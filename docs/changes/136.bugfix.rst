@@ -1,0 +1,2 @@
+Added workaround for issue where duplicate section titles would cause error in
+``quanta_tif`` extractor.

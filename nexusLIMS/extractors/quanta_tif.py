@@ -30,6 +30,7 @@ import configparser
 import contextlib
 import io
 import logging
+import re
 from decimal import Decimal, InvalidOperation
 from math import degrees
 from pathlib import Path
@@ -87,6 +88,7 @@ def get_quanta_metadata(filename: Path):
     metadata_bytes = metadata_bytes.replace(b"\x00", b"")
     metadata_str = metadata_bytes.decode().replace("\r\n", "\n")
     metadata_str = metadata_str.replace("\r", "\n")
+    metadata_str = _fix_duplicate_multigis_metadata_tags(metadata_str)
     buf = io.StringIO(metadata_str)
     config = configparser.ConfigParser()
     # make ConfigParser respect upper/lowercase values
@@ -107,6 +109,70 @@ def get_quanta_metadata(filename: Path):
     mdict["nx_meta"] = sort_dict(mdict["nx_meta"])
 
     return mdict
+
+
+def _fix_duplicate_multigis_metadata_tags(metadata_str: str) -> str:
+    """
+    Rename the metadata section headers to allow parsing by ``ConfigParser``.
+
+    Some instruments have metadata section titles like so:
+
+        [MultiGIS]
+        [MultiGISUnit1]
+        [MultiGISGas1]
+        [MultiGISGas2]
+        [MultiGISGas3]
+        [MultiGISUnit2]
+        [MultiGISGas1]
+        [MultiGISGas2]
+        [MultiGISGas3]
+        [MultiGISUnit3]
+        [MultiGISGas1]
+        [MultiGISGas2]
+        [MultiGISGas3]
+
+    Which causes errors because ``ConfigParser`` raises a ``DuplicateSectionError`` on
+    the first time it sees a duplicate of ``MultiGISGas1``. As a workaround, this method
+    will modify an entire string of "Quanta" metadata so that it instead reads like so:
+
+        [MultiGIS]
+        [MultiGISUnit1]
+        [MultiGISUnit1.MultiGISGas1]
+        [MultiGISUnit1.MultiGISGas2]
+        [MultiGISUnit1.MultiGISGas3]
+        [MultiGISUnit2]
+        [MultiGISUnit2.MultiGISGas1]
+        [MultiGISUnit2.MultiGISGas2]
+        [MultiGISUnit2.MultiGISGas3]
+        [MultiGISUnit3]
+        [MultiGISUnit3.MultiGISGas1]
+        [MultiGISUnit3.MultiGISGas2]
+        [MultiGISUnit3.MultiGISGas3]
+
+    """
+    metadata_to_return = ""
+    multi_gis_section_numbers = re.findall(r"\[MultiGISUnit(\d+)\]", metadata_str)
+    if multi_gis_section_numbers:
+        multi_gis_unit_indices = [
+            metadata_str.index(f"[MultiGISUnit{num}]")
+            for num in multi_gis_section_numbers
+        ]
+        metadata_to_return += metadata_str[: multi_gis_unit_indices[0]]
+        for i, num in enumerate(multi_gis_section_numbers):
+            if i < len(multi_gis_unit_indices) - 1:
+                to_process = metadata_str[
+                    multi_gis_unit_indices[i] : multi_gis_unit_indices[i + 1]
+                ]
+            else:
+                to_process = metadata_str[multi_gis_unit_indices[i] :]
+            multi_gis_gas_tags = re.findall(r"\[(MultiGISGas\d+)\]", to_process)
+            for tag in multi_gis_gas_tags:
+                to_process = to_process.replace(tag, f"MultiGISUnit{num}.{tag}")
+            metadata_to_return += to_process
+    else:
+        metadata_to_return = metadata_str
+
+    return metadata_to_return
 
 
 def parse_nx_meta(mdict):

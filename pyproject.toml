@@ -69,7 +69,7 @@ disable = "locally-disabled"
 
 [tool.ruff]
 select = [
-    "F", "E", "W", "I", "N", "D", "U", "YTT", "UP", "S", "FBT", "B", "A", "COM", "C4",
+    "F", "E", "W", "I", "N", "D", "YTT", "UP", "S", "FBT", "B", "A", "COM", "C4",
     "DTZ", "T10", "EM", "EXE", "ISC", "ICN", "G", "INP", "PIE", "T20", "PYI",
     "PT", "Q", "RSE", "RET", "SLF", "SIM", "TID", "TCH", "ARG", "PTH", "ERA", "PL",
     "TRY", "RUF"

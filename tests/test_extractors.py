@@ -547,7 +547,7 @@ def _fixture_titan_643_tem_db(monkeypatch):
 
 
 class TestDigitalMicrographExtractor:
-    """Tests nexusLIMS.extractors.digital_migrograph."""
+    """Tests nexusLIMS.extractors.digital_micrograph."""
 
     def test_corrupted_file(self, corrupted_file):
         assert digital_micrograph.get_dm3_metadata(corrupted_file) is None
@@ -927,6 +927,21 @@ class TestQuantaExtractor:
         assert metadata["nx_meta"]["Frames Integrated"] == 5
         assert metadata["Image"]["ResolutionX"] == "1024"
         assert metadata["Image"]["DigitalContrast"] == "1"
+
+    def test_scios_duplicate_metadata_sections(self, scios_multiple_gis_meta):
+        metadata = get_quanta_metadata(scios_multiple_gis_meta[0])
+        assert metadata["nx_meta"]["Data Type"] == "SEM_Imaging"
+        assert metadata["nx_meta"]["DatasetType"] == "Image"
+        assert (
+            metadata["nx_meta"]["Creation Time"] == "2024-02-21T11:02:41"
+            or metadata["nx_meta"]["Creation Time"] == "2024-02-21T13:02:41"
+        )
+        assert metadata["nx_meta"]["Operator"] == "xxxx"
+        assert metadata["CBS"]["Setting"] == "C+D"
+        assert metadata["MultiGISUnit1.MultiGISGas1"]["GasName"] == ""  # noqa: PLC1901
+        assert metadata["MultiGISUnit2.MultiGISGas3"]["DutyCycle"] == "0"
+        assert metadata["MultiGISUnit3.MultiGISGas6"]["GasState"] == "Unknown"
+        assert metadata["MultiGISUnit4.MultiGISGas4"]["GasState"] == "Unknown"
 
 
 class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods

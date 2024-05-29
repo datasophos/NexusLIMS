@@ -343,6 +343,14 @@ def quanta_no_beam_meta():
     delete_files("QUANTA_NO_BEAM")
 
 
+@pytest.fixture(scope="module")
+def scios_multiple_gis_meta():
+    """Scios FIB example tif with duplicate metadata sections."""
+    files = extract_files("SCIOS_DUPLICATE_META_TIF")
+    yield files
+    delete_files("SCIOS_DUPLICATE_META_TIF")
+
+
 # other assorted files
 
 
@@ -389,7 +397,7 @@ def basic_txt_file():
 
 @pytest.fixture(scope="module")
 def basic_txt_file_no_extension():
-    """Plain txt file with no extention for basic extractor test."""
+    """Plain txt file with no extension for basic extractor test."""
     return Path(__file__).parent / "files" / "basic_test_no_extension"
 
 
