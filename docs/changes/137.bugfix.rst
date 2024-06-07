@@ -1,2 +1,0 @@
-Add ability to parse XML metadata included in some FEI/Thermo TIFF files that was
-causing the TIFF extractor to fail when it was present.
