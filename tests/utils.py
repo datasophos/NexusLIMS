@@ -55,6 +55,7 @@ tars = {
     "QUANTA_32BIT": "quad1image_001_32bit.tif.tar.gz",
     "QUANTA_NO_BEAM": "quad1image_001_no_beam_scan_or_system_meta.tar.gz",
     "SCIOS_DUPLICATE_META_TIF": "scios_multiple_gis_metadata_sections.tar.gz",
+    "SCIOS_XML_META_TIF": "scios_with_xml_metadata.tar.gz",
     "4D_STEM": "4d_stem.hdf5.tar.gz",
     "PARSE_META_642_TITAN": "01 - 13k - 30um obj.dm3.tar.gz",
     "FEI_SER": "fei_emi_ser_test_files.tar.gz",

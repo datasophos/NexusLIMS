@@ -943,6 +943,31 @@ class TestQuantaExtractor:
         assert metadata["MultiGISUnit3.MultiGISGas6"]["GasState"] == "Unknown"
         assert metadata["MultiGISUnit4.MultiGISGas4"]["GasState"] == "Unknown"
 
+    def test_scios_xml_metadata(self, scios_xml_metadata):
+        metadata = get_quanta_metadata(scios_xml_metadata[0])
+        assert metadata["nx_meta"]["Data Type"] == "SEM_Imaging"
+        assert metadata["nx_meta"]["Acquisition Date"] == "05/01/2024"
+        assert metadata["nx_meta"]["Beam Name"] == "EBeam"
+        assert metadata["nx_meta"]["Beam Tilt X"] == 0.0
+        assert metadata["CBS"]["Setting"] == "A+B"
+        assert metadata["nx_meta"]["Operator"] == "xxxx"
+
+        assert metadata["FEI_XML_Metadata"]["Core"]["ApplicationSoftware"] == "xT"
+        assert metadata["FEI_XML_Metadata"]["Core"]["UserID"] == "xxxx"
+        assert (
+            metadata["FEI_XML_Metadata"]["Instrument"]["Manufacturer"] == "FEI Company"
+        )
+        assert (
+            metadata["FEI_XML_Metadata"]["GasInjectionSystems"]["Gis"][1]["PortName"]
+            == "Port2"
+        )
+        assert (
+            metadata["FEI_XML_Metadata"]["StageSettings"]["StagePosition"]["Tilt"][
+                "Alpha"
+            ]
+            == "-1.4439342452859871E-05"
+        )
+
 
 class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
     """Tests nexusLIMS.extractors.fei_emi."""

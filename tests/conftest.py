@@ -351,6 +351,14 @@ def scios_multiple_gis_meta():
     delete_files("SCIOS_DUPLICATE_META_TIF")
 
 
+@pytest.fixture(scope="module")
+def scios_xml_metadata():
+    """Scios FIB example tif with XML metadata embedded at the end."""
+    files = extract_files("SCIOS_XML_META_TIF")
+    yield files
+    delete_files("SCIOS_XML_META_TIF")
+
+
 # other assorted files
 
 

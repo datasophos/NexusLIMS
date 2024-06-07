@@ -34,6 +34,9 @@ import re
 from decimal import Decimal, InvalidOperation
 from math import degrees
 from pathlib import Path
+from typing import Tuple
+
+from lxml import etree
 
 from nexusLIMS.extractors.utils import _set_instr_name_and_time
 from nexusLIMS.utils import set_nested_dict_value, sort_dict, try_getting_dict_value
@@ -89,6 +92,12 @@ def get_quanta_metadata(filename: Path):
     metadata_str = metadata_bytes.decode().replace("\r\n", "\n")
     metadata_str = metadata_str.replace("\r", "\n")
     metadata_str = _fix_duplicate_multigis_metadata_tags(metadata_str)
+
+    # test if file has XML metadata and if so, extract it separately
+    metadata_str, mdict["FEI_XML_Metadata"] = _detect_and_process_xml_metadata(
+        metadata_str,
+    )
+
     buf = io.StringIO(metadata_str)
     config = configparser.ConfigParser()
     # make ConfigParser respect upper/lowercase values
@@ -109,6 +118,78 @@ def get_quanta_metadata(filename: Path):
     mdict["nx_meta"] = sort_dict(mdict["nx_meta"])
 
     return mdict
+
+
+def _detect_and_process_xml_metadata(
+    metadata_str: str,
+) -> Tuple[str, dict]:
+    """
+    Find and (if necessary) parse XML metadata in a Thermo Fisher FIB/SEM TIF file.
+
+    Some Thermo Fisher FIB/SEM files have additional metadata embedded as XML at the end
+    of the TIF file, which cannot be handled by the ``ConfigParser`` implementation of
+    :py:meth:`get_quanta_metadata`. This method will detect, parse, and remove the XML
+    from the metadata if present.
+
+    Parameters
+    ----------
+    metadata_str
+        The metadata at the end of the TIF file as a string. May or may not include
+        an XML section (this depends on the version of the Thermo software that saved
+        the image).
+
+    Returns
+    -------
+    metadata_str
+        The originally provided metadata as a string, but with the XML portion removed
+        if it was present
+
+    xml_metadata
+        A dictionary containing the metadata that was present in the XML portion. Will
+        be an empty dictionary if there was no XML.
+    """
+    xml_regex = re.compile(r'<\?xml version=".+"\?>')
+    regex_match = xml_regex.search(metadata_str)
+    if regex_match:
+        # there is an xml declaration in the metadata of this file, so parse it:
+        xml_str = metadata_str[regex_match.span()[0] :]
+        metadata_str = metadata_str[: regex_match.span()[0]]
+        root = etree.fromstring(xml_str)  # noqa: S320
+        return metadata_str, _xml_el_to_dict(root)
+
+    return metadata_str, {}
+
+
+def _xml_el_to_dict(node: etree.ElementBase):
+    """
+    Convert an lxml.etree node tree into a dict.
+
+    This is used to transform the XML metadata section into a dictionary representation
+    so it can be stored alongside the other metadata.
+
+    Taken from https://stackoverflow.com/a/66103841/1435788
+    """
+    result = {}
+
+    for element in node.iterchildren():
+        # Remove namespace prefix
+        key = element.tag.split("}")[1] if "}" in element.tag else element.tag
+
+        # Process element as tree element if the inner XML contains
+        # non-whitespace content
+        if element.text and element.text.strip():
+            value = element.text
+        else:
+            value = _xml_el_to_dict(element)
+        if key in result:
+            if isinstance(result[key], list):
+                result[key].append(value)  # pragma: no cover
+            else:
+                tempvalue = result[key].copy()
+                result[key] = [tempvalue, value]
+        else:
+            result[key] = value
+    return result
 
 
 def _fix_duplicate_multigis_metadata_tags(metadata_str: str) -> str:
@@ -182,6 +263,10 @@ def parse_nx_meta(mdict):
     Parse the "important" metadata that is saved at specific places within
     the Quanta tag structure into a consistent place in the metadata dictionary
     returned by :py:meth:`get_quanta_metadata`.
+
+    The metadata contained in the XML section (if present) is not parsed, since it
+    appears to only contain duplicates or slightly renamed metadata values compared
+    to the typical config-style section that is always present.
 
     Parameters
     ----------
