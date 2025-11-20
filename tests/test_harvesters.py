@@ -1,46 +1,18 @@
-#  NIST Public License - 2019-2023
-#
-#  This software was developed by employees of the National Institute of
-#  Standards and Technology (NIST), an agency of the Federal Government
-#  and is being made available as a public service. Pursuant to title 17
-#  United States Code Section 105, works of NIST employees are not subject
-#  to copyright protection in the United States.  This software may be
-#  subject to foreign copyright.  Permission in the United States and in
-#  foreign countries, to the extent that NIST may hold copyright, to use,
-#  copy, modify, create derivative works, and distribute this software and
-#  its documentation without fee is hereby granted on a non-exclusive basis,
-#  provided that this notice and disclaimer of warranty appears in all copies.
-#
-#  THE SOFTWARE IS PROVIDED 'AS IS' WITHOUT ANY WARRANTY OF ANY KIND,
-#  EITHER EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED
-#  TO, ANY WARRANTY THAT THE SOFTWARE WILL CONFORM TO SPECIFICATIONS, ANY
-#  IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
-#  AND FREEDOM FROM INFRINGEMENT, AND ANY WARRANTY THAT THE DOCUMENTATION
-#  WILL CONFORM TO THE SOFTWARE, OR ANY WARRANTY THAT THE SOFTWARE WILL BE
-#  ERROR FREE.  IN NO EVENT SHALL NIST BE LIABLE FOR ANY DAMAGES, INCLUDING,
-#  BUT NOT LIMITED TO, DIRECT, INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES,
-#  ARISING OUT OF, RESULTING FROM, OR IN ANY WAY CONNECTED WITH THIS SOFTWARE,
-#  WHETHER OR NOT BASED UPON WARRANTY, CONTRACT, TORT, OR OTHERWISE, WHETHER
-#  OR NOT INJURY WAS SUSTAINED BY PERSONS OR PROPERTY OR OTHERWISE, AND
-#  WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT OF THE RESULTS OF,
-#  OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
-#
 # pylint: disable=C0116,C0302,too-many-locals
-# ruff: noqa: D102
+# ruff: noqa: D102, ARG001, ARG005, PLR2004, SLF001, DTZ001
 """
 Test NexusLIMS harvesters.
 
 Tests the harvesters of NexusLIMS, which fetch information about reservations from
-external APIs. These tests are not particularly portable, because they rely on an
-external instance of SharePoint and/or NEMO, so they likely will not work in other
-environments
+external APIs. These tests use mocked NEMO API responses based on the actual API
+schema to avoid requiring a running NEMO server.
 """
+
 import os
 import time
 import warnings
 from datetime import datetime as dt
 from datetime import timedelta
-from urllib.parse import urljoin
 
 import pytest
 import requests
@@ -54,7 +26,10 @@ from nexusLIMS.harvesters.nemo import utils as nemo_utils
 from nexusLIMS.harvesters.nemo.connector import NemoConnector
 from nexusLIMS.harvesters.reservation_event import ReservationEvent
 from nexusLIMS.instruments import Instrument, instrument_db
-from nexusLIMS.utils import AuthenticationError, get_auth, nexus_req
+from nexusLIMS.utils import AuthenticationError, get_auth
+
+# Import mock data fixtures - these are pytest fixtures used via dependency injection
+pytest_plugins = ["tests.fixtures.nemo_mock_data"]
 
 warnings.filterwarnings(
     action="ignore",
@@ -83,7 +58,7 @@ class TestSharepoint:  # pragma: no cover
     def test_downloading_valid_calendars(self, instrument):
         # Handle the two test instruments that we put into the database,
         # which will raise an error because their url values are bogus
-        if instrument.name in ["testsurface-CPU_P1111111", "testVDI-VM-JAT-111222"]:
+        if instrument.name in ["TEST-INSTRUMENT-001", "testVDI-VM-JAT-111222"]:
             pass
         elif instrument.harvester == "sharepoint_calendar":
             sc.fetch_xml(instrument)
@@ -127,7 +102,7 @@ class TestSharepoint:  # pragma: no cover
 
     def test_bad_username(self, monkeypatch):
         with monkeypatch.context() as m_patch:
-            m_patch.setenv("nexusLIMS_user", "bad_user")
+            m_patch.setenv("NEXUSLIMS_USER", "bad_user")
             with pytest.raises(AuthenticationError):
                 sc.fetch_xml(instrument_db["FEI-Titan-TEM-635816"])
 
@@ -145,7 +120,7 @@ class TestSharepoint:  # pragma: no cover
                 return MockResponse()
 
             # User bad username so we don't get a valid response or lock miclims
-            m_patch.setenv("nexusLIMS_user", "bad_user")
+            m_patch.setenv("NEXUSLIMS_USER", "bad_user")
 
             # use monkeypatch to use our version of get for requests that
             # always returns a 404
@@ -156,14 +131,14 @@ class TestSharepoint:  # pragma: no cover
     def test_fetch_xml_instrument_none(self, monkeypatch):
         with monkeypatch.context() as m_patch:
             # use bad username so we don't get a response or lock miclims
-            m_patch.setenv("nexusLIMS_user", "bad_user")
+            m_patch.setenv("NEXUSLIMS_USER", "bad_user")
             with pytest.raises(AuthenticationError):
                 sc.fetch_xml(instrument_db["FEI-Titan-TEM-635816"])
 
     def test_fetch_xml_instrument_bogus(self, monkeypatch):
         with monkeypatch.context() as m_patch:
             # use bad username so we don't get a response or lock miclims
-            m_patch.setenv("nexusLIMS_user", "bad_user")
+            m_patch.setenv("NEXUSLIMS_USER", "bad_user")
             with pytest.raises(
                 ValueError,
                 match="could not be parsed",
@@ -287,7 +262,7 @@ class TestSharepoint:  # pragma: no cover
 
     def test_get_sharepoint_tz(self, monkeypatch):
         # pylint: disable=W0212
-        assert sc._get_sharepoint_tz() in [  # noqa: SLF001
+        assert sc._get_sharepoint_tz() in [
             "America/New_York",
             "America/Chicago",
             "America/Denver",
@@ -408,29 +383,56 @@ class TestSharepoint:  # pragma: no cover
             )
 
         monkeypatch.setattr(sc, "nexus_req", mock_get_et)
-        assert sc._get_sharepoint_tz() == "America/New_York"  # noqa: SLF001
+        assert sc._get_sharepoint_tz() == "America/New_York"
         monkeypatch.setattr(sc, "nexus_req", mock_get_ct)
-        assert sc._get_sharepoint_tz() == "America/Chicago"  # noqa: SLF001
+        assert sc._get_sharepoint_tz() == "America/Chicago"
         monkeypatch.setattr(sc, "nexus_req", mock_get_mt)
-        assert sc._get_sharepoint_tz() == "America/Denver"  # noqa: SLF001
+        assert sc._get_sharepoint_tz() == "America/Denver"
         monkeypatch.setattr(sc, "nexus_req", mock_get_pt)
-        assert sc._get_sharepoint_tz() == "America/Los_Angeles"  # noqa: SLF001
+        assert sc._get_sharepoint_tz() == "America/Los_Angeles"
         monkeypatch.setattr(sc, "nexus_req", mock_get_ht)
-        assert sc._get_sharepoint_tz() == "Pacific/Honolulu"  # noqa: SLF001
+        assert sc._get_sharepoint_tz() == "Pacific/Honolulu"
 
 
 @pytest.fixture(name="nemo_connector")
-def nemo_connector_test_instance():
-    """Return a valid NemoConnector instance for test."""
-    assert "NEMO_address_1" in os.environ
-    assert "NEMO_token_1" in os.environ
-    return NemoConnector(
-        base_url=os.getenv("NEMO_address_1"),
-        token=os.getenv("NEMO_token_1"),
-        strftime_fmt=os.getenv("NEMO_strftime_fmt_1"),
-        strptime_fmt=os.getenv("NEMO_strptime_fmt_1"),
-        timezone=os.getenv("NEMO_tz_1"),
+def nemo_connector_test_instance(  # noqa: PLR0913
+    monkeypatch,
+    mock_users_data,
+    mock_tools_data,
+    mock_projects_data,
+    mock_reservations_data,
+    mock_usage_events_data,
+):
+    """
+    Return a NemoConnector instance with mocked API calls.
+
+    This fixture mocks the _api_caller method to return test data instead of
+    making real HTTP requests to a NEMO server.
+    """
+    from tests.fixtures.nemo_mock_data import filter_by_params
+
+    connector = NemoConnector(
+        base_url="http://test.example.com/api/",
+        token="test-token-12345",
+        timezone="America/Denver",
     )
+
+    # Create a mock _api_caller that returns appropriate mock data
+    def mock_api_caller(verb, endpoint, params):
+        if endpoint == "users/":
+            return filter_by_params(mock_users_data, params)
+        if endpoint == "tools/":
+            return filter_by_params(mock_tools_data, params)
+        if endpoint == "projects/":
+            return filter_by_params(mock_projects_data, params)
+        if endpoint == "reservations/":
+            return filter_by_params(mock_reservations_data, params)
+        if endpoint == "usage_events/":
+            return filter_by_params(mock_usage_events_data, params)
+        return []
+
+    monkeypatch.setattr(connector, "_api_caller", mock_api_caller)
+    return connector
 
 
 @pytest.fixture(name="bogus_nemo_connector_url")
@@ -442,7 +444,7 @@ def bogus_nemo_connector_url_test_instance():
 @pytest.fixture(name="bogus_nemo_connector_token")
 def bogus_nemo_connector_token_test_instance():
     """Return a NemoConnector with a bad URL and token that should fail."""
-    return NemoConnector(os.environ["NEMO_address_1"], "badtokenvalue")
+    return NemoConnector("http://test.example.com/api/", "badtokenvalue")
 
 
 class TestNemoConnector:
@@ -458,13 +460,13 @@ class TestNemoConnector:
 
     def test_nemo_connector_repr(self, nemo_connector):
         assert (
-            str(nemo_connector) == f"Connection to NEMO API at "
-            f"{os.environ['NEMO_address_1']}"
+            str(nemo_connector)
+            == "Connection to NEMO API at http://test.example.com/api/"
         )
 
     def test_nemo_multiple_harvesters_enabled(self, monkeypatch):
-        monkeypatch.setenv("NEMO_address_2", "https://nemo.address.com/api/")
-        monkeypatch.setenv("NEMO_token_2", "sometokenvalue")
+        monkeypatch.setenv("NEMO_ADDRESS_2", "https://nemo.address.com/api/")
+        monkeypatch.setenv("NEMO_TOKEN_2", "sometokenvalue")
         harvester_count = 2
         assert len(nemo_utils.get_harvesters_enabled()) == harvester_count
         assert "Connection to NEMO API at https://nemo.address.com/api/" in [
@@ -473,16 +475,15 @@ class TestNemoConnector:
 
     def test_nemo_harvesters_enabled(self):
         assert len(nemo_utils.get_harvesters_enabled()) >= 1
-        assert f"Connection to NEMO API at {os.environ['NEMO_address_1']}" in [
+        assert f"Connection to NEMO API at {os.environ['NEMO_ADDRESS_1']}" in [
             str(n) for n in nemo_utils.get_harvesters_enabled()
         ]
 
-    def test_getting_nemo_data(self):
-        _ = nexus_req(
-            url=urljoin(os.environ["NEMO_address_1"], "api/reservations"),
-            function="GET",
-            token_auth=os.environ["NEMO_token_1"],
-        )
+    def test_getting_nemo_data(self, nemo_connector):
+        # Test that the connector can successfully get data via its API caller
+        users = nemo_connector.get_users(user_id=1)
+        assert len(users) == 1
+        assert users[0]["username"] == "captain"
 
     def test_get_connector_by_base_url(self):
         with pytest.raises(LookupError):
@@ -491,8 +492,8 @@ class TestNemoConnector:
     def test_connector_strftime(self):
         """Test conversion of datetimes to strings based on a connector's settings."""
         new_york = timezone("America/New_York")
-        date_no_ms = dt(2022, 2, 16, 9, 39, 0, 0)  # noqa: DTZ001
-        date_w_ms = dt(2022, 2, 16, 9, 39, 0, 1)  # noqa: DTZ001
+        date_no_ms = dt(2022, 2, 16, 9, 39, 0, 0)
+        date_w_ms = dt(2022, 2, 16, 9, 39, 0, 1)
         date_no_ms_tz = new_york.localize(date_no_ms)
         date_w_ms_tz = new_york.localize(date_w_ms)
 
@@ -510,7 +511,7 @@ class TestNemoConnector:
             strftime_fmt="%Y-%m-%dT%H:%M:%S%z",
         )
         # these two will depend on whatever the local machine's offset is
-        date_ = dt(2022, 2, 16, 9, 39, 0).astimezone().strftime("%z")  # noqa: DTZ001
+        date_ = dt(2022, 2, 16, 9, 39, 0).astimezone().strftime("%z")
         assert nemo_conn.strftime(date_no_ms) == "2022-02-16T09:39:00" + date_
         assert nemo_conn.strftime(date_w_ms) == "2022-02-16T09:39:00" + date_
         assert nemo_conn.strftime(date_no_ms_tz) == "2022-02-16T09:39:00-0500"
@@ -525,7 +526,7 @@ class TestNemoConnector:
         )
         assert (
             nemo_conn.strftime(
-                dt(2022, 2, 16, 23, 6, 12, 50),  # noqa: DTZ001
+                dt(2022, 2, 16, 23, 6, 12, 50),
             )
             == "2022-02-16T23:06:12-0500"
         )
@@ -537,8 +538,8 @@ class TestNemoConnector:
         datestr_w_ms = "2022-02-16T09:39:00.000001"
         datestr_no_ms_tz = "2022-02-16T09:39:00-05:00"
         datestr_w_ms_tz = "2022-02-16T09:39:00.000001-05:00"
-        date_no_ms = dt(2022, 2, 16, 9, 39, 0, 0)  # noqa: DTZ001
-        date_w_ms = dt(2022, 2, 16, 9, 39, 0, 1)  # noqa: DTZ001
+        date_no_ms = dt(2022, 2, 16, 9, 39, 0, 0)
+        date_w_ms = dt(2022, 2, 16, 9, 39, 0, 1)
         date_no_ms_tz = new_york.localize(date_no_ms)
         date_w_ms_tz = new_york.localize(date_w_ms)
 
@@ -569,7 +570,7 @@ class TestNemoConnector:
         assert nemo_conn.strptime(datestr_no_ms) == date_no_ms
         with pytest.raises(
             ValueError,
-            match="unconverted data remains: .000001",
+            match=r"unconverted data remains: \.000001",
         ):  # should error since our fmt has no ms
             assert nemo_conn.strptime(datestr_w_ms) == date_w_ms
         with pytest.raises(
@@ -579,7 +580,7 @@ class TestNemoConnector:
             assert nemo_conn.strptime(datestr_no_ms_tz) == date_no_ms_tz
         with pytest.raises(
             ValueError,
-            match="unconverted data remains: .000001-05:00",
+            match=r"unconverted data remains: \.000001-05:00",
         ):  # should error since our fmt has no TZ
             assert nemo_conn.strptime(datestr_w_ms_tz) == date_w_ms_tz
 
@@ -594,8 +595,8 @@ class TestNemoConnector:
         with pytest.raises(
             ValueError,
             match=(
-                "time data '2022-02-16T09:39:00.000001' does not "
-                "match format '%Y-%m-%dT%H:%M:%S%z'"
+                r"time data '2022-02-16T09:39:00\.000001' does not "
+                r"match format '%Y-%m-%dT%H:%M:%S%z'"
             ),
         ):  # should error since our fmt has no ms
             assert c_tz.strptime(datestr_w_ms) == date_w_ms
@@ -603,8 +604,8 @@ class TestNemoConnector:
         with pytest.raises(
             ValueError,
             match=(
-                "time data '2022-02-16T09:39:00.000001-05:00' does not "
-                "match format '%Y-%m-%dT%H:%M:%S%z'"
+                r"time data '2022-02-16T09:39:00\.000001-05:00' does not "
+                r"match format '%Y-%m-%dT%H:%M:%S%z'"
             ),
         ):  # should error since our fmt has no ms
             assert c_tz.strptime(datestr_w_ms_tz) == date_w_ms_tz
@@ -616,7 +617,7 @@ class TestNemoConnector:
             strptime_fmt="%m-%d-%Y %H:%M:%S",
         )
         datestr_no_ms = "02-16-2022 09:39:00"
-        date_no_ms = dt(2022, 2, 16, 9, 39, 0, 0)  # noqa: DTZ001
+        date_no_ms = dt(2022, 2, 16, 9, 39, 0, 0)
         assert nemo_conn_2.strptime(datestr_no_ms) == date_no_ms
 
         # test format seen on ***REMOVED*** coerced to timezone
@@ -655,7 +656,11 @@ class TestNemoConnectorUsers:
 
     @pytest.mark.parametrize(
         ("test_user_id_input", "expected_usernames"),
-        [(3, ["***REMOVED***"]), ([2, 3, 4], ["***REMOVED***", "***REMOVED***", "***REMOVED***"]), (-1, [])],
+        [
+            (3, ["ned"]),
+            ([2, 3, 4], ["professor", "ned", "commander"]),
+            (-1, []),
+        ],
     )
     def test_get_users(
         self,
@@ -671,8 +676,11 @@ class TestNemoConnectorUsers:
     @pytest.mark.parametrize(
         ("test_username_input", "expected_usernames"),
         [
-            ("***REMOVED***", ["***REMOVED***"]),
-            (["***REMOVED***", "***REMOVED***", "***REMOVED***"], ["***REMOVED***", "***REMOVED***", "***REMOVED***"]),
+            ("ned", ["ned"]),
+            (
+                ["professor", "ned", "commander"],
+                ["professor", "ned", "commander"],
+            ),
             ("ernst_ruska", []),
         ],
     )
@@ -687,47 +695,56 @@ class TestNemoConnectorUsers:
         # unordered and deduplicated comparison
         assert {u["username"] for u in users} == set(expected_usernames)
 
-    def test_get_users_memoization(self):
-        # to test the memoization of user data, we have to use one instance
-        # of NemoConnector rather than a new one from the fixture for each call
-        nemo_conn = NemoConnector(
-            os.environ["NEMO_address_1"],
-            os.environ["NEMO_token_1"],
-        )
+    def test_get_users_memoization(self, nemo_connector):
+        # to test the memoization of user data, we use the fixture connector
+        # and verify caching works across multiple calls
         to_test = [
-            (3, ["***REMOVED***"]),
-            ([2, 3, 4], ["***REMOVED***", "***REMOVED***", "***REMOVED***"]),
+            (3, ["ned"]),
+            ([2, 3, 4], ["professor", "ned", "commander"]),
             (-1, []),
-            ([2, 3], ["***REMOVED***", "***REMOVED***"]),
-            (2, ["***REMOVED***"]),
+            ([2, 3], ["professor", "ned"]),
+            (2, ["professor"]),
         ]
         for u_id, expected in to_test:
-            users = nemo_conn.get_users(u_id)
+            users = nemo_connector.get_users(u_id)
             assert {u["username"] for u in users} == set(expected)
 
-    def test_get_users_by_username_memoization(self):
-        # to test the memoization of user data, we have to use one instance
-        # of NemoConnector rather than a new one from the fixture for each call
-        nemo_conn = NemoConnector(
-            os.environ["NEMO_address_1"],
-            os.environ["NEMO_token_1"],
-        )
+    def test_get_users_by_username_memoization(self, nemo_connector):
+        # to test the memoization of user data, we use the fixture connector
+        # and verify caching works across multiple calls
         to_test = [
-            ("***REMOVED***", ["***REMOVED***"]),
-            (["***REMOVED***", "***REMOVED***", "***REMOVED***"], ["***REMOVED***", "***REMOVED***", "***REMOVED***"]),
+            ("ned", ["ned"]),
+            (
+                ["professor", "ned", "commander"],
+                ["professor", "ned", "commander"],
+            ),
             ("ernst_ruska", []),
-            (["***REMOVED***", "***REMOVED***"], ["***REMOVED***", "***REMOVED***"]),
-            ("***REMOVED***", ["***REMOVED***"]),
+            (["professor", "ned"], ["professor", "ned"]),
+            ("commander", ["commander"]),
         ]
         for uname, expected in to_test:
-            users = nemo_conn.get_users_by_username(uname)
+            users = nemo_connector.get_users_by_username(uname)
             assert {u["username"] for u in users} == set(expected)
 
     def test_get_users_bad_url(self, bogus_nemo_connector_url):
         with pytest.raises(requests.exceptions.ConnectionError):
             bogus_nemo_connector_url.get_users()
 
-    def test_get_users_bad_token(self, bogus_nemo_connector_token):
+    def test_get_users_bad_token(self, bogus_nemo_connector_token, monkeypatch):
+        def mock_api_caller_401(*_args, **_kwargs):
+            """Mock _api_caller to raise 401 Unauthorized error."""
+            response = requests.Response()
+            response.status_code = 401
+            response.reason = "Unauthorized"
+            error_msg = "401 Client Error: Unauthorized"
+            raise requests.exceptions.HTTPError(error_msg, response=response)
+
+        monkeypatch.setattr(
+            bogus_nemo_connector_token,
+            "_api_caller",
+            mock_api_caller_401,
+        )
+
         with pytest.raises(requests.exceptions.HTTPError) as exception:
             bogus_nemo_connector_token.get_users()
         assert "401" in str(exception.value)
@@ -764,13 +781,8 @@ class TestNemoConnectorTools:
         # unordered and deduplicated comparison
         assert {t["name"] for t in tools} == set(expected_names)
 
-    def test_get_tools_memoization(self):
-        # to test the memoization of tool data, we have to use one instance
-        # of NemoConnector rather than a new one from the fixture for each call
-        nemo_conn = NemoConnector(
-            os.environ["NEMO_address_1"],
-            os.environ["NEMO_token_1"],
-        )
+    def test_get_tools_memoization(self, nemo_connector):
+        # Test memoization with the fixture connector across multiple calls
         to_test = [
             (
                 [1, 15, 3],
@@ -784,12 +796,13 @@ class TestNemoConnectorTools:
             ([15, 3], ["642 JEOL 3010", "642 FEI Titan"]),
         ]
         for t_id, expected in to_test:
-            tools = nemo_conn.get_tools(t_id)
+            tools = nemo_connector.get_tools(t_id)
             assert {t["name"] for t in tools} == set(expected)
 
     def test_get_tool_ids(self, nemo_connector):
         tool_ids = nemo_connector.get_known_tool_ids()
-        for t_id in [1, 3, 4, 5, 6, 7, 8, 9, 10, 15]:
+        # Check for the three tool IDs from our test instruments
+        for t_id in [1, 10, 15]:
             assert t_id in tool_ids
 
 
@@ -816,20 +829,15 @@ class TestNemoConnectorProjects:
         # it's an unordered and deduplicated comparison
         assert {p["name"] for p in proj} == set(expected_names)
 
-    def test_get_projects_memoization(self):
-        # to test the memoization of project data, we have to use one instance
-        # of NemoConnector rather than a new one from the fixture for each call
-        nemo_conn = NemoConnector(
-            os.environ["NEMO_address_1"],
-            os.environ["NEMO_token_1"],
-        )
+    def test_get_projects_memoization(self, nemo_connector):
+        # Test memoization with the fixture connector across multiple calls
         to_test = [
             ([13, 14, 15], ["Gaithersburg", "Boulder", "ODI"]),
             (16, ["Test"]),
             ([13, 14], ["Gaithersburg", "Boulder"]),
         ]
         for p_id, expected in to_test:
-            projects = nemo_conn.get_projects(p_id)
+            projects = nemo_connector.get_projects(p_id)
             assert {p["name"] for p in projects} == set(expected)
 
 
@@ -837,12 +845,9 @@ class TestNemoConnectorEvents:
     """Testing getting usage event and reservation information from NEMO."""
 
     def test_get_reservations(self, nemo_connector):
-        # not sure best way to test this, but defaults should return at least
-        # as many dictionaries as were present on the day these tests were
-        # written (Sept. 20, 2021)
+        # Test with mocked data - should return all mock reservations
         defaults = nemo_connector.get_reservations()
-        reservation_count = 10
-        assert len(defaults) > reservation_count
+        assert len(defaults) == 7  # We have 7 mock reservations
         assert all(
             key in defaults[0]
             for key in ["id", "question_data", "creation_time", "start", "end"]
@@ -880,17 +885,10 @@ class TestNemoConnectorEvents:
         assert all(d["tool"]["id"] in [15, 10] for d in multi_tool)
 
     def test_get_usage_events(self, nemo_connector):
-        # not sure best way to test this, but defaults should return at least
-        # as many dictionaries as were present on the day these tests were
-        # written (Sept. 20, 2021)
-
-        # Need to override api_url values for tools in the test DB if we're
-        # using ***REMOVED***. without changing the code for the nemo_connector, we do
-        # this at test setup in conftest.py
-
+        # Test with mocked data - only returns events for tools in instrument_db
+        # Our mock has 3 usage events, but only tool 10 is in test instrument_db
         defaults = nemo_connector.get_usage_events()
-        usage_event_count = 2
-        assert len(defaults) >= usage_event_count
+        assert len(defaults) >= 2  # At least 2 events for tool 10
         assert all(
             key in defaults[0]
             for key in [
@@ -933,12 +931,12 @@ class TestNemoConnectorEvents:
         multi_tool = nemo_connector.get_usage_events(tool_id=[10, 3])
         assert all(d["tool"]["id"] in [10, 3] for d in multi_tool)
 
-        username_test = nemo_connector.get_usage_events(user="***REMOVED***")
+        username_test = nemo_connector.get_usage_events(user="ned")
         user_id = 3
         assert all(d["user"]["id"] == user_id for d in username_test)
 
-        user_id_test = nemo_connector.get_usage_events(user=3)  # ***REMOVED***
-        assert all(d["user"]["username"] == "***REMOVED***" for d in user_id_test)
+        user_id_test = nemo_connector.get_usage_events(user=3)  # ned
+        assert all(d["user"]["username"] == "ned" for d in user_id_test)
 
         dt_test_from = dt.fromisoformat("2021-09-01T00:01:00-06:00")
         dt_test_to = dt.fromisoformat("2021-09-02T16:02:00-06:00")
@@ -949,12 +947,12 @@ class TestNemoConnectorEvents:
         )
         # should return one usage event
         assert len(multiple_test) == 1
-        assert multiple_test[0]["user"]["username"] == "***REMOVED***"
+        assert multiple_test[0]["user"]["username"] == "ned"
 
         # test event_id
         one_event = nemo_connector.get_usage_events(event_id=29)
         assert len(one_event) == 1
-        assert one_event[0]["user"]["username"] == "***REMOVED***"
+        assert one_event[0]["user"]["username"] == "ned"
 
         multi_events = nemo_connector.get_usage_events(event_id=[29, 30])
         usage_event_count = 2
@@ -966,10 +964,16 @@ class TestNemoConnectorEvents:
         assert nemo_connector.get_usage_events(tool_id=[-5, -4]) == []
 
     @pytest.mark.usefixtures("_cleanup_session_log")
-    def test_add_all_usage_events_to_db(self):
+    def test_add_all_usage_events_to_db(self, nemo_connector, monkeypatch):
+        # Mock get_harvesters_enabled to return our mocked connector
+        monkeypatch.setattr(
+            "nexusLIMS.harvesters.nemo.utils.get_harvesters_enabled",
+            lambda: [nemo_connector],
+        )
+
         _, _ = db_query("SELECT * FROM session_log;")
         # currently, this only adds instruments from the test tool on
-        # ***REMOVED***
+        # test.example.com
         nemo_utils.add_all_usage_events_to_db(tool_id=10)
         _, _ = db_query("SELECT * FROM session_log;")
 
@@ -1024,10 +1028,10 @@ class TestNemoConnectorEvents:
             end_dt = dt.fromisoformat(results[0][3])
             start_dt = dt.fromisoformat(results[1][3])
             assert end_dt == timezone("America/New_York").localize(
-                dt(2022, 2, 10, 16, 4, 1, 920306),  # noqa: DTZ001
+                dt(2022, 2, 10, 16, 4, 1, 920306),
             )
             assert start_dt == timezone("America/New_York").localize(
-                dt(2022, 2, 10, 14, 10, 45, 780530),  # noqa: DTZ001
+                dt(2022, 2, 10, 14, 10, 45, 780530),
             )
 
         except LookupError:  # pragma: no cover
@@ -1049,8 +1053,8 @@ class TestNemoConnectorEvents:
         session = nemo_connector.get_session_from_usage_event(30)
         assert session.dt_from == dt.fromisoformat("2021-09-05T13:57:00.000000-06:00")
         assert session.dt_to == dt.fromisoformat("2021-09-05T17:00:00.000000-06:00")
-        assert session.user == "***REMOVED***"
-        assert session.instrument == instrument_db["testsurface-CPU_P1111111"]
+        assert session.user == "ned"
+        assert session.instrument == instrument_db["TEST-INSTRUMENT-001"]
 
     def test_usage_event_to_session_non_existent_event(
         self,
@@ -1062,80 +1066,106 @@ class TestNemoConnectorEvents:
         assert "WARNING" in caplog.text
         assert session is None
 
-    def test_res_event_from_session(self):
+    def test_res_event_from_session(self, nemo_connector, monkeypatch):
+        # Mock get_connector_for_session to return our mocked connector
+        monkeypatch.setattr(
+            "nexusLIMS.harvesters.nemo.get_connector_for_session",
+            lambda _: nemo_connector,
+        )
+
         s = Session(
             "test_matching_reservation",
-            instrument_db["testsurface-CPU_P1111111"],
+            instrument_db["TEST-INSTRUMENT-001"],
             (
                 dt.fromisoformat("2021-08-02T11:00:00-06:00"),
                 dt.fromisoformat("2021-08-02T16:00:00-06:00"),
             ),
-            user="***REMOVED***",
+            user="ned",
         )
         res_event = nemo.res_event_from_session(s)
-        assert res_event.instrument == instrument_db["testsurface-CPU_P1111111"]
-        assert res_event.experiment_title == "***REMOVED***"
-        assert (
-            res_event.experiment_purpose
-            == "***REMOVED*** "
-            "***REMOVED***."
-        )
-        assert res_event.sample_name[0] == "***REMOVED***"
-        assert res_event.project_id[0] is None
-        assert res_event.username == "***REMOVED***"
+        assert res_event.instrument == instrument_db["TEST-INSTRUMENT-001"]
+        assert res_event.experiment_title == "Test Reservation Title"
+        assert res_event.experiment_purpose == "Testing the NEMO harvester integration."
+        assert res_event.sample_name[0] == "test_sample_1"
+        assert res_event.project_id[0] == "NexusLIMS-Test"
+        assert res_event.username == "ned"
         assert res_event.internal_id == "187"
-        url = os.environ.get("NEMO_address_1").replace("api/", "")
-        assert res_event.url == f"{url}event_details/reservation/187/"
+        assert res_event.url == "http://test.example.com/event_details/reservation/187/"
 
-    def test_res_event_from_session_with_elements(self):
+    def test_res_event_from_session_with_elements(self, nemo_connector, monkeypatch):
+        # Mock get_connector_for_session to return our mocked connector
+        monkeypatch.setattr(
+            "nexusLIMS.harvesters.nemo.get_connector_for_session",
+            lambda _: nemo_connector,
+        )
+
         s = Session(
             "test_matching_reservation",
-            instrument_db["testsurface-CPU_P1111111"],
+            instrument_db["TEST-INSTRUMENT-001"],
             (
                 dt.fromisoformat("2023-02-13T13:00:00-07:00"),
                 dt.fromisoformat("2023-02-13T14:00:00-07:00"),
             ),
-            user="***REMOVED***",
+            user="ned",
         )
         res_event = nemo.res_event_from_session(s)
-        assert res_event.instrument == instrument_db["testsurface-CPU_P1111111"]
+        assert res_event.instrument == instrument_db["TEST-INSTRUMENT-001"]
         assert (
             res_event.experiment_title
             == "Test reservation for multiple samples, some with elements, some not"
         )
         assert res_event.experiment_purpose == "testing"
         assert res_event.sample_name[0] == "sample 1.1"
-        assert res_event.project_id[0] is None
+        assert res_event.project_id[0] == "ElementsTest"
         assert res_event.sample_elements[0] is None
         assert set(res_event.sample_elements[1]) == {"S", "Rb", "Sb", "Re", "Cm"}
         assert set(res_event.sample_elements[2]) == {"Ir"}
-        assert res_event.username == "***REMOVED***"
+        assert res_event.username == "ned"
 
-        url = os.environ.get("NEMO_address_1").replace("api/", "")
-        assert f"{url}event_details/reservation/" in res_event.url
+        assert "http://test.example.com/event_details/reservation/" in res_event.url
 
-    def test_res_event_from_session_no_matching_sessions(self):
+    def test_res_event_from_session_no_matching_sessions(
+        self,
+        nemo_connector,
+        monkeypatch,
+    ):
+        # Mock get_connector_for_session to return our mocked connector
+        monkeypatch.setattr(
+            "nexusLIMS.harvesters.nemo.get_connector_for_session",
+            lambda _: nemo_connector,
+        )
+
         s = Session(
             "test_no_reservations",
-            instrument_db["FEI-Titan-TEM-635816_n"],
+            instrument_db["FEI-Titan-TEM"],
             (
                 dt.fromisoformat("2021-08-10T15:00:00-06:00"),
                 dt.fromisoformat("2021-08-10T16:00:00-06:00"),
             ),
-            user="***REMOVED***",
+            user="ned",
         )
         with pytest.raises(nemo.NoMatchingReservationError):
             nemo.res_event_from_session(s)
 
-    def test_res_event_from_session_no_overlapping_sessions(self):
+    def test_res_event_from_session_no_overlapping_sessions(
+        self,
+        nemo_connector,
+        monkeypatch,
+    ):
+        # Mock get_connector_for_session to return our mocked connector
+        monkeypatch.setattr(
+            "nexusLIMS.harvesters.nemo.get_connector_for_session",
+            lambda _: nemo_connector,
+        )
+
         s = Session(
             "test_no_reservations",
-            instrument_db["testsurface-CPU_P1111111"],
+            instrument_db["TEST-INSTRUMENT-001"],
             (
                 dt.fromisoformat("2021-08-05T15:00:00-06:00"),
                 dt.fromisoformat("2021-08-05T16:00:00-06:00"),
             ),
-            user="***REMOVED***",
+            user="ned",
         )
         with pytest.raises(nemo.NoMatchingReservationError):
             nemo.res_event_from_session(s)
@@ -1148,7 +1178,7 @@ class TestNemoConnectorEvents:
                 dt.fromisoformat("2021-08-05T15:00:00-06:00"),
                 dt.fromisoformat("2021-08-05T16:00:00-06:00"),
             ),
-            user="***REMOVED***",
+            user="ned",
         )
         with pytest.raises(LookupError) as exception:
             nemo_utils.get_connector_for_session(s)
@@ -1170,7 +1200,7 @@ class TestNemoConnectorReservationQuestions:
             dt_from=dt_from,
             dt_to=dt_to,
         )[0]
-        val = nemo_utils._get_res_question_value("bad_value", res)  # noqa: SLF001
+        val = nemo_utils._get_res_question_value("bad_value", res)
         assert val is None
 
     def test_no_res_questions(self, nemo_connector):
@@ -1182,7 +1212,7 @@ class TestNemoConnectorReservationQuestions:
             dt_from=dt_from,
             dt_to=dt_to,
         )[0]
-        val = nemo_utils._get_res_question_value("project_id", res)  # noqa: SLF001
+        val = nemo_utils._get_res_question_value("project_id", res)
         assert val is None
 
     def test_bad_id_from_url(self):
@@ -1451,11 +1481,17 @@ class TestNemoConnectorReservationQuestions:
             {"Ir"},
         ]
 
-    def test_no_consent_no_questions(self):
-        # should match https://***REMOVED***/api/reservations/?id=188
+    def test_no_consent_no_questions(self, nemo_connector, monkeypatch):
+        # Mock get_connector_for_session to return our mocked connector
+        monkeypatch.setattr(
+            "nexusLIMS.harvesters.nemo.get_connector_for_session",
+            lambda _: nemo_connector,
+        )
+
+        # should match http://test.example.com/api/reservations/?id=188
         s = Session(
             session_identifier="blah-blah",
-            instrument=instrument_db["testsurface-CPU_P1111111"],
+            instrument=instrument_db["TEST-INSTRUMENT-001"],
             dt_range=(
                 dt.fromisoformat("2021-08-03T10:00-06:00"),
                 dt.fromisoformat("2021-08-03T17:00-06:00"),
@@ -1468,11 +1504,17 @@ class TestNemoConnectorReservationQuestions:
             exception.value,
         )
 
-    def test_no_consent_user_disagree(self):
-        # should match https://***REMOVED***/api/reservations/?id=189
+    def test_no_consent_user_disagree(self, nemo_connector, monkeypatch):
+        # Mock get_connector_for_session to return our mocked connector
+        monkeypatch.setattr(
+            "nexusLIMS.harvesters.nemo.get_connector_for_session",
+            lambda _: nemo_connector,
+        )
+
+        # should match http://test.example.com/api/reservations/?id=189
         s = Session(
             session_identifier="blah-blah",
-            instrument=instrument_db["testsurface-CPU_P1111111"],
+            instrument=instrument_db["TEST-INSTRUMENT-001"],
             dt_range=(
                 dt.fromisoformat("2021-08-04T10:00-06:00"),
                 dt.fromisoformat("2021-08-04T17:00-06:00"),
@@ -1497,12 +1539,12 @@ class TestNemoConnectorReservationQuestions:
             "id": 0,
             "start": "2022-01-12T11:44:25.384309-05:00",
             "end": None,
-            "tool": {"id": 8, "name": "643 FEI Quanta 200 (ESEM)"},
+            "tool": {"id": 10, "name": "Test Instrument"},
         }
         monkeypatch.setattr(
             nemo_connector,
             "get_usage_events",
-            lambda event_id: [our_dict],  # noqa: ARG005
+            lambda event_id: [our_dict],
         )
 
         _, results_before = db_query("SELECT * FROM session_log;")
@@ -1517,11 +1559,13 @@ class TestNemoConnectorReservationQuestions:
 
 
 class TestReservationEvent:
-    @pytest.fixture()
+    """Test the ReservationEvent class."""
+
+    @pytest.fixture
     def res_event(self):
         return ReservationEvent(
             experiment_title="A test title",
-            instrument=instrument_db["FEI-Titan-TEM-635816_n"],
+            instrument=instrument_db["FEI-Titan-TEM"],
             last_updated=dt.fromisoformat("2021-09-15T16:04:00"),
             username="***REMOVED***",
             created_by="***REMOVED***",
@@ -1541,11 +1585,11 @@ class TestReservationEvent:
             group="00",
         )
 
-    @pytest.fixture()
+    @pytest.fixture
     def res_event_no_calendar_match(self):
-        return ReservationEvent(instrument=instrument_db["FEI-Titan-TEM-635816_n"])
+        return ReservationEvent(instrument=instrument_db["FEI-Titan-TEM"])
 
-    @pytest.fixture()
+    @pytest.fixture
     def res_event_no_instr(self):
         return ReservationEvent()
 
@@ -1555,7 +1599,7 @@ class TestReservationEvent:
         assert xml.find("id").text == "42308"
         assert xml.find("summary/experimenter").text == "***REMOVED***"
         assert xml.find("summary/instrument").text == "FEI Titan TEM"
-        assert xml.find("summary/instrument").get("pid") == "FEI-Titan-TEM-635816"
+        assert xml.find("summary/instrument").get("pid") == "FEI-Titan-TEM"
         assert xml.find("summary/reservationStart").text == "2021-09-15T03:00:00-04:00"
         assert xml.find("summary/reservationEnd").text == "2021-09-15T16:00:00-04:00"
         assert xml.find("summary/motivation").text == "To test the constructor"
@@ -1579,12 +1623,12 @@ class TestReservationEvent:
         res_event_no_instr,
     ):
         assert (
-            repr(res_event) == "Event for ***REMOVED*** on FEI-Titan-TEM-635816_n from "
+            repr(res_event) == "Event for ***REMOVED*** on FEI-Titan-TEM from "
             "2021-09-15T03:00:00-04:00 to 2021-09-15T16:00:00-04:00"
         )
         assert (
             repr(res_event_no_calendar_match)
-            == "No matching calendar event for FEI-Titan-TEM-635816_n"
+            == "No matching calendar event for FEI-Titan-TEM"
         )
         assert repr(res_event_no_instr) == "No matching calendar event"
 
@@ -1633,7 +1677,7 @@ class TestReservationEvent:
     def test_res_event_without_title(self):
         res_event = ReservationEvent(
             experiment_title=None,
-            instrument=instrument_db["FEI-Titan-TEM-635816_n"],
+            instrument=instrument_db["FEI-Titan-TEM"],
             last_updated=dt.fromisoformat("2021-09-15T16:04:00"),
             username="***REMOVED***",
             created_by="***REMOVED***",
@@ -1660,12 +1704,11 @@ class TestReservationEvent:
         assert xml.find("id").text == "48328"
         assert xml.find("summary/experimenter").text == "***REMOVED***"
         assert xml.find("summary/instrument").text == "FEI Titan TEM"
-        assert xml.find("summary/instrument").get("pid") == "FEI-Titan-TEM-635816"
+        assert xml.find("summary/instrument").get("pid") == "FEI-Titan-TEM"
         assert xml.find("summary/reservationStart").text == "2021-09-15T04:00:00-04:00"
         assert xml.find("summary/reservationEnd").text == "2021-09-15T17:00:00-04:00"
         assert (
-            xml.find("summary/motivation").text == "To test a reservation "
-            "with no title"
+            xml.find("summary/motivation").text == "To test a reservation with no title"
         )
         assert xml.find("sample").get("ref") == "10.2.13.4.6"
         assert xml.find("sample/name").text == "The test sample name"

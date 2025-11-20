@@ -31,10 +31,10 @@ tests/test_report.xml
 cert_bundle.pem
 .directory
 test_db.sqlite
-nexusLIMS.db
-**/.DS_Store
 *.ipynb
 coverage.xml
+nexusLIMS.db
+.DS_Store
 
 # dev files
 *.pyc
@@ -52,6 +52,10 @@ _coverage_output
 .tox/
 **/schemas/records
 _build
+coverage.xml
+._*
+*-checkpoint.ipynb
+Untitled.ipynb
 
 # pip installation files
 *.egg-info

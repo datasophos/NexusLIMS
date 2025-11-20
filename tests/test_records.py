@@ -4,8 +4,9 @@ Tests for record_builder module.
 Tests functionality related to the building of records, such as the record builder
 module, acquisition activity representations, session handling, and CDCS connections
 """
+
 # pylint: disable=C0302,missing-function-docstring,too-many-lines,too-many-locals
-# ruff: noqa: D102
+# ruff: noqa: D102, ARG001, ARG002, ARG005, PLR2004, PT019
 
 import os
 import shutil
@@ -21,11 +22,16 @@ from nexusLIMS.builder import record_builder
 from nexusLIMS.builder.record_builder import build_record
 from nexusLIMS.db import make_db_query, session_handler
 from nexusLIMS.db.session_handler import Session, SessionLog, db_query
-from nexusLIMS.harvesters.nemo import utils as nemo_utils
+from nexusLIMS.harvesters.nemo.exceptions import NoMatchingReservationError
 from nexusLIMS.harvesters.reservation_event import ReservationEvent
-from nexusLIMS.instruments import Instrument, instrument_db
+from nexusLIMS.instruments import Instrument
 from nexusLIMS.schemas import activity
 from nexusLIMS.utils import current_system_tz
+
+from .test_instrument_factory import (
+    make_test_tool,
+    make_titan_tem,
+)
 
 
 @pytest.fixture(name="_remove_nemo_gov_harvester")
@@ -50,10 +56,98 @@ def _remove_nemo_gov_harvester(monkeypatch):
         monkeypatch.delenv(nemo_var.replace("address", "tz"), raising=False)
         yield
         monkeypatch.undo()
+    else:
+        # Must yield even when no nemo_var is found
+        yield
+
+
+@pytest.fixture(name="mock_nemo_reservation")
+def mock_nemo_reservation_fixture(monkeypatch):
+    """
+    Mock NEMO res_event_from_session with realistic test data.
+
+    Returns different ReservationEvent data based on instrument.
+    Also mocks get_usage_events_as_sessions to prevent HTTP calls.
+    """
+    # Define reservation data for each test instrument
+    reservation_data = {
+        "FEI-Titan-TEM": {
+            "title": "Microstructure analysis of steel alloys",
+            "user_name": "Alice Researcher",
+            "purpose": "Characterize phase transformations in heat-treated steel",
+            "sample_details": "Heat-treated steel with martensitic structure",
+            "sample_pid": "sample-steel-001",
+            "project": "Materials Characterization",
+        },
+        "JEOL-JEM-TEM": {
+            "title": "EELS mapping of multilayer thin films",
+            "user_name": "Bob Scientist",
+            "purpose": "Study layer intermixing in deposited thin films",
+            "sample_details": "Multilayer thin film on Si substrate",
+            "sample_pid": "sample-thinfilm-003",
+            "project": "Thin Film Analysis",
+        },
+        "TEST-INSTRUMENT-001": {
+            "title": "EDX spectroscopy of platinum-nickel alloys",
+            "user_name": "Test User",
+            "purpose": "Determine composition of Pt-Ni alloy samples",
+            "sample_details": "Platinum-nickel alloy nanoparticles",
+            "sample_pid": "sample-ptni-042",
+            "project": "Catalyst Development",
+        },
+    }
+
+    def mock_res_event_from_session(session):
+        """Return a mock ReservationEvent with data specific to each instrument."""
+        data = reservation_data.get(
+            session.instrument.name,
+            reservation_data["TEST-INSTRUMENT-001"],
+        )
+        return ReservationEvent(
+            experiment_title=data["title"],
+            instrument=session.instrument,
+            username=session.user,
+            user_full_name=data["user_name"],
+            start_time=session.dt_from,
+            end_time=session.dt_to,
+            experiment_purpose=data["purpose"],
+            reservation_type="User session",
+            sample_details=[data["sample_details"]],
+            sample_pid=[data["sample_pid"]],
+            sample_name=[data["sample_details"].split()[0]],
+            project_name=[data["project"]],
+            project_id=[f"project-{data['sample_pid'].split('-')[1]}-001"],
+        )
+
+    # Mock the res_event_from_session function
+    monkeypatch.setattr(
+        "nexusLIMS.harvesters.nemo.res_event_from_session",
+        mock_res_event_from_session,
+    )
+
+    # Mock get_usage_events_as_sessions to prevent HTTP calls during dry runs
+    # This returns an empty list, so process_new_records will only use sessions
+    # already in the database (from get_sessions_to_build())
+    monkeypatch.setattr(
+        "nexusLIMS.harvesters.nemo.utils.get_usage_events_as_sessions",
+        lambda **kwargs: [],
+    )
+
+    # Mock add_all_usage_events_to_db to prevent HTTP calls during non-dry runs
+    # This is called when dry_run=False in process_new_records()
+    monkeypatch.setattr(
+        "nexusLIMS.harvesters.nemo.utils.add_all_usage_events_to_db",
+        lambda **kwargs: None,
+    )
 
 
 class TestRecordBuilder:
     """Tests the record building module."""
+
+    @property
+    def mmfnexus_path(self):
+        """Get the MMFNEXUS_PATH as a Path object."""
+        return Path(os.environ["MMFNEXUS_PATH"])
 
     # have to do these before modifying the database with the actual run tests
     @pytest.mark.skip(
@@ -68,48 +162,53 @@ class TestRecordBuilder:
         assert cal_event.experiment_title == "Looking for Nickel Alloys"
         assert cal_event.start_time == dt.fromisoformat("2019-09-06T16:30:00-04:00")
 
-    @pytest.mark.usefixtures("_remove_nemo_gov_harvester")
-    def test_dry_run_file_find(self):
+    @pytest.mark.usefixtures("_remove_nemo_gov_harvester", "mock_nemo_reservation")
+    def test_dry_run_file_find(
+        self,
+        test_record_files,
+    ):
+        """Test file finding for multiple sessions with different instruments."""
+        # Get all sessions from test database
+        # fresh_test_db fixture provides 3 sessions: Titan, JEOL, Nexus
         sessions = session_handler.get_sessions_to_build()
-        # add at least one NEMO session to the file find (one is already in the
-        # test database, but this get_usage_events_as_sessions call will add
-        # two, including one with no files)
-        sessions += nemo_utils.get_usage_events_as_sessions(
-            dt_from=dt.fromisoformat("2021-08-02T00:00:00-04:00"),
-            dt_to=dt.fromisoformat("2021-08-03T00:00:00-04:00"),
-        )
-        sessions += nemo_utils.get_usage_events_as_sessions(
-            dt_from=dt.fromisoformat("2021-09-01T00:00:00-04:00"),
-            dt_to=dt.fromisoformat("2021-09-02T00:00:00-04:00"),
-        )
-        # removal of SharePoint sessions from testing
-        correct_files_per_session = [28, 37, 38, 55, 0, 18, 4, 4, 0]
+        assert len(sessions) == 3
+
+        # Expected file counts for each session:
+        # - Titan_TEM (2018-11-13): 10 files (8 .dm3 + 2 .ser, .emi excluded)
+        # - JEOL_TEM (2019-07-24): 8 files (.dm3 in subdirs)
+        # - Nexus_Test_Instrument (2021-08-02): 4 files (.dm3)
+        correct_files_per_session = [10, 8, 4]
+
         file_list_list = []
-        for s, ans in zip(sessions, correct_files_per_session):
-            found_files = record_builder.dry_run_file_find(s)
+        for session, expected_count in zip(sessions, correct_files_per_session):
+            found_files = record_builder.dry_run_file_find(session)
             file_list_list.append(found_files)
-            # noinspection PyTypeChecker
-            assert len(found_files) == ans
+            assert len(found_files) == expected_count
+
+        # Verify specific files are found in each session
+        assert (
+            self.mmfnexus_path
+            / "Titan_TEM/researcher_a/project_alpha/20181113/image_001.dm3"
+        ) in file_list_list[0]
 
         assert (
-            Path(os.environ["mmfnexus_path"])
-            / "Titan/***REMOVED***/***REMOVED***/15 - 620k.dm3"
-        ) in file_list_list[5]
+            self.mmfnexus_path
+            / "JEOL_TEM/researcher_b/project_beta/20190724/beam_study_1/image_1.dm3"
+        ) in file_list_list[1]
 
-        # file from NEMO session
         assert (
-            Path(os.environ["mmfnexus_path"]) / "NexusLIMS/test_files/02 - 620k-2.dm3"
-        ) in file_list_list[-2]
+            self.mmfnexus_path / "Nexus_Test_Instrument/test_files/sample_001.dm3"
+        ) in file_list_list[2]
 
-    @pytest.mark.usefixtures("_remove_nemo_gov_harvester")
-    def test_process_new_records_dry_run(self):
+    @pytest.mark.usefixtures("_remove_nemo_gov_harvester", "mock_nemo_reservation")
+    def test_process_new_records_dry_run(self, test_record_files):
         # just running to ensure coverage, tests are included above
         record_builder.process_new_records(
             dry_run=True,
             dt_to=dt.fromisoformat("2021-08-03T00:00:00-04:00"),
         )
 
-    @pytest.mark.usefixtures("_remove_nemo_gov_harvester")
+    @pytest.mark.usefixtures("_remove_nemo_gov_harvester", "mock_nemo_reservation")
     def test_process_new_records_dry_run_no_sessions(
         self,
         monkeypatch,
@@ -123,7 +222,11 @@ class TestRecordBuilder:
         )
         assert "No 'TO_BE_BUILT' sessions were found. Exiting." in caplog.text
 
-    @pytest.mark.usefixtures("_remove_nemo_gov_harvester", "_cleanup_session_log")
+    @pytest.mark.usefixtures(
+        "_remove_nemo_gov_harvester",
+        "_cleanup_session_log",
+        "mock_nemo_reservation",
+    )
     def test_process_new_records_no_files_warning(
         self,
         monkeypatch,
@@ -138,7 +241,7 @@ class TestRecordBuilder:
             lambda: [
                 Session(
                     session_identifier="test_session",
-                    instrument=instrument_db["testsurface-CPU_P1111111"],
+                    instrument=make_test_tool(),
                     dt_range=(
                         dt.fromisoformat(dt_str_from),
                         dt.fromisoformat(dt_str_to),
@@ -188,7 +291,7 @@ class TestRecordBuilder:
 
         s = Session(
             session_identifier="test_session",
-            instrument=instrument_db["FEI-Titan-TEM-635816_n"],
+            instrument=make_titan_tem(),
             dt_range=(start_ts, end_ts),
             user="test",
         )
@@ -198,7 +301,7 @@ class TestRecordBuilder:
         monkeypatch.setattr(
             record_builder.nemo_utils,
             "add_all_usage_events_to_db",
-            lambda dt_from, dt_to: None,  # noqa: ARG005
+            lambda dt_from, dt_to: None,
         )
         monkeypatch.setattr(
             record_builder.nemo,
@@ -276,7 +379,7 @@ class TestRecordBuilder:
 
         s = Session(
             session_identifier="test_session",
-            instrument=instrument_db["testsurface-CPU_P1111111"],
+            instrument=make_test_tool(),
             dt_range=(dt.fromisoformat(start_ts), dt.fromisoformat(end_ts)),
             user="test",
         )
@@ -286,7 +389,21 @@ class TestRecordBuilder:
         monkeypatch.setattr(
             record_builder.nemo_utils,
             "add_all_usage_events_to_db",
-            lambda dt_from, dt_to: None,  # noqa: ARG005
+            lambda dt_from, dt_to: None,
+        )
+
+        # Mock res_event_from_session to raise NoMatchingReservationError
+        # This simulates the scenario where no reservation is found
+        def mock_res_event_no_reservation(session):
+            msg = (
+                "No reservation found matching this session, so assuming NexusLIMS "
+                "does not have user consent for data harvesting."
+            )
+            raise NoMatchingReservationError(msg)
+
+        monkeypatch.setattr(
+            "nexusLIMS.harvesters.nemo.res_event_from_session",
+            mock_res_event_no_reservation,
         )
 
         record_builder.process_new_records(dry_run=False)
@@ -304,9 +421,10 @@ class TestRecordBuilder:
         assert res[1][5] == "NO_RESERVATION"
         assert res[2][5] == "NO_RESERVATION"
 
-    @pytest.mark.usefixtures("_remove_nemo_gov_harvester")
+    @pytest.mark.usefixtures("_remove_nemo_gov_harvester", "mock_nemo_reservation")
     def test_new_session_processor(
         self,
+        test_record_files,
         monkeypatch,
     ):
         # make record uploader just pretend by returning all files provided
@@ -321,20 +439,26 @@ class TestRecordBuilder:
             partial(build_record, generate_previews=False),
         )
 
-        # use just datetime range that should have just one record from NEMO
+        # Process all sessions in the database (all 3 test sessions)
+        # The fresh_test_db fixture already has Titan, JEOL, and Nexus sessions
         record_builder.process_new_records(
-            dt_from=dt.fromisoformat("2021-08-02T00:00:00-04:00"),
-            dt_to=dt.fromisoformat("2021-08-03T00:00:00-04:00"),
+            dt_from=dt.fromisoformat("2018-01-01T00:00:00-04:00"),
+            dt_to=dt.fromisoformat("2022-01-01T00:00:00-04:00"),
         )
 
         # tests on the database entries
-        # after processing the records, there should be size added
-        # "RECORD_GENERATION" logs, for a total of 18 logs
-        total_session_log_count = 24
-        record_generation_count = 8
+        # after processing the records, there should be added
+        # "RECORD_GENERATION" logs
+        # Updated counts to match 3 test sessions:
+        # - TEST-INSTRUMENT-001 (2 logs: START + END)
+        # - Titan TEM (2 logs: START + END)
+        # - JEOL TEM (2 logs: START + END)
+        # - 3 RECORD_GENERATION logs added during processing
+        total_session_log_count = 9  # 6 original + 3 RECORD_GENERATION
+        record_generation_count = 3  # One for each session
         to_be_built_count = 0
-        no_files_found_count = 3
-        completed_count = 21
+        no_files_found_count = 0
+        completed_count = 9  # All 9 logs marked as COMPLETED
         assert (
             len(
                 make_db_query("SELECT * FROM session_log"),
@@ -361,8 +485,7 @@ class TestRecordBuilder:
         assert (
             len(
                 make_db_query(
-                    "SELECT * FROM session_log WHERE"
-                    '"record_status" = "NO_FILES_FOUND"',
+                    'SELECT * FROM session_log WHERE"record_status" = "NO_FILES_FOUND"',
                 ),
             )
             == no_files_found_count
@@ -377,96 +500,50 @@ class TestRecordBuilder:
         )
 
         # tests on the XML records
-        # there should be 6 completed records in the records/uploaded/ folder
-        upload_path = Path(os.getenv("nexusLIMS_path")).parent / "records" / "uploaded"
+        # Updated for 3 test sessions (Titan TEM, JEOL TEM, Nexus Test Instrument)
+        upload_path = Path(os.getenv("NEXUSLIMS_PATH")).parent / "records" / "uploaded"
         xmls = list(upload_path.glob("*.xml"))
-        xml_count = 7
+        xml_count = 3  # One for each test session
         assert len(xmls) == xml_count
 
         # test some various values from the records saved to disk:
         nexus_ns = "https://data.nist.gov/od/dm/nexus/experiment/v1.0"
-        motives = [
-            "Trying to find us some martensite!",
-            "Electron beam dose effect of C36H74 paraffin "
-            "polymer under DC electron beam",
-            "Determine the composition of platinum nickel "
-            "alloys using EDX spectroscopy.",
-            "EELS mapping of layer intermixing.",
-            None,
-            "Examine more closely the epitaxial (or not) "
-            "registrations between the various layers.",
-            "To test the harvester with multiple samples",
-        ]
-        instr = {
-            "titan": "FEI-Titan-TEM-635816",
-            "jeol": "JEOL-JEM3010-TEM-565989",
-            "stem": "FEI-Titan-STEM-630901",
-            "quanta": "FEI-Quanta200-ESEM-633137",
-            "surface": "testsurface-CPU_P1111111",
-        }
         expected = {
-            # ./Titan/***REMOVED***/181113 - ***REMOVED***- Titan/
-            "2018-11-13_FEI-Titan-TEM-635816_n_91.xml": {
-                f"/{{{nexus_ns}}}title": "Martensite search",
-                f"//{{{nexus_ns}}}acquisitionActivity": 4,
-                f"//{{{nexus_ns}}}dataset": 37,
-                f"/{{{nexus_ns}}}summary/{{{nexus_ns}}}motivation": motives[0],
-                f"/{{{nexus_ns}}}summary/{{{nexus_ns}}}instrument": instr["titan"],
+            # Updated for simplified test sessions with URL-based session identifiers
+            # Titan TEM session (id=101)
+            "2018-11-13_FEI-Titan-TEM_101.xml": {
+                f"/{{{nexus_ns}}}title": "Microstructure analysis of steel alloys",
+                f"//{{{nexus_ns}}}acquisitionActivity": 2,
+                f"//{{{nexus_ns}}}dataset": 10,
+                f"/{{{nexus_ns}}}summary/{{{nexus_ns}}}motivation": (
+                    "Characterize phase transformations in heat-treated steel"
+                ),
+                f"/{{{nexus_ns}}}summary/{{{nexus_ns}}}instrument": "FEI-Titan-TEM",
                 f"//{{{nexus_ns}}}sample": 1,
             },
-            # ./JEOL3010/JEOL3010/***REMOVED***/***REMOVED***/20190724/
-            "2019-07-24_JEOL-JEM3010-TEM-565989_n_93.xml": {
-                f"/{{{nexus_ns}}}title": "Examining beam dose impacts",
-                f"//{{{nexus_ns}}}acquisitionActivity": 6,
-                f"//{{{nexus_ns}}}dataset": 55,
-                f"/{{{nexus_ns}}}summary/{{{nexus_ns}}}motivation": motives[1],
-                f"/{{{nexus_ns}}}summary/{{{nexus_ns}}}instrument": instr["jeol"],
+            # JEOL TEM session (id=202)
+            "2019-07-24_JEOL-JEM-TEM_202.xml": {
+                f"/{{{nexus_ns}}}title": "EELS mapping of multilayer thin films",
+                f"//{{{nexus_ns}}}acquisitionActivity": 1,
+                f"//{{{nexus_ns}}}dataset": 8,
+                f"/{{{nexus_ns}}}summary/{{{nexus_ns}}}motivation": (
+                    "Study layer intermixing in deposited thin films"
+                ),
+                f"/{{{nexus_ns}}}summary/{{{nexus_ns}}}instrument": "JEOL-JEM-TEM",
                 f"//{{{nexus_ns}}}sample": 1,
             },
-            # ./Quanta/***REMOVED***/20190830_05... and ./Quanta/***REMOVED***/tmp/20190830_05...
-            "2019-09-06_FEI-Quanta200-ESEM-633137_n_90.xml": {
-                f"/{{{nexus_ns}}}title": "Looking for Nickel Alloys",
-                f"//{{{nexus_ns}}}acquisitionActivity": 5,
-                f"//{{{nexus_ns}}}dataset": 28,
-                f"/{{{nexus_ns}}}summary/{{{nexus_ns}}}motivation": motives[2],
-                f"/{{{nexus_ns}}}summary/{{{nexus_ns}}}instrument": instr["quanta"],
-                f"//{{{nexus_ns}}}sample": 1,
-            },
-            # ./643Titan/***REMOVED***/191106 - ***REMOVED***/
-            "2019-11-06_FEI-Titan-STEM-630901_n_92.xml": {
-                f"/{{{nexus_ns}}}title": "Reactor Samples",
-                f"//{{{nexus_ns}}}acquisitionActivity": 15,
-                f"//{{{nexus_ns}}}dataset": 38,
-                f"/{{{nexus_ns}}}summary/{{{nexus_ns}}}motivation": motives[3],
-                f"/{{{nexus_ns}}}summary/{{{nexus_ns}}}instrument": instr["stem"],
-                f"//{{{nexus_ns}}}sample": 1,
-            },
-            # ./Titan/***REMOVED***/200204 - ***REMOVED*** - Titan/
-            "2020-02-04_FEI-Titan-TEM-635816_n_95.xml": {
-                f"/{{{nexus_ns}}}title": "Experiment on the FEI Titan TEM on "
-                "Tuesday Feb. 04, 2020",
-                f"//{{{nexus_ns}}}acquisitionActivity": 4,
-                f"//{{{nexus_ns}}}dataset": 18,
-                f"/{{{nexus_ns}}}summary/{{{nexus_ns}}}motivation": motives[4],
-                f"/{{{nexus_ns}}}summary/{{{nexus_ns}}}instrument": instr["titan"],
-                f"//{{{nexus_ns}}}sample": 1,
-            },
-            # expected values for NEMO built record
-            "2021-08-02_testsurface-CPU_P1111111_31.xml": {
-                f"/{{{nexus_ns}}}title": "Tunnel Junction Inspection",
+            # Nexus Test Instrument session (id=21)
+            "2021-08-02_TEST-INSTRUMENT-001_21.xml": {
+                f"/{{{nexus_ns}}}title": "EDX spectroscopy of platinum-nickel alloys",
                 f"//{{{nexus_ns}}}acquisitionActivity": 1,
                 f"//{{{nexus_ns}}}dataset": 4,
-                f"/{{{nexus_ns}}}summary/{{{nexus_ns}}}motivation": motives[5],
-                f"/{{{nexus_ns}}}summary/{{{nexus_ns}}}instrument": instr["surface"],
+                f"/{{{nexus_ns}}}summary/{{{nexus_ns}}}motivation": (
+                    "Determine composition of Pt-Ni alloy samples"
+                ),
+                f"/{{{nexus_ns}}}summary/{{{nexus_ns}}}instrument": (
+                    "TEST-INSTRUMENT-001"
+                ),
                 f"//{{{nexus_ns}}}sample": 1,
-            },
-            "2021-11-29_testsurface-CPU_P1111111_21.xml": {
-                f"/{{{nexus_ns}}}title": "A test with multiple samples",
-                f"//{{{nexus_ns}}}acquisitionActivity": 1,
-                f"//{{{nexus_ns}}}dataset": 4,
-                f"/{{{nexus_ns}}}summary/{{{nexus_ns}}}motivation": motives[6],
-                f"/{{{nexus_ns}}}summary/{{{nexus_ns}}}instrument": instr["surface"],
-                f"//{{{nexus_ns}}}sample": 4,
             },
         }
         for f in sorted(xmls):
@@ -501,106 +578,82 @@ class TestRecordBuilder:
         # clean up directory
         shutil.rmtree(upload_path.parent)
 
-    @pytest.mark.usefixtures("_remove_nemo_gov_harvester")
-    def test_record_builder_strategies(self, monkeypatch):
-        # test session that only has one file present
+    @pytest.mark.usefixtures("_remove_nemo_gov_harvester", "mock_nemo_reservation")
+    @pytest.mark.parametrize(
+        ("strategy_name", "env_value", "expected_datasets"),
+        [
+            ("inclusive", "inclusive", 14),
+            ("default", None, 10),
+            ("unsupported", "bob", 10),
+        ],
+        ids=["inclusive_strategy", "default_strategy", "unsupported_strategy"],
+    )
+    def test_record_builder_file_strategies(
+        self,
+        test_record_files,
+        monkeypatch,
+        strategy_name,
+        env_value,
+        expected_datasets,
+    ):
+        """Test record builder with different file-finding strategies.
+
+        Args:
+            strategy_name: Name of the strategy being tested (for clarity)
+            env_value: Value to set for NEXUSLIMS_FILE_STRATEGY (None = unset)
+            expected_datasets: Expected number of dataset elements in XML
+        """
+
+        # Use the Titan TEM session from fresh_test_db
         def mock_get_sessions():
-            base_url = "https://marlin.nist.gov/api"
-            return [
-                session_handler.Session(
-                    session_identifier=f"{base_url}/usage_events/?id=91",
-                    instrument=instrument_db["FEI-Titan-TEM-635816_n"],
-                    dt_range=(
-                        dt.fromisoformat("2018-11-13T13:00:00.000-05:00"),
-                        dt.fromisoformat("2018-11-13T16:00:00.000-05:00"),
-                    ),
-                    user="miclims",
-                ),
-            ]
+            all_sessions = session_handler.get_sessions_to_build()
+            return [s for s in all_sessions if s.instrument.name == "FEI-Titan-TEM"]
 
         nexus_ns = "https://data.nist.gov/od/dm/nexus/experiment/v1.0"
 
         monkeypatch.setattr(record_builder, "get_sessions_to_build", mock_get_sessions)
-
-        # make record uploader just pretend by returning all files provided (
-        # as if they were actually uploaded)
         monkeypatch.setattr(record_builder, "upload_record_files", lambda x: (x, x))
-
-        # Override the build_records function to not generate previews (since
-        # this is tested elsewhere) to speed things up
         monkeypatch.setattr(
             record_builder,
             "build_record",
             partial(build_record, generate_previews=False),
         )
 
-        # test the inclusive strategy
-        monkeypatch.setenv("NexusLIMS_file_strategy", "inclusive")
+        # Set or unset the environment variable
+        if env_value is None:
+            monkeypatch.delenv("NEXUSLIMS_FILE_STRATEGY", raising=False)
+        else:
+            monkeypatch.setenv("NEXUSLIMS_FILE_STRATEGY", env_value)
+
+        # Build the record
         xml_files = record_builder.build_new_session_records()
         assert len(xml_files) == 1
         f = xml_files[0]
 
+        # Parse and validate the XML
         root = etree.parse(f)
-        aa_count = 4
-        dataset_count = 41
-        assert root.find(f"/{{{nexus_ns}}}title").text == "Martensite search"
+        aa_count = 2  # Two temporal clusters based on file timestamps
+
+        assert (
+            root.find(f"/{{{nexus_ns}}}title").text
+            == "Microstructure analysis of steel alloys"
+        )
         assert len(root.findall(f"//{{{nexus_ns}}}acquisitionActivity")) == aa_count
-        assert len(root.findall(f"//{{{nexus_ns}}}dataset")) == dataset_count
+        assert len(root.findall(f"//{{{nexus_ns}}}dataset")) == expected_datasets
         assert (
             root.find(f"/{{{nexus_ns}}}summary/{{{nexus_ns}}}motivation").text
-            == "Trying to find us some martensite!"
+            == "Characterize phase transformations in heat-treated steel"
         )
         assert (
             root.find(f"/{{{nexus_ns}}}summary/{{{nexus_ns}}}instrument").get("pid")
-            == "FEI-Titan-TEM-635816"
+            == "FEI-Titan-TEM"
         )
         assert len(root.findall(f"//{{{nexus_ns}}}sample")) == 1
 
         # remove record
         f.unlink()
 
-        # test with undefined environment variable
-        monkeypatch.delenv("NexusLIMS_file_strategy", raising=False)
-        xml_files_no = record_builder.build_new_session_records()
-        # rename first xml file so the next call to build_new_session_records doesn't
-        # overwrite it
-        new_path = shutil.move(
-            xml_files_no[0],
-            Path(str(xml_files_no[0]).replace("91", "91_no_strategy")),
-        )
-        xml_files_no = [Path(str(new_path))]
-
-        # test with unsupported value for environment variable
-        monkeypatch.setenv("NexusLIMS_file_strategy", "bob")
-        xml_files_unsupported = record_builder.build_new_session_records()
-
-        xml_files = xml_files_no + xml_files_unsupported
-
-        xml_count = 2
-        aa_count = 4
-        dataset_count = 37
-
-        assert len(xml_files) == xml_count
-        for f in xml_files:
-            root = etree.parse(f)
-
-            assert root.find(f"/{{{nexus_ns}}}title").text == "Martensite search"
-            assert len(root.findall(f"//{{{nexus_ns}}}acquisitionActivity")) == aa_count
-            assert len(root.findall(f"//{{{nexus_ns}}}dataset")) == dataset_count
-            assert (
-                root.find(f"/{{{nexus_ns}}}summary/{{{nexus_ns}}}motivation").text
-                == "Trying to find us some martensite!"
-            )
-            assert (
-                root.find(f"/{{{nexus_ns}}}summary/{{{nexus_ns}}}instrument").get("pid")
-                == "FEI-Titan-TEM-635816"
-            )
-            assert len(root.findall(f"//{{{nexus_ns}}}sample")) == 1
-
-            # remove record
-            f.unlink()
-
-    @pytest.mark.usefixtures("_remove_nemo_gov_harvester")
+    @pytest.mark.usefixtures("_remove_nemo_gov_harvester", "mock_nemo_reservation")
     def test_new_session_bad_upload(
         self,
         monkeypatch,
@@ -651,7 +704,7 @@ class TestRecordBuilder:
             return [
                 session_handler.Session(
                     session_identifier="1c3a6a8d-9038-41f5-b969-55fd02e12345",
-                    instrument=instrument_db["FEI-Titan-TEM-635816_n"],
+                    instrument=make_titan_tem(),
                     dt_range=(
                         dt.fromisoformat("2020-02-04T09:00:00.000"),
                         dt.fromisoformat("2020-02-04T12:00:00.001"),
@@ -661,10 +714,10 @@ class TestRecordBuilder:
             ]
 
         def mock_build_record(
-            session,  # noqa: ARG001
-            sample_id=None,  # noqa: ARG001
+            session,
+            sample_id=None,
             *,
-            generate_previews=True,  # noqa: ARG001
+            generate_previews=True,
         ):
             return "<xml>Record that will not validate against NexusLIMS Schema</xml>"
 
@@ -674,13 +727,13 @@ class TestRecordBuilder:
         assert "ERROR" in caplog.text
         assert "Could not validate record, did not write to disk" in caplog.text
 
-    @pytest.mark.usefixtures("_remove_nemo_gov_harvester")
-    def test_dump_record(self):
-        dt_str_from = "2021-08-02T12:00:00-06:00"
-        dt_str_to = "2021-08-02T15:00:00-06:00"
+    @pytest.mark.usefixtures("_remove_nemo_gov_harvester", "mock_nemo_reservation")
+    def test_dump_record(self, test_record_files):
+        dt_str_from = "2021-08-02T09:00:00-07:00"
+        dt_str_to = "2021-08-02T11:00:00-07:00"
         session = Session(
             session_identifier="an-identifier-string",
-            instrument=instrument_db["testsurface-CPU_P1111111"],
+            instrument=make_test_tool(),
             dt_range=(dt.fromisoformat(dt_str_from), dt.fromisoformat(dt_str_to)),
             user="unused",
         )
@@ -693,7 +746,7 @@ class TestRecordBuilder:
         monkeypatch.setattr(record_builder, "get_sessions_to_build", list)
         with pytest.raises(SystemExit) as exception:
             record_builder.build_new_session_records()
-        assert exception.type == SystemExit
+        assert exception.type is SystemExit
 
     @pytest.mark.usefixtures("_remove_nemo_gov_harvester")
     def test_build_record_no_consent(
@@ -701,12 +754,23 @@ class TestRecordBuilder:
         monkeypatch,
         caplog,
     ):
-        #  https://***REMOVED***/api/reservations/?id=168
+        # Mock res_event_from_session to raise NoDataConsentError
+        from nexusLIMS.harvesters.nemo.exceptions import NoDataConsentError
+
+        def mock_res_event_no_consent(session):
+            msg = "Reservation requested not to have their data harvested"
+            raise NoDataConsentError(msg)
+
+        monkeypatch.setattr(
+            "nexusLIMS.harvesters.nemo.res_event_from_session",
+            mock_res_event_no_consent,
+        )
+
         def mock_get_sessions():
             return [
                 session_handler.Session(
                     session_identifier="test_session",
-                    instrument=instrument_db["testsurface-CPU_P1111111"],
+                    instrument=make_test_tool(),
                     dt_range=(
                         dt.fromisoformat("2021-12-08T09:00:00.000-07:00"),
                         dt.fromisoformat("2021-12-08T12:00:00.000-07:00"),
@@ -723,34 +787,37 @@ class TestRecordBuilder:
             ("test_session",),
         )
         assert res[0][5] == "NO_CONSENT"
-        assert (
-            "Reservation 168 requested not to have their data harvested" in caplog.text
-        )
+        assert "Reservation requested not to have their data harvested" in caplog.text
         assert len(xmls_files) == 0  # no record should be returned
 
-    @pytest.mark.usefixtures("_remove_nemo_gov_harvester")
-    def test_build_record_single_file(self, monkeypatch):
-        # test session that only has one file present
+    @pytest.mark.usefixtures("_remove_nemo_gov_harvester", "mock_nemo_reservation")
+    def test_build_record_single_file(self, test_record_files, monkeypatch):
+        """Test record builder with a narrow time window that captures only 1 file."""
+
+        # Use TEST-INSTRUMENT-001 from database with narrow time window
+        # Files are at: 17:00, 17:15, 17:30, 17:45 UTC (10:00, 10:15, 10:30, 10:45 PDT)
+        # This window captures only sample_002.dm3 at 17:15 UTC
         def mock_get_sessions():
+            all_sessions = session_handler.get_sessions_to_build()
+            test_instr = next(
+                s for s in all_sessions if s.instrument.name == "TEST-INSTRUMENT-001"
+            )
+            # Create custom session with narrow window
             return [
                 session_handler.Session(
-                    session_identifier="https://***REMOVED***/api/usage_events"
-                    "/?id=-1",
-                    instrument=instrument_db["testsurface-CPU_P1111111"],
+                    session_identifier=test_instr.session_identifier,
+                    instrument=test_instr.instrument,
                     dt_range=(
-                        dt.fromisoformat("2021-11-29T11:28:01.000-07:00"),
-                        dt.fromisoformat("2021-11-29T11:28:02.000-07:00"),
+                        dt.fromisoformat("2021-08-02T17:10:00.000+00:00"),
+                        dt.fromisoformat("2021-08-02T17:20:00.000+00:00"),
                     ),
-                    user="None",
+                    user="test_user",
                 ),
             ]
 
         nexus_ns = "https://data.nist.gov/od/dm/nexus/experiment/v1.0"
 
         monkeypatch.setattr(record_builder, "get_sessions_to_build", mock_get_sessions)
-
-        # make record uploader just pretend by returning all files provided (
-        # as if they were actually uploaded)
         monkeypatch.setattr(record_builder, "upload_record_files", lambda x: (x, x))
 
         xml_files = record_builder.build_new_session_records()
@@ -758,26 +825,24 @@ class TestRecordBuilder:
 
         aa_count = 1
         dataset_count = 1
-        sample_count = 4
 
         f = xml_files[0]
         root = etree.parse(f)
 
-        assert root.find(f"/{{{nexus_ns}}}title").text == "A test with multiple samples"
+        # Verify it used the mock_nemo_reservation data for TEST-INSTRUMENT-001
+        assert (
+            root.find(f"/{{{nexus_ns}}}title").text
+            == "EDX spectroscopy of platinum-nickel alloys"
+        )
         assert len(root.findall(f"//{{{nexus_ns}}}acquisitionActivity")) == aa_count
         assert len(root.findall(f"//{{{nexus_ns}}}dataset")) == dataset_count
         assert (
             root.find(f"/{{{nexus_ns}}}summary/{{{nexus_ns}}}motivation").text
-            == "To test the harvester with multiple samples"
+            == "Determine composition of Pt-Ni alloy samples"
         )
         assert (
             root.find(f"/{{{nexus_ns}}}summary/{{{nexus_ns}}}instrument").get("pid")
-            == "testsurface-CPU_P1111111"
-        )
-        assert len(root.findall(f"//{{{nexus_ns}}}sample")) == sample_count
-        assert (
-            root.find(f"//{{{nexus_ns}}}dataset/{{{nexus_ns}}}preview").text
-            == "/NexusLIMS/test_files/04%20-%20620k.dm3.thumb.png"
+            == "TEST-INSTRUMENT-001"
         )
 
         # remove record
@@ -786,21 +851,46 @@ class TestRecordBuilder:
     @pytest.mark.usefixtures("_remove_nemo_gov_harvester")
     def test_build_record_with_sample_elements(
         self,
+        test_record_files,
         monkeypatch,
     ):
-        # test session that only has one file present
-        def mock_get_sessions():
-            return [
-                session_handler.Session(
-                    session_identifier="https://***REMOVED***/api/usage_events"
-                    "/?id=-1",
-                    instrument=instrument_db["testsurface-CPU_P1111111"],
-                    dt_range=(
-                        dt.fromisoformat("2023-02-13T13:00:00.000-07:00"),
-                        dt.fromisoformat("2023-02-13T14:00:00.000-07:00"),
-                    ),
-                    user="None",
+        # Mock res_event_from_session to return reservation with multiple samples
+        def mock_res_event_with_samples(session):
+            return ReservationEvent(
+                experiment_title=(
+                    "Test reservation for multiple samples, "
+                    "some with elements, some not"
                 ),
+                instrument=session.instrument,
+                username=session.user,
+                user_full_name="Test User",
+                start_time=session.dt_from,
+                end_time=session.dt_to,
+                experiment_purpose="testing",
+                reservation_type="User session",
+                sample_details=[
+                    "Sample without elements",
+                    "Sample with S, Rb, Sb, Re, Cm elements",
+                    "Sample with Ir element",
+                ],
+                sample_pid=["sample-001", "sample-002", "sample-003"],
+                sample_name=["Sample 1", "Sample 2", "Sample 3"],
+                project_name=["Test Project"],
+                project_id=["test-project-001"],
+                sample_elements=[None, ["S", "Rb", "Sb", "Re", "Cm"], ["Ir"]],
+            )
+
+        monkeypatch.setattr(
+            "nexusLIMS.harvesters.nemo.res_event_from_session",
+            mock_res_event_with_samples,
+        )
+
+        # Use the Nexus Test Instrument session from fresh_test_db
+        # Filter to get just the TEST-INSTRUMENT-001 session
+        def mock_get_sessions():
+            all_sessions = session_handler.get_sessions_to_build()
+            return [
+                s for s in all_sessions if s.instrument.name == "TEST-INSTRUMENT-001"
             ]
 
         nexus_ns = "https://data.nist.gov/od/dm/nexus/experiment/v1.0"
@@ -840,7 +930,7 @@ class TestRecordBuilder:
         )
         assert (
             root.find(f"/{{{nexus_ns}}}summary/{{{nexus_ns}}}instrument").get("pid")
-            == "testsurface-CPU_P1111111"
+            == "TEST-INSTRUMENT-001"
         )
         assert len(root.findall(f"//{{{nexus_ns}}}sample")) == sample_count
 
@@ -895,7 +985,7 @@ class TestRecordBuilder:
                 record_builder.get_reservation_event(
                     session_handler.Session(
                         session_identifier="identifier",
-                        instrument=instrument_db["testsurface-CPU_P1111111"],
+                        instrument=make_test_tool(),
                         dt_range=(
                             dt.fromisoformat("2021-12-09T11:40:00-07:00"),
                             dt.fromisoformat("2021-12-09T11:41:00-07:00"),
@@ -909,9 +999,9 @@ class TestRecordBuilder:
 
 
 @pytest.fixture(scope="module", name="_gnu_find_activities")
-def gnu_find_activities():
+def gnu_find_activities(test_record_files):
     """Find specific activity for testing."""
-    instr = instrument_db["FEI-Titan-TEM-635816_n"]
+    instr = make_titan_tem()
     dt_from = dt.fromisoformat("2018-11-13T13:00:00.000-05:00")
     dt_to = dt.fromisoformat("2018-11-13T16:00:00.000-05:00")
     activities_list = record_builder.build_acq_activities(
@@ -936,7 +1026,7 @@ class TestActivity:
     def test_gnu_find_vs_pure_python(
         self,
         monkeypatch,
-        _gnu_find_activities,  # noqa: PT019
+        _gnu_find_activities,
     ):  # pragma: no cover
         # force the GNU find method to fail
         def mock_gnu_find(_path, _dt_from, _dt_to, _extensions, _followlinks):
@@ -954,42 +1044,40 @@ class TestActivity:
         for i, this_activity in enumerate(activities_list_python_find):
             assert str(_gnu_find_activities["activities_list"][i]) == str(this_activity)
 
-    def test_activity_repr(self, _gnu_find_activities):  # noqa: PT019
-        expected = (
-            "             AcquisitionActivity; "
-            "start: 2018-11-13T13:01:28.179682-05:00; "
-            "end: 2018-11-13T13:19:14.635522-05:00"
-        )
+    def test_activity_repr(self, _gnu_find_activities):
+        expected = "             AcquisitionActivity; "
+        expected += "start: 2018-11-13T11:01:00-07:00; "
+        expected += "end: 2018-11-13T11:04:00-07:00"
         assert repr(_gnu_find_activities["activities_list"][0]) == expected
 
-    def test_activity_str(self, _gnu_find_activities):  # noqa: PT019
-        expected = "2018-11-13T13:01:28.179682-05:00 AcquisitionActivity "
+    def test_activity_str(self, _gnu_find_activities):
+        expected = "2018-11-13T11:01:00-07:00 AcquisitionActivity "
         assert str(_gnu_find_activities["activities_list"][0]) == expected
 
     def test_add_file_bad_meta(
         self,
         monkeypatch,
         caplog,
-        _gnu_find_activities,  # noqa: PT019
-        eels_si_643,
+        _gnu_find_activities,
+        eels_si_titan,
     ):
         # make parse_metadata return None to force into error situation
         monkeypatch.setattr(
             activity,
             "parse_metadata",
-            lambda fname, generate_preview: (None, ""),  # noqa: ARG005
+            lambda fname, generate_preview: (None, ""),
         )
         orig_activity_file_length = len(
             _gnu_find_activities["activities_list"][0].files,
         )
-        _gnu_find_activities["activities_list"][0].add_file(eels_si_643[0])
+        _gnu_find_activities["activities_list"][0].add_file(eels_si_titan[0])
         assert (
             len(_gnu_find_activities["activities_list"][0].files)
             == orig_activity_file_length + 1
         )
-        assert f"Could not parse metadata of {eels_si_643[0]}" in caplog.text
+        assert f"Could not parse metadata of {eels_si_titan[0]}" in caplog.text
 
-    def test_add_file_bad_file(self, _gnu_find_activities):  # noqa: PT019
+    def test_add_file_bad_file(self, _gnu_find_activities):
         with pytest.raises(FileNotFoundError):
             _gnu_find_activities["activities_list"][0].add_file(
                 Path("dummy_file_does_not_exist"),
@@ -999,7 +1087,7 @@ class TestActivity:
         self,
         monkeypatch,
         caplog,
-        _gnu_find_activities,  # noqa: PT019
+        _gnu_find_activities,
     ):
         activity_1 = _gnu_find_activities["activities_list"][0]
         monkeypatch.setattr(activity_1, "setup_params", None)
@@ -1009,7 +1097,7 @@ class TestActivity:
             "prior to using this method. Nothing was done." in caplog.text
         )
 
-    def test_as_xml(self, _gnu_find_activities):  # noqa: PT019
+    def test_as_xml(self, _gnu_find_activities):
         activity_1 = _gnu_find_activities["activities_list"][0]
         # setup a few values in the activity to trigger XML escaping:
         activity_1.setup_params["Acquisition Device"] = "<TEST>"

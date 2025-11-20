@@ -227,7 +227,7 @@ html_theme_options = {
 
 rst_epilog = """
 .. |SQLSchemaLink| replace:: SQL Schema Definition
-.. _SQLSchemaLink: https://github.com/usnistgov/NexusLIMS/blob/public/nexusLIMS/db/dev/NexusLIMS_db_creation_script.sql
+.. _SQLSchemaLink: https://github.com/usnistgov/NexusLIMS/blob/main/nexusLIMS/db/dev/NexusLIMS_db_creation_script.sql
 .. |RepoLink| replace:: repository
 .. _RepoLink: https://github.com/usnistgov/NexusLIMS
 """

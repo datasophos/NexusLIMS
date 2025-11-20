@@ -4,7 +4,7 @@ Get the size of all files referenced in NexusLIMS records.
 Helper script to get the size of all files referenced (via ``/location`` tags)
 in the records present on a NexusLIMS CDCS server.
 """
-# ruff: noqa: T201, INP001
+
 import json
 import logging
 import os
@@ -20,18 +20,18 @@ from urllib3.exceptions import InsecureRequestWarning
 
 # load environment variables from a .env file if present
 load_dotenv()
-USERNAME = os.environ.get("nexusLIMS_user")
-PASSWORD = os.environ.get("nexusLIMS_pass")
-URL = os.environ.get("cdcs_url")
-FNAME = os.environ.get("records_json_path", "records.json")
-ROOT_PATH = os.environ.get("mmfnexus_path")
+USERNAME = os.environ.get("NEXUSLIMS_USER")
+PASSWORD = os.environ.get("NEXUSLIMS_PASS")
+URL = os.environ.get("CDCS_URL")
+FNAME = os.environ.get("RECORDS_JSON_PATH", "records.json")
+ROOT_PATH = os.environ.get("MMFNEXUS_PATH")
 
 for var, val in [
-    ("nexusLIMS_user", USERNAME),
-    ("nexusLIMS_pass", PASSWORD),
-    ("cdcs_url", URL),
+    ("NEXUSLIMS_USER", USERNAME),
+    ("NEXUSLIMS_PASS", PASSWORD),
+    ("CDCS_URL", URL),
     ("records_json_path", FNAME),
-    ("mmfnexus_path", ROOT_PATH),
+    ("MMFNEXUS_PATH", ROOT_PATH),
 ]:
     if val is None:
         msg = (
@@ -111,7 +111,7 @@ def parse_json_file(json_file: Path) -> Dict:
                 f_ = f[1:]
             full_path = ROOT_PATH / f_
             if full_path.is_file():
-                file_sizes[record_title] += os.path.getsize(full_path)
+                file_sizes[record_title] += full_path.stat().st_size
             else:
                 print(f"{f_} was not found")
 
@@ -137,9 +137,8 @@ def sizeof_fmt(num, suffix="B"):
     str
         A human-readable file size
     """
-    #
     for unit in ["", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei", "Zi"]:
-        if abs(num) < 1024.0:  # noqa: PLR2004
+        if abs(num) < 1024.0:
             return f"{num:3.1f}{unit}{suffix}"
         num /= 1024.0
     return f"{num:.1f}Yi{suffix}"

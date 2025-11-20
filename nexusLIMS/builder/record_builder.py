@@ -1,31 +1,5 @@
-#  NIST Public License - 2019
-#
-#  This software was developed by employees of the National Institute of
-#  Standards and Technology (NIST), an agency of the Federal Government
-#  and is being made available as a public service. Pursuant to title 17
-#  United States Code Section 105, works of NIST employees are not subject
-#  to copyright protection in the United States.  This software may be
-#  subject to foreign copyright.  Permission in the United States and in
-#  foreign countries, to the extent that NIST may hold copyright, to use,
-#  copy, modify, create derivative works, and distribute this software and
-#  its documentation without fee is hereby granted on a non-exclusive basis,
-#  provided that this notice and disclaimer of warranty appears in all copies.
-#
-#  THE SOFTWARE IS PROVIDED 'AS IS' WITHOUT ANY WARRANTY OF ANY KIND,
-#  EITHER EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED
-#  TO, ANY WARRANTY THAT THE SOFTWARE WILL CONFORM TO SPECIFICATIONS, ANY
-#  IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
-#  AND FREEDOM FROM INFRINGEMENT, AND ANY WARRANTY THAT THE DOCUMENTATION
-#  WILL CONFORM TO THE SOFTWARE, OR ANY WARRANTY THAT THE SOFTWARE WILL BE
-#  ERROR FREE.  IN NO EVENT SHALL NIST BE LIABLE FOR ANY DAMAGES, INCLUDING,
-#  BUT NOT LIMITED TO, DIRECT, INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES,
-#  ARISING OUT OF, RESULTING FROM, OR IN ANY WAY CONNECTED WITH THIS SOFTWARE,
-#  WHETHER OR NOT BASED UPON WARRANTY, CONTRACT, TORT, OR OTHERWISE, WHETHER
-#  OR NOT INJURY WAS SUSTAINED BY PERSONS OR PROPERTY OR OTHERWISE, AND
-#  WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT OF THE RESULTS OF,
-#  OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
-#
-"""
+"""Build Nexus records from metadata and datasets.
+
 Builds NexusLIMS records.
 
 Attributes
@@ -34,6 +8,7 @@ XSD_PATH
     A string containing the path to the Nexus Experiment schema file,
     which is used to validate XML records built by this module
 """
+
 import argparse
 import logging
 import os
@@ -45,7 +20,7 @@ from importlib import import_module, util
 from io import BytesIO
 from pathlib import Path
 from timeit import default_timer
-from typing import List, Optional
+from typing import List
 from uuid import uuid4
 
 from lxml import etree
@@ -72,7 +47,7 @@ XSD_PATH: str = Path(activity.__file__).parent / "nexus-experiment.xsd"
 
 def build_record(
     session: Session,
-    sample_id: Optional[str] = None,
+    sample_id: str | None = None,
     *,
     generate_previews: bool = True,
 ) -> str:
@@ -244,7 +219,7 @@ def build_acq_activities(instrument, dt_from, dt_to, generate_previews):
     )
 
     start_timer = default_timer()
-    path = Path(os.environ["mmfnexus_path"]) / instrument.filestore_path
+    path = Path(os.environ["MMFNEXUS_PATH"]) / instrument.filestore_path
 
     # find the files to be included (list of Paths)
     files = get_files(path, dt_from, dt_to)
@@ -267,7 +242,7 @@ def build_acq_activities(instrument, dt_from, dt_to, generate_previews):
     # the loop below easier to process
     aa_bounds.append(files[-1].stat().st_mtime)
 
-    activities: List[Optional[AcquisitionActivity]] = [None] * len(aa_bounds)
+    activities: List[AcquisitionActivity | None] = [None] * len(aa_bounds)
 
     i = 0
     aa_idx = 0
@@ -290,7 +265,7 @@ def build_acq_activities(instrument, dt_from, dt_to, generate_previews):
                 "Adding file %i/%i %s to activity %i",
                 i,
                 len(files),
-                str(f).replace(os.environ["mmfnexus_path"], "").strip("/"),
+                str(f).replace(os.environ["MMFNEXUS_PATH"], "").strip("/"),
                 aa_idx,
             )
             activities[aa_idx].add_file(fname=f, generate_preview=generate_previews)
@@ -346,10 +321,10 @@ def get_files(
     logger.info("Starting new file-finding in %s", path)
 
     # read file finding strategy from environment and set to default of exclusive
-    strategy = os.environ.get("NexusLIMS_file_strategy", default="exclusive").lower()
+    strategy = os.environ.get("NEXUSLIMS_FILE_STRATEGY", default="exclusive").lower()
     if strategy not in ["inclusive", "exclusive"]:
         logger.warning(
-            'File finding strategy (env variable "NexusLIMS_file_strategy") had '
+            'File finding strategy (env variable "NEXUSLIMS_FILE_STRATEGY") had '
             'an unexpected value: "%s". Setting value to "exclusive".',
             strategy,
         )
@@ -373,7 +348,7 @@ def get_files(
 
 def dump_record(
     session: Session,
-    filename: Optional[Path] = None,
+    filename: Path | None = None,
     *,
     generate_previews: bool = True,
 ) -> Path:
@@ -431,9 +406,9 @@ def validate_record(xml_filename):
     validates : bool
         Whether the record validates against the Nexus schema
     """
-    xsd_doc = etree.parse(XSD_PATH)  # noqa: S320
+    xsd_doc = etree.parse(XSD_PATH)
     xml_schema = etree.XMLSchema(xsd_doc)
-    xml_doc = etree.parse(xml_filename)  # noqa: S320
+    xml_doc = etree.parse(xml_filename)
 
     return xml_schema.validate(xml_doc)
 
@@ -472,7 +447,7 @@ def build_new_session_records() -> List[Path]:
             if isinstance(exception, FileNotFoundError):
                 # if no files were found for this session log, mark it as so in
                 # the database
-                path = Path(os.environ["mmfnexus_path"]) / s.instrument.filestore_path
+                path = Path(os.environ["MMFNEXUS_PATH"]) / s.instrument.filestore_path
                 logger.warning(
                     "No files found in %s between %s and %s",
                     path,
@@ -537,13 +512,11 @@ def _record_validation_flow(record_text, s, xml_files) -> List[Path]:
             unique_suffix = f"{nemo_utils.id_from_url(s.session_identifier)}"
         else:  # pragma: no cover
             # assume session_identifier is a UUID
-            unique_suffix = f'{s.session_identifier.split("-")[0]}'
+            unique_suffix = f"{s.session_identifier.split('-')[0]}"
         basename = (
-            f'{s.dt_from.strftime("%Y-%m-%d")}_'
-            f"{s.instrument.name}_"
-            f"{unique_suffix}.xml"
+            f"{s.dt_from.strftime('%Y-%m-%d')}_{s.instrument.name}_{unique_suffix}.xml"
         )
-        filename = Path(os.environ["nexusLIMS_path"]).parent / "records" / basename
+        filename = Path(os.environ["NEXUSLIMS_PATH"]).parent / "records" / basename
         filename.parent.mkdir(parents=True, exist_ok=True)
         # write the record to disk and append to list of files generated
         with filename.open(mode="w", encoding="utf-8") as f:
@@ -563,8 +536,8 @@ def _record_validation_flow(record_text, s, xml_files) -> List[Path]:
 def process_new_records(
     *,
     dry_run: bool = False,
-    dt_from: Optional[dt] = None,
-    dt_to: Optional[dt] = None,
+    dt_from: dt | None = None,
+    dt_to: dt | None = None,
 ):
     """
     Process new records (this is the main entrypoint to the record builder).
@@ -678,7 +651,7 @@ def dry_run_file_find(s: Session) -> List[Path]:
         A list of Paths containing the files that would be included for the
         record of this session (if it were not a dry run)
     """
-    path = Path(os.environ["mmfnexus_path"]) / s.instrument.filestore_path
+    path = Path(os.environ["MMFNEXUS_PATH"]) / s.instrument.filestore_path
     logger.info(
         "Searching for files for %s in %s between %s and %s",
         s.instrument.name,

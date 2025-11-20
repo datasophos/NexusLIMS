@@ -1,4 +1,5 @@
 """Tests functionality related to handling of session objects."""
+
 # pylint: disable=missing-function-docstring
 # ruff: noqa: D102
 
@@ -9,17 +10,18 @@ import pytest
 
 from nexusLIMS.db import make_db_query, session_handler
 from nexusLIMS.db.session_handler import db_query
-from nexusLIMS.instruments import instrument_db
+
+from .test_instrument_factory import make_test_tool
 
 
 class TestSession:
     """Test the Session class representing a unit of time on an instrument."""
 
-    @pytest.fixture()
+    @pytest.fixture
     def session(self):
         return session_handler.Session(
             session_identifier="test_session",
-            instrument=instrument_db["FEI-Titan-TEM-635816_n"],
+            instrument=make_test_tool(),
             dt_range=(
                 dt.fromisoformat("2020-02-04T09:00:00.000"),
                 dt.fromisoformat("2020-02-04T12:00:00.000"),
@@ -31,7 +33,7 @@ class TestSession:
         assert (
             repr(session) == "2020-02-04T09:00:00 to "
             "2020-02-04T12:00:00 on "
-            "FEI-Titan-TEM-635816_n"
+            "testtool-TEST-A1234567"
         )
 
     @pytest.mark.usefixtures("_cleanup_session_log")
@@ -47,9 +49,9 @@ class TestSession:
         uuid = uuid4()
         query = (
             f"INSERT INTO session_log "
-            f"(instrument, event_type, session_identifier, record_status) "
+            f"(instrument, event_type, session_identifier, record_status, timestamp) "
             f"VALUES ('FEI-Titan-TEM-635816_n', 'START', "
-            f"'{uuid}', 'TO_BE_BUILT');"
+            f"'{uuid}', 'TO_BE_BUILT', datetime('now'));"
         )
         make_db_query(query)
         # because we put in an extra START log with TO_BE_BUILT status,
@@ -75,7 +77,7 @@ class TestSessionLog:
 
     sl = session_handler.SessionLog(
         session_identifier="testing-session-log",
-        instrument=instrument_db["FEI-Titan-TEM-635816_n"].name,
+        instrument=make_test_tool().name,
         timestamp="2020-02-04T09:00:00.000",
         event_type="START",
         user="ear1",
@@ -97,7 +99,7 @@ class TestSessionLog:
         assert (
             repr(self.sl) == "SessionLog "
             "(id=testing-session-log, "
-            "instrument=FEI-Titan-TEM-635816_n, "
+            "instrument=testtool-TEST-A1234567, "
             "timestamp=2020-02-04T09:00:00.000, "
             "event_type=START, "
             "user=ear1, "
@@ -112,6 +114,9 @@ class TestSessionLog:
 
     @pytest.mark.usefixtures("_record_cleanup_session_log")
     def test_insert_duplicate_log(self, caplog):
+        # First insert - should succeed
+        self.sl.insert_log()
+        # Second insert - should trigger warning
         result = self.sl.insert_log()
         assert "WARNING" in caplog.text
         assert "SessionLog already existed in DB, so no row was added:" in caplog.text

@@ -1,30 +1,3 @@
-#  NIST Public License - 2019
-#
-#  This software was developed by employees of the National Institute of
-#  Standards and Technology (NIST), an agency of the Federal Government
-#  and is being made available as a public service. Pursuant to title 17
-#  United States Code Section 105, works of NIST employees are not subject
-#  to copyright protection in the United States.  This software may be
-#  subject to foreign copyright.  Permission in the United States and in
-#  foreign countries, to the extent that NIST may hold copyright, to use,
-#  copy, modify, create derivative works, and distribute this software and
-#  its documentation without fee is hereby granted on a non-exclusive basis,
-#  provided that this notice and disclaimer of warranty appears in all copies.
-#
-#  THE SOFTWARE IS PROVIDED 'AS IS' WITHOUT ANY WARRANTY OF ANY KIND,
-#  EITHER EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED
-#  TO, ANY WARRANTY THAT THE SOFTWARE WILL CONFORM TO SPECIFICATIONS, ANY
-#  IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
-#  AND FREEDOM FROM INFRINGEMENT, AND ANY WARRANTY THAT THE DOCUMENTATION
-#  WILL CONFORM TO THE SOFTWARE, OR ANY WARRANTY THAT THE SOFTWARE WILL BE
-#  ERROR FREE.  IN NO EVENT SHALL NIST BE LIABLE FOR ANY DAMAGES, INCLUDING,
-#  BUT NOT LIMITED TO, DIRECT, INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES,
-#  ARISING OUT OF, RESULTING FROM, OR IN ANY WAY CONNECTED WITH THIS SOFTWARE,
-#  WHETHER OR NOT BASED UPON WARRANTY, CONTRACT, TORT, OR OTHERWISE, WHETHER
-#  OR NOT INJURY WAS SUSTAINED BY PERSONS OR PROPERTY OR OTHERWISE, AND
-#  WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT OF THE RESULTS OF,
-#  OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
-#
 """
 Communicate with a SharePoint calendar system used for instrument reservations.
 
@@ -40,6 +13,7 @@ NTLM authentication. This file is left in place for backwards compatibility,
 but is no longer actively developed nor tested (since it requires a working
 2019 SP - or older - server, which we do not have readily available).
 """
+
 import logging
 import os
 import re
@@ -47,7 +21,6 @@ from datetime import datetime as dt
 from datetime import timedelta as td
 from http import HTTPStatus
 from pathlib import Path
-from typing import Optional
 
 import requests
 from defusedxml import ElementTree
@@ -67,11 +40,11 @@ logger = logging.getLogger(__name__)
 INDENT = "  "
 
 __all__ = [
-    "res_event_from_session",
-    "res_event_from_xml",
+    "dump_calendars",
     "fetch_xml",
     "get_events",
-    "dump_calendars",
+    "res_event_from_session",
+    "res_event_from_xml",
 ]
 
 
@@ -87,12 +60,12 @@ def _sharepoint_url():
     Raises
     ------
     ValueError
-        If the ``sharepoint_root_url`` environment variable is not defined,
+        If the ``NEXUSLIMS_SP_ROOT_URL`` environment variable is not defined,
         raise a ``ValueError``
     """
-    url = os.environ.get("sharepoint_root_url", None)
+    url = os.environ.get("SHAREPOINT_ROOT_URL", None)
     if url is None:
-        msg = "'sharepoint_root_url' environment variable is not defined"
+        msg = "'SHAREPOINT_ROOT_URL' environment variable is not defined"
         raise ValueError(msg)
     return url
 
@@ -310,9 +283,7 @@ def fetch_xml(instrument, dt_from=None, dt_to=None):
         msg = f'Could not access Nexus SharePoint Calendar API at "{instr_url}"'
         raise requests.exceptions.ConnectionError(msg)
 
-    api_response = _filter_matching_reservation(api_response, dt_from, dt_to, xml)
-
-    return api_response
+    return _filter_matching_reservation(api_response, dt_from, dt_to, xml)
 
 
 def _build_instr_url(instrument, dt_from, dt_to):
@@ -382,7 +353,7 @@ def _filter_matching_reservation(api_response, dt_from, dt_to, xml):
             # api_response will now have non-relevant entry items removed
             api_response = etree.tostring(doc)
 
-    return api_response  # noqa: RET504
+    return api_response
 
 
 def get_events(instrument=None, dt_from=None, dt_to=None):
@@ -429,7 +400,7 @@ def dump_calendars(
     instrument=None,
     dt_from=None,
     dt_to=None,
-    filename: Optional[Path] = None,
+    filename: Path | None = None,
 ):
     """
     Write the results of :py:func:`~.get_events` to a file.

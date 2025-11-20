@@ -8,14 +8,16 @@ The expectation is that submodules of this module will have a method named
 object from a :py:class:`nexusLIMS.db.session_handler.Session` object.
 """
 
+from dataclasses import dataclass
 from datetime import datetime
-from typing import List, Optional
+from typing import List
 
 from lxml import etree
 
 from nexusLIMS.instruments import Instrument
 
 
+@dataclass
 class ReservationEvent:
     """
     A representation of a single calendar reservation.
@@ -90,73 +92,65 @@ class ReservationEvent:
         A web-accessible link to a summary of this reservation
     """
 
-    # pylint: disable=too-many-instance-attributes
-    def __init__(  # noqa: PLR0913
-        self,
-        experiment_title: Optional[str] = None,
-        instrument: Optional[Instrument] = None,
-        last_updated: Optional[datetime] = None,
-        username: Optional[str] = None,
-        user_full_name: Optional[str] = None,
-        created_by: Optional[str] = None,
-        created_by_full_name: Optional[str] = None,
-        start_time: Optional[datetime] = None,
-        end_time: Optional[datetime] = None,
-        reservation_type: Optional[str] = None,
-        experiment_purpose: Optional[str] = None,
-        sample_details: Optional[List[Optional[str]]] = None,
-        sample_pid: Optional[List[Optional[str]]] = None,
-        sample_name: Optional[List[Optional[str]]] = None,
-        sample_elements: Optional[List[Optional[List[str]]]] = None,
-        project_name: Optional[List[Optional[str]]] = None,
-        project_id: Optional[List[Optional[str]]] = None,
-        project_ref: Optional[List[Optional[str]]] = None,
-        internal_id: Optional[str] = None,
-        division: Optional[str] = None,
-        group: Optional[str] = None,
-        url: Optional[str] = None,
-    ):
-        # pylint: disable=too-many-arguments, too-many-locals
-        self.experiment_title = experiment_title
-        self.instrument = instrument
-        self.last_updated = last_updated
-        self.username = username
-        self.user_full_name = user_full_name
-        self.created_by = created_by
-        self.created_by_full_name = created_by_full_name
-        self.start_time = start_time
-        self.end_time = end_time
-        self.reservation_type = reservation_type
-        self.experiment_purpose = experiment_purpose
+    experiment_title: str | None = None
+    instrument: Instrument | None = None
+    last_updated: datetime | None = None
+    username: str | None = None
+    user_full_name: str | None = None
+    created_by: str | None = None
+    created_by_full_name: str | None = None
+    start_time: datetime | None = None
+    end_time: datetime | None = None
+    reservation_type: str | None = None
+    experiment_purpose: str | None = None
+    sample_details: List[str | None] | None = None
+    sample_pid: List[str | None] | None = None
+    sample_name: List[str | None] | None = None
+    sample_elements: List[List[str] | None] | None = None
+    project_name: List[str | None] | None = None
+    project_id: List[str | None] | None = None
+    project_ref: List[str | None] | None = None
+    internal_id: str | None = None
+    division: str | None = None
+    group: str | None = None
+    url: str | None = None
 
+    def __post_init__(self):
+        """Post-initialization to coerce arguments to lists and validate."""
         # coerce sample arguments into lists
         self.sample_details = (
-            sample_details if isinstance(sample_details, list) else [sample_details]
+            self.sample_details
+            if isinstance(self.sample_details, list)
+            else [self.sample_details]
         )
-        self.sample_pid = sample_pid if isinstance(sample_pid, list) else [sample_pid]
+        self.sample_pid = (
+            self.sample_pid if isinstance(self.sample_pid, list) else [self.sample_pid]
+        )
         self.sample_name = (
-            sample_name if isinstance(sample_name, list) else [sample_name]
+            self.sample_name
+            if isinstance(self.sample_name, list)
+            else [self.sample_name]
         )
         # sample elements should be a list of List[str] or None; we shouldn't really be
         # doing the above coercion anyway, so we'll assume the caller knows what
         # they're doing and used the right argument type
-        self.sample_elements = sample_elements
         if self.sample_elements is None:
             self.sample_elements = [None]
 
         # coerce project arguments into lists
         self.project_name = (
-            project_name if isinstance(project_name, list) else [project_name]
+            self.project_name
+            if isinstance(self.project_name, list)
+            else [self.project_name]
         )
-        self.project_id = project_id if isinstance(project_id, list) else [project_id]
+        self.project_id = (
+            self.project_id if isinstance(self.project_id, list) else [self.project_id]
+        )
         self.project_ref = (
-            project_ref if isinstance(project_ref, list) else [project_ref]
+            self.project_ref
+            if isinstance(self.project_ref, list)
+            else [self.project_ref]
         )
-
-        self.internal_id = internal_id
-        self.division = division
-        self.group = group
-        self.url = url
 
         # raise error if all sample values are not none and have different
         # lengths (this shouldn't happen):
@@ -229,9 +223,7 @@ class ReservationEvent:
         root = self._add_sample_nodes(root)
 
         # project nodes
-        root = self._add_project_nodes(root)
-
-        return root
+        return self._add_project_nodes(root)
 
     def _add_summary_node(self, root):
         summary_el = etree.SubElement(root, "summary")

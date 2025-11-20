@@ -1,43 +1,18 @@
-#  NIST Public License - 2023
-#
-#  This software was developed by employees of the National Institute of
-#  Standards and Technology (NIST), an agency of the Federal Government
-#  and is being made available as a public service. Pursuant to title 17
-#  United States Code Section 105, works of NIST employees are not subject
-#  to copyright protection in the United States.  This software may be
-#  subject to foreign copyright.  Permission in the United States and in
-#  foreign countries, to the extent that NIST may hold copyright, to use,
-#  copy, modify, create derivative works, and distribute this software and
-#  its documentation without fee is hereby granted on a non-exclusive basis,
-#  provided that this notice and disclaimer of warranty appears in all copies.
-#
-#  THE SOFTWARE IS PROVIDED 'AS IS' WITHOUT ANY WARRANTY OF ANY KIND,
-#  EITHER EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED
-#  TO, ANY WARRANTY THAT THE SOFTWARE WILL CONFORM TO SPECIFICATIONS, ANY
-#  IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
-#  AND FREEDOM FROM INFRINGEMENT, AND ANY WARRANTY THAT THE DOCUMENTATION
-#  WILL CONFORM TO THE SOFTWARE, OR ANY WARRANTY THAT THE SOFTWARE WILL BE
-#  ERROR FREE.  IN NO EVENT SHALL NIST BE LIABLE FOR ANY DAMAGES, INCLUDING,
-#  BUT NOT LIMITED TO, DIRECT, INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES,
-#  ARISING OUT OF, RESULTING FROM, OR IN ANY WAY CONNECTED WITH THIS SOFTWARE,
-#  WHETHER OR NOT BASED UPON WARRANTY, CONTRACT, TORT, OR OTHERWISE, WHETHER
-#  OR NOT INJURY WAS SUSTAINED BY PERSONS OR PROPERTY OR OTHERWISE, AND
-#  WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT OF THE RESULTS OF,
-#  OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
-#
 """Methods (primarily intended to be private) that are used by the other extractors."""
 
 import logging
-import os
 import re
 import shutil
 import tarfile
 from datetime import datetime
 from decimal import Decimal, InvalidOperation
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List
 
-from hyperspy.io_plugins.digital_micrograph import DigitalMicrographReader, ImageObject
+from rsciio.digitalmicrograph._api import (  # pylint: disable=import-error,no-name-in-module
+    DigitalMicrographReader,
+    ImageObject,
+)
 
 from nexusLIMS.instruments import Instrument, get_instr_from_filepath
 from nexusLIMS.utils import set_nested_dict_value, try_getting_dict_value
@@ -51,9 +26,9 @@ def _coerce_to_list(meta_key):
     return meta_key
 
 
-def _get_mtime_iso(filename: Path, instrument: Optional[Instrument] = None):
+def _get_mtime_iso(filename: Path, instrument: Instrument | None = None):
     return datetime.fromtimestamp(
-        os.path.getmtime(filename),
+        filename.stat().st_mtime,
         tz=instrument.timezone if instrument else None,
     ).isoformat()
 
@@ -121,7 +96,7 @@ def _set_eels_meta(mdict, base, meta_key):
     # one of the "facility-wide" set values that do not have any meaning:
     if val != "not found":
         # add last value of each parameter to the "EELS" sub-tree of nx_meta
-        set_nested_dict_value(mdict, ["nx_meta", "EELS"] + [meta_key[-1]], val)
+        set_nested_dict_value(mdict, ["nx_meta", "EELS", meta_key[-1]], val)
 
 
 def _set_eels_spectrometer_meta(mdict, base, meta_key):
@@ -130,7 +105,7 @@ def _set_eels_spectrometer_meta(mdict, base, meta_key):
         # add last value of each param to the "EELS" sub-tree of nx_meta
         set_nested_dict_value(
             mdict,
-            ["nx_meta", "EELS"] + ["Spectrometer " + meta_key[0]],
+            ["nx_meta", "EELS", "Spectrometer " + meta_key[0]],
             val,
         )
 
@@ -223,7 +198,7 @@ def _set_eds_meta(mdict, base, meta_key):
         # add last value of each parameter to the "EDS" sub-tree of nx_meta
         set_nested_dict_value(
             mdict,
-            ["nx_meta", "EDS"] + [meta_key[-1] if len(meta_key) > 1 else meta_key[0]],
+            ["nx_meta", "EDS", meta_key[-1] if len(meta_key) > 1 else meta_key[0]],
             val,
         )
 
@@ -233,7 +208,7 @@ def _set_si_meta(mdict, pre_path, meta_key):
     if val != "not found":
         # add last value of each parameter to the "EDS" sub-tree of
         # nx_meta
-        set_nested_dict_value(mdict, ["nx_meta", "EDS"] + [meta_key[-1]], val)
+        set_nested_dict_value(mdict, ["nx_meta", "EDS", meta_key[-1]], val)
 
 
 def _try_decimal(val):
@@ -290,7 +265,7 @@ def _parse_filter_settings(info_dict, tecnai_info):
 
 def _zero_data_in_dm3(
     filename: Path,
-    out_filename: Optional[Path] = None,
+    out_filename: Path | None = None,
     *,
     compress=True,
 ) -> Path:

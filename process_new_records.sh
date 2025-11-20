@@ -68,11 +68,11 @@ function script_trap_err() {
 # ARGS: None
 # OUTS: None
 function script_trap_exit() {
-    # test to see if we have any files/directories at all in nexusLIMS_path;
+    # test to see if we have any files/directories at all in NEXUSLIMS_PATH;
     # if we don't (i.e. the "find | wc -l" equals zero) then the mount point
     # is probably not set up correctly and we should bail and send an email warning
-    if [[ $(find ${nexusLIMS_path} -maxdepth 0  | wc -l) -eq 0 ]]; then 
-        echo "no files at all found"; 
+    if [[ $(find ${NEXUSLIMS_PATH} -maxdepth 0  | wc -l) -eq 0 ]]; then
+        echo "no files at all found";
         send_email 'no_log'
     else
         # delete lock file
@@ -100,7 +100,7 @@ function script_trap_exit() {
                 stringArr+=("no_files_found")
             fi
             found_strings=$(IFS=, ; echo "${stringArr[*]}")
-        
+
             # ignore (somewhat) common DNS issues and don't alert
             if grep -q -i -E "Temporary failure in name resolution" "${LOGPATH}"; then
                 :
@@ -350,18 +350,18 @@ function get_abs_filename() {
 
 function send_email() {
     if [ "$1" = "no_log" ]; then
-sendmail "${email_recipients}" << EOF
-To: ${email_recipients}
-From: ${email_sender}
+sendmail "${NEXUSLIMS_EMAIL_RECIPIENTS}" << EOF
+To: ${NEXUSLIMS_EMAIL_RECIPIENTS}
+From: ${NEXUSLIMS_EMAIL_SENDER}
 Subject: ERROR in NexusLIMS record builder
 
 No log file was produced. Most likely the NexusLIMS file storage location
 was not properly mounted. Please check the record builder status.
 EOF
     else
-sendmail "${email_recipients}" << EOF
-To: ${email_recipients}
-From: ${email_sender}
+sendmail "${NEXUSLIMS_EMAIL_RECIPIENTS}" << EOF
+To: ${NEXUSLIMS_EMAIL_RECIPIENTS}
+From: ${NEXUSLIMS_EMAIL_SENDER}
 Subject: ERROR in NexusLIMS record builder
 
 There was an error (or unusual output) in the record builder. Here is the
@@ -393,7 +393,7 @@ function main() {
     month=$(date +%m)
     day=$(date +%d)
     # shellcheck disable=SC2154
-    LOGPATH_rel="${nexusLIMS_path}/../logs/${year}/${month}/${day}/$(date +%Y%m%d-%H%M).log"
+    LOGPATH_rel="${NEXUSLIMS_PATH}/../logs/${year}/${month}/${day}/$(date +%Y%m%d-%H%M).log"
     # make sure path to log file directory exists
     # echo "LOGPATH_rel is ${LOGPATH_rel}"
     mkdir -p "$(dirname "${LOGPATH_rel}")"
@@ -412,8 +412,8 @@ function main() {
         touch "${LOGPATH}"
     fi
 
-    # check/create lock file and exit if needed 
-    LOCKFILE=$(get_abs_filename "${nexusLIMS_path}/../.builder.lock")
+    # check/create lock file and exit if needed
+    LOCKFILE=$(get_abs_filename "${NEXUSLIMS_PATH}/../.builder.lock")
     echo "Writing log to ${LOGPATH}" | tee -a "${LOGPATH}"
     if [ -f "${LOCKFILE}" ] ; then
         WE_CREATED_LOCKFILE=false
@@ -429,7 +429,7 @@ function main() {
         abs_script_dir=$(get_abs_filename "${script_dir}")
         # echo "Abs script dir is ${abs_script_dir}"
         cd "${abs_script_dir}"
-        poetry run python -m nexusLIMS.builder.record_builder ${python_args}  2>&1 | tee -a "${LOGPATH}"
+        uv run python -m nexusLIMS.builder.record_builder ${python_args}  2>&1 | tee -a "${LOGPATH}"
     fi
 }
 

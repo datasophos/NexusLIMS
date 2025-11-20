@@ -15,6 +15,7 @@ expected (although not enforced):
   separated by commas as a string- e.g. '(12, 1024, 1024)'
 * ``'Instrument ID'`` - instrument PID pulled from the instrument database
 """
+
 import base64
 import inspect
 import json
@@ -23,15 +24,16 @@ import shutil
 from collections import abc
 from datetime import datetime as dt
 from pathlib import Path
-from typing import Any, Callable, Dict, Optional, Tuple
+from typing import Any, Callable, Dict, Tuple
 
-import hyperspy.api_nogui as hs
+import hyperspy.api as hs
 import numpy as np
 
 from nexusLIMS.instruments import get_instr_from_filepath
 from nexusLIMS.utils import current_system_tz, replace_mmf_path
 from nexusLIMS.version import __version__
 
+from . import utils
 from .basic_metadata import get_basic_metadata
 from .digital_micrograph import get_dm3_metadata
 from .edax import get_msa_metadata, get_spc_metadata
@@ -46,6 +48,33 @@ from .thumbnail_generator import (
 
 logger = logging.getLogger(__name__)
 PLACEHOLDER_PREVIEW = Path(__file__).parent / "extractor_error.png"
+
+__all__ = [
+    "PLACEHOLDER_PREVIEW",
+    "basic_metadata",
+    "create_preview",
+    "digital_micrograph",
+    "down_sample_image",
+    "edax",
+    "extension_reader_map",
+    "fei_emi",
+    "flatten_dict",
+    "get_basic_metadata",
+    "get_dm3_metadata",
+    "get_msa_metadata",
+    "get_quanta_metadata",
+    "get_ser_metadata",
+    "get_spc_metadata",
+    "image_to_square_thumbnail",
+    "logger",
+    "parse_metadata",
+    "quanta_tif",
+    "sig_to_thumbnail",
+    "text_to_thumbnail",
+    "thumbnail_generator",
+    "unextracted_preview_map",
+    "utils",
+]
 
 extension_reader_map = {
     "dm3": get_dm3_metadata,
@@ -116,7 +145,7 @@ def parse_metadata(
     write_output: bool = True,
     generate_preview: bool = True,
     overwrite: bool = True,
-) -> Tuple[Optional[Dict[str, Any]], Optional[Path]]:
+) -> Tuple[Dict[str, Any] | None, Path | None]:
     """
     Parse metadata from a file and optionaly generate a preview image.
 
@@ -213,7 +242,7 @@ def parse_metadata(
     return nx_meta, preview_fname
 
 
-def create_preview(fname: Path, *, overwrite: bool) -> Optional[Path]:  # noqa: PLR0912
+def create_preview(fname: Path, *, overwrite: bool) -> Path | None:
     """
     Generate a preview image for a given file using one of a few different methods.
 
@@ -260,8 +289,7 @@ def create_preview(fname: Path, *, overwrite: bool) -> Optional[Path]:  # noqa: 
 
         # handle the case where PIL cannot open an image
         if preview_return is False:
-            preview_fname = None
-            return preview_fname
+            return None
 
     else:
         load_options = {"lazy": True}

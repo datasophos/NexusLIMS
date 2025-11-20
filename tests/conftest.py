@@ -1,37 +1,11 @@
-#  NIST Public License - 2020
-#
-#  This software was developed by employees of the National Institute of
-#  Standards and Technology (NIST), an agency of the Federal Government
-#  and is being made available as a public service. Pursuant to title 17
-#  United States Code Section 105, works of NIST employees are not subject
-#  to copyright protection in the United States.  This software may be
-#  subject to foreign copyright.  Permission in the United States and in
-#  foreign countries, to the extent that NIST may hold copyright, to use,
-#  copy, modify, create derivative works, and distribute this software and
-#  its documentation without fee is hereby granted on a non-exclusive basis,
-#  provided that this notice and disclaimer of warranty appears in all copies.
-#
-#  THE SOFTWARE IS PROVIDED 'AS IS' WITHOUT ANY WARRANTY OF ANY KIND,
-#  EITHER EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED
-#  TO, ANY WARRANTY THAT THE SOFTWARE WILL CONFORM TO SPECIFICATIONS, ANY
-#  IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
-#  AND FREEDOM FROM INFRINGEMENT, AND ANY WARRANTY THAT THE DOCUMENTATION
-#  WILL CONFORM TO THE SOFTWARE, OR ANY WARRANTY THAT THE SOFTWARE WILL BE
-#  ERROR FREE.  IN NO EVENT SHALL NIST BE LIABLE FOR ANY DAMAGES, INCLUDING,
-#  BUT NOT LIMITED TO, DIRECT, INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES,
-#  ARISING OUT OF, RESULTING FROM, OR IN ANY WAY CONNECTED WITH THIS SOFTWARE,
-#  WHETHER OR NOT BASED UPON WARRANTY, CONTRACT, TORT, OR OTHERWISE, WHETHER
-#  OR NOT INJURY WAS SUSTAINED BY PERSONS OR PROPERTY OR OTHERWISE, AND
-#  WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT OF THE RESULTS OF,
-#  OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
-#
 """Set up pytest configuration."""
 
 # pylint: disable=unused-argument
+# ruff: noqa: ARG001, SLF001
 
 import os
 import shutil
-import tarfile
+import sqlite3
 from datetime import datetime as dt
 from datetime import timedelta as td
 from pathlib import Path
@@ -39,21 +13,82 @@ from pathlib import Path
 import pytest
 from _pytest.monkeypatch import MonkeyPatch
 
-from nexusLIMS.utils import current_system_tz
+from .utils import delete_files, extract_files
 
-from .utils import delete_files, extract_files, tars
+# Load fixtures from fixtures modules
+pytest_plugins = ["tests.fixtures.cdcs_mock_data"]
 
-# use our test database for all tests (don't want to impact real one)
-os.environ["nexusLIMS_db_path"] = str(
-    Path(__file__).parent / "files" / "test_db.sqlite",
-)
-os.environ["nexusLIMS_path"] = str(Path(__file__).parent / "files" / "nexusLIMS_path")
+# Define paths for MMFNexus and NexusLIMS within the tests/files directory
+_test_files_dir = Path(__file__).parent / "files"
+_nexuslims_path = _test_files_dir / "NexusLIMS"
+_mmfnexus_path = _test_files_dir / "MMFNexus"
 
-# we don't want to mask mmfnexus directory, because the record builder tests
-# need to look at the real files on the mmfnexus storage path
+# Create the directories
+_nexuslims_path.mkdir(exist_ok=True)
+_mmfnexus_path.mkdir(exist_ok=True)
+
+# Define path for dynamically-created test database
+# Database will be populated by fresh_test_db fixture (session-scoped)
+_test_db_path = _nexuslims_path / "test_db.sqlite"
+
+# Create empty database with tables if it doesn't exist
+# This allows nexusLIMS modules to import without errors
+# The fresh_test_db fixture will populate it with test data
+
+if not _test_db_path.exists():
+    conn = sqlite3.connect(_test_db_path)
+    cursor = conn.cursor()
+    # Create empty tables (will be populated by fresh_test_db fixture)
+    cursor.execute(
+        """
+        CREATE TABLE IF NOT EXISTS instruments (
+            instrument_pid VARCHAR(100) NOT NULL PRIMARY KEY,
+            api_url TEXT NOT NULL UNIQUE,
+            calendar_name TEXT NOT NULL,
+            calendar_url TEXT NOT NULL,
+            location VARCHAR(100) NOT NULL,
+            schema_name TEXT NOT NULL,
+            property_tag VARCHAR(20) NOT NULL,
+            filestore_path TEXT NOT NULL,
+            computer_name TEXT UNIQUE,
+            computer_ip VARCHAR(15) UNIQUE,
+            computer_mount TEXT,
+            harvester TEXT,
+            timezone TEXT DEFAULT 'America/New_York' NOT NULL
+        )
+    """,
+    )
+    cursor.execute(
+        """
+        CREATE TABLE IF NOT EXISTS session_log (
+            id_session_log INTEGER PRIMARY KEY AUTOINCREMENT,
+            session_identifier TEXT NOT NULL,
+            instrument TEXT NOT NULL,
+            timestamp TEXT NOT NULL,
+            event_type TEXT NOT NULL,
+            record_status TEXT DEFAULT 'TO_BE_BUILT',
+            user TEXT
+        )
+    """,
+    )
+    conn.commit()
+    conn.close()
+
+# Set environment variables to use the new temporary directories and test DB
+# IMPORTANT: This must be set BEFORE importing nexusLIMS modules
+os.environ["NEXUSLIMS_DB_PATH"] = str(_test_db_path)
+os.environ["NEXUSLIMS_PATH"] = str(_nexuslims_path)
+os.environ["MMFNEXUS_PATH"] = str(_mmfnexus_path)
+
+# Create NexusLIMS/test_files directory structure if it doesn't exist
+# This matches the filestore_path used by test instruments
+(_nexuslims_path / "test_files").mkdir(parents=True, exist_ok=True)
 
 
-def pytest_configure(config):  # noqa: ARG001
+from nexusLIMS.utils import current_system_tz  # noqa: E402
+
+
+def pytest_configure(config):
     """
     Configure pytest.
 
@@ -61,16 +96,13 @@ def pytest_configure(config):  # noqa: ARG001
     This hook is called for every plugin and initial conftest
     file after command line options have been parsed.
 
-    Unpack the test_db at the very beginning since we need it right away
-    when importing the instruments.py module (for instrument_db)
+    Note: The test database extraction now happens at module level (before imports)
+    to ensure it's available when nexusLIMS.instruments is imported.
     """
-    with tarfile.open(tars["DB"], "r:gz") as tar:
-        tar.extractall(path=Path(tars["DB"]).parent)
-
     from nexusLIMS.db import make_db_query  # pylint: disable=import-outside-toplevel
 
     # update API URLs for marlin.nist.gov if we're using marlin-test.nist.gov:
-    if "marlin-test.nist.gov" in os.environ.get("NEMO_address_1", ""):
+    if "marlin-test.nist.gov" in os.environ.get("NEMO_ADDRESS_1", ""):
         make_db_query(
             "UPDATE instruments "
             "SET api_url = "
@@ -83,24 +115,30 @@ def pytest_configure(config):  # noqa: ARG001
         )
 
 
-def pytest_unconfigure(config):  # noqa: ARG001
+def pytest_unconfigure(config):
     """
     Unconfigure pytest.
 
-    if nexusLIMS_path is a subdirectory of the current tests directory
-    (which it should be since we explicitly set it at the top of this file),
-    remove it -- the  check for subdirectory is just a safety to make sure
-    we don't nuke the real nexusLIMS_path. If we did that, we would
-    have a bad time.
+    Clean up the temporary directories created for the test session.
+    This includes the NexusLIMS and MMFNexus subdirectories in tests/files.
     """
-    this_dir = Path(__file__).parent
-    nx_dir = Path(os.getenv("nexusLIMS_path"))
-    if this_dir in nx_dir.parents:
-        records_dir = nx_dir / ".." / "records"
-        if records_dir.exists():
-            shutil.rmtree(records_dir)
-        if nx_dir.exists():
-            shutil.rmtree(nx_dir)
+    # Paths are now subdirectories of tests/files
+    nexuslims_path = Path(os.environ["NEXUSLIMS_PATH"])
+    mmfnexus_path = Path(os.environ["MMFNEXUS_PATH"])
+    test_files_dir = Path(__file__).parent / "files"
+
+    # Clean up the created directories, with safety checks
+    if nexuslims_path.exists() and nexuslims_path.parent == test_files_dir:
+        shutil.rmtree(nexuslims_path)
+
+    if mmfnexus_path.exists() and mmfnexus_path.parent == test_files_dir:
+        shutil.rmtree(mmfnexus_path)
+
+    # The old logic also removed a 'records' directory.
+    # Let's see if it exists and remove it if it's inside tests/files.
+    records_dir = test_files_dir / "records"
+    if records_dir.exists():
+        shutil.rmtree(records_dir)
 
 
 @pytest.fixture(scope="session")
@@ -109,6 +147,22 @@ def monkey_session():
     mpatch = MonkeyPatch()
     yield mpatch
     mpatch.undo()
+
+
+@pytest.fixture(scope="session", name="mock_nemo_env", autouse=True)
+def mock_nemo_env_fixture(monkey_session):
+    """
+    Set up mock NEMO environment variables for testing.
+
+    This fixture provides a basic NEMO configuration that allows
+    tests to run without requiring a real NEMO instance. Auto-used
+    for all tests unless NEMO environment variables are already set.
+    """
+    # Only set if not already set (allows real NEMO testing if env vars exist)
+    if "NEMO_ADDRESS_1" not in os.environ:
+        monkey_session.setenv("NEMO_ADDRESS_1", "http://test.example.com/api/")
+        monkey_session.setenv("NEMO_TOKEN_1", "test-token-12345")
+        monkey_session.setenv("NEMO_TZ_1", "America/Denver")
 
 
 @pytest.fixture(scope="session", name="_fix_mountain_time")
@@ -146,18 +200,14 @@ def cleanup_session_log():
     from nexusLIMS.db.session_handler import db_query
 
     to_remove = (
-        "https://***REMOVED***/api/usage_events/?id=29",
-        "https://***REMOVED***/api/usage_events/?id=30",
-        "https://***REMOVED***/api/usage_events/?id=31",
-        "https://***REMOVED***/api/usage_events/?id=29",
-        "https://***REMOVED***/api/usage_events/?id=30",
-        "https://***REMOVED***/api/usage_events/?id=31",
-        "https://***REMOVED***/api/usage_events/?id=385031",
+        "http://test.example.com/api/usage_events/?id=29",
+        "http://test.example.com/api/usage_events/?id=30",
+        "http://test.example.com/api/usage_events/?id=31",
         "test_session",
     )
     db_query(
         f"DELETE FROM session_log WHERE session_identifier IN "
-        f'({",".join("?" * len(to_remove))})',
+        f"({','.join('?' * len(to_remove))})",
         to_remove,
     )
 
@@ -167,75 +217,75 @@ def cleanup_session_log():
 
 # 643 Titan files
 @pytest.fixture(scope="module")
-def eftem_diff_643():
-    """643 Titan EFTEM example diffraction."""
-    files = extract_files("643_EFTEM_DIFF")
+def eftem_diff():
+    """Titan EFTEM example diffraction."""
+    files = extract_files("TITAN_EFTEM_DIFF")
     yield files
-    delete_files("643_EFTEM_DIFF")
+    delete_files("TITAN_EFTEM_DIFF")
 
 
 @pytest.fixture(scope="module")
-def stem_stack_643():
-    """643 Titan example STEM stack."""
-    files = extract_files("643_STEM_STACK")
+def stem_stack_titan():
+    """Titan example STEM stack."""
+    files = extract_files("TITAN_STEM_STACK")
     yield files
-    delete_files("643_STEM_STACK")
+    delete_files("TITAN_STEM_STACK")
 
 
 @pytest.fixture(scope="module")
-def survey_643():
-    """643 Titan example survey image."""
-    files = extract_files("643_SURVEY")
+def survey_titan():
+    """Titan example survey image."""
+    files = extract_files("TITAN_SURVEY_IMAGE")
     yield files
-    delete_files("643_SURVEY")
+    delete_files("TITAN_SURVEY_IMAGE")
 
 
 @pytest.fixture(scope="module")
-def eels_si_643():
-    """643 Titan example EELS spectrum image."""
-    files = extract_files("643_EELS_SI")
+def eels_si_titan():
+    """Titan STEM example EELS spectrum image."""
+    files = extract_files("TITAN_EELS_SI")
     yield files
-    delete_files("643_EELS_SI")
+    delete_files("TITAN_EELS_SI")
 
 
 @pytest.fixture(scope="module")
-def eels_proc_int_bg_643():
-    """643 Titan example EELS SI with processing integration and background removal."""
-    files = extract_files("643_EELS_PROC_INT_BG")
+def eels_proc_int_bg_titan():
+    """Titan example EELS SI with processing integration and background removal."""
+    files = extract_files("TITAN_EELS_PROC_INT_BG")
     yield files
-    delete_files("643_EELS_PROC_INT_BG")
+    delete_files("TITAN_EELS_PROC_INT_BG")
 
 
 @pytest.fixture(scope="module")
-def eels_proc_thick_643():
-    """643 Titan example EELS spectrum image with thickness calculation."""
-    files = extract_files("643_EELS_PROC_THICK")
+def eels_proc_thick_titan():
+    """Titan example EELS spectrum image with thickness calculation."""
+    files = extract_files("TITAN_EELS_PROC_THICK")
     yield files
-    delete_files("643_EELS_PROC_THICK")
+    delete_files("TITAN_EELS_PROC_THICK")
 
 
 @pytest.fixture(scope="module")
-def eds_si_643():
-    """643 Titan example EDS spectrum image."""
-    files = extract_files("643_EDS_SI")
+def eds_si_titan():
+    """Titan example EDS spectrum image."""
+    files = extract_files("TITAN_EDS_SI")
     yield files
-    delete_files("643_EDS_SI")
+    delete_files("TITAN_EDS_SI")
 
 
 @pytest.fixture(scope="module")
-def eels_si_drift_643():
-    """643 Titan example EELS spectrum image with drift correction."""
-    files = extract_files("643_EELS_SI_DRIFT")
+def eels_si_drift_titan():
+    """Titan STEM example EELS spectrum image with drift correction."""
+    files = extract_files("TITAN_EELS_SI_DRIFT")
     yield files
-    delete_files("643_EELS_SI_DRIFT")
+    delete_files("TITAN_EELS_SI_DRIFT")
 
 
 @pytest.fixture(scope="module")
-def annotations_643():
+def annotations():
     """643 Titan example image with annotations."""
-    files = extract_files("642_ANNOTATIONS")
+    files = extract_files("ANNOTATIONS")
     yield files
-    delete_files("642_ANNOTATIONS")
+    delete_files("ANNOTATIONS")
 
 
 @pytest.fixture(scope="module")
@@ -277,43 +327,43 @@ def jeol3010_diff():
 
 
 @pytest.fixture(scope="module")
-def stem_diff_642():
-    """642 Titan STEM diffraction."""
-    files = extract_files("642_STEM_DIFF")
+def stem_diff():
+    """Titan STEM diffraction."""
+    files = extract_files("TITAN_STEM_DIFF")
     yield files
-    delete_files("642_STEM_DIFF")
+    delete_files("TITAN_STEM_DIFF")
 
 
 @pytest.fixture(scope="module")
-def opmode_diff_642():
-    """STEM diffraction (in operation mode) from 642 Titan."""
-    files = extract_files("642_OPMODE_DIFF")
+def opmode_diff():
+    """STEM diffraction (in operation mode) from Titan."""
+    files = extract_files("TITAN_OPMODE_DIFF")
     yield files
-    delete_files("642_OPMODE_DIFF")
+    delete_files("TITAN_OPMODE_DIFF")
 
 
 @pytest.fixture(scope="module")
-def eels_proc_1_642():
-    """EELS processing metadata from 642 Titan."""
-    files = extract_files("642_EELS_PROC_1")
+def eels_proc_1_titan():
+    """EELS processing metadata from Titan."""
+    files = extract_files("TITAN_EELS_PROC_1")
     yield files
-    delete_files("642_EELS_PROC_1")
+    delete_files("TITAN_EELS_PROC_1")
 
 
 @pytest.fixture(scope="module")
-def eels_si_drift_642():
-    """EELS SI drift correction metadata from 642 Titan."""
-    files = extract_files("642_EELS_SI_DRIFT")
+def eels_si_drift():
+    """EELS SI drift correction metadata from Titan."""
+    files = extract_files("EELS_SI_DRIFT")
     yield files
-    delete_files("642_EELS_SI_DRIFT")
+    delete_files("EELS_SI_DRIFT")
 
 
 @pytest.fixture(scope="module")
-def tecnai_mag_642():
+def tecnai_mag():
     """Tecnai magnification metadata from 642 Titan."""
-    files = extract_files("642_TECNAI_MAG")
+    files = extract_files("TECNAI_MAG")
     yield files
-    delete_files("642_TECNAI_MAG")
+    delete_files("TECNAI_MAG")
 
 
 # Quanta tiff files
@@ -363,11 +413,11 @@ def scios_xml_metadata():
 
 
 @pytest.fixture(scope="module")
-def parse_meta_642_titan():
+def parse_meta_titan():
     """642 Titan file for metadata parsing test."""
-    files = extract_files("PARSE_META_642_TITAN")
+    files = extract_files("PARSE_META_TITAN")
     yield files
-    delete_files("PARSE_META_642_TITAN")
+    delete_files("PARSE_META_TITAN")
 
 
 @pytest.fixture(scope="module")
@@ -386,7 +436,7 @@ def fei_ser_files():
     delete_files("FEI_SER")
 
 
-@pytest.fixture()
+@pytest.fixture
 def fei_ser_files_function_scope():
     """FEI .ser/.emi test files."""
     files = extract_files("FEI_SER")
@@ -449,7 +499,12 @@ def text_ansi_test_file():
 def basic_image_file():
     """Image file that is not data, e.g. a screenshot."""
     extract_files("IMAGE_FILES")
-    yield Path(__file__).parent / "files" / "test_image_thumb_source.bmp"
+    yield (
+        Path(__file__).parent
+        / "files"
+        / os.environ["MMFNEXUS_PATH"]
+        / "test_image_thumb_source.bmp"
+    )
     delete_files("IMAGE_FILES")
 
 
@@ -457,7 +512,12 @@ def basic_image_file():
 def image_thumb_source_gif():
     """Image file in GIF format for thumbnail testing."""
     extract_files("IMAGE_FILES")
-    yield Path(__file__).parent / "files" / "test_image_thumb_source.gif"
+    yield (
+        Path(__file__).parent
+        / "files"
+        / os.environ["MMFNEXUS_PATH"]
+        / "test_image_thumb_source.gif"
+    )
     delete_files("IMAGE_FILES")
 
 
@@ -465,7 +525,12 @@ def image_thumb_source_gif():
 def image_thumb_source_png():
     """Image file in PNG format for thumbnail testing."""
     extract_files("IMAGE_FILES")
-    yield Path(__file__).parent / "files" / "test_image_thumb_source.png"
+    yield (
+        Path(__file__).parent
+        / "files"
+        / os.environ["MMFNEXUS_PATH"]
+        / "test_image_thumb_source.png"
+    )
     delete_files("IMAGE_FILES")
 
 
@@ -473,7 +538,12 @@ def image_thumb_source_png():
 def image_thumb_source_tif():
     """Image file in TIF format for thumbnail testing."""
     extract_files("IMAGE_FILES")
-    yield Path(__file__).parent / "files" / "test_image_thumb_source.tif"
+    yield (
+        Path(__file__).parent
+        / "files"
+        / os.environ["MMFNEXUS_PATH"]
+        / "test_image_thumb_source.tif"
+    )
     delete_files("IMAGE_FILES")
 
 
@@ -481,7 +551,12 @@ def image_thumb_source_tif():
 def image_thumb_source_jpg():
     """Image file in JPG format for thumbnail testing."""
     extract_files("IMAGE_FILES")
-    yield Path(__file__).parent / "files" / "test_image_thumb_source.jpg"
+    yield (
+        Path(__file__).parent
+        / "files"
+        / os.environ["MMFNEXUS_PATH"]
+        / "test_image_thumb_source.jpg"
+    )
     delete_files("IMAGE_FILES")
 
 
@@ -506,3 +581,372 @@ def xml_record_file():
     files = extract_files("RECORD")
     yield files
     delete_files("RECORD")
+
+
+# CDCS mocking fixtures
+
+
+@pytest.fixture
+def test_xml_record_file(tmp_path):
+    """Create a temporary test XML record file for CDCS upload tests."""
+    xml_content = """<?xml version="1.0" encoding="UTF-8"?>
+<nx:Experiment xmlns:nx="https://data.nist.gov/od/dm/nexus/experiment/v1.0">
+    <nx:summary>
+        <nx:title>Test Record</nx:title>
+        <nx:instrument pid="test-instrument">Test Instrument</nx:instrument>
+        <nx:creationDate>2025-01-15T10:00:00</nx:creationDate>
+    </nx:summary>
+</nx:Experiment>"""
+
+    # Create test XML file
+    xml_file = tmp_path / "test_record.xml"
+    xml_file.write_text(xml_content, encoding="utf-8")
+
+    # Create figs subdirectory for no-files test
+    (tmp_path / "figs").mkdir()
+
+    return [xml_file]
+
+
+@pytest.fixture
+def mock_cdcs_server(monkeypatch, mock_cdcs_responses):
+    """
+    Mock the CDCS server by patching nexus_req to return mock responses.
+
+    This fixture intercepts all HTTP calls to the CDCS API and returns
+    appropriate mock responses based on the URL and HTTP method.
+    """
+    from http import HTTPStatus
+    from typing import NamedTuple
+    from urllib.parse import urlparse
+
+    import nexusLIMS.cdcs
+
+    class MockResponse(NamedTuple):
+        """Mock HTTP response."""
+
+        status_code: int
+        text: str
+
+        def json(self):
+            """Return JSON response data."""
+            import json
+
+            return json.loads(self.text)
+
+    # Track created record IDs for delete operations
+    created_records = set()
+
+    def mock_nexus_req(url, method, **kwargs):
+        """Mock HTTP request handler."""
+        parsed = urlparse(url)
+        path = parsed.path
+
+        # GET /rest/workspace/read_access
+        if path.endswith("/rest/workspace/read_access") and method == "GET":
+            import json
+
+            return MockResponse(
+                status_code=HTTPStatus.OK,
+                text=json.dumps(mock_cdcs_responses["workspace"]),
+            )
+
+        # GET /rest/template-version-manager/global
+        if path.endswith("/rest/template-version-manager/global") and method == "GET":
+            import json
+
+            return MockResponse(
+                status_code=HTTPStatus.OK,
+                text=json.dumps(mock_cdcs_responses["template"]),
+            )
+
+        # POST /rest/data/
+        if path.endswith("/rest/data/") and method == "POST":
+            import json
+            import uuid
+
+            # Generate a unique record ID
+            record_id = f"test-record-{uuid.uuid4().hex[:12]}"
+            created_records.add(record_id)
+
+            response_data = {
+                "id": record_id,
+                "template": mock_cdcs_responses["template"][0]["current"],
+                "title": kwargs.get("json", {}).get("title", "Test Record"),
+                "xml_content": kwargs.get("json", {}).get("xml_content", ""),
+            }
+
+            return MockResponse(
+                status_code=HTTPStatus.CREATED,
+                text=json.dumps(response_data),
+            )
+
+        # Handle workspace assignment endpoint
+        if "/rest/data/" in path and "/assign/" in path and method == "PATCH":
+            return MockResponse(status_code=HTTPStatus.OK, text="{}")
+
+        # Handle record deletion endpoint
+        if "/rest/data/" in path and method == "DELETE":
+            return MockResponse(status_code=HTTPStatus.NO_CONTENT, text="")
+
+        # Return 404 for unknown endpoints
+        return MockResponse(
+            status_code=HTTPStatus.NOT_FOUND,
+            text="Mock endpoint not found",
+        )
+
+    # Patch the nexus_req function in the cdcs module
+    monkeypatch.setattr(nexusLIMS.cdcs, "nexus_req", mock_nexus_req)
+
+
+@pytest.fixture(scope="module")
+def test_record_files():
+    """
+    Test record files for file finding and record building tests.
+
+    Extracts test files from test_record_files.tar.gz which contains:
+    - Titan_TEM/researcher_a/project_alpha/20181113/
+      (8 .dm3 files, 2 .ser files, 1 .emi file, 4 test files)
+    - JEOL_TEM/researcher_b/project_beta/20190724/
+      (3 subdirectories with .dm3 files)
+    - Nexus_Test_Instrument/test_files/ (4 sample .dm3 files)
+
+    Files have specific modification times for temporal file-finding tests.
+    """
+    files = extract_files("TEST_RECORD_FILES")
+    yield files
+    delete_files("TEST_RECORD_FILES")
+
+
+@pytest.fixture(autouse=True)
+def fresh_test_db():
+    """
+    Populate test database with test instruments and sessions.
+
+    Populates the database with:
+    - Three test instruments: Titan_TEM, JEOL_TEM, Nexus_Test_Instrument
+    - Test sessions for each instrument matching test file dates
+
+    This replaces the static test_db.sqlite.tar.gz approach with
+    dynamic database construction for cleaner, more maintainable tests.
+
+    Function-scoped and autouse=True ensures each test gets a fresh database,
+    preventing test isolation issues.
+    """
+    # Connect to existing database (schema created during conftest initialization)
+    db_path = _test_db_path
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+
+    # Clear any existing data to ensure clean state for each test
+    cursor.execute("DELETE FROM session_log")
+    cursor.execute("DELETE FROM instruments")
+
+    # Insert test instruments
+    instruments = [
+        # Titan TEM (corresponds to mock tool ID 1)
+        (
+            "FEI-Titan-TEM",
+            "http://test.example.com/api/?id=1",
+            "FEI Titan TEM",
+            "http://test.example.com/calendar/titan/",
+            "Test Building Room 301",
+            "FEI Titan TEM",
+            "TEST-TEM-001",
+            "./Titan_TEM",
+            None,
+            None,
+            None,
+            "nemo",
+            "America/New_York",
+        ),
+        # JEOL TEM (corresponds to mock tool ID 15)
+        (
+            "JEOL-JEM-TEM",
+            "http://test.example.com/api/?id=15",
+            "JEOL 3010 TEM",
+            "http://test.example.com/calendar/jeol/",
+            "Test Building Room 303",
+            "JEOL JEM-3010",
+            "TEST-JEOL-001",
+            "./JEOL_TEM",
+            None,
+            None,
+            None,
+            "nemo",
+            "America/Chicago",
+        ),
+        # Nexus Test Instrument (corresponds to mock tool ID 10)
+        (
+            "TEST-INSTRUMENT-001",
+            "http://test.example.com/api/tools/?id=10",
+            "Test Instrument",
+            "http://test.example.com/calendar/",
+            "Test Building Room 123",
+            "Test Instrument",
+            "TEST-001",
+            "./Nexus_Test_Instrument/test_files",
+            None,
+            None,
+            None,
+            "nemo",
+            "America/Denver",
+        ),
+    ]
+
+    cursor.executemany(
+        """
+        INSERT INTO instruments VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """,
+        instruments,
+    )
+
+    # Insert test sessions for all three instruments
+    # Session identifiers use URL format with ID parameter for proper
+    # filename generation
+    sessions = [
+        # Titan TEM session (2018-11-13)
+        (
+            "http://test.example.com/api/titan/usage_events/?id=101",
+            "FEI-Titan-TEM",
+            "2018-11-13T13:00:00-05:00",
+            "START",
+            "TO_BE_BUILT",
+            "researcher_a",
+        ),
+        (
+            "http://test.example.com/api/titan/usage_events/?id=101",
+            "FEI-Titan-TEM",
+            "2018-11-13T16:00:00-05:00",
+            "END",
+            "TO_BE_BUILT",
+            "researcher_a",
+        ),
+        # JEOL TEM session (2019-07-24)
+        (
+            "http://test.example.com/api/jeol/usage_events/?id=202",
+            "JEOL-JEM-TEM",
+            "2019-07-24T11:00:00-04:00",
+            "START",
+            "TO_BE_BUILT",
+            "researcher_b",
+        ),
+        (
+            "http://test.example.com/api/jeol/usage_events/?id=202",
+            "JEOL-JEM-TEM",
+            "2019-07-24T16:00:00-04:00",
+            "END",
+            "TO_BE_BUILT",
+            "researcher_b",
+        ),
+        # Nexus Test Instrument session (2021-08-02)
+        (
+            "http://test.example.com/api/usage_events/?id=21",
+            "TEST-INSTRUMENT-001",
+            "2021-08-02T09:00:00-07:00",
+            "START",
+            "TO_BE_BUILT",
+            "user",
+        ),
+        (
+            "http://test.example.com/api/usage_events/?id=21",
+            "TEST-INSTRUMENT-001",
+            "2021-08-02T11:00:00-07:00",
+            "END",
+            "TO_BE_BUILT",
+            "user",
+        ),
+    ]
+
+    cursor.executemany(
+        """
+        INSERT INTO session_log
+        (session_identifier, instrument, timestamp, event_type, record_status, user)
+        VALUES (?, ?, ?, ?, ?, ?)
+        """,
+        sessions,
+    )
+
+    conn.commit()
+    conn.close()
+
+    # Reload the instrument_db to pick up the new instruments
+    # This is necessary because instrument_db is populated at module import time
+    from nexusLIMS import instruments
+
+    updated_db = instruments._get_instrument_db()
+    instruments.instrument_db.clear()
+    instruments.instrument_db.update(updated_db)
+
+    return db_path
+
+    # Cleanup is handled by pytest teardown
+
+
+# Instrument factory fixtures for reducing database dependencies
+
+
+@pytest.fixture
+def mock_instrument_from_filepath(monkeypatch):
+    """
+    Mock get_instr_from_filepath in extractor modules.
+
+    This fixture returns a function that accepts an Instrument object and
+    monkeypatches the get_instr_from_filepath function in all relevant
+    extractor modules to return that instrument.
+
+    This allows tests to explicitly specify what instrument they need without
+    relying on database entries.
+
+    Parameters
+    ----------
+    monkeypatch : pytest.MonkeyPatch
+        Pytest's monkeypatch fixture
+
+    Returns
+    -------
+    function
+        A function that accepts an Instrument and sets up the monkeypatch
+
+    Examples
+    --------
+    In a test:
+        >>> def test_something(mock_instrument_from_filepath):
+        ...     from tests.test_instrument_factory import make_titan_stem
+        ...     instrument = make_titan_stem()
+        ...     mock_instrument_from_filepath(instrument)
+        ...     # Now any code calling get_instr_from_filepath gets this instrument
+        ...     metadata = parse_metadata("some_file.dm3")
+    """
+
+    def _mock(instrument):
+        """Apply the monkeypatch for the given instrument."""
+        # Import here to avoid circular imports
+        import nexusLIMS.extractors
+        import nexusLIMS.extractors.digital_micrograph
+        import nexusLIMS.extractors.fei_emi
+        import nexusLIMS.extractors.utils
+
+        # Monkeypatch all the places where get_instr_from_filepath is called
+        monkeypatch.setattr(
+            nexusLIMS.extractors.digital_micrograph,
+            "get_instr_from_filepath",
+            lambda _: instrument,
+        )
+        monkeypatch.setattr(
+            nexusLIMS.extractors.utils,
+            "get_instr_from_filepath",
+            lambda _: instrument,
+        )
+        monkeypatch.setattr(
+            nexusLIMS.extractors.fei_emi,
+            "get_instr_from_filepath",
+            lambda _: instrument,
+        )
+        monkeypatch.setattr(
+            nexusLIMS.extractors,
+            "get_instr_from_filepath",
+            lambda _: instrument,
+        )
+
+    return _mock

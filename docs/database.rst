@@ -8,7 +8,7 @@ needs to be built) NexusLIMS relies on an external database that is stored
 as a file accessible to the back-end. Due to its simple design and requirements,
 the database is implemented using a single `SQLite <https://sqlite.org/index.html>`_
 file stored in a location specified by the
-:ref:`nexusLIMS_db_path <nexuslims-db-path>` environment variable. This database
+:ref:`NEXUSLIMS_DB_PATH <nexuslims-db-path>` environment variable. This database
 is created using a custom |SQLSchemaLink|_ (documented below) and can be
 easily backed up by simply copying the database file to a new location.
 The contents and structure of the database can be inspected using a number
@@ -161,7 +161,7 @@ the ``instruments`` table from the database into
 :py:class:`~nexusLIMS.instruments.Instrument` objects. These objects are
 stored in a dictionary attribute named :py:data:`nexusLIMS.instruments.instrument_db`.
 This is done by querying the database specified in the environment variable
-:ref:`nexusLIMS_db_path <nexuslims-db-path>` and creating a dictionary of
+:ref:`NEXUSLIMS_DB_PATH <nexuslims-db-path>` and creating a dictionary of
 :py:class:`~nexusLIMS.instruments.Instrument` objects that contain information
 about all of the instruments specified in the database. These objects are used
 widely throughout the code so that the database is only queried once at initial
@@ -202,7 +202,7 @@ import, rather than every time information is needed.
 +--------------------+--------------+-----------------------------------------+
 | ``filestore_path`` | TEXT         | The path (relative to central storage   |
 |                    |              | location specified in                   |
-|                    |              | :ref:`mmfnexus_path <mmfnexus-path>`)   |
+|                    |              | :ref:`MMFNEXUS_PATH <mmfnexus-path>`)   |
 |                    |              | where this instrument stores            |
 |                    |              | its data (e.g. ``./Titan``)             |
 +--------------------+--------------+-----------------------------------------+
@@ -242,4 +242,3 @@ import, rather than every time information is needed.
 |                    |              | when communicating with the harvester   |
 |                    |              | APIs.                                   |
 +--------------------+--------------+-----------------------------------------+
-

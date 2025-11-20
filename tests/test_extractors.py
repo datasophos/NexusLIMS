@@ -1,5 +1,5 @@
 # pylint: disable=C0302,C0116
-# ruff: noqa: D102, PLR2004
+# ruff: noqa: D102, PLR2004, DTZ001
 
 """Tests the extraction of metadata and generation of preview images from data files."""
 
@@ -10,10 +10,14 @@ import logging
 import os
 from datetime import datetime as dt
 from pathlib import Path
+from typing import cast
 
+import exspy
 import hyperspy.api as hs
 import numpy as np
 import pytest
+from hyperspy.io import load as hs_load
+from hyperspy.misc.utils import stack as hs_stack
 
 import nexusLIMS
 from nexusLIMS import instruments
@@ -37,30 +41,40 @@ from nexusLIMS.extractors.thumbnail_generator import (
 from nexusLIMS.extractors.utils import _try_decimal, _zero_data_in_dm3
 from nexusLIMS.version import __version__
 
+from .test_instrument_factory import (
+    make_jeol_tem,
+    make_quanta_sem,
+    make_test_tool,
+    make_titan_stem,
+    make_titan_tem,
+)
 from .utils import assert_images_equal, get_full_file_path
 
 
 class TestThumbnailGenerator:  # pylint: disable=too-many-public-methods
     """Tests the generation of thumbnail preview images."""
 
-    @pytest.fixture()
-    def output_path(self):
-        output = Path("output.png")
+    @pytest.fixture
+    def output_path(self, tmp_path):
+        """Provide a unique output path for each test worker."""
+        output = tmp_path / "output.png"
         yield output
-        output.unlink()
+        # Clean up if file exists (may not exist if test failed early)
+        if output.exists():
+            output.unlink()
 
     @classmethod
     def setup_class(cls):
-        cls.s = hs.datasets.example_signals.EDS_TEM_Spectrum()
-        cls.oned_s = hs.stack(
+        cls.s = exspy.data.EDS_TEM_FePt_nanoparticles()
+        cls.oned_s = hs_stack(
             [cls.s * i for i in np.arange(0.1, 1, 0.3)],
             new_axis_name="x",
         )
-        cls.twod_s = hs.stack(
+        cls.twod_s = hs_stack(
             [cls.oned_s * i for i in np.arange(0.1, 1, 0.3)],
             new_axis_name="y",
         )
-        cls.threed_s = hs.stack(
+        cls.threed_s = hs_stack(
             [cls.twod_s * i for i in np.arange(0.1, 1, 0.3)],
             new_axis_name="z",
         )
@@ -94,36 +108,38 @@ class TestThumbnailGenerator:  # pylint: disable=too-many-public-methods
         return sig_to_thumbnail(self.threed_s, output_path)
 
     @pytest.mark.mpl_image_compare(style="default")
-    def test_single_image(self, eftem_diff_643, output_path):
-        return sig_to_thumbnail(hs.load(eftem_diff_643), output_path)
+    def test_single_image(self, eftem_diff, output_path):
+        return sig_to_thumbnail(hs_load(eftem_diff), output_path)
 
     @pytest.mark.mpl_image_compare(style="default")
-    def test_single_not_dm3_image(self, eftem_diff_643, output_path):
-        s = hs.load(eftem_diff_643)
+    def test_single_not_dm3_image(self, eftem_diff, output_path):
+        s = cast("hs.signals.Signal1D", hs_load(eftem_diff))
         s.metadata.General.original_filename = "not dm3"
         return sig_to_thumbnail(s, output_path)
 
     @pytest.mark.mpl_image_compare(style="default")
-    def test_image_stack(self, stem_stack_643, output_path):
-        return sig_to_thumbnail(hs.load(stem_stack_643), output_path)
+    def test_image_stack(self, stem_stack_titan, output_path):
+        return sig_to_thumbnail(hs_load(stem_stack_titan), output_path)
 
     @pytest.mark.mpl_image_compare(style="default")
     def test_4d_stem_type(self, four_d_stem, output_path):
-        return sig_to_thumbnail(hs.load(four_d_stem), output_path)
+        return sig_to_thumbnail(hs_load(four_d_stem), output_path)
 
     @pytest.mark.mpl_image_compare(style="default")
     def test_4d_stem_type_1(self, four_d_stem, output_path):
         # nav size >= 4 but < 9
-        return sig_to_thumbnail(hs.load(four_d_stem).inav[:2, :3], output_path)
+        s = cast("hs.signals.Signal2D", hs_load(four_d_stem, reader="HSPY"))
+        return sig_to_thumbnail(s.inav[:2, :3], output_path)
 
     @pytest.mark.mpl_image_compare(style="default")
     def test_4d_stem_type_2(self, four_d_stem, output_path):
         # nav size = 1
-        return sig_to_thumbnail(hs.load(four_d_stem).inav[:1, :2], output_path)
+        s = cast("hs.signals.Signal2D", hs_load(four_d_stem, reader="HSPY"))
+        return sig_to_thumbnail(s.inav[:1, :2], output_path)
 
     @pytest.mark.mpl_image_compare(style="default", tolerance=20)
     def test_complex_image(self, fft, output_path):
-        return sig_to_thumbnail(hs.load(fft), output_path)
+        return sig_to_thumbnail(hs_load(fft), output_path)
 
     @pytest.mark.mpl_image_compare(style="default")
     def test_higher_dimensional_signal(self, output_path):
@@ -178,24 +194,25 @@ class TestThumbnailGenerator:  # pylint: disable=too-many-public-methods
         return sig_to_thumbnail(s, output_path)
 
     @pytest.mark.mpl_image_compare(style="default")
-    def test_survey_image(self, survey_643, output_path):
-        return sig_to_thumbnail(hs.load(survey_643), output_path)
+    def test_survey_image(self, survey_titan, output_path):
+        return sig_to_thumbnail(hs_load(survey_titan), output_path)
 
-    def test_annotation_error(self, monkeypatch, survey_643):
+    def test_annotation_error(self, monkeypatch, survey_titan):
         def monkey_get_annotation(_1, _2):
             msg = "Mocked error for testing"
             raise ValueError(msg)
 
         monkeypatch.setattr(
             thumbnail_generator,
-            "_get_markers_dict",
+            "_get_markers_list",
             monkey_get_annotation,
         )
-        thumbnail_generator.add_annotation_markers(hs.load(survey_643))
+        thumbnail_generator.add_annotation_markers(hs_load(survey_titan))
 
     @pytest.mark.mpl_image_compare(style="default")
-    def test_annotations(self, annotations_643, output_path):
-        return sig_to_thumbnail(hs.load(annotations_643), output_path)
+    def test_annotations(self, annotations, output_path):
+        s = hs_load(annotations)
+        return sig_to_thumbnail(s, output_path)
 
     def test_downsample_image_errors(self):
         with pytest.raises(
@@ -203,14 +220,14 @@ class TestThumbnailGenerator:  # pylint: disable=too-many-public-methods
             match="One of output_size or factor must be provided",
         ):
             # providing neither output size and factor should raise an error
-            down_sample_image("", "")
+            down_sample_image("", "")  # type: ignore
 
         with pytest.raises(
             ValueError,
             match="Only one of output_size or factor should be provided",
         ):
             # providing both output size and factor should raise an error
-            down_sample_image("", "", output_size=(20, 20), factor=5)
+            down_sample_image("", "", output_size=(20, 20), factor=5)  # type: ignore
 
     @pytest.mark.mpl_image_compare(style="default")
     def test_downsample_image_factor(self, quanta_test_file, output_path):
@@ -289,14 +306,16 @@ class TestExtractorModule:
         fname.unlink()
         Path(str(fname).replace("thumb.png", "json")).unlink()
 
-    def test_parse_metadata_642_titan(self, parse_meta_642_titan):
-        meta, thumb_fname = parse_metadata(fname=parse_meta_642_titan[0])
+    def test_parse_metadata_titan(self, parse_meta_titan):
+        meta, thumb_fname = parse_metadata(fname=parse_meta_titan[0])
+        assert meta is not None
         assert meta["nx_meta"]["Acquisition Device"] == "BM-UltraScan"
-        assert meta["nx_meta"]["Actual Magnification"] == 17677.0
-        assert meta["nx_meta"]["Cs(mm)"] == 1.2
+        assert meta["nx_meta"]["Actual Magnification"] == pytest.approx(17677.0)
+        assert meta["nx_meta"]["Cs(mm)"] == pytest.approx(1.2)
         assert meta["nx_meta"]["Data Dimensions"] == "(2048, 2048)"
         assert meta["nx_meta"]["Data Type"] == "TEM_Imaging"
         assert meta["nx_meta"]["DatasetType"] == "Image"
+        assert meta["nx_meta"]["Microscope"] == "TEST Titan"
         assert len(meta["nx_meta"]["warnings"]) == 0
         assert (
             meta["nx_meta"]["NexusLIMS Extraction"]["Module"]
@@ -308,9 +327,10 @@ class TestExtractorModule:
 
     def test_parse_metadata_list_signal(self, list_signal):
         meta, thumb_fname = parse_metadata(fname=list_signal[0])
+        assert meta is not None
         assert meta["nx_meta"]["Acquisition Device"] == "DigiScan"
-        assert meta["nx_meta"]["STEM Camera Length"] == 77.0
-        assert meta["nx_meta"]["Cs(mm)"] == 1.0
+        assert meta["nx_meta"]["STEM Camera Length"] == pytest.approx(77.0)
+        assert meta["nx_meta"]["Cs(mm)"] == pytest.approx(1.0)
         assert meta["nx_meta"]["Data Dimensions"] == "(512, 512)"
         assert meta["nx_meta"]["Data Type"] == "STEM_Imaging"
         assert meta["nx_meta"]["DatasetType"] == "Image"
@@ -324,7 +344,10 @@ class TestExtractorModule:
         self.remove_thumb_and_json(thumb_fname)
 
     def test_parse_metadata_overwrite_false(self, caplog, list_signal):
-        thumb_fname = Path(str(list_signal[0]) + ".thumb.png")
+        from nexusLIMS.extractors import replace_mmf_path
+
+        thumb_fname = replace_mmf_path(list_signal[0], ".thumb.png")
+        thumb_fname.parent.mkdir(parents=True, exist_ok=True)
         # create the thumbnail file so we can't overwrite
         with thumb_fname.open(mode="a", encoding="utf-8") as _:
             pass
@@ -333,20 +356,18 @@ class TestExtractorModule:
         assert "Preview already exists" in caplog.text
         self.remove_thumb_and_json(thumb_fname)
 
-    def test_parse_metadata_quanta(self, monkeypatch, quanta_test_file):
-        def mock_instr(_):
-            return instruments.instrument_db["FEI-Quanta200-ESEM-633137_n"]
+    def test_parse_metadata_quanta(
+        self,
+        quanta_test_file,
+        mock_instrument_from_filepath,
+    ):
+        """Test metadata parsing for Quanta SEM files.
 
-        monkeypatch.setattr(
-            nexusLIMS.extractors.utils,
-            "get_instr_from_filepath",
-            mock_instr,
-        )
-        monkeypatch.setattr(
-            nexusLIMS.extractors,
-            "get_instr_from_filepath",
-            mock_instr,
-        )
+        This test now uses the instrument factory instead of relying on
+        specific database entries, making dependencies explicit.
+        """
+        # Set up Quanta SEM instrument for this test
+        mock_instrument_from_filepath(make_quanta_sem())
 
         _, thumb_fname = parse_metadata(fname=quanta_test_file[0])
         self.remove_thumb_and_json(thumb_fname)
@@ -362,6 +383,7 @@ class TestExtractorModule:
         )
 
         meta, thumb_fname = parse_metadata(fname=quanta_test_file[0])
+        assert meta is not None
         assert (
             meta["nx_meta"]["NexusLIMS Extraction"]["Module"]
             == "nexusLIMS.extractors.quanta_tif"
@@ -370,7 +392,7 @@ class TestExtractorModule:
         self.remove_thumb_and_json(thumb_fname)
 
     def test_parse_metadata_edax_spc(self):
-        test_file = Path(__file__).parent / "files" / "647_leo_edax_test.spc"
+        test_file = Path(__file__).parent / "files" / "leo_edax_test.spc"
         _, thumb_fname = parse_metadata(fname=test_file)
 
         # test encoding of np.void metadata filler values
@@ -381,24 +403,25 @@ class TestExtractorModule:
         filler_val = json_meta["original_metadata"]["filler3"]
         assert filler_val == "PQoOQgAAgD8="
 
-        expected_void = np.void(b"\x3D\x0A\x0E\x42\x00\x00\x80\x3F")
+        expected_void = np.void(b"\x3d\x0a\x0e\x42\x00\x00\x80\x3f")
         assert np.void(base64.b64decode(filler_val)) == expected_void
 
         self.remove_thumb_and_json(thumb_fname)
 
     def test_parse_metadata_edax_msa(self):
-        test_file = Path(__file__).parent / "files" / "647_leo_edax_test.msa"
+        test_file = Path(__file__).parent / "files" / "leo_edax_test.msa"
         _, thumb_fname = parse_metadata(fname=test_file)
         self.remove_thumb_and_json(thumb_fname)
 
     def test_parse_metadata_ser(self, fei_ser_files):
-        test_file = [
+        test_file = next(
             i
             for i in fei_ser_files
-            if "14.59.36 Scanning Acquire_dataZeroed_1.ser" in str(i)
-        ][0]
+            if "Titan_TEM_1_test_ser_image_dataZeroed_1.ser" in str(i)
+        )
 
         meta, thumb_fname = parse_metadata(fname=test_file)
+        assert meta is not None
         assert (
             meta["nx_meta"]["NexusLIMS Extraction"]["Module"]
             == "nexusLIMS.extractors.fei_emi"
@@ -408,12 +431,13 @@ class TestExtractorModule:
 
     def test_parse_metadata_no_dataset_type(self, monkeypatch, quanta_test_file):
         monkeypatch.setitem(
-            nexusLIMS.extractors.extension_reader_map,
+            nexusLIMS.extractors.extension_reader_map,  # type: ignore
             "tif",
             lambda _x: {"nx_meta": {"key": "val"}},
         )
 
         meta, thumb_fname = parse_metadata(fname=quanta_test_file[0])
+        assert meta is not None
         assert meta["nx_meta"]["DatasetType"] == "Misc"
         assert meta["nx_meta"]["Data Type"] == "Miscellaneous"
         assert meta["nx_meta"]["key"] == "val"
@@ -424,11 +448,13 @@ class TestExtractorModule:
     def test_parse_metadata_bad_ser(self, fei_ser_files):
         # if we find a bad ser that can't be read, we should get minimal
         # metadata and a placeholder thumbnail image
-        test_file = [
-            i for i in fei_ser_files if "642Titan_13_unreadable_ser_1.ser" in str(i)
-        ][0]
+        test_file = next(
+            i for i in fei_ser_files if "Titan_TEM_13_unreadable_ser_1.ser" in str(i)
+        )
 
         meta, thumb_fname = parse_metadata(fname=test_file)
+        assert thumb_fname is not None
+        assert meta is not None
         # assert that preview is same as our placeholder image (should be)
         assert filecmp.cmp(PLACEHOLDER_PREVIEW, thumb_fname, shallow=False)
         assert meta["nx_meta"]["Data Type"] == "Unknown"
@@ -438,7 +464,7 @@ class TestExtractorModule:
             == "nexusLIMS.extractors.fei_emi"
         )
         assert meta["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
-        assert "642Titan_13_unreadable_ser.emi" in meta["nx_meta"]["emi Filename"]
+        assert "Titan_TEM_13_unreadable_ser.emi" in meta["nx_meta"]["emi Filename"]
         assert (
             "The .ser file could not be opened" in meta["nx_meta"]["Extractor Warning"]
         )
@@ -449,6 +475,7 @@ class TestExtractorModule:
         meta, thumb_fname = parse_metadata(fname=basic_txt_file_no_extension)
 
         assert thumb_fname is None
+        assert meta is not None
         assert meta["nx_meta"]["Data Type"] == "Unknown"
         assert meta["nx_meta"]["DatasetType"] == "Unknown"
         assert (
@@ -460,16 +487,17 @@ class TestExtractorModule:
         # remove json file
         Path(
             str(basic_txt_file_no_extension).replace(
-                os.environ["mmfnexus_path"],
-                os.environ["nexusLIMS_path"],
+                os.environ["MMFNEXUS_PATH"],
+                os.environ["NEXUSLIMS_PATH"],
             )
             + ".json",
         ).unlink()
 
     def test_parse_metadata_with_image_preview(self, basic_image_file):
         meta, thumb_fname = parse_metadata(fname=basic_image_file)
-
+        assert thumb_fname is not None
         assert thumb_fname.is_file()
+        assert meta is not None
         assert meta["nx_meta"]["Data Type"] == "Unknown"
         assert meta["nx_meta"]["DatasetType"] == "Unknown"
         assert (
@@ -482,8 +510,9 @@ class TestExtractorModule:
 
     def test_parse_metadata_with_text_preview(self, basic_txt_file):
         meta, thumb_fname = parse_metadata(fname=basic_txt_file)
-
+        assert thumb_fname is not None
         assert thumb_fname.is_file()
+        assert meta is not None
         assert meta["nx_meta"]["Data Type"] == "Unknown"
         assert meta["nx_meta"]["DatasetType"] == "Unknown"
         assert (
@@ -498,6 +527,7 @@ class TestExtractorModule:
         meta, thumb_fname = parse_metadata(fname=unreadable_image_file)
 
         assert thumb_fname is None
+        assert meta is not None
         assert meta["nx_meta"]["Data Type"] == "Unknown"
         assert meta["nx_meta"]["DatasetType"] == "Unknown"
         assert (
@@ -510,6 +540,7 @@ class TestExtractorModule:
         meta, thumb_fname = parse_metadata(fname=binary_text_file)
 
         assert thumb_fname is None
+        assert meta is not None
         assert meta["nx_meta"]["Data Type"] == "Unknown"
         assert meta["nx_meta"]["DatasetType"] == "Unknown"
         assert (
@@ -526,6 +557,15 @@ class TestExtractorModule:
 
         flattened = flatten_dict(dict_to_flatten)
         assert flattened == {"level1.1": "level1.1v", "level1.2 level2.1": "level2.1v"}
+
+
+@pytest.fixture(name="_test_tool_db")
+def _fixture_test_tool_db(monkeypatch):
+    """Monkeypatch so DM extractor thinks this file came from testtool-TEST-A1234567."""
+    monkeypatch.setattr(
+        "nexusLIMS.extractors.digital_micrograph.get_instr_from_filepath",
+        lambda _x: instruments.instrument_db["testtool-TEST-A1234567"],
+    )
 
 
 @pytest.fixture(name="_titan_tem_db")
@@ -552,93 +592,121 @@ class TestDigitalMicrographExtractor:
     def test_corrupted_file(self, corrupted_file):
         assert digital_micrograph.get_dm3_metadata(corrupted_file) is None
 
-    @pytest.mark.usefixtures("_titan_tem_db")
-    def test_dm3_list_file(self, list_signal):
+    def test_dm3_list_file(self, list_signal, mock_instrument_from_filepath):
+        """Test DM3 metadata extraction from list signal file.
+
+        This test now uses the instrument factory instead of relying on
+        specific database entries, making dependencies explicit.
+        """
+        # Set up instrument for this test
+        mock_instrument_from_filepath(make_test_tool())
+
         metadata = digital_micrograph.get_dm3_metadata(list_signal[0])
 
+        assert metadata is not None
         assert metadata["nx_meta"]["Data Type"] == "STEM_Imaging"
         assert metadata["nx_meta"]["Imaging Mode"] == "DIFFRACTION"
-        assert metadata["nx_meta"]["Microscope"] == "Titan80-300_D3094"
-        assert metadata["nx_meta"]["Voltage"] == 300000.0
+        assert metadata["nx_meta"]["Microscope"] == "TEST Titan_______"
+        assert metadata["nx_meta"]["Voltage"] == pytest.approx(300000.0)
 
-    @pytest.mark.usefixtures("_titan_tem_db")
-    def test_642_dm3_diffraction(
+    def test_dm3_diffraction(
         self,
-        stem_diff_642,
-        opmode_diff_642,
+        stem_diff,
+        opmode_diff,
+        mock_instrument_from_filepath,
     ):
-        meta = digital_micrograph.get_dm3_metadata(stem_diff_642[0])
+        """Test DM3 diffraction metadata extraction from Titan TEM."""
+        mock_instrument_from_filepath(make_titan_tem())
+
+        meta = digital_micrograph.get_dm3_metadata(stem_diff[0])
+        assert meta is not None
         assert meta["nx_meta"]["Data Type"] == "STEM_Diffraction"
         assert meta["nx_meta"]["Imaging Mode"] == "DIFFRACTION"
-        assert meta["nx_meta"]["Microscope"] == "MSED Titan"
-        assert meta["nx_meta"]["Voltage"] == 300000.0
+        assert meta["nx_meta"]["Microscope"] == "TEST Titan"
+        assert meta["nx_meta"]["Voltage"] == pytest.approx(300000.0)
 
-        meta = digital_micrograph.get_dm3_metadata(opmode_diff_642[0])
+        meta = digital_micrograph.get_dm3_metadata(opmode_diff[0])
+        assert meta is not None
         assert meta["nx_meta"]["Data Type"] == "TEM_Diffraction"
         assert meta["nx_meta"]["Imaging Mode"] == "DIFFRACTION"
-        assert meta["nx_meta"]["Microscope"] == "MSED Titan"
-        assert meta["nx_meta"]["Voltage"] == 300000.0
+        assert meta["nx_meta"]["Microscope"] == "TEST Titan"
+        assert meta["nx_meta"]["Voltage"] == pytest.approx(300000.0)
 
-    @pytest.mark.usefixtures("_titan_tem_db")
-    def test_642_dm3_eels(
+    def test_titan_dm3_eels(
         self,
-        eels_proc_1_642,
-        eels_si_drift_642,
-        tecnai_mag_642,
+        eels_proc_1_titan,
+        eels_si_drift,
+        tecnai_mag,
+        mock_instrument_from_filepath,
     ):
-        meta = digital_micrograph.get_dm3_metadata(eels_proc_1_642[0])
+        """Test DM3 EELS metadata extraction from Titan TEM."""
+        mock_instrument_from_filepath(make_titan_tem())
+
+        meta = digital_micrograph.get_dm3_metadata(eels_proc_1_titan[0])
+        assert meta is not None
         assert meta["nx_meta"]["Data Type"] == "STEM_EELS"
         assert meta["nx_meta"]["Imaging Mode"] == "DIFFRACTION"
-        assert meta["nx_meta"]["Microscope"] == "MSED Titan"
-        assert meta["nx_meta"]["Voltage"] == 300000.0
+        assert meta["nx_meta"]["Microscope"] == "TEST Titan"
+        assert meta["nx_meta"]["Voltage"] == pytest.approx(300000.0)
         assert (
             meta["nx_meta"]["EELS"]["Processing Steps"]
             == "Aligned parent SI By Peak, Extracted from SI"
         )
         assert meta["nx_meta"]["EELS"]["Spectrometer Aperture label"] == "2mm"
 
-        meta = digital_micrograph.get_dm3_metadata(eels_si_drift_642[0])
+        meta = digital_micrograph.get_dm3_metadata(eels_si_drift[0])
+        assert meta is not None
         assert meta["nx_meta"]["Data Type"] == "EELS_Spectrum_Imaging"
         assert meta["nx_meta"]["Imaging Mode"] == "DIFFRACTION"
-        assert meta["nx_meta"]["Microscope"] == "MSED Titan"
-        assert meta["nx_meta"]["Voltage"] == 300000.0
-        assert meta["nx_meta"]["EELS"]["Convergence semi-angle (mrad)"] == 10.0
+        assert meta["nx_meta"]["Microscope"] == "TEST Titan"
+        assert meta["nx_meta"]["Voltage"] == pytest.approx(300000.0)
+        assert meta["nx_meta"]["EELS"][
+            "Convergence semi-angle (mrad)"
+        ] == pytest.approx(10.0)
         assert meta["nx_meta"]["EELS"]["Spectrometer Aperture label"] == "2mm"
         assert (
             meta["nx_meta"]["Spectrum Imaging"]["Artefact Correction"]
             == "Spatial drift correction every 100 seconds"
         )
-        assert meta["nx_meta"]["Spectrum Imaging"]["Pixel time (s)"] == 0.05
+        assert meta["nx_meta"]["Spectrum Imaging"]["Pixel time (s)"] == pytest.approx(
+            0.05,
+        )
 
-        meta = digital_micrograph.get_dm3_metadata(tecnai_mag_642[0])
+        meta = digital_micrograph.get_dm3_metadata(tecnai_mag[0])
+        assert meta is not None
         assert meta["nx_meta"]["Data Type"] == "TEM_Imaging"
         assert meta["nx_meta"]["Imaging Mode"] == "IMAGING"
-        assert meta["nx_meta"]["Microscope"] == "MSED Titan"
-        assert meta["nx_meta"]["Indicated Magnification"] == 8100.0
-        assert meta["nx_meta"]["Tecnai User"] == "MBK1"
+        assert meta["nx_meta"]["Microscope"] == "TEST Titan"
+        assert meta["nx_meta"]["Indicated Magnification"] == pytest.approx(8100.0)
+        assert meta["nx_meta"]["Tecnai User"] == "USER"
         assert meta["nx_meta"]["Tecnai Mode"] == "TEM uP SA Zoom Image"
 
-    @pytest.mark.usefixtures("_titan_643_tem_db")
-    def test_643_dm3(
+    def test_titan_stem_dm3(
         self,
-        eftem_diff_643,
-        eds_si_643,
-        stem_stack_643,
+        eftem_diff,
+        eds_si_titan,
+        stem_stack_titan,
+        mock_instrument_from_filepath,
     ):
-        meta = digital_micrograph.get_dm3_metadata(eftem_diff_643[0])
+        """Test DM3 metadata extraction from a Titan STEM."""
+        mock_instrument_from_filepath(make_titan_stem())
+
+        meta = digital_micrograph.get_dm3_metadata(eftem_diff[0])
+        assert meta is not None
         assert meta["nx_meta"]["Data Type"] == "TEM_EFTEM_Diffraction"
         assert meta["nx_meta"]["DatasetType"] == "Diffraction"
         assert meta["nx_meta"]["Imaging Mode"] == "EFTEM DIFFRACTION"
-        assert meta["nx_meta"]["Microscope"] == "Titan80-300_D3094"
-        assert meta["nx_meta"]["STEM Camera Length"] == 5.0
+        assert meta["nx_meta"]["Microscope"] == "TEST Titan_______"
+        assert meta["nx_meta"]["STEM Camera Length"] == pytest.approx(5.0)
         assert meta["nx_meta"]["EELS"]["Spectrometer Aperture label"] == "5 mm"
 
-        meta = digital_micrograph.get_dm3_metadata(eds_si_643[0])
+        meta = digital_micrograph.get_dm3_metadata(eds_si_titan[0])
+        assert meta is not None
         assert meta["nx_meta"]["Data Type"] == "EDS_Spectrum_Imaging"
         assert meta["nx_meta"]["DatasetType"] == "SpectrumImage"
         assert meta["nx_meta"]["Analytic Signal"] == "X-ray"
         assert meta["nx_meta"]["Analytic Format"] == "Spectrum image"
-        assert meta["nx_meta"]["STEM Camera Length"] == 77.0
+        assert meta["nx_meta"]["STEM Camera Length"] == pytest.approx(77.0)
         assert meta["nx_meta"]["EDS"]["Real time (SI Average)"] == pytest.approx(
             0.9696700292825698,
             0.1,
@@ -647,61 +715,74 @@ class TestDigitalMicrographExtractor:
             0.9696700292825698,
             0.1,
         )
-        assert meta["nx_meta"]["Spectrum Imaging"]["Pixel time (s)"] == 1.0
+        assert meta["nx_meta"]["Spectrum Imaging"]["Pixel time (s)"] == pytest.approx(
+            1.0,
+        )
         assert meta["nx_meta"]["Spectrum Imaging"]["Scan Mode"] == "LineScan"
         assert (
             meta["nx_meta"]["Spectrum Imaging"]["Spatial Sampling (Horizontal)"] == 100
         )
 
-        meta = digital_micrograph.get_dm3_metadata(stem_stack_643[0])
+        meta = digital_micrograph.get_dm3_metadata(stem_stack_titan[0])
+        assert meta is not None
         assert meta["nx_meta"]["Data Type"] == "STEM_Imaging"
         assert meta["nx_meta"]["DatasetType"] == "Image"
         assert meta["nx_meta"]["Acquisition Device"] == "DigiScan"
-        assert meta["nx_meta"]["Cs(mm)"] == 1.0
+        assert meta["nx_meta"]["Cs(mm)"] == pytest.approx(1.0)
         assert meta["nx_meta"]["Data Dimensions"] == "(12, 1024, 1024)"
-        assert meta["nx_meta"]["Indicated Magnification"] == 7200000.0
-        assert meta["nx_meta"]["STEM Camera Length"] == 100.0
+        assert meta["nx_meta"]["Indicated Magnification"] == pytest.approx(7200000.0)
+        assert meta["nx_meta"]["STEM Camera Length"] == pytest.approx(100.0)
 
-    @pytest.mark.usefixtures("_titan_643_tem_db")
-    def test_643_dm3_eels(
+    def test_titan_stem_dm3_eels(
         self,
-        eels_si_643,
-        eels_proc_int_bg_643,
-        eels_proc_thick_643,
-        eels_si_drift_643,
+        eels_si_titan,
+        eels_proc_int_bg_titan,
+        eels_proc_thick_titan,
+        eels_si_drift_titan,
+        mock_instrument_from_filepath,
     ):
-        meta = digital_micrograph.get_dm3_metadata(eels_si_643[0])
+        """Test DM3 EELS metadata extraction from Titan STEM."""
+        mock_instrument_from_filepath(make_titan_stem())
+
+        meta = digital_micrograph.get_dm3_metadata(eels_si_titan[0])
+        assert meta is not None
         assert meta["nx_meta"]["Data Type"] == "EELS_Spectrum_Imaging"
         assert meta["nx_meta"]["DatasetType"] == "SpectrumImage"
         assert meta["nx_meta"]["Imaging Mode"] == "DIFFRACTION"
         assert meta["nx_meta"]["Operation Mode"] == "SCANNING"
-        assert meta["nx_meta"]["STEM Camera Length"] == 60.0
-        assert meta["nx_meta"]["EELS"]["Convergence semi-angle (mrad)"] == 13.0
-        assert meta["nx_meta"]["EELS"]["Exposure (s)"] == 0.5
-        assert meta["nx_meta"]["Spectrum Imaging"]["Pixel time (s)"] == 0.5
+        assert meta["nx_meta"]["STEM Camera Length"] == pytest.approx(60.0)
+        assert meta["nx_meta"]["EELS"][
+            "Convergence semi-angle (mrad)"
+        ] == pytest.approx(13.0)
+        assert meta["nx_meta"]["EELS"]["Exposure (s)"] == pytest.approx(0.5)
+        assert meta["nx_meta"]["Spectrum Imaging"]["Pixel time (s)"] == pytest.approx(
+            0.5,
+        )
         assert meta["nx_meta"]["Spectrum Imaging"]["Scan Mode"] == "LineScan"
         assert meta["nx_meta"]["Spectrum Imaging"]["Acquisition Duration (s)"] == 605
 
-        meta = digital_micrograph.get_dm3_metadata(eels_proc_int_bg_643[0])
+        meta = digital_micrograph.get_dm3_metadata(eels_proc_int_bg_titan[0])
+        assert meta is not None
         assert meta["nx_meta"]["Data Type"] == "STEM_EELS"
         assert meta["nx_meta"]["DatasetType"] == "Spectrum"
         assert meta["nx_meta"]["Analytic Signal"] == "EELS"
         assert meta["nx_meta"]["Analytic Format"] == "Image"
-        assert meta["nx_meta"]["STEM Camera Length"] == 48.0
+        assert meta["nx_meta"]["STEM Camera Length"] == pytest.approx(48.0)
         assert meta["nx_meta"]["EELS"]["Background Removal Model"] == "Power Law"
         assert (
             meta["nx_meta"]["EELS"]["Processing Steps"]
             == "Background Removal, Signal Integration"
         )
 
-        meta = digital_micrograph.get_dm3_metadata(eels_proc_thick_643[0])
+        meta = digital_micrograph.get_dm3_metadata(eels_proc_thick_titan[0])
+        assert meta is not None
         assert meta["nx_meta"]["Data Type"] == "STEM_EELS"
         assert meta["nx_meta"]["DatasetType"] == "Spectrum"
         assert meta["nx_meta"]["Analytic Signal"] == "EELS"
         assert meta["nx_meta"]["Analytic Format"] == "Spectrum"
-        assert meta["nx_meta"]["STEM Camera Length"] == 60.0
-        assert meta["nx_meta"]["EELS"]["Exposure (s)"] == 0.05
-        assert meta["nx_meta"]["EELS"]["Integration time (s)"] == 0.25
+        assert meta["nx_meta"]["STEM Camera Length"] == pytest.approx(60.0)
+        assert meta["nx_meta"]["EELS"]["Exposure (s)"] == pytest.approx(0.05)
+        assert meta["nx_meta"]["EELS"]["Integration time (s)"] == pytest.approx(0.25)
         assert (
             meta["nx_meta"]["EELS"]["Processing Steps"]
             == "Calibrated Post-acquisition, Compute Thickness"
@@ -711,14 +792,15 @@ class TestDigitalMicrographExtractor:
             0.1,
         )
 
-        meta = digital_micrograph.get_dm3_metadata(eels_si_drift_643[0])
+        meta = digital_micrograph.get_dm3_metadata(eels_si_drift_titan[0])
+        assert meta is not None
         assert meta["nx_meta"]["Data Type"] == "EELS_Spectrum_Imaging"
         assert meta["nx_meta"]["DatasetType"] == "SpectrumImage"
         assert meta["nx_meta"]["Analytic Signal"] == "EELS"
         assert meta["nx_meta"]["Analytic Format"] == "Spectrum image"
         assert meta["nx_meta"]["Analytic Acquisition Mode"] == "Parallel dispersive"
-        assert meta["nx_meta"]["STEM Camera Length"] == 100.0
-        assert meta["nx_meta"]["EELS"]["Exposure (s)"] == 0.5
+        assert meta["nx_meta"]["STEM Camera Length"] == pytest.approx(100.0)
+        assert meta["nx_meta"]["EELS"]["Exposure (s)"] == pytest.approx(0.5)
         assert meta["nx_meta"]["EELS"]["Number of frames"] == 1
         assert meta["nx_meta"]["Spectrum Imaging"]["Acquisition Duration (s)"] == 2173
         assert (
@@ -727,20 +809,19 @@ class TestDigitalMicrographExtractor:
         )
         assert meta["nx_meta"]["Spectrum Imaging"]["Scan Mode"] == "2D Array"
 
-    def test_jeol3010_dm3(self, monkeypatch, jeol3010_diff):
-        # monkeypatch so DM extractor thinks this file came from JEOL 3010
-        def mock_instr(_):
-            return instruments.instrument_db["JEOL-JEM3010-TEM-565989_n"]
-
-        monkeypatch.setattr(digital_micrograph, "get_instr_from_filepath", mock_instr)
+    def test_jeol3010_dm3(self, jeol3010_diff, mock_instrument_from_filepath):
+        """Test DM3 metadata extraction from JEOL 3010 TEM file."""
+        # Set up JEOL 3010 instrument for this test
+        mock_instrument_from_filepath(make_jeol_tem())
 
         meta = digital_micrograph.get_dm3_metadata(jeol3010_diff[0])
+        assert meta is not None
         assert meta["nx_meta"]["Data Type"] == "TEM_Diffraction"
         assert meta["nx_meta"]["DatasetType"] == "Diffraction"
         assert meta["nx_meta"]["Acquisition Device"] == "Orius "
         assert meta["nx_meta"]["Microscope"] == "JEM3010 UHR"
         assert meta["nx_meta"]["Data Dimensions"] == "(2672, 4008)"
-        assert meta["nx_meta"]["Facility"] == "Microscopy Nexus"
+        assert meta["nx_meta"]["Facility"] == "MicroLabFacility"
         assert meta["nx_meta"]["Camera/Detector Processing"] == "Gain Normalized"
 
     def test_try_decimal(self):
@@ -769,6 +850,8 @@ class TestDigitalMicrographExtractor:
         meta_3 = digital_micrograph.get_dm3_metadata(fname_3)
 
         # Creation times will be different, so remove that metadata
+        assert meta_in is not None
+        assert meta_3 is not None
         del meta_in["nx_meta"]["Creation Time"]
         del meta_3["nx_meta"]["Creation Time"]
 
@@ -782,61 +865,63 @@ class TestDigitalMicrographExtractor:
 class TestEDAXSPCExtractor:
     """Tests nexusLIMS.extractors.edax."""
 
-    def test_647_leo_edax_spc(self):
-        test_file = Path(__file__).parent / "files" / "647_leo_edax_test.spc"
+    def test_leo_edax_spc(self):
+        test_file = Path(__file__).parent / "files" / "leo_edax_test.spc"
         meta = get_spc_metadata(test_file)
-        assert meta["nx_meta"]["Azimuthal Angle (deg)"] == 0.0
+        assert meta is not None
+        assert meta["nx_meta"]["Azimuthal Angle (deg)"] == pytest.approx(0.0)
         assert meta["nx_meta"]["Live Time (s)"] == pytest.approx(30.000002)
         assert meta["nx_meta"]["Detector Energy Resolution (eV)"] == pytest.approx(
             125.16211,
         )
-        assert meta["nx_meta"]["Elevation Angle (deg)"] == 35.0
+        assert meta["nx_meta"]["Elevation Angle (deg)"] == pytest.approx(35.0)
         assert meta["nx_meta"]["Channel Size (eV)"] == 5
         assert meta["nx_meta"]["Number of Spectrum Channels"] == 4096
         assert meta["nx_meta"]["Stage Tilt (deg)"] == -1.0
-        assert meta["nx_meta"]["Starting Energy (keV)"] == 0.0
+        assert meta["nx_meta"]["Starting Energy (keV)"] == pytest.approx(0.0)
         assert meta["nx_meta"]["Ending Energy (keV)"] == pytest.approx(20.475)
 
-    def test_647_leo_edax_msa(self):
-        test_file = Path(__file__).parent / "files" / "647_leo_edax_test.msa"
+    def test_leo_edax_msa(self):
+        test_file = Path(__file__).parent / "files" / "leo_edax_test.msa"
         meta = get_msa_metadata(test_file)
-        assert meta["nx_meta"]["Azimuthal Angle (deg)"] == 0.0
+        assert meta is not None
+        assert meta["nx_meta"]["Azimuthal Angle (deg)"] == pytest.approx(0.0)
         assert meta["nx_meta"]["Amplifier Time (μs)"] == "7.68"
         assert meta["nx_meta"]["Analyzer Type"] == "DPP4"
-        assert meta["nx_meta"]["Beam Energy (keV)"] == 10.0
-        assert meta["nx_meta"]["Channel Offset"] == 0.0
+        assert meta["nx_meta"]["Beam Energy (keV)"] == pytest.approx(10.0)
+        assert meta["nx_meta"]["Channel Offset"] == pytest.approx(0.0)
         assert (
             meta["nx_meta"]["EDAX Comment"]
             == "Converted by EDAX.TeamEDS V4.5.1-RC2.20170623.3 Friday, June 23, 2017"
         )
         assert meta["nx_meta"]["Data Format"] == "XY"
         assert meta["nx_meta"]["EDAX Date"] == "29-Aug-2022"
-        assert meta["nx_meta"]["Elevation Angle (deg)"] == 35.0
+        assert meta["nx_meta"]["Elevation Angle (deg)"] == pytest.approx(35.0)
         assert meta["nx_meta"]["User-Selected Elements"] == "8,27,16"
         assert (
             meta["nx_meta"]["Originating File of MSA Export"]
-            == "20220829_CoO220711_withNscan.spc"
+            == "20220829_XXXXXXXXXXXX_XXXXXX.spc"
         )
         assert meta["nx_meta"]["File Format"] == "EMSA/MAS Spectral Data File"
         assert meta["nx_meta"]["FPGA Version"] == "0"
-        assert meta["nx_meta"]["Live Time (s)"] == 30.0
-        assert meta["nx_meta"]["Number of Data Columns"] == 1.0
-        assert meta["nx_meta"]["Number of Data Points"] == 4096.0
-        assert meta["nx_meta"]["Offset"] == 0.0
+        assert meta["nx_meta"]["Live Time (s)"] == pytest.approx(30.0)
+        assert meta["nx_meta"]["Number of Data Columns"] == pytest.approx(1.0)
+        assert meta["nx_meta"]["Number of Data Points"] == pytest.approx(4096.0)
+        assert meta["nx_meta"]["Offset"] == pytest.approx(0.0)
         assert meta["nx_meta"]["EDAX Owner"] == "EDAX TEAM EDS/block"
-        assert meta["nx_meta"]["Real Time (s)"] == 0.0
+        assert meta["nx_meta"]["Real Time (s)"] == pytest.approx(0.0)
         assert meta["nx_meta"]["Energy Resolution (eV)"] == "125.2"
         assert meta["nx_meta"]["Signal Type"] == "EDS"
         assert meta["nx_meta"]["Active Layer Thickness (cm)"] == "0.1"
-        assert meta["nx_meta"]["Be Window Thickness (cm)"] == 0.0
-        assert meta["nx_meta"]["Dead Layer Thickness (cm)"] == 0.03
+        assert meta["nx_meta"]["Be Window Thickness (cm)"] == pytest.approx(0.0)
+        assert meta["nx_meta"]["Dead Layer Thickness (cm)"] == pytest.approx(0.03)
         assert meta["nx_meta"]["EDAX Time"] == "10:14"
-        assert meta["nx_meta"]["EDAX Title"] == ""  # noqa: PLC1901
+        assert meta["nx_meta"]["EDAX Title"] == ""
         assert meta["nx_meta"]["TakeOff Angle (deg)"] == "35.5"
         assert meta["nx_meta"]["Stage Tilt (deg)"] == "-1.0"
         assert meta["nx_meta"]["MSA Format Version"] == "1.0"
         assert meta["nx_meta"]["X Column Label"] == "X-RAY Energy"
-        assert meta["nx_meta"]["X Units Per Channel"] == 5.0
+        assert meta["nx_meta"]["X Units Per Channel"] == pytest.approx(5.0)
         assert meta["nx_meta"]["X Column Units"] == "Energy (EV)"
         assert meta["nx_meta"]["Y Column Label"] == "X-RAY Intensity"
         assert meta["nx_meta"]["Y Column Units"] == "Intensity"
@@ -854,10 +939,11 @@ class TestQuantaExtractor:
         assert metadata["nx_meta"]["warnings"] == [["Operator"]]
 
         # test two values from each of the native sections
+        assert metadata["User"]["User"] == "user_"
         assert metadata["User"]["Date"] == "12/18/2017"
         assert metadata["User"]["Time"] == "01:04:14 PM"
         assert metadata["System"]["Type"] == "SEM"
-        assert metadata["System"]["Dnumber"] == "D8439"
+        assert metadata["System"]["Dnumber"] == "ABCD1"
         assert metadata["Beam"]["HV"] == "30000"
         assert metadata["Beam"]["Spot"] == "3"
         assert metadata["EBeam"]["Source"] == "FEG"
@@ -871,7 +957,7 @@ class TestQuantaExtractor:
         assert metadata["Image"]["DigitalContrast"] == "1"
         assert metadata["Vacuum"]["ChPressure"] == "79.8238"
         assert metadata["Vacuum"]["Gas"] == "Wet"
-        assert metadata["Specimen"]["Temperature"] == ""  # noqa: PLC1901
+        assert metadata["Specimen"]["Temperature"] == ""
         assert metadata["Detectors"]["Number"] == "1"
         assert metadata["Detectors"]["Name"] == "LFD"
         assert metadata["LFD"]["Contrast"] == "62.4088"
@@ -882,8 +968,8 @@ class TestQuantaExtractor:
             metadata["PrivateFei"]["DataBarSelected"]
             == "DateTime dwell HV HFW pressure Label MicronBar"
         )
-        assert metadata["HiResIllumination"]["BrightFieldIsOn"] == ""  # noqa: PLC1901
-        assert metadata["HiResIllumination"]["BrightFieldValue"] == ""  # noqa: PLC1901
+        assert metadata["HiResIllumination"]["BrightFieldIsOn"] == ""
+        assert metadata["HiResIllumination"]["BrightFieldValue"] == ""
 
     def test_bad_metadata(self, quanta_bad_metadata):
         metadata = get_quanta_metadata(quanta_bad_metadata)
@@ -902,27 +988,26 @@ class TestQuantaExtractor:
         assert metadata["nx_meta"]["DatasetType"] == "Image"
         assert metadata["nx_meta"]["warnings"] == [["Operator"]]
 
-        assert metadata["nx_meta"]["Scan Rotation (°)"] == 179.9947
-        assert metadata["nx_meta"]["Tilt Correction Angle"] == 0.0121551
+        assert metadata["nx_meta"]["Scan Rotation (°)"] == pytest.approx(179.9947)
+        assert metadata["nx_meta"]["Tilt Correction Angle"] == pytest.approx(0.0121551)
         assert metadata["nx_meta"]["Specimen Temperature (K)"] == "j"
         assert len(metadata["nx_meta"]["Chamber Pressure (mPa)"]) == 7000
 
-    def test_no_beam_scan_or_system_metadata(self, monkeypatch, quanta_no_beam_meta):
-        # monkeypatch so DM extractor thinks this file came from JEOL 3010
-        def mock_instr(_):
-            return instruments.instrument_db["FEI-Quanta200-ESEM-633137_n"]
-
-        monkeypatch.setattr(
-            nexusLIMS.extractors.utils,
-            "get_instr_from_filepath",
-            mock_instr,
-        )
+    def test_no_beam_scan_or_system_metadata(
+        self,
+        mock_instrument_from_filepath,
+        quanta_no_beam_meta,
+    ):
+        """Test Quanta extraction with missing beam/scan/system metadata."""
+        mock_instrument_from_filepath(make_test_tool())
 
         metadata = get_quanta_metadata(quanta_no_beam_meta[0])
         assert metadata["nx_meta"]["Data Type"] == "SEM_Imaging"
         assert metadata["nx_meta"]["DatasetType"] == "Image"
-        assert metadata["nx_meta"]["Creation Time"] == "2023-03-23T18:32:11-04:00"
-        assert metadata["nx_meta"]["Instrument ID"] == "FEI-Quanta200-ESEM-633137_n"
+        assert (
+            metadata["nx_meta"]["Creation Time"] == "2025-11-17T17:52:13.811711-07:00"
+        )
+        assert metadata["nx_meta"]["Instrument ID"] == "testtool-TEST-A1234567"
         assert metadata["nx_meta"]["Data Dimensions"] == "(1024, 884)"
         assert metadata["nx_meta"]["Frames Integrated"] == 5
         assert metadata["Image"]["ResolutionX"] == "1024"
@@ -933,12 +1018,12 @@ class TestQuantaExtractor:
         assert metadata["nx_meta"]["Data Type"] == "SEM_Imaging"
         assert metadata["nx_meta"]["DatasetType"] == "Image"
         assert (
-            metadata["nx_meta"]["Creation Time"] == "2024-02-21T11:02:41"
-            or metadata["nx_meta"]["Creation Time"] == "2024-02-21T13:02:41"
+            metadata["nx_meta"]["Creation Time"] == "2025-11-17T17:53:37.585629"
+            or metadata["nx_meta"]["Creation Time"] == "2025-11-17T17:53:37.585629"
         )
         assert metadata["nx_meta"]["Operator"] == "xxxx"
         assert metadata["CBS"]["Setting"] == "C+D"
-        assert metadata["MultiGISUnit1.MultiGISGas1"]["GasName"] == ""  # noqa: PLC1901
+        assert metadata["MultiGISUnit1.MultiGISGas1"]["GasName"] == ""
         assert metadata["MultiGISUnit2.MultiGISGas3"]["DutyCycle"] == "0"
         assert metadata["MultiGISUnit3.MultiGISGas6"]["GasState"] == "Unknown"
         assert metadata["MultiGISUnit4.MultiGISGas4"]["GasState"] == "Unknown"
@@ -948,7 +1033,7 @@ class TestQuantaExtractor:
         assert metadata["nx_meta"]["Data Type"] == "SEM_Imaging"
         assert metadata["nx_meta"]["Acquisition Date"] == "05/01/2024"
         assert metadata["nx_meta"]["Beam Name"] == "EBeam"
-        assert metadata["nx_meta"]["Beam Tilt X"] == 0.0
+        assert metadata["nx_meta"]["Beam Tilt X"] == pytest.approx(0.0)
         assert metadata["CBS"]["Setting"] == "A+B"
         assert metadata["nx_meta"]["Operator"] == "xxxx"
 
@@ -972,9 +1057,9 @@ class TestQuantaExtractor:
 class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
     """Tests nexusLIMS.extractors.fei_emi."""
 
-    def test_642_stem_image_1(self, fei_ser_files):
+    def test_titan_tem_stem_image_1(self, fei_ser_files):
         test_file = get_full_file_path(
-            "***REMOVED***_14.59.36 Scanning Acquire_dataZeroed_1.ser",
+            "Titan_TEM_1_STEM_image_dataZeroed_1.ser",
             fei_ser_files,
         )
         meta = fei_emi.get_ser_metadata(test_file)
@@ -982,24 +1067,23 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta["nx_meta"]["Data Type"] == "STEM_Imaging"
         assert meta["nx_meta"]["Data Dimensions"] == "(1024, 1024)"
         assert (
-            meta["nx_meta"]["Creation Time"]
-            == dt(2018, 11, 13, 15, 00, 31).isoformat()  # noqa: DTZ001
+            meta["nx_meta"]["Creation Time"] == dt(2018, 11, 13, 15, 2, 43).isoformat()
         )
-        assert meta["nx_meta"]["Magnification (x)"] == 28500
+        assert meta["nx_meta"]["Magnification (x)"] == pytest.approx(225000)
         assert meta["nx_meta"]["Mode"] == "STEM nP SA Zoom Diffraction"
         assert meta["nx_meta"]["Stage Position"] == {
             "A (°)": -0.84,
             "B (°)": 0.0,
-            "X (μm)": -195.777,
-            "Y (μm)": -132.325,
+            "X (μm)": -194.379,
+            "Y (μm)": -130.201,
             "Z (μm)": 128.364,
         }
-        assert meta["nx_meta"]["User"] == "MBK1"
-        assert meta["nx_meta"]["C2 Lens (%)"] == 22.133
+        assert meta["nx_meta"]["User"] == "USER"
+        assert meta["nx_meta"]["C2 Lens (%)"] == pytest.approx(22.133)
 
-    def test_642_stem_image_2(self, fei_ser_files):
+    def test_titan_tem_stem_image_2(self, fei_ser_files):
         test_file = get_full_file_path(
-            "***REMOVED***_14.59.36 Scanning Acquire_dataZeroed_2.ser",
+            "Titan_TEM_1_STEM_image_dataZeroed_2.ser",
             fei_ser_files,
         )
         meta = fei_emi.get_ser_metadata(test_file)
@@ -1007,17 +1091,16 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta["nx_meta"]["Data Dimensions"] == "(1024, 1024)"
         assert meta["nx_meta"]["Gun Lens"] == 6
         assert meta["nx_meta"]["Gun Type"] == "FEG"
-        assert meta["nx_meta"]["C2 Aperture (μm)"] == 50.0
+        assert meta["nx_meta"]["C2 Aperture (μm)"] == pytest.approx(50.0)
         assert meta["nx_meta"]["DatasetType"] == "Image"
         assert meta["nx_meta"]["Data Type"] == "STEM_Imaging"
         assert (
-            meta["nx_meta"]["Creation Time"]
-            == dt(2018, 11, 13, 15, 00, 31).isoformat()  # noqa: DTZ001
+            meta["nx_meta"]["Creation Time"] == dt(2018, 11, 13, 15, 2, 43).isoformat()
         )
 
-    def test_642_single_stem_image(self, fei_ser_files):
+    def test_titan_tem_single_stem_image(self, fei_ser_files):
         test_file = get_full_file_path(
-            "***REMOVED***_HAADF_dataZeroed_1.ser",
+            "Titan_TEM_2_HAADF_STEM_dataZeroed_1.ser",
             fei_ser_files,
         )
         meta = fei_emi.get_ser_metadata(test_file)
@@ -1025,8 +1108,7 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta["nx_meta"]["Data Type"] == "STEM_Imaging"
         assert meta["nx_meta"]["Data Dimensions"] == "(1024, 1024)"
         assert (
-            meta["nx_meta"]["Creation Time"]
-            == dt(2019, 6, 28, 15, 53, 31).isoformat()  # noqa: DTZ001
+            meta["nx_meta"]["Creation Time"] == dt(2019, 6, 28, 15, 53, 31).isoformat()
         )
         assert meta["nx_meta"]["C1 Aperture (μm)"] == 2000
         assert meta["nx_meta"]["Mode"] == "STEM nP SA Zoom Image"
@@ -1040,9 +1122,9 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta["nx_meta"]["SA Aperture"] == "retracted"
         assert meta["ObjectInfo"]["Uuid"] == "cb7d82b8-5405-42fc-aa71-7680721a6e32"
 
-    def test_642_eds_spectrum_image(self, fei_ser_files):
+    def test_titan_tem_eds_spectrum_image(self, fei_ser_files):
         test_file = get_full_file_path(
-            "***REMOVED***_13.50.23 Spectrum image_dataZeroed_1.ser",
+            "Titan_TEM_3_eds_spectrum_image_dataZeroed_1.ser",
             fei_ser_files,
         )
         meta = fei_emi.get_ser_metadata(test_file)
@@ -1050,11 +1132,10 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta["nx_meta"]["Data Type"] == "STEM_EDS_Spectrum_Imaging"
         assert meta["nx_meta"]["Data Dimensions"] == "(9, 10, 3993)"
         assert (
-            meta["nx_meta"]["Creation Time"]
-            == dt(2019, 7, 17, 13, 50, 22).isoformat()  # noqa: DTZ001
+            meta["nx_meta"]["Creation Time"] == dt(2019, 7, 17, 13, 50, 22).isoformat()
         )
         assert meta["nx_meta"]["Microscope Accelerating Voltage (V)"] == 300000
-        assert meta["nx_meta"]["Camera Length (m)"] == 0.195
+        assert meta["nx_meta"]["Camera Length (m)"] == pytest.approx(0.195)
         assert meta["nx_meta"]["Stage Position"] == {
             "A (°)": 9.57,
             "B (°)": 0.0,
@@ -1063,11 +1144,11 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
             "Z (μm)": 15.525,
         }
         assert meta["nx_meta"]["Spot Size"] == 6
-        assert meta["nx_meta"]["Magnification (x)"] == 14000.0
+        assert meta["nx_meta"]["Magnification (x)"] == pytest.approx(14000.0)
 
-    def test_642_eds_line_scan_1(self, fei_ser_files):
+    def test_titan_tem_eds_line_scan_1(self, fei_ser_files):
         test_file = get_full_file_path(
-            "***REMOVED***_15.42.57 Spectrum profile_dataZeroed_1.ser",
+            "Titan_TEM_4_eds_line_scan_1_dataZeroed_1.ser",
             fei_ser_files,
         )
         meta = fei_emi.get_ser_metadata(test_file)
@@ -1075,8 +1156,7 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta["nx_meta"]["Data Type"] == "STEM_EDS_Spectrum_Imaging"
         assert meta["nx_meta"]["Data Dimensions"] == "(100, 3993)"
         assert (
-            meta["nx_meta"]["Creation Time"]
-            == dt(2019, 11, 1, 15, 42, 16).isoformat()  # noqa: DTZ001
+            meta["nx_meta"]["Creation Time"] == dt(2019, 11, 1, 15, 42, 16).isoformat()
         )
         assert meta["nx_meta"]["Dwell Time Path (s)"] == 6e-6
         assert meta["nx_meta"]["Defocus (μm)"] == -1.12
@@ -1088,11 +1168,11 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
             "Z (μm)": 45.491,
         }
         assert meta["nx_meta"]["STEM Rotation Correction (°)"] == -12.3
-        assert meta["nx_meta"]["Frame Time (s)"] == 1.88744
+        assert meta["nx_meta"]["Frame Time (s)"] == pytest.approx(1.88744)
 
-    def test_642_eds_line_scan_2(self, fei_ser_files):
+    def test_titan_tem_eds_line_scan_2(self, fei_ser_files):
         test_file = get_full_file_path(
-            "***REMOVED***_15.43.21 Spectrum positions_dataZeroed_1.ser",
+            "Titan_TEM_4_eds_line_scan_2_dataZeroed_1.ser",
             fei_ser_files,
         )
         meta = fei_emi.get_ser_metadata(test_file)
@@ -1100,10 +1180,9 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta["nx_meta"]["Data Type"] == "STEM_EDS_Spectrum_Imaging"
         assert meta["nx_meta"]["Data Dimensions"] == "(6, 3993)"
         assert (
-            meta["nx_meta"]["Creation Time"]
-            == dt(2019, 7, 17, 15, 43, 21).isoformat()  # noqa: DTZ001
+            meta["nx_meta"]["Creation Time"] == dt(2019, 7, 17, 15, 43, 21).isoformat()
         )
-        assert meta["nx_meta"]["Diffraction Lens (%)"] == 34.922
+        assert meta["nx_meta"]["Diffraction Lens (%)"] == pytest.approx(34.922)
         assert meta["nx_meta"]["Defocus (μm)"] == -0.145
         assert meta["nx_meta"]["Stage Position"] == {
             "A (°)": 9.57,
@@ -1114,13 +1193,12 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         }
         assert meta["nx_meta"]["Manufacturer"] == "FEI (ISAS)"
         assert (
-            meta["nx_meta"]["Microscope"] == "Microscope Titan 300 "
-            "kV D3188 SuperTwin"
+            meta["nx_meta"]["Microscope"] == "Microscope Titan 300 kV ABCD1 SuperTwin"
         )
 
-    def test_642_eds_spectrum(self, fei_ser_files):
+    def test_titan_tem_eds_spectrum(self, fei_ser_files):
         test_file = get_full_file_path(
-            "***REMOVED***_16.02.37 EDX Acquire_dataZeroed_1.ser",
+            "Titan_TEM_5_eds_spectrum_dataZeroed_1.ser",
             fei_ser_files,
         )
         meta = fei_emi.get_ser_metadata(test_file)
@@ -1128,8 +1206,7 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta["nx_meta"]["Data Type"] == "TEM_EDS_Spectrum"
         assert meta["nx_meta"]["Data Dimensions"] == "(3993,)"
         assert (
-            meta["nx_meta"]["Creation Time"]
-            == dt(2019, 12, 11, 16, 2, 38).isoformat()  # noqa: DTZ001
+            meta["nx_meta"]["Creation Time"] == dt(2019, 12, 11, 16, 2, 38).isoformat()
         )
         assert meta["nx_meta"]["Energy Resolution (eV)"] == 10
         assert meta["nx_meta"]["Integration Time (s)"] == 25
@@ -1141,11 +1218,11 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
             "Z (μm)": 7.06,
         }
         assert meta["nx_meta"]["Manufacturer"] == "EDAX"
-        assert meta["nx_meta"]["Emission (μA)"] == 145.0
+        assert meta["nx_meta"]["Emission (μA)"] == pytest.approx(145.0)
 
-    def test_642_diffraction(self, fei_ser_files):
+    def test_titan_tem_diffraction(self, fei_ser_files):
         test_file = get_full_file_path(
-            "***REMOVED***_saed2_1a(-28p57_-1p4)_dl300_dataZeroed_1.ser",
+            "Titan_TEM_6_diffraction_dataZeroed_1.ser",
             fei_ser_files,
         )
         meta = fei_emi.get_ser_metadata(test_file)
@@ -1153,11 +1230,10 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta["nx_meta"]["Data Type"] == "TEM_Diffraction"
         assert meta["nx_meta"]["Data Dimensions"] == "(2048, 2048)"
         assert (
-            meta["nx_meta"]["Creation Time"]
-            == dt(2018, 10, 30, 17, 1, 3).isoformat()  # noqa: DTZ001
+            meta["nx_meta"]["Creation Time"] == dt(2018, 10, 30, 17, 1, 3).isoformat()
         )
         assert meta["nx_meta"]["Camera Name Path"] == "BM-UltraScan"
-        assert meta["nx_meta"]["Camera Length (m)"] == 0.3
+        assert meta["nx_meta"]["Camera Length (m)"] == pytest.approx(0.3)
         assert meta["nx_meta"]["Stage Position"] == {
             "A (°)": -28.59,
             "B (°)": 0.0,
@@ -1168,9 +1244,9 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta["nx_meta"]["Manufacturer"] == "FEI"
         assert meta["nx_meta"]["Extraction Voltage (V)"] == 4400
 
-    def test_642_image_stack_1(self, fei_ser_files):
+    def test_titan_tem_image_stack_1(self, fei_ser_files):
         test_file = get_full_file_path(
-            "***REMOVED***_haadfseries1_dataZeroed_1.ser",
+            "Titan_TEM_7_image_stack_1_dataZeroed_1.ser",
             fei_ser_files,
         )
         meta = fei_emi.get_ser_metadata(test_file)
@@ -1178,11 +1254,10 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta["nx_meta"]["Data Type"] == "STEM_Imaging"
         assert meta["nx_meta"]["Data Dimensions"] == "(20, 2048, 2048)"
         assert (
-            meta["nx_meta"]["Creation Time"]
-            == dt(2019, 3, 28, 21, 14, 16).isoformat()  # noqa: DTZ001
+            meta["nx_meta"]["Creation Time"] == dt(2019, 3, 28, 21, 14, 16).isoformat()
         )
-        assert meta["nx_meta"]["Dwell Time Path (s)"] == 0.000002
-        assert meta["nx_meta"]["C2 Aperture (μm)"] == 50.0
+        assert meta["nx_meta"]["Dwell Time Path (s)"] == pytest.approx(0.000002)
+        assert meta["nx_meta"]["C2 Aperture (μm)"] == pytest.approx(50.0)
         assert meta["nx_meta"]["Stage Position"] == {
             "A (°)": 2.9,
             "B (°)": 0.0,
@@ -1191,11 +1266,11 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
             "Z (μm)": 74.297,
         }
         assert meta["nx_meta"]["Gun Type"] == "FEG"
-        assert meta["nx_meta"]["Diffraction Lens (%)"] == 38.91
+        assert meta["nx_meta"]["Diffraction Lens (%)"] == pytest.approx(38.91)
 
-    def test_642_image_stack_2(self, fei_ser_files):
+    def test_titan_tem_image_stack_2(self, fei_ser_files):
         test_file = get_full_file_path(
-            "***REMOVED***_haadfseries3_dataZeroed_1.ser",
+            "Titan_TEM_7_image_stack_2_dataZeroed_1.ser",
             fei_ser_files,
         )
         meta = fei_emi.get_ser_metadata(test_file)
@@ -1203,8 +1278,7 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta["nx_meta"]["Data Type"] == "STEM_Imaging"
         assert meta["nx_meta"]["Data Dimensions"] == "(20, 2048, 2048)"
         assert (
-            meta["nx_meta"]["Creation Time"]
-            == dt(2019, 3, 28, 22, 41, 0).isoformat()  # noqa: DTZ001
+            meta["nx_meta"]["Creation Time"] == dt(2019, 3, 28, 22, 41, 0).isoformat()
         )
         assert meta["nx_meta"]["Frame Time (s)"] == 10
         assert meta["nx_meta"]["C1 Aperture (μm)"] == 2000
@@ -1218,10 +1292,9 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta["nx_meta"]["Gun Lens"] == 5
         assert meta["nx_meta"]["Tecnai Filter"]["Mode"] is None
 
-    def test_642_diffraction_stack(self, fei_ser_files):
+    def test_titan_tem_diffraction_stack(self, fei_ser_files):
         test_file = get_full_file_path(
-            "***REMOVED***_21318 MoTe2 flake2 "
-            "D245mm SAED 7b0 fx27k TEM6g 4s_dataZeroed_1.ser",
+            "Titan_TEM_7_diffraction_stack_dataZeroed_1.ser",
             fei_ser_files,
         )
         meta = fei_emi.get_ser_metadata(test_file)
@@ -1229,10 +1302,9 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta["nx_meta"]["Data Type"] == "TEM_Diffraction"
         assert meta["nx_meta"]["Data Dimensions"] == "(33, 1024, 1024)"
         assert (
-            meta["nx_meta"]["Creation Time"]
-            == dt(2018, 12, 13, 13, 33, 47).isoformat()  # noqa: DTZ001
+            meta["nx_meta"]["Creation Time"] == dt(2018, 12, 13, 13, 33, 47).isoformat()
         )
-        assert meta["nx_meta"]["C2 Lens (%)"] == 43.465
+        assert meta["nx_meta"]["C2 Lens (%)"] == pytest.approx(43.465)
         assert meta["nx_meta"]["C2 Aperture (μm)"] == 100
         assert meta["nx_meta"]["Stage Position"] == {
             "A (°)": 1.86,
@@ -1244,13 +1316,13 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta["nx_meta"]["OBJ Aperture"] == "retracted"
         assert meta["nx_meta"]["Mode"] == "TEM uP SA Zoom Diffraction"
 
-    def test_642_emi_list_image_spectrum_1(self, fei_ser_files):
+    def test_titan_tem_emi_list_image_spectrum_1(self, fei_ser_files):
         test_file_1 = get_full_file_path(
-            "***REMOVED***_eds1_dataZeroed_1.ser",
+            "Titan_TEM_8_emi_list_eds_SI1_dataZeroed_1.ser",
             fei_ser_files,
         )
         test_file_2 = get_full_file_path(
-            "***REMOVED***_eds1_dataZeroed_2.ser",
+            "Titan_TEM_8_emi_list_eds_SI1_dataZeroed_2.ser",
             fei_ser_files,
         )
         meta_1 = fei_emi.get_ser_metadata(test_file_1)
@@ -1273,8 +1345,8 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta_2["nx_meta"]["Data Type"] == "STEM_EDS_Spectrum"
         assert meta_2["nx_meta"]["Data Dimensions"] == "(3993,)"
         assert meta_2["nx_meta"]["Beam Position (μm)"] == "(-0.99656, 0.74289)"
-        assert meta_2["nx_meta"]["Diffraction Lens (%)"] == 37.347
-        assert meta_2["nx_meta"]["Objective Lens (%)"] == 87.987
+        assert meta_2["nx_meta"]["Diffraction Lens (%)"] == pytest.approx(37.347)
+        assert meta_2["nx_meta"]["Objective Lens (%)"] == pytest.approx(87.987)
         assert meta_2["nx_meta"]["Stage Position"] == {
             "A (°)": 9.21,
             "B (°)": 0.0,
@@ -1283,25 +1355,25 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
             "Z (μm)": 92.45,
         }
 
-    def test_642_emi_list_image_spectrum_2(self, fei_ser_files):
+    def test_titan_tem_emi_list_image_spectrum_2(self, fei_ser_files):
         test_file_1 = get_full_file_path(
-            "***REMOVED***_eds2a_dataZeroed_1.ser",
+            "Titan_TEM_8_emi_list_eds_SI2_dataZeroed_1.ser",
             fei_ser_files,
         )
         test_file_2 = get_full_file_path(
-            "***REMOVED***eds2a_dataZeroed_2.ser",
+            "Titan_TEM_8_emi_list_eds_SI2_dataZeroed_2.ser",
             fei_ser_files,
         )
         test_file_3 = get_full_file_path(
-            "***REMOVED***_eds2a_dataZeroed_3.ser",
+            "Titan_TEM_8_emi_list_eds_SI2_dataZeroed_3.ser",
             fei_ser_files,
         )
         test_file_4 = get_full_file_path(
-            "***REMOVED***_eds2a_dataZeroed_4.ser",
+            "Titan_TEM_8_emi_list_eds_SI2_dataZeroed_4.ser",
             fei_ser_files,
         )
         test_file_5 = get_full_file_path(
-            "***REMOVED***_eds2a_dataZeroed_5.ser",
+            "Titan_TEM_8_emi_list_eds_SI2_dataZeroed_5.ser",
             fei_ser_files,
         )
         meta_1 = fei_emi.get_ser_metadata(test_file_1)
@@ -1314,10 +1386,9 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta_1["nx_meta"]["Data Type"] == "STEM_Imaging"
         assert meta_1["nx_meta"]["Data Dimensions"] == "(512, 512)"
         assert (
-            meta_1["nx_meta"]["Creation Time"]
-            == dt(2019, 6, 13, 19, 52, 6).isoformat()  # noqa: DTZ001
+            meta_1["nx_meta"]["Creation Time"] == dt(2019, 6, 13, 19, 52, 6).isoformat()
         )
-        assert meta_1["nx_meta"]["Diffraction Lens (%)"] == 37.347
+        assert meta_1["nx_meta"]["Diffraction Lens (%)"] == pytest.approx(37.347)
         assert meta_1["nx_meta"]["Spot Size"] == 7
         assert meta_1["nx_meta"]["Manufacturer"] == "FEI (ISAS)"
         assert meta_1["nx_meta"]["Stage Position"] == {
@@ -1345,15 +1416,13 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
             assert meta["ObjectInfo"]["Uuid"] == uuid
             assert "Manufacturer" not in meta["nx_meta"]
 
-    def test_642_emi_list_haadf_diff_stack(self, fei_ser_files):
+    def test_titan_tem_emi_list_haadf_diff_stack(self, fei_ser_files):
         test_file_1 = get_full_file_path(
-            "***REMOVED***_92118 35nm Si B3 inspection x10k TEM10d2 "
-            "large w  f saed10_dataZeroed_1.ser",
+            "Titan_TEM_9_list_haadf_diff_stack_dataZeroed_1.ser",
             fei_ser_files,
         )
         test_file_2 = get_full_file_path(
-            "***REMOVED***_92118 35nm Si B3 inspection x10k TEM10d2 "
-            "large w  f saed10_dataZeroed_2.ser",
+            "Titan_TEM_9_list_haadf_diff_stack_dataZeroed_2.ser",
             fei_ser_files,
         )
         meta_1 = fei_emi.get_ser_metadata(test_file_1)
@@ -1364,12 +1433,12 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta_1["nx_meta"]["Data Dimensions"] == "(77, 1024, 1024)"
         assert (
             meta_1["nx_meta"]["Creation Time"]
-            == dt(2018, 9, 21, 14, 17, 25).isoformat()  # noqa: DTZ001
+            == dt(2018, 9, 21, 14, 17, 25).isoformat()
         )
         assert meta_1["nx_meta"]["Binning"] == 2
         assert meta_1["nx_meta"]["Tecnai Filter"]["Mode"] == "Spectroscopy"
         assert meta_1["nx_meta"]["Tecnai Filter"]["Selected Aperture"] == "3mm"
-        assert meta_1["nx_meta"]["Image Shift X (μm)"] == 0.003
+        assert meta_1["nx_meta"]["Image Shift X (μm)"] == pytest.approx(0.003)
         assert meta_1["nx_meta"]["Mode"] == "TEM uP SA Zoom Diffraction"
         assert meta_1["nx_meta"]["Stage Position"] == {
             "A (°)": 0,
@@ -1384,12 +1453,12 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta_2["nx_meta"]["Data Dimensions"] == "(4, 1024, 1024)"
         assert (
             meta_2["nx_meta"]["Creation Time"]
-            == dt(2018, 9, 21, 14, 25, 11).isoformat()  # noqa: DTZ001
+            == dt(2018, 9, 21, 14, 25, 11).isoformat()
         )
-        assert meta_2["nx_meta"]["Dwell Time Path (s)"] == 0.8
-        assert meta_2["nx_meta"]["Emission (μA)"] == 135.0
+        assert meta_2["nx_meta"]["Dwell Time Path (s)"] == pytest.approx(0.8)
+        assert meta_2["nx_meta"]["Emission (μA)"] == pytest.approx(135.0)
         assert meta_2["nx_meta"]["Magnification (x)"] == 10000
-        assert meta_2["nx_meta"]["Image Shift X (μm)"] == 0.003
+        assert meta_2["nx_meta"]["Image Shift X (μm)"] == pytest.approx(0.003)
         assert meta_2["nx_meta"]["Mode"] == "TEM uP SA Zoom Image"
         assert meta_2["nx_meta"]["Stage Position"] == {
             "A (°)": 0,
@@ -1399,25 +1468,21 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
             "Z (μm)": 77.505,
         }
 
-    def test_642_emi_list_four_images(self, fei_ser_files):
+    def test_titan_tem_emi_list_four_images(self, fei_ser_files):
         test_file_1 = get_full_file_path(
-            "642Titan_10_voleshko_11418 Inspection A1 35nm Si membUS100_C35Q33 "
-            "l2266CL130mmx160kSTEM lw15corner_dataZeroed_1.ser",
+            "Titan_TEM_10_emi_list_4_images_dataZeroed_1.ser",
             fei_ser_files,
         )
         test_file_2 = get_full_file_path(
-            "***REMOVED***_11418 Inspection A1 35nm Si membUS100_C35Q33 "
-            "l2266CL130mmx160kSTEM lw15corner_dataZeroed_2.ser",
+            "Titan_TEM_10_emi_list_4_images_dataZeroed_2.ser",
             fei_ser_files,
         )
         test_file_3 = get_full_file_path(
-            "***REMOVED***_11418 Inspection A1 35nm Si membUS100_C35Q33 "
-            "l2266CL130mmx160kSTEM lw15corner_dataZeroed_3.ser",
+            "Titan_TEM_10_emi_list_4_images_dataZeroed_3.ser",
             fei_ser_files,
         )
         test_file_4 = get_full_file_path(
-            "***REMOVED***_11418 Inspection A1 35nm Si membUS100_C35Q33 "
-            "l2266CL130mmx160kSTEM lw15corner_dataZeroed_4.ser",
+            "Titan_TEM_10_emi_list_4_images_dataZeroed_4.ser",
             fei_ser_files,
         )
 
@@ -1431,16 +1496,16 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
 
             assert (
                 meta["nx_meta"]["Creation Time"]
-                == dt(2018, 11, 14, 17, 9, 55).isoformat()  # noqa: DTZ001
+                == dt(2018, 11, 14, 17, 9, 55).isoformat()
             )
-            assert meta["nx_meta"]["Frame Time (s)"] == 30.199
+            assert meta["nx_meta"]["Frame Time (s)"] == pytest.approx(30.199)
             assert (
                 meta["nx_meta"]["Tecnai Filter"]["Selected Dispersion (eV/Channel)"]
                 == 0.1
             )
             assert (
                 meta["nx_meta"]["Microscope"] == "Microscope Titan 300 kV "
-                "D3188 SuperTwin"
+                "ABCD1 SuperTwin"
             )
             assert meta["nx_meta"]["Mode"] == "STEM nP SA Zoom Diffraction"
             assert meta["nx_meta"]["Spot Size"] == 8
@@ -1456,7 +1521,7 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
 
     def test_643_stem_image(self, fei_ser_files):
         test_file = get_full_file_path(
-            "***REMOVED***_09.45.36 Scanning Acquire_dataZeroed_1.ser",
+            "Titan_STEM_1_stem_image_dataZeroed_1.ser",
             fei_ser_files,
         )
         meta = fei_emi.get_ser_metadata(test_file)
@@ -1464,10 +1529,9 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta["nx_meta"]["Data Type"] == "STEM_Imaging"
         assert meta["nx_meta"]["Data Dimensions"] == "(1024, 1024)"
         assert (
-            meta["nx_meta"]["Creation Time"]
-            == dt(2011, 11, 16, 9, 46, 13).isoformat()  # noqa: DTZ001
+            meta["nx_meta"]["Creation Time"] == dt(2011, 11, 16, 9, 46, 13).isoformat()
         )
-        assert meta["nx_meta"]["C2 Lens (%)"] == 8.967
+        assert meta["nx_meta"]["C2 Lens (%)"] == pytest.approx(8.967)
         assert meta["nx_meta"]["C2 Aperture (μm)"] == 40
         assert meta["nx_meta"]["Stage Position"] == {
             "A (°)": 0,
@@ -1476,20 +1540,19 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
             "Y (μm)": -14.017,
             "Z (μm)": -127.155,
         }
-        assert meta["nx_meta"]["STEM Rotation Correction (°)"] == 12.4
-        assert meta["nx_meta"]["User"] == "SUPERVISOR"
+        assert meta["nx_meta"]["STEM Rotation Correction (°)"] == pytest.approx(12.4)
+        assert meta["nx_meta"]["User"] == "OPERATOR__"
         assert (
-            meta["nx_meta"]["Microscope"] == "Microscope Titan 300 kV "
-            "D3094 SuperTwin"
+            meta["nx_meta"]["Microscope"] == "Microscope Titan 300 kV ABCD1 SuperTwin"
         )
 
     def test_643_eds_and_eels_spectrum_image(self, fei_ser_files):
         test_file_eds = get_full_file_path(
-            "***REMOVED***_16.10.32 Spectrum image_dataZeroed_1.ser",
+            "Titan_STEM_2_spectrum_image_dataZeroed_1.ser",
             fei_ser_files,
         )
         test_file_eels = get_full_file_path(
-            "***REMOVED***_16.10.32 Spectrum image_dataZeroed_2.ser",
+            "Titan_STEM_2_spectrum_image_dataZeroed_2.ser",
             fei_ser_files,
         )
         meta_1 = fei_emi.get_ser_metadata(test_file_eds)
@@ -1500,10 +1563,10 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta_1["nx_meta"]["Data Dimensions"] == "(40, 70, 4000)"
         assert (
             meta_1["nx_meta"]["Creation Time"]
-            == dt(2011, 11, 16, 16, 8, 54).isoformat()  # noqa: DTZ001
+            == dt(2011, 11, 16, 16, 8, 54).isoformat()
         )
         assert meta_1["nx_meta"]["Frame Time (s)"] == 10
-        assert meta_1["nx_meta"]["Emission (μA)"] == 237.3
+        assert meta_1["nx_meta"]["Emission (μA)"] == pytest.approx(237.3)
         assert meta_1["nx_meta"]["Tecnai Filter"]["Selected Aperture"] == "2.5 mm"
         assert meta_1["nx_meta"]["Tecnai Filter"]["Slit State"] == "Retracted"
 
@@ -1512,19 +1575,18 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta_2["nx_meta"]["Data Dimensions"] == "(40, 70, 2048)"
         assert (
             meta_2["nx_meta"]["Creation Time"]
-            == dt(2011, 11, 16, 16, 32, 27).isoformat()  # noqa: DTZ001
+            == dt(2011, 11, 16, 16, 32, 27).isoformat()
         )
         assert meta_2["nx_meta"]["Energy Resolution (eV)"] == 10
-        assert meta_2["nx_meta"]["Integration Time (s)"] == 0.5
+        assert meta_2["nx_meta"]["Integration Time (s)"] == pytest.approx(0.5)
         assert meta_2["nx_meta"]["Extraction Voltage (V)"] == 4500
-        assert meta_2["nx_meta"]["Camera Length (m)"] == 0.06
-        assert meta_2["nx_meta"]["C2 Lens (%)"] == 8.967
+        assert meta_2["nx_meta"]["Camera Length (m)"] == pytest.approx(0.06)
+        assert meta_2["nx_meta"]["C2 Lens (%)"] == pytest.approx(8.967)
         assert meta_2["nx_meta"]["C3 Aperture (μm)"] == 1000
 
     def test_643_image_stack(self, fei_ser_files):
         test_file = get_full_file_path(
-            "***REMOVED***_17.08.14 Scanning Acquire_Before Full 360 "
-            "Dataset_2_dataZeroed_1.ser",
+            "Titan_STEM_3_image_stack_dataZeroed_1.ser",
             fei_ser_files,
         )
         meta = fei_emi.get_ser_metadata(test_file)
@@ -1532,23 +1594,21 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta["nx_meta"]["Data Type"] == "STEM_Imaging"
         assert meta["nx_meta"]["Data Dimensions"] == "(5, 1024, 1024)"
         assert (
-            meta["nx_meta"]["Creation Time"]
-            == dt(2012, 1, 31, 13, 43, 40).isoformat()  # noqa: DTZ001
+            meta["nx_meta"]["Creation Time"] == dt(2012, 1, 31, 13, 43, 40).isoformat()
         )
-        assert meta["nx_meta"]["Frame Time (s)"] == 2.0
+        assert meta["nx_meta"]["Frame Time (s)"] == pytest.approx(2.0)
         assert meta["nx_meta"]["C1 Aperture (μm)"] == 2000
-        assert meta["nx_meta"]["C2 Lens (%)"] == 14.99
+        assert meta["nx_meta"]["C2 Lens (%)"] == pytest.approx(14.99)
         assert meta["nx_meta"]["Defocus (μm)"] == -2.593
         assert (
-            meta["nx_meta"]["Microscope"] == "Microscope Titan 300 kV "
-            "D3094 SuperTwin"
+            meta["nx_meta"]["Microscope"] == "Microscope Titan 300 kV ABCD1 SuperTwin"
         )
         assert meta["nx_meta"]["Mode"] == "STEM nP SA Zoom Diffraction"
         assert meta["nx_meta"]["Magnification (x)"] == 80000
 
     def test_643_image_stack_2_newer(self, fei_ser_files):
         test_file = get_full_file_path(
-            "***REMOVED***_005_STEM_80kXemi_dataZeroed_1.ser",
+            "Titan_STEM_4_image_stack_2_dataZeroed_1.ser",
             fei_ser_files,
         )
         meta = fei_emi.get_ser_metadata(test_file)
@@ -1556,17 +1616,15 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta["nx_meta"]["Data Type"] == "STEM_Imaging"
         assert meta["nx_meta"]["Data Dimensions"] == "(2, 512, 512)"
         assert (
-            meta["nx_meta"]["Creation Time"]
-            == dt(2020, 3, 11, 16, 33, 38).isoformat()  # noqa: DTZ001
+            meta["nx_meta"]["Creation Time"] == dt(2020, 3, 11, 16, 33, 38).isoformat()
         )
-        assert meta["nx_meta"]["Frame Time (s)"] == 6.34179
-        assert meta["nx_meta"]["Dwell Time Path (s)"] == 0.000001
+        assert meta["nx_meta"]["Frame Time (s)"] == pytest.approx(6.34179)
+        assert meta["nx_meta"]["Dwell Time Path (s)"] == pytest.approx(0.000001)
         assert meta["nx_meta"]["C2 Aperture (μm)"] == 10
         assert meta["nx_meta"]["C3 Lens (%)"] == -37.122
         assert meta["nx_meta"]["Defocus (μm)"] == -0.889
         assert (
-            meta["nx_meta"]["Microscope"] == "Microscope Titan 300 kV "
-            "D3094 SuperTwin"
+            meta["nx_meta"]["Microscope"] == "Microscope Titan 300 kV ABCD1 SuperTwin"
         )
         assert meta["nx_meta"]["Mode"] == "STEM nP SA Zoom Diffraction"
         assert meta["nx_meta"]["Magnification (x)"] == 80000
@@ -1574,7 +1632,7 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
 
     def test_no_emi_error(self, caplog, fei_ser_files):
         test_file = get_full_file_path(
-            "***REMOVED***_12_no_accompanying_emi_dataZeroed_1.ser",
+            "Titan_TEM_12_no_accompanying_emi_dataZeroed_1.ser",
             fei_ser_files,
         )
         meta = fei_emi.get_ser_metadata(test_file)
@@ -1594,7 +1652,7 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         # if the ser is unreadable, neither the emi or the ser can be read,
         # so we will get the bare minimum of metadata back from the parser
         test_file = get_full_file_path(
-            "***REMOVED***_13_unreadable_ser_1.ser",
+            "Titan_TEM_13_unreadable_ser_1.ser",
             fei_ser_files,
         )
         meta = fei_emi.get_ser_metadata(test_file)
@@ -1602,7 +1660,7 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta["nx_meta"]["Data Type"] == "Unknown"
         assert meta["nx_meta"]["DatasetType"] == "Misc"
         assert "Creation Time" in meta["nx_meta"]
-        assert "***REMOVED***_13_unreadable_ser.emi" in meta["nx_meta"]["emi Filename"]
+        assert "13_unreadable_ser.emi" in meta["nx_meta"]["emi Filename"]
         assert (
             "The .emi metadata file associated with this .ser file could "
             "not be opened by NexusLIMS." in caplog.text
@@ -1615,7 +1673,7 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
     @staticmethod
     def _helper_test(caplog, fei_ser_files):
         test_file = get_full_file_path(
-            "***REMOVED***_14_unreadable_emi_1.ser",
+            "Titan_TEM_14_unreadable_emi_1.ser",
             fei_ser_files,
         )
         meta = fei_emi.get_ser_metadata(test_file)
@@ -1635,7 +1693,7 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
 
     def test_unreadable_emi(self, caplog, fei_ser_files):
         # if emi is unreadable, we should still get basic metadata from the ser
-        meta = TestSerEmiExtractor._helper_test(caplog, fei_ser_files)  # noqa: SLF001
+        meta = TestSerEmiExtractor._helper_test(caplog, fei_ser_files)
         assert meta["nx_meta"]["Data Type"] == "TEM_Imaging"
 
     def test_instr_mode_parsing_with_unreadable_emi_tem(
@@ -1644,14 +1702,16 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         caplog,
         fei_ser_files,
     ):
+        """Test imaging mode parsing when EMI is unreadable (TEM instrument)."""
         # if emi is unreadable, we should get imaging mode based off
         # instrument, but testing directory doesn't allow proper handling of
         # this, so monkeypatch get_instr_from_filepath
-        def mock_get_instr(_):
-            return instruments.instrument_db["FEI-Titan-TEM-635816_n"]
-
-        monkeypatch.setattr(fei_emi, "get_instr_from_filepath", mock_get_instr)
-        meta = TestSerEmiExtractor._helper_test(caplog, fei_ser_files)  # noqa: SLF001
+        monkeypatch.setattr(
+            fei_emi,
+            "get_instr_from_filepath",
+            lambda _: make_titan_tem(),
+        )
+        meta = TestSerEmiExtractor._helper_test(caplog, fei_ser_files)
         assert meta["nx_meta"]["Data Type"] == "TEM_Imaging"
 
     def test_instr_mode_parsing_with_unreadable_emi_stem(
@@ -1660,14 +1720,16 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         caplog,
         fei_ser_files,
     ):
+        """Test imaging mode parsing when EMI is unreadable (STEM instrument)."""
         # if emi is unreadable, we should get imaging mode based off
         # instrument, but testing directory doesn't allow proper handling of
         # this, so monkeypatch get_instr_from_filepath
-        def mock_get_instr(_):
-            return instruments.instrument_db["FEI-Titan-STEM-630901_n"]
-
-        monkeypatch.setattr(fei_emi, "get_instr_from_filepath", mock_get_instr)
-        meta = TestSerEmiExtractor._helper_test(caplog, fei_ser_files)  # noqa: SLF001
+        monkeypatch.setattr(
+            fei_emi,
+            "get_instr_from_filepath",
+            lambda _: make_titan_stem(),
+        )
+        meta = TestSerEmiExtractor._helper_test(caplog, fei_ser_files)
         assert meta["nx_meta"]["Data Type"] == "STEM_Imaging"
 
 

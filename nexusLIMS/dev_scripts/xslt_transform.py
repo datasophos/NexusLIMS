@@ -1,5 +1,5 @@
 """Tranform an XML document using an XSLT stylesheet."""
-# ruff: noqa: INP001, T201
+
 import argparse
 import logging
 import warnings
@@ -19,9 +19,9 @@ class XSLTError(Exception):
 
 def transform_xml(xml: Union[Path, str], xslt: Union[Path, str]):
     """Perform XSLT transformation."""
-    dom = etree.parse(xml)  # noqa: S320
-    xslt = etree.parse(xslt)  # noqa: S320
-    transform = etree.XSLT(xslt)
+    dom = etree.parse(xml)
+    xslt_doc = etree.parse(xslt)
+    transform = etree.XSLT(xslt_doc)
     try:
         newdom = transform(dom)
     except Exception as e:

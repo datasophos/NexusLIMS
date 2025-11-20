@@ -1,8 +1,8 @@
 [run]
 omit =
     nexusLIMS/dev_scripts/*
-    tests/conftest.py
     nexusLIMS/harvesters/sharepoint_calendar.py
+    tests/dev
 
 [report]
 exclude_lines =

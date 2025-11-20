@@ -1,86 +1,98 @@
-[tool.poetry]
+[project]
 name = "nexusLIMS"
 version = "1.4.3"
-description = "The NIST Electron Microscopy Nexus LIMS project"
-authors = ["Joshua Taillon <joshua.taillon@nist.gov>"]
-maintainers = ["Joshua Taillon <joshua.taillon@nist.gov>"]
+description = "Electron Microscopy Nexus LIMS project (Datasophos fork)"
+authors = [
+    {name = "Joshua Taillon", email = "josh@datasophos.co"}
+]
+maintainers = [
+    {name = "Joshua Taillon", email = "josh@datasophos.co"}
+]
 readme = "README.md"
-repository = "https://github.com/usnistgov/NexusLIMS.git"
-documentation = "http://pages.nist.gov/NexusLIMS"
-license = "NIST Public License"
-# necessary if we want to have a package name with capitals... see
-#  https://github.com/python-poetry/poetry/issues/1538#issuecomment-555753130
-packages = [
-    {include = "nexusLIMS"}
+license = {text = "MIT"}
+requires-python = ">=3.11,<3.13"
+keywords = ["microscopy", "LIMS", "materials", "electron-microscopy"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
 ]
 
-[tool.poetry.dependencies]
-python = ">=3.8.1,<3.11"
-lxml = "^4.9.2"
-requests = "^2.28.1"
-requests_ntlm = "^1.1.0"
-pytz = "^2022.7"
-hyperspy = "1.7.3"
-scikit-learn = "^1.2.0"
-python-dotenv = "^0.21.0"
-defusedxml = "^0.7.1"
+dependencies = [
+    "lxml>=4.9.2,<5.0.0",
+    "requests>=2.28.1,<3.0.0",
+    "requests-ntlm>=1.1.0,<2.0.0",
+    "pytz>=2022.7",
+    "hyperspy[speed]>=2.1.0,<3.0.0",
+    "scikit-learn>=1.2.0,<2.0.0",
+    "python-dotenv>=0.21.0,<1.0.0",
+    "defusedxml>=0.7.1,<1.0.0",
+    "exspy>=0.3.2",
+    "pyxem>=0.21.0",
+    "pixstem>=0.4.0",
+]
 
-[tool.poetry.dev-dependencies]
-pytest = "^7.2"
-coverage = "^7.0.0"
-pytest-mpl = "^0.16.1"
-pytest-cov = "^4.0.0"
-Sphinx = "^4.3.1"
-sphinx-bootstrap-theme = "^0.8.0"
-tox = "^4.0"
+[dependency-groups]
+dev = [
+    "pytest>=7.2",
+    "coverage>=7.0.0",
+    "pytest-mpl>=0.16.1",
+    "pytest-cov>=4.0.0",
+    "Sphinx>=4.3.1",
+    "sphinx-bootstrap-theme>=0.8.0",
+    "ruff>=0.0.259",
+    "sphinxcontrib-towncrier>=0.3.2a0",
+    "types-lxml>=2025.8.25",
+    "pytest-xdist>=3.8.0",
+    "responses>=0.25.8",
+]
 
-[tool.poetry.scripts]
+[project.urls]
+Homepage = "https://github.com/datasophos/NexusLIMS"
+Repository = "https://github.com/datasophos/NexusLIMS.git"
+Documentation = "https://github.com/datasophos/NexusLIMS"
+"Original-NIST-Repository" = "https://github.com/usnistgov/NexusLIMS.git"
 
-
-[tool.poetry.group.dev.dependencies]
-black = "^23.1.0"
-isort = "^5.12.0"
-pylint = "^2.16.4"
-ruff = "^0.0.259"
-sphinxcontrib-towncrier = "^0.3.2a0"
+[project.scripts]
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
-[tool.isort]
-profile = "black"
-src_paths = ["nexusLIMS", "tests"]
-
-[tool.pylint.format]
-max-line-length = "88"
-good-names = ["f", "i", "j", "k", "v", "s"]
-ignore-long-lines = "^\\s*(# |\\.\\. _.*: |``/feed)(<?https?://\\S+>|\\S+)?$"
-
-[tool.pylint.Main]
-extension-pkg-allow-list = ["lxml"]
-
-[tool.pylint.MASTER]
-init-hook="from pylint.config import find_default_config_files; import os, sys; sys.path.append(os.path.dirname(next(find_default_config_files())))"
-ignore="dev_scripts"
-
-[tool.pylint."MESSAGES CONTROL"]
-disable = "locally-disabled"
+[tool.hatch.build.targets.wheel]
+packages = ["nexusLIMS"]
 
 [tool.ruff]
+
+exclude = [
+    "nexusLIMS/dev_scripts",
+    "tests/dev",
+    "nexusLIMS/db/dev/migrate_db.py"
+]
+
+[tool.ruff.lint]
 select = [
     "F", "E", "W", "I", "N", "D", "YTT", "UP", "S", "FBT", "B", "A", "COM", "C4",
     "DTZ", "T10", "EM", "EXE", "ISC", "ICN", "G", "INP", "PIE", "T20", "PYI",
     "PT", "Q", "RSE", "RET", "SLF", "SIM", "TID", "TCH", "ARG", "PTH", "ERA", "PL",
     "TRY", "RUF"
 ]
-ignore = ["N999", "UP006", "UP007", "UP035", "B905", "RUF007"]
+ignore = ["N999", "UP006", "UP007", "UP035", "B905", "RUF007", "S603", "COM812"]
 
-[tool.ruff.per-file-ignores]
-"tests/*" = ["S"]
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S", "PLC0415"]
 
-[tool.ruff.pydocstyle]
+[tool.ruff.lint.pydocstyle]
 convention = "numpy"
+
+[tool.ruff.format]
+# Use Black-compatible formatting
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
 
 [tool.towncrier]
 directory = "docs/changes"
@@ -120,50 +132,9 @@ directory = "removal"
 name = "Deprecations and/or Removals"
 showcontent = true
 
-[tool.tox]
-legacy_tox_ini = """
-[tox]
-isolated_build = true
-envlist = 
-    lint
-    py{38, 39, 310}
-
-[testenv]
-passenv = *
-allowlist_externals = poetry
-commands = 
-    poetry install
-    poetry run pytest tests/ --cov=nexusLIMS --cov=tests \
-        --cov-config=tests/.coveragerc \
-        --cov-report html:tests/coverage \
-        --cov-report term-missing \
-        --junitxml=tests/test_report.xml \
-        --mpl --mpl-baseline-path=tests/files/figs
-
-[testenv:gen_mpl_baseline]
-passenv = *
-description = use pytest-mpl to generate baseline figures for comparison
-commands = 
-    poetry install
-    poetry run pytest tests/test_extractors.py \
-        -k TestThumbnailGenerator \
-        --mpl-generate-path=tests/files/figs
-
-[testenv:docs]
-passenv = *
-description = invoke sphinx-build to build the HTML docs
-commands = 
-    poetry install
-    poetry run python -m sphinx.cmd.build ./docs ./_build -n -E -a -j auto -b html
-
-[testenv:lint]
-passenv = *
-description = run liniting scripts
-commands = 
-    poetry install
-    poetry run isort . --check-only
-    poetry run black --check .
-    poetry run ruff check nexusLIMS tests
-    poetry run pylint nexusLIMS tests
-"""
-
+[tool.pyright]
+venvPath = "."
+venv = ".venv"
+typeCheckingMode = "basic"
+reportMissingImports = true
+reportMissingTypeStubs = false

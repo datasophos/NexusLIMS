@@ -1,31 +1,5 @@
-#  NIST Public License - 2019
-#
-#  This software was developed by employees of the National Institute of
-#  Standards and Technology (NIST), an agency of the Federal Government
-#  and is being made available as a public service. Pursuant to title 17
-#  United States Code Section 105, works of NIST employees are not subject
-#  to copyright protection in the United States.  This software may be
-#  subject to foreign copyright.  Permission in the United States and in
-#  foreign countries, to the extent that NIST may hold copyright, to use,
-#  copy, modify, create derivative works, and distribute this software and
-#  its documentation without fee is hereby granted on a non-exclusive basis,
-#  provided that this notice and disclaimer of warranty appears in all copies.
-#
-#  THE SOFTWARE IS PROVIDED 'AS IS' WITHOUT ANY WARRANTY OF ANY KIND,
-#  EITHER EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED
-#  TO, ANY WARRANTY THAT THE SOFTWARE WILL CONFORM TO SPECIFICATIONS, ANY
-#  IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
-#  AND FREEDOM FROM INFRINGEMENT, AND ANY WARRANTY THAT THE DOCUMENTATION
-#  WILL CONFORM TO THE SOFTWARE, OR ANY WARRANTY THAT THE SOFTWARE WILL BE
-#  ERROR FREE.  IN NO EVENT SHALL NIST BE LIABLE FOR ANY DAMAGES, INCLUDING,
-#  BUT NOT LIMITED TO, DIRECT, INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES,
-#  ARISING OUT OF, RESULTING FROM, OR IN ANY WAY CONNECTED WITH THIS SOFTWARE,
-#  WHETHER OR NOT BASED UPON WARRANTY, CONTRACT, TORT, OR OTHERWISE, WHETHER
-#  OR NOT INJURY WAS SUSTAINED BY PERSONS OR PROPERTY OR OTHERWISE, AND
-#  WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT OF THE RESULTS OF,
-#  OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
-#
 """Utility functions used in potentially multiple places by NexusLIMS."""
+
 import json
 import logging
 import os
@@ -35,10 +9,9 @@ import time
 import warnings
 from configparser import ConfigParser
 from datetime import datetime, timedelta, timezone
-from os.path import getmtime
 from pathlib import Path
 from shutil import copyfile
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Tuple, Union
 
 import certifi
 from requests import Session
@@ -82,8 +55,8 @@ def nexus_req(
     function: str,
     *,
     basic_auth: bool = False,
-    token_auth: Optional[str] = None,
-    **kwargs: Optional[dict],
+    token_auth: str | None = None,
+    **kwargs: dict | None,
 ):
     """
     Make a request from NexusLIMS.
@@ -192,7 +165,7 @@ def is_subpath(path: Path, of_paths: Union[Path, List[Path]]):
     Examples
     --------
     >>> is_subpath(Path('/path/to/file.dm3'),
-    ...            Path(os.environ['mmfnexus_path'] /
+    ...            Path(os.environ['MMFNEXUS_PATH'] /
     ...                 titan.filestore_path))
     True
     """
@@ -295,7 +268,9 @@ def get_nested_dict_value_by_path(nest_dict, path):
     """
     sub_dict = nest_dict
     for key in path:
-        sub_dict = sub_dict[key] if key in sub_dict else "not found"
+        if sub_dict == "not found":
+            break
+        sub_dict = sub_dict.get(key, "not found")
 
     return sub_dict
 
@@ -355,11 +330,12 @@ def try_getting_dict_value(dict_, key):
             return dict_[key]
         if hasattr(key, "__iter__"):
             return get_nested_dict_value_by_path(dict_, key)
-        # we shouldn't reach this line, but always good to return a consistent
-        # value just in case
-        return "not found"  # pragma: no cover # noqa: TRY300
     except (KeyError, TypeError):
         return "not found"
+    else:
+        # we shouldn't reach this line, but always good to return a consistent
+        # value just in case
+        return "not found"  # pragma: no cover
 
 
 def find_dirs_by_mtime(
@@ -417,7 +393,7 @@ def find_dirs_by_mtime(
         dt_to.isoformat(),
     )
     for dirpath, _, _ in os.walk(path, followlinks=followlinks):
-        if dt_from.timestamp() < getmtime(dirpath) < dt_to.timestamp():
+        if dt_from.timestamp() < Path(dirpath).stat().st_mtime < dt_to.timestamp():
             dirs.append(dirpath)
     return dirs
 
@@ -471,21 +447,187 @@ def find_files_by_mtime(path: Path, dt_from, dt_to) -> List[Path]:  # pragma: no
         for dirpath, _, filenames in os.walk(directory, followlinks=True):
             for f in filenames:
                 fname = Path(dirpath) / f
-                if dt_from.timestamp() < getmtime(fname) < dt_to.timestamp():
+                if dt_from.timestamp() < fname.stat().st_mtime < dt_to.timestamp():
                     files.add(fname)
 
     # convert the set to a list and sort my mtime
     files = list(files)
-    files.sort(key=getmtime)
+    files.sort(key=lambda f: f.stat().st_mtime)
 
     return files
+
+
+def _get_find_command():
+    """
+    Get the appropriate GNU find command for the system.
+
+    Returns
+    -------
+    str
+        The find command to use ('find' or 'gfind')
+
+    Raises
+    ------
+    RuntimeError
+        If find command is not available or GNU find is required but not found
+    """
+
+    def _which(fname):
+        def _is_exec(f):
+            return Path(f).is_file() and os.access(f, os.X_OK)
+
+        for exe in os.environ["PATH"].split(os.pathsep):
+            exe_file = str(Path(exe) / fname)
+            if _is_exec(exe_file):
+                return exe_file
+        return False
+
+    def _is_gnu_find(find_cmd):
+        """Check if the find command is GNU find (supports -xtype)."""
+        try:
+            result = subprocess.run(
+                [find_cmd, "--version"],
+                check=False,
+                capture_output=True,
+                text=True,
+                timeout=2,
+            )
+        except (subprocess.SubprocessError, FileNotFoundError):
+            return False
+        else:
+            return "GNU findutils" in result.stdout
+
+    find_command = "find"
+    if not _which(find_command):
+        msg = "find command was not found on the system PATH"
+        raise RuntimeError(msg)
+
+    if not _is_gnu_find(find_command):
+        import platform  # noqa: PLC0415
+
+        if platform.system() == "Darwin":  # macOS
+            if _which("gfind"):
+                find_command = "gfind"
+                logger.info("BSD find detected, using gfind (GNU find) instead")
+            else:
+                msg = (
+                    "BSD find detected on macOS, but GNU find is required.\n"
+                    "The 'find' command on macOS does not support the '-xtype' option "
+                    "needed for NexusLIMS.\n\n"
+                    "Please install GNU find via Homebrew:\n"
+                    "  brew install findutils\n\n"
+                    "This will install GNU find as 'gfind', which NexusLIMS will use "
+                    "automatically."
+                )
+                raise RuntimeError(msg)
+        else:
+            logger.warning(
+                "Non-GNU find detected. If you encounter errors, "
+                "please install GNU findutils.",
+            )
+
+    return find_command
+
+
+def _find_symlink_dirs(find_command, path):
+    """
+    Find symbolic links pointing to directories.
+
+    Parameters
+    ----------
+    find_command : str
+        The find command to use
+    path : Path
+        The root path to search
+
+    Returns
+    -------
+    list
+        List of symbolic link paths, or [path] if none found
+    """
+    find_path = Path(os.environ["MMFNEXUS_PATH"]) / path
+    cmd = [find_command, str(find_path), "-type", "l", "-xtype", "d", "-print0"]
+    logger.info('Running followlinks find via subprocess.run: "%s"', cmd)
+    out = subprocess.run(cmd, capture_output=True, check=True)
+    paths = [f.decode() for f in out.stdout.split(b"\x00") if len(f) > 0]
+    logger.info('Found the following symlinks: "%s"', paths)
+
+    if paths:
+        logger.info("find_path is: '%s'", paths)
+        return paths
+    return [find_path]
+
+
+def _build_find_command(  # noqa: PLR0913
+    find_command,
+    find_paths,
+    dt_from,
+    dt_to,
+    extensions,
+    followlinks,
+):
+    """
+    Build the find command with all arguments.
+
+    Parameters
+    ----------
+    find_command : str
+        The find command to use
+    find_paths : list
+        Paths to search
+    dt_from : datetime
+        Start time
+    dt_to : datetime
+        End time
+    extensions : list or None
+        File extensions to search for
+    followlinks : bool
+        Whether to follow symlinks
+
+    Returns
+    -------
+    list
+        Complete find command as list of arguments
+    """
+    cmd = [find_command, "-H" if followlinks else ""]
+    cmd += [str(p) for p in find_paths]
+    cmd += [
+        "-type",
+        "f",
+        "-newermt",
+        dt_from.isoformat(),
+        "-not",
+        "-newermt",
+        dt_to.isoformat(),
+    ]
+
+    # Add extension patterns
+    if extensions is not None:
+        cmd += ["("]
+        for ext in extensions:
+            cmd += ["-iname", f"*.{ext}", "-o"]
+        cmd.pop()
+        cmd += [")"]
+
+    # Add ignore patterns
+    if "NEXUSLIMS_IGNORE_PATTERNS" in os.environ:
+        ignore_patterns = json.loads(os.environ.get("NEXUSLIMS_IGNORE_PATTERNS"))
+        if ignore_patterns:
+            cmd += ["-and", "("]
+            for i in ignore_patterns:
+                cmd += ["-not", "-iname", i, "-and"]
+            cmd.pop()
+            cmd += [")"]
+
+    cmd += ["-print0"]
+    return cmd
 
 
 def gnu_find_files_by_mtime(
     path: Path,
     dt_from: datetime,
     dt_to: datetime,
-    extensions: Optional[List[str]] = None,
+    extensions: List[str] | None = None,
     *,
     followlinks: bool = True,
 ) -> List[Path]:
@@ -502,7 +644,7 @@ def gnu_find_files_by_mtime(
     ----------
     path
         The root path from which to start the search, relative to
-        the :ref:`mmfnexus_path <mmfnexus-path>` environment setting.
+        the :ref:`MMFNEXUS_PATH <mmfnexus-path>` environment setting.
     dt_from
         The "starting" point of the search timeframe
     dt_to
@@ -513,7 +655,7 @@ def gnu_find_files_by_mtime(
     followlinks
         Whether to follow symlinks using the ``find`` command via
         the ``-H`` command line flag. This is useful when the
-        :ref:`mmfnexus_path <mmfnexus-path>` is actually a directory
+        :ref:`MMFNEXUS_PATH <mmfnexus-path>` is actually a directory
         of symlinks. If this is the case and ``followlinks`` is
         ``False``, no files will ever be found because the ``find``
         command will not "dereference" the symbolic links it finds.
@@ -534,114 +676,39 @@ def gnu_find_files_by_mtime(
     """
     logger.info("Using GNU `find` to search for files")
 
-    def _which(fname):
-        def _is_exec(f):
-            return Path(f).is_file() and os.access(f, os.X_OK)
+    # Get appropriate find command
+    find_command = _get_find_command()
 
-        # Check to see if find command is on PATH:
-        for exe in os.environ["PATH"].split(os.pathsep):
-            exe_file = str(Path(exe) / fname)
-            if _is_exec(exe_file):
-                return exe_file
-
-        return False
-
-    if not _which("find"):
-        msg = "find command was not found on the system PATH"
-        raise RuntimeError(msg)
-
-    # adjust the datetime objects with the tz_offset (usually should be 0) if
-    # they are naive
+    # Adjust datetime objects with tz_offset if naive
     dt_from += tz_offset if dt_from.tzinfo is None else timedelta(0)
     dt_to += tz_offset if dt_to.tzinfo is None else timedelta(0)
 
-    # join the given path with the root storage folder
-    find_path = Path(os.environ["mmfnexus_path"]) / path
-
-    # if "followlinks" is provided, the "find" command is split into two parts;
-    # This code is to support when `mmfnexus_path` is a directory of symbolic links
-    # to instrument storage locations, rather than actual directories
-
-    # The simplest option would be to provide the "-L" flag to "find", which instructs
-    # the program to "dereference" all symbolic links it finds. In testing, this
-    # was found to slow the file finding operation by at least an order of magnitude,
-    # inflating run-times from a few minutes to over an hour; instead, we do
-    # a two part operation:
-
-    # First, we search from the root path for any symbolic links that point
-    # to directories; If the root path is a (relatively) small directory consisting
-    # of mostly symbolic links, this operation should be very fast.
-
-    # Based off the results of the first search, we then use "find" with the
-    # "-H" flag to dereference only the paths provided as a command line option
-    # for "find". We assume in this implementation there will not be symlinks
-    # in the instrument data folders themselves. This method further assumes that
-    # the folder specified by "path" is either a symlink itself, or a directory
-    # containing one or more symlinks. It _should_ still work if this is not the
-    # case, but may be slower, since it will run two "find" commands over the whole
-    # directory tree in that case.
+    # Find symlink directories if following links
     if followlinks:
-        find_path = Path(os.environ["mmfnexus_path"]) / path
-        cmd = ["find", str(find_path), "-type", "l", "-xtype", "d", "-print0"]
-        logger.info('Running followlinks find via subprocess.run: "%s"', cmd)
-        out = subprocess.run(cmd, capture_output=True, check=True)
-        paths = [f.decode() for f in out.stdout.split(b"\x00") if len(f) > 0]
-        logger.info('Found the following symlinks: "%s"', paths)
-        if paths:
-            find_path = paths  # make find_path a list of str here for later use
-            logger.info("find_path is: '%s'", find_path)
+        find_paths = _find_symlink_dirs(find_command, path)
+    else:
+        find_paths = [Path(os.environ["MMFNEXUS_PATH"]) / path]
 
-    # check if find_path is a Path and convert it to list if so:
-    find_path = [find_path] if isinstance(find_path, Path) else find_path
-
-    # Actually run find command (ignoring mib files if specified by
-    # environment variable):
-
-    cmd = ["find", "-H" if followlinks else ""]
-    cmd += [str(p) for p in find_path]
-    cmd += [
-        "-type",
-        "f",
-        "-newermt",
-        dt_from.isoformat(),
-        "-not",
-        "-newermt",
-        dt_to.isoformat(),
-    ]
-
-    # add extensions as -iname patterns to find arguments
-    if extensions is not None:
-        cmd += ["("]
-        for ext in extensions:
-            cmd += ["-iname", f"*.{ext}", "-o"]
-        cmd.pop()
-        cmd += [")"]
-
-    # if we need to ignore patterns, add them as an "and (-not -iname ...)"
-    # syntax as find arguments
-    if "NexusLIMS_ignore_patterns" in os.environ:
-        ignore_patterns = json.loads(os.environ.get("NexusLIMS_ignore_patterns"))
-        if ignore_patterns:
-            cmd += ["-and", "("]
-            for i in ignore_patterns:
-                cmd += ["-not", "-iname", i, "-and"]
-            cmd.pop()
-            cmd += [")"]
-
-    # add -print0 at the end since it will preempt our filename
-    # patterns if we add it at the beginning
-    cmd += ["-print0"]
-
+    # Build and execute find command
+    cmd = _build_find_command(
+        find_command,
+        find_paths,
+        dt_from,
+        dt_to,
+        extensions,
+        followlinks,
+    )
     logger.info('Running via subprocess.run: "%s"', cmd)
     logger.info('Running via subprocess.run (as string): "%s"', " ".join(cmd))
     out = subprocess.run(cmd, capture_output=True, check=True)
+
+    # Process results
     files = out.stdout.split(b"\x00")
     files = [Path(f.decode()) for f in files if len(f) > 0]
-
-    # convert to set and back to remove duplicates and sort my mtime
     files = list(set(files))
-    files.sort(key=getmtime)
+    files.sort(key=lambda f: f.stat().st_mtime)
     logger.info("Found %i files", len(files))
+
     return files
 
 
@@ -772,7 +839,7 @@ def get_timespan_overlap(
     return max(timedelta(0), delta)
 
 
-def get_auth(filename: Optional[Path] = None, *, basic: bool = False):
+def get_auth(filename: Path | None = None, *, basic: bool = False):
     """
     Get an authentication scheme for NexusLIMS requests.
 
@@ -780,7 +847,7 @@ def get_auth(filename: Optional[Path] = None, *, basic: bool = False):
     as specified from a file that lives in the package root named
     .credentials (or some other value provided as a parameter).
     Alternatively, the stored credentials can be overridden by supplying two
-    environment variables: ``nexusLIMS_user`` and ``nexusLIMS_pass``. These
+    environment variables: ``NEXUSLIMS_USER`` and ``NEXUSLIMS_PASS``. These
     variables will be queried first, and if not found, the method will
     attempt to use the credential file.
 
@@ -811,8 +878,8 @@ def get_auth(filename: Optional[Path] = None, *, basic: bool = False):
     # DONE: this should be moved out of sharepoint calendar an into general
     #  utils since it's used for CDCS as well
     try:
-        username = os.environ["nexusLIMS_user"]
-        passwd = os.environ["nexusLIMS_pass"]
+        username = os.environ["NEXUSLIMS_USER"]
+        passwd = os.environ["NEXUSLIMS_PASS"]
         logger.info("Authenticating using environment variables")
     except KeyError as exception:
         # if absolute path was provided, use that, otherwise find filename in
@@ -852,7 +919,7 @@ def has_delay_passed(date: datetime) -> bool:
     Check if the current time is greater than the configured delay.
 
     Check if the current time is greater than the configured (or default) record
-    building delay configured in the ``nexusLIMS_file_delay_days`` environment variable.
+    building delay configured in the ``NEXUSLIMS_FILE_DELAY_DAYS`` environment variable.
     If the date given is timezone-aware, the current time in that timezone will be
     compared.
 
@@ -869,19 +936,20 @@ def has_delay_passed(date: datetime) -> bool:
     """
     try:
         # get record builder delay from environment settings
-        delay = float(os.getenv("nexusLIMS_file_delay_days", "2"))
+        delay = float(os.getenv("NEXUSLIMS_FILE_DELAY_DAYS", "2"))
     except ValueError:
         # if it cannot be coerced to a number, warn and set to the
         # default of 2 days
         logger.warning(
-            "The environment variable value of nexusLIMS_file_delay_days (%s) could "
+            "The environment variable value of NEXUSLIMS_FILE_DELAY_DAYS (%s) could "
             "not be understood as a number, so using the default of 2 days.",
-            os.getenv("nexusLIMS_file_delay_days"),
+            os.getenv("NEXUSLIMS_FILE_DELAY_DAYS"),
         )
         delay = 2
 
     delay = timedelta(days=delay)
 
+    # Match timezone awareness of input date
     now = (
         datetime.now()  # noqa: DTZ005
         if date.tzinfo is None
@@ -904,15 +972,15 @@ def current_system_tz():
 
 def replace_mmf_path(path: Path, suffix: str) -> Path:
     """
-    Given an input "mmfnexus_path" path, generate equivalent "nexusLIMS_path" path.
+    Given an input "MMFNEXUS_PATH" path, generate equivalent "NEXUSLIMS_PATH" path.
 
-    If the given path is not a subpath of "mmfnexus_path", a warning will be logged
+    If the given path is not a subpath of "MMFNEXUS_PATH", a warning will be logged
     and the suffix will just be added at the end.
 
     Parameters
     ----------
     path
-        The input path, which is expected to be a subpath of the mmfnexus_path directory
+        The input path, which is expected to be a subpath of the MMFNEXUS_PATH directory
     suffix
         Any added suffix to add to the path (useful for appending with a new extension,
         such as ``.json``)
@@ -922,11 +990,11 @@ def replace_mmf_path(path: Path, suffix: str) -> Path:
     pathlib.Path
         A resolved pathlib.Path object pointing to the new path
     """
-    mmf_path = Path(os.environ["mmfnexus_path"])
-    nexuslims_path = Path(os.environ["nexusLIMS_path"])
+    mmf_path = Path(os.environ["MMFNEXUS_PATH"])
+    nexuslims_path = Path(os.environ["NEXUSLIMS_PATH"])
 
     if mmf_path not in path.parents:
-        logger.warning("%s is not a sub-path of %s", path, os.environ["mmfnexus_path"])
+        logger.warning("%s is not a sub-path of %s", path, os.environ["MMFNEXUS_PATH"])
     return Path(str(path).replace(str(mmf_path), str(nexuslims_path)) + suffix)
 
 

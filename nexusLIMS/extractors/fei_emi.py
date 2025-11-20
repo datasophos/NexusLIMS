@@ -1,29 +1,3 @@
-#  NIST Public License - 2019
-#
-#  This software was developed by employees of the National Institute of
-#  Standards and Technology (NIST), an agency of the Federal Government
-#  and is being made available as a public service. Pursuant to title 17
-#  United States Code Section 105, works of NIST employees are not subject
-#  to copyright protection in the United States.  This software may be
-#  subject to foreign copyright.  Permission in the United States and in
-#  foreign countries, to the extent that NIST may hold copyright, to use,
-#  copy, modify, create derivative works, and distribute this software and
-#  its documentation without fee is hereby granted on a non-exclusive basis,
-#  provided that this notice and disclaimer of warranty appears in all copies.
-#
-#  THE SOFTWARE IS PROVIDED 'AS IS' WITHOUT ANY WARRANTY OF ANY KIND,
-#  EITHER EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED
-#  TO, ANY WARRANTY THAT THE SOFTWARE WILL CONFORM TO SPECIFICATIONS, ANY
-#  IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
-#  AND FREEDOM FROM INFRINGEMENT, AND ANY WARRANTY THAT THE DOCUMENTATION
-#  WILL CONFORM TO THE SOFTWARE, OR ANY WARRANTY THAT THE SOFTWARE WILL BE
-#  ERROR FREE.  IN NO EVENT SHALL NIST BE LIABLE FOR ANY DAMAGES, INCLUDING,
-#  BUT NOT LIMITED TO, DIRECT, INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES,
-#  ARISING OUT OF, RESULTING FROM, OR IN ANY WAY CONNECTED WITH THIS SOFTWARE,
-#  WHETHER OR NOT BASED UPON WARRANTY, CONTRACT, TORT, OR OTHERWISE, WHETHER
-#  OR NOT INJURY WAS SUSTAINED BY PERSONS OR PROPERTY OR OTHERWISE, AND
-#  WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT OF THE RESULTS OF,
-#  OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
 """
 Parses and extract metadata from files saved by the TIA software.
 
@@ -33,6 +7,7 @@ and ``.emi``. The ``.emi`` file contains metadata about the data acquisition, wh
 the (one or more) ``.ser`` files contain the actual collected data. Thus, access to
 both is required for full metadata extraction and preview generation.
 """
+
 import logging
 import os
 from datetime import datetime as dt
@@ -142,7 +117,7 @@ def get_ser_metadata(filename: Path):
     # if we successfully found the .emi file, add it to the metadata
     if emi_filename:
         rel_emi_fname = (
-            str(emi_filename).replace(os.environ["mmfnexus_path"] + "/", "")
+            str(emi_filename).replace(os.environ["MMFNEXUS_PATH"] + "/", "")
             if emi_filename
             else None
         )
@@ -158,7 +133,7 @@ def get_ser_metadata(filename: Path):
     metadata["nx_meta"]["fname"] = filename
     # get the modification time:
     metadata["nx_meta"]["Creation Time"] = dt.fromtimestamp(
-        os.path.getmtime(filename),
+        filename.stat().st_mtime,
         tz=instr.timezone if instr else None,
     ).isoformat()
     metadata["nx_meta"]["Instrument ID"] = instr_name
@@ -227,13 +202,9 @@ def _load_ser(emi_filename: Path, ser_index: int):
     # if there is more than one dataset, emi_s will be a list, so pick
     # out the matching signal from the list, which will be the "index"
     # from the filename minus 1:
-    if isinstance(emi_s, list):
-        s = emi_s[ser_index - 1]
-
-    # otherwise we should just have a regular signal, so make s the same
-    # as the data loaded from the .emi
-    elif isinstance(emi_s, BaseSignal):
-        s = emi_s
+    # if there is more than one dataset, emi_s will be a list, so pick
+    # out the matching signal, otherwise use the signal as-is
+    s = emi_s[ser_index - 1] if isinstance(emi_s, list) else emi_s
 
     return s, True
 
@@ -365,7 +336,7 @@ def parse_acquire_info(metadata):
     if try_getting_dict_value(metadata, base) != "not found":
         metadata = map_keys(term_mapping, base, metadata)
 
-    return metadata  # noqa: RET504
+    return metadata
 
 
 def parse_experimental_description(metadata):
@@ -501,9 +472,7 @@ def split_fei_metadata_units(metadata_term):
     # replace weird "Stem" capitalization
     mdata_term = mdata_term.replace("Stem ", "STEM ")
 
-    mdata_and_unit = (mdata_term, mdata_and_unit[1])
-
-    return mdata_and_unit
+    return (mdata_term, mdata_and_unit[1])
 
 
 def map_keys(term_mapping, base, metadata):

@@ -92,12 +92,12 @@ New features
 - Added new "default" extractor for filetypes we don't know how to read
   that will add very basic file-based metadata otherwise (`#121 <#>`_)
 - Added a configuration environment variable for file finding
-  (``NexusLIMS_file_strategy``). A value of ``"inclusive"`` will add all files found in
+  (``NEXUSLIMS_FILE_STRATEGY``). A value of ``"inclusive"`` will add all files found in
   the time range of a session to the record (even if we don't know how to parse it beyond
   basic metadata). A value of ``"exclusive"`` will exlcude files that do not have an
   explicit extractor defined (this was the previous behavior) (`#121 <#>`_)
 - Added a way to "ignore" files during the file finding routine via an environment
-  variable named ``NexusLIMS_ignore_patterns``. It should be a JSON-formatted list
+  variable named ``NEXUSLIMS_IGNORE_PATTERNS``. It should be a JSON-formatted list
   provided as a string. Each item of the list will be passed to the GNU find command
   as a pattern to ignore. (`#121 <#>`_)
 
@@ -107,7 +107,7 @@ Bug fixes
 
 - Fixed Poetry not installing due to change in upstream installer location (`#117 <#>`_)
 - Fixed issue where record builder would not run (and we wouldn't even be alerted!)
-  if the network shares for ``mmfnexus_path`` and ``nexusLIMS_path`` were not mounted. (`#118 <#>`_)
+  if the network shares for ``MMFNEXUS_PATH`` and ``NEXUSLIMS_PATH`` were not mounted. (`#118 <#>`_)
 - Fixed bug introduced by change to API response for reservation questions in NEMO 4.3.2 (`#119 <#>`_)
 - Fix for development bug introduced by upgrade of tox package to 4.0.
 
@@ -195,7 +195,7 @@ Enhancements
   database, which is more efficient and greatly speeds up the harvesting process. (`#94 <#>`_)
 - The record builder will now retry for a configurable number of days if it does not find
   any files for a session (useful for machines that have a delay in data syncing to
-  centralized file storage). Configured via the ``nexusLIMS_file_delay_days`` environment
+  centralized file storage). Configured via the ``NEXUSLIMS_FILE_DELAY_DAYS`` environment
   variable. (`#102 <#>`_)
 - Made datetime formats for NEMO API harvester configurable (both sending and receiving)
   so that it can work regardless of configuration on the NEMO server. (`#103 <#>`_)
@@ -369,7 +369,7 @@ Miscellaneous/Development changes
   the SharePoint-specific way things were written before and will help in the future
   implementation of the NEMO harvester.
 - Fix some issues with tests not running correctly due to changes of paths in
-  ``mmfnexus_path``.
+  ``MMFNEXUS_PATH``.
 - Improvements to the CI/CD pipelines so multiple pipelines can run at once without error.
 
 
@@ -494,7 +494,7 @@ New features
 
 - Implemented SharePoint calendar metadata harvesting for equipment reservations. (`#26 <#>`_)
 - Added metadata extractor for FEI TIFF image files produced by SEMs and FIBs. (`#35 <#>`_)
-- Created repository to hold initial work on NexusLIMS. 
+- Created repository to hold initial work on NexusLIMS.
 
 Enhancements
 ------------
@@ -507,4 +507,3 @@ Miscellaneous/Development changes
 ---------------------------------
 
 - Added CI/CD pipeline for backend tests. (`#30 <#>`_)
-

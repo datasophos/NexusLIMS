@@ -1,30 +1,3 @@
-#  NIST Public License - 2019
-#
-#  This software was developed by employees of the National Institute of
-#  Standards and Technology (NIST), an agency of the Federal Government
-#  and is being made available as a public service. Pursuant to title 17
-#  United States Code Section 105, works of NIST employees are not subject
-#  to copyright protection in the United States.  This software may be
-#  subject to foreign copyright.  Permission in the United States and in
-#  foreign countries, to the extent that NIST may hold copyright, to use,
-#  copy, modify, create derivative works, and distribute this software and
-#  its documentation without fee is hereby granted on a non-exclusive basis,
-#  provided that this notice and disclaimer of warranty appears in all copies.
-#
-#  THE SOFTWARE IS PROVIDED 'AS IS' WITHOUT ANY WARRANTY OF ANY KIND,
-#  EITHER EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED
-#  TO, ANY WARRANTY THAT THE SOFTWARE WILL CONFORM TO SPECIFICATIONS, ANY
-#  IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
-#  AND FREEDOM FROM INFRINGEMENT, AND ANY WARRANTY THAT THE DOCUMENTATION
-#  WILL CONFORM TO THE SOFTWARE, OR ANY WARRANTY THAT THE SOFTWARE WILL BE
-#  ERROR FREE.  IN NO EVENT SHALL NIST BE LIABLE FOR ANY DAMAGES, INCLUDING,
-#  BUT NOT LIMITED TO, DIRECT, INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES,
-#  ARISING OUT OF, RESULTING FROM, OR IN ANY WAY CONNECTED WITH THIS SOFTWARE,
-#  WHETHER OR NOT BASED UPON WARRANTY, CONTRACT, TORT, OR OTHERWISE, WHETHER
-#  OR NOT INJURY WAS SUSTAINED BY PERSONS OR PROPERTY OR OTHERWISE, AND
-#  WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT OF THE RESULTS OF,
-#  OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
-#
 """
 The "Acquisition Activity" module.
 
@@ -36,6 +9,7 @@ filenames by the files' modification times.
 import logging
 import math
 import os
+from dataclasses import dataclass, field
 from datetime import datetime as dt
 from pathlib import Path
 from timeit import default_timer
@@ -96,10 +70,10 @@ def cluster_filelist_mtimes(filelist: List[str]) -> List[float]:
     aa_boundaries : List[float]
         A list of the `mtime` values that represent boundaries between
         discrete Acquisition Activities
-    """  # noqa: E501
+    """
     logger.info("Starting clustering of file mtimes")
     start_timer = default_timer()
-    mtimes = sorted([os.path.getmtime(f) for f in filelist])
+    mtimes = sorted([f.stat().st_mtime for f in filelist])
 
     # remove duplicate file mtimes (since they cause errors below):
     mtimes = sorted(set(mtimes))
@@ -186,7 +160,7 @@ def _add_dataset_element(
     file = _escape(file)
 
     # build path to thumbnail
-    rel_fname = file.replace(os.environ["mmfnexus_path"], "")
+    rel_fname = file.replace(os.environ["MMFNEXUS_PATH"], "")
     rel_thumb_name = f"{rel_fname}.thumb.png"
 
     # encode for safe URLs
@@ -206,10 +180,10 @@ def _add_dataset_element(
 
     # check if preview image exists before adding it XML structure
     if rel_thumb_name[0] == "/":
-        test_path = Path(os.environ["nexusLIMS_path"]) / unquote(rel_thumb_name)[1:]
+        test_path = Path(os.environ["NEXUSLIMS_PATH"]) / unquote(rel_thumb_name)[1:]
     else:  # pragma: no cover
         # this shouldn't happen, but just in case...
-        test_path = Path(os.environ["nexusLIMS_path"]) / unquote(rel_thumb_name)
+        test_path = Path(os.environ["NEXUSLIMS_PATH"]) / unquote(rel_thumb_name)
 
     if test_path.exists():
         dset_prev_el = etree.SubElement(dset_el, "preview")
@@ -227,7 +201,8 @@ def _add_dataset_element(
     return aq_ac_xml_el
 
 
-class AcquisitionActivity:  # pylint: disable=too-many-instance-attributes
+@dataclass
+class AcquisitionActivity:
     """
     A collection of files/metadata attributed to a physical acquisition activity.
 
@@ -267,30 +242,25 @@ class AcquisitionActivity:  # pylint: disable=too-many-instance-attributes
         software
     """
 
-    def __init__(  # pylint: disable=too-many-arguments # noqa: 0913
-        self,
-        start=None,
-        end=None,
-        mode="",
-        unique_params=None,
-        setup_params=None,
-        unique_meta=None,
-        files=None,
-        previews=None,
-        meta=None,
-        warnings=None,
-    ):
-        """Create a new AcquisitionActivity."""
-        self.start = start if start is not None else dt.now(tz=current_system_tz())
-        self.end = end if end is not None else dt.now(tz=current_system_tz())
-        self.mode = mode
-        self.unique_params = set() if unique_params is None else unique_params
-        self.setup_params = setup_params
-        self.unique_meta = unique_meta
-        self.files = [] if files is None else files
-        self.previews = [] if previews is None else previews
-        self.meta = [] if meta is None else meta
-        self.warnings = [] if warnings is None else warnings
+    start: dt | None = None
+    end: dt | None = None
+    mode: str = ""
+    unique_params: set | None = None
+    setup_params: dict | None = None
+    unique_meta: list | None = None
+    files: list = field(default_factory=list)
+    previews: list = field(default_factory=list)
+    meta: list = field(default_factory=list)
+    warnings: list = field(default_factory=list)
+
+    def __post_init__(self):
+        """Post-initialization to set defaults for start/end times."""
+        if self.start is None:
+            self.start = dt.now(tz=current_system_tz())
+        if self.end is None:
+            self.end = dt.now(tz=current_system_tz())
+        if self.unique_params is None:
+            self.unique_params = set()
 
     def __repr__(self):
         """Return custom representation of AcquisitionActivity."""
@@ -391,9 +361,8 @@ class AcquisitionActivity:  # pylint: disable=too-many-instance-attributes
             values_to_search = self.unique_params
 
         # meta will be individual dictionaries, since self.meta is list of dicts
-        i = 0
         setup_params = {}
-        for meta, _file in zip(self.meta, self.files):
+        for i, (meta, _file) in enumerate(zip(self.meta, self.files)):
             # loop through the values_to_search
             # using .copy() on the set allows us to remove values during each
             # iteration, as described in:
@@ -451,7 +420,6 @@ class AcquisitionActivity:  # pylint: disable=too-many-instance-attributes
                         )
                         del setup_params[vts]
                         values_to_search.remove(vts)
-            i += 1
 
         self.setup_params = setup_params
 
