@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS "session_log" (
 );
 
 -- The system administrator should add rows to the "instruments" table representing each instrument that is part of the
--- NexusLIMS system; the "filestore_path" should be a relative path underneath the path specified in the "MMFNEXUS_PATH" environment variable
+-- NexusLIMS system; the "filestore_path" should be a relative path underneath the path specified in the "NEXUSLIMS_INSTRUMENT_DATA_PATH" environment variable
 DROP TABLE IF EXISTS "instruments";
 CREATE TABLE IF NOT EXISTS "instruments" (
 	"instrument_pid"	VARCHAR(100) NOT NULL,

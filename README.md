@@ -142,8 +142,8 @@ functionality, including logging the results of the run to a file, generating a 
 not run if it is already running, and the sending of notification emails if any errors are detected in the log output.
 This script can be configured also by settings in the `.env` file, including the `NEXUSLIMS_EMAIL_SENDER` and `NEXUSLIMS_EMAIL_RECIPIENTS`
 values. In the original NIST deployment, NexusLIMS was automated by running this script via the `cron` scheduler. As currently
-written, the logs from this script will be saved in a file relative to the `NEXUSLIMS_PATH` environment variable and
-organized by date, generated as follows: `"${NEXUSLIMS_PATH}/../logs/${year}/${month}/${day}/$(date +%Y%m%d-%H%M).log"`.
+written, the logs from this script will be saved in a file relative to the `NEXUSLIMS_DATA_PATH` environment variable and
+organized by date, generated as follows: `"${NEXUSLIMS_DATA_PATH}/../logs/${year}/${month}/${day}/$(date +%Y%m%d-%H%M).log"`.
 
 ## Where to get help?
 

@@ -117,7 +117,7 @@ class Instrument:
         but for reference and potential future use)
     filestore_path : str or None
         The path (relative to central storage location specified in
-        :ref:`MMFNEXUS_PATH <mmfnexus-path>`) where this instrument stores its
+        :ref:`NEXUSLIMS_INSTRUMENT_DATA_PATH <nexuslims-instrument-data-path>`) where this instrument stores its
         data (e.g. ``./Titan``)
     computer_name : str or None
         The hostname of the `support PC` connected to this instrument that runs
@@ -272,7 +272,7 @@ def get_instr_from_filepath(path: Path):
     for _, v in instrument_db.items():
         if is_subpath(
             path,
-            Path(os.environ["MMFNEXUS_PATH"]) / v.filestore_path,
+            Path(os.environ["NEXUSLIMS_INSTRUMENT_DATA_PATH"]) / v.filestore_path,
         ):
             return v
 

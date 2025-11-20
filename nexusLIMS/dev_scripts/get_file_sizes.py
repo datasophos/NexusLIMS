@@ -24,15 +24,13 @@ USERNAME = os.environ.get("NEXUSLIMS_USER")
 PASSWORD = os.environ.get("NEXUSLIMS_PASS")
 URL = os.environ.get("CDCS_URL")
 FNAME = os.environ.get("RECORDS_JSON_PATH", "records.json")
-ROOT_PATH = os.environ.get("MMFNEXUS_PATH")
-
+    ROOT_PATH = os.environ.get("NEXUSLIMS_INSTRUMENT_DATA_PATH")
 for var, val in [
     ("NEXUSLIMS_USER", USERNAME),
     ("NEXUSLIMS_PASS", PASSWORD),
     ("CDCS_URL", URL),
     ("records_json_path", FNAME),
-    ("MMFNEXUS_PATH", ROOT_PATH),
-]:
+            ("NEXUSLIMS_INSTRUMENT_DATA_PATH", ROOT_PATH),]:
     if val is None:
         msg = (
             f"{var} was not defined in the environment; please make sure "

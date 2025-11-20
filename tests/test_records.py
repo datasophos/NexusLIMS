@@ -145,9 +145,9 @@ class TestRecordBuilder:
     """Tests the record building module."""
 
     @property
-    def mmfnexus_path(self):
-        """Get the MMFNEXUS_PATH as a Path object."""
-        return Path(os.environ["MMFNEXUS_PATH"])
+    def instr_data_path(self):
+        """Get the NEXUSLIMS_INSTRUMENT_DATA_PATH as a Path object."""
+        return Path(os.environ["NEXUSLIMS_INSTRUMENT_DATA_PATH"])
 
     # have to do these before modifying the database with the actual run tests
     @pytest.mark.skip(
@@ -187,17 +187,17 @@ class TestRecordBuilder:
 
         # Verify specific files are found in each session
         assert (
-            self.mmfnexus_path
+            self.instr_data_path
             / "Titan_TEM/researcher_a/project_alpha/20181113/image_001.dm3"
         ) in file_list_list[0]
 
         assert (
-            self.mmfnexus_path
+            self.instr_data_path
             / "JEOL_TEM/researcher_b/project_beta/20190724/beam_study_1/image_1.dm3"
         ) in file_list_list[1]
 
         assert (
-            self.mmfnexus_path / "Nexus_Test_Instrument/test_files/sample_001.dm3"
+            self.instr_data_path / "Nexus_Test_Instrument/test_files/sample_001.dm3"
         ) in file_list_list[2]
 
     @pytest.mark.usefixtures("_remove_nemo_gov_harvester", "mock_nemo_reservation")
@@ -501,7 +501,7 @@ class TestRecordBuilder:
 
         # tests on the XML records
         # Updated for 3 test sessions (Titan TEM, JEOL TEM, Nexus Test Instrument)
-        upload_path = Path(os.getenv("NEXUSLIMS_PATH")).parent / "records" / "uploaded"
+        upload_path = Path(os.getenv("NEXUSLIMS_DATA_PATH")).parent / "records" / "uploaded"
         xmls = list(upload_path.glob("*.xml"))
         xml_count = 3  # One for each test session
         assert len(xmls) == xml_count

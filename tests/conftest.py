@@ -21,11 +21,11 @@ pytest_plugins = ["tests.fixtures.cdcs_mock_data"]
 # Define paths for MMFNexus and NexusLIMS within the tests/files directory
 _test_files_dir = Path(__file__).parent / "files"
 _nexuslims_path = _test_files_dir / "NexusLIMS"
-_mmfnexus_path = _test_files_dir / "MMFNexus"
+_instr_data_path = _test_files_dir / "MMFNexus"
 
 # Create the directories
 _nexuslims_path.mkdir(exist_ok=True)
-_mmfnexus_path.mkdir(exist_ok=True)
+_instr_data_path.mkdir(exist_ok=True)
 
 # Define path for dynamically-created test database
 # Database will be populated by fresh_test_db fixture (session-scoped)
@@ -77,9 +77,8 @@ if not _test_db_path.exists():
 # Set environment variables to use the new temporary directories and test DB
 # IMPORTANT: This must be set BEFORE importing nexusLIMS modules
 os.environ["NEXUSLIMS_DB_PATH"] = str(_test_db_path)
-os.environ["NEXUSLIMS_PATH"] = str(_nexuslims_path)
-os.environ["MMFNEXUS_PATH"] = str(_mmfnexus_path)
-
+os.environ["NEXUSLIMS_DATA_PATH"] = str(_nexuslims_path)
+os.environ["NEXUSLIMS_INSTRUMENT_DATA_PATH"] = str(_instr_data_path)
 # Create NexusLIMS/test_files directory structure if it doesn't exist
 # This matches the filestore_path used by test instruments
 (_nexuslims_path / "test_files").mkdir(parents=True, exist_ok=True)
@@ -123,16 +122,16 @@ def pytest_unconfigure(config):
     This includes the NexusLIMS and MMFNexus subdirectories in tests/files.
     """
     # Paths are now subdirectories of tests/files
-    nexuslims_path = Path(os.environ["NEXUSLIMS_PATH"])
-    mmfnexus_path = Path(os.environ["MMFNEXUS_PATH"])
+    nexuslims_path = Path(os.environ["NEXUSLIMS_DATA_PATH"])
+    instr_data_path = Path(os.environ["NEXUSLIMS_INSTRUMENT_DATA_PATH"])
     test_files_dir = Path(__file__).parent / "files"
 
     # Clean up the created directories, with safety checks
     if nexuslims_path.exists() and nexuslims_path.parent == test_files_dir:
         shutil.rmtree(nexuslims_path)
 
-    if mmfnexus_path.exists() and mmfnexus_path.parent == test_files_dir:
-        shutil.rmtree(mmfnexus_path)
+    if instr_data_path.exists() and instr_data_path.parent == test_files_dir:
+        shutil.rmtree(instr_data_path)
 
     # The old logic also removed a 'records' directory.
     # Let's see if it exists and remove it if it's inside tests/files.
@@ -502,7 +501,7 @@ def basic_image_file():
     yield (
         Path(__file__).parent
         / "files"
-        / os.environ["MMFNEXUS_PATH"]
+        / os.environ["NEXUSLIMS_INSTRUMENT_DATA_PATH"]
         / "test_image_thumb_source.bmp"
     )
     delete_files("IMAGE_FILES")
@@ -515,7 +514,7 @@ def image_thumb_source_gif():
     yield (
         Path(__file__).parent
         / "files"
-        / os.environ["MMFNEXUS_PATH"]
+        / os.environ["NEXUSLIMS_INSTRUMENT_DATA_PATH"]
         / "test_image_thumb_source.gif"
     )
     delete_files("IMAGE_FILES")
@@ -528,7 +527,7 @@ def image_thumb_source_png():
     yield (
         Path(__file__).parent
         / "files"
-        / os.environ["MMFNEXUS_PATH"]
+        / os.environ["NEXUSLIMS_INSTRUMENT_DATA_PATH"]
         / "test_image_thumb_source.png"
     )
     delete_files("IMAGE_FILES")
@@ -541,7 +540,7 @@ def image_thumb_source_tif():
     yield (
         Path(__file__).parent
         / "files"
-        / os.environ["MMFNEXUS_PATH"]
+        / os.environ["NEXUSLIMS_INSTRUMENT_DATA_PATH"]
         / "test_image_thumb_source.tif"
     )
     delete_files("IMAGE_FILES")
@@ -554,7 +553,7 @@ def image_thumb_source_jpg():
     yield (
         Path(__file__).parent
         / "files"
-        / os.environ["MMFNEXUS_PATH"]
+        / os.environ["NEXUSLIMS_INSTRUMENT_DATA_PATH"]
         / "test_image_thumb_source.jpg"
     )
     delete_files("IMAGE_FILES")

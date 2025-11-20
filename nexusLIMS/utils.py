@@ -165,7 +165,7 @@ def is_subpath(path: Path, of_paths: Union[Path, List[Path]]):
     Examples
     --------
     >>> is_subpath(Path('/path/to/file.dm3'),
-    ...            Path(os.environ['MMFNEXUS_PATH'] /
+    ...            Path(os.environ['NEXUSLIMS_INSTRUMENT_DATA_PATH'] /
     ...                 titan.filestore_path))
     True
     """
@@ -545,7 +545,7 @@ def _find_symlink_dirs(find_command, path):
     list
         List of symbolic link paths, or [path] if none found
     """
-    find_path = Path(os.environ["MMFNEXUS_PATH"]) / path
+    find_path = Path(os.environ["NEXUSLIMS_INSTRUMENT_DATA_PATH"]) / path
     cmd = [find_command, str(find_path), "-type", "l", "-xtype", "d", "-print0"]
     logger.info('Running followlinks find via subprocess.run: "%s"', cmd)
     out = subprocess.run(cmd, capture_output=True, check=True)
@@ -644,7 +644,7 @@ def gnu_find_files_by_mtime(
     ----------
     path
         The root path from which to start the search, relative to
-        the :ref:`MMFNEXUS_PATH <mmfnexus-path>` environment setting.
+        the :ref:`NEXUSLIMS_INSTRUMENT_DATA_PATH <nexuslims-instrument-data-path>` environment setting.
     dt_from
         The "starting" point of the search timeframe
     dt_to
@@ -655,7 +655,7 @@ def gnu_find_files_by_mtime(
     followlinks
         Whether to follow symlinks using the ``find`` command via
         the ``-H`` command line flag. This is useful when the
-        :ref:`MMFNEXUS_PATH <mmfnexus-path>` is actually a directory
+        :ref:`NEXUSLIMS_INSTRUMENT_DATA_PATH <nexuslims-instrument-data-path>` is actually a directory
         of symlinks. If this is the case and ``followlinks`` is
         ``False``, no files will ever be found because the ``find``
         command will not "dereference" the symbolic links it finds.
@@ -687,7 +687,7 @@ def gnu_find_files_by_mtime(
     if followlinks:
         find_paths = _find_symlink_dirs(find_command, path)
     else:
-        find_paths = [Path(os.environ["MMFNEXUS_PATH"]) / path]
+        find_paths = [Path(os.environ["NEXUSLIMS_INSTRUMENT_DATA_PATH"]) / path]
 
     # Build and execute find command
     cmd = _build_find_command(
@@ -972,15 +972,15 @@ def current_system_tz():
 
 def replace_mmf_path(path: Path, suffix: str) -> Path:
     """
-    Given an input "MMFNEXUS_PATH" path, generate equivalent "NEXUSLIMS_PATH" path.
+    Given an input "NEXUSLIMS_INSTRUMENT_DATA_PATH" path, generate equivalent "NEXUSLIMS_DATA_PATH" path.
 
-    If the given path is not a subpath of "MMFNEXUS_PATH", a warning will be logged
+    If the given path is not a subpath of "NEXUSLIMS_INSTRUMENT_DATA_PATH", a warning will be logged
     and the suffix will just be added at the end.
 
     Parameters
     ----------
     path
-        The input path, which is expected to be a subpath of the MMFNEXUS_PATH directory
+        The input path, which is expected to be a subpath of the NEXUSLIMS_INSTRUMENT_DATA_PATH directory
     suffix
         Any added suffix to add to the path (useful for appending with a new extension,
         such as ``.json``)
@@ -990,11 +990,11 @@ def replace_mmf_path(path: Path, suffix: str) -> Path:
     pathlib.Path
         A resolved pathlib.Path object pointing to the new path
     """
-    mmf_path = Path(os.environ["MMFNEXUS_PATH"])
-    nexuslims_path = Path(os.environ["NEXUSLIMS_PATH"])
+    mmf_path = Path(os.environ["NEXUSLIMS_INSTRUMENT_DATA_PATH"])
+    nexuslims_path = Path(os.environ["NEXUSLIMS_DATA_PATH"])
 
     if mmf_path not in path.parents:
-        logger.warning("%s is not a sub-path of %s", path, os.environ["MMFNEXUS_PATH"])
+        logger.warning("%s is not a sub-path of %s", path, os.environ["NEXUSLIMS_INSTRUMENT_DATA_PATH"])
     return Path(str(path).replace(str(mmf_path), str(nexuslims_path)) + suffix)
 
 

@@ -53,10 +53,10 @@ def extract_files(tar_key):
     Will extract files from a tar specified by ``tar_key``; returns a list
     of files that were present in the tar archive
     """
-    mmfnexus_path = Path(os.environ["MMFNEXUS_PATH"])
+    instr_data_path = Path(os.environ["NEXUSLIMS_INSTRUMENT_DATA_PATH"])
     with tarfile.open(tars[tar_key], "r:gz") as tar:
-        tar.extractall(path=mmfnexus_path)
-        return [mmfnexus_path / i for i in tar.getnames()]
+        tar.extractall(path=instr_data_path)
+        return [instr_data_path / i for i in tar.getnames()]
 
 
 def delete_files(tar_key):
@@ -66,12 +66,12 @@ def delete_files(tar_key):
     Will delete any files that have been extracted from one of the above tars,
     specified by ``tar_key``
     """
-    mmfnexus_path = Path(os.environ["MMFNEXUS_PATH"])
+    instr_data_path = Path(os.environ["NEXUSLIMS_INSTRUMENT_DATA_PATH"])
     with tarfile.open(tars[tar_key], "r:gz") as tar:
-        files = [mmfnexus_path / i for i in tar.getnames()]
+        files = [instr_data_path / i for i in tar.getnames()]
 
     # Get the parent directory path to avoid accidentally deleting it
-    parent_dir = mmfnexus_path
+    parent_dir = instr_data_path
 
     for _f in files:
         _f_path = Path(_f).resolve()

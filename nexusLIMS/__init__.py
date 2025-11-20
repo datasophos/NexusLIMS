@@ -51,18 +51,18 @@ See the ``.env.example`` file for more documentation and examples.
 `NEXUSLIMS_PASS`
     The password used to authenticate to sharepoint calendar resources and CDCS
 
-.. _mmfnexus-path:
+.. _nexuslims-instrument-data-path:
 
-`MMFNEXUS_PATH`
+`NEXUSLIMS_INSTRUMENT_DATA_PATH`
     The path (should be already mounted) to the root folder containing data
     from the Electron Microscopy Nexus. This folder is accessible read-only,
     and it is where data is written to by instruments in the Electron
     Microscopy Nexus. The file paths for specific instruments (specified in
     the NexusLIMS database) are relative to this root.
 
-.. _nexusLIMS-path:
+.. _nexuslims-data-path:
 
-`NEXUSLIMS_PATH`
+`NEXUSLIMS_DATA_PATH`
     The root path used by NexusLIMS for various needs. This folder is used to
     store the NexusLIMS database, generated records, individual file metadata
     dumps and preview images, and anything else that is needed by the back-end

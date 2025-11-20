@@ -202,7 +202,7 @@ import, rather than every time information is needed.
 +--------------------+--------------+-----------------------------------------+
 | ``filestore_path`` | TEXT         | The path (relative to central storage   |
 |                    |              | location specified in                   |
-|                    |              | :ref:`MMFNEXUS_PATH <mmfnexus-path>`)   |
+|                    |              | :ref:`NEXUSLIMS_INSTRUMENT_DATA_PATH <nexuslims-instrument-data-path>`)   |
 |                    |              | where this instrument stores            |
 |                    |              | its data (e.g. ``./Titan``)             |
 +--------------------+--------------+-----------------------------------------+

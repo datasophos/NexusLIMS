@@ -56,7 +56,7 @@ class TestInstruments:
         if test_instrument is not None:
             # Construct a path under this instrument's filestore path
             path = (
-                Path(os.environ["MMFNEXUS_PATH"])
+                Path(os.environ["NEXUSLIMS_INSTRUMENT_DATA_PATH"])
                 / test_instrument.filestore_path
                 / "some_file.dm3"
             )

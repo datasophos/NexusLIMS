@@ -107,7 +107,7 @@ Bug fixes
 
 - Fixed Poetry not installing due to change in upstream installer location (`#117 <#>`_)
 - Fixed issue where record builder would not run (and we wouldn't even be alerted!)
-  if the network shares for ``MMFNEXUS_PATH`` and ``NEXUSLIMS_PATH`` were not mounted. (`#118 <#>`_)
+  if the network shares for ``NEXUSLIMS_INSTRUMENT_DATA_PATH`` and ``NEXUSLIMS_DATA_PATH`` were not mounted. (`#118 <#>`_)
 - Fixed bug introduced by change to API response for reservation questions in NEMO 4.3.2 (`#119 <#>`_)
 - Fix for development bug introduced by upgrade of tox package to 4.0.
 
@@ -369,8 +369,7 @@ Miscellaneous/Development changes
   the SharePoint-specific way things were written before and will help in the future
   implementation of the NEMO harvester.
 - Fix some issues with tests not running correctly due to changes of paths in
-  ``MMFNEXUS_PATH``.
-- Improvements to the CI/CD pipelines so multiple pipelines can run at once without error.
+      ``NEXUSLIMS_INSTRUMENT_DATA_PATH``.- Improvements to the CI/CD pipelines so multiple pipelines can run at once without error.
 
 
 v0.0.9 (2020-02-24) - First real working release

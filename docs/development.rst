@@ -77,8 +77,8 @@ details.
 
     NEXUSLIMS_USER='username'
     NEXUSLIMS_PASS='password'
-    MMFNEXUS_PATH='/path/to/mmfnexus/mount'
-    NEXUSLIMS_PATH='/path/to/nexusLIMS/mount/mmfnexus'
+    NEXUSLIMS_INSTRUMENT_DATA_PATH='/path/to/mmfnexus/mount'
+    NEXUSLIMS_DATA_PATH='/path/to/nexusLIMS/mount/mmfnexus'
     NEXUSLIMS_DB_PATH='/path/to/nexusLIMS/nexuslims_db.sqlite'
     NEMO_ADDRESS_1='https://path.to.nemo.com/api/'
     NEMO_TOKEN_1='authentication_token'

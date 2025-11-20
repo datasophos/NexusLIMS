@@ -487,8 +487,8 @@ class TestExtractorModule:
         # remove json file
         Path(
             str(basic_txt_file_no_extension).replace(
-                os.environ["MMFNEXUS_PATH"],
-                os.environ["NEXUSLIMS_PATH"],
+                os.environ["NEXUSLIMS_INSTRUMENT_DATA_PATH"],
+                os.environ["NEXUSLIMS_DATA_PATH"],
             )
             + ".json",
         ).unlink()

@@ -48,9 +48,9 @@ class TestUtils:
     JEOL_FILE_COUNT = 8  # Total .dm3 files across all JEOL_TEM subdirs
 
     @property
-    def mmfnexus_path(self):
-        """Get the MMFNEXUS_PATH as a Path object."""
-        return Path(os.environ["MMFNEXUS_PATH"])
+    def instr_data_path(self):
+        """Get the NEXUSLIMS_INSTRUMENT_DATA_PATH as a Path object."""
+        return Path(os.environ["NEXUSLIMS_INSTRUMENT_DATA_PATH"])
 
     def test_get_nested_dict_value(self):
         nest = {"level1": {"level2.1": {"level3.1": "value"}}}
@@ -72,7 +72,7 @@ class TestUtils:
         }
 
     def test_find_dirs_by_mtime(self, test_record_files):
-        path = self.mmfnexus_path / "JEOL_TEM"
+        path = self.instr_data_path / "JEOL_TEM"
         dt_from = datetime.fromisoformat("2019-07-24T11:00:00.000-04:00")
         dt_to = datetime.fromisoformat("2019-07-24T16:00:00.000-04:00")
         dirs = find_dirs_by_mtime(path, dt_from, dt_to, followlinks=True)
@@ -88,7 +88,7 @@ class TestUtils:
 
     def test_gnu_find(self, test_record_files):
         files = gnu_find_files_by_mtime(
-            self.mmfnexus_path / "Titan_TEM",
+            self.instr_data_path / "Titan_TEM",
             dt_from=datetime.fromisoformat("2018-11-13T13:00:00.000-05:00"),
             dt_to=datetime.fromisoformat("2018-11-13T16:00:00.000-05:00"),
             extensions=ext_map.keys(),
@@ -98,7 +98,7 @@ class TestUtils:
 
         # Test with trailing slash as well
         files = gnu_find_files_by_mtime(
-            self.mmfnexus_path / "Titan_TEM",
+            self.instr_data_path / "Titan_TEM",
             dt_from=datetime.fromisoformat("2018-11-13T13:00:00.000-05:00"),
             dt_to=datetime.fromisoformat("2018-11-13T16:00:00.000-05:00"),
             extensions=ext_map.keys(),
@@ -118,7 +118,7 @@ class TestUtils:
         #     2018-11-13 14:58:35.329069000 -0500  raw_file_should_not_be_ignored.raw
         #     2018-11-13 14:59:35.329069000 -0500  txt_file_should_not_be_ignored.txt
         files = gnu_find_files_by_mtime(
-            self.mmfnexus_path / "Titan_TEM",
+            self.instr_data_path / "Titan_TEM",
             dt_from=datetime.fromisoformat("2018-11-13T13:00:00.000-05:00"),
             dt_to=datetime.fromisoformat("2018-11-13T16:00:00.000-05:00"),
             extensions=None,
@@ -130,7 +130,7 @@ class TestUtils:
     def test_gnu_and_pure_find_together(self):  # pragma: no cover
         # both file-finding methods should return the same list (when sorted
         # by mtime) for the same path and date range
-        path = self.mmfnexus_path / "JEOL_TEM"
+        path = self.instr_data_path / "JEOL_TEM"
         dt_from = datetime.fromisoformat("2019-07-24T11:00:00.000")
         dt_to = datetime.fromisoformat("2019-07-24T16:00:00.000")
         gnu_files = gnu_find_files_by_mtime(
@@ -153,7 +153,7 @@ class TestUtils:
 
         with pytest.raises(RuntimeError) as exception:
             _ = gnu_find_files_by_mtime(
-                self.mmfnexus_path / "643Titan",
+                self.instr_data_path / "643Titan",
                 dt_from=datetime.fromisoformat("2019-11-06T15:00:00.000"),
                 dt_to=datetime.fromisoformat("2019-11-06T18:00:00.000"),
                 extensions=ext_map.keys(),
@@ -218,7 +218,7 @@ class TestUtils:
         # zero a selection of bytes (doesn't matter which ones)
         new_fname = _zero_bytes(test_file, 0, 973385)
         expected = (
-            self.mmfnexus_path
+            self.instr_data_path
             / "Titan_TEM_12_no_accompanying_emi_dataZeroed_dataZeroed_1.ser"
         )
         assert new_fname == expected
@@ -272,8 +272,8 @@ class TestUtils:
 
     @pytest.fixture
     def _change_paths_in_env(self, monkeypatch):
-        monkeypatch.setenv("MMFNEXUS_PATH", "/tmp/mmf_test_path")
-        monkeypatch.setenv("NEXUSLIMS_PATH", "/tmp/nexuslims_test_path")
+        monkeypatch.setenv("NEXUSLIMS_INSTRUMENT_DATA_PATH", "/tmp/mmf_test_path")
+        monkeypatch.setenv("NEXUSLIMS_DATA_PATH", "/tmp/nexuslims_test_path")
 
     @pytest.mark.usefixtures("_change_paths_in_env")
     def test_replace_mmf_path(self):

@@ -68,10 +68,10 @@ function script_trap_err() {
 # ARGS: None
 # OUTS: None
 function script_trap_exit() {
-    # test to see if we have any files/directories at all in NEXUSLIMS_PATH;
+    # test to see if we have any files/directories at all in NEXUSLIMS_DATA_PATH;
     # if we don't (i.e. the "find | wc -l" equals zero) then the mount point
     # is probably not set up correctly and we should bail and send an email warning
-    if [[ $(find ${NEXUSLIMS_PATH} -maxdepth 0  | wc -l) -eq 0 ]]; then
+    if [[ $(find ${NEXUSLIMS_DATA_PATH} -maxdepth 0  | wc -l) -eq 0 ]]; then
         echo "no files at all found";
         send_email 'no_log'
     else
@@ -393,7 +393,7 @@ function main() {
     month=$(date +%m)
     day=$(date +%d)
     # shellcheck disable=SC2154
-    LOGPATH_rel="${NEXUSLIMS_PATH}/../logs/${year}/${month}/${day}/$(date +%Y%m%d-%H%M).log"
+    LOGPATH_rel="${NEXUSLIMS_DATA_PATH}/../logs/${year}/${month}/${day}/$(date +%Y%m%d-%H%M).log"
     # make sure path to log file directory exists
     # echo "LOGPATH_rel is ${LOGPATH_rel}"
     mkdir -p "$(dirname "${LOGPATH_rel}")"
@@ -413,7 +413,7 @@ function main() {
     fi
 
     # check/create lock file and exit if needed
-    LOCKFILE=$(get_abs_filename "${NEXUSLIMS_PATH}/../.builder.lock")
+    LOCKFILE=$(get_abs_filename "${NEXUSLIMS_DATA_PATH}/../.builder.lock")
     echo "Writing log to ${LOGPATH}" | tee -a "${LOGPATH}"
     if [ -f "${LOCKFILE}" ] ; then
         WE_CREATED_LOCKFILE=false
