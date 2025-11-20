@@ -26,7 +26,7 @@ See the ``.env.example`` file for more documentation and examples.
 
 .. _NexusLIMS-file-strategy:
 
-`NEXUSLIMS_FILE_STRATEGY`
+`NX_FILE_STRATEGY`
     Defines the strategy used to find files associated with experimental records.
     A value of ``exclusive`` will `only` add files for which NexusLIMS knows how
     to generate preview images and extract metadata.  A value of ``inclusive``
@@ -35,7 +35,7 @@ See the ``.env.example`` file for more documentation and examples.
 
 .. _NexusLIMS-ignore-patterns:
 
-`NEXUSLIMS_IGNORE_PATTERNS`
+`NX_IGNORE_PATTERNS`
     The patterns defined in this variable (which should be provided as a
     JSON-formatted string) will be ignored when finding files. A default value
     is provided in the ``.env.example`` file that should work for most users,
@@ -43,17 +43,17 @@ See the ``.env.example`` file for more documentation and examples.
 
 .. _nexusLIMS-user:
 
-`NEXUSLIMS_USER`
+`NX_CDCS_USER`
     The username used to authenticate to sharepoint calendar resources and CDCS
 
 .. _nexusLIMS-pass:
 
-`NEXUSLIMS_PASS`
+`NX_CDCS_PASS`
     The password used to authenticate to sharepoint calendar resources and CDCS
 
 .. _nexuslims-instrument-data-path:
 
-`NEXUSLIMS_INSTRUMENT_DATA_PATH`
+`NX_INSTRUMENT_DATA_PATH`
     The path (should be already mounted) to the root folder containing data
     from the Electron Microscopy Nexus. This folder is accessible read-only,
     and it is where data is written to by instruments in the Electron
@@ -62,7 +62,7 @@ See the ``.env.example`` file for more documentation and examples.
 
 .. _nexuslims-data-path:
 
-`NEXUSLIMS_DATA_PATH`
+`NX_DATA_PATH`
     The root path used by NexusLIMS for various needs. This folder is used to
     store the NexusLIMS database, generated records, individual file metadata
     dumps and preview images, and anything else that is needed by the back-end
@@ -70,7 +70,7 @@ See the ``.env.example`` file for more documentation and examples.
 
 .. _nexusLIMS-db-path:
 
-`NEXUSLIMS_DB_PATH`
+`NX_DB_PATH`
     The direct path to the NexusLIMS SQLite database file that contains
     information about the instruments in the Nexus Facility, as well as logs
     for the sessions created by users using the Session Logger Application.
@@ -81,12 +81,12 @@ See the ``.env.example`` file for more documentation and examples.
     The path to a NEMO instance's API endpoint. Should be something like
     ``https://www.nemo.com/api/`` (make sure to include the trailing slash).
     The value ``_X`` can be replaced with any value (such as
-    ``NEMO_ADDRESS_1``). NexusLIMS supports having multiple NEMO reservation
+    ``NX_NEMO_ADDRESS_1``). NexusLIMS supports having multiple NEMO reservation
     systems enabled at once (useful if your instruments are split over a few
     different management systems). To enable this behavior, create multiple
     pairs of environment variables for each instance, where the suffix ``_X``
-    changes for each pair (`e.g.` you could have ``NEMO_ADDRESS_1`` paired with
-    ``NEMO_TOKEN_1``, ``NEMO_ADDRESS_2`` paired with ``NEMO_TOKEN_2``, etc.).
+    changes for each pair (`e.g.` you could have ``NX_NEMO_ADDRESS_1`` paired with
+    ``NX_NEMO_TOKEN_1``, ``NX_NEMO_ADDRESS_2`` paired with ``NX_NEMO_TOKEN_2``, etc.).
 
 .. _nemo-token:
 
@@ -116,7 +116,7 @@ See the ``.env.example`` file for more documentation and examples.
 
 .. _nemo-tz:
 
-`NEMO_TZ_1`
+`NX_NEMO_TZ_1`
     Also optional; If the "`tz`" option is provided, the datetime
     strings received from the NEMO API will be coerced into the given timezone.
     The timezone should be specified using the IANA "tz database" name (see

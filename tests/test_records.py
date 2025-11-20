@@ -146,8 +146,8 @@ class TestRecordBuilder:
 
     @property
     def instr_data_path(self):
-        """Get the NEXUSLIMS_INSTRUMENT_DATA_PATH as a Path object."""
-        return Path(os.environ["NEXUSLIMS_INSTRUMENT_DATA_PATH"])
+        """Get the NX_INSTRUMENT_DATA_PATH as a Path object."""
+        return Path(os.environ["NX_INSTRUMENT_DATA_PATH"])
 
     # have to do these before modifying the database with the actual run tests
     @pytest.mark.skip(
@@ -501,7 +501,7 @@ class TestRecordBuilder:
 
         # tests on the XML records
         # Updated for 3 test sessions (Titan TEM, JEOL TEM, Nexus Test Instrument)
-        upload_path = Path(os.getenv("NEXUSLIMS_DATA_PATH")).parent / "records" / "uploaded"
+        upload_path = Path(os.getenv("NX_DATA_PATH")).parent / "records" / "uploaded"
         xmls = list(upload_path.glob("*.xml"))
         xml_count = 3  # One for each test session
         assert len(xmls) == xml_count
@@ -600,7 +600,7 @@ class TestRecordBuilder:
 
         Args:
             strategy_name: Name of the strategy being tested (for clarity)
-            env_value: Value to set for NEXUSLIMS_FILE_STRATEGY (None = unset)
+            env_value: Value to set for NX_FILE_STRATEGY (None = unset)
             expected_datasets: Expected number of dataset elements in XML
         """
 
@@ -621,9 +621,9 @@ class TestRecordBuilder:
 
         # Set or unset the environment variable
         if env_value is None:
-            monkeypatch.delenv("NEXUSLIMS_FILE_STRATEGY", raising=False)
+            monkeypatch.delenv("NX_FILE_STRATEGY", raising=False)
         else:
-            monkeypatch.setenv("NEXUSLIMS_FILE_STRATEGY", env_value)
+            monkeypatch.setenv("NX_FILE_STRATEGY", env_value)
 
         # Build the record
         xml_files = record_builder.build_new_session_records()

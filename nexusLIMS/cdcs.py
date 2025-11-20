@@ -38,11 +38,11 @@ def get_cdcs_url() -> str:
     Raises
     ------
     ValueError
-        If the ``CDCS_URL`` environment variable is not defined, raise a ``ValueError``
+        If the ``NX_CDCS_URL`` environment variable is not defined, raise a ``ValueError``
     """
-    url = os.environ.get("CDCS_URL", None)
+    url = os.environ.get("NX_CDCS_URL", None)
     if url is None:
-        msg = "'CDCS_URL' environment variable is not defined"
+        msg = "'NX_CDCS_URL' environment variable is not defined"
         raise ValueError(msg)
 
     return url
@@ -66,8 +66,8 @@ def get_workspace_id():
     _r = nexus_req(_endpoint, "GET", basic_auth=True)
     if _r.status_code == HTTPStatus.UNAUTHORIZED:
         msg = (
-            "Could not authenticate to CDCS. Are the NEXUSLIMS_USER and "
-            "NEXUSLIMS_PASS environment variables set correctly?"
+            "Could not authenticate to CDCS. Are the NX_CDCS_USER and "
+            "NX_CDCS_PASS environment variables set correctly?"
         )
         raise AuthenticationError(msg)
 
@@ -88,7 +88,7 @@ def get_template_id():
     _r = nexus_req(_endpoint, "GET", basic_auth=True)
     if _r.status_code == HTTPStatus.UNAUTHORIZED:
         msg = (
-            "Could not authenticate to CDCS. Are the NEXUSLIMS_USER and NEXUSLIMS_PASS "
+            "Could not authenticate to CDCS. Are the NX_CDCS_USER and NX_CDCS_PASS "
             "environment variables set correctly?",
         )
         raise AuthenticationError(msg)

@@ -42,7 +42,7 @@ def get_current_xslt_ids(names):
         "Content-Type": "application/json",
         "Accept": "application/json",
     }
-    url = urljoin(_CDCS_URL, "rest/xslt/")
+    url = urljoin(_NX_CDCS_URL, "rest/xslt/")
     xslt_ids = {}
     resp = requests.request(
         "GET",
@@ -69,7 +69,7 @@ def get_current_xslt_ids(names):
 
 def get_template_id_by_name(template_name):
     """Get the ID of a template (schema) byt its configured name."""
-    endpoint = urljoin(_CDCS_URL, "rest/template-version-manager/global/")
+    endpoint = urljoin(_NX_CDCS_URL, "rest/template-version-manager/global/")
     headers = {"Content-Type": "application/json", "Accept": "application/json"}
     res = requests.request(
         "GET",
@@ -132,7 +132,7 @@ def replace_xslt_files(
                 "filename": list_basename,  # filename of XSL
                 "content": list_content,  # xml content of XSL
             }
-            list_xsl_endpoint = urljoin(_CDCS_URL, "rest/xslt/")
+            list_xsl_endpoint = urljoin(_NX_CDCS_URL, "rest/xslt/")
             list_response = requests.request(
                 "POST",
                 list_xsl_endpoint,
@@ -154,7 +154,7 @@ def replace_xslt_files(
                 "_cls": "XslTransformation",
             }
             list_xsl_endpoint = urljoin(
-                _CDCS_URL,
+                _NX_CDCS_URL,
                 f"rest/xslt/{xslt_ids[list_basename]}/",
             )
             list_response = requests.request(
@@ -177,7 +177,7 @@ def replace_xslt_files(
                 "filename": detail_basename,  # filename of XSL
                 "content": detail_content,  # xml content of XSL
             }
-            detail_xsl_endpoint = urljoin(_CDCS_URL, "rest/xslt/")
+            detail_xsl_endpoint = urljoin(_NX_CDCS_URL, "rest/xslt/")
             detail_response = requests.request(
                 "POST",
                 detail_xsl_endpoint,
@@ -200,7 +200,7 @@ def replace_xslt_files(
                 "_cls": "XslTransformation",
             }
             detail_xsl_endpoint = urljoin(
-                _CDCS_URL,
+                _NX_CDCS_URL,
                 f"rest/xslt/{xslt_ids[detail_basename]}/",
             )
             detail_response = requests.request(
@@ -222,7 +222,7 @@ def replace_xslt_files(
             "list_xslt": new_list_id,
             "default_detail_xslt": new_detail_id,
         }
-        endpoint = urljoin(_CDCS_URL, "rest/template/xsl_rendering/")
+        endpoint = urljoin(_NX_CDCS_URL, "rest/template/xsl_rendering/")
         headers = {"Content-Type": "application/json", "Accept": "application/json"}
         xsl_response = requests.request(
             "POST",
@@ -262,6 +262,6 @@ if __name__ == "__main__":
 
     username = args.username
     password = args.password
-    _CDCS_URL = args.url
+    _NX_CDCS_URL = args.url
 
     replace_xslt_files(Path(args.detail), Path(args.list), args.template_name)

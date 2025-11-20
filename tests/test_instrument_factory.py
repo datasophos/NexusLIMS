@@ -58,7 +58,7 @@ def make_test_instrument(  # noqa: PLR0913
     property_tag : str, optional
         Unique property tag (default: "TEST-001")
     filestore_path : str, optional
-        Path relative to NEXUSLIMS_INSTRUMENT_DATA_PATH (default: "test/path")
+        Path relative to NX_INSTRUMENT_DATA_PATH (default: "test/path")
     computer_name : str or None, optional
         Support PC hostname (default: auto-generated from instrument_pid)
     computer_ip : str or None, optional

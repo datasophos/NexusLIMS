@@ -102,7 +102,7 @@ class TestSharepoint:  # pragma: no cover
 
     def test_bad_username(self, monkeypatch):
         with monkeypatch.context() as m_patch:
-            m_patch.setenv("NEXUSLIMS_USER", "bad_user")
+            m_patch.setenv("NX_CDCS_USER", "bad_user")
             with pytest.raises(AuthenticationError):
                 sc.fetch_xml(instrument_db["FEI-Titan-TEM-635816"])
 
@@ -120,7 +120,7 @@ class TestSharepoint:  # pragma: no cover
                 return MockResponse()
 
             # User bad username so we don't get a valid response or lock miclims
-            m_patch.setenv("NEXUSLIMS_USER", "bad_user")
+            m_patch.setenv("NX_CDCS_USER", "bad_user")
 
             # use monkeypatch to use our version of get for requests that
             # always returns a 404
@@ -131,14 +131,14 @@ class TestSharepoint:  # pragma: no cover
     def test_fetch_xml_instrument_none(self, monkeypatch):
         with monkeypatch.context() as m_patch:
             # use bad username so we don't get a response or lock miclims
-            m_patch.setenv("NEXUSLIMS_USER", "bad_user")
+            m_patch.setenv("NX_CDCS_USER", "bad_user")
             with pytest.raises(AuthenticationError):
                 sc.fetch_xml(instrument_db["FEI-Titan-TEM-635816"])
 
     def test_fetch_xml_instrument_bogus(self, monkeypatch):
         with monkeypatch.context() as m_patch:
             # use bad username so we don't get a response or lock miclims
-            m_patch.setenv("NEXUSLIMS_USER", "bad_user")
+            m_patch.setenv("NX_CDCS_USER", "bad_user")
             with pytest.raises(
                 ValueError,
                 match="could not be parsed",
@@ -465,8 +465,8 @@ class TestNemoConnector:
         )
 
     def test_nemo_multiple_harvesters_enabled(self, monkeypatch):
-        monkeypatch.setenv("NEMO_ADDRESS_2", "https://nemo.address.com/api/")
-        monkeypatch.setenv("NEMO_TOKEN_2", "sometokenvalue")
+        monkeypatch.setenv("NX_NEMO_ADDRESS_2", "https://nemo.address.com/api/")
+        monkeypatch.setenv("NX_NEMO_TOKEN_2", "sometokenvalue")
         harvester_count = 2
         assert len(nemo_utils.get_harvesters_enabled()) == harvester_count
         assert "Connection to NEMO API at https://nemo.address.com/api/" in [
@@ -475,7 +475,7 @@ class TestNemoConnector:
 
     def test_nemo_harvesters_enabled(self):
         assert len(nemo_utils.get_harvesters_enabled()) >= 1
-        assert f"Connection to NEMO API at {os.environ['NEMO_ADDRESS_1']}" in [
+        assert f"Connection to NEMO API at {os.environ['NX_NEMO_ADDRESS_1']}" in [
             str(n) for n in nemo_utils.get_harvesters_enabled()
         ]
 

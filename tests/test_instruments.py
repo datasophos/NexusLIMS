@@ -56,7 +56,7 @@ class TestInstruments:
         if test_instrument is not None:
             # Construct a path under this instrument's filestore path
             path = (
-                Path(os.environ["NEXUSLIMS_INSTRUMENT_DATA_PATH"])
+                Path(os.environ["NX_INSTRUMENT_DATA_PATH"])
                 / test_instrument.filestore_path
                 / "some_file.dm3"
             )
@@ -123,7 +123,7 @@ class TestInstruments:
         # This tests the database lookup function
         # It will return an instrument if one exists with matching api_url
         returned_item = get_instr_from_api_url(
-            f"{os.environ.get('NEMO_ADDRESS_1', 'http://test.example.com/api/')}tools/?id=10",
+            f"{os.environ.get('NX_NEMO_ADDRESS_1', 'http://test.example.com/api/')}tools/?id=10",
         )
         # Verify it returns an Instrument or None
         if returned_item is not None:

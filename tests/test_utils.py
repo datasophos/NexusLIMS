@@ -49,8 +49,8 @@ class TestUtils:
 
     @property
     def instr_data_path(self):
-        """Get the NEXUSLIMS_INSTRUMENT_DATA_PATH as a Path object."""
-        return Path(os.environ["NEXUSLIMS_INSTRUMENT_DATA_PATH"])
+        """Get the NX_INSTRUMENT_DATA_PATH as a Path object."""
+        return Path(os.environ["NX_INSTRUMENT_DATA_PATH"])
 
     def test_get_nested_dict_value(self):
         nest = {"level1": {"level2.1": {"level3.1": "value"}}}
@@ -248,15 +248,15 @@ class TestUtils:
         # The test calls nexus_req with just the base URL, so match that exactly
         responses.add(
             responses.GET,
-            os.environ["NEMO_ADDRESS_1"],
+            os.environ["NX_NEMO_ADDRESS_1"],
             json={"users": []},
             status=200,
         )
 
         response = nexus_req(
-            os.environ["NEMO_ADDRESS_1"],
+            os.environ["NX_NEMO_ADDRESS_1"],
             "GET",
-            token_auth=os.environ["NEMO_TOKEN_1"],
+            token_auth=os.environ["NX_NEMO_TOKEN_1"],
             headers={"test_header": "test_header_val"},
         )
         assert "test_header" in response.request.headers
@@ -264,16 +264,16 @@ class TestUtils:
         assert "users" in response.json()
 
     def test_has_delay_passed_no_val(self, monkeypatch, caplog):
-        monkeypatch.setenv("NEXUSLIMS_FILE_DELAY_DAYS", "bad_float")
+        monkeypatch.setenv("NX_FILE_DELAY_DAYS", "bad_float")
         assert not has_delay_passed(datetime.now(tz=current_system_tz()))
         assert (
-            "The environment variable value of NEXUSLIMS_FILE_DELAY_DAYS" in caplog.text
+            "The environment variable value of NX_FILE_DELAY_DAYS" in caplog.text
         )
 
     @pytest.fixture
     def _change_paths_in_env(self, monkeypatch):
-        monkeypatch.setenv("NEXUSLIMS_INSTRUMENT_DATA_PATH", "/tmp/mmf_test_path")
-        monkeypatch.setenv("NEXUSLIMS_DATA_PATH", "/tmp/nexuslims_test_path")
+        monkeypatch.setenv("NX_INSTRUMENT_DATA_PATH", "/tmp/mmf_test_path")
+        monkeypatch.setenv("NX_DATA_PATH", "/tmp/nexuslims_test_path")
 
     @pytest.mark.usefixtures("_change_paths_in_env")
     def test_replace_mmf_path(self):
@@ -306,20 +306,20 @@ class TestUtils:
     def test_absolute_path_to_credentials(self, monkeypatch):
         with monkeypatch.context() as m_patch:
             # remove environment variable so we get into file processing
-            m_patch.delenv("NEXUSLIMS_USER")
+            m_patch.delenv("NX_CDCS_USER")
             _ = get_auth(self.CREDENTIAL_FILE_ABS)
 
     def test_relative_path_to_credentials(self, monkeypatch):
         os.chdir(Path(__file__).parent)
         with monkeypatch.context() as m_patch:
             # remove environment variable so we get into file processing
-            m_patch.delenv("NEXUSLIMS_USER")
+            m_patch.delenv("NX_CDCS_USER")
             _ = get_auth(self.CREDENTIAL_FILE_REL)
 
     def test_bad_path_to_credentials(self, monkeypatch):
         with monkeypatch.context() as m_patch:
             # remove environment variable so we get into file processing
-            m_patch.delenv("NEXUSLIMS_USER")
+            m_patch.delenv("NX_CDCS_USER")
             cred_file = Path("bogus_credentials.ini")
             with pytest.raises(AuthenticationError):
                 _ = get_auth(cred_file)

@@ -165,7 +165,7 @@ def is_subpath(path: Path, of_paths: Union[Path, List[Path]]):
     Examples
     --------
     >>> is_subpath(Path('/path/to/file.dm3'),
-    ...            Path(os.environ['NEXUSLIMS_INSTRUMENT_DATA_PATH'] /
+    ...            Path(os.environ['NX_INSTRUMENT_DATA_PATH'] /
     ...                 titan.filestore_path))
     True
     """
@@ -545,7 +545,7 @@ def _find_symlink_dirs(find_command, path):
     list
         List of symbolic link paths, or [path] if none found
     """
-    find_path = Path(os.environ["NEXUSLIMS_INSTRUMENT_DATA_PATH"]) / path
+    find_path = Path(os.environ["NX_INSTRUMENT_DATA_PATH"]) / path
     cmd = [find_command, str(find_path), "-type", "l", "-xtype", "d", "-print0"]
     logger.info('Running followlinks find via subprocess.run: "%s"', cmd)
     out = subprocess.run(cmd, capture_output=True, check=True)
@@ -610,8 +610,8 @@ def _build_find_command(  # noqa: PLR0913
         cmd += [")"]
 
     # Add ignore patterns
-    if "NEXUSLIMS_IGNORE_PATTERNS" in os.environ:
-        ignore_patterns = json.loads(os.environ.get("NEXUSLIMS_IGNORE_PATTERNS"))
+    if "NX_IGNORE_PATTERNS" in os.environ:
+        ignore_patterns = json.loads(os.environ.get("NX_IGNORE_PATTERNS"))
         if ignore_patterns:
             cmd += ["-and", "("]
             for i in ignore_patterns:
@@ -644,7 +644,7 @@ def gnu_find_files_by_mtime(
     ----------
     path
         The root path from which to start the search, relative to
-        the :ref:`NEXUSLIMS_INSTRUMENT_DATA_PATH <nexuslims-instrument-data-path>` environment setting.
+        the :ref:`NX_INSTRUMENT_DATA_PATH <nexuslims-instrument-data-path>` environment setting.
     dt_from
         The "starting" point of the search timeframe
     dt_to
@@ -655,7 +655,7 @@ def gnu_find_files_by_mtime(
     followlinks
         Whether to follow symlinks using the ``find`` command via
         the ``-H`` command line flag. This is useful when the
-        :ref:`NEXUSLIMS_INSTRUMENT_DATA_PATH <nexuslims-instrument-data-path>` is actually a directory
+        :ref:`NX_INSTRUMENT_DATA_PATH <nexuslims-instrument-data-path>` is actually a directory
         of symlinks. If this is the case and ``followlinks`` is
         ``False``, no files will ever be found because the ``find``
         command will not "dereference" the symbolic links it finds.
@@ -687,7 +687,7 @@ def gnu_find_files_by_mtime(
     if followlinks:
         find_paths = _find_symlink_dirs(find_command, path)
     else:
-        find_paths = [Path(os.environ["NEXUSLIMS_INSTRUMENT_DATA_PATH"]) / path]
+        find_paths = [Path(os.environ["NX_INSTRUMENT_DATA_PATH"]) / path]
 
     # Build and execute find command
     cmd = _build_find_command(
@@ -847,7 +847,7 @@ def get_auth(filename: Path | None = None, *, basic: bool = False):
     as specified from a file that lives in the package root named
     .credentials (or some other value provided as a parameter).
     Alternatively, the stored credentials can be overridden by supplying two
-    environment variables: ``NEXUSLIMS_USER`` and ``NEXUSLIMS_PASS``. These
+    environment variables: ``NX_CDCS_USER`` and ``NX_CDCS_PASS``. These
     variables will be queried first, and if not found, the method will
     attempt to use the credential file.
 
@@ -878,8 +878,8 @@ def get_auth(filename: Path | None = None, *, basic: bool = False):
     # DONE: this should be moved out of sharepoint calendar an into general
     #  utils since it's used for CDCS as well
     try:
-        username = os.environ["NEXUSLIMS_USER"]
-        passwd = os.environ["NEXUSLIMS_PASS"]
+        username = os.environ["NX_CDCS_USER"]
+        passwd = os.environ["NX_CDCS_PASS"]
         logger.info("Authenticating using environment variables")
     except KeyError as exception:
         # if absolute path was provided, use that, otherwise find filename in
@@ -919,7 +919,7 @@ def has_delay_passed(date: datetime) -> bool:
     Check if the current time is greater than the configured delay.
 
     Check if the current time is greater than the configured (or default) record
-    building delay configured in the ``NEXUSLIMS_FILE_DELAY_DAYS`` environment variable.
+    building delay configured in the ``NX_FILE_DELAY_DAYS`` environment variable.
     If the date given is timezone-aware, the current time in that timezone will be
     compared.
 
@@ -936,14 +936,14 @@ def has_delay_passed(date: datetime) -> bool:
     """
     try:
         # get record builder delay from environment settings
-        delay = float(os.getenv("NEXUSLIMS_FILE_DELAY_DAYS", "2"))
+        delay = float(os.getenv("NX_FILE_DELAY_DAYS", "2"))
     except ValueError:
         # if it cannot be coerced to a number, warn and set to the
         # default of 2 days
         logger.warning(
-            "The environment variable value of NEXUSLIMS_FILE_DELAY_DAYS (%s) could "
+            "The environment variable value of NX_FILE_DELAY_DAYS (%s) could "
             "not be understood as a number, so using the default of 2 days.",
-            os.getenv("NEXUSLIMS_FILE_DELAY_DAYS"),
+            os.getenv("NX_FILE_DELAY_DAYS"),
         )
         delay = 2
 
@@ -972,15 +972,15 @@ def current_system_tz():
 
 def replace_mmf_path(path: Path, suffix: str) -> Path:
     """
-    Given an input "NEXUSLIMS_INSTRUMENT_DATA_PATH" path, generate equivalent "NEXUSLIMS_DATA_PATH" path.
+    Given an input "NX_INSTRUMENT_DATA_PATH" path, generate equivalent "NX_DATA_PATH" path.
 
-    If the given path is not a subpath of "NEXUSLIMS_INSTRUMENT_DATA_PATH", a warning will be logged
+    If the given path is not a subpath of "NX_INSTRUMENT_DATA_PATH", a warning will be logged
     and the suffix will just be added at the end.
 
     Parameters
     ----------
     path
-        The input path, which is expected to be a subpath of the NEXUSLIMS_INSTRUMENT_DATA_PATH directory
+        The input path, which is expected to be a subpath of the NX_INSTRUMENT_DATA_PATH directory
     suffix
         Any added suffix to add to the path (useful for appending with a new extension,
         such as ``.json``)
@@ -990,11 +990,11 @@ def replace_mmf_path(path: Path, suffix: str) -> Path:
     pathlib.Path
         A resolved pathlib.Path object pointing to the new path
     """
-    mmf_path = Path(os.environ["NEXUSLIMS_INSTRUMENT_DATA_PATH"])
-    nexuslims_path = Path(os.environ["NEXUSLIMS_DATA_PATH"])
+    mmf_path = Path(os.environ["NX_INSTRUMENT_DATA_PATH"])
+    nexuslims_path = Path(os.environ["NX_DATA_PATH"])
 
     if mmf_path not in path.parents:
-        logger.warning("%s is not a sub-path of %s", path, os.environ["NEXUSLIMS_INSTRUMENT_DATA_PATH"])
+        logger.warning("%s is not a sub-path of %s", path, os.environ["NX_INSTRUMENT_DATA_PATH"])
     return Path(str(path).replace(str(mmf_path), str(nexuslims_path)) + suffix)
 
 

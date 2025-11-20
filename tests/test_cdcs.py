@@ -34,9 +34,9 @@ class TestCDCS:
     @pytest.fixture(autouse=True)
     def _setup_cdcs_env(self, monkeypatch, mock_cdcs_server):
         """Set up CDCS environment variables and mock server."""
-        monkeypatch.setenv("CDCS_URL", "http://test-cdcs.example.com")
-        monkeypatch.setenv("NEXUSLIMS_USER", "testuser")
-        monkeypatch.setenv("NEXUSLIMS_PASS", "testpass")
+        monkeypatch.setenv("NX_CDCS_URL", "http://test-cdcs.example.com")
+        monkeypatch.setenv("NX_CDCS_USER", "testuser")
+        monkeypatch.setenv("NX_CDCS_PASS", "testpass")
 
     def test_upload_and_delete_record(self, test_xml_record_file):
         _files_uploaded, record_ids = cdcs.upload_record_files(
@@ -131,8 +131,8 @@ class TestCDCS:
         assert "This is a fake request error!" in caplog.text
 
     def test_no_env_variable(self, monkeypatch):
-        """Test that missing CDCS_URL environment variable raises ValueError."""
+        """Test that missing NX_CDCS_URL environment variable raises ValueError."""
         # pylint: disable=protected-access
-        monkeypatch.delenv("CDCS_URL")
-        with pytest.raises(ValueError, match="'CDCS_URL' environment variable"):
+        monkeypatch.delenv("NX_CDCS_URL")
+        with pytest.raises(ValueError, match="'NX_CDCS_URL' environment variable"):
             cdcs.get_cdcs_url()

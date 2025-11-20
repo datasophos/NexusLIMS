@@ -30,7 +30,7 @@ def make_db_query(query):
     # use contextlib to auto-close the connection and database cursors
     with (
         contextlib.closing(
-            sqlite3.connect(os.environ["NEXUSLIMS_DB_PATH"]),
+            sqlite3.connect(os.environ["NX_DB_PATH"]),
         ) as connection,
         connection,
         contextlib.closing(connection.cursor()) as cursor,

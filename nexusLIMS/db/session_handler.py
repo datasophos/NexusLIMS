@@ -21,7 +21,7 @@ def db_query(query, args=None):
     success = False
     with (
         contextlib.closing(
-            sqlite3.connect(os.environ["NEXUSLIMS_DB_PATH"]),
+            sqlite3.connect(os.environ["NX_DB_PATH"]),
         ) as conn,
         conn,
         contextlib.closing(conn.cursor()) as cursor,
@@ -197,7 +197,7 @@ class Session:
         # use contextlib to auto-close the connection and database cursors
         with (
             contextlib.closing(
-                sqlite3.connect(os.environ["NEXUSLIMS_DB_PATH"]),
+                sqlite3.connect(os.environ["NX_DB_PATH"]),
             ) as conn,
             conn,
             contextlib.closing(conn.cursor()) as cursor,
@@ -229,14 +229,14 @@ class Session:
             self.instrument.name,
             "RECORD_GENERATION",
             self.session_identifier,
-            os.getenv("NEXUSLIMS_USER"),
+            os.getenv("NX_CDCS_USER"),
             dt.now(tz=current_system_tz()),
         )
 
         # use contextlib to auto-close the connection and database cursors
         with (
             contextlib.closing(
-                sqlite3.connect(os.environ["NEXUSLIMS_DB_PATH"]),
+                sqlite3.connect(os.environ["NX_DB_PATH"]),
             ) as conn,
             conn,
             contextlib.closing(conn.cursor()) as cursor,
@@ -255,7 +255,7 @@ class Session:
         # use contextlib to auto-close the connection and database cursors
         with (
             contextlib.closing(
-                sqlite3.connect(os.environ["NEXUSLIMS_DB_PATH"]),
+                sqlite3.connect(os.environ["NX_DB_PATH"]),
             ) as conn,
             conn,
         ):  # auto-commits
@@ -301,7 +301,7 @@ def get_sessions_to_build() -> List[Session]:
     # use contextlib to auto-close the connection and database cursors
     with (
         contextlib.closing(
-            sqlite3.connect(os.environ["NEXUSLIMS_DB_PATH"]),
+            sqlite3.connect(os.environ["NX_DB_PATH"]),
         ) as conn,
         conn,
         contextlib.closing(conn.cursor()) as cursor,

@@ -110,7 +110,7 @@ Primarily, you need to configure three types of settings:
 
 - First, the username/password for a user in the NexusLIMS CDCS front-end system where the built records will be   
   uploaded. While not currently configurable, the upload functionality could be disabled if this feature is not 
-  needed. Also, you will need to enter the URL to your NexusLIMS instance in the `CDCS_URL` variable.
+  needed. Also, you will need to enter the URL to your NexusLIMS instance in the `NX_CDCS_URL` variable.
 - Second, various file paths that indicate the read-only path to the centralized datafile store, a writeable path 
   in which to store preview images and extracted metadata, and the path to the SQlite database file that is used to 
   hold information about instruments and sessions
@@ -140,10 +140,10 @@ Alternatively, there is a bash script supplied in the root folder of this reposi
 This script wraps the above `uv run python -m nexusLIMS.builder.record_builder` command with additional
 functionality, including logging the results of the run to a file, generating a "lock file" so the record builder will
 not run if it is already running, and the sending of notification emails if any errors are detected in the log output.
-This script can be configured also by settings in the `.env` file, including the `NEXUSLIMS_EMAIL_SENDER` and `NEXUSLIMS_EMAIL_RECIPIENTS`
+This script can be configured also by settings in the `.env` file, including the `NX_EMAIL_SENDER` and `NX_EMAIL_RECIPIENTS`
 values. In the original NIST deployment, NexusLIMS was automated by running this script via the `cron` scheduler. As currently
-written, the logs from this script will be saved in a file relative to the `NEXUSLIMS_DATA_PATH` environment variable and
-organized by date, generated as follows: `"${NEXUSLIMS_DATA_PATH}/../logs/${year}/${month}/${day}/$(date +%Y%m%d-%H%M).log"`.
+written, the logs from this script will be saved in a file relative to the `NX_DATA_PATH` environment variable and
+organized by date, generated as follows: `"${NX_DATA_PATH}/../logs/${year}/${month}/${day}/$(date +%Y%m%d-%H%M).log"`.
 
 ## Where to get help?
 

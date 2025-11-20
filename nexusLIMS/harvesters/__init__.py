@@ -8,8 +8,8 @@ a class to represent a Reservation Event
 import os
 from pathlib import Path
 
-CA_BUNDLE_PATH = os.environ.get("NEXUSLIMS_CERT_BUNDLE_FILE", None)
-CA_BUNDLE_CONTENT = os.environ.get("NEXUSLIMS_CERT_BUNDLE", None)
+CA_BUNDLE_PATH = os.environ.get("NX_CERT_BUNDLE_FILE", None)
+CA_BUNDLE_CONTENT = os.environ.get("NX_CERT_BUNDLE", None)
 
 if CA_BUNDLE_CONTENT is None:  # pragma: no cover
     # no way to test this in CI/CD pipeline

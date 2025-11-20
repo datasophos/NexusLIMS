@@ -60,7 +60,7 @@ def _sharepoint_url():
     Raises
     ------
     ValueError
-        If the ``NEXUSLIMS_SP_ROOT_URL`` environment variable is not defined,
+        If the ``NX_SP_ROOT_URL`` environment variable is not defined,
         raise a ``ValueError``
     """
     url = os.environ.get("SHAREPOINT_ROOT_URL", None)

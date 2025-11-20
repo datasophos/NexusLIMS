@@ -53,7 +53,7 @@ def extract_files(tar_key):
     Will extract files from a tar specified by ``tar_key``; returns a list
     of files that were present in the tar archive
     """
-    instr_data_path = Path(os.environ["NEXUSLIMS_INSTRUMENT_DATA_PATH"])
+    instr_data_path = Path(os.environ["NX_INSTRUMENT_DATA_PATH"])
     with tarfile.open(tars[tar_key], "r:gz") as tar:
         tar.extractall(path=instr_data_path)
         return [instr_data_path / i for i in tar.getnames()]
@@ -66,7 +66,7 @@ def delete_files(tar_key):
     Will delete any files that have been extracted from one of the above tars,
     specified by ``tar_key``
     """
-    instr_data_path = Path(os.environ["NEXUSLIMS_INSTRUMENT_DATA_PATH"])
+    instr_data_path = Path(os.environ["NX_INSTRUMENT_DATA_PATH"])
     with tarfile.open(tars[tar_key], "r:gz") as tar:
         files = [instr_data_path / i for i in tar.getnames()]
 

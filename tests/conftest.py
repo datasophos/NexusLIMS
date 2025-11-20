@@ -76,9 +76,9 @@ if not _test_db_path.exists():
 
 # Set environment variables to use the new temporary directories and test DB
 # IMPORTANT: This must be set BEFORE importing nexusLIMS modules
-os.environ["NEXUSLIMS_DB_PATH"] = str(_test_db_path)
-os.environ["NEXUSLIMS_DATA_PATH"] = str(_nexuslims_path)
-os.environ["NEXUSLIMS_INSTRUMENT_DATA_PATH"] = str(_instr_data_path)
+os.environ["NX_DB_PATH"] = str(_test_db_path)
+os.environ["NX_DATA_PATH"] = str(_nexuslims_path)
+os.environ["NX_INSTRUMENT_DATA_PATH"] = str(_instr_data_path)
 # Create NexusLIMS/test_files directory structure if it doesn't exist
 # This matches the filestore_path used by test instruments
 (_nexuslims_path / "test_files").mkdir(parents=True, exist_ok=True)
@@ -101,7 +101,7 @@ def pytest_configure(config):
     from nexusLIMS.db import make_db_query  # pylint: disable=import-outside-toplevel
 
     # update API URLs for marlin.nist.gov if we're using marlin-test.nist.gov:
-    if "marlin-test.nist.gov" in os.environ.get("NEMO_ADDRESS_1", ""):
+    if "marlin-test.nist.gov" in os.environ.get("NX_NEMO_ADDRESS_1", ""):
         make_db_query(
             "UPDATE instruments "
             "SET api_url = "
@@ -122,8 +122,8 @@ def pytest_unconfigure(config):
     This includes the NexusLIMS and MMFNexus subdirectories in tests/files.
     """
     # Paths are now subdirectories of tests/files
-    nexuslims_path = Path(os.environ["NEXUSLIMS_DATA_PATH"])
-    instr_data_path = Path(os.environ["NEXUSLIMS_INSTRUMENT_DATA_PATH"])
+    nexuslims_path = Path(os.environ["NX_DATA_PATH"])
+    instr_data_path = Path(os.environ["NX_INSTRUMENT_DATA_PATH"])
     test_files_dir = Path(__file__).parent / "files"
 
     # Clean up the created directories, with safety checks
@@ -158,10 +158,10 @@ def mock_nemo_env_fixture(monkey_session):
     for all tests unless NEMO environment variables are already set.
     """
     # Only set if not already set (allows real NEMO testing if env vars exist)
-    if "NEMO_ADDRESS_1" not in os.environ:
-        monkey_session.setenv("NEMO_ADDRESS_1", "http://test.example.com/api/")
-        monkey_session.setenv("NEMO_TOKEN_1", "test-token-12345")
-        monkey_session.setenv("NEMO_TZ_1", "America/Denver")
+    if "NX_NEMO_ADDRESS_1" not in os.environ:
+        monkey_session.setenv("NX_NEMO_ADDRESS_1", "http://test.example.com/api/")
+        monkey_session.setenv("NX_NEMO_TOKEN_1", "test-token-12345")
+        monkey_session.setenv("NX_NEMO_TZ_1", "America/Denver")
 
 
 @pytest.fixture(scope="session", name="_fix_mountain_time")
@@ -501,7 +501,7 @@ def basic_image_file():
     yield (
         Path(__file__).parent
         / "files"
-        / os.environ["NEXUSLIMS_INSTRUMENT_DATA_PATH"]
+        / os.environ["NX_INSTRUMENT_DATA_PATH"]
         / "test_image_thumb_source.bmp"
     )
     delete_files("IMAGE_FILES")
@@ -514,7 +514,7 @@ def image_thumb_source_gif():
     yield (
         Path(__file__).parent
         / "files"
-        / os.environ["NEXUSLIMS_INSTRUMENT_DATA_PATH"]
+        / os.environ["NX_INSTRUMENT_DATA_PATH"]
         / "test_image_thumb_source.gif"
     )
     delete_files("IMAGE_FILES")
@@ -527,7 +527,7 @@ def image_thumb_source_png():
     yield (
         Path(__file__).parent
         / "files"
-        / os.environ["NEXUSLIMS_INSTRUMENT_DATA_PATH"]
+        / os.environ["NX_INSTRUMENT_DATA_PATH"]
         / "test_image_thumb_source.png"
     )
     delete_files("IMAGE_FILES")
@@ -540,7 +540,7 @@ def image_thumb_source_tif():
     yield (
         Path(__file__).parent
         / "files"
-        / os.environ["NEXUSLIMS_INSTRUMENT_DATA_PATH"]
+        / os.environ["NX_INSTRUMENT_DATA_PATH"]
         / "test_image_thumb_source.tif"
     )
     delete_files("IMAGE_FILES")
@@ -553,7 +553,7 @@ def image_thumb_source_jpg():
     yield (
         Path(__file__).parent
         / "files"
-        / os.environ["NEXUSLIMS_INSTRUMENT_DATA_PATH"]
+        / os.environ["NX_INSTRUMENT_DATA_PATH"]
         / "test_image_thumb_source.jpg"
     )
     delete_files("IMAGE_FILES")
