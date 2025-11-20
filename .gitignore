@@ -1,5 +1,9 @@
 # File patterns we want git to ignore
 
+# Markdown files
+*.md
+!README.md
+
 # backup
 *~
 *.bak
@@ -7,6 +11,7 @@ backups
 .~lock*
 
 # Other files
+nemo_api_schemas
 .access_token
 gitlab_backup.log
 *credentials.ini
@@ -26,12 +31,17 @@ tests/test_report.xml
 cert_bundle.pem
 .directory
 test_db.sqlite
+nexusLIMS.db
+**/.DS_Store
+*.ipynb
+coverage.xml
 
 # dev files
 *.pyc
 .idea
 .vscode
 test_data/
+tests/dev/
 **/doc/build
 **/db_logger_gui/build
 mdcs/nexusLIMS/doc/source/api/*.rst
