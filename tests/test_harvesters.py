@@ -436,15 +436,25 @@ def nemo_connector_test_instance(  # noqa: PLR0913
 
 
 @pytest.fixture(name="bogus_nemo_connector_url")
-def bogus_nemo_connector_url_test_instance():
-    """Return a NemoConnector with a bad URL and token that should fail."""
-    return NemoConnector("https://a_url_that_doesnt_exist/", "notneeded")
+def bogus_nemo_connector_url_test_instance(monkeypatch):
+    """
+    Return a NemoConnector with a bad URL and token that should fail.
+
+    This connector only uses one retry to speed up the tests where this is used.
+    """
+    return NemoConnector(
+        "https://a_url_that_doesnt_exist/", "notneeded", retries=1
+    )
 
 
 @pytest.fixture(name="bogus_nemo_connector_token")
 def bogus_nemo_connector_token_test_instance():
-    """Return a NemoConnector with a bad URL and token that should fail."""
-    return NemoConnector("http://test.example.com/api/", "badtokenvalue")
+    """
+    Return a NemoConnector with a bad URL and token that should fail.
+
+    This connector only uses one retry to speed up the tests where this is used.
+    """
+    return NemoConnector("http://test.example.com/api/", "badtokenvalue", retries=1)
 
 
 class TestNemoConnector:

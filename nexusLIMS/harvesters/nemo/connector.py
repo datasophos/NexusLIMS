@@ -44,6 +44,9 @@ class NemoConnector:
         from an instance of the NEMO API. If ``None``, no timezone setting will
         be done and the code will use whatever was returned from the server
         as is.
+    retries : int
+        The number of retries that will be used for failed HTTP requests before
+        actually failing.
     """
 
     tools: Dict[int, Dict]
@@ -51,13 +54,14 @@ class NemoConnector:
     users_by_username: Dict[str, Dict]
     projects: Dict[int, Dict]
 
-    def __init__(  # pylint: disable=too-many-arguments,too-many-positional-arguments
+    def __init__(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # noqa: PLR0913
         self,
         base_url: str,
         token: str,
         strftime_fmt: str | None = None,
         strptime_fmt: str | None = None,
         timezone: str | None = None,
+        retries: int = 5,
     ):
         self.config = {
             "base_url": base_url,
@@ -65,6 +69,7 @@ class NemoConnector:
             "strftime_fmt": strftime_fmt,
             "strptime_fmt": strptime_fmt,
             "timezone": timezone,
+            "retries": retries,
         }
 
         # these attributes are used for "memoization" of NEMO content,
@@ -814,7 +819,13 @@ class NemoConnector:
         """
         url = urljoin(self.config["base_url"], endpoint)
         logger.info("getting data from %s with parameters %s", url, params)
-        response = nexus_req(url, verb, token_auth=self.config["token"], params=params)
+        response = nexus_req(
+            url,
+            verb,
+            token_auth=self.config["token"],
+            params=params,
+            retries=self.config["retries"],
+        )
         response.raise_for_status()
 
         return response.json()

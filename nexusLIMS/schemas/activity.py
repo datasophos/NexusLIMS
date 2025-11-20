@@ -160,7 +160,7 @@ def _add_dataset_element(
     file = _escape(file)
 
     # build path to thumbnail
-    rel_fname = file.replace(os.environ["NX_INSTRUMENT_DATA_PATH"], "")    
+    rel_fname = file.replace(os.environ["NX_INSTRUMENT_DATA_PATH"], "")
     rel_thumb_name = f"{rel_fname}.thumb.png"
 
     # encode for safe URLs

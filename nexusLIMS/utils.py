@@ -54,6 +54,7 @@ def nexus_req(
     url: str,
     function: str,
     *,
+    retries: int = 5,
     basic_auth: bool = False,
     token_auth: str | None = None,
     **kwargs: dict | None,
@@ -73,6 +74,8 @@ def nexus_req(
     function
         The function from the ``requests`` library to use (e.g.
         ``'GET'``, ``'POST'``, ``'PATCH'``, etc.)
+    retries
+        The number of retries to attempt before failing
     basic_auth
         If True, use only username and password for authentication rather than
         NTLM
@@ -110,7 +113,7 @@ def nexus_req(
 
     # set up a session to retry requests as needed
     s = Session()
-    retries = Retry(total=5, backoff_factor=1, status_forcelist=[502, 503, 504])
+    retries = Retry(total=retries, backoff_factor=1, status_forcelist=[502, 503, 504])
     s.mount("https://", HTTPAdapter(max_retries=retries))
     s.mount("http://", HTTPAdapter(max_retries=retries))
 
