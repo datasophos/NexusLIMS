@@ -13,10 +13,11 @@ instrument_db : dict
 
 import contextlib
 import datetime
+import json
 import logging
 import os
 import sqlite3
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from pathlib import Path
 
 import pytz
@@ -43,44 +44,52 @@ def _get_instrument_db():
         NexusLIMS database
     """
     query = "SELECT * from instruments"
+    instr_db = {}  # Initialize instr_db here
 
-    with (
-        contextlib.closing(
-            sqlite3.connect(os.environ["NX_DB_PATH"]),
-        ) as conn,
-        conn,
-        contextlib.closing(conn.cursor()) as cursor,
-    ):  # auto-commits
-        results = cursor.execute(query).fetchall()
-        col_names = [x[0] for x in cursor.description]
+    try:
+        with (
+            contextlib.closing(
+                sqlite3.connect(os.environ["NX_DB_PATH"]),
+            ) as conn,
+            conn,
+            contextlib.closing(conn.cursor()) as cursor,
+        ):  # auto-commits
+            results = cursor.execute(query).fetchall()
+            col_names = [x[0] for x in cursor.description]
 
-    instr_db = {}
-    for line in results:
-        this_dict = {}
-        for key, val in zip(col_names, line):
-            this_dict[key] = val
+        for line in results:
+            this_dict = {}
+            for key, val in zip(col_names, line):
+                this_dict[key] = val
 
-        key = this_dict.pop("instrument_pid")
-        this_dict["name"] = key
-        # remove keys from this_dict that we don't know about yet so we don't
-        # crash and burn if a new column is added
-        known_cols = [
-            "api_url",
-            "calendar_name",
-            "calendar_url",
-            "location",
-            "name",
-            "schema_name",
-            "property_tag",
-            "filestore_path",
-            "computer_ip",
-            "computer_name",
-            "computer_mount",
-            "harvester",
-            "timezone",
-        ]
-        this_dict = {k: this_dict[k] for k in known_cols}
-        instr_db[key] = Instrument(**this_dict)
+            key = this_dict.pop("instrument_pid")
+            this_dict["name"] = key
+            # remove keys from this_dict that we don't know about yet so we don't
+            # crash and burn if a new column is added
+            known_cols = [
+                "api_url",
+                "calendar_name",
+                "calendar_url",
+                "location",
+                "name",
+                "schema_name",
+                "property_tag",
+                "filestore_path",
+                "computer_ip",
+                "computer_name",
+                "computer_mount",
+                "harvester",
+                "timezone",
+            ]
+            this_dict = {k: this_dict[k] for k in known_cols}
+            instr_db[key] = Instrument(**this_dict)
+
+    except (sqlite3.Error, KeyError) as e:
+        logger.warning(
+            "Could not connect to database or retrieve instruments. "
+            "Returning empty instrument dictionary.\n\n Details:\n %s", e
+        )
+        return {}
 
     return instr_db
 
@@ -117,8 +126,8 @@ class Instrument:
         but for reference and potential future use)
     filestore_path : str or None
         The path (relative to central storage location specified in
-        :ref:`NX_INSTRUMENT_DATA_PATH <nexuslims-instrument-data-path>`) where this instrument stores its
-        data (e.g. ``./Titan``)
+        :ref:`NX_INSTRUMENT_DATA_PATH <nexuslims-instrument-data-path>`) where
+        this instrument stores its data (e.g. ``./Titan``)
     computer_name : str or None
         The hostname of the `support PC` connected to this instrument that runs
         the `Session Logger App`. If this is incorrect (or not included), the
@@ -242,6 +251,47 @@ class Instrument:
             The formatted textual representation of the localized datetime
         """
         return self.localize_datetime(_dt).strftime(fmt)
+
+    def to_dict(self) -> dict:
+        """
+        Return a dictionary representation of the Instrument object.
+
+        Handles special cases like renaming 'name' to 'instrument_pid' and
+        converting timezone objects to strings.
+
+        Returns
+        -------
+        dict
+            A dictionary representation of the instrument, suitable for database
+            insertion or JSON serialization.
+        """
+        instr_dict = asdict(self)
+
+        # Rename 'name' to 'instrument_pid' for database compatibility
+        if "name" in instr_dict:
+            instr_dict["instrument_pid"] = instr_dict.pop("name")
+
+        # Convert timezone object to string
+        if isinstance(instr_dict.get("timezone"), BaseTzInfo):
+            instr_dict["timezone"] = str(instr_dict["timezone"])
+
+        return instr_dict
+
+    def to_json(self, **kwargs) -> str:
+        """
+        Return a JSON string representation of the Instrument object.
+
+        Parameters
+        ----------
+        **kwargs
+            Additional keyword arguments to pass to `json.dumps`.
+
+        Returns
+        -------
+        str
+            A JSON string representation of the instrument.
+        """
+        return json.dumps(self.to_dict(), **kwargs)
 
 
 instrument_db = _get_instrument_db()

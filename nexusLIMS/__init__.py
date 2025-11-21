@@ -134,11 +134,12 @@ import logging
 
 from dotenv import load_dotenv
 
-from . import builder, db, extractors, instruments, utils
-from .version import __version__
-
-# load environment variables from a .env file if present
+# load environment variables from a .env file if present;
+# must be loaded before the other nexus imports
 load_dotenv()
+
+from . import builder, db, extractors, instruments, utils  # noqa: E402
+from .version import __version__  # noqa: E402
 
 
 def _filter_hyperspy_messages(record):  # pragma: no cover

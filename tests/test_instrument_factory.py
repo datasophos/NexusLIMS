@@ -8,7 +8,7 @@ tests from the test database contents and makes test dependencies explicit.
 Usage
 -----
 In tests, instead of:
-    instruments.instrument_db["FEI-Titan-STEM-630901_n"]
+    instruments.instrument_db["FEI-Titan-STEM"]
 
 Use:
     make_titan_stem()  # or make_test_instrument() with custom params
