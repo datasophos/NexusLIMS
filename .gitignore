@@ -37,6 +37,7 @@ nexusLIMS.db
 .DS_Store
 
 # dev files
+nexuslims_db.sqlite
 *.pyc
 .idea
 .vscode

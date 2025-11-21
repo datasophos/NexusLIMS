@@ -75,16 +75,16 @@ details.
 
 .. code:: bash
 
-    NEXUSLIMS_USER='username'
-    NEXUSLIMS_PASS='password'
-    NEXUSLIMS_INSTRUMENT_DATA_PATH='/path/to/mmfnexus/mount'
-    NEXUSLIMS_DATA_PATH='/path/to/nexusLIMS/mount/mmfnexus'
-    NEXUSLIMS_DB_PATH='/path/to/nexusLIMS/nexuslims_db.sqlite'
-    NEMO_ADDRESS_1='https://path.to.nemo.com/api/'
-    NEMO_TOKEN_1='authentication_token'
-    NEMO_STRFTIME_FMT_1="%Y-%m-%dT%H:%M:%S%z"
-    NEMO_STRPTIME_FMT_1="%Y-%m-%dT%H:%M:%S%z"
-    NEMO_TZ_1="America/New_York"
+    NX_CDCS_USER='username'
+    NX_CDCS_PASS='password'
+    NX_INSTRUMENT_DATA_PATH='/path/to/mmfnexus/mount'
+    NX_DATA_PATH='/path/to/nexusLIMS/mount/mmfnexus'
+    NX_DB_PATH='/path/to/nexusLIMS/nexuslims_db.sqlite'
+    NX_NEMO_ADDRESS_1='https://path.to.nemo.com/api/'
+    NX_NEMO_TOKEN_1='authentication_token'
+    NX_NEMO_STRFTIME_FMT_1="%Y-%m-%dT%H:%M:%S%z"
+    NX_NEMO_STRPTIME_FMT_1="%Y-%m-%dT%H:%M:%S%z"
+    NX_NEMO_TZ_1="America/New_York"
 
 Rather than using the ``.env`` file, each of these variables could also be set
 in the environment some other way if you desire. For example, to use Gitlab

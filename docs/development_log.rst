@@ -92,12 +92,12 @@ New features
 - Added new "default" extractor for filetypes we don't know how to read
   that will add very basic file-based metadata otherwise (`#121 <#>`_)
 - Added a configuration environment variable for file finding
-  (``NEXUSLIMS_FILE_STRATEGY``). A value of ``"inclusive"`` will add all files found in
+  (``NX_FILE_STRATEGY``). A value of ``"inclusive"`` will add all files found in
   the time range of a session to the record (even if we don't know how to parse it beyond
   basic metadata). A value of ``"exclusive"`` will exlcude files that do not have an
   explicit extractor defined (this was the previous behavior) (`#121 <#>`_)
 - Added a way to "ignore" files during the file finding routine via an environment
-  variable named ``NEXUSLIMS_IGNORE_PATTERNS``. It should be a JSON-formatted list
+  variable named ``NX_IGNORE_PATTERNS``. It should be a JSON-formatted list
   provided as a string. Each item of the list will be passed to the GNU find command
   as a pattern to ignore. (`#121 <#>`_)
 
@@ -107,7 +107,7 @@ Bug fixes
 
 - Fixed Poetry not installing due to change in upstream installer location (`#117 <#>`_)
 - Fixed issue where record builder would not run (and we wouldn't even be alerted!)
-  if the network shares for ``NEXUSLIMS_INSTRUMENT_DATA_PATH`` and ``NEXUSLIMS_DATA_PATH`` were not mounted. (`#118 <#>`_)
+  if the network shares for ``NX_INSTRUMENT_DATA_PATH`` and ``NX_DATA_PATH`` were not mounted. (`#118 <#>`_)
 - Fixed bug introduced by change to API response for reservation questions in NEMO 4.3.2 (`#119 <#>`_)
 - Fix for development bug introduced by upgrade of tox package to 4.0.
 
@@ -369,7 +369,7 @@ Miscellaneous/Development changes
   the SharePoint-specific way things were written before and will help in the future
   implementation of the NEMO harvester.
 - Fix some issues with tests not running correctly due to changes of paths in
-      ``NEXUSLIMS_INSTRUMENT_DATA_PATH``.- Improvements to the CI/CD pipelines so multiple pipelines can run at once without error.
+      ``NX_INSTRUMENT_DATA_PATH``.- Improvements to the CI/CD pipelines so multiple pipelines can run at once without error.
 
 
 v0.0.9 (2020-02-24) - First real working release
