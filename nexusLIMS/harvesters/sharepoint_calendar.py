@@ -63,9 +63,9 @@ def _sharepoint_url():
         If the ``NX_SP_ROOT_URL`` environment variable is not defined,
         raise a ``ValueError``
     """
-    url = os.environ.get("SHAREPOINT_ROOT_URL", None)
+    url = os.environ.get("NX_SP_ROOT_URL", None)
     if url is None:
-        msg = "'SHAREPOINT_ROOT_URL' environment variable is not defined"
+        msg = "'NX_SP_ROOT_URL' environment variable is not defined"
         raise ValueError(msg)
     return url
 

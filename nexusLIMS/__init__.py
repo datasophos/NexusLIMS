@@ -132,6 +132,8 @@ See the ``.env.example`` file for more documentation and examples.
 
 import logging
 
+from .config import settings
+
 from dotenv import load_dotenv
 
 # load environment variables from a .env file if present;
