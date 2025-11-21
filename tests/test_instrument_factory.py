@@ -27,7 +27,7 @@ def make_test_instrument(  # noqa: PLR0913
     location="Test Building Room 123",
     schema_name="Test Instrument",
     property_tag="TEST-001",
-    filestore_path="./NexusLIMS/test_files",
+    filestore_path="./Nexus_Test_Instrument",
     computer_name=None,
     computer_ip=None,
     computer_mount=None,
@@ -95,12 +95,6 @@ def make_test_instrument(  # noqa: PLR0913
     if calendar_url is None:
         calendar_url = f"http://test.example.com/calendar/{instrument_pid}"
 
-    if computer_name is None:
-        computer_name = f"computer-{instrument_pid.lower()}"
-
-    if computer_ip is None:
-        computer_ip = "192.168.1.100"
-
     # Build the parameters dict
     params = {
         "name": instrument_pid,
@@ -131,7 +125,7 @@ def make_titan_stem(
     instrument_pid="FEI-Titan-STEM",
     calendar_name="FEI Titan TEM",
     schema_name="Titan TEM",
-    filestore_path="Titan_STEM",
+    filestore_path="./Titan_STEM",
     **overrides,
 ):
     """
@@ -169,6 +163,7 @@ def make_titan_stem(
         "calendar_name": calendar_name,
         "schema_name": schema_name,
         "filestore_path": filestore_path,
+        "api_url": "https://nemo.url.com/api/tools/?id=1",
         "location": "Test Building Room 300",
         "property_tag": "TEST-STEM-001",
     }
@@ -180,7 +175,7 @@ def make_titan_tem(
     instrument_pid="FEI-Titan-TEM",
     calendar_name="FEI Titan TEM",
     schema_name="Titan TEM",
-    filestore_path="Titan_TEM",
+    filestore_path="./Titan_TEM",
     **overrides,
 ):
     """
@@ -218,6 +213,7 @@ def make_titan_tem(
         "calendar_name": calendar_name,
         "schema_name": schema_name,
         "filestore_path": filestore_path,
+        "api_url": "https://nemo.url.com/api/tools/?id=2",
         "location": "Test Building Room 301",
         "property_tag": "TEST-TEM-001",
     }
@@ -229,7 +225,7 @@ def make_quanta_sem(
     instrument_pid="FEI-Quanta-ESEM",
     calendar_name="FEI Quanta 200 ESEM",
     schema_name="Quanta FEG 200",
-    filestore_path="Quanta",
+    filestore_path="./Quanta",
     **overrides,
 ):
     """
@@ -267,6 +263,7 @@ def make_quanta_sem(
         "calendar_name": calendar_name,
         "schema_name": schema_name,
         "filestore_path": filestore_path,
+        "api_url": "https://nemo.url.com/api/tools/?id=3",
         "location": "Test Building Room 302",
         "property_tag": "TEST-SEM-001",
     }
@@ -278,7 +275,7 @@ def make_jeol_tem(
     instrument_pid="JEOL-JEM-TEM",
     calendar_name="JEOL 3010 TEM",
     schema_name="JEOL JEM-3010",
-    filestore_path="JEOL_TEM",
+    filestore_path="./JEOL_TEM",
     **overrides,
 ):
     """
@@ -316,6 +313,7 @@ def make_jeol_tem(
         "calendar_name": calendar_name,
         "schema_name": schema_name,
         "filestore_path": filestore_path,
+        "api_url": "https://nemo.url.com/api/tools/?id=5",
         "location": "Test Building Room 303",
         "property_tag": "TEST-JEOL-001",
     }
@@ -365,6 +363,7 @@ def make_test_tool(
         "calendar_name": calendar_name,
         "schema_name": schema_name,
         "filestore_path": filestore_path,
+        "api_url": "https://nemo.url.com/api/tools/?id=6",
         "location": "Test Building Room 400",
         "property_tag": "TEST-TOOL-001",
     }
