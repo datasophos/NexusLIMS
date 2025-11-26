@@ -33,7 +33,9 @@ dependencies = [
     "exspy>=0.3.2",
     "pyxem>=0.21.0",
     "pixstem>=0.4.0",
+    "pydantic[email]>=2.12.0",
     "pydantic-settings>=2.12.0",
+    "email-validator>=2.3.0",
 ]
 
 [dependency-groups]

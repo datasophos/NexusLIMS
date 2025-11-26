@@ -29,6 +29,14 @@ nexusLIMS.cdcs module
    :undoc-members:
    :show-inheritance:
 
+nexusLIMS.config module
+-----------------------
+
+.. automodule:: nexusLIMS.config
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 nexusLIMS.instruments module
 ----------------------------
 

@@ -132,15 +132,8 @@ See the ``.env.example`` file for more documentation and examples.
 
 import logging
 
-from .config import settings
-
-from dotenv import load_dotenv
-
-# load environment variables from a .env file if present;
-# must be loaded before the other nexus imports
-load_dotenv()
-
 from . import builder, db, extractors, instruments, utils  # noqa: E402
+from .config import settings
 from .version import __version__  # noqa: E402
 
 

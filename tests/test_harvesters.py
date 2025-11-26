@@ -475,8 +475,13 @@ class TestNemoConnector:
         )
 
     def test_nemo_multiple_harvesters_enabled(self, monkeypatch):
+        from nexusLIMS.config import settings
+
         monkeypatch.setenv("NX_NEMO_ADDRESS_2", "https://nemo.address.com/api/")
         monkeypatch.setenv("NX_NEMO_TOKEN_2", "sometokenvalue")
+        # Clear the cached property so it re-evaluates with new env vars
+        if "nemo_harvesters" in settings.__dict__:
+            del settings.__dict__["nemo_harvesters"]
         harvester_count = 2
         assert len(nemo_utils.get_harvesters_enabled()) == harvester_count
         assert "Connection to NEMO API at https://nemo.address.com/api/" in [

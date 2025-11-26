@@ -1,12 +1,11 @@
 """Various utility functions used by the NEMO harvester."""
 
 import logging
-import os
-import re
 from datetime import datetime
 from typing import Dict, List, Tuple, Union
 from urllib.parse import parse_qs, urljoin, urlparse
 
+from nexusLIMS.config import settings
 from nexusLIMS.db.session_handler import Session
 
 from .connector import NemoConnector
@@ -24,18 +23,23 @@ def get_harvesters_enabled() -> List[NemoConnector]:
         A list of NemoConnector objects representing the NEMO APIs enabled
         via environment settings
     """
-    harvesters_enabled_str: List[str] = list(
-        filter(lambda x: re.search("NEMO_ADDRESS", x), os.environ.keys()),
-    )
     return [
         NemoConnector(
-            base_url=os.getenv(addr),
-            token=os.getenv(addr.replace("ADDRESS", "TOKEN")),
-            strftime_fmt=os.getenv(addr.replace("ADDRESS", "STRFTIME_FMT")),
-            strptime_fmt=os.getenv(addr.replace("ADDRESS", "STRPTIME_FMT")),
-            timezone=os.getenv(addr.replace("ADDRESS", "TZ")),
+            base_url=str(config.address),
+            token=config.token,
+            strftime_fmt=(
+                config.strftime_fmt
+                if config.strftime_fmt != "%Y-%m-%dT%H:%M:%S%z"
+                else None
+            ),
+            strptime_fmt=(
+                config.strptime_fmt
+                if config.strptime_fmt != "%Y-%m-%dT%H:%M:%S%z"
+                else None
+            ),
+            timezone=config.tz,
         )
-        for addr in harvesters_enabled_str
+        for config in settings.nemo_harvesters.values()
     ]
 
 
