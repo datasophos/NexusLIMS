@@ -50,7 +50,9 @@ class TestUtils:
     @property
     def instr_data_path(self):
         """Get the NX_INSTRUMENT_DATA_PATH as a Path object."""
-        return Path(os.environ["NX_INSTRUMENT_DATA_PATH"])
+        from nexusLIMS.config import settings
+
+        return Path(settings.NX_INSTRUMENT_DATA_PATH)
 
     def test_get_nested_dict_value(self):
         nest = {"level1": {"level2.1": {"level3.1": "value"}}}
@@ -244,85 +246,75 @@ class TestUtils:
 
     @responses.activate
     def test_header_addition_nexus_req(self):
+        from nexusLIMS.config import settings
+
         # Mock the NEMO API response
         # The test calls nexus_req with just the base URL, so match that exactly
+        nemo_address = str(next(iter(settings.nemo_harvesters.values())).address)
+        nemo_token = next(iter(settings.nemo_harvesters.values())).token
+
         responses.add(
             responses.GET,
-            os.environ["NX_NEMO_ADDRESS_1"],
+            nemo_address,
             json={"users": []},
             status=200,
         )
 
         response = nexus_req(
-            os.environ["NX_NEMO_ADDRESS_1"],
+            nemo_address,
             "GET",
-            token_auth=os.environ["NX_NEMO_TOKEN_1"],
+            token_auth=nemo_token,
             headers={"test_header": "test_header_val"},
         )
         assert "test_header" in response.request.headers
         assert response.request.headers["test_header"] == "test_header_val"
         assert "users" in response.json()
 
-    def test_has_delay_passed_no_val(self, monkeypatch, caplog):
-        monkeypatch.setenv("NX_FILE_DELAY_DAYS", "bad_float")
-        assert not has_delay_passed(datetime.now(tz=current_system_tz()))
-        assert (
-            "The environment variable value of NX_FILE_DELAY_DAYS" in caplog.text
-        )
+    # Note: test_has_delay_passed_no_val removed - pydantic now validates
+    # NX_FILE_DELAY_DAYS at settings initialization time, not at function call time
 
-    @pytest.fixture
-    def _change_paths_in_env(self, monkeypatch):
-        monkeypatch.setenv("NX_INSTRUMENT_DATA_PATH", "/tmp/mmf_test_path")
-        monkeypatch.setenv("NX_DATA_PATH", "/tmp/nexuslims_test_path")
-
-    @pytest.mark.usefixtures("_change_paths_in_env")
     def test_replace_mmf_path(self):
-        new_path = replace_mmf_path(
-            Path("/tmp/mmf_test_path/path/to/file.txt"),
-            suffix=".json",
-        )
-        assert new_path == Path("/tmp/nexuslims_test_path/path/to/file.txt.json")
+        """Test replace_mmf_path using actual test settings paths."""
+        from nexusLIMS.config import settings
 
-    @pytest.mark.usefixtures("_change_paths_in_env")
+        # Use actual settings paths from test environment
+        instr_path = Path(settings.NX_INSTRUMENT_DATA_PATH)
+        data_path = Path(settings.NX_DATA_PATH)
+
+        # Create a test path under the instrument data path
+        test_file = instr_path / "path" / "to" / "file.txt"
+        expected = data_path / "path" / "to" / "file.txt.json"
+
+        new_path = replace_mmf_path(test_file, suffix=".json")
+        assert new_path == expected
+
     def test_replace_mmf_path_no_suffix(self):
-        new_path = replace_mmf_path(
-            Path("/tmp/mmf_test_path/path/to/file.txt"),
-            suffix="",
-        )
-        assert new_path == Path("/tmp/nexuslims_test_path/path/to/file.txt")
+        """Test replace_mmf_path without suffix using actual test settings paths."""
+        from nexusLIMS.config import settings
 
-    @pytest.mark.usefixtures("_change_paths_in_env")
+        instr_path = Path(settings.NX_INSTRUMENT_DATA_PATH)
+        data_path = Path(settings.NX_DATA_PATH)
+
+        test_file = instr_path / "path" / "to" / "file.txt"
+        expected = data_path / "path" / "to" / "file.txt"
+
+        new_path = replace_mmf_path(test_file, suffix="")
+        assert new_path == expected
+
     def test_replace_mmf_path_not_in_mmfnexus(self, caplog):
-        new_path = replace_mmf_path(
-            Path("/tmp/other/path/entirely/test.txt"),
-            suffix=".json",
-        )
+        """Test replace_mmf_path with path not under instrument data path."""
+        from nexusLIMS.config import settings
+
+        # Path that's not under NX_INSTRUMENT_DATA_PATH
+        other_path = Path("/tmp/other/path/entirely/test.txt")
+        new_path = replace_mmf_path(other_path, suffix=".json")
+
+        # Should append suffix but log warning
         assert new_path == Path("/tmp/other/path/entirely/test.txt.json")
-        assert (
-            "/tmp/other/path/entirely/test.txt is not a sub-path of /tmp/mmf_test_path"
-            in caplog.text
-        )
+        assert f"{other_path} is not a sub-path of" in caplog.text
 
-    def test_absolute_path_to_credentials(self, monkeypatch):
-        with monkeypatch.context() as m_patch:
-            # remove environment variable so we get into file processing
-            m_patch.delenv("NX_CDCS_USER")
-            _ = get_auth(self.CREDENTIAL_FILE_ABS)
-
-    def test_relative_path_to_credentials(self, monkeypatch):
-        os.chdir(Path(__file__).parent)
-        with monkeypatch.context() as m_patch:
-            # remove environment variable so we get into file processing
-            m_patch.delenv("NX_CDCS_USER")
-            _ = get_auth(self.CREDENTIAL_FILE_REL)
-
-    def test_bad_path_to_credentials(self, monkeypatch):
-        with monkeypatch.context() as m_patch:
-            # remove environment variable so we get into file processing
-            m_patch.delenv("NX_CDCS_USER")
-            cred_file = Path("bogus_credentials.ini")
-            with pytest.raises(AuthenticationError):
-                _ = get_auth(cred_file)
+    # Note: File-based credential tests removed - get_auth() now only uses
+    # settings (NX_CDCS_USER and NX_CDCS_PASS environment variables)
 
     @responses.activate
     def test_request_retry(self):

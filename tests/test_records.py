@@ -43,6 +43,8 @@ def _remove_nemo_gov_harvester(monkeypatch):
     present, since it has _a lot_ of usage events, and takes a long time to fetch
     from the API with the current set of tests.
     """
+    import os  # pylint: disable=import-outside-toplevel
+
     nemo_var = None
     for k in os.environ:
         if "nemo.nist.gov/api" in os.getenv(k) and "address" in k:
@@ -87,7 +89,7 @@ def mock_nemo_reservation_fixture(monkeypatch):
             "sample_pid": "sample-thinfilm-003",
             "project": "Thin Film Analysis",
         },
-        "TEST-INSTRUMENT-001": {
+        "testtool-TEST-A1234567": {
             "title": "EDX spectroscopy of platinum-nickel alloys",
             "user_name": "Test User",
             "purpose": "Determine composition of Pt-Ni alloy samples",
@@ -101,7 +103,7 @@ def mock_nemo_reservation_fixture(monkeypatch):
         """Return a mock ReservationEvent with data specific to each instrument."""
         data = reservation_data.get(
             session.instrument.name,
-            reservation_data["TEST-INSTRUMENT-001"],
+            reservation_data["testtool-TEST-A1234567"],
         )
         return ReservationEvent(
             experiment_title=data["title"],
@@ -147,20 +149,9 @@ class TestRecordBuilder:
     @property
     def instr_data_path(self):
         """Get the NX_INSTRUMENT_DATA_PATH as a Path object."""
-        return Path(os.environ["NX_INSTRUMENT_DATA_PATH"])
+        from nexusLIMS.config import settings
 
-    # have to do these before modifying the database with the actual run tests
-    @pytest.mark.skip(
-        reason="no way of currently testing SharePoint with current "
-        "deployment environment; SP harvesting is deprecated",
-    )
-    def test_dry_run_sharepoint_calendar(self):  # pragma: no cover
-        sessions = session_handler.get_sessions_to_build()
-        cal_event = record_builder.dry_run_get_sharepoint_reservation_event(sessions[0])
-        assert cal_event.project_name[0] == "642.03.??"
-        assert cal_event.username == "***REMOVED***"
-        assert cal_event.experiment_title == "Looking for Nickel Alloys"
-        assert cal_event.start_time == dt.fromisoformat("2019-09-06T16:30:00-04:00")
+        return Path(settings.NX_INSTRUMENT_DATA_PATH)
 
     @pytest.mark.usefixtures("_remove_nemo_gov_harvester", "mock_nemo_reservation")
     def test_dry_run_file_find(
@@ -169,14 +160,14 @@ class TestRecordBuilder:
     ):
         """Test file finding for multiple sessions with different instruments."""
         # Get all sessions from test database
-        # fresh_test_db fixture provides 3 sessions: Titan, JEOL, Nexus
+        # fresh_test_db fixture provides 3 sessions: FEI-Titan-TEM, JEOL-JEM-TEM, testtool
         sessions = session_handler.get_sessions_to_build()
         assert len(sessions) == 3
 
         # Expected file counts for each session:
-        # - Titan_TEM (2018-11-13): 10 files (8 .dm3 + 2 .ser, .emi excluded)
-        # - JEOL_TEM (2019-07-24): 8 files (.dm3 in subdirs)
-        # - Nexus_Test_Instrument (2021-08-02): 4 files (.dm3)
+        # - FEI-Titan-TEM (2018-11-13): 10 files (8 .dm3 + 2 .ser, .emi excluded)
+        # - JEOL-JEM-TEM (2019-07-24): 8 files (.dm3 in subdirs)
+        # - testtool-TEST-A1234567 (2021-08-02): 4 files (.dm3)
         correct_files_per_session = [10, 8, 4]
 
         file_list_list = []
@@ -440,7 +431,7 @@ class TestRecordBuilder:
         )
 
         # Process all sessions in the database (all 3 test sessions)
-        # The fresh_test_db fixture already has Titan, JEOL, and Nexus sessions
+        # The fresh_test_db fixture already has FEI-Titan-TEM, JEOL-JEM-TEM, and testtool sessions
         record_builder.process_new_records(
             dt_from=dt.fromisoformat("2018-01-01T00:00:00-04:00"),
             dt_to=dt.fromisoformat("2022-01-01T00:00:00-04:00"),
@@ -450,9 +441,9 @@ class TestRecordBuilder:
         # after processing the records, there should be added
         # "RECORD_GENERATION" logs
         # Updated counts to match 3 test sessions:
-        # - TEST-INSTRUMENT-001 (2 logs: START + END)
-        # - Titan TEM (2 logs: START + END)
-        # - JEOL TEM (2 logs: START + END)
+        # - FEI-Titan-TEM (2 logs: START + END)
+        # - JEOL-JEM-TEM (2 logs: START + END)
+        # - testtool-TEST-A1234567 (2 logs: START + END)
         # - 3 RECORD_GENERATION logs added during processing
         total_session_log_count = 9  # 6 original + 3 RECORD_GENERATION
         record_generation_count = 3  # One for each session
@@ -501,7 +492,9 @@ class TestRecordBuilder:
 
         # tests on the XML records
         # Updated for 3 test sessions (Titan TEM, JEOL TEM, Nexus Test Instrument)
-        upload_path = Path(os.getenv("NX_DATA_PATH")).parent / "records" / "uploaded"
+        from nexusLIMS.config import settings
+
+        upload_path = Path(settings.NX_DATA_PATH).parent / "records" / "uploaded"
         xmls = list(upload_path.glob("*.xml"))
         xml_count = 3  # One for each test session
         assert len(xmls) == xml_count
@@ -532,8 +525,8 @@ class TestRecordBuilder:
                 f"/{{{nexus_ns}}}summary/{{{nexus_ns}}}instrument": "JEOL-JEM-TEM",
                 f"//{{{nexus_ns}}}sample": 1,
             },
-            # Nexus Test Instrument session (id=21)
-            "2021-08-02_TEST-INSTRUMENT-001_21.xml": {
+            # Nexus Test Instrument session (id=303)
+            "2021-08-02_testtool-TEST-A1234567_303.xml": {
                 f"/{{{nexus_ns}}}title": "EDX spectroscopy of platinum-nickel alloys",
                 f"//{{{nexus_ns}}}acquisitionActivity": 1,
                 f"//{{{nexus_ns}}}dataset": 4,
@@ -541,7 +534,7 @@ class TestRecordBuilder:
                     "Determine composition of Pt-Ni alloy samples"
                 ),
                 f"/{{{nexus_ns}}}summary/{{{nexus_ns}}}instrument": (
-                    "TEST-INSTRUMENT-001"
+                    "testtool-TEST-A1234567"
                 ),
                 f"//{{{nexus_ns}}}sample": 1,
             },
@@ -619,11 +612,16 @@ class TestRecordBuilder:
             partial(build_record, generate_previews=False),
         )
 
-        # Set or unset the environment variable
+        # Set or unset the file strategy in settings
+        # (monkeypatching environment variables doesn't work because settings
+        # is already instantiated)
+        from nexusLIMS.config import settings
+
         if env_value is None:
-            monkeypatch.delenv("NX_FILE_STRATEGY", raising=False)
+            # Use default "exclusive" strategy
+            monkeypatch.setattr(settings, "NX_FILE_STRATEGY", "exclusive")
         else:
-            monkeypatch.setenv("NX_FILE_STRATEGY", env_value)
+            monkeypatch.setattr(settings, "NX_FILE_STRATEGY", env_value)
 
         # Build the record
         xml_files = record_builder.build_new_session_records()
@@ -794,13 +792,13 @@ class TestRecordBuilder:
     def test_build_record_single_file(self, test_record_files, monkeypatch):
         """Test record builder with a narrow time window that captures only 1 file."""
 
-        # Use TEST-INSTRUMENT-001 from database with narrow time window
+        # Use testtool-TEST-A1234567 from database with narrow time window
         # Files are at: 17:00, 17:15, 17:30, 17:45 UTC (10:00, 10:15, 10:30, 10:45 PDT)
         # This window captures only sample_002.dm3 at 17:15 UTC
         def mock_get_sessions():
             all_sessions = session_handler.get_sessions_to_build()
             test_instr = next(
-                s for s in all_sessions if s.instrument.name == "TEST-INSTRUMENT-001"
+                s for s in all_sessions if s.instrument.name == "testtool-TEST-A1234567"
             )
             # Create custom session with narrow window
             return [
@@ -829,7 +827,7 @@ class TestRecordBuilder:
         f = xml_files[0]
         root = etree.parse(f)
 
-        # Verify it used the mock_nemo_reservation data for TEST-INSTRUMENT-001
+        # Verify it used the mock_nemo_reservation data for testtool-TEST-A1234567
         assert (
             root.find(f"/{{{nexus_ns}}}title").text
             == "EDX spectroscopy of platinum-nickel alloys"
@@ -842,7 +840,7 @@ class TestRecordBuilder:
         )
         assert (
             root.find(f"/{{{nexus_ns}}}summary/{{{nexus_ns}}}instrument").get("pid")
-            == "TEST-INSTRUMENT-001"
+            == "testtool-TEST-A1234567"
         )
 
         # remove record
@@ -886,11 +884,11 @@ class TestRecordBuilder:
         )
 
         # Use the Nexus Test Instrument session from fresh_test_db
-        # Filter to get just the TEST-INSTRUMENT-001 session
+        # Filter to get just the testtool-TEST-A1234567 session
         def mock_get_sessions():
             all_sessions = session_handler.get_sessions_to_build()
             return [
-                s for s in all_sessions if s.instrument.name == "TEST-INSTRUMENT-001"
+                s for s in all_sessions if s.instrument.name == "testtool-TEST-A1234567"
             ]
 
         nexus_ns = "https://data.nist.gov/od/dm/nexus/experiment/v1.0"
@@ -930,7 +928,7 @@ class TestRecordBuilder:
         )
         assert (
             root.find(f"/{{{nexus_ns}}}summary/{{{nexus_ns}}}instrument").get("pid")
-            == "TEST-INSTRUMENT-001"
+            == "testtool-TEST-A1234567"
         )
         assert len(root.findall(f"//{{{nexus_ns}}}sample")) == sample_count
 

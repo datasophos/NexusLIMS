@@ -27,6 +27,7 @@ from lxml import etree
 
 from nexusLIMS import version
 from nexusLIMS.cdcs import upload_record_files
+from nexusLIMS.config import settings
 from nexusLIMS.db.session_handler import Session, db_query, get_sessions_to_build
 from nexusLIMS.extractors import extension_reader_map as ext_map
 from nexusLIMS.harvesters import nemo, sharepoint_calendar
@@ -219,7 +220,7 @@ def build_acq_activities(instrument, dt_from, dt_to, generate_previews):
     )
 
     start_timer = default_timer()
-    path = Path(os.environ["NX_INSTRUMENT_DATA_PATH"]) / instrument.filestore_path
+    path = Path(settings.NX_INSTRUMENT_DATA_PATH) / instrument.filestore_path
     # find the files to be included (list of Paths)
     files = get_files(path, dt_from, dt_to)
 
@@ -264,7 +265,7 @@ def build_acq_activities(instrument, dt_from, dt_to, generate_previews):
                 "Adding file %i/%i %s to activity %i",
                 i,
                 len(files),
-                str(f).replace(os.environ["NX_INSTRUMENT_DATA_PATH"], "").strip("/"),
+                str(f).replace(str(settings.NX_INSTRUMENT_DATA_PATH), "").strip("/"),
                 aa_idx,
             )
             activities[aa_idx].add_file(fname=f, generate_preview=generate_previews)
@@ -319,11 +320,11 @@ def get_files(
     """
     logger.info("Starting new file-finding in %s", path)
 
-    # read file finding strategy from environment and set to default of exclusive
-    strategy = os.environ.get("NX_FILE_STRATEGY", default="exclusive").lower()
+    # read file finding strategy from settings
+    strategy = settings.NX_FILE_STRATEGY.lower()
     if strategy not in ["inclusive", "exclusive"]:
         logger.warning(
-            'File finding strategy (env variable "NX_FILE_STRATEGY") had '
+            'File finding strategy (setting "NX_FILE_STRATEGY") had '
             'an unexpected value: "%s". Setting value to "exclusive".',
             strategy,
         )
@@ -446,7 +447,7 @@ def build_new_session_records() -> List[Path]:
             if isinstance(exception, FileNotFoundError):
                 # if no files were found for this session log, mark it as so in
                 # the database
-                path = Path(os.environ["NX_INSTRUMENT_DATA_PATH"]) / s.instrument.filestore_path
+                path = Path(settings.NX_INSTRUMENT_DATA_PATH) / s.instrument.filestore_path
                 logger.warning(
                     "No files found in %s between %s and %s",
                     path,
@@ -515,7 +516,7 @@ def _record_validation_flow(record_text, s, xml_files) -> List[Path]:
         basename = (
             f"{s.dt_from.strftime('%Y-%m-%d')}_{s.instrument.name}_{unique_suffix}.xml"
         )
-        filename = Path(os.environ["NX_DATA_PATH"]).parent / "records" / basename
+        filename = Path(settings.NX_DATA_PATH).parent / "records" / basename
         filename.parent.mkdir(parents=True, exist_ok=True)
         # write the record to disk and append to list of files generated
         with filename.open(mode="w", encoding="utf-8") as f:
@@ -650,7 +651,7 @@ def dry_run_file_find(s: Session) -> List[Path]:
         A list of Paths containing the files that would be included for the
         record of this session (if it were not a dry run)
     """
-    path = Path(os.environ["NX_INSTRUMENT_DATA_PATH"]) / s.instrument.filestore_path
+    path = Path(settings.NX_INSTRUMENT_DATA_PATH) / s.instrument.filestore_path
     logger.info(
         "Searching for files for %s in %s between %s and %s",
         s.instrument.name,

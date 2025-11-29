@@ -1,15 +1,16 @@
 """
-Handles obtaining a certificate authority bundle from the environment.
+Handles obtaining a certificate authority bundle from settings.
 
 Sub-modules include connections to calendar APIs (NEMO and Sharepoint) as well as
 a class to represent a Reservation Event
 """
 
-import os
 from pathlib import Path
 
-CA_BUNDLE_PATH = os.environ.get("NX_CERT_BUNDLE_FILE", None)
-CA_BUNDLE_CONTENT = os.environ.get("NX_CERT_BUNDLE", None)
+from nexusLIMS.config import settings
+
+CA_BUNDLE_PATH = settings.NX_CERT_BUNDLE_FILE
+CA_BUNDLE_CONTENT = settings.NX_CERT_BUNDLE
 
 if CA_BUNDLE_CONTENT is None:  # pragma: no cover
     # no way to test this in CI/CD pipeline

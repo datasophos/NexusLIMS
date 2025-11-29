@@ -24,7 +24,7 @@ class NemoConnector:
     ----------
     base_url : str
         The "root" of the API including a trailing slash;
-        e.g. 'https://nemo.url.com/api/'
+        e.g. 'https://nemo.example.com/api/'
     token : str
         An authentication token for this NEMO instance
     strftime_fmt : str

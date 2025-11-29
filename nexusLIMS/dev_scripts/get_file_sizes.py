@@ -18,19 +18,22 @@ from defusedxml import ElementTree
 from dotenv import load_dotenv
 from urllib3.exceptions import InsecureRequestWarning
 
-# load environment variables from a .env file if present
-load_dotenv()
-USERNAME = os.environ.get("NX_CDCS_USER")
-PASSWORD = os.environ.get("NX_CDCS_PASS")
-URL = os.environ.get("NX_CDCS_URL")
+# Import settings from config module
+from nexusLIMS.config import settings
+
+USERNAME = settings.NX_CDCS_USER
+PASSWORD = settings.NX_CDCS_PASS
+URL = str(settings.NX_CDCS_URL)
 FNAME = os.environ.get("RECORDS_JSON_PATH", "records.json")
-    ROOT_PATH = os.environ.get("NX_INSTRUMENT_DATA_PATH")
+ROOT_PATH = str(settings.NX_INSTRUMENT_DATA_PATH)
+
 for var, val in [
     ("NX_CDCS_USER", USERNAME),
     ("NX_CDCS_PASS", PASSWORD),
     ("NX_CDCS_URL", URL),
     ("records_json_path", FNAME),
-            ("NX_INSTRUMENT_DATA_PATH", ROOT_PATH),]:
+    ("NX_INSTRUMENT_DATA_PATH", ROOT_PATH),
+]:
     if val is None:
         msg = (
             f"{var} was not defined in the environment; please make sure "

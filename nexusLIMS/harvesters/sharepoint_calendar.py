@@ -50,7 +50,7 @@ __all__ = [
 
 def _sharepoint_url():
     """
-    Return url to the SharePoint calendar instance by fetching it from the environment.
+    Return url to the SharePoint calendar instance by fetching it from settings.
 
     Returns
     -------
@@ -60,14 +60,16 @@ def _sharepoint_url():
     Raises
     ------
     ValueError
-        If the ``NX_SP_ROOT_URL`` environment variable is not defined,
+        If the ``NX_SP_ROOT_URL`` setting is not defined,
         raise a ``ValueError``
     """
-    url = os.environ.get("NX_SP_ROOT_URL", None)
+    from nexusLIMS.config import settings
+
+    url = settings.NX_SP_ROOT_URL
     if url is None:
-        msg = "'NX_SP_ROOT_URL' environment variable is not defined"
+        msg = "'NX_SP_ROOT_URL' setting is not defined"
         raise ValueError(msg)
-    return url
+    return str(url)
 
 
 def res_event_from_xml(xml, date=None):

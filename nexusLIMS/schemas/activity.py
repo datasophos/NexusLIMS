@@ -156,11 +156,13 @@ def _add_dataset_element(
     unique_meta: Dict,
     warning: List,
 ):
+    from nexusLIMS.config import settings
+
     # escape any bad characters in the filename
     file = _escape(file)
 
     # build path to thumbnail
-    rel_fname = file.replace(os.environ["NX_INSTRUMENT_DATA_PATH"], "")
+    rel_fname = file.replace(str(settings.NX_INSTRUMENT_DATA_PATH), "")
     rel_thumb_name = f"{rel_fname}.thumb.png"
 
     # encode for safe URLs
@@ -180,10 +182,10 @@ def _add_dataset_element(
 
     # check if preview image exists before adding it XML structure
     if rel_thumb_name[0] == "/":
-        test_path = Path(os.environ["NX_DATA_PATH"]) / unquote(rel_thumb_name)[1:]
+        test_path = Path(settings.NX_DATA_PATH) / unquote(rel_thumb_name)[1:]
     else:  # pragma: no cover
         # this shouldn't happen, but just in case...
-        test_path = Path(os.environ["NX_DATA_PATH"]) / unquote(rel_thumb_name)
+        test_path = Path(settings.NX_DATA_PATH) / unquote(rel_thumb_name)
 
     if test_path.exists():
         dset_prev_el = etree.SubElement(dset_el, "preview")

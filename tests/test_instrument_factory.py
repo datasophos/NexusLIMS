@@ -22,7 +22,7 @@ from nexusLIMS.instruments import Instrument
 def make_test_instrument(  # noqa: PLR0913
     instrument_pid="TEST-INSTRUMENT-001",
     calendar_name="Test Instrument",
-    api_url="http://test.example.com/api/",
+    api_url="https://nemo.example.com/api/",
     calendar_url=None,
     location="Test Building Room 123",
     schema_name="Test Instrument",
@@ -48,7 +48,7 @@ def make_test_instrument(  # noqa: PLR0913
     calendar_name : str, optional
         User-friendly calendar name (default: "Test Instrument")
     api_url : str, optional
-        Calendar API endpoint URL (default: "http://test.example.com/api/")
+        Calendar API endpoint URL (default: "https://nemo.example.com/api/")
     calendar_url : str or None, optional
         SharePoint calendar URL (default: auto-generated from instrument_pid)
     location : str, optional
@@ -93,7 +93,7 @@ def make_test_instrument(  # noqa: PLR0913
     """
     # Set defaults that depend on other parameters
     if calendar_url is None:
-        calendar_url = f"http://test.example.com/calendar/{instrument_pid}"
+        calendar_url = f"https://nemo.example.com/calendar/{instrument_pid}"
 
     # Build the parameters dict
     params = {
@@ -163,7 +163,7 @@ def make_titan_stem(
         "calendar_name": calendar_name,
         "schema_name": schema_name,
         "filestore_path": filestore_path,
-        "api_url": "https://nemo.url.com/api/tools/?id=1",
+        "api_url": "https://nemo.example.com/api/tools/?id=1",
         "location": "Test Building Room 300",
         "property_tag": "TEST-STEM-001",
     }
@@ -213,7 +213,7 @@ def make_titan_tem(
         "calendar_name": calendar_name,
         "schema_name": schema_name,
         "filestore_path": filestore_path,
-        "api_url": "https://nemo.url.com/api/tools/?id=2",
+        "api_url": "https://nemo.example.com/api/tools/?id=2",
         "location": "Test Building Room 301",
         "property_tag": "TEST-TEM-001",
     }
@@ -263,7 +263,7 @@ def make_quanta_sem(
         "calendar_name": calendar_name,
         "schema_name": schema_name,
         "filestore_path": filestore_path,
-        "api_url": "https://nemo.url.com/api/tools/?id=3",
+        "api_url": "https://nemo.example.com/api/tools/?id=3",
         "location": "Test Building Room 302",
         "property_tag": "TEST-SEM-001",
     }
@@ -313,7 +313,7 @@ def make_jeol_tem(
         "calendar_name": calendar_name,
         "schema_name": schema_name,
         "filestore_path": filestore_path,
-        "api_url": "https://nemo.url.com/api/tools/?id=5",
+        "api_url": "https://nemo.example.com/api/tools/?id=5",
         "location": "Test Building Room 303",
         "property_tag": "TEST-JEOL-001",
     }
@@ -363,7 +363,7 @@ def make_test_tool(
         "calendar_name": calendar_name,
         "schema_name": schema_name,
         "filestore_path": filestore_path,
-        "api_url": "https://nemo.url.com/api/tools/?id=6",
+        "api_url": "https://nemo.example.com/api/tools/?id=6",
         "location": "Test Building Room 400",
         "property_tag": "TEST-TOOL-001",
     }

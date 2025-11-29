@@ -10,15 +10,13 @@ from datetime import datetime as dt
 from datetime import timedelta as td
 from pathlib import Path
 
-import pytest
-from _pytest.monkeypatch import MonkeyPatch
+# ============================================================================
+# CRITICAL: Set test environment variables BEFORE any nexusLIMS imports
+# ============================================================================
+# The Settings class in nexusLIMS.config is instantiated at module import time,
+# so we MUST set environment variables before any nexusLIMS module is imported.
 
-from .utils import delete_files, extract_files
-
-# Load fixtures from fixtures modules
-pytest_plugins = ["tests.fixtures.cdcs_mock_data"]
-
-# Define paths for MMFNexus and NexusLIMS within the tests/files directory
+# Define paths for test database and data directories
 _test_files_dir = Path(__file__).parent / "files"
 _nexuslims_path = _test_files_dir / "NexusLIMS"
 _instr_data_path = _test_files_dir / "MMFNexus"
@@ -28,13 +26,9 @@ _nexuslims_path.mkdir(exist_ok=True)
 _instr_data_path.mkdir(exist_ok=True)
 
 # Define path for dynamically-created test database
-# Database will be populated by fresh_test_db fixture (session-scoped)
 _test_db_path = _nexuslims_path / "test_db.sqlite"
 
 # Create empty database with tables if it doesn't exist
-# This allows nexusLIMS modules to import without errors
-# The fresh_test_db fixture will populate it with test data
-
 if not _test_db_path.exists():
     conn = sqlite3.connect(_test_db_path)
     cursor = conn.cursor()
@@ -74,17 +68,51 @@ if not _test_db_path.exists():
     conn.commit()
     conn.close()
 
-# Set environment variables to use the new temporary directories and test DB
-# IMPORTANT: This must be set BEFORE importing nexusLIMS modules
+# Set environment variables to use test paths
+# CRITICAL: This MUST happen before importing nexusLIMS.config
 os.environ["NX_DB_PATH"] = str(_test_db_path)
 os.environ["NX_DATA_PATH"] = str(_nexuslims_path)
 os.environ["NX_INSTRUMENT_DATA_PATH"] = str(_instr_data_path)
-# Create NexusLIMS/test_files directory structure if it doesn't exist
-# This matches the filestore_path used by test instruments
+
+# Set test-specific config to override .env file
+# Use JSON format for list values (pydantic-settings requirement)
+os.environ["NX_IGNORE_PATTERNS"] = '["*.mib", "*.db", "*.emi"]'
+os.environ["NX_FILE_STRATEGY"] = "exclusive"
+
+# Create required directory structure
 (_nexuslims_path / "test_files").mkdir(parents=True, exist_ok=True)
 
+# ============================================================================
+# NOW it's safe to import nexusLIMS modules
+# ============================================================================
 
+import pytest  # noqa: E402
+from _pytest.monkeypatch import MonkeyPatch  # noqa: E402
+
+from nexusLIMS.config import settings  # noqa: E402
 from nexusLIMS.utils import current_system_tz  # noqa: E402
+
+from .utils import delete_files, extract_files  # noqa: E402
+
+# Load fixtures from fixtures modules
+pytest_plugins = ["tests.fixtures.cdcs_mock_data"]
+
+
+@pytest.fixture(autouse=True)
+def clear_settings_cache():
+    """
+    Clear cached properties from settings after each test.
+
+    This fixture only clears @cached_property attributes (like nemo_harvesters),
+    not regular pydantic fields. For tests that need to modify environment
+    variables and reload settings, they should create a new Settings instance.
+    """
+    yield
+
+    # Only clear cached_property items (nemo_harvesters)
+    # Don't try to delete regular pydantic fields
+    if "nemo_harvesters" in settings.__dict__:
+        del settings.__dict__["nemo_harvesters"]
 
 
 def pytest_configure(config):
@@ -98,10 +126,14 @@ def pytest_configure(config):
     Note: The test database extraction now happens at module level (before imports)
     to ensure it's available when nexusLIMS.instruments is imported.
     """
+    from nexusLIMS.config import settings  # pylint: disable=import-outside-toplevel
     from nexusLIMS.db import make_db_query  # pylint: disable=import-outside-toplevel
 
     # update API URLs for marlin.nist.gov if we're using marlin-test.nist.gov:
-    if "marlin-test.nist.gov" in os.environ.get("NX_NEMO_ADDRESS_1", ""):
+    nemo_harvesters = settings.nemo_harvesters
+    if nemo_harvesters and "marlin-test.nist.gov" in str(
+        next(iter(nemo_harvesters.values())).address
+    ):
         make_db_query(
             "UPDATE instruments "
             "SET api_url = "
@@ -121,9 +153,11 @@ def pytest_unconfigure(config):
     Clean up the temporary directories created for the test session.
     This includes the NexusLIMS and MMFNexus subdirectories in tests/files.
     """
+    from nexusLIMS.config import settings  # pylint: disable=import-outside-toplevel
+
     # Paths are now subdirectories of tests/files
-    nexuslims_path = Path(os.environ["NX_DATA_PATH"])
-    instr_data_path = Path(os.environ["NX_INSTRUMENT_DATA_PATH"])
+    nexuslims_path = Path(settings.NX_DATA_PATH)
+    instr_data_path = Path(settings.NX_INSTRUMENT_DATA_PATH)
     test_files_dir = Path(__file__).parent / "files"
 
     # Clean up the created directories, with safety checks
@@ -157,9 +191,11 @@ def mock_nemo_env_fixture(monkey_session):
     tests to run without requiring a real NEMO instance. Auto-used
     for all tests unless NEMO environment variables are already set.
     """
+    import os  # pylint: disable=import-outside-toplevel
+
     # Only set if not already set (allows real NEMO testing if env vars exist)
     if "NX_NEMO_ADDRESS_1" not in os.environ:
-        monkey_session.setenv("NX_NEMO_ADDRESS_1", "http://test.example.com/api/")
+        monkey_session.setenv("NX_NEMO_ADDRESS_1", "https://nemo.example.com/api/")
         monkey_session.setenv("NX_NEMO_TOKEN_1", "test-token-12345")
         monkey_session.setenv("NX_NEMO_TZ_1", "America/Denver")
 
@@ -199,9 +235,9 @@ def cleanup_session_log():
     from nexusLIMS.db.session_handler import db_query
 
     to_remove = (
-        "http://test.example.com/api/usage_events/?id=29",
-        "http://test.example.com/api/usage_events/?id=30",
-        "http://test.example.com/api/usage_events/?id=31",
+        "https://nemo.example.com/api/usage_events/?id=29",
+        "https://nemo.example.com/api/usage_events/?id=30",
+        "https://nemo.example.com/api/usage_events/?id=31",
         "test_session",
     )
     db_query(
@@ -501,7 +537,7 @@ def basic_image_file():
     yield (
         Path(__file__).parent
         / "files"
-        / os.environ["NX_INSTRUMENT_DATA_PATH"]
+        / str(settings.NX_INSTRUMENT_DATA_PATH)
         / "test_image_thumb_source.bmp"
     )
     delete_files("IMAGE_FILES")
@@ -514,7 +550,7 @@ def image_thumb_source_gif():
     yield (
         Path(__file__).parent
         / "files"
-        / os.environ["NX_INSTRUMENT_DATA_PATH"]
+        / str(settings.NX_INSTRUMENT_DATA_PATH)
         / "test_image_thumb_source.gif"
     )
     delete_files("IMAGE_FILES")
@@ -527,7 +563,7 @@ def image_thumb_source_png():
     yield (
         Path(__file__).parent
         / "files"
-        / os.environ["NX_INSTRUMENT_DATA_PATH"]
+        / str(settings.NX_INSTRUMENT_DATA_PATH)
         / "test_image_thumb_source.png"
     )
     delete_files("IMAGE_FILES")
@@ -540,7 +576,7 @@ def image_thumb_source_tif():
     yield (
         Path(__file__).parent
         / "files"
-        / os.environ["NX_INSTRUMENT_DATA_PATH"]
+        / str(settings.NX_INSTRUMENT_DATA_PATH)
         / "test_image_thumb_source.tif"
     )
     delete_files("IMAGE_FILES")
@@ -553,7 +589,7 @@ def image_thumb_source_jpg():
     yield (
         Path(__file__).parent
         / "files"
-        / os.environ["NX_INSTRUMENT_DATA_PATH"]
+        / str(settings.NX_INSTRUMENT_DATA_PATH)
         / "test_image_thumb_source.jpg"
     )
     delete_files("IMAGE_FILES")
@@ -723,8 +759,10 @@ def fresh_test_db():
     Populate test database with test instruments and sessions.
 
     Populates the database with:
-    - Three test instruments: Titan_TEM, JEOL_TEM, Nexus_Test_Instrument
-    - Test sessions for each instrument matching test file dates
+    - Five test instruments: FEI-Titan-STEM, FEI-Titan-TEM, FEI-Quanta-ESEM,
+      JEOL-JEM-TEM, testtool-TEST-A1234567
+    - Test sessions for Titan_TEM, JEOL_TEM, and Nexus_Test_Instrument matching
+      test file dates
 
     This replaces the static test_db.sqlite.tar.gz approach with
     dynamic database construction for cleaner, more maintainable tests.
@@ -742,13 +780,30 @@ def fresh_test_db():
     cursor.execute("DELETE FROM instruments")
 
     # Insert test instruments
+    # Match the tool IDs from test_instrument_factory.py and mock NEMO responses
     instruments = [
-        # Titan TEM (corresponds to mock tool ID 1)
+        # FEI Titan STEM (id=1)
+        (
+            "FEI-Titan-STEM",
+            "https://nemo.example.com/api/tools/?id=1",
+            "FEI Titan TEM",
+            "https://nemo.example.com/calendar/titan-stem/",
+            "Test Building Room 300",
+            "Titan TEM",
+            "TEST-STEM-001",
+            "./Titan_STEM",
+            None,
+            None,
+            None,
+            "nemo",
+            "America/New_York",
+        ),
+        # FEI Titan TEM (id=2)
         (
             "FEI-Titan-TEM",
-            "http://test.example.com/api/?id=1",
+            "https://nemo.example.com/api/tools/?id=2",
             "FEI Titan TEM",
-            "http://test.example.com/calendar/titan/",
+            "https://nemo.example.com/calendar/titan/",
             "Test Building Room 301",
             "FEI Titan TEM",
             "TEST-TEM-001",
@@ -759,12 +814,28 @@ def fresh_test_db():
             "nemo",
             "America/New_York",
         ),
-        # JEOL TEM (corresponds to mock tool ID 15)
+        # FEI Quanta ESEM (id=3)
+        (
+            "FEI-Quanta-ESEM",
+            "https://nemo.example.com/api/tools/?id=3",
+            "FEI Quanta 200 ESEM",
+            "https://nemo.example.com/calendar/quanta/",
+            "Test Building Room 302",
+            "Quanta FEG 200",
+            "TEST-SEM-001",
+            "./Quanta",
+            None,
+            None,
+            None,
+            "nemo",
+            "America/New_York",
+        ),
+        # JEOL TEM (id=5)
         (
             "JEOL-JEM-TEM",
-            "http://test.example.com/api/?id=15",
+            "https://nemo.example.com/api/tools/?id=5",
             "JEOL 3010 TEM",
-            "http://test.example.com/calendar/jeol/",
+            "https://nemo.example.com/calendar/jeol/",
             "Test Building Room 303",
             "JEOL JEM-3010",
             "TEST-JEOL-001",
@@ -775,16 +846,32 @@ def fresh_test_db():
             "nemo",
             "America/Chicago",
         ),
-        # Nexus Test Instrument (corresponds to mock tool ID 10)
+        # Generic test tool (id=6)
         (
-            "TEST-INSTRUMENT-001",
-            "http://test.example.com/api/tools/?id=10",
-            "Test Instrument",
-            "http://test.example.com/calendar/",
-            "Test Building Room 123",
-            "Test Instrument",
-            "TEST-001",
-            "./Nexus_Test_Instrument/test_files",
+            "testtool-TEST-A1234567",
+            "https://nemo.example.com/api/tools/?id=6",
+            "Test Tool",
+            "https://nemo.example.com/calendar/test-tool/",
+            "Test Building Room 400",
+            "Test Tool",
+            "TEST-TOOL-001",
+            "./Nexus_Test_Instrument",
+            None,
+            None,
+            None,
+            "nemo",
+            "America/Denver",
+        ),
+        # Test Tool for NEMO connector tests (id=10)
+        (
+            "test-tool-10",
+            "https://nemo.example.com/api/tools/?id=10",
+            "Test Tool",
+            "https://nemo.example.com/calendar/test-tool-10/",
+            "Test Building Room 100",
+            "Test Tool",
+            "TEST-TOOL-010",
+            "./Test_Tool_10",
             None,
             None,
             None,
@@ -800,13 +887,13 @@ def fresh_test_db():
         instruments,
     )
 
-    # Insert test sessions for all three instruments
+    # Insert test sessions matching the test data files
     # Session identifiers use URL format with ID parameter for proper
     # filename generation
     sessions = [
-        # Titan TEM session (2018-11-13)
+        # Titan TEM session (2018-11-13) - tool_id=2
         (
-            "http://test.example.com/api/titan/usage_events/?id=101",
+            "https://nemo.example.com/api/usage_events/?id=101",
             "FEI-Titan-TEM",
             "2018-11-13T13:00:00-05:00",
             "START",
@@ -814,16 +901,16 @@ def fresh_test_db():
             "researcher_a",
         ),
         (
-            "http://test.example.com/api/titan/usage_events/?id=101",
+            "https://nemo.example.com/api/usage_events/?id=101",
             "FEI-Titan-TEM",
             "2018-11-13T16:00:00-05:00",
             "END",
             "TO_BE_BUILT",
             "researcher_a",
         ),
-        # JEOL TEM session (2019-07-24)
+        # JEOL TEM session (2019-07-24) - tool_id=5
         (
-            "http://test.example.com/api/jeol/usage_events/?id=202",
+            "https://nemo.example.com/api/usage_events/?id=202",
             "JEOL-JEM-TEM",
             "2019-07-24T11:00:00-04:00",
             "START",
@@ -831,29 +918,29 @@ def fresh_test_db():
             "researcher_b",
         ),
         (
-            "http://test.example.com/api/jeol/usage_events/?id=202",
+            "https://nemo.example.com/api/usage_events/?id=202",
             "JEOL-JEM-TEM",
             "2019-07-24T16:00:00-04:00",
             "END",
             "TO_BE_BUILT",
             "researcher_b",
         ),
-        # Nexus Test Instrument session (2021-08-02)
+        # Test Tool session (2021-08-02) - tool_id=6
         (
-            "http://test.example.com/api/usage_events/?id=21",
-            "TEST-INSTRUMENT-001",
-            "2021-08-02T09:00:00-07:00",
+            "https://nemo.example.com/api/usage_events/?id=303",
+            "testtool-TEST-A1234567",
+            "2021-08-02T10:00:00-06:00",
             "START",
             "TO_BE_BUILT",
-            "user",
+            "test_user",
         ),
         (
-            "http://test.example.com/api/usage_events/?id=21",
-            "TEST-INSTRUMENT-001",
-            "2021-08-02T11:00:00-07:00",
+            "https://nemo.example.com/api/usage_events/?id=303",
+            "testtool-TEST-A1234567",
+            "2021-08-02T18:00:00-06:00",
             "END",
             "TO_BE_BUILT",
-            "user",
+            "test_user",
         ),
     ]
 
@@ -871,11 +958,11 @@ def fresh_test_db():
 
     # Reload the instrument_db to pick up the new instruments
     # This is necessary because instrument_db is populated at module import time
+    # and needs to be refreshed with the newly populated test data
     from nexusLIMS import instruments
 
-    updated_db = instruments._get_instrument_db()
     instruments.instrument_db.clear()
-    instruments.instrument_db.update(updated_db)
+    instruments.instrument_db.update(instruments._get_instrument_db(db_path=db_path))
 
     return db_path
 

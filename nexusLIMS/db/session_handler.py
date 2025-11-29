@@ -2,12 +2,12 @@
 
 import contextlib
 import logging
-import os
 import sqlite3
 from dataclasses import dataclass
 from datetime import datetime as dt
 from typing import List, Tuple
 
+from nexusLIMS.config import settings
 from nexusLIMS.instruments import Instrument, instrument_db
 from nexusLIMS.utils import current_system_tz
 
@@ -21,7 +21,7 @@ def db_query(query, args=None):
     success = False
     with (
         contextlib.closing(
-            sqlite3.connect(os.environ["NX_DB_PATH"]),
+            sqlite3.connect(str(settings.NX_DB_PATH)),
         ) as conn,
         conn,
         contextlib.closing(conn.cursor()) as cursor,
@@ -197,7 +197,7 @@ class Session:
         # use contextlib to auto-close the connection and database cursors
         with (
             contextlib.closing(
-                sqlite3.connect(os.environ["NX_DB_PATH"]),
+                sqlite3.connect(str(settings.NX_DB_PATH)),
             ) as conn,
             conn,
             contextlib.closing(conn.cursor()) as cursor,
@@ -229,14 +229,14 @@ class Session:
             self.instrument.name,
             "RECORD_GENERATION",
             self.session_identifier,
-            os.getenv("NX_CDCS_USER"),
+            settings.NX_CDCS_USER,
             dt.now(tz=current_system_tz()),
         )
 
         # use contextlib to auto-close the connection and database cursors
         with (
             contextlib.closing(
-                sqlite3.connect(os.environ["NX_DB_PATH"]),
+                sqlite3.connect(str(settings.NX_DB_PATH)),
             ) as conn,
             conn,
             contextlib.closing(conn.cursor()) as cursor,
@@ -255,7 +255,7 @@ class Session:
         # use contextlib to auto-close the connection and database cursors
         with (
             contextlib.closing(
-                sqlite3.connect(os.environ["NX_DB_PATH"]),
+                sqlite3.connect(str(settings.NX_DB_PATH)),
             ) as conn,
             conn,
         ):  # auto-commits
@@ -301,7 +301,7 @@ def get_sessions_to_build() -> List[Session]:
     # use contextlib to auto-close the connection and database cursors
     with (
         contextlib.closing(
-            sqlite3.connect(os.environ["NX_DB_PATH"]),
+            sqlite3.connect(str(settings.NX_DB_PATH)),
         ) as conn,
         conn,
         contextlib.closing(conn.cursor()) as cursor,

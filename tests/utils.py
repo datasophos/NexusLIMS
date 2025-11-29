@@ -35,7 +35,6 @@ tars = {
     "4D_STEM": "4d_stem.hspy.tar.gz",
     "PARSE_META_TITAN": "test_titan_parse_metadata.dm3.tar.gz",
     "FEI_SER": "fei_emi_ser_test_files.tar.gz",
-    "DB": "test_db.sqlite.tar.gz",
     "RECORD": "2018-11-13_FEI-Titan-TEM-635816_7de34313.xml.tar.gz",
     "IMAGE_FILES": "test_image_thumb_sources.tar.gz",
     "TEST_RECORD_FILES": "test_record_files.tar.gz",
@@ -53,7 +52,9 @@ def extract_files(tar_key):
     Will extract files from a tar specified by ``tar_key``; returns a list
     of files that were present in the tar archive
     """
-    instr_data_path = Path(os.environ["NX_INSTRUMENT_DATA_PATH"])
+    from nexusLIMS.config import settings
+
+    instr_data_path = Path(settings.NX_INSTRUMENT_DATA_PATH)
     with tarfile.open(tars[tar_key], "r:gz") as tar:
         tar.extractall(path=instr_data_path)
         return [instr_data_path / i for i in tar.getnames()]
@@ -66,7 +67,9 @@ def delete_files(tar_key):
     Will delete any files that have been extracted from one of the above tars,
     specified by ``tar_key``
     """
-    instr_data_path = Path(os.environ["NX_INSTRUMENT_DATA_PATH"])
+    from nexusLIMS.config import settings
+
+    instr_data_path = Path(settings.NX_INSTRUMENT_DATA_PATH)
     with tarfile.open(tars[tar_key], "r:gz") as tar:
         files = [instr_data_path / i for i in tar.getnames()]
 

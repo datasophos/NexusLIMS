@@ -7,7 +7,6 @@ import subprocess
 import tempfile
 import time
 import warnings
-from configparser import ConfigParser
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from shutil import copyfile
@@ -18,6 +17,7 @@ from requests import Session
 from requests.adapters import HTTPAdapter, Retry
 from requests_ntlm import HttpNtlmAuth
 
+from .config import settings
 from .harvesters import CA_BUNDLE_CONTENT
 
 logger = logging.getLogger(__name__)
@@ -168,8 +168,8 @@ def is_subpath(path: Path, of_paths: Union[Path, List[Path]]):
     Examples
     --------
     >>> is_subpath(Path('/path/to/file.dm3'),
-    ...            Path(os.environ['NX_INSTRUMENT_DATA_PATH'] /
-    ...                 titan.filestore_path))
+    ...            settings.NX_INSTRUMENT_DATA_PATH /
+    ...                titan.filestore_path))
     True
     """
     if isinstance(of_paths, Path):
@@ -548,7 +548,7 @@ def _find_symlink_dirs(find_command, path):
     list
         List of symbolic link paths, or [path] if none found
     """
-    find_path = Path(os.environ["NX_INSTRUMENT_DATA_PATH"]) / path
+    find_path = Path(str(settings.NX_INSTRUMENT_DATA_PATH)) / path
     cmd = [find_command, str(find_path), "-type", "l", "-xtype", "d", "-print0"]
     logger.info('Running followlinks find via subprocess.run: "%s"', cmd)
     out = subprocess.run(cmd, capture_output=True, check=True)
@@ -612,15 +612,14 @@ def _build_find_command(  # noqa: PLR0913
         cmd.pop()
         cmd += [")"]
 
-    # Add ignore patterns
-    if "NX_IGNORE_PATTERNS" in os.environ:
-        ignore_patterns = json.loads(os.environ.get("NX_IGNORE_PATTERNS"))
-        if ignore_patterns:
-            cmd += ["-and", "("]
-            for i in ignore_patterns:
-                cmd += ["-not", "-iname", i, "-and"]
-            cmd.pop()
-            cmd += [")"]
+    # Add ignore patterns (settings already provides a list)
+    ignore_patterns = settings.NX_IGNORE_PATTERNS
+    if ignore_patterns:
+        cmd += ["-and", "("]
+        for i in ignore_patterns:
+            cmd += ["-not", "-iname", i, "-and"]
+        cmd.pop()
+        cmd += [")"]
 
     cmd += ["-print0"]
     return cmd
@@ -690,7 +689,7 @@ def gnu_find_files_by_mtime(
     if followlinks:
         find_paths = _find_symlink_dirs(find_command, path)
     else:
-        find_paths = [Path(os.environ["NX_INSTRUMENT_DATA_PATH"]) / path]
+        find_paths = [Path(str(settings.NX_INSTRUMENT_DATA_PATH)) / path]
 
     # Build and execute find command
     cmd = _build_find_command(
@@ -842,70 +841,42 @@ def get_timespan_overlap(
     return max(timedelta(0), delta)
 
 
-def get_auth(filename: Path | None = None, *, basic: bool = False):
+def get_auth(*, basic: bool = False):
     """
     Get an authentication scheme for NexusLIMS requests.
 
-    Set up NTLM authentication for the Microscopy Nexus using an account
-    as specified from a file that lives in the package root named
-    .credentials (or some other value provided as a parameter).
-    Alternatively, the stored credentials can be overridden by supplying two
-    environment variables: ``NX_CDCS_USER`` and ``NX_CDCS_PASS``. These
-    variables will be queried first, and if not found, the method will
-    attempt to use the credential file.
+    Get authentication credentials from settings (NX_CDCS_USER and NX_CDCS_PASS
+    environment variables) and return either NTLM authentication or basic
+    username/password tuple.
 
     Parameters
     ----------
-    filename : str
-        Name relative to this file (or absolute path) of file from which to
-        read the parameters
     basic : bool
-        If True, return only username and password rather than NTLM
-        authentication
+        If True, return only username and password tuple rather than NTLM
+        authentication object
 
     Returns
     -------
     auth : ``requests_ntlm.HttpNtlmAuth`` or tuple
-        NTLM authentication handler for ``requests``
+        NTLM authentication handler for ``requests`` (default), or
+        (username, password) tuple if basic=True
 
-    Notes
-    -----
-        The credentials file is expected to have a section named
-        ``[nexus_credentials]`` and two values: ``username`` and
-        ``password``. See the ``credentials.ini.example`` file included in
-        the repository as an example.
+    Raises
+    ------
+    AuthenticationError
+        If NX_CDCS_USER or NX_CDCS_PASS are not configured in settings
     """
-    if filename is None:
-        filename = Path("credentials.ini")
-
-    # DONE: this should be moved out of sharepoint calendar an into general
-    #  utils since it's used for CDCS as well
     try:
-        username = os.environ["NX_CDCS_USER"]
-        passwd = os.environ["NX_CDCS_PASS"]
-        logger.info("Authenticating using environment variables")
-    except KeyError as exception:
-        # if absolute path was provided, use that, otherwise find filename in
-        # this directory
-        if filename.is_absolute():
-            pass
-        else:
-            filename = Path(__file__).parent / filename
-
-        # Raise error if the configuration file is not found
-        if not filename.is_file():
-            msg = (
-                "No credentials were specified with "
-                "environment variables, and credential "
-                f"file {filename} was not found"
-            )
-            raise AuthenticationError(msg) from exception
-
-        config = ConfigParser()
-        config.read(filename)
-
-        username = config.get("nexus_credentials", "username")
-        passwd = config.get("nexus_credentials", "password")
+        username = settings.NX_CDCS_USER
+        passwd = settings.NX_CDCS_PASS
+        logger.info("Authenticating using credentials from settings")
+    except (KeyError, AttributeError) as exception:
+        msg = (
+            "No credentials were found in settings. "
+            "Please configure NX_CDCS_USER and NX_CDCS_PASS "
+            "environment variables."
+        )
+        raise AuthenticationError(msg) from exception
 
     if basic:
         # return just username and password (for BasicAuthentication)
@@ -937,20 +908,8 @@ def has_delay_passed(date: datetime) -> bool:
         Whether the current time is greater than the given date plus the
         configurable delay.
     """
-    try:
-        # get record builder delay from environment settings
-        delay = float(os.getenv("NX_FILE_DELAY_DAYS", "2"))
-    except ValueError:
-        # if it cannot be coerced to a number, warn and set to the
-        # default of 2 days
-        logger.warning(
-            "The environment variable value of NX_FILE_DELAY_DAYS (%s) could "
-            "not be understood as a number, so using the default of 2 days.",
-            os.getenv("NX_FILE_DELAY_DAYS"),
-        )
-        delay = 2
-
-    delay = timedelta(days=delay)
+    # get record builder delay from settings (already validated as float > 0)
+    delay = timedelta(days=settings.NX_FILE_DELAY_DAYS)
 
     # Match timezone awareness of input date
     now = (
@@ -993,11 +952,11 @@ def replace_mmf_path(path: Path, suffix: str) -> Path:
     pathlib.Path
         A resolved pathlib.Path object pointing to the new path
     """
-    mmf_path = Path(os.environ["NX_INSTRUMENT_DATA_PATH"])
-    nexuslims_path = Path(os.environ["NX_DATA_PATH"])
+    mmf_path = Path(str(settings.NX_INSTRUMENT_DATA_PATH))
+    nexuslims_path = Path(str(settings.NX_DATA_PATH))
 
     if mmf_path not in path.parents:
-        logger.warning("%s is not a sub-path of %s", path, os.environ["NX_INSTRUMENT_DATA_PATH"])
+        logger.warning("%s is not a sub-path of %s", path, str(settings.NX_INSTRUMENT_DATA_PATH))
     return Path(str(path).replace(str(mmf_path), str(nexuslims_path)) + suffix)
 
 

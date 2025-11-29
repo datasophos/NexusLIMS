@@ -130,9 +130,5 @@ class TestCDCS:
         assert "Got error while uploading title:" in caplog.text
         assert "This is a fake request error!" in caplog.text
 
-    def test_no_env_variable(self, monkeypatch):
-        """Test that missing NX_CDCS_URL environment variable raises ValueError."""
-        # pylint: disable=protected-access
-        monkeypatch.delenv("NX_CDCS_URL")
-        with pytest.raises(ValueError, match="'NX_CDCS_URL' environment variable"):
-            cdcs.get_cdcs_url()
+    # Note: test_no_env_variable removed - pydantic Settings now validates
+    # NX_CDCS_URL at module import time, not at function call time

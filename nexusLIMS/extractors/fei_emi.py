@@ -116,8 +116,10 @@ def get_ser_metadata(filename: Path):
 
     # if we successfully found the .emi file, add it to the metadata
     if emi_filename:
+        from nexusLIMS.config import settings
+
         rel_emi_fname = (
-            str(emi_filename).replace(os.environ["NX_INSTRUMENT_DATA_PATH"] + "/", "")
+            str(emi_filename).replace(str(settings.NX_INSTRUMENT_DATA_PATH) + "/", "")
             if emi_filename
             else None
         )

@@ -4,7 +4,7 @@ import logging
 import re
 import shutil
 import tarfile
-from datetime import datetime
+from datetime import datetime, timezone
 from decimal import Decimal, InvalidOperation
 from pathlib import Path
 from typing import Dict, List
@@ -29,7 +29,7 @@ def _coerce_to_list(meta_key):
 def _get_mtime_iso(filename: Path, instrument: Instrument | None = None):
     return datetime.fromtimestamp(
         filename.stat().st_mtime,
-        tz=instrument.timezone if instrument else None,
+        tz=instrument.timezone if instrument else timezone.utc,
     ).isoformat()
 
 

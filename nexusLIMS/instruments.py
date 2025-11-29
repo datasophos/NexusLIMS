@@ -30,11 +30,17 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 
-def _get_instrument_db():
+def _get_instrument_db(db_path: Path | str | None = None):
     """
     Get dictionary of instruments from the NexusLIMS database.
 
     Sort of like a very very basic ORM, but much worse.
+
+    Parameters
+    ----------
+    db_path : Path | str | None, optional
+        Path to the database file. If None, uses the path from settings.
+        This parameter is primarily for testing purposes.
 
     Returns
     -------
@@ -46,10 +52,15 @@ def _get_instrument_db():
     query = "SELECT * from instruments"
     instr_db = {}  # Initialize instr_db here
 
+    from nexusLIMS.config import settings
+
+    # Use provided path or fall back to settings
+    _db_path = db_path if db_path is not None else settings.NX_DB_PATH
+
     try:
         with (
             contextlib.closing(
-                sqlite3.connect(os.environ["NX_DB_PATH"]),
+                sqlite3.connect(str(_db_path)),
             ) as conn,
             conn,
             contextlib.closing(conn.cursor()) as cursor,
@@ -319,10 +330,12 @@ def get_instr_from_filepath(path: Path):
     >>> str(inst)
     'FEI-Titan-TEM-635816 in xxx/xxxx'
     """
+    from nexusLIMS.config import settings
+
     for _, v in instrument_db.items():
         if is_subpath(
             path,
-            Path(os.environ["NX_INSTRUMENT_DATA_PATH"]) / v.filestore_path,
+            Path(settings.NX_INSTRUMENT_DATA_PATH) / v.filestore_path,
         ):
             return v
 
@@ -376,7 +389,7 @@ def get_instr_from_api_url(api_url: str) -> Instrument | None:
 
     Examples
     --------
-    >>> inst = get_instr_from_api_url('https://nemo.url.com/api/tools/?id=1')
+    >>> inst = get_instr_from_api_url('https://nemo.example.com/api/tools/?id=1')
     >>> str(inst)
     'FEI-Titan-STEM-630901_n in xxx/xxxx'
     """

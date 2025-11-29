@@ -38,14 +38,13 @@ def get_cdcs_url() -> str:
     Raises
     ------
     ValueError
-        If the ``NX_CDCS_URL`` environment variable is not defined, raise a ``ValueError``
+        If the ``NX_CDCS_URL`` setting is not defined, raise a ``ValueError``
     """
-    url = os.environ.get("NX_CDCS_URL", None)
-    if url is None:
-        msg = "'NX_CDCS_URL' environment variable is not defined"
-        raise ValueError(msg)
+    from nexusLIMS.config import settings
 
-    return url
+    # NX_CDCS_URL is required, so validation ensures it exists
+    # Convert AnyHttpUrl to string
+    return str(settings.NX_CDCS_URL)
 
 
 def get_workspace_id():

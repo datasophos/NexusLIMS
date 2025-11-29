@@ -292,7 +292,7 @@ def id_from_url(url: str) -> int | None:
     ----------
     url
         The URL to parse, such as
-        ``https://nemo.url.com/api/usage_events/?id=9``
+        ``https://nemo.example.com/api/usage_events/?id=9``
 
     Returns
     -------

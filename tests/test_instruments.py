@@ -31,18 +31,17 @@ class TestInstruments:
 
     def test_instrument_repr(self):
         titan_tem = make_titan_tem()
-        # Note: Factory sets default values for computer_name and computer_ip
         assert (
             repr(titan_tem) == "Nexus Instrument: FEI-Titan-TEM\n"
-            "API url:          http://test.example.com/api/\n"
+            "API url:          https://nemo.example.com/api/tools/?id=2\n"
             "Calendar name:    FEI Titan TEM\n"
-            "Calendar url:     http://test.example.com/calendar/FEI-Titan-TEM\n"
+            "Calendar url:     https://nemo.example.com/calendar/FEI-Titan-TEM\n"
             "Schema name:      Titan TEM\n"
             "Location:         Test Building Room 301\n"
             "Property tag:     TEST-TEM-001\n"
-            "Filestore path:   Titan_TEM\n"
-            "Computer IP:      192.168.1.100\n"
-            "Computer name:    computer-fei-titan-tem\n"
+            "Filestore path:   ./Titan_TEM\n"
+            "Computer IP:      None\n"
+            "Computer name:    None\n"
             "Computer mount:   None\n"
             "Harvester:        nemo\n"
             "Timezone:         America/Denver"
@@ -52,11 +51,13 @@ class TestInstruments:
         # Test that we can find the test instrument by its filepath
         # The test database contains TEST-INSTRUMENT-001 with
         # filestore_path = "./NexusLIMS/test_files"  # noqa: ERA001
+        from nexusLIMS.config import settings
+
         test_instrument = instrument_db.get("testtool-TEST-A1234567")
         if test_instrument is not None:
             # Construct a path under this instrument's filestore path
             path = (
-                Path(os.environ["NX_INSTRUMENT_DATA_PATH"])
+                Path(settings.NX_INSTRUMENT_DATA_PATH)
                 / test_instrument.filestore_path
                 / "some_file.dm3"
             )
@@ -120,10 +121,18 @@ class TestInstruments:
         assert titan_tem.localize_datetime_str(dt_et) == "2021-11-26 10:00:00 MST"
 
     def test_instrument_from_api_url(self):
+        from nexusLIMS.config import settings
+
         # This tests the database lookup function
         # It will return an instrument if one exists with matching api_url
+        nemo_harvesters = settings.nemo_harvesters
+        nemo_address = (
+            str(next(iter(nemo_harvesters.values())).address)
+            if nemo_harvesters
+            else "https://nemo.example.com/api/"
+        )
         returned_item = get_instr_from_api_url(
-            f"{os.environ.get('NX_NEMO_ADDRESS_1', 'http://test.example.com/api/')}tools/?id=10",
+            f"{nemo_address}tools/?id=10",
         )
         # Verify it returns an Instrument or None
         if returned_item is not None:
@@ -131,6 +140,6 @@ class TestInstruments:
 
     def test_instrument_from_api_url_none(self):
         returned_item = get_instr_from_api_url(
-            "https://test.example.com/api/tools/?id=-1",
+            "https://nemo.example.com/api/tools/?id=-1",
         )
         assert returned_item is None

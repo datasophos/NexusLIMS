@@ -27,10 +27,12 @@ def make_db_query(query):
     res_list : :obj:`list` of :obj:`tuple`
         The results of the SQL query
     """
+    from nexusLIMS.config import settings
+
     # use contextlib to auto-close the connection and database cursors
     with (
         contextlib.closing(
-            sqlite3.connect(os.environ["NX_DB_PATH"]),
+            sqlite3.connect(str(settings.NX_DB_PATH)),
         ) as connection,
         connection,
         contextlib.closing(connection.cursor()) as cursor,
