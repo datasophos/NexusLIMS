@@ -50,7 +50,7 @@ def make_test_instrument(  # noqa: PLR0913
     api_url : str, optional
         Calendar API endpoint URL (default: "https://nemo.example.com/api/")
     calendar_url : str or None, optional
-        SharePoint calendar URL (default: auto-generated from instrument_pid)
+        Web-accessible calendar URL (default: auto-generated from instrument_pid)
     location : str, optional
         Physical location (default: "Test Building Room 123")
     schema_name : str, optional
@@ -66,7 +66,7 @@ def make_test_instrument(  # noqa: PLR0913
     computer_mount : str, optional
         Mount path on support PC (default: "/mnt/test")
     harvester : str, optional
-        Harvester type - "nemo" or "sharepoint" (default: "nemo")
+        Harvester type - only allowed value is "nemo" (default: "nemo")
     timezone : str, optional
         IANA timezone string (default: "America/New_York")
     **overrides : dict

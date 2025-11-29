@@ -44,12 +44,12 @@ See the ``.env.example`` file for more documentation and examples.
 .. _nexusLIMS-user:
 
 `NX_CDCS_USER`
-    The username used to authenticate to sharepoint calendar resources and CDCS
+    The username used to authenticate to CDCS API
 
 .. _nexusLIMS-pass:
 
 `NX_CDCS_PASS`
-    The password used to authenticate to sharepoint calendar resources and CDCS
+    The password used to authenticate to CDCS API
 
 .. _nexuslims-instrument-data-path:
 

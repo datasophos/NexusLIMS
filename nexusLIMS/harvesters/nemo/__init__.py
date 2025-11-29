@@ -114,7 +114,7 @@ def res_event_from_session(session: Session) -> ReservationEvent:
     # in order to get reservations, we need a NemoConnector
     nemo_connector = get_connector_for_session(session)
 
-    # get reservation with maximum overlap (like sharepoint_calendar.fetch_xml)
+    # get reservation with maximum overlap
     reservations = nemo_connector.get_reservations(
         # tool id can be extracted from instrument api_url query parameter
         tool_id=id_from_url(session.instrument.api_url),

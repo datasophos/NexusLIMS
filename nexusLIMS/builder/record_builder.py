@@ -30,7 +30,7 @@ from nexusLIMS.cdcs import upload_record_files
 from nexusLIMS.config import settings
 from nexusLIMS.db.session_handler import Session, db_query, get_sessions_to_build
 from nexusLIMS.extractors import extension_reader_map as ext_map
-from nexusLIMS.harvesters import nemo, sharepoint_calendar
+from nexusLIMS.harvesters import nemo
 from nexusLIMS.harvesters.nemo import utils as nemo_utils
 from nexusLIMS.harvesters.reservation_event import ReservationEvent
 from nexusLIMS.schemas import activity
@@ -137,7 +137,7 @@ def get_reservation_event(session: Session) -> ReservationEvent:
     ``res_event_from_session`` method from the harvester specified in the
     instrument database. This allows for one consistent function name to call
     a different method depending on which harvester is specified for each
-    instrument (currently just NEMO or Sharepoint).
+    instrument (currently just NEMO).
 
     Parameters
     ----------
@@ -171,9 +171,7 @@ def get_reservation_event(session: Session) -> ReservationEvent:
         "nexusLIMS.harvesters",
     )
     # for PyCharm typing, explicitly specify what modules may be in `harvester`
-    # harvester: Union[nemo, sharepoint_calendar]  # noqa: ERA001
-    # DONE: check if that method exists for the given harvester and raise
-    #  NotImplementedError if not
+    # harvester: Union[nemo]  # noqa: ERA001
     if not hasattr(harvester, "res_event_from_session"):
         msg = (
             f"res_event_from_session has not been implemented for {harvester}, which "
@@ -555,13 +553,11 @@ def process_new_records(
     dt_from
         The point in time after which sessions will be fetched. If ``None``,
         no date filtering will be performed. This parameter currently only
-        has an effect for the NEMO harvester. All SharePoint events will always
-        be fetched.
+        has an effect for the NEMO harvester.
     dt_to
         The point in time before which sessions will be fetched. If ``None``,
         no date filtering will be performed. This parameter currently only
-        has an effect for the NEMO harvester. All SharePoint events will always
-        be fetched.
+        has an effect for the NEMO harvester.
     """
     if dry_run:
         logger.info("!!DRY RUN!! Only finding files, not building records")
@@ -580,10 +576,6 @@ def process_new_records(
             # at this point, sessions can be from any type of harvester
             logger.info("")
             logger.info("")
-            # DONE: generalize this from just sharepoint to any harvester
-            #       (prob. new function that takes session and determines
-            #       where it came from and then gets the matching reservation
-            #       event)
             get_reservation_event(s)
             dry_run_file_find(s)
     else:
@@ -609,31 +601,6 @@ def process_new_records(
                     files_not_uploaded,
                 )
     return
-
-
-def dry_run_get_sharepoint_reservation_event(
-    s: Session,
-) -> ReservationEvent:  # pragma: no cover
-    """
-    Get the calendar event that *would* be used based off the supplied session.
-
-    Only implemented for the Sharepoint harvester.
-
-    Parameters
-    ----------
-    s
-        A session read from the database
-
-    Returns
-    -------
-    res_event : ~nexusLIMS.harvesters.reservation_event.ReservationEvent
-        A list of strings containing the files that would be included for the
-        record of this session (if it were not a dry run)
-    """
-    xml = sharepoint_calendar.fetch_xml(s.instrument, s.dt_from, s.dt_to)
-    res_event = sharepoint_calendar.res_event_from_xml(xml)
-    logger.info(res_event)
-    return res_event
 
 
 def dry_run_file_find(s: Session) -> List[Path]:

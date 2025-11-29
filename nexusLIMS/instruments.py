@@ -121,8 +121,7 @@ class Instrument:
         The "user-friendly" name of the calendar for this instrument as displayed on the
         reservation system resource (e.g. "FEI Titan TEM")
     calendar_url : str or None
-        The URL to this instrument's web-accessible calendar on the SharePoint
-        resource (if using)
+        The URL to this instrument's web-accessible calendar
     location : str or None
         The physical location of this instrument (building and room number)
     name : str or None
@@ -154,7 +153,7 @@ class Instrument:
     harvester : str or None
         The specific submodule within :py:mod:`nexusLIMS.harvesters` that should be
         used to harvest reservation information for this instrument. At the time of
-        writing, the only possible values are ``nemo`` or ``sharepoint_calendar``.
+        writing, the only possible value is ``nemo``.
     timezone : pytz.timezone, str, or None
         The timezone in which this instrument is located, in the format of the IANA
         timezone database (e.g. ``America/New_York``). This is used to properly localize

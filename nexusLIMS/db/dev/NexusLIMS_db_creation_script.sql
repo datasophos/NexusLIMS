@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS "instruments" (
 	"computer_name"	TEXT,
 	"computer_ip"	VARCHAR(15),
 	"computer_mount"	TEXT,
-	"harvester"	TEXT DEFAULT 'nemo', -- currently only "nemo" or "sharepoint" supported
+	"harvester"	TEXT DEFAULT 'nemo', -- currently only "nemo" supported
 	"timezone"	TEXT NOT NULL DEFAULT 'America/New_York',
 	CONSTRAINT "instrument_pid_UNIQUE" UNIQUE("instrument_pid"),
 	PRIMARY KEY("instrument_pid"),

@@ -1,7 +1,7 @@
 """
 Handles obtaining a certificate authority bundle from settings.
 
-Sub-modules include connections to calendar APIs (NEMO and Sharepoint) as well as
+Sub-modules include connections to calendar APIs (NEMO) as well as
 a class to represent a Reservation Event
 """
 

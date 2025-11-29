@@ -207,11 +207,6 @@ class Settings(BaseSettings):
             "process_new_records.sh)."
         ),
     )
-    NX_SP_ROOT_URL: AnyHttpUrl | None = Field(
-        None,
-        description=("The root URL of the SharePoint calendar resource."),
-        deprecated=True,
-    )
 
     @property
     def nexuslims_instrument_data_path(self) -> Path:

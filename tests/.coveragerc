@@ -1,7 +1,6 @@
 [run]
 omit =
     nexusLIMS/dev_scripts/*
-    nexusLIMS/harvesters/sharepoint_calendar.py
     tests/dev
 
 [report]
