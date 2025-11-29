@@ -10,7 +10,6 @@ invoking the record builder.
 
 import argparse
 import logging
-import os
 import sys
 from http import HTTPStatus
 from pathlib import Path
@@ -19,6 +18,7 @@ from urllib.parse import urljoin
 
 from tqdm import tqdm
 
+from nexusLIMS.config import settings
 from nexusLIMS.utils import AuthenticationError, nexus_req
 
 logging.basicConfig()
@@ -40,8 +40,6 @@ def get_cdcs_url() -> str:
     ValueError
         If the ``NX_CDCS_URL`` setting is not defined, raise a ``ValueError``
     """
-    from nexusLIMS.config import settings
-
     # NX_CDCS_URL is required, so validation ensures it exists
     # Convert AnyHttpUrl to string
     return str(settings.NX_CDCS_URL)

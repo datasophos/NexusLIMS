@@ -1,5 +1,5 @@
 # pylint: disable=C0116
-# ruff: noqa: D102, PLR2004, DTZ001
+# ruff: noqa: D102
 
 """Tests for nexusLIMS.extractors.basic_metadata."""
 

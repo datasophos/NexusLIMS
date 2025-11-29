@@ -8,7 +8,6 @@ filenames by the files' modification times.
 
 import logging
 import math
-import os
 from dataclasses import dataclass, field
 from datetime import datetime as dt
 from pathlib import Path
@@ -23,6 +22,7 @@ from scipy.signal import argrelextrema
 from sklearn.model_selection import GridSearchCV, LeaveOneOut
 from sklearn.neighbors import KernelDensity
 
+from nexusLIMS.config import settings
 from nexusLIMS.extractors import flatten_dict, parse_metadata
 from nexusLIMS.utils import current_system_tz
 
@@ -156,8 +156,6 @@ def _add_dataset_element(
     unique_meta: Dict,
     warning: List,
 ):
-    from nexusLIMS.config import settings
-
     # escape any bad characters in the filename
     file = _escape(file)
 

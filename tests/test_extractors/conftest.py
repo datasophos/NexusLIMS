@@ -1,4 +1,3 @@
-# ruff: noqa: ARG001
 """Shared fixtures for extractor tests."""
 
 import pytest

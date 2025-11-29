@@ -2,7 +2,6 @@
 # ruff: noqa: D102
 """Tests the workings of the NexusLIMS Instrument handling."""
 
-import os
 from datetime import datetime
 from pathlib import Path
 

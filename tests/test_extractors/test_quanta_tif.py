@@ -1,13 +1,12 @@
 # pylint: disable=C0116
-# ruff: noqa: D102, PLR2004, DTZ001
+# ruff: noqa: D102, PLR2004
 
 """Tests for nexusLIMS.extractors.quanta_tif."""
 
 import pytest
 
 from nexusLIMS.extractors.quanta_tif import get_quanta_metadata
-
-from ..test_instrument_factory import make_test_tool
+from tests.test_instrument_factory import make_test_tool
 
 
 class TestQuantaExtractor:

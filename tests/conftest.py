@@ -79,6 +79,13 @@ os.environ["NX_INSTRUMENT_DATA_PATH"] = str(_instr_data_path)
 os.environ["NX_IGNORE_PATTERNS"] = '["*.mib", "*.db", "*.emi"]'
 os.environ["NX_FILE_STRATEGY"] = "exclusive"
 
+# Set dummy CDCS environment variables so tests can run independent of
+# the local .env file (these are not used, since only unit tests are done
+# and there's no integration testing to an actual CDCS server at this moment)
+os.environ["NX_CDCS_URL"] = "https://cdcs.example.com"
+os.environ["NX_CDCS_USER"] = "username"
+os.environ["NX_CDCS_PASS"] = "dummy_password"
+
 # Create required directory structure
 (_nexuslims_path / "test_files").mkdir(parents=True, exist_ok=True)
 

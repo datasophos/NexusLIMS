@@ -1,6 +1,5 @@
 """Provides some utilities to use during the testing of NexusLIMS."""
 
-import os
 import shutil
 import tarfile
 from pathlib import Path

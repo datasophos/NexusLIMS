@@ -1,6 +1,7 @@
 #!/bin/bash
 # Run tests with coverage and matplotlib baseline checks
 
+rm -r tests/coverage || true
 uv run pytest tests/ --cov=nexusLIMS --cov=tests \
         --cov-config=tests/.coveragerc \
         --cov-report html:tests/coverage \

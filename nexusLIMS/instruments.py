@@ -15,7 +15,6 @@ import contextlib
 import datetime
 import json
 import logging
-import os
 import sqlite3
 from dataclasses import asdict, dataclass
 from pathlib import Path
@@ -23,6 +22,7 @@ from pathlib import Path
 import pytz
 from pytz.tzinfo import BaseTzInfo
 
+from nexusLIMS.config import settings
 from nexusLIMS.utils import is_subpath
 
 logging.basicConfig()
@@ -51,8 +51,6 @@ def _get_instrument_db(db_path: Path | str | None = None):
     """
     query = "SELECT * from instruments"
     instr_db = {}  # Initialize instr_db here
-
-    from nexusLIMS.config import settings
 
     # Use provided path or fall back to settings
     _db_path = db_path if db_path is not None else settings.NX_DB_PATH
@@ -98,7 +96,8 @@ def _get_instrument_db(db_path: Path | str | None = None):
     except (sqlite3.Error, KeyError) as e:
         logger.warning(
             "Could not connect to database or retrieve instruments. "
-            "Returning empty instrument dictionary.\n\n Details:\n %s", e
+            "Returning empty instrument dictionary.\n\n Details:\n %s",
+            e,
         )
         return {}
 
@@ -329,8 +328,6 @@ def get_instr_from_filepath(path: Path):
     >>> str(inst)
     'FEI-Titan-TEM-635816 in xxx/xxxx'
     """
-    from nexusLIMS.config import settings
-
     for _, v in instrument_db.items():
         if is_subpath(
             path,

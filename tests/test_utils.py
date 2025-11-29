@@ -5,7 +5,6 @@
 
 import gzip
 import logging
-import os
 import shutil
 from datetime import datetime
 from pathlib import Path
@@ -19,15 +18,11 @@ from nexusLIMS import utils
 from nexusLIMS.extractors import extension_reader_map as ext_map
 from nexusLIMS.extractors import quanta_tif
 from nexusLIMS.utils import (
-    AuthenticationError,
     _zero_bytes,
-    current_system_tz,
     find_dirs_by_mtime,
     find_files_by_mtime,
-    get_auth,
     get_nested_dict_value,
     gnu_find_files_by_mtime,
-    has_delay_passed,
     nexus_req,
     replace_mmf_path,
     setup_loggers,
@@ -303,8 +298,6 @@ class TestUtils:
 
     def test_replace_mmf_path_not_in_mmfnexus(self, caplog):
         """Test replace_mmf_path with path not under instrument data path."""
-        from nexusLIMS.config import settings
-
         # Path that's not under NX_INSTRUMENT_DATA_PATH
         other_path = Path("/tmp/other/path/entirely/test.txt")
         new_path = replace_mmf_path(other_path, suffix=".json")

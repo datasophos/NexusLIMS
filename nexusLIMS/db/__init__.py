@@ -9,8 +9,9 @@ the NexusLIMS backend.
 """
 
 import contextlib
-import os
 import sqlite3
+
+from nexusLIMS.config import settings
 
 
 def make_db_query(query):
@@ -27,8 +28,6 @@ def make_db_query(query):
     res_list : :obj:`list` of :obj:`tuple`
         The results of the SQL query
     """
-    from nexusLIMS.config import settings
-
     # use contextlib to auto-close the connection and database cursors
     with (
         contextlib.closing(

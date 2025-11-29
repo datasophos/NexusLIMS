@@ -1,6 +1,5 @@
 """Utility functions used in potentially multiple places by NexusLIMS."""
 
-import json
 import logging
 import os
 import subprocess
@@ -646,7 +645,8 @@ def gnu_find_files_by_mtime(
     ----------
     path
         The root path from which to start the search, relative to
-        the :ref:`NX_INSTRUMENT_DATA_PATH <nexuslims-instrument-data-path>` environment setting.
+        the :ref:`NX_INSTRUMENT_DATA_PATH <nexuslims-instrument-data-path>`
+        environment setting.
     dt_from
         The "starting" point of the search timeframe
     dt_to
@@ -657,7 +657,8 @@ def gnu_find_files_by_mtime(
     followlinks
         Whether to follow symlinks using the ``find`` command via
         the ``-H`` command line flag. This is useful when the
-        :ref:`NX_INSTRUMENT_DATA_PATH <nexuslims-instrument-data-path>` is actually a directory
+        :ref:`NX_INSTRUMENT_DATA_PATH <nexuslims-instrument-data-path>` is actually a
+        directory
         of symlinks. If this is the case and ``followlinks`` is
         ``False``, no files will ever be found because the ``find``
         command will not "dereference" the symbolic links it finds.
@@ -934,15 +935,16 @@ def current_system_tz():
 
 def replace_mmf_path(path: Path, suffix: str) -> Path:
     """
-    Given an input "NX_INSTRUMENT_DATA_PATH" path, generate equivalent "NX_DATA_PATH" path.
+    Given an "NX_INSTRUMENT_DATA_PATH" path, generate equivalent"NX_DATA_PATH" path.
 
-    If the given path is not a subpath of "NX_INSTRUMENT_DATA_PATH", a warning will be logged
-    and the suffix will just be added at the end.
+    If the given path is not a subpath of "NX_INSTRUMENT_DATA_PATH", a warning will
+    be logged and the suffix will just be added at the end.
 
     Parameters
     ----------
     path
-        The input path, which is expected to be a subpath of the NX_INSTRUMENT_DATA_PATH directory
+        The input path, which is expected to be a subpath of the
+        NX_INSTRUMENT_DATA_PATH directory
     suffix
         Any added suffix to add to the path (useful for appending with a new extension,
         such as ``.json``)
@@ -956,7 +958,9 @@ def replace_mmf_path(path: Path, suffix: str) -> Path:
     nexuslims_path = Path(str(settings.NX_DATA_PATH))
 
     if mmf_path not in path.parents:
-        logger.warning("%s is not a sub-path of %s", path, str(settings.NX_INSTRUMENT_DATA_PATH))
+        logger.warning(
+            "%s is not a sub-path of %s", path, str(settings.NX_INSTRUMENT_DATA_PATH)
+        )
     return Path(str(path).replace(str(mmf_path), str(nexuslims_path)) + suffix)
 
 

@@ -9,7 +9,6 @@ both is required for full metadata extraction and preview generation.
 """
 
 import logging
-import os
 from datetime import datetime as dt
 from pathlib import Path
 from typing import List, Tuple
@@ -116,7 +115,7 @@ def get_ser_metadata(filename: Path):
 
     # if we successfully found the .emi file, add it to the metadata
     if emi_filename:
-        from nexusLIMS.config import settings
+        from nexusLIMS.config import settings  # noqa: PLC0415
 
         rel_emi_fname = (
             str(emi_filename).replace(str(settings.NX_INSTRUMENT_DATA_PATH) + "/", "")

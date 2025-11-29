@@ -8,9 +8,8 @@ from datetime import datetime as dt
 import pytest
 
 from nexusLIMS.extractors import fei_emi
-
-from ..test_instrument_factory import make_titan_stem, make_titan_tem
-from ..utils import get_full_file_path
+from tests.test_instrument_factory import make_titan_stem, make_titan_tem
+from tests.utils import get_full_file_path
 
 
 class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
@@ -690,5 +689,3 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         )
         meta = TestSerEmiExtractor._helper_test(caplog, fei_ser_files)
         assert meta["nx_meta"]["Data Type"] == "STEM_Imaging"
-
-

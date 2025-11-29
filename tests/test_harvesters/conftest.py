@@ -70,9 +70,7 @@ def bogus_nemo_connector_url_test_instance(monkeypatch):
 
     This connector only uses one retry to speed up the tests where this is used.
     """
-    return NemoConnector(
-        "https://a_url_that_doesnt_exist/", "notneeded", retries=1
-    )
+    return NemoConnector("https://a_url_that_doesnt_exist/", "notneeded", retries=1)
 
 
 @pytest.fixture(name="bogus_nemo_connector_token")

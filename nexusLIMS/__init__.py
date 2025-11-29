@@ -132,9 +132,8 @@ See the ``.env.example`` file for more documentation and examples.
 
 import logging
 
-from . import builder, db, extractors, instruments, utils  # noqa: E402
-from .config import settings
-from .version import __version__  # noqa: E402
+from . import builder, db, extractors, instruments, utils
+from .version import __version__
 
 
 def _filter_hyperspy_messages(record):  # pragma: no cover

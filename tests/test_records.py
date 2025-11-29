@@ -43,8 +43,6 @@ def _remove_nemo_gov_harvester(monkeypatch):
     present, since it has _a lot_ of usage events, and takes a long time to fetch
     from the API with the current set of tests.
     """
-    import os  # pylint: disable=import-outside-toplevel
-
     nemo_var = None
     for k in os.environ:
         if "nemo.nist.gov/api" in os.getenv(k) and "address" in k:
@@ -160,7 +158,8 @@ class TestRecordBuilder:
     ):
         """Test file finding for multiple sessions with different instruments."""
         # Get all sessions from test database
-        # fresh_test_db fixture provides 3 sessions: FEI-Titan-TEM, JEOL-JEM-TEM, testtool
+        # fresh_test_db fixture provides 3 sessions:
+        #   FEI-Titan-TEM, JEOL-JEM-TEM, testtool
         sessions = session_handler.get_sessions_to_build()
         assert len(sessions) == 3
 
@@ -431,7 +430,8 @@ class TestRecordBuilder:
         )
 
         # Process all sessions in the database (all 3 test sessions)
-        # The fresh_test_db fixture already has FEI-Titan-TEM, JEOL-JEM-TEM, and testtool sessions
+        # The fresh_test_db fixture already has FEI-Titan-TEM, JEOL-JEM-TEM,
+        # and testtool sessions
         record_builder.process_new_records(
             dt_from=dt.fromisoformat("2018-01-01T00:00:00-04:00"),
             dt_to=dt.fromisoformat("2022-01-01T00:00:00-04:00"),

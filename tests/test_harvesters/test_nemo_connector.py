@@ -1,9 +1,10 @@
 # pylint: disable=C0116
-# ruff: noqa: D102, ARG001, PLR2004
+# ruff: noqa: D102
 """
 Test NEMO connector infrastructure.
 
-Tests basic connector functionality, authentication, datetime handling, and configuration.
+Tests basic connector functionality, authentication, datetime handling,
+and configuration.
 """
 
 from datetime import datetime as dt
@@ -70,8 +71,8 @@ class TestNemoConnector:
     def test_connector_strftime(self):
         """Test conversion of datetimes to strings based on a connector's settings."""
         new_york = timezone("America/New_York")
-        date_no_ms = dt(2022, 2, 16, 9, 39, 0, 0)
-        date_w_ms = dt(2022, 2, 16, 9, 39, 0, 1)
+        date_no_ms = dt(2022, 2, 16, 9, 39, 0, 0)  # noqa: DTZ001
+        date_w_ms = dt(2022, 2, 16, 9, 39, 0, 1)  # noqa: DTZ001
         date_no_ms_tz = new_york.localize(date_no_ms)
         date_w_ms_tz = new_york.localize(date_w_ms)
 
@@ -102,12 +103,9 @@ class TestNemoConnector:
             strftime_fmt="%Y-%m-%dT%H:%M:%S%z",
             timezone="America/New_York",
         )
-        assert (
-            nemo_conn.strftime(
-                dt(2022, 2, 16, 23, 6, 12, 50),
-            )
-            == "2022-02-16T23:06:12-0500"
-        )
+        to_fmt = dt(2022, 2, 16, 23, 6, 12, 50)  # noqa: DTZ001
+        to_fmt = new_york.localize(to_fmt)
+        assert nemo_conn.strftime(to_fmt) == "2022-02-16T23:06:12-0500"
 
     def test_connector_strptime(self):
         """Test the conversion of string to datetime based on a connector's settings."""
@@ -116,8 +114,8 @@ class TestNemoConnector:
         datestr_w_ms = "2022-02-16T09:39:00.000001"
         datestr_no_ms_tz = "2022-02-16T09:39:00-05:00"
         datestr_w_ms_tz = "2022-02-16T09:39:00.000001-05:00"
-        date_no_ms = dt(2022, 2, 16, 9, 39, 0, 0)
-        date_w_ms = dt(2022, 2, 16, 9, 39, 0, 1)
+        date_no_ms = dt(2022, 2, 16, 9, 39, 0, 0)  # noqa: DTZ001
+        date_w_ms = dt(2022, 2, 16, 9, 39, 0, 1)  # noqa: DTZ001
         date_no_ms_tz = new_york.localize(date_no_ms)
         date_w_ms_tz = new_york.localize(date_w_ms)
 
@@ -195,7 +193,7 @@ class TestNemoConnector:
             strptime_fmt="%m-%d-%Y %H:%M:%S",
         )
         datestr_no_ms = "02-16-2022 09:39:00"
-        date_no_ms = dt(2022, 2, 16, 9, 39, 0, 0)
+        date_no_ms = dt(2022, 2, 16, 9, 39, 0, 0)  # noqa: DTZ001
         assert nemo_conn_2.strptime(datestr_no_ms) == date_no_ms
 
         # test format seen on ***REMOVED*** coerced to timezone

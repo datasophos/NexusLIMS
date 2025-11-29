@@ -1,5 +1,5 @@
 # pylint: disable=C0116
-# ruff: noqa: D102, PLR2004, DTZ001
+# ruff: noqa: D102
 
 """Tests for nexusLIMS.extractors top-level module functions."""
 
@@ -15,8 +15,7 @@ import pytest
 import nexusLIMS
 from nexusLIMS.extractors import PLACEHOLDER_PREVIEW, flatten_dict, parse_metadata
 from nexusLIMS.version import __version__
-
-from ..test_instrument_factory import make_quanta_sem
+from tests.test_instrument_factory import make_quanta_sem
 
 
 class TestExtractorModule:

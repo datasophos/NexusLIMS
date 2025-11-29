@@ -1,5 +1,5 @@
 # pylint: disable=C0116
-# ruff: noqa: D102, PLR2004, DTZ001
+# ruff: noqa: D102, PLR2004
 
 """Tests for nexusLIMS.extractors.digital_micrograph."""
 
@@ -9,8 +9,7 @@ import pytest
 
 from nexusLIMS.extractors import digital_micrograph
 from nexusLIMS.extractors.utils import _try_decimal, _zero_data_in_dm3
-
-from ..test_instrument_factory import (
+from tests.test_instrument_factory import (
     make_jeol_tem,
     make_test_tool,
     make_titan_stem,

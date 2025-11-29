@@ -1,5 +1,5 @@
 # pylint: disable=C0116,too-many-locals
-# ruff: noqa: D102, ARG001, ARG005, PLR2004, SLF001, DTZ001
+# ruff: noqa: D102, ARG005, PLR2004, SLF001
 """
 Test NEMO API endpoints.
 
@@ -7,11 +7,9 @@ Tests the NEMO API integration including users, tools, projects, events,
 and reservation questions.
 """
 
-import time
 from datetime import datetime as dt
 
 import pytest
-import requests
 
 from nexusLIMS.db.session_handler import Session, db_query
 from nexusLIMS.harvesters import nemo
@@ -146,9 +144,10 @@ class TestNemoConnectorTools:
     def test_get_tool_ids(self, nemo_connector):
         tool_ids = nemo_connector.get_known_tool_ids()
         # Check for tool IDs from our test database instruments
-        # Test database has: FEI-Titan-STEM (id=1), FEI-Titan-TEM (id=2),
-        # FEI-Quanta-ESEM (id=3), JEOL-JEM-TEM (id=5), testtool-TEST-A1234567 (id=6),
-        # test-tool-10 (id=10)
+        # Test database has:
+        #   FEI-Titan-STEM: id=1, FEI-Titan-TEM: id=2,
+        #   FEI-Quanta-ESEM: id=3, JEOL-JEM-TEM: id=5,
+        #   testtool-TEST-A1234567: id=6, test-tool-10: id=10
         assert len(tool_ids) == 6
         for t_id in [1, 2, 3, 5, 6, 10]:
             assert t_id in tool_ids
@@ -403,7 +402,9 @@ class TestNemoConnectorEvents:
         assert res_event.project_id[0] == "NexusLIMS-Test"
         assert res_event.username == "ned"
         assert res_event.internal_id == "187"
-        assert res_event.url == "https://nemo.example.com/event_details/reservation/187/"
+        assert (
+            res_event.url == "https://nemo.example.com/event_details/reservation/187/"
+        )
 
     def test_res_event_from_session_with_elements(self, nemo_connector, monkeypatch):
         # Mock get_connector_for_session to return our mocked connector

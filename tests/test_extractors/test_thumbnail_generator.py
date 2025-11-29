@@ -1,5 +1,5 @@
 # pylint: disable=C0116,too-many-public-methods
-# ruff: noqa: D102, PLR2004, DTZ001
+# ruff: noqa: D102
 
 """Tests for nexusLIMS.extractors.thumbnail_generator."""
 
@@ -20,8 +20,7 @@ from nexusLIMS.extractors.thumbnail_generator import (
     sig_to_thumbnail,
     text_to_thumbnail,
 )
-
-from ..utils import assert_images_equal
+from tests.utils import assert_images_equal
 
 
 class TestThumbnailGenerator:  # pylint: disable=too-many-public-methods

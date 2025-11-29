@@ -11,7 +11,6 @@ XSD_PATH
 
 import argparse
 import logging
-import os
 import shutil
 import sys
 from datetime import datetime as dt
@@ -445,7 +444,9 @@ def build_new_session_records() -> List[Path]:
             if isinstance(exception, FileNotFoundError):
                 # if no files were found for this session log, mark it as so in
                 # the database
-                path = Path(settings.NX_INSTRUMENT_DATA_PATH) / s.instrument.filestore_path
+                path = (
+                    Path(settings.NX_INSTRUMENT_DATA_PATH) / s.instrument.filestore_path
+                )
                 logger.warning(
                     "No files found in %s between %s and %s",
                     path,

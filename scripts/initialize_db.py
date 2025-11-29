@@ -306,7 +306,7 @@ def main():
     """Run the initialize_db script."""
     parser = argparse.ArgumentParser(
         description="Initialize NexusLIMS database and add instrument "
-                    "information interactively."
+        "information interactively."
     )
     parser.add_argument(
         "db_path",
@@ -368,7 +368,7 @@ def main():
         )
         print(f"NX_DB_PATH={db_abs_path}")  # noqa: T201
     elif rows_added == 0:
-        print("No rows were added to the database") # noqa: T201
+        print("No rows were added to the database")  # noqa: T201
 
 
 if __name__ == "__main__":
