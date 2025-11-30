@@ -80,6 +80,39 @@ class NemoHarvesterConfig(BaseModel):
         return v
 
 
+class EmailConfig(BaseModel):
+    """Config for email notifications from the nexuslims-process-records script."""
+
+    smtp_host: str = Field(
+        ...,
+        description="SMTP server hostname (e.g., 'smtp.gmail.com')",
+    )
+    smtp_port: int = Field(
+        587,
+        description="SMTP server port (default: 587 for STARTTLS)",
+    )
+    smtp_username: str | None = Field(
+        None,
+        description="SMTP username for authentication (if required)",
+    )
+    smtp_password: str | None = Field(
+        None,
+        description="SMTP password for authentication (if required)",
+    )
+    use_tls: bool = Field(
+        default=True,
+        description="Use TLS encryption (default: True)",
+    )
+    sender: EmailStr = Field(
+        ...,
+        description="Email address to send from",
+    )
+    recipients: list[EmailStr] = Field(
+        ...,
+        description="List of recipient email addresses for error notifications",
+    )
+
+
 class Settings(BaseSettings):
     """
     Manage application settings loaded from environment variables and `.env` files.
@@ -193,25 +226,21 @@ class Settings(BaseSettings):
         ),
         gt=0,
     )
-    NX_EMAIL_SENDER: EmailStr | None = Field(
-        None,
-        description=(
-            "Email address to send from for notifications via the "
-            "process_new_records.sh script."
-        ),
-    )
-    NX_EMAIL_RECIPIENTS: list[EmailStr] | None = Field(
-        None,
-        description=(
-            "Address(es) to email when an error is detected (used by "
-            "process_new_records.sh)."
-        ),
-    )
 
     @property
     def nexuslims_instrument_data_path(self) -> Path:
         """Alias for NX_INSTRUMENT_DATA_PATH for easier access."""
         return self.NX_INSTRUMENT_DATA_PATH
+
+    @property
+    def lock_file_path(self) -> Path:
+        """Path to the record builder lock file."""
+        return self.NX_DATA_PATH / ".builder.lock"
+
+    @property
+    def log_dir_path(self) -> Path:
+        """Base directory for timestamped log files."""
+        return self.NX_DATA_PATH.parent / "logs"
 
     @cached_property
     def nemo_harvesters(self) -> dict[int, NemoHarvesterConfig]:
@@ -311,6 +340,71 @@ class Settings(BaseSettings):
                     raise
 
         return harvesters
+
+    @cached_property
+    def email_config(self) -> EmailConfig | None:
+        """
+        Load email configuration from environment variables if available.
+
+        Returns
+        -------
+        EmailConfig | None
+            Email configuration object if all required settings are present,
+            None otherwise (email notifications will be disabled).
+
+        Examples
+        --------
+        With environment variables:
+            NX_EMAIL_SMTP_HOST=smtp.gmail.com
+            NX_EMAIL_SENDER=nexuslims@example.com
+            NX_EMAIL_RECIPIENTS=admin@example.com,team@example.com
+
+        Optional variables:
+            NX_EMAIL_SMTP_PORT=587
+            NX_EMAIL_SMTP_USERNAME=user@example.com
+            NX_EMAIL_SMTP_PASSWORD=secret
+            NX_EMAIL_USE_TLS=true
+        """
+        # Load .env file to get email variables
+        env_file_path = Path(".env")
+        env_vars = {}
+        if env_file_path.exists():
+            env_vars = dotenv_values(env_file_path)
+
+        # Merge with os.environ (os.environ takes precedence)
+        all_env = {**env_vars, **os.environ}
+
+        # Check if required email vars are present
+        smtp_host = all_env.get("NX_EMAIL_SMTP_HOST")
+        sender = all_env.get("NX_EMAIL_SENDER")
+        recipients_str = all_env.get("NX_EMAIL_RECIPIENTS")
+
+        if not all([smtp_host, sender, recipients_str]):
+            return None  # Email not configured
+
+        recipients = [r.strip() for r in recipients_str.split(",")]
+
+        config_dict = {
+            "smtp_host": smtp_host,
+            "sender": sender,
+            "recipients": recipients,
+        }
+
+        # Add optional fields
+        if smtp_port := all_env.get("NX_EMAIL_SMTP_PORT"):
+            config_dict["smtp_port"] = int(smtp_port)
+        if smtp_username := all_env.get("NX_EMAIL_SMTP_USERNAME"):
+            config_dict["smtp_username"] = smtp_username
+        if smtp_password := all_env.get("NX_EMAIL_SMTP_PASSWORD"):
+            config_dict["smtp_password"] = smtp_password
+        if use_tls := all_env.get("NX_EMAIL_USE_TLS"):
+            config_dict["use_tls"] = use_tls.lower() in ("true", "1", "yes")
+
+        try:
+            return EmailConfig(**config_dict)
+        except ValidationError:
+            logger.exception("Invalid email configuration")
+            return None
 
 
 # Instantiate the settings object to be imported throughout the application

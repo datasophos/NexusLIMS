@@ -132,8 +132,26 @@ See the ``.env.example`` file for more documentation and examples.
 
 import logging
 
-from . import builder, db, extractors, instruments, utils
+# Defer heavy imports to reduce CLI startup time
+# These will be imported on-demand when accessing the attributes
 from .version import __version__
+
+
+def __getattr__(name):
+    """Lazy import submodules to speed up CLI startup."""
+    if name in ("builder", "db", "extractors", "instruments", "utils"):
+        import importlib  # noqa: PLC0415
+
+        module = importlib.import_module(f".{name}", __package__)
+        globals()[name] = module
+        return module
+    msg = f"module {__name__!r} has no attribute {name!r}"
+    raise AttributeError(msg)
+
+
+def __dir__():
+    """Support for dir() to show lazy-loaded attributes."""
+    return ["__version__", "builder", "db", "extractors", "instruments", "utils"]
 
 
 def _filter_hyperspy_messages(record):  # pragma: no cover

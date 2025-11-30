@@ -36,6 +36,9 @@ dependencies = [
     "pydantic[email]>=2.12.0",
     "pydantic-settings>=2.12.0",
     "email-validator>=2.3.0",
+    "click>=8.1.8",
+    "rich>=13.0.0",
+    "filelock>=3.0.0",
 ]
 
 [dependency-groups]
@@ -60,6 +63,7 @@ Documentation = "https://github.com/datasophos/NexusLIMS"
 "Original-NIST-Repository" = "https://github.com/usnistgov/NexusLIMS.git"
 
 [project.scripts]
+nexuslims-process-records = "nexusLIMS.cli.process_records:main"
 
 [build-system]
 requires = ["hatchling"]
