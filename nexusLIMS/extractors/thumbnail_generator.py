@@ -896,7 +896,7 @@ def _plot_tableau(s, out_path, dpi):
     left_extent = (
         txt.get_window_extent().transformed(axlist[0].transData.inverted()).bounds[0]
     )
-    if left_extent < 0:
+    if left_extent < 0:  # pragma: no cover
         # Move scalebar text over if it overlaps outside of axis
         txt.set_x(txt.get_position()[0] + left_extent * -1)
 

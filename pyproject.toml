@@ -52,8 +52,9 @@ dev = [
     "ruff>=0.0.259",
     "sphinxcontrib-towncrier>=0.3.2a0",
     "types-lxml>=2025.8.25",
-    "pytest-xdist>=3.8.0",
     "responses>=0.25.8",
+    "python-semantic-release>=10.5.2",
+    "freezegun>=1.5.5",
 ]
 
 [project.urls]

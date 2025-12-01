@@ -345,6 +345,38 @@ class TestNemoConnectorEvents:
         assert results[0][4] == "END"
         assert results[1][4] == "START"
 
+    @pytest.mark.usefixtures("_cleanup_session_log")
+    def test_usage_event_to_session_log_duplicate_start_and_end(
+        self,
+        caplog,
+        nemo_connector,
+    ):
+        """Test that duplicate START and END logs are detected and not inserted."""
+        # First, write the event normally to create the initial logs
+        _, results_before = db_query("SELECT * FROM session_log;")
+        nemo_connector.write_usage_event_to_session_log(30)
+        _, results_after_first = db_query("SELECT * FROM session_log;")
+
+        # Verify initial insertion worked (2 logs added: START and END)
+        assert len(results_after_first) - len(results_before) == 2
+
+        # Now try to write the same event again - should detect duplicates and warn
+        with caplog.at_level("WARNING"):
+            nemo_connector.write_usage_event_to_session_log(30)
+
+            # Verify warning was logged for duplicate START log (lines 644-650)
+            assert "A 'START' log with session id" in caplog.text
+            assert "so a new one will not be inserted for this event" in caplog.text
+
+            # Verify warning was logged for duplicate END log (lines 669-675)
+            assert "An 'END' log with session id" in caplog.text
+            # Both warnings should mention the DB check
+            assert caplog.text.count("was found in the the DB") == 2
+
+        # Verify no new logs were added (count should be same as after first insert)
+        _, results_after_second = db_query("SELECT * FROM session_log;")
+        assert len(results_after_second) == len(results_after_first)
+
     def test_usage_event_to_session_log_non_existent_event(
         self,
         caplog,

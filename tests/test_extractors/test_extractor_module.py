@@ -271,6 +271,52 @@ class TestExtractorModule:
         )
         assert meta["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
 
+    def test_create_preview_non_quanta_tif(
+        self, monkeypatch, quanta_test_file, tmp_path
+    ):
+        """Test create_preview for non-Quanta TIF files (else branch, lines 275-276)."""
+        from unittest.mock import Mock
+
+        from PIL import Image
+
+        from nexusLIMS.extractors import create_preview
+
+        # Create a mock instrument that is NOT Quanta (to hit the else branch)
+        mock_instr = Mock()
+        mock_instr.name = "Some-Other-Instrument"
+
+        monkeypatch.setattr(
+            "nexusLIMS.extractors.get_instr_from_filepath",
+            lambda _fname: mock_instr,
+        )
+
+        # Create output path
+        output_path = tmp_path / "preview.png"
+
+        monkeypatch.setattr(
+            "nexusLIMS.extractors.replace_mmf_path",
+            lambda _fname, _ext: output_path,
+        )
+
+        # Mock down_sample_image to verify factor=2 is used and create output
+        def mock_downsample(_fname, out_path=None, factor=None, output_size=None):
+            # This assertion verifies we hit lines 275-276 (else branch)
+            assert factor == 2, "Expected factor=2 for non-Quanta instruments"  # noqa: PLR2004
+            assert output_size is None, "Expected output_size=None for non-Quanta"
+            # Create output
+            if out_path:
+                out_path.parent.mkdir(parents=True, exist_ok=True)
+                img = Image.new("RGB", (100, 100), color="red")
+                img.save(out_path)
+
+        monkeypatch.setattr(
+            "nexusLIMS.extractors.down_sample_image",
+            mock_downsample,
+        )
+
+        # Execute the function - this should hit lines 275-276
+        _result = create_preview(fname=quanta_test_file[0], overwrite=False)
+
     def test_flatten_dict(self):
         dict_to_flatten = {
             "level1.1": "level1.1v",

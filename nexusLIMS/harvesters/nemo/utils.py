@@ -39,7 +39,7 @@ def get_harvesters_enabled() -> List[NemoConnector]:
             ),
             timezone=config.tz,
         )
-        for config in settings.nemo_harvesters.values()
+        for config in settings.nemo_harvesters().values()
     ]
 
 

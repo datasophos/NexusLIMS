@@ -181,6 +181,113 @@ class TestThumbnailGenerator:  # pylint: disable=too-many-public-methods
         )
         thumbnail_generator.add_annotation_markers(hs_load(survey_titan))
 
+    def test_label_marker_creation_error(self, monkeypatch, caplog):
+        """Test exception handling when label marker creation fails."""
+        import logging
+        from unittest.mock import Mock
+
+        # Set the logger to DEBUG level for this module
+        logger = logging.getLogger("nexusLIMS.extractors.thumbnail_generator")
+        logger.setLevel(logging.DEBUG)
+
+        # Create a mock signal with the necessary structure
+        mock_signal = Mock()
+        mock_signal.axes_manager = {
+            "x": Mock(scale=1.0, offset=0.0),
+            "y": Mock(scale=1.0, offset=0.0),
+        }
+
+        # Create mock tags dictionary with an annotation that has a label
+        tags_dict = {
+            "DocumentObjectList": {
+                "TagGroup0": {
+                    "AnnotationGroupList": {
+                        "Annotation0": {
+                            "Rectangle": [10, 10, 50, 50],  # position
+                            "Label": "Test Label",  # Triggers label marker creation
+                            "AnnotationType": 5,  # Rectangle type
+                            "ForegroundColor": [1.0, 0.0, 0.0],
+                            "FillMode": 2,  # FILL_NONE
+                        }
+                    }
+                }
+            }
+        }
+
+        # Mock hs_api.plot.markers.Texts to raise exception
+        # Must patch where it's imported in thumbnail_generator
+        def mock_texts_raises(*_args, **_kwargs):
+            msg = "Simulated label marker creation failure"
+            raise RuntimeError(msg)
+
+        monkeypatch.setattr(
+            "nexusLIMS.extractors.thumbnail_generator.hs_api.plot.markers.Texts",
+            mock_texts_raises,
+        )
+
+        with caplog.at_level(
+            "DEBUG", logger="nexusLIMS.extractors.thumbnail_generator"
+        ):
+            # This should trigger the label marker creation and catch the exception
+            _ = thumbnail_generator._get_markers_list(mock_signal, tags_dict)  # noqa: SLF001
+
+            # Verify the exception was logged
+            assert "Failed to create label marker" in caplog.text
+            assert "Simulated label marker creation failure" in caplog.text
+
+    def test_main_marker_creation_error(self, monkeypatch, caplog):
+        """Test exception handling when main marker creation fails."""
+        import logging
+        from unittest.mock import Mock
+
+        # Set the logger to DEBUG level for this module
+        logger = logging.getLogger("nexusLIMS.extractors.thumbnail_generator")
+        logger.setLevel(logging.DEBUG)
+
+        # Create a mock signal with the necessary structure
+        mock_signal = Mock()
+        mock_signal.axes_manager = {
+            "x": Mock(scale=1.0, offset=0.0),
+            "y": Mock(scale=1.0, offset=0.0),
+        }
+
+        # Create mock tags dictionary with a Rectangle annotation (no label)
+        tags_dict = {
+            "DocumentObjectList": {
+                "TagGroup0": {
+                    "AnnotationGroupList": {
+                        "Annotation0": {
+                            "Rectangle": [10, 10, 50, 50],  # position
+                            "AnnotationType": 5,  # Rectangle type
+                            "ForegroundColor": [1.0, 0.0, 0.0],
+                            "FillMode": 2,  # FILL_NONE
+                            # No Label field, so only main marker will be created
+                        }
+                    }
+                }
+            }
+        }
+
+        # Mock hs_api.plot.markers.Rectangles to raise exception
+        def mock_rectangles_raises(*_args, **_kwargs):
+            msg = "Simulated rectangle marker creation failure"
+            raise RuntimeError(msg)
+
+        monkeypatch.setattr(
+            "nexusLIMS.extractors.thumbnail_generator.hs_api.plot.markers.Rectangles",
+            mock_rectangles_raises,
+        )
+
+        with caplog.at_level(
+            "DEBUG", logger="nexusLIMS.extractors.thumbnail_generator"
+        ):
+            # This should trigger the main marker creation and catch the exception
+            _ = thumbnail_generator._get_markers_list(mock_signal, tags_dict)  # noqa: SLF001
+
+            # Verify the exception was logged with the marker type
+            assert "Failed to create Rectangle marker" in caplog.text
+            assert "Simulated rectangle marker creation failure" in caplog.text
+
     @pytest.mark.mpl_image_compare(style="default")
     def test_annotations(self, annotations, output_path):
         s = hs_load(annotations)

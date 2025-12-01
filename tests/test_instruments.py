@@ -124,7 +124,7 @@ class TestInstruments:
 
         # This tests the database lookup function
         # It will return an instrument if one exists with matching api_url
-        nemo_harvesters = settings.nemo_harvesters
+        nemo_harvesters = settings.nemo_harvesters()
         nemo_address = (
             str(next(iter(nemo_harvesters.values())).address)
             if nemo_harvesters
@@ -142,3 +142,164 @@ class TestInstruments:
             "https://nemo.example.com/api/tools/?id=-1",
         )
         assert returned_item is None
+
+    def test_get_instruments_db_error(self, monkeypatch, caplog):
+        """Test _get_instrument_db with database error."""
+        import sqlite3
+
+        from nexusLIMS.instruments import _get_instrument_db
+
+        # Mock sqlite3.connect to raise sqlite3.Error
+        def mock_connect(*_args, **_kwargs):
+            msg = "Database connection failed"
+            raise sqlite3.Error(msg)
+
+        monkeypatch.setattr("sqlite3.connect", mock_connect)
+
+        with caplog.at_level("WARNING"):
+            result = _get_instrument_db()
+
+        assert result == {}
+        assert "Could not connect to database" in caplog.text
+
+    def test_get_instruments_db_key_error(self, tmp_path, caplog):
+        """Test _get_instrument_db with KeyError from missing instrument_pid column."""
+        import sqlite3
+
+        from nexusLIMS.instruments import _get_instrument_db
+
+        # Create a real database with malformed schema (missing instrument_pid column)
+        db_file = tmp_path / "test_broken.db"
+        conn = sqlite3.connect(str(db_file))
+        cursor = conn.cursor()
+
+        # Create table without instrument_pid column (will cause KeyError)
+        cursor.execute("""
+            CREATE TABLE instruments (
+                name TEXT,
+                filestore_path TEXT,
+                harvester TEXT
+            )
+        """)
+        cursor.execute("""
+            INSERT INTO instruments (name, filestore_path, harvester)
+            VALUES ('test-instr', '/path/to/files', 'nemo')
+        """)
+        conn.commit()
+        conn.close()
+
+        with caplog.at_level("WARNING"):
+            result = _get_instrument_db(db_path=db_file)
+
+        assert result == {}
+        assert "Could not connect to database or retrieve instruments" in caplog.text
+
+    def test_instrument_to_dict(self):
+        """Test Instrument.to_dict() method."""
+        import pytz
+
+        from nexusLIMS.instruments import Instrument
+
+        instrument = Instrument(
+            name="test-instrument",
+            schema_name="TestInstrument",
+            api_url="https://example.com/api/",
+            calendar_name="Test Tool",
+            location="Building 1",
+            property_tag="12345",
+            filestore_path="/path/to/files",
+            computer_name="test-computer",
+            computer_ip="192.168.1.1",
+            computer_mount="/mount/path",
+            harvester="nemo",
+            timezone=pytz.timezone("America/New_York"),
+        )
+
+        result = instrument.to_dict()
+
+        # Check that 'name' was renamed to 'instrument_pid'
+        assert "instrument_pid" in result
+        assert "name" not in result
+        assert result["instrument_pid"] == "test-instrument"
+
+        # Check that timezone was converted to string
+        assert isinstance(result["timezone"], str)
+        assert "America/New_York" in result["timezone"]
+
+    def test_instrument_to_dict_timezone_string(self):
+        """Test Instrument.to_dict() when timezone is already a string."""
+        from nexusLIMS.instruments import Instrument
+
+        instrument = Instrument(
+            name="test-instrument",
+            schema_name="TestInstrument",
+            api_url="https://example.com/api/",
+            calendar_name="Test Tool",
+            location="Building 1",
+            property_tag="12345",
+            filestore_path="/path/to/files",
+            computer_name="test-computer",
+            computer_ip="192.168.1.1",
+            computer_mount="/mount/path",
+            harvester="nemo",
+            timezone="America/Denver",  # Already a string
+        )
+
+        result = instrument.to_dict()
+
+        # Timezone should remain a string
+        assert isinstance(result["timezone"], str)
+        assert result["timezone"] == "America/Denver"
+
+    def test_instrument_to_json(self):
+        """Test Instrument.to_json() method."""
+        import json
+
+        from nexusLIMS.instruments import Instrument
+
+        instrument = Instrument(
+            name="test-instrument",
+            schema_name="TestInstrument",
+            api_url="https://example.com/api/",
+            calendar_name="Test Tool",
+            location="Building 1",
+            property_tag="12345",
+            filestore_path="/path/to/files",
+            computer_name="test-computer",
+            computer_ip="192.168.1.1",
+            computer_mount="/mount/path",
+            harvester="nemo",
+            timezone="America/Denver",
+        )
+
+        json_str = instrument.to_json()
+
+        # Should be valid JSON
+        parsed = json.loads(json_str)
+        assert parsed["instrument_pid"] == "test-instrument"
+        assert parsed["schema_name"] == "TestInstrument"
+
+    def test_instrument_to_json_with_kwargs(self):
+        """Test Instrument.to_json() with custom kwargs."""
+        from nexusLIMS.instruments import Instrument
+
+        instrument = Instrument(
+            name="test-instrument",
+            schema_name="TestInstrument",
+            api_url="https://example.com/api/",
+            calendar_name="Test Tool",
+            location="Building 1",
+            property_tag="12345",
+            filestore_path="/path/to/files",
+            computer_name="test-computer",
+            computer_ip="192.168.1.1",
+            computer_mount="/mount/path",
+            harvester="nemo",
+            timezone="America/Denver",
+        )
+
+        json_str = instrument.to_json(indent=2)
+
+        # Should be pretty-printed
+        assert "\n" in json_str
+        assert "  " in json_str

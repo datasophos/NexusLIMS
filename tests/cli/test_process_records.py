@@ -3,6 +3,7 @@
 
 import logging
 import smtplib
+from pathlib import Path
 from unittest.mock import MagicMock, Mock, patch
 
 from click.testing import CliRunner
@@ -166,6 +167,22 @@ class TestCheckLogForErrors:
         assert has_errors is False
         assert len(found_patterns) == 0
 
+    def test_log_file_read_error(self, tmp_path, caplog):
+        """Test behavior when log file cannot be read (OSError)."""
+        log_file = tmp_path / "test.log"
+        log_file.write_text("Some content")
+
+        # Make the file unreadable by mocking read_text to raise OSError
+        with (
+            patch.object(Path, "read_text", side_effect=OSError("Permission denied")),
+            caplog.at_level(logging.ERROR)
+        ):
+                has_errors, found_patterns = check_log_for_errors(log_file)
+
+        assert has_errors is False
+        assert len(found_patterns) == 0
+        assert "Failed to read log file" in caplog.text
+
 
 class TestSendErrorNotification:
     """Test the send_error_notification function."""
@@ -276,6 +293,63 @@ class TestSendErrorNotification:
             send_error_notification(log_file, ["error"])
 
         assert "Failed to send error notification email" in caplog.text
+
+    @patch("nexusLIMS.cli.process_records.smtplib.SMTP")
+    def test_handles_log_read_error_during_email(
+        self, mock_smtp, tmp_path, monkeypatch, caplog
+    ):
+        """Test OSError when reading log file for email."""
+        mock_email_config = Mock()
+        mock_email_config.smtp_host = "smtp.example.com"
+        mock_email_config.smtp_port = 25
+        mock_email_config.use_tls = False
+        mock_email_config.sender = "sender@example.com"
+        mock_email_config.recipients = ["recipient@example.com"]
+
+        mock_settings = Mock()
+        mock_settings.email_config = mock_email_config
+
+        monkeypatch.setattr("nexusLIMS.config.settings", mock_settings)
+
+        log_file = tmp_path / "test.log"
+        log_file.write_text("Error log contents")
+
+        # Mock read_text to raise OSError
+        with (
+            patch.object(Path, "read_text", side_effect=OSError("Cannot read file")),
+            caplog.at_level(logging.ERROR)
+        ):
+                send_error_notification(log_file, ["error"])
+
+        assert "Failed to read log file for email" in caplog.text
+
+    @patch("nexusLIMS.cli.process_records.smtplib.SMTP")
+    def test_handles_unexpected_exception_during_email(
+        self, mock_smtp, tmp_path, monkeypatch, caplog
+    ):
+        """Test unexpected exceptions during email sending."""
+        mock_email_config = Mock()
+        mock_email_config.smtp_host = "smtp.example.com"
+        mock_email_config.smtp_port = 25
+        mock_email_config.use_tls = False
+        mock_email_config.sender = "sender@example.com"
+        mock_email_config.recipients = ["recipient@example.com"]
+
+        mock_settings = Mock()
+        mock_settings.email_config = mock_email_config
+
+        monkeypatch.setattr("nexusLIMS.config.settings", mock_settings)
+
+        # Make SMTP raise an unexpected exception
+        mock_smtp.side_effect = RuntimeError("Unexpected error")
+
+        log_file = tmp_path / "test.log"
+        log_file.write_text("Error log contents")
+
+        with caplog.at_level(logging.ERROR):
+            send_error_notification(log_file, ["error"])
+
+        assert "Unexpected error while sending email" in caplog.text
 
 
 class TestMainCLI:
@@ -420,3 +494,155 @@ class TestMainCLI:
 
         assert result.exit_code == 0
         mock_send_email.assert_not_called()
+
+    @patch("nexusLIMS.cli.process_records.setup_file_logging")
+    @patch("nexusLIMS.utils.setup_loggers")
+    def test_setup_file_logging_error(
+        self, mock_setup_loggers, mock_setup_file_logging, tmp_path, monkeypatch
+    ):
+        """Test that OSError during file logging setup exits cleanly."""
+        mock_settings = Mock()
+        mock_settings.log_dir_path = tmp_path / "logs"
+        mock_settings.lock_file_path = tmp_path / ".builder.lock"
+
+        monkeypatch.setattr("nexusLIMS.config.settings", mock_settings)
+
+        # Make setup_file_logging raise OSError
+        mock_setup_file_logging.side_effect = OSError("Cannot create log directory")
+
+        runner = CliRunner()
+        result = runner.invoke(main, [])
+
+        assert result.exit_code == 1
+
+    @patch("nexusLIMS.builder.record_builder.process_new_records")
+    @patch("nexusLIMS.cli.process_records.send_error_notification")
+    @patch("nexusLIMS.utils.setup_loggers")
+    def test_exception_during_record_processing(  # noqa: PLR0913
+        self,
+        mock_setup_loggers,
+        mock_send_email,
+        mock_process_records,
+        tmp_path,
+        monkeypatch,
+        caplog,
+    ):
+        """Test that exceptions during record processing are logged."""
+        mock_settings = Mock()
+        mock_settings.log_dir_path = tmp_path / "logs"
+        mock_settings.lock_file_path = tmp_path / ".builder.lock"
+        mock_settings.email_config = None
+
+        monkeypatch.setattr("nexusLIMS.config.settings", mock_settings)
+
+        # Make process_new_records raise an exception
+        mock_process_records.side_effect = RuntimeError("Processing failed")
+
+        runner = CliRunner()
+        with caplog.at_level(logging.ERROR):
+            result = runner.invoke(main, [])
+
+        assert result.exit_code == 0
+        assert "Error during record processing" in caplog.text
+
+    @patch("nexusLIMS.builder.record_builder.process_new_records")
+    @patch("nexusLIMS.cli.process_records.check_log_for_errors")
+    @patch("nexusLIMS.cli.process_records.send_error_notification")
+    @patch("nexusLIMS.utils.setup_loggers")
+    def test_exception_during_log_check(  # noqa: PLR0913
+        self,
+        mock_setup_loggers,
+        mock_send_email,
+        mock_check_log,
+        mock_process_records,
+        tmp_path,
+        monkeypatch,
+        caplog,
+    ):
+        """Test that exceptions during log checking are handled."""
+        mock_settings = Mock()
+        mock_settings.log_dir_path = tmp_path / "logs"
+        mock_settings.lock_file_path = tmp_path / ".builder.lock"
+        mock_settings.email_config = Mock()
+
+        monkeypatch.setattr("nexusLIMS.config.settings", mock_settings)
+
+        # Make check_log_for_errors raise an exception
+        mock_check_log.side_effect = RuntimeError("Check failed")
+
+        runner = CliRunner()
+        with caplog.at_level(logging.ERROR):
+            result = runner.invoke(main, [])
+
+        assert result.exit_code == 0
+        assert "Error while checking log or sending notification" in caplog.text
+
+    @patch("nexusLIMS.builder.record_builder.process_new_records")
+    @patch("nexusLIMS.cli.process_records.send_error_notification")
+    @patch("nexusLIMS.utils.setup_loggers")
+    def test_verbose_level_zero(
+        self,
+        mock_setup_loggers,
+        mock_send_email,
+        mock_process_records,
+        tmp_path,
+        monkeypatch,
+    ):
+        """Test verbose level 0 calls setup_loggers with WARNING."""
+        mock_settings = Mock()
+        mock_settings.log_dir_path = tmp_path / "logs"
+        mock_settings.lock_file_path = tmp_path / ".builder.lock"
+        mock_settings.email_config = None
+
+        monkeypatch.setattr("nexusLIMS.config.settings", mock_settings)
+
+        runner = CliRunner()
+        result = runner.invoke(main, [])
+
+        assert result.exit_code == 0
+        # Default (no -v flag) should call setup_loggers with WARNING
+        mock_setup_loggers.assert_called_once_with(logging.WARNING)
+
+    @patch("nexusLIMS.builder.record_builder.process_new_records")
+    @patch("nexusLIMS.cli.process_records.send_error_notification")
+    @patch("nexusLIMS.utils.setup_loggers")
+    def test_verbose_level_one(
+        self,
+        mock_setup_loggers,
+        mock_send_email,
+        mock_process_records,
+        tmp_path,
+        monkeypatch,
+    ):
+        """Test verbose level 1 calls setup_loggers with INFO."""
+        mock_settings = Mock()
+        mock_settings.log_dir_path = tmp_path / "logs"
+        mock_settings.lock_file_path = tmp_path / ".builder.lock"
+        mock_settings.email_config = None
+
+        monkeypatch.setattr("nexusLIMS.config.settings", mock_settings)
+
+        runner = CliRunner()
+        result = runner.invoke(main, ["-v"])
+
+        assert result.exit_code == 0
+        # -v should call setup_loggers with INFO
+        mock_setup_loggers.assert_called_once_with(logging.INFO)
+
+
+def test_main_entry_point():
+    """Test that the module can be run as __main__."""
+    import subprocess
+    import sys
+
+    # Just test that the module can be imported as __main__ without crashing
+    # We use --help to avoid actually running the full process
+    result = subprocess.run(
+        [sys.executable, "-m", "nexusLIMS.cli.process_records", "--help"],
+        check=False, capture_output=True,
+        text=True,
+        timeout=5,
+    )
+
+    assert result.returncode == 0
+    assert "Process new NexusLIMS records" in result.stdout

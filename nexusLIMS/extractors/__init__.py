@@ -61,6 +61,7 @@ __all__ = [
     "flatten_dict",
     "get_basic_metadata",
     "get_dm3_metadata",
+    "get_instr_from_filepath",
     "get_msa_metadata",
     "get_quanta_metadata",
     "get_ser_metadata",
@@ -268,15 +269,8 @@ def create_preview(fname: Path, *, overwrite: bool) -> Path | None:
     extension = fname.suffix[1:]
 
     if extension == "tif":
-        instr = get_instr_from_filepath(fname)
-        instr_name = instr.name if instr is not None else None
-        if instr_name == "FEI-Quanta200-ESEM-633137_n":
-            # we know the output size we want for the Quanta
-            output_size = (512, 471)
-            down_sample_image(fname, out_path=preview_fname, output_size=output_size)
-        else:
-            factor = 2
-            down_sample_image(fname, out_path=preview_fname, factor=factor)
+        factor = 2
+        down_sample_image(fname, out_path=preview_fname, factor=factor)
 
     elif extension in unextracted_preview_map:
         # use preview generation function from the map of functions defined

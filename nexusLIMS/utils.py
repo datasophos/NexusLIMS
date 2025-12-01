@@ -591,7 +591,7 @@ def _build_find_command(  # noqa: PLR0913
     list
         Complete find command as list of arguments
     """
-    cmd = [find_command, "-H" if followlinks else ""]
+    cmd = [find_command] + (["-H"] if followlinks else [])
     cmd += [str(p) for p in find_paths]
     cmd += [
         "-type",

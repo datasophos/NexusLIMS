@@ -6,6 +6,7 @@ Test ReservationEvent class.
 Tests the ReservationEvent class that represents calendar reservation data.
 """
 
+from datetime import UTC
 from datetime import datetime as dt
 
 import pytest
@@ -177,6 +178,22 @@ class TestReservationEvent:
         assert xml.find("project/group").text == "00"
         assert xml.find("project/project_id").text == "10.2.3.4.1.6"
         assert xml.find("project/ref").text == "https://www.example.org"
+
+    def test_res_event_with_url(self):
+        """Test that URL is included in XML when provided."""
+        res_event = ReservationEvent(
+            experiment_title="Test with URL",
+            username="testuser",
+            start_time=dt(2021, 9, 15, 8, 0, 0, tzinfo=UTC),
+            last_updated=dt(2021, 9, 15, 8, 0, 0, tzinfo=UTC),
+            url="https://example.com/reservation/123",
+        )
+
+        xml = res_event.as_xml()
+        summary_el = xml.find("summary")
+
+        assert summary_el is not None
+        assert summary_el.get("ref") == "https://example.com/reservation/123"
 
     def test_check_arg_lists(self):
         ReservationEvent(

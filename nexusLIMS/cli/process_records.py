@@ -200,7 +200,7 @@ def send_error_notification(log_path: Path, found_patterns: list[str]) -> None:
 Here is the output of {log_path}.
 To help you debug, the following "bad" strings were found in the output:
 
-{', '.join(found_patterns)}
+{", ".join(found_patterns)}
 
 {log_contents}"""
 
@@ -327,9 +327,7 @@ def main(*, dry_run: bool, verbose: int) -> None:
             "Lock file already exists at %s - another instance is running",
             lock_file,
         )
-        console.print(
-            f"[yellow]Lock file already exists at {lock_file}[/yellow]"
-        )
+        console.print(f"[yellow]Lock file already exists at {lock_file}[/yellow]")
         console.print("[yellow]Another instance is already running. Exiting.[/yellow]")
         sys.exit(0)
 
@@ -347,5 +345,5 @@ def main(*, dry_run: bool, verbose: int) -> None:
     logger.info("NexusLIMS record processor finished")
 
 
-if __name__ == "__main__":
+if __name__ == "__main__": # pragma: no cover
     main()

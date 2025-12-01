@@ -19,7 +19,7 @@ def _fixture_titan_tem_db(monkeypatch):
     """Monkeypatch so DM extractor thinks this file came from FEI Titan TEM."""
     monkeypatch.setattr(
         "nexusLIMS.extractors.digital_micrograph.get_instr_from_filepath",
-        lambda _x: instruments.instrument_db["FEI-Titan-TEM-635816_n"],
+        lambda _x: instruments.instrument_db["FEI-Titan-TEM"],
     )
 
 
@@ -28,5 +28,5 @@ def _fixture_titan_643_tem_db(monkeypatch):
     """Monkeypatch so DM extractor thinks this file came from FEI Titan STEM."""
     monkeypatch.setattr(
         "nexusLIMS.extractors.digital_micrograph.get_instr_from_filepath",
-        lambda _x: instruments.instrument_db["FEI-Titan-STEM-630901_n"],
+        lambda _x: instruments.instrument_db["FEI-Titan-STEM"],
     )

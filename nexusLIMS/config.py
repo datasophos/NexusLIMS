@@ -5,12 +5,15 @@ This module uses `pydantic-settings` to define, validate, and access
 application settings from environment variables and .env files.
 It provides a single source of truth for configuration, ensuring
 type safety and simplifying access throughout the application.
+
+The settings object can be imported and used throughout the application.
+In tests, use refresh_settings() to reload settings after modifying
+environment variables.
 """
 
 import logging
 import os
 import re
-from functools import cached_property
 from pathlib import Path
 from typing import Literal
 
@@ -242,7 +245,6 @@ class Settings(BaseSettings):
         """Base directory for timestamped log files."""
         return self.NX_DATA_PATH.parent / "logs"
 
-    @cached_property
     def nemo_harvesters(self) -> dict[int, NemoHarvesterConfig]:
         """
         Dynamically discover and parse all NEMO harvester configurations.
@@ -341,10 +343,11 @@ class Settings(BaseSettings):
 
         return harvesters
 
-    @cached_property
     def email_config(self) -> EmailConfig | None:
         """
         Load email configuration from environment variables if available.
+
+        This method is cached per Settings instance for performance.
 
         Returns
         -------
@@ -407,9 +410,140 @@ class Settings(BaseSettings):
             return None
 
 
-# Instantiate the settings object to be imported throughout the application
-try:
-    settings = Settings()
-except ValidationError:
-    logger.exception("Configuration validation error")
-    raise
+class _SettingsManager:
+    """
+    Internal manager for the settings singleton.
+
+    Provides a refresh mechanism for testing while maintaining
+    the convenient import pattern for production code.
+    """
+
+    def __init__(self):
+        self._settings: Settings | None = None
+
+    def get(self) -> Settings:
+        """Get the current settings instance, creating if needed."""
+        if self._settings is None:
+            self._settings = self._create()
+        return self._settings
+
+    def _create(self) -> Settings:
+        """Create a new Settings instance."""
+        try:
+            return Settings()
+        except ValidationError:
+            logger.exception("Configuration validation error")
+            raise
+
+    def refresh(self) -> Settings:
+        """
+        Refresh settings from current environment variables.
+
+        Creates a new Settings instance and replaces the cached singleton.
+        Primarily used in testing when environment variables are modified.
+
+        Returns
+        -------
+        Settings
+            The newly created settings instance
+
+        Examples
+        --------
+        >>> import os
+        >>> from nexusLIMS.config import settings, refresh_settings
+        >>>
+        >>> # In a test, modify environment
+        >>> os.environ["NX_FILE_STRATEGY"] = "inclusive"
+        >>>
+        >>> # Refresh to pick up changes
+        >>> refresh_settings()
+        >>>
+        >>> assert settings.NX_FILE_STRATEGY == "inclusive"
+        """
+        self._settings = self._create()
+        return self._settings
+
+    def clear(self) -> None:
+        """
+        Clear the settings cache.
+
+        The next access to settings will create a new instance.
+        This is equivalent to refresh() but doesn't immediately create
+        a new instance.
+        """
+        self._settings = None
+
+
+class _SettingsProxy:
+    """
+    Proxy that provides attribute access to the current settings instance.
+
+    This allows settings to be used like a normal object while supporting
+    the refresh mechanism for testing.
+    """
+
+    def __getattr__(self, name):
+        # Get the attribute from the actual Settings instance
+        attr = getattr(_manager.get(), name)
+
+        # If it's a method, wrap it to ensure it's called on the right instance
+        if callable(attr):
+
+            def method_wrapper(*args, **kwargs):
+                # Re-get the attribute from the current Settings instance
+                # in case it was refreshed between getting the method and calling it
+                current_attr = getattr(_manager.get(), name)
+                return current_attr(*args, **kwargs)
+
+            return method_wrapper
+
+        return attr
+
+    def __dir__(self):
+        return dir(_manager.get())
+
+    def __repr__(self):
+        return repr(_manager.get())
+
+
+# Create the settings manager
+_manager = _SettingsManager()
+
+
+def refresh_settings() -> Settings:
+    """
+    Refresh the settings singleton from current environment variables.
+
+    This forces a reload of all settings from the environment.
+    Primarily useful for testing.
+
+    Returns
+    -------
+    Settings
+        The newly created settings instance
+
+    Examples
+    --------
+    >>> from nexusLIMS.config import settings, refresh_settings
+    >>> import os
+    >>>
+    >>> os.environ["NX_FILE_STRATEGY"] = "inclusive"
+    >>> refresh_settings()
+    >>>
+    >>> assert settings.NX_FILE_STRATEGY == "inclusive"
+    """
+    return _manager.refresh()
+
+
+def clear_settings() -> None:
+    """
+    Clear the settings cache without immediately creating a new instance.
+
+    The next import or access to settings will create a fresh instance.
+    Useful in test teardown to ensure clean state.
+    """
+    _manager.clear()
+
+
+# The settings "singleton" - accessed like a normal object throughout the application
+settings = _SettingsProxy()

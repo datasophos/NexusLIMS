@@ -53,7 +53,7 @@ class TestNemoConnector:
         from nexusLIMS.config import settings
 
         assert len(nemo_utils.get_harvesters_enabled()) >= 1
-        nemo_address = str(next(iter(settings.nemo_harvesters.values())).address)
+        nemo_address = str(next(iter(settings.nemo_harvesters().values())).address)
         assert f"Connection to NEMO API at {nemo_address}" in [
             str(n) for n in nemo_utils.get_harvesters_enabled()
         ]
@@ -67,6 +67,27 @@ class TestNemoConnector:
     def test_get_connector_by_base_url(self):
         with pytest.raises(LookupError):
             nemo_utils.get_connector_by_base_url("bogus_connector")
+
+    def test_get_session_from_usage_event_no_event(self, nemo_connector, monkeypatch):
+        def mock_get_usage_events(*_args, **_kwargs):
+            return []
+
+        monkeypatch.setattr(nemo_connector, "get_usage_events", mock_get_usage_events)
+        assert nemo_connector.get_session_from_usage_event(123) is None
+
+    def test_get_projects_expands_tools(self, nemo_connector, monkeypatch):
+        def mock_api_caller(*_args, **_kwargs):
+            return [{"id": 1, "name": "Test Project", "only_allow_tools": [1]}]
+
+        def mock_get_tools(*_args, **_kwargs):
+            return [{"id": 1, "name": "Test Tool"}]
+
+        monkeypatch.setattr(nemo_connector, "_api_caller", mock_api_caller)
+        monkeypatch.setattr(nemo_connector, "get_tools", mock_get_tools)
+
+        projects = nemo_connector.get_projects(1)
+        assert len(projects) == 1
+        assert projects[0]["only_allow_tools"] == [{"id": 1, "name": "Test Tool"}]
 
     def test_connector_strftime(self):
         """Test conversion of datetimes to strings based on a connector's settings."""
@@ -106,6 +127,80 @@ class TestNemoConnector:
         to_fmt = dt(2022, 2, 16, 23, 6, 12, 50)  # noqa: DTZ001
         to_fmt = new_york.localize(to_fmt)
         assert nemo_conn.strftime(to_fmt) == "2022-02-16T23:06:12-0500"
+
+        # test %z in strftime_fmt for NAIVE datetime with self.timezone set
+        # This tests line 117-118 in connector.py where naive datetimes are localized
+        nemo_conn_naive = NemoConnector(
+            base_url="https://example.org",
+            token="not_needed",
+            strftime_fmt="%Y-%m-%dT%H:%M:%S%z",
+            timezone="America/New_York",
+        )
+        # Create a naive datetime (no tzinfo)
+        naive_dt = dt(2022, 2, 16, 23, 6, 12, 50)  # noqa: DTZ001
+        # Should be localized to America/New_York when strftime is called
+        result = nemo_conn_naive.strftime(naive_dt)
+        assert result == "2022-02-16T23:06:12-0500"
+
+        # test %z in strftime_fmt for naive datetime with no self.timezone set
+        nemo_conn = NemoConnector(
+            base_url="https://example.org",
+            token="not_needed",
+            strftime_fmt="%Y-%m-%dT%H:%M:%S%z",
+        )
+        to_fmt = dt(2022, 2, 16, 23, 6, 12, 50)  # noqa: DTZ001
+        assert nemo_conn.strftime(to_fmt) == to_fmt.astimezone().strftime(
+            "%Y-%m-%dT%H:%M:%S%z"
+        )
+
+    def test_parse_reservation_with_cancelled_by(self, nemo_connector, monkeypatch):
+        """Test that _parse_reservation expands the cancelled_by field."""
+
+        # Mock get_users to return a user dictionary
+        def mock_get_users(user_id):
+            if user_id == 5:  # noqa: PLR2004
+                return [
+                    {"id": 5, "username": "canceller", "email": "canceller@example.com"}
+                ]
+            return []
+
+        # Mock get_tools to return a tool dictionary
+        def mock_get_tools(tool_id):
+            if tool_id == 1:
+                return [{"id": 1, "name": "Test Tool"}]
+            return []
+
+        # Mock get_projects to return a project dictionary
+        def mock_get_projects(proj_id):
+            if proj_id == 10:  # noqa: PLR2004
+                return [{"id": 10, "name": "Test Project"}]
+            return []
+
+        monkeypatch.setattr(nemo_connector, "get_users", mock_get_users)
+        monkeypatch.setattr(nemo_connector, "get_tools", mock_get_tools)
+        monkeypatch.setattr(nemo_connector, "get_projects", mock_get_projects)
+
+        # Create a mock reservation with cancelled_by field
+        reservation = {
+            "id": 123,
+            "user": 1,
+            "creator": 2,
+            "tool": 1,
+            "project": 10,
+            "cancelled_by": 5,  # This should be expanded to full user dict
+            "start": "2024-01-01T10:00:00",
+            "end": "2024-01-01T12:00:00",
+        }
+
+        # Parse the reservation
+        parsed = nemo_connector._parse_reservation(reservation)  # noqa: SLF001
+
+        # Verify that cancelled_by was expanded from ID to full user dict
+        assert "cancelled_by" in parsed
+        assert isinstance(parsed["cancelled_by"], dict)
+        assert parsed["cancelled_by"]["id"] == 5  # noqa: PLR2004
+        assert parsed["cancelled_by"]["username"] == "canceller"
+        assert parsed["cancelled_by"]["email"] == "canceller@example.com"
 
     def test_connector_strptime(self):
         """Test the conversion of string to datetime based on a connector's settings."""
@@ -226,6 +321,16 @@ class TestNemoConnector:
             "2022-02-16T09:39:00-07:00",
         )
 
+        # test microsecond fallback
+        nemo_conn_5 = NemoConnector(
+            base_url="https://example.org",
+            token="not_needed",
+            strptime_fmt="%Y-%m-%dT%H:%M:%S.%f",
+        )
+        datestr_no_ms = "2022-02-16T09:39:00"
+        date_no_ms = dt(2022, 2, 16, 9, 39, 0, 0)  # noqa: DTZ001
+        assert nemo_conn_5.strptime(datestr_no_ms) == date_no_ms
+
 
 class TestNemoConnectorAuthentication:
     """Testing NEMO connector authentication and error handling."""
@@ -253,3 +358,76 @@ class TestNemoConnectorAuthentication:
             bogus_nemo_connector_token.get_users()
         assert "401" in str(exception.value)
         assert "Unauthorized" in str(exception.value)
+
+    def test_api_caller_raise_for_status(self, monkeypatch):
+        """Test that _api_caller calls raise_for_status on bad responses (line 829)."""
+        from unittest.mock import Mock
+
+        # Create a fresh connector WITHOUT the mocked _api_caller
+        connector = NemoConnector(
+            base_url="https://test.example.com/api/",
+            token="test-token",
+        )
+
+        # Create a mock response with a bad status code
+        mock_response = Mock()
+        mock_response.status_code = 500
+        mock_response.reason = "Internal Server Error"
+
+        # Make raise_for_status raise an HTTPError
+        def mock_raise_for_status():
+            error_msg = "500 Server Error: Internal Server Error"
+            raise requests.exceptions.HTTPError(error_msg, response=mock_response)
+
+        mock_response.raise_for_status = mock_raise_for_status
+
+        # Mock nexus_req to return this bad response
+        def mock_nexus_req(*_args, **_kwargs):
+            return mock_response
+
+        # Patch nexus_req in the connector module's namespace (where it's imported)
+        import nexusLIMS.harvesters.nemo.connector as connector_module
+
+        monkeypatch.setattr(connector_module, "nexus_req", mock_nexus_req)
+
+        # Call _api_caller which should call raise_for_status
+        with pytest.raises(requests.exceptions.HTTPError) as exc_info:
+            connector._api_caller("GET", "users/", {})  # noqa: SLF001
+
+        # Verify the error was raised from raise_for_status
+        assert "500 Server Error" in str(exc_info.value)
+
+    def test_api_caller_returns_json(self, monkeypatch):
+        """Test that _api_caller returns parsed JSON (line 831)."""
+        from unittest.mock import Mock
+
+        # Create a fresh connector WITHOUT the mocked _api_caller
+        connector = NemoConnector(
+            base_url="https://test.example.com/api/",
+            token="test-token",
+        )
+
+        # Create a mock response with valid JSON
+        mock_response = Mock()
+        mock_response.status_code = 200
+        mock_response.raise_for_status = Mock()  # Does nothing for 200 OK
+
+        # Mock json() to return parsed data
+        expected_data = [{"id": 1, "username": "testuser"}]
+        mock_response.json = Mock(return_value=expected_data)
+
+        # Mock nexus_req to return this response
+        def mock_nexus_req(*_args, **_kwargs):
+            return mock_response
+
+        # Patch nexus_req in the connector module's namespace (where it's imported)
+        import nexusLIMS.harvesters.nemo.connector as connector_module
+
+        monkeypatch.setattr(connector_module, "nexus_req", mock_nexus_req)
+
+        # Call _api_caller which should return the JSON data
+        result = connector._api_caller("GET", "users/", {})  # noqa: SLF001
+
+        # Verify json() was called and data was returned
+        assert mock_response.json.called
+        assert result == expected_data

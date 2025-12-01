@@ -1,14 +1,9 @@
-"""
-Tests for record_builder module.
+"""Tests for the record builder module."""
 
-Tests functionality related to the building of records, such as the record builder
-module, acquisition activity representations, session handling, and CDCS connections
-"""
+# pylint: disable=missing-function-docstring,too-many-locals
+# ruff: noqa: D102, ARG001, ARG002, ARG005, PLR2004
 
-# pylint: disable=C0302,missing-function-docstring,too-many-lines,too-many-locals
-# ruff: noqa: D102, ARG001, ARG002, ARG005, PLR2004, PT019
-
-import os
+import re
 import shutil
 from datetime import datetime as dt
 from datetime import timedelta as td
@@ -25,120 +20,11 @@ from nexusLIMS.db.session_handler import Session, SessionLog, db_query
 from nexusLIMS.harvesters.nemo.exceptions import NoMatchingReservationError
 from nexusLIMS.harvesters.reservation_event import ReservationEvent
 from nexusLIMS.instruments import Instrument
-from nexusLIMS.schemas import activity
 from nexusLIMS.utils import current_system_tz
-
-from .test_instrument_factory import (
+from tests.test_instrument_factory import (
     make_test_tool,
     make_titan_tem,
 )
-
-
-@pytest.fixture(name="_remove_nemo_gov_harvester")
-def _remove_nemo_gov_harvester(monkeypatch):
-    """
-    Remove nemo.nist.gov harvester from environment.
-
-    Helper fixture to remove the nemo.nist.gov harvester from the environment if it's
-    present, since it has _a lot_ of usage events, and takes a long time to fetch
-    from the API with the current set of tests.
-    """
-    nemo_var = None
-    for k in os.environ:
-        if "nemo.nist.gov/api" in os.getenv(k) and "address" in k:
-            nemo_var = k
-
-    if nemo_var:
-        monkeypatch.delenv(nemo_var, raising=False)
-        monkeypatch.delenv(nemo_var.replace("address", "token"), raising=False)
-        monkeypatch.delenv(nemo_var.replace("address", "strftime_fmt"), raising=False)
-        monkeypatch.delenv(nemo_var.replace("address", "strptime_fmt"), raising=False)
-        monkeypatch.delenv(nemo_var.replace("address", "tz"), raising=False)
-        yield
-        monkeypatch.undo()
-    else:
-        # Must yield even when no nemo_var is found
-        yield
-
-
-@pytest.fixture(name="mock_nemo_reservation")
-def mock_nemo_reservation_fixture(monkeypatch):
-    """
-    Mock NEMO res_event_from_session with realistic test data.
-
-    Returns different ReservationEvent data based on instrument.
-    Also mocks get_usage_events_as_sessions to prevent HTTP calls.
-    """
-    # Define reservation data for each test instrument
-    reservation_data = {
-        "FEI-Titan-TEM": {
-            "title": "Microstructure analysis of steel alloys",
-            "user_name": "Alice Researcher",
-            "purpose": "Characterize phase transformations in heat-treated steel",
-            "sample_details": "Heat-treated steel with martensitic structure",
-            "sample_pid": "sample-steel-001",
-            "project": "Materials Characterization",
-        },
-        "JEOL-JEM-TEM": {
-            "title": "EELS mapping of multilayer thin films",
-            "user_name": "Bob Scientist",
-            "purpose": "Study layer intermixing in deposited thin films",
-            "sample_details": "Multilayer thin film on Si substrate",
-            "sample_pid": "sample-thinfilm-003",
-            "project": "Thin Film Analysis",
-        },
-        "testtool-TEST-A1234567": {
-            "title": "EDX spectroscopy of platinum-nickel alloys",
-            "user_name": "Test User",
-            "purpose": "Determine composition of Pt-Ni alloy samples",
-            "sample_details": "Platinum-nickel alloy nanoparticles",
-            "sample_pid": "sample-ptni-042",
-            "project": "Catalyst Development",
-        },
-    }
-
-    def mock_res_event_from_session(session):
-        """Return a mock ReservationEvent with data specific to each instrument."""
-        data = reservation_data.get(
-            session.instrument.name,
-            reservation_data["testtool-TEST-A1234567"],
-        )
-        return ReservationEvent(
-            experiment_title=data["title"],
-            instrument=session.instrument,
-            username=session.user,
-            user_full_name=data["user_name"],
-            start_time=session.dt_from,
-            end_time=session.dt_to,
-            experiment_purpose=data["purpose"],
-            reservation_type="User session",
-            sample_details=[data["sample_details"]],
-            sample_pid=[data["sample_pid"]],
-            sample_name=[data["sample_details"].split()[0]],
-            project_name=[data["project"]],
-            project_id=[f"project-{data['sample_pid'].split('-')[1]}-001"],
-        )
-
-    # Mock the res_event_from_session function
-    monkeypatch.setattr(
-        "nexusLIMS.harvesters.nemo.res_event_from_session",
-        mock_res_event_from_session,
-    )
-
-    # Mock get_usage_events_as_sessions to prevent HTTP calls during dry runs
-    # This returns an empty list, so process_new_records will only use sessions
-    # already in the database (from get_sessions_to_build())
-    monkeypatch.setattr(
-        "nexusLIMS.harvesters.nemo.utils.get_usage_events_as_sessions",
-        lambda **kwargs: [],
-    )
-
-    # Mock add_all_usage_events_to_db to prevent HTTP calls during non-dry runs
-    # This is called when dry_run=False in process_new_records()
-    monkeypatch.setattr(
-        "nexusLIMS.harvesters.nemo.utils.add_all_usage_events_to_db",
-        lambda **kwargs: None,
-    )
 
 
 class TestRecordBuilder:
@@ -189,6 +75,31 @@ class TestRecordBuilder:
         assert (
             self.instr_data_path / "Nexus_Test_Instrument/test_files/sample_001.dm3"
         ) in file_list_list[2]
+
+    @pytest.mark.usefixtures("_remove_nemo_gov_harvester", "mock_nemo_reservation")
+    def test_dry_run_file_find_no_files(
+        self,
+        test_record_files,
+        caplog,
+    ):
+        """Test file finding for multiple sessions with different instruments."""
+        # Get all sessions from test database
+        # fresh_test_db fixture provides 3 sessions:
+        #   FEI-Titan-TEM, JEOL-JEM-TEM, testtool
+        dt_from = dt.fromisoformat("2019-09-06T17:00:00.000-06:00")
+        dt_to = dt.fromisoformat("2019-09-06T18:00:00.000-06:00")
+        s = Session(
+            session_identifier="test_session",
+            instrument=make_test_tool(),
+            dt_range=(dt_from, dt_to),
+            user="test",
+        )
+
+        # this should find no files for the given time range and test tool,
+        # and a warning should be logged
+        found_files = record_builder.dry_run_file_find(s)
+        assert found_files == []
+        assert re.search(r"\nWARNING.*No files found for this session", caplog.text)
 
     @pytest.mark.usefixtures("_remove_nemo_gov_harvester", "mock_nemo_reservation")
     def test_process_new_records_dry_run(self, test_record_files):
@@ -262,7 +173,7 @@ class TestRecordBuilder:
             end_ts = dt.now(tz=current_system_tz()) - td(days=0.5)
         start = SessionLog(
             session_identifier="test_session",
-            instrument="FEI-Titan-TEM-635816_n",
+            instrument="FEI-Titan-TEM",
             timestamp=start_ts.isoformat(),
             event_type="START",
             user="test",
@@ -271,7 +182,7 @@ class TestRecordBuilder:
         start.insert_log()
         end = SessionLog(
             session_identifier="test_session",
-            instrument="FEI-Titan-TEM-635816_n",
+            instrument="FEI-Titan-TEM",
             timestamp=end_ts.isoformat(),
             event_type="END",
             user="test",
@@ -350,7 +261,7 @@ class TestRecordBuilder:
         end_ts = "2020-01-01T20:00:00.000-05:00"
         start = SessionLog(
             session_identifier="test_session",
-            instrument="FEI-Titan-TEM-635816_n",
+            instrument="FEI-Titan-TEM",
             timestamp=start_ts,
             event_type="START",
             user="test",
@@ -359,7 +270,7 @@ class TestRecordBuilder:
         start.insert_log()
         end = SessionLog(
             session_identifier="test_session",
-            instrument="FEI-Titan-TEM-635816_n",
+            instrument="FEI-Titan-TEM",
             timestamp=end_ts,
             event_type="END",
             user="test",
@@ -996,110 +907,3 @@ class TestRecordBuilder:
             )
 
 
-@pytest.fixture(scope="module", name="_gnu_find_activities")
-def gnu_find_activities(test_record_files):
-    """Find specific activity for testing."""
-    instr = make_titan_tem()
-    dt_from = dt.fromisoformat("2018-11-13T13:00:00.000-05:00")
-    dt_to = dt.fromisoformat("2018-11-13T16:00:00.000-05:00")
-    activities_list = record_builder.build_acq_activities(
-        instrument=instr,
-        dt_from=dt_from,
-        dt_to=dt_to,
-        generate_previews=False,
-    )
-
-    return {
-        "instr": instr,
-        "dt_from": dt_from,
-        "dt_to": dt_to,
-        "activities_list": activities_list,
-    }
-
-
-class TestActivity:
-    """Test the representation and functionality of acquisition activities."""
-
-    @pytest.mark.skip(reason="method deprecated in v1.2.0")
-    def test_gnu_find_vs_pure_python(
-        self,
-        monkeypatch,
-        _gnu_find_activities,
-    ):  # pragma: no cover
-        # force the GNU find method to fail
-        def mock_gnu_find(_path, _dt_from, _dt_to, _extensions, _followlinks):
-            msg = "Mock failure for GNU find method"
-            raise RuntimeError(msg)
-
-        monkeypatch.setattr(record_builder, "gnu_find_files_by_mtime", mock_gnu_find)
-        activities_list_python_find = record_builder.build_acq_activities(
-            instrument=_gnu_find_activities["instr"],
-            dt_from=_gnu_find_activities["dt_from"],
-            dt_to=_gnu_find_activities["dt_to"],
-            generate_previews=False,
-        )
-
-        for i, this_activity in enumerate(activities_list_python_find):
-            assert str(_gnu_find_activities["activities_list"][i]) == str(this_activity)
-
-    def test_activity_repr(self, _gnu_find_activities):
-        expected = "             AcquisitionActivity; "
-        expected += "start: 2018-11-13T11:01:00-07:00; "
-        expected += "end: 2018-11-13T11:04:00-07:00"
-        assert repr(_gnu_find_activities["activities_list"][0]) == expected
-
-    def test_activity_str(self, _gnu_find_activities):
-        expected = "2018-11-13T11:01:00-07:00 AcquisitionActivity "
-        assert str(_gnu_find_activities["activities_list"][0]) == expected
-
-    def test_add_file_bad_meta(
-        self,
-        monkeypatch,
-        caplog,
-        _gnu_find_activities,
-        eels_si_titan,
-    ):
-        # make parse_metadata return None to force into error situation
-        monkeypatch.setattr(
-            activity,
-            "parse_metadata",
-            lambda fname, generate_preview: (None, ""),
-        )
-        orig_activity_file_length = len(
-            _gnu_find_activities["activities_list"][0].files,
-        )
-        _gnu_find_activities["activities_list"][0].add_file(eels_si_titan[0])
-        assert (
-            len(_gnu_find_activities["activities_list"][0].files)
-            == orig_activity_file_length + 1
-        )
-        assert f"Could not parse metadata of {eels_si_titan[0]}" in caplog.text
-
-    def test_add_file_bad_file(self, _gnu_find_activities):
-        with pytest.raises(FileNotFoundError):
-            _gnu_find_activities["activities_list"][0].add_file(
-                Path("dummy_file_does_not_exist"),
-            )
-
-    def test_store_unique_before_setup(
-        self,
-        monkeypatch,
-        caplog,
-        _gnu_find_activities,
-    ):
-        activity_1 = _gnu_find_activities["activities_list"][0]
-        monkeypatch.setattr(activity_1, "setup_params", None)
-        activity_1.store_unique_metadata()
-        assert (
-            "setup_params has not been defined; call store_setup_params() "
-            "prior to using this method. Nothing was done." in caplog.text
-        )
-
-    def test_as_xml(self, _gnu_find_activities):
-        activity_1 = _gnu_find_activities["activities_list"][0]
-        # setup a few values in the activity to trigger XML escaping:
-        activity_1.setup_params["Acquisition Device"] = "<TEST>"
-        activity_1.files[0] += "<&"
-        activity_1.unique_meta[0]["Imaging Mode"] = "<IMAGING>"
-
-        _ = activity_1.as_xml(seqno=0, sample_id="sample_id")

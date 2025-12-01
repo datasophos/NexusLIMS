@@ -108,18 +108,18 @@ pytest_plugins = ["tests.fixtures.cdcs_mock_data"]
 @pytest.fixture(autouse=True)
 def clear_settings_cache():
     """
-    Clear cached properties from settings after each test.
+    Clear settings cache after each test to prevent pollution.
 
-    This fixture only clears @cached_property attributes (like nemo_harvesters),
-    not regular pydantic fields. For tests that need to modify environment
-    variables and reload settings, they should create a new Settings instance.
+    This ensures that any environment variable changes made during a test
+    don't leak into subsequent tests. Tests that modify environment variables
+    should call refresh_settings() to pick up the changes.
     """
     yield
 
-    # Only clear cached_property items (nemo_harvesters)
-    # Don't try to delete regular pydantic fields
-    if "nemo_harvesters" in settings.__dict__:
-        del settings.__dict__["nemo_harvesters"]
+    # Clear the settings cache so next test gets fresh settings
+    from nexusLIMS.config import clear_settings
+
+    clear_settings()
 
 
 def pytest_configure(config):
@@ -137,7 +137,7 @@ def pytest_configure(config):
     from nexusLIMS.db import make_db_query  # pylint: disable=import-outside-toplevel
 
     # update API URLs for marlin.nist.gov if we're using marlin-test.nist.gov:
-    nemo_harvesters = settings.nemo_harvesters
+    nemo_harvesters = settings.nemo_harvesters()
     if nemo_harvesters and "marlin-test.nist.gov" in str(
         next(iter(nemo_harvesters.values())).address
     ):
