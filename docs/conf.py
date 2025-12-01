@@ -41,7 +41,7 @@ def autodoc_mock_settings(_):
 # -- Project information -----------------------------------------------------
 
 project = "NexusLIMS"
-copyright = f"{datetime.now().year}, datasophos"
+copyright = f"{datetime.now().year}, datasophos, LLC"
 author = "datasophos, LLC"
 numfig = True
 
@@ -64,6 +64,7 @@ extensions = [
     "sphinxcontrib.towncrier.ext",
     "sphinxcontrib.autodoc_pydantic",
     "sphinx_autodoc_typehints",
+    "sphinx_design",
 ]
 
 autodoc_pydantic_model_show_json = False
@@ -124,11 +125,7 @@ intersphinx_mapping = {
     "pydantic": ("https://docs.pydantic.dev/latest/", None),
 }
 
-import sphinx_bootstrap_theme
-
-# Activate the theme.
-html_theme = "bootstrap"
-html_theme_path = sphinx_bootstrap_theme.get_html_theme_path()
+html_theme = "pydata_sphinx_theme"
 
 
 # List of patterns, relative to source directory, that match files and
@@ -164,16 +161,12 @@ keep_warnings = True
 html_static_path = ["_static"]
 
 html_css_files = [
-    "custom-styles.css",
-]
-
-html_js_files = [
-    "custom.js",
+    "custom.css",
 ]
 
 # html_title = "NexusLIMS documentation"
 html_short_title = "NexusLIMS"
-html_logo = "_static/logo_horizontal.png"
+html_logo = "_static/nexusLIMS_bare_logo.png"
 html_favicon = "_static/nexusLIMS_bare_logo.ico"
 html_last_updated_fmt = "%b, %d, %Y"
 html_use_smartypants = True
@@ -183,71 +176,28 @@ html_show_copyright = True
 
 html_extra_path = ["schema_doc"]
 
-# html_sidebars = {'**': ['localtoc.html', 'sourcelink.html', 'searchbox.html']}
 html_sidebars = {
-    "**": ["custom-sidebar.html", "localtoc.html", "searchbox.html", "sourcelink.html"]
+    "**": ["sidebar-nav-bs"]
 }
 
 
 html_theme_options = {
-    # Navigation bar title. (Default: ``project`` value)
-    "navbar_title": " ",
-    # Tab name for entire site. (Default: "Site")
-    "navbar_site_name": "Site Map",
-    # A list of tuples containing pages or urls to link to.
-    # Valid tuples should be in the following forms:
-    #    (name, page)                 # a link to a page
-    #    (name, "/aa/bb", 1)          # a link to an arbitrary relative url
-    #    (name, "http://example.com", True) # arbitrary absolute url
-    # Note the "1" or "True" value above as the third argument to indicate
-    # an arbitrary url.
-    "navbar_links": [
-        ("API Docs", "api"),
-        ("Repository", "https://github.com/datasophos/NexusLIMS", True),
-        ("Datasophos", "https://datasophos.co", True),
+    "logo": {
+        "image_light": "_static/logo_horizontal_light.png",
+        "image_dark": "_static/logo_horizontal_dark.png",
+    },
+    "github_url": "https://github.com/datasophos/NexusLIMS",
+    "collapse_navigation": True,
+    "header_links_before_dropdown": 5,
+    "navbar_end": ["search-button", "theme-switcher", "navbar-icon-links"],
+    "navbar_persistent": [],
+    "icon_links": [
+        {
+            "name": "Datasophos",
+            "url": "https://datasophos.co",
+            "icon": "fa-solid fa-globe",
+        },
     ],
-    # Render the next and previous page links in navbar. (Default: true)
-    "navbar_sidebarrel": True,
-    # Render the current pages TOC in the navbar. (Default: true)
-    "navbar_pagenav": False,
-    # Tab name for the current pages TOC. (Default: "Page")
-    "navbar_pagenav_name": "Page",
-    # Global TOC depth for "site" navbar tab. (Default: 1)
-    # Switching to -1 shows all levels.
-    "globaltoc_depth": -1,
-    # Include hidden TOCs in Site navbar?
-    #
-    # Note: If this is "false", you cannot have mixed ``:hidden:`` and
-    # non-hidden ``toctree`` directives in the same page, or else the build
-    # will break.
-    #
-    # Values: "true" (default) or "false"
-    "globaltoc_includehidden": "true",
-    # HTML navbar class (Default: "navbar") to attach to <div> element.
-    # For black navbar, do "navbar navbar-inverse"
-    # 'navbar_class': "navbar navbar-inverse",
-    "navbar_class": "navbar",
-    # Fix navigation bar to top of page?
-    # Values: "true" (default) or "false"
-    "navbar_fixed_top": "false",
-    # Location of link to source.
-    # Options are "nav" (default), "footer" or anything else to exclude.
-    "source_link_position": "footer",
-    # Bootswatch (http://bootswatch.com/) theme.
-    #
-    # Options are nothing (default) or the name of a valid theme
-    # such as "cosmo" or "sandstone".
-    #
-    # The set of valid themes depend on the version of Bootstrap
-    # that's used (the next config option).
-    #
-    # Currently, the supported themes are:
-    # - Bootstrap 2: https://bootswatch.com/2
-    # - Bootstrap 3: https://bootswatch.com/3
-    "bootswatch_theme": "lumen",
-    # Choose Bootstrap version.
-    # Values: "3" (default) or "2" (in quotes)
-    "bootstrap_version": "3",
 }
 
 rst_epilog = """

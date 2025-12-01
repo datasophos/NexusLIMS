@@ -458,8 +458,7 @@ Enhancements
 - Added a place to insert "project" information into `Nexus Experiment` schema (`#44 <#>`_)
 - Improved the implementation of the ``Instrument`` type within the `Nexus Experiment`
   schema. (`#45 <#>`_)
-- Added spiffy logo for NexusLIMS (see :ref:`the README<logo>` for more details on its
-  origins).
+- Added spiffy logo for NexusLIMS
 - Formatted repository as a proper Python package that can be installed via ``pip``.
 - Generalized metadata extraction process in anticipation of implementing extractors for
   additional file types.
