@@ -1124,7 +1124,7 @@ wheels = [
 
 [[package]]
 name = "nexuslims"
-version = "1.4.3"
+version = "2.0.0a0"
 source = { editable = "." }
 dependencies = [
     { name = "click" },

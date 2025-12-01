@@ -1,0 +1,1 @@
+Migration from direct environment variable access to a settings-based configuration system (using `pydantic-settings <https://docs.pydantic.dev/latest/concepts/pydantic_settings/>`_), enhancing configuration consistency and type safety throughout the codebase.

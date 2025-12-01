@@ -1,0 +1,1 @@
+Initial release of the `datasophos <https://datasophos.co>`_ fork of NexusLIMS!

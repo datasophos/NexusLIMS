@@ -4,10 +4,8 @@ Changelog
 +++++++++
 
 .. note::
-   This changelog documents development history from the original NIST project.
-   Issue references point to the NIST GitLab instance and are retained for
-   historical purposes. For issues with the Datasophos fork, please use
-   the GitHub issue tracker at https://github.com/datasophos/NexusLIMS/issues
+   This changelog documents development history including the original NIST project
+   up to version 1.4.3. The datasophos fork begins at version 2.0.
 
 .. towncrier-draft-entries:: |release| [Unreleased]
 

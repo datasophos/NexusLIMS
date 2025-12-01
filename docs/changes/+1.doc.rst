@@ -1,0 +1,1 @@
+Migrated documentation to the modern PyData Sphinx Theme, offering a refreshed look, improved mobile responsiveness, and dark mode support. This overhaul includes a complete restructuring into hierarchical sections, a comprehensive "Getting Started" guide, new logo branding, and streamlined configuration.

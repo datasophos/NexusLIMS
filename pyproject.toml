@@ -1,6 +1,6 @@
 [project]
 name = "nexusLIMS"
-version = "1.4.3"
+version = "2.0.0_alpha"
 description = "Electron Microscopy Nexus LIMS project (Datasophos fork)"
 authors = [
     {name = "Joshua Taillon", email = "josh@datasophos.co"}
@@ -113,7 +113,7 @@ package = "nexusLIMS"
 package_dir = "nexusLIMS"
 title_format = "v{version} ({project_date})"
 filename = "docs/development_log.rst"
-issue_format = "`#{issue} <https://gitlab.nist.gov/gitlab/nexuslims/NexusMicroscopyLIMS/-/issues/{issue}>`_"
+issue_format = "`#{issue} <https://github.com/datasophos/NexusLIMS/issues/{issue}>`_"
 
 [[tool.towncrier.type]]
 directory = "feature"

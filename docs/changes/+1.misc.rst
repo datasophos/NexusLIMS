@@ -1,0 +1,1 @@
+Migrated test suite to unit test pattern that can run without any external services connected.

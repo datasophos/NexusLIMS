@@ -1,0 +1,3 @@
+Migrated record processing from a bash script (``process_new_records.sh``) to a new Python CLI script (``nexuslims-process-records``), 
+offering improved error handling, structured logging, SMTP-based email notifications, file locking, and comprehensive 
+unit tests.

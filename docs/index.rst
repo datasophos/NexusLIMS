@@ -1,5 +1,5 @@
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    :hidden:
 
    Home <self>
@@ -11,7 +11,13 @@
 **NexusLIMS** - An Automated Laboratory Information Management System for Electron Microscopy
 =============================================================================================
 
-NexusLIMS automatically generates experimental records by extracting metadata from microscopy data files and harvesting information from laboratory calendar systems.
+NexusLIMS automatically generates experimental records by extracting metadata from microscopy data
+files and harvesting information from laboratory calendar systems.
+
+.. note::
+   This is a fork of the original NexusLIMS project maintained by Datasophos.
+   This fork is **not affiliated with NIST**. For the official NIST version,
+   please visit the `original repository <https://github.com/usnistgov/NexusLIMS>`_.
 
 .. grid:: 2
    :gutter: 3
@@ -72,6 +78,3 @@ Quick Links
 - **Repository**: https://github.com/datasophos/NexusLIMS
 - **Issues**: https://github.com/datasophos/NexusLIMS/issues
 - **Datasophos**: https://datasophos.co
-
-.. note::
-   This is a datasophos fork of the original NIST NexusLIMS project. It is not affiliated with NIST.

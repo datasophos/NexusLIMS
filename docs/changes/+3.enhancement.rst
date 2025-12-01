@@ -1,0 +1,1 @@
+Migrated dependency management from Poetry to ``uv``, streamlining the development environment and improving build performance. This included extensive code modernization, addressing all Ruff linting issues, implementing type stubs, enhancing the test suite for reliability and isolation, and updating configuration and documentation to reflect these significant changes.
