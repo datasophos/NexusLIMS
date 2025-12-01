@@ -24,7 +24,7 @@ from nexusLIMS.utils import (
     get_nested_dict_value,
     gnu_find_files_by_mtime,
     nexus_req,
-    replace_mmf_path,
+    replace_instrument_data_path,
     setup_loggers,
     try_getting_dict_value,
 )
@@ -229,8 +229,8 @@ class TestUtils:
     # Note: test_has_delay_passed_no_val removed - pydantic now validates
     # NX_FILE_DELAY_DAYS at settings initialization time, not at function call time
 
-    def test_replace_mmf_path(self):
-        """Test replace_mmf_path using actual test settings paths."""
+    def test_replace_instrument_data_path(self):
+        """Test replace_instrument_data_path using actual test settings paths."""
         from nexusLIMS.config import settings
 
         # Use actual settings paths from test environment
@@ -241,11 +241,11 @@ class TestUtils:
         test_file = instr_path / "path" / "to" / "file.txt"
         expected = data_path / "path" / "to" / "file.txt.json"
 
-        new_path = replace_mmf_path(test_file, suffix=".json")
+        new_path = replace_instrument_data_path(test_file, suffix=".json")
         assert new_path == expected
 
-    def test_replace_mmf_path_no_suffix(self):
-        """Test replace_mmf_path without suffix using actual test settings paths."""
+    def test_replace_instrument_data_path_no_suffix(self):
+        """Test replace_instrument_data_path without suffix using test paths."""
         from nexusLIMS.config import settings
 
         instr_path = Path(settings.NX_INSTRUMENT_DATA_PATH)
@@ -254,14 +254,14 @@ class TestUtils:
         test_file = instr_path / "path" / "to" / "file.txt"
         expected = data_path / "path" / "to" / "file.txt"
 
-        new_path = replace_mmf_path(test_file, suffix="")
+        new_path = replace_instrument_data_path(test_file, suffix="")
         assert new_path == expected
 
-    def test_replace_mmf_path_not_in_mmfnexus(self, caplog):
-        """Test replace_mmf_path with path not under instrument data path."""
+    def test_replace_instrument_data_path_not_in_instr_data_path(self, caplog):
+        """Test replace_instrument_data_path with path not under instr data path."""
         # Path that's not under NX_INSTRUMENT_DATA_PATH
         other_path = Path("/tmp/other/path/entirely/test.txt")
-        new_path = replace_mmf_path(other_path, suffix=".json")
+        new_path = replace_instrument_data_path(other_path, suffix=".json")
 
         # Should append suffix but log warning
         assert new_path == Path("/tmp/other/path/entirely/test.txt.json")

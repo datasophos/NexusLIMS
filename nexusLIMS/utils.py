@@ -153,11 +153,11 @@ def is_subpath(path: Path, of_paths: Union[Path, List[Path]]):
     path
         The path of the file (or directory) to test. This will usually be the
         absolute path to a file on the local filesystem (to be compared using
-        the host-specific ``mmf_nexus_root_path``.
+        the host-specific ``nx_instrument_data_path``.
     of_paths
         The "higher-level" path to test against (or list thereof). In typical
         use, this will be a path joined of an instruments ``filestore_path``
-        with the root-level ``mmf_nexus_root_path``
+        with the root-level ``nx_instrument_data_path``
 
     Returns
     -------
@@ -933,7 +933,7 @@ def current_system_tz():
     )
 
 
-def replace_mmf_path(path: Path, suffix: str) -> Path:
+def replace_instrument_data_path(path: Path, suffix: str) -> Path:
     """
     Given an "NX_INSTRUMENT_DATA_PATH" path, generate equivalent"NX_DATA_PATH" path.
 
@@ -954,14 +954,14 @@ def replace_mmf_path(path: Path, suffix: str) -> Path:
     pathlib.Path
         A resolved pathlib.Path object pointing to the new path
     """
-    mmf_path = Path(str(settings.NX_INSTRUMENT_DATA_PATH))
+    instr_data_path = Path(str(settings.NX_INSTRUMENT_DATA_PATH))
     nexuslims_path = Path(str(settings.NX_DATA_PATH))
 
-    if mmf_path not in path.parents:
+    if instr_data_path not in path.parents:
         logger.warning(
             "%s is not a sub-path of %s", path, str(settings.NX_INSTRUMENT_DATA_PATH)
         )
-    return Path(str(path).replace(str(mmf_path), str(nexuslims_path)) + suffix)
+    return Path(str(path).replace(str(instr_data_path), str(nexuslims_path)) + suffix)
 
 
 class AuthenticationError(Exception):

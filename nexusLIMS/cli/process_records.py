@@ -345,5 +345,5 @@ def main(*, dry_run: bool, verbose: int) -> None:
     logger.info("NexusLIMS record processor finished")
 
 
-if __name__ == "__main__": # pragma: no cover
+if __name__ == "__main__":  # pragma: no cover
     main()

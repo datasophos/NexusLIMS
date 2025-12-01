@@ -19,7 +19,7 @@ from pathlib import Path
 # Define paths for test database and data directories
 _test_files_dir = Path(__file__).parent / "files"
 _nexuslims_path = _test_files_dir / "NexusLIMS"
-_instr_data_path = _test_files_dir / "MMFNexus"
+_instr_data_path = _test_files_dir / "InstrumentData"
 
 # Create the directories
 _nexuslims_path.mkdir(exist_ok=True)
@@ -158,7 +158,7 @@ def pytest_unconfigure(config):
     Unconfigure pytest.
 
     Clean up the temporary directories created for the test session.
-    This includes the NexusLIMS and MMFNexus subdirectories in tests/files.
+    This includes the NexusLIMS and InstrumentData subdirectories in tests/files.
     """
     from nexusLIMS.config import settings  # pylint: disable=import-outside-toplevel
 

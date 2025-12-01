@@ -37,7 +37,7 @@ class TestRecordBuilder:
 
         return Path(settings.NX_INSTRUMENT_DATA_PATH)
 
-    @pytest.mark.usefixtures("_remove_nemo_gov_harvester", "mock_nemo_reservation")
+    @pytest.mark.usefixtures("mock_nemo_reservation")
     def test_dry_run_file_find(
         self,
         test_record_files,
@@ -76,7 +76,7 @@ class TestRecordBuilder:
             self.instr_data_path / "Nexus_Test_Instrument/test_files/sample_001.dm3"
         ) in file_list_list[2]
 
-    @pytest.mark.usefixtures("_remove_nemo_gov_harvester", "mock_nemo_reservation")
+    @pytest.mark.usefixtures("mock_nemo_reservation")
     def test_dry_run_file_find_no_files(
         self,
         test_record_files,
@@ -101,7 +101,7 @@ class TestRecordBuilder:
         assert found_files == []
         assert re.search(r"\nWARNING.*No files found for this session", caplog.text)
 
-    @pytest.mark.usefixtures("_remove_nemo_gov_harvester", "mock_nemo_reservation")
+    @pytest.mark.usefixtures("mock_nemo_reservation")
     def test_process_new_records_dry_run(self, test_record_files):
         # just running to ensure coverage, tests are included above
         record_builder.process_new_records(
@@ -109,7 +109,7 @@ class TestRecordBuilder:
             dt_to=dt.fromisoformat("2021-08-03T00:00:00-04:00"),
         )
 
-    @pytest.mark.usefixtures("_remove_nemo_gov_harvester", "mock_nemo_reservation")
+    @pytest.mark.usefixtures("mock_nemo_reservation")
     def test_process_new_records_dry_run_no_sessions(
         self,
         monkeypatch,
@@ -124,7 +124,6 @@ class TestRecordBuilder:
         assert "No 'TO_BE_BUILT' sessions were found. Exiting." in caplog.text
 
     @pytest.mark.usefixtures(
-        "_remove_nemo_gov_harvester",
         "_cleanup_session_log",
         "mock_nemo_reservation",
     )
@@ -223,7 +222,6 @@ class TestRecordBuilder:
     @pytest.mark.parametrize("_add_recent_test_session", [True, False], indirect=True)
     @pytest.mark.usefixtures(
         "_add_recent_test_session",
-        "_remove_nemo_gov_harvester",
         "_cleanup_session_log",
     )
     def test_process_new_records_within_delay(
@@ -245,7 +243,7 @@ class TestRecordBuilder:
         assert res[1][5] == "TO_BE_BUILT"
         assert len(res) == inserted_row_count
 
-    @pytest.mark.usefixtures("_remove_nemo_gov_harvester", "_cleanup_session_log")
+    @pytest.mark.usefixtures("_cleanup_session_log")
     def test_process_new_nemo_record_with_no_reservation(
         self,
         monkeypatch,
@@ -322,7 +320,7 @@ class TestRecordBuilder:
         assert res[1][5] == "NO_RESERVATION"
         assert res[2][5] == "NO_RESERVATION"
 
-    @pytest.mark.usefixtures("_remove_nemo_gov_harvester", "mock_nemo_reservation")
+    @pytest.mark.usefixtures("mock_nemo_reservation")
     def test_new_session_processor(
         self,
         test_record_files,
@@ -482,7 +480,7 @@ class TestRecordBuilder:
         # clean up directory
         shutil.rmtree(upload_path.parent)
 
-    @pytest.mark.usefixtures("_remove_nemo_gov_harvester", "mock_nemo_reservation")
+    @pytest.mark.usefixtures("mock_nemo_reservation")
     @pytest.mark.parametrize(
         ("strategy_name", "env_value", "expected_datasets"),
         [
@@ -562,7 +560,7 @@ class TestRecordBuilder:
         # remove record
         f.unlink()
 
-    @pytest.mark.usefixtures("_remove_nemo_gov_harvester", "mock_nemo_reservation")
+    @pytest.mark.usefixtures("mock_nemo_reservation")
     def test_new_session_bad_upload(
         self,
         monkeypatch,
@@ -586,7 +584,6 @@ class TestRecordBuilder:
             "['dummy_file1', 'dummy_file2', 'dummy_file3']" in caplog.text
         )
 
-    @pytest.mark.usefixtures("_remove_nemo_gov_harvester")
     def test_build_record_error(self, monkeypatch, caplog):
         def mock_get_sessions():
             return [
@@ -602,7 +599,6 @@ class TestRecordBuilder:
         record_builder.build_new_session_records()
         assert 'Marking dummy_id as "ERROR"' in caplog.text
 
-    @pytest.mark.usefixtures("_remove_nemo_gov_harvester")
     def test_non_validating_record(
         self,
         monkeypatch,
@@ -636,7 +632,7 @@ class TestRecordBuilder:
         assert "ERROR" in caplog.text
         assert "Could not validate record, did not write to disk" in caplog.text
 
-    @pytest.mark.usefixtures("_remove_nemo_gov_harvester", "mock_nemo_reservation")
+    @pytest.mark.usefixtures("mock_nemo_reservation")
     def test_dump_record(self, test_record_files):
         dt_str_from = "2021-08-02T09:00:00-07:00"
         dt_str_to = "2021-08-02T11:00:00-07:00"
@@ -649,7 +645,6 @@ class TestRecordBuilder:
         out_fname = record_builder.dump_record(session=session, generate_previews=False)
         out_fname.unlink()
 
-    @pytest.mark.usefixtures("_remove_nemo_gov_harvester")
     def test_no_sessions(self, monkeypatch):
         # monkeypatch to return empty list (as if there are no sessions)
         monkeypatch.setattr(record_builder, "get_sessions_to_build", list)
@@ -657,7 +652,6 @@ class TestRecordBuilder:
             record_builder.build_new_session_records()
         assert exception.type is SystemExit
 
-    @pytest.mark.usefixtures("_remove_nemo_gov_harvester")
     def test_build_record_no_consent(
         self,
         monkeypatch,
@@ -699,7 +693,7 @@ class TestRecordBuilder:
         assert "Reservation requested not to have their data harvested" in caplog.text
         assert len(xmls_files) == 0  # no record should be returned
 
-    @pytest.mark.usefixtures("_remove_nemo_gov_harvester", "mock_nemo_reservation")
+    @pytest.mark.usefixtures("mock_nemo_reservation")
     def test_build_record_single_file(self, test_record_files, monkeypatch):
         """Test record builder with a narrow time window that captures only 1 file."""
 
@@ -757,7 +751,6 @@ class TestRecordBuilder:
         # remove record
         f.unlink()
 
-    @pytest.mark.usefixtures("_remove_nemo_gov_harvester")
     def test_build_record_with_sample_elements(
         self,
         test_record_files,
@@ -905,5 +898,3 @@ class TestRecordBuilder:
             assert "res_event_from_session has not been implemented for" in str(
                 exception.value,
             )
-
-

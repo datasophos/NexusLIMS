@@ -64,9 +64,9 @@ class TestExtractorModule:
         self.remove_thumb_and_json(thumb_fname)
 
     def test_parse_metadata_overwrite_false(self, caplog, list_signal):
-        from nexusLIMS.extractors import replace_mmf_path
+        from nexusLIMS.extractors import replace_instrument_data_path
 
-        thumb_fname = replace_mmf_path(list_signal[0], ".thumb.png")
+        thumb_fname = replace_instrument_data_path(list_signal[0], ".thumb.png")
         thumb_fname.parent.mkdir(parents=True, exist_ok=True)
         # create the thumbnail file so we can't overwrite
         with thumb_fname.open(mode="a", encoding="utf-8") as _:
@@ -294,7 +294,7 @@ class TestExtractorModule:
         output_path = tmp_path / "preview.png"
 
         monkeypatch.setattr(
-            "nexusLIMS.extractors.replace_mmf_path",
+            "nexusLIMS.extractors.replace_instrument_data_path",
             lambda _fname, _ext: output_path,
         )
 

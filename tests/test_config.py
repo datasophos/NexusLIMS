@@ -257,14 +257,18 @@ def test_settings_proxy_callable(mock_nemo_env):
     harvesters = settings.nemo_harvesters()
     assert isinstance(harvesters, dict)
 
+
 def test_settings_proxy_dir():
     """Exercise the __dir__ method of the _SettingsProxy class."""
     from nexusLIMS.config import settings
+
     assert "NX_CDCS_PASS" in dir(settings)
+
 
 def test_settings_proxy_repr():
     """Exercise the __repr__ method of the _SettingsProxy class."""
     from nexusLIMS.config import settings
+
     assert repr(settings) == str(settings)
 
 

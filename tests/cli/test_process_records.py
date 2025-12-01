@@ -175,9 +175,9 @@ class TestCheckLogForErrors:
         # Make the file unreadable by mocking read_text to raise OSError
         with (
             patch.object(Path, "read_text", side_effect=OSError("Permission denied")),
-            caplog.at_level(logging.ERROR)
+            caplog.at_level(logging.ERROR),
         ):
-                has_errors, found_patterns = check_log_for_errors(log_file)
+            has_errors, found_patterns = check_log_for_errors(log_file)
 
         assert has_errors is False
         assert len(found_patterns) == 0
@@ -317,9 +317,9 @@ class TestSendErrorNotification:
         # Mock read_text to raise OSError
         with (
             patch.object(Path, "read_text", side_effect=OSError("Cannot read file")),
-            caplog.at_level(logging.ERROR)
+            caplog.at_level(logging.ERROR),
         ):
-                send_error_notification(log_file, ["error"])
+            send_error_notification(log_file, ["error"])
 
         assert "Failed to read log file for email" in caplog.text
 
@@ -639,7 +639,8 @@ def test_main_entry_point():
     # We use --help to avoid actually running the full process
     result = subprocess.run(
         [sys.executable, "-m", "nexusLIMS.cli.process_records", "--help"],
-        check=False, capture_output=True,
+        check=False,
+        capture_output=True,
         text=True,
         timeout=5,
     )

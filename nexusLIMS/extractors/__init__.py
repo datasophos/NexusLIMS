@@ -30,7 +30,7 @@ import hyperspy.api as hs
 import numpy as np
 
 from nexusLIMS.instruments import get_instr_from_filepath
-from nexusLIMS.utils import current_system_tz, replace_mmf_path
+from nexusLIMS.utils import current_system_tz, replace_instrument_data_path
 from nexusLIMS.version import __version__
 
 from . import utils
@@ -215,7 +215,7 @@ def parse_metadata(
             nx_meta["nx_meta"]["Data Type"] = "Miscellaneous"
 
         if write_output:
-            out_fname = replace_mmf_path(fname, ".json")
+            out_fname = replace_instrument_data_path(fname, ".json")
 
             if not out_fname.exists() or overwrite:
                 # Create the directory for the metadata file, if needed
@@ -264,7 +264,7 @@ def create_preview(fname: Path, *, overwrite: bool) -> Path | None:
         The filename of the generated preview image; if None, a preview could not be
         successfully generated.
     """
-    preview_fname = replace_mmf_path(fname, ".thumb.png")
+    preview_fname = replace_instrument_data_path(fname, ".thumb.png")
 
     extension = fname.suffix[1:]
 
@@ -298,7 +298,7 @@ def create_preview(fname: Path, *, overwrite: bool) -> Path | None:
                 "Signal could not be loaded by HyperSpy. "
                 "Using placeholder image for preview.",
             )
-            preview_fname = replace_mmf_path(fname, ".thumb.png")
+            preview_fname = replace_instrument_data_path(fname, ".thumb.png")
             shutil.copyfile(PLACEHOLDER_PREVIEW, preview_fname)
             return preview_fname
 

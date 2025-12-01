@@ -1,6 +1,5 @@
 """Fixtures for record builder and activity tests."""
 
-import os
 from datetime import datetime as dt
 
 import pytest
@@ -8,33 +7,6 @@ import pytest
 from nexusLIMS.builder import record_builder
 from nexusLIMS.harvesters.reservation_event import ReservationEvent
 from tests.test_instrument_factory import make_titan_tem
-
-
-@pytest.fixture(name="_remove_nemo_gov_harvester")
-def _remove_nemo_gov_harvester(monkeypatch):
-    """
-    Remove nemo.nist.gov harvester from environment.
-
-    Helper fixture to remove the nemo.nist.gov harvester from the environment if it's
-    present, since it has _a lot_ of usage events, and takes a long time to fetch
-    from the API with the current set of tests.
-    """
-    nemo_var = None
-    for k in os.environ:
-        if "nemo.nist.gov/api" in os.getenv(k) and "address" in k:
-            nemo_var = k
-
-    if nemo_var:
-        monkeypatch.delenv(nemo_var, raising=False)
-        monkeypatch.delenv(nemo_var.replace("address", "token"), raising=False)
-        monkeypatch.delenv(nemo_var.replace("address", "strftime_fmt"), raising=False)
-        monkeypatch.delenv(nemo_var.replace("address", "strptime_fmt"), raising=False)
-        monkeypatch.delenv(nemo_var.replace("address", "tz"), raising=False)
-        yield
-        monkeypatch.undo()
-    else:
-        # Must yield even when no nemo_var is found
-        yield
 
 
 @pytest.fixture(name="mock_nemo_reservation")

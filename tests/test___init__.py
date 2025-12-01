@@ -58,6 +58,7 @@ class TestLazyLoading:
         of that method were actually called.
         """
         import nexusLIMS
+
         module = nexusLIMS.__getattr__("builder")
         assert module is not None
 
