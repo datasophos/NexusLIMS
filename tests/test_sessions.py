@@ -50,7 +50,7 @@ class TestSession:
         query = (
             f"INSERT INTO session_log "
             f"(instrument, event_type, session_identifier, record_status, timestamp) "
-            f"VALUES ('FEI-Titan-TEM-635816_n', 'START', "
+            f"VALUES ('FEI-Titan-TEM-012345', 'START', "
             f"'{uuid}', 'TO_BE_BUILT', datetime('now'));"
         )
         make_db_query(query)

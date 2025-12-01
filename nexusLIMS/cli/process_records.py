@@ -7,10 +7,22 @@ It replaces the functionality previously provided by process_new_records.sh.
 
 Usage
 -----
+
+.. code-block:: bash
+
     uv run python -m nexusLIMS.cli.process_records [OPTIONS]
+
+or
+
+.. code-block:: bash
+
+    uv run nexuslims-process-records [OPTIONS]
 
 Options
 -------
+
+.. code-block:: bash
+
     -n, --dry-run   : Dry run mode (find files without building records)
     -v, --verbose   : Increase verbosity (-v for INFO, -vv for DEBUG)
     --version       : Show version and exit
@@ -66,7 +78,7 @@ def setup_file_logging(dry_run: bool = False) -> Path:  # noqa: FBT001, FBT002
 
     Returns
     -------
-    Path
+    log_file: pathlib.Path
         Path to the created log file
 
     Raises
@@ -111,7 +123,7 @@ def check_log_for_errors(log_path: Path) -> tuple[bool, list[str]]:
 
     Parameters
     ----------
-    log_path : Path
+    log_path : pathlib.Path
         Path to the log file to check
 
     Returns
@@ -164,7 +176,7 @@ def send_error_notification(log_path: Path, found_patterns: list[str]) -> None:
 
     Parameters
     ----------
-    log_path : Path
+    log_path : pathlib.Path
         Path to the log file to include in the email
     found_patterns : list[str]
         List of error pattern names that were found in the log

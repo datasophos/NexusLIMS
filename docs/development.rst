@@ -1,7 +1,7 @@
 Developer documentation
 =======================
 
-    `Last updated: December 11, 2021`
+    `Last updated: December 2025`
 
 If you are interested in learning about how the NexusLIMS back-end works or
 adding new features, these instructions should get you up and running with a
@@ -112,52 +112,41 @@ the environment using the ``$ uv shell`` command from within the cloned
 repository. This will spawn a new shell that ensures all commands will have
 access to the installed packages and environment variables set appropriately.
 
-Using ``tox`` for testing
+Testing and Documentation
 -------------------------
 
-The ``tox`` library is installed as a NexusLIMS dependency via ``uv``, along
-with ``tox-uv`` for seamless integration between tox and uv. This combination
-is used to coordinate running the code tests and building documentation.
-``tox`` is configured in the ``[tool.tox]`` section of the ``pyproject.toml``
-file with ``tox-uv`` runners. To run the complete test suite in isolated
-environments through ``tox``, simply run:
+To run the complete test suite, use the provided shell script:
 
 ..  code-block:: bash
 
-   $ uv run tox
+   $ ./scripts/run_tests.sh
 
-``tox`` with ``tox-uv`` is configured to run tests in both Python 3.11 and 3.12
-environments. The ``uv`` tool will automatically download and manage the required
-Python versions for testing, eliminating the need for manual Python installation
-or pyenv setup. This greatly simplifies the development environment setup process.
+This will run all tests with coverage reporting. To run specific tests:
+
+..  code-block:: bash
+
+   $ uv run pytest tests/test_extractors.py
 
 To build the documentation for the project, run:
 
 ..  code-block:: bash
 
-   $ uv run tox -e docs
+   $ ./scripts/build_docs.sh
 
 The documentation should then be present in the ``./_build/`` directory.
 
-Finally, to generate the baseline test images (for the thumbnail generator
-code), run:
 To generate matplotlib baseline figures for the tests, run:
 
 ..  code-block:: bash
 
-   $ uv run tox -e gen_mpl_baseline
-
-Other commands can be added to the ``tox`` configuration in ``pyproject.toml``
-following the example of the existing tasks. Consult the
-`tox documentation <https://tox.wiki/en/latest/index.html>`_ for more
-information.
+   $ ./scripts/generate_mpl_baseline.sh
 
 Building new records
 --------------------
 
 The most basic feature of the NexusLIMS back-end is to check the
-:doc:`database <database>` for any logs (inserted by the
-:doc:`Session Logger App <session_logger_app>`) with a status of
+:doc:`database <database>` for any logs (typically inserted by the
+NEMO harvester) with a status of
 ``'TO_BE_BUILT'``. This can be accomplished simply by running the
 :py:mod:`~nexusLIMS.builder.record_builder` module directly via:
 
@@ -195,7 +184,7 @@ Contributing
 
 To contribute, please fork the repository, develop your addition on a
 `feature branch <https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow>`_
-within your forked repo, and submit a pull request to the ``master``
+within your forked repo, and submit a pull request to the ``main``
 branch to have it included in the project. Contributing to the package
 requires that every line of code is covered by a test case. This project uses
 testing through the `pytest <https://docs.pytest.org/en/latest/>`_ library,

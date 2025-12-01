@@ -569,7 +569,7 @@ def text_to_thumbnail(
 
     Returns
     -------
-    f
+    f : :py:class:`matplotlib.figure.Figure` or bool
         Handle to a matplotlib Figure, or the value False if a preview could not be
         generated
     """
@@ -677,7 +677,8 @@ def image_to_square_thumbnail(f: Path, out_path: Path, output_size: int) -> bool
 
     Returns
     -------
-    Whether a preview was generated
+    bool
+        Whether a preview was generated
     """
     shutil.copy(f, out_path)
     try:

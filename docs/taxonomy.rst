@@ -9,9 +9,8 @@ used by the NexusLIMS development team and what is meant by them:
 
   - The harvesters (implemented in the :py:mod:`nexusLIMS.harvesters` package)
     are the portions of the code that connect to external data sources, such
-    as the SharePoint calendar. Currently, the calendar harvester is the only
-    one implemented, but eventually there will likely be at least an electronic
-    laboratory notebook (ELN) harvester as well.
+    as the NEMO laboratory management system. The primary harvester is NEMO
+    (:py:mod:`~nexusLIMS.harvesters.nemo`), with SharePoint being deprecated.
 
 .. Padding. See https://github.com/sphinx-doc/sphinx/issues/2258
 
@@ -37,7 +36,6 @@ used by the NexusLIMS development team and what is meant by them:
 
 - **Session Logger:**
 
-  - The session logger (deprecated) was the portable Windows application that runs on the
-    individual microscope PCs, which logs simple information to the NexusLIMS
-    database about when an Experiment has occurred. See the associated
-    :doc:`documentation <session_logger_app>` page for more details.
+  - The session logger (deprecated) was a portable Windows application that ran on
+    individual microscope PCs to log experiment session information. This has been
+    replaced by the NEMO harvester approach.

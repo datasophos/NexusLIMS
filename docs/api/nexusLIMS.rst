@@ -1,11 +1,6 @@
 nexusLIMS package
 =================
 
-.. automodule:: nexusLIMS
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Subpackages
 -----------
 
@@ -13,6 +8,7 @@ Subpackages
    :maxdepth: -1
 
    nexusLIMS.builder
+   nexusLIMS.cli
    nexusLIMS.db
    nexusLIMS.extractors
    nexusLIMS.harvesters
@@ -26,37 +22,45 @@ nexusLIMS.cdcs module
 
 .. automodule:: nexusLIMS.cdcs
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 nexusLIMS.config module
 -----------------------
 
 .. automodule:: nexusLIMS.config
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 nexusLIMS.instruments module
 ----------------------------
 
 .. automodule:: nexusLIMS.instruments
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 nexusLIMS.utils module
 ----------------------
 
 .. automodule:: nexusLIMS.utils
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 nexusLIMS.version module
 ------------------------
 
 .. automodule:: nexusLIMS.version
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
+
+Module contents
+---------------
+
+.. automodule:: nexusLIMS
+   :members:
+   :show-inheritance:
+   :undoc-members:

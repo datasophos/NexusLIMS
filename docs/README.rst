@@ -1,12 +1,14 @@
 Welcome to NexusLIMS!
 =====================
 
-The project serves as the development and documentation space for the back-end
-of the Nexus Microscopy Facility Laboratory Information Management System
-(LIMS), developed by the NIST Office of Data and Informatics.
+.. note::
+   This is a fork of the original NexusLIMS project maintained by Datasophos.
+   This fork is **not affiliated with NIST**. For the official NIST version,
+   please visit the `original repository <https://github.com/usnistgov/NexusLIMS>`_.
+
 This documentation contains a number of pages that detail the processes by
 which NexusLIMS harvests and combines data from multiple sources to build
-a record of an experiment on a Nexus facility microscope.
+a record of an experiment on a microscopy facility.
 
 Documentation overview
 ----------------------
@@ -17,10 +19,8 @@ page provides a detailed description of how a record of a given experiment
 is built from beginning to end.
 There is also additional documentation about the practices used
 in :doc:`developing NexusLIMS <development>`, the
-:doc:`taxonomy <taxonomy>` used when discussing NexusLIMS, the
-:doc:`schema <schema_documentation>` used to represent Experiment records,
-and :doc:`customizations <customizing_cdcs>` that were made to
-the `CDCS <https://cdcs.nist.gov>`_ platform to create the NexusLIMS front-end.
+:doc:`taxonomy <taxonomy>` used when discussing NexusLIMS, and the
+:doc:`schema <schema_documentation>` used to represent Experiment records.
 Finally, there is detailed :doc:`API documentation <api>` for every method
 used in the NexusLIMS back-end.
 
@@ -31,6 +31,14 @@ for those with more interest in the nuts and bolts of how it all works together,
 and how the system may be able to be changed in the future.
 
 .. _logo:
+
+Need help with deployment?
+--------------------------
+
+Datasophos offers consulting services for NexusLIMS deployment, customization,
+and custom metadata extractor development. If you're interested in deploying
+NexusLIMS at your institution or need assistance with integration, please
+contact us at josh@datasophos.co or visit https://datasophos.co.
 
 About the logo
 --------------
@@ -61,7 +69,7 @@ crystallography communities, together with its storied NIST heritage:
 About the NexusLIMS team
 ------------------------
 
-NexusLIMS has been developed through a great deal of work by a number of people
+NexusLIMS was originally developed at NIST through a great deal of work by a number of people
 including:
 
 - `Joshua Taillon <https://www.nist.gov/people/joshua-taillon>`_ - Office of Data and Informatics - Primary application developer

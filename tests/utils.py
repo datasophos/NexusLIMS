@@ -34,7 +34,7 @@ tars = {
     "4D_STEM": "4d_stem.hspy.tar.gz",
     "PARSE_META_TITAN": "test_titan_parse_metadata.dm3.tar.gz",
     "FEI_SER": "fei_emi_ser_test_files.tar.gz",
-    "RECORD": "2018-11-13_FEI-Titan-TEM-635816_7de34313.xml.tar.gz",
+    "RECORD": "2018-11-13_FEI-Titan-TEM-012345_7de34313.xml.tar.gz",
     "IMAGE_FILES": "test_image_thumb_sources.tar.gz",
     "TEST_RECORD_FILES": "test_record_files.tar.gz",
 }

@@ -31,7 +31,7 @@ class ReservationEvent:
     contained within a ``ReservationEvent`` into an XML representation that is
     compatible with the Nexus Facility ``Experiment`` schema.
 
-    Attributes
+    Parameters
     ----------
     experiment_title
         The title of the event
@@ -53,7 +53,7 @@ class ReservationEvent:
         The time this event was scheduled to end
     reservation_type
         The "type" or category of this event (such as User session, service,
-        etc.))
+        etc.)
     experiment_purpose
         The user-entered purpose of this experiment
     sample_details

@@ -226,7 +226,7 @@ Deprecations and/or Removals
 
 - Removed a variety of associated files that were not important for the Python package
   (old presentations, diagrams, reports, etc.) (`#60 <#>`_)
-- :py:mod:`nexusLIMS.harvesters.sharepoint_calendar` module was deprecated after
+- The ``nexusLIMS.harvesters.sharepoint_calendar`` module was deprecated after
   the SharePoint calendaring system was decommissioned in the Nexus facility. All
   harvester development will center around NEMO for the foreseeable future. (`#108 <#>`_)
 - Removed enumeration restriction on PIDs from the schema so it is more general (and
@@ -356,7 +356,7 @@ Documentation improvements
 - Added links to NexusLIMS documentation in the front-end NexusLIMS CDCS application. (`#68 <#>`_)
 - Added many documentation pages to more thoroughly explain how NexusLIMS works,
   including improvements to the project README, as well as the following pages:
-  :std:doc:`database`, :std:doc:`session_logger_app`, :std:doc:`development`,
+  :std:doc:`database`, session_logger_app, :std:doc:`development`,
   and pages about data security.
 
 
@@ -433,7 +433,7 @@ New features
   in the CDCS front-end (T. Bina).
 - Added session logging .exe application that can be deployed on individual microscope PCs
   to specify when a session starts and ends (used to get timestamps for file finding
-  during record building). See :doc:`session_logger_app` for more details.
+  during record building).
 - Finished implementation of building ``AcquisitionActivity`` representations of
   experiments, which are then translated into XML for the final record.
 - Implemented prototype record builder script for automated record generation (T. Bina).

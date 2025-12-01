@@ -133,24 +133,6 @@ def pytest_configure(config):
     Note: The test database extraction now happens at module level (before imports)
     to ensure it's available when nexusLIMS.instruments is imported.
     """
-    from nexusLIMS.config import settings  # pylint: disable=import-outside-toplevel
-    from nexusLIMS.db import make_db_query  # pylint: disable=import-outside-toplevel
-
-    # update API URLs for marlin.nist.gov if we're using marlin-test.nist.gov:
-    nemo_harvesters = settings.nemo_harvesters()
-    if nemo_harvesters and "marlin-test.nist.gov" in str(
-        next(iter(nemo_harvesters.values())).address
-    ):
-        make_db_query(
-            "UPDATE instruments "
-            "SET api_url = "
-            "REPLACE(api_url, '***REMOVED***', '***REMOVED***');",
-        )
-        make_db_query(
-            "UPDATE session_log "
-            "SET session_identifier = "
-            "REPLACE(session_identifier, '***REMOVED***', '***REMOVED***');",
-        )
 
 
 def pytest_unconfigure(config):

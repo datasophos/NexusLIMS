@@ -24,8 +24,8 @@ class TestReservationEvent:
             experiment_title="A test title",
             instrument=instrument_db["FEI-Titan-TEM"],
             last_updated=dt.fromisoformat("2021-09-15T16:04:00"),
-            username="***REMOVED***",
-            created_by="***REMOVED***",
+            username="user",
+            created_by="user",
             start_time=dt.fromisoformat("2021-09-15T03:00:00"),
             end_time=dt.fromisoformat("2021-09-15T16:00:00"),
             reservation_type="A test event",
@@ -54,7 +54,7 @@ class TestReservationEvent:
         xml = res_event.as_xml()
         assert xml.find("title").text == "A test title"
         assert xml.find("id").text == "42308"
-        assert xml.find("summary/experimenter").text == "***REMOVED***"
+        assert xml.find("summary/experimenter").text == "user"
         assert xml.find("summary/instrument").text == "FEI Titan TEM"
         assert xml.find("summary/instrument").get("pid") == "FEI-Titan-TEM"
         assert xml.find("summary/reservationStart").text == "2021-09-15T03:00:00-04:00"
@@ -80,7 +80,7 @@ class TestReservationEvent:
         res_event_no_instr,
     ):
         assert (
-            repr(res_event) == "Event for ***REMOVED*** on FEI-Titan-TEM from "
+            repr(res_event) == "Event for user on FEI-Titan-TEM from "
             "2021-09-15T03:00:00-04:00 to 2021-09-15T16:00:00-04:00"
         )
         assert (
@@ -94,8 +94,8 @@ class TestReservationEvent:
             experiment_title="A test title for no instrument",
             instrument=None,
             last_updated=dt.fromisoformat("2021-09-15T16:04:00"),
-            username="***REMOVED***",
-            created_by="***REMOVED***",
+            username="User",
+            created_by="User",
             start_time=dt.fromisoformat("2021-09-15T03:00:00"),
             end_time=dt.fromisoformat("2021-09-15T16:00:00"),
             reservation_type="A test event",
@@ -115,7 +115,7 @@ class TestReservationEvent:
         xml = res_event.as_xml()
         assert xml.find("title").text == "A test title for no instrument"
         assert xml.find("id").text == "42309"
-        assert xml.find("summary/experimenter").text == "***REMOVED***"
+        assert xml.find("summary/experimenter").text == "User"
         assert xml.find("summary/reservationStart").text == "2021-09-15T03:00:00"
         assert xml.find("summary/reservationEnd").text == "2021-09-15T16:00:00"
         assert xml.find("summary/motivation").text == "To test the constructor again"
@@ -136,8 +136,8 @@ class TestReservationEvent:
             experiment_title=None,
             instrument=instrument_db["FEI-Titan-TEM"],
             last_updated=dt.fromisoformat("2021-09-15T16:04:00"),
-            username="***REMOVED***",
-            created_by="***REMOVED***",
+            username="User",
+            created_by="User",
             start_time=dt.fromisoformat("2021-09-15T04:00:00"),
             end_time=dt.fromisoformat("2021-09-15T17:00:00"),
             reservation_type="A test event",
@@ -159,7 +159,7 @@ class TestReservationEvent:
             "Wednesday Sep. 15, 2021"
         )
         assert xml.find("id").text == "48328"
-        assert xml.find("summary/experimenter").text == "***REMOVED***"
+        assert xml.find("summary/experimenter").text == "User"
         assert xml.find("summary/instrument").text == "FEI Titan TEM"
         assert xml.find("summary/instrument").get("pid") == "FEI-Titan-TEM"
         assert xml.find("summary/reservationStart").text == "2021-09-15T04:00:00-04:00"

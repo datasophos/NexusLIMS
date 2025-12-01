@@ -10,8 +10,6 @@
    development
    taxonomy
    schema_documentation
-   customizing_cdcs
-   session_logger_app
    api
 
 .. include:: README.rst

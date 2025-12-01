@@ -1,7 +1,7 @@
 Schema documentation
 ====================
 
-    `Last updated: February 25, 2020`
+    `Last updated: December 2025`
 
 
 This page contains the documentation automatically generated from the NexusLIMS

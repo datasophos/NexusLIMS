@@ -75,6 +75,19 @@ See the ``.env.example`` file for more documentation and examples.
     information about the instruments in the Nexus Facility, as well as logs
     for the sessions created by users using the Session Logger Application.
 
+.. _nexusLIMS-log-path:
+
+`NX_LOG_PATH`
+    Directory for application logs. If not specified, defaults to
+    ``${NX_DATA_PATH}/logs/``. Logs are organized by date: ``logs/YYYY/MM/DD/``
+
+.. _nexusLIMS-records-path:
+
+`NX_RECORDS_PATH`
+    Directory for generated XML records. If not specified, defaults to
+    ``${NX_DATA_PATH}/records/``. Successfully uploaded records are moved to
+    an 'uploaded' subdirectory upon upload.
+
 .. _nemo-address:
 
 `NEMO_address_X`

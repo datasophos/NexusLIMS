@@ -235,7 +235,7 @@ def parse_642_titan(mdict):
     """
     Add/adjust metadata specific to the 642 FEI Titan.
 
-    ('`FEI-Titan-TEM-635816 in **********`')
+    ('`FEI-Titan-TEM-012345 in **********`')
 
     Parameters
     ----------

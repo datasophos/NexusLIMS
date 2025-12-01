@@ -877,7 +877,7 @@ class TestNemoConnectorReservationQuestions:
                 dt.fromisoformat("2021-08-03T10:00-06:00"),
                 dt.fromisoformat("2021-08-03T17:00-06:00"),
             ),
-            user="***REMOVED***",
+            user="user",
         )
         with pytest.raises(nemo.NoDataConsentError) as exception:
             nemo.res_event_from_session(s)
@@ -901,7 +901,7 @@ class TestNemoConnectorReservationQuestions:
                 dt.fromisoformat("2021-08-04T10:00-06:00"),
                 dt.fromisoformat("2021-08-04T17:00-06:00"),
             ),
-            user="***REMOVED***",
+            user="user",
         )
         with pytest.raises(nemo.NoDataConsentError) as exception:
             nemo.res_event_from_session(s)

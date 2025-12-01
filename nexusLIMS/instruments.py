@@ -126,7 +126,7 @@ class Instrument:
     name : str or None
         The unique identifier for an instrument in the facility, currently
         (but not required to be) built from the make, model, and type of instrument,
-        plus a unique numeric code (e.g. ``FEI-Titan-TEM-635816``)
+        plus a unique numeric code (e.g. ``FEI-Titan-TEM-012345``)
     schema_name : str or None
         The human-readable name of instrument as defined in the Nexus Microscopy
         schema and displayed in the records
@@ -153,7 +153,7 @@ class Instrument:
         The specific submodule within :py:mod:`nexusLIMS.harvesters` that should be
         used to harvest reservation information for this instrument. At the time of
         writing, the only possible value is ``nemo``.
-    timezone : pytz.timezone, str, or None
+    timezone : pytz.tzinfo.BaseTzInfo or str or None
         The timezone in which this instrument is located, in the format of the IANA
         timezone database (e.g. ``America/New_York``). This is used to properly localize
         dates and times when communicating with the harvester APIs.
@@ -326,7 +326,7 @@ def get_instr_from_filepath(path: Path):
     --------
     >>> inst = get_instr_from_filepath('/path/to/file.dm3')
     >>> str(inst)
-    'FEI-Titan-TEM-635816 in xxx/xxxx'
+    'FEI-Titan-TEM-012345 in Bldg 1/Room A'
     """
     for _, v in instrument_db.items():
         if is_subpath(
@@ -358,7 +358,7 @@ def get_instr_from_calendar_name(cal_name):
     --------
     >>> inst = get_instr_from_calendar_name('FEITitanTEMEvents')
     >>> str(inst)
-    'FEI-Titan-TEM-635816 in ***REMOVED***'
+    'FEI-Titan-TEM-012345 in Bldg 1/Room A'
     """
     for _, v in instrument_db.items():
         if cal_name in v.api_url:
@@ -387,7 +387,7 @@ def get_instr_from_api_url(api_url: str) -> Instrument | None:
     --------
     >>> inst = get_instr_from_api_url('https://nemo.example.com/api/tools/?id=1')
     >>> str(inst)
-    'FEI-Titan-STEM-630901_n in xxx/xxxx'
+    'FEI-Titan-STEM-012345 in Bldg 1/Room A'
     """
     for _, v in instrument_db.items():
         if api_url == v.api_url:

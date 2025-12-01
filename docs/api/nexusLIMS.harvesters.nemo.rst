@@ -1,11 +1,6 @@
 nexusLIMS.harvesters.nemo package
 =================================
 
-.. automodule:: nexusLIMS.harvesters.nemo
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Submodules
 ----------
 
@@ -14,21 +9,29 @@ nexusLIMS.harvesters.nemo.connector module
 
 .. automodule:: nexusLIMS.harvesters.nemo.connector
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 nexusLIMS.harvesters.nemo.exceptions module
 -------------------------------------------
 
 .. automodule:: nexusLIMS.harvesters.nemo.exceptions
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 nexusLIMS.harvesters.nemo.utils module
 --------------------------------------
 
 .. automodule:: nexusLIMS.harvesters.nemo.utils
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
+
+Module contents
+---------------
+
+.. automodule:: nexusLIMS.harvesters.nemo
+   :members:
+   :show-inheritance:
+   :undoc-members:

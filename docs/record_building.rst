@@ -5,10 +5,10 @@
 Record building workflow
 ========================
 
-    `Last updated: November 26, 2021`
+    `Last updated: December 2025`
 
 This page describes the process used to build records based on the data saved by
-instruments in the Electron Microscopy Nexus facility using NexusLIMS.
+electron microscopy instruments using NexusLIMS.
 At the bottom is an `activity diagram <activity-diagram_>`_ that illustrates
 how the different modules work together to generate records from the centralized
 file storage and the NexusLIMS session database. Throughout this page, links
@@ -43,18 +43,18 @@ and the operators of NexusLIMS are notified so the issue can be corrected.
 ..  admonition:: A note on authentication...
 
     Since many of the resources accessed by the NexusLIMS back-end require
-    authentication (such as the SharePoint Calendar and the CDCS instance), it
+    authentication (such as the CDCS instance), it
     is necessary to provide suitable credentials, or no information will be able
     to be fetched. This is done by specifying two environment variables in the
-    context the code is run: :ref:`NEXUSLIMS_USER <nexusLIMS-user>` and
-    :ref:`NEXUSLIMS_PASS <nexusLIMS-pass>`. The
+    context the code is run: :ref:`NX_CDCS_USER <nexusLIMS-user>` and
+    :ref:`NX_CDCS_PASS <nexusLIMS-pass>`. The
     values provided in these variables will be used for authentication to all
     network resources that require it. The easiest way to do
     this is by editing the ``.env.example`` file in the root of the NexusLIMS
     repository and renaming it to ``.env`` (make sure not to push this file to
     any remote source, since it has a password in it!). Furthermore, NEMO-based
     session harvesting is enabled by specifying one or more sets of environment
-    variables named ``NEMO_address_X`` and ``NEMO_token_X``, where ``X`` is an
+    variables named ``NX_NEMO_ADDRESS_X`` and ``NX_NEMO_TOKEN_X``, where ``X`` is an
     integer value (``1``, ``2``, ``3``, etc.). The address variable should be
     a path to the API endpoint for a particular server (e.g.
     ``https://www.nemo.com/api/``), while the token should be an API
@@ -76,8 +76,8 @@ days for usage events). The record builder then calls
 turn uses :py:func:`~nexusLIMS.db.session_handler.get_sessions_to_build` to
 query the NexusLIMS database for any sessions awaiting processing (the database
 location can be referenced within the code using the environment variable
-:ref:`NEXUSLIMS_DB_PATH <nexusLIMS-db-path>` (`e.g.`
-``os.environ["NEXUSLIMS_DB_PATH"]``. This method interrogates the database for
+:ref:`NX_DB_PATH <nexusLIMS-db-path>` (`e.g.`
+``os.environ["NX_DB_PATH"]``. This method interrogates the database for
 session logs with a status of ``TO_BE_BUILT`` using the SQL query:
 
 .. code-block:: sql
@@ -139,8 +139,7 @@ Overview
 2.  `(link) <harvesting-calendar_>`_
     Fetch any associated calendar information for this
     :py:class:`~nexusLIMS.db.session_handler.Session` using one of the enabled
-    harvesters (currently :py:mod:`~nexusLIMS.harvesters.sharepoint_calendar`
-    or :py:mod:`~nexusLIMS.harvesters.nemo`).
+    harvesters (currently only :py:mod:`~nexusLIMS.harvesters.nemo`).
 3.  `(link) <identifying-files_>`_
     Identify files that NexusLIMS knows how to parse within the time range using
     :py:func:`~nexusLIMS.utils.find_files_by_mtime`; if no files are found,
@@ -211,8 +210,7 @@ experiment's motivation was, what sample was examined, etc.
 
 To obtain this information, the record builder uses whatever harvester module
 is listed in the ``harvester`` column of the NexusLIMS database for that
-instrument. (i.e. either :py:mod:`~nexusLIMS.harvesters.nemo` or
-:py:mod:`~nexusLIMS.harvesters.sharepoint_calendar` as of version
+instrument. (i.e. :py:mod:`~nexusLIMS.harvesters.nemo` as of version
 1.1.0). Each of these modules implements a ``res_event_from_session`` method,
 used by the record builder to return a
 :py:class:`~nexusLIMS.harvesters.reservation_event.ReservationEvent` object representing
@@ -248,25 +246,8 @@ specified in the :ref:`NX_INSTRUMENT_DATA_PATH <nexuslims-instrument-data-path>`
 etc. Sourcing this information from the master database allows for one central
 location for authoritative data. Thus, if something changes about the
 instruments' configuration, the data needs to be updated in one location only.
-The following is an example of the information extracted from the database and
-available to the NexusLIMS back-end software for a given instrument (in this
-case the FEI Titan TEM in Building 223, connected to the SharePoint harvester):
 
-.. code-block::
-
-    Nexus Instrument: FEI-Titan-TEM-635816
-    API url:          https://sharepoint.url.com/_vti_bin/ListData.svc/FEITitanTEMEvents
-    Calendar name:    FEI Titan TEM
-    Calendar url:     https://sharepoint.url.com/Lists/FEI%20Titan%20Events/calendar.aspx
-    Schema name:      FEI Titan TEM
-    Location:         ***REMOVED***
-    Property tag:     635816
-    Filestore path:   ./Titan
-    Computer IP:      ***REMOVED***
-    Computer name:    TITAN12345678
-    Computer mount:   M:/
-
-Using the `Filestore path` information, NexusLIMS searches for files
+Using the `Filestore path` information from the database, NexusLIMS searches for files
 modified within the :py:class:`~nexusLIMS.instruments.Instrument`'s path during
 the specified timespan. This is first tried using the
 :py:meth:`~nexusLIMS.utils.gnu_find_files_by_mtime`, which attempts to use
@@ -422,8 +403,8 @@ data file was found in the directory from the
 this file is included in the outputted XML record to provide users with an easy
 way to query the metadata for their files in a text-based format. Likewise, the
 :py:func:`~nexusLIMS.extractors.parse_metadata` function also handles
-generating a PNG format preview image, which is saved in the same folder as the
-JSON file described above. The actual preview generation is currently
+generating a PNG format preview image (saved in a subdirectory within :ref:`NX_DATA_PATH <nexuslims-data-path>`),
+which is saved in the same folder as the JSON file described above. The actual preview generation is currently
 implemented in
 :py:meth:`~nexusLIMS.extractors.thumbnail_generator.sig_to_thumbnail` for files
 that have a `HyperSpy <hyperspy_>`_ reader implemented, and in
@@ -486,10 +467,11 @@ If the record does not validate, something has gone wrong and an error is
 logged. Correspondingly, the
 :py:meth:`~nexusLIMS.db.session_handler.Session.update_session_status` method is
 used to mark the session's record status as ``'ERROR'`` in the database so the
-root cause of the problem can be investigated by the NexusLIMS operations team.
+root cause of the problem can be investigated.
 
 If the record does validate, it is written to a subdirectory of
-:ref:`NX_DATA_PATH <nexuslims-data-path>` (environment variable) for storage
+:ref:`NX_DATA_PATH <nexuslims-data-path>` (environment variable) or
+:ref:`NX_RECORDS_PATH <nexuslims-records-path>` if specified, for storage
 before it is uploaded to the CDCS instance.
 
 Regardless, the back-end then proceeds with `step 1 <starting-record-builder_>`_

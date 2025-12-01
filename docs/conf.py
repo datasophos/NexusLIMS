@@ -19,15 +19,30 @@ import os
 import shutil
 from datetime import datetime
 from glob import glob
+from pathlib import Path
 
 # sys.path.insert(0, os.path.abspath('../../'))
 import nexusLIMS.version
 
+
+def autodoc_mock_settings(_):
+    """Mock settings for autodoc to avoid validation errors."""
+    # create dummy directories for data and instrument data
+    tmp_dir = Path("/tmp")
+    instrument_data_path = tmp_dir / "nx_instrument_data"
+    instrument_data_path.mkdir(exist_ok=True)
+    data_path = tmp_dir / "nx_data"
+    data_path.mkdir(exist_ok=True)
+
+    os.environ["NX_INSTRUMENT_DATA_PATH"] = str(instrument_data_path)
+    os.environ["NX_DATA_PATH"] = str(data_path)
+
+
 # -- Project information -----------------------------------------------------
 
 project = "NexusLIMS"
-copyright = f"{datetime.now().year}, NIST Office of Data and Informatics"
-author = "NIST Office of Data and Informatics"
+copyright = f"{datetime.now().year}, datasophos"
+author = "datasophos, LLC"
 numfig = True
 
 # The full version, including alpha/beta/rc tags
@@ -47,7 +62,16 @@ extensions = [
     "sphinx.ext.coverage",
     "sphinx.ext.viewcode",
     "sphinxcontrib.towncrier.ext",
+    "sphinxcontrib.autodoc_pydantic",
+    "sphinx_autodoc_typehints",
 ]
+
+autodoc_pydantic_model_show_json = False
+autodoc_pydantic_model_show_config_summary = False
+
+# Options for sphinx_autodoc_typehints
+set_type_checking_flag = True
+typehints_fully_qualified = False
 
 # use short form for type hint links
 autodoc_typehints_format = "short"
@@ -84,19 +108,20 @@ add_function_parentheses = True
 #     inv.objects.append(o)
 #     text = inv.data_file(contract=True)
 #     ztext = soi.compress(text)
-#     soi.writebytes('**REMOVED**/NexusMicroscopyLIMS/mdcs/nexusLIMS/'
+#     soi.writebytes('NexusMicroscopyLIMS/mdcs/nexusLIMS/'
 #                    'doc/source/objects_lxml.inv', ztext)
 
 intersphinx_mapping = {
-    "python": ("https://docs.python.org/3.10/", None),
+    "python": ("https://docs.python.org/3.11/", None),
     "hyperspy": ("http://hyperspy.org/hyperspy-doc/current/", None),
     "numpy": ("https://numpy.org/doc/stable/", None),
     "matplotlib": ("https://matplotlib.org/stable/", None),
     "requests": ("https://requests.readthedocs.io/en/latest/", None),
     "PIL": ("https://pillow.readthedocs.io/en/stable/", None),
-    "pytz": ("http://pytz.sourceforge.net/", "pytz_objects.inv"),
+    "pytz": ("https://pythonhosted.org/pytz/", "pytz_objects.inv"),
     # use the custom objects.inv file above for LXML:
     "lxml": ("https://lxml.de/", "objects_lxml.inv"),
+    "pydantic": ("https://docs.pydantic.dev/latest/", None),
 }
 
 import sphinx_bootstrap_theme
@@ -178,8 +203,8 @@ html_theme_options = {
     # an arbitrary url.
     "navbar_links": [
         ("API Docs", "api"),
-        ("Repository", "https://github.com/usnistgov/NexusLIMS", True),
-        ("NIST ODI", "https://www.nist.gov/mml/odi", True),
+        ("Repository", "https://github.com/datasophos/NexusLIMS", True),
+        ("Datasophos", "https://datasophos.co", True),
     ],
     # Render the next and previous page links in navbar. (Default: true)
     "navbar_sidebarrel": True,
@@ -227,9 +252,9 @@ html_theme_options = {
 
 rst_epilog = """
 .. |SQLSchemaLink| replace:: SQL Schema Definition
-.. _SQLSchemaLink: https://github.com/usnistgov/NexusLIMS/blob/main/nexusLIMS/db/dev/NexusLIMS_db_creation_script.sql
+.. _SQLSchemaLink: https://github.com/datasophos/NexusLIMS/blob/main/nexusLIMS/db/dev/NexusLIMS_db_creation_script.sql
 .. |RepoLink| replace:: repository
-.. _RepoLink: https://github.com/usnistgov/NexusLIMS
+.. _RepoLink: https://github.com/datasophos/NexusLIMS
 """
 
 
@@ -255,7 +280,7 @@ def run_apidoc(_):
 
     load_dotenv("../.env")
 
-    main(["-f", "-M", "-T", "-d", "-1", "-o", output_path, modules] + to_exclude)
+    main(["-f", "-T", "-d", "-1", "-o", output_path, modules] + to_exclude)
 
 
 # def build_plantuml(_):
@@ -278,6 +303,7 @@ nitpick_ignore = [
     ("py:class", "function"),
     ("py:class", "optional"),
     ("py:class", "json.encoder.JSONEncoder"),
+    ("py:class", "pathlib.Annotated")
 ]
 
 
@@ -289,6 +315,7 @@ def skip(app, what, name, obj, would_skip, options):
 
 def setup(app):
     # app.connect("autodoc-skip-member", skip)
+    app.connect("builder-inited", autodoc_mock_settings)
     app.connect("builder-inited", run_apidoc)
     # app.connect('builder-inited', build_plantuml)
     print(

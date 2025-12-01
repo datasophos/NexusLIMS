@@ -809,7 +809,7 @@
       <xs:enumeration value="FEI Titan TEM">
         <xs:annotation>
           <xs:documentation>
-            The FEI Titan transmission electron microscope in ***REMOVED***
+            The FEI Titan transmission electron microscope in Bldg 1/Room A
           </xs:documentation>
         </xs:annotation>
       </xs:enumeration>
@@ -817,7 +817,7 @@
       <xs:enumeration value="FEI Titan STEM">
         <xs:annotation>
           <xs:documentation>
-            The FEI Titan scanning transmission electron microscope in ***REMOVED***
+            The FEI Titan scanning transmission electron microscope in Bldg 1/Room A
           </xs:documentation>
         </xs:annotation>
       </xs:enumeration>
@@ -825,7 +825,7 @@
       <xs:enumeration value="FEI Helios">
         <xs:annotation>
           <xs:documentation>
-            The FEI Helios dual beam FIB/SEM in ***REMOVED***
+            The FEI Helios dual beam FIB/SEM in Bldg 1/Room A
           </xs:documentation>
         </xs:annotation>
       </xs:enumeration>
@@ -833,7 +833,7 @@
       <xs:enumeration value="FEI Quanta200">
         <xs:annotation>
           <xs:documentation>
-            The FEI Quanta 200 environmental scanning electron microscope in ***REMOVED***
+            The FEI Quanta 200 environmental scanning electron microscope in Bldg 1/Room A
           </xs:documentation>
         </xs:annotation>
       </xs:enumeration>
@@ -841,7 +841,7 @@
       <xs:enumeration value="Hitachi S4700">
         <xs:annotation>
           <xs:documentation>
-            The Hitachi S4700 scanning electron microscope in ***REMOVED***
+            The Hitachi S4700 scanning electron microscope in Bldg 1/Room A
           </xs:documentation>
         </xs:annotation>
       </xs:enumeration>
@@ -849,7 +849,7 @@
       <xs:enumeration value="Hitachi S5500">
         <xs:annotation>
           <xs:documentation>
-            The Hitachi S5500 scanning electron microscope in ***REMOVED***
+            The Hitachi S5500 scanning electron microscope in Bldg 1/Room A
           </xs:documentation>
         </xs:annotation>
       </xs:enumeration>
@@ -857,7 +857,7 @@
       <xs:enumeration value="JEOL JEM3010">
         <xs:annotation>
           <xs:documentation>
-            The JEOL JEM3010 transmission electron microscope in ***REMOVED***
+            The JEOL JEM3010 transmission electron microscope in Bldg 1/Room A
           </xs:documentation>
         </xs:annotation>
       </xs:enumeration>
@@ -865,7 +865,7 @@
       <xs:enumeration value="JEOL JSM7100">
         <xs:annotation>
           <xs:documentation>
-            The JEOL JSM7100 scanning electron microscope in ***REMOVED***
+            The JEOL JSM7100 scanning electron microscope in Bldg 1/Room A
           </xs:documentation>
         </xs:annotation>
       </xs:enumeration>
@@ -873,7 +873,7 @@
       <xs:enumeration value="Philips EM400">
         <xs:annotation>
           <xs:documentation>
-            The Phillips EM400 transmission electron microscope in ***REMOVED***
+            The Phillips EM400 transmission electron microscope in Bldg 1/Room A
           </xs:documentation>
         </xs:annotation>
       </xs:enumeration>

@@ -291,7 +291,7 @@ class TestNemoConnector:
         date_no_ms = dt(2022, 2, 16, 9, 39, 0, 0)  # noqa: DTZ001
         assert nemo_conn_2.strptime(datestr_no_ms) == date_no_ms
 
-        # test format seen on ***REMOVED*** coerced to timezone
+        # test format coerced to timezone
         nemo_conn_3 = NemoConnector(
             base_url="https://example.org",
             token="not_needed",

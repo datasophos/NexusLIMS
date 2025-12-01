@@ -283,14 +283,19 @@ class Settings(BaseSettings):
         Examples
         --------
         With environment variables:
+
+        .. code-block:: python
+
             NX_NEMO_ADDRESS_1=https://nemo1.com/api/
             NX_NEMO_TOKEN_1=token123
             NX_NEMO_ADDRESS_2=https://nemo2.com/api/
             NX_NEMO_TOKEN_2=token456
             NX_NEMO_TZ_2=America/New_York
 
-        Returns
-        -------
+        The resulting output will be of the following format:
+
+        .. code-block:: python
+
             {
                 1: NemoHarvesterConfig(
                     address='https://nemo1.com/api/', token='token123', ...
@@ -380,11 +385,17 @@ class Settings(BaseSettings):
         Examples
         --------
         With environment variables:
+
+        .. code-block:: python
+
             NX_EMAIL_SMTP_HOST=smtp.gmail.com
             NX_EMAIL_SENDER=nexuslims@example.com
             NX_EMAIL_RECIPIENTS=admin@example.com,team@example.com
 
         Optional variables:
+
+        .. code-block:: python
+
             NX_EMAIL_SMTP_PORT=587
             NX_EMAIL_SMTP_USERNAME=user@example.com
             NX_EMAIL_SMTP_PASSWORD=secret
