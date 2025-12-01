@@ -3,6 +3,7 @@
 # Markdown files
 *.md
 !README.md
+!MIGRATION_GUIDE.md
 
 # backup
 *~

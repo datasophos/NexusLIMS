@@ -176,9 +176,7 @@ html_show_copyright = True
 
 html_extra_path = ["schema_doc"]
 
-html_sidebars = {
-    "**": ["sidebar-nav-bs"]
-}
+html_sidebars = {"**": ["sidebar-nav-bs"]}
 
 
 html_theme_options = {
@@ -253,7 +251,7 @@ nitpick_ignore = [
     ("py:class", "function"),
     ("py:class", "optional"),
     ("py:class", "json.encoder.JSONEncoder"),
-    ("py:class", "pathlib.Annotated")
+    ("py:class", "pathlib.Annotated"),
 ]
 
 
