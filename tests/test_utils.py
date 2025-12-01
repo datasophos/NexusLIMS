@@ -317,6 +317,10 @@ class TestUtils:
         result = _get_find_command()
         assert result == "find"
 
+    @pytest.mark.skipif(
+        __import__("platform").system() != "Darwin",
+        reason="Test is specific to macOS/Darwin behavior",
+    )
     def test_get_find_command_bsd_without_gfind(self, monkeypatch, tmp_path):
         """Test _get_find_command with BSD find and no gfind available."""
         from unittest.mock import Mock
@@ -344,6 +348,10 @@ class TestUtils:
         with pytest.raises(RuntimeError, match="GNU find is required"):
             _get_find_command()
 
+    @pytest.mark.skipif(
+        __import__("platform").system() != "Darwin",
+        reason="Test is specific to macOS/Darwin behavior",
+    )
     def test_get_find_command_bsd_with_gfind(self, monkeypatch, caplog):
         """Test _get_find_command with BSD find and gfind available."""
         from unittest.mock import Mock
