@@ -15,7 +15,7 @@ import logging
 import os
 import re
 from pathlib import Path
-from typing import Literal
+from typing import TYPE_CHECKING, Literal
 
 from dotenv import dotenv_values
 from pydantic import (
@@ -474,36 +474,44 @@ class _SettingsManager:
         self._settings = None
 
 
-class _SettingsProxy:
-    """
-    Proxy that provides attribute access to the current settings instance.
+if TYPE_CHECKING:
+    # For type checkers, make the proxy look like Settings
+    # This gives us proper type hints and autocomplete
+    class _SettingsProxy(Settings):  # type: ignore[misc]
+        """Type stub for the settings proxy."""
 
-    This allows settings to be used like a normal object while supporting
-    the refresh mechanism for testing.
-    """
+else:
 
-    def __getattr__(self, name):
-        # Get the attribute from the actual Settings instance
-        attr = getattr(_manager.get(), name)
+    class _SettingsProxy:
+        """
+        Proxy that provides attribute access to the current settings instance.
 
-        # If it's a method, wrap it to ensure it's called on the right instance
-        if callable(attr):
+        This allows settings to be used like a normal object while supporting
+        the refresh mechanism for testing.
+        """
 
-            def method_wrapper(*args, **kwargs):
-                # Re-get the attribute from the current Settings instance
-                # in case it was refreshed between getting the method and calling it
-                current_attr = getattr(_manager.get(), name)
-                return current_attr(*args, **kwargs)
+        def __getattr__(self, name: str):
+            # Get the attribute from the actual Settings instance
+            attr = getattr(_manager.get(), name)
 
-            return method_wrapper
+            # If it's a method, wrap it to ensure it's called on the right instance
+            if callable(attr):
 
-        return attr
+                def method_wrapper(*args, **kwargs):
+                    # Re-get the attribute from the current Settings instance
+                    # in case it was refreshed between getting the method and calling it
+                    current_attr = getattr(_manager.get(), name)
+                    return current_attr(*args, **kwargs)
 
-    def __dir__(self):
-        return dir(_manager.get())
+                return method_wrapper
 
-    def __repr__(self):
-        return repr(_manager.get())
+            return attr
+
+        def __dir__(self):
+            return dir(_manager.get())
+
+        def __repr__(self):
+            return repr(_manager.get())
 
 
 # Create the settings manager
