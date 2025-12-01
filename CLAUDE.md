@@ -154,17 +154,19 @@ uv run python -m nexusLIMS.builder.record_builder
 Environment variables are loaded from `.env` file (see `.env.example`):
 
 **Critical paths:**
-- `MMFNEXUS_PATH`: Read-only mount of centralized instrument data
-- `NEXUSLIMS_PATH`: Writable parallel directory for metadata/previews
-- `NEXUSLIMS_DB_PATH`: SQLite database path
+- `NX_INSTRUMENT_DATA_PATH`: Read-only mount of centralized instrument data
+- `NX_DATA_PATH`: Writable parallel directory for metadata/previews
+- `NX_DB_PATH`: SQLite database path
+- `NX_LOG_PATH` (optional): Directory for application logs (defaults to `NX_DATA_PATH/logs/`)
+- `NX_RECORDS_PATH` (optional): Directory for generated XML records (defaults to `NX_DATA_PATH/records/`)
 
 **NEMO integration:**
-- Supports multiple NEMO instances via `NEMO_ADDRESS_N`, `NEMO_TOKEN_N` pattern
+- Supports multiple NEMO instances via `NX_NEMO_ADDRESS_N`, `NX_NEMO_TOKEN_N` pattern
 - Optional timezone/datetime format overrides per instance
 
 **CDCS authentication:**
-- `NEXUSLIMS_USER` / `NEXUSLIMS_PASS`: Credentials for CDCS uploads
-- `CDCS_URL`: Target CDCS instance URL
+- `NX_CDCS_USER` / `NX_CDCS_PASS`: Credentials for CDCS uploads
+- `NX_CDCS_URL`: Target CDCS instance URL
 
 ## Important Implementation Details
 
@@ -177,12 +179,12 @@ Sessions progress through states in `session_log.record_status`:
 - `NO_FILES_FOUND`: No files found (may retry if within delay window)
 
 ### File Delay Mechanism
-`NEXUSLIMS_FILE_DELAY_DAYS` controls retry window for NO_FILES_FOUND sessions. Record builder continues searching until delay expires.
+`NX_FILE_DELAY_DAYS` controls retry window for NO_FILES_FOUND sessions. Record builder continues searching until delay expires.
 
 ### Instrument Database Requirements
 Each instrument in `instruments` table must specify:
 - `harvester`: "nemo" or "sharepoint"
-- `filestore_path`: Relative to `MMFNEXUS_PATH`
+- `filestore_path`: Relative to `NX_INSTRUMENT_DATA_PATH`
 - `timezone`: For proper datetime handling
 - NEMO-specific: `api_url`, `calendar_name` matching NEMO tool names
 

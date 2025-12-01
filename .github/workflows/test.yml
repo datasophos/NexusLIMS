@@ -21,7 +21,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version-file: ".python-version"
+          python-version: "3.11"
 
       - name: Install dependencies
         run: uv sync
@@ -64,7 +64,6 @@ jobs:
       - name: Run tests
         run: |
           uv run pytest tests/ --cov=nexusLIMS --cov=tests \
-            --cov-config=tests/.coveragerc \
             --cov-report html:tests/coverage \
             --cov-report term-missing \
             --cov-report=xml \
@@ -99,7 +98,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version-file: ".python-version"
+          python-version: "3.11"
       - name: Install dependencies
         run: uv sync
       - name: Download coverage artifact

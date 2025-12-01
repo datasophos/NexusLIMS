@@ -229,6 +229,21 @@ class Settings(BaseSettings):
         ),
         gt=0,
     )
+    NX_LOG_PATH: DirectoryPath | None = Field(
+        None,
+        description=(
+            "Directory for application logs. If not specified, defaults to "
+            "NX_DATA_PATH/logs/. Logs are organized by date: logs/YYYY/MM/DD/"
+        ),
+    )
+    NX_RECORDS_PATH: DirectoryPath | None = Field(
+        None,
+        description=(
+            "Directory for generated XML records. If not specified, defaults to "
+            "NX_DATA_PATH/records/. Successfully uploaded records are moved to "
+            "a 'uploaded' subdirectory."
+        ),
+    )
 
     @property
     def nexuslims_instrument_data_path(self) -> Path:
@@ -243,7 +258,14 @@ class Settings(BaseSettings):
     @property
     def log_dir_path(self) -> Path:
         """Base directory for timestamped log files."""
-        return self.NX_DATA_PATH.parent / "logs"
+        return self.NX_LOG_PATH if self.NX_LOG_PATH else self.NX_DATA_PATH / "logs"
+
+    @property
+    def records_dir_path(self) -> Path:
+        """Base directory for generated XML records."""
+        if self.NX_RECORDS_PATH:
+            return self.NX_RECORDS_PATH
+        return self.NX_DATA_PATH / "records"
 
     def nemo_harvesters(self) -> dict[int, NemoHarvesterConfig]:
         """

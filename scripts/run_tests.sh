@@ -3,7 +3,6 @@
 
 rm -r tests/coverage || true
 uv run pytest tests/ --cov=nexusLIMS \
-        --cov-config=tests/.coveragerc \
         --cov-report html:tests/coverage \
         --cov-report term-missing \
         --cov-report xml \

@@ -140,6 +140,31 @@ directory = "removal"
 name = "Deprecations and/or Removals"
 showcontent = true
 
+[tool.coverage.run]
+omit = [
+    "nexusLIMS/dev_scripts/*",
+    "tests/dev/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "class _CustomEncoder",
+    "if TYPE_CHECKING:",
+    "@overload",
+]
+
+[tool.pytest.ini_options]
+log_cli = false
+log_cli_level = "DEBUG"
+filterwarnings = [
+    "ignore:Using Ntlm\\(\\) is deprecated:DeprecationWarning",
+    "ignore:Manually creating the cbt stuct:DeprecationWarning",
+    "ignore:Using or importing the ABCs from:DeprecationWarning",
+    "ignore:the imp module is deprecated in favour of:DeprecationWarning",
+    "ignore:Glyph .* missing from font:UserWarning",
+]
+
 [tool.pyright]
 venvPath = "."
 venv = ".venv"

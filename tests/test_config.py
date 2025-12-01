@@ -243,9 +243,13 @@ def test_settings_property_aliases(mock_nemo_env):
     expected_lock = settings.NX_DATA_PATH / ".builder.lock"
     assert settings.lock_file_path == expected_lock
 
-    # Test log_dir_path
-    expected_log = settings.NX_DATA_PATH.parent / "logs"
+    # Test log_dir_path with default
+    expected_log = settings.NX_DATA_PATH / "logs"
     assert settings.log_dir_path == expected_log
+
+    # Test records_dir_path with default
+    expected_records = settings.NX_DATA_PATH / "records"
+    assert settings.records_dir_path == expected_records
 
 
 def test_settings_proxy_callable(mock_nemo_env):
@@ -394,3 +398,26 @@ def test_nemo_harvesters_loads_from_dotenv_file(monkeypatch, mock_nemo_env):
     assert str(harvesters[10].address) == "https://nemo10.dotenv.com/api/"
     assert harvesters[10].token == "dotenv-token-123"
     assert harvesters[10].tz == "America/Los_Angeles"
+
+
+def test_custom_log_and_records_paths(tmp_path, monkeypatch, mock_nemo_env):
+    """Test NX_LOG_PATH and NX_RECORDS_PATH overrides."""
+    from nexusLIMS.config import refresh_settings
+
+    # Create custom directories
+    custom_log = tmp_path / "custom_logs"
+    custom_records = tmp_path / "custom_records"
+    custom_log.mkdir()
+    custom_records.mkdir()
+
+    # Set environment variables
+    monkeypatch.setenv("NX_LOG_PATH", str(custom_log))
+    monkeypatch.setenv("NX_RECORDS_PATH", str(custom_records))
+
+    # Refresh settings to pick up new environment variables
+    settings = refresh_settings()
+
+    assert settings.log_dir_path == custom_log
+    assert settings.records_dir_path == custom_records
+    assert custom_log == settings.NX_LOG_PATH
+    assert custom_records == settings.NX_RECORDS_PATH

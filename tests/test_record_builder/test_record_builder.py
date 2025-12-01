@@ -403,7 +403,7 @@ class TestRecordBuilder:
         # Updated for 3 test sessions (Titan TEM, JEOL TEM, Nexus Test Instrument)
         from nexusLIMS.config import settings
 
-        upload_path = Path(settings.NX_DATA_PATH).parent / "records" / "uploaded"
+        upload_path = settings.records_dir_path / "uploaded"
         xmls = list(upload_path.glob("*.xml"))
         xml_count = 3  # One for each test session
         assert len(xmls) == xml_count

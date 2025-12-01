@@ -42,7 +42,7 @@ from nexusLIMS.utils import (
 )
 
 logger = logging.getLogger(__name__)
-XSD_PATH: str = Path(activity.__file__).parent / "nexus-experiment.xsd"
+XSD_PATH: Path = Path(activity.__file__).parent / "nexus-experiment.xsd"
 
 
 def build_record(
@@ -504,8 +504,6 @@ def _record_validation_flow(record_text, s, xml_files) -> List[Path]:
     if validate_record(BytesIO(bytes(record_text, "UTF-8"))):
         logger.info("Validated newly generated record")
         # generate filename for saved record and make sure path exists
-        # DONE: fix this for NEMO records since session_identifier is
-        #  a URL and it doesn't work right
         if s.instrument.harvester == "nemo":
             # for NEMO session_identifier is a URL of usage_event
             unique_suffix = f"{nemo_utils.id_from_url(s.session_identifier)}"
@@ -515,7 +513,7 @@ def _record_validation_flow(record_text, s, xml_files) -> List[Path]:
         basename = (
             f"{s.dt_from.strftime('%Y-%m-%d')}_{s.instrument.name}_{unique_suffix}.xml"
         )
-        filename = Path(settings.NX_DATA_PATH).parent / "records" / basename
+        filename = settings.records_dir_path / basename
         filename.parent.mkdir(parents=True, exist_ok=True)
         # write the record to disk and append to list of files generated
         with filename.open(mode="w", encoding="utf-8") as f:
@@ -589,7 +587,7 @@ def process_new_records(
         else:
             files_uploaded, _ = upload_record_files(xml_files)
             for f in files_uploaded:
-                uploaded_dir = Path(f).parent / "uploaded"
+                uploaded_dir = settings.records_dir_path / "uploaded"
                 Path(uploaded_dir).mkdir(parents=True, exist_ok=True)
 
                 shutil.copy2(f, uploaded_dir)
