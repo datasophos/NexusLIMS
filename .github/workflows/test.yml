@@ -63,10 +63,11 @@ jobs:
 
       - name: Run tests
         run: |
-          uv run pytest tests/ --cov=nexusLIMS --cov=tests \
+          uv run pytest tests/ --cov=nexusLIMS \
             --cov-report html:tests/coverage \
             --cov-report term-missing \
             --cov-report=xml \
+            --cov-branch \
             --mpl --mpl-baseline-path=tests/files/figs
 
       - name: Upload HTML coverage report
@@ -79,6 +80,7 @@ jobs:
         if: matrix.python-version == '3.11'
         uses: codecov/codecov-action@v5
         with:
+          token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage.xml
           fail_ci_if_error: false
 
