@@ -85,17 +85,29 @@ def build_switcher_json(dirs, current_pr_num=None):
         List of version entries for switcher.json.
     """
     entries = []
-    # Add stable and latest first, if present
-    for v in ["stable", "latest"]:
-        if v in dirs:
-            entries.append(
-                {
-                    "name": v.capitalize(),
-                    "version": v,
-                    "url": f"{BASE_URL}/{v}/",
-                    "preferred": v == "stable",
-                }
-            )
+
+    # If no dirs and not in PR context, assume we're building latest
+    if not dirs and not current_pr_num:
+        entries.append(
+            {
+                "name": "Latest",
+                "version": "latest",
+                "url": f"{BASE_URL}/latest/",
+                "preferred": True,
+            }
+        )
+    else:
+        # Add stable and latest first, if present
+        for v in ["stable", "latest"]:
+            if v in dirs:
+                entries.append(
+                    {
+                        "name": v.capitalize(),
+                        "version": v,
+                        "url": f"{BASE_URL}/{v}/",
+                        "preferred": v == "stable",
+                    }
+                )
 
     # Add current PR first (if in PR context)
     if current_pr_num:
@@ -141,14 +153,17 @@ def main():
 
     dirs = get_gh_pages_dirs()
     if not dirs and not current_pr:
-        # Only error if we have no dirs AND we're not in a PR context
+        # First deployment case: no versions exist yet, create minimal switcher
         print(
             "No deployed documentation versions found in gh-pages branch.",
             file=sys.stderr,
         )
-        sys.exit(1)
+        print(
+            "This appears to be the first deployment. Creating minimal switcher.json."
+        )
+        dirs = []  # Will create a minimal switcher with just upstream link
 
-    if not dirs:
+    if not dirs and current_pr:
         print("No deployed versions found, generating switcher for current PR only.")
 
     switcher = build_switcher_json(dirs, current_pr_num=current_pr)
