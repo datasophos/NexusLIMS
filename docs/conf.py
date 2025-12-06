@@ -33,9 +33,20 @@ def autodoc_mock_settings(_):
     instrument_data_path.mkdir(exist_ok=True)
     data_path = tmp_dir / "nx_data"
     data_path.mkdir(exist_ok=True)
+    db_dir = tmp_dir / "nx_db"
+    db_dir.mkdir(exist_ok=True)
+    db_path = db_dir / "nexuslims_db.sqlite"
+    # Create empty database file to satisfy path validation
+    db_path.touch(exist_ok=True)
 
     os.environ["NX_INSTRUMENT_DATA_PATH"] = str(instrument_data_path)
     os.environ["NX_DATA_PATH"] = str(data_path)
+    os.environ["NX_DB_PATH"] = str(db_path)
+
+    # Set dummy CDCS environment variables (same as conftest.py)
+    os.environ["NX_CDCS_URL"] = "https://cdcs.example.com"
+    os.environ["NX_CDCS_USER"] = "username"
+    os.environ["NX_CDCS_PASS"] = "dummy_password"
 
 
 # -- Project information -----------------------------------------------------
