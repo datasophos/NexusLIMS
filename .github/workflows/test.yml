@@ -110,6 +110,13 @@ jobs:
           path: tests/coverage
       - name: Build documentation
         run: ./scripts/build_docs.sh
+        env:
+          NX_INSTRUMENT_DATA_PATH: /tmp/nx_instrument_data
+          NX_DATA_PATH: /tmp/nx_data
+          NX_DB_PATH: /tmp/nx_db/nexuslims_db.sqlite
+          NX_CDCS_USER: dummy
+          NX_CDCS_PASS: dummy
+          NX_CDCS_URL: https://example.com
       - name: Prepare Pages artifact
         run: |
           mkdir -p _site/doc
@@ -160,6 +167,13 @@ jobs:
         run: |
           cd pr-source
           ./scripts/build_docs.sh
+        env:
+          NX_INSTRUMENT_DATA_PATH: /tmp/nx_instrument_data
+          NX_DATA_PATH: /tmp/nx_data
+          NX_DB_PATH: /tmp/nx_db/nexuslims_db.sqlite
+          NX_CDCS_USER: dummy
+          NX_CDCS_PASS: dummy
+          NX_CDCS_URL: https://example.com
       - name: Deploy to PR preview directory
         run: |
           PR_NUMBER=${{ github.event.pull_request.number }}
