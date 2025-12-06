@@ -49,7 +49,7 @@ Thumbs.db
 nexusLIMS/
 tests/
 docs/
-scripts/
+/scripts/
 
 # Build artifacts that might be checked out locally
 _build/
