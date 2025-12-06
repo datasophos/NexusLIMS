@@ -5,6 +5,13 @@ on:
     branches: [main, convert-to-uv]
   pull_request:
     branches: [main]
+  workflow_dispatch:
+    inputs:
+      deploy_docs:
+        description: "Deploy documentation to GitHub Pages"
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   test:
@@ -61,7 +68,8 @@ jobs:
 
   deploy-docs:
     # Deploy documentation to GitHub Pages after successful test run on main branch
-    if: github.ref == 'refs/heads/main'
+    # Can also be triggered manually via workflow_dispatch with deploy_docs input
+    if: github.ref == 'refs/heads/main' || github.event.inputs.deploy_docs == 'true'
     needs: test
     runs-on: ubuntu-latest
     permissions:
@@ -158,7 +166,7 @@ jobs:
   deploy-pr-docs:
     # Deploy documentation preview for pull requests to gh-pages branch
     if: github.event_name == 'pull_request'
-    # needs: test
+    needs: test
     runs-on: ubuntu-latest
     permissions:
       contents: write # Required to push to gh-pages branch
