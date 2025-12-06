@@ -33,10 +33,14 @@ jobs:
         continue-on-error: true
       - name: Build documentation
         run: ./scripts/build_docs.sh
+      - name: Generate switcher.json
+        run: python scripts/generate_switcher_json.py
       - name: Prepare Pages artifact
         run: |
-          mkdir -p _site/doc
-          rsync -avr _build/ _site/doc/
+          mkdir -p _site
+          rsync -avr _build/ _site/
+          mkdir -p _site/_static
+          cp docs/_static/switcher.json _site/_static/switcher.json
           mkdir -p _site/coverage
           if [ -d "tests/coverage" ]; then
             rsync -avr tests/coverage/ _site/coverage/
@@ -48,6 +52,33 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: _site
+      - name: Create latest redirect
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git fetch origin gh-pages
+          git checkout gh-pages
+          git pull origin gh-pages
+          rm -rf latest
+          mkdir -p latest
+          cat > latest/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <meta http-equiv="refresh" content="0; url=../stable/">
+            <link rel="canonical" href="../stable/" />
+            <title>Redirecting to stable documentation</title>
+          </head>
+          <body>
+            <p>Redirecting to <a href="../stable/">stable documentation</a>...</p>
+          </body>
+          </html>
+          EOF
+          git add latest
+          git commit -m "Update latest redirect to stable" || echo "No changes to commit"
+          git push origin gh-pages
+          echo "✅ Latest redirect updated!"
+          echo "🔗 https://datasophos.github.io/NexusLIMS/latest/ → stable"
 
   deploy-pr-docs:
     if: github.event_name == 'pull_request'
@@ -86,13 +117,19 @@ jobs:
           cd pr-source
           ./scripts/build_docs.sh
       - name: Deploy to PR preview directory
+        env:
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          GITHUB_REF: refs/pull/${{ github.event.pull_request.number }}/merge
         run: |
           PR_NUMBER=${{ github.event.pull_request.number }}
           rm -rf "pr-${PR_NUMBER}"
-          mkdir -p "pr-${PR_NUMBER}/doc"
-          mkdir -p "pr-${PR_NUMBER}/coverage"
-          rsync -avr pr-source/_build/ "pr-${PR_NUMBER}/doc/"
+          mkdir -p "pr-${PR_NUMBER}"
+          python pr-source/scripts/generate_switcher_json.py
+          rsync -avr pr-source/_build/ "pr-${PR_NUMBER}/"
+          mkdir -p "pr-${PR_NUMBER}/_static"
+          cp docs/_static/switcher.json "pr-${PR_NUMBER}/_static/switcher.json"
           if [ -d "pr-source/tests/coverage" ]; then
+            mkdir -p "pr-${PR_NUMBER}/coverage"
             rsync -avr pr-source/tests/coverage/ "pr-${PR_NUMBER}/coverage/"
           fi
           git config user.name "github-actions[bot]"
@@ -100,6 +137,8 @@ jobs:
           git add "pr-${PR_NUMBER}"
           git commit -m "Deploy docs preview for PR #${PR_NUMBER}" || echo "No changes to commit"
           git push origin gh-pages
+          echo "✅ Documentation preview deployed!"
+          echo "🔗 View at: https://datasophos.github.io/NexusLIMS/pr-${PR_NUMBER}/doc/"
       - name: Comment on PR
         uses: actions/github-script@v7
         with:

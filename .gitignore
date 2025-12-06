@@ -59,6 +59,9 @@ coverage.xml
 *-checkpoint.ipynb
 Untitled.ipynb
 
+# Ignore auto-generated version switcher for docs
+docs/_static/switcher.json
+
 # pip installation files
 *.egg-info
 

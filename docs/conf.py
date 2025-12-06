@@ -201,6 +201,12 @@ html_sidebars = {"**": ["sidebar-nav-bs"]}
 
 
 html_theme_options = {
+    "navbar_start": ["navbar-logo", "version-switcher"],
+    "switcher": {
+        "json_url": "_static/switcher.json",
+        "version_match": version,
+    },
+    "show_version_warning_banner": True,
     "logo": {
         "image_light": "_static/logo_horizontal_light.png",
         "image_dark": "_static/logo_horizontal_dark.png",
