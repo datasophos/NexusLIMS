@@ -47,11 +47,17 @@ class XSDDocumenter:
 
     def _get_documentation(self, element: etree._Element) -> str:
         """Extract documentation from xs:annotation/xs:documentation."""
+        import re
+
         annotation = element.find("xs:annotation", namespaces=self.XS_NS)
         if annotation is not None:
             doc = annotation.find("xs:documentation", namespaces=self.XS_NS)
             if doc is not None and doc.text:
-                return doc.text.strip()
+                # Clean up multiple spaces and newlines
+                text = doc.text.strip()
+                # Replace multiple whitespace characters (including newlines) with single space
+                text = re.sub(r"\s+", " ", text)
+                return text
         return ""
 
     def _get_appinfo_label(self, element: etree._Element) -> str:

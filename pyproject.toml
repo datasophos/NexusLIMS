@@ -146,6 +146,7 @@ name = "Deprecations and/or Removals"
 showcontent = true
 
 [tool.coverage.run]
+relative_files = true
 omit = [
     "nexusLIMS/dev_scripts/*",
     "tests/dev/*",

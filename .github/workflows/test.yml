@@ -15,20 +15,27 @@ on:
 
 jobs:
   test:
-    name: Test Python ${{ matrix.python-version }}
-    runs-on: ubuntu-latest
+    name: Test Python ${{ matrix.python-version }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         python-version: ["3.11", "3.12"]
+        os: [ubuntu-latest, macos-latest]
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install system dependencies
+      - name: Install system dependencies (Ubuntu)
+        if: matrix.os == 'ubuntu-latest'
         run: |
           sudo apt-get update
           sudo apt-get install -y findutils
+
+      - name: Install system dependencies (macOS)
+        if: matrix.os == 'macos-latest'
+        run: |
+          brew install findutils
 
       - name: Set up uv
         uses: astral-sh/setup-uv@v4
@@ -49,21 +56,61 @@ jobs:
             --cov-report html:tests/coverage \
             --cov-report term-missing \
             --cov-report=xml \
-            --cov-branch \
             --mpl --mpl-baseline-path=tests/files/figs
 
+      - name: Upload coverage database
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-db-${{ matrix.python-version }}-${{ matrix.os }}
+          path: .coverage
+          include-hidden-files: true
+
       - name: Upload HTML coverage report
+        if: matrix.python-version == '3.11' && matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v4
         with:
           name: coverage-html-${{ matrix.python-version }}
           path: tests/coverage
 
-      - name: Upload coverage to Codecov
-        if: matrix.python-version == '3.11'
+  coverage:
+    # Combine coverage from all test runs and upload to Codecov
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install coverage tools
+        run: pip install coverage
+
+      - name: Download all coverage artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: coverage-db-*
+          path: coverage-reports
+
+      - name: Combine coverage reports
+        run: |
+          # List downloaded files for debugging
+          find coverage-reports -name .coverage -type f
+          # Move all .coverage files to current directory with unique names
+          find coverage-reports -name .coverage -type f -exec sh -c 'cp "$1" ".coverage.$(basename $(dirname $1))"' _ {} \;
+          # Combine all .coverage.* files
+          coverage combine
+          # Generate combined XML report
+          coverage xml -o combined-coverage.xml
+          # Show report in logs
+          coverage report
+
+      - name: Upload combined coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./coverage.xml
+          files: ./combined-coverage.xml
           fail_ci_if_error: false
 
   deploy-docs:
@@ -73,8 +120,7 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     permissions:
-      pages: write # Required to deploy to GitHub Pages
-      id-token: write # Required for OIDC authentication
+      contents: write # Required to push to gh-pages branch
     steps:
       - uses: actions/checkout@v4
 
@@ -98,70 +144,40 @@ jobs:
           name: coverage-html-3.11
           path: tests/coverage
 
-      - name: Build documentation
-        # Build Sphinx documentation (includes API docs and coverage link)
-        run: ./scripts/build_docs.sh
-
       - name: Generate switcher.json
         # Create version switcher for PyData Sphinx Theme navigation
         run: python scripts/generate_switcher_json.py
 
-      - name: Prepare Pages artifact
-        # Assemble final site structure with docs and coverage in _site directory
-        run: |
-          mkdir -p _site
-          rsync -avr _build/ _site/
-          mkdir -p _site/_static
-          cp docs/_static/switcher.json _site/_static/switcher.json
-          mkdir -p _site/coverage
-          if [ -d "tests/coverage" ]; then
-            rsync -avr tests/coverage/ _site/coverage/
-          fi
+      - name: Build documentation
+        # Build Sphinx documentation (includes API docs, coverage link, and switcher.json)
+        run: ./scripts/build_docs.sh
 
-      - name: Setup Pages
-        # Configure GitHub Pages deployment settings
-        id: pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload artifact
-        # Upload the complete site as a Pages deployment artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: _site
-
-      - name: Deploy to GitHub Pages
-        # Deploy the uploaded artifact to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
-
-      - name: Create latest redirect
-        # Create a /latest/ redirect in gh-pages branch pointing to /stable/
+      - name: Deploy to gh-pages branch
+        # Deploy docs to gh-pages branch in stable/ directory
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git fetch origin gh-pages
           git checkout gh-pages
           git pull origin gh-pages
+
+          # Deploy to latest directory (main branch = latest)
           rm -rf latest
           mkdir -p latest
-          cat > latest/index.html << 'EOF'
-          <!DOCTYPE html>
-          <html>
-          <head>
-            <meta http-equiv="refresh" content="0; url=../stable/">
-            <link rel="canonical" href="../stable/" />
-            <title>Redirecting to stable documentation</title>
-          </head>
-          <body>
-            <p>Redirecting to <a href="../stable/">stable documentation</a>...</p>
-          </body>
-          </html>
-          EOF
+          rsync -avr _build/ latest/
+
+          # Add coverage if available
+          if [ -d "tests/coverage" ]; then
+            mkdir -p latest/coverage
+            rsync -avr tests/coverage/ latest/coverage/
+          fi
+
+          # Commit and push
           git add latest
-          git commit -m "Update latest redirect to stable" || echo "No changes to commit"
+          git commit -m "Deploy docs to latest from main branch" || echo "No changes to commit"
           git push origin gh-pages
-          echo "✅ Latest redirect updated!"
-          echo "🔗 https://datasophos.github.io/NexusLIMS/latest/ → stable"
+          echo "✅ Documentation deployed to latest!"
+          echo "🔗 https://datasophos.github.io/NexusLIMS/latest/"
 
   deploy-pr-docs:
     # Deploy documentation preview for pull requests to gh-pages branch

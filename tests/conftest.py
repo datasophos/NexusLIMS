@@ -85,6 +85,9 @@ os.environ["NX_FILE_STRATEGY"] = "exclusive"
 os.environ["NX_CDCS_URL"] = "https://cdcs.example.com"
 os.environ["NX_CDCS_USER"] = "username"
 os.environ["NX_CDCS_PASS"] = "dummy_password"
+os.environ["NX_CERT_BUNDLE"] = (
+    "-----BEGIN CERTIFICATE-----\nDUMMY\n-----END CERTIFICATE-----"
+)
 
 # Create required directory structure
 (_nexuslims_path / "test_files").mkdir(parents=True, exist_ok=True)
