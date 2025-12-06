@@ -92,7 +92,7 @@ def build_switcher_json(dirs, current_pr_num=None):
                 {
                     "name": v.capitalize(),
                     "version": v,
-                    "url": f"{BASE_URL}/{v}/doc/",
+                    "url": f"{BASE_URL}/{v}/",
                     "preferred": v == "stable",
                 }
             )
@@ -104,7 +104,7 @@ def build_switcher_json(dirs, current_pr_num=None):
             {
                 "name": f"PR #{current_pr_num} (current)",
                 "version": current_pr_name,
-                "url": f"{BASE_URL}/{current_pr_name}/doc/",
+                "url": f"{BASE_URL}/{current_pr_name}/",
                 "preferred": True,
             }
         )
@@ -117,7 +117,7 @@ def build_switcher_json(dirs, current_pr_num=None):
             if current_pr_num and pr_num == current_pr_num:
                 continue
             entries.append(
-                {"name": f"PR #{pr_num}", "version": d, "url": f"{BASE_URL}/{d}/doc/"}
+                {"name": f"PR #{pr_num}", "version": d, "url": f"{BASE_URL}/{d}/"}
             )
 
     # Add link to upstream NIST project documentation
