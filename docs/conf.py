@@ -71,6 +71,17 @@ html_context = {
     "pr_number": pr_number,
 }
 
+# Set html_baseurl for proper asset loading in subdirectories
+# This is critical for GitHub Pages deployment to subdirectories like /pr-2/
+base_url = "https://datasophos.github.io/NexusLIMS"
+if pr_number:
+    html_baseurl = f"{base_url}/pr-{pr_number}/"
+elif os.environ.get("GITHUB_REF") == "refs/heads/main":
+    html_baseurl = f"{base_url}/latest/"
+else:
+    # For local builds or stable releases, use relative paths
+    html_baseurl = ""
+
 
 # -- General configuration ---------------------------------------------------
 
@@ -83,6 +94,7 @@ extensions = [
     "sphinx.ext.intersphinx",
     "sphinx.ext.coverage",
     "sphinx.ext.viewcode",
+    "sphinx.ext.githubpages",  # Creates .nojekyll file for GitHub Pages
     "sphinxcontrib.towncrier.ext",
     "sphinxcontrib.autodoc_pydantic",
     "sphinx_autodoc_typehints",
