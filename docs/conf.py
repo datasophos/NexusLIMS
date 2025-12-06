@@ -14,14 +14,15 @@
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
 import os
-
-# import sys
+import sys
 import shutil
 from datetime import datetime
 from glob import glob
 from pathlib import Path
 
-# sys.path.insert(0, os.path.abspath('../../'))
+# Add custom extensions directory to path
+sys.path.insert(0, os.path.abspath("_ext"))
+
 import nexusLIMS.version
 
 
@@ -86,6 +87,7 @@ extensions = [
     "sphinxcontrib.autodoc_pydantic",
     "sphinx_autodoc_typehints",
     "sphinx_design",
+    "xsd_documenter",  # Custom XSD documentation extension with D3.js diagrams
 ]
 
 autodoc_pydantic_model_show_json = False
