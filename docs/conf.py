@@ -60,6 +60,16 @@ numfig = True
 version = nexusLIMS.version.__version__
 release = version
 
+# Add PR number to context if available
+pr_number = os.environ.get("PR_NUMBER")
+
+# Pass version and PR info to templates
+html_context = {
+    "version": version,
+    "release": release,
+    "pr_number": pr_number,
+}
+
 
 # -- General configuration ---------------------------------------------------
 
