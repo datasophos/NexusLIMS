@@ -136,9 +136,10 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add "pr-${PR_NUMBER}"
           git commit -m "Deploy docs preview for PR #${PR_NUMBER}" || echo "No changes to commit"
+          git pull --rebase origin gh-pages
           git push origin gh-pages
           echo "✅ Documentation preview deployed!"
-          echo "🔗 View at: https://datasophos.github.io/NexusLIMS/pr-${PR_NUMBER}/doc/"
+          echo "🔗 View at: https://datasophos.github.io/NexusLIMS/pr-${PR_NUMBER}/"
       - name: Comment on PR
         uses: actions/github-script@v7
         with:
@@ -149,7 +150,7 @@ jobs:
             const commentBody = `## 📚 Documentation Preview
 
             The documentation for this PR has been deployed to:
-            - **Docs**: ${baseUrl}/pr-${prNumber}/doc/
+            - **Docs**: ${baseUrl}/pr-${prNumber}/
             - **Coverage**: ${baseUrl}/pr-${prNumber}/coverage/
 
             _This preview will be updated on each push to this PR._`;
