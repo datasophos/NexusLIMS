@@ -1,0 +1,1 @@
+Added the ability to customize the number of retries for the NEMO connector, improving flexibility and test performance.

@@ -1,24 +1,21 @@
-#  NIST Public License - 2023
-#
-#  See the LICENSE file in the root of this project
-#
 """Parse and extract metadata from files saved by Gatan's DigitalMicrograph software."""
+
 import logging
-import os
+from datetime import UTC
 from datetime import datetime as dt
 from pathlib import Path
 from struct import error
 from typing import Dict, List
 
 import numpy as np
-from hyperspy.exceptions import (
+from hyperspy.io import load as hs_load
+from rsciio.utils.exceptions import (
     DM3DataTypeError,
     DM3FileVersionError,
     DM3TagError,
     DM3TagIDError,
     DM3TagTypeError,
 )
-from hyperspy.io import load as hs_load
 
 from nexusLIMS.extractors.utils import (
     _coerce_to_list,
@@ -50,7 +47,7 @@ from nexusLIMS.utils import (
 logger = logging.getLogger(__name__)
 
 
-def get_dm3_metadata(filename: Path):  # noqa: PLR0912
+def get_dm3_metadata(filename: Path):
     """
     Get metadata from a dm3 or dm4 file.
 
@@ -163,7 +160,7 @@ def get_dm3_metadata(filename: Path):  # noqa: PLR0912
         # Get the instrument object associated with this file
         instr = get_instr_from_filepath(filename)
         # get the modification time (as ISO format):
-        mtime = os.path.getmtime(filename)
+        mtime = filename.stat().st_mtime
         mtime_iso = dt.fromtimestamp(
             mtime,
             tz=instr.timezone if instr else None,
@@ -238,7 +235,7 @@ def parse_642_titan(mdict):
     """
     Add/adjust metadata specific to the 642 FEI Titan.
 
-    ('`FEI-Titan-TEM-635816 in **********`')
+    ('`FEI-Titan-TEM-012345 in **********`')
 
     Parameters
     ----------
@@ -414,9 +411,9 @@ def parse_642_jeol(mdict):
 
 
 _instr_specific_parsers = {
-    "FEI-Titan-STEM-630901_n": parse_643_titan,
-    "FEI-Titan-TEM-635816_n": parse_642_titan,
-    "JEOL-JEM3010-TEM-565989_n": parse_642_jeol,
+    "FEI-Titan-STEM": parse_643_titan,
+    "FEI-Titan-TEM": parse_642_titan,
+    "JEOL-JEM-TEM": parse_642_jeol,
 }
 
 
@@ -565,7 +562,7 @@ def parse_dm3_microscope_info(mdict):
             and val != []
         ):
             if "Label" in meta_key:
-                set_nested_dict_value(mdict, ["nx_meta"] + ["Analytic Label"], val)
+                set_nested_dict_value(mdict, ["nx_meta", "Analytic Label"], val)
             else:
                 set_nested_dict_value(
                     mdict,
@@ -630,9 +627,9 @@ def parse_dm3_eels_info(mdict):
 
     # different instruments have the spectrometer information in different
     # places...
-    if mdict["nx_meta"]["Instrument ID"] == "FEI-Titan-TEM-635816_n":
+    if mdict["nx_meta"]["Instrument ID"] == "FEI-Titan-TEM":
         base = [*pre_path, "EELS", "Acquisition", "Spectrometer"]
-    elif mdict["nx_meta"]["Instrument ID"] == "FEI-Titan-STEM-630901_n":
+    elif mdict["nx_meta"]["Instrument ID"] == "FEI-Titan-STEM":
         base = [*pre_path, "EELS Spectrometer"]
     else:
         base = None
@@ -745,7 +742,7 @@ def parse_dm3_eds_info(mdict):
                 avg_val = np.array(v).mean()
                 set_nested_dict_value(
                     mdict,
-                    ["nx_meta", "EDS"] + [f"{k} (SI Average)"],
+                    ["nx_meta", "EDS", f"{k} (SI Average)"],
                     avg_val,
                 )
 
@@ -771,7 +768,7 @@ def parse_dm3_eds_info(mdict):
     ]:
         if try_getting_dict_value(mdict, base + meta_key) != "not found":
             mdict["nx_meta"]["warnings"].append(
-                ["EDS"] + [meta_key[-1] if len(meta_key) > 1 else meta_key[0]],
+                ["EDS", meta_key[-1] if len(meta_key) > 1 else meta_key[0]],
             )
 
     # Set the dataset type to Spectrum if any EDS tags were added
@@ -863,8 +860,8 @@ def parse_dm3_spectrum_image_info(mdict):
     start_val = try_getting_dict_value(mdict, [*base, "Acquisition", "Start time"])
     end_val = try_getting_dict_value(mdict, [*base, "Acquisition", "End time"])
     if start_val != "not found" and end_val != "not found":
-        start_dt = dt.strptime(start_val, "%I:%M:%S %p")  # noqa: DTZ007
-        end_dt = dt.strptime(end_val, "%I:%M:%S %p")  # noqa: DTZ007
+        start_dt = dt.strptime(start_val, "%I:%M:%S %p").replace(tzinfo=UTC)
+        end_dt = dt.strptime(end_val, "%I:%M:%S %p").replace(tzinfo=UTC)
         duration = (end_dt - start_dt).seconds  # Calculate acquisition duration
         set_nested_dict_value(
             mdict,
@@ -893,7 +890,63 @@ def parse_dm3_spectrum_image_info(mdict):
     return mdict
 
 
-def process_tecnai_microscope_info(  # noqa: PLR0915
+def _parse_stage_position(tecnai_info):
+    """
+    Parse stage position from Tecnai metadata.
+
+    Parameters
+    ----------
+    tecnai_info : list
+        Split metadata strings
+
+    Returns
+    -------
+    dict
+        Dictionary with stage position x, y, z, theta, phi values
+    """
+    tmp = _find_val("Stage ", tecnai_info).split(",")
+    tmp = [_try_decimal(t.strip(" umdeg")) for t in tmp]
+    return {
+        "Stage_Position_x": tmp[0],
+        "Stage_Position_y": tmp[1],
+        "Stage_Position_z": tmp[2],
+        "Stage_Position_theta": tmp[3],
+        "Stage_Position_phi": tmp[4],
+    }
+
+
+def _parse_apertures(tecnai_info):
+    """
+    Parse aperture settings from Tecnai metadata.
+
+    Parameters
+    ----------
+    tecnai_info : list
+        Split metadata strings
+
+    Returns
+    -------
+    dict
+        Dictionary with C1, C2, Obj, and SA aperture values
+    """
+
+    def _read_aperture(val, tecnai_info_):
+        """Test if aperture has value or is retracted."""
+        try:
+            value = _find_val(val, tecnai_info_).strip(" um")
+            return int(value)
+        except (ValueError, AttributeError):
+            return None
+
+    return {
+        "C1_Aperture": _read_aperture("C1 Aperture: ", tecnai_info),
+        "C2_Aperture": _read_aperture("C2 Aperture: ", tecnai_info),
+        "Obj_Aperture": _read_aperture("OBJ Aperture: ", tecnai_info),
+        "SA_Aperture": _read_aperture("SA Aperture: ", tecnai_info),
+    }
+
+
+def process_tecnai_microscope_info(
     microscope_info,
     delimiter="\u2028",
 ):
@@ -966,32 +1019,11 @@ def process_tecnai_microscope_info(  # noqa: PLR0915
     info_dict["Image_Shift_x"] = _try_decimal(tmp.split("/")[0])
     info_dict["Image_Shift_y"] = _try_decimal(tmp.split("/")[1])
 
-    # Decimal values are given in micrometers and degrees
-    tmp = _find_val("Stage ", tecnai_info).split(",")
-    tmp = [_try_decimal(t.strip(" umdeg")) for t in tmp]
-    info_dict["Stage_Position_x"] = tmp[0]
-    info_dict["Stage_Position_y"] = tmp[1]
-    info_dict["Stage_Position_z"] = tmp[2]
-    info_dict["Stage_Position_theta"] = tmp[3]
-    info_dict["Stage_Position_phi"] = tmp[4]
-
-    def __read_aperture(val, tecnai_info_):
-        """Test if aperture has value or is retracted."""
-        try:
-            value = _find_val(val, tecnai_info_).strip(" um")
-            res = int(value)
-        except (ValueError, AttributeError):
-            res = None
-        return res
-
-    # Either an integer value or None (indicating the aperture was not
-    # inserted or tag did not exist in the metadata)
-    info_dict["C1_Aperture"] = __read_aperture("C1 Aperture: ", tecnai_info)
-    info_dict["C2_Aperture"] = __read_aperture("C2 Aperture: ", tecnai_info)
-    info_dict["Obj_Aperture"] = __read_aperture("OBJ Aperture: ", tecnai_info)
-    info_dict["SA_Aperture"] = __read_aperture("SA Aperture: ", tecnai_info)
+    # Parse stage position and apertures using helper functions
+    info_dict.update(_parse_stage_position(tecnai_info))
+    info_dict.update(_parse_apertures(tecnai_info))
 
     # Nested dictionary
     info_dict = _parse_filter_settings(info_dict, tecnai_info)
 
-    return info_dict
+    return _parse_filter_settings(info_dict, tecnai_info)

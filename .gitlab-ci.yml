@@ -9,77 +9,65 @@ cache:
 
 .env_setup:
   before_script:
-# install pyenv and python versions
-    - if [[ -z "${PYENV_DIR}" ]]; then export PYENV_DIR=${HOME}/.pyenv; fi 
-    - export PYENV_ROOT="${PYENV_DIR}" && export PATH="$PYENV_ROOT/bin:$PATH" && export TMPDIR="$PYENV_ROOT/.pip-tmp"
-    - if ! command -v pyenv; then rm -rf ${PYENV_DIR} || true; git clone https://github.com/pyenv/pyenv.git ${PYENV_DIR}; else cd ${PYENV_DIR}; git pull; cd -; eval "$(pyenv init --path)";  fi
-    - pyenv local | xargs -L1 pyenv install -s
-    - which python
-#   install poetry
-    - curl -sSL https://install.python-poetry.org | python -
-#   add poetry install path to PATH
-    - export PATH="$HOME/.local/bin:${PATH}"
-# update poetry, configure, and install tox
-    - poetry self update
-    - poetry config virtualenvs.in-project true; poetry config cache-dir ${PYENV_DIR}/.poetry-cache;
-    - poetry config --list
-    - poetry run pip install tox
+    # install uv (handles Python version management automatically)
+    - curl -LsSf https://astral.sh/uv/install.sh | sh
+    - source $HOME/.cargo/env
+    - export PATH="$HOME/.cargo/bin:${PATH}"
 
 linting:
-    stage: linting
-    extends: .env_setup
-    rules:
-      - if: $CI_COMMIT_TAG
-        when: never 
-      - if: $CI_COMMIT_BRANCH == "public"
-        when: never
-      - if: $CI_COMMIT_BRANCH == "nist-pages"
-        when: never
-      - when: always
-    retry: 2
-    script:
-      - poetry install
-      - poetry run tox -e lint
-    needs: []
+  stage: linting
+  extends: .env_setup
+  rules:
+    - if: $CI_COMMIT_TAG
+      when: never
+    - if: $CI_COMMIT_BRANCH == "public"
+      when: never
+    - if: $CI_COMMIT_BRANCH == "nist-pages"
+      when: never
+    - when: always
+  retry: 2
+  script:
+    - uv run tox -e lint
+  needs: []
 
 nexusLIMS_tests:
-    stage: test
-    script:
-      # run tests with coverage and output coverage report to html
-      - TOX_SKIP_ENV=lint poetry run tox
-    retry: 2
-    extends: .env_setup
-    rules:
-      - if: $CI_COMMIT_TAG
-        when: never 
-      - if: $CI_COMMIT_BRANCH == "public"
-        when: never
-      - if: $CI_COMMIT_BRANCH == "nist-pages"
-        when: never
-      - when: always
-    after_script:
-      # cache the coverage results so they can be published, always returning true
-      - mv tests/coverage .
-      - tar -czf coverage.tar.gz coverage || true
-    coverage: /(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/
-    artifacts:
-      paths:
-        - coverage
-      reports:
-        junit: tests/test_report.xml
-      expire_in: 30 days
-    needs: ['linting']
+  stage: test
+  script:
+    # run tests with coverage and output coverage report to html
+    - TOX_SKIP_ENV=lint uv run tox
+  retry: 2
+  extends: .env_setup
+  rules:
+    - if: $CI_COMMIT_TAG
+      when: never
+    - if: $CI_COMMIT_BRANCH == "public"
+      when: never
+    - if: $CI_COMMIT_BRANCH == "nist-pages"
+      when: never
+    - when: always
+  after_script:
+    # cache the coverage results so they can be published, always returning true
+    - mv tests/coverage .
+    - tar -czf coverage.tar.gz coverage || true
+  coverage: /(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/
+  artifacts:
+    paths:
+      - coverage
+    reports:
+      junit: tests/test_report.xml
+    expire_in: 30 days
+  needs: ["linting"]
 
 pages:
   stage: deploy
   script:
-    - poetry run tox -e docs
+    - uv run tox -e docs
     - mkdir -p public/doc && rsync -avr _build/ public/doc/
   retry: 2
   extends: .env_setup
   rules:
     - if: $CI_COMMIT_TAG
-      when: never 
+      when: never
     - if: $CI_COMMIT_BRANCH == "public"
       when: never
     - if: $CI_COMMIT_BRANCH == "nist-pages"
@@ -92,4 +80,4 @@ pages:
       - public
   dependencies:
     - nexusLIMS_tests
-  needs: ['nexusLIMS_tests']
+  needs: ["nexusLIMS_tests"]

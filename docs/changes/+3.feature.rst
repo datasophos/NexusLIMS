@@ -1,0 +1,1 @@
+New helper script for initializing the database with test or real data (``scripts/initalize_db.py``).

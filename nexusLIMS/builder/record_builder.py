@@ -1,31 +1,5 @@
-#  NIST Public License - 2019
-#
-#  This software was developed by employees of the National Institute of
-#  Standards and Technology (NIST), an agency of the Federal Government
-#  and is being made available as a public service. Pursuant to title 17
-#  United States Code Section 105, works of NIST employees are not subject
-#  to copyright protection in the United States.  This software may be
-#  subject to foreign copyright.  Permission in the United States and in
-#  foreign countries, to the extent that NIST may hold copyright, to use,
-#  copy, modify, create derivative works, and distribute this software and
-#  its documentation without fee is hereby granted on a non-exclusive basis,
-#  provided that this notice and disclaimer of warranty appears in all copies.
-#
-#  THE SOFTWARE IS PROVIDED 'AS IS' WITHOUT ANY WARRANTY OF ANY KIND,
-#  EITHER EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED
-#  TO, ANY WARRANTY THAT THE SOFTWARE WILL CONFORM TO SPECIFICATIONS, ANY
-#  IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
-#  AND FREEDOM FROM INFRINGEMENT, AND ANY WARRANTY THAT THE DOCUMENTATION
-#  WILL CONFORM TO THE SOFTWARE, OR ANY WARRANTY THAT THE SOFTWARE WILL BE
-#  ERROR FREE.  IN NO EVENT SHALL NIST BE LIABLE FOR ANY DAMAGES, INCLUDING,
-#  BUT NOT LIMITED TO, DIRECT, INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES,
-#  ARISING OUT OF, RESULTING FROM, OR IN ANY WAY CONNECTED WITH THIS SOFTWARE,
-#  WHETHER OR NOT BASED UPON WARRANTY, CONTRACT, TORT, OR OTHERWISE, WHETHER
-#  OR NOT INJURY WAS SUSTAINED BY PERSONS OR PROPERTY OR OTHERWISE, AND
-#  WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT OF THE RESULTS OF,
-#  OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
-#
-"""
+"""Build Nexus records from metadata and datasets.
+
 Builds NexusLIMS records.
 
 Attributes
@@ -34,9 +8,9 @@ XSD_PATH
     A string containing the path to the Nexus Experiment schema file,
     which is used to validate XML records built by this module
 """
+
 import argparse
 import logging
-import os
 import shutil
 import sys
 from datetime import datetime as dt
@@ -45,16 +19,17 @@ from importlib import import_module, util
 from io import BytesIO
 from pathlib import Path
 from timeit import default_timer
-from typing import List, Optional
+from typing import List
 from uuid import uuid4
 
 from lxml import etree
 
 from nexusLIMS import version
 from nexusLIMS.cdcs import upload_record_files
+from nexusLIMS.config import settings
 from nexusLIMS.db.session_handler import Session, db_query, get_sessions_to_build
 from nexusLIMS.extractors import extension_reader_map as ext_map
-from nexusLIMS.harvesters import nemo, sharepoint_calendar
+from nexusLIMS.harvesters import nemo
 from nexusLIMS.harvesters.nemo import utils as nemo_utils
 from nexusLIMS.harvesters.reservation_event import ReservationEvent
 from nexusLIMS.schemas import activity
@@ -67,12 +42,12 @@ from nexusLIMS.utils import (
 )
 
 logger = logging.getLogger(__name__)
-XSD_PATH: str = Path(activity.__file__).parent / "nexus-experiment.xsd"
+XSD_PATH: Path = Path(activity.__file__).parent / "nexus-experiment.xsd"
 
 
 def build_record(
     session: Session,
-    sample_id: Optional[str] = None,
+    sample_id: str | None = None,
     *,
     generate_previews: bool = True,
 ) -> str:
@@ -161,7 +136,7 @@ def get_reservation_event(session: Session) -> ReservationEvent:
     ``res_event_from_session`` method from the harvester specified in the
     instrument database. This allows for one consistent function name to call
     a different method depending on which harvester is specified for each
-    instrument (currently just NEMO or Sharepoint).
+    instrument (currently just NEMO).
 
     Parameters
     ----------
@@ -195,9 +170,7 @@ def get_reservation_event(session: Session) -> ReservationEvent:
         "nexusLIMS.harvesters",
     )
     # for PyCharm typing, explicitly specify what modules may be in `harvester`
-    # harvester: Union[nemo, sharepoint_calendar]  # noqa: ERA001
-    # DONE: check if that method exists for the given harvester and raise
-    #  NotImplementedError if not
+    # harvester: Union[nemo]  # noqa: ERA001
     if not hasattr(harvester, "res_event_from_session"):
         msg = (
             f"res_event_from_session has not been implemented for {harvester}, which "
@@ -244,8 +217,7 @@ def build_acq_activities(instrument, dt_from, dt_to, generate_previews):
     )
 
     start_timer = default_timer()
-    path = Path(os.environ["mmfnexus_path"]) / instrument.filestore_path
-
+    path = Path(settings.NX_INSTRUMENT_DATA_PATH) / instrument.filestore_path
     # find the files to be included (list of Paths)
     files = get_files(path, dt_from, dt_to)
 
@@ -267,7 +239,7 @@ def build_acq_activities(instrument, dt_from, dt_to, generate_previews):
     # the loop below easier to process
     aa_bounds.append(files[-1].stat().st_mtime)
 
-    activities: List[Optional[AcquisitionActivity]] = [None] * len(aa_bounds)
+    activities: List[AcquisitionActivity | None] = [None] * len(aa_bounds)
 
     i = 0
     aa_idx = 0
@@ -290,7 +262,7 @@ def build_acq_activities(instrument, dt_from, dt_to, generate_previews):
                 "Adding file %i/%i %s to activity %i",
                 i,
                 len(files),
-                str(f).replace(os.environ["mmfnexus_path"], "").strip("/"),
+                str(f).replace(str(settings.NX_INSTRUMENT_DATA_PATH), "").strip("/"),
                 aa_idx,
             )
             activities[aa_idx].add_file(fname=f, generate_preview=generate_previews)
@@ -345,11 +317,11 @@ def get_files(
     """
     logger.info("Starting new file-finding in %s", path)
 
-    # read file finding strategy from environment and set to default of exclusive
-    strategy = os.environ.get("NexusLIMS_file_strategy", default="exclusive").lower()
+    # read file finding strategy from settings
+    strategy = settings.NX_FILE_STRATEGY.lower()
     if strategy not in ["inclusive", "exclusive"]:
         logger.warning(
-            'File finding strategy (env variable "NexusLIMS_file_strategy") had '
+            'File finding strategy (setting "NX_FILE_STRATEGY") had '
             'an unexpected value: "%s". Setting value to "exclusive".',
             strategy,
         )
@@ -373,7 +345,7 @@ def get_files(
 
 def dump_record(
     session: Session,
-    filename: Optional[Path] = None,
+    filename: Path | None = None,
     *,
     generate_previews: bool = True,
 ) -> Path:
@@ -431,9 +403,9 @@ def validate_record(xml_filename):
     validates : bool
         Whether the record validates against the Nexus schema
     """
-    xsd_doc = etree.parse(XSD_PATH)  # noqa: S320
+    xsd_doc = etree.parse(XSD_PATH)
     xml_schema = etree.XMLSchema(xsd_doc)
-    xml_doc = etree.parse(xml_filename)  # noqa: S320
+    xml_doc = etree.parse(xml_filename)
 
     return xml_schema.validate(xml_doc)
 
@@ -472,7 +444,9 @@ def build_new_session_records() -> List[Path]:
             if isinstance(exception, FileNotFoundError):
                 # if no files were found for this session log, mark it as so in
                 # the database
-                path = Path(os.environ["mmfnexus_path"]) / s.instrument.filestore_path
+                path = (
+                    Path(settings.NX_INSTRUMENT_DATA_PATH) / s.instrument.filestore_path
+                )
                 logger.warning(
                     "No files found in %s between %s and %s",
                     path,
@@ -530,20 +504,16 @@ def _record_validation_flow(record_text, s, xml_files) -> List[Path]:
     if validate_record(BytesIO(bytes(record_text, "UTF-8"))):
         logger.info("Validated newly generated record")
         # generate filename for saved record and make sure path exists
-        # DONE: fix this for NEMO records since session_identifier is
-        #  a URL and it doesn't work right
         if s.instrument.harvester == "nemo":
             # for NEMO session_identifier is a URL of usage_event
             unique_suffix = f"{nemo_utils.id_from_url(s.session_identifier)}"
         else:  # pragma: no cover
             # assume session_identifier is a UUID
-            unique_suffix = f'{s.session_identifier.split("-")[0]}'
+            unique_suffix = f"{s.session_identifier.split('-')[0]}"
         basename = (
-            f'{s.dt_from.strftime("%Y-%m-%d")}_'
-            f"{s.instrument.name}_"
-            f"{unique_suffix}.xml"
+            f"{s.dt_from.strftime('%Y-%m-%d')}_{s.instrument.name}_{unique_suffix}.xml"
         )
-        filename = Path(os.environ["nexusLIMS_path"]).parent / "records" / basename
+        filename = settings.records_dir_path / basename
         filename.parent.mkdir(parents=True, exist_ok=True)
         # write the record to disk and append to list of files generated
         with filename.open(mode="w", encoding="utf-8") as f:
@@ -563,8 +533,8 @@ def _record_validation_flow(record_text, s, xml_files) -> List[Path]:
 def process_new_records(
     *,
     dry_run: bool = False,
-    dt_from: Optional[dt] = None,
-    dt_to: Optional[dt] = None,
+    dt_from: dt | None = None,
+    dt_to: dt | None = None,
 ):
     """
     Process new records (this is the main entrypoint to the record builder).
@@ -582,13 +552,11 @@ def process_new_records(
     dt_from
         The point in time after which sessions will be fetched. If ``None``,
         no date filtering will be performed. This parameter currently only
-        has an effect for the NEMO harvester. All SharePoint events will always
-        be fetched.
+        has an effect for the NEMO harvester.
     dt_to
         The point in time before which sessions will be fetched. If ``None``,
         no date filtering will be performed. This parameter currently only
-        has an effect for the NEMO harvester. All SharePoint events will always
-        be fetched.
+        has an effect for the NEMO harvester.
     """
     if dry_run:
         logger.info("!!DRY RUN!! Only finding files, not building records")
@@ -607,10 +575,6 @@ def process_new_records(
             # at this point, sessions can be from any type of harvester
             logger.info("")
             logger.info("")
-            # DONE: generalize this from just sharepoint to any harvester
-            #       (prob. new function that takes session and determines
-            #       where it came from and then gets the matching reservation
-            #       event)
             get_reservation_event(s)
             dry_run_file_find(s)
     else:
@@ -623,7 +587,7 @@ def process_new_records(
         else:
             files_uploaded, _ = upload_record_files(xml_files)
             for f in files_uploaded:
-                uploaded_dir = Path(f).parent / "uploaded"
+                uploaded_dir = settings.records_dir_path / "uploaded"
                 Path(uploaded_dir).mkdir(parents=True, exist_ok=True)
 
                 shutil.copy2(f, uploaded_dir)
@@ -636,31 +600,6 @@ def process_new_records(
                     files_not_uploaded,
                 )
     return
-
-
-def dry_run_get_sharepoint_reservation_event(
-    s: Session,
-) -> ReservationEvent:  # pragma: no cover
-    """
-    Get the calendar event that *would* be used based off the supplied session.
-
-    Only implemented for the Sharepoint harvester.
-
-    Parameters
-    ----------
-    s
-        A session read from the database
-
-    Returns
-    -------
-    res_event : ~nexusLIMS.harvesters.reservation_event.ReservationEvent
-        A list of strings containing the files that would be included for the
-        record of this session (if it were not a dry run)
-    """
-    xml = sharepoint_calendar.fetch_xml(s.instrument, s.dt_from, s.dt_to)
-    res_event = sharepoint_calendar.res_event_from_xml(xml)
-    logger.info(res_event)
-    return res_event
 
 
 def dry_run_file_find(s: Session) -> List[Path]:
@@ -678,7 +617,7 @@ def dry_run_file_find(s: Session) -> List[Path]:
         A list of Paths containing the files that would be included for the
         record of this session (if it were not a dry run)
     """
-    path = Path(os.environ["mmfnexus_path"]) / s.instrument.filestore_path
+    path = Path(settings.NX_INSTRUMENT_DATA_PATH) / s.instrument.filestore_path
     logger.info(
         "Searching for files for %s in %s between %s and %s",
         s.instrument.name,

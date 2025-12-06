@@ -1,30 +1,3 @@
-#  NIST Public License - 2019
-#
-#  This software was developed by employees of the National Institute of
-#  Standards and Technology (NIST), an agency of the Federal Government
-#  and is being made available as a public service. Pursuant to title 17
-#  United States Code Section 105, works of NIST employees are not subject
-#  to copyright protection in the United States.  This software may be
-#  subject to foreign copyright.  Permission in the United States and in
-#  foreign countries, to the extent that NIST may hold copyright, to use,
-#  copy, modify, create derivative works, and distribute this software and
-#  its documentation without fee is hereby granted on a non-exclusive basis,
-#  provided that this notice and disclaimer of warranty appears in all copies.
-#
-#  THE SOFTWARE IS PROVIDED 'AS IS' WITHOUT ANY WARRANTY OF ANY KIND,
-#  EITHER EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED
-#  TO, ANY WARRANTY THAT THE SOFTWARE WILL CONFORM TO SPECIFICATIONS, ANY
-#  IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
-#  AND FREEDOM FROM INFRINGEMENT, AND ANY WARRANTY THAT THE DOCUMENTATION
-#  WILL CONFORM TO THE SOFTWARE, OR ANY WARRANTY THAT THE SOFTWARE WILL BE
-#  ERROR FREE.  IN NO EVENT SHALL NIST BE LIABLE FOR ANY DAMAGES, INCLUDING,
-#  BUT NOT LIMITED TO, DIRECT, INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES,
-#  ARISING OUT OF, RESULTING FROM, OR IN ANY WAY CONNECTED WITH THIS SOFTWARE,
-#  WHETHER OR NOT BASED UPON WARRANTY, CONTRACT, TORT, OR OTHERWISE, WHETHER
-#  OR NOT INJURY WAS SUSTAINED BY PERSONS OR PROPERTY OR OTHERWISE, AND
-#  WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT OF THE RESULTS OF,
-#  OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
-#
 """The NexusLIMS back-end software.
 
 This module contains the software required to monitor a database for sessions
@@ -53,7 +26,7 @@ See the ``.env.example`` file for more documentation and examples.
 
 .. _NexusLIMS-file-strategy:
 
-`NexusLIMS_file_strategy`
+`NX_FILE_STRATEGY`
     Defines the strategy used to find files associated with experimental records.
     A value of ``exclusive`` will `only` add files for which NexusLIMS knows how
     to generate preview images and extract metadata.  A value of ``inclusive``
@@ -62,7 +35,7 @@ See the ``.env.example`` file for more documentation and examples.
 
 .. _NexusLIMS-ignore-patterns:
 
-`NexusLIMS_ignore_patterns`
+`NX_IGNORE_PATTERNS`
     The patterns defined in this variable (which should be provided as a
     JSON-formatted string) will be ignored when finding files. A default value
     is provided in the ``.env.example`` file that should work for most users,
@@ -70,26 +43,26 @@ See the ``.env.example`` file for more documentation and examples.
 
 .. _nexusLIMS-user:
 
-`nexusLIMS_user`
-    The username used to authenticate to sharepoint calendar resources and CDCS
+`NX_CDCS_USER`
+    The username used to authenticate to CDCS API
 
 .. _nexusLIMS-pass:
 
-`nexusLIMS_pass`
-    The password used to authenticate to sharepoint calendar resources and CDCS
+`NX_CDCS_PASS`
+    The password used to authenticate to CDCS API
 
-.. _mmfnexus-path:
+.. _nexuslims-instrument-data-path:
 
-`mmfnexus_path`
+`NX_INSTRUMENT_DATA_PATH`
     The path (should be already mounted) to the root folder containing data
     from the Electron Microscopy Nexus. This folder is accessible read-only,
     and it is where data is written to by instruments in the Electron
     Microscopy Nexus. The file paths for specific instruments (specified in
     the NexusLIMS database) are relative to this root.
 
-.. _nexusLIMS-path:
+.. _nexuslims-data-path:
 
-`nexusLIMS_path`
+`NX_DATA_PATH`
     The root path used by NexusLIMS for various needs. This folder is used to
     store the NexusLIMS database, generated records, individual file metadata
     dumps and preview images, and anything else that is needed by the back-end
@@ -97,10 +70,23 @@ See the ``.env.example`` file for more documentation and examples.
 
 .. _nexusLIMS-db-path:
 
-`nexusLIMS_db_path`
+`NX_DB_PATH`
     The direct path to the NexusLIMS SQLite database file that contains
     information about the instruments in the Nexus Facility, as well as logs
     for the sessions created by users using the Session Logger Application.
+
+.. _nexusLIMS-log-path:
+
+`NX_LOG_PATH`
+    Directory for application logs. If not specified, defaults to
+    ``${NX_DATA_PATH}/logs/``. Logs are organized by date: ``logs/YYYY/MM/DD/``
+
+.. _nexusLIMS-records-path:
+
+`NX_RECORDS_PATH`
+    Directory for generated XML records. If not specified, defaults to
+    ``${NX_DATA_PATH}/records/``. Successfully uploaded records are moved to
+    an 'uploaded' subdirectory upon upload.
 
 .. _nemo-address:
 
@@ -108,12 +94,12 @@ See the ``.env.example`` file for more documentation and examples.
     The path to a NEMO instance's API endpoint. Should be something like
     ``https://www.nemo.com/api/`` (make sure to include the trailing slash).
     The value ``_X`` can be replaced with any value (such as
-    ``NEMO_address_1``). NexusLIMS supports having multiple NEMO reservation
+    ``NX_NEMO_ADDRESS_1``). NexusLIMS supports having multiple NEMO reservation
     systems enabled at once (useful if your instruments are split over a few
     different management systems). To enable this behavior, create multiple
     pairs of environment variables for each instance, where the suffix ``_X``
-    changes for each pair (`e.g.` you could have ``NEMO_address_1`` paired with
-    ``NEMO_token_1``, ``NEMO_address_2`` paired with ``NEMO_token_2``, etc.).
+    changes for each pair (`e.g.` you could have ``NX_NEMO_ADDRESS_1`` paired with
+    ``NX_NEMO_TOKEN_1``, ``NX_NEMO_ADDRESS_2`` paired with ``NX_NEMO_TOKEN_2``, etc.).
 
 .. _nemo-token:
 
@@ -143,7 +129,7 @@ See the ``.env.example`` file for more documentation and examples.
 
 .. _nemo-tz:
 
-`NEMO_tz_1`
+`NX_NEMO_TZ_1`
     Also optional; If the "`tz`" option is provided, the datetime
     strings received from the NEMO API will be coerced into the given timezone.
     The timezone should be specified using the IANA "tz database" name (see
@@ -154,29 +140,43 @@ See the ``.env.example`` file for more documentation and examples.
     times without any timezone information. Providing it helps properly map
     file creation times to usage event times.
 """
+
 # pylint: disable=invalid-name
 
 import logging
 
-from dotenv import load_dotenv
+# Defer heavy imports to reduce CLI startup time
+# These will be imported on-demand when accessing the attributes
+from .version import __version__
 
-from .version import __version__  # noqa: F401
 
-# load environment variables from a .env file if present
-load_dotenv()
+def __getattr__(name):
+    """Lazy import submodules to speed up CLI startup."""
+    if name in ("builder", "db", "extractors", "instruments", "utils"):
+        import importlib  # noqa: PLC0415
+
+        module = importlib.import_module(f".{name}", __package__)
+        globals()[name] = module
+        return module
+    msg = f"module {__name__!r} has no attribute {name!r}"
+    raise AttributeError(msg)
+
+
+def __dir__():
+    """Support for dir() to show lazy-loaded attributes."""
+    return ["__version__", "builder", "db", "extractors", "instruments", "utils"]
 
 
 def _filter_hyperspy_messages(record):  # pragma: no cover
     """Filter HyperSpy API import warnings within the NexusLIMS codebase."""
     # this only triggers if the hs.preferences.GUIs.warn_if_guis_are_missing
     # preference is set to True
-    if record.msg.startswith("The ipywidgets GUI") or record.msg.startswith(
-        "The traitsui GUI",
-    ):
-        return False
-    # unless we come across another HyperSpy error, this line won't be
-    # reached, so exclude from coverage
-    return True
+    return not (
+        record.msg.startswith("The ipywidgets GUI")
+        or record.msg.startswith(
+            "The traitsui GUI",
+        )
+    )
 
 
 # connect the filter function to the HyperSpy logger
@@ -189,3 +189,5 @@ logging.getLogger("PIL.PngImagePlugin").setLevel(logging.WARNING)
 
 # set log message format
 logging.basicConfig(format="%(asctime)s %(name)s %(levelname)s: %(message)s")
+
+__all__ = ["__version__", "builder", "db", "extractors", "instruments", "utils"]

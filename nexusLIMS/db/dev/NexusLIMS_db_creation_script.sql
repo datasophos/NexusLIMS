@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS "session_log" (
 );
 
 -- The system administrator should add rows to the "instruments" table representing each instrument that is part of the
--- NexusLIMS system; the "filestore_path" should be a relative path underneath the path specified in the "mmfnexus_path" environment variable
+-- NexusLIMS system; the "filestore_path" should be a relative path underneath the path specified in the "NX_INSTRUMENT_DATA_PATH" environment variable
 DROP TABLE IF EXISTS "instruments";
 CREATE TABLE IF NOT EXISTS "instruments" (
 	"instrument_pid"	VARCHAR(100) NOT NULL,
@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS "instruments" (
 	"computer_name"	TEXT,
 	"computer_ip"	VARCHAR(15),
 	"computer_mount"	TEXT,
-	"harvester"	TEXT, -- currently only "nemo" or "sharepoint" supported
+	"harvester"	TEXT DEFAULT 'nemo', -- currently only "nemo" supported
 	"timezone"	TEXT NOT NULL DEFAULT 'America/New_York',
 	CONSTRAINT "instrument_pid_UNIQUE" UNIQUE("instrument_pid"),
 	PRIMARY KEY("instrument_pid"),

@@ -1,61 +1,30 @@
 # pylint: disable=missing-function-docstring,too-many-public-methods
-# ruff: noqa: D102
+# ruff: noqa: D102, ARG001, ARG002
 
-#  NIST Public License - 2020
-#
-#  This software was developed by employees of the National Institute of
-#  Standards and Technology (NIST), an agency of the Federal Government
-#  and is being made available as a public service. Pursuant to title 17
-#  United States Code Section 105, works of NIST employees are not subject
-#  to copyright protection in the United States.  This software may be
-#  subject to foreign copyright.  Permission in the United States and in
-#  foreign countries, to the extent that NIST may hold copyright, to use,
-#  copy, modify, create derivative works, and distribute this software and
-#  its documentation without fee is hereby granted on a non-exclusive basis,
-#  provided that this notice and disclaimer of warranty appears in all copies.
-#
-#  THE SOFTWARE IS PROVIDED 'AS IS' WITHOUT ANY WARRANTY OF ANY KIND,
-#  EITHER EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED
-#  TO, ANY WARRANTY THAT THE SOFTWARE WILL CONFORM TO SPECIFICATIONS, ANY
-#  IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
-#  AND FREEDOM FROM INFRINGEMENT, AND ANY WARRANTY THAT THE DOCUMENTATION
-#  WILL CONFORM TO THE SOFTWARE, OR ANY WARRANTY THAT THE SOFTWARE WILL BE
-#  ERROR FREE.  IN NO EVENT SHALL NIST BE LIABLE FOR ANY DAMAGES, INCLUDING,
-#  BUT NOT LIMITED TO, DIRECT, INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES,
-#  ARISING OUT OF, RESULTING FROM, OR IN ANY WAY CONNECTED WITH THIS SOFTWARE,
-#  WHETHER OR NOT BASED UPON WARRANTY, CONTRACT, TORT, OR OTHERWISE, WHETHER
-#  OR NOT INJURY WAS SUSTAINED BY PERSONS OR PROPERTY OR OTHERWISE, AND
-#  WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT OF THE RESULTS OF,
-#  OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
-#
 """Tests the various utilities shared among NexusLIMS modules."""
 
 import gzip
 import logging
-import os
 import shutil
 from datetime import datetime
 from pathlib import Path
 from subprocess import CalledProcessError
+from unittest.mock import Mock
 
 import pytest
+import responses
 from requests.exceptions import RetryError
 
 from nexusLIMS import utils
 from nexusLIMS.extractors import extension_reader_map as ext_map
 from nexusLIMS.extractors import quanta_tif
 from nexusLIMS.utils import (
-    AuthenticationError,
     _zero_bytes,
-    current_system_tz,
     find_dirs_by_mtime,
-    find_files_by_mtime,
-    get_auth,
     get_nested_dict_value,
     gnu_find_files_by_mtime,
-    has_delay_passed,
     nexus_req,
-    replace_mmf_path,
+    replace_instrument_data_path,
     setup_loggers,
     try_getting_dict_value,
 )
@@ -68,10 +37,17 @@ class TestUtils:
 
     CREDENTIAL_FILE_ABS = Path(utils.__file__).parent / "credentials.ini.example"
     CREDENTIAL_FILE_REL = Path("credentials.ini.example")
-    TITAN_FILE_COUNT = 37
-    TITAN_ALL_FILE_COUNT = 41
-    JEOL_DIRS_COUNT = 3
-    JEOL_FILE_COUNT = 55
+    TITAN_FILE_COUNT = 10  # Files with known extensions (.dm3, .ser)
+    TITAN_ALL_FILE_COUNT = 16  # All files (.db, .jpg, .jpeg, .raw, .txt, .emi)
+    JEOL_DIRS_COUNT = 7  # All dirs with correct timestamp
+    JEOL_FILE_COUNT = 8  # Total .dm3 files across all JEOL_TEM subdirs
+
+    @property
+    def instr_data_path(self):
+        """Get the NX_INSTRUMENT_DATA_PATH as a Path object."""
+        from nexusLIMS.config import settings
+
+        return Path(settings.NX_INSTRUMENT_DATA_PATH)
 
     def test_get_nested_dict_value(self):
         nest = {"level1": {"level2.1": {"level3.1": "value"}}}
@@ -92,24 +68,24 @@ class TestUtils:
             "level3.1": "value",
         }
 
-    def test_find_dirs_by_mtime(self):
-        path = Path(os.environ["mmfnexus_path"]) / "JEOL3010"
+    def test_find_dirs_by_mtime(self, test_record_files):
+        path = self.instr_data_path / "JEOL_TEM"
         dt_from = datetime.fromisoformat("2019-07-24T11:00:00.000-04:00")
         dt_to = datetime.fromisoformat("2019-07-24T16:00:00.000-04:00")
         dirs = find_dirs_by_mtime(path, dt_from, dt_to, followlinks=True)
 
         assert len(dirs) == self.JEOL_DIRS_COUNT
         for dir_ in [
-            "***REMOVED***/20190724/M1_DC_Beam",
-            "***REMOVED***/20190724/M2_DC_Beam_Dose_1",
-            "***REMOVED***/20190724/M3_DC_Beam_Dose_2",
+            "researcher_b/project_beta/20190724/beam_study_1",
+            "researcher_b/project_beta/20190724/beam_study_2",
+            "researcher_b/project_beta/20190724/beam_study_3",
         ]:
             # assert that d is a substring of at least one of the found dirs
             assert any(dir_ in x for x in dirs)
 
-    def test_gnu_find(self):
+    def test_gnu_find(self, test_record_files):
         files = gnu_find_files_by_mtime(
-            Path(os.environ["mmfnexus_path"]) / "Titan",
+            self.instr_data_path / "Titan_TEM",
             dt_from=datetime.fromisoformat("2018-11-13T13:00:00.000-05:00"),
             dt_to=datetime.fromisoformat("2018-11-13T16:00:00.000-05:00"),
             extensions=ext_map.keys(),
@@ -119,7 +95,7 @@ class TestUtils:
 
         # Test with trailing slash as well
         files = gnu_find_files_by_mtime(
-            Path(os.environ["mmfnexus_path"]) / "Titan",
+            self.instr_data_path / "Titan_TEM",
             dt_from=datetime.fromisoformat("2018-11-13T13:00:00.000-05:00"),
             dt_to=datetime.fromisoformat("2018-11-13T16:00:00.000-05:00"),
             extensions=ext_map.keys(),
@@ -127,51 +103,27 @@ class TestUtils:
 
         assert len(files) == self.TITAN_FILE_COUNT
 
-    def test_gnu_find_no_extensions(self):
-        # assumption is there are the following additional files
-        # in the same 2018-11-13 Titan folder:
-        #     2018-11-13 14:55:35.329069000 -0500  db_file_to_test_ignore_patterns.db
-        #     2018-11-13 14:57:35.329069000 -0500  jpg_file_should_not_be_ignored.jpeg
-        #     2018-11-13 14:56:35.329069000 -0500  jpg_file_should_not_be_ignored.jpg
-        #     2018-11-13 14:58:35.329069000 -0500  raw_file_should_not_be_ignored.raw
-        #     2018-11-13 14:59:35.329069000 -0500  txt_file_should_not_be_ignored.txt
+    def test_gnu_find_followlinks_false(self, test_record_files):
+        """Test gnu_find_files_by_mtime with followlinks=False."""
+        # Test that the function works correctly when followlinks=False
+        # This branch uses simple path construction instead of _find_symlink_dirs
         files = gnu_find_files_by_mtime(
-            Path(os.environ["mmfnexus_path"]) / "Titan",
+            self.instr_data_path / "Titan_TEM",
             dt_from=datetime.fromisoformat("2018-11-13T13:00:00.000-05:00"),
             dt_to=datetime.fromisoformat("2018-11-13T16:00:00.000-05:00"),
-            extensions=None,
-        )
-
-        assert len(files) == self.TITAN_ALL_FILE_COUNT
-
-    @pytest.mark.skip(reason="method deprecated in v1.2.0")
-    def test_gnu_and_pure_find_together(self):  # pragma: no cover
-        # both file-finding methods should return the same list (when sorted
-        # by mtime) for the same path and date range
-        path = Path(os.environ["mmfnexus_path"]) / "JEOL3010"
-        dt_from = datetime.fromisoformat("2019-07-24T11:00:00.000")
-        dt_to = datetime.fromisoformat("2019-07-24T16:00:00.000")
-        gnu_files = gnu_find_files_by_mtime(
-            path,
-            dt_from=dt_from,
-            dt_to=dt_to,
             extensions=ext_map.keys(),
+            followlinks=False,
         )
-        find_files = find_files_by_mtime(path, dt_from=dt_from, dt_to=dt_to)
 
-        gnu_files = sorted(gnu_files)
-        find_files = sorted(find_files)
-
-        assert len(gnu_files) == self.JEOL_FILE_COUNT
-        assert len(find_files) == self.JEOL_FILE_COUNT
-        assert gnu_files == find_files
+        # Should still find the same files as the test above
+        assert len(files) == self.TITAN_FILE_COUNT
 
     def test_gnu_find_not_on_path(self, monkeypatch):
         monkeypatch.setenv("PATH", ".")
 
         with pytest.raises(RuntimeError) as exception:
             _ = gnu_find_files_by_mtime(
-                Path(os.environ["mmfnexus_path"]) / "643Titan",
+                self.instr_data_path / "643Titan",
                 dt_from=datetime.fromisoformat("2019-11-06T15:00:00.000"),
                 dt_to=datetime.fromisoformat("2019-11-06T18:00:00.000"),
                 extensions=ext_map.keys(),
@@ -188,15 +140,6 @@ class TestUtils:
                 extensions=ext_map.keys(),
             )
         assert "..............." in str(exception.value)
-
-    def test_gnu_find_with_trailing_slash(self):
-        files = gnu_find_files_by_mtime(
-            Path("Titan/"),
-            dt_from=datetime.fromisoformat("2018-11-13T13:00:00.000-05:00"),
-            dt_to=datetime.fromisoformat("2018-11-13T16:00:00.000-05:00"),
-            extensions=ext_map.keys(),
-        )
-        assert len(files) == self.TITAN_FILE_COUNT
 
     def test_zero_bytes(self, quanta_test_file):
         test_file = quanta_test_file[0]
@@ -227,15 +170,14 @@ class TestUtils:
 
     def test_zero_bytes_ser_processing(self, fei_ser_files_function_scope):
         test_file = get_full_file_path(
-            "***REMOVED***_12_no_accompanying_emi_dataZeroed_1.ser",
+            "Titan_TEM_12_no_accompanying_emi_dataZeroed_1.ser",
             fei_ser_files_function_scope,
         )
         # zero a selection of bytes (doesn't matter which ones)
         new_fname = _zero_bytes(test_file, 0, 973385)
         expected = (
-            Path(__file__).parent
-            / "files"
-            / "***REMOVED***_12_no_accompanying_emi_dataZeroed_dataZeroed_1.ser"
+            self.instr_data_path
+            / "Titan_TEM_12_no_accompanying_emi_dataZeroed_dataZeroed_1.ser"
         )
         assert new_fname == expected
         new_fname.unlink()
@@ -252,85 +194,325 @@ class TestUtils:
         with pytest.raises(
             ValueError,
             match=(
-                "Both `basic_auth` and `token_auth` were provided. Only one can "
-                "be used at a time"
+                r"Both `basic_auth` and `token_auth` were provided\. Only one can "
+                r"be used at a time"
             ),
         ):
             nexus_req("http://example.com", "GET", basic_auth=True, token_auth="test")
 
+    @responses.activate
     def test_header_addition_nexus_req(self):
+        from nexusLIMS.config import settings
+
+        # Mock the NEMO API response
+        # The test calls nexus_req with just the base URL, so match that exactly
+        nemo_address = str(next(iter(settings.nemo_harvesters().values())).address)
+        nemo_token = next(iter(settings.nemo_harvesters().values())).token
+
+        responses.add(
+            responses.GET,
+            nemo_address,
+            json={"users": []},
+            status=200,
+        )
+
         response = nexus_req(
-            os.environ["NEMO_address_1"],
+            nemo_address,
             "GET",
-            token_auth=os.environ["NEMO_token_1"],
+            token_auth=nemo_token,
             headers={"test_header": "test_header_val"},
         )
         assert "test_header" in response.request.headers
         assert response.request.headers["test_header"] == "test_header_val"
         assert "users" in response.json()
 
-    def test_has_delay_passed_no_val(self, monkeypatch, caplog):
-        monkeypatch.setenv("nexusLIMS_file_delay_days", "bad_float")
-        assert not has_delay_passed(datetime.now(tz=current_system_tz()))
-        assert (
-            "The environment variable value of nexusLIMS_file_delay_days" in caplog.text
-        )
+    # Note: test_has_delay_passed_no_val removed - pydantic now validates
+    # NX_FILE_DELAY_DAYS at settings initialization time, not at function call time
 
-    @pytest.fixture()
-    def _change_paths_in_env(self, monkeypatch):
-        monkeypatch.setenv("mmfnexus_path", "/tmp/mmf_test_path")
-        monkeypatch.setenv("nexusLIMS_path", "/tmp/nexuslims_test_path")
+    def test_replace_instrument_data_path(self):
+        """Test replace_instrument_data_path using actual test settings paths."""
+        from nexusLIMS.config import settings
 
-    @pytest.mark.usefixtures("_change_paths_in_env")
-    def test_replace_mmf_path(self):
-        new_path = replace_mmf_path(
-            Path("/tmp/mmf_test_path/path/to/file.txt"),
-            suffix=".json",
-        )
-        assert new_path == Path("/tmp/nexuslims_test_path/path/to/file.txt.json")
+        # Use actual settings paths from test environment
+        instr_path = Path(settings.NX_INSTRUMENT_DATA_PATH)
+        data_path = Path(settings.NX_DATA_PATH)
 
-    @pytest.mark.usefixtures("_change_paths_in_env")
-    def test_replace_mmf_path_no_suffix(self):
-        new_path = replace_mmf_path(
-            Path("/tmp/mmf_test_path/path/to/file.txt"),
-            suffix="",
-        )
-        assert new_path == Path("/tmp/nexuslims_test_path/path/to/file.txt")
+        # Create a test path under the instrument data path
+        test_file = instr_path / "path" / "to" / "file.txt"
+        expected = data_path / "path" / "to" / "file.txt.json"
 
-    @pytest.mark.usefixtures("_change_paths_in_env")
-    def test_replace_mmf_path_not_in_mmfnexus(self, caplog):
-        new_path = replace_mmf_path(
-            Path("/tmp/other/path/entirely/test.txt"),
-            suffix=".json",
-        )
+        new_path = replace_instrument_data_path(test_file, suffix=".json")
+        assert new_path == expected
+
+    def test_replace_instrument_data_path_no_suffix(self):
+        """Test replace_instrument_data_path without suffix using test paths."""
+        from nexusLIMS.config import settings
+
+        instr_path = Path(settings.NX_INSTRUMENT_DATA_PATH)
+        data_path = Path(settings.NX_DATA_PATH)
+
+        test_file = instr_path / "path" / "to" / "file.txt"
+        expected = data_path / "path" / "to" / "file.txt"
+
+        new_path = replace_instrument_data_path(test_file, suffix="")
+        assert new_path == expected
+
+    def test_replace_instrument_data_path_not_in_instr_data_path(self, caplog):
+        """Test replace_instrument_data_path with path not under instr data path."""
+        # Path that's not under NX_INSTRUMENT_DATA_PATH
+        other_path = Path("/tmp/other/path/entirely/test.txt")
+        new_path = replace_instrument_data_path(other_path, suffix=".json")
+
+        # Should append suffix but log warning
         assert new_path == Path("/tmp/other/path/entirely/test.txt.json")
-        assert (
-            "/tmp/other/path/entirely/test.txt is not a sub-path of /tmp/mmf_test_path"
-            in caplog.text
+        assert f"{other_path} is not a sub-path of" in caplog.text
+
+    # Note: File-based credential tests removed - get_auth() now only uses
+    # settings (NX_CDCS_USER and NX_CDCS_PASS environment variables)
+
+    @responses.activate
+    def test_request_retry(self):
+        # Mock the service to always return 503
+        responses.add(
+            responses.GET,
+            "https://httpstat.us/503",
+            json={"code": 503, "description": "Service Unavailable"},
+            status=503,
         )
 
-    def test_absolute_path_to_credentials(self, monkeypatch):
-        with monkeypatch.context() as m_patch:
-            # remove environment variable so we get into file processing
-            m_patch.delenv("nexusLIMS_user")
-            _ = get_auth(self.CREDENTIAL_FILE_ABS)
-
-    def test_relative_path_to_credentials(self, monkeypatch):
-        os.chdir(Path(__file__).parent)
-        with monkeypatch.context() as m_patch:
-            # remove environment variable so we get into file processing
-            m_patch.delenv("nexusLIMS_user")
-            _ = get_auth(self.CREDENTIAL_FILE_REL)
-
-    def test_bad_path_to_credentials(self, monkeypatch):
-        with monkeypatch.context() as m_patch:
-            # remove environment variable so we get into file processing
-            m_patch.delenv("nexusLIMS_user")
-            cred_file = Path("bogus_credentials.ini")
-            with pytest.raises(AuthenticationError):
-                _ = get_auth(cred_file)
-
-    def test_request_retry(self):
         with pytest.raises(RetryError) as exception:
             _ = nexus_req("https://httpstat.us/503", "GET")
         assert "Max retries exceeded with url" in str(exception)
+
+    def test_get_find_command_not_found(self, monkeypatch):
+        """Test _get_find_command when find is not on PATH."""
+        from nexusLIMS.utils import _get_find_command
+
+        # Mock os.environ to have an empty PATH
+        monkeypatch.setattr("os.environ", {"PATH": ""})
+
+        with pytest.raises(RuntimeError, match="find command was not found"):
+            _get_find_command()
+
+    def test_get_find_command_subprocess_error(self, monkeypatch):
+        """Test _get_find_command when subprocess fails."""
+        import subprocess
+
+        from nexusLIMS.utils import _get_find_command
+
+        # Mock platform to not be Darwin to simplify test
+        monkeypatch.setattr("platform.system", lambda: "Linux")
+
+        # Mock shutil.which to return a path
+        monkeypatch.setattr("shutil.which", lambda _: "/usr/bin/find")
+
+        # Mock subprocess.run to raise SubprocessError
+        def mock_run(*args, **kwargs):
+            msg = "Command failed"
+            raise subprocess.SubprocessError(msg)
+
+        monkeypatch.setattr("subprocess.run", mock_run)
+
+        # Should return "find" as fallback when check fails
+        result = _get_find_command()
+        assert result == "find"
+
+    @pytest.mark.skipif(
+        __import__("platform").system() != "Darwin",
+        reason="Test is specific to macOS/Darwin behavior",
+    )
+    def test_get_find_command_bsd_without_gfind(self, monkeypatch, tmp_path):
+        """Test _get_find_command with BSD find and no gfind available."""
+        from unittest.mock import Mock
+
+        from nexusLIMS.utils import _get_find_command
+
+        # Create a fake find executable
+        find_dir = tmp_path / "bin"
+        find_dir.mkdir()
+        find_cmd = find_dir / "find"
+        find_cmd.write_text("#!/bin/sh\necho 'BSD find'\n")
+        find_cmd.chmod(0o755)
+
+        # Mock os.environ PATH to only include our fake find
+        monkeypatch.setattr("os.environ", {"PATH": str(find_dir)})
+
+        # Mock subprocess to return BSD find version (without GNU findutils)
+        def mock_run(cmd, *args, **kwargs):
+            result = Mock()
+            result.stdout = "BSD find"
+            return result
+
+        monkeypatch.setattr("subprocess.run", mock_run)
+
+        with pytest.raises(RuntimeError, match="GNU find is required"):
+            _get_find_command()
+
+    @pytest.mark.skipif(
+        __import__("platform").system() != "Darwin",
+        reason="Test is specific to macOS/Darwin behavior",
+    )
+    def test_get_find_command_bsd_with_gfind(self, monkeypatch, caplog):
+        """Test _get_find_command with BSD find and gfind available."""
+        from unittest.mock import Mock
+
+        from nexusLIMS.utils import _get_find_command
+
+        # Mock platform to be darwin
+        monkeypatch.setattr("platform.system", lambda: "Darwin")
+
+        # Mock shutil.which to return both find and gfind
+        def mock_which(cmd):
+            if cmd == "find":
+                return "/usr/bin/find"
+            if cmd == "gfind":
+                return "/usr/local/bin/gfind"
+            return None
+
+        monkeypatch.setattr("shutil.which", mock_which)
+
+        # Mock subprocess to return BSD find for 'find' and GNU for 'gfind'
+        def mock_run(cmd, *args, **kwargs):
+            result = Mock()
+            if "gfind" in cmd:
+                result.stdout = "GNU findutils"
+            else:
+                result.stdout = "BSD find"
+            return result
+
+        monkeypatch.setattr("subprocess.run", mock_run)
+
+        with caplog.at_level("INFO"):
+            result = _get_find_command()
+
+        assert result == "gfind"
+        assert "BSD find detected, using gfind" in caplog.text
+
+    def test_get_find_command_non_gnu_warning(self, monkeypatch, caplog):
+        """Test _get_find_command warns for non-GNU find on non-macOS."""
+        from unittest.mock import Mock
+
+        from nexusLIMS.utils import _get_find_command
+
+        # Mock platform to be Linux
+        monkeypatch.setattr("platform.system", lambda: "Linux")
+        monkeypatch.setattr("shutil.which", lambda _: "/usr/bin/find")
+
+        # Mock subprocess to return non-GNU find
+        def mock_run(cmd, *args, **kwargs):
+            result = Mock()
+            result.stdout = "some other find"
+            return result
+
+        monkeypatch.setattr("subprocess.run", mock_run)
+
+        with caplog.at_level("WARNING"):
+            result = _get_find_command()
+
+        assert result == "find"
+        assert "Non-GNU find detected" in caplog.text
+
+    def test_find_symlink_dirs_with_results(self, tmp_path, monkeypatch, caplog):
+        """Test _find_symlink_dirs when symlinks are found."""
+        from nexusLIMS.utils import _find_symlink_dirs
+
+        # Create a test symlink
+        target = tmp_path / "target"
+        target.mkdir()
+        link = tmp_path / "link"
+        link.symlink_to(target)
+
+        # Mock subprocess.run to simulate successful find with symlink results
+        def mock_run(cmd, *args, **kwargs):
+            from unittest.mock import Mock
+
+            result = Mock()
+            result.stdout = str(link).encode() + b"\x00"
+            return result
+
+        monkeypatch.setattr("subprocess.run", mock_run)
+
+        with caplog.at_level("INFO"):
+            result = _find_symlink_dirs("find", str(tmp_path))
+
+        # Should log when paths are found
+        assert "find_path is:" in caplog.text
+        assert len(result) == 1
+        assert str(link) in str(result[0])
+
+    def test_get_auth_missing_credentials(self, monkeypatch):
+        """Test get_auth when credentials are missing."""
+        from nexusLIMS.utils import AuthenticationError, get_auth
+
+        # Mock settings to not have credentials
+        mock_settings = Mock()
+        del mock_settings.NX_CDCS_USER  # Trigger AttributeError
+        monkeypatch.setattr("nexusLIMS.utils.settings", mock_settings)
+
+        with pytest.raises(AuthenticationError, match="No credentials were found"):
+            get_auth()
+
+    def test_get_auth_basic(self, monkeypatch):
+        """Test get_auth with basic=True."""
+        from nexusLIMS.utils import get_auth
+
+        mock_settings = Mock()
+        mock_settings.NX_CDCS_USER = "testuser"
+        mock_settings.NX_CDCS_PASS = "testpass"
+        monkeypatch.setattr("nexusLIMS.utils.settings", mock_settings)
+
+        username, password = get_auth(basic=True)
+
+        assert username == "testuser"
+        assert password == "testpass"
+
+    def test_gnu_find_files_by_mtime_instrument_path(self, tmp_path, monkeypatch):
+        """Test gnu_find_files_by_mtime with instrument-relative path."""
+        from datetime import datetime, timedelta
+        from pathlib import Path
+
+        from nexusLIMS.utils import gnu_find_files_by_mtime
+
+        # Create test directory structure
+        instr_data = tmp_path / "instruments"
+        instr_data.mkdir()
+        test_path = instr_data / "test_instrument"
+        test_path.mkdir()
+        test_file = test_path / "test.txt"
+        test_file.write_text("test")
+
+        mock_settings = Mock()
+        mock_settings.NX_INSTRUMENT_DATA_PATH = instr_data
+        mock_settings.NX_IGNORE_PATTERNS = ["*.mib", "*.db", "*.emi"]
+        monkeypatch.setattr("nexusLIMS.utils.settings", mock_settings)
+
+        # Mock _get_find_command to return a simple command
+        monkeypatch.setattr("nexusLIMS.utils._get_find_command", lambda: "gfind")
+
+        # Mock _find_symlink_dirs to return the test path
+        monkeypatch.setattr(
+            "nexusLIMS.utils._find_symlink_dirs",
+            lambda *_: [test_path],
+        )
+
+        # Mock subprocess.run to simulate find command results
+        def mock_run(cmd, *args, **kwargs):
+            result = Mock()
+            result.stdout = str(test_file).encode() + b"\x00"
+            return result
+
+        monkeypatch.setattr("subprocess.run", mock_run)
+
+        dt_from = datetime.now() - timedelta(days=1)  # noqa: DTZ005
+        dt_to = datetime.now() + timedelta(days=1)  # noqa: DTZ005
+
+        # Should use the instrument path construction
+        files = gnu_find_files_by_mtime(
+            Path("test_instrument"),
+            dt_from,
+            dt_to,
+            extensions=["txt"],
+        )
+
+        assert len(files) == 1
+        assert files[0] == test_file

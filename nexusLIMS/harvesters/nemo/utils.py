@@ -1,11 +1,11 @@
 """Various utility functions used by the NEMO harvester."""
+
 import logging
-import os
-import re
 from datetime import datetime
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Dict, List, Tuple, Union
 from urllib.parse import parse_qs, urljoin, urlparse
 
+from nexusLIMS.config import settings
 from nexusLIMS.db.session_handler import Session
 
 from .connector import NemoConnector
@@ -23,27 +23,31 @@ def get_harvesters_enabled() -> List[NemoConnector]:
         A list of NemoConnector objects representing the NEMO APIs enabled
         via environment settings
     """
-    harvesters_enabled_str: List[str] = list(
-        filter(lambda x: re.search("NEMO_address", x), os.environ.keys()),
-    )
-    harvesters_enabled = [
+    return [
         NemoConnector(
-            base_url=os.getenv(addr),
-            token=os.getenv(addr.replace("address", "token")),
-            strftime_fmt=os.getenv(addr.replace("address", "strftime_fmt")),
-            strptime_fmt=os.getenv(addr.replace("address", "strptime_fmt")),
-            timezone=os.getenv(addr.replace("address", "tz")),
+            base_url=str(config.address),
+            token=config.token,
+            strftime_fmt=(
+                config.strftime_fmt
+                if config.strftime_fmt != "%Y-%m-%dT%H:%M:%S%z"
+                else None
+            ),
+            strptime_fmt=(
+                config.strptime_fmt
+                if config.strptime_fmt != "%Y-%m-%dT%H:%M:%S%z"
+                else None
+            ),
+            timezone=config.tz,
         )
-        for addr in harvesters_enabled_str
+        for config in settings.nemo_harvesters().values()
     ]
-    return harvesters_enabled  # noqa: RET504
 
 
 def add_all_usage_events_to_db(
-    user: Optional[Union[str, int]] = None,
-    dt_from: datetime = None,
-    dt_to: datetime = None,
-    tool_id: Optional[Union[int, List[int]]] = None,
+    user: Union[str, int] | None = None,
+    dt_from: datetime | None = None,
+    dt_to: datetime | None = None,
+    tool_id: Union[int, List[int]] | None = None,
 ):
     """
     Add all usage events to database for enabled NEMO connectors.
@@ -78,10 +82,10 @@ def add_all_usage_events_to_db(
 
 
 def get_usage_events_as_sessions(
-    user: Union[str, int] = None,
-    dt_from: datetime = None,
-    dt_to: datetime = None,
-    tool_id: Optional[Union[int, List[int]]] = None,
+    user: Union[str, int] | None = None,
+    dt_from: datetime | None = None,
+    dt_to: datetime | None = None,
+    tool_id: Union[int, List[int]] | None = None,
 ) -> List[Session]:
     """
     Get all usage events for enabled NEMO connectors as Sessions.
@@ -198,10 +202,10 @@ def get_connector_by_base_url(base_url: str) -> NemoConnector:
 def process_res_question_samples(
     res_dict: Dict,
 ) -> Tuple[
-    Optional[List[Optional[str]]],
-    Optional[List[Optional[str]]],
-    Optional[List[Optional[str]]],
-    Optional[List[Optional[str]]],
+    List[str | None] | None,
+    List[str | None] | None,
+    List[str | None] | None,
+    List[str | None] | None,
 ]:
     """
     Process sample information from reservation questions.
@@ -268,7 +272,7 @@ def process_res_question_samples(
     return sample_details, sample_pid, sample_name, periodic_tables
 
 
-def _get_res_question_value(value: str, res_dict: Dict) -> Optional[Union[str, Dict]]:
+def _get_res_question_value(value: str, res_dict: Dict) -> Union[str, Dict] | None:
     if "question_data" in res_dict and res_dict["question_data"] is not None:
         if value in res_dict["question_data"]:
             return res_dict["question_data"][value].get("user_input", None)
@@ -278,7 +282,7 @@ def _get_res_question_value(value: str, res_dict: Dict) -> Optional[Union[str, D
     return None
 
 
-def id_from_url(url: str) -> Optional[int]:
+def id_from_url(url: str) -> int | None:
     """
     Get the value of the id query parameter stored in URL string.
 
@@ -288,7 +292,7 @@ def id_from_url(url: str) -> Optional[int]:
     ----------
     url
         The URL to parse, such as
-        ``https://nemo.url.com/api/usage_events/?id=9``
+        ``https://nemo.example.com/api/usage_events/?id=9``
 
     Returns
     -------

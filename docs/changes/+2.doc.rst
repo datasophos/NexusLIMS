@@ -1,0 +1,1 @@
+Added improved auto-generated documentation for XML schema with interactive visualization (:std:doc:`schema_documentation`).

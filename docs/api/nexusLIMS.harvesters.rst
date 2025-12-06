@@ -1,11 +1,6 @@
 nexusLIMS.harvesters package
 ============================
 
-.. automodule:: nexusLIMS.harvesters
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Subpackages
 -----------
 
@@ -22,13 +17,13 @@ nexusLIMS.harvesters.reservation\_event module
 
 .. automodule:: nexusLIMS.harvesters.reservation_event
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
-nexusLIMS.harvesters.sharepoint\_calendar module
-------------------------------------------------
+Module contents
+---------------
 
-.. automodule:: nexusLIMS.harvesters.sharepoint_calendar
+.. automodule:: nexusLIMS.harvesters
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

@@ -2,7 +2,7 @@
 
 import logging
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Tuple, Union
 from urllib.parse import parse_qs, urljoin, urlparse
 
 from pytz import timezone as pytz_timezone
@@ -24,7 +24,7 @@ class NemoConnector:
     ----------
     base_url : str
         The "root" of the API including a trailing slash;
-        e.g. 'https://nemo.url.com/api/'
+        e.g. 'https://nemo.example.com/api/'
     token : str
         An authentication token for this NEMO instance
     strftime_fmt : str
@@ -44,6 +44,9 @@ class NemoConnector:
         from an instance of the NEMO API. If ``None``, no timezone setting will
         be done and the code will use whatever was returned from the server
         as is.
+    retries : int
+        The number of retries that will be used for failed HTTP requests before
+        actually failing.
     """
 
     tools: Dict[int, Dict]
@@ -51,13 +54,14 @@ class NemoConnector:
     users_by_username: Dict[str, Dict]
     projects: Dict[int, Dict]
 
-    def __init__(  # pylint: disable=too-many-arguments # noqa: PLR0913
+    def __init__(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # noqa: PLR0913
         self,
         base_url: str,
         token: str,
-        strftime_fmt: Optional[str] = None,
-        strptime_fmt: Optional[str] = None,
-        timezone: Optional[str] = None,
+        strftime_fmt: str | None = None,
+        strptime_fmt: str | None = None,
+        timezone: str | None = None,
+        retries: int = 5,
     ):
         self.config = {
             "base_url": base_url,
@@ -65,6 +69,7 @@ class NemoConnector:
             "strftime_fmt": strftime_fmt,
             "strptime_fmt": strptime_fmt,
             "timezone": timezone,
+            "retries": retries,
         }
 
         # these attributes are used for "memoization" of NEMO content,
@@ -143,25 +148,37 @@ class NemoConnector:
             # to be defensive here, try without microseconds as well if ".%f"
             # is in strptime_fmt and it fails (since sometimes NEMO doesn't
             # write microseconds for every time, even if it's supposed to
+            fmt = self.config["strptime_fmt"]
+            has_tz_directive = "%z" in fmt or "%Z" in fmt
             try:
-                date_dt = datetime.strptime(  # noqa: DTZ007
-                    date_str,
-                    self.config["strptime_fmt"],
-                )
+                date_dt = datetime.strptime(date_str, fmt)  # noqa: DTZ007
+                # Only strip timezone if format doesn't include timezone directives
+                if not has_tz_directive:
+                    date_dt = date_dt.replace(tzinfo=None)
             except ValueError as exception:
-                if ".%f" in self.config["strptime_fmt"]:
+                if ".%f" in fmt:
                     date_dt = datetime.strptime(  # noqa: DTZ007
                         date_str,
-                        self.config["strptime_fmt"].replace(".%f", ""),
+                        fmt.replace(".%f", ""),
                     )
+                    # Only strip timezone if no timezone directives
+                    if not has_tz_directive:
+                        date_dt = date_dt.replace(tzinfo=None)
                 else:
                     raise ValueError(str(exception)) from exception  # pragma: no cover
 
         if self.config["timezone"]:
-            # strip any timezone information from the datetime, then localize
-            # with pytz to whatever timezone specified
-            date_dt = date_dt.replace(tzinfo=None)
-            date_dt = pytz_timezone(self.config["timezone"]).localize(date_dt)
+            target_tz = pytz_timezone(self.config["timezone"])
+            if date_dt.tzinfo is None:
+                # Localize naive datetime to the configured timezone
+                date_dt = target_tz.localize(date_dt)
+            else:
+                # If datetime already has a timezone, it is replaced with the
+                # configured timezone. This is done by taking the naive
+                # datetime and localizing it to the new timezone. This does
+                # NOT preserve the moment in time but is useful for
+                # correcting a misconfigured server.
+                date_dt = target_tz.localize(date_dt.replace(tzinfo=None))
 
         return date_dt
 
@@ -215,7 +232,7 @@ class NemoConnector:
 
         return tools
 
-    def get_users(self, user_id: Optional[Union[int, List[int]]] = None) -> List[Dict]:
+    def get_users(self, user_id: Union[int, List[int]] | None = None) -> List[Dict]:
         """
         Get a list of one or more users from the NEMO API in a dictionary.
 
@@ -368,11 +385,11 @@ class NemoConnector:
 
     def get_reservations(
         self,
-        dt_from: datetime = None,
-        dt_to: datetime = None,
-        tool_id: Optional[Union[int, List[int]]] = None,
+        dt_from: datetime | None = None,
+        dt_to: datetime | None = None,
+        tool_id: Union[int, List[int]] | None = None,
         *,
-        cancelled: Optional[bool] = False,
+        cancelled: bool | None = False,
     ) -> List[Dict]:
         """
         Get reservations from the NEMO API filtered in various ways.
@@ -457,10 +474,10 @@ class NemoConnector:
 
     def get_usage_events(
         self,
-        event_id: Optional[Union[int, List[int]]] = None,
-        user: Optional[Union[str, int]] = None,
-        dt_range: Optional[Tuple[Optional[datetime], Optional[datetime]]] = None,
-        tool_id: Optional[Union[int, List[int]]] = None,
+        event_id: Union[int, List[int]] | None = None,
+        user: Union[str, int] | None = None,
+        dt_range: Tuple[datetime | None, datetime | None] | None = None,
+        tool_id: Union[int, List[int]] | None = None,
     ) -> List:
         """
         Get usage events from the NEMO API filtered in various ways.
@@ -547,7 +564,7 @@ class NemoConnector:
 
     def _parse_dt_range(
         self,
-        dt_range: Optional[Tuple[Optional[datetime], Optional[datetime]]],
+        dt_range: Tuple[datetime | None, datetime | None] | None,
         params: Dict,
     ) -> Dict:
         if dt_range is not None:
@@ -675,7 +692,7 @@ class NemoConnector:
                 self,
             )
 
-    def get_session_from_usage_event(self, event_id: int) -> Optional[Session]:
+    def get_session_from_usage_event(self, event_id: int) -> Session | None:
         """
         Get a Session representation of a usage event.
 
@@ -709,13 +726,12 @@ class NemoConnector:
                 f"{self.config['base_url']}tools/?id={event['tool']['id']}",
             )
             session_id = f"{self.config['base_url']}usage_events/?id={event_id}"
-            session = Session(
+            return Session(
                 session_identifier=session_id,
                 instrument=instr,
                 dt_range=(self.strptime(event["start"]), self.strptime(event["end"])),
                 user=event["user"]["username"],
             )
-            return session
 
         logger.warning("No usage event with id = %s was found for '%s'", event_id, self)
         return None
@@ -803,7 +819,13 @@ class NemoConnector:
         """
         url = urljoin(self.config["base_url"], endpoint)
         logger.info("getting data from %s with parameters %s", url, params)
-        response = nexus_req(url, verb, token_auth=self.config["token"], params=params)
+        response = nexus_req(
+            url,
+            verb,
+            token_auth=self.config["token"],
+            params=params,
+            retries=self.config["retries"],
+        )
         response.raise_for_status()
 
         return response.json()

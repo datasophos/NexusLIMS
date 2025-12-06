@@ -1,30 +1,3 @@
-#  NIST Public License - 2019
-#
-#  This software was developed by employees of the National Institute of
-#  Standards and Technology (NIST), an agency of the Federal Government
-#  and is being made available as a public service. Pursuant to title 17
-#  United States Code Section 105, works of NIST employees are not subject
-#  to copyright protection in the United States.  This software may be
-#  subject to foreign copyright.  Permission in the United States and in
-#  foreign countries, to the extent that NIST may hold copyright, to use,
-#  copy, modify, create derivative works, and distribute this software and
-#  its documentation without fee is hereby granted on a non-exclusive basis,
-#  provided that this notice and disclaimer of warranty appears in all copies.
-#
-#  THE SOFTWARE IS PROVIDED 'AS IS' WITHOUT ANY WARRANTY OF ANY KIND,
-#  EITHER EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED
-#  TO, ANY WARRANTY THAT THE SOFTWARE WILL CONFORM TO SPECIFICATIONS, ANY
-#  IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
-#  AND FREEDOM FROM INFRINGEMENT, AND ANY WARRANTY THAT THE DOCUMENTATION
-#  WILL CONFORM TO THE SOFTWARE, OR ANY WARRANTY THAT THE SOFTWARE WILL BE
-#  ERROR FREE.  IN NO EVENT SHALL NIST BE LIABLE FOR ANY DAMAGES, INCLUDING,
-#  BUT NOT LIMITED TO, DIRECT, INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES,
-#  ARISING OUT OF, RESULTING FROM, OR IN ANY WAY CONNECTED WITH THIS SOFTWARE,
-#  WHETHER OR NOT BASED UPON WARRANTY, CONTRACT, TORT, OR OTHERWISE, WHETHER
-#  OR NOT INJURY WAS SUSTAINED BY PERSONS OR PROPERTY OR OTHERWISE, AND
-#  WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT OF THE RESULTS OF,
-#  OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
-#
 # pylint: disable=duplicate-code
 """
 Methods and representations for instruments in a NexusLIMS system.
@@ -37,16 +10,19 @@ instrument_db : dict
     Each object in this dictionary represents an instrument detected in the
     NexusLIMS remote database.
 """
+
 import contextlib
 import datetime
+import json
 import logging
-import os
 import sqlite3
+from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Optional
 
 import pytz
+from pytz.tzinfo import BaseTzInfo
 
+from nexusLIMS.config import settings
 from nexusLIMS.utils import is_subpath
 
 logging.basicConfig()
@@ -54,11 +30,17 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 
-def _get_instrument_db():
+def _get_instrument_db(db_path: Path | str | None = None):
     """
     Get dictionary of instruments from the NexusLIMS database.
 
     Sort of like a very very basic ORM, but much worse.
+
+    Parameters
+    ----------
+    db_path : Path | str | None, optional
+        Path to the database file. If None, uses the path from settings.
+        This parameter is primarily for testing purposes.
 
     Returns
     -------
@@ -68,47 +50,62 @@ def _get_instrument_db():
         NexusLIMS database
     """
     query = "SELECT * from instruments"
+    instr_db = {}  # Initialize instr_db here
 
-    with contextlib.closing(  # noqa: SIM117
-        sqlite3.connect(os.environ["nexusLIMS_db_path"]),
-    ) as conn:
-        with conn:  # auto-commits
-            with contextlib.closing(conn.cursor()) as cursor:
-                results = cursor.execute(query).fetchall()
-                col_names = [x[0] for x in cursor.description]
+    # Use provided path or fall back to settings
+    _db_path = db_path if db_path is not None else settings.NX_DB_PATH
 
-    instr_db = {}
-    for line in results:
-        this_dict = {}
-        for key, val in zip(col_names, line):
-            this_dict[key] = val
+    try:
+        with (
+            contextlib.closing(
+                sqlite3.connect(str(_db_path)),
+            ) as conn,
+            conn,
+            contextlib.closing(conn.cursor()) as cursor,
+        ):  # auto-commits
+            results = cursor.execute(query).fetchall()
+            col_names = [x[0] for x in cursor.description]
 
-        key = this_dict.pop("instrument_pid")
-        this_dict["name"] = key
-        # remove keys from this_dict that we don't know about yet so we don't
-        # crash and burn if a new column is added
-        known_cols = [
-            "api_url",
-            "calendar_name",
-            "calendar_url",
-            "location",
-            "name",
-            "schema_name",
-            "property_tag",
-            "filestore_path",
-            "computer_ip",
-            "computer_name",
-            "computer_mount",
-            "harvester",
-            "timezone",
-        ]
-        this_dict = {k: this_dict[k] for k in known_cols}
-        instr_db[key] = Instrument(**this_dict)
+        for line in results:
+            this_dict = {}
+            for key, val in zip(col_names, line):
+                this_dict[key] = val
+
+            key = this_dict.pop("instrument_pid")
+            this_dict["name"] = key
+            # remove keys from this_dict that we don't know about yet so we don't
+            # crash and burn if a new column is added
+            known_cols = [
+                "api_url",
+                "calendar_name",
+                "calendar_url",
+                "location",
+                "name",
+                "schema_name",
+                "property_tag",
+                "filestore_path",
+                "computer_ip",
+                "computer_name",
+                "computer_mount",
+                "harvester",
+                "timezone",
+            ]
+            this_dict = {k: this_dict[k] for k in known_cols}
+            instr_db[key] = Instrument(**this_dict)
+
+    except (sqlite3.Error, KeyError) as e:
+        logger.warning(
+            "Could not connect to database or retrieve instruments. "
+            "Returning empty instrument dictionary.\n\n Details:\n %s",
+            e,
+        )
+        return {}
 
     return instr_db
 
 
-class Instrument:  # pylint: disable=too-many-instance-attributes
+@dataclass
+class Instrument:
     """
     Representation of a NexusLIMS instrument.
 
@@ -120,17 +117,16 @@ class Instrument:  # pylint: disable=too-many-instance-attributes
     api_url : str or None
         The calendar API endpoint url for this instrument's scheduler
     calendar_name : str or None
-        The “user-friendly” name of the calendar for this instrument as displayed on the
-        reservation system resource (e.g. “FEI Titan TEM”)
+        The "user-friendly" name of the calendar for this instrument as displayed on the
+        reservation system resource (e.g. "FEI Titan TEM")
     calendar_url : str or None
-        The URL to this instrument's web-accessible calendar on the SharePoint
-        resource (if using)
+        The URL to this instrument's web-accessible calendar
     location : str or None
         The physical location of this instrument (building and room number)
     name : str or None
         The unique identifier for an instrument in the facility, currently
         (but not required to be) built from the make, model, and type of instrument,
-        plus a unique numeric code (e.g. ``FEI-Titan-TEM-635816``)
+        plus a unique numeric code (e.g. ``FEI-Titan-TEM-012345``)
     schema_name : str or None
         The human-readable name of instrument as defined in the Nexus Microscopy
         schema and displayed in the records
@@ -139,8 +135,8 @@ class Instrument:  # pylint: disable=too-many-instance-attributes
         but for reference and potential future use)
     filestore_path : str or None
         The path (relative to central storage location specified in
-        :ref:`mmfnexus_path <mmfnexus-path>`) where this instrument stores its
-        data (e.g. ``./Titan``)
+        :ref:`NX_INSTRUMENT_DATA_PATH <nexuslims-instrument-data-path>`) where
+        this instrument stores its data (e.g. ``./Titan``)
     computer_name : str or None
         The hostname of the `support PC` connected to this instrument that runs
         the `Session Logger App`. If this is incorrect (or not included), the
@@ -156,46 +152,31 @@ class Instrument:  # pylint: disable=too-many-instance-attributes
     harvester : str or None
         The specific submodule within :py:mod:`nexusLIMS.harvesters` that should be
         used to harvest reservation information for this instrument. At the time of
-        writing, the only possible values are ``nemo`` or ``sharepoint_calendar``.
-    timezone : pytz.timezone, str, or None
+        writing, the only possible value is ``nemo``.
+    timezone : pytz.tzinfo.BaseTzInfo or str or None
         The timezone in which this instrument is located, in the format of the IANA
         timezone database (e.g. ``America/New_York``). This is used to properly localize
         dates and times when communicating with the harvester APIs.
     """
 
-    def __init__(  # pylint: disable=too-many-arguments # noqa: PLR0913
-        self,
-        api_url=None,
-        calendar_name=None,
-        calendar_url=None,
-        location=None,
-        name=None,
-        schema_name=None,
-        property_tag=None,
-        filestore_path=None,
-        computer_ip=None,
-        computer_name=None,
-        computer_mount=None,
-        harvester=None,
-        timezone=None,
-    ):
-        """Create a new Instrument."""
-        self.api_url = api_url
-        self.calendar_name = calendar_name
-        self.calendar_url = calendar_url
-        self.location = location
-        self.name = name
-        self.schema_name = schema_name
-        self.property_tag = property_tag
-        self.filestore_path = filestore_path
-        self.computer_ip = computer_ip
-        self.computer_name = computer_name
-        self.computer_mount = computer_mount
-        self.harvester = harvester
-        if isinstance(timezone, str):
-            self.timezone = pytz.timezone(timezone)
-        else:
-            self.timezone = timezone
+    api_url: str | None = None
+    calendar_name: str | None = None
+    calendar_url: str | None = None
+    location: str | None = None
+    name: str | None = None
+    schema_name: str | None = None
+    property_tag: str | None = None
+    filestore_path: str | None = None
+    computer_ip: str | None = None
+    computer_name: str | None = None
+    computer_mount: str | None = None
+    harvester: str | None = None
+    timezone: BaseTzInfo | str | None = None
+
+    def __post_init__(self):
+        """Post-initialization to convert timezone string to timezone object."""
+        if isinstance(self.timezone, str):
+            self.timezone = pytz.timezone(self.timezone)
 
     def __repr__(self):
         """Return custom representation of an Instrument."""
@@ -280,6 +261,47 @@ class Instrument:  # pylint: disable=too-many-instance-attributes
         """
         return self.localize_datetime(_dt).strftime(fmt)
 
+    def to_dict(self) -> dict:
+        """
+        Return a dictionary representation of the Instrument object.
+
+        Handles special cases like renaming 'name' to 'instrument_pid' and
+        converting timezone objects to strings.
+
+        Returns
+        -------
+        dict
+            A dictionary representation of the instrument, suitable for database
+            insertion or JSON serialization.
+        """
+        instr_dict = asdict(self)
+
+        # Rename 'name' to 'instrument_pid' for database compatibility
+        if "name" in instr_dict:
+            instr_dict["instrument_pid"] = instr_dict.pop("name")
+
+        # Convert timezone object to string
+        if isinstance(instr_dict.get("timezone"), BaseTzInfo):
+            instr_dict["timezone"] = str(instr_dict["timezone"])
+
+        return instr_dict
+
+    def to_json(self, **kwargs) -> str:
+        """
+        Return a JSON string representation of the Instrument object.
+
+        Parameters
+        ----------
+        **kwargs
+            Additional keyword arguments to pass to `json.dumps`.
+
+        Returns
+        -------
+        str
+            A JSON string representation of the instrument.
+        """
+        return json.dumps(self.to_dict(), **kwargs)
+
 
 instrument_db = _get_instrument_db()
 
@@ -304,12 +326,12 @@ def get_instr_from_filepath(path: Path):
     --------
     >>> inst = get_instr_from_filepath('/path/to/file.dm3')
     >>> str(inst)
-    'FEI-Titan-TEM-635816 in xxx/xxxx'
+    'FEI-Titan-TEM-012345 in Bldg 1/Room A'
     """
     for _, v in instrument_db.items():
         if is_subpath(
             path,
-            Path(os.environ["mmfnexus_path"]) / v.filestore_path,
+            Path(settings.NX_INSTRUMENT_DATA_PATH) / v.filestore_path,
         ):
             return v
 
@@ -336,7 +358,7 @@ def get_instr_from_calendar_name(cal_name):
     --------
     >>> inst = get_instr_from_calendar_name('FEITitanTEMEvents')
     >>> str(inst)
-    'FEI-Titan-TEM-635816 in ***REMOVED***'
+    'FEI-Titan-TEM-012345 in Bldg 1/Room A'
     """
     for _, v in instrument_db.items():
         if cal_name in v.api_url:
@@ -345,7 +367,7 @@ def get_instr_from_calendar_name(cal_name):
     return None
 
 
-def get_instr_from_api_url(api_url: str) -> Optional[Instrument]:
+def get_instr_from_api_url(api_url: str) -> Instrument | None:
     """
     Get an instrument object from the NexusLIMS database by its ``api_url``.
 
@@ -363,9 +385,9 @@ def get_instr_from_api_url(api_url: str) -> Optional[Instrument]:
 
     Examples
     --------
-    >>> inst = get_instr_from_api_url('https://nemo.url.com/api/tools/?id=1')
+    >>> inst = get_instr_from_api_url('https://nemo.example.com/api/tools/?id=1')
     >>> str(inst)
-    'FEI-Titan-STEM-630901_n in xxx/xxxx'
+    'FEI-Titan-STEM-012345 in Bldg 1/Room A'
     """
     for _, v in instrument_db.items():
         if api_url == v.api_url:

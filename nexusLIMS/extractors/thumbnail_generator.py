@@ -1,61 +1,37 @@
-#  NIST Public License - 2019
-#
-#  This software was developed by employees of the National Institute of
-#  Standards and Technology (NIST), an agency of the Federal Government
-#  and is being made available as a public service. Pursuant to title 17
-#  United States Code Section 105, works of NIST employees are not subject
-#  to copyright protection in the United States.  This software may be
-#  subject to foreign copyright.  Permission in the United States and in
-#  foreign countries, to the extent that NIST may hold copyright, to use,
-#  copy, modify, create derivative works, and distribute this software and
-#  its documentation without fee is hereby granted on a non-exclusive basis,
-#  provided that this notice and disclaimer of warranty appears in all copies.
-#
-#  THE SOFTWARE IS PROVIDED 'AS IS' WITHOUT ANY WARRANTY OF ANY KIND,
-#  EITHER EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED
-#  TO, ANY WARRANTY THAT THE SOFTWARE WILL CONFORM TO SPECIFICATIONS, ANY
-#  IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
-#  AND FREEDOM FROM INFRINGEMENT, AND ANY WARRANTY THAT THE DOCUMENTATION
-#  WILL CONFORM TO THE SOFTWARE, OR ANY WARRANTY THAT THE SOFTWARE WILL BE
-#  ERROR FREE.  IN NO EVENT SHALL NIST BE LIABLE FOR ANY DAMAGES, INCLUDING,
-#  BUT NOT LIMITED TO, DIRECT, INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES,
-#  ARISING OUT OF, RESULTING FROM, OR IN ANY WAY CONNECTED WITH THIS SOFTWARE,
-#  WHETHER OR NOT BASED UPON WARRANTY, CONTRACT, TORT, OR OTHERWISE, WHETHER
-#  OR NOT INJURY WAS SUSTAINED BY PERSONS OR PROPERTY OR OTHERWISE, AND
-#  WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT OF THE RESULTS OF,
-#  OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
-#
+# pylint: disable=too-many-lines
+
 """
 Generate preview images from various data files.
 
 Data files are represented as either HyperSpy Signals, or as raw data files
 (in the case of tiff images)
 """
+
 import logging
 import shutil
 import tempfile
 import textwrap
 from pathlib import Path
-from typing import Optional, Tuple, Union
+from typing import Tuple, Union
 
 import hyperspy.api as hs_api
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
-from hyperspy.drawing.marker import dict2marker
 from matplotlib.figure import Figure
 from matplotlib.offsetbox import AnchoredOffsetbox, OffsetImage
 from matplotlib.transforms import Bbox
 from PIL import Image, UnidentifiedImageError
 from skimage import transform
 from skimage.io import imread
-from skimage.transform import resize
+from skimage.transform import resize  # pylint: disable=no-name-in-module
 
-try:
-    _LANCZOS = Image.Resampling.LANCZOS
-except AttributeError:  # pragma: no cover
-    # above is deprecated as of Pillow 9.1.0
-    _LANCZOS = Image.LANCZOS
+# Use modern HyperSpy 2.0+ API only
+# Marker functionality has changed significantly in HyperSpy 2.0+
+# The old dict2marker approach is no longer supported
+
+_LANCZOS = Image.Resampling.LANCZOS
+_POINT_SIZE = 5
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -167,7 +143,7 @@ def _project_image_stack(s, num=5, dpi=92, v_shear=0.3, h_scale=0.3):
             scalebar="all",
             label=None,
         )
-        tmp = tempfile.NamedTemporaryFile()  # pylint: disable=consider-using-with
+        tmp = tempfile.NamedTemporaryFile()  # noqa: SIM115
         axis = plt.gca()
         axis.set_position([0, 0, 1, 1])
         axis.set_axis_on()
@@ -284,7 +260,7 @@ def _get_marker_color(annotation):
 
 def _get_marker_props(annotation):
     """
-    Get the properties of a DigitalMicrograph annotation.
+    Get the properties and type of a DigitalMicrograph annotation.
 
     Parameters
     ----------
@@ -297,13 +273,13 @@ def _get_marker_props(annotation):
     marker_properties : dict
         A dictionary containing various properties for this
         annotation/marker, such as line width, style, etc.
-    temp_dict : dict
-        A dictionary that contains the marker type
+    marker_type : str or None
+        The type of marker (e.g., "LineSegment", "Rectangle", "Text", "Point")
     marker_text : None or str
         If present, the text of a textual annotation
     """
     marker_properties = {}
-    temp_dict = {}
+    marker_type = None
     marker_text = None
     log_msg_map = {
         3: "Arrow marker not loaded: not implemented",
@@ -322,36 +298,46 @@ def _get_marker_props(annotation):
     roi_rectangle_type = 23
     roi_line_type = 25
     point_type = 27
+
+    # FillMode:
+    FILL_NONE = 2  # noqa: N806
+
     if "AnnotationType" in annotation:
         annotation_type = annotation["AnnotationType"]
+        color = _get_marker_color(annotation)
+        marker_properties["color"] = color
         if annotation_type == line_segment_type:
-            temp_dict["marker_type"] = "LineSegment"
+            marker_type = "LineSegment"
             marker_properties["linewidth"] = 2
-        elif annotation_type == rectangle_type:
-            temp_dict["marker_type"] = "Rectangle"
+        elif annotation_type in (rectangle_type, roi_rectangle_type):
+            marker_type = "Rectangle"
             marker_properties["linewidth"] = 2
+            # ROI rectangles get dashed lines
+            if annotation_type == roi_rectangle_type:
+                marker_properties["linestyle"] = "--"
+            if annotation["FillMode"] == FILL_NONE:
+                marker_properties["facecolor"] = "none"
+                marker_properties["edgecolor"] = marker_properties.pop("color")
+                marker_properties["labelcolor"] = marker_properties["edgecolor"]
         elif annotation_type == text_type:
-            temp_dict["marker_type"] = "Text"
+            marker_type = "Text"
             marker_text = annotation["Text"]
-        elif annotation_type == roi_rectangle_type:  # roirectangle
-            temp_dict["marker_type"] = "Rectangle"
-            marker_properties["linestyle"] = "--"
-            marker_properties["linewidth"] = 2
         elif annotation_type == roi_line_type:  # roiline
-            temp_dict["marker_type"] = "LineSegment"
+            marker_type = "LineSegment"
             marker_properties["linestyle"] = "--"
             marker_properties["linewidth"] = 2
         elif annotation_type == point_type:
-            temp_dict["marker_type"] = "Point"
+            marker_type = "Point"
+            marker_properties["size"] = _POINT_SIZE
         elif annotation_type in log_msg_map:
             logger.debug(log_msg_map[annotation_type])
 
-    return marker_properties, temp_dict, marker_text
+    return marker_properties, marker_type, marker_text
 
 
-def _get_markers_dict(s, tags_dict):
+def _get_markers_list(s, tags_dict):
     """
-    Get dictionary of markers from a HyperSpy signal.
+    Get list of HyperSpy 2.0+ marker objects from a HyperSpy signal.
 
     Parameters
     ----------
@@ -363,63 +349,109 @@ def _get_markers_dict(s, tags_dict):
 
     Returns
     -------
-    markers_dict : dict
-        The Markers that correspond to the annotations found in `s`
+    markers_list : list
+        List of HyperSpy 2.0+ marker objects that correspond to the
+        annotations found in `s`
     """
     scale = {"x": s.axes_manager["x"].scale, "y": s.axes_manager["y"].scale}
     offset = {"x": s.axes_manager["x"].offset, "y": s.axes_manager["y"].offset}
 
-    markers_dict = {}
+    markers_list = []
     annotations_dict = tags_dict["DocumentObjectList"]["TagGroup0"][
         "AnnotationGroupList"
     ]
     for annotation in annotations_dict.values():
+        position = None  # Initialize position to avoid pylint warning
         if "Rectangle" in annotation:
             position = annotation["Rectangle"]
-        marker_properties, temp_dict, marker_text = _get_marker_props(annotation)
-        if "marker_type" in temp_dict:
-            color = _get_marker_color(annotation)
+        marker_properties, marker_type, marker_text = _get_marker_props(annotation)
+        if marker_type:
+            # Add label text marker if present
             if "Label" in annotation and annotation["Label"] != []:
-                # Some annotations contains an empty label, which are
-                # represented in the input dict as an empty list: []
                 marker_label = annotation["Label"]
-                label_marker_dict = {
-                    "marker_type": "Text",
-                    "plot_marker": True,
-                    "plot_on_signal": True,
-                    "axes_manager": s.axes_manager,
-                    "data": {
-                        "y1": position[0] * scale["y"] + offset["y"],
-                        "x1": position[1] * scale["x"] + offset["x"],
-                        "size": 20,
-                        "text": marker_label,
-                    },
-                    "marker_properties": {
-                        "color": color,
-                        "va": "bottom",
-                    },
-                }
-                marker_name = "Text" + str(annotation["UniqueID"])
-                markers_dict[marker_name] = label_marker_dict
+                # Add small vertical offset to position label below the marker
+                label_offset_y = scale["y"] * -4  # 4 pixels in data coordinates
+                y1 = (
+                    (position[0] * scale["y"] + offset["y"] + label_offset_y)
+                    if position
+                    else 0
+                )
+                x1 = position[1] * scale["x"] + offset["x"] if position else 0
+                try:
+                    label_marker = hs_api.plot.markers.Texts(
+                        offsets=[(x1, y1)],
+                        texts=[marker_label],
+                        color=marker_properties.pop("labelcolor", "none"),
+                        verticalalignment="bottom",
+                        horizontalalignment="left",
+                    )
+                    markers_list.append(label_marker)
+                except Exception as err:
+                    logger.debug("Failed to create label marker: %s", err)
 
-            marker_properties["color"] = color
-            temp_dict["plot_on_signal"] = (True,)
-            temp_dict["plot_marker"] = (True,)
-            temp_dict["axes_manager"] = (s.axes_manager,)
-            temp_dict["data"] = {
-                "y1": position[0] * scale["y"] + offset["y"],
-                "x1": position[1] * scale["x"] + offset["x"],
-                "y2": position[2] * scale["y"] + offset["y"],
-                "x2": position[3] * scale["x"] + offset["x"],
-                "size": 20,
-                "text": marker_text,
-            }
-            temp_dict["marker_properties"] = marker_properties
-            markers_dict[
-                temp_dict["marker_type"] + str(annotation["UniqueID"])
-            ] = temp_dict
+            # Create the main marker based on type
+            if position:
+                y1 = position[0] * scale["y"] + offset["y"]
+                x1 = position[1] * scale["x"] + offset["x"]
+                y2 = position[2] * scale["y"] + offset["y"]
+                x2 = position[3] * scale["x"] + offset["x"]
 
-    return markers_dict
+                try:
+                    if marker_type == "Text":
+                        marker = hs_api.plot.markers.Texts(
+                            offsets=[(x1, y1)],
+                            texts=[marker_text or ""],
+                            verticalalignment="bottom",
+                            horizontalalignment="left",
+                            **marker_properties,
+                        )
+                        markers_list.append(marker)
+                    elif marker_type == "Point":
+                        marker = hs_api.plot.markers.Points(
+                            offsets=[(x1, y1)],
+                            sizes=[marker_properties.pop("size", _POINT_SIZE)],
+                            **marker_properties,
+                        )
+                        markers_list.append(marker)
+                    elif marker_type == "LineSegment":
+                        marker = hs_api.plot.markers.Lines(
+                            segments=[[(x1, y1), (x2, y2)]],
+                            **marker_properties,
+                        )
+                        markers_list.append(marker)
+                    elif marker_type == "Rectangle":
+                        width = abs(x2 - x1)
+                        height = abs(y2 - y1)
+                        x = min(x1, x2) + width / 2
+                        y = min(y1, y2) + height / 2
+                        # Work with a copy to avoid mutating original marker_properties
+                        rect_props = marker_properties.copy()
+                        edgecolors = (
+                            [rect_props.pop("edgecolor")]
+                            if "edgecolor" in rect_props
+                            else None
+                        )
+                        facecolors = (
+                            [rect_props.pop("facecolor")]
+                            if "facecolor" in rect_props
+                            else None
+                        )
+                        # Remove labelcolor if present (not used for rectangles)
+                        rect_props.pop("labelcolor", None)
+
+                        marker = hs_api.plot.markers.Rectangles(
+                            offsets=[(x, y)],
+                            widths=[width],
+                            heights=[height],
+                            edgecolors=edgecolors,
+                            facecolors=facecolors,
+                            **rect_props,
+                        )
+                        markers_list.append(marker)
+                except Exception as err:
+                    logger.debug("Failed to create %s marker: %s", marker_type, err)
+
+    return markers_list
 
 
 def add_annotation_markers(s):
@@ -427,11 +459,8 @@ def add_annotation_markers(s):
     Add annotation markers from a DM3/DM4 file to a HyperSpy signal.
 
     Read annotations from a signal originating from DigitalMicrograph and
-    convert the ones (that we can) into Hyperspy markers for plotting.
-    Adapted from a currently (at the time of writing) open `pull request`_ in
-    HyperSpy.
-
-    .. _pull request: https://github.com/hyperspy/hyperspy/pull/1491
+    convert the ones (that we can) into HyperSpy 2.0+ markers for plotting.
+    Uses the modern hs.plot.markers API instead of the deprecated dict2marker.
 
     Parameters
     ----------
@@ -443,18 +472,13 @@ def add_annotation_markers(s):
     # this any Exceptions are caught and logged instead of the files
     # not being loaded at all.
     try:
-        markers_dict = _get_markers_dict(s, s.original_metadata.as_dictionary())
+        markers_list = _get_markers_list(s, s.original_metadata.as_dictionary())
     except Exception as err:
         logger.warning("Markers could not be loaded from the file due to: %s", err)
-        markers_dict = {}
-    if markers_dict:
         markers_list = []
-        for k, v in markers_dict.items():
-            # convert each marker dictionary item into a Marker object
-            markers_list.append(dict2marker(v, k))
-        if len(markers_list) > 0:
-            # add the Marker objects (in a list) to the signal
-            s.add_marker(markers_list, permanent=True)
+    if markers_list:
+        # Add the HyperSpy 2.0+ Marker objects (in a list) to the signal
+        s.add_marker(markers_list, permanent=True)
 
 
 def sig_to_thumbnail(s, out_path: Path, dpi: int = 92):
@@ -545,7 +569,7 @@ def text_to_thumbnail(
 
     Returns
     -------
-    f
+    f : :py:class:`matplotlib.figure.Figure` or bool
         Handle to a matplotlib Figure, or the value False if a preview could not be
         generated
     """
@@ -653,7 +677,8 @@ def image_to_square_thumbnail(f: Path, out_path: Path, output_size: int) -> bool
 
     Returns
     -------
-    Whether a preview was generated
+    bool
+        Whether a preview was generated
     """
     shutil.copy(f, out_path)
     try:
@@ -835,11 +860,13 @@ def _plot_image_stack(s, out_path, dpi):
 
 
 def _plot_tableau(s, out_path, dpi):
+    tableau_3x3_limit = 9
+    tableau_2x2_limit = 4
     asp_ratio = s.axes_manager.signal_shape[1] / s.axes_manager.signal_shape[0]
     f = plt.figure(figsize=(6, 6 * asp_ratio))
-    if s.axes_manager.navigation_size >= 9:  # noqa: PLR2004
+    if s.axes_manager.navigation_size >= tableau_3x3_limit:
         square_n = 3
-    elif s.axes_manager.navigation_size >= 4:  # noqa: PLR2004
+    elif s.axes_manager.navigation_size >= tableau_2x2_limit:
         square_n = 2
     else:
         square_n = 1
@@ -870,7 +897,7 @@ def _plot_tableau(s, out_path, dpi):
     left_extent = (
         txt.get_window_extent().transformed(axlist[0].transData.inverted()).bounds[0]
     )
-    if left_extent < 0:
+    if left_extent < 0:  # pragma: no cover
         # Move scalebar text over if it overlaps outside of axis
         txt.set_x(txt.get_position()[0] + left_extent * -1)
 
@@ -902,7 +929,7 @@ def _plot_complex_signal(s, out_path, dpi):
     s.amplitude.plot(
         interpolation="bilinear",
         norm="log",
-        vmin=np.nanpercentile(s.amplitude.data, 66),
+        vmin=float(np.nanpercentile(s.amplitude.data, 66)),
         colorbar=None,
         axes_off=True,
     )
@@ -945,8 +972,8 @@ def _plot_axes_manager(s, out_path, dpi):
 def down_sample_image(
     fname: Path,
     out_path: Path,
-    output_size: Optional[Tuple[int, int]] = None,
-    factor: Optional[int] = None,
+    output_size: Tuple[int, int] | None = None,
+    factor: int | None = None,
 ):
     """
     Load an image file from disk, down-sample it to the requested dpi, and save.

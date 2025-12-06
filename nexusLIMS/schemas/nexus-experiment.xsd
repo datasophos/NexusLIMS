@@ -1,33 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ NIST Public License - 2019
-  ~
-  ~ This software was developed by employees of the National Institute of
-  ~ Standards and Technology (NIST), an agency of the Federal Government
-  ~ and is being made available as a public service. Pursuant to title 17
-  ~ United States Code Section 105, works of NIST employees are not subject
-  ~ to copyright protection in the United States.  This software may be
-  ~ subject to foreign copyright.  Permission in the United States and in
-  ~ foreign countries, to the extent that NIST may hold copyright, to use,
-  ~ copy, modify, create derivative works, and distribute this software and
-  ~ its documentation without fee is hereby granted on a non-exclusive basis,
-  ~ provided that this notice and disclaimer of warranty appears in all copies.
-  ~
-  ~ THE SOFTWARE IS PROVIDED 'AS IS' WITHOUT ANY WARRANTY OF ANY KIND,
-  ~ EITHER EXPRESSED, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED
-  ~ TO, ANY WARRANTY THAT THE SOFTWARE WILL CONFORM TO SPECIFICATIONS, ANY
-  ~ IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
-  ~ AND FREEDOM FROM INFRINGEMENT, AND ANY WARRANTY THAT THE DOCUMENTATION
-  ~ WILL CONFORM TO THE SOFTWARE, OR ANY WARRANTY THAT THE SOFTWARE WILL BE
-  ~ ERROR FREE.  IN NO EVENT SHALL NIST BE LIABLE FOR ANY DAMAGES, INCLUDING,
-  ~ BUT NOT LIMITED TO, DIRECT, INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES,
-  ~ ARISING OUT OF, RESULTING FROM, OR IN ANY WAY CONNECTED WITH THIS SOFTWARE,
-  ~ WHETHER OR NOT BASED UPON WARRANTY, CONTRACT, TORT, OR OTHERWISE, WHETHER
-  ~ OR NOT INJURY WAS SUSTAINED BY PERSONS OR PROPERTY OR OTHERWISE, AND
-  ~ WHETHER OR NOT LOSS WAS SUSTAINED FROM, OR AROSE OUT OF THE RESULTS OF,
-  ~ OR USE OF, THE SOFTWARE OR SERVICES PROVIDED HEREUNDER.
-  ~
-  -->
+  This is a metadata schema for describing an experiment utilizing equipment
+  from the Nexus Microscopy Lab. This schema is designed to capture the
+  necessary information about an experiment, including its title, ID, and
+  associated metadata. It is intended to be used in conjunction within
+  NexusLIMS schemas to provide a comprehensive view of an experiment.
+-->
 
 <xs:schema targetNamespace="https://data.nist.gov/od/dm/nexus/experiment/v1.0"
   xmlns:nx="https://data.nist.gov/od/dm/nexus/experiment/v1.0"
@@ -235,7 +213,7 @@
 
 
     </xs:sequence>
-      
+
       <xs:attribute name="ref" type="xs:anyURI">
           <xs:annotation>
               <xs:documentation>
@@ -246,7 +224,7 @@
               </xs:documentation>
           </xs:annotation>
       </xs:attribute>
-      
+
   </xs:complexType>
 
   <xs:complexType name="Sample">
@@ -282,7 +260,7 @@
                </xs:documentation>
         </xs:annotation>
       </xs:element>
-      
+
       <xs:element name="elements" type="nx:PeriodicTableElementType" minOccurs="0" maxOccurs="1">
         <xs:annotation>
           <xs:documentation> A list of one or more elements that are present or expected to be
@@ -807,7 +785,7 @@
         <xs:attribute name="warning" type="boolean">
           <xs:annotation>
             <xs:documentation>
-                A marker to indicate that this parameter may not be reliable 
+                A marker to indicate that this parameter may not be reliable
                 (an instrument may have not written it correctly, or it is commonly not
                 filled out properly, etc.)
             </xs:documentation>
@@ -821,7 +799,7 @@
   <xs:simpleType name="InstrumentName">
     <xs:annotation>
       <xs:documentation>
-         Controlled labels that identify available instruments in the 
+         Controlled labels that identify available instruments in the
          facility (matching names in the reservation calendar resource).
        </xs:documentation>
     </xs:annotation>
@@ -831,7 +809,7 @@
       <xs:enumeration value="FEI Titan TEM">
         <xs:annotation>
           <xs:documentation>
-            The FEI Titan transmission electron microscope in ***REMOVED***
+            The FEI Titan transmission electron microscope in Bldg 1/Room A
           </xs:documentation>
         </xs:annotation>
       </xs:enumeration>
@@ -839,7 +817,7 @@
       <xs:enumeration value="FEI Titan STEM">
         <xs:annotation>
           <xs:documentation>
-            The FEI Titan scanning transmission electron microscope in ***REMOVED***
+            The FEI Titan scanning transmission electron microscope in Bldg 1/Room A
           </xs:documentation>
         </xs:annotation>
       </xs:enumeration>
@@ -847,7 +825,7 @@
       <xs:enumeration value="FEI Helios">
         <xs:annotation>
           <xs:documentation>
-            The FEI Helios dual beam FIB/SEM in ***REMOVED***
+            The FEI Helios dual beam FIB/SEM in Bldg 1/Room A
           </xs:documentation>
         </xs:annotation>
       </xs:enumeration>
@@ -855,7 +833,7 @@
       <xs:enumeration value="FEI Quanta200">
         <xs:annotation>
           <xs:documentation>
-            The FEI Quanta 200 environmental scanning electron microscope in ***REMOVED***
+            The FEI Quanta 200 environmental scanning electron microscope in Bldg 1/Room A
           </xs:documentation>
         </xs:annotation>
       </xs:enumeration>
@@ -863,7 +841,7 @@
       <xs:enumeration value="Hitachi S4700">
         <xs:annotation>
           <xs:documentation>
-            The Hitachi S4700 scanning electron microscope in ***REMOVED***
+            The Hitachi S4700 scanning electron microscope in Bldg 1/Room A
           </xs:documentation>
         </xs:annotation>
       </xs:enumeration>
@@ -871,7 +849,7 @@
       <xs:enumeration value="Hitachi S5500">
         <xs:annotation>
           <xs:documentation>
-            The Hitachi S5500 scanning electron microscope in ***REMOVED***
+            The Hitachi S5500 scanning electron microscope in Bldg 1/Room A
           </xs:documentation>
         </xs:annotation>
       </xs:enumeration>
@@ -879,7 +857,7 @@
       <xs:enumeration value="JEOL JEM3010">
         <xs:annotation>
           <xs:documentation>
-            The JEOL JEM3010 transmission electron microscope in ***REMOVED***
+            The JEOL JEM3010 transmission electron microscope in Bldg 1/Room A
           </xs:documentation>
         </xs:annotation>
       </xs:enumeration>
@@ -887,7 +865,7 @@
       <xs:enumeration value="JEOL JSM7100">
         <xs:annotation>
           <xs:documentation>
-            The JEOL JSM7100 scanning electron microscope in ***REMOVED***
+            The JEOL JSM7100 scanning electron microscope in Bldg 1/Room A
           </xs:documentation>
         </xs:annotation>
       </xs:enumeration>
@@ -895,7 +873,7 @@
       <xs:enumeration value="Philips EM400">
         <xs:annotation>
           <xs:documentation>
-            The Phillips EM400 transmission electron microscope in ***REMOVED***
+            The Phillips EM400 transmission electron microscope in Bldg 1/Room A
           </xs:documentation>
         </xs:annotation>
       </xs:enumeration>

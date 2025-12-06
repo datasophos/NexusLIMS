@@ -14,25 +14,62 @@
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
 import os
-
-# import sys
+import sys
 import shutil
 from datetime import datetime
 from glob import glob
+from pathlib import Path
 
-# sys.path.insert(0, os.path.abspath('../../'))
+# Add custom extensions directory to path
+sys.path.insert(0, os.path.abspath("_ext"))
+
 import nexusLIMS.version
+
+
+def autodoc_mock_settings(_):
+    """Mock settings for autodoc to avoid validation errors."""
+    # create dummy directories for data and instrument data
+    tmp_dir = Path("/tmp")
+    instrument_data_path = tmp_dir / "nx_instrument_data"
+    instrument_data_path.mkdir(exist_ok=True)
+    data_path = tmp_dir / "nx_data"
+    data_path.mkdir(exist_ok=True)
+    db_dir = tmp_dir / "nx_db"
+    db_dir.mkdir(exist_ok=True)
+    db_path = db_dir / "nexuslims_db.sqlite"
+    # Create empty database file to satisfy path validation
+    db_path.touch(exist_ok=True)
+
+    os.environ["NX_INSTRUMENT_DATA_PATH"] = str(instrument_data_path)
+    os.environ["NX_DATA_PATH"] = str(data_path)
+    os.environ["NX_DB_PATH"] = str(db_path)
+
+    # Set dummy CDCS environment variables (same as conftest.py)
+    os.environ["NX_CDCS_URL"] = "https://cdcs.example.com"
+    os.environ["NX_CDCS_USER"] = "username"
+    os.environ["NX_CDCS_PASS"] = "dummy_password"
+
 
 # -- Project information -----------------------------------------------------
 
 project = "NexusLIMS"
-copyright = f"{datetime.now().year}, NIST Office of Data and Informatics"
-author = "NIST Office of Data and Informatics"
+copyright = f"{datetime.now().year}, datasophos, LLC"
+author = "datasophos, LLC"
 numfig = True
 
 # The full version, including alpha/beta/rc tags
 version = nexusLIMS.version.__version__
 release = version
+
+# Add PR number to context if available
+pr_number = os.environ.get("PR_NUMBER")
+
+# Pass version and PR info to templates
+html_context = {
+    "version": version,
+    "release": release,
+    "pr_number": pr_number,
+}
 
 
 # -- General configuration ---------------------------------------------------
@@ -47,7 +84,18 @@ extensions = [
     "sphinx.ext.coverage",
     "sphinx.ext.viewcode",
     "sphinxcontrib.towncrier.ext",
+    "sphinxcontrib.autodoc_pydantic",
+    "sphinx_autodoc_typehints",
+    "sphinx_design",
+    "xsd_documenter",  # Custom XSD documentation extension with D3.js diagrams
 ]
+
+autodoc_pydantic_model_show_json = False
+autodoc_pydantic_model_show_config_summary = False
+
+# Options for sphinx_autodoc_typehints
+set_type_checking_flag = True
+typehints_fully_qualified = False
 
 # use short form for type hint links
 autodoc_typehints_format = "short"
@@ -84,26 +132,23 @@ add_function_parentheses = True
 #     inv.objects.append(o)
 #     text = inv.data_file(contract=True)
 #     ztext = soi.compress(text)
-#     soi.writebytes('**REMOVED**/NexusMicroscopyLIMS/mdcs/nexusLIMS/'
+#     soi.writebytes('NexusMicroscopyLIMS/mdcs/nexusLIMS/'
 #                    'doc/source/objects_lxml.inv', ztext)
 
 intersphinx_mapping = {
-    "python": ("https://docs.python.org/3.10/", None),
+    "python": ("https://docs.python.org/3.11/", None),
     "hyperspy": ("http://hyperspy.org/hyperspy-doc/current/", None),
     "numpy": ("https://numpy.org/doc/stable/", None),
     "matplotlib": ("https://matplotlib.org/stable/", None),
     "requests": ("https://requests.readthedocs.io/en/latest/", None),
     "PIL": ("https://pillow.readthedocs.io/en/stable/", None),
-    "pytz": ("http://pytz.sourceforge.net/", "pytz_objects.inv"),
+    "pytz": ("https://pythonhosted.org/pytz/", "pytz_objects.inv"),
     # use the custom objects.inv file above for LXML:
     "lxml": ("https://lxml.de/", "objects_lxml.inv"),
+    "pydantic": ("https://docs.pydantic.dev/latest/", None),
 }
 
-import sphinx_bootstrap_theme
-
-# Activate the theme.
-html_theme = "bootstrap"
-html_theme_path = sphinx_bootstrap_theme.get_html_theme_path()
+html_theme = "pydata_sphinx_theme"
 
 
 # List of patterns, relative to source directory, that match files and
@@ -139,16 +184,12 @@ keep_warnings = True
 html_static_path = ["_static"]
 
 html_css_files = [
-    "custom-styles.css",
-]
-
-html_js_files = [
-    "custom.js",
+    "custom.css",
 ]
 
 # html_title = "NexusLIMS documentation"
 html_short_title = "NexusLIMS"
-html_logo = "_static/logo_horizontal.png"
+html_logo = "_static/nexusLIMS_bare_logo.png"
 html_favicon = "_static/nexusLIMS_bare_logo.ico"
 html_last_updated_fmt = "%b, %d, %Y"
 html_use_smartypants = True
@@ -158,78 +199,39 @@ html_show_copyright = True
 
 html_extra_path = ["schema_doc"]
 
-# html_sidebars = {'**': ['localtoc.html', 'sourcelink.html', 'searchbox.html']}
-html_sidebars = {
-    "**": ["custom-sidebar.html", "localtoc.html", "searchbox.html", "sourcelink.html"]
-}
+html_sidebars = {"**": ["sidebar-nav-bs"]}
 
 
 html_theme_options = {
-    # Navigation bar title. (Default: ``project`` value)
-    "navbar_title": " ",
-    # Tab name for entire site. (Default: "Site")
-    "navbar_site_name": "Site Map",
-    # A list of tuples containing pages or urls to link to.
-    # Valid tuples should be in the following forms:
-    #    (name, page)                 # a link to a page
-    #    (name, "/aa/bb", 1)          # a link to an arbitrary relative url
-    #    (name, "http://example.com", True) # arbitrary absolute url
-    # Note the "1" or "True" value above as the third argument to indicate
-    # an arbitrary url.
-    "navbar_links": [
-        ("API Docs", "api"),
-        ("Repository", "https://github.com/usnistgov/NexusLIMS", True),
-        ("NIST ODI", "https://www.nist.gov/mml/odi", True),
+    "navbar_start": ["navbar-logo", "version-switcher"],
+    "switcher": {
+        "json_url": "_static/switcher.json",
+        "version_match": version,
+    },
+    "show_version_warning_banner": True,
+    "logo": {
+        "image_light": "_static/logo_horizontal_light.png",
+        "image_dark": "_static/logo_horizontal_dark.png",
+    },
+    "github_url": "https://github.com/datasophos/NexusLIMS",
+    "collapse_navigation": True,
+    "header_links_before_dropdown": 5,
+    "navbar_end": ["search-button", "theme-switcher", "navbar-icon-links"],
+    "navbar_persistent": [],
+    "icon_links": [
+        {
+            "name": "Datasophos",
+            "url": "https://datasophos.co",
+            "icon": "fa-solid fa-globe",
+        },
     ],
-    # Render the next and previous page links in navbar. (Default: true)
-    "navbar_sidebarrel": True,
-    # Render the current pages TOC in the navbar. (Default: true)
-    "navbar_pagenav": False,
-    # Tab name for the current pages TOC. (Default: "Page")
-    "navbar_pagenav_name": "Page",
-    # Global TOC depth for "site" navbar tab. (Default: 1)
-    # Switching to -1 shows all levels.
-    "globaltoc_depth": -1,
-    # Include hidden TOCs in Site navbar?
-    #
-    # Note: If this is "false", you cannot have mixed ``:hidden:`` and
-    # non-hidden ``toctree`` directives in the same page, or else the build
-    # will break.
-    #
-    # Values: "true" (default) or "false"
-    "globaltoc_includehidden": "true",
-    # HTML navbar class (Default: "navbar") to attach to <div> element.
-    # For black navbar, do "navbar navbar-inverse"
-    # 'navbar_class': "navbar navbar-inverse",
-    "navbar_class": "navbar",
-    # Fix navigation bar to top of page?
-    # Values: "true" (default) or "false"
-    "navbar_fixed_top": "false",
-    # Location of link to source.
-    # Options are "nav" (default), "footer" or anything else to exclude.
-    "source_link_position": "footer",
-    # Bootswatch (http://bootswatch.com/) theme.
-    #
-    # Options are nothing (default) or the name of a valid theme
-    # such as "cosmo" or "sandstone".
-    #
-    # The set of valid themes depend on the version of Bootstrap
-    # that's used (the next config option).
-    #
-    # Currently, the supported themes are:
-    # - Bootstrap 2: https://bootswatch.com/2
-    # - Bootstrap 3: https://bootswatch.com/3
-    "bootswatch_theme": "lumen",
-    # Choose Bootstrap version.
-    # Values: "3" (default) or "2" (in quotes)
-    "bootstrap_version": "3",
 }
 
 rst_epilog = """
 .. |SQLSchemaLink| replace:: SQL Schema Definition
-.. _SQLSchemaLink: https://github.com/usnistgov/NexusLIMS/blob/public/nexusLIMS/db/dev/NexusLIMS_db_creation_script.sql
+.. _SQLSchemaLink: https://github.com/datasophos/NexusLIMS/blob/main/nexusLIMS/db/dev/NexusLIMS_db_creation_script.sql
 .. |RepoLink| replace:: repository
-.. _RepoLink: https://github.com/usnistgov/NexusLIMS
+.. _RepoLink: https://github.com/datasophos/NexusLIMS
 """
 
 
@@ -255,7 +257,7 @@ def run_apidoc(_):
 
     load_dotenv("../.env")
 
-    main(["-f", "-M", "-T", "-d", "-1", "-o", output_path, modules] + to_exclude)
+    main(["-f", "-T", "-d", "-1", "-o", output_path, modules] + to_exclude)
 
 
 # def build_plantuml(_):
@@ -278,6 +280,7 @@ nitpick_ignore = [
     ("py:class", "function"),
     ("py:class", "optional"),
     ("py:class", "json.encoder.JSONEncoder"),
+    ("py:class", "pathlib.Annotated"),
 ]
 
 
@@ -289,6 +292,7 @@ def skip(app, what, name, obj, would_skip, options):
 
 def setup(app):
     # app.connect("autodoc-skip-member", skip)
+    app.connect("builder-inited", autodoc_mock_settings)
     app.connect("builder-inited", run_apidoc)
     # app.connect('builder-inited', build_plantuml)
     print(
