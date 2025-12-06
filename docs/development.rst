@@ -108,8 +108,8 @@ using the ``uv run`` command from the repository:
    $ uv run python
 
 To use other commands in the NexusLIMS environment, you can also "activate"
-the environment using the ``$ uv shell`` command from within the cloned
-repository. This will spawn a new shell that ensures all commands will have
+the environment using the ``$ source .venv/bin/activate`` command from within the cloned
+repository. This will activate the virtual environment that ensures all commands will have
 access to the installed packages and environment variables set appropriately.
 
 Testing and Documentation
@@ -125,7 +125,7 @@ This will run all tests with coverage reporting. To run specific tests:
 
 ..  code-block:: bash
 
-   $ uv run pytest tests/test_extractors.py
+   $ pytest tests/test_extractors.py
 
 To build the documentation for the project, run:
 
@@ -152,7 +152,7 @@ NEMO harvester) with a status of
 
 ..  code-block:: bash
 
-    $ uv run python -m nexusLIMS.builder.record_builder
+    $ uv run nexuslims-process-records
 
 This command will find any records that need to be built, build their .xml
 files, and then upload them to the front-end CDCS instance. Consult the
@@ -209,56 +209,77 @@ the `"reference"` images that are tested against. For example:
 .. code:: bash
 
    $ cd <path_to_repo>
-   $ uv run pytest tests/ --cov=nexusLIMS --cov=tests --cov-config=tests/.coveragerc \
-        --cov-report term --mpl --mpl-baseline-path=tests/files/figs
+   $ uv run ./scripts/run_tests.sh
 
-   # ================================= test session starts ==============================================================
-   # platform linux -- Python 3.8.12, pytest-5.4.3, py-1.11.0, pluggy-0.13.1
-   # cachedir: nexuslims/.tox/py38/.pytest_cache
-   # Matplotlib: 3.4.3
+   # =============================================== test session starts =========================
+   # platform darwin -- Python 3.11.14, pytest-9.0.1, pluggy-1.6.0
+   # Matplotlib: 3.10.7
    # Freetype: 2.6.1
-   # rootdir: nexuslims/tests, inifile: pytest.ini
-   # plugins: cov-3.0.0, mpl-0.13
-   # collected 204 items
-   #
-   # tests/test_extractors.py ...............................................................                      [ 30%]
-   # tests/test_harvesters.py .................................................................................... [ 72%]
-   # tests/test_instruments.py ..........                                                                          [ 76%]
-   # tests/test_records.py .................................                                                       [ 93%]
-   # tests/test_utils.py .............                                                                             [ 99%]
-   # tests/test_version.py .                                                                                       [100%]
-   #
-   # ---------- coverage: platform linux, python 3.8.12-final-0 -----------
+   # rootdir: /Users/josh/git_repos/datasophos/NexusLIMS
+   # configfile: pyproject.toml
+   # plugins: mpl-0.17.0, cov-7.0.0
+   # collected 303 items
+   #                                                                                                        
+   # tests/cli/test_process_records.py ............................                         [  9%]
+   # tests/test___init__.py ........                                                        [ 11%]
+   # tests/test___main__.py .                                                               [ 12%]
+   # tests/test_cdcs.py .......                                                             [ 14%]
+   # tests/test_config.py ...................                                               [ 20%]
+   # tests/test_extractors/test_basic_metadata.py ..                                        [ 21%]
+   # tests/test_extractors/test_digital_micrograph.py .........                             [ 24%]
+   # tests/test_extractors/test_edax.py ..                                                  [ 25%]
+   # tests/test_extractors/test_extractor_module.py .................                       [ 30%]
+   # tests/test_extractors/test_fei_emi.py ........................                         [ 38%]
+   # tests/test_extractors/test_quanta_tif.py ......                                        [ 40%]
+   # tests/test_extractors/test_thumbnail_generator.py ...............................      [ 50%]
+   # tests/test_harvesters/test_nemo_api.py .........................................       [ 64%]
+   # tests/test_harvesters/test_nemo_connector.py ..............                            [ 68%]
+   # tests/test_harvesters/test_nemo_utils.py .........                                     [ 71%]
+   # tests/test_harvesters/test_reservation_event.py ......                                 [ 73%]
+   # tests/test_instruments.py .................                                            [ 79%]
+   # tests/test_record_builder/test_activity.py ........                                    [ 82%]
+   # tests/test_record_builder/test_record_builder.py ......................                [ 89%]
+   # tests/test_sessions.py ......                                                          [ 91%]
+   # tests/test_utils.py .........................                                          [ 99%]
+   # tests/test_version.py .                                                                [100%]
+   #                                                                                        [100%]    
+   # =============================================== tests coverage ==============================
+   # _____________________________ coverage: platform darwin, python 3.11.14-final-0 _____________
+   # 
    # Name                                          Stmts   Miss  Cover   Missing
    # ---------------------------------------------------------------------------
-   # nexusLIMS/__init__.py                             8      0   100%
-   # nexusLIMS/_urls.py                                3      0   100%
+   # nexusLIMS/__init__.py                            18      0   100%
+   # nexusLIMS/__main__.py                             3      0   100%
    # nexusLIMS/builder/__init__.py                     0      0   100%
-   # nexusLIMS/builder/record_builder.py             201      0   100%
-   # nexusLIMS/cdcs.py                                70      0   100%
-   # nexusLIMS/db/__init__.py                         10      0   100%
-   # nexusLIMS/db/session_handler.py                  96      0   100%
-   # nexusLIMS/extractors/__init__.py                 80      0   100%
-   # nexusLIMS/extractors/digital_micrograph.py      415      0   100%
-   # nexusLIMS/extractors/fei_emi.py                 198      0   100%
-   # nexusLIMS/extractors/quanta_tif.py              203      0   100%
-   # nexusLIMS/extractors/thumbnail_generator.py     328      0   100%
-   # nexusLIMS/harvesters/__init__.py                107      0   100%
-   # nexusLIMS/harvesters/nemo.py                    275      0   100%
-   # nexusLIMS/harvesters/sharepoint_calendar.py     149      0   100%
-   # nexusLIMS/instruments.py                         76      0   100%
+   # nexusLIMS/builder/record_builder.py             197      0   100%
+   # nexusLIMS/cdcs.py                                73      0   100%
+   # nexusLIMS/cli/__init__.py                         0      0   100%
+   # nexusLIMS/cli/process_records.py                129      0   100%
+   # nexusLIMS/config.py                             153      0   100%
+   # nexusLIMS/db/__init__.py                          7      0   100%
+   # nexusLIMS/db/session_handler.py                  89      0   100%
+   # nexusLIMS/extractors/__init__.py                103      0   100%
+   # nexusLIMS/extractors/basic_metadata.py           14      0   100%
+   # nexusLIMS/extractors/digital_micrograph.py      278      0   100%
+   # nexusLIMS/extractors/edax.py                     33      0   100%
+   # nexusLIMS/extractors/fei_emi.py                 200      0   100%
+   # nexusLIMS/extractors/quanta_tif.py              237      0   100%
+   # nexusLIMS/extractors/thumbnail_generator.py     402      0   100%
+   # nexusLIMS/extractors/utils.py                   163      0   100%
+   # nexusLIMS/harvesters/__init__.py                  5      0   100%
+   # nexusLIMS/harvesters/nemo/__init__.py            33      0   100%
+   # nexusLIMS/harvesters/nemo/connector.py          244      0   100%
+   # nexusLIMS/harvesters/nemo/exceptions.py           2      0   100%
+   # nexusLIMS/harvesters/nemo/utils.py               68      0   100%
+   # nexusLIMS/harvesters/reservation_event.py       130      0   100%
+   # nexusLIMS/instruments.py                         91      0   100%
    # nexusLIMS/schemas/__init__.py                     0      0   100%
-   # nexusLIMS/schemas/activity.py                   166      0   100%
-   # nexusLIMS/utils.py                              199      0   100%
+   # nexusLIMS/schemas/activity.py                   173      0   100%
+   # nexusLIMS/utils.py                              240      0   100%
    # nexusLIMS/version.py                              2      0   100%
-   # tests/__init__.py                                 0      0   100%
-   # tests/test_extractors.py                        747      0   100%
-   # tests/test_harvesters.py                        477      0   100%
-   # tests/test_instruments.py                        56      0   100%
-   # tests/test_records.py                           254      0   100%
-   # tests/test_utils.py                             101      0   100%
-   # tests/test_version.py                             5      0   100%
-   # tests/utils.py                                    9      0   100%
    # ---------------------------------------------------------------------------
-   # TOTAL                                          4235      0   100%
+   # TOTAL                                          3087      0   100%
    # Coverage HTML written to dir tests/coverage
+   # Coverage XML written to file coverage.xml
+   # ============================= 303 passed in 33.51s =================
+   # >>> elapsed time 39s
