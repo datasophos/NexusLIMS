@@ -1,0 +1,27 @@
+name: Cleanup PR Documentation
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+      - name: Remove PR preview directory
+        run: |
+          PR_NUMBER=${{ github.event.pull_request.number }}
+          if [ -d "pr-${PR_NUMBER}" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git rm -rf "pr-${PR_NUMBER}"
+            git commit -m "Remove docs preview for closed PR #${PR_NUMBER}"
+            git push origin gh-pages
+          else
+            echo "No preview directory found for PR #${PR_NUMBER}"
+          fi
