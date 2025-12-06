@@ -1,0 +1,78 @@
+# gh-pages branch should only contain built documentation
+# Ignore all local development artifacts and source code
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+ENV/
+env/
+
+# Testing
+.pytest_cache/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+.tox/
+.nox/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.claude/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Linting/Formatting
+.ruff_cache/
+.mypy_cache/
+.pytype/
+
+# Local environment
+.env
+.env.local
+
+# Source code directories (should not be on gh-pages)
+nexusLIMS/
+tests/
+docs/
+scripts/
+
+# Build artifacts that might be checked out locally
+_build/
+.doctrees/
+
+# Database files
+*.sqlite
+*.db
+
+# Any project files
+pyproject.toml
+poetry.lock
+uv.lock
+*.cfg
+*.ini
+setup.py
+setup.cfg
+tox.ini
+
+# Documentation source that might get checked out
+*.rst
+*.md
+!README.md
+
+# Keep only the .env.example template
+!.env.example
