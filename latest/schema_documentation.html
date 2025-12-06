@@ -454,10 +454,7 @@ XML schema used to represent experimental records.</p>
 <p>The Nexus Experiment schema defines the structure of XML records generated
 by NexusLIMS. Each record describes a microscopy session, including metadata
 about the experiment, instruments used, and data files acquired.</p>
-<dl class="simple">
-<dt>A metadata schema for describing an experiment utilizing equipment</dt><dd><p>from the Nexus Microscopy Lab.</p>
-</dd>
-</dl>
+<p>A metadata schema for describing an experiment utilizing equipment from the Nexus Microscopy Lab.</p>
 <p class="rubric" id="schema-structure-interactive">Schema Structure (Interactive)</p>
 <p>The diagram below shows the hierarchical structure of the schema.
 <strong>Pan</strong> by clicking and dragging, <strong>zoom</strong> with the mouse wheel,
@@ -583,7 +580,7 @@ and <strong>click</strong> on any <em>type</em> node to jump to its detailed doc
       "id": "Experiment_summary",
       "label": "summary",
       "type": "element",
-      "description": "A collection of metadata that summarize the overall use and\n               intent of the experiment."
+      "description": "A collection of metadata that summarize the overall use and intent of the experiment."
     },
     {
       "id": "Experiment_sample",
@@ -601,7 +598,7 @@ and <strong>click</strong> on any <em>type</em> node to jump to its detailed doc
       "id": "Experiment_acquisitionActivity",
       "label": "acquisitionActivity (optional)",
       "type": "optional",
-      "description": "A description of a specific group of data acqusition during this\n               experimental session."
+      "description": "A description of a specific group of data acqusition during this experimental session."
     },
     {
       "id": "Experiment_notes",
@@ -613,7 +610,7 @@ and <strong>click</strong> on any <em>type</em> node to jump to its detailed doc
       "id": "Summary",
       "label": "Summary",
       "type": "complexType",
-      "description": "A collection of metadata that summarize the overall use and\n           intent of the experiment."
+      "description": "A collection of metadata that summarize the overall use and intent of the experiment."
     },
     {
       "id": "Summary_experimenter",
@@ -649,13 +646,13 @@ and <strong>click</strong> on any <em>type</em> node to jump to its detailed doc
       "id": "Summary_motivation",
       "label": "motivation (optional)",
       "type": "optional",
-      "description": "A prose description of the motivation, purpose, or other intent\n               behind this experiment."
+      "description": "A prose description of the motivation, purpose, or other intent behind this experiment."
     },
     {
       "id": "Sample",
       "label": "Sample",
       "type": "complexType",
-      "description": "A collection of metadata that describe a sample examined during\n           an experiment."
+      "description": "A collection of metadata that describe a sample examined during an experiment."
     },
     {
       "id": "Sample_name",
@@ -667,7 +664,7 @@ and <strong>click</strong> on any <em>type</em> node to jump to its detailed doc
       "id": "Sample_description",
       "label": "description (optional)",
       "type": "optional",
-      "description": "A description of the sample (where each occurance can\n                 be thought of as a separate paragraph)."
+      "description": "A description of the sample (where each occurance can be thought of as a separate paragraph)."
     },
     {
       "id": "Sample_notes",
@@ -679,13 +676,13 @@ and <strong>click</strong> on any <em>type</em> node to jump to its detailed doc
       "id": "Sample_elements",
       "label": "elements (optional)",
       "type": "optional",
-      "description": "A list of one or more elements that are present or expected to be\n            present in this sample"
+      "description": "A list of one or more elements that are present or expected to be present in this sample"
     },
     {
       "id": "Project",
       "label": "Project",
       "type": "complexType",
-      "description": "A collection of metadata that describes a project to which an\n           Experiment can belong."
+      "description": "A collection of metadata that describes a project to which an Experiment can belong."
     },
     {
       "id": "Project_name",
@@ -703,7 +700,7 @@ and <strong>click</strong> on any <em>type</em> node to jump to its detailed doc
       "id": "Project_group",
       "label": "group (optional)",
       "type": "optional",
-      "description": "The group ID within a division to which this\n            project belongs"
+      "description": "The group ID within a division to which this project belongs"
     },
     {
       "id": "Project_project_id",
@@ -721,25 +718,25 @@ and <strong>click</strong> on any <em>type</em> node to jump to its detailed doc
       "id": "AcquisitionActivity",
       "label": "AcquisitionActivity",
       "type": "complexType",
-      "description": "A collection of metadata that describe a specific group\n           of acquired data during the Experiment."
+      "description": "A collection of metadata that describe a specific group of acquired data during the Experiment."
     },
     {
       "id": "AcquisitionActivity_startTime",
       "label": "startTime (optional)",
       "type": "optional",
-      "description": "A date and time recorded as the start of this activity.\n                 This can be the time of the creation of the of the first\n                 dataset."
+      "description": "A date and time recorded as the start of this activity. This can be the time of the creation of the of the first dataset."
     },
     {
       "id": "AcquisitionActivity_sampleID",
       "label": "sampleID (optional)",
       "type": "optional",
-      "description": "The identifier for the sample that was part of this\n                 acquisition activity.  This should match a value of\n                 the id attribute for a sample element included in\n                 this document."
+      "description": "The identifier for the sample that was part of this acquisition activity. This should match a value of the id attribute for a sample element included in this document."
     },
     {
       "id": "AcquisitionActivity_setup",
       "label": "setup (optional)",
       "type": "optional",
-      "description": "Metadata describing the set-up of the instrument\n                 during the current Acqusition Activity."
+      "description": "Metadata describing the set-up of the instrument during the current Acqusition Activity."
     },
     {
       "id": "AcquisitionActivity_notes",
@@ -751,7 +748,7 @@ and <strong>click</strong> on any <em>type</em> node to jump to its detailed doc
       "id": "AcquisitionActivity_dataset",
       "label": "dataset (optional)",
       "type": "optional",
-      "description": "A file or named set of files that was acquired during\n                 the current Acqusition Activity."
+      "description": "A file or named set of files that was acquired during the current Acqusition Activity."
     },
     {
       "id": "Notes",
@@ -763,13 +760,13 @@ and <strong>click</strong> on any <em>type</em> node to jump to its detailed doc
       "id": "Notes_entry",
       "label": "entry (optional)",
       "type": "optional",
-      "description": "A section of the notes.  Each section can be of a different\n                 type with different structural content (e.g. for text, an\n                 image, a table, etc.)"
+      "description": "A section of the notes. Each section can be of a different type with different structural content (e.g. for text, an image, a table, etc.)"
     },
     {
       "id": "Entry",
       "label": "Entry",
       "type": "complexType",
-      "description": "An entry into a set of notes.  This type serves as a base type\n           for different sub-types."
+      "description": "An entry into a set of notes. This type serves as a base type for different sub-types."
     },
     {
       "id": "TextEntry",
@@ -865,7 +862,7 @@ and <strong>click</strong> on any <em>type</em> node to jump to its detailed doc
       "id": "Setup",
       "label": "Setup",
       "type": "complexType",
-      "description": "Metadata describing the set-up of an instrument (values common\n           to all datasets within an Acqusition Activity)."
+      "description": "Metadata describing the set-up of an instrument (values common to all datasets within an Acqusition Activity)."
     },
     {
       "id": "Setup_param",
@@ -889,25 +886,25 @@ and <strong>click</strong> on any <em>type</em> node to jump to its detailed doc
       "id": "Dataset_location",
       "label": "location",
       "type": "element",
-      "description": "A directory path or URL indicating the location where\n                 the dataset is stored"
+      "description": "A directory path or URL indicating the location where the dataset is stored"
     },
     {
       "id": "Dataset_format",
       "label": "format (optional)",
       "type": "optional",
-      "description": "A string (can be a MIME type) indicating the format of\n                 the dataset (e.g. TIFF, DICOM, Excel)."
+      "description": "A string (can be a MIME type) indicating the format of the dataset (e.g. TIFF, DICOM, Excel)."
     },
     {
       "id": "Dataset_description",
       "label": "description (optional)",
       "type": "optional",
-      "description": "A description of the dataset (where each occurance can\n                 be thought of as a separate paragraph)."
+      "description": "A description of the dataset (where each occurance can be thought of as a separate paragraph)."
     },
     {
       "id": "Dataset_preview",
       "label": "preview (optional)",
       "type": "optional",
-      "description": "URL or string path to a preview rendering (thumbnail) of the data\n                 in the dataset."
+      "description": "URL or string path to a preview rendering (thumbnail) of the data in the dataset."
     },
     {
       "id": "Dataset_meta",
@@ -919,19 +916,19 @@ and <strong>click</strong> on any <em>type</em> node to jump to its detailed doc
       "id": "Parameter",
       "label": "Parameter",
       "type": "complexType",
-      "description": "A piece of arbitrary metadata featuring a name and a value, unique\n           to a dataset within an Acqusition Activity."
+      "description": "A piece of arbitrary metadata featuring a name and a value, unique to a dataset within an Acqusition Activity."
     },
     {
       "id": "Instrument",
       "label": "Instrument",
       "type": "complexType",
-      "description": "The identification of an instrument in the\n        facility."
+      "description": "The identification of an instrument in the facility."
     },
     {
       "id": "PeriodicTableElementType",
       "label": "PeriodicTableElementType",
       "type": "complexType",
-      "description": "Allowed periodic table element values. Includes abbreviations from the\n        periodic table up to element number 118. This list was adapted from the Chemical Markup\n        Language schema (http://www.xml-cml.org/schema/schema3/)"
+      "description": "Allowed periodic table element values. Includes abbreviations from the periodic table up to element number 118. This list was adapted from the Chemical Markup Language schema (http://www.xml-cml.org/schema/schema3/)"
     },
     {
       "id": "PeriodicTableElementType_summary",
@@ -1568,48 +1565,38 @@ and <strong>click</strong> on any <em>type</em> node to jump to its detailed doc
 <div class="type-header docutils container" id="xsd-type-experiment">
 <p><strong>Type: Experiment</strong></p>
 <div style="float: right; font-size: 0.9em;"><a href="#schema-structure-interactive">↑ Back to diagram</a></div></div>
-<dl>
-<dt>A description of an experiment using an instrument in Nexus</dt><dd><blockquote>
-<div><p>Microscopy Lab</p>
-</div></blockquote>
-<dl>
+<p>A description of an experiment using an instrument in Nexus Microscopy Lab</p>
+<blockquote>
+<div><dl>
 <dt><strong>title</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:token</span></code> (optional)</span></dt><dd><p>The title of this experiment</p>
 </dd>
 <dt><strong>id</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:token</span></code> (optional)</span></dt><dd><p>A unique local identifier assigned to this record.</p>
 </dd>
-<dt><strong>summary</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">nx:Summary</span></code></span></dt><dd><p>A collection of metadata that summarize the overall use and
-intent of the experiment.</p>
+<dt><strong>summary</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">nx:Summary</span></code></span></dt><dd><p>A collection of metadata that summarize the overall use and intent of the experiment.</p>
 </dd>
 <dt><strong>sample</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">nx:Sample</span></code> (optional)</span></dt><dd><p>A description of a sample examined in this experiment.</p>
 </dd>
 <dt><strong>project</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">nx:Project</span></code> (optional)</span></dt><dd><p>A description of a project of which this Experiment is a part.</p>
 </dd>
-<dt><strong>acquisitionActivity</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">nx:AcquisitionActivity</span></code> (optional)</span></dt><dd><p>A description of a specific group of data acqusition during this
-experimental session.</p>
+<dt><strong>acquisitionActivity</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">nx:AcquisitionActivity</span></code> (optional)</span></dt><dd><p>A description of a specific group of data acqusition during this experimental session.</p>
 </dd>
 <dt><strong>notes</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">nx:Notes</span></code> (optional)</span></dt><dd><p>Largely unformatted notes taken regarding the current sample</p>
 </dd>
 </dl>
-</dd>
-</dl>
+</div></blockquote>
 <p><strong>Attributes:</strong></p>
 <blockquote>
 <div><dl class="simple">
-<dt><strong>pid</strong></dt><dd><dl class="simple">
-<dt>An unambiguous identifier for this resource description as</dt><dd><p>assigned by its author or its curating registry.</p>
-</dd>
-</dl>
+<dt><strong>pid</strong></dt><dd><p>An unambiguous identifier for this resource description as assigned by its author or its curating registry.</p>
 </dd>
 </dl>
 </div></blockquote>
 <div class="type-header docutils container" id="xsd-type-summary">
 <p><strong>Type: Summary</strong></p>
 <div style="float: right; font-size: 0.9em;"><a href="#schema-structure-interactive">↑ Back to diagram</a></div></div>
-<dl>
-<dt>A collection of metadata that summarize the overall use and</dt><dd><blockquote>
-<div><p>intent of the experiment.</p>
-</div></blockquote>
-<dl>
+<p>A collection of metadata that summarize the overall use and intent of the experiment.</p>
+<blockquote>
+<div><dl>
 <dt><strong>experimenter</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:token</span></code> (optional)</span></dt><dd><p>The name of the user running this experiment.</p>
 </dd>
 <dt><strong>collaborator</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:token</span></code> (optional)</span></dt><dd><p>The name of a notable collaborator in the experiment</p>
@@ -1620,119 +1607,82 @@ experimental session.</p>
 </dd>
 <dt><strong>reservationEnd</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:dateTime</span></code> (optional)</span></dt><dd><p>The end time of this experiment</p>
 </dd>
-<dt><strong>motivation</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:string</span></code> (optional)</span></dt><dd><p>A prose description of the motivation, purpose, or other intent
-behind this experiment.</p>
+<dt><strong>motivation</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:string</span></code> (optional)</span></dt><dd><p>A prose description of the motivation, purpose, or other intent behind this experiment.</p>
 </dd>
 </dl>
-</dd>
-</dl>
+</div></blockquote>
 <p><strong>Attributes:</strong></p>
 <blockquote>
 <div><dl>
-<dt><strong>ref</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:anyURI</span></code></span></dt><dd><dl class="simple">
-<dt>An external link to the reservation or metadata record used</dt><dd><p>to populate this Experiment record. Could be a link to
-a particular reservation in a facility management system,
-for instance.</p>
-</dd>
-</dl>
+<dt><strong>ref</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:anyURI</span></code></span></dt><dd><p>An external link to the reservation or metadata record used to populate this Experiment record. Could be a link to a particular reservation in a facility management system, for instance.</p>
 </dd>
 </dl>
 </div></blockquote>
 <div class="type-header docutils container" id="xsd-type-sample">
 <p><strong>Type: Sample</strong></p>
 <div style="float: right; font-size: 0.9em;"><a href="#schema-structure-interactive">↑ Back to diagram</a></div></div>
-<dl>
-<dt>A collection of metadata that describe a sample examined during</dt><dd><blockquote>
-<div><p>an experiment.</p>
-</div></blockquote>
-<dl>
+<p>A collection of metadata that describe a sample examined during an experiment.</p>
+<blockquote>
+<div><dl>
 <dt><strong>name</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:token</span></code> (optional)</span></dt><dd><p>A name for the sample (for display purposes)</p>
 </dd>
-<dt><strong>description</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:token</span></code> (optional)</span></dt><dd><p>A description of the sample (where each occurance can
-be thought of as a separate paragraph).</p>
+<dt><strong>description</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:token</span></code> (optional)</span></dt><dd><p>A description of the sample (where each occurance can be thought of as a separate paragraph).</p>
 </dd>
 <dt><strong>notes</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">nx:Notes</span></code> (optional)</span></dt><dd><p>Largely unformatted notes taken regarding the current sample</p>
 </dd>
-<dt><strong>elements</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">nx:PeriodicTableElementType</span></code> (optional)</span></dt><dd><p>A list of one or more elements that are present or expected to be
-present in this sample</p>
+<dt><strong>elements</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">nx:PeriodicTableElementType</span></code> (optional)</span></dt><dd><p>A list of one or more elements that are present or expected to be present in this sample</p>
 </dd>
 </dl>
-</dd>
-</dl>
+</div></blockquote>
 <p><strong>Attributes:</strong></p>
 <blockquote>
 <div><dl>
-<dt><strong>id</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:string</span></code></span></dt><dd><dl class="simple">
-<dt>An identifier (unique to this document) that identifies</dt><dd><p>the current sample.  This can be the sample name if it
-is unique.</p>
+<dt><strong>id</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:string</span></code></span></dt><dd><p>An identifier (unique to this document) that identifies the current sample. This can be the sample name if it is unique.</p>
 </dd>
-</dl>
-</dd>
-<dt><strong>ref</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:string</span></code></span></dt><dd><dl class="simple">
-<dt>An external persistent identifier for the current sample</dt><dd><p>the current sample.  This can be the sample name if it
-is unique.</p>
-</dd>
-</dl>
+<dt><strong>ref</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:string</span></code></span></dt><dd><p>An external persistent identifier for the current sample the current sample. This can be the sample name if it is unique.</p>
 </dd>
 </dl>
 </div></blockquote>
 <div class="type-header docutils container" id="xsd-type-project">
 <p><strong>Type: Project</strong></p>
 <div style="float: right; font-size: 0.9em;"><a href="#schema-structure-interactive">↑ Back to diagram</a></div></div>
-<dl>
-<dt>A collection of metadata that describes a project to which an</dt><dd><blockquote>
-<div><p>Experiment can belong.</p>
-</div></blockquote>
-<dl>
+<p>A collection of metadata that describes a project to which an Experiment can belong.</p>
+<blockquote>
+<div><dl>
 <dt><strong>name</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:token</span></code> (optional)</span></dt><dd><p>A name for the project (for display purposes)</p>
 </dd>
 <dt><strong>division</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:token</span></code> (optional)</span></dt><dd><p>The division ID to which this project belongs</p>
 </dd>
-<dt><strong>group</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:token</span></code> (optional)</span></dt><dd><p>The group ID within a division to which this
-project belongs</p>
+<dt><strong>group</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:token</span></code> (optional)</span></dt><dd><p>The group ID within a division to which this project belongs</p>
 </dd>
 <dt><strong>project_id</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:token</span></code> (optional)</span></dt><dd><p>The specific project ID within a research group/division</p>
 </dd>
 <dt><strong>ref</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:anyURI</span></code> (optional)</span></dt><dd><p>An (optional) link to this project in another database</p>
 </dd>
 </dl>
-</dd>
-</dl>
+</div></blockquote>
 <div class="type-header docutils container" id="xsd-type-acquisitionactivity">
 <p><strong>Type: AcquisitionActivity</strong></p>
 <div style="float: right; font-size: 0.9em;"><a href="#schema-structure-interactive">↑ Back to diagram</a></div></div>
-<dl>
-<dt>A collection of metadata that describe a specific group</dt><dd><blockquote>
-<div><p>of acquired data during the Experiment.</p>
-</div></blockquote>
-<dl>
-<dt><strong>startTime</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:dateTime</span></code> (optional)</span></dt><dd><p>A date and time recorded as the start of this activity.
-This can be the time of the creation of the of the first
-dataset.</p>
+<p>A collection of metadata that describe a specific group of acquired data during the Experiment.</p>
+<blockquote>
+<div><dl>
+<dt><strong>startTime</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:dateTime</span></code> (optional)</span></dt><dd><p>A date and time recorded as the start of this activity. This can be the time of the creation of the of the first dataset.</p>
 </dd>
-<dt><strong>sampleID</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:token</span></code> (optional)</span></dt><dd><p>The identifier for the sample that was part of this
-acquisition activity.  This should match a value of
-the id attribute for a sample element included in
-this document.</p>
+<dt><strong>sampleID</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:token</span></code> (optional)</span></dt><dd><p>The identifier for the sample that was part of this acquisition activity. This should match a value of the id attribute for a sample element included in this document.</p>
 </dd>
-<dt><strong>setup</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">nx:Setup</span></code> (optional)</span></dt><dd><p>Metadata describing the set-up of the instrument
-during the current Acqusition Activity.</p>
+<dt><strong>setup</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">nx:Setup</span></code> (optional)</span></dt><dd><p>Metadata describing the set-up of the instrument during the current Acqusition Activity.</p>
 </dd>
 <dt><strong>notes</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">nx:Notes</span></code> (optional)</span></dt><dd><p>Largely unformatted notes taken regarding the current Acqusition Activity</p>
 </dd>
-<dt><strong>dataset</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">nx:Dataset</span></code> (optional)</span></dt><dd><p>A file or named set of files that was acquired during
-the current Acqusition Activity.</p>
+<dt><strong>dataset</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">nx:Dataset</span></code> (optional)</span></dt><dd><p>A file or named set of files that was acquired during the current Acqusition Activity.</p>
 </dd>
 </dl>
-</dd>
-</dl>
+</div></blockquote>
 <p><strong>Attributes:</strong></p>
 <blockquote>
 <div><dl>
-<dt><strong>seqno</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:integer</span></code></span></dt><dd><dl class="simple">
-<dt>A number that indicates the order that this Acqusition Activity occurred</dt><dd><p>within a sequence of Acqusition Activities.</p>
-</dd>
-</dl>
+<dt><strong>seqno</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:integer</span></code></span></dt><dd><p>A number that indicates the order that this Acqusition Activity occurred within a sequence of Acqusition Activities.</p>
 </dd>
 </dl>
 </div></blockquote>
@@ -1742,9 +1692,7 @@ the current Acqusition Activity.</p>
 <p>Generic content pulled as notes (lightly structured).</p>
 <blockquote>
 <div><dl>
-<dt><strong>entry</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">nx:Entry</span></code> (optional)</span></dt><dd><p>A section of the notes.  Each section can be of a different
-type with different structural content (e.g. for text, an
-image, a table, etc.)</p>
+<dt><strong>entry</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">nx:Entry</span></code> (optional)</span></dt><dd><p>A section of the notes. Each section can be of a different type with different structural content (e.g. for text, an image, a table, etc.)</p>
 </dd>
 </dl>
 </div></blockquote>
@@ -1758,10 +1706,7 @@ image, a table, etc.)</p>
 <div class="type-header docutils container" id="xsd-type-entry">
 <p><strong>Type: Entry</strong></p>
 <div style="float: right; font-size: 0.9em;"><a href="#schema-structure-interactive">↑ Back to diagram</a></div></div>
-<dl class="simple">
-<dt>An entry into a set of notes.  This type serves as a base type</dt><dd><p>for different sub-types.</p>
-</dd>
-</dl>
+<p>An entry into a set of notes. This type serves as a base type for different sub-types.</p>
 <div class="type-header docutils container" id="xsd-type-textentry">
 <p><strong>Type: TextEntry</strong></p>
 <div style="float: right; font-size: 0.9em;"><a href="#schema-structure-interactive">↑ Back to diagram</a></div></div>
@@ -1805,10 +1750,7 @@ image, a table, etc.)</p>
 <p><strong>Attributes:</strong></p>
 <blockquote>
 <div><dl class="simple">
-<dt><strong>id</strong></dt><dd><dl class="simple">
-<dt>The identifier to assign to this column (for reference by</dt><dd><p>cell elements).</p>
-</dd>
-</dl>
+<dt><strong>id</strong></dt><dd><p>The identifier to assign to this column (for reference by cell elements).</p>
 </dd>
 </dl>
 </div></blockquote>
@@ -1835,10 +1777,7 @@ image, a table, etc.)</p>
 <p><strong>Attributes:</strong></p>
 <blockquote>
 <div><dl>
-<dt><strong>seqno</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:integer</span></code></span></dt><dd><dl class="simple">
-<dt>A number that indicates the order that the row appears</dt><dd><p>in the table.</p>
-</dd>
-</dl>
+<dt><strong>seqno</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:integer</span></code></span></dt><dd><p>A number that indicates the order that the row appears in the table.</p>
 </dd>
 </dl>
 </div></blockquote>
@@ -1856,16 +1795,13 @@ image, a table, etc.)</p>
 <div class="type-header docutils container" id="xsd-type-setup">
 <p><strong>Type: Setup</strong></p>
 <div style="float: right; font-size: 0.9em;"><a href="#schema-structure-interactive">↑ Back to diagram</a></div></div>
-<dl>
-<dt>Metadata describing the set-up of an instrument (values common</dt><dd><blockquote>
-<div><p>to all datasets within an Acqusition Activity).</p>
-</div></blockquote>
-<dl>
+<p>Metadata describing the set-up of an instrument (values common to all datasets within an Acqusition Activity).</p>
+<blockquote>
+<div><dl>
 <dt><strong>param</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">nx:Parameter</span></code> (optional)</span></dt><dd><p>An arbitrary setup parameter with a name and a value</p>
 </dd>
 </dl>
-</dd>
-</dl>
+</div></blockquote>
 <div class="type-header docutils container" id="xsd-type-dataset">
 <p><strong>Type: Dataset</strong></p>
 <div style="float: right; font-size: 0.9em;"><a href="#schema-structure-interactive">↑ Back to diagram</a></div></div>
@@ -1874,17 +1810,13 @@ image, a table, etc.)</p>
 <div><dl>
 <dt><strong>name</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:string</span></code></span></dt><dd><p>The name given to the dataset</p>
 </dd>
-<dt><strong>location</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:string</span></code></span></dt><dd><p>A directory path or URL indicating the location where
-the dataset is stored</p>
+<dt><strong>location</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:string</span></code></span></dt><dd><p>A directory path or URL indicating the location where the dataset is stored</p>
 </dd>
-<dt><strong>format</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:string</span></code> (optional)</span></dt><dd><p>A string (can be a MIME type) indicating the format of
-the dataset (e.g. TIFF, DICOM, Excel).</p>
+<dt><strong>format</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:string</span></code> (optional)</span></dt><dd><p>A string (can be a MIME type) indicating the format of the dataset (e.g. TIFF, DICOM, Excel).</p>
 </dd>
-<dt><strong>description</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:string</span></code> (optional)</span></dt><dd><p>A description of the dataset (where each occurance can
-be thought of as a separate paragraph).</p>
+<dt><strong>description</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:string</span></code> (optional)</span></dt><dd><p>A description of the dataset (where each occurance can be thought of as a separate paragraph).</p>
 </dd>
-<dt><strong>preview</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:string</span></code> (optional)</span></dt><dd><p>URL or string path to a preview rendering (thumbnail) of the data
-in the dataset.</p>
+<dt><strong>preview</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:string</span></code> (optional)</span></dt><dd><p>URL or string path to a preview rendering (thumbnail) of the data in the dataset.</p>
 </dd>
 <dt><strong>meta</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">nx:Parameter</span></code> (optional)</span></dt><dd><p>An arbitrary metadatum with a name and a value unique to this dataset</p>
 </dd>
@@ -1893,25 +1825,16 @@ in the dataset.</p>
 <p><strong>Attributes:</strong></p>
 <blockquote>
 <div><dl>
-<dt><strong>type</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">nx:DatasetType</span></code></span></dt><dd><dl class="simple">
-<dt>A label indicating the type of this dataset (taken from</dt><dd><p>a controlled list).</p>
+<dt><strong>type</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">nx:DatasetType</span></code></span></dt><dd><p>A label indicating the type of this dataset (taken from a controlled list).</p>
 </dd>
-</dl>
-</dd>
-<dt><strong>role</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">nx:DatasetRole</span></code></span></dt><dd><dl class="simple">
-<dt>A label indicating the experimental role of this dataset</dt><dd><p>(taken from a controlled list).</p>
-</dd>
-</dl>
+<dt><strong>role</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">nx:DatasetRole</span></code></span></dt><dd><p>A label indicating the experimental role of this dataset (taken from a controlled list).</p>
 </dd>
 </dl>
 </div></blockquote>
 <div class="type-header docutils container" id="xsd-type-parameter">
 <p><strong>Type: Parameter</strong></p>
 <div style="float: right; font-size: 0.9em;"><a href="#schema-structure-interactive">↑ Back to diagram</a></div></div>
-<dl class="simple">
-<dt>A piece of arbitrary metadata featuring a name and a value, unique</dt><dd><p>to a dataset within an Acqusition Activity.</p>
-</dd>
-</dl>
+<p>A piece of arbitrary metadata featuring a name and a value, unique to a dataset within an Acqusition Activity.</p>
 <p><strong>Attributes:</strong></p>
 <blockquote>
 <div><dl>
@@ -1919,21 +1842,14 @@ in the dataset.</p>
 </dd>
 <dt><strong>unit</strong></dt><dd><p>A physical unit associated with the value of this parameter</p>
 </dd>
-<dt><strong>warning</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">boolean</span></code></span></dt><dd><dl class="simple">
-<dt>A marker to indicate that this parameter may not be reliable</dt><dd><p>(an instrument may have not written it correctly, or it is commonly not
-filled out properly, etc.)</p>
-</dd>
-</dl>
+<dt><strong>warning</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">boolean</span></code></span></dt><dd><p>A marker to indicate that this parameter may not be reliable (an instrument may have not written it correctly, or it is commonly not filled out properly, etc.)</p>
 </dd>
 </dl>
 </div></blockquote>
 <div class="type-header docutils container" id="xsd-type-instrument">
 <p><strong>Type: Instrument</strong></p>
 <div style="float: right; font-size: 0.9em;"><a href="#schema-structure-interactive">↑ Back to diagram</a></div></div>
-<dl class="simple">
-<dt>The identification of an instrument in the</dt><dd><p>facility.</p>
-</dd>
-</dl>
+<p>The identification of an instrument in the facility.</p>
 <p><strong>Attributes:</strong></p>
 <blockquote>
 <div><dl>
@@ -1946,12 +1862,9 @@ filled out properly, etc.)</p>
 <div class="type-header docutils container" id="xsd-type-periodictableelementtype">
 <p><strong>Type: PeriodicTableElementType</strong></p>
 <div style="float: right; font-size: 0.9em;"><a href="#schema-structure-interactive">↑ Back to diagram</a></div></div>
-<dl>
-<dt>Allowed periodic table element values. Includes abbreviations from the</dt><dd><blockquote>
-<div><p>periodic table up to element number 118. This list was adapted from the Chemical Markup
-Language schema (<a class="reference external" href="http://www.xml-cml.org/schema/schema3/">http://www.xml-cml.org/schema/schema3/</a>)</p>
-</div></blockquote>
-<dl class="simple">
+<p>Allowed periodic table element values. Includes abbreviations from the periodic table up to element number 118. This list was adapted from the Chemical Markup Language schema (<a class="reference external" href="http://www.xml-cml.org/schema/schema3/">http://www.xml-cml.org/schema/schema3/</a>)</p>
+<blockquote>
+<div><dl class="simple">
 <dt><strong>H</strong> (optional)</dt><dd><p>Hydrogen; Atomic number 1</p>
 </dd>
 <dt><strong>He</strong> (optional)</dt><dd><p>Helium; Atomic number 2</p>
@@ -2189,17 +2102,14 @@ Language schema (<a class="reference external" href="http://www.xml-cml.org/sche
 <dt><strong>Og</strong> (optional)</dt><dd><p>Oganesson; Atomic number 118</p>
 </dd>
 </dl>
-</dd>
-</dl>
+</div></blockquote>
 <p class="rubric">Simple Types</p>
 <div class="type-header docutils container" id="xsd-type-instrumentname">
 <p><strong>Type: InstrumentName</strong> (simple type)</p>
 <div style="float: right; font-size: 0.9em;"><a href="#schema-structure-interactive">↑ Back to diagram</a></div></div>
-<dl>
-<dt>Controlled labels that identify available instruments in the</dt><dd><blockquote>
-<div><p>facility (matching names in the reservation calendar resource).</p>
-</div></blockquote>
-<p><em>Base type:</em> <code class="docutils literal notranslate"><span class="pre">xs:token</span></code></p>
+<p>Controlled labels that identify available instruments in the facility (matching names in the reservation calendar resource).</p>
+<blockquote>
+<div><p><em>Base type:</em> <code class="docutils literal notranslate"><span class="pre">xs:token</span></code></p>
 <p><em>Allowed values:</em></p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">FEI</span> <span class="pre">Titan</span> <span class="pre">TEM</span></code> - The FEI Titan transmission electron microscope in Bldg 1/Room A</p></li>
@@ -2214,54 +2124,24 @@ Language schema (<a class="reference external" href="http://www.xml-cml.org/sche
 <li><p><code class="docutils literal notranslate"><span class="pre">Philips</span> <span class="pre">CM30</span></code> - The Phillips CM30 transmission electron microscope</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">Test</span> <span class="pre">Tool</span></code> - A test tool that does not exist for testing</p></li>
 </ul>
-</dd>
-</dl>
+</div></blockquote>
 <div class="type-header docutils container" id="xsd-type-datasettype">
 <p><strong>Type: DatasetType</strong> (simple type)</p>
 <div style="float: right; font-size: 0.9em;"><a href="#schema-structure-interactive">↑ Back to diagram</a></div></div>
-<dl>
-<dt>Controlled labels that identify a functional type data contained in</dt><dd><blockquote>
-<div><p>a dataset.</p>
-</div></blockquote>
-<p><em>Base type:</em> <code class="docutils literal notranslate"><span class="pre">xs:token</span></code></p>
+<p>Controlled labels that identify a functional type data contained in a dataset.</p>
+<blockquote>
+<div><p><em>Base type:</em> <code class="docutils literal notranslate"><span class="pre">xs:token</span></code></p>
 <p><em>Allowed values:</em></p>
 <ul class="simple">
-<li><dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">Image</span></code> - A 2-D array of data where each value is typically an</dt><dd><p>intensity measurement as function of regularly spaced position</p>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">Spectrum</span></code> - A 1-D array of data where each value is typically an</dt><dd><p>intensity measurement as a function of frequency or energy</p>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">SpectrumImage</span></code> - A 3-D array of data where each value is typically an</dt><dd><p>intensity measurement as a function of regularly space
-position along two axes and of frequency or energy along
-the third.</p>
-</dd>
-</dl>
-</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Image</span></code> - A 2-D array of data where each value is typically an intensity measurement as function of regularly spaced position</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Spectrum</span></code> - A 1-D array of data where each value is typically an intensity measurement as a function of frequency or energy</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SpectrumImage</span></code> - A 3-D array of data where each value is typically an intensity measurement as a function of regularly space position along two axes and of frequency or energy along the third.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">Diffraction</span></code> - Data that measures a (usually electron) diffraction pattern</p></li>
-<li><dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">Notes</span></code> - Arbitrary textual data that is typically manually created by</dt><dd><p>the Experimenter.</p>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">Misc</span></code> - A dataset that does not qualify as of any of the other</dt><dd><p>defined types.</p>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">Unknown</span></code> - A dataset with an unknown type (meaning its metadata could</dt><dd><p>not be extracted with current methods).</p>
-</dd>
-</dl>
-</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Notes</span></code> - Arbitrary textual data that is typically manually created by the Experimenter.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Misc</span></code> - A dataset that does not qualify as of any of the other defined types.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Unknown</span></code> - A dataset with an unknown type (meaning its metadata could not be extracted with current methods).</p></li>
 </ul>
-</dd>
-</dl>
+</div></blockquote>
 <div class="type-header docutils container" id="xsd-type-datasetrole">
 <p><strong>Type: DatasetRole</strong> (simple type)</p>
 <div style="float: right; font-size: 0.9em;"><a href="#schema-structure-interactive">↑ Back to diagram</a></div></div>
@@ -2270,28 +2150,10 @@ the third.</p>
 <div><p><em>Base type:</em> <code class="docutils literal notranslate"><span class="pre">xs:token</span></code></p>
 <p><em>Allowed values:</em></p>
 <ul class="simple">
-<li><dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">Experimental</span></code> - “Normal” data collected during typical operation of an instrument</dt><dd><p>for experimental purposes</p>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">MasterCalibration</span></code> - Reference data collected for the purpose of instrument calibration</dt><dd><p>during instrument service events or by allowed super users</p>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">UserCalibration</span></code> - Data collected alongside “Experimental” Datasets by regular users</dt><dd><p>for calibration purposes between service events or for a specific
-experiment</p>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">Derived</span></code> - Data that is not collected form an instrument, but rather</dt><dd><p>derived from raw and/or calibration data as the result of
-post-acquisition analysis processes</p>
-</dd>
-</dl>
-</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Experimental</span></code> - “Normal” data collected during typical operation of an instrument for experimental purposes</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">MasterCalibration</span></code> - Reference data collected for the purpose of instrument calibration during instrument service events or by allowed super users</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">UserCalibration</span></code> - Data collected alongside “Experimental” Datasets by regular users for calibration purposes between service events or for a specific experiment</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Derived</span></code> - Data that is not collected form an instrument, but rather derived from raw and/or calibration data as the result of post-acquisition analysis processes</p></li>
 </ul>
 </div></blockquote>
 </section>
