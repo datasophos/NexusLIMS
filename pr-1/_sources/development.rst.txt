@@ -219,7 +219,7 @@ the `"reference"` images that are tested against. For example:
    # configfile: pyproject.toml
    # plugins: mpl-0.17.0, cov-7.0.0
    # collected 303 items
-   #                                                                                                        
+   #
    # tests/cli/test_process_records.py ............................                         [  9%]
    # tests/test___init__.py ........                                                        [ 11%]
    # tests/test___main__.py .                                                               [ 12%]
@@ -242,10 +242,10 @@ the `"reference"` images that are tested against. For example:
    # tests/test_sessions.py ......                                                          [ 91%]
    # tests/test_utils.py .........................                                          [ 99%]
    # tests/test_version.py .                                                                [100%]
-   #                                                                                        [100%]    
+   #                                                                                        [100%]
    # =============================================== tests coverage ==============================
    # _____________________________ coverage: platform darwin, python 3.11.14-final-0 _____________
-   # 
+   #
    # Name                                          Stmts   Miss  Cover   Missing
    # ---------------------------------------------------------------------------
    # nexusLIMS/__init__.py                            18      0   100%
@@ -283,3 +283,247 @@ the `"reference"` images that are tested against. For example:
    # Coverage XML written to file coverage.xml
    # ============================= 303 passed in 33.51s =================
    # >>> elapsed time 39s
+
+
+Release Process
+---------------
+
+This section describes how to create a new release of NexusLIMS.
+
+Quick Start
+^^^^^^^^^^^
+
+.. code-block:: bash
+
+   # Standard release
+   ./scripts/release.sh 2.0.0
+
+   # Preview what will happen (dry-run)
+   ./scripts/release.sh 2.0.1 --dry-run
+
+   # Auto-approve prompts
+   ./scripts/release.sh 2.0.2 --yes
+
+Prerequisites
+^^^^^^^^^^^^^
+
+1. **Clean working directory**: Commit or stash any uncommitted changes
+2. **Towncrier fragments**: Add changelog fragments to ``docs/changes/`` for all changes since last release
+3. **Branch**: Typically on ``main`` branch (or your release branch)
+4. **Tests passing**: Ensure all tests pass with ``./scripts/run_tests.sh``
+5. **Linting passing**: Ensure linting passes with ``./scripts/run_lint.sh``
+
+Creating Towncrier Fragments
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Before releasing, create changelog fragments for all notable changes:
+
+.. code-block:: bash
+
+   # Fragment naming: <number>.<type>.rst or +<number>.<type>.rst
+   # Use <number> to link to GitHub issue #<number>
+   # Use +<number> for fragments without issue links
+   # Types: feature, bugfix, enhancement, doc, misc, removal
+
+   # Example fragments:
+   echo "Added new NEMO harvester for multi-instance support" > docs/changes/42.feature.rst
+   echo "Fixed metadata extraction for FEI TIFF files" > docs/changes/43.bugfix.rst
+   echo "Improved performance of file clustering algorithm" > docs/changes/+44.enhancement.rst
+
+Fragment types correspond to sections in the changelog:
+
+- **feature**: New features
+- **bugfix**: Bug fixes
+- **enhancement**: Enhancements
+- **doc**: Documentation improvements
+- **misc**: Miscellaneous/Development changes
+- **removal**: Deprecations and/or Removals
+
+Release Workflow
+^^^^^^^^^^^^^^^^
+
+1. Prepare the Release
+"""""""""""""""""""""""
+
+.. code-block:: bash
+
+   # Ensure you're on the correct branch
+   git checkout main
+   git pull origin main
+
+   # Run tests
+   ./scripts/run_tests.sh
+
+   # Run linting
+   ./scripts/run_lint.sh
+
+   # Preview the changelog
+   ./scripts/release.sh 2.0.0 --draft
+
+2. Create the Release
+""""""""""""""""""""""
+
+.. code-block:: bash
+
+   # Interactive release (recommended for first time)
+   ./scripts/release.sh 2.0.0
+
+   # Or with auto-confirmation
+   ./scripts/release.sh 2.0.0 --yes
+
+The script will:
+
+1. ✓ Update version in ``pyproject.toml``
+2. ✓ Generate changelog from towncrier fragments (adds to ``docs/development_log.rst``)
+3. ✓ Delete consumed changelog fragments
+4. ✓ Commit changes
+5. ✓ Create git tag ``v2.0.0``
+6. ✓ Push to remote (with confirmation)
+
+3. Monitor Automated Process
+"""""""""""""""""""""""""""""
+
+Once the tag is pushed, GitHub Actions automatically:
+
+1. Builds distribution packages (wheel and sdist)
+2. Publishes to PyPI
+3. Creates GitHub Release with auto-generated notes
+4. Deploys versioned documentation to GitHub Pages
+
+Monitor progress at: https://github.com/datasophos/NexusLIMS/actions
+
+Script Options
+^^^^^^^^^^^^^^
+
+.. code-block:: text
+
+   ./scripts/release.sh [VERSION] [OPTIONS]
+
+   Options:
+     -h, --help    Show help message
+     -d, --dry-run Run without making changes (preview only)
+     -y, --yes     Skip confirmation prompts
+     --no-push     Don't push to remote (tag locally only)
+     --draft       Generate draft changelog without committing
+
+Common Scenarios
+""""""""""""""""
+
+**Preview release without making changes:**
+
+.. code-block:: bash
+
+   ./scripts/release.sh 2.0.0 --dry-run
+
+**Create local tag without pushing (for testing):**
+
+.. code-block:: bash
+
+   ./scripts/release.sh 2.0.0 --no-push
+
+**Generate changelog preview only:**
+
+.. code-block:: bash
+
+   ./scripts/release.sh 2.0.0 --draft
+
+**Quick release with no prompts:**
+
+.. code-block:: bash
+
+   ./scripts/release.sh 2.0.0 --yes
+
+Version Numbering
+^^^^^^^^^^^^^^^^^
+
+Follow `Semantic Versioning <https://semver.org/>`_:
+
+- **Major** (X.0.0): Breaking changes, incompatible API changes
+- **Minor** (x.Y.0): New features, backwards-compatible
+- **Patch** (x.y.Z): Bug fixes, backwards-compatible
+
+Pre-release versions:
+
+- ``2.0.0-alpha1``: Alpha releases
+- ``2.0.0-beta1``: Beta releases
+- ``2.0.0-rc1``: Release candidates
+
+Troubleshooting
+^^^^^^^^^^^^^^^
+
+"Working directory is not clean"
+"""""""""""""""""""""""""""""""""
+
+Commit or stash your changes:
+
+.. code-block:: bash
+
+   git status
+   git add .
+   git commit -m "Your changes"
+
+"No towncrier fragments found"
+"""""""""""""""""""""""""""""""
+
+Add at least one changelog fragment:
+
+.. code-block:: bash
+
+   echo "Your change description" > docs/changes/+1.misc.rst
+
+Need to fix a release tag
+""""""""""""""""""""""""""
+
+If you need to redo a release:
+
+.. code-block:: bash
+
+   # Delete local tag
+   git tag -d v2.0.0
+
+   # Delete remote tag (CAUTION!)
+   git push origin :refs/tags/v2.0.0
+
+   # Re-run release script
+   ./scripts/release.sh 2.0.0
+
+Release workflow failed on GitHub
+""""""""""""""""""""""""""""""""""
+
+Check the Actions tab for error details. Common issues:
+
+- PyPI credentials not configured (requires trusted publishing setup)
+- Package build errors (test locally with ``uv build``)
+- Documentation build errors (test with ``./scripts/build_docs.sh``)
+
+Manual Release (Without Script)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If you need to release manually:
+
+.. code-block:: bash
+
+   # 1. Update version
+   sed -i 's/version = ".*"/version = "2.0.0"/' pyproject.toml
+
+   # 2. Generate changelog
+   uv run towncrier build --version=2.0.0 --yes
+
+   # 3. Commit and tag
+   git add pyproject.toml docs/
+   git commit -m "Release v2.0.0"
+   git tag -a v2.0.0 -m "Release 2.0.0"
+
+   # 4. Push
+   git push origin main
+   git push origin v2.0.0
+
+Post-Release Checklist
+^^^^^^^^^^^^^^^^^^^^^^
+
+- Verify package on PyPI: https://pypi.org/project/nexusLIMS/
+- Check GitHub Release: https://github.com/datasophos/NexusLIMS/releases
+- Verify documentation: https://datasophos.github.io/NexusLIMS/stable/
+- Test installation: ``pip install nexusLIMS==2.0.0``
+- Announce release (if applicable)
+- Update dependent projects/deployments
