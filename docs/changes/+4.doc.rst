@@ -1,1 +1,0 @@
-Added a migration guide to support users migrating from v1 to v2

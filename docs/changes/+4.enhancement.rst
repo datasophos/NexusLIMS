@@ -1,1 +1,0 @@
-Enhanced module loading to allow successful import even if the database is not yet properly configured, improving flexibility for environments where the database setup is delayed.

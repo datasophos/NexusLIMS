@@ -1,1 +1,0 @@
-Removed tox for test running and local development processes, with most functions going into the ``./scripts/`` directory.

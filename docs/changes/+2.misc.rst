@@ -1,1 +1,0 @@
-Added highly-compressible test files for extractors and record building process so test suite can run isolated from a deployed environment.
