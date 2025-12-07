@@ -209,13 +209,14 @@ html_show_sourcelink = True
 html_show_sphinx = False
 html_show_copyright = True
 
-html_extra_path = ["schema_doc"]
+html_extra_path = []
 
 html_sidebars = {"**": ["sidebar-nav-bs"]}
 
 
 html_theme_options = {
     "navbar_start": ["navbar-logo", "version-switcher"],
+    "navbar_center": ["navbar-nav"],
     "switcher": {
         "json_url": "_static/switcher.json",
         "version_match": version,
