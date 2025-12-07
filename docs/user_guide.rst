@@ -10,4 +10,5 @@ This guide provides comprehensive information for users of NexusLIMS.
    :maxdepth: 2
 
    record_building
+   extractors
    taxonomy

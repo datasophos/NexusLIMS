@@ -1,0 +1,1 @@
+Add a comprehensive documentation page for the extractors within NexusLIMS.
