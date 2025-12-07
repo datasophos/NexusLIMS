@@ -1,0 +1,1199 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>v2.0.0 (2025-12-06) &#8212; NexusLIMS 2.0.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=51baea2f" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="_static/documentation_options.js?v=51b770b3"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'development_log';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.0.0';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/pr-6/development_log.html" />
+    <link rel="icon" href="_static/nexusLIMS_bare_logo.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="2.0.0" />
+    <meta name="docbuild:last-update" content="Dec, 07, 2025"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.0.0 documentation - Home"/>
+    <img src="_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.0.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="getting_started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="migration.html">
+    Migration Guide: v1 to v2
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="dev_guide.html">
+    Developer Guide
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="reference.html">
+    Reference
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datasophos/NexusLIMS" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://datasophos.co" title="Datasophos" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-globe fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Datasophos</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="getting_started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="migration.html">
+    Migration Guide: v1 to v2
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="dev_guide.html">
+    Developer Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="reference.html">
+    Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datasophos/NexusLIMS" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://datasophos.co" title="Datasophos" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-globe fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Datasophos</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">v2.0.0 (2025-12-06)</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="v2-0-0-2025-12-06">
+<h1>v2.0.0 (2025-12-06)<a class="headerlink" href="#v2-0-0-2025-12-06" title="Link to this heading">#</a></h1>
+<section id="new-features">
+<h2>New features<a class="headerlink" href="#new-features" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Initial release of the <a class="reference external" href="https://datasophos.co">datasophos</a> fork of NexusLIMS!</p></li>
+<li><p>Migrated record processing from a bash script (<code class="docutils literal notranslate"><span class="pre">process_new_records.sh</span></code>) to a new Python CLI script (<code class="docutils literal notranslate"><span class="pre">nexuslims-process-records</span></code>),
+offering improved error handling, structured logging, SMTP-based email notifications, file locking, and comprehensive
+unit tests.</p></li>
+<li><p>New helper script for initializing the database with test or real data (<code class="docutils literal notranslate"><span class="pre">scripts/initalize_db.py</span></code>).</p></li>
+</ul>
+</section>
+<section id="enhancements">
+<h2>Enhancements<a class="headerlink" href="#enhancements" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Added the ability to customize the number of retries for the NEMO connector, improving flexibility and test performance.</p></li>
+<li><p>Enhanced module loading to allow successful import even if the database is not yet properly configured, improving flexibility for environments where the database setup is delayed.</p></li>
+<li><p>Migrated dependency management from Poetry to <code class="docutils literal notranslate"><span class="pre">uv</span></code>, streamlining the development environment and improving build performance. This included extensive code modernization, addressing all Ruff linting issues, implementing type stubs, enhancing the test suite for reliability and isolation, and updating configuration and documentation to reflect these significant changes.</p></li>
+<li><p>Migration from direct environment variable access to a settings-based configuration system (using <a class="reference external" href="https://docs.pydantic.dev/latest/concepts/pydantic_settings/">pydantic-settings</a>), enhancing configuration consistency and type safety throughout the codebase.</p></li>
+<li><p>Refactored settings management to support test isolation and improved maintainability, along with several bug fixes and general code quality enhancements.</p></li>
+<li><p>Refactored the test suite into hierarchical modules for better organization and maintainability.</p></li>
+<li><p>Updated dependencies (including hyperspy to 2.0+)</p></li>
+</ul>
+</section>
+<section id="documentation-improvements">
+<h2>Documentation improvements<a class="headerlink" href="#documentation-improvements" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Add a comprehensive documentation page for the extractors within NexusLIMS.</p></li>
+<li><p>Added a migration guide to support users migrating from v1 to v2</p></li>
+<li><p>Added improved auto-generated documentation for XML schema with interactive visualization (<a class="reference internal" href="schema_documentation.html"><span class="doc">XML Schema Reference</span></a>).</p></li>
+<li><p>Migrated documentation to the modern PyData Sphinx Theme, offering a refreshed look, improved mobile responsiveness, and dark mode support. This overhaul includes a complete restructuring into hierarchical sections, a comprehensive “Getting Started” guide, new logo branding, and streamlined configuration.</p></li>
+</ul>
+</section>
+<section id="miscellaneous-development-changes">
+<h2>Miscellaneous/Development changes<a class="headerlink" href="#miscellaneous-development-changes" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Added highly-compressible test files for extractors and record building process so test suite can run isolated from a deployed environment.</p></li>
+<li><p>Implemented full Github actions for CI/CD, covering tests, documentation, and release deployment.</p></li>
+<li><p>Migrated test suite to unit test pattern that can run without any external services connected.</p></li>
+</ul>
+</section>
+<section id="deprecations-and-or-removals">
+<h2>Deprecations and/or Removals<a class="headerlink" href="#deprecations-and-or-removals" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Removed the deprecated SharePoint harvester.</p></li>
+<li><p>Removed tox for test running and local development processes, with most functions going into the <code class="docutils literal notranslate"><span class="pre">./scripts/</span></code> directory.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The following changelog for versions up to v1.4.3
+is copied from the original NIST <a class="reference external" href="https://github.com/usnistgov/NexusLIMS">NexusLIMS project</a>.</p>
+</div>
+</section>
+</section>
+<section id="v1-4-3-2024-06-07">
+<h1>v1.4.3 (2024-06-07)<a class="headerlink" href="#v1-4-3-2024-06-07" title="Link to this heading">#</a></h1>
+<section id="bug-fixes">
+<h2>Bug fixes<a class="headerlink" href="#bug-fixes" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Add ability to parse XML metadata included in some FEI/Thermo TIFF files that was
+causing the TIFF extractor to fail when it was present.</p></li>
+</ul>
+</section>
+</section>
+<section id="v1-4-2-2024-05-29">
+<h1>v1.4.2 (2024-05-29)<a class="headerlink" href="#v1-4-2-2024-05-29" title="Link to this heading">#</a></h1>
+<section id="id1">
+<h2>Bug fixes<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Added workaround for issue where duplicate section titles would cause error in
+<code class="docutils literal notranslate"><span class="pre">quanta_tif</span></code> extractor.</p></li>
+</ul>
+</section>
+</section>
+<section id="v1-4-1-2023-09-20">
+<h1>v1.4.1 (2023-09-20)<a class="headerlink" href="#v1-4-1-2023-09-20" title="Link to this heading">#</a></h1>
+<section id="id2">
+<h2>Bug fixes<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Resolved issue where text files that can’t be opened with any encoding caused the record
+builder to crash</p></li>
+</ul>
+</section>
+<section id="id3">
+<h2>Documentation improvements<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Documented internal release and deploy process on Wiki</p></li>
+</ul>
+</section>
+</section>
+<section id="v1-4-0-2023-09-19">
+<h1>v1.4.0 (2023-09-19)<a class="headerlink" href="#v1-4-0-2023-09-19" title="Link to this heading">#</a></h1>
+<section id="id4">
+<h2>New features<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Added ability to generate previews for “plain” image files (e.g. <code class="docutils literal notranslate"><span class="pre">.jpg</span></code>, <code class="docutils literal notranslate"><span class="pre">.png</span></code>,
+etc.) and plain text files.</p></li>
+</ul>
+</section>
+<section id="id5">
+<h2>Bug fixes<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Fix problem arising from NEMO API change that removed <code class="docutils literal notranslate"><span class="pre">username</span></code> keyword.</p></li>
+</ul>
+</section>
+</section>
+<section id="v1-3-1-2023-05-19">
+<h1>v1.3.1 (2023-05-19)<a class="headerlink" href="#v1-3-1-2023-05-19" title="Link to this heading">#</a></h1>
+<section id="id6">
+<h2>Bug fixes<a class="headerlink" href="#id6" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Fixed issue where “process new records” script was emailing an error alert on conditions
+that were not errors.</p></li>
+</ul>
+</section>
+<section id="id7">
+<h2>Miscellaneous/Development changes<a class="headerlink" href="#id7" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Fixed pipeline runner to not run tests when they’re not needed.</p></li>
+</ul>
+</section>
+</section>
+<section id="v1-3-0-2023-04-14">
+<h1>v1.3.0 (2023-04-14)<a class="headerlink" href="#v1-3-0-2023-04-14" title="Link to this heading">#</a></h1>
+<section id="id8">
+<h2>New features<a class="headerlink" href="#id8" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Add support for reading <code class="docutils literal notranslate"><span class="pre">.spc</span></code> and <code class="docutils literal notranslate"><span class="pre">.msa</span></code> EDS spectrum files produced by EDAX
+acquisition softwares.</p></li>
+</ul>
+</section>
+<section id="id9">
+<h2>Documentation improvements<a class="headerlink" href="#id9" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Add <a class="reference external" href="https://towncrier.readthedocs.io/">towncrier</a> to manage documentation of
+changes in a semi-automated manner.</p></li>
+</ul>
+</section>
+</section>
+<section id="v1-2-0-2023-03-31">
+<h1>v1.2.0 (2023-03-31)<a class="headerlink" href="#v1-2-0-2023-03-31" title="Link to this heading">#</a></h1>
+<section id="id10">
+<h2>New features<a class="headerlink" href="#id10" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Added new “default” extractor for filetypes we don’t know how to read
+that will add very basic file-based metadata otherwise</p></li>
+<li><p>Added a configuration environment variable for file finding
+(<code class="docutils literal notranslate"><span class="pre">NX_FILE_STRATEGY</span></code>). A value of <code class="docutils literal notranslate"><span class="pre">&quot;inclusive&quot;</span></code> will add all files found in
+the time range of a session to the record (even if we don’t know how to parse it beyond
+basic metadata). A value of <code class="docutils literal notranslate"><span class="pre">&quot;exclusive&quot;</span></code> will exlcude files that do not have an
+explicit extractor defined (this was the previous behavior)</p></li>
+<li><p>Added a way to “ignore” files during the file finding routine via an environment
+variable named <code class="docutils literal notranslate"><span class="pre">NX_IGNORE_PATTERNS</span></code>. It should be a JSON-formatted list
+provided as a string. Each item of the list will be passed to the GNU find command
+as a pattern to ignore.</p></li>
+</ul>
+</section>
+<section id="id11">
+<h2>Bug fixes<a class="headerlink" href="#id11" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Fixed Poetry not installing due to change in upstream installer location</p></li>
+<li><p>Fixed issue where record builder would not run (and we wouldn’t even be alerted!)
+if the network shares for <code class="docutils literal notranslate"><span class="pre">NX_INSTRUMENT_DATA_PATH</span></code> and <code class="docutils literal notranslate"><span class="pre">NX_DATA_PATH</span></code> were not mounted.</p></li>
+<li><p>Fixed bug introduced by change to API response for reservation questions in NEMO 4.3.2</p></li>
+<li><p>Fix for development bug introduced by upgrade of tox package to 4.0.</p></li>
+</ul>
+</section>
+<section id="id12">
+<h2>Enhancements<a class="headerlink" href="#id12" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Added support for <code class="docutils literal notranslate"><span class="pre">&quot;NO_CONSENT&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;NO_RESERVATION&quot;</span></code> statuses in the
+<code class="docutils literal notranslate"><span class="pre">session_log</span></code> table of the NexusLIMS database</p></li>
+<li><p>Harvesters (and other parts of the code that use network resources) will now retry
+their requests if they fail in order to make the record building process more resilient</p></li>
+<li><p>Harvester will now read periodic table element information from NEMO reservation
+questions and include them in the XML records. Also updated the schema and CDCS XSLT
+to allow for and display this information in the front end.</p></li>
+<li><p>File finding now works on a directory of symbolic links (in addition to a regular
+folder hierarchy).</p></li>
+</ul>
+</section>
+<section id="id13">
+<h2>Documentation improvements<a class="headerlink" href="#id13" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Improved documentation to be public-facing and also set up structure for public
+repository at <a class="github reference external" href="https://github.com/usnistgov/nexuslims">usnistgov/nexuslims</a>,
+<a class="github reference external" href="https://github.com/usnistgov/NexusLIMS-CDCS">usnistgov/NexusLIMS-CDCS</a>, and
+<a class="github reference external" href="https://github.com/usnistgov/nexuslims-cdcs-docker">usnistgov/nexuslims-cdcs-docker</a></p></li>
+<li><p>Add NIST branding to documentation via header/footer script from pages.nist.gov</p></li>
+</ul>
+</section>
+<section id="id14">
+<h2>Miscellaneous/Development changes<a class="headerlink" href="#id14" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>If the record building delay has not passed and no files were found, a
+<code class="docutils literal notranslate"><span class="pre">RECORD_GENERATION</span></code> event will no longer be added to the <code class="docutils literal notranslate"><span class="pre">session_log</span></code> table
+in the database to avoid cluttering things up.</p></li>
+<li><p>Public facing branches are now excluded from CI/CD pipeline to prevent test failures</p></li>
+<li><p>Updated code to use various linters, including
+<a class="reference external" href="https://pycqa.github.io/isort/">isort</a>, <a class="reference external" href="https://github.com/psf/black">black</a>,
+<a class="reference external" href="https://pylint.readthedocs.io/en/latest/">pylint</a>, and
+<a class="reference external" href="https://beta.ruff.rs/docs/">ruff</a>.</p></li>
+<li><p>Add support for Python 3.10(.9)</p></li>
+<li><p>Moved URL configration to environment variables</p></li>
+<li><p>Updated third-party dependencies to recent latest versions</p></li>
+</ul>
+</section>
+<section id="id15">
+<h2>Deprecations and/or Removals<a class="headerlink" href="#id15" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Remove support for Python 3.7.X</p></li>
+<li><p>Removed unused LDAP code</p></li>
+</ul>
+</section>
+</section>
+<section id="v1-1-1-2022-06-15">
+<h1>v1.1.1 (2022-06-15)<a class="headerlink" href="#v1-1-1-2022-06-15" title="Link to this heading">#</a></h1>
+<section id="id16">
+<h2>Bug fixes<a class="headerlink" href="#id16" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Fixed issue where record builder would crash if only one file was found during the
+activity (and added explicit test for this condition).</p></li>
+<li><p>Fix issue in NEMO harvester where not-yet-ended sessions would cause the harvester
+to try to insert rows that violated database constraints.</p></li>
+<li><p>Implemented a “lockfile” system so concurrent runs of the record builder will not
+be allowed, preventing extra entries in the <code class="docutils literal notranslate"><span class="pre">session_log</span></code> table that were causing
+errors.</p></li>
+<li><p>Fix reading reservation and usage event times from NEMO servers with differing datetime
+formats.</p></li>
+<li><p>The NEMO harvester no longer attempts to build records without explicit “data consent”
+supplied by the user during the reservation questions (previously, if no reservation
+was found, the harvester would return a generic event and a record would still be built).</p></li>
+<li><p>Fixed bug where null bytes in a TIFF file caused an error in metadata extraction</p></li>
+</ul>
+</section>
+<section id="id17">
+<h2>Enhancements<a class="headerlink" href="#id17" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Add ability for record builder to insert a link to reservation information in the
+<code class="docutils literal notranslate"><span class="pre">summary</span></code> node (modified schema to hold this and record builder to insert it).</p></li>
+<li><p>Contributed a <a class="reference external" href="https://github.com/usnistgov/NEMO/pull/97">PR</a> to the upstream NEMO
+project to allow for displaying of a single reservation, so that we may link to it
+and include it as a reference in records built by NexusLIMS.</p></li>
+<li><p>Made the default <cite>data_consent</cite> value for the NEMO harvester False, so we will not
+harvest data from sessions that do not have reservation questions defined (users
+now have to opt-in to have their data curated by NexusLIMS).</p></li>
+<li><p>NEMO harvester now limits its API requests to only tools defined in the NexusLIMS
+database, which is more efficient and greatly speeds up the harvesting process.</p></li>
+<li><p>The record builder will now retry for a configurable number of days if it does not find
+any files for a session (useful for machines that have a delay in data syncing to
+centralized file storage). Configured via the <code class="docutils literal notranslate"><span class="pre">NEXUSLIMS_FILE_DELAY_DAYS</span></code> environment
+variable.</p></li>
+<li><p>Made datetime formats for NEMO API harvester configurable (both sending and receiving)
+so that it can work regardless of configuration on the NEMO server.</p></li>
+<li><p>Record generation events in the database now have timezone information for better
+specificity in multi-timezone setups.</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">pid</span></code> attribute to Experiment schema to allow for integration with CDCS’s handle
+implementation.</p></li>
+</ul>
+</section>
+<section id="id18">
+<h2>Miscellaneous/Development changes<a class="headerlink" href="#id18" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Configured tests to run on-premises, which speeds up various testing operations.</p></li>
+<li><p>Drastically restructured repository to look more like a proper Python library than just
+a collection of files and scripts.</p></li>
+<li><p>Migrated project organization and packaging from
+<a class="reference external" href="https://pipenv.pypa.io/en/latest/">pipenv</a> to <a class="reference external" href="https://python-poetry.org/">poetry</a>.</p></li>
+<li><p>Fixed some tests that started failing due to tool ID changes on our local NEMO server.</p></li>
+<li><p>Improved logging from NEMO harvester making it easier to debug issues when they occur.</p></li>
+<li><p>Session processing script is now smarter about email alerts.</p></li>
+<li><p>CI/CD pipeline will now retry failed tests (should be more resilient against transient
+failures due to network issues).</p></li>
+<li><p>Made some changes to the codebase in preparation of making it public-facing on Github.</p></li>
+</ul>
+</section>
+<section id="id19">
+<h2>Deprecations and/or Removals<a class="headerlink" href="#id19" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Removed a variety of associated files that were not important for the Python package
+(old presentations, diagrams, reports, etc.)</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">nexusLIMS.harvesters.sharepoint_calendar</span></code> module was deprecated after
+the SharePoint calendaring system was decommissioned in the Nexus facility. All
+harvester development will center around NEMO for the foreseeable future.</p></li>
+<li><p>Removed enumeration restriction on PIDs from the schema so it is more general (and
+easier to add new instruments without having to do an XML schema migration).</p></li>
+</ul>
+</section>
+</section>
+<section id="v1-1-0-2021-12-12">
+<h1>v1.1.0 (2021-12-12)<a class="headerlink" href="#v1-1-0-2021-12-12" title="Link to this heading">#</a></h1>
+<section id="id20">
+<h2>New features<a class="headerlink" href="#id20" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Major new feature in this release is the implementation of a reservation and metadata
+harvester for the <a class="reference external" href="https://github.com/usnistgov/NEMO">NEMO</a> facility management
+system. All planned future feature development will focus on this harvester, and the
+SharePoint calendar harvester will be deprecated in a future release. See the
+<a class="reference internal" href="record_building.html"><span class="doc">Record building workflow</span></a> docs and the <a class="reference internal" href="api/nexusLIMS.harvesters.nemo.html"><span class="doc">nexusLIMS.harvesters.nemo package</span></a> docs
+for more details.</p></li>
+</ul>
+</section>
+<section id="id21">
+<h2>Enhancements<a class="headerlink" href="#id21" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Add support to NEMO harvester for multiple samples in a set of reservation questions.
+The required structure for reservation questions is documented in the
+<a class="reference internal" href="api/nexusLIMS.harvesters.nemo.html#nexusLIMS.harvesters.nemo.res_event_from_session" title="nexusLIMS.harvesters.nemo.res_event_from_session"><code class="xref py py-func docutils literal notranslate"><span class="pre">nexusLIMS.harvesters.nemo.res_event_from_session()</span></code></a> function.</p></li>
+<li><p>Added ability to specify timezone information for instruments in the NexusLIMS database,
+which helps fully qualify all dates and times so file finding works as expected when
+inspecting files stored on servers in different timezones.</p></li>
+<li><p>Updated detail XLST to display multiple samples for a record if present (since this
+is now possible using the NEMO reservation questions).</p></li>
+</ul>
+</section>
+<section id="id22">
+<h2>Documentation improvements<a class="headerlink" href="#id22" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Documented new NEMO harvester and updated record generation documentation to describe
+how the process works with multiple harvesters.</p></li>
+<li><p>Fixed broken image paths in README.</p></li>
+</ul>
+</section>
+<section id="id23">
+<h2>Miscellaneous/Development changes<a class="headerlink" href="#id23" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Migrated project structure from <a class="reference external" href="https://pipenv.pypa.io/en/latest/"><code class="docutils literal notranslate"><span class="pre">pipenv</span></code></a> to <a class="reference external" href="https://python-poetry.org/"><code class="docutils literal notranslate"><span class="pre">poetry</span></code></a> for better dependency
+resolution, easier and faster deployment, and configuration of project via
+<code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code>. Also implemented <a class="reference external" href="https://tox.wiki/en/latest/"><code class="docutils literal notranslate"><span class="pre">tox</span></code></a> for the running of tests, doc builds,
+and pipelines.</p>
+</li>
+<li><p>Refactored some functions from the SharePoint harvester into the
+<a class="reference internal" href="api/nexusLIMS.html#module-nexusLIMS.utils" title="nexusLIMS.utils"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils</span></code></a> module for easier use throughout the rest of the codebase.</p></li>
+</ul>
+</section>
+<section id="id25">
+<h2>Deprecations and/or Removals<a class="headerlink" href="#id25" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Removed the “Session Logger” application in favor of using NEMO and its usage events
+to track session timestamps.</p></li>
+</ul>
+</section>
+</section>
+<section id="v1-0-1-2021-09-15">
+<h1>v1.0.1 (2021-09-15)<a class="headerlink" href="#v1-0-1-2021-09-15" title="Link to this heading">#</a></h1>
+<section id="id26">
+<h2>New features<a class="headerlink" href="#id26" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Implemented a “file viewer” on the front-end NexusLIMS application which also allows
+for downloading single, multiple, or all data files from a particular record in
+<code class="docutils literal notranslate"><span class="pre">.zip</span></code> archives.</p></li>
+<li><p>Implemented a metadata extractor for <code class="docutils literal notranslate"><span class="pre">.ser</span></code> and <code class="docutils literal notranslate"><span class="pre">.emi</span></code> files produced by the TIA
+application on FEI TEMs.</p></li>
+<li><p>Added ability to export a record as XML in the front end NexusLIMS application.</p></li>
+<li><p>Added a “tutorial” feature to the front-end of the NexusLIMS application, which leads
+users through a tour describing what the various parts of the application do.</p></li>
+<li><p>Added new “dry run” mode and additional verbosity options to record builder that allow
+one to see what records <cite>would</cite> be built without actually doing anything.</p></li>
+</ul>
+</section>
+<section id="id27">
+<h2>Bug fixes<a class="headerlink" href="#id27" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Fixed issue where Session Logger app was failing due to incompatibilities between
+the code and certain database states.</p></li>
+<li><p>Fixed issue where Session Logger app was leaving behind a temporary file on the
+microscope computers by making it clean up after itself.</p></li>
+<li><p>Fixed issue where multiple copies of the Session Logger app were able to be run at the
+same time, which shouldn’t have been possible.</p></li>
+<li><p>Fixed the “back to previous” button in the front-end application that was broken.</p></li>
+<li><p>Fixed issue with SharePoint harvester where records were being assigned to the person
+who <cite>created</cite> a calendar event, not the person whose name was on the actual event.</p></li>
+<li><p>Fixed a deployment issue related to <code class="docutils literal notranslate"><span class="pre">pipenv</span></code> and how it specifies packages to be
+installed.</p></li>
+<li><p>Fixed issues with <code class="docutils literal notranslate"><span class="pre">.ser</span></code> file handling (and contributed various fixes upstream to the
+HyperSpy project: <a class="reference external" href="https://github.com/hyperspy/hyperspy/pull/2533">1</a>,
+<a class="reference external" href="https://github.com/hyperspy/hyperspy/pull/2531">2</a>,
+<a class="reference external" href="https://github.com/hyperspy/hyperspy/pull/2529">3</a>).</p></li>
+</ul>
+</section>
+<section id="id31">
+<h2>Enhancements<a class="headerlink" href="#id31" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Added customized loading text while the list of records is loading in the front-end
+NexusLIMS application.</p></li>
+<li><p>Tweaked heuristic in SharePoint harvester to better match sessions to calendar events
+(previously, if there were multiple reservations in one day, they may have been
+incorrectly attributed to a session).</p></li>
+<li><p>Added explicit support for Python 3.8.X versions.</p></li>
+<li><p>Implemented bash script to run record builder automatically, which can then be scheduled
+via a tool such as <code class="docutils literal notranslate"><span class="pre">cron</span></code>.</p></li>
+<li><p>Added version information to Session Logger app to make it easier for users to know
+if they are up to date or not.</p></li>
+<li><p>Small tweak to make acquisition activity links easier to click in record display.</p></li>
+</ul>
+</section>
+<section id="id32">
+<h2>Documentation improvements<a class="headerlink" href="#id32" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Added “taxonomy” of terms used in the NexusLIMS project to the documentation (see
+<a class="reference internal" href="taxonomy.html"><span class="doc">NexusLIMS taxonomy</span></a> for details).</p></li>
+<li><p>Added XML Schema documentation for the Nexus <code class="docutils literal notranslate"><span class="pre">Experiment</span></code> schema to the documentation
+(see <a class="reference internal" href="schema_documentation.html"><span class="doc">XML Schema Reference</span></a> for details).</p></li>
+<li><p>Added links to NexusLIMS documentation in the front-end NexusLIMS CDCS application.</p></li>
+<li><p>Added many documentation pages to more thoroughly explain how NexusLIMS works,
+including improvements to the project README, as well as the following pages:
+<a class="reference internal" href="database.html"><span class="doc">NexusLIMS database</span></a>, session_logger_app, <a class="reference internal" href="development.html"><span class="doc">Developer documentation</span></a>,
+and pages about data security.</p></li>
+</ul>
+</section>
+<section id="id33">
+<h2>Miscellaneous/Development changes<a class="headerlink" href="#id33" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Improvement to logging to make it easier to debug records not being built correctly.</p></li>
+<li><p>Added new <a class="reference internal" href="api/nexusLIMS.harvesters.html#nexusLIMS.harvesters.reservation_event.ReservationEvent" title="nexusLIMS.harvesters.reservation_event.ReservationEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ReservationEvent</span></code></a> class
+to abstract the concept of a calendar reservation event. This reduces dependencies on
+the SharePoint-specific way things were written before and will help in the future
+implementation of the NEMO harvester.</p></li>
+<li><dl class="simple">
+<dt>Fix some issues with tests not running correctly due to changes of paths in</dt><dd><p><code class="docutils literal notranslate"><span class="pre">NX_INSTRUMENT_DATA_PATH</span></code>.- Improvements to the CI/CD pipelines so multiple pipelines can run at once without error.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</section>
+</section>
+<section id="v0-0-9-2020-02-24-first-real-working-release">
+<h1>v0.0.9 (2020-02-24) - First real working release<a class="headerlink" href="#v0-0-9-2020-02-24-first-real-working-release" title="Link to this heading">#</a></h1>
+<section id="id34">
+<h2>New features<a class="headerlink" href="#id34" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Added extractor for TIFF image files produced by FEI SEM and FIB instruments.</p></li>
+<li><p>Record builder can now be run automatically and will do the whole process (probing
+database, finding files, extracting metadata, building record XML, and uploading to
+CDCS frontend).</p></li>
+</ul>
+</section>
+<section id="id35">
+<h2>Enhancements<a class="headerlink" href="#id35" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Acquisition activities are now split up by clustering of file acquisition times, rather
+than inspecting when an instrument switches modes. This is more realistic to how
+microscopes are used in practice (see
+<a class="reference internal" href="record_building.html#build-activities"><span class="std std-ref">Activity Clustering</span></a> for more details).</p></li>
+<li><p>Added “instrument specific” parsing for DigitalMicrograph files</p></li>
+<li><p>Added <a class="reference internal" href="api/nexusLIMS.html#module-nexusLIMS.cdcs" title="nexusLIMS.cdcs"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cdcs</span></code></a> module to handle interactions with the CDCS front-end.</p></li>
+<li><p>Added a “Data Type” to all metadata extractions that will attempt to classify what sort
+of data a file is (“STEM EELS”, “TEM Image”, “SEM EDS”, etc.).</p></li>
+<li><p>Configuration of program options is now mostly done via environment variables rather
+than values hard-coded into the source code.</p></li>
+<li><p>Drastically improved file finding time by utilizing GNU <code class="docutils literal notranslate"><span class="pre">find</span></code> to identify files in
+a record rather than a pure Python implementation.</p></li>
+<li><p>Records now use a “dummy title” if no matching reservation is found for a session.</p></li>
+<li><p>Thumbnail previews of DigitalMicrograph files will now include image annotations.</p></li>
+<li><p>Updated SharePoint calendar harvester to be compatible with SharePoint 2016.</p></li>
+<li><p>Various XSLT enhancements for better display of record data.</p></li>
+</ul>
+</section>
+<section id="id36">
+<h2>Documentation improvements<a class="headerlink" href="#id36" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Added record building documentation: <a class="reference internal" href="record_building.html"><span class="doc">Record building workflow</span></a>.</p></li>
+</ul>
+</section>
+<section id="id37">
+<h2>Miscellaneous/Development changes<a class="headerlink" href="#id37" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Added helper script to update XLST on NexusLIMS front-end via API, making things easier
+for development.</p></li>
+<li><p>Fully implemented tests to ensure 100% of codebase is covered by test functions.</p></li>
+<li><p>Refactored record builder and harvester to use
+<a class="reference internal" href="api/nexusLIMS.html#nexusLIMS.instruments.Instrument" title="nexusLIMS.instruments.Instrument"><code class="xref py py-class docutils literal notranslate"><span class="pre">Instrument</span></code></a> instances rather than string parsing.</p></li>
+</ul>
+</section>
+</section>
+<section id="v0-0-2-2020-01-08-pre-release-version">
+<h1>v0.0.2 (2020-01-08) - Pre-release version<a class="headerlink" href="#v0-0-2-2020-01-08-pre-release-version" title="Link to this heading">#</a></h1>
+<section id="id38">
+<h2>New features<a class="headerlink" href="#id38" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Added ability to use custom CA certificate for network communications (useful if
+communicating with servers with self-signed certificates).</p></li>
+<li><p>Added javascript-powered XLST for more interactive and fully-featured display of records
+in the CDCS front-end (T. Bina).</p></li>
+<li><p>Added session logging .exe application that can be deployed on individual microscope PCs
+to specify when a session starts and ends (used to get timestamps for file finding
+during record building).</p></li>
+<li><p>Finished implementation of building <code class="docutils literal notranslate"><span class="pre">AcquisitionActivity</span></code> representations of
+experiments, which are then translated into XML for the final record.</p></li>
+<li><p>Implemented prototype record builder script for automated record generation (T. Bina).</p></li>
+<li><p>Preview images are now generated for known dataset types during the creation of
+acquisition activities in record building.</p></li>
+</ul>
+</section>
+<section id="id39">
+<h2>Bug fixes<a class="headerlink" href="#id39" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Updated endpoint for sharepoint calendar API that had broken due to a change in that service.</p></li>
+<li><p>Fixed issue where schema had duplicate “labels” for certain fields that was causing
+a confusing display in the CDCS “curate” page.</p></li>
+</ul>
+</section>
+<section id="id40">
+<h2>Enhancements<a class="headerlink" href="#id40" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Added other Nexus instruments to the schema so we can have records from more than just
+a single <code class="docutils literal notranslate"><span class="pre">Instrument</span></code> (as it was in initial testing).</p></li>
+<li><p>Added a <code class="docutils literal notranslate"><span class="pre">unit</span></code> attribute to parameter values in the <cite>Nexus Experiment</cite> schema.</p></li>
+<li><p>Added a place to insert “project” information into <cite>Nexus Experiment</cite> schema</p></li>
+<li><p>Improved the implementation of the <code class="docutils literal notranslate"><span class="pre">Instrument</span></code> type within the <cite>Nexus Experiment</cite>
+schema.</p></li>
+<li><p>Added spiffy logo for NexusLIMS</p></li>
+<li><p>Formatted repository as a proper Python package that can be installed via <code class="docutils literal notranslate"><span class="pre">pip</span></code>.</p></li>
+<li><p>Generalized metadata extraction process in anticipation of implementing extractors for
+additional file types.</p></li>
+<li><p>Instrument configuration is now fully pulled from NexusLIMS DB, rather than hard-coded
+in the application code.</p></li>
+<li><p>XSLT now properly displays preview images rather than a placeholder for each dataset.</p></li>
+</ul>
+</section>
+<section id="id41">
+<h2>Documentation improvements<a class="headerlink" href="#id41" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Fix links in README to point to new upstream project location.</p></li>
+<li><p>Added basic documentation for NexusLIMS package and link via a badge on the README.</p></li>
+</ul>
+</section>
+<section id="id42">
+<h2>Miscellaneous/Development changes<a class="headerlink" href="#id42" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Moved project out of a personal account and into it’s own NexusLIMS group on Gitlab.</p></li>
+<li><p>Added dedicated folder (separate form data storage location) for NexusLIMS to write
+dumps of extracted metadata and preview images.</p></li>
+<li><p>Added database initialization script to create correct NexusLIMS DB structure.</p></li>
+<li><p>Refactored record builder and calendar harvesting into separate submodules to better
+delineate functionality of the various parts of NexusLIMS</p></li>
+</ul>
+</section>
+</section>
+<section id="v0-0-1-2019-03-26-pre-release-version">
+<h1>v0.0.1 (2019-03-26) - Pre-release version<a class="headerlink" href="#v0-0-1-2019-03-26-pre-release-version" title="Link to this heading">#</a></h1>
+<section id="id43">
+<h2>New features<a class="headerlink" href="#id43" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Implemented SharePoint calendar metadata harvesting for equipment reservations.</p></li>
+<li><p>Added metadata extractor for FEI TIFF image files produced by SEMs and FIBs.</p></li>
+<li><p>Created repository to hold initial work on NexusLIMS.</p></li>
+</ul>
+</section>
+<section id="id44">
+<h2>Enhancements<a class="headerlink" href="#id44" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Added a concept of “role” (experimental, calibration, etc.) to datasets in the
+<cite>Nexus Experiment</cite> schema</p></li>
+</ul>
+</section>
+<section id="id45">
+<h2>Miscellaneous/Development changes<a class="headerlink" href="#id45" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Added CI/CD pipeline for backend tests.</p></li>
+</ul>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">v2.0.0 (2025-12-06)</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#new-features">New features</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#enhancements">Enhancements</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#documentation-improvements">Documentation improvements</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#miscellaneous-development-changes">Miscellaneous/Development changes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#deprecations-and-or-removals">Deprecations and/or Removals</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#v1-4-3-2024-06-07">v1.4.3 (2024-06-07)</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bug-fixes">Bug fixes</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#v1-4-2-2024-05-29">v1.4.2 (2024-05-29)</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Bug fixes</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#v1-4-1-2023-09-20">v1.4.1 (2023-09-20)</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Bug fixes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">Documentation improvements</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#v1-4-0-2023-09-19">v1.4.0 (2023-09-19)</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">New features</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">Bug fixes</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#v1-3-1-2023-05-19">v1.3.1 (2023-05-19)</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">Bug fixes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">Miscellaneous/Development changes</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#v1-3-0-2023-04-14">v1.3.0 (2023-04-14)</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">New features</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">Documentation improvements</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#v1-2-0-2023-03-31">v1.2.0 (2023-03-31)</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">New features</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">Bug fixes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">Enhancements</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">Documentation improvements</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">Miscellaneous/Development changes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">Deprecations and/or Removals</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#v1-1-1-2022-06-15">v1.1.1 (2022-06-15)</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">Bug fixes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">Enhancements</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">Miscellaneous/Development changes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id19">Deprecations and/or Removals</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#v1-1-0-2021-12-12">v1.1.0 (2021-12-12)</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id20">New features</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id21">Enhancements</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id22">Documentation improvements</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id23">Miscellaneous/Development changes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id25">Deprecations and/or Removals</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#v1-0-1-2021-09-15">v1.0.1 (2021-09-15)</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id26">New features</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id27">Bug fixes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id31">Enhancements</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id32">Documentation improvements</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id33">Miscellaneous/Development changes</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-0-9-2020-02-24-first-real-working-release">v0.0.9 (2020-02-24) - First real working release</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id34">New features</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id35">Enhancements</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id36">Documentation improvements</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id37">Miscellaneous/Development changes</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-0-2-2020-01-08-pre-release-version">v0.0.2 (2020-01-08) - Pre-release version</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id38">New features</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id39">Bug fixes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id40">Enhancements</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id41">Documentation improvements</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id42">Miscellaneous/Development changes</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-0-1-2019-03-26-pre-release-version">v0.0.1 (2019-03-26) - Pre-release version</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id43">New features</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id44">Enhancements</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id45">Miscellaneous/Development changes</a></li>
+</ul>
+</li>
+</ul>
+
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/development_log.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2025, datasophos, LLC.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
