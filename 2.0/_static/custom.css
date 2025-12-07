@@ -1,0 +1,19 @@
+/* Custom styling for NexusLIMS documentation */
+
+/* Logo sizing - constrain logo to reasonable navbar height */
+.navbar-brand img {
+    /* max-height: 32px; */
+    width: auto;
+}
+
+/* Prevent navbar items from wrapping on smaller screens */
+.navbar-nav {
+    flex-wrap: nowrap;
+}
+
+/* Improve navbar spacing on smaller screens */
+@media (max-width: 768px) {
+    .navbar-brand img {
+        max-height: 28px;
+    }
+}

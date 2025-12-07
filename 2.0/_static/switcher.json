@@ -1,0 +1,13 @@
+[
+  {
+    "name": "Latest",
+    "version": "latest",
+    "url": "https://datasophos.github.io/NexusLIMS/latest/",
+    "preferred": false
+  },
+  {
+    "name": "Upstream NIST docs",
+    "version": "upstream",
+    "url": "https://pages.nist.gov/NexusLIMS/"
+  }
+]
