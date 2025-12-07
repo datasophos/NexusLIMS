@@ -17,3 +17,9 @@
         max-height: 28px;
     }
 }
+
+/* fix offset of version switcher button */
+#pst-version-switcher-button-2 {
+    margin-bottom: 0;
+    margin-left: 0.5em;
+}
