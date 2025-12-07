@@ -34,22 +34,38 @@ For more details, see the [Record Building Workflow](https://datasophos.github.i
 
 ## Quick Start
 
-### Prerequisites
+### Installation
 
-Install [uv](https://docs.astral.sh/uv/) package manager (uv will automatically manage Python versions for you):
+NexusLIMS can be installed in two ways:
+
+#### Option 1: Install from PyPI (Recommended for Users)
+
+```bash
+# Install using pip
+pip install nexusLIMS
+
+# Or using uv (faster)
+uv pip install nexusLIMS
+```
+
+**Note**: When installing from PyPI, you'll need to manually create a `.env` file in your working directory or set environment variables for configuration. See the [Configuration Documentation](https://datasophos.github.io/NexusLIMS/getting_started.html#configuration) for required settings.
+
+#### Option 2: Install from Source (Recommended for Development)
+
+First, install [uv](https://docs.astral.sh/uv/) package manager:
 
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
-### Installation
+Then clone and install:
 
 ```bash
 # Clone the repository
 git clone https://github.com/datasophos/NexusLIMS.git
 cd NexusLIMS
 
-# Install dependencies
+# Install dependencies (includes .env.example)
 uv sync
 ```
 
