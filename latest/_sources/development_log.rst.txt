@@ -1,3 +1,52 @@
+v2.0.0 (2025-12-06)
+===================
+
+New features
+------------
+
+- Initial release of the `datasophos <https://datasophos.co>`_ fork of NexusLIMS!
+- Migrated record processing from a bash script (``process_new_records.sh``) to a new Python CLI script (``nexuslims-process-records``), 
+  offering improved error handling, structured logging, SMTP-based email notifications, file locking, and comprehensive 
+  unit tests.
+- New helper script for initializing the database with test or real data (``scripts/initalize_db.py``).
+
+
+Enhancements
+------------
+
+- Added the ability to customize the number of retries for the NEMO connector, improving flexibility and test performance.
+- Enhanced module loading to allow successful import even if the database is not yet properly configured, improving flexibility for environments where the database setup is delayed.
+- Migrated dependency management from Poetry to ``uv``, streamlining the development environment and improving build performance. This included extensive code modernization, addressing all Ruff linting issues, implementing type stubs, enhancing the test suite for reliability and isolation, and updating configuration and documentation to reflect these significant changes.
+- Migration from direct environment variable access to a settings-based configuration system (using `pydantic-settings <https://docs.pydantic.dev/latest/concepts/pydantic_settings/>`_), enhancing configuration consistency and type safety throughout the codebase.
+- Refactored settings management to support test isolation and improved maintainability, along with several bug fixes and general code quality enhancements.
+- Refactored the test suite into hierarchical modules for better organization and maintainability.
+- Updated dependencies (including hyperspy to 2.0+)
+
+
+Documentation improvements
+--------------------------
+
+- Add a comprehensive documentation page for the extractors within NexusLIMS.
+- Added a migration guide to support users migrating from v1 to v2
+- Added improved auto-generated documentation for XML schema with interactive visualization (:std:doc:`schema_documentation`).
+- Migrated documentation to the modern PyData Sphinx Theme, offering a refreshed look, improved mobile responsiveness, and dark mode support. This overhaul includes a complete restructuring into hierarchical sections, a comprehensive "Getting Started" guide, new logo branding, and streamlined configuration.
+
+
+Miscellaneous/Development changes
+---------------------------------
+
+- Added highly-compressible test files for extractors and record building process so test suite can run isolated from a deployed environment.
+- Implemented full Github actions for CI/CD, covering tests, documentation, and release deployment.
+- Migrated test suite to unit test pattern that can run without any external services connected.
+
+
+Deprecations and/or Removals
+----------------------------
+
+- Removed the deprecated SharePoint harvester.
+- Removed tox for test running and local development processes, with most functions going into the ``./scripts/`` directory.
+
+
 .. note::
    The following changelog for versions up to v1.4.3
    is copied from the original NIST `NexusLIMS project <https://github.com/usnistgov/NexusLIMS>`_.
