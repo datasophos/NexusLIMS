@@ -213,20 +213,39 @@ class TestExtractorModule:
         self.remove_thumb_and_json(thumb_fname)
 
     def test_parse_metadata_no_dataset_type(self, monkeypatch, quanta_test_file):
-        monkeypatch.setitem(
-            nexusLIMS.extractors.extension_reader_map,  # type: ignore
-            "tif",
-            lambda _x: {"nx_meta": {"key": "val"}},
-        )
+        # PHASE 1 MIGRATION: Instead of monkeypatching extension_reader_map,
+        # create a test extractor and register it with the registry
+        from nexusLIMS.extractors.base import ExtractionContext
+        from nexusLIMS.extractors.registry import get_registry
 
-        meta, thumb_fname = parse_metadata(fname=quanta_test_file[0])
-        assert meta is not None
-        assert meta["nx_meta"]["DatasetType"] == "Misc"
-        assert meta["nx_meta"]["Data Type"] == "Miscellaneous"
-        assert meta["nx_meta"]["key"] == "val"
-        assert meta["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
+        class TestExtractorNoDatasetType:
+            """Test extractor that doesn't set DatasetType."""
 
-        self.remove_thumb_and_json(thumb_fname)
+            name = "test_no_dataset_type"
+            priority = 200  # Higher than normal extractors so it gets selected
+
+            def supports(self, context: ExtractionContext) -> bool:
+                return context.file_path.suffix.lower() == ".tif"
+
+            def extract(self, context: ExtractionContext) -> dict:
+                return {"nx_meta": {"key": "val"}}
+
+        # Register the test extractor
+        registry = get_registry()
+        registry.register_extractor(TestExtractorNoDatasetType)
+
+        try:
+            meta, thumb_fname = parse_metadata(fname=quanta_test_file[0])
+            assert meta is not None
+            assert meta["nx_meta"]["DatasetType"] == "Misc"
+            assert meta["nx_meta"]["Data Type"] == "Miscellaneous"
+            assert meta["nx_meta"]["key"] == "val"
+            assert meta["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
+
+            self.remove_thumb_and_json(thumb_fname)
+        finally:
+            # Clean up - clear and re-discover to restore original state
+            registry.clear()
 
     def test_parse_metadata_bad_ser(self, fei_ser_files):
         # if we find a bad ser that can't be read, we should get minimal

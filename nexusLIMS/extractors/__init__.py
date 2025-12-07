@@ -39,6 +39,7 @@ from .digital_micrograph import get_dm3_metadata
 from .edax import get_msa_metadata, get_spc_metadata
 from .fei_emi import get_ser_metadata
 from .quanta_tif import get_quanta_metadata
+from .registry import get_registry  # New: registry access
 from .thumbnail_generator import (
     down_sample_image,
     image_to_square_thumbnail,
@@ -64,6 +65,7 @@ __all__ = [
     "get_instr_from_filepath",
     "get_msa_metadata",
     "get_quanta_metadata",
+    "get_registry",  # New: registry access
     "get_ser_metadata",
     "get_spc_metadata",
     "image_to_square_thumbnail",
@@ -77,6 +79,9 @@ __all__ = [
     "utils",
 ]
 
+# PHASE 1 MIGRATION: Keep extension_reader_map for backward compatibility
+# This will be auto-generated from the registry but maintain the same interface
+# Will be removed in Phase 3 after full migration
 extension_reader_map = {
     "dm3": get_dm3_metadata,
     "dm4": get_dm3_metadata,
@@ -131,9 +136,26 @@ def _add_extraction_details(
         An updated ``nx_meta`` dictionary, containing extraction details
 
     """
+    # PHASE 1 MIGRATION: Handle both old-style functions and new-style extractors
+    # Try to get the module name in different ways for backward compatibility
+    module_name = None
+
+    # Try __module__ attribute first (works for new extractor system)
+    if hasattr(extractor_module, "__module__"):
+        module_name = extractor_module.__module__
+
+    # Fallback to inspect.getmodule() for old-style functions
+    if module_name is None:
+        module = inspect.getmodule(extractor_module)
+        if module is not None:
+            module_name = module.__name__
+        else:
+            # Last resort - use "unknown"
+            module_name = "unknown"
+
     nx_meta["nx_meta"]["NexusLIMS Extraction"] = {
         "Date": dt.now(tz=current_system_tz()).isoformat(),
-        "Module": inspect.getmodule(extractor_module).__name__,
+        "Module": module_name,
         "Version": __version__,
     }
 
@@ -182,9 +204,48 @@ def parse_metadata(
     """
     extension = fname.suffix[1:]
 
-    # Dealing with files we can't parse and extract
+    # Create extraction context
+    instrument = get_instr_from_filepath(fname)
+    context = ExtractionContext(file_path=fname, instrument=instrument)
+
+    # Get extractor from registry
+    registry = get_registry()
+    extractor = registry.get_extractor(context)
+
+    # Extract metadata using the selected extractor
+    nx_meta = extractor.extract(context)
+
+    # For backward compatibility, create a class that can be used with
+    # _add_extraction_details. We need to report the legacy module name
+    # so existing tests don't break.
+    class ExtractorMethod:
+        """Pseudo-module for extraction details tracking."""
+
+        # Map adapter names back to original module names for backward compatibility
+        _legacy_module_map = {
+            "dm3_adapter": "nexusLIMS.extractors.digital_micrograph",
+            "ser_adapter": "nexusLIMS.extractors.fei_emi",
+            "quanta_tif_adapter": "nexusLIMS.extractors.quanta_tif",
+            "spc_adapter": "nexusLIMS.extractors.edax",
+            "msa_adapter": "nexusLIMS.extractors.edax",
+            "basic_metadata_adapter": "nexusLIMS.extractors.basic_metadata",
+        }
+
+        def __init__(self, extractor_name: str):
+            # Use legacy module name if this is an adapter, otherwise use plugin name
+            self.__module__ = self._legacy_module_map.get(
+                extractor_name,
+                f"nexusLIMS.extractors.plugins.{extractor_name}",
+            )
+            self.__name__ = self.__module__
+
+        def __call__(self, f: Path) -> dict:  # noqa: ARG002
+            return nx_meta
+
+    extractor_method = ExtractorMethod(extractor.name)
+
+    # Handle preview generation logic
     if extension.lower() not in extension_reader_map:
-        extractor_method = get_basic_metadata
         if extension not in unextracted_preview_map:
             generate_preview = False
             logger.info(
@@ -199,11 +260,7 @@ def parse_metadata(
                 "setting generate_preview to True",
             )
 
-    else:
-        extractor_method = extension_reader_map[extension.lower()]
-
-    nx_meta = extractor_method(fname)
-    nx_meta = _add_extraction_details(nx_meta, extractor_method)
+    nx_meta = _add_extraction_details(nx_meta, extractor_method.lower())
     preview_fname = None
 
     # nx_meta should never be None, because the extractors are defensive and
