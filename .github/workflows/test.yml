@@ -247,13 +247,13 @@ jobs:
       - name: Deploy to PR preview directory
         # Create/update pr-{NUMBER} directory in gh-pages with docs and coverage
         run: |
+          # Stash any local changes (e.g., uv.lock modifications from uv sync)
+          git stash --include-untracked || true
+
           PR_NUMBER=${{ github.event.pull_request.number }}
           rm -rf "pr-${PR_NUMBER}"
           mkdir -p "pr-${PR_NUMBER}"
           rsync -avr pr-source/_build/ "pr-${PR_NUMBER}/"
-
-          # Stash any local changes (e.g., uv.lock modifications from uv sync)
-          git stash --include-untracked || true
 
           if [ -d "pr-source/tests/coverage" ]; then
             mkdir -p "pr-${PR_NUMBER}/coverage"
