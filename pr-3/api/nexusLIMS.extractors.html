@@ -1,0 +1,1853 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>nexusLIMS.extractors package &#8212; NexusLIMS 2.0.0a4 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=cabef9d0" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=cc4637dc"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api/nexusLIMS.extractors';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.0.0a4';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/pr-3/api/nexusLIMS.extractors.html" />
+    <link rel="icon" href="../_static/nexusLIMS_bare_logo.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="nexusLIMS.harvesters package" href="nexusLIMS.harvesters.html" />
+    <link rel="prev" title="nexusLIMS.db package" href="nexusLIMS.db.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="2.0.0a4" />
+    <meta name="docbuild:last-update" content="Dec, 07, 2025"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.0.0a4 documentation - Home"/>
+    <img src="../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.0.0a4 documentation - Home"/>
+  
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../dev_guide.html">
+    Developer Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../reference.html">
+    Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datasophos/NexusLIMS" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://datasophos.co" title="Datasophos" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-globe fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Datasophos</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../dev_guide.html">
+    Developer Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../reference.html">
+    Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datasophos/NexusLIMS" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://datasophos.co" title="Datasophos" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-globe fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Datasophos</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../api.html">API documentation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="nexusLIMS.html">nexusLIMS package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.builder.html">nexusLIMS.builder package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.cli.html">nexusLIMS.cli package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.db.html">nexusLIMS.db package</a></li>
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">nexusLIMS.extractors package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.harvesters.html">nexusLIMS.harvesters package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.schemas.html">nexusLIMS.schemas package</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../reference.html" class="nav-link">Reference</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../api.html" class="nav-link">API documentation</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="nexusLIMS.html" class="nav-link">nexusLIMS package</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">nexusLIMS.extractors package</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="nexuslims-extractors-package">
+<h1>nexusLIMS.extractors package<a class="headerlink" href="#nexuslims-extractors-package" title="Link to this heading">#</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">#</a></h2>
+</section>
+<section id="module-nexusLIMS.extractors.basic_metadata">
+<span id="nexuslims-extractors-basic-metadata-module"></span><h2>nexusLIMS.extractors.basic_metadata module<a class="headerlink" href="#module-nexusLIMS.extractors.basic_metadata" title="Link to this heading">#</a></h2>
+<p>Handle basic metadata extraction from files that do not have an extractor defined.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.basic_metadata.get_basic_metadata">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.basic_metadata.</span></span><span class="sig-name descname"><span class="pre">get_basic_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/nexusLIMS/extractors/basic_metadata.html#get_basic_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.basic_metadata.get_basic_metadata" title="Link to this definition">#</a></dt>
+<dd><p>Get basic metadata from a file.</p>
+<p>Returns basic metadata from a file that’s not currently interpretable by NexusLIMS.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – path to a file saved in the harvested directory of the instrument</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>mdict</strong> – A description of the file in lieu of any metadata extracted from it.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-nexusLIMS.extractors.digital_micrograph">
+<span id="nexuslims-extractors-digital-micrograph-module"></span><h2>nexusLIMS.extractors.digital_micrograph module<a class="headerlink" href="#module-nexusLIMS.extractors.digital_micrograph" title="Link to this heading">#</a></h2>
+<p>Parse and extract metadata from files saved by Gatan’s DigitalMicrograph software.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.digital_micrograph.get_dm3_metadata">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.digital_micrograph.</span></span><span class="sig-name descname"><span class="pre">get_dm3_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/nexusLIMS/extractors/digital_micrograph.html#get_dm3_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.digital_micrograph.get_dm3_metadata" title="Link to this definition">#</a></dt>
+<dd><p>Get metadata from a dm3 or dm4 file.</p>
+<p>Returns the metadata from a .dm3 file saved by Digital Micrograph, with some
+non-relevant information stripped out, and instrument specific metadata parsed and
+added by one of the instrument-specific parsers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – path to a .dm3 file saved by Gatan’s Digital Micrograph</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>metadata</strong> – The extracted metadata of interest. If None, the file could not be opened</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a> or <em>None</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.digital_micrograph.get_pre_path">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.digital_micrograph.</span></span><span class="sig-name descname"><span class="pre">get_pre_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mdict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/nexusLIMS/extractors/digital_micrograph.html#get_pre_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.digital_micrograph.get_pre_path" title="Link to this definition">#</a></dt>
+<dd><p>Get the appropriate pre-path in the metadata tag structure for a given signal.</p>
+<p>Get the path into a dictionary where the important DigitalMicrograph metadata is
+expected to be found. If the .dm3/.dm4 file contains a stack of images, the
+important metadata for NexusLIMS is not at its usual place and is instead under a
+<cite>plan info</cite> tag, so this method will determine if the stack metadata is present and
+return the correct path.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mdict</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>) – A metadata dictionary as returned by <a class="reference internal" href="#nexusLIMS.extractors.digital_micrograph.get_dm3_metadata" title="nexusLIMS.extractors.digital_micrograph.get_dm3_metadata"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_dm3_metadata()</span></code></a></p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><em>A list containing the subsequent keys that need to be traversed to</em></p></li>
+<li><p>get to the point in the <cite>mdict</cite> where the important metadata is stored</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.digital_micrograph.parse_642_jeol">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.digital_micrograph.</span></span><span class="sig-name descname"><span class="pre">parse_642_jeol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mdict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/nexusLIMS/extractors/digital_micrograph.html#parse_642_jeol"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.digital_micrograph.parse_642_jeol" title="Link to this definition">#</a></dt>
+<dd><p>Add/adjust metadata specific to the 642 FEI Titan.</p>
+<p>(’<cite>JEOL-JEM3010-TEM-565989 in *********</cite>’)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mdict</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>) – “raw” metadata dictionary as parsed by <a class="reference internal" href="#nexusLIMS.extractors.digital_micrograph.get_dm3_metadata" title="nexusLIMS.extractors.digital_micrograph.get_dm3_metadata"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_dm3_metadata()</span></code></a></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>mdict</strong> – The original metadata dictionary with added information specific to
+files originating from this microscope with “important” values contained
+under the <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code> key at the root level</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.digital_micrograph.parse_642_titan">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.digital_micrograph.</span></span><span class="sig-name descname"><span class="pre">parse_642_titan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mdict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/nexusLIMS/extractors/digital_micrograph.html#parse_642_titan"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.digital_micrograph.parse_642_titan" title="Link to this definition">#</a></dt>
+<dd><p>Add/adjust metadata specific to the 642 FEI Titan.</p>
+<p>(’<cite>FEI-Titan-TEM-012345 in **********</cite>’)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mdict</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>) – “raw” metadata dictionary as parsed by <a class="reference internal" href="#nexusLIMS.extractors.digital_micrograph.get_dm3_metadata" title="nexusLIMS.extractors.digital_micrograph.get_dm3_metadata"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_dm3_metadata()</span></code></a></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>mdict</strong> – The original metadata dictionary with added information specific to
+files originating from this microscope with “important” values contained
+under the <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code> key at the root level</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.digital_micrograph.parse_643_titan">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.digital_micrograph.</span></span><span class="sig-name descname"><span class="pre">parse_643_titan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mdict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/nexusLIMS/extractors/digital_micrograph.html#parse_643_titan"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.digital_micrograph.parse_643_titan" title="Link to this definition">#</a></dt>
+<dd><p>Add/adjust metadata specific to the 643 FEI Titan.</p>
+<p>(’<cite>FEI-Titan-STEM-630901 in *********</cite>’)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mdict</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>) – “raw” metadata dictionary as parsed by <a class="reference internal" href="#nexusLIMS.extractors.digital_micrograph.get_dm3_metadata" title="nexusLIMS.extractors.digital_micrograph.get_dm3_metadata"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_dm3_metadata()</span></code></a></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>mdict</strong> – The original metadata dictionary with added information specific to
+files originating from this microscope with “important” values contained
+under the <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code> key at the root level</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.digital_micrograph.parse_dm3_eds_info">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.digital_micrograph.</span></span><span class="sig-name descname"><span class="pre">parse_dm3_eds_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mdict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/nexusLIMS/extractors/digital_micrograph.html#parse_dm3_eds_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.digital_micrograph.parse_dm3_eds_info" title="Link to this definition">#</a></dt>
+<dd><p>Parse EDS information from the dm3 metadata.</p>
+<p>Parses metadata from the DigitalMicrograph tag structure that concerns any
+EDS acquisition or spectrometer settings, placing it in an <code class="docutils literal notranslate"><span class="pre">EDS</span></code>
+dictionary underneath the root-level <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code> node. Metadata values
+that are commonly incorrect or may be placeholders are specified in a
+list under the <code class="docutils literal notranslate"><span class="pre">nx_meta.warnings</span></code> node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mdict</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>) – A metadata dictionary as returned by <a class="reference internal" href="#nexusLIMS.extractors.digital_micrograph.get_dm3_metadata" title="nexusLIMS.extractors.digital_micrograph.get_dm3_metadata"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_dm3_metadata()</span></code></a></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>mdict</strong> – The metadata dictionary with all the “EDS-specific” metadata
+added as sub-node under the <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code> root level dictionary</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.digital_micrograph.parse_dm3_eels_info">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.digital_micrograph.</span></span><span class="sig-name descname"><span class="pre">parse_dm3_eels_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mdict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/nexusLIMS/extractors/digital_micrograph.html#parse_dm3_eels_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.digital_micrograph.parse_dm3_eels_info" title="Link to this definition">#</a></dt>
+<dd><p>Parse EELS information from the metadata.</p>
+<p>Parses metadata from the DigitalMicrograph tag structure that concerns any
+EELS acquisition or spectrometer settings, placing it in an <code class="docutils literal notranslate"><span class="pre">EELS</span></code>
+dictionary underneath the root-level <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code> node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mdict</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>) – A metadata dictionary as returned by <a class="reference internal" href="#nexusLIMS.extractors.digital_micrograph.get_dm3_metadata" title="nexusLIMS.extractors.digital_micrograph.get_dm3_metadata"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_dm3_metadata()</span></code></a></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>mdict</strong> – The metadata dict with all the “EELS-specific” metadata added under <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.digital_micrograph.parse_dm3_microscope_info">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.digital_micrograph.</span></span><span class="sig-name descname"><span class="pre">parse_dm3_microscope_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mdict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/nexusLIMS/extractors/digital_micrograph.html#parse_dm3_microscope_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.digital_micrograph.parse_dm3_microscope_info" title="Link to this definition">#</a></dt>
+<dd><p>Parse the “microscope info” metadata.</p>
+<p>Parse the “important” metadata that is saved at specific places within the DM3 tag
+structure into a consistent place in the metadata dictionary returned by
+<a class="reference internal" href="#nexusLIMS.extractors.digital_micrograph.get_dm3_metadata" title="nexusLIMS.extractors.digital_micrograph.get_dm3_metadata"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_dm3_metadata()</span></code></a>. Specifically looks at the “Microscope Info”,
+“Session Info”, and “Meta Data” nodes (these are not present on every microscope).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mdict</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>) – A metadata dictionary as returned by <a class="reference internal" href="#nexusLIMS.extractors.digital_micrograph.get_dm3_metadata" title="nexusLIMS.extractors.digital_micrograph.get_dm3_metadata"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_dm3_metadata()</span></code></a></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>mdict</strong> – The same metadata dictionary with some values added under the
+root-level <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code> key</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.digital_micrograph.parse_dm3_spectrum_image_info">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.digital_micrograph.</span></span><span class="sig-name descname"><span class="pre">parse_dm3_spectrum_image_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mdict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/nexusLIMS/extractors/digital_micrograph.html#parse_dm3_spectrum_image_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.digital_micrograph.parse_dm3_spectrum_image_info" title="Link to this definition">#</a></dt>
+<dd><p>Parse “spectrum image” information from the metadata.</p>
+<p>Parses metadata that concerns any spectrum imaging information (the “SI” tag) and
+places it in a “Spectrum Imaging” dictionary underneath the root-level <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code>
+node. Metadata values that are commonly incorrect or may be placeholders are
+specified in a list under the <code class="docutils literal notranslate"><span class="pre">nx_meta.warnings</span></code> node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mdict</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>) – A metadata dictionary as returned by <a class="reference internal" href="#nexusLIMS.extractors.digital_micrograph.get_dm3_metadata" title="nexusLIMS.extractors.digital_micrograph.get_dm3_metadata"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_dm3_metadata()</span></code></a></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>mdict</strong> – The metadata dictionary with all the “EDS-specific” metadata
+added as sub-node under the <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code> root level dictionary</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.digital_micrograph.process_tecnai_microscope_info">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.digital_micrograph.</span></span><span class="sig-name descname"><span class="pre">process_tecnai_microscope_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">microscope_info</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delimiter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'\u2028'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/nexusLIMS/extractors/digital_micrograph.html#process_tecnai_microscope_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.digital_micrograph.process_tecnai_microscope_info" title="Link to this definition">#</a></dt>
+<dd><p>Process the Microscope_Info metadata string into a dictionary of key-value pairs.</p>
+<p>This method is only relevant for FEI Titan TEMs that write additional metadata into
+a unicode-delimited string at a certain place in the DM3 tag structure</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>microscope_info</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – The string of data obtained from the Tecnai.Microscope_Info leaf of the metadata</p></li>
+<li><p><strong>delimiter</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – The value (a unicode string) used to split the <code class="docutils literal notranslate"><span class="pre">microscope_info</span></code> string.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>info_dict</strong> – The information contained in the string, in a more easily-digestible form.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-nexusLIMS.extractors.edax">
+<span id="nexuslims-extractors-edax-module"></span><h2>nexusLIMS.extractors.edax module<a class="headerlink" href="#module-nexusLIMS.extractors.edax" title="Link to this heading">#</a></h2>
+<p>Parse metadata from EDAX EDS spectra saved as .spc and .msa files.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.edax.get_msa_metadata">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.edax.</span></span><span class="sig-name descname"><span class="pre">get_msa_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/nexusLIMS/extractors/edax.html#get_msa_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.edax.get_msa_metadata" title="Link to this definition">#</a></dt>
+<dd><p>Return the metadata (as a dict) from an .msa spectrum file.</p>
+<p>This file may be saved by a number of different EDS acquisition software, but
+most often is produced as an export from EDAX or Oxford software. This format is
+a standard, but vendors (such as EDAX) often add other values into the metadata
+header. See <a class="reference external" href="https://www.microscopy.org/resources/scientific_data/">https://www.microscopy.org/resources/scientific_data/</a> for the fomal
+specification.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a></span>) – path to a .msa file saved by various EDS software packages</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>metadata</strong> – The metadata of interest extracted from the file. If None, the file
+could not be opened</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>Optional</em>[<em>Dict</em>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.edax.get_spc_metadata">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.edax.</span></span><span class="sig-name descname"><span class="pre">get_spc_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/nexusLIMS/extractors/edax.html#get_spc_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.edax.get_spc_metadata" title="Link to this definition">#</a></dt>
+<dd><p>Return the metadata (as a dict) from a .spc file.</p>
+<p>This type of file is produced by EDAX EDS software. It is read by HyperSpy’s
+file reader and relevant metadata extracted and returned</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a></span>) – path to a .spc file saved by EDAX software (Genesis, TEAM, etc.)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>metadata</strong> – The metadata of interest extracted from the file. If None, the file
+could not be opened</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>Optional</em>[<em>Dict</em>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-nexusLIMS.extractors.fei_emi">
+<span id="nexuslims-extractors-fei-emi-module"></span><h2>nexusLIMS.extractors.fei_emi module<a class="headerlink" href="#module-nexusLIMS.extractors.fei_emi" title="Link to this heading">#</a></h2>
+<p>Parses and extract metadata from files saved by the TIA software.</p>
+<p>Handles files saved by FEI’s (now Thermo Fisher Scientific) TIA (Tecnai Imaging and
+Analysis) software. This software package saves data in two types of files: <code class="docutils literal notranslate"><span class="pre">.ser</span></code>
+and <code class="docutils literal notranslate"><span class="pre">.emi</span></code>. The <code class="docutils literal notranslate"><span class="pre">.emi</span></code> file contains metadata about the data acquisition, while
+the (one or more) <code class="docutils literal notranslate"><span class="pre">.ser</span></code> files contain the actual collected data. Thus, access to
+both is required for full metadata extraction and preview generation.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.fei_emi.get_emi_from_ser">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.fei_emi.</span></span><span class="sig-name descname"><span class="pre">get_emi_from_ser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ser_fname</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/nexusLIMS/extractors/fei_emi.html#get_emi_from_ser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.fei_emi.get_emi_from_ser" title="Link to this definition">#</a></dt>
+<dd><p>Get the accompanying <cite>.emi</cite> filename from an ser filename.</p>
+<p>This method assumes that the <cite>.ser</cite> file will be the same name as the <cite>.emi</cite> file,
+but with an underscore and a digit appended. i.e. <code class="docutils literal notranslate"><span class="pre">file.emi</span></code> would
+result in <cite>.ser</cite> files named <code class="docutils literal notranslate"><span class="pre">file_1.ser</span></code>, <code class="docutils literal notranslate"><span class="pre">file_2.ser</span></code>, etc.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ser_fname</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a></span>) – The absolute path of an FEI TIA <cite>.ser</cite> data file</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><em>emi_fname</em> – The absolute path of the accompanying <cite>.emi</cite> metadata file</p></li>
+<li><p><strong>index</strong> (<em>int</em>) – The number of this .ser file (i.e. 1, 2, 3, etc.)</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.11/library/exceptions.html#FileNotFoundError" title="(in Python v3.11)"><strong>FileNotFoundError</strong></a> – If the accompanying .emi file cannot be resolved to be a file</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.fei_emi.get_ser_metadata">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.fei_emi.</span></span><span class="sig-name descname"><span class="pre">get_ser_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/nexusLIMS/extractors/fei_emi.html#get_ser_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.fei_emi.get_ser_metadata" title="Link to this definition">#</a></dt>
+<dd><p>Get metadat from .ser file.</p>
+<p>Returns metadata (as a dict) from an FEI .ser file + its associated .emi
+files, with some non-relevant information stripped.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a></span>) – Path to FEI .ser file</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>metadata</strong> – Metadata of interest which is extracted from the passed files. If
+files cannot be opened, at least basic metadata will be returned (
+creation time, etc.)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.fei_emi.map_keys">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.fei_emi.</span></span><span class="sig-name descname"><span class="pre">map_keys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">term_mapping</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/nexusLIMS/extractors/fei_emi.html#map_keys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.fei_emi.map_keys" title="Link to this definition">#</a></dt>
+<dd><p>Map keys into NexusLIMS metadata structure.</p>
+<p>Given a term mapping dictionary and a metadata dictionary, translate
+the input keys within the “raw” metadata into a parsed value in the
+“nx_meta” metadata structure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>term_mapping</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>) – Dictionary where keys are tuples of strings (the input terms),
+and values are either a single string or a list of strings (the
+output terms).</p></li>
+<li><p><strong>base</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a>) – The ‘root’ path within the metadata dictionary of where to start
+applying the input terms</p></li>
+<li><p><strong>metadata</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>) – A metadata dictionary as returned by <a class="reference internal" href="#nexusLIMS.extractors.fei_emi.get_ser_metadata" title="nexusLIMS.extractors.fei_emi.get_ser_metadata"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_ser_metadata()</span></code></a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>metadata</strong> – The same metadata dictionary with some values added under the
+root-level <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code> key, as specified by <code class="docutils literal notranslate"><span class="pre">term_mapping</span></code></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a></p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">term_mapping</span></code> parameter should be a dictionary of the form:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="p">(</span><span class="s1">&#39;val1_1&#39;</span><span class="p">,</span> <span class="s1">&#39;val1_2&#39;</span><span class="p">)</span> <span class="p">:</span> <span class="s1">&#39;output_val_1&#39;</span><span class="p">,</span>
+    <span class="p">(</span><span class="s1">&#39;val1_1&#39;</span><span class="p">,</span> <span class="s1">&#39;val2_2&#39;</span><span class="p">)</span> <span class="p">:</span> <span class="s1">&#39;output_val_2&#39;</span><span class="p">,</span>
+    <span class="n">etc</span><span class="o">.</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Assuming <code class="docutils literal notranslate"><span class="pre">base</span></code> is <code class="docutils literal notranslate"><span class="pre">['ObjectInfo',</span> <span class="pre">'AcquireInfo']</span></code>, this would map
+the term present at <code class="docutils literal notranslate"><span class="pre">ObjectInfo.AcquireInfo.val1_1.val1_2</span></code> into
+<code class="docutils literal notranslate"><span class="pre">nx_meta.output_val_1</span></code>, and <code class="docutils literal notranslate"><span class="pre">ObjectInfo.AcquireInfo.val1_1.val2_2</span></code> into
+<code class="docutils literal notranslate"><span class="pre">nx_meta.output_val_2</span></code>, and so on. If one of the output terms is a list,
+the resulting metadata will be nested. <cite>e.g.</cite> <code class="docutils literal notranslate"><span class="pre">['output_val_1',</span>
+<span class="pre">'output_val_2']</span></code> would get mapped to <code class="docutils literal notranslate"><span class="pre">nx_meta.output_val_1.output_val_2</span></code>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.fei_emi.parse_acquire_info">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.fei_emi.</span></span><span class="sig-name descname"><span class="pre">parse_acquire_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metadata</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/nexusLIMS/extractors/fei_emi.html#parse_acquire_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.fei_emi.parse_acquire_info" title="Link to this definition">#</a></dt>
+<dd><p>Parse acquisition conditions.</p>
+<p>Parse the metadata that is saved at specific places within
+the .emi tag structure into a consistent place in the metadata dictionary
+returned by <a class="reference internal" href="#nexusLIMS.extractors.fei_emi.get_ser_metadata" title="nexusLIMS.extractors.fei_emi.get_ser_metadata"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_ser_metadata()</span></code></a>. Specifically looks at the
+“AcquireInfo” node of the metadata structure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>metadata</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>) – A metadata dictionary as returned by <a class="reference internal" href="#nexusLIMS.extractors.fei_emi.get_ser_metadata" title="nexusLIMS.extractors.fei_emi.get_ser_metadata"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_ser_metadata()</span></code></a></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>metadata</strong> – The same metadata dictionary with some values added under the
+root-level <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code> key</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.fei_emi.parse_basic_info">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.fei_emi.</span></span><span class="sig-name descname"><span class="pre">parse_basic_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metadata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instrument</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/nexusLIMS/extractors/fei_emi.html#parse_basic_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.fei_emi.parse_basic_info" title="Link to this definition">#</a></dt>
+<dd><p>Parse basic metadata from file.</p>
+<p>Parse the metadata that is saved at specific places within
+the .emi tag structure into a consistent place in the metadata dictionary
+returned by <a class="reference internal" href="#nexusLIMS.extractors.fei_emi.get_ser_metadata" title="nexusLIMS.extractors.fei_emi.get_ser_metadata"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_ser_metadata()</span></code></a>. Specifically, this method handles
+the creation date, equipment manufacturer, and data shape/type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>metadata</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>) – A metadata dictionary as returned by <a class="reference internal" href="#nexusLIMS.extractors.fei_emi.get_ser_metadata" title="nexusLIMS.extractors.fei_emi.get_ser_metadata"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_ser_metadata()</span></code></a></p></li>
+<li><p><strong>shape</strong> – The shape of the dataset</p></li>
+<li><p><strong>instrument</strong> (<a class="reference internal" href="nexusLIMS.html#nexusLIMS.instruments.Instrument" title="nexusLIMS.instruments.Instrument"><em>Instrument</em></a>) – The instrument this file was collected on</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>metadata</strong> – The same metadata dictionary with some values added under the
+root-level <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code> key</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.fei_emi.parse_data_type">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.fei_emi.</span></span><span class="sig-name descname"><span class="pre">parse_data_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/nexusLIMS/extractors/fei_emi.html#parse_data_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.fei_emi.parse_data_type" title="Link to this definition">#</a></dt>
+<dd><p>Parse the data type from the signal’s metadata.</p>
+<p>Determine <cite>“Data Type”</cite> and <cite>“DatasetType”</cite> for the given .ser file based
+off of metadata and signal characteristics. This method is used to
+determine whether the image is TEM or STEM, Image or Diffraction,
+Spectrum or Spectrum Image, etc.</p>
+<p>Due to lack of appropriate metadata written by the FEI software,
+a heuristic of axis limits and size is used to determine whether a
+spectrum’s data type is EELS or EDS. This may not be a perfect
+determination.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>s</strong> (<a class="reference external" href="http://hyperspy.org/hyperspy-doc/current/reference/api.signals/BaseSignal.html#hyperspy.api.signals.BaseSignal" title="(in HyperSpy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">hyperspy.signal.BaseSignal</span></code></a> (or subclass)) – The HyperSpy signal that contains the data of interest</p></li>
+<li><p><strong>metadata</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>) – A metadata dictionary as returned by <a class="reference internal" href="#nexusLIMS.extractors.fei_emi.get_ser_metadata" title="nexusLIMS.extractors.fei_emi.get_ser_metadata"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_ser_metadata()</span></code></a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>data_type</strong> (<em>str</em>) – The string that should be stored at metadata[‘nx_meta’][‘Data Type’]</p></li>
+<li><p><strong>dataset_type</strong> (<em>str</em>) – The string that should be stored at metadata[‘nx_meta’][‘DatasetType’]</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.fei_emi.parse_experimental_conditions">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.fei_emi.</span></span><span class="sig-name descname"><span class="pre">parse_experimental_conditions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metadata</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/nexusLIMS/extractors/fei_emi.html#parse_experimental_conditions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.fei_emi.parse_experimental_conditions" title="Link to this definition">#</a></dt>
+<dd><p>Parse experimental conditions.</p>
+<p>Parse the metadata that is saved at specific places within
+the .emi tag structure into a consistent place in the metadata dictionary
+returned by <a class="reference internal" href="#nexusLIMS.extractors.fei_emi.get_ser_metadata" title="nexusLIMS.extractors.fei_emi.get_ser_metadata"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_ser_metadata()</span></code></a>. Specifically looks at the
+“ExperimentalConditions” node of the metadata structure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>metadata</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>) – A metadata dictionary as returned by <a class="reference internal" href="#nexusLIMS.extractors.fei_emi.get_ser_metadata" title="nexusLIMS.extractors.fei_emi.get_ser_metadata"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_ser_metadata()</span></code></a></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>metadata</strong> – The same metadata dictionary with some values added under the
+root-level <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code> key</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.fei_emi.parse_experimental_description">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.fei_emi.</span></span><span class="sig-name descname"><span class="pre">parse_experimental_description</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metadata</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/nexusLIMS/extractors/fei_emi.html#parse_experimental_description"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.fei_emi.parse_experimental_description" title="Link to this definition">#</a></dt>
+<dd><p>Parse experimental description.</p>
+<p>Parse the metadata that is saved at specific places within
+the .emi tag structure into a consistent place in the metadata dictionary
+returned by <a class="reference internal" href="#nexusLIMS.extractors.fei_emi.get_ser_metadata" title="nexusLIMS.extractors.fei_emi.get_ser_metadata"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_ser_metadata()</span></code></a>. Specifically looks at the
+“ExperimentalDescription” node of the metadata structure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>metadata</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>) – A metadata dictionary as returned by <a class="reference internal" href="#nexusLIMS.extractors.fei_emi.get_ser_metadata" title="nexusLIMS.extractors.fei_emi.get_ser_metadata"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_ser_metadata()</span></code></a></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>metadata</strong> – The same metadata dictionary with some values added under the
+root-level <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code> key</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a></p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The terms to extract in this section were</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.fei_emi.split_fei_metadata_units">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.fei_emi.</span></span><span class="sig-name descname"><span class="pre">split_fei_metadata_units</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metadata_term</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/nexusLIMS/extractors/fei_emi.html#split_fei_metadata_units"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.fei_emi.split_fei_metadata_units" title="Link to this definition">#</a></dt>
+<dd><p>Split metadata into value and units.</p>
+<p>If present, separate a metadata term into its value and units.
+In the FEI metadata structure, units are indicated separated by an
+underscore at the end of the term. i.e. <code class="docutils literal notranslate"><span class="pre">High</span> <span class="pre">tension_kV</span></code> indicates that
+the <cite>High tension</cite> metadata value has units of <cite>kV</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>metadata_term</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – The metadata term read from the FEI tag structure</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>mdata_and_unit</strong> – A length-2 tuple with the metadata value name as the first
+item and the unit (if present) as the second item</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#tuple" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-nexusLIMS.extractors.quanta_tif">
+<span id="nexuslims-extractors-quanta-tif-module"></span><h2>nexusLIMS.extractors.quanta_tif module<a class="headerlink" href="#module-nexusLIMS.extractors.quanta_tif" title="Link to this heading">#</a></h2>
+<p>Parse metadata from FEI tif images (saved by FEI/Thermo Fisher FIBs and SEMs).</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.quanta_tif.get_quanta_metadata">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.quanta_tif.</span></span><span class="sig-name descname"><span class="pre">get_quanta_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/nexusLIMS/extractors/quanta_tif.html#get_quanta_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.quanta_tif.get_quanta_metadata" title="Link to this definition">#</a></dt>
+<dd><p>Get metadata from a Quanta-style tif file.</p>
+<p>Returns the metadata (as a dictionary) from a .tif file saved by the FEI
+Quanta SEM in the Nexus Microscopy Facility. Specific tags of interest are
+duplicated under the root-level <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code> node in the dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a></span>) – path to a .tif file saved by the Quanta</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>mdict</strong> – The metadata text extracted from the file</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.quanta_tif.parse_beam_info">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.quanta_tif.</span></span><span class="sig-name descname"><span class="pre">parse_beam_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mdict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beam_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/nexusLIMS/extractors/quanta_tif.html#parse_beam_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.quanta_tif.parse_beam_info" title="Link to this definition">#</a></dt>
+<dd><p>Parse the “Beam info” section of the metadata.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mdict</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>) – A metadata dictionary as returned by <a class="reference internal" href="#nexusLIMS.extractors.quanta_tif.get_quanta_metadata" title="nexusLIMS.extractors.quanta_tif.get_quanta_metadata"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_quanta_metadata()</span></code></a></p></li>
+<li><p><strong>beam_name</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – The “beam name” read from the root-level <code class="docutils literal notranslate"><span class="pre">Beam</span></code> node of the
+metadata dictionary</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>mdict</strong> – The same metadata dictionary with some values added under the
+root-level <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code> key</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.quanta_tif.parse_det_info">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.quanta_tif.</span></span><span class="sig-name descname"><span class="pre">parse_det_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mdict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">det_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/nexusLIMS/extractors/quanta_tif.html#parse_det_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.quanta_tif.parse_det_info" title="Link to this definition">#</a></dt>
+<dd><p>Parse the “Detector info” section of the metadata.</p>
+<p>Parses the <cite>Detector</cite> portion of the metadata dictionary from the Quanta to
+get values such as brightness, contrast, signal, etc.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mdict</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>) – A metadata dictionary as returned by <a class="reference internal" href="#nexusLIMS.extractors.quanta_tif.get_quanta_metadata" title="nexusLIMS.extractors.quanta_tif.get_quanta_metadata"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_quanta_metadata()</span></code></a></p></li>
+<li><p><strong>det_name</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – The “detector name” read from the root-level <code class="docutils literal notranslate"><span class="pre">Beam</span></code> node of the
+metadata dictionary</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>mdict</strong> – The same metadata dictionary with some values added under the
+root-level <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code> key</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.quanta_tif.parse_image_info">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.quanta_tif.</span></span><span class="sig-name descname"><span class="pre">parse_image_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mdict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/nexusLIMS/extractors/quanta_tif.html#parse_image_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.quanta_tif.parse_image_info" title="Link to this definition">#</a></dt>
+<dd><p>Parse the “Image info” section of the metadata.</p>
+<p>Parses the <cite>Image</cite> portion of the metadata dictionary from the Quanta to
+get values such as drift correction, image integration settings, etc.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mdict</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>) – A metadata dictionary as returned by <a class="reference internal" href="#nexusLIMS.extractors.quanta_tif.get_quanta_metadata" title="nexusLIMS.extractors.quanta_tif.get_quanta_metadata"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_quanta_metadata()</span></code></a></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>mdict</strong> – The same metadata dictionary with some values added under the
+root-level <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code> key</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.quanta_tif.parse_nx_meta">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.quanta_tif.</span></span><span class="sig-name descname"><span class="pre">parse_nx_meta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mdict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/nexusLIMS/extractors/quanta_tif.html#parse_nx_meta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.quanta_tif.parse_nx_meta" title="Link to this definition">#</a></dt>
+<dd><p>Parse metadata into NexusLIMS format.</p>
+<p>Parse the “important” metadata that is saved at specific places within
+the Quanta tag structure into a consistent place in the metadata dictionary
+returned by <a class="reference internal" href="#nexusLIMS.extractors.quanta_tif.get_quanta_metadata" title="nexusLIMS.extractors.quanta_tif.get_quanta_metadata"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_quanta_metadata()</span></code></a>.</p>
+<p>The metadata contained in the XML section (if present) is not parsed, since it
+appears to only contain duplicates or slightly renamed metadata values compared
+to the typical config-style section that is always present.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mdict</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>) – A metadata dictionary as returned by <a class="reference internal" href="#nexusLIMS.extractors.quanta_tif.get_quanta_metadata" title="nexusLIMS.extractors.quanta_tif.get_quanta_metadata"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_quanta_metadata()</span></code></a></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>mdict</strong> – The same metadata dictionary with some values added under the
+root-level <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code> key</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.quanta_tif.parse_scan_info">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.quanta_tif.</span></span><span class="sig-name descname"><span class="pre">parse_scan_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mdict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scan_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/nexusLIMS/extractors/quanta_tif.html#parse_scan_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.quanta_tif.parse_scan_info" title="Link to this definition">#</a></dt>
+<dd><p>Parse the “Scan info” section of the metadata.</p>
+<p>Parses the <cite>Scan</cite> portion of the metadata dictionary (on a Quanta this is
+always <cite>“EScan”</cite>) to get values such as dwell time, field width, and pixel
+size.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mdict</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>) – A metadata dictionary as returned by <a class="reference internal" href="#nexusLIMS.extractors.quanta_tif.get_quanta_metadata" title="nexusLIMS.extractors.quanta_tif.get_quanta_metadata"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_quanta_metadata()</span></code></a></p></li>
+<li><p><strong>scan_name</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – The “scan name” read from the root-level <code class="docutils literal notranslate"><span class="pre">Beam</span></code> node of the
+metadata dictionary</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>mdict</strong> – The same metadata dictionary with some values added under the
+root-level <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code> key</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.quanta_tif.parse_system_info">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.quanta_tif.</span></span><span class="sig-name descname"><span class="pre">parse_system_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mdict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/nexusLIMS/extractors/quanta_tif.html#parse_system_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.quanta_tif.parse_system_info" title="Link to this definition">#</a></dt>
+<dd><p>Parse the “System info” section of the metadata.</p>
+<p>Parses the <cite>System</cite> portion of the metadata dictionary from the Quanta to
+get values such as software version, chamber config, etc.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mdict</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>) – A metadata dictionary as returned by <a class="reference internal" href="#nexusLIMS.extractors.quanta_tif.get_quanta_metadata" title="nexusLIMS.extractors.quanta_tif.get_quanta_metadata"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_quanta_metadata()</span></code></a></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>mdict</strong> – The same metadata dictionary with some values added under the
+root-level <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code> key</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-nexusLIMS.extractors.thumbnail_generator">
+<span id="nexuslims-extractors-thumbnail-generator-module"></span><h2>nexusLIMS.extractors.thumbnail_generator module<a class="headerlink" href="#module-nexusLIMS.extractors.thumbnail_generator" title="Link to this heading">#</a></h2>
+<p>Generate preview images from various data files.</p>
+<p>Data files are represented as either HyperSpy Signals, or as raw data files
+(in the case of tiff images)</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.thumbnail_generator.add_annotation_markers">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.thumbnail_generator.</span></span><span class="sig-name descname"><span class="pre">add_annotation_markers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/nexusLIMS/extractors/thumbnail_generator.html#add_annotation_markers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.thumbnail_generator.add_annotation_markers" title="Link to this definition">#</a></dt>
+<dd><p>Add annotation markers from a DM3/DM4 file to a HyperSpy signal.</p>
+<p>Read annotations from a signal originating from DigitalMicrograph and
+convert the ones (that we can) into HyperSpy 2.0+ markers for plotting.
+Uses the modern hs.plot.markers API instead of the deprecated dict2marker.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>s</strong> (<a class="reference external" href="http://hyperspy.org/hyperspy-doc/current/reference/api.signals/BaseSignal.html#hyperspy.api.signals.BaseSignal" title="(in HyperSpy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">hyperspy.signal.BaseSignal</span></code></a> (or subclass)) – The HyperSpy signal for which a thumbnail should be generated</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.thumbnail_generator.down_sample_image">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.thumbnail_generator.</span></span><span class="sig-name descname"><span class="pre">down_sample_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/nexusLIMS/extractors/thumbnail_generator.html#down_sample_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.thumbnail_generator.down_sample_image" title="Link to this definition">#</a></dt>
+<dd><p>Load an image file from disk, down-sample it to the requested dpi, and save.</p>
+<p>Sometimes the data doesn’t need to be loaded as a HyperSpy signal,
+and it’s better just to down-sample existing image data (such as for .tif
+files created by the Quanta SEM).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fname</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a></span>) – The filepath that will be resized. All formats supported by
+<a class="reference external" href="https://pillow.readthedocs.io/en/stable/reference/Image.html#PIL.Image.open" title="(in Pillow (PIL Fork) v12.0.0)"><code class="xref py py-func docutils literal notranslate"><span class="pre">PIL.Image.open()</span></code></a> can be used</p></li>
+<li><p><strong>out_path</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a></span>) – A path to the desired thumbnail filename. All formats supported by
+<a class="reference external" href="https://pillow.readthedocs.io/en/stable/reference/Image.html#PIL.Image.Image.save" title="(in Pillow (PIL Fork) v12.0.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">PIL.Image.Image.save()</span></code></a> can be used.</p></li>
+<li><p><strong>output_size</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Optional" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Tuple" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code></a>[<a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]]</span>) – A tuple of ints specifying the width and height of the output image.
+Either this argument or <code class="docutils literal notranslate"><span class="pre">factor</span></code> should be provided (not both).</p></li>
+<li><p><strong>factor</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> | <a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span>) – The multiple of the image size to reduce by (i.e. a value of 2
+results in an image that is 50% of each original dimension). Either
+this argument or <code class="docutils literal notranslate"><span class="pre">output_size</span></code> should be provided (not both).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.thumbnail_generator.image_to_square_thumbnail">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.thumbnail_generator.</span></span><span class="sig-name descname"><span class="pre">image_to_square_thumbnail</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_size</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/nexusLIMS/extractors/thumbnail_generator.html#image_to_square_thumbnail"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.thumbnail_generator.image_to_square_thumbnail" title="Link to this definition">#</a></dt>
+<dd><p>Generate a preview thumbnail from a non-data image file.</p>
+<p>Images of common filetypes will be transformed into 500 x 500 pixel images
+by first scaling the largest dimension to 500 pixels and then padding the
+resulting image to square.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>f</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a></span>) – The string of the path of an image file for which a thumbnail should be
+generated.</p></li>
+<li><p><strong>out_path</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a></span>) – A path to the desired thumbnail filename. All formats supported by
+<a class="reference external" href="https://pillow.readthedocs.io/en/stable/reference/Image.html#PIL.Image.Image.save" title="(in Pillow (PIL Fork) v12.0.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">save()</span></code></a> can be used.</p></li>
+<li><p><strong>output_size</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – The desired resulting size of the thumbnail image.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Whether a preview was generated</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.thumbnail_generator.sig_to_thumbnail">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.thumbnail_generator.</span></span><span class="sig-name descname"><span class="pre">sig_to_thumbnail</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dpi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">92</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/nexusLIMS/extractors/thumbnail_generator.html#sig_to_thumbnail"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.thumbnail_generator.sig_to_thumbnail" title="Link to this definition">#</a></dt>
+<dd><p>Generate a preview thumbnail from an arbitrary HyperSpy signal.</p>
+<p>For a 2D signal, the signal from the first navigation position is used (most
+likely the top- and left-most position. For a 1D signal (<em>i.e.</em> a
+spectrum or spectrum image), the output depends on the
+number of navigation dimensions:</p>
+<ul class="simple">
+<li><p>0: Image of spectrum</p></li>
+<li><p>1: Image of linescan (<em>a la</em> DigitalMicrograph)</p></li>
+<li><p>2: Image of spectra sampled from navigation space</p></li>
+<li><p>2+: As for 2 dimensions</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>s</strong> (<a class="reference external" href="http://hyperspy.org/hyperspy-doc/current/reference/api.signals/BaseSignal.html#hyperspy.api.signals.BaseSignal" title="(in HyperSpy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">hyperspy.signal.BaseSignal</span></code></a> (or subclass)) – The HyperSpy signal for which a thumbnail should be generated</p></li>
+<li><p><strong>out_path</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a></span>) – A path to the desired thumbnail filename. All formats supported by
+<a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.figure.Figure.savefig.html#matplotlib.figure.Figure.savefig" title="(in Matplotlib v3.10.7)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">savefig()</span></code></a> can be used.</p></li>
+<li><p><strong>dpi</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – The “dots per inch” resolution for the outputted figure</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>f</strong> – Handle to a matplotlib Figure</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure" title="(in Matplotlib v3.10.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.figure.Figure</span></code></a></p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This method heavily utilizes HyperSpy’s existing plotting functions to
+figure out how to best display the image</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.thumbnail_generator.text_to_thumbnail">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.thumbnail_generator.</span></span><span class="sig-name descname"><span class="pre">text_to_thumbnail</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">500</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/nexusLIMS/extractors/thumbnail_generator.html#text_to_thumbnail"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.thumbnail_generator.text_to_thumbnail" title="Link to this definition">#</a></dt>
+<dd><p>Generate a preview thumbnail from a text file.</p>
+<p>For a text file, the contents will be formatted and written to a 500x500
+pixel jpg image of size 5 in by 5 in.</p>
+<p>If the text file has many newlines, it is probably data and the first 42
+characters of each of the first 20 lines of the text file will be written
+to the image.</p>
+<p>If the text file has a few (or fewer) newlines, it is probably a manually
+generated note and the text will be written to a 42 column, 18 row box
+until the space is exhausted.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>f</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a></span>) – The path of a text file for which a thumbnail should be generated.</p></li>
+<li><p><strong>out_path</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a></span>) – A path to the desired thumbnail filename. All formats supported by
+<a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.figure.Figure.savefig.html#matplotlib.figure.Figure.savefig" title="(in Matplotlib v3.10.7)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">savefig()</span></code></a> can be used.</p></li>
+<li><p><strong>output_size</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – The pixel width (and height, since the image is padded to square) of
+the saved image file.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>f</strong> – Handle to a matplotlib Figure, or the value False if a preview could not be
+generated</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure" title="(in Matplotlib v3.10.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.figure.Figure</span></code></a> or bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-nexusLIMS.extractors.utils">
+<span id="nexuslims-extractors-utils-module"></span><h2>nexusLIMS.extractors.utils module<a class="headerlink" href="#module-nexusLIMS.extractors.utils" title="Link to this heading">#</a></h2>
+<p>Methods (primarily intended to be private) that are used by the other extractors.</p>
+</section>
+<section id="module-nexusLIMS.extractors">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-nexusLIMS.extractors" title="Link to this heading">#</a></h2>
+<p>Extract metadata from various electron microscopy file types.</p>
+<p>Extractors should return a dictionary containing the values to be displayed
+in NexusLIMS as a sub-dictionary under the key <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code>. The remaining keys
+will be for the metadata as extracted. Under <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code>, a few keys are
+expected (although not enforced):</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">'Creation</span> <span class="pre">Time'</span></code> - ISO format date and time as a string</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'Data</span> <span class="pre">Type'</span></code> - a human-readable description of the data type separated by
+underscores - e.g “STEM_Imaging”, “TEM_EDS”, etc.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'DatasetType'</span></code> - determines the value of the Type attribute for the dataset
+(defined in the schema)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'Data</span> <span class="pre">Dimensions'</span></code> - dimensions of the dataset, surrounded by parentheses,
+separated by commas as a string- e.g. ‘(12, 1024, 1024)’</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'Instrument</span> <span class="pre">ID'</span></code> - instrument PID pulled from the instrument database</p></li>
+</ul>
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.create_preview">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.</span></span><span class="sig-name descname"><span class="pre">create_preview</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/nexusLIMS/extractors.html#create_preview"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.create_preview" title="Link to this definition">#</a></dt>
+<dd><p>Generate a preview image for a given file using one of a few different methods.</p>
+<p>For most files, this method will try to load the file using HyperSpy and generate
+a preview using that library’s capabilities.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fname</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a></span>) – The filename from which to read data</p></li>
+<li><p><strong>overwrite</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – Whether to overwrite the .json metadata file and thumbnail
+image if either exists</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>preview_fname</strong> – The filename of the generated preview image; if None, a preview could not be
+successfully generated.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>Optional</em>[<a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><em>Path</em></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.down_sample_image">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.</span></span><span class="sig-name descname"><span class="pre">down_sample_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/nexusLIMS/extractors/thumbnail_generator.html#down_sample_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.down_sample_image" title="Link to this definition">#</a></dt>
+<dd><p>Load an image file from disk, down-sample it to the requested dpi, and save.</p>
+<p>Sometimes the data doesn’t need to be loaded as a HyperSpy signal,
+and it’s better just to down-sample existing image data (such as for .tif
+files created by the Quanta SEM).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fname</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a></span>) – The filepath that will be resized. All formats supported by
+<a class="reference external" href="https://pillow.readthedocs.io/en/stable/reference/Image.html#PIL.Image.open" title="(in Pillow (PIL Fork) v12.0.0)"><code class="xref py py-func docutils literal notranslate"><span class="pre">PIL.Image.open()</span></code></a> can be used</p></li>
+<li><p><strong>out_path</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a></span>) – A path to the desired thumbnail filename. All formats supported by
+<a class="reference external" href="https://pillow.readthedocs.io/en/stable/reference/Image.html#PIL.Image.Image.save" title="(in Pillow (PIL Fork) v12.0.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">PIL.Image.Image.save()</span></code></a> can be used.</p></li>
+<li><p><strong>output_size</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Optional" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Tuple" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code></a>[<a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]]</span>) – A tuple of ints specifying the width and height of the output image.
+Either this argument or <code class="docutils literal notranslate"><span class="pre">factor</span></code> should be provided (not both).</p></li>
+<li><p><strong>factor</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> | <a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span>) – The multiple of the image size to reduce by (i.e. a value of 2
+results in an image that is 50% of each original dimension). Either
+this argument or <code class="docutils literal notranslate"><span class="pre">output_size</span></code> should be provided (not both).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.flatten_dict">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.</span></span><span class="sig-name descname"><span class="pre">flatten_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">separator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'</span> <span class="pre">'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/nexusLIMS/extractors.html#flatten_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.flatten_dict" title="Link to this definition">#</a></dt>
+<dd><p>Flatten a nested dictionary into a single level.</p>
+<p>Utility method to take a nested dictionary structure and flatten it into a
+single level, separating the levels by a string as specified by
+<code class="docutils literal notranslate"><span class="pre">separator</span></code>.</p>
+<p>Cribbed from: <a class="reference external" href="https://stackoverflow.com/a/6027615/1435788">https://stackoverflow.com/a/6027615/1435788</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>_dict</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>) – The dictionary to flatten</p></li>
+<li><p><strong>parent_key</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – The “root” key to add to the existing keys</p></li>
+<li><p><strong>separator</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – The string to use to separate values in the flattened keys (i.e.
+{‘a’: {‘b’: ‘c’}} would become {‘a’ + sep + ‘b’: ‘c’})</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>flattened_dict</strong> – The dictionary with depth one, with nested dictionaries flattened
+into root-level keys</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.get_basic_metadata">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.</span></span><span class="sig-name descname"><span class="pre">get_basic_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/nexusLIMS/extractors/basic_metadata.html#get_basic_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.get_basic_metadata" title="Link to this definition">#</a></dt>
+<dd><p>Get basic metadata from a file.</p>
+<p>Returns basic metadata from a file that’s not currently interpretable by NexusLIMS.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – path to a file saved in the harvested directory of the instrument</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>mdict</strong> – A description of the file in lieu of any metadata extracted from it.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.get_dm3_metadata">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.</span></span><span class="sig-name descname"><span class="pre">get_dm3_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/nexusLIMS/extractors/digital_micrograph.html#get_dm3_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.get_dm3_metadata" title="Link to this definition">#</a></dt>
+<dd><p>Get metadata from a dm3 or dm4 file.</p>
+<p>Returns the metadata from a .dm3 file saved by Digital Micrograph, with some
+non-relevant information stripped out, and instrument specific metadata parsed and
+added by one of the instrument-specific parsers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – path to a .dm3 file saved by Gatan’s Digital Micrograph</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>metadata</strong> – The extracted metadata of interest. If None, the file could not be opened</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a> or <em>None</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.get_instr_from_filepath">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.</span></span><span class="sig-name descname"><span class="pre">get_instr_from_filepath</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/nexusLIMS/instruments.html#get_instr_from_filepath"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.get_instr_from_filepath" title="Link to this definition">#</a></dt>
+<dd><p>Get an instrument object by a given path Using the NexusLIMS database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a></span>) – A path (relative or absolute) to a file saved in the central
+filestore that will be used to search for a matching instrument</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>instrument</strong> – An <cite>Instrument</cite> instance matching the path, or None if no match was
+found</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="nexusLIMS.html#nexusLIMS.instruments.Instrument" title="nexusLIMS.instruments.Instrument"><em>Instrument</em></a> or <em>None</em></p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">inst</span> <span class="o">=</span> <span class="n">get_instr_from_filepath</span><span class="p">(</span><span class="s1">&#39;/path/to/file.dm3&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">inst</span><span class="p">)</span>
+<span class="go">&#39;FEI-Titan-TEM-012345 in Bldg 1/Room A&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.get_msa_metadata">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.</span></span><span class="sig-name descname"><span class="pre">get_msa_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/nexusLIMS/extractors/edax.html#get_msa_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.get_msa_metadata" title="Link to this definition">#</a></dt>
+<dd><p>Return the metadata (as a dict) from an .msa spectrum file.</p>
+<p>This file may be saved by a number of different EDS acquisition software, but
+most often is produced as an export from EDAX or Oxford software. This format is
+a standard, but vendors (such as EDAX) often add other values into the metadata
+header. See <a class="reference external" href="https://www.microscopy.org/resources/scientific_data/">https://www.microscopy.org/resources/scientific_data/</a> for the fomal
+specification.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a></span>) – path to a .msa file saved by various EDS software packages</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>metadata</strong> – The metadata of interest extracted from the file. If None, the file
+could not be opened</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>Optional</em>[<em>Dict</em>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.get_quanta_metadata">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.</span></span><span class="sig-name descname"><span class="pre">get_quanta_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/nexusLIMS/extractors/quanta_tif.html#get_quanta_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.get_quanta_metadata" title="Link to this definition">#</a></dt>
+<dd><p>Get metadata from a Quanta-style tif file.</p>
+<p>Returns the metadata (as a dictionary) from a .tif file saved by the FEI
+Quanta SEM in the Nexus Microscopy Facility. Specific tags of interest are
+duplicated under the root-level <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code> node in the dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a></span>) – path to a .tif file saved by the Quanta</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>mdict</strong> – The metadata text extracted from the file</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.get_ser_metadata">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.</span></span><span class="sig-name descname"><span class="pre">get_ser_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/nexusLIMS/extractors/fei_emi.html#get_ser_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.get_ser_metadata" title="Link to this definition">#</a></dt>
+<dd><p>Get metadat from .ser file.</p>
+<p>Returns metadata (as a dict) from an FEI .ser file + its associated .emi
+files, with some non-relevant information stripped.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a></span>) – Path to FEI .ser file</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>metadata</strong> – Metadata of interest which is extracted from the passed files. If
+files cannot be opened, at least basic metadata will be returned (
+creation time, etc.)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.get_spc_metadata">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.</span></span><span class="sig-name descname"><span class="pre">get_spc_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/nexusLIMS/extractors/edax.html#get_spc_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.get_spc_metadata" title="Link to this definition">#</a></dt>
+<dd><p>Return the metadata (as a dict) from a .spc file.</p>
+<p>This type of file is produced by EDAX EDS software. It is read by HyperSpy’s
+file reader and relevant metadata extracted and returned</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a></span>) – path to a .spc file saved by EDAX software (Genesis, TEAM, etc.)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>metadata</strong> – The metadata of interest extracted from the file. If None, the file
+could not be opened</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>Optional</em>[<em>Dict</em>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.image_to_square_thumbnail">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.</span></span><span class="sig-name descname"><span class="pre">image_to_square_thumbnail</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_size</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/nexusLIMS/extractors/thumbnail_generator.html#image_to_square_thumbnail"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.image_to_square_thumbnail" title="Link to this definition">#</a></dt>
+<dd><p>Generate a preview thumbnail from a non-data image file.</p>
+<p>Images of common filetypes will be transformed into 500 x 500 pixel images
+by first scaling the largest dimension to 500 pixels and then padding the
+resulting image to square.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>f</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a></span>) – The string of the path of an image file for which a thumbnail should be
+generated.</p></li>
+<li><p><strong>out_path</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a></span>) – A path to the desired thumbnail filename. All formats supported by
+<a class="reference external" href="https://pillow.readthedocs.io/en/stable/reference/Image.html#PIL.Image.Image.save" title="(in Pillow (PIL Fork) v12.0.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">save()</span></code></a> can be used.</p></li>
+<li><p><strong>output_size</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – The desired resulting size of the thumbnail image.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Whether a preview was generated</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.parse_metadata">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.</span></span><span class="sig-name descname"><span class="pre">parse_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generate_preview</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/nexusLIMS/extractors.html#parse_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.parse_metadata" title="Link to this definition">#</a></dt>
+<dd><p>Parse metadata from a file and optionaly generate a preview image.</p>
+<p>Given an input filename, read the file, determine what “type” of file (i.e.
+what instrument it came from) it is, filter the metadata (if necessary) to
+what we are interested in, and return it as a dictionary (writing to the
+NexusLIMS directory as JSON by default). Also calls the preview
+generation method, if desired.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fname</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a></span>) – The filename from which to read data</p></li>
+<li><p><strong>write_output</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – Whether to write the metadata dictionary as a json file in the NexusLIMS
+folder structure</p></li>
+<li><p><strong>generate_preview</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – Whether to generate the thumbnail preview of this dataset (that
+operation is not done in this method, it is just called from here so
+it can be done at the same time)</p></li>
+<li><p><strong>overwrite</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – Whether to overwrite the .json metadata file and thumbnail
+image if either exists</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Tuple" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code></a>[<a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Optional" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Dict" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Any" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]], <a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a> | <a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>]</span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><strong>nx_meta</strong> (<em>dict or None</em>) – The “relevant” metadata that is of use for NexusLIMS. If None,
+the file could not be opened</p></li>
+<li><p><strong>preview_fname</strong> (<em>Path or None</em>) – The file path of the generated preview image, or <cite>None</cite> if it was not
+requested</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.sig_to_thumbnail">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.</span></span><span class="sig-name descname"><span class="pre">sig_to_thumbnail</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dpi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">92</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/nexusLIMS/extractors/thumbnail_generator.html#sig_to_thumbnail"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.sig_to_thumbnail" title="Link to this definition">#</a></dt>
+<dd><p>Generate a preview thumbnail from an arbitrary HyperSpy signal.</p>
+<p>For a 2D signal, the signal from the first navigation position is used (most
+likely the top- and left-most position. For a 1D signal (<em>i.e.</em> a
+spectrum or spectrum image), the output depends on the
+number of navigation dimensions:</p>
+<ul class="simple">
+<li><p>0: Image of spectrum</p></li>
+<li><p>1: Image of linescan (<em>a la</em> DigitalMicrograph)</p></li>
+<li><p>2: Image of spectra sampled from navigation space</p></li>
+<li><p>2+: As for 2 dimensions</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>s</strong> (<a class="reference external" href="http://hyperspy.org/hyperspy-doc/current/reference/api.signals/BaseSignal.html#hyperspy.api.signals.BaseSignal" title="(in HyperSpy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">hyperspy.signal.BaseSignal</span></code></a> (or subclass)) – The HyperSpy signal for which a thumbnail should be generated</p></li>
+<li><p><strong>out_path</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a></span>) – A path to the desired thumbnail filename. All formats supported by
+<a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.figure.Figure.savefig.html#matplotlib.figure.Figure.savefig" title="(in Matplotlib v3.10.7)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">savefig()</span></code></a> can be used.</p></li>
+<li><p><strong>dpi</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – The “dots per inch” resolution for the outputted figure</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>f</strong> – Handle to a matplotlib Figure</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure" title="(in Matplotlib v3.10.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.figure.Figure</span></code></a></p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This method heavily utilizes HyperSpy’s existing plotting functions to
+figure out how to best display the image</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.text_to_thumbnail">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.</span></span><span class="sig-name descname"><span class="pre">text_to_thumbnail</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">500</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/nexusLIMS/extractors/thumbnail_generator.html#text_to_thumbnail"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.text_to_thumbnail" title="Link to this definition">#</a></dt>
+<dd><p>Generate a preview thumbnail from a text file.</p>
+<p>For a text file, the contents will be formatted and written to a 500x500
+pixel jpg image of size 5 in by 5 in.</p>
+<p>If the text file has many newlines, it is probably data and the first 42
+characters of each of the first 20 lines of the text file will be written
+to the image.</p>
+<p>If the text file has a few (or fewer) newlines, it is probably a manually
+generated note and the text will be written to a 42 column, 18 row box
+until the space is exhausted.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>f</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a></span>) – The path of a text file for which a thumbnail should be generated.</p></li>
+<li><p><strong>out_path</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a></span>) – A path to the desired thumbnail filename. All formats supported by
+<a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.figure.Figure.savefig.html#matplotlib.figure.Figure.savefig" title="(in Matplotlib v3.10.7)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">savefig()</span></code></a> can be used.</p></li>
+<li><p><strong>output_size</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – The pixel width (and height, since the image is padded to square) of
+the saved image file.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>f</strong> – Handle to a matplotlib Figure, or the value False if a preview could not be
+generated</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure" title="(in Matplotlib v3.10.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.figure.Figure</span></code></a> or bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="nexusLIMS.db.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">nexusLIMS.db package</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="nexusLIMS.harvesters.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">nexusLIMS.harvesters package</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-nexusLIMS.extractors.basic_metadata">nexusLIMS.extractors.basic_metadata module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.basic_metadata.get_basic_metadata"><code class="docutils literal notranslate"><span class="pre">get_basic_metadata()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-nexusLIMS.extractors.digital_micrograph">nexusLIMS.extractors.digital_micrograph module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.digital_micrograph.get_dm3_metadata"><code class="docutils literal notranslate"><span class="pre">get_dm3_metadata()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.digital_micrograph.get_pre_path"><code class="docutils literal notranslate"><span class="pre">get_pre_path()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.digital_micrograph.parse_642_jeol"><code class="docutils literal notranslate"><span class="pre">parse_642_jeol()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.digital_micrograph.parse_642_titan"><code class="docutils literal notranslate"><span class="pre">parse_642_titan()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.digital_micrograph.parse_643_titan"><code class="docutils literal notranslate"><span class="pre">parse_643_titan()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.digital_micrograph.parse_dm3_eds_info"><code class="docutils literal notranslate"><span class="pre">parse_dm3_eds_info()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.digital_micrograph.parse_dm3_eels_info"><code class="docutils literal notranslate"><span class="pre">parse_dm3_eels_info()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.digital_micrograph.parse_dm3_microscope_info"><code class="docutils literal notranslate"><span class="pre">parse_dm3_microscope_info()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.digital_micrograph.parse_dm3_spectrum_image_info"><code class="docutils literal notranslate"><span class="pre">parse_dm3_spectrum_image_info()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.digital_micrograph.process_tecnai_microscope_info"><code class="docutils literal notranslate"><span class="pre">process_tecnai_microscope_info()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-nexusLIMS.extractors.edax">nexusLIMS.extractors.edax module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.edax.get_msa_metadata"><code class="docutils literal notranslate"><span class="pre">get_msa_metadata()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.edax.get_spc_metadata"><code class="docutils literal notranslate"><span class="pre">get_spc_metadata()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-nexusLIMS.extractors.fei_emi">nexusLIMS.extractors.fei_emi module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.fei_emi.get_emi_from_ser"><code class="docutils literal notranslate"><span class="pre">get_emi_from_ser()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.fei_emi.get_ser_metadata"><code class="docutils literal notranslate"><span class="pre">get_ser_metadata()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.fei_emi.map_keys"><code class="docutils literal notranslate"><span class="pre">map_keys()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.fei_emi.parse_acquire_info"><code class="docutils literal notranslate"><span class="pre">parse_acquire_info()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.fei_emi.parse_basic_info"><code class="docutils literal notranslate"><span class="pre">parse_basic_info()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.fei_emi.parse_data_type"><code class="docutils literal notranslate"><span class="pre">parse_data_type()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.fei_emi.parse_experimental_conditions"><code class="docutils literal notranslate"><span class="pre">parse_experimental_conditions()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.fei_emi.parse_experimental_description"><code class="docutils literal notranslate"><span class="pre">parse_experimental_description()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.fei_emi.split_fei_metadata_units"><code class="docutils literal notranslate"><span class="pre">split_fei_metadata_units()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-nexusLIMS.extractors.quanta_tif">nexusLIMS.extractors.quanta_tif module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.quanta_tif.get_quanta_metadata"><code class="docutils literal notranslate"><span class="pre">get_quanta_metadata()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.quanta_tif.parse_beam_info"><code class="docutils literal notranslate"><span class="pre">parse_beam_info()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.quanta_tif.parse_det_info"><code class="docutils literal notranslate"><span class="pre">parse_det_info()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.quanta_tif.parse_image_info"><code class="docutils literal notranslate"><span class="pre">parse_image_info()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.quanta_tif.parse_nx_meta"><code class="docutils literal notranslate"><span class="pre">parse_nx_meta()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.quanta_tif.parse_scan_info"><code class="docutils literal notranslate"><span class="pre">parse_scan_info()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.quanta_tif.parse_system_info"><code class="docutils literal notranslate"><span class="pre">parse_system_info()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-nexusLIMS.extractors.thumbnail_generator">nexusLIMS.extractors.thumbnail_generator module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.thumbnail_generator.add_annotation_markers"><code class="docutils literal notranslate"><span class="pre">add_annotation_markers()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.thumbnail_generator.down_sample_image"><code class="docutils literal notranslate"><span class="pre">down_sample_image()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.thumbnail_generator.image_to_square_thumbnail"><code class="docutils literal notranslate"><span class="pre">image_to_square_thumbnail()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.thumbnail_generator.sig_to_thumbnail"><code class="docutils literal notranslate"><span class="pre">sig_to_thumbnail()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.thumbnail_generator.text_to_thumbnail"><code class="docutils literal notranslate"><span class="pre">text_to_thumbnail()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-nexusLIMS.extractors.utils">nexusLIMS.extractors.utils module</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-nexusLIMS.extractors">Module contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.create_preview"><code class="docutils literal notranslate"><span class="pre">create_preview()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.down_sample_image"><code class="docutils literal notranslate"><span class="pre">down_sample_image()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.flatten_dict"><code class="docutils literal notranslate"><span class="pre">flatten_dict()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.get_basic_metadata"><code class="docutils literal notranslate"><span class="pre">get_basic_metadata()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.get_dm3_metadata"><code class="docutils literal notranslate"><span class="pre">get_dm3_metadata()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.get_instr_from_filepath"><code class="docutils literal notranslate"><span class="pre">get_instr_from_filepath()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.get_msa_metadata"><code class="docutils literal notranslate"><span class="pre">get_msa_metadata()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.get_quanta_metadata"><code class="docutils literal notranslate"><span class="pre">get_quanta_metadata()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.get_ser_metadata"><code class="docutils literal notranslate"><span class="pre">get_ser_metadata()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.get_spc_metadata"><code class="docutils literal notranslate"><span class="pre">get_spc_metadata()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.image_to_square_thumbnail"><code class="docutils literal notranslate"><span class="pre">image_to_square_thumbnail()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.parse_metadata"><code class="docutils literal notranslate"><span class="pre">parse_metadata()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.sig_to_thumbnail"><code class="docutils literal notranslate"><span class="pre">sig_to_thumbnail()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.text_to_thumbnail"><code class="docutils literal notranslate"><span class="pre">text_to_thumbnail()</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/api/nexusLIMS.extractors.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2025, datasophos, LLC.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
