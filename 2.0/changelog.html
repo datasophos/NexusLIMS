@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Changelog &#8212; NexusLIMS 2.0.0a4 documentation</title>
+    <title>Changelog &#8212; NexusLIMS 2.0.0 documentation</title>
   
   
   
@@ -33,7 +33,7 @@
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/autodoc_pydantic.css" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=cabef9d0" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=51baea2f" />
   
   <!-- So that users can add custom icons -->
   <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="_static/documentation_options.js?v=cc4637dc"></script>
+    <script src="_static/documentation_options.js?v=51b770b3"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/design-tabs.js?v=f930bc37"></script>
@@ -49,7 +49,7 @@
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.0.0a4';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.0.0';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
@@ -59,7 +59,7 @@
     <link rel="prev" title="nexusLIMS.schemas package" href="api/nexusLIMS.schemas.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.0.0a4" />
+  <meta name="docsearch:version" content="2.0.0" />
     <meta name="docbuild:last-update" content="Dec, 07, 2025"/>
   </head>
   
@@ -126,8 +126,8 @@
       
     
     
-    <img src="_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.0.0a4 documentation - Home"/>
-    <img src="_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.0.0a4 documentation - Home"/>
+    <img src="_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.0.0 documentation - Home"/>
+    <img src="_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.0.0 documentation - Home"/>
   
   
 </a></div>
@@ -177,6 +177,13 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="migration.html">
+    Migration Guide: v1 to v2
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="user_guide.html">
     User Guide
   </a>
@@ -189,13 +196,23 @@
   </a>
 </li>
 
-
-<li class="nav-item current active">
-  <a class="nav-link nav-internal" href="reference.html">
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="reference.html">
     Reference
   </a>
 </li>
 
+                </ul>
+            </li>
+            
   </ul>
 </nav></div>
       
@@ -294,6 +311,13 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="getting_started.html">
     Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="migration.html">
+    Migration Guide: v1 to v2
   </a>
 </li>
 
@@ -449,8 +473,8 @@
 <p>This changelog documents development history including the original NIST project
 up to version 1.4.3. The datasophos fork begins at version 2.0.</p>
 </div>
-<section id="vrelease-unreleased-2025-12-07">
-<h2>v2.0.0a4 [Unreleased] (2025-12-07)<a class="headerlink" href="#vrelease-unreleased-2025-12-07" title="Link to this heading">#</a></h2>
+<section id="v2-0-0-2025-12-06">
+<h2>v2.0.0 (2025-12-06)<a class="headerlink" href="#v2-0-0-2025-12-06" title="Link to this heading">#</a></h2>
 <section id="new-features">
 <h3>New features<a class="headerlink" href="#new-features" title="Link to this heading">#</a></h3>
 <ul class="simple">
@@ -476,6 +500,8 @@ unit tests.</p></li>
 <section id="documentation-improvements">
 <h3>Documentation improvements<a class="headerlink" href="#documentation-improvements" title="Link to this heading">#</a></h3>
 <ul class="simple">
+<li><p>Add a comprehensive documentation page for the extractors within NexusLIMS.</p></li>
+<li><p>Added a migration guide to support users migrating from v1 to v2</p></li>
 <li><p>Added improved auto-generated documentation for XML schema with interactive visualization (<a class="reference internal" href="schema_documentation.html"><span class="doc">XML Schema Reference</span></a>).</p></li>
 <li><p>Migrated documentation to the modern PyData Sphinx Theme, offering a refreshed look, improved mobile responsiveness, and dark mode support. This overhaul includes a complete restructuring into hierarchical sections, a comprehensive “Getting Started” guide, new logo branding, and streamlined configuration.</p></li>
 </ul>
@@ -494,13 +520,13 @@ unit tests.</p></li>
 <li><p>Removed the deprecated SharePoint harvester.</p></li>
 <li><p>Removed tox for test running and local development processes, with most functions going into the <code class="docutils literal notranslate"><span class="pre">./scripts/</span></code> directory.</p></li>
 </ul>
-</section>
-</section>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The following changelog for versions up to v1.4.3
 is copied from the original NIST <a class="reference external" href="https://github.com/usnistgov/NexusLIMS">NexusLIMS project</a>.</p>
 </div>
+</section>
+</section>
 <section id="v1-4-3-2024-06-07">
 <h2>v1.4.3 (2024-06-07)<a class="headerlink" href="#v1-4-3-2024-06-07" title="Link to this heading">#</a></h2>
 <section id="bug-fixes">
@@ -1050,7 +1076,7 @@ delineate functionality of the various parts of NexusLIMS</p></li>
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#vrelease-unreleased-2025-12-07">v2.0.0a4 [Unreleased] (2025-12-07)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v2-0-0-2025-12-06">v2.0.0 (2025-12-06)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v1-4-3-2024-06-07">v1.4.3 (2024-06-07)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v1-4-2-2024-05-29">v1.4.2 (2024-05-29)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v1-4-1-2023-09-20">v1.4.1 (2023-09-20)</a></li>

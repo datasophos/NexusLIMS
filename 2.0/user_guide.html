@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>User Guide &#8212; NexusLIMS 2.0.0a4 documentation</title>
+    <title>User Guide &#8212; NexusLIMS 2.0.0 documentation</title>
   
   
   
@@ -33,7 +33,7 @@
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/autodoc_pydantic.css" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=cabef9d0" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=51baea2f" />
   
   <!-- So that users can add custom icons -->
   <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="_static/documentation_options.js?v=cc4637dc"></script>
+    <script src="_static/documentation_options.js?v=51b770b3"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/design-tabs.js?v=f930bc37"></script>
@@ -49,7 +49,7 @@
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.0.0a4';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.0.0';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
@@ -57,10 +57,10 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Record building workflow" href="record_building.html" />
-    <link rel="prev" title="Getting Started" href="getting_started.html" />
+    <link rel="prev" title="Migration Guide: v1 to v2" href="migration.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.0.0a4" />
+  <meta name="docsearch:version" content="2.0.0" />
     <meta name="docbuild:last-update" content="Dec, 07, 2025"/>
   </head>
   
@@ -127,8 +127,8 @@
       
     
     
-    <img src="_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.0.0a4 documentation - Home"/>
-    <img src="_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.0.0a4 documentation - Home"/>
+    <img src="_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.0.0 documentation - Home"/>
+    <img src="_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.0.0 documentation - Home"/>
   
   
 </a></div>
@@ -177,6 +177,13 @@
 </li>
 
 
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="migration.html">
+    Migration Guide: v1 to v2
+  </a>
+</li>
+
+
 <li class="nav-item current active">
   <a class="nav-link nav-internal" href="#">
     User Guide
@@ -190,13 +197,23 @@
   </a>
 </li>
 
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="reference.html">
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="reference.html">
     Reference
   </a>
 </li>
 
+                </ul>
+            </li>
+            
   </ul>
 </nav></div>
       
@@ -299,6 +316,13 @@
 </li>
 
 
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="migration.html">
+    Migration Guide: v1 to v2
+  </a>
+</li>
+
+
 <li class="nav-item current active">
   <a class="nav-link nav-internal" href="#">
     User Guide
@@ -382,6 +406,7 @@
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="record_building.html">Record building workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extractors.html">Extractors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="taxonomy.html">NexusLIMS taxonomy</a></li>
 </ul>
 </div>
@@ -452,6 +477,18 @@
 <li class="toctree-l2"><a class="reference internal" href="record_building.html#record-generation-diagram">Record Generation Diagram</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="extractors.html">Extractors</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="extractors.html#quick-reference">Quick Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extractors.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extractors.html#fully-supported-formats">Fully Supported Formats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extractors.html#partially-supported-formats">Partially Supported Formats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extractors.html#unsupported-formats">Unsupported Formats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extractors.html#how-extraction-works">How Extraction Works</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extractors.html#adding-support-for-new-formats">Adding Support for New Formats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extractors.html#api-reference">API Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extractors.html#further-reading">Further Reading</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="taxonomy.html">NexusLIMS taxonomy</a></li>
 </ul>
 </div>
@@ -468,12 +505,12 @@
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="getting_started.html"
+       href="migration.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Getting Started</p>
+        <p class="prev-next-title">Migration Guide: v1 to v2</p>
       </div>
     </a>
     <a class="right-next"

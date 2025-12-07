@@ -12,6 +12,9 @@ Getting Started
 
 Welcome to NexusLIMS! This guide will help you get up and running quickly.
 
+.. note::
+   **Upgrading from v1.x?** See the :ref:`migration` guide for step-by-step instructions on migrating from NexusLIMS v1.4.3 to v2.0+.
+
 What is NexusLIMS?
 ==================
 
