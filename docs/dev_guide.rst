@@ -10,5 +10,6 @@ Documentation for developers contributing to or extending NexusLIMS.
    :maxdepth: 2
 
    development
+   uv_migration
    database
    schema_documentation
