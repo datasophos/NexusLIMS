@@ -57,7 +57,7 @@
     <link rel="icon" href="_static/nexusLIMS_bare_logo.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="User Guide" href="user_guide.html" />
+    <link rel="next" title="Migration Guide: v1 to v2" href="migration.html" />
     <link rel="prev" title="NexusLIMS - An Automated Laboratory Information Management System for Electron Microscopy" href="index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -179,6 +179,13 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="migration.html">
+    Migration Guide: v1 to v2
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="user_guide.html">
     User Guide
   </a>
@@ -191,13 +198,23 @@
   </a>
 </li>
 
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="reference.html">
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="reference.html">
     Reference
   </a>
 </li>
 
+                </ul>
+            </li>
+            
   </ul>
 </nav></div>
       
@@ -296,6 +313,13 @@
 <li class="nav-item current active">
   <a class="nav-link nav-internal" href="#">
     Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="migration.html">
+    Migration Guide: v1 to v2
   </a>
 </li>
 
@@ -445,6 +469,10 @@
 <div class="toctree-wrapper compound">
 </div>
 <p>Welcome to NexusLIMS! This guide will help you get up and running quickly.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Upgrading from v1.x?</strong> See the <a class="reference internal" href="migration.html#migration"><span class="std std-ref">Migration Guide: v1 to v2</span></a> guide for step-by-step instructions on migrating from NexusLIMS v1.4.3 to v2.0+.</p>
+</div>
 <section id="what-is-nexuslims">
 <h2>What is NexusLIMS?<a class="headerlink" href="#what-is-nexuslims" title="Link to this heading">#</a></h2>
 <p>NexusLIMS is an electron microscopy Laboratory Information Management System (LIMS) that automatically generates experimental records by:</p>
@@ -709,11 +737,11 @@ nexuslims-process-records<span class="w"> </span>-vv
       </div>
     </a>
     <a class="right-next"
-       href="user_guide.html"
+       href="migration.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">User Guide</p>
+        <p class="prev-next-title">Migration Guide: v1 to v2</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

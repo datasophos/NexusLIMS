@@ -4,6 +4,7 @@
 
    Home <self>
    getting_started
+   migration
    user_guide
    dev_guide
    reference
@@ -27,6 +28,12 @@ files and harvesting information from laboratory calendar systems.
       :link-type: doc
 
       New to NexusLIMS? Start here for installation, configuration, and quick start guide.
+
+   .. grid-item-card:: 🔄 Migration Guide
+      :link: migration
+      :link-type: doc
+
+      Upgrading from v1.x? Step-by-step instructions for migrating to v2.0+.
 
    .. grid-item-card:: 📖 User Guide
       :link: user_guide
