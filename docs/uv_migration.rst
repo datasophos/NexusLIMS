@@ -4,12 +4,16 @@
 Migration from Poetry to uv
 ============================
 
-This document describes the migration of the NexusLIMS project from Poetry to uv for dependency management and package installation. This information is primarily relevant for developers who were familiar with the previous Poetry-based workflow.
+This document describes the migration of the NexusLIMS project from Poetry
+to uv for dependency management and package installation. This information
+is primarily relevant for developers who were familiar with the previous
+Poetry-based workflow.
 
 Why the Change?
 ===============
 
-NexusLIMS migrated from Poetry to `uv <https://docs.astral.sh/uv/>`_ to leverage several key advantages:
+NexusLIMS migrated from Poetry to `uv <https://docs.astral.sh/uv/>`_ to
+leverage several key advantages:
 
 **Performance**
    uv is significantly faster than Poetry for dependency resolution and installation (often 10-100x faster)
@@ -516,22 +520,6 @@ Feature Comparison
    * - Ecosystem maturity
      - Mature (2018)
      - Newer but stable (2023)
-
-When to Use Which
------------------
-
-**Use uv** (recommended for NexusLIMS):
-
-- You want the fastest possible dependency resolution and installation
-- You're starting a new project
-- You want standard Python packaging formats
-- You value simplicity and speed over features
-
-**Use Poetry** (if you must):
-
-- You have complex plugin requirements specific to Poetry
-- You're maintaining a legacy project that heavily uses Poetry-specific features
-- You need Poetry's publishing features (though uv can also publish)
 
 Further Reading
 ===============
