@@ -129,6 +129,10 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Stash any local changes (e.g., uv.lock modifications from uv sync)
+          git stash --include-untracked || true
+
           git fetch origin gh-pages
           git checkout gh-pages
           git pull origin gh-pages
