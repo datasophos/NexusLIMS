@@ -86,6 +86,7 @@ extension_reader_map = {
     "dm3": get_dm3_metadata,
     "dm4": get_dm3_metadata,
     "tif": get_quanta_metadata,
+    "tiff": get_quanta_metadata,
     "ser": get_ser_metadata,
     "spc": get_spc_metadata,
     "msa": get_msa_metadata,

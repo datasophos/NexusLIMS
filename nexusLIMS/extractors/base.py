@@ -157,7 +157,7 @@ class BaseExtractor(Protocol):
         ...     return (context.instrument is not None and
         ...             context.instrument.name.startswith("FEI-Quanta"))
         """
-        ...
+        ...  # pragma: no cover
 
     def extract(self, context: ExtractionContext) -> dict[str, Any]:
         """
@@ -222,7 +222,7 @@ class BaseExtractor(Protocol):
         ...         }
         ...     }
         """
-        ...
+        ...  # pragma: no cover
 
 
 class PreviewGenerator(Protocol):
@@ -278,7 +278,7 @@ class PreviewGenerator(Protocol):
         bool
             True if this generator can handle this file
         """
-        ...
+        ...  # pragma: no cover
 
     def generate(self, context: ExtractionContext, output_path: Path) -> bool:
         """
@@ -315,7 +315,7 @@ class PreviewGenerator(Protocol):
         ...         logger.error(f"Preview generation failed: {e}")
         ...         return False
         """
-        ...
+        ...  # pragma: no cover
 
 
 @dataclass
@@ -360,8 +360,8 @@ class InstrumentProfile:
     ...         "microscope_info": parse_643_titan_microscope,
     ...     },
     ...     static_metadata={
-    ...         "nx_meta.Facility": "NIST",
-    ...         "nx_meta.Building": "223",
+    ...         "nx_meta.Facility": "Nexus Facility",
+    ...         "nx_meta.Building": "Bldg. 1",
     ...     }
     ... )
 
