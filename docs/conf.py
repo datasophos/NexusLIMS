@@ -99,6 +99,7 @@ extensions = [
     "sphinxcontrib.autodoc_pydantic",
     "sphinx_autodoc_typehints",
     "sphinx_design",
+    "myst_parser",  # Support for Markdown files
     "xsd_documenter",  # Custom XSD documentation extension with D3.js diagrams
 ]
 
@@ -122,7 +123,10 @@ towncrier_draft_working_directory = "."
 templates_path = ["_templates"]
 
 # The suffix of source filenames.
-source_suffix = ".rst"
+source_suffix = {
+    ".rst": "restructuredtext",
+    ".md": "markdown",
+}
 highlight_language = "python"
 today = ""
 pygments_style = "sphinx"

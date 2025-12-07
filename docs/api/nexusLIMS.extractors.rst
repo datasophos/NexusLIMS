@@ -1,8 +1,24 @@
 nexusLIMS.extractors package
 ============================
 
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: -1
+
+   nexusLIMS.extractors.plugins
+
 Submodules
 ----------
+
+nexusLIMS.extractors.base module
+--------------------------------
+
+.. automodule:: nexusLIMS.extractors.base
+   :members:
+   :show-inheritance:
+   :undoc-members:
 
 nexusLIMS.extractors.basic\_metadata module
 -------------------------------------------
@@ -36,10 +52,26 @@ nexusLIMS.extractors.fei\_emi module
    :show-inheritance:
    :undoc-members:
 
+nexusLIMS.extractors.profiles module
+------------------------------------
+
+.. automodule:: nexusLIMS.extractors.profiles
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
 nexusLIMS.extractors.quanta\_tif module
 ---------------------------------------
 
 .. automodule:: nexusLIMS.extractors.quanta_tif
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+nexusLIMS.extractors.registry module
+------------------------------------
+
+.. automodule:: nexusLIMS.extractors.registry
    :members:
    :show-inheritance:
    :undoc-members:

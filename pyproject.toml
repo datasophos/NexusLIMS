@@ -71,6 +71,11 @@ Documentation = "https://github.com/datasophos/NexusLIMS"
 [project.scripts]
 nexuslims-process-records = "nexusLIMS.cli.process_records:main"
 
+[project.optional-dependencies]
+docs = [
+    "myst-parser>=4.0.1",
+]
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"

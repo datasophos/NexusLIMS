@@ -10,6 +10,7 @@ Documentation for developers contributing to or extending NexusLIMS.
    :maxdepth: 2
 
    development
+   writing_extractor_plugins
    uv_migration
    database
    schema_documentation
