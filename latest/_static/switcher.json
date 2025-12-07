@@ -1,5 +1,11 @@
 [
   {
+    "name": "Stable",
+    "version": "stable",
+    "url": "https://datasophos.github.io/NexusLIMS/stable/",
+    "preferred": true
+  },
+  {
     "name": "Latest",
     "version": "latest",
     "url": "https://datasophos.github.io/NexusLIMS/latest/",
