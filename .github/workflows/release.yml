@@ -168,7 +168,7 @@ jobs:
           </html>
           EOF
 
-          git add "$VERSION_DIR" stable docs/_static/switcher.json
+          git add "$VERSION_DIR" stable
           git commit -m "Deploy docs for version ${{ steps.version.outputs.version }}" || echo "No changes to commit"
           git push origin gh-pages
 

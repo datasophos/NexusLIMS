@@ -157,6 +157,10 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Stash any local changes (e.g., uv.lock modifications from uv sync)
+          git stash --include-untracked || true
+
           git fetch origin gh-pages
           git checkout gh-pages
           git pull origin gh-pages
@@ -247,6 +251,10 @@ jobs:
           rm -rf "pr-${PR_NUMBER}"
           mkdir -p "pr-${PR_NUMBER}"
           rsync -avr pr-source/_build/ "pr-${PR_NUMBER}/"
+
+          # Stash any local changes (e.g., uv.lock modifications from uv sync)
+          git stash --include-untracked || true
+
           if [ -d "pr-source/tests/coverage" ]; then
             mkdir -p "pr-${PR_NUMBER}/coverage"
             rsync -avr pr-source/tests/coverage/ "pr-${PR_NUMBER}/coverage/"
