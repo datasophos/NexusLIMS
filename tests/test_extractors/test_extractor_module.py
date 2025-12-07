@@ -7,6 +7,7 @@ import base64
 import filecmp
 import json
 import logging
+import shutil
 from pathlib import Path
 
 import numpy as np
@@ -43,6 +44,32 @@ class TestExtractorModule:
         )
         assert meta["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
 
+        self.remove_thumb_and_json(thumb_fname)
+
+    def test_parse_metadata_titan_mixed_case_extension(
+        self, parse_meta_titan, tmp_path
+    ):
+        """Test metadata extraction with non-lowercase .dm4 extension.
+
+        This test ensures that file extension matching is case-insensitive
+        and that metadata extraction works properly for files with uppercase
+        or mixed-case extensions like .TIF, .Tif, etc.
+        """
+        # Create a copy of the test file with mixed case extension
+        original_file = parse_meta_titan[0]
+        uppercase_file = tmp_path / (original_file.stem + ".Dm4")
+        shutil.copy2(original_file, uppercase_file)
+
+        # Test that metadata extraction works with mixed case extension
+        meta, thumb_fname = parse_metadata(fname=uppercase_file)
+        assert meta is not None
+        assert thumb_fname is not None
+        assert meta["nx_meta"]["Actual Magnification"] == pytest.approx(17677.0)
+        assert (
+            meta["nx_meta"]["NexusLIMS Extraction"]["Module"]
+            == "nexusLIMS.extractors.digital_micrograph"
+        )
+        assert meta["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
         self.remove_thumb_and_json(thumb_fname)
 
     def test_parse_metadata_list_signal(self, list_signal):
@@ -104,6 +131,42 @@ class TestExtractorModule:
 
         meta, thumb_fname = parse_metadata(fname=quanta_test_file[0])
         assert meta is not None
+        assert (
+            meta["nx_meta"]["NexusLIMS Extraction"]["Module"]
+            == "nexusLIMS.extractors.quanta_tif"
+        )
+        assert meta["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
+        self.remove_thumb_and_json(thumb_fname)
+
+    def test_parse_metadata_tif_uppercase_extension(
+        self, monkeypatch, quanta_test_file, tmp_path
+    ):
+        """Test metadata extraction with non-lowercase .TIF extension.
+
+        This test ensures that file extension matching is case-insensitive
+        and that metadata extraction works properly for files with uppercase
+        or mixed-case extensions like .TIF, .Tif, etc.
+        """
+        import shutil
+
+        def mock_instr(_):
+            return None
+
+        monkeypatch.setattr(
+            nexusLIMS.extractors.utils,
+            "get_instr_from_filepath",
+            mock_instr,
+        )
+
+        # Create a copy of the test file with uppercase .TIF extension
+        original_file = quanta_test_file[0]
+        uppercase_file = tmp_path / (original_file.stem + ".TIF")
+        shutil.copy2(original_file, uppercase_file)
+
+        # Test that metadata extraction works with uppercase extension
+        meta, thumb_fname = parse_metadata(fname=uppercase_file)
+        assert meta is not None
+        assert thumb_fname is not None
         assert (
             meta["nx_meta"]["NexusLIMS Extraction"]["Module"]
             == "nexusLIMS.extractors.quanta_tif"
