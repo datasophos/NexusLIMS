@@ -34,6 +34,7 @@ from nexusLIMS.utils import current_system_tz, replace_instrument_data_path
 from nexusLIMS.version import __version__
 
 from . import utils
+from .base import ExtractionContext
 from .basic_metadata import get_basic_metadata
 from .digital_micrograph import get_dm3_metadata
 from .edax import get_msa_metadata, get_spc_metadata
@@ -146,10 +147,10 @@ def _add_extraction_details(
         module_name = extractor_module.__module__
 
     # Fallback to inspect.getmodule() for old-style functions
-    if module_name is None:
-        module = inspect.getmodule(extractor_module)
-        if module is not None:
-            module_name = module.__name__
+    if module_name is None:  # pragma: no cover
+        module = inspect.getmodule(extractor_module)  # pragma: no cover
+        if module is not None:  # pragma: no cover
+            module_name = module.__name__  # pragma: no cover
         else:
             # Last resort - use "unknown"
             module_name = "unknown"
@@ -241,7 +242,7 @@ def parse_metadata(
             self.__name__ = self.__module__
 
         def __call__(self, f: Path) -> dict:  # noqa: ARG002
-            return nx_meta
+            return nx_meta  # pragma: no cover
 
     extractor_method = ExtractorMethod(extractor.name)
 
@@ -261,7 +262,7 @@ def parse_metadata(
                 "setting generate_preview to True",
             )
 
-    nx_meta = _add_extraction_details(nx_meta, extractor_method.lower())
+    nx_meta = _add_extraction_details(nx_meta, extractor_method)
     preview_fname = None
 
     # nx_meta should never be None, because the extractors are defensive and

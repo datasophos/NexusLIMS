@@ -1089,16 +1089,24 @@ class TestPriorityOrdering:
 class TestErrorHandling:
     """Test error handling and robustness."""
 
-    def test_supports_raises_exception(self, registry):
-        """Exception in supports() should be caught, next extractor tried."""
+    def test_supports_raises_exception(self, registry, caplog):
+        """Exception in supports() should be caught and logged (lines 387-388)."""
+        import logging
+
+        # Track if we're in registration phase
+        in_registration = [True]
 
         class BrokenExtractor:
             name = "broken"
             priority = 200
 
             def supports(self, context):
-                msg = "I'm broken!"
-                raise ValueError(msg)
+                # Don't raise during registration, but raise during get_extractor
+                if not in_registration[0]:
+                    msg = "I'm broken!"
+                    raise ValueError(msg)
+                # During registration, claim to support dm3
+                return context.file_path.suffix.lower() == ".dm3"
 
             def extract(self, context):
                 return {"nx_meta": {}}
@@ -1108,7 +1116,7 @@ class TestErrorHandling:
             priority = 100
 
             def supports(self, context):
-                return True
+                return context.file_path.suffix.lower() == ".dm3"
 
             def extract(self, context):
                 return {"nx_meta": {"status": "ok"}}
@@ -1117,11 +1125,18 @@ class TestErrorHandling:
             registry.register_extractor(BrokenExtractor)
             registry.register_extractor(WorkingExtractor)
 
-            context = ExtractionContext(Path("test.dm3"), None)
-            extractor = registry.get_extractor(context)
+            # Now exit registration phase
+            in_registration[0] = False
+
+            with caplog.at_level(logging.WARNING):
+                context = ExtractionContext(Path("test.dm3"), None)
+                extractor = registry.get_extractor(context)
 
             # Should skip broken and use working
             assert extractor.name == "working"
+            # Verify warning was logged (covers lines 387-388 in registry.py)
+            assert "Error in broken.supports()" in caplog.text
+            assert "I'm broken!" in caplog.text
         finally:
             registry.clear()
 

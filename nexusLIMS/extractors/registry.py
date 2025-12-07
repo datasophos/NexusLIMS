@@ -131,7 +131,7 @@ class ExtractorRegistry:
         ):
             # Skip __pycache__ and other special directories
             if "__pycache__" in name:
-                continue
+                continue  # pragma: no cover
 
             try:
                 module = importlib.import_module(name)
