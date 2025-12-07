@@ -125,6 +125,9 @@ jobs:
           # Get major.minor for version directory (e.g., 2.0 from 2.0.1)
           echo "version_short=$(echo $VERSION | cut -d. -f1,2)" >> $GITHUB_OUTPUT
 
+      - name: Generate switcher.json
+        run: python scripts/generate_switcher_json.py
+
       - name: Deploy versioned docs to gh-pages
         run: |
           git config user.name "github-actions[bot]"
@@ -142,9 +145,6 @@ jobs:
           # Remove old version if exists
           rm -rf "$VERSION_DIR"
           mkdir -p "$VERSION_DIR"
-
-          # Generate switcher.json
-          python scripts/generate_switcher_json.py
 
           # Copy built docs to version directory
           rsync -avr _build/ "$VERSION_DIR/"
