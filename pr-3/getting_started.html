@@ -1,0 +1,864 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Getting Started &#8212; NexusLIMS 2.0.0a4 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=cabef9d0" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="_static/documentation_options.js?v=cc4637dc"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'getting_started';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.0.0a4';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/pr-3/getting_started.html" />
+    <link rel="icon" href="_static/nexusLIMS_bare_logo.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Migration Guide: v1 to v2" href="migration.html" />
+    <link rel="prev" title="NexusLIMS - An Automated Laboratory Information Management System for Electron Microscopy" href="index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="2.0.0a4" />
+    <meta name="docbuild:last-update" content="Dec, 07, 2025"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.0.0a4 documentation - Home"/>
+    <img src="_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.0.0a4 documentation - Home"/>
+  
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="#">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="migration.html">
+    Migration Guide: v1 to v2
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="dev_guide.html">
+    Developer Guide
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="reference.html">
+    Reference
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datasophos/NexusLIMS" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://datasophos.co" title="Datasophos" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-globe fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Datasophos</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="#">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="migration.html">
+    Migration Guide: v1 to v2
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="dev_guide.html">
+    Developer Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="reference.html">
+    Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datasophos/NexusLIMS" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://datasophos.co" title="Datasophos" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-globe fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Datasophos</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Getting Started</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Getting Started</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="getting-started">
+<span id="id1"></span><h1>Getting Started<a class="headerlink" href="#getting-started" title="Link to this heading">#</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<p>Welcome to NexusLIMS! This guide will help you get up and running quickly.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Upgrading from v1.x?</strong> See the <a class="reference internal" href="migration.html#migration"><span class="std std-ref">Migration Guide: v1 to v2</span></a> guide for step-by-step instructions on migrating from NexusLIMS v1.4.3 to v2.0+.</p>
+</div>
+<section id="what-is-nexuslims">
+<h2>What is NexusLIMS?<a class="headerlink" href="#what-is-nexuslims" title="Link to this heading">#</a></h2>
+<p>NexusLIMS is an electron microscopy Laboratory Information Management System (LIMS) that automatically generates experimental records by:</p>
+<ul class="simple">
+<li><p>Extracting metadata from microscopy data files</p></li>
+<li><p>Harvesting information from reservation calendar systems (like <a class="reference external" href="https://github.com/usnistgov/NEMO">NEMO</a>)</p></li>
+<li><p>Building structured XML records conforming to the <a class="reference external" href="https://doi.org/10.18434/M32245">Nexus Experiment schema</a></p></li>
+<li><p>Uploading records to a <a class="reference external" href="https://github.com/datasophos/nexuslims-cdcs/">CDCS</a> (Configurable Data Curation System) frontend</p></li>
+</ul>
+<p>Originally developed at NIST, NexusLIMS is now maintained by <a class="reference external" href="https://datasophos.co">datasophos</a>.</p>
+<section id="key-features">
+<h3>Key Features<a class="headerlink" href="#key-features" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Automatic Record Generation</strong>: Creates comprehensive experimental records without manual data entry</p></li>
+<li><p><strong>Multiple File Format Support</strong>: Reads metadata from <cite>.dm3/.dm4</cite>, <cite>.tif</cite>, <cite>.ser/.emi</cite>, <cite>.spc/.msa</cite> files</p></li>
+<li><p><strong>Calendar Integration</strong>: Connects with NEMO lab management systems</p></li>
+<li><p><strong>Temporal File Clustering</strong>: Intelligently groups files into acquisition activities</p></li>
+<li><p><strong>CDCS Integration</strong>: Publishes records to web-accessible data repositories</p></li>
+</ul>
+</section>
+</section>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading">#</a></h2>
+<section id="prerequisites">
+<h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Python 3.11 or 3.12</p></li>
+<li><p>Linux or macOS (Windows is not officially supported)</p></li>
+<li><p><a class="reference external" href="https://docs.astral.sh/uv/">uv</a> package manager (recommended) or pip</p></li>
+</ul>
+</section>
+<section id="install-nexuslims">
+<h3>Install NexusLIMS<a class="headerlink" href="#install-nexuslims" title="Link to this heading">#</a></h3>
+<p>Using uv (recommended):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Clone the repository</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/datasophos/NexusLIMS.git
+<span class="nb">cd</span><span class="w"> </span>NexusLIMS
+
+<span class="c1"># Install with uv</span>
+uv<span class="w"> </span>sync
+</pre></div>
+</div>
+<p>Using pip:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Clone the repository</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/datasophos/NexusLIMS.git
+<span class="nb">cd</span><span class="w"> </span>NexusLIMS
+
+<span class="c1"># Create virtual environment</span>
+python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>.venv
+<span class="nb">source</span><span class="w"> </span>.venv/bin/activate
+
+<span class="c1"># Install</span>
+pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
+</pre></div>
+</div>
+</section>
+<section id="verify-installation">
+<h3>Verify Installation<a class="headerlink" href="#verify-installation" title="Link to this heading">#</a></h3>
+<p>Check that NexusLIMS is installed correctly:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import nexusLIMS; print(nexusLIMS.version.__version__)&quot;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="configuration">
+<h2>Configuration<a class="headerlink" href="#configuration" title="Link to this heading">#</a></h2>
+<p>NexusLIMS requires configuration through environment variables, typically stored in a <cite>.env</cite> file.</p>
+<section id="create-configuration-file">
+<h3>Create Configuration File<a class="headerlink" href="#create-configuration-file" title="Link to this heading">#</a></h3>
+<p>Copy the example configuration file:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>.env.example<span class="w"> </span>.env
+</pre></div>
+</div>
+<p>Then edit <cite>.env</cite> with your settings.</p>
+</section>
+<section id="essential-configuration">
+<h3>Essential Configuration<a class="headerlink" href="#essential-configuration" title="Link to this heading">#</a></h3>
+<section id="critical-paths">
+<h4>Critical Paths<a class="headerlink" href="#critical-paths" title="Link to this heading">#</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Read-only mount of centralized instrument data</span>
+<span class="nv">NX_INSTRUMENT_DATA_PATH</span><span class="o">=</span>/path/to/instrument/data
+
+<span class="c1"># Writable parallel directory for metadata/previews</span>
+<span class="nv">NX_DATA_PATH</span><span class="o">=</span>/path/to/nexuslims/data
+
+<span class="c1"># SQLite database path</span>
+<span class="nv">NX_DB_PATH</span><span class="o">=</span>/path/to/nexuslims/data/nexuslims_db.sqlite
+</pre></div>
+</div>
+</section>
+<section id="optional-paths">
+<h4>Optional Paths<a class="headerlink" href="#optional-paths" title="Link to this heading">#</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Directory for application logs (defaults to NX_DATA_PATH/logs/)</span>
+<span class="nv">NX_LOG_PATH</span><span class="o">=</span>/path/to/logs
+
+<span class="c1"># Directory for generated XML records (defaults to NX_DATA_PATH/records/)</span>
+<span class="nv">NX_RECORDS_PATH</span><span class="o">=</span>/path/to/records
+</pre></div>
+</div>
+</section>
+<section id="nemo-integration">
+<h4>NEMO Integration<a class="headerlink" href="#nemo-integration" title="Link to this heading">#</a></h4>
+<p>For multiple NEMO instances, use the pattern <cite>NX_NEMO_ADDRESS_N</cite> and <cite>NX_NEMO_TOKEN_N</cite>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># First NEMO instance</span>
+<span class="nv">NX_NEMO_ADDRESS_0</span><span class="o">=</span>https://nemo.example.com
+<span class="nv">NX_NEMO_TOKEN_0</span><span class="o">=</span>your_api_token_here
+
+<span class="c1"># Second NEMO instance (if applicable)</span>
+<span class="nv">NX_NEMO_ADDRESS_1</span><span class="o">=</span>https://nemo2.example.com
+<span class="nv">NX_NEMO_TOKEN_1</span><span class="o">=</span>another_api_token
+</pre></div>
+</div>
+<p>Optional timezone and datetime format overrides:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_NEMO_TIMEZONE_0</span><span class="o">=</span>America/New_York
+<span class="nv">NX_NEMO_DATEFMT_0</span><span class="o">=</span>%Y-%m-%dT%H:%M:%S%z
+</pre></div>
+</div>
+</section>
+<section id="cdcs-authentication">
+<h4>CDCS Authentication<a class="headerlink" href="#cdcs-authentication" title="Link to this heading">#</a></h4>
+<p>For uploading records to CDCS:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_CDCS_USER</span><span class="o">=</span>your_username
+<span class="nv">NX_CDCS_PASS</span><span class="o">=</span>your_password
+<span class="nv">NX_CDCS_URL</span><span class="o">=</span>https://cdcs.example.com
+</pre></div>
+</div>
+</section>
+<section id="file-processing-strategy">
+<h4>File Processing Strategy<a class="headerlink" href="#file-processing-strategy" title="Link to this heading">#</a></h4>
+<p>Control which files are included in records:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># exclusive: Only files with known extractors (default)</span>
+<span class="c1"># inclusive: All files (with basic metadata for unknowns)</span>
+<span class="nv">NEXUSLIMS_FILE_STRATEGY</span><span class="o">=</span>exclusive
+</pre></div>
+</div>
+</section>
+<section id="file-delay-window">
+<h4>File Delay Window<a class="headerlink" href="#file-delay-window" title="Link to this heading">#</a></h4>
+<p>Control retry window for sessions with no files found (useful if there are delays in your file management):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Days to continue searching for files (default: 14)</span>
+<span class="nv">NX_FILE_DELAY_DAYS</span><span class="o">=</span><span class="m">14</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+<section id="database-setup">
+<h2>Database Setup<a class="headerlink" href="#database-setup" title="Link to this heading">#</a></h2>
+<section id="initialize-the-database">
+<h3>Initialize the Database<a class="headerlink" href="#initialize-the-database" title="Link to this heading">#</a></h3>
+<p>NexusLIMS uses SQLite to track instruments and sessions. Initialize the database:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create database with schema</span>
+sqlite3<span class="w"> </span><span class="nv">$NX_DB_PATH</span><span class="w"> </span>&lt;<span class="w"> </span>nexusLIMS/db/dev/NexusLIMS_db_creation_script.sql
+</pre></div>
+</div>
+</section>
+<section id="configure-instruments">
+<h3>Configure Instruments<a class="headerlink" href="#configure-instruments" title="Link to this heading">#</a></h3>
+<p>Add your instruments to the database. Each instrument requires:</p>
+<ul class="simple">
+<li><p><strong>name</strong>: Instrument identifier</p></li>
+<li><p><strong>harvester</strong>: “nemo” or “sharepoint”</p></li>
+<li><p><strong>filestore_path</strong>: Path relative to <cite>NX_INSTRUMENT_DATA_PATH</cite></p></li>
+<li><p><strong>timezone</strong>: Timezone for datetime handling</p></li>
+<li><p><strong>api_url</strong>: NEMO API URL (for NEMO harvester)</p></li>
+<li><p><strong>calendar_name</strong>: NEMO tool name (must match NEMO configuration)</p></li>
+</ul>
+<p>Example SQL:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">instruments</span><span class="w"> </span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">harvester</span><span class="p">,</span><span class="w"> </span><span class="n">filestore_path</span><span class="p">,</span><span class="w"> </span><span class="n">timezone</span><span class="p">,</span><span class="w"> </span><span class="n">api_url</span><span class="p">,</span><span class="w"> </span><span class="n">calendar_name</span><span class="p">)</span>
+<span class="k">VALUES</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="s1">&#39;FEI Titan&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="s1">&#39;nemo&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="s1">&#39;Titan_data&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="s1">&#39;America/New_York&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="s1">&#39;https://nemo.example.com&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="s1">&#39;FEI Titan TEM&#39;</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="quick-start">
+<h2>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading">#</a></h2>
+<section id="run-the-record-builder">
+<h3>Run the Record Builder<a class="headerlink" href="#run-the-record-builder" title="Link to this heading">#</a></h3>
+<p>Once configured, run the record builder:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Full orchestration (recommended)</span>
+<span class="c1"># Includes file locking, timestamped logging, email notifications</span>
+nexuslims-process-records
+
+<span class="c1"># Dry-run mode (find files without building records)</span>
+nexuslims-process-records<span class="w"> </span>-n
+
+<span class="c1"># Verbose output</span>
+nexuslims-process-records<span class="w"> </span>-vv
+</pre></div>
+</div>
+</section>
+<section id="understanding-the-workflow">
+<h3>Understanding the Workflow<a class="headerlink" href="#understanding-the-workflow" title="Link to this heading">#</a></h3>
+<p>NexusLIMS follows this process:</p>
+<ol class="arabic simple">
+<li><p><strong>Harvest</strong>: NEMO harvester polls API for new/ended reservations</p></li>
+<li><p><strong>Track</strong>: Creates session_log entries with START/END events</p></li>
+<li><p><strong>Find Files</strong>: Locates files modified during session window</p></li>
+<li><p><strong>Cluster</strong>: Groups files into Acquisition Activities by temporal analysis</p></li>
+<li><p><strong>Extract</strong>: Reads metadata from each file</p></li>
+<li><p><strong>Build</strong>: Generates XML record conforming to Nexus Experiment schema</p></li>
+<li><p><strong>Upload</strong>: Publishes record to CDCS</p></li>
+</ol>
+</section>
+<section id="session-states">
+<h3>Session States<a class="headerlink" href="#session-states" title="Link to this heading">#</a></h3>
+<p>Sessions progress through states:</p>
+<ul class="simple">
+<li><p><strong>WAITING_FOR_END</strong>: Session started but not ended</p></li>
+<li><p><strong>TO_BE_BUILT</strong>: Session ended, needs record generation</p></li>
+<li><p><strong>NO_FILES_FOUND</strong>: No files found (will retry if within delay window)</p></li>
+<li><p><strong>COMPLETED</strong>: Record successfully built and uploaded</p></li>
+<li><p><strong>ERROR</strong>: Record building failed</p></li>
+</ul>
+</section>
+</section>
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading">#</a></h2>
+<p>Now that you’re set up, explore the documentation:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="user_guide.html#user-guide"><span class="std std-ref">User Guide</span></a> - Learn about record building and the taxonomy</p></li>
+<li><p><a class="reference internal" href="dev_guide.html#dev-guide"><span class="std std-ref">Developer Guide</span></a> - Understand the architecture and extend NexusLIMS</p></li>
+<li><p><a class="reference internal" href="reference.html#reference"><span class="std std-ref">Reference</span></a> - Dive into the API documentation</p></li>
+</ul>
+</section>
+<section id="getting-help">
+<h2>Getting Help<a class="headerlink" href="#getting-help" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>Documentation</strong>: You’re reading it! Browse the sections above</p></li>
+<li><p><strong>Issues</strong>: Report bugs at <a class="github reference external" href="https://github.com/datasophos/NexusLIMS/issues">datasophos/NexusLIMS#issues</a></p></li>
+<li><p><strong>Source Code</strong>: <a class="github reference external" href="https://github.com/datasophos/NexusLIMS">datasophos/NexusLIMS</a></p></li>
+<li><p><strong>Original NIST Docs</strong>: <a class="reference external" href="https://pages.nist.gov/NexusLIMS">https://pages.nist.gov/NexusLIMS</a> (may be outdated)</p></li>
+</ul>
+<p><strong>Note</strong>: This is a fork maintained by <a class="reference external" href="https://datasophos.co">datasophos</a>, not affiliated with NIST.</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title"><strong>NexusLIMS</strong> - An Automated Laboratory Information Management System for Electron Microscopy</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="migration.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Migration Guide: v1 to v2</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-nexuslims">What is NexusLIMS?</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#key-features">Key Features</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation">Installation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#prerequisites">Prerequisites</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#install-nexuslims">Install NexusLIMS</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#verify-installation">Verify Installation</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuration">Configuration</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#create-configuration-file">Create Configuration File</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#essential-configuration">Essential Configuration</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#critical-paths">Critical Paths</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#optional-paths">Optional Paths</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nemo-integration">NEMO Integration</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cdcs-authentication">CDCS Authentication</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#file-processing-strategy">File Processing Strategy</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#file-delay-window">File Delay Window</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#database-setup">Database Setup</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#initialize-the-database">Initialize the Database</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#configure-instruments">Configure Instruments</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quick-start">Quick Start</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#run-the-record-builder">Run the Record Builder</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#understanding-the-workflow">Understanding the Workflow</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#session-states">Session States</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#next-steps">Next Steps</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-help">Getting Help</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/getting_started.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2025, datasophos, LLC.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
