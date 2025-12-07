@@ -1,0 +1,1 @@
+Fixed issue where mixed-case or upper-case extensions were not being properly assigned to the correct extractors.

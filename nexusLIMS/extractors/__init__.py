@@ -183,7 +183,7 @@ def parse_metadata(
     extension = fname.suffix[1:]
 
     # Dealing with files we can't parse and extract
-    if extension not in extension_reader_map:
+    if extension.lower() not in extension_reader_map:
         extractor_method = get_basic_metadata
         if extension not in unextracted_preview_map:
             generate_preview = False
@@ -200,7 +200,7 @@ def parse_metadata(
             )
 
     else:
-        extractor_method = extension_reader_map[extension]
+        extractor_method = extension_reader_map[extension.lower()]
 
     nx_meta = extractor_method(fname)
     nx_meta = _add_extraction_details(nx_meta, extractor_method)
