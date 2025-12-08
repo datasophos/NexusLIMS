@@ -15,6 +15,11 @@ logger = logging.getLogger(__name__)
 
 _LANCZOS = Image.Resampling.LANCZOS
 
+# Constants for text preview formatting
+_MAX_ROWS_NOTE = 18  # Maximum rows for note-style text
+_MAX_ROWS_DATA = 17  # Maximum rows for data-style text
+_MAX_COLS = 44  # Maximum columns for text display
+_DEFAULT_SIZE = 5  # default size in inches for the preview
 
 def _pad_to_square(im_path: Path, new_width: int = 500):
     """
@@ -85,88 +90,108 @@ def text_to_thumbnail(
         Handle to a matplotlib Figure, or the value False if a preview could not be
         generated
     """
-    # close all currently open plots to ensure we don't leave a mess behind
-    # in memory
     plt.close("all")
     plt.rcParams["image.cmap"] = "gray"
 
-    # some instruments produce text files with different encodings, so we try a few
-    # of the common ones. Also, escape "$" pattern that matplotlib
-    # will interpret as a math formula and replace "\\t" with spaces for neat display
-    textlist = None
-    for enc in ["utf-8", "windows-1250", "windows-1252"]:
-        try:
-            with Path.open(f, encoding=enc) as textfile:
-                textlist = (
-                    textfile.read()
-                    .replace("$", r"\\$")
-                    .replace("\\t", "   ")
-                    .splitlines()
-                )
-            break
-        except UnicodeDecodeError as exc:
-            logger.warning(
-                "no preview generated; could not decode text file with encoding %s: %s",
-                enc,
-                str(exc),
-            )
-        finally:
-            logger.info("opening the file with encoding: %s ", str(enc))
+    try:
+        # Try to decode with common encodings
+        raw_bytes = f.read_bytes()
 
-    if textlist is None:
-        # textlist being None means that none of the encodings used could open the
-        # text file, so we should just return False to indicate no preview was generated
-        logger.warning(
-            "Could not generate preview of text file with any available encoding",
-        )
+        # Try encodings in order of preference
+        encodings_to_try = ["utf-8", "windows-1250", "windows-1252"]
+        content = None
+
+        for encoding in encodings_to_try:
+            try:
+                content = raw_bytes.decode(encoding)
+                logger.debug("Successfully decoded %s with %s encoding", f, encoding)
+                break
+            except (UnicodeDecodeError, LookupError):
+                continue
+
+        if content is None:
+            logger.warning(
+                "Failed to decode text file %s with any supported encoding", f
+            )
+            return False
+
+    except Exception as e:
+        logger.warning("Failed to read text file %s: %s", f, e)
         return False
 
-    textfig = plt.figure()
-    # 5 x 5" is a good size
-    size_inches = 5
-    textfig.set_size_inches(size_inches, size_inches)
-    dpi = output_size / size_inches
+    # Normalize line endings (CRLF to LF) for consistent handling
+    content = content.replace("\r\n", "\n").replace("\r", "\n")
+
+    # Expand tabs to spaces (tabs can render as black squares in matplotlib)
+    content = content.expandtabs(tabsize=4)
+
+    # Count newlines to determine if it's data or a note
+    newline_count = content.count("\n")
+
+    # Threshold to distinguish between data (many newlines) and notes (few newlines)
+    # Using _MAX_ROWS_NOTE as threshold since notes are displayed in that many rows
+    is_data = newline_count > _MAX_ROWS_NOTE
+
+    if is_data:
+        # Data mode: first _MAX_COLS characters of first _MAX_ROWS_DATA lines
+        lines = content.split("\n")[:_MAX_ROWS_DATA]
+        formatted_text = "\n".join(line[:_MAX_COLS] for line in lines)
+    else:
+        # Note mode: wrap to _MAX_COLS columns, up to _MAX_ROWS_NOTE rows
+        # Wrap the text to _MAX_COLS columns
+        wrapper = textwrap.TextWrapper(width=_MAX_COLS)
+        wrapped_lines = []
+        for line in content.split("\n"):
+            if line.strip():  # Non-empty lines
+                wrapped_lines.extend(wrapper.wrap(line))
+            else:  # Preserve empty lines
+                wrapped_lines.append("")
+
+        # Take first _MAX_ROWS_NOTE rows
+        formatted_text = "\n".join(wrapped_lines[:_MAX_ROWS_NOTE])
+
+    # Escape special characters that matplotlib's mathtext parser might interpret
+    # Replace $ with \$ to prevent mathtext parsing, and escape backslashes
+    formatted_text = formatted_text.replace("\\", "\\\\").replace("$", r"\$")
+
+    # Create a matplotlib figure with no frame
+    fig = plt.figure(
+        figsize=(_DEFAULT_SIZE, _DEFAULT_SIZE),
+        dpi=output_size / _DEFAULT_SIZE,
+        # frameon=False,
+    )
+
     plt.axis("off")
 
-    # Number of newlines to distinguish between data-like and note-like text
-    paragraph_check = 15
-    num_lines_in_image = 19
+    # Add the text to the figure
+    # Using monospace font and left-aligned at top
+    # Use DejaVu Sans Mono for better Unicode/emoji support than generic monospace
+    # This font is included with matplotlib and has wider character support
+    fig.text(
+        0.02,
+        0.97,
+        formatted_text,
+        fontfamily="DejaVu Sans Mono",
+        fontsize=12,
+        verticalalignment="top",
+        horizontalalignment="left",
+        usetex=False,
+        linespacing=1.7,  # Increase line spacing (default is 1.2)
+    )
 
-    if len(textlist) <= paragraph_check:
-        wrapped_text = []
-        for i in textlist:
-            wrapped_text = wrapped_text + textwrap.wrap(i, width=42)
-        lines_printed = 0
-        while lines_printed <= num_lines_in_image and lines_printed < len(wrapped_text):
-            textfig.text(
-                0.02,
-                0.9 - lines_printed / 18,
-                wrapped_text[lines_printed],
-                fontsize=12,
-                fontfamily="monospace",
-            )
-            lines_printed = lines_printed + 1
-        # textfile is assumed to be hand-typed notes in paragraph format
-        # we will wrap text until we run out of space
+    fig.tight_layout()
 
+    # Save the figure
+    try:
+        fig.savefig(out_path, dpi=output_size / _DEFAULT_SIZE)
+        _pad_to_square(out_path, output_size)
+    except Exception as e:
+        logger.warning("Failed to save text thumbnail to %s: %s", out_path, e)
+        plt.close(fig)
+        return False
     else:
-        # 17 is the maximum number of lines that will fit in this size image
-        for i in range(17):
-            textfig.text(
-                0.02,
-                0.9 - i / 18,
-                textlist[i][0:48],
-                fontsize=12,
-                fontfamily="monospace",
-            )
-        # textfile is assumed to be some form of column data.
-        # we will essentially create an image of the top left corner of the
-        # text file.
-
-    textfig.tight_layout()
-    textfig.savefig(out_path, dpi=dpi)
-    _pad_to_square(out_path, output_size)
-    return textfig
+        plt.close(fig)
+        return fig
 
 
 class TextPreviewGenerator:
@@ -214,9 +239,7 @@ class TextPreviewGenerator:
             True if preview was successfully generated, False otherwise
         """
         try:
-            logger.debug(
-                "Generating text preview for: %s", context.file_path
-            )
+            logger.debug("Generating text preview for: %s", context.file_path)
 
             # Generate the thumbnail using the local function
             text_to_thumbnail(
@@ -226,7 +249,7 @@ class TextPreviewGenerator:
             )
 
             return output_path.exists()
-        except Exception as e:  # noqa: BLE001
+        except Exception as e:
             logger.warning(
                 "Failed to generate text preview for %s: %s",
                 context.file_path,
