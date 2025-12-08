@@ -1,29 +1,28 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
-   xmlns:osb="http://www.openswatchbook.org/uri/2009/osb"
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:xlink="http://www.w3.org/1999/xlink"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   inkscape:export-ydpi="94.923698"
-   inkscape:export-xdpi="94.923698"
-   inkscape:export-filename="**REMOVED**/NexusMicroscopyLIMS/mdcs/nexusLIMS/nexusLIMS/extractors/extractor_error.png"
+   inkscape:export-ydpi="192"
+   inkscape:export-xdpi="192"
+   inkscape:export-filename="**REMOVED**/NexusMicroscopyLIMS/mdcs/nexusLIMS/nexusLIMS/extractors/extractor_error.svg.png"
    sodipodi:docname="extractor_error.svg"
-   inkscape:version="1.0 (4035a4fb49, 2020-05-01)"
+   inkscape:version="1.4.2 (ebf0e940, 2025-05-08)"
    id="svg8"
    version="1.1"
    viewBox="0 0 132.29167 132.29167"
    height="500"
-   width="500">
+   width="500"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
   <defs
      id="defs2">
     <linearGradient
        id="linearGradient1033"
-       osb:paint="solid">
+       inkscape:swatch="solid">
       <stop
          style="stop-color:#000000;stop-opacity:1;"
          offset="0"
@@ -31,7 +30,7 @@
     </linearGradient>
     <linearGradient
        id="linearGradient1027"
-       osb:paint="solid">
+       inkscape:swatch="solid">
       <stop
          style="stop-color:#12659c;stop-opacity:1;"
          offset="0"
@@ -39,7 +38,7 @@
     </linearGradient>
     <linearGradient
        id="linearGradient1036"
-       osb:paint="solid">
+       inkscape:swatch="solid">
       <stop
          style="stop-color:#fae199;stop-opacity:1;"
          offset="0"
@@ -47,8 +46,8 @@
     </linearGradient>
     <linearGradient
        id="linearGradient969"
-       osb:paint="solid"
-       gradientTransform="translate(-10923.235,10396.754)">
+       gradientTransform="translate(-10923.235,10396.754)"
+       inkscape:swatch="solid">
       <stop
          style="stop-color:#95bb98;stop-opacity:1;"
          offset="0"
@@ -56,7 +55,7 @@
     </linearGradient>
     <linearGradient
        id="linearGradient925"
-       osb:paint="solid">
+       inkscape:swatch="solid">
       <stop
          style="stop-color:#5991b7;stop-opacity:1;"
          offset="0"
@@ -64,7 +63,7 @@
     </linearGradient>
     <linearGradient
        id="linearGradient1617"
-       osb:paint="solid">
+       inkscape:swatch="solid">
       <stop
          style="stop-color:#fcffff;stop-opacity:1;"
          offset="0"
@@ -72,7 +71,7 @@
     </linearGradient>
     <linearGradient
        id="linearGradient1595"
-       osb:paint="solid">
+       inkscape:swatch="solid">
       <stop
          style="stop-color:#f5c636;stop-opacity:1;"
          offset="0"
@@ -80,8 +79,8 @@
     </linearGradient>
     <linearGradient
        id="linearGradient1589"
-       osb:paint="solid"
-       gradientTransform="matrix(3.8655266,0,0,3.8650706,67975.473,17446.989)">
+       gradientTransform="matrix(3.8655266,0,0,3.8650706,67975.473,17446.989)"
+       inkscape:swatch="solid">
       <stop
          style="stop-color:#257a2d;stop-opacity:1;"
          offset="0"
@@ -109,7 +108,7 @@
        gradientUnits="userSpaceOnUse" />
     <linearGradient
        id="linearGradient6905"
-       osb:paint="solid">
+       inkscape:swatch="solid">
       <stop
          style="stop-color:#a9c7da;stop-opacity:1;"
          offset="0"
@@ -117,7 +116,7 @@
     </linearGradient>
     <linearGradient
        id="linearGradient6891"
-       osb:paint="solid">
+       inkscape:swatch="solid">
       <stop
          style="stop-color:#fff3d1;stop-opacity:1;"
          offset="0"
@@ -125,7 +124,7 @@
     </linearGradient>
     <linearGradient
        id="linearGradient6897"
-       osb:paint="solid">
+       inkscape:swatch="solid">
       <stop
          style="stop-color:#b0c6b2;stop-opacity:1;"
          offset="0"
@@ -133,7 +132,7 @@
     </linearGradient>
     <linearGradient
        id="linearGradient6923"
-       osb:paint="solid">
+       inkscape:swatch="solid">
       <stop
          style="stop-color:#fef8e7;stop-opacity:1;"
          offset="0"
@@ -141,7 +140,7 @@
     </linearGradient>
     <linearGradient
        id="linearGradient6917"
-       osb:paint="solid">
+       inkscape:swatch="solid">
       <stop
          style="stop-color:#d5e2d5;stop-opacity:1;"
          offset="0"
@@ -204,24 +203,27 @@
   </defs>
   <sodipodi:namedview
      inkscape:window-maximized="1"
-     inkscape:window-y="0"
+     inkscape:window-y="38"
      inkscape:window-x="0"
-     inkscape:window-height="999"
-     inkscape:window-width="1920"
+     inkscape:window-height="890"
+     inkscape:window-width="1472"
      units="px"
      showgrid="false"
      inkscape:document-rotation="0"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="g2148"
      inkscape:document-units="mm"
-     inkscape:cy="242.55579"
-     inkscape:cx="247.78343"
+     inkscape:cy="242.10899"
+     inkscape:cx="248.12412"
      inkscape:zoom="0.99748465"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0.0"
      borderopacity="1.0"
      bordercolor="#666666"
      pagecolor="#ffffff"
-     id="base" />
+     id="base"
+     inkscape:showpageshadow="2"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1" />
   <metadata
      id="metadata5">
     <rdf:RDF>
@@ -230,7 +232,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -251,7 +253,7 @@
          y="-2.5431316e-06" />
       <g
          id="g581"
-         transform="matrix(0.00814899,0,0,0.00814899,-22.582698,2.5333956)"
+         transform="matrix(0.00814899,0,0,0.00814899,-22.582698,6.2802898)"
          style="stroke-width:3.28418">
         <g
            style="stroke-width:4.1283"
@@ -459,28 +461,23 @@
          xml:space="preserve"
          style="font-style:normal;font-weight:normal;font-size:8.33881px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.267626"
          x="66.216713"
-         y="89.899178"
+         y="96.857697"
          id="text591"><tspan
            sodipodi:role="line"
-           id="tspan589"
            x="66.216713"
-           y="89.899178"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Lato;-inkscape-font-specification:Lato;text-align:center;text-anchor:middle;stroke-width:0.267626">Our apologies, NexusLIMS</tspan><tspan
+           y="96.857697"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Lato;-inkscape-font-specification:Lato;text-align:center;text-anchor:middle;stroke-width:0.267626"
+           id="tspan593">NexusLIMS was unable to open</tspan><tspan
            sodipodi:role="line"
            x="66.216713"
-           y="100.84582"
+           y="107.44903"
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Lato;-inkscape-font-specification:Lato;text-align:center;text-anchor:middle;stroke-width:0.267626"
-           id="tspan593">was not able to open this file</tspan><tspan
+           id="tspan595">this file to extract metadata </tspan><tspan
            sodipodi:role="line"
            x="66.216713"
-           y="111.79247"
+           y="118.04035"
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Lato;-inkscape-font-specification:Lato;text-align:center;text-anchor:middle;stroke-width:0.267626"
-           id="tspan595">to extract metadata and generate</tspan><tspan
-           sodipodi:role="line"
-           x="66.216713"
-           y="122.73911"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Lato;-inkscape-font-specification:Lato;text-align:center;text-anchor:middle;stroke-width:0.267626"
-           id="tspan597">a preview</tspan></text>
+           id="tspan597">and generate a preview</tspan></text>
     </g>
   </g>
 </svg>

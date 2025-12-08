@@ -1001,13 +1001,13 @@ def mock_instrument_from_filepath(monkeypatch):
         """Apply the monkeypatch for the given instrument."""
         # Import here to avoid circular imports
         import nexusLIMS.extractors
-        import nexusLIMS.extractors.digital_micrograph
-        import nexusLIMS.extractors.fei_emi
+        import nexusLIMS.extractors.plugins.digital_micrograph
+        import nexusLIMS.extractors.plugins.fei_emi
         import nexusLIMS.extractors.utils
 
         # Monkeypatch all the places where get_instr_from_filepath is called
         monkeypatch.setattr(
-            nexusLIMS.extractors.digital_micrograph,
+            nexusLIMS.extractors.plugins.digital_micrograph,
             "get_instr_from_filepath",
             lambda _: instrument,
         )
@@ -1017,7 +1017,7 @@ def mock_instrument_from_filepath(monkeypatch):
             lambda _: instrument,
         )
         monkeypatch.setattr(
-            nexusLIMS.extractors.fei_emi,
+            nexusLIMS.extractors.plugins.fei_emi,
             "get_instr_from_filepath",
             lambda _: instrument,
         )

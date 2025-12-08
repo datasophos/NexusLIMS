@@ -7,7 +7,7 @@ from datetime import datetime as dt
 
 import pytest
 
-from nexusLIMS.extractors import fei_emi
+from nexusLIMS.extractors.plugins import fei_emi
 from tests.test_instrument_factory import make_titan_stem, make_titan_tem
 from tests.utils import get_full_file_path
 

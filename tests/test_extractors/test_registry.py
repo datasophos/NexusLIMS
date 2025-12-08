@@ -1786,8 +1786,8 @@ class TestErrorHandlingEdgeCases:
 
             # Should get fallback due to exception in wildcard
             assert extractor is not None
-            # Either the working fallback or the basic metadata adapter
-            assert extractor.name in ["working_fallback", "basic_metadata_adapter"]
+            # Either the working fallback or the basic file info extractor
+            assert extractor.name in ["working_fallback", "basic_file_info_extractor"]
         finally:
             registry.clear()
 

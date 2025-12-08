@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-from nexusLIMS.extractors import digital_micrograph
+from nexusLIMS.extractors.plugins import digital_micrograph
 from nexusLIMS.extractors.utils import _try_decimal, _zero_data_in_dm3
 from tests.test_instrument_factory import (
     make_jeol_tem,

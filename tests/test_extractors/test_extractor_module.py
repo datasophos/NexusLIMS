@@ -40,7 +40,7 @@ class TestExtractorModule:
         assert len(meta["nx_meta"]["warnings"]) == 0
         assert (
             meta["nx_meta"]["NexusLIMS Extraction"]["Module"]
-            == "nexusLIMS.extractors.digital_micrograph"
+            == "nexusLIMS.extractors.plugins.dm3_extractor"
         )
         assert meta["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
 
@@ -67,7 +67,7 @@ class TestExtractorModule:
         assert meta["nx_meta"]["Actual Magnification"] == pytest.approx(17677.0)
         assert (
             meta["nx_meta"]["NexusLIMS Extraction"]["Module"]
-            == "nexusLIMS.extractors.digital_micrograph"
+            == "nexusLIMS.extractors.plugins.dm3_extractor"
         )
         assert meta["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
         self.remove_thumb_and_json(thumb_fname)
@@ -84,7 +84,7 @@ class TestExtractorModule:
         assert len(meta["nx_meta"]["warnings"]) == 0
         assert (
             meta["nx_meta"]["NexusLIMS Extraction"]["Module"]
-            == "nexusLIMS.extractors.digital_micrograph"
+            == "nexusLIMS.extractors.plugins.dm3_extractor"
         )
         assert meta["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
 
@@ -133,7 +133,7 @@ class TestExtractorModule:
         assert meta is not None
         assert (
             meta["nx_meta"]["NexusLIMS Extraction"]["Module"]
-            == "nexusLIMS.extractors.quanta_tif"
+            == "nexusLIMS.extractors.plugins.quanta_tif_extractor"
         )
         assert meta["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
         self.remove_thumb_and_json(thumb_fname)
@@ -169,7 +169,7 @@ class TestExtractorModule:
         assert thumb_fname is not None
         assert (
             meta["nx_meta"]["NexusLIMS Extraction"]["Module"]
-            == "nexusLIMS.extractors.quanta_tif"
+            == "nexusLIMS.extractors.plugins.quanta_tif_extractor"
         )
         assert meta["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
         self.remove_thumb_and_json(thumb_fname)
@@ -207,7 +207,7 @@ class TestExtractorModule:
         assert meta is not None
         assert (
             meta["nx_meta"]["NexusLIMS Extraction"]["Module"]
-            == "nexusLIMS.extractors.fei_emi"
+            == "nexusLIMS.extractors.plugins.ser_emi_extractor"
         )
         assert meta["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
         self.remove_thumb_and_json(thumb_fname)
@@ -263,7 +263,7 @@ class TestExtractorModule:
         assert meta["nx_meta"]["DatasetType"] == "Misc"
         assert (
             meta["nx_meta"]["NexusLIMS Extraction"]["Module"]
-            == "nexusLIMS.extractors.fei_emi"
+            == "nexusLIMS.extractors.plugins.ser_emi_extractor"
         )
         assert meta["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
         assert "Titan_TEM_13_unreadable_ser.emi" in meta["nx_meta"]["emi Filename"]
@@ -282,7 +282,7 @@ class TestExtractorModule:
         assert meta["nx_meta"]["DatasetType"] == "Unknown"
         assert (
             meta["nx_meta"]["NexusLIMS Extraction"]["Module"]
-            == "nexusLIMS.extractors.basic_metadata"
+            == "nexusLIMS.extractors.plugins.basic_file_info_extractor"
         )
         assert meta["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
 
@@ -306,7 +306,7 @@ class TestExtractorModule:
         assert meta["nx_meta"]["DatasetType"] == "Unknown"
         assert (
             meta["nx_meta"]["NexusLIMS Extraction"]["Module"]
-            == "nexusLIMS.extractors.basic_metadata"
+            == "nexusLIMS.extractors.plugins.basic_file_info_extractor"
         )
         assert meta["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
 
@@ -321,7 +321,7 @@ class TestExtractorModule:
         assert meta["nx_meta"]["DatasetType"] == "Unknown"
         assert (
             meta["nx_meta"]["NexusLIMS Extraction"]["Module"]
-            == "nexusLIMS.extractors.basic_metadata"
+            == "nexusLIMS.extractors.plugins.basic_file_info_extractor"
         )
         assert meta["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
 
@@ -336,7 +336,7 @@ class TestExtractorModule:
         assert meta["nx_meta"]["DatasetType"] == "Unknown"
         assert (
             meta["nx_meta"]["NexusLIMS Extraction"]["Module"]
-            == "nexusLIMS.extractors.basic_metadata"
+            == "nexusLIMS.extractors.plugins.basic_file_info_extractor"
         )
         assert meta["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
 
@@ -349,7 +349,7 @@ class TestExtractorModule:
         assert meta["nx_meta"]["DatasetType"] == "Unknown"
         assert (
             meta["nx_meta"]["NexusLIMS Extraction"]["Module"]
-            == "nexusLIMS.extractors.basic_metadata"
+            == "nexusLIMS.extractors.plugins.basic_file_info_extractor"
         )
         assert meta["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
 

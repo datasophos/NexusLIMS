@@ -2,8 +2,8 @@
 
 ## Implementation Status
 
-**Current Phase:** Phase 2 Complete ✅  
-**Last Updated:** 2025-12-07  
+**Current Phase:** Phase 3 Complete ✅
+**Last Updated:** 2025-12-07
 **Branch:** `feature/extractor-plugin-system`
 
 ### Phase 1: Core Infrastructure (COMPLETED) ✅
@@ -25,11 +25,13 @@
 
 ### Phase 2: Migrate Extractors (COMPLETED) ✅
 
-✅ All extractor plugins created  
-✅ All 91 extractor tests passing  
-✅ Plugin auto-discovery working correctly  
-✅ Both adapters and plugins coexist successfully  
+✅ All extractor plugins created
+✅ All 91 extractor tests passing
+✅ Plugin auto-discovery working correctly
+✅ Both adapters and plugins coexist successfully
 ✅ Documentation created for plugin development
+✅ Preview generator plugin system implemented
+✅ All 428 tests passing with preview generators
 
 **Completed Items:**
 - Created `plugins/digital_micrograph.py` - DM3Extractor for .dm3/.dm4 files
@@ -41,7 +43,81 @@
 - Verified plugin auto-discovery and priority-based selection
 - All extractors working through both adapters (backward compat) and new plugins
 
-**Ready for Phase 3:** All extractors have been migrated to plugin form. Can now remove legacy code and adapter wrappers.
+**Preview Generator Plugins:**
+- Created `plugins/preview_generators/` directory structure
+- Created `plugins/preview_generators/hyperspy_preview.py` - HyperSpyPreviewGenerator for dm3/dm4/ser/emi files
+- Created `plugins/preview_generators/text_preview.py` - TextPreviewGenerator for .txt files
+- Created `plugins/preview_generators/image_preview.py` - ImagePreviewGenerator for png/jpg/tiff/bmp/gif files
+- Extended `registry.py` to discover and manage preview generators
+- Updated `create_preview()` to use plugin system with legacy fallback
+- All 34 preview/thumbnail tests passing with new plugin system
+
+**Ready for Phase 3:** All extractors have been migrated to plugin form. Preview generation now uses plugin architecture. Can now remove legacy code and adapter wrappers.
+
+### Phase 3: Remove Legacy Code (COMPLETED) ✅
+
+✅ All legacy code removed from public API
+✅ All 428 tests passing (99% coverage)
+✅ Adapter wrappers deleted
+✅ Extension reader map removed
+✅ Full implementations moved into plugin classes
+✅ Backward compatibility functions added for tests
+
+**Completed Items:**
+1. **Removed from Public API:**
+   - Deleted `plugins/adapters.py` - adapter wrappers no longer needed
+   - Removed `extension_reader_map` from `__init__.py` - replaced with registry-based selection
+   - Removed legacy function exports from `__all__` in `__init__.py`
+   - Deleted legacy extractor files (`digital_micrograph.py`, `fei_emi.py`, `quanta_tif.py`, `edax.py`)
+
+2. **Moved Implementations into Plugins:**
+   - Moved all extraction logic from legacy files directly into plugin classes
+   - `plugins/digital_micrograph.py` (1037 lines) - Contains full DM3/DM4 extraction implementation with all helper functions
+   - `plugins/quanta_tif.py` (707 lines) - Contains full Quanta TIFF extraction implementation with all parsing functions
+   - `plugins/fei_emi.py` (698 lines) - Contains full SER/EMI extraction implementation with all parsing functions
+   - `plugins/edax.py` (216 lines) - Contains both SPC and MSA extraction implementations
+   - `plugins/basic_metadata.py` (77 lines) - Contains basic fallback extraction implementation
+
+3. **Updated Core System:**
+   - Updated `ExtractorMethod` class to use plugin module paths for extraction details
+   - Updated registry's `_get_fallback_extractor()` to use `BasicFileInfoExtractor`
+   - Updated preview generation logic to check extractor name instead of extension map
+   - Updated `record_builder.py` to use `get_registry().get_supported_extensions(exclude_fallback=True)`
+   - Updated `test_utils.py` to use registry instead of extension_reader_map
+   - Added `exclude_fallback` parameter to `get_supported_extensions()` method
+
+4. **Backward Compatibility:**
+   - Added `get_dm3_metadata()`, `get_quanta_metadata()`, `get_ser_metadata()`, `get_spc_metadata()`, `get_msa_metadata()` functions to plugin files
+   - These functions create ExtractionContext and call plugin extractors (for test compatibility)
+   - Kept `basic_metadata.py` at top level with deprecated `get_basic_metadata()` function
+
+5. **Test Updates:**
+   - Updated test imports to use plugin module paths:
+     - `from nexusLIMS.extractors.plugins.edax import get_msa_metadata, get_spc_metadata`
+     - `from nexusLIMS.extractors.plugins.quanta_tif import get_quanta_metadata`
+     - `from nexusLIMS.extractors.plugins import fei_emi`
+   - Updated `conftest.py` monkeypatch imports to use plugin paths
+   - Updated all test module name assertions:
+     - `nexusLIMS.extractors.digital_micrograph` → `nexusLIMS.extractors.plugins.dm3_extractor`
+     - `nexusLIMS.extractors.quanta_tif` → `nexusLIMS.extractors.plugins.quanta_tif_extractor`
+     - `nexusLIMS.extractors.fei_emi` → `nexusLIMS.extractors.plugins.ser_emi_extractor`
+     - `nexusLIMS.extractors.basic_metadata` → `nexusLIMS.extractors.plugins.basic_file_info_extractor`
+
+**Architecture After Phase 3:**
+- Public API: Only `parse_metadata()`, `create_preview()`, and `get_registry()` exposed
+- Plugin classes now contain complete, self-contained extraction implementations
+- No legacy extractor files (except `basic_metadata.py` for backward compat)
+- All metadata extraction goes through the registry system
+- Zero breaking changes for end users (same `parse_metadata()` signature and behavior)
+- Backward compatibility functions in plugins allow existing test code to work unchanged
+
+**Test Results:**
+```
+============================= 428 passed in 33.28s =============================
+Coverage: 99% (3389 statements, 14 missed)
+```
+
+**Ready for Phase 4:** Clean, self-contained plugin-based system ready for advanced features (profiles, monitoring, content sniffing).
 
 ---
 

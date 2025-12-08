@@ -16,7 +16,11 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    from nexusLIMS.extractors.base import BaseExtractor, ExtractionContext
+    from nexusLIMS.extractors.base import (
+        BaseExtractor,
+        ExtractionContext,
+        PreviewGenerator,
+    )
 
 logger = logging.getLogger(__name__)
 
@@ -79,6 +83,14 @@ class ExtractorRegistry:
         # Wildcard extractors that support any extension
         self._wildcard_extractors: list[type[BaseExtractor]] = []
 
+        # Preview generators (maps extension -> list of generator classes)
+        self._preview_generators: dict[str, list[type[PreviewGenerator]]] = (
+            defaultdict(list)
+        )
+
+        # Cache of instantiated preview generators (name -> instance)
+        self._preview_instances: dict[str, PreviewGenerator] = {}
+
         # Discovery state
         self._discovered = False
 
@@ -137,7 +149,7 @@ class ExtractorRegistry:
                 module = importlib.import_module(name)
                 logger.debug("Imported plugin module: %s", name)
 
-                # Look for classes that implement BaseExtractor protocol
+                # Look for classes that implement BaseExtractor or PreviewGenerator protocol
                 for _item_name, obj in inspect.getmembers(module, inspect.isclass):
                     # Skip imported classes (only process classes defined in this module)
                     if obj.__module__ != module.__name__:
@@ -149,6 +161,15 @@ class ExtractorRegistry:
                         discovered_count += 1
                         logger.debug(
                             "Discovered extractor: %s (priority: %d)",
+                            obj.name,
+                            obj.priority,
+                        )
+                    # Check if it looks like a PreviewGenerator
+                    elif self._is_preview_generator(obj):
+                        self.register_preview_generator(obj)
+                        discovered_count += 1
+                        logger.debug(
+                            "Discovered preview generator: %s (priority: %d)",
                             obj.name,
                             obj.priority,
                         )
@@ -194,6 +215,40 @@ class ExtractorRegistry:
             return False
 
         if not hasattr(obj, "extract") or not callable(obj.extract):
+            return False
+
+        return True
+
+    def _is_preview_generator(self, obj: Any) -> bool:
+        """
+        Check if an object implements the PreviewGenerator protocol.
+
+        Parameters
+        ----------
+        obj
+            Object to check
+
+        Returns
+        -------
+        bool
+            True if obj implements PreviewGenerator protocol
+        """
+        # Must be a class
+        if not inspect.isclass(obj):
+            return False
+
+        # Check for required attributes
+        if not hasattr(obj, "name") or not isinstance(obj.name, str):
+            return False
+
+        if not hasattr(obj, "priority") or not isinstance(obj.priority, int):
+            return False
+
+        # Check for required methods
+        if not hasattr(obj, "supports") or not callable(obj.supports):
+            return False
+
+        if not hasattr(obj, "generate") or not callable(obj.generate):
             return False
 
         return True
@@ -425,13 +480,11 @@ class ExtractorRegistry:
         Returns
         -------
         BaseExtractor
-            BasicMetadataExtractor instance
+            BasicFileInfoExtractor instance
         """
-        # This will be implemented in Phase 2 when we create the adapter extractors
-        # For now, we'll import and use the basic_metadata adapter
-        from nexusLIMS.extractors.plugins.adapters import BasicMetadataAdapter
+        from nexusLIMS.extractors.plugins.basic_metadata import BasicFileInfoExtractor
 
-        return self._get_instance(BasicMetadataAdapter)
+        return self._get_instance(BasicFileInfoExtractor)
 
     def get_extractors_for_extension(self, extension: str) -> list[BaseExtractor]:
         """
@@ -467,9 +520,14 @@ class ExtractorRegistry:
             for extractor_class in self._extractors[ext]
         ]
 
-    def get_supported_extensions(self) -> set[str]:
+    def get_supported_extensions(self, exclude_fallback: bool = False) -> set[str]:
         """
         Get all file extensions that have registered extractors.
+
+        Parameters
+        ----------
+        exclude_fallback
+            If True, exclude extensions that only have the fallback extractor
 
         Returns
         -------
@@ -481,12 +539,28 @@ class ExtractorRegistry:
         >>> registry = get_registry()
         >>> extensions = registry.get_supported_extensions()
         >>> print(f"Supported: {', '.join(sorted(extensions))}")
+        >>> specialized = registry.get_supported_extensions(exclude_fallback=True)
+        >>> print(f"Specialized: {', '.join(sorted(specialized))}")
         """
         # Auto-discover if needed
         if not self._discovered:
             self.discover_plugins()
 
-        return set(self._extractors.keys())
+        if not exclude_fallback:
+            return set(self._extractors.keys())
+
+        # Only return extensions that have non-fallback extractors
+        specialized_extensions = set()
+        for ext, extractors in self._extractors.items():
+            # Check if any extractor for this extension is NOT the fallback
+            for extractor_class in extractors:
+                instance = self._get_instance(extractor_class)
+                # Basic file info extractor has priority 0 and is the fallback
+                if instance.priority > 0:
+                    specialized_extensions.add(ext)
+                    break
+
+        return specialized_extensions
 
     def clear(self) -> None:
         """
@@ -503,8 +577,209 @@ class ExtractorRegistry:
         self._extractors.clear()
         self._instances.clear()
         self._wildcard_extractors.clear()
+        self._preview_generators.clear()
+        self._preview_instances.clear()
         self._discovered = False
         logger.debug("Cleared extractor registry")
+
+    def register_preview_generator(
+        self,
+        generator_class: type[PreviewGenerator],
+    ) -> None:
+        """
+        Manually register a preview generator class.
+
+        This method is called automatically during plugin discovery, but can
+        also be used to manually register generators (useful for testing).
+
+        Parameters
+        ----------
+        generator_class
+            The preview generator class to register (not an instance)
+
+        Examples
+        --------
+        >>> class MyGenerator:
+        ...     name = "my_generator"
+        ...     priority = 100
+        ...     def supports(self, context): return True
+        ...     def generate(self, context, output_path): return True
+        >>>
+        >>> registry = get_registry()
+        >>> registry.register_preview_generator(MyGenerator)
+        """
+        # Determine which extensions this generator supports
+        extensions = self._get_supported_extensions_for_generator(generator_class)
+
+        if extensions:
+            # Register for specific extensions
+            for ext in extensions:
+                self._preview_generators[ext].append(generator_class)
+                logger.debug(
+                    "Registered preview generator %s for extension: .%s",
+                    generator_class.name,
+                    ext,
+                )
+
+            # Sort by priority (descending) for each extension
+            for ext in extensions:
+                self._preview_generators[ext].sort(
+                    key=lambda g: g.priority,
+                    reverse=True,
+                )
+
+    def _get_supported_extensions_for_generator(
+        self,
+        generator_class: type[PreviewGenerator],
+    ) -> set[str]:
+        """
+        Determine which file extensions a preview generator supports.
+
+        Parameters
+        ----------
+        generator_class
+            The preview generator class to check
+
+        Returns
+        -------
+        set[str]
+            Set of supported extensions (without dots)
+        """
+        # Common extensions to check
+        common_extensions = [
+            "dm3",
+            "dm4",
+            "ser",
+            "emi",
+            "tif",
+            "tiff",
+            "spc",
+            "msa",
+            "txt",
+            "png",
+            "jpg",
+            "jpeg",
+            "bmp",
+            "gif",
+        ]
+
+        # Import here to avoid circular imports
+        from nexusLIMS.extractors.base import ExtractionContext
+
+        # Instantiate the generator
+        instance = self._get_preview_instance(generator_class)
+
+        supported = set()
+        for ext in common_extensions:
+            dummy_path = Path(f"test.{ext}")
+            dummy_context = ExtractionContext(dummy_path, instrument=None)
+
+            try:
+                if instance.supports(dummy_context):
+                    supported.add(ext)
+            except Exception as e:  # noqa: BLE001
+                logger.debug(
+                    "Error checking if %s supports .%s: %s",
+                    generator_class.name,
+                    ext,
+                    e,
+                )
+
+        return supported
+
+    def _get_preview_instance(
+        self,
+        generator_class: type[PreviewGenerator],
+    ) -> PreviewGenerator:
+        """
+        Get or create an instance of a preview generator class.
+
+        Instances are cached for performance.
+
+        Parameters
+        ----------
+        generator_class
+            The preview generator class
+
+        Returns
+        -------
+        PreviewGenerator
+            Instance of the preview generator
+        """
+        name = generator_class.name
+        if name not in self._preview_instances:
+            self._preview_instances[name] = generator_class()
+            logger.debug("Instantiated preview generator: %s", name)
+
+        return self._preview_instances[name]
+
+    def get_preview_generator(
+        self,
+        context: ExtractionContext,
+    ) -> PreviewGenerator | None:
+        """
+        Get the best preview generator for a given file context.
+
+        Selection algorithm:
+        1. Auto-discover plugins if not already done
+        2. Get generators registered for this file's extension
+        3. Try each in priority order (high to low) until one's supports() returns True
+        4. If none match, return None
+
+        Parameters
+        ----------
+        context
+            Extraction context containing file path, instrument, etc.
+
+        Returns
+        -------
+        PreviewGenerator | None
+            The best preview generator for this file, or None if no generator found
+
+        Examples
+        --------
+        >>> from nexusLIMS.extractors.base import ExtractionContext
+        >>> from pathlib import Path
+        >>>
+        >>> context = ExtractionContext(Path("data.dm3"), None)
+        >>> registry = get_registry()
+        >>> generator = registry.get_preview_generator(context)
+        >>> if generator:
+        ...     generator.generate(context, Path("preview.png"))
+        """
+        # Auto-discover if needed
+        if not self._discovered:
+            self.discover_plugins()
+
+        # Get file extension
+        ext = context.file_path.suffix.lstrip(".").lower()
+
+        # Try extension-specific generators
+        if ext in self._preview_generators:
+            for generator_class in self._preview_generators[ext]:
+                instance = self._get_preview_instance(generator_class)
+                try:
+                    if instance.supports(context):
+                        logger.debug(
+                            "Selected preview generator %s for %s",
+                            instance.name,
+                            context.file_path.name,
+                        )
+                        return instance
+                except Exception as e:  # noqa: BLE001
+                    logger.warning(
+                        "Error in %s.supports(): %s",
+                        instance.name,
+                        e,
+                        exc_info=True,
+                    )
+
+        # No generator found
+        logger.debug(
+            "No preview generator found for %s",
+            context.file_path.name,
+        )
+        return None
 
 
 # Singleton instance

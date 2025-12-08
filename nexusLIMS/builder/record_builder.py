@@ -28,7 +28,7 @@ from nexusLIMS import version
 from nexusLIMS.cdcs import upload_record_files
 from nexusLIMS.config import settings
 from nexusLIMS.db.session_handler import Session, db_query, get_sessions_to_build
-from nexusLIMS.extractors import extension_reader_map as ext_map
+from nexusLIMS.extractors import get_registry
 from nexusLIMS.harvesters import nemo
 from nexusLIMS.harvesters.nemo import utils as nemo_utils
 from nexusLIMS.harvesters.reservation_event import ReservationEvent
@@ -327,7 +327,12 @@ def get_files(
         )
         strategy = "exclusive"
 
-    extension_arg = None if strategy == "inclusive" else ext_map.keys()
+    # Get supported extensions from the registry
+    # For exclusive strategy, only use extensions with specialized extractors
+    # (exclude extensions that only have the fallback basic_file_info_extractor)
+    registry = get_registry()
+    supported_extensions = registry.get_supported_extensions(exclude_fallback=True)
+    extension_arg = None if strategy == "inclusive" else supported_extensions
 
     try:
         files = gnu_find_files_by_mtime(path, dt_from, dt_to, extensions=extension_arg)

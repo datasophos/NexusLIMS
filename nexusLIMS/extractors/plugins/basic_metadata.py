@@ -1,10 +1,10 @@
 """Basic metadata extractor plugin (fallback for unknown file types)."""
 
 import logging
+from datetime import datetime as dt
 from typing import Any
 
 from nexusLIMS.extractors.base import ExtractionContext
-from nexusLIMS.extractors.basic_metadata import get_basic_metadata
 
 logger = logging.getLogger(__name__)
 
@@ -60,4 +60,44 @@ class BasicFileInfoExtractor:
             "Extracting basic metadata from file (no specialized extractor): %s",
             context.file_path,
         )
-        return get_basic_metadata(context.file_path)
+
+        mdict = {"nx_meta": {}}
+        mdict["nx_meta"]["DatasetType"] = "Unknown"
+        mdict["nx_meta"]["Data Type"] = "Unknown"
+
+        # get the modification time (as ISO format):
+        mtime = context.file_path.stat().st_mtime
+        mtime_iso = dt.fromtimestamp(
+            mtime,
+            tz=context.instrument.timezone if context.instrument else None,
+        ).isoformat()
+        mdict["nx_meta"]["Creation Time"] = mtime_iso
+
+        return mdict
+
+
+# Backward compatibility function for tests
+def get_basic_metadata(filename):
+    """
+    Get basic metadata from a file.
+
+    Returns basic metadata from a file that's not currently interpretable by NexusLIMS.
+
+    .. deprecated::
+        This function is deprecated. Use BasicFileInfoExtractor class instead.
+
+    Parameters
+    ----------
+    filename : pathlib.Path
+        path to a file saved in the harvested directory of the instrument
+
+    Returns
+    -------
+    mdict : dict
+        A description of the file in lieu of any metadata extracted from it.
+    """
+    from nexusLIMS.instruments import get_instr_from_filepath
+
+    context = ExtractionContext(file_path=filename, instrument=get_instr_from_filepath(filename))
+    extractor = BasicFileInfoExtractor()
+    return extractor.extract(context)

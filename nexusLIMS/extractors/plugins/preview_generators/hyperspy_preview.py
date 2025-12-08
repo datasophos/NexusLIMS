@@ -1,30 +1,25 @@
-# pylint: disable=too-many-lines
-
-"""
-Generate preview images from various data files.
-
-Data files are represented as either HyperSpy Signals, or as raw data files
-(in the case of tiff images)
-"""
+"""HyperSpy-based preview generator for microscopy data files."""
 
 import logging
-import shutil
 import tempfile
 import textwrap
 from pathlib import Path
-from typing import Tuple, Union
 
 import hyperspy.api as hs_api
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
-from matplotlib.figure import Figure
 from matplotlib.offsetbox import AnchoredOffsetbox, OffsetImage
 from matplotlib.transforms import Bbox
-from PIL import Image, UnidentifiedImageError
+from PIL import Image
 from skimage import transform
 from skimage.io import imread
 from skimage.transform import resize  # pylint: disable=no-name-in-module
+
+import nexusLIMS.extractors
+from nexusLIMS.extractors.base import ExtractionContext
+
+logger = logging.getLogger(__name__)
 
 # Use modern HyperSpy 2.0+ API only
 # Marker functionality has changed significantly in HyperSpy 2.0+
@@ -32,10 +27,11 @@ from skimage.transform import resize  # pylint: disable=no-name-in-module
 
 _LANCZOS = Image.Resampling.LANCZOS
 _POINT_SIZE = 5
-
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
-mpl.use("Agg")
+SPECTRUM_IMAGE_LOGO = (
+    Path(nexusLIMS.extractors.__file__).parent
+    / "assets"
+    / "spectrum_image_logo.svg.png"
+)
 
 
 def _full_extent(axis, items, pad=0.0):
@@ -481,216 +477,6 @@ def add_annotation_markers(s):
         s.add_marker(markers_list, permanent=True)
 
 
-def sig_to_thumbnail(s, out_path: Path, dpi: int = 92):
-    """
-    Generate a preview thumbnail from an arbitrary HyperSpy signal.
-
-    For a 2D signal, the signal from the first navigation position is used (most
-    likely the top- and left-most position. For a 1D signal (*i.e.* a
-    spectrum or spectrum image), the output depends on the
-    number of navigation dimensions:
-
-    - 0: Image of spectrum
-    - 1: Image of linescan (*a la* DigitalMicrograph)
-    - 2: Image of spectra sampled from navigation space
-    - 2+: As for 2 dimensions
-
-    Parameters
-    ----------
-    s : :py:class:`hyperspy.signal.BaseSignal` (or subclass)
-        The HyperSpy signal for which a thumbnail should be generated
-    out_path
-        A path to the desired thumbnail filename. All formats supported by
-        :py:meth:`~matplotlib.figure.Figure.savefig` can be used.
-    dpi : int
-        The "dots per inch" resolution for the outputted figure
-
-    Returns
-    -------
-    f : :py:class:`matplotlib.figure.Figure`
-        Handle to a matplotlib Figure
-
-    Notes
-    -----
-    This method heavily utilizes HyperSpy's existing plotting functions to
-    figure out how to best display the image
-    """
-    # close all currently open plots to ensure we don't leave a mess behind
-    # in memory
-    plt.close("all")
-    plt.rcParams["image.cmap"] = "gray"
-
-    # Processing 1D signals (spectra, spectrum images, etc)
-    if isinstance(s, hs_api.signals.Signal1D):
-        return _plot_1d_signal(s, out_path, dpi)
-
-    # Signal is an image of some sort, so we'll use hs.plot.plot_images
-    if isinstance(s, hs_api.signals.Signal2D):
-        return _plot_2d_signal(s, out_path, dpi)
-
-    # Complex image, so plot power spectrum (like an FFT)
-    if isinstance(s, hs_api.signals.ComplexSignal2D):
-        return _plot_complex_signal(s, out_path, dpi)
-
-    # if we have a different type of signal, just output a graphical
-    # representation of the axis manager
-    return _plot_axes_manager(s, out_path, dpi)
-
-
-def text_to_thumbnail(
-    f: Path,
-    out_path: Path,
-    output_size: int = 500,
-) -> Union[Figure, bool]:
-    """
-    Generate a preview thumbnail from a text file.
-
-    For a text file, the contents will be formatted and written to a 500x500
-    pixel jpg image of size 5 in by 5 in.
-
-    If the text file has many newlines, it is probably data and the first 42
-    characters of each of the first 20 lines of the text file will be written
-    to the image.
-
-    If the text file has a few (or fewer) newlines, it is probably a manually
-    generated note and the text will be written to a 42 column, 18 row box
-    until the space is exhausted.
-
-    Parameters
-    ----------
-    f
-        The path of a text file for which a thumbnail should be generated.
-    out_path
-        A path to the desired thumbnail filename. All formats supported by
-        :py:meth:`~matplotlib.figure.Figure.savefig` can be used.
-    output_size : int
-        The pixel width (and height, since the image is padded to square) of
-        the saved image file.
-
-    Returns
-    -------
-    f : :py:class:`matplotlib.figure.Figure` or bool
-        Handle to a matplotlib Figure, or the value False if a preview could not be
-        generated
-    """
-    # close all currently open plots to ensure we don't leave a mess behind
-    # in memory
-    plt.close("all")
-    plt.rcParams["image.cmap"] = "gray"
-
-    # some instruments produce text files with different encodings, so we try a few
-    # of the common ones. Also, escape "$" pattern that matplotlib
-    # will interpret as a math formula and replace "\t" with spaces for neat display
-    textlist = None
-    for enc in ["utf-8", "windows-1250", "windows-1252"]:
-        try:
-            with Path.open(f, encoding=enc) as textfile:
-                textlist = (
-                    textfile.read()
-                    .replace("$", r"\$")
-                    .replace("\t", "   ")
-                    .splitlines()
-                )
-        except UnicodeDecodeError as exc:
-            logger.warning(
-                "no preview generated; could not decode text file with encoding %s: %s",
-                enc,
-                str(exc),
-            )
-        else:
-            logger.info("opening the file with encoding: %s ", str(enc))
-
-    if textlist is None:
-        # textlist being None means that none of the encodings used could open the
-        # text file, so we should just return False to indicate no preview was generated
-        logger.warning(
-            "Could not generate preview of text file with any available encoding",
-        )
-        return False
-
-    textfig = plt.figure()
-    # 5 x 5" is a good size
-    size_inches = 5
-    textfig.set_size_inches(size_inches, size_inches)
-    dpi = output_size / size_inches
-    plt.axis("off")
-
-    # Number of newlines to distinguish between data-like and note-like text
-    paragraph_check = 15
-    num_lines_in_image = 19
-
-    if len(textlist) <= paragraph_check:
-        wrapped_text = []
-        for i in textlist:
-            wrapped_text = wrapped_text + textwrap.wrap(i, width=42)
-        lines_printed = 0
-        while lines_printed <= num_lines_in_image and lines_printed < len(wrapped_text):
-            textfig.text(
-                0.02,
-                0.9 - lines_printed / 18,
-                wrapped_text[lines_printed] + "\n",
-                fontsize=12,
-                fontfamily="monospace",
-            )
-            lines_printed = lines_printed + 1
-        # textfile is assumed to be hand-typed notes in paragraph format
-        # we will wrap text until we run out of space
-
-    else:
-        # 17 is the maximum number of lines that will fit in this size image
-        for i in range(17):
-            textfig.text(
-                0.02,
-                0.9 - i / 18,
-                textlist[i][0:48] + "\n",
-                fontsize=12,
-                fontfamily="monospace",
-            )
-        # textfile is assumed to be some form of column data.
-        # we will essentially create an image of the top left corner of the
-        # text file.
-
-    textfig.tight_layout()
-    textfig.savefig(out_path, dpi=dpi)
-    _pad_to_square(out_path, output_size)
-    return textfig
-
-
-def image_to_square_thumbnail(f: Path, out_path: Path, output_size: int) -> bool:
-    """
-    Generate a preview thumbnail from a non-data image file.
-
-    Images of common filetypes will be transformed into 500 x 500 pixel images
-    by first scaling the largest dimension to 500 pixels and then padding the
-    resulting image to square.
-
-    Parameters
-    ----------
-    f
-        The string of the path of an image file for which a thumbnail should be
-        generated.
-    out_path
-        A path to the desired thumbnail filename. All formats supported by
-        :py:meth:`~PIL.Image.Image.save` can be used.
-    output_size
-        The desired resulting size of the thumbnail image.
-
-    Returns
-    -------
-    bool
-        Whether a preview was generated
-    """
-    shutil.copy(f, out_path)
-    try:
-        _pad_to_square(out_path, output_size)
-    except UnidentifiedImageError as exc:
-        logger.warning("no preview generated; PIL error text: %s", str(exc))
-        out_path.unlink()
-        return False
-
-    return True
-
-
 def _set_extent_and_save(mpl_axis, s, f, out_path, dpi):
     _set_title(mpl_axis, s.metadata.General.title)
     items = [mpl_axis, mpl_axis.title, mpl_axis.xaxis.label, mpl_axis.yaxis.label]
@@ -701,32 +487,6 @@ def _set_extent_and_save(mpl_axis, s, f, out_path, dpi):
     )
     f.savefig(out_path, bbox_inches=extent, dpi=dpi)
     _pad_to_square(out_path, 500)
-
-
-def _plot_1d_signal(s, out_path, dpi):
-    # signal is single spectrum
-    if s.axes_manager.navigation_dimension == 0:
-        return _plot_spectrum(s, out_path, dpi)
-
-    # signal is 1D linescan
-    if s.axes_manager.navigation_dimension == 1:
-        return _plot_linescan(s, out_path, dpi)
-
-    # otherwise we have spectrum image:
-    return _plot_si(s, out_path, dpi)
-
-
-def _plot_2d_signal(s, out_path, dpi):
-    # signal is single image
-    if s.axes_manager.navigation_dimension == 0:
-        return _plot_single_image(s, out_path, dpi)
-
-    # we're looking at an image stack
-    if s.axes_manager.navigation_dimension == 1:
-        return _plot_image_stack(s, out_path, dpi)
-
-    # This is a 4D-STEM type image, so display as tableau
-    return _plot_tableau(s, out_path, dpi)
 
 
 def _plot_spectrum(s, out_path, dpi):
@@ -786,7 +546,7 @@ def _plot_si(s, out_path, dpi):
     )
 
     # Load "watermark" stamp and rescale to be appropriately sized
-    stamp = imread(Path(__file__).parent / "spectrum_image_logo.svg.png")
+    stamp = imread(SPECTRUM_IMAGE_LOGO)
     stamp_width = int((mpl_axis.figure.get_size_inches() * f.dpi)[0] / 2.5)
     scaling = stamp_width / float(stamp.shape[0])
     stamp_height = int(float(stamp.shape[1]) * float(scaling))
@@ -969,59 +729,160 @@ def _plot_axes_manager(s, out_path, dpi):
     return f
 
 
-def down_sample_image(
-    fname: Path,
-    out_path: Path,
-    output_size: Tuple[int, int] | None = None,
-    factor: int | None = None,
-):
-    """
-    Load an image file from disk, down-sample it to the requested dpi, and save.
+def _plot_1d_signal(s, out_path, dpi):
+    # signal is single spectrum
+    if s.axes_manager.navigation_dimension == 0:
+        return _plot_spectrum(s, out_path, dpi)
 
-    Sometimes the data doesn't need to be loaded as a HyperSpy signal,
-    and it's better just to down-sample existing image data (such as for .tif
-    files created by the Quanta SEM).
+    # signal is 1D linescan
+    if s.axes_manager.navigation_dimension == 1:
+        return _plot_linescan(s, out_path, dpi)
+
+    # otherwise we have spectrum image:
+    return _plot_si(s, out_path, dpi)
+
+
+def _plot_2d_signal(s, out_path, dpi):
+    # signal is single image
+    if s.axes_manager.navigation_dimension == 0:
+        return _plot_single_image(s, out_path, dpi)
+
+    # we're looking at an image stack
+    if s.axes_manager.navigation_dimension == 1:
+        return _plot_image_stack(s, out_path, dpi)
+
+    # This is a 4D-STEM type image, so display as tableau
+    return _plot_tableau(s, out_path, dpi)
+
+
+def sig_to_thumbnail(s, out_path: Path, dpi: int = 92):
+    """
+    Generate a preview thumbnail from an arbitrary HyperSpy signal.
+
+    For a 2D signal, the signal from the first navigation position is used (most
+    likely the top- and left-most position. For a 1D signal (*i.e.* a
+    spectrum or spectrum image), the output depends on the
+    number of navigation dimensions:
+
+    - 0: Image of spectrum
+    - 1: Image of linescan (*a la* DigitalMicrograph)
+    - 2: Image of spectra sampled from navigation space
+    - 2+: As for 2 dimensions
 
     Parameters
     ----------
-    fname
-        The filepath that will be resized. All formats supported by
-        :py:func:`PIL.Image.open` can be used
+    s : :py:class:`hyperspy.signal.BaseSignal` (or subclass)
+        The HyperSpy signal for which a thumbnail should be generated
     out_path
         A path to the desired thumbnail filename. All formats supported by
-        :py:meth:`PIL.Image.Image.save` can be used.
-    output_size
-        A tuple of ints specifying the width and height of the output image.
-        Either this argument or ``factor`` should be provided (not both).
-    factor
-        The multiple of the image size to reduce by (i.e. a value of 2
-        results in an image that is 50% of each original dimension). Either
-        this argument or ``output_size`` should be provided (not both).
+        :py:meth:`~matplotlib.figure.Figure.savefig` can be used.
+    dpi : int
+        The "dots per inch" resolution for the outputted figure
+
+    Returns
+    -------
+    f : :py:class:`matplotlib.figure.Figure`
+        Handle to a matplotlib Figure
+
+    Notes
+    -----
+    This method heavily utilizes HyperSpy's existing plotting functions to
+    figure out how to best display the image
     """
-    if output_size is None and factor is None:
-        msg = "One of output_size or factor must be provided"
-        raise ValueError(msg)
-    if output_size is not None and factor is not None:
-        msg = "Only one of output_size or factor should be provided"
-        raise ValueError(msg)
-
-    image = Image.open(fname)
-    size = image.size
-
-    if output_size is not None:
-        resized = output_size
-    else:
-        resized = tuple(s // factor for s in size)
-
-    if "I" in image.mode:
-        image = image.point(lambda i: i * (1.0 / 256)).convert("L")
-
-    image.thumbnail(resized, resample=_LANCZOS)
-    image.save(out_path)
-    _pad_to_square(out_path, new_width=500)
-
+    # close all currently open plots to ensure we don't leave a mess behind
+    # in memory
+    plt.close("all")
     plt.rcParams["image.cmap"] = "gray"
-    f = plt.figure()
-    f.gca().imshow(image)
 
-    return f
+    # Set matplotlib backend to avoid GUI issues
+    mpl.use("Agg")
+
+    # Processing 1D signals (spectra, spectrum images, etc)
+    if isinstance(s, hs_api.signals.Signal1D):
+        return _plot_1d_signal(s, out_path, dpi)
+
+    # Signal is an image of some sort, so we'll use hs.plot.plot_images
+    if isinstance(s, hs_api.signals.Signal2D):
+        return _plot_2d_signal(s, out_path, dpi)
+
+    # Complex image, so plot power spectrum (like an FFT)
+    if isinstance(s, hs_api.signals.ComplexSignal2D):
+        return _plot_complex_signal(s, out_path, dpi)
+
+    # if we have a different type of signal, just output a graphical
+    # representation of the axis manager
+    return _plot_axes_manager(s, out_path, dpi)
+
+
+class HyperSpyPreviewGenerator:
+    """
+    Preview generator for files that can be loaded with HyperSpy.
+
+    This generator handles preview generation for scientific data files
+    that HyperSpy can load, including dm3, dm4, ser, and other formats.
+    It uses the sig_to_thumbnail function to create previews.
+    """
+
+    name = "hyperspy_preview"
+    priority = 100
+
+    # File extensions that HyperSpy can handle and we want to preview
+    SUPPORTED_EXTENSIONS = {
+        "dm3",
+        "dm4",
+        "ser",
+        "emi",
+    }
+
+    def supports(self, context: ExtractionContext) -> bool:
+        """
+        Check if this generator supports the given file.
+
+        Parameters
+        ----------
+        context
+            The extraction context containing file information
+
+        Returns
+        -------
+        bool
+            True if file extension is supported by HyperSpy
+        """
+        extension = context.file_path.suffix.lower().lstrip(".")
+        return extension in self.SUPPORTED_EXTENSIONS
+
+    def generate(self, context: ExtractionContext, output_path: Path) -> bool:
+        """
+        Generate a thumbnail preview using HyperSpy.
+
+        Parameters
+        ----------
+        context
+            The extraction context containing file information
+        output_path
+            Path where the preview image should be saved
+
+        Returns
+        -------
+        bool
+            True if preview was successfully generated, False otherwise
+        """
+        try:
+            from hyperspy.io import load
+
+            logger.debug("Generating HyperSpy preview for: %s", context.file_path)
+
+            # Load the signal
+            s = load(str(context.file_path), lazy=True)
+
+            # Generate the thumbnail using the local function
+            sig_to_thumbnail(s, output_path, dpi=92)
+
+            return output_path.exists()
+        except Exception as e:  # noqa: BLE001
+            logger.warning(
+                "Failed to generate HyperSpy preview for %s: %s",
+                context.file_path,
+                e,
+            )
+            return False
