@@ -1,0 +1,190 @@
+name: Deploy PR Documentation
+
+on:
+  # Trigger after the test workflow completes for PRs
+  workflow_run:
+    workflows: ["Tests"]
+    types:
+      - completed
+
+jobs:
+  deploy-pr-docs:
+    # Only deploy if:
+    # 1. Tests passed
+    # 2. It was triggered by a pull_request event
+    if: >
+      ${{ github.event.workflow_run.conclusion == 'success' &&
+          github.event.workflow_run.event == 'pull_request' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Required to push to gh-pages branch
+      pull-requests: write # Required to comment on PR
+    steps:
+      - name: Get PR number
+        id: pr
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // Get the PR number from the workflow_run event
+            const pullRequests = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              head: `${context.repo.owner}:${context.payload.workflow_run.head_branch}`,
+            });
+
+            if (pullRequests.data.length === 0) {
+              core.setFailed('No open PR found for this branch');
+              return;
+            }
+
+            const prNumber = pullRequests.data[0].number;
+            core.setOutput('number', prNumber);
+            console.log(`Found PR #${prNumber}`);
+
+      - name: Checkout gh-pages branch
+        # Start from gh-pages to preserve existing PR previews
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+
+      - name: Checkout PR code
+        # Checkout the PR source code into pr-source subdirectory
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          path: pr-source
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          cd pr-source
+          uv sync
+
+      - name: Download coverage artifact from test workflow
+        # Download coverage artifact from the workflow_run that triggered this
+        continue-on-error: true
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const artifacts = await github.rest.actions.listWorkflowRunArtifacts({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: context.payload.workflow_run.id,
+            });
+
+            const coverageArtifact = artifacts.data.artifacts.find(
+              artifact => artifact.name === 'coverage-html-3.11'
+            );
+
+            if (coverageArtifact) {
+              const download = await github.rest.actions.downloadArtifact({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                artifact_id: coverageArtifact.id,
+                archive_format: 'zip',
+              });
+
+              const fs = require('fs');
+              fs.mkdirSync('pr-source/tests', { recursive: true });
+              fs.writeFileSync('coverage.zip', Buffer.from(download.data));
+
+              // Extract the zip file
+              const { execSync } = require('child_process');
+              execSync('unzip -q coverage.zip -d pr-source/tests/coverage');
+            }
+
+      - name: Generate switcher.json
+        # Create version switcher for PyData Sphinx Theme navigation
+        env:
+          GITHUB_EVENT_NAME: pull_request
+          GITHUB_REF: refs/pull/${{ steps.pr.outputs.number }}/merge
+        run: |
+          cd pr-source
+          python scripts/generate_switcher_json.py
+
+      - name: Build documentation
+        # Build Sphinx documentation for this PR (includes switcher.json from above)
+        env:
+          PR_NUMBER: ${{ steps.pr.outputs.number }}
+        run: |
+          cd pr-source
+          ./scripts/build_docs.sh
+
+      - name: Deploy to PR preview directory
+        # Create/update pr-{NUMBER} directory in gh-pages with docs and coverage
+        run: |
+          # Stash any local changes (e.g., uv.lock modifications from uv sync)
+          git stash --include-untracked || true
+
+          PR_NUMBER=${{ steps.pr.outputs.number }}
+          rm -rf "pr-${PR_NUMBER}"
+          mkdir -p "pr-${PR_NUMBER}"
+          rsync -avr pr-source/_build/ "pr-${PR_NUMBER}/"
+
+          if [ -d "pr-source/tests/coverage" ]; then
+            mkdir -p "pr-${PR_NUMBER}/coverage"
+            rsync -avr pr-source/tests/coverage/ "pr-${PR_NUMBER}/coverage/"
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add "pr-${PR_NUMBER}"
+          git commit -m "Deploy docs preview for PR #${PR_NUMBER}" || echo "No changes to commit"
+          git pull --rebase origin gh-pages
+          git push origin gh-pages
+          echo "✅ Documentation preview deployed!"
+          echo "🔗 View at: https://datasophos.github.io/NexusLIMS/pr-${PR_NUMBER}/"
+
+      - name: Comment on PR
+        # Post a comment with links to the deployed preview and coverage
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prNumber = ${{ steps.pr.outputs.number }};
+            const baseUrl = `https://${context.repo.owner}.github.io/${context.repo.repo}`;
+            const commentBody = `## 📚 Documentation Preview
+
+            The documentation for this PR has been deployed to:
+            - **Docs**: ${baseUrl}/pr-${prNumber}/
+            - **Coverage**: ${baseUrl}/pr-${prNumber}/coverage/
+
+            _This preview will be updated on each push to this PR._`;
+
+            // Find existing comment
+            const comments = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+            });
+
+            const botComment = comments.data.find(comment =>
+              comment.user.type === 'Bot' &&
+              comment.body.includes('Documentation Preview')
+            );
+
+            if (botComment) {
+              // Update existing comment
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: commentBody,
+              });
+            } else {
+              // Create new comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                body: commentBody,
+              });
+            }
