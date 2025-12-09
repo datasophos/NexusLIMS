@@ -151,22 +151,13 @@ jobs:
           mkdir -p "$VERSION_DIR/_static"
           cp docs/_static/switcher.json "$VERSION_DIR/_static/switcher.json"
 
-          # Update stable redirect to point to this version
+          # Update stable to be a full copy of the documentation (not just a redirect)
+          # This allows subpath links like /stable/user_guide/record_building.html to work
           rm -rf stable
           mkdir -p stable
-          cat > stable/index.html << EOF
-          <!DOCTYPE html>
-          <html>
-          <head>
-            <meta http-equiv="refresh" content="0; url=../$VERSION_DIR/">
-            <link rel="canonical" href="../$VERSION_DIR/" />
-            <title>Redirecting to stable documentation ($VERSION_DIR)</title>
-          </head>
-          <body>
-            <p>Redirecting to <a href="../$VERSION_DIR/">stable documentation ($VERSION_DIR)</a>...</p>
-          </body>
-          </html>
-          EOF
+          rsync -avr _build/ stable/
+          mkdir -p stable/_static
+          cp docs/_static/switcher.json stable/_static/switcher.json
 
           git add "$VERSION_DIR" stable
           git commit -m "Deploy docs for version ${{ steps.version.outputs.version }}" || echo "No changes to commit"
