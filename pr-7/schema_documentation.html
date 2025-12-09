@@ -1,0 +1,2299 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>XML Schema Reference &#8212; NexusLIMS 2.0.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=51baea2f" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="_static/documentation_options.js?v=51b770b3"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'schema_documentation';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.0.0';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/pr-7/schema_documentation.html" />
+    <link rel="icon" href="_static/nexusLIMS_bare_logo.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Reference" href="reference.html" />
+    <link rel="prev" title="NexusLIMS database" href="database.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="2.0.0" />
+    <meta name="docbuild:last-update" content="Dec, 09, 2025"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.0.0 documentation - Home"/>
+    <img src="_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.0.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="getting_started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="migration.html">
+    Migration Guide: v1 to v2
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="dev_guide.html">
+    Developer Guide
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="reference.html">
+    Reference
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datasophos/NexusLIMS" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://datasophos.co" title="Datasophos" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-globe fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Datasophos</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="getting_started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="migration.html">
+    Migration Guide: v1 to v2
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="dev_guide.html">
+    Developer Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="reference.html">
+    Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datasophos/NexusLIMS" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://datasophos.co" title="Datasophos" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-globe fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Datasophos</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="development.html">Developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="writing_extractor_plugins.html">Writing Extractor Plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="instrument_profiles.html">Instrument Profiles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="uv_migration.html">Migration from Poetry to uv</a></li>
+<li class="toctree-l1"><a class="reference internal" href="database.html">NexusLIMS database</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">XML Schema Reference</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="dev_guide.html" class="nav-link">Developer Guide</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">XML Schema Reference</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="xml-schema-reference">
+<span id="schema-documentation"></span><h1>XML Schema Reference<a class="headerlink" href="#xml-schema-reference" title="Link to this heading">#</a></h1>
+<p>This page provides automatically-generated documentation for the NexusLIMS
+XML schema used to represent experimental records.</p>
+<section id="nexus-experiment-schema">
+<h2>Nexus Experiment Schema<a class="headerlink" href="#nexus-experiment-schema" title="Link to this heading">#</a></h2>
+<p>The Nexus Experiment schema defines the structure of XML records generated
+by NexusLIMS. Each record describes a microscopy session, including metadata
+about the experiment, instruments used, and data files acquired.</p>
+<p>A metadata schema for describing an experiment utilizing equipment from the Nexus Microscopy Lab.</p>
+<p class="rubric" id="schema-structure-interactive">Schema Structure (Interactive)</p>
+<p>The diagram below shows the hierarchical structure of the schema.
+<strong>Pan</strong> by clicking and dragging, <strong>zoom</strong> with the mouse wheel,
+and <strong>click</strong> on any <em>type</em> node to jump to its detailed documentation below. You can also <strong>hover</strong> over nodes to see more information about that element.</p>
+   <style>
+   /* Theme-aware colors using pydata-sphinx-theme variables */
+   /* Light mode (default) */
+   #schema-viz-container {
+     --schema-border-color: var(--pst-color-border, #ccc);
+     --schema-text-color: var(--pst-color-text-base, #333);
+     --schema-legend-bg: var(--pst-color-background, #fff);
+     --schema-legend-text: var(--pst-color-text-base, #000);
+     --schema-legend-border: var(--pst-color-border, #ccc);
+     --schema-root-color: #e74c3c;
+     --schema-complex-color: #3498db;
+     --schema-element-color: #2ecc71;
+     --schema-optional-color: #95a5a6;
+     --schema-link-color: #444;
+     --schema-link-label-color: #333;
+     --schema-tooltip-bg: var(--pst-color-background, #fff);
+     --schema-tooltip-text: var(--pst-color-text-base, #000);
+   }
+
+   /* Dark mode - uses pydata theme's data-theme attribute */
+   html[data-theme="dark"] #schema-viz-container {
+     --schema-border-color: var(--pst-color-border, #555);
+     --schema-text-color: var(--pst-color-text-base, #e0e0e0);
+     --schema-legend-bg: var(--pst-color-background, #1e1e1e);
+     --schema-legend-text: var(--pst-color-text-base, #fff);
+     --schema-legend-border: var(--pst-color-border, #555);
+     --schema-link-color: #ccc;
+     --schema-link-label-color: #ddd;
+     --schema-tooltip-bg: var(--pst-color-background, #1e1e1e);
+     --schema-tooltip-text: var(--pst-color-text-base, #fff);
+   }
+
+   /* Legend styling - uses CSS variables that respond to theme */
+   #schema-legend {
+     background: var(--schema-legend-bg);
+     color: var(--schema-legend-text);
+     border: 1px solid var(--schema-legend-border);
+     position: absolute;
+     top: 10px;
+     left: 10px;
+     padding: 10px;
+     border-radius: 4px;
+     font-size: 12px;
+     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+   }
+
+   /* SVG element styles that respond to theme changes */
+   #schema-viz-container .schema-link {
+     stroke: var(--schema-link-color);
+   }
+
+   #schema-viz-container .schema-link-label {
+     fill: var(--schema-link-label-color);
+   }
+
+   #schema-viz-container .schema-node-label {
+     fill: var(--schema-text-color);
+   }
+
+   #schema-viz-container .schema-arrow {
+     fill: var(--schema-link-color);
+   }
+
+   #schema-viz-container .schema-arrow-stroke {
+     stroke: var(--schema-link-color);
+   }
+
+   /* Tooltip styling that responds to theme changes */
+   .schema-tooltip {
+     background: var(--pst-color-background, #fff) !important;
+     color: var(--pst-color-text-base, #000) !important;
+     border: 1px solid var(--pst-color-border, #ccc) !important;
+     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+   }
+
+   html[data-theme="dark"] .schema-tooltip {
+     background: var(--pst-color-background, #1e1e1e) !important;
+     color: var(--pst-color-text-base, #fff) !important;
+     border-color: var(--pst-color-border, #555) !important;
+   }
+   </style>
+
+   <div id="schema-viz-container" style="width: 100%; height: 800px; border: 1px solid var(--schema-border-color); position: relative; overflow: hidden;">
+     <div id="schema-viz" style="width: 100%; height: 100%; overflow: hidden;"></div>
+     <div id="schema-legend">
+       <div><strong>Legend</strong></div>
+       <div style="margin-top: 5px;"><span style="display: inline-block; width: 12px; height: 12px; background: var(--schema-root-color); border-radius: 50%; margin-right: 5px;"></span>Root Element</div>
+       <div><span style="display: inline-block; width: 12px; height: 12px; background: var(--schema-complex-color); border-radius: 50%; margin-right: 5px;"></span>Complex Type</div>
+       <div><span style="display: inline-block; width: 12px; height: 12px; background: var(--schema-element-color); border-radius: 50%; margin-right: 5px;"></span>Required Element</div>
+       <div><span style="display: inline-block; width: 12px; height: 12px; background: var(--schema-optional-color); border-radius: 50%; margin-right: 5px;"></span>Optional Element</div>
+     </div>
+     <button id="reset-zoom" style="position: absolute; top: 10px; right: 10px; padding: 8px 16px; background: var(--schema-complex-color); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px;">Reset View</button>
+   </div>
+
+   <script src="https://d3js.org/d3.v7.min.js"></script>
+   <script>
+   (function() {
+     const fullData = {
+  "nodes": [
+    {
+      "id": "Experiment",
+      "label": "Experiment",
+      "type": "root",
+      "description": "The root element for a document describing an Experiment"
+    },
+    {
+      "id": "Experiment_title",
+      "label": "title (optional)",
+      "type": "optional",
+      "description": "The title of this experiment"
+    },
+    {
+      "id": "Experiment_id",
+      "label": "id (optional)",
+      "type": "optional",
+      "description": "A unique local identifier assigned to this record."
+    },
+    {
+      "id": "Experiment_summary",
+      "label": "summary",
+      "type": "element",
+      "description": "A collection of metadata that summarize the overall use and intent of the experiment."
+    },
+    {
+      "id": "Experiment_sample",
+      "label": "sample (optional)",
+      "type": "optional",
+      "description": "A description of a sample examined in this experiment."
+    },
+    {
+      "id": "Experiment_project",
+      "label": "project (optional)",
+      "type": "optional",
+      "description": "A description of a project of which this Experiment is a part."
+    },
+    {
+      "id": "Experiment_acquisitionActivity",
+      "label": "acquisitionActivity (optional)",
+      "type": "optional",
+      "description": "A description of a specific group of data acqusition during this experimental session."
+    },
+    {
+      "id": "Experiment_notes",
+      "label": "notes (optional)",
+      "type": "optional",
+      "description": "Largely unformatted notes taken regarding the current sample"
+    },
+    {
+      "id": "Summary",
+      "label": "Summary",
+      "type": "complexType",
+      "description": "A collection of metadata that summarize the overall use and intent of the experiment."
+    },
+    {
+      "id": "Summary_experimenter",
+      "label": "experimenter (optional)",
+      "type": "optional",
+      "description": "The name of the user running this experiment."
+    },
+    {
+      "id": "Summary_collaborator",
+      "label": "collaborator (optional)",
+      "type": "optional",
+      "description": "The name of a notable collaborator in the experiment"
+    },
+    {
+      "id": "Summary_instrument",
+      "label": "instrument (optional)",
+      "type": "optional",
+      "description": "The instrument used in this experiment"
+    },
+    {
+      "id": "Summary_reservationStart",
+      "label": "reservationStart (optional)",
+      "type": "optional",
+      "description": "The start time of this experiment"
+    },
+    {
+      "id": "Summary_reservationEnd",
+      "label": "reservationEnd (optional)",
+      "type": "optional",
+      "description": "The end time of this experiment"
+    },
+    {
+      "id": "Summary_motivation",
+      "label": "motivation (optional)",
+      "type": "optional",
+      "description": "A prose description of the motivation, purpose, or other intent behind this experiment."
+    },
+    {
+      "id": "Sample",
+      "label": "Sample",
+      "type": "complexType",
+      "description": "A collection of metadata that describe a sample examined during an experiment."
+    },
+    {
+      "id": "Sample_name",
+      "label": "name (optional)",
+      "type": "optional",
+      "description": "A name for the sample (for display purposes)"
+    },
+    {
+      "id": "Sample_description",
+      "label": "description (optional)",
+      "type": "optional",
+      "description": "A description of the sample (where each occurance can be thought of as a separate paragraph)."
+    },
+    {
+      "id": "Sample_notes",
+      "label": "notes (optional)",
+      "type": "optional",
+      "description": "Largely unformatted notes taken regarding the current sample"
+    },
+    {
+      "id": "Sample_elements",
+      "label": "elements (optional)",
+      "type": "optional",
+      "description": "A list of one or more elements that are present or expected to be present in this sample"
+    },
+    {
+      "id": "Project",
+      "label": "Project",
+      "type": "complexType",
+      "description": "A collection of metadata that describes a project to which an Experiment can belong."
+    },
+    {
+      "id": "Project_name",
+      "label": "name (optional)",
+      "type": "optional",
+      "description": "A name for the project (for display purposes)"
+    },
+    {
+      "id": "Project_division",
+      "label": "division (optional)",
+      "type": "optional",
+      "description": "The division ID to which this project belongs"
+    },
+    {
+      "id": "Project_group",
+      "label": "group (optional)",
+      "type": "optional",
+      "description": "The group ID within a division to which this project belongs"
+    },
+    {
+      "id": "Project_project_id",
+      "label": "project_id (optional)",
+      "type": "optional",
+      "description": "The specific project ID within a research group/division"
+    },
+    {
+      "id": "Project_ref",
+      "label": "ref (optional)",
+      "type": "optional",
+      "description": "An (optional) link to this project in another database"
+    },
+    {
+      "id": "AcquisitionActivity",
+      "label": "AcquisitionActivity",
+      "type": "complexType",
+      "description": "A collection of metadata that describe a specific group of acquired data during the Experiment."
+    },
+    {
+      "id": "AcquisitionActivity_startTime",
+      "label": "startTime (optional)",
+      "type": "optional",
+      "description": "A date and time recorded as the start of this activity. This can be the time of the creation of the of the first dataset."
+    },
+    {
+      "id": "AcquisitionActivity_sampleID",
+      "label": "sampleID (optional)",
+      "type": "optional",
+      "description": "The identifier for the sample that was part of this acquisition activity. This should match a value of the id attribute for a sample element included in this document."
+    },
+    {
+      "id": "AcquisitionActivity_setup",
+      "label": "setup (optional)",
+      "type": "optional",
+      "description": "Metadata describing the set-up of the instrument during the current Acqusition Activity."
+    },
+    {
+      "id": "AcquisitionActivity_notes",
+      "label": "notes (optional)",
+      "type": "optional",
+      "description": "Largely unformatted notes taken regarding the current Acqusition Activity"
+    },
+    {
+      "id": "AcquisitionActivity_dataset",
+      "label": "dataset (optional)",
+      "type": "optional",
+      "description": "A file or named set of files that was acquired during the current Acqusition Activity."
+    },
+    {
+      "id": "Notes",
+      "label": "Notes",
+      "type": "complexType",
+      "description": "Generic content pulled as notes (lightly structured)."
+    },
+    {
+      "id": "Notes_entry",
+      "label": "entry (optional)",
+      "type": "optional",
+      "description": "A section of the notes. Each section can be of a different type with different structural content (e.g. for text, an image, a table, etc.)"
+    },
+    {
+      "id": "Entry",
+      "label": "Entry",
+      "type": "complexType",
+      "description": "An entry into a set of notes. This type serves as a base type for different sub-types."
+    },
+    {
+      "id": "TextEntry",
+      "label": "TextEntry",
+      "type": "complexType",
+      "description": "A text entry into a set of notes."
+    },
+    {
+      "id": "ImageEntry",
+      "label": "ImageEntry",
+      "type": "complexType",
+      "description": "An image entry into a set of notes."
+    },
+    {
+      "id": "TableEntry",
+      "label": "TableEntry",
+      "type": "complexType",
+      "description": "A table entry into a set of notes."
+    },
+    {
+      "id": "Table",
+      "label": "Table",
+      "type": "complexType",
+      "description": "A single grid of tabular information"
+    },
+    {
+      "id": "Table_title",
+      "label": "title (optional)",
+      "type": "optional",
+      "description": "The title for the table"
+    },
+    {
+      "id": "Table_header",
+      "label": "header",
+      "type": "element",
+      "description": "The description of the table's columns"
+    },
+    {
+      "id": "Table_rows",
+      "label": "rows",
+      "type": "element",
+      "description": "The main data of the table, organized into rows"
+    },
+    {
+      "id": "TableHeader",
+      "label": "TableHeader",
+      "type": "complexType",
+      "description": "A description of a table's columns"
+    },
+    {
+      "id": "TableHeader_column",
+      "label": "column (optional)",
+      "type": "optional",
+      "description": "A single column of data in the table"
+    },
+    {
+      "id": "TableColumn",
+      "label": "TableColumn",
+      "type": "complexType",
+      "description": "A description of one column in a table"
+    },
+    {
+      "id": "TableRows",
+      "label": "TableRows",
+      "type": "complexType",
+      "description": "The main data body of a table, organized as a sequence of rows."
+    },
+    {
+      "id": "TableRows_row",
+      "label": "row (optional)",
+      "type": "optional",
+      "description": "A single row of data in the table"
+    },
+    {
+      "id": "TableRow",
+      "label": "TableRow",
+      "type": "complexType",
+      "description": "A single row of a table"
+    },
+    {
+      "id": "TableRow_cell",
+      "label": "cell (optional)",
+      "type": "optional",
+      "description": "A single cell in a row of a table."
+    },
+    {
+      "id": "TableCell",
+      "label": "TableCell",
+      "type": "complexType",
+      "description": "A container for data in one cell of the table."
+    },
+    {
+      "id": "Setup",
+      "label": "Setup",
+      "type": "complexType",
+      "description": "Metadata describing the set-up of an instrument (values common to all datasets within an Acqusition Activity)."
+    },
+    {
+      "id": "Setup_param",
+      "label": "param (optional)",
+      "type": "optional",
+      "description": "An arbitrary setup parameter with a name and a value"
+    },
+    {
+      "id": "Dataset",
+      "label": "Dataset",
+      "type": "complexType",
+      "description": "A description of a file or set of files."
+    },
+    {
+      "id": "Dataset_name",
+      "label": "name",
+      "type": "element",
+      "description": "The name given to the dataset"
+    },
+    {
+      "id": "Dataset_location",
+      "label": "location",
+      "type": "element",
+      "description": "A directory path or URL indicating the location where the dataset is stored"
+    },
+    {
+      "id": "Dataset_format",
+      "label": "format (optional)",
+      "type": "optional",
+      "description": "A string (can be a MIME type) indicating the format of the dataset (e.g. TIFF, DICOM, Excel)."
+    },
+    {
+      "id": "Dataset_description",
+      "label": "description (optional)",
+      "type": "optional",
+      "description": "A description of the dataset (where each occurance can be thought of as a separate paragraph)."
+    },
+    {
+      "id": "Dataset_preview",
+      "label": "preview (optional)",
+      "type": "optional",
+      "description": "URL or string path to a preview rendering (thumbnail) of the data in the dataset."
+    },
+    {
+      "id": "Dataset_meta",
+      "label": "meta (optional)",
+      "type": "optional",
+      "description": "An arbitrary metadatum with a name and a value unique to this dataset"
+    },
+    {
+      "id": "Parameter",
+      "label": "Parameter",
+      "type": "complexType",
+      "description": "A piece of arbitrary metadata featuring a name and a value, unique to a dataset within an Acqusition Activity."
+    },
+    {
+      "id": "Instrument",
+      "label": "Instrument",
+      "type": "complexType",
+      "description": "The identification of an instrument in the facility."
+    },
+    {
+      "id": "PeriodicTableElementType",
+      "label": "PeriodicTableElementType",
+      "type": "complexType",
+      "description": "Allowed periodic table element values. Includes abbreviations from the periodic table up to element number 118. This list was adapted from the Chemical Markup Language schema (http://www.xml-cml.org/schema/schema3/)"
+    },
+    {
+      "id": "PeriodicTableElementType_summary",
+      "label": "118 chemical elements",
+      "type": "element",
+      "description": "Choice of 118 elements"
+    }
+  ],
+  "links": [
+    {
+      "source": "Experiment",
+      "target": "Experiment_title",
+      "label": "has"
+    },
+    {
+      "source": "Experiment",
+      "target": "Experiment_id",
+      "label": "has"
+    },
+    {
+      "source": "Experiment",
+      "target": "Experiment_summary",
+      "label": "has"
+    },
+    {
+      "source": "Experiment_summary",
+      "target": "Summary",
+      "label": "type"
+    },
+    {
+      "source": "Experiment",
+      "target": "Experiment_sample",
+      "label": "has"
+    },
+    {
+      "source": "Experiment_sample",
+      "target": "Sample",
+      "label": "type"
+    },
+    {
+      "source": "Experiment",
+      "target": "Experiment_project",
+      "label": "has"
+    },
+    {
+      "source": "Experiment_project",
+      "target": "Project",
+      "label": "type"
+    },
+    {
+      "source": "Experiment",
+      "target": "Experiment_acquisitionActivity",
+      "label": "has"
+    },
+    {
+      "source": "Experiment_acquisitionActivity",
+      "target": "AcquisitionActivity",
+      "label": "type"
+    },
+    {
+      "source": "Experiment",
+      "target": "Experiment_notes",
+      "label": "has"
+    },
+    {
+      "source": "Experiment_notes",
+      "target": "Notes",
+      "label": "type"
+    },
+    {
+      "source": "Summary",
+      "target": "Summary_experimenter",
+      "label": "has"
+    },
+    {
+      "source": "Summary",
+      "target": "Summary_collaborator",
+      "label": "has"
+    },
+    {
+      "source": "Summary",
+      "target": "Summary_instrument",
+      "label": "has"
+    },
+    {
+      "source": "Summary_instrument",
+      "target": "Instrument",
+      "label": "type"
+    },
+    {
+      "source": "Summary",
+      "target": "Summary_reservationStart",
+      "label": "has"
+    },
+    {
+      "source": "Summary",
+      "target": "Summary_reservationEnd",
+      "label": "has"
+    },
+    {
+      "source": "Summary",
+      "target": "Summary_motivation",
+      "label": "has"
+    },
+    {
+      "source": "Sample",
+      "target": "Sample_name",
+      "label": "has"
+    },
+    {
+      "source": "Sample",
+      "target": "Sample_description",
+      "label": "has"
+    },
+    {
+      "source": "Sample",
+      "target": "Sample_notes",
+      "label": "has"
+    },
+    {
+      "source": "Sample_notes",
+      "target": "Notes",
+      "label": "type"
+    },
+    {
+      "source": "Sample",
+      "target": "Sample_elements",
+      "label": "has"
+    },
+    {
+      "source": "Sample_elements",
+      "target": "PeriodicTableElementType",
+      "label": "type"
+    },
+    {
+      "source": "Project",
+      "target": "Project_name",
+      "label": "has"
+    },
+    {
+      "source": "Project",
+      "target": "Project_division",
+      "label": "has"
+    },
+    {
+      "source": "Project",
+      "target": "Project_group",
+      "label": "has"
+    },
+    {
+      "source": "Project",
+      "target": "Project_project_id",
+      "label": "has"
+    },
+    {
+      "source": "Project",
+      "target": "Project_ref",
+      "label": "has"
+    },
+    {
+      "source": "AcquisitionActivity",
+      "target": "AcquisitionActivity_startTime",
+      "label": "has"
+    },
+    {
+      "source": "AcquisitionActivity",
+      "target": "AcquisitionActivity_sampleID",
+      "label": "has"
+    },
+    {
+      "source": "AcquisitionActivity",
+      "target": "AcquisitionActivity_setup",
+      "label": "has"
+    },
+    {
+      "source": "AcquisitionActivity_setup",
+      "target": "Setup",
+      "label": "type"
+    },
+    {
+      "source": "AcquisitionActivity",
+      "target": "AcquisitionActivity_notes",
+      "label": "has"
+    },
+    {
+      "source": "AcquisitionActivity_notes",
+      "target": "Notes",
+      "label": "type"
+    },
+    {
+      "source": "AcquisitionActivity",
+      "target": "AcquisitionActivity_dataset",
+      "label": "has"
+    },
+    {
+      "source": "AcquisitionActivity_dataset",
+      "target": "Dataset",
+      "label": "type"
+    },
+    {
+      "source": "Notes",
+      "target": "Notes_entry",
+      "label": "has"
+    },
+    {
+      "source": "Notes_entry",
+      "target": "Entry",
+      "label": "type"
+    },
+    {
+      "source": "Table",
+      "target": "Table_title",
+      "label": "has"
+    },
+    {
+      "source": "Table",
+      "target": "Table_header",
+      "label": "has"
+    },
+    {
+      "source": "Table_header",
+      "target": "TableHeader",
+      "label": "type"
+    },
+    {
+      "source": "Table",
+      "target": "Table_rows",
+      "label": "has"
+    },
+    {
+      "source": "Table_rows",
+      "target": "TableRows",
+      "label": "type"
+    },
+    {
+      "source": "TableHeader",
+      "target": "TableHeader_column",
+      "label": "has"
+    },
+    {
+      "source": "TableHeader_column",
+      "target": "TableColumn",
+      "label": "type"
+    },
+    {
+      "source": "TableRows",
+      "target": "TableRows_row",
+      "label": "has"
+    },
+    {
+      "source": "TableRows_row",
+      "target": "TableRow",
+      "label": "type"
+    },
+    {
+      "source": "TableRow",
+      "target": "TableRow_cell",
+      "label": "has"
+    },
+    {
+      "source": "TableRow_cell",
+      "target": "TableCell",
+      "label": "type"
+    },
+    {
+      "source": "Setup",
+      "target": "Setup_param",
+      "label": "has"
+    },
+    {
+      "source": "Setup_param",
+      "target": "Parameter",
+      "label": "type"
+    },
+    {
+      "source": "Dataset",
+      "target": "Dataset_name",
+      "label": "has"
+    },
+    {
+      "source": "Dataset",
+      "target": "Dataset_location",
+      "label": "has"
+    },
+    {
+      "source": "Dataset",
+      "target": "Dataset_format",
+      "label": "has"
+    },
+    {
+      "source": "Dataset",
+      "target": "Dataset_description",
+      "label": "has"
+    },
+    {
+      "source": "Dataset",
+      "target": "Dataset_preview",
+      "label": "has"
+    },
+    {
+      "source": "Dataset",
+      "target": "Dataset_meta",
+      "label": "has"
+    },
+    {
+      "source": "Dataset_meta",
+      "target": "Parameter",
+      "label": "type"
+    },
+    {
+      "source": "PeriodicTableElementType",
+      "target": "PeriodicTableElementType_summary",
+      "label": "choice"
+    }
+  ]
+};
+
+     // Filter to only show nodes connected to "Experiment" root
+     function filterExperimentSubtree(data) {
+       const experimentRoot = data.nodes.find(n => n.id === 'Experiment' && n.type === 'root');
+       if (!experimentRoot) {
+         console.warn('Experiment root not found, showing all nodes');
+         return data;
+       }
+
+       // Build adjacency list for graph traversal
+       const adjacencyMap = new Map();
+       data.links.forEach(link => {
+         if (!adjacencyMap.has(link.source)) {
+           adjacencyMap.set(link.source, []);
+         }
+         adjacencyMap.get(link.source).push(link.target);
+       });
+
+       // BFS traversal from Experiment root
+       const connectedNodes = new Set(['Experiment']);
+       const queue = ['Experiment'];
+
+       while (queue.length > 0) {
+         const current = queue.shift();
+         const neighbors = adjacencyMap.get(current) || [];
+
+         neighbors.forEach(neighbor => {
+           const neighborId = typeof neighbor === 'string' ? neighbor : neighbor.id || neighbor;
+           if (!connectedNodes.has(neighborId)) {
+             connectedNodes.add(neighborId);
+             queue.push(neighborId);
+           }
+         });
+       }
+
+       // Filter nodes and links
+       const filteredNodes = data.nodes.filter(n => connectedNodes.has(n.id));
+       const filteredLinks = data.links.filter(l => {
+         const sourceId = typeof l.source === 'string' ? l.source : l.source.id || l.source;
+         const targetId = typeof l.target === 'string' ? l.target : l.target.id || l.target;
+         return connectedNodes.has(sourceId) && connectedNodes.has(targetId);
+       });
+
+       return { nodes: filteredNodes, links: filteredLinks };
+     }
+
+     const data = filterExperimentSubtree(fullData);
+
+     // Set up dimensions
+     const container = document.getElementById('schema-viz');
+     const width = container.clientWidth;
+     const height = container.clientHeight;
+
+     // Create SVG with zoom behavior
+     const svg = d3.select('#schema-viz')
+       .append('svg')
+       .attr('width', width)
+       .attr('height', height);
+
+     const g = svg.append('g');
+
+     // Define zoom behavior
+     const zoom = d3.zoom()
+       .scaleExtent([0.1, 4])
+       .on('zoom', (event) => {
+         g.attr('transform', event.transform);
+       });
+
+     svg.call(zoom);
+
+     // Initial transform (centered and slightly zoomed out)
+     const initialTransform = d3.zoomIdentity
+       .translate(width / 2, height / 2)
+       .scale(0.8);
+
+     svg.call(zoom.transform, initialTransform);
+
+     // Reset button functionality
+     document.getElementById('reset-zoom').addEventListener('click', () => {
+       svg.transition()
+         .duration(750)
+         .call(zoom.transform, initialTransform);
+     });
+
+     // Get theme-aware colors from CSS variables
+     const containerStyle = getComputedStyle(document.getElementById('schema-viz-container'));
+     const colorMap = {
+       'root': containerStyle.getPropertyValue('--schema-root-color').trim() || '#e74c3c',
+       'complexType': containerStyle.getPropertyValue('--schema-complex-color').trim() || '#3498db',
+       'element': containerStyle.getPropertyValue('--schema-element-color').trim() || '#2ecc71',
+       'optional': containerStyle.getPropertyValue('--schema-optional-color').trim() || '#95a5a6'
+     };
+
+     const linkColor = containerStyle.getPropertyValue('--schema-link-color').trim() || '#999';
+     const linkLabelColor = containerStyle.getPropertyValue('--schema-link-label-color').trim() || '#666';
+     const textColor = containerStyle.getPropertyValue('--schema-text-color').trim() || '#333';
+
+     // Function to get node radius (make Experiment root larger)
+     function getNodeRadius(d) {
+       if (d.id === 'Experiment' && d.type === 'root') {
+         return 16;  // Larger radius for Experiment root
+       }
+       return 8;  // Default radius
+     }
+
+     // Create force simulation
+     const simulation = d3.forceSimulation(data.nodes)
+       .force('link', d3.forceLink(data.links)
+         .id(d => d.id)
+         .distance(100))
+       .force('charge', d3.forceManyBody()
+         .strength(-300))
+       .force('center', d3.forceCenter(0, 0))
+       .force('collision', d3.forceCollide().radius(40));
+
+     // Create arrow markers for directed edges
+     const defs = svg.append('defs');
+
+     // Solid arrows for "has" and "choice" relationships
+     defs.selectAll('marker.solid')
+       .data(['has', 'choice'])
+       .join('marker')
+       .attr('class', 'solid')
+       .attr('id', d => `arrow-${d}`)
+       .attr('viewBox', '0 -5 10 10')
+       .attr('refX', 20)
+       .attr('refY', 0)
+       .attr('markerWidth', 6)
+       .attr('markerHeight', 6)
+       .attr('orient', 'auto')
+       .append('path')
+       .attr('class', 'schema-arrow')
+       .attr('d', 'M0,-5L10,0L0,5');
+
+     // Hollow diamond arrow for "type" relationships
+     defs.append('marker')
+       .attr('id', 'arrow-type')
+       .attr('viewBox', '0 -5 10 10')
+       .attr('refX', 22)
+       .attr('refY', 0)
+       .attr('markerWidth', 7)
+       .attr('markerHeight', 7)
+       .attr('orient', 'auto')
+       .append('path')
+       .attr('class', 'schema-arrow-stroke')
+       .attr('fill', 'none')
+       .attr('stroke-width', 1.5)
+       .attr('d', 'M0,0L5,-4L10,0L5,4Z');
+
+     // Create links
+     const link = g.append('g')
+       .selectAll('line')
+       .data(data.links)
+       .join('line')
+       .attr('class', 'schema-link')
+       .attr('stroke-opacity', 0.6)
+       .attr('stroke-width', d => d.label === 'type' ? 1.5 : 1.5)
+       .attr('stroke-dasharray', d => d.label === 'type' ? '5,3' : 'none')
+       .attr('marker-end', d => `url(#arrow-${d.label})`);
+
+     // Create link labels
+     const linkLabel = g.append('g')
+       .selectAll('text')
+       .data(data.links)
+       .join('text')
+       .attr('class', 'schema-link-label')
+       .attr('font-size', 9)
+       .attr('text-anchor', 'middle')
+       .text(d => d.label);
+
+     // Create nodes
+     const node = g.append('g')
+       .selectAll('circle')
+       .data(data.nodes)
+       .join('circle')
+       .attr('r', d => getNodeRadius(d))
+       .attr('fill', d => colorMap[d.type] || colorMap['optional'])
+       .attr('stroke', '#fff')
+       .attr('stroke-width', 2)
+       .style('cursor', d => d.type === 'complexType' || d.type === 'root' ? 'pointer' : 'default')
+       .call(d3.drag()
+         .on('start', dragstarted)
+         .on('drag', dragged)
+         .on('end', dragended));
+
+     // Add click handler for navigation
+     node.on('click', function(event, d) {
+       event.stopPropagation();
+       const targetId = d.id.toLowerCase();
+
+       // Try element anchor first
+       let anchor = document.getElementById(`xsd-element-${targetId}`);
+       if (!anchor) {
+         // Try type anchor
+         anchor = document.getElementById(`xsd-type-${targetId}`);
+       }
+
+       if (anchor) {
+         anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+         // Highlight the target briefly
+         const originalBg = anchor.style.backgroundColor;
+         anchor.style.backgroundColor = '#fff3cd';
+         setTimeout(() => {
+           anchor.style.backgroundColor = originalBg;
+         }, 2000);
+       }
+     });
+
+     // Add tooltips
+     const tooltip = d3.select('body').append('div')
+       .attr('class', 'schema-tooltip')
+       .style('position', 'absolute')
+       .style('padding', '8px 12px')
+       .style('border-radius', '4px')
+       .style('font-size', '12px')
+       .style('pointer-events', 'none')
+       .style('opacity', 0)
+       .style('max-width', '300px')
+       .style('z-index', 1000);
+
+     node.on('mouseenter', function(event, d) {
+       const originalRadius = getNodeRadius(d);
+       const hoverRadius = originalRadius * 1.5;
+
+       d3.select(this)
+         .transition()
+         .duration(200)
+         .attr('r', hoverRadius);
+
+       tooltip
+         .style('opacity', 1)
+         .html(`<strong>${d.label}</strong><br/>${d.description || ''}`)
+         .style('left', (event.pageX + 10) + 'px')
+         .style('top', (event.pageY - 10) + 'px');
+     });
+
+     node.on('mousemove', function(event) {
+       tooltip
+         .style('left', (event.pageX + 10) + 'px')
+         .style('top', (event.pageY - 10) + 'px');
+     });
+
+     node.on('mouseleave', function(event, d) {
+       d3.select(this)
+         .transition()
+         .duration(200)
+         .attr('r', getNodeRadius(d));
+
+       tooltip.style('opacity', 0);
+     });
+
+     // Create labels
+     const label = g.append('g')
+       .selectAll('text')
+       .data(data.nodes)
+       .join('text')
+       .attr('class', 'schema-node-label')
+       .attr('font-size', d => d.id === 'Experiment' && d.type === 'root' ? 13 : 11)
+       .attr('font-weight', d => d.id === 'Experiment' && d.type === 'root' ? 'bold' : 'normal')
+       .attr('font-family', 'sans-serif')
+       .attr('text-anchor', 'middle')
+       .attr('dy', d => d.id === 'Experiment' && d.type === 'root' ? 30 : 25)
+       .text(d => {
+         // Truncate long labels
+         const maxLength = 20;
+         return d.label.length > maxLength ? d.label.substring(0, maxLength) + '...' : d.label;
+       })
+       .style('pointer-events', 'none');
+
+     // Update positions on each tick
+     simulation.on('tick', () => {
+       link
+         .attr('x1', d => d.source.x)
+         .attr('y1', d => d.source.y)
+         .attr('x2', d => d.target.x)
+         .attr('y2', d => d.target.y);
+
+       linkLabel
+         .attr('x', d => (d.source.x + d.target.x) / 2)
+         .attr('y', d => (d.source.y + d.target.y) / 2);
+
+       node
+         .attr('cx', d => d.x)
+         .attr('cy', d => d.y);
+
+       label
+         .attr('x', d => d.x)
+         .attr('y', d => d.y);
+     });
+
+     // Drag functions with boundary constraints
+     function dragstarted(event, d) {
+       if (!event.active) simulation.alphaTarget(0.3).restart();
+       d.fx = d.x;
+       d.fy = d.y;
+     }
+
+     function dragged(event, d) {
+       d.fx = event.x;
+       d.fy = event.y;
+     }
+
+     function dragended(event, d) {
+       if (!event.active) simulation.alphaTarget(0);
+       d.fx = null;
+       d.fy = null;
+     }
+   })();
+   </script><p class="rubric">Schema Information</p>
+<p><strong>Target Namespace:</strong> <code class="docutils literal notranslate"><span class="pre">https://data.nist.gov/od/dm/nexus/experiment/v1.0</span></code></p>
+<p><strong>Version:</strong> 1.03-10-2022</p>
+<p class="rubric">Root Elements</p>
+<div style="float: right; font-size: 0.9em;"><a href="#schema-structure-interactive">↑ Back to diagram</a></div><dl>
+<dt><strong>Experiment</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">nx:Experiment</span></code></span></dt><dd><p>The root element for a document describing an Experiment</p>
+</dd>
+</dl>
+<p class="rubric">Complex Types</p>
+<div class="type-header docutils container" id="xsd-type-experiment">
+<p><strong>Type: Experiment</strong></p>
+<div style="float: right; font-size: 0.9em;"><a href="#schema-structure-interactive">↑ Back to diagram</a></div></div>
+<p>A description of an experiment using an instrument in Nexus Microscopy Lab</p>
+<blockquote>
+<div><dl>
+<dt><strong>title</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:token</span></code> (optional)</span></dt><dd><p>The title of this experiment</p>
+</dd>
+<dt><strong>id</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:token</span></code> (optional)</span></dt><dd><p>A unique local identifier assigned to this record.</p>
+</dd>
+<dt><strong>summary</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">nx:Summary</span></code></span></dt><dd><p>A collection of metadata that summarize the overall use and intent of the experiment.</p>
+</dd>
+<dt><strong>sample</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">nx:Sample</span></code> (optional)</span></dt><dd><p>A description of a sample examined in this experiment.</p>
+</dd>
+<dt><strong>project</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">nx:Project</span></code> (optional)</span></dt><dd><p>A description of a project of which this Experiment is a part.</p>
+</dd>
+<dt><strong>acquisitionActivity</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">nx:AcquisitionActivity</span></code> (optional)</span></dt><dd><p>A description of a specific group of data acqusition during this experimental session.</p>
+</dd>
+<dt><strong>notes</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">nx:Notes</span></code> (optional)</span></dt><dd><p>Largely unformatted notes taken regarding the current sample</p>
+</dd>
+</dl>
+</div></blockquote>
+<p><strong>Attributes:</strong></p>
+<blockquote>
+<div><dl class="simple">
+<dt><strong>pid</strong></dt><dd><p>An unambiguous identifier for this resource description as assigned by its author or its curating registry.</p>
+</dd>
+</dl>
+</div></blockquote>
+<div class="type-header docutils container" id="xsd-type-summary">
+<p><strong>Type: Summary</strong></p>
+<div style="float: right; font-size: 0.9em;"><a href="#schema-structure-interactive">↑ Back to diagram</a></div></div>
+<p>A collection of metadata that summarize the overall use and intent of the experiment.</p>
+<blockquote>
+<div><dl>
+<dt><strong>experimenter</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:token</span></code> (optional)</span></dt><dd><p>The name of the user running this experiment.</p>
+</dd>
+<dt><strong>collaborator</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:token</span></code> (optional)</span></dt><dd><p>The name of a notable collaborator in the experiment</p>
+</dd>
+<dt><strong>instrument</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">nx:Instrument</span></code> (optional)</span></dt><dd><p>The instrument used in this experiment</p>
+</dd>
+<dt><strong>reservationStart</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:dateTime</span></code> (optional)</span></dt><dd><p>The start time of this experiment</p>
+</dd>
+<dt><strong>reservationEnd</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:dateTime</span></code> (optional)</span></dt><dd><p>The end time of this experiment</p>
+</dd>
+<dt><strong>motivation</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:string</span></code> (optional)</span></dt><dd><p>A prose description of the motivation, purpose, or other intent behind this experiment.</p>
+</dd>
+</dl>
+</div></blockquote>
+<p><strong>Attributes:</strong></p>
+<blockquote>
+<div><dl>
+<dt><strong>ref</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:anyURI</span></code></span></dt><dd><p>An external link to the reservation or metadata record used to populate this Experiment record. Could be a link to a particular reservation in a facility management system, for instance.</p>
+</dd>
+</dl>
+</div></blockquote>
+<div class="type-header docutils container" id="xsd-type-sample">
+<p><strong>Type: Sample</strong></p>
+<div style="float: right; font-size: 0.9em;"><a href="#schema-structure-interactive">↑ Back to diagram</a></div></div>
+<p>A collection of metadata that describe a sample examined during an experiment.</p>
+<blockquote>
+<div><dl>
+<dt><strong>name</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:token</span></code> (optional)</span></dt><dd><p>A name for the sample (for display purposes)</p>
+</dd>
+<dt><strong>description</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:token</span></code> (optional)</span></dt><dd><p>A description of the sample (where each occurance can be thought of as a separate paragraph).</p>
+</dd>
+<dt><strong>notes</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">nx:Notes</span></code> (optional)</span></dt><dd><p>Largely unformatted notes taken regarding the current sample</p>
+</dd>
+<dt><strong>elements</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">nx:PeriodicTableElementType</span></code> (optional)</span></dt><dd><p>A list of one or more elements that are present or expected to be present in this sample</p>
+</dd>
+</dl>
+</div></blockquote>
+<p><strong>Attributes:</strong></p>
+<blockquote>
+<div><dl>
+<dt><strong>id</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:string</span></code></span></dt><dd><p>An identifier (unique to this document) that identifies the current sample. This can be the sample name if it is unique.</p>
+</dd>
+<dt><strong>ref</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:string</span></code></span></dt><dd><p>An external persistent identifier for the current sample the current sample. This can be the sample name if it is unique.</p>
+</dd>
+</dl>
+</div></blockquote>
+<div class="type-header docutils container" id="xsd-type-project">
+<p><strong>Type: Project</strong></p>
+<div style="float: right; font-size: 0.9em;"><a href="#schema-structure-interactive">↑ Back to diagram</a></div></div>
+<p>A collection of metadata that describes a project to which an Experiment can belong.</p>
+<blockquote>
+<div><dl>
+<dt><strong>name</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:token</span></code> (optional)</span></dt><dd><p>A name for the project (for display purposes)</p>
+</dd>
+<dt><strong>division</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:token</span></code> (optional)</span></dt><dd><p>The division ID to which this project belongs</p>
+</dd>
+<dt><strong>group</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:token</span></code> (optional)</span></dt><dd><p>The group ID within a division to which this project belongs</p>
+</dd>
+<dt><strong>project_id</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:token</span></code> (optional)</span></dt><dd><p>The specific project ID within a research group/division</p>
+</dd>
+<dt><strong>ref</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:anyURI</span></code> (optional)</span></dt><dd><p>An (optional) link to this project in another database</p>
+</dd>
+</dl>
+</div></blockquote>
+<div class="type-header docutils container" id="xsd-type-acquisitionactivity">
+<p><strong>Type: AcquisitionActivity</strong></p>
+<div style="float: right; font-size: 0.9em;"><a href="#schema-structure-interactive">↑ Back to diagram</a></div></div>
+<p>A collection of metadata that describe a specific group of acquired data during the Experiment.</p>
+<blockquote>
+<div><dl>
+<dt><strong>startTime</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:dateTime</span></code> (optional)</span></dt><dd><p>A date and time recorded as the start of this activity. This can be the time of the creation of the of the first dataset.</p>
+</dd>
+<dt><strong>sampleID</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:token</span></code> (optional)</span></dt><dd><p>The identifier for the sample that was part of this acquisition activity. This should match a value of the id attribute for a sample element included in this document.</p>
+</dd>
+<dt><strong>setup</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">nx:Setup</span></code> (optional)</span></dt><dd><p>Metadata describing the set-up of the instrument during the current Acqusition Activity.</p>
+</dd>
+<dt><strong>notes</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">nx:Notes</span></code> (optional)</span></dt><dd><p>Largely unformatted notes taken regarding the current Acqusition Activity</p>
+</dd>
+<dt><strong>dataset</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">nx:Dataset</span></code> (optional)</span></dt><dd><p>A file or named set of files that was acquired during the current Acqusition Activity.</p>
+</dd>
+</dl>
+</div></blockquote>
+<p><strong>Attributes:</strong></p>
+<blockquote>
+<div><dl>
+<dt><strong>seqno</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:integer</span></code></span></dt><dd><p>A number that indicates the order that this Acqusition Activity occurred within a sequence of Acqusition Activities.</p>
+</dd>
+</dl>
+</div></blockquote>
+<div class="type-header docutils container" id="xsd-type-notes">
+<p><strong>Type: Notes</strong></p>
+<div style="float: right; font-size: 0.9em;"><a href="#schema-structure-interactive">↑ Back to diagram</a></div></div>
+<p>Generic content pulled as notes (lightly structured).</p>
+<blockquote>
+<div><dl>
+<dt><strong>entry</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">nx:Entry</span></code> (optional)</span></dt><dd><p>A section of the notes. Each section can be of a different type with different structural content (e.g. for text, an image, a table, etc.)</p>
+</dd>
+</dl>
+</div></blockquote>
+<p><strong>Attributes:</strong></p>
+<blockquote>
+<div><dl>
+<dt><strong>source</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:string</span></code></span></dt><dd><p>A label indicating where the notes were extracted from (e.g. “ELN”)</p>
+</dd>
+</dl>
+</div></blockquote>
+<div class="type-header docutils container" id="xsd-type-entry">
+<p><strong>Type: Entry</strong></p>
+<div style="float: right; font-size: 0.9em;"><a href="#schema-structure-interactive">↑ Back to diagram</a></div></div>
+<p>An entry into a set of notes. This type serves as a base type for different sub-types.</p>
+<div class="type-header docutils container" id="xsd-type-textentry">
+<p><strong>Type: TextEntry</strong></p>
+<div style="float: right; font-size: 0.9em;"><a href="#schema-structure-interactive">↑ Back to diagram</a></div></div>
+<p>A text entry into a set of notes.</p>
+<div class="type-header docutils container" id="xsd-type-imageentry">
+<p><strong>Type: ImageEntry</strong></p>
+<div style="float: right; font-size: 0.9em;"><a href="#schema-structure-interactive">↑ Back to diagram</a></div></div>
+<p>An image entry into a set of notes.</p>
+<div class="type-header docutils container" id="xsd-type-tableentry">
+<p><strong>Type: TableEntry</strong></p>
+<div style="float: right; font-size: 0.9em;"><a href="#schema-structure-interactive">↑ Back to diagram</a></div></div>
+<p>A table entry into a set of notes.</p>
+<div class="type-header docutils container" id="xsd-type-table">
+<p><strong>Type: Table</strong></p>
+<div style="float: right; font-size: 0.9em;"><a href="#schema-structure-interactive">↑ Back to diagram</a></div></div>
+<p>A single grid of tabular information</p>
+<blockquote>
+<div><dl>
+<dt><strong>title</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:token</span></code> (optional)</span></dt><dd><p>The title for the table</p>
+</dd>
+<dt><strong>header</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">nx:TableHeader</span></code></span></dt><dd><p>The description of the table’s columns</p>
+</dd>
+<dt><strong>rows</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">nx:TableRows</span></code></span></dt><dd><p>The main data of the table, organized into rows</p>
+</dd>
+</dl>
+</div></blockquote>
+<div class="type-header docutils container" id="xsd-type-tableheader">
+<p><strong>Type: TableHeader</strong></p>
+<div style="float: right; font-size: 0.9em;"><a href="#schema-structure-interactive">↑ Back to diagram</a></div></div>
+<p>A description of a table’s columns</p>
+<blockquote>
+<div><dl>
+<dt><strong>column</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">nx:TableColumn</span></code> (optional)</span></dt><dd><p>A single column of data in the table</p>
+</dd>
+</dl>
+</div></blockquote>
+<div class="type-header docutils container" id="xsd-type-tablecolumn">
+<p><strong>Type: TableColumn</strong></p>
+<div style="float: right; font-size: 0.9em;"><a href="#schema-structure-interactive">↑ Back to diagram</a></div></div>
+<p>A description of one column in a table</p>
+<p><strong>Attributes:</strong></p>
+<blockquote>
+<div><dl class="simple">
+<dt><strong>id</strong></dt><dd><p>The identifier to assign to this column (for reference by cell elements).</p>
+</dd>
+</dl>
+</div></blockquote>
+<div class="type-header docutils container" id="xsd-type-tablerows">
+<p><strong>Type: TableRows</strong></p>
+<div style="float: right; font-size: 0.9em;"><a href="#schema-structure-interactive">↑ Back to diagram</a></div></div>
+<p>The main data body of a table, organized as a sequence of rows.</p>
+<blockquote>
+<div><dl>
+<dt><strong>row</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">nx:TableRow</span></code> (optional)</span></dt><dd><p>A single row of data in the table</p>
+</dd>
+</dl>
+</div></blockquote>
+<div class="type-header docutils container" id="xsd-type-tablerow">
+<p><strong>Type: TableRow</strong></p>
+<div style="float: right; font-size: 0.9em;"><a href="#schema-structure-interactive">↑ Back to diagram</a></div></div>
+<p>A single row of a table</p>
+<blockquote>
+<div><dl>
+<dt><strong>cell</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">nx:TableCell</span></code> (optional)</span></dt><dd><p>A single cell in a row of a table.</p>
+</dd>
+</dl>
+</div></blockquote>
+<p><strong>Attributes:</strong></p>
+<blockquote>
+<div><dl>
+<dt><strong>seqno</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:integer</span></code></span></dt><dd><p>A number that indicates the order that the row appears in the table.</p>
+</dd>
+</dl>
+</div></blockquote>
+<div class="type-header docutils container" id="xsd-type-tablecell">
+<p><strong>Type: TableCell</strong></p>
+<div style="float: right; font-size: 0.9em;"><a href="#schema-structure-interactive">↑ Back to diagram</a></div></div>
+<p>A container for data in one cell of the table.</p>
+<p><strong>Attributes:</strong></p>
+<blockquote>
+<div><dl class="simple">
+<dt><strong>colid</strong></dt><dd><p>The identifier for the column that this cell corresponds to</p>
+</dd>
+</dl>
+</div></blockquote>
+<div class="type-header docutils container" id="xsd-type-setup">
+<p><strong>Type: Setup</strong></p>
+<div style="float: right; font-size: 0.9em;"><a href="#schema-structure-interactive">↑ Back to diagram</a></div></div>
+<p>Metadata describing the set-up of an instrument (values common to all datasets within an Acqusition Activity).</p>
+<blockquote>
+<div><dl>
+<dt><strong>param</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">nx:Parameter</span></code> (optional)</span></dt><dd><p>An arbitrary setup parameter with a name and a value</p>
+</dd>
+</dl>
+</div></blockquote>
+<div class="type-header docutils container" id="xsd-type-dataset">
+<p><strong>Type: Dataset</strong></p>
+<div style="float: right; font-size: 0.9em;"><a href="#schema-structure-interactive">↑ Back to diagram</a></div></div>
+<p>A description of a file or set of files.</p>
+<blockquote>
+<div><dl>
+<dt><strong>name</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:string</span></code></span></dt><dd><p>The name given to the dataset</p>
+</dd>
+<dt><strong>location</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:string</span></code></span></dt><dd><p>A directory path or URL indicating the location where the dataset is stored</p>
+</dd>
+<dt><strong>format</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:string</span></code> (optional)</span></dt><dd><p>A string (can be a MIME type) indicating the format of the dataset (e.g. TIFF, DICOM, Excel).</p>
+</dd>
+<dt><strong>description</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:string</span></code> (optional)</span></dt><dd><p>A description of the dataset (where each occurance can be thought of as a separate paragraph).</p>
+</dd>
+<dt><strong>preview</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:string</span></code> (optional)</span></dt><dd><p>URL or string path to a preview rendering (thumbnail) of the data in the dataset.</p>
+</dd>
+<dt><strong>meta</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">nx:Parameter</span></code> (optional)</span></dt><dd><p>An arbitrary metadatum with a name and a value unique to this dataset</p>
+</dd>
+</dl>
+</div></blockquote>
+<p><strong>Attributes:</strong></p>
+<blockquote>
+<div><dl>
+<dt><strong>type</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">nx:DatasetType</span></code></span></dt><dd><p>A label indicating the type of this dataset (taken from a controlled list).</p>
+</dd>
+<dt><strong>role</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">nx:DatasetRole</span></code></span></dt><dd><p>A label indicating the experimental role of this dataset (taken from a controlled list).</p>
+</dd>
+</dl>
+</div></blockquote>
+<div class="type-header docutils container" id="xsd-type-parameter">
+<p><strong>Type: Parameter</strong></p>
+<div style="float: right; font-size: 0.9em;"><a href="#schema-structure-interactive">↑ Back to diagram</a></div></div>
+<p>A piece of arbitrary metadata featuring a name and a value, unique to a dataset within an Acqusition Activity.</p>
+<p><strong>Attributes:</strong></p>
+<blockquote>
+<div><dl>
+<dt><strong>name</strong></dt><dd><p>The name of the parameter</p>
+</dd>
+<dt><strong>unit</strong></dt><dd><p>A physical unit associated with the value of this parameter</p>
+</dd>
+<dt><strong>warning</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">boolean</span></code></span></dt><dd><p>A marker to indicate that this parameter may not be reliable (an instrument may have not written it correctly, or it is commonly not filled out properly, etc.)</p>
+</dd>
+</dl>
+</div></blockquote>
+<div class="type-header docutils container" id="xsd-type-instrument">
+<p><strong>Type: Instrument</strong></p>
+<div style="float: right; font-size: 0.9em;"><a href="#schema-structure-interactive">↑ Back to diagram</a></div></div>
+<p>The identification of an instrument in the facility.</p>
+<p><strong>Attributes:</strong></p>
+<blockquote>
+<div><dl>
+<dt><strong>pid</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:token</span></code></span></dt><dd><p>An unique identifier that identifies the instrument within facility.</p>
+</dd>
+<dt><strong>ref</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:anyURI</span></code></span></dt><dd><p>An (optional) link to this instrument in another database</p>
+</dd>
+</dl>
+</div></blockquote>
+<div class="type-header docutils container" id="xsd-type-periodictableelementtype">
+<p><strong>Type: PeriodicTableElementType</strong></p>
+<div style="float: right; font-size: 0.9em;"><a href="#schema-structure-interactive">↑ Back to diagram</a></div></div>
+<p>Allowed periodic table element values. Includes abbreviations from the periodic table up to element number 118. This list was adapted from the Chemical Markup Language schema (<a class="reference external" href="http://www.xml-cml.org/schema/schema3/">http://www.xml-cml.org/schema/schema3/</a>)</p>
+<blockquote>
+<div><dl class="simple">
+<dt><strong>H</strong> (optional)</dt><dd><p>Hydrogen; Atomic number 1</p>
+</dd>
+<dt><strong>He</strong> (optional)</dt><dd><p>Helium; Atomic number 2</p>
+</dd>
+<dt><strong>Li</strong> (optional)</dt><dd><p>Lithium; Atomic number 3</p>
+</dd>
+<dt><strong>Be</strong> (optional)</dt><dd><p>Beryllium; Atomic number 4</p>
+</dd>
+<dt><strong>B</strong> (optional)</dt><dd><p>Boron; Atomic number 5</p>
+</dd>
+<dt><strong>C</strong> (optional)</dt><dd><p>Carbon; Atomic number 6</p>
+</dd>
+<dt><strong>N</strong> (optional)</dt><dd><p>Nitrogen; Atomic number 7</p>
+</dd>
+<dt><strong>O</strong> (optional)</dt><dd><p>Oxygen; Atomic number 8</p>
+</dd>
+<dt><strong>F</strong> (optional)</dt><dd><p>Fluorine; Atomic number 9</p>
+</dd>
+<dt><strong>Ne</strong> (optional)</dt><dd><p>Neon; Atomic number 10</p>
+</dd>
+<dt><strong>Na</strong> (optional)</dt><dd><p>Sodium; Atomic number 11</p>
+</dd>
+<dt><strong>Mg</strong> (optional)</dt><dd><p>Magnesium; Atomic number 12</p>
+</dd>
+<dt><strong>Al</strong> (optional)</dt><dd><p>Aluminum; Atomic number 13</p>
+</dd>
+<dt><strong>Si</strong> (optional)</dt><dd><p>Silicon; Atomic number 14</p>
+</dd>
+<dt><strong>P</strong> (optional)</dt><dd><p>Phosphorus; Atomic number 15</p>
+</dd>
+<dt><strong>S</strong> (optional)</dt><dd><p>Sulfur; Atomic number 16</p>
+</dd>
+<dt><strong>Cl</strong> (optional)</dt><dd><p>Chlorine; Atomic number 17</p>
+</dd>
+<dt><strong>Ar</strong> (optional)</dt><dd><p>Argon; Atomic number 18</p>
+</dd>
+<dt><strong>K</strong> (optional)</dt><dd><p>Potassium; Atomic number 19</p>
+</dd>
+<dt><strong>Ca</strong> (optional)</dt><dd><p>Calcium; Atomic number 20</p>
+</dd>
+<dt><strong>Sc</strong> (optional)</dt><dd><p>Scandium; Atomic number 21</p>
+</dd>
+<dt><strong>Ti</strong> (optional)</dt><dd><p>Titanium; Atomic number 22</p>
+</dd>
+<dt><strong>V</strong> (optional)</dt><dd><p>Vanadium; Atomic number 23</p>
+</dd>
+<dt><strong>Cr</strong> (optional)</dt><dd><p>Chromium; Atomic number 24</p>
+</dd>
+<dt><strong>Mn</strong> (optional)</dt><dd><p>Manganese; Atomic number 25</p>
+</dd>
+<dt><strong>Fe</strong> (optional)</dt><dd><p>Iron; Atomic number 26</p>
+</dd>
+<dt><strong>Co</strong> (optional)</dt><dd><p>Cobalt; Atomic number 27</p>
+</dd>
+<dt><strong>Ni</strong> (optional)</dt><dd><p>Nickel; Atomic number 28</p>
+</dd>
+<dt><strong>Cu</strong> (optional)</dt><dd><p>Copper; Atomic number 29</p>
+</dd>
+<dt><strong>Zn</strong> (optional)</dt><dd><p>Zinc; Atomic number 30</p>
+</dd>
+<dt><strong>Ga</strong> (optional)</dt><dd><p>Gallium; Atomic number 31</p>
+</dd>
+<dt><strong>Ge</strong> (optional)</dt><dd><p>Germanium; Atomic number 32</p>
+</dd>
+<dt><strong>As</strong> (optional)</dt><dd><p>Arsenic; Atomic number 33</p>
+</dd>
+<dt><strong>Se</strong> (optional)</dt><dd><p>Selenium; Atomic number 34</p>
+</dd>
+<dt><strong>Br</strong> (optional)</dt><dd><p>Bromine; Atomic number 35</p>
+</dd>
+<dt><strong>Kr</strong> (optional)</dt><dd><p>Krypton; Atomic number 36</p>
+</dd>
+<dt><strong>Rb</strong> (optional)</dt><dd><p>Rubidium; Atomic number 37</p>
+</dd>
+<dt><strong>Sr</strong> (optional)</dt><dd><p>Strontium; Atomic number 38</p>
+</dd>
+<dt><strong>Y</strong> (optional)</dt><dd><p>Yttrium; Atomic number 39</p>
+</dd>
+<dt><strong>Zr</strong> (optional)</dt><dd><p>Zirconium; Atomic number 40</p>
+</dd>
+<dt><strong>Nb</strong> (optional)</dt><dd><p>Niobium; Atomic number 41</p>
+</dd>
+<dt><strong>Mo</strong> (optional)</dt><dd><p>Molybdenum; Atomic number 42</p>
+</dd>
+<dt><strong>Tc</strong> (optional)</dt><dd><p>Technetium; Atomic number 43</p>
+</dd>
+<dt><strong>Ru</strong> (optional)</dt><dd><p>Ruthenium; Atomic number 44</p>
+</dd>
+<dt><strong>Rh</strong> (optional)</dt><dd><p>Rhodium; Atomic number 45</p>
+</dd>
+<dt><strong>Pd</strong> (optional)</dt><dd><p>Palladium; Atomic number 46</p>
+</dd>
+<dt><strong>Ag</strong> (optional)</dt><dd><p>Silver; Atomic number 47</p>
+</dd>
+<dt><strong>Cd</strong> (optional)</dt><dd><p>Cadmium; Atomic number 48</p>
+</dd>
+<dt><strong>In</strong> (optional)</dt><dd><p>Indium; Atomic number 49</p>
+</dd>
+<dt><strong>Sn</strong> (optional)</dt><dd><p>Tin; Atomic number 50</p>
+</dd>
+<dt><strong>Sb</strong> (optional)</dt><dd><p>Antimony; Atomic number 51</p>
+</dd>
+<dt><strong>Te</strong> (optional)</dt><dd><p>Tellurium; Atomic number 52</p>
+</dd>
+<dt><strong>I</strong> (optional)</dt><dd><p>Iodine; Atomic number 53</p>
+</dd>
+<dt><strong>Xe</strong> (optional)</dt><dd><p>Xenon; Atomic number 54</p>
+</dd>
+<dt><strong>Cs</strong> (optional)</dt><dd><p>Cesium; Atomic number 55</p>
+</dd>
+<dt><strong>Ba</strong> (optional)</dt><dd><p>Barium; Atomic number 56</p>
+</dd>
+<dt><strong>La</strong> (optional)</dt><dd><p>Lanthanum; Atomic number 57</p>
+</dd>
+<dt><strong>Ce</strong> (optional)</dt><dd><p>Cerium; Atomic number 58</p>
+</dd>
+<dt><strong>Pr</strong> (optional)</dt><dd><p>Praseodymium; Atomic number 59</p>
+</dd>
+<dt><strong>Nd</strong> (optional)</dt><dd><p>Neodymium; Atomic number 60</p>
+</dd>
+<dt><strong>Pm</strong> (optional)</dt><dd><p>Promethium; Atomic number 61</p>
+</dd>
+<dt><strong>Sm</strong> (optional)</dt><dd><p>Samarium; Atomic number 62</p>
+</dd>
+<dt><strong>Eu</strong> (optional)</dt><dd><p>Europium; Atomic number 63</p>
+</dd>
+<dt><strong>Gd</strong> (optional)</dt><dd><p>Gadolinium; Atomic number 64</p>
+</dd>
+<dt><strong>Tb</strong> (optional)</dt><dd><p>Terbium; Atomic number 65</p>
+</dd>
+<dt><strong>Dy</strong> (optional)</dt><dd><p>Dysprosium; Atomic number 66</p>
+</dd>
+<dt><strong>Ho</strong> (optional)</dt><dd><p>Holmium; Atomic number 67</p>
+</dd>
+<dt><strong>Er</strong> (optional)</dt><dd><p>Erbium; Atomic number 68</p>
+</dd>
+<dt><strong>Tm</strong> (optional)</dt><dd><p>Thulium; Atomic number 69</p>
+</dd>
+<dt><strong>Yb</strong> (optional)</dt><dd><p>Ytterbium; Atomic number 70</p>
+</dd>
+<dt><strong>Lu</strong> (optional)</dt><dd><p>Lutetium; Atomic number 71</p>
+</dd>
+<dt><strong>Hf</strong> (optional)</dt><dd><p>Hafnium; Atomic number 72</p>
+</dd>
+<dt><strong>Ta</strong> (optional)</dt><dd><p>Tantalum; Atomic number 73</p>
+</dd>
+<dt><strong>W</strong> (optional)</dt><dd><p>Tungsten; Atomic number 74</p>
+</dd>
+<dt><strong>Re</strong> (optional)</dt><dd><p>Rhenium; Atomic number 75</p>
+</dd>
+<dt><strong>Os</strong> (optional)</dt><dd><p>Osmium; Atomic number 76</p>
+</dd>
+<dt><strong>Ir</strong> (optional)</dt><dd><p>Iridium; Atomic number 77</p>
+</dd>
+<dt><strong>Pt</strong> (optional)</dt><dd><p>Platinum; Atomic number 78</p>
+</dd>
+<dt><strong>Au</strong> (optional)</dt><dd><p>Gold; Atomic number 79</p>
+</dd>
+<dt><strong>Hg</strong> (optional)</dt><dd><p>Mercury; Atomic number 80</p>
+</dd>
+<dt><strong>Tl</strong> (optional)</dt><dd><p>Thallium; Atomic number 81</p>
+</dd>
+<dt><strong>Pb</strong> (optional)</dt><dd><p>Lead; Atomic number 82</p>
+</dd>
+<dt><strong>Bi</strong> (optional)</dt><dd><p>Bismuth; Atomic number 83</p>
+</dd>
+<dt><strong>Po</strong> (optional)</dt><dd><p>Polonium; Atomic number 84</p>
+</dd>
+<dt><strong>At</strong> (optional)</dt><dd><p>Astatine; Atomic number 85</p>
+</dd>
+<dt><strong>Rn</strong> (optional)</dt><dd><p>Radon; Atomic number 86</p>
+</dd>
+<dt><strong>Fr</strong> (optional)</dt><dd><p>Francium; Atomic number 87</p>
+</dd>
+<dt><strong>Ra</strong> (optional)</dt><dd><p>Radium; Atomic number 88</p>
+</dd>
+<dt><strong>Ac</strong> (optional)</dt><dd><p>Actinium; Atomic number 89</p>
+</dd>
+<dt><strong>Th</strong> (optional)</dt><dd><p>Thorium; Atomic number 90</p>
+</dd>
+<dt><strong>Pa</strong> (optional)</dt><dd><p>Protactinium; Atomic number 91</p>
+</dd>
+<dt><strong>U</strong> (optional)</dt><dd><p>Uranium; Atomic number 92</p>
+</dd>
+<dt><strong>Np</strong> (optional)</dt><dd><p>Neptunium; Atomic number 93</p>
+</dd>
+<dt><strong>Pu</strong> (optional)</dt><dd><p>Plutonium; Atomic number 94</p>
+</dd>
+<dt><strong>Am</strong> (optional)</dt><dd><p>Americium; Atomic number 95</p>
+</dd>
+<dt><strong>Cm</strong> (optional)</dt><dd><p>Curium; Atomic number 96</p>
+</dd>
+<dt><strong>Bk</strong> (optional)</dt><dd><p>Berkelium; Atomic number 97</p>
+</dd>
+<dt><strong>Cf</strong> (optional)</dt><dd><p>Californium; Atomic number 98</p>
+</dd>
+<dt><strong>Es</strong> (optional)</dt><dd><p>Einsteinium; Atomic number 99</p>
+</dd>
+<dt><strong>Fm</strong> (optional)</dt><dd><p>Fermium; Atomic number 100</p>
+</dd>
+<dt><strong>Md</strong> (optional)</dt><dd><p>Mendelevium; Atomic number 101</p>
+</dd>
+<dt><strong>No</strong> (optional)</dt><dd><p>Nobelium; Atomic number 102</p>
+</dd>
+<dt><strong>Lr</strong> (optional)</dt><dd><p>Lawrencium; Atomic number 103</p>
+</dd>
+<dt><strong>Rf</strong> (optional)</dt><dd><p>Rutherfordium; Atomic number 104</p>
+</dd>
+<dt><strong>Db</strong> (optional)</dt><dd><p>Dubnium; Atomic number 105</p>
+</dd>
+<dt><strong>Sg</strong> (optional)</dt><dd><p>Seaborgium; Atomic number 106</p>
+</dd>
+<dt><strong>Bh</strong> (optional)</dt><dd><p>Bohrium; Atomic number 107</p>
+</dd>
+<dt><strong>Hs</strong> (optional)</dt><dd><p>Hassium; Atomic number 108</p>
+</dd>
+<dt><strong>Mt</strong> (optional)</dt><dd><p>Meitnerium; Atomic number 109</p>
+</dd>
+<dt><strong>Ds</strong> (optional)</dt><dd><p>Darmstadtium; Atomic number 110</p>
+</dd>
+<dt><strong>Rg</strong> (optional)</dt><dd><p>Roentgenium; Atomic number 111</p>
+</dd>
+<dt><strong>Cn</strong> (optional)</dt><dd><p>Copernicium; Atomic number 112</p>
+</dd>
+<dt><strong>Nh</strong> (optional)</dt><dd><p>Nihonium; Atomic number 113</p>
+</dd>
+<dt><strong>Fl</strong> (optional)</dt><dd><p>Flerovium; Atomic number 114</p>
+</dd>
+<dt><strong>Mc</strong> (optional)</dt><dd><p>Moscovium; Atomic number 115</p>
+</dd>
+<dt><strong>Lv</strong> (optional)</dt><dd><p>Livermorium; Atomic number 116</p>
+</dd>
+<dt><strong>Ts</strong> (optional)</dt><dd><p>Tennessine; Atomic number 117</p>
+</dd>
+<dt><strong>Og</strong> (optional)</dt><dd><p>Oganesson; Atomic number 118</p>
+</dd>
+</dl>
+</div></blockquote>
+<p class="rubric">Simple Types</p>
+<div class="type-header docutils container" id="xsd-type-instrumentname">
+<p><strong>Type: InstrumentName</strong> (simple type)</p>
+<div style="float: right; font-size: 0.9em;"><a href="#schema-structure-interactive">↑ Back to diagram</a></div></div>
+<p>Controlled labels that identify available instruments in the facility (matching names in the reservation calendar resource).</p>
+<blockquote>
+<div><p><em>Base type:</em> <code class="docutils literal notranslate"><span class="pre">xs:token</span></code></p>
+<p><em>Allowed values:</em></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">FEI</span> <span class="pre">Titan</span> <span class="pre">TEM</span></code> - The FEI Titan transmission electron microscope in Bldg 1/Room A</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">FEI</span> <span class="pre">Titan</span> <span class="pre">STEM</span></code> - The FEI Titan scanning transmission electron microscope in Bldg 1/Room A</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">FEI</span> <span class="pre">Helios</span></code> - The FEI Helios dual beam FIB/SEM in Bldg 1/Room A</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">FEI</span> <span class="pre">Quanta200</span></code> - The FEI Quanta 200 environmental scanning electron microscope in Bldg 1/Room A</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Hitachi</span> <span class="pre">S4700</span></code> - The Hitachi S4700 scanning electron microscope in Bldg 1/Room A</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Hitachi</span> <span class="pre">S5500</span></code> - The Hitachi S5500 scanning electron microscope in Bldg 1/Room A</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">JEOL</span> <span class="pre">JEM3010</span></code> - The JEOL JEM3010 transmission electron microscope in Bldg 1/Room A</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">JEOL</span> <span class="pre">JSM7100</span></code> - The JEOL JSM7100 scanning electron microscope in Bldg 1/Room A</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Philips</span> <span class="pre">EM400</span></code> - The Phillips EM400 transmission electron microscope in Bldg 1/Room A</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Philips</span> <span class="pre">CM30</span></code> - The Phillips CM30 transmission electron microscope</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Test</span> <span class="pre">Tool</span></code> - A test tool that does not exist for testing</p></li>
+</ul>
+</div></blockquote>
+<div class="type-header docutils container" id="xsd-type-datasettype">
+<p><strong>Type: DatasetType</strong> (simple type)</p>
+<div style="float: right; font-size: 0.9em;"><a href="#schema-structure-interactive">↑ Back to diagram</a></div></div>
+<p>Controlled labels that identify a functional type data contained in a dataset.</p>
+<blockquote>
+<div><p><em>Base type:</em> <code class="docutils literal notranslate"><span class="pre">xs:token</span></code></p>
+<p><em>Allowed values:</em></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Image</span></code> - A 2-D array of data where each value is typically an intensity measurement as function of regularly spaced position</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Spectrum</span></code> - A 1-D array of data where each value is typically an intensity measurement as a function of frequency or energy</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SpectrumImage</span></code> - A 3-D array of data where each value is typically an intensity measurement as a function of regularly space position along two axes and of frequency or energy along the third.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Diffraction</span></code> - Data that measures a (usually electron) diffraction pattern</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Notes</span></code> - Arbitrary textual data that is typically manually created by the Experimenter.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Misc</span></code> - A dataset that does not qualify as of any of the other defined types.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Unknown</span></code> - A dataset with an unknown type (meaning its metadata could not be extracted with current methods).</p></li>
+</ul>
+</div></blockquote>
+<div class="type-header docutils container" id="xsd-type-datasetrole">
+<p><strong>Type: DatasetRole</strong> (simple type)</p>
+<div style="float: right; font-size: 0.9em;"><a href="#schema-structure-interactive">↑ Back to diagram</a></div></div>
+<p>Controlled labels that identify the functional role of a dataset</p>
+<blockquote>
+<div><p><em>Base type:</em> <code class="docutils literal notranslate"><span class="pre">xs:token</span></code></p>
+<p><em>Allowed values:</em></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Experimental</span></code> - “Normal” data collected during typical operation of an instrument for experimental purposes</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">MasterCalibration</span></code> - Reference data collected for the purpose of instrument calibration during instrument service events or by allowed super users</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">UserCalibration</span></code> - Data collected alongside “Experimental” Datasets by regular users for calibration purposes between service events or for a specific experiment</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Derived</span></code> - Data that is not collected form an instrument, but rather derived from raw and/or calibration data as the result of post-acquisition analysis processes</p></li>
+</ul>
+</div></blockquote>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="database.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">NexusLIMS database</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="reference.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Reference</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#nexus-experiment-schema">Nexus Experiment Schema</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/schema_documentation.md.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2025, datasophos, LLC.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
