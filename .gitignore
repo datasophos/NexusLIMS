@@ -46,9 +46,9 @@ Thumbs.db
 .env.local
 
 # Source code directories (should not be on gh-pages)
-nexusLIMS/
-tests/
-docs/
+/nexusLIMS/
+/tests/
+/docs/
 /scripts/
 
 # Build artifacts that might be checked out locally
