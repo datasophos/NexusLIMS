@@ -4,6 +4,8 @@
 
 Instrument profiles provide a powerful mechanism for customizing metadata extraction behavior for specific microscopes without modifying core extractor code. This system is critical for NexusLIMS extensibility, as each installation has unique instruments with specific metadata quirks.
 
+NexusLIMS supports both **built-in profiles** (shipped with the codebase) and **local profiles** (stored outside the codebase). Local profiles are ideal for site-specific instruments, allowing you to maintain custom configurations independently of NexusLIMS updates.
+
 ## What are Instrument Profiles?
 
 An instrument profile is a collection of:
@@ -32,9 +34,36 @@ Use instrument profiles when you need to:
 
 ## Creating an Instrument Profile
 
-### Step 1: Create a Profile Module
+You have two options for creating instrument profiles:
 
-Create a new Python file in `nexusLIMS/extractors/plugins/profiles/`:
+1. **Built-in profiles**: Add to the NexusLIMS codebase at `nexusLIMS/extractors/plugins/profiles/`
+2. **Local profiles**: Create in a separate directory outside the codebase (recommended for site-specific instruments)
+
+### Local Profiles (Recommended for Site-Specific Instruments)
+
+Local profiles are kept separate from the NexusLIMS codebase, making it easy to maintain site-specific customizations without worrying about git conflicts or merge issues when updating NexusLIMS.
+
+#### Step 1a: Configure Local Profiles Directory
+
+Add to your `.env` file:
+
+```bash
+NX_LOCAL_PROFILES_PATH=/opt/nexuslims/local_profiles
+```
+
+Create the directory:
+
+```bash
+mkdir -p /opt/nexuslims/local_profiles
+```
+
+#### Step 1b: Create a Local Profile Module
+
+Create a Python file in your local profiles directory (e.g., `/opt/nexuslims/local_profiles/my_instrument.py`).
+
+**TIP:** See [local_profile_example.py](examples/local_profile_example.py) for a complete, well-documented example you can copy and customize.
+
+Basic example:
 
 ```python
 """Instrument profile for My Custom Microscope."""
@@ -97,6 +126,14 @@ get_profile_registry().register(my_instrument_profile)
 
 logger.debug("Registered My Custom Microscope instrument profile")
 ```
+
+**Note:** Local profiles work identically to built-in profiles - they use the same API and registration mechanism. The only difference is where the files are stored.
+
+### Built-in Profiles (For Contributing to NexusLIMS)
+
+If you're developing a profile that would benefit the broader NexusLIMS community (e.g., for a common commercial instrument), consider contributing it as a built-in profile.
+
+Create a new Python file in `nexusLIMS/extractors/plugins/profiles/` following the same structure as shown above for local profiles.
 
 ### Step 2: Match Instrument ID
 
@@ -204,6 +241,15 @@ profile = InstrumentProfile(
 This is useful when multiple extractors support the same extension but one works better for your instrument.
 
 ## Examples
+
+**📄 Complete Example File:** For a comprehensive, production-ready example, see [local_profile_example.py](examples/local_profile_example.py). This file includes:
+- Multiple parser functions with detailed comments
+- Facility metadata injection
+- Warning generation for unreliable fields
+- Filename-based acquisition mode detection
+- Best practices and common patterns
+
+The examples below show specific use cases in isolation.
 
 ### Example 1: Simple Warning Profile
 
@@ -355,11 +401,22 @@ NexusLIMS includes profiles for common instruments:
 **Problem:** Your profile doesn't appear in `get_all_profiles()`
 
 **Solutions:**
-1. Check filename - must be a `.py` file in `nexusLIMS/extractors/plugins/profiles/`
-2. Verify registration call at bottom of module:
+
+For **local profiles**:
+1. Verify `NX_LOCAL_PROFILES_PATH` is set correctly in `.env`
+2. Check the directory exists and is readable
+3. Ensure profile file ends with `.py` and doesn't start with `_`
+4. Look for error messages in logs during profile discovery
+5. Verify registration call at bottom of module:
    ```python
    get_profile_registry().register(my_profile)
    ```
+6. Check for import errors in profile module (e.g., missing dependencies)
+7. Ensure `instrument_id` exactly matches database instrument name
+
+For **built-in profiles**:
+1. Check filename - must be a `.py` file in `nexusLIMS/extractors/plugins/profiles/`
+2. Verify registration call at bottom of module
 3. Check for import errors in profile module
 4. Ensure `instrument_id` exactly matches database instrument name
 

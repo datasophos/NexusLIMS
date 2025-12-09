@@ -9,10 +9,17 @@ extraction customization.
 # ruff: noqa: D102
 
 import logging
+import os
+from pathlib import Path
+from unittest.mock import patch
 
 import pytest
 
 from nexusLIMS.extractors.base import InstrumentProfile
+from nexusLIMS.extractors.plugins.profiles import (
+    _load_profiles_from_directory,
+    register_all_profiles,
+)
 from nexusLIMS.extractors.profiles import (
     InstrumentProfileRegistry,
     get_profile_registry,
@@ -431,3 +438,246 @@ class TestProfileIntegration:
             assert metadata["facility"] == "Test Facility"
         finally:
             registry.clear()
+
+
+class TestLocalProfileLoading:
+    """Test local profile loading from external directories."""
+
+    def test_load_profiles_from_directory_built_in(self, tmp_path, registry):
+        """Load built-in profiles using package-based import."""
+        # This test verifies that the existing built-in profile loading still works
+        # We use the actual built-in profiles directory
+        built_in_dir = Path(__file__).parent.parent.parent / "nexusLIMS" / "extractors" / "plugins" / "profiles"
+
+        # Load should succeed without errors
+        count = _load_profiles_from_directory(
+            built_in_dir,
+            module_prefix="nexusLIMS.extractors.plugins.profiles"
+        )
+
+        # Should load at least the 3 existing profiles
+        assert count >= 3
+
+    def test_load_profiles_from_directory_local(self, tmp_path, registry):
+        """Load local profiles from standalone Python files."""
+        try:
+            # Create a local profile file
+            profile_file = tmp_path / "test_local_profile.py"
+            profile_file.write_text("""
+from nexusLIMS.extractors.base import InstrumentProfile
+from nexusLIMS.extractors.profiles import get_profile_registry
+
+test_profile = InstrumentProfile(
+    instrument_id="Test-Local-Instrument",
+    static_metadata={"test": "local"}
+)
+
+get_profile_registry().register(test_profile)
+""")
+
+            # Load profiles from temp directory
+            count = _load_profiles_from_directory(tmp_path, module_prefix=None)
+
+            assert count == 1
+
+            # Verify profile was registered
+            all_profiles = registry.get_all_profiles()
+            assert "Test-Local-Instrument" in all_profiles
+            assert all_profiles["Test-Local-Instrument"].static_metadata["test"] == "local"
+        finally:
+            registry.clear()
+
+    def test_load_profiles_skips_private_modules(self, tmp_path, registry):
+        """Local profile loader skips files starting with underscore."""
+        try:
+            # Create private module (should be skipped)
+            private_file = tmp_path / "_private.py"
+            private_file.write_text("""
+from nexusLIMS.extractors.base import InstrumentProfile
+from nexusLIMS.extractors.profiles import get_profile_registry
+
+profile = InstrumentProfile(instrument_id="Should-Not-Load")
+get_profile_registry().register(profile)
+""")
+
+            # Create public module (should load)
+            public_file = tmp_path / "public.py"
+            public_file.write_text("""
+from nexusLIMS.extractors.base import InstrumentProfile
+from nexusLIMS.extractors.profiles import get_profile_registry
+
+profile = InstrumentProfile(instrument_id="Should-Load")
+get_profile_registry().register(profile)
+""")
+
+            count = _load_profiles_from_directory(tmp_path, module_prefix=None)
+
+            # Should only load 1 (the public module)
+            assert count == 1
+
+            all_profiles = registry.get_all_profiles()
+            assert "Should-Load" in all_profiles
+            assert "Should-Not-Load" not in all_profiles
+        finally:
+            registry.clear()
+
+    def test_load_profiles_handles_import_errors(self, tmp_path, registry, caplog):
+        """Local profile loader handles and logs import errors gracefully."""
+        try:
+            # Create a profile with import error
+            bad_file = tmp_path / "bad_profile.py"
+            bad_file.write_text("""
+import nonexistent_module  # This will fail
+""")
+
+            # Should not raise, but log warning
+            caplog.clear()
+            count = _load_profiles_from_directory(tmp_path, module_prefix=None)
+
+            assert count == 0
+            assert "Failed to load local profile" in caplog.text
+            assert "bad_profile.py" in caplog.text
+        finally:
+            registry.clear()
+
+    def test_register_all_profiles_with_local_path_set(self, tmp_path, registry):
+        """register_all_profiles() loads from NX_LOCAL_PROFILES_PATH when set."""
+        try:
+            # Create local profile
+            local_profile = tmp_path / "my_custom_instrument.py"
+            local_profile.write_text("""
+from nexusLIMS.extractors.base import InstrumentProfile
+from nexusLIMS.extractors.profiles import get_profile_registry
+
+profile = InstrumentProfile(
+    instrument_id="Custom-Instrument-12345",
+    static_metadata={"site": "My Lab"}
+)
+
+get_profile_registry().register(profile)
+""")
+
+            # Set environment variable
+            with patch.dict(os.environ, {"NX_LOCAL_PROFILES_PATH": str(tmp_path)}):
+                register_all_profiles()
+
+            # Verify local profile was loaded
+            all_profiles = registry.get_all_profiles()
+            assert "Custom-Instrument-12345" in all_profiles
+        finally:
+            registry.clear()
+
+    def test_register_all_profiles_without_local_path(self):
+        """register_all_profiles() works without NX_LOCAL_PROFILES_PATH set."""
+        # This test verifies that register_all_profiles() runs without error
+        # when NX_LOCAL_PROFILES_PATH is not set. Since Python caches module imports,
+        # the built-in profile modules have already been imported and their
+        # registration code has already run, so we can't test the actual
+        # registration here. Instead, we just verify no errors occur and
+        # that built-in profiles exist in the registry (from earlier imports).
+        registry = get_profile_registry()
+
+        # Get current profiles count before
+        profiles_before = len(registry.get_all_profiles())
+
+        try:
+            # Ensure variable is not set
+            with patch.dict(os.environ, {}, clear=True):
+                # Clear any existing env vars that might interfere
+                if "NX_LOCAL_PROFILES_PATH" in os.environ:
+                    del os.environ["NX_LOCAL_PROFILES_PATH"]
+
+                # Should not raise
+                register_all_profiles()
+
+                # Profile count should be unchanged (modules already imported)
+                all_profiles = registry.get_all_profiles()
+                assert len(all_profiles) == profiles_before
+        finally:
+            pass  # No cleanup needed - didn't modify registry
+
+    def test_register_all_profiles_with_invalid_path(self, registry, caplog):
+        """register_all_profiles() logs warning for nonexistent path."""
+        try:
+            fake_path = "/nonexistent/path/to/profiles"
+
+            caplog.clear()
+            with patch.dict(os.environ, {"NX_LOCAL_PROFILES_PATH": fake_path}):
+                register_all_profiles()
+
+            # Should log warning
+            assert "NX_LOCAL_PROFILES_PATH set but directory not found" in caplog.text
+            assert fake_path in caplog.text
+        finally:
+            registry.clear()
+
+    def test_local_profile_with_parsers(self, tmp_path, registry):
+        """Local profiles can include custom parser functions."""
+        try:
+            # Create local profile with parser
+            profile_file = tmp_path / "parser_test.py"
+            profile_file.write_text("""
+from nexusLIMS.extractors.base import InstrumentProfile
+from nexusLIMS.extractors.profiles import get_profile_registry
+
+def custom_parser(metadata, context):
+    metadata["custom_field"] = "custom_value"
+    return metadata
+
+profile = InstrumentProfile(
+    instrument_id="Parser-Test-Instrument",
+    parsers={"custom": custom_parser}
+)
+
+get_profile_registry().register(profile)
+""")
+
+            count = _load_profiles_from_directory(tmp_path, module_prefix=None)
+            assert count == 1
+
+            # Verify parser is callable
+            all_profiles = registry.get_all_profiles()
+            profile = all_profiles["Parser-Test-Instrument"]
+            assert "custom" in profile.parsers
+
+            # Test parser execution
+            metadata = {}
+            result = profile.parsers["custom"](metadata, None)
+            assert result["custom_field"] == "custom_value"
+        finally:
+            registry.clear()
+
+    def test_local_and_builtin_profiles_coexist(self, tmp_path, registry):
+        """Local profiles can be loaded alongside built-in profiles."""
+        try:
+            # Get existing profile count
+            existing_count = len(registry.get_all_profiles())
+
+            # Create local profile
+            local_profile = tmp_path / "local_test.py"
+            local_profile.write_text("""
+from nexusLIMS.extractors.base import InstrumentProfile
+from nexusLIMS.extractors.profiles import get_profile_registry
+
+profile = InstrumentProfile(instrument_id="Local-Test-Instrument")
+get_profile_registry().register(profile)
+""")
+
+            with patch.dict(os.environ, {"NX_LOCAL_PROFILES_PATH": str(tmp_path)}):
+                register_all_profiles()
+
+                all_profiles = registry.get_all_profiles()
+
+                # Should have local profile
+                assert "Local-Test-Instrument" in all_profiles
+                # Should have existing profiles plus new local profile
+                assert len(all_profiles) == existing_count + 1
+        finally:
+            # Clean up only the test profile we added
+            all_profiles = registry.get_all_profiles()
+            if "Local-Test-Instrument" in all_profiles:
+                # Remove just the test profile by clearing and re-registering others
+                all_profiles.pop("Local-Test-Instrument")
+                registry.clear()
+                for profile in all_profiles.values():
+                    registry.register(profile)
