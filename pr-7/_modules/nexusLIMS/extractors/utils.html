@@ -1,0 +1,929 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>nexusLIMS.extractors.utils &#8212; NexusLIMS 2.0.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=51baea2f" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../../_static/documentation_options.js?v=51b770b3"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/nexusLIMS/extractors/utils';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.0.0';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/pr-7/_modules/nexusLIMS/extractors/utils.html" />
+    <link rel="icon" href="../../../_static/nexusLIMS_bare_logo.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="2.0.0" />
+    <meta name="docbuild:last-update" content="Dec, 09, 2025"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.0.0 documentation - Home"/>
+    <img src="../../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.0.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../getting_started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../migration.html">
+    Migration Guide: v1 to v2
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../dev_guide.html">
+    Developer Guide
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../reference.html">
+    Reference
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datasophos/NexusLIMS" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://datasophos.co" title="Datasophos" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-globe fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Datasophos</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../getting_started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../migration.html">
+    Migration Guide: v1 to v2
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../dev_guide.html">
+    Developer Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../reference.html">
+    Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datasophos/NexusLIMS" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://datasophos.co" title="Datasophos" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-globe fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Datasophos</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../../nexusLIMS.html" class="nav-link">nexusLIMS</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../extractors.html" class="nav-link">nexusLIMS.extractors</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">nexusLIMS.extractors.utils</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for nexusLIMS.extractors.utils</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Methods (primarily intended to be private) that are used by the other extractors.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tarfile</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">UTC</span><span class="p">,</span> <span class="n">datetime</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">decimal</span><span class="w"> </span><span class="kn">import</span> <span class="n">Decimal</span><span class="p">,</span> <span class="n">InvalidOperation</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">rsciio.digitalmicrograph._api</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>  <span class="c1"># pylint: disable=import-error,no-name-in-module</span>
+    <span class="n">DigitalMicrographReader</span><span class="p">,</span>
+    <span class="n">ImageObject</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.instruments</span><span class="w"> </span><span class="kn">import</span> <span class="n">Instrument</span><span class="p">,</span> <span class="n">get_instr_from_filepath</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_nested_dict_value</span><span class="p">,</span> <span class="n">try_getting_dict_value</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="_coerce_to_list">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.utils.html#nexusLIMS.extractors.utils._coerce_to_list">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">_coerce_to_list</span><span class="p">(</span><span class="n">meta_key</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">meta_key</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">meta_key</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">meta_key</span></div>
+
+
+
+<div class="viewcode-block" id="_get_mtime_iso">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.utils.html#nexusLIMS.extractors.utils._get_mtime_iso">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_mtime_iso</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">instrument</span><span class="p">:</span> <span class="n">Instrument</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span>
+        <span class="n">filename</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_mtime</span><span class="p">,</span>
+        <span class="n">tz</span><span class="o">=</span><span class="n">instrument</span><span class="o">.</span><span class="n">timezone</span> <span class="k">if</span> <span class="n">instrument</span> <span class="k">else</span> <span class="n">UTC</span><span class="p">,</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="_set_instr_name_and_time">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.utils.html#nexusLIMS.extractors.utils._set_instr_name_and_time">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">_set_instr_name_and_time</span><span class="p">(</span><span class="n">mdict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
+    <span class="n">instr</span> <span class="o">=</span> <span class="n">get_instr_from_filepath</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="c1"># if we found the instrument, then store the name as string, else None</span>
+    <span class="n">instr_name</span> <span class="o">=</span> <span class="n">instr</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="n">instr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+
+    <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;Instrument ID&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">instr_name</span>
+    <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;Creation Time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_get_mtime_iso</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">instr</span><span class="p">)</span>
+    <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;warnings&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span></div>
+
+
+
+<div class="viewcode-block" id="_set_acquisition_device_name">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.utils.html#nexusLIMS.extractors.utils._set_acquisition_device_name">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">_set_acquisition_device_name</span><span class="p">(</span><span class="n">mdict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">pre_path</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+    <span class="n">val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="o">*</span><span class="n">pre_path</span><span class="p">,</span> <span class="s2">&quot;Acquisition&quot;</span><span class="p">,</span> <span class="s2">&quot;Device&quot;</span><span class="p">,</span> <span class="s2">&quot;Name&quot;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">val</span> <span class="o">==</span> <span class="s2">&quot;not found&quot;</span><span class="p">:</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="o">*</span><span class="n">pre_path</span><span class="p">,</span> <span class="s2">&quot;DataBar&quot;</span><span class="p">,</span> <span class="s2">&quot;Device Name&quot;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">val</span> <span class="o">!=</span> <span class="s2">&quot;not found&quot;</span><span class="p">:</span>
+        <span class="n">set_nested_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="s2">&quot;Acquisition Device&quot;</span><span class="p">],</span> <span class="n">val</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="_set_exposure_time">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.utils.html#nexusLIMS.extractors.utils._set_exposure_time">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">_set_exposure_time</span><span class="p">(</span><span class="n">mdict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">pre_path</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+    <span class="n">val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span>
+        <span class="n">mdict</span><span class="p">,</span>
+        <span class="p">[</span><span class="o">*</span><span class="n">pre_path</span><span class="p">,</span> <span class="s2">&quot;Acquisition&quot;</span><span class="p">,</span> <span class="s2">&quot;Parameters&quot;</span><span class="p">,</span> <span class="s2">&quot;High Level&quot;</span><span class="p">,</span> <span class="s2">&quot;Exposure (s)&quot;</span><span class="p">],</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">val</span> <span class="o">==</span> <span class="s2">&quot;not found&quot;</span><span class="p">:</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="o">*</span><span class="n">pre_path</span><span class="p">,</span> <span class="s2">&quot;DataBar&quot;</span><span class="p">,</span> <span class="s2">&quot;Exposure Time (s)&quot;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">val</span> <span class="o">!=</span> <span class="s2">&quot;not found&quot;</span><span class="p">:</span>
+        <span class="n">set_nested_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="s2">&quot;Exposure Time (s)&quot;</span><span class="p">],</span> <span class="n">val</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="_set_gms_version">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.utils.html#nexusLIMS.extractors.utils._set_gms_version">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">_set_gms_version</span><span class="p">(</span><span class="n">mdict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">pre_path</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+    <span class="n">val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="o">*</span><span class="n">pre_path</span><span class="p">,</span> <span class="s2">&quot;GMS Version&quot;</span><span class="p">,</span> <span class="s2">&quot;Created&quot;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">val</span> <span class="o">!=</span> <span class="s2">&quot;not found&quot;</span><span class="p">:</span>
+        <span class="n">set_nested_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="s2">&quot;GMS Version&quot;</span><span class="p">],</span> <span class="n">val</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="_set_camera_binning">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.utils.html#nexusLIMS.extractors.utils._set_camera_binning">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">_set_camera_binning</span><span class="p">(</span><span class="n">mdict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">pre_path</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+    <span class="n">val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span>
+        <span class="n">mdict</span><span class="p">,</span>
+        <span class="p">[</span><span class="o">*</span><span class="n">pre_path</span><span class="p">,</span> <span class="s2">&quot;Acquisition&quot;</span><span class="p">,</span> <span class="s2">&quot;Parameters&quot;</span><span class="p">,</span> <span class="s2">&quot;High Level&quot;</span><span class="p">,</span> <span class="s2">&quot;Binning&quot;</span><span class="p">],</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">val</span> <span class="o">!=</span> <span class="s2">&quot;not found&quot;</span><span class="p">:</span>
+        <span class="n">set_nested_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="s2">&quot;Binning (Horizontal)&quot;</span><span class="p">],</span> <span class="n">val</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">set_nested_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="s2">&quot;Binning (Vertical)&quot;</span><span class="p">],</span> <span class="n">val</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span></div>
+
+
+
+<div class="viewcode-block" id="_set_image_processing">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.utils.html#nexusLIMS.extractors.utils._set_image_processing">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">_set_image_processing</span><span class="p">(</span><span class="n">mdict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">pre_path</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+    <span class="c1">#   ImageTags.Acquisition.Parameters[&quot;High Level&quot;].Processing will be</span>
+    <span class="c1">#   something like &quot;Gain normalized&quot; - not just for EELS so move this to</span>
+    <span class="c1">#   general</span>
+    <span class="n">val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span>
+        <span class="n">mdict</span><span class="p">,</span>
+        <span class="p">[</span><span class="o">*</span><span class="n">pre_path</span><span class="p">,</span> <span class="s2">&quot;Acquisition&quot;</span><span class="p">,</span> <span class="s2">&quot;Parameters&quot;</span><span class="p">,</span> <span class="s2">&quot;High Level&quot;</span><span class="p">,</span> <span class="s2">&quot;Processing&quot;</span><span class="p">],</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">val</span> <span class="o">!=</span> <span class="s2">&quot;not found&quot;</span><span class="p">:</span>
+        <span class="n">set_nested_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="s2">&quot;Camera/Detector Processing&quot;</span><span class="p">],</span> <span class="n">val</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="_set_eels_meta">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.utils.html#nexusLIMS.extractors.utils._set_eels_meta">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">_set_eels_meta</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="n">base</span><span class="p">,</span> <span class="n">meta_key</span><span class="p">):</span>
+    <span class="n">val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="n">base</span> <span class="o">+</span> <span class="n">meta_key</span><span class="p">)</span>
+    <span class="c1"># only add the value to this list if we found it, and it&#39;s not</span>
+    <span class="c1"># one of the &quot;facility-wide&quot; set values that do not have any meaning:</span>
+    <span class="k">if</span> <span class="n">val</span> <span class="o">!=</span> <span class="s2">&quot;not found&quot;</span><span class="p">:</span>
+        <span class="c1"># add last value of each parameter to the &quot;EELS&quot; sub-tree of nx_meta</span>
+        <span class="n">set_nested_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="s2">&quot;EELS&quot;</span><span class="p">,</span> <span class="n">meta_key</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]],</span> <span class="n">val</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="_set_eels_spectrometer_meta">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.utils.html#nexusLIMS.extractors.utils._set_eels_spectrometer_meta">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">_set_eels_spectrometer_meta</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="n">base</span><span class="p">,</span> <span class="n">meta_key</span><span class="p">):</span>
+    <span class="n">val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="n">base</span> <span class="o">+</span> <span class="n">meta_key</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">val</span> <span class="o">!=</span> <span class="s2">&quot;not found&quot;</span><span class="p">:</span>
+        <span class="c1"># add last value of each param to the &quot;EELS&quot; sub-tree of nx_meta</span>
+        <span class="n">set_nested_dict_value</span><span class="p">(</span>
+            <span class="n">mdict</span><span class="p">,</span>
+            <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="s2">&quot;EELS&quot;</span><span class="p">,</span> <span class="s2">&quot;Spectrometer &quot;</span> <span class="o">+</span> <span class="n">meta_key</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
+            <span class="n">val</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="_set_eels_processing">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.utils.html#nexusLIMS.extractors.utils._set_eels_processing">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">_set_eels_processing</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="n">pre_path</span><span class="p">):</span>
+    <span class="c1"># Process known tags under &quot;processing&quot;:</span>
+    <span class="c1">#   ImageTags.Processing will be a list of things done (in multiple</span>
+    <span class="c1">#   TagGroups) - things like Compute thickness, etc.</span>
+    <span class="n">val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="o">*</span><span class="n">pre_path</span><span class="p">,</span> <span class="s2">&quot;Processing&quot;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">val</span> <span class="o">!=</span> <span class="s2">&quot;not found&quot;</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="c1"># if val is a dict, then there were processing steps applied</span>
+        <span class="n">eels_ops</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">val</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="c1"># k will be TagGroup0, TagGroup1, etc.</span>
+            <span class="c1"># v will be dictionaries specifying the process step</span>
+            <span class="c1"># AlignSIByPeak, DataPicker, SpectrumCalibrate,</span>
+            <span class="c1"># Compute Thickness, Background Removal, Signal Integration</span>
+            <span class="n">operation</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="s2">&quot;Operation&quot;</span><span class="p">]</span>
+            <span class="n">param</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="s2">&quot;Parameters&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">operation</span> <span class="o">==</span> <span class="s2">&quot;AlignSIByPeak&quot;</span><span class="p">:</span>
+                <span class="n">eels_ops</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Aligned parent SI By Peak&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">operation</span> <span class="o">==</span> <span class="s2">&quot;Background Removal&quot;</span><span class="p">:</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Model&quot;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">val</span> <span class="o">!=</span> <span class="s2">&quot;not found&quot;</span><span class="p">:</span>
+                    <span class="n">set_nested_dict_value</span><span class="p">(</span>
+                        <span class="n">mdict</span><span class="p">,</span>
+                        <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="s2">&quot;EELS&quot;</span><span class="p">,</span> <span class="s2">&quot;Background Removal Model&quot;</span><span class="p">],</span>
+                        <span class="n">val</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="n">eels_ops</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">operation</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">operation</span> <span class="o">==</span> <span class="s2">&quot;SpectrumCalibrate&quot;</span><span class="p">:</span>
+                <span class="n">eels_ops</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Calibrated Post-acquisition&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">operation</span> <span class="o">==</span> <span class="s2">&quot;Compute Thickness&quot;</span><span class="p">:</span>
+                <span class="n">mdict</span> <span class="o">=</span> <span class="n">_process_thickness_metadata</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="o">*</span><span class="n">pre_path</span><span class="p">,</span> <span class="s2">&quot;EELS&quot;</span><span class="p">])</span>
+                <span class="n">eels_ops</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">operation</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">operation</span> <span class="o">==</span> <span class="s2">&quot;DataPicker&quot;</span><span class="p">:</span>
+                <span class="n">eels_ops</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Extracted from SI&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">operation</span> <span class="o">==</span> <span class="s2">&quot;Signal Integration&quot;</span><span class="p">:</span>
+                <span class="n">eels_ops</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">operation</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">eels_ops</span><span class="p">:</span>
+            <span class="c1"># remove duplicates (convert to set) and sort alphabetically:</span>
+            <span class="n">set_nested_dict_value</span><span class="p">(</span>
+                <span class="n">mdict</span><span class="p">,</span>
+                <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="s2">&quot;EELS&quot;</span><span class="p">,</span> <span class="s2">&quot;Processing Steps&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">eels_ops</span><span class="p">))),</span>
+            <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="_process_thickness_metadata">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.utils.html#nexusLIMS.extractors.utils._process_thickness_metadata">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">_process_thickness_metadata</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="n">base</span><span class="p">):</span>
+    <span class="n">abs_thick</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span>
+        <span class="n">mdict</span><span class="p">,</span>
+        <span class="p">[</span><span class="o">*</span><span class="n">base</span><span class="p">,</span> <span class="s2">&quot;Thickness&quot;</span><span class="p">,</span> <span class="s2">&quot;Absolute&quot;</span><span class="p">,</span> <span class="s2">&quot;Measurement&quot;</span><span class="p">],</span>
+    <span class="p">)</span>
+    <span class="n">abs_units</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="o">*</span><span class="n">base</span><span class="p">,</span> <span class="s2">&quot;Thickness&quot;</span><span class="p">,</span> <span class="s2">&quot;Absolute&quot;</span><span class="p">,</span> <span class="s2">&quot;Units&quot;</span><span class="p">])</span>
+    <span class="n">abs_mfp</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span>
+        <span class="n">mdict</span><span class="p">,</span>
+        <span class="p">[</span><span class="o">*</span><span class="n">base</span><span class="p">,</span> <span class="s2">&quot;Thickness&quot;</span><span class="p">,</span> <span class="s2">&quot;Absolute&quot;</span><span class="p">,</span> <span class="s2">&quot;Mean Free Path&quot;</span><span class="p">],</span>
+    <span class="p">)</span>
+    <span class="n">rel_thick</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span>
+        <span class="n">mdict</span><span class="p">,</span>
+        <span class="p">[</span><span class="o">*</span><span class="n">base</span><span class="p">,</span> <span class="s2">&quot;Thickness&quot;</span><span class="p">,</span> <span class="s2">&quot;Relative&quot;</span><span class="p">,</span> <span class="s2">&quot;Measurement&quot;</span><span class="p">],</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">abs_thick</span> <span class="o">!=</span> <span class="s2">&quot;not found&quot;</span><span class="p">:</span>
+        <span class="n">set_nested_dict_value</span><span class="p">(</span>
+            <span class="n">mdict</span><span class="p">,</span>
+            <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="s2">&quot;EELS&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Thickness (absolute) [</span><span class="si">{</span><span class="n">abs_units</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">],</span>
+            <span class="n">abs_thick</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">abs_mfp</span> <span class="o">!=</span> <span class="s2">&quot;not found&quot;</span><span class="p">:</span>
+        <span class="n">set_nested_dict_value</span><span class="p">(</span>
+            <span class="n">mdict</span><span class="p">,</span>
+            <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="s2">&quot;EELS&quot;</span><span class="p">,</span> <span class="s2">&quot;Thickness (absolute) mean free path&quot;</span><span class="p">],</span>
+            <span class="n">abs_mfp</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">rel_thick</span> <span class="o">!=</span> <span class="s2">&quot;not found&quot;</span><span class="p">:</span>
+        <span class="n">set_nested_dict_value</span><span class="p">(</span>
+            <span class="n">mdict</span><span class="p">,</span>
+            <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="s2">&quot;EELS&quot;</span><span class="p">,</span> <span class="s2">&quot;Thickness (relative) [t/λ]&quot;</span><span class="p">],</span>
+            <span class="n">rel_thick</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">mdict</span></div>
+
+
+
+<div class="viewcode-block" id="_set_eds_meta">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.utils.html#nexusLIMS.extractors.utils._set_eds_meta">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">_set_eds_meta</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="n">base</span><span class="p">,</span> <span class="n">meta_key</span><span class="p">):</span>
+    <span class="n">val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="n">base</span> <span class="o">+</span> <span class="n">meta_key</span><span class="p">)</span>
+    <span class="c1"># only add the value to this list if we found it, and it&#39;s not</span>
+    <span class="c1"># one of the &quot;facility-wide&quot; set values that do not have any meaning:</span>
+    <span class="k">if</span> <span class="n">val</span> <span class="o">!=</span> <span class="s2">&quot;not found&quot;</span><span class="p">:</span>
+        <span class="c1"># add last value of each parameter to the &quot;EDS&quot; sub-tree of nx_meta</span>
+        <span class="n">set_nested_dict_value</span><span class="p">(</span>
+            <span class="n">mdict</span><span class="p">,</span>
+            <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="s2">&quot;EDS&quot;</span><span class="p">,</span> <span class="n">meta_key</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">meta_key</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">meta_key</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
+            <span class="n">val</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="_set_si_meta">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.utils.html#nexusLIMS.extractors.utils._set_si_meta">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">_set_si_meta</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="n">pre_path</span><span class="p">,</span> <span class="n">meta_key</span><span class="p">):</span>
+    <span class="n">val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="o">*</span><span class="n">pre_path</span><span class="p">,</span> <span class="s2">&quot;SI&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">meta_key</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">val</span> <span class="o">!=</span> <span class="s2">&quot;not found&quot;</span><span class="p">:</span>
+        <span class="c1"># add last value of each parameter to the &quot;EDS&quot; sub-tree of</span>
+        <span class="c1"># nx_meta</span>
+        <span class="n">set_nested_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="s2">&quot;EDS&quot;</span><span class="p">,</span> <span class="n">meta_key</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]],</span> <span class="n">val</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="_try_decimal">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.utils.html#nexusLIMS.extractors.utils._try_decimal">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">_try_decimal</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="n">Decimal</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="n">InvalidOperation</span><span class="p">):</span>
+        <span class="k">pass</span>
+    <span class="k">return</span> <span class="n">val</span></div>
+
+
+
+<div class="viewcode-block" id="_parse_filter_settings">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.utils.html#nexusLIMS.extractors.utils._parse_filter_settings">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">_parse_filter_settings</span><span class="p">(</span><span class="n">info_dict</span><span class="p">,</span> <span class="n">tecnai_info</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">info_dict</span><span class="p">[</span><span class="s2">&quot;Filter_Settings&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">tecnai_filter_info</span> <span class="o">=</span> <span class="n">tecnai_info</span><span class="p">[</span>
+            <span class="n">tecnai_info</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;Filter related settings:&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:</span>
+        <span class="p">]</span>
+        <span class="c1"># String</span>
+        <span class="n">info_dict</span><span class="p">[</span><span class="s2">&quot;Filter_Settings&quot;</span><span class="p">][</span><span class="s2">&quot;Mode&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_find_val</span><span class="p">(</span><span class="s2">&quot;Mode: &quot;</span><span class="p">,</span> <span class="n">tecnai_filter_info</span><span class="p">)</span>
+        <span class="c1"># Decimal (eV/channel)  # noqa: ERA001</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">_find_val</span><span class="p">(</span><span class="s2">&quot;Selected dispersion: &quot;</span><span class="p">,</span> <span class="n">tecnai_filter_info</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">tmp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\[eV/Channel\]&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">tmp</span><span class="p">)</span>
+            <span class="n">info_dict</span><span class="p">[</span><span class="s2">&quot;Filter_Settings&quot;</span><span class="p">][</span><span class="s2">&quot;Dispersion&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_try_decimal</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+
+        <span class="c1"># Decimal (millimeter)  # noqa: ERA001</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">_find_val</span><span class="p">(</span><span class="s2">&quot;Selected aperture: &quot;</span><span class="p">,</span> <span class="n">tecnai_filter_info</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">tmp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="n">tmp</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;m&quot;</span><span class="p">)</span>
+            <span class="n">info_dict</span><span class="p">[</span><span class="s2">&quot;Filter_Settings&quot;</span><span class="p">][</span><span class="s2">&quot;Aperture&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_try_decimal</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+
+        <span class="c1"># Decimal (eV)  # noqa: ERA001</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">_find_val</span><span class="p">(</span><span class="s2">&quot;Prism shift: &quot;</span><span class="p">,</span> <span class="n">tecnai_filter_info</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">tmp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\[eV\]&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">tmp</span><span class="p">)</span>
+            <span class="n">info_dict</span><span class="p">[</span><span class="s2">&quot;Filter_Settings&quot;</span><span class="p">][</span><span class="s2">&quot;Prism_Shift&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_try_decimal</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+
+        <span class="c1"># Decimal (eV)  # noqa: ERA001</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">_find_val</span><span class="p">(</span><span class="s2">&quot;Drift tube: &quot;</span><span class="p">,</span> <span class="n">tecnai_filter_info</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">tmp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\[eV\]&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">tmp</span><span class="p">)</span>
+            <span class="n">info_dict</span><span class="p">[</span><span class="s2">&quot;Filter_Settings&quot;</span><span class="p">][</span><span class="s2">&quot;Drift_Tube&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_try_decimal</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+
+        <span class="c1"># Decimal (eV)  # noqa: ERA001</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">_find_val</span><span class="p">(</span><span class="s2">&quot;Total energy loss: &quot;</span><span class="p">,</span> <span class="n">tecnai_filter_info</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">tmp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\[eV\]&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">tmp</span><span class="p">)</span>
+            <span class="n">info_dict</span><span class="p">[</span><span class="s2">&quot;Filter_Settings&quot;</span><span class="p">][</span><span class="s2">&quot;Total_Energy_Loss&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_try_decimal</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Filter settings not found in Tecnai microscope info&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">info_dict</span></div>
+
+
+
+<div class="viewcode-block" id="_zero_data_in_dm3">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.utils.html#nexusLIMS.extractors.utils._zero_data_in_dm3">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">_zero_data_in_dm3</span><span class="p">(</span>
+    <span class="n">filename</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
+    <span class="n">out_filename</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">compress</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Zero out data in a DM3 file.</span>
+
+<span class="sd">    Helper method that will overwrite the data in a dm3 image file  with</span>
+<span class="sd">    zeros and save it as either another dm3, or as a compressed archive (used</span>
+<span class="sd">    for creating files for the test suite that don&#39;t take up tons of space).</span>
+<span class="sd">    Since the resulting file is just some text metadata and zeros, it should</span>
+<span class="sd">    be highly compressible (initial tests allowed for a 16MB file to be</span>
+<span class="sd">    compressed to ~100KB).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename</span>
+<span class="sd">        Path to file to be modified</span>
+<span class="sd">    out_filename</span>
+<span class="sd">        Name with which to save the output file. If None, it will be</span>
+<span class="sd">        automatically generated from the ``filename``.</span>
+<span class="sd">    compress</span>
+<span class="sd">        Whether to compress the files into a tar.gz file</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Path</span>
+<span class="sd">        The path of the compressed (or zeroed) file</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># zero out extent of data in DM3 file and compress to tar.gz:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">out_filename</span><span class="p">:</span>
+        <span class="n">mod_fname</span> <span class="o">=</span> <span class="n">filename</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="p">(</span><span class="n">filename</span><span class="o">.</span><span class="n">stem</span> <span class="o">+</span> <span class="s2">&quot;_dataZeroed&quot;</span> <span class="o">+</span> <span class="n">filename</span><span class="o">.</span><span class="n">suffix</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">mod_fname</span> <span class="o">=</span> <span class="n">out_filename</span>
+
+    <span class="n">shutil</span><span class="o">.</span><span class="n">copyfile</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">mod_fname</span><span class="p">)</span>
+
+    <span class="c1"># Do some lower-level reading on the .dm3 file to get the ImageObject refs</span>
+    <span class="k">with</span> <span class="n">filename</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">dm_reader</span> <span class="o">=</span> <span class="n">DigitalMicrographReader</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="n">dm_reader</span><span class="o">.</span><span class="n">parse_file</span><span class="p">()</span>
+        <span class="n">images</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">ImageObject</span><span class="p">(</span><span class="n">im_dict</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">im_dict</span> <span class="ow">in</span> <span class="n">dm_reader</span><span class="o">.</span><span class="n">get_image_dictionaries</span><span class="p">()</span>
+        <span class="p">]</span>
+
+    <span class="c1"># write zeros to the file in the data block (offset + size in bytes</span>
+    <span class="c1"># information is obtained from the ImageObject ref)</span>
+    <span class="c1"># NB: currently this is just tested for single-image .dm3 files. Spectra</span>
+    <span class="c1"># and image stacks will probably work differently.</span>
+    <span class="k">with</span> <span class="n">mod_fname</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;r+b&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">images</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">imdict</span><span class="o">.</span><span class="n">ImageData</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">offset</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;</span><span class="se">\x00</span><span class="s2">&quot;</span> <span class="o">*</span> <span class="n">images</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">imdict</span><span class="o">.</span><span class="n">ImageData</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">size_bytes</span><span class="p">)</span>
+
+    <span class="c1"># compress the output, if requested</span>
+    <span class="k">if</span> <span class="n">compress</span><span class="p">:</span>
+        <span class="n">tar_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">mod_fname</span><span class="si">}</span><span class="s2">.tar.gz&quot;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">tarfile</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">tar_path</span><span class="p">,</span> <span class="s2">&quot;w:gz&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">tar</span><span class="p">:</span>
+            <span class="n">tar</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">mod_fname</span><span class="p">)</span>
+        <span class="n">out_fpath</span> <span class="o">=</span> <span class="n">tar_path</span>
+        <span class="n">mod_fname</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">out_fpath</span> <span class="o">=</span> <span class="n">mod_fname</span>
+
+    <span class="k">return</span> <span class="n">out_fpath</span></div>
+
+
+
+<div class="viewcode-block" id="_find_val">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.utils.html#nexusLIMS.extractors.utils._find_val">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">_find_val</span><span class="p">(</span><span class="n">s_to_find</span><span class="p">,</span> <span class="n">list_to_search</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Find a value in a list.</span>
+
+<span class="sd">    Return the first value in list_to_search that contains s_to_find, or</span>
+<span class="sd">    None if it is not found.</span>
+
+<span class="sd">    Note: If needed, this could be improved to use regex instead, which</span>
+<span class="sd">          would provide more control over the patterns to return</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">list_to_search</span> <span class="k">if</span> <span class="n">s_to_find</span> <span class="ow">in</span> <span class="n">x</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">res</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c1"># remove the string we searched for from the beginning of the res</span>
+        <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">&quot;^&quot;</span> <span class="o">+</span> <span class="n">s_to_find</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">res</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="kc">None</span></div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2025, datasophos, LLC.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

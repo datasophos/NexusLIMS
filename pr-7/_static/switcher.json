@@ -12,12 +12,6 @@
     "preferred": false
   },
   {
-    "name": "PR #7 (current)",
-    "version": "pr-7",
-    "url": "https://datasophos.github.io/NexusLIMS/pr-7/",
-    "preferred": true
-  },
-  {
     "name": "Upstream NIST docs",
     "version": "upstream",
     "url": "https://pages.nist.gov/NexusLIMS/"

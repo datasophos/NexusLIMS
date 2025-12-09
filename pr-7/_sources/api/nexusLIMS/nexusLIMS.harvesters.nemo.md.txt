@@ -1,0 +1,64 @@
+# {py:mod}`nexusLIMS.harvesters.nemo`
+
+```{py:module} nexusLIMS.harvesters.nemo
+```
+
+```{autodoc2-docstring} nexusLIMS.harvesters.nemo
+:allowtitles:
+```
+
+## Submodules
+
+```{toctree}
+:titlesonly:
+:maxdepth: 1
+
+nexusLIMS.harvesters.nemo.utils
+nexusLIMS.harvesters.nemo.exceptions
+nexusLIMS.harvesters.nemo.connector
+```
+
+## Package Contents
+
+### Functions
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`res_event_from_session <nexusLIMS.harvesters.nemo.res_event_from_session>`
+  - ```{autodoc2-docstring} nexusLIMS.harvesters.nemo.res_event_from_session
+    :summary:
+    ```
+````
+
+### Data
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`logger <nexusLIMS.harvesters.nemo.logger>`
+  - ```{autodoc2-docstring} nexusLIMS.harvesters.nemo.logger
+    :summary:
+    ```
+````
+
+### API
+
+````{py:data} logger
+:canonical: nexusLIMS.harvesters.nemo.logger
+:value: >
+   'getLogger(...)'
+
+```{autodoc2-docstring} nexusLIMS.harvesters.nemo.logger
+```
+
+````
+
+````{py:function} res_event_from_session(session: nexusLIMS.db.session_handler.Session) -> nexusLIMS.harvesters.reservation_event.ReservationEvent
+:canonical: nexusLIMS.harvesters.nemo.res_event_from_session
+
+```{autodoc2-docstring} nexusLIMS.harvesters.nemo.res_event_from_session
+```
+````
