@@ -28,4 +28,4 @@ in the top header bar to browse through the documentation.
    :maxdepth: -1
    :glob:
 
-   api/nexusLIMS.rst
+   api/nexusLIMS/nexusLIMS

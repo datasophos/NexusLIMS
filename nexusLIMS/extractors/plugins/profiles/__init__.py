@@ -17,7 +17,7 @@ Examples
 --------
 Creating a new instrument profile (in profiles/my_instrument.py):
 
->>> from nexusLIMS.extractors import InstrumentProfile
+>>> from nexusLIMS.extractors.base import InstrumentProfile
 >>> from nexusLIMS.extractors.profiles import get_profile_registry
 >>>
 >>> def custom_parser(metadata: dict, context) -> dict:

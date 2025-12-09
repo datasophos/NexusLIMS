@@ -339,7 +339,7 @@ def _apply_profile_to_metadata(metadata: dict, instrument, file_path: Path) -> d
     dict
         Modified metadata dictionary with profile transformations applied
     """
-    from nexusLIMS.extractors import ExtractionContext
+    from nexusLIMS.extractors.base import ExtractionContext
     from nexusLIMS.extractors.plugins.profiles import register_all_profiles
     from nexusLIMS.extractors.profiles import get_profile_registry
 

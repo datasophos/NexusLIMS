@@ -15,9 +15,7 @@
 #
 import os
 import sys
-import shutil
 from datetime import datetime
-from glob import glob
 from pathlib import Path
 
 # Add custom extensions directory to path
@@ -101,6 +99,7 @@ extensions = [
     "sphinx_design",
     "myst_parser",  # Support for Markdown files
     "xsd_documenter",  # Custom XSD documentation extension with D3.js diagrams
+    "autodoc2",  # Automatic API documentation generation
 ]
 
 autodoc_pydantic_model_show_json = False
@@ -113,6 +112,23 @@ typehints_fully_qualified = False
 # use short form for type hint links
 autodoc_typehints_format = "short"
 python_use_unqualified_type_names = True
+
+# -- Options for autodoc2 ----------------------------------------------------
+autodoc2_packages = [
+    {
+        "path": "../nexusLIMS",
+        "exclude_files": [
+            "version.py",
+        ],
+        "exclude_dirs": [
+            "dev_scripts",
+            "dev",  # Excludes any 'dev' directory
+        ],
+    }
+]
+autodoc2_render_plugin = "myst"
+autodoc2_output_dir = "api"
+autodoc2_index_template = None  # We'll use a custom api.rst instead
 
 # -- Options for towncrier_draft extension -----------------------------------
 towncrier_draft_autoversion_mode = "draft"
@@ -176,8 +192,6 @@ exclude_patterns = [
     "Thumbs.db",
     ".DS_Store",
     "build",
-    #    'api/nexusLIMS.rst',
-    "api/nexusLIMS.version.rst",
     "changes/*.rst",
     "README.rst",
     "dev_scripts",
@@ -253,29 +267,8 @@ rst_epilog = """
 """
 
 
-# api-doc autogeneration adapted from
-# https://github.com/isogeo/isogeo-api-py-minsdk/blob/master/docs/conf.py
-def run_apidoc(_):
-    from sphinx.ext.apidoc import main
-
-    cur_dir = os.path.normpath(os.path.dirname(__file__))
-    output_path = os.path.join(cur_dir, "api")
-    shutil.rmtree(output_path, ignore_errors=True)
-    modules = os.path.normpath(os.path.join(cur_dir, "../nexusLIMS"))
-    to_exclude = list(
-        glob(os.path.join(modules, "dev_scripts") + "/**/*", recursive=True)
-    )
-    # exclude db_logger_gui files from autodoc
-    # to_exclude += list(glob(os.path.join(modules, 'db', 'db_logger_gui', '*')))
-    # to_exclude += list(glob(os.path.join(modules, 'db', 'migrate_db.py')))
-    # to_exclude += [os.path.join(modules, 'builder')]
-
-    # load environment if present
-    from dotenv import load_dotenv
-
-    load_dotenv("../.env")
-
-    main(["-f", "-T", "-d", "-1", "-o", output_path, modules] + to_exclude)
+# Note: autodoc2 replaces the old sphinx-apidoc approach
+# API documentation is now generated automatically by autodoc2
 
 
 # def build_plantuml(_):
@@ -299,6 +292,15 @@ nitpick_ignore = [
     ("py:class", "optional"),
     ("py:class", "json.encoder.JSONEncoder"),
     ("py:class", "pathlib.Annotated"),
+    # Pydantic type aliases not in their documentation
+    ("py:class", "pydantic.EmailStr"),
+    ("py:class", "pydantic.DirectoryPath"),
+    ("py:class", "pydantic.FilePath"),
+    # Pydantic settings internal types
+    ("py:class", "pydantic_settings.sources.DotenvType"),
+    ("py:class", "pydantic_settings.sources.PathType"),
+    # lxml types not in custom objects.inv
+    ("py:class", "lxml.etree.ElementBase"),
 ]
 
 
@@ -311,7 +313,7 @@ def skip(app, what, name, obj, would_skip, options):
 def setup(app):
     # app.connect("autodoc-skip-member", skip)
     app.connect("builder-inited", autodoc_mock_settings)
-    app.connect("builder-inited", run_apidoc)
+    # autodoc2 handles API doc generation automatically, no need for run_apidoc
     # app.connect('builder-inited', build_plantuml)
     print(
         "If you need to update the PlantUML diagrams, run\n"

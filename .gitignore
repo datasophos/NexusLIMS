@@ -1,9 +1,5 @@
 # File patterns we want git to ignore
-
-# Markdown files
-*.md
-!README.md
-!MIGRATION_GUIDE.md
+docs/api/ 
 
 # backup
 *~

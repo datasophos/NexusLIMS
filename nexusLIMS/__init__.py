@@ -12,9 +12,9 @@ In most cases, the only code that needs to be run directly is initiating the
 record builder to look for new sessions, which can be done by running the
 :py:mod:`~nexusLIMS.builder.record_builder` module directly:
 
-.. code-block:: bash
-
-    $ python -m nexusLIMS.builder.record_builder
+```bash
+$ python -m nexusLIMS.builder.record_builder
+```
 
 Refer to :ref:`record-building` for more details.
 
@@ -24,7 +24,7 @@ The following variables should be defined as environment variables in your
 session, or in the ``.env`` file in the root of this package's repository.
 See the ``.env.example`` file for more documentation and examples.
 
-.. _NexusLIMS-file-strategy:
+(NexusLIMS-file-strategy)=
 
 `NX_FILE_STRATEGY`
     Defines the strategy used to find files associated with experimental records.
@@ -33,7 +33,7 @@ See the ``.env.example`` file for more documentation and examples.
     will include all files found, even if preview generation/detailed metadata
     extraction is not possible.
 
-.. _NexusLIMS-ignore-patterns:
+(NexusLIMS-ignore-patterns)=
 
 `NX_IGNORE_PATTERNS`
     The patterns defined in this variable (which should be provided as a
@@ -41,17 +41,17 @@ See the ``.env.example`` file for more documentation and examples.
     is provided in the ``.env.example`` file that should work for most users,
     but this setting allows for further customization of the file-finding routine.
 
-.. _nexusLIMS-user:
+(nexuslims-user)=
 
 `NX_CDCS_USER`
     The username used to authenticate to CDCS API
 
-.. _nexusLIMS-pass:
+(nexuslims-pass)=
 
 `NX_CDCS_PASS`
     The password used to authenticate to CDCS API
 
-.. _nexuslims-instrument-data-path:
+(nexuslims-instrument-data-path)=
 
 `NX_INSTRUMENT_DATA_PATH`
     The path (should be already mounted) to the root folder containing data
@@ -60,7 +60,7 @@ See the ``.env.example`` file for more documentation and examples.
     Microscopy Nexus. The file paths for specific instruments (specified in
     the NexusLIMS database) are relative to this root.
 
-.. _nexuslims-data-path:
+(nexuslims-data-path)=
 
 `NX_DATA_PATH`
     The root path used by NexusLIMS for various needs. This folder is used to
@@ -68,27 +68,27 @@ See the ``.env.example`` file for more documentation and examples.
     dumps and preview images, and anything else that is needed by the back-end
     system.
 
-.. _nexusLIMS-db-path:
+(nexuslims-db-path)=
 
 `NX_DB_PATH`
     The direct path to the NexusLIMS SQLite database file that contains
     information about the instruments in the Nexus Facility, as well as logs
     for the sessions created by users using the Session Logger Application.
 
-.. _nexusLIMS-log-path:
+(nexuslims-log-path)=
 
 `NX_LOG_PATH`
     Directory for application logs. If not specified, defaults to
     ``${NX_DATA_PATH}/logs/``. Logs are organized by date: ``logs/YYYY/MM/DD/``
 
-.. _nexusLIMS-records-path:
+(nexuslims-records-path)=
 
 `NX_RECORDS_PATH`
     Directory for generated XML records. If not specified, defaults to
     ``${NX_DATA_PATH}/records/``. Successfully uploaded records are moved to
     an 'uploaded' subdirectory upon upload.
 
-.. _nemo-address:
+(nemo-address)=
 
 `NEMO_address_X`
     The path to a NEMO instance's API endpoint. Should be something like
@@ -101,7 +101,7 @@ See the ``.env.example`` file for more documentation and examples.
     changes for each pair (`e.g.` you could have ``NX_NEMO_ADDRESS_1`` paired with
     ``NX_NEMO_TOKEN_1``, ``NX_NEMO_ADDRESS_2`` paired with ``NX_NEMO_TOKEN_2``, etc.).
 
-.. _nemo-token:
+(nemo-token)=
 
 `NEMO_token_X`
     An API authentication token from the corresponding NEMO installation
@@ -113,8 +113,8 @@ See the ``.env.example`` file for more documentation and examples.
     up a "dummy" or "functional" user account in the NEMO instance for these
     operations.
 
-.. _nemo-strftime-fmt:
-.. _nemo-strptime-fmt:
+(nemo-strftime-fmt)=
+(nemo-strptime-fmt)=
 
 `NEMO_strftime_fmt_X` and `NEMO_strptime_fmt_X`
     These options are optional, and control how dates/times are sent to
@@ -127,7 +127,7 @@ See the ``.env.example`` file for more documentation and examples.
     encoding date and time information (see :ref:`strftime-strptime-behavior`
     for details).
 
-.. _nemo-tz:
+(nemo-tz)=
 
 `NX_NEMO_TZ_1`
     Also optional; If the "`tz`" option is provided, the datetime

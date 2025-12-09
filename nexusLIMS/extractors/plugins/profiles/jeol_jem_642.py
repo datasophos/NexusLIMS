@@ -6,7 +6,7 @@ import logging
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    from nexusLIMS.extractors import ExtractionContext
+    from nexusLIMS.extractors.base import ExtractionContext
 
 logger = logging.getLogger(__name__)
 
@@ -62,7 +62,7 @@ def detect_diffraction_from_filename(
 
 
 # Register the profile
-from nexusLIMS.extractors import InstrumentProfile
+from nexusLIMS.extractors.base import InstrumentProfile
 from nexusLIMS.extractors.profiles import get_profile_registry
 
 jeol_jem_642_profile = InstrumentProfile(

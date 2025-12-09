@@ -13,7 +13,7 @@ from nexusLIMS.utils import (
 )
 
 if TYPE_CHECKING:
-    from nexusLIMS.extractors import ExtractionContext
+    from nexusLIMS.extractors.base import ExtractionContext
 
 logger = logging.getLogger(__name__)
 
@@ -167,7 +167,7 @@ def detect_diffraction_mode(
 
 
 # Register the profile
-from nexusLIMS.extractors import InstrumentProfile
+from nexusLIMS.extractors.base import InstrumentProfile
 from nexusLIMS.extractors.profiles import get_profile_registry
 
 fei_titan_tem_642_profile = InstrumentProfile(

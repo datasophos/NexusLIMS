@@ -296,7 +296,7 @@ New features
   harvester for the `NEMO <https://github.com/usnistgov/NEMO>`_ facility management
   system. All planned future feature development will focus on this harvester, and the
   SharePoint calendar harvester will be deprecated in a future release. See the
-  :std:doc:`record_building` docs and the :std:doc:`api/nexusLIMS.harvesters.nemo` docs
+  :std:doc:`record_building` docs and the :std:doc:`api/nexusLIMS/nexusLIMS.harvesters.nemo` docs
   for more details. 
 
 

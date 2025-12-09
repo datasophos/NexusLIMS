@@ -12,7 +12,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from nexusLIMS.extractors import ExtractionContext, InstrumentProfile
+from nexusLIMS.extractors.base import ExtractionContext, InstrumentProfile
 from nexusLIMS.extractors.profiles import get_profile_registry
 
 

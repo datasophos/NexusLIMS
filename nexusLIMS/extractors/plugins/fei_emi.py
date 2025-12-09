@@ -532,13 +532,13 @@ def map_keys(term_mapping, base, metadata):
     -----
     The ``term_mapping`` parameter should be a dictionary of the form:
 
-    .. code-block:: python
-
-        {
-            ('val1_1', 'val1_2') : 'output_val_1',
-            ('val1_1', 'val2_2') : 'output_val_2',
-            etc.
-        }
+    ```python
+    {
+        ('val1_1', 'val1_2') : 'output_val_1',
+        ('val1_1', 'val2_2') : 'output_val_2',
+        etc.
+    }
+    ```
 
     Assuming ``base`` is ``['ObjectInfo', 'AcquireInfo']``, this would map
     the term present at ``ObjectInfo.AcquireInfo.val1_1.val1_2`` into
