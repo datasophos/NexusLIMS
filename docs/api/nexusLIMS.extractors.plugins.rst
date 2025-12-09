@@ -1,16 +1,17 @@
 nexusLIMS.extractors.plugins package
 ====================================
 
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: -1
+
+   nexusLIMS.extractors.plugins.preview_generators
+   nexusLIMS.extractors.plugins.profiles
+
 Submodules
 ----------
-
-nexusLIMS.extractors.plugins.adapters module
---------------------------------------------
-
-.. automodule:: nexusLIMS.extractors.plugins.adapters
-   :members:
-   :show-inheritance:
-   :undoc-members:
 
 nexusLIMS.extractors.plugins.basic\_metadata module
 ---------------------------------------------------

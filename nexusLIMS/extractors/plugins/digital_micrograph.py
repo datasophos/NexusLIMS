@@ -91,21 +91,96 @@ class DM3Extractor:
             Metadata dictionary with 'nx_meta' key containing NexusLIMS metadata
         """
         logger.debug("Extracting metadata from DM3/DM4 file: %s", context.file_path)
-        return get_dm3_metadata(context.file_path)
+        metadata = get_dm3_metadata(context.file_path, context.instrument)
+
+        # Apply instrument profile if available
+        if context.instrument:
+            metadata = self._apply_profile(metadata, context)
+
+        return metadata
+
+    def _apply_profile(self, metadata: dict[str, Any], context: ExtractionContext) -> dict[str, Any]:
+        """
+        Apply instrument-specific profile transformations.
+
+        Parameters
+        ----------
+        metadata
+            Metadata dictionary with 'nx_meta' key
+        context
+            Extraction context containing instrument information
+
+        Returns
+        -------
+        dict
+            Modified metadata dictionary with profile transformations applied
+        """
+        from nexusLIMS.extractors.profiles import get_profile_registry
+
+        profile = get_profile_registry().get_profile(context.instrument)
+
+        if profile is None:
+            logger.debug(
+                "No profile found for instrument: %s",
+                context.instrument.name if context.instrument else "None"
+            )
+            return metadata
+
+        logger.debug("Applying profile for instrument: %s", context.instrument.name)
+
+        # Apply custom parsers in order
+        for parser_name, parser_func in profile.parsers.items():
+            try:
+                metadata = parser_func(metadata, context)
+            except Exception as e:  # noqa: BLE001
+                logger.warning(
+                    "Profile parser '%s' failed: %s",
+                    parser_name,
+                    e,
+                )
+
+        # Apply transformations
+        for key, transform_func in profile.transformations.items():
+            try:
+                if key in metadata:
+                    metadata[key] = transform_func(metadata[key])
+            except Exception as e:  # noqa: BLE001
+                logger.warning(
+                    "Profile transformation '%s' failed: %s",
+                    key,
+                    e,
+                )
+
+        # Inject static metadata
+        for key, value in profile.static_metadata.items():
+            try:
+                keys = key.split('.')
+                set_nested_dict_value(metadata, keys, value)
+            except Exception as e:  # noqa: BLE001
+                logger.warning(
+                    "Profile static metadata injection '%s' failed: %s",
+                    key,
+                    e,
+                )
+
+        return metadata
 
 
-def get_dm3_metadata(filename: Path):
+def get_dm3_metadata(filename: Path, instrument=None):
     """
     Get metadata from a dm3 or dm4 file.
 
     Returns the metadata from a .dm3 file saved by Digital Micrograph, with some
-    non-relevant information stripped out, and instrument specific metadata parsed and
-    added by one of the instrument-specific parsers.
+    non-relevant information stripped out. Instrument-specific metadata parsing is
+    handled by instrument profiles (see nexusLIMS.extractors.plugins.profiles).
 
     Parameters
     ----------
     filename : str
         path to a .dm3 file saved by Gatan's Digital Micrograph
+    instrument : Instrument, optional
+        The instrument object (used for timezone info). Instrument-specific parsing
+        is now handled via profiles, not this parameter.
 
     Returns
     -------
@@ -205,7 +280,8 @@ def get_dm3_metadata(filename: Path):
         m_list[i] = m_tree.as_dictionary()
 
         # Get the instrument object associated with this file
-        instr = get_instr_from_filepath(filename)
+        # Use provided instrument if available, otherwise look it up
+        instr = instrument if instrument is not None else get_instr_from_filepath(filename)
         # get the modification time (as ISO format):
         mtime = filename.stat().st_mtime
         mtime_iso = dt.fromtimestamp(
@@ -228,10 +304,9 @@ def get_dm3_metadata(filename: Path):
         m_list[i] = parse_dm3_eds_info(m_list[i])
         m_list[i] = parse_dm3_spectrum_image_info(m_list[i])
 
-        # if the instrument name is None, this check will be false, otherwise
-        # look for the instrument in our list of instrument-specific parsers:
-        if instr_name in _instr_specific_parsers:
-            m_list[i] = _instr_specific_parsers[instr_name](m_list[i])
+        # Apply instrument-specific profiles if an instrument was provided
+        if instr is not None:
+            m_list[i] = _apply_profile_to_metadata(m_list[i], instr, filename)
 
         # we don't need to save the filename, it's just for internal processing
         del m_list[i]["nx_meta"]["fname"]
@@ -243,225 +318,124 @@ def get_dm3_metadata(filename: Path):
     return remove_dict_nones(m_list[0])
 
 
-def parse_643_titan(mdict):
+def _apply_profile_to_metadata(metadata: dict, instrument, file_path: Path) -> dict:
     """
-    Add/adjust metadata specific to the 643 FEI Titan.
+    Apply instrument profile to metadata dictionary.
 
-    ('`FEI-Titan-STEM-630901 in *********`')
+    This is a helper function used by get_dm3_metadata() to maintain backward
+    compatibility with code that calls it directly.
 
     Parameters
     ----------
-    mdict : dict
-        "raw" metadata dictionary as parsed by :py:func:`get_dm3_metadata`
+    metadata
+        Metadata dictionary with 'nx_meta' key
+    instrument
+        Instrument object
+    file_path
+        Path to the file being processed
 
     Returns
     -------
-    mdict : dict
-        The original metadata dictionary with added information specific to
-        files originating from this microscope with "important" values contained
-        under the ``nx_meta`` key at the root level
+    dict
+        Modified metadata dictionary with profile transformations applied
     """
-    # The 643 Titan will likely have session info defined, but it may not be
-    # accurate, so add it to the warning list
-    for val in ["Detector", "Operator", "Specimen"]:
-        mdict["nx_meta"]["warnings"].append([val])
+    from nexusLIMS.extractors import ExtractionContext
+    from nexusLIMS.extractors.plugins.profiles import register_all_profiles
+    from nexusLIMS.extractors.profiles import get_profile_registry
 
-    # the 643Titan sets the Imaging mode to "EFTEM DIFFRACTION" when an
-    # actual diffraction pattern is taken
-    if (
-        "Imaging Mode" in mdict["nx_meta"]
-        and mdict["nx_meta"]["Imaging Mode"] == "EFTEM DIFFRACTION"
-    ):
-        mdict["nx_meta"]["DatasetType"] = "Diffraction"
-        mdict["nx_meta"]["Data Type"] = "TEM_EFTEM_Diffraction"
+    # Ensure profiles are loaded
+    register_all_profiles()
 
-    return mdict
+    profile = get_profile_registry().get_profile(instrument)
 
+    if profile is None:
+        return metadata
 
-def parse_642_titan(mdict):
-    """
-    Add/adjust metadata specific to the 642 FEI Titan.
+    logger.debug("Applying profile for instrument: %s", instrument.name)
 
-    ('`FEI-Titan-TEM-012345 in **********`')
+    # Create a mock context for profile application
+    context = ExtractionContext(file_path=file_path, instrument=instrument)
 
-    Parameters
-    ----------
-    mdict : dict
-        "raw" metadata dictionary as parsed by :py:func:`get_dm3_metadata`
-
-    Returns
-    -------
-    mdict : dict
-        The original metadata dictionary with added information specific to
-        files originating from this microscope with "important" values contained
-        under the ``nx_meta`` key at the root level
-    """
-    # DONE: complete 642 titan metadata parsing including Tecnai tag
-    path_to_tecnai = get_nested_dict_key(mdict, "Tecnai")
-
-    if path_to_tecnai is None:
-        # For whatever reason, the expected Tecnai Tag is not present,
-        # so return to prevent errors below
-        return mdict
-
-    tecnai_value = get_nested_dict_value_by_path(mdict, path_to_tecnai)
-    microscope_info = tecnai_value["Microscope Info"]
-    tecnai_value["Microscope Info"] = process_tecnai_microscope_info(microscope_info)
-    set_nested_dict_value(mdict, path_to_tecnai, tecnai_value)
-
-    # - Tecnai info:
-    #     _ ImageTags.Tecnai.Microscope_Info['Gun_Name']
-    #     _ ImageTags.Tecnai.Microscope_Info['Extractor_Voltage']
-    #     _ ImageTags.Tecnai.Microscope_Info['Gun_Lens_No']
-    #     _ ImageTags.Tecnai.Microscope_Info['Emission_Current']
-    #     _ ImageTags.Tecnai.Microscope_Info['Spot']
-    #     _ ImageTags.Tecnai.Microscope_Info['Mode']
-    #     _ C2, C3, Obj, Dif lens strength:
-    #         - ImageTags.Tecnai.Microscope_Info['C2_Strength', 'C3_Strength',
-    #                                            'Obj_Strength', 'Dif_Strength']
-    #     _ ImageTags.Tecnai.Microscope_Info['Image_Shift_x'/'Image_Shift_y'])
-    #     _ ImageTags.Tecnai.Microscope_Info['Stage_Position_x' (y/z/theta/phi)]
-    #     _ C1/C2/Objective/SA aperture sizes:
-    #         _ ImageTags.Tecnai.Microscope_Info['(C1/C2/Obj/SA)_Aperture']
-    #     _ ImageTags.Tecnai.Microscope_Info['Filter_Settings']['Mode']
-    #     _ ImageTags.Tecnai.Microscope_Info['Filter_Settings']['Dispersion']
-    #     _ ImageTags.Tecnai.Microscope_Info['Filter_Settings']['Aperture']
-    #     _ ImageTags.Tecnai.Microscope_Info['Filter_Settings']['Prism_Shift']
-    #     _ ImageTags.Tecnai.Microscope_Info['Filter_Settings']['Drift_Tube']
-    #     _ ImageTags.Tecnai.Microscope_Info['Filter_Settings'][
-    #           'Total_Energy_Loss']
-
-    term_mapping = {
-        "Gun_Name": "Gun Name",
-        "Extractor_Voltage": "Extractor Voltage (V)",
-        "Camera_Length": "Camera Length (m)",
-        "Gun_Lens_No": "Gun Lens #",
-        "Emission_Current": "Emission Current (μA)",
-        "Spot": "Spot",
-        "Mode": "Tecnai Mode",
-        "Defocus": "Defocus",
-        "C2_Strength": "C2 Lens Strength (%)",
-        "C3_Strength": "C3 Lens Strength (%)",
-        "Obj_Strength": "Objective Lens Strength (%)",
-        "Dif_Strength": "Diffraction Lens Strength (%)",
-        "Microscope_Name": "Tecnai Microscope Name",
-        "User": "Tecnai User",
-        "Image_Shift_x": "Image Shift X (μm)",
-        "Image_Shift_y": "Image Shift Y (μm)",
-        "Stage_Position_x": ["Stage Position", "X (μm)"],
-        "Stage_Position_y": ["Stage Position", "Y (μm)"],
-        "Stage_Position_z": ["Stage Position", "Z (μm)"],
-        "Stage_Position_theta": ["Stage Position", "θ (°)"],
-        "Stage_Position_phi": ["Stage Position", "φ (°)"],
-        "C1_Aperture": "C1 Aperture (μm)",
-        "C2_Aperture": "C2 Aperture (μm)",
-        "Obj_Aperture": "Objective Aperture (μm)",
-        "SA_Aperture": "Selected Area Aperture (μm)",
-        ("Filter_Settings", "Mode"): ["Tecnai Filter", "Mode"],
-        ("Filter_Settings", "Dispersion"): ["Tecnai Filter", "Dispersion (eV/channel)"],
-        ("Filter_Settings", "Aperture"): ["Tecnai Filter", "Aperture (mm)"],
-        ("Filter_Settings", "Prism_Shift"): ["Tecnai Filter", "Prism Shift (eV)"],
-        ("Filter_Settings", "Drift_Tube"): ["Tecnai Filter", "Drift Tube (eV)"],
-        ("Filter_Settings", "Total_Energy_Loss"): [
-            "Tecnai Filter",
-            "Total Energy Loss (eV)",
-        ],
-    }
-
-    for in_term, out_term in term_mapping.items():
-        base = [*list(path_to_tecnai), "Microscope Info"]
-        if isinstance(in_term, str):
-            in_term = [in_term]  # noqa: PLW2901
-        elif isinstance(in_term, tuple):
-            in_term = list(in_term)  # noqa: PLW2901
-        if isinstance(out_term, str):
-            out_term = [out_term]  # noqa: PLW2901
-        val = try_getting_dict_value(mdict, base + in_term)
-        # only add the value to this list if we found it
-        if val != "not found" and val not in ["DO NOT EDIT", "DO NOT ENTER"]:
-            set_nested_dict_value(mdict, ["nx_meta", *out_term], val)
-
-    path = [*list(path_to_tecnai), "Specimen Info"]
-    val = try_getting_dict_value(mdict, path)
-    if val not in ["not found", "Specimen information is not available yet"]:
-        set_nested_dict_value(mdict, ["nx_meta", "Specimen"], val)
-
-    # If `Tecnai Mode` is `STEM nP SA Zoom Diffraction`, it's diffraction
-    if (
-        "Tecnai Mode" in mdict["nx_meta"]
-        and mdict["nx_meta"]["Tecnai Mode"] == "STEM nP SA Zoom Diffraction"
-    ):
-        logger.info(
-            'Detected file as Diffraction type based on "Tecnai '
-            'Mode" == "STEM nP SA Zoom Diffraction"',
-        )
-        mdict["nx_meta"]["DatasetType"] = "Diffraction"
-        mdict["nx_meta"]["Data Type"] = "STEM_Diffraction"
-
-    # also, if `Operation Mode` is `DIFFRACTION`, it's diffraction
-    elif (
-        "Operation Mode" in mdict["nx_meta"]
-        and mdict["nx_meta"]["Operation Mode"] == "DIFFRACTION"
-    ):
-        logger.info(
-            'Detected file as Diffraction type based on "Operation '
-            'Mode" == "DIFFRACTION"',
-        )
-        mdict["nx_meta"]["DatasetType"] = "Diffraction"
-        mdict["nx_meta"]["Data Type"] = "TEM_Diffraction"
-
-    return mdict
-
-
-def parse_642_jeol(mdict):
-    """
-    Add/adjust metadata specific to the 642 FEI Titan.
-
-    ('`JEOL-JEM3010-TEM-565989 in *********`')
-
-    Parameters
-    ----------
-    mdict : dict
-        "raw" metadata dictionary as parsed by :py:func:`get_dm3_metadata`
-
-    Returns
-    -------
-    mdict : dict
-        The original metadata dictionary with added information specific to
-        files originating from this microscope with "important" values contained
-        under the ``nx_meta`` key at the root level
-    """
-    # Currently, the Stroboscope does not add any metadata items that need to
-    # be processed differently than the "default" dm3 tags (and it barely has
-    # any metadata anyway), so this method does not need to do anything
-
-    # To try to detect diffraction pattern, we will check the file name
-    # against commonly used terms for saving diffraction patterns (not even
-    # close to perfect, but at least it's something)
-    for s in ["Diff", "SAED", "DP"]:
-        if (
-            s.lower() in mdict["nx_meta"]["fname"]
-            or s.upper() in mdict["nx_meta"]["fname"]
-            or s in mdict["nx_meta"]["fname"]
-        ):
-            logger.info(
-                'Detected file as Diffraction type based on "%s" in the filename',
-                s,
+    # Apply custom parsers in order
+    for parser_name, parser_func in profile.parsers.items():
+        try:
+            metadata = parser_func(metadata, context)
+        except Exception as e:  # noqa: BLE001
+            logger.warning(
+                "Profile parser '%s' failed: %s",
+                parser_name,
+                e,
             )
-            mdict["nx_meta"]["DatasetType"] = "Diffraction"
-            mdict["nx_meta"]["Data Type"] = "TEM_Diffraction"
 
-    mdict["nx_meta"]["warnings"].append(["DatasetType"])
-    mdict["nx_meta"]["warnings"].append(["Data Type"])
+    # Apply transformations
+    for key, transform_func in profile.transformations.items():
+        try:
+            if key in metadata:
+                metadata[key] = transform_func(metadata[key])
+        except Exception as e:  # noqa: BLE001
+            logger.warning(
+                "Profile transformation '%s' failed: %s",
+                key,
+                e,
+            )
 
-    return mdict
+    # Inject static metadata
+    for key, value in profile.static_metadata.items():
+        try:
+            keys = key.split('.')
+            set_nested_dict_value(metadata, keys, value)
+        except Exception as e:  # noqa: BLE001
+            logger.warning(
+                "Profile static metadata injection '%s' failed: %s",
+                key,
+                e,
+            )
+
+    return metadata
 
 
-_instr_specific_parsers = {
-    "FEI-Titan-STEM": parse_643_titan,
-    "FEI-Titan-TEM": parse_642_titan,
-    "JEOL-JEM-TEM": parse_642_jeol,
-}
+# DEPRECATED: This function has been replaced by the instrument profile system.
+# See: nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643
+# Kept for reference only - remove in future version.
+#
+# def parse_643_titan(mdict):
+#     """
+#     Add/adjust metadata specific to the 643 FEI Titan.
+#
+#     ('`FEI-Titan-STEM-630901 in *********`')
+#     """
+#     # The 643 Titan will likely have session info defined, but it may not be
+#     # accurate, so add it to the warning list
+#     for val in ["Detector", "Operator", "Specimen"]:
+#         mdict["nx_meta"]["warnings"].append([val])
+#
+#     # the 643Titan sets the Imaging mode to "EFTEM DIFFRACTION" when an
+#     # actual diffraction pattern is taken
+#     if (
+#         "Imaging Mode" in mdict["nx_meta"]
+#         and mdict["nx_meta"]["Imaging Mode"] == "EFTEM DIFFRACTION"
+#     ):
+#         mdict["nx_meta"]["DatasetType"] = "Diffraction"
+#         mdict["nx_meta"]["Data Type"] = "TEM_EFTEM_Diffraction"
+#
+#     return mdict
+
+
+# DEPRECATED: This function has been replaced by the instrument profile system.
+# See: nexusLIMS.extractors.plugins.profiles.fei_titan_tem_642
+# Kept for reference only - remove in future version.
+
+
+# DEPRECATED: This function has been replaced by the instrument profile system.
+# See: nexusLIMS.extractors.plugins.profiles.jeol_jem_642
+# Kept for reference only - remove in future version.
+
+# DEPRECATED: This dictionary has been replaced by the instrument profile system.
+# Instrument-specific parsing is now handled by profiles in:
+# - nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643
+# - nexusLIMS.extractors.plugins.profiles.fei_titan_tem_642
+# - nexusLIMS.extractors.plugins.profiles.jeol_jem_642
+# Remove in future version.
 
 
 def get_pre_path(mdict: Dict) -> List[str]:

@@ -168,11 +168,11 @@ tasks, such as extracting metadata or building previews images, etc.
 
 For example, to extract the metadata from a ``.tif`` file saved on the
 FEI Quanta, run the following code using the
-:py:func:`~nexusLIMS.extractors.quanta_tif.get_quanta_metadata` function:
+:py:func:`~nexusLIMS.extractors.plugins.quanta_tif.get_quanta_metadata` function:
 
 .. code:: python
 
-   from nexusLIMS.extractors.quanta_tif import get_quanta_metadata
+   from nexusLIMS.extractors.plugins.quanta_tif import get_quanta_metadata
    meta = get_quanta_metadata("path_to_file.tif")
 
 The ``meta`` variable will then contain a dictionary with the extracted
@@ -263,8 +263,8 @@ the `"reference"` images that are tested against. For example:
    # nexusLIMS/extractors/digital_micrograph.py      278      0   100%
    # nexusLIMS/extractors/edax.py                     33      0   100%
    # nexusLIMS/extractors/fei_emi.py                 200      0   100%
-   # nexusLIMS/extractors/quanta_tif.py              237      0   100%
-   # nexusLIMS/extractors/thumbnail_generator.py     402      0   100%
+   # nexusLIMS/extractors/plugins/quanta_tif.py              237      0   100%
+   # nexusLIMS/extractors/plugins/preview_generators/*       402      0   100%
    # nexusLIMS/extractors/utils.py                   163      0   100%
    # nexusLIMS/harvesters/__init__.py                  5      0   100%
    # nexusLIMS/harvesters/nemo/__init__.py            33      0   100%

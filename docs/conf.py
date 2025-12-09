@@ -181,6 +181,7 @@ exclude_patterns = [
     "changes/*.rst",
     "README.rst",
     "dev_scripts",
+    "_ext/README.md",
 ]
 
 # Keep warnings as “system message” paragraphs in the built documents.

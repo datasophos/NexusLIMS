@@ -34,7 +34,12 @@ from nexusLIMS.utils import current_system_tz, replace_instrument_data_path
 from nexusLIMS.version import __version__
 
 from . import utils
-from .base import ExtractionContext
+from .base import (
+    BaseExtractor,
+    ExtractionContext,
+    InstrumentProfile,
+    PreviewGenerator,
+)
 from .plugins.preview_generators.hyperspy_preview import sig_to_thumbnail
 from .plugins.preview_generators.image_preview import (
     down_sample_image,
@@ -47,6 +52,10 @@ logger = logging.getLogger(__name__)
 PLACEHOLDER_PREVIEW = Path(__file__).parent / "assets" / "extractor_error.png"
 
 __all__ = [
+    "BaseExtractor",
+    "ExtractionContext",
+    "InstrumentProfile",
+    "PreviewGenerator",
     "PLACEHOLDER_PREVIEW",
     "create_preview",
     "down_sample_image",

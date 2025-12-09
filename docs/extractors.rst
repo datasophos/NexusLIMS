@@ -86,7 +86,7 @@ Digital Micrograph Files (.dm3, .dm4)
 
 **Description**: Files saved by Gatan's DigitalMicrograph (GMS) software, commonly used for TEM/STEM imaging, EELS, and EDS data.
 
-**Extractor Module**: :py:mod:`nexusLIMS.extractors.digital_micrograph`
+**Extractor Module**: :py:mod:`nexusLIMS.extractors.plugins.digital_micrograph`
 
 **Key Metadata Extracted**:
 
@@ -143,7 +143,7 @@ FEI/Thermo Fisher TIF Files (.tif)
 
 **Description**: TIFF images saved by FEI/Thermo Fisher FIB and SEM instruments (Quanta, Helios, etc.) with embedded metadata.
 
-**Extractor Module**: :py:mod:`nexusLIMS.extractors.quanta_tif`
+**Extractor Module**: :py:mod:`nexusLIMS.extractors.plugins.quanta_tif`
 
 **Key Metadata Extracted**:
 
@@ -188,7 +188,7 @@ FEI TIA Files (.ser, .emi)
 
 **Description**: Files saved by FEI's TIA (Tecnai Imaging and Analysis) software. Data is stored in ``.ser`` files with accompanying ``.emi`` metadata files.
 
-**Extractor Module**: :py:mod:`nexusLIMS.extractors.fei_emi`
+**Extractor Module**: :py:mod:`nexusLIMS.extractors.plugins.fei_emi`
 
 **File Relationship**:
 
@@ -233,7 +233,7 @@ EDAX EDS Files (.spc, .msa)
 
 **Description**: EDS spectrum files saved by EDAX software (Genesis, TEAM, etc.) in proprietary (``.spc``) or standard EMSA (``.msa``) format.
 
-**Extractor Module**: :py:mod:`nexusLIMS.extractors.edax`
+**Extractor Module**: :py:mod:`nexusLIMS.extractors.plugins.edax`
 
 **.spc Files**
 ^^^^^^^^^^^^^^
@@ -292,9 +292,9 @@ Image Formats
 
 **Formats**: ``.png``, ``.tiff``, ``.bmp``, ``.gif``, ``.jpg``, ``.jpeg``
 
-**Extractor Module**: :py:mod:`nexusLIMS.extractors.basic_metadata`
+**Extractor Module**: :py:mod:`nexusLIMS.extractors.plugins.basic_metadata`
 
-**Preview Generator**: :py:func:`nexusLIMS.extractors.thumbnail_generator.image_to_square_thumbnail`
+**Preview Generator**: :py:mod:`nexusLIMS.extractors.plugins.preview_generators.image_preview`
 
 **Metadata Extracted**:
 
@@ -317,9 +317,9 @@ Text Files (.txt)
 
 **Support Level**: ⚠️ Preview Only
 
-**Extractor Module**: :py:mod:`nexusLIMS.extractors.basic_metadata`
+**Extractor Module**: :py:mod:`nexusLIMS.extractors.plugins.basic_metadata`
 
-**Preview Generator**: :py:func:`nexusLIMS.extractors.thumbnail_generator.text_to_thumbnail`
+**Preview Generator**: :py:mod:`nexusLIMS.extractors.plugins.preview_generators.text_preview`
 
 **Metadata Extracted**:
 
@@ -501,12 +501,12 @@ API Reference
 For complete API documentation of the extractor modules, see:
 
 - :py:mod:`nexusLIMS.extractors` - Main extractor module
-- :py:mod:`nexusLIMS.extractors.digital_micrograph` - DM3/DM4 file extractor
-- :py:mod:`nexusLIMS.extractors.quanta_tif` - FEI/Thermo TIF file extractor
-- :py:mod:`nexusLIMS.extractors.fei_emi` - FEI TIA .ser/.emi file extractor
-- :py:mod:`nexusLIMS.extractors.edax` - EDAX .spc/.msa file extractor
-- :py:mod:`nexusLIMS.extractors.basic_metadata` - Basic metadata fallback extractor
-- :py:mod:`nexusLIMS.extractors.thumbnail_generator` - Preview image generation utilities
+- :py:mod:`nexusLIMS.extractors.plugins.digital_micrograph` - DM3/DM4 file extractor
+- :py:mod:`nexusLIMS.extractors.plugins.quanta_tif` - FEI/Thermo TIF file extractor
+- :py:mod:`nexusLIMS.extractors.plugins.fei_emi` - FEI TIA .ser/.emi file extractor
+- :py:mod:`nexusLIMS.extractors.plugins.edax` - EDAX .spc/.msa file extractor
+- :py:mod:`nexusLIMS.extractors.plugins.basic_metadata` - Basic metadata fallback extractor
+- :py:mod:`nexusLIMS.extractors.plugins.preview_generators` - Preview image generation utilities
 
 
 Further Reading

@@ -156,8 +156,8 @@ Overview
     For each file, add it to the appropriate activity using
     :py:meth:`~nexusLIMS.schemas.activity.AcquisitionActivity.add_file`, which
     in turn uses :py:func:`~nexusLIMS.extractors.parse_metadata` to extract
-    known metadata and :py:mod:`~nexusLIMS.extractors.thumbnail_generator` to
-    generate a web-accessible preview image of the dataset. These files are
+    known metadata and the preview generator system to generate a web-accessible
+    preview image of the dataset. These files are
     saved within the directory contained in the
     :ref:`NX_DATA_PATH <nexuslims-data-path>` environment variable.
 6.  `(link) <separate-setup-parameters_>`_
@@ -381,9 +381,9 @@ methodology-specific ontology/schema, were one to exist.
     the dataset table in the front-end. Finally, ``'warnings'`` should contain
     a list of metadata keys that will be marked as "unreliable". These allow
     the front-end to display a warning for values that are worth including, but
-    are known to sometimes have an incorrect value (see
-    :py:meth:`~nexusLIMS.extractors.digital_micrograph.parse_643_titan` for an
-    example of this).
+    are known to sometimes have an incorrect value (see the FEI Titan STEM
+    instrument profile in ``nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643``
+    for an example of this).
 
 As much as possible, the metadata extractors make use of widely adopted
 third-party libraries for proprietary data access. For most data files, this
@@ -404,11 +404,9 @@ this file is included in the outputted XML record to provide users with an easy
 way to query the metadata for their files in a text-based format. Likewise, the
 :py:func:`~nexusLIMS.extractors.parse_metadata` function also handles
 generating a PNG format preview image (saved in a subdirectory within :ref:`NX_DATA_PATH <nexuslims-data-path>`),
-which is saved in the same folder as the JSON file described above. The actual preview generation is currently
-implemented in
-:py:meth:`~nexusLIMS.extractors.thumbnail_generator.sig_to_thumbnail` for files
-that have a `HyperSpy <hyperspy_>`_ reader implemented, and in
-:py:meth:`~nexusLIMS.extractors.thumbnail_generator.down_sample_image` for
+which is saved in the same folder as the JSON file described above. The actual preview generation is implemented
+using the plugin-based preview generator system in :py:mod:`nexusLIMS.extractors.plugins.preview_generators`,
+which includes HyperSpy-based preview generation for complex formats and simple image downsampling for
 simpler formats, such as the TIF images produced by certain SEMs.
 
 The metadata dictionaries and path to the preview image are maintained at the

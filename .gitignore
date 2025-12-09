@@ -12,6 +12,7 @@ backups
 .~lock*
 
 # Other files
+TODO.txt
 nemo_api_schemas
 .access_token
 gitlab_backup.log

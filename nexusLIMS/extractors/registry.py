@@ -183,7 +183,34 @@ class ExtractorRegistry:
                 )
 
         logger.info("Discovered %d extractor plugins", discovered_count)
+
+        # Register instrument profiles
+        self._register_instrument_profiles()
+
         self._discovered = True
+
+    def _register_instrument_profiles(self) -> None:
+        """
+        Register all instrument profiles.
+
+        This calls the profile package's auto-discovery function to load
+        and register all instrument-specific profiles.
+        """
+        try:
+            from nexusLIMS.extractors.plugins.profiles import register_all_profiles
+
+            register_all_profiles()
+        except ImportError as e:
+            logger.warning(
+                "Could not import profiles package: %s. No profiles will be loaded.",
+                e,
+            )
+        except Exception as e:  # noqa: BLE001
+            logger.warning(
+                "Error registering instrument profiles: %s",
+                e,
+                exc_info=True,
+            )
 
     def _is_extractor(self, obj: Any) -> bool:
         """

@@ -11,6 +11,7 @@ Documentation for developers contributing to or extending NexusLIMS.
 
    development
    writing_extractor_plugins
+   instrument_profiles
    uv_migration
    database
    schema_documentation
