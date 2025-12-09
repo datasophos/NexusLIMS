@@ -77,17 +77,13 @@ def register_all_profiles() -> None:
     if config.settings.NX_LOCAL_PROFILES_PATH:
         local_path_obj = config.settings.NX_LOCAL_PROFILES_PATH
         logger.info("Loading local profiles from: %s", local_path_obj)
-        local_count = _load_profiles_from_directory(
-            local_path_obj, module_prefix=None
-        )
+        local_count = _load_profiles_from_directory(local_path_obj, module_prefix=None)
         profile_count += local_count
 
     logger.info("Loaded %d total instrument profile modules", profile_count)
 
 
-def _load_profiles_from_directory(
-    directory: Path, module_prefix: str | None
-) -> int:
+def _load_profiles_from_directory(directory: Path, module_prefix: str | None) -> int:
     """
     Load all profile modules from a directory.
 
@@ -125,9 +121,7 @@ def _load_profiles_from_directory(
                 module_name = f"nexuslims_local_profile_{profile_file.stem}"
 
                 # Load the profile file as a module
-                spec = importlib.util.spec_from_file_location(
-                    module_name, profile_file
-                )
+                spec = importlib.util.spec_from_file_location(module_name, profile_file)
                 if spec is None or spec.loader is None:
                     logger.warning(
                         "Failed to create module spec for local profile: %s",
@@ -141,7 +135,7 @@ def _load_profiles_from_directory(
                 profile_count += 1
                 logger.debug("Loaded local profile: %s", profile_file.name)
 
-            except Exception as e:  # noqa: BLE001
+            except Exception as e:
                 logger.warning(
                     "Failed to load local profile '%s': %s",
                     profile_file,
@@ -164,7 +158,7 @@ def _load_profiles_from_directory(
                 profile_count += 1
                 logger.debug("Loaded built-in profile module: %s", module_name)
 
-            except Exception as e:  # noqa: BLE001
+            except Exception as e:
                 logger.warning(
                     "Failed to load built-in profile module '%s': %s",
                     module_name,

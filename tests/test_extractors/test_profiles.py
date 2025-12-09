@@ -1,3 +1,4 @@
+# ruff: noqa: SLF001, PLR2004, ARG002
 """Tests for InstrumentProfileRegistry and profile system.
 
 This test suite comprehensively tests the instrument profile registry system,
@@ -6,7 +7,6 @@ extraction customization.
 """
 
 # pylint: disable=C0116
-# ruff: noqa: D102
 
 import logging
 import os
@@ -26,7 +26,6 @@ from nexusLIMS.extractors.profiles import (
     get_profile_registry,
 )
 from tests.test_instrument_factory import make_quanta_sem, make_titan_stem
-
 
 # ============================================================================
 # FIXTURES
@@ -448,12 +447,17 @@ class TestLocalProfileLoading:
         """Load built-in profiles using package-based import."""
         # This test verifies that the existing built-in profile loading still works
         # We use the actual built-in profiles directory
-        built_in_dir = Path(__file__).parent.parent.parent / "nexusLIMS" / "extractors" / "plugins" / "profiles"
+        built_in_dir = (
+            Path(__file__).parent.parent.parent
+            / "nexusLIMS"
+            / "extractors"
+            / "plugins"
+            / "profiles"
+        )
 
         # Load should succeed without errors
         count = _load_profiles_from_directory(
-            built_in_dir,
-            module_prefix="nexusLIMS.extractors.plugins.profiles"
+            built_in_dir, module_prefix="nexusLIMS.extractors.plugins.profiles"
         )
 
         # Should load at least the 3 existing profiles
@@ -484,7 +488,9 @@ get_profile_registry().register(test_profile)
             # Verify profile was registered
             all_profiles = registry.get_all_profiles()
             assert "Test-Local-Instrument" in all_profiles
-            assert all_profiles["Test-Local-Instrument"].static_metadata["test"] == "local"
+            assert (
+                all_profiles["Test-Local-Instrument"].static_metadata["test"] == "local"
+            )
         finally:
             registry.clear()
 

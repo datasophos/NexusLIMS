@@ -88,8 +88,7 @@ class TestRecordBuilder:
 
         # Create copies of existing files with uppercase extensions
         test_dir = (
-            self.instr_data_path
-            / "Titan_TEM/researcher_a/project_alpha/20181113"
+            self.instr_data_path / "Titan_TEM/researcher_a/project_alpha/20181113"
         )
 
         # Copy image_001.dm3 to image_001_copy.DM3 (uppercase)
@@ -133,8 +132,7 @@ class TestRecordBuilder:
 
         # Create test TIFF files with various case combinations
         test_dir = (
-            self.instr_data_path
-            / "Titan_TEM/researcher_a/project_alpha/20181113"
+            self.instr_data_path / "Titan_TEM/researcher_a/project_alpha/20181113"
         )
 
         # Use image_001.dm3 as source, copy to various .tif extensions

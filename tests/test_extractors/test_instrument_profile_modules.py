@@ -5,7 +5,6 @@ the FEI Titan STEM, FEI Titan TEM, and JEOL JEM microscopes work correctly.
 """
 
 # pylint: disable=C0116
-# ruff: noqa: D102
 
 from pathlib import Path
 from unittest.mock import Mock
@@ -14,7 +13,6 @@ import pytest
 
 from nexusLIMS.extractors.base import ExtractionContext, InstrumentProfile
 from nexusLIMS.extractors.profiles import get_profile_registry
-
 
 # ============================================================================
 # FIXTURES
@@ -31,8 +29,9 @@ def clean_registry():
     registry = get_profile_registry()
     # Ensure profiles are loaded by triggering discovery
     from nexusLIMS.extractors.plugins.profiles import register_all_profiles
+
     register_all_profiles()
-    yield registry
+    return registry
     # No cleanup needed - profiles persist across tests
 
 
@@ -52,7 +51,7 @@ def mock_instrument():
 def mock_context():
     """Create a mock extraction context."""
 
-    def _make_context(filename: str = "test.dm3", instrument_name: str = None):
+    def _make_context(filename: str = "test.dm3", instrument_name: str | None = None):
         context = Mock(spec=ExtractionContext)
         context.file_path = Path(filename)
         if instrument_name:
@@ -142,7 +141,7 @@ class TestFEITitanSTEMProfile:
         result = profile.parsers["metadata_warnings"](metadata, context)
 
         # Should have added warnings for all three fields
-        assert len(result["nx_meta"]["warnings"]) == 3
+        assert len(result["nx_meta"]["warnings"]) == 3  # noqa: PLR2004
         assert ["Detector"] in result["nx_meta"]["warnings"]
         assert ["Operator"] in result["nx_meta"]["warnings"]
         assert ["Specimen"] in result["nx_meta"]["warnings"]

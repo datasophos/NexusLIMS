@@ -1,13 +1,13 @@
 """EDAX EDS spectrum (.spc/.msa) extractor plugin."""
 
 import logging
-from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 from hyperspy.io import load
 
 from nexusLIMS.extractors.base import ExtractionContext
 from nexusLIMS.extractors.utils import _set_instr_name_and_time
+from nexusLIMS.instruments import get_instr_from_filepath
 from nexusLIMS.utils import try_getting_dict_value
 
 logger = logging.getLogger(__name__)
@@ -233,9 +233,9 @@ def get_spc_metadata(filename):
     mdict : dict
         A description of the file's metadata.
     """
-    from nexusLIMS.instruments import get_instr_from_filepath
-
-    context = ExtractionContext(file_path=filename, instrument=get_instr_from_filepath(filename))
+    context = ExtractionContext(
+        file_path=filename, instrument=get_instr_from_filepath(filename)
+    )
     extractor = SpcExtractor()
     return extractor.extract(context)
 
@@ -257,8 +257,8 @@ def get_msa_metadata(filename):
     mdict : dict
         A description of the file's metadata.
     """
-    from nexusLIMS.instruments import get_instr_from_filepath
-
-    context = ExtractionContext(file_path=filename, instrument=get_instr_from_filepath(filename))
+    context = ExtractionContext(
+        file_path=filename, instrument=get_instr_from_filepath(filename)
+    )
     extractor = MsaExtractor()
     return extractor.extract(context)

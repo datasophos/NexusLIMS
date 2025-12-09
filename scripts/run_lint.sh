@@ -7,6 +7,6 @@ echo "Running ruff format check..."
 uv run ruff format . --check
 
 echo "Running ruff linting..."
-uv run ruff check nexusLIMS tests
+uv run ruff check nexusLIMS tests --output-format=concise
 
 echo "✓ All linting checks passed!"

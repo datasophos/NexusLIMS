@@ -29,6 +29,8 @@ from typing import Any, Callable, Dict, Tuple
 import hyperspy.api as hs
 import numpy as np
 
+from nexusLIMS.extractors.base import ExtractionContext
+from nexusLIMS.extractors.registry import get_registry
 from nexusLIMS.instruments import get_instr_from_filepath
 from nexusLIMS.utils import current_system_tz, replace_instrument_data_path
 from nexusLIMS.version import __version__
@@ -40,7 +42,6 @@ from .plugins.preview_generators.image_preview import (
     image_to_square_thumbnail,
 )
 from .plugins.preview_generators.text_preview import text_to_thumbnail
-from .registry import get_registry
 
 logger = logging.getLogger(__name__)
 PLACEHOLDER_PREVIEW = Path(__file__).parent / "assets" / "extractor_error.png"
@@ -57,7 +58,6 @@ __all__ = [
     "parse_metadata",
     "sig_to_thumbnail",
     "text_to_thumbnail",
-    "thumbnail_generator",
     "unextracted_preview_map",
     "utils",
 ]
@@ -118,11 +118,10 @@ def _add_extraction_details(
     # Fallback to inspect.getmodule() for old-style functions
     if module_name is None:  # pragma: no cover
         module = inspect.getmodule(extractor_module)  # pragma: no cover
-        if module is not None:  # pragma: no cover
-            module_name = module.__name__  # pragma: no cover
-        else:
-            # Last resort - use "unknown"
-            module_name = "unknown"
+        # Last resort - use "unknown"
+        module_name = (  # pragma: no cover
+            module.__name__ if module is not None else "unknown"
+        )
 
     nx_meta["nx_meta"]["NexusLIMS Extraction"] = {
         "Date": dt.now(tz=current_system_tz()).isoformat(),
@@ -173,8 +172,6 @@ def parse_metadata(
         The file path of the generated preview image, or `None` if it was not
         requested
     """
-    from nexusLIMS.extractors.base import ExtractionContext
-
     extension = fname.suffix[1:]
 
     # Create extraction context
@@ -202,8 +199,8 @@ def parse_metadata(
 
     extractor_method = ExtractorMethod(extractor.name)
 
-    # Handle preview generation logic
-    # If the extractor is the basic fallback and extension is not in unextracted_preview_map,
+    # Handle preview generation logic if the extractor is
+    # the basic fallback and extension is not in unextracted_preview_map,
     # don't generate a preview
     if extractor.name == "basic_file_info_extractor":
         if extension not in unextracted_preview_map:
@@ -260,7 +257,7 @@ def parse_metadata(
     return nx_meta, preview_fname
 
 
-def create_preview(fname: Path, *, overwrite: bool) -> Path | None:
+def create_preview(fname: Path, *, overwrite: bool) -> Path | None:  # noqa: PLR0911
     """
     Generate a preview image for a given file using the plugin system.
 
@@ -282,10 +279,6 @@ def create_preview(fname: Path, *, overwrite: bool) -> Path | None:
         The filename of the generated preview image; if None, a preview could not be
         successfully generated.
     """
-    from nexusLIMS.extractors.base import ExtractionContext
-    from nexusLIMS.extractors.registry import get_registry
-    from nexusLIMS.instruments import get_instr_from_filepath
-
     preview_fname = replace_instrument_data_path(fname, ".thumb.png")
 
     # Skip if preview exists and overwrite is False

@@ -7,13 +7,13 @@ import logging
 import re
 from decimal import Decimal, InvalidOperation
 from math import degrees
-from pathlib import Path
 from typing import Any, Tuple
 
 from lxml import etree
 
 from nexusLIMS.extractors.base import ExtractionContext
 from nexusLIMS.extractors.utils import _set_instr_name_and_time
+from nexusLIMS.instruments import get_instr_from_filepath
 from nexusLIMS.utils import set_nested_dict_value, sort_dict, try_getting_dict_value
 
 logger = logging.getLogger(__name__)
@@ -724,8 +724,8 @@ def get_quanta_metadata(filename):
     mdict : dict
         A description of the file's metadata.
     """
-    from nexusLIMS.instruments import get_instr_from_filepath
-
-    context = ExtractionContext(file_path=filename, instrument=get_instr_from_filepath(filename))
+    context = ExtractionContext(
+        file_path=filename, instrument=get_instr_from_filepath(filename)
+    )
     extractor = QuantaTiffExtractor()
     return extractor.extract(context)

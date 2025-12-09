@@ -1,5 +1,5 @@
 # pylint: disable=C0116
-# ruff: noqa: D102, PLR2004
+# ruff: noqa: PLR2004
 
 """Tests for plugin extractor classes (not adapters).
 

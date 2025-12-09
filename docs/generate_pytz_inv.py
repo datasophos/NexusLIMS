@@ -1,5 +1,6 @@
-import sphobjinv as soi
 import os
+
+import sphobjinv as soi
 
 # Create a new inventory
 inv = soi.Inventory()

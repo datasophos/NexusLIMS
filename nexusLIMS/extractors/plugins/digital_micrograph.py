@@ -18,6 +18,8 @@ from rsciio.utils.exceptions import (
 )
 
 from nexusLIMS.extractors.base import ExtractionContext
+from nexusLIMS.extractors.plugins.profiles import register_all_profiles
+from nexusLIMS.extractors.profiles import get_profile_registry
 from nexusLIMS.extractors.utils import (
     _coerce_to_list,
     _find_val,
@@ -36,8 +38,6 @@ from nexusLIMS.extractors.utils import (
 )
 from nexusLIMS.instruments import get_instr_from_filepath
 from nexusLIMS.utils import (
-    get_nested_dict_key,
-    get_nested_dict_value_by_path,
     remove_dict_nones,
     remove_dtb_element,
     set_nested_dict_value,
@@ -99,7 +99,9 @@ class DM3Extractor:
 
         return metadata
 
-    def _apply_profile(self, metadata: dict[str, Any], context: ExtractionContext) -> dict[str, Any]:
+    def _apply_profile(
+        self, metadata: dict[str, Any], context: ExtractionContext
+    ) -> dict[str, Any]:
         """
         Apply instrument-specific profile transformations.
 
@@ -115,14 +117,12 @@ class DM3Extractor:
         dict
             Modified metadata dictionary with profile transformations applied
         """
-        from nexusLIMS.extractors.profiles import get_profile_registry
-
         profile = get_profile_registry().get_profile(context.instrument)
 
         if profile is None:
             logger.debug(
                 "No profile found for instrument: %s",
-                context.instrument.name if context.instrument else "None"
+                context.instrument.name if context.instrument else "None",
             )
             return metadata
 
@@ -132,7 +132,7 @@ class DM3Extractor:
         for parser_name, parser_func in profile.parsers.items():
             try:
                 metadata = parser_func(metadata, context)
-            except Exception as e:  # noqa: BLE001
+            except Exception as e:
                 logger.warning(
                     "Profile parser '%s' failed: %s",
                     parser_name,
@@ -144,7 +144,7 @@ class DM3Extractor:
             try:
                 if key in metadata:
                     metadata[key] = transform_func(metadata[key])
-            except Exception as e:  # noqa: BLE001
+            except Exception as e:
                 logger.warning(
                     "Profile transformation '%s' failed: %s",
                     key,
@@ -154,9 +154,9 @@ class DM3Extractor:
         # Inject static metadata
         for key, value in profile.static_metadata.items():
             try:
-                keys = key.split('.')
+                keys = key.split(".")
                 set_nested_dict_value(metadata, keys, value)
-            except Exception as e:  # noqa: BLE001
+            except Exception as e:
                 logger.warning(
                     "Profile static metadata injection '%s' failed: %s",
                     key,
@@ -281,7 +281,9 @@ def get_dm3_metadata(filename: Path, instrument=None):
 
         # Get the instrument object associated with this file
         # Use provided instrument if available, otherwise look it up
-        instr = instrument if instrument is not None else get_instr_from_filepath(filename)
+        instr = (
+            instrument if instrument is not None else get_instr_from_filepath(filename)
+        )
         # get the modification time (as ISO format):
         mtime = filename.stat().st_mtime
         mtime_iso = dt.fromtimestamp(
@@ -339,10 +341,6 @@ def _apply_profile_to_metadata(metadata: dict, instrument, file_path: Path) -> d
     dict
         Modified metadata dictionary with profile transformations applied
     """
-    from nexusLIMS.extractors.base import ExtractionContext
-    from nexusLIMS.extractors.plugins.profiles import register_all_profiles
-    from nexusLIMS.extractors.profiles import get_profile_registry
-
     # Ensure profiles are loaded
     register_all_profiles()
 
@@ -360,7 +358,7 @@ def _apply_profile_to_metadata(metadata: dict, instrument, file_path: Path) -> d
     for parser_name, parser_func in profile.parsers.items():
         try:
             metadata = parser_func(metadata, context)
-        except Exception as e:  # noqa: BLE001
+        except Exception as e:
             logger.warning(
                 "Profile parser '%s' failed: %s",
                 parser_name,
@@ -372,7 +370,7 @@ def _apply_profile_to_metadata(metadata: dict, instrument, file_path: Path) -> d
         try:
             if key in metadata:
                 metadata[key] = transform_func(metadata[key])
-        except Exception as e:  # noqa: BLE001
+        except Exception as e:
             logger.warning(
                 "Profile transformation '%s' failed: %s",
                 key,
@@ -382,9 +380,9 @@ def _apply_profile_to_metadata(metadata: dict, instrument, file_path: Path) -> d
     # Inject static metadata
     for key, value in profile.static_metadata.items():
         try:
-            keys = key.split('.')
+            keys = key.split(".")
             set_nested_dict_value(metadata, keys, value)
-        except Exception as e:  # noqa: BLE001
+        except Exception as e:
             logger.warning(
                 "Profile static metadata injection '%s' failed: %s",
                 key,
@@ -392,50 +390,6 @@ def _apply_profile_to_metadata(metadata: dict, instrument, file_path: Path) -> d
             )
 
     return metadata
-
-
-# DEPRECATED: This function has been replaced by the instrument profile system.
-# See: nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643
-# Kept for reference only - remove in future version.
-#
-# def parse_643_titan(mdict):
-#     """
-#     Add/adjust metadata specific to the 643 FEI Titan.
-#
-#     ('`FEI-Titan-STEM-630901 in *********`')
-#     """
-#     # The 643 Titan will likely have session info defined, but it may not be
-#     # accurate, so add it to the warning list
-#     for val in ["Detector", "Operator", "Specimen"]:
-#         mdict["nx_meta"]["warnings"].append([val])
-#
-#     # the 643Titan sets the Imaging mode to "EFTEM DIFFRACTION" when an
-#     # actual diffraction pattern is taken
-#     if (
-#         "Imaging Mode" in mdict["nx_meta"]
-#         and mdict["nx_meta"]["Imaging Mode"] == "EFTEM DIFFRACTION"
-#     ):
-#         mdict["nx_meta"]["DatasetType"] = "Diffraction"
-#         mdict["nx_meta"]["Data Type"] = "TEM_EFTEM_Diffraction"
-#
-#     return mdict
-
-
-# DEPRECATED: This function has been replaced by the instrument profile system.
-# See: nexusLIMS.extractors.plugins.profiles.fei_titan_tem_642
-# Kept for reference only - remove in future version.
-
-
-# DEPRECATED: This function has been replaced by the instrument profile system.
-# See: nexusLIMS.extractors.plugins.profiles.jeol_jem_642
-# Kept for reference only - remove in future version.
-
-# DEPRECATED: This dictionary has been replaced by the instrument profile system.
-# Instrument-specific parsing is now handled by profiles in:
-# - nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643
-# - nexusLIMS.extractors.plugins.profiles.fei_titan_tem_642
-# - nexusLIMS.extractors.plugins.profiles.jeol_jem_642
-# Remove in future version.
 
 
 def get_pre_path(mdict: Dict) -> List[str]:

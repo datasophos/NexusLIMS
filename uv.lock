@@ -1184,16 +1184,12 @@ dependencies = [
     { name = "scikit-learn" },
 ]
 
-[package.optional-dependencies]
-docs = [
-    { name = "myst-parser" },
-]
-
 [package.dev-dependencies]
 dev = [
     { name = "autodoc-pydantic" },
     { name = "coverage" },
     { name = "freezegun" },
+    { name = "myst-parser" },
     { name = "pydata-sphinx-theme" },
     { name = "pytest" },
     { name = "pytest-cov" },
@@ -1220,7 +1216,6 @@ requires-dist = [
     { name = "filelock", specifier = ">=3.0.0" },
     { name = "hyperspy", extras = ["speed"], specifier = ">=2.1.0,<3.0.0" },
     { name = "lxml", specifier = ">=4.9.2,<5.0.0" },
-    { name = "myst-parser", marker = "extra == 'docs'", specifier = ">=4.0.1" },
     { name = "pixstem", specifier = ">=0.4.0" },
     { name = "pydantic", extras = ["email"], specifier = ">=2.12.0" },
     { name = "pydantic-settings", specifier = ">=2.12.0" },
@@ -1232,13 +1227,13 @@ requires-dist = [
     { name = "rich", specifier = ">=13.0.0" },
     { name = "scikit-learn", specifier = ">=1.2.0,<2.0.0" },
 ]
-provides-extras = ["docs"]
 
 [package.metadata.requires-dev]
 dev = [
     { name = "autodoc-pydantic", specifier = ">=2.2.0" },
     { name = "coverage", specifier = ">=7.0.0" },
     { name = "freezegun", specifier = ">=1.5.5" },
+    { name = "myst-parser", specifier = ">=4.0.1" },
     { name = "pydata-sphinx-theme", specifier = ">=0.16.1" },
     { name = "pytest", specifier = ">=7.2" },
     { name = "pytest-cov", specifier = ">=4.0.0" },

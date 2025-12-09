@@ -5,6 +5,7 @@ from datetime import datetime as dt
 from typing import Any
 
 from nexusLIMS.extractors.base import ExtractionContext
+from nexusLIMS.instruments import get_instr_from_filepath
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +22,7 @@ class BasicFileInfoExtractor:
     name = "basic_file_info_extractor"
     priority = 0  # Lowest priority - only used as fallback
 
-    def supports(self, context: ExtractionContext) -> bool:
+    def supports(self, context: ExtractionContext) -> bool:  # noqa: ARG002
         """
         Check if this extractor supports the given file.
 
@@ -96,8 +97,8 @@ def get_basic_metadata(filename):
     mdict : dict
         A description of the file in lieu of any metadata extracted from it.
     """
-    from nexusLIMS.instruments import get_instr_from_filepath
-
-    context = ExtractionContext(file_path=filename, instrument=get_instr_from_filepath(filename))
+    context = ExtractionContext(
+        file_path=filename, instrument=get_instr_from_filepath(filename)
+    )
     extractor = BasicFileInfoExtractor()
     return extractor.extract(context)

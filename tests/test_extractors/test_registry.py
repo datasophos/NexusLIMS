@@ -1,3 +1,4 @@
+# ruff: noqa: SLF001, ARG002, PLR2004
 """Tests for ExtractorRegistry plugin discovery and selection.
 
 This test suite comprehensively tests the plugin registry system while remaining
@@ -11,8 +12,7 @@ from pathlib import Path
 import pytest
 
 from nexusLIMS.extractors.base import ExtractionContext
-from nexusLIMS.extractors.registry import ExtractorRegistry, get_registry
-
+from nexusLIMS.extractors.registry import get_registry
 
 # ============================================================================
 # FIXTURES
@@ -169,8 +169,22 @@ class TestManualRegistration:
             def supports(self, context):
                 # Only match non-common extensions to be registered as wildcard
                 ext = context.file_path.suffix.lower().lstrip(".")
-                common = {"dm3", "dm4", "ser", "emi", "tif", "tiff", "spc", "msa",
-                         "txt", "png", "jpg", "jpeg", "bmp", "gif"}
+                common = {
+                    "dm3",
+                    "dm4",
+                    "ser",
+                    "emi",
+                    "tif",
+                    "tiff",
+                    "spc",
+                    "msa",
+                    "txt",
+                    "png",
+                    "jpg",
+                    "jpeg",
+                    "bmp",
+                    "gif",
+                }
                 return ext not in common
 
             def extract(self, context):
@@ -609,8 +623,22 @@ class TestExtensionQueries:
             def supports(self, context):
                 # Only match non-common extensions to be wildcard
                 ext = context.file_path.suffix.lower().lstrip(".")
-                common = {"dm3", "dm4", "ser", "emi", "tif", "tiff", "spc", "msa",
-                         "txt", "png", "jpg", "jpeg", "bmp", "gif"}
+                common = {
+                    "dm3",
+                    "dm4",
+                    "ser",
+                    "emi",
+                    "tif",
+                    "tiff",
+                    "spc",
+                    "msa",
+                    "txt",
+                    "png",
+                    "jpg",
+                    "jpeg",
+                    "bmp",
+                    "gif",
+                }
                 return ext not in common
 
             def extract(self, context):
@@ -641,8 +669,22 @@ class TestWildcardExtractors:
                 # Only match extensions NOT in the common extension list
                 # This makes it a wildcard extractor
                 ext = context.file_path.suffix.lower().lstrip(".")
-                common = {"dm3", "dm4", "ser", "emi", "tif", "tiff", "spc", "msa",
-                         "txt", "png", "jpg", "jpeg", "bmp", "gif"}
+                common = {
+                    "dm3",
+                    "dm4",
+                    "ser",
+                    "emi",
+                    "tif",
+                    "tiff",
+                    "spc",
+                    "msa",
+                    "txt",
+                    "png",
+                    "jpg",
+                    "jpeg",
+                    "bmp",
+                    "gif",
+                }
                 return ext not in common
 
             def extract(self, context):
@@ -671,8 +713,22 @@ class TestWildcardExtractors:
 
             def supports(self, context):
                 ext = context.file_path.suffix.lower().lstrip(".")
-                common = {"dm3", "dm4", "ser", "emi", "tif", "tiff", "spc", "msa",
-                         "txt", "png", "jpg", "jpeg", "bmp", "gif"}
+                common = {
+                    "dm3",
+                    "dm4",
+                    "ser",
+                    "emi",
+                    "tif",
+                    "tiff",
+                    "spc",
+                    "msa",
+                    "txt",
+                    "png",
+                    "jpg",
+                    "jpeg",
+                    "bmp",
+                    "gif",
+                }
                 # Wildcard that rejects
                 return ext not in common and ext == "nope"
 
@@ -685,8 +741,22 @@ class TestWildcardExtractors:
 
             def supports(self, context):
                 ext = context.file_path.suffix.lower().lstrip(".")
-                common = {"dm3", "dm4", "ser", "emi", "tif", "tiff", "spc", "msa",
-                         "txt", "png", "jpg", "jpeg", "bmp", "gif"}
+                common = {
+                    "dm3",
+                    "dm4",
+                    "ser",
+                    "emi",
+                    "tif",
+                    "tiff",
+                    "spc",
+                    "msa",
+                    "txt",
+                    "png",
+                    "jpg",
+                    "jpeg",
+                    "bmp",
+                    "gif",
+                }
                 return ext not in common  # Wildcard that matches
 
             def extract(self, context):
@@ -759,8 +829,22 @@ class TestWildcardExtractors:
 
             def supports(self, context):
                 ext = context.file_path.suffix.lower().lstrip(".")
-                common = {"dm3", "dm4", "ser", "emi", "tif", "tiff", "spc", "msa",
-                         "txt", "png", "jpg", "jpeg", "bmp", "gif"}
+                common = {
+                    "dm3",
+                    "dm4",
+                    "ser",
+                    "emi",
+                    "tif",
+                    "tiff",
+                    "spc",
+                    "msa",
+                    "txt",
+                    "png",
+                    "jpg",
+                    "jpeg",
+                    "bmp",
+                    "gif",
+                }
                 return ext not in common
 
             def extract(self, context):
@@ -772,8 +856,22 @@ class TestWildcardExtractors:
 
             def supports(self, context):
                 ext = context.file_path.suffix.lower().lstrip(".")
-                common = {"dm3", "dm4", "ser", "emi", "tif", "tiff", "spc", "msa",
-                         "txt", "png", "jpg", "jpeg", "bmp", "gif"}
+                common = {
+                    "dm3",
+                    "dm4",
+                    "ser",
+                    "emi",
+                    "tif",
+                    "tiff",
+                    "spc",
+                    "msa",
+                    "txt",
+                    "png",
+                    "jpg",
+                    "jpeg",
+                    "bmp",
+                    "gif",
+                }
                 return ext not in common
 
             def extract(self, context):
@@ -1168,7 +1266,7 @@ class TestErrorHandling:
             registry.clear()
 
     def test_extract_exception_not_tested_in_registry(self, registry):
-        """Registry doesn't call extract(), so broken extract() is okay for selection."""
+        """Registry doesn't call extract() so broken extract() is okay for selection."""
 
         class BrokenExtractMethod:
             name = "broken_extract"
@@ -1442,8 +1540,22 @@ class TestMultipleExtractorsPerExtension:
             def supports(self, context):
                 # Only match non-common extensions to be wildcard
                 ext = context.file_path.suffix.lower().lstrip(".")
-                common = {"dm3", "dm4", "ser", "emi", "tif", "tiff", "spc", "msa",
-                         "txt", "png", "jpg", "jpeg", "bmp", "gif"}
+                common = {
+                    "dm3",
+                    "dm4",
+                    "ser",
+                    "emi",
+                    "tif",
+                    "tiff",
+                    "spc",
+                    "msa",
+                    "txt",
+                    "png",
+                    "jpg",
+                    "jpeg",
+                    "bmp",
+                    "gif",
+                }
                 return ext not in common
 
             def extract(self, context):
@@ -1471,7 +1583,9 @@ class TestMultipleExtractorsPerExtension:
 
             def supports(self, context):
                 # Check for FEI in filename
-                return "FEI" in context.file_path.name or "fei" in context.file_path.name
+                return (
+                    "FEI" in context.file_path.name or "fei" in context.file_path.name
+                )
 
             def extract(self, context):
                 return {"nx_meta": {"vendor": "FEI"}}
@@ -1583,8 +1697,7 @@ class TestPluginDiscoveryErrors:
 
             # Should have logged warnings about failed imports
             assert (
-                "Failed to import plugin module" in caplog.text
-                or registry._discovered
+                "Failed to import plugin module" in caplog.text or registry._discovered
             )
         finally:
             registry.clear()

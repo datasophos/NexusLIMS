@@ -126,7 +126,9 @@ class TestUtils:
                 self.instr_data_path / "643Titan",
                 dt_from=datetime.fromisoformat("2019-11-06T15:00:00.000"),
                 dt_to=datetime.fromisoformat("2019-11-06T18:00:00.000"),
-                extensions=get_registry().get_supported_extensions(exclude_fallback=True),
+                extensions=get_registry().get_supported_extensions(
+                    exclude_fallback=True
+                ),
             )
         assert str(exception.value) == "find command was not found on the system PATH"
 
@@ -137,7 +139,9 @@ class TestUtils:
                 Path("..............."),
                 dt_from=datetime.fromisoformat("2019-11-06T15:00:00.000"),
                 dt_to=datetime.fromisoformat("2019-11-06T18:00:00.000"),
-                extensions=get_registry().get_supported_extensions(exclude_fallback=True),
+                extensions=get_registry().get_supported_extensions(
+                    exclude_fallback=True
+                ),
             )
         assert "..............." in str(exception.value)
 

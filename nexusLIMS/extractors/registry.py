@@ -15,10 +15,13 @@ from collections import defaultdict
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
+from nexusLIMS.extractors.base import ExtractionContext
+from nexusLIMS.extractors.plugins.basic_metadata import BasicFileInfoExtractor
+from nexusLIMS.extractors.plugins.profiles import register_all_profiles
+
 if TYPE_CHECKING:
     from nexusLIMS.extractors.base import (
         BaseExtractor,
-        ExtractionContext,
         PreviewGenerator,
     )
 
@@ -84,8 +87,8 @@ class ExtractorRegistry:
         self._wildcard_extractors: list[type[BaseExtractor]] = []
 
         # Preview generators (maps extension -> list of generator classes)
-        self._preview_generators: dict[str, list[type[PreviewGenerator]]] = (
-            defaultdict(list)
+        self._preview_generators: dict[str, list[type[PreviewGenerator]]] = defaultdict(
+            list
         )
 
         # Cache of instantiated preview generators (name -> instance)
@@ -149,9 +152,9 @@ class ExtractorRegistry:
                 module = importlib.import_module(name)
                 logger.debug("Imported plugin module: %s", name)
 
-                # Look for classes that implement BaseExtractor or PreviewGenerator protocol
+                # Look for classes implementing BaseExtractor/PreviewGenerator protocol
                 for _item_name, obj in inspect.getmembers(module, inspect.isclass):
-                    # Skip imported classes (only process classes defined in this module)
+                    # Skip imported classes (only use classes defined in this module)
                     if obj.__module__ != module.__name__:
                         continue
 
@@ -174,7 +177,7 @@ class ExtractorRegistry:
                             obj.priority,
                         )
 
-            except Exception as e:  # noqa: BLE001
+            except Exception as e:
                 logger.warning(
                     "Failed to import plugin module '%s': %s",
                     name,
@@ -197,15 +200,13 @@ class ExtractorRegistry:
         and register all instrument-specific profiles.
         """
         try:
-            from nexusLIMS.extractors.plugins.profiles import register_all_profiles
-
             register_all_profiles()
         except ImportError as e:
             logger.warning(
                 "Could not import profiles package: %s. No profiles will be loaded.",
                 e,
             )
-        except Exception as e:  # noqa: BLE001
+        except Exception as e:
             logger.warning(
                 "Error registering instrument profiles: %s",
                 e,
@@ -241,7 +242,7 @@ class ExtractorRegistry:
         if not hasattr(obj, "supports") or not callable(obj.supports):
             return False
 
-        if not hasattr(obj, "extract") or not callable(obj.extract):
+        if not hasattr(obj, "extract") or not callable(obj.extract):  # noqa: SIM103
             return False
 
         return True
@@ -275,7 +276,7 @@ class ExtractorRegistry:
         if not hasattr(obj, "supports") or not callable(obj.supports):
             return False
 
-        if not hasattr(obj, "generate") or not callable(obj.generate):
+        if not hasattr(obj, "generate") or not callable(obj.generate):  # noqa: SIM103
             return False
 
         return True
@@ -368,7 +369,6 @@ class ExtractorRegistry:
         ]
 
         # Import here to avoid circular imports
-        from nexusLIMS.extractors.base import ExtractionContext
 
         # Instantiate the extractor
         instance = self._get_instance(extractor_class)
@@ -381,7 +381,7 @@ class ExtractorRegistry:
             try:
                 if instance.supports(dummy_context):
                     supported.add(ext)
-            except Exception as e:  # noqa: BLE001
+            except Exception as e:
                 logger.debug(
                     "Error checking if %s supports .%s: %s",
                     extractor_class.name,
@@ -466,7 +466,7 @@ class ExtractorRegistry:
                             context.file_path.name,
                         )
                         return instance
-                except Exception as e:  # noqa: BLE001
+                except Exception as e:
                     logger.warning(
                         "Error in %s.supports(): %s",
                         instance.name,
@@ -485,7 +485,7 @@ class ExtractorRegistry:
                         context.file_path.name,
                     )
                     return instance
-            except Exception as e:  # noqa: BLE001
+            except Exception as e:
                 logger.warning(
                     "Error in wildcard %s.supports(): %s",
                     instance.name,
@@ -509,8 +509,6 @@ class ExtractorRegistry:
         BaseExtractor
             BasicFileInfoExtractor instance
         """
-        from nexusLIMS.extractors.plugins.basic_metadata import BasicFileInfoExtractor
-
         return self._get_instance(BasicFileInfoExtractor)
 
     def get_extractors_for_extension(self, extension: str) -> list[BaseExtractor]:
@@ -547,7 +545,7 @@ class ExtractorRegistry:
             for extractor_class in self._extractors[ext]
         ]
 
-    def get_supported_extensions(self, exclude_fallback: bool = False) -> set[str]:
+    def get_supported_extensions(self, exclude_fallback: bool = False) -> set[str]:  # noqa: FBT001, FBT002
         """
         Get all file extensions that have registered extractors.
 
@@ -690,9 +688,6 @@ class ExtractorRegistry:
             "gif",
         ]
 
-        # Import here to avoid circular imports
-        from nexusLIMS.extractors.base import ExtractionContext
-
         # Instantiate the generator
         instance = self._get_preview_instance(generator_class)
 
@@ -704,7 +699,7 @@ class ExtractorRegistry:
             try:
                 if instance.supports(dummy_context):
                     supported.add(ext)
-            except Exception as e:  # noqa: BLE001
+            except Exception as e:
                 logger.debug(
                     "Error checking if %s supports .%s: %s",
                     generator_class.name,
@@ -793,7 +788,7 @@ class ExtractorRegistry:
                             context.file_path.name,
                         )
                         return instance
-                except Exception as e:  # noqa: BLE001
+                except Exception as e:
                     logger.warning(
                         "Error in %s.supports(): %s",
                         instance.name,

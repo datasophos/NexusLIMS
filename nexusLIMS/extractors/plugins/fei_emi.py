@@ -45,7 +45,7 @@ class SerEmiExtractor:
         extension = context.file_path.suffix.lower().lstrip(".")
         return extension == "ser"
 
-    def extract(self, context: ExtractionContext) -> dict[str, Any]:
+    def extract(self, context: ExtractionContext) -> dict[str, Any]:  # noqa: PLR0915
         """
         Extract metadata from a .ser file and its accompanying .emi file.
 
@@ -715,8 +715,8 @@ def get_ser_metadata(filename):
     mdict : dict
         A description of the file's metadata.
     """
-    from nexusLIMS.instruments import get_instr_from_filepath
-
-    context = ExtractionContext(file_path=filename, instrument=get_instr_from_filepath(filename))
+    context = ExtractionContext(
+        file_path=filename, instrument=get_instr_from_filepath(filename)
+    )
     extractor = SerEmiExtractor()
     return extractor.extract(context)

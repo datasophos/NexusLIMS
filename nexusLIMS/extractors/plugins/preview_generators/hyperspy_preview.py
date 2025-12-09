@@ -4,6 +4,7 @@ import logging
 import tempfile
 import textwrap
 from pathlib import Path
+from typing import ClassVar
 
 import hyperspy.api as hs_api
 import matplotlib as mpl
@@ -827,7 +828,7 @@ class HyperSpyPreviewGenerator:
     priority = 100
 
     # File extensions that HyperSpy can handle and we want to preview
-    SUPPORTED_EXTENSIONS = {
+    SUPPORTED_EXTENSIONS: ClassVar = {
         "dm3",
         "dm4",
         "ser",
@@ -868,7 +869,7 @@ class HyperSpyPreviewGenerator:
             True if preview was successfully generated, False otherwise
         """
         try:
-            from hyperspy.io import load
+            from hyperspy.io import load  # noqa: PLC0415
 
             logger.debug("Generating HyperSpy preview for: %s", context.file_path)
 
@@ -879,7 +880,7 @@ class HyperSpyPreviewGenerator:
             sig_to_thumbnail(s, output_path, dpi=92)
 
             return output_path.exists()
-        except Exception as e:  # noqa: BLE001
+        except Exception as e:
             logger.warning(
                 "Failed to generate HyperSpy preview for %s: %s",
                 context.file_path,

@@ -21,6 +21,7 @@ _MAX_ROWS_DATA = 17  # Maximum rows for data-style text
 _MAX_COLS = 44  # Maximum columns for text display
 _DEFAULT_SIZE = 5  # default size in inches for the preview
 
+
 def _pad_to_square(im_path: Path, new_width: int = 500):
     """
     Pad an image to square.
@@ -158,7 +159,6 @@ def text_to_thumbnail(
     fig = plt.figure(
         figsize=(_DEFAULT_SIZE, _DEFAULT_SIZE),
         dpi=output_size / _DEFAULT_SIZE,
-        # frameon=False,
     )
 
     plt.axis("off")

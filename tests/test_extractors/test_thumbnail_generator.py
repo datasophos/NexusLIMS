@@ -15,8 +15,6 @@ from hyperspy.misc.utils import stack as hs_stack
 
 from nexusLIMS.extractors.plugins.preview_generators import (
     hyperspy_preview,
-    image_preview,
-    text_preview,
 )
 from nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview import (
     _get_markers_list,
@@ -24,13 +22,11 @@ from nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview import (
     sig_to_thumbnail,
 )
 from nexusLIMS.extractors.plugins.preview_generators.image_preview import (
+    down_sample_image,
     image_to_square_thumbnail,
 )
 from nexusLIMS.extractors.plugins.preview_generators.text_preview import (
     text_to_thumbnail,
-)
-from nexusLIMS.extractors.plugins.preview_generators.image_preview import (
-    down_sample_image,
 )
 from tests.utils import assert_images_equal
 
@@ -199,7 +195,9 @@ class TestThumbnailGenerator:  # pylint: disable=too-many-public-methods
         from unittest.mock import Mock
 
         # Set the logger to DEBUG level for this module
-        logger = logging.getLogger("nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview")
+        logger = logging.getLogger(
+            "nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview"
+        )
         logger.setLevel(logging.DEBUG)
 
         # Create a mock signal with the necessary structure
@@ -238,7 +236,8 @@ class TestThumbnailGenerator:  # pylint: disable=too-many-public-methods
         )
 
         with caplog.at_level(
-            "DEBUG", logger="nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview"
+            "DEBUG",
+            logger="nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview",
         ):
             # This should trigger the label marker creation and catch the exception
             _ = _get_markers_list(mock_signal, tags_dict)
@@ -253,7 +252,9 @@ class TestThumbnailGenerator:  # pylint: disable=too-many-public-methods
         from unittest.mock import Mock
 
         # Set the logger to DEBUG level for this module
-        logger = logging.getLogger("nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview")
+        logger = logging.getLogger(
+            "nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview"
+        )
         logger.setLevel(logging.DEBUG)
 
         # Create a mock signal with the necessary structure
@@ -291,7 +292,8 @@ class TestThumbnailGenerator:  # pylint: disable=too-many-public-methods
         )
 
         with caplog.at_level(
-            "DEBUG", logger="nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview"
+            "DEBUG",
+            logger="nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview",
         ):
             # This should trigger the main marker creation and catch the exception
             _ = _get_markers_list(mock_signal, tags_dict)

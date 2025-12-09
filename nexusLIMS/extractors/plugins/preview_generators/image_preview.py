@@ -3,7 +3,7 @@
 import logging
 import shutil
 from pathlib import Path
-from typing import Tuple
+from typing import ClassVar, Tuple
 
 import matplotlib.pyplot as plt
 from PIL import Image, UnidentifiedImageError
@@ -153,7 +153,7 @@ class ImagePreviewGenerator:
     priority = 100
 
     # Supported image formats
-    SUPPORTED_EXTENSIONS = {
+    SUPPORTED_EXTENSIONS: ClassVar = {
         "png",
         "jpg",
         "jpeg",
@@ -197,19 +197,16 @@ class ImagePreviewGenerator:
             True if preview was successfully generated, False otherwise
         """
         try:
-            logger.debug(
-                "Generating image preview for: %s", context.file_path
-            )
+            logger.debug("Generating image preview for: %s", context.file_path)
 
             # Generate the thumbnail using the local function
-            result = image_to_square_thumbnail(
+            return image_to_square_thumbnail(
                 context.file_path,
                 output_path,
                 output_size=500,
             )
 
-            return result
-        except Exception as e:  # noqa: BLE001
+        except Exception as e:
             logger.warning(
                 "Failed to generate image preview for %s: %s",
                 context.file_path,

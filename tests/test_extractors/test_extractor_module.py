@@ -1,5 +1,5 @@
 # pylint: disable=C0116
-# ruff: noqa: D102
+# ruff: noqa: D102, ARG002
 
 """Tests for nexusLIMS.extractors top-level module functions."""
 
@@ -446,7 +446,7 @@ class TestExtractorModule:
                 self.__module__ = "test_module"
                 self.__name__ = self.__module__
 
-            def __call__(self, f: Path) -> dict:  # noqa: ARG002
+            def __call__(self, f: Path) -> dict:
                 return nx_meta_test
 
         em = ExtractorMethod("test")

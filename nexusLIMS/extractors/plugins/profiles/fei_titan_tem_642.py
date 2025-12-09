@@ -1,3 +1,4 @@
+# ruff: noqa: ARG001
 """Instrument profile for FEI Titan TEM (642 microscope)."""
 
 from __future__ import annotations
@@ -5,6 +6,8 @@ from __future__ import annotations
 import logging
 from typing import TYPE_CHECKING, Any
 
+from nexusLIMS.extractors.base import InstrumentProfile
+from nexusLIMS.extractors.profiles import get_profile_registry
 from nexusLIMS.utils import (
     get_nested_dict_key,
     get_nested_dict_value_by_path,
@@ -41,7 +44,7 @@ def parse_tecnai_metadata(
         Modified metadata dictionary with parsed Tecnai metadata
     """
     # Import the processing function from the DM3 extractor
-    from nexusLIMS.extractors.plugins.digital_micrograph import (
+    from nexusLIMS.extractors.plugins.digital_micrograph import (  # noqa: PLC0415
         process_tecnai_microscope_info,
     )
 
@@ -167,9 +170,6 @@ def detect_diffraction_mode(
 
 
 # Register the profile
-from nexusLIMS.extractors.base import InstrumentProfile
-from nexusLIMS.extractors.profiles import get_profile_registry
-
 fei_titan_tem_642_profile = InstrumentProfile(
     instrument_id="FEI-Titan-TEM",
     parsers={

@@ -1,9 +1,13 @@
+# ruff: noqa: ARG001
 """Instrument profile for FEI Titan STEM (643 microscope)."""
 
 from __future__ import annotations
 
 import logging
 from typing import TYPE_CHECKING, Any
+
+from nexusLIMS.extractors.base import InstrumentProfile
+from nexusLIMS.extractors.profiles import get_profile_registry
 
 if TYPE_CHECKING:
     from nexusLIMS.extractors.base import ExtractionContext
@@ -81,9 +85,6 @@ def detect_eftem_diffraction(
 
 
 # Register the profile
-from nexusLIMS.extractors.base import InstrumentProfile
-from nexusLIMS.extractors.profiles import get_profile_registry
-
 fei_titan_stem_643_profile = InstrumentProfile(
     instrument_id="FEI-Titan-STEM",
     parsers={

@@ -5,6 +5,9 @@ from __future__ import annotations
 import logging
 from typing import TYPE_CHECKING, Any
 
+from nexusLIMS.extractors.base import InstrumentProfile
+from nexusLIMS.extractors.profiles import get_profile_registry
+
 if TYPE_CHECKING:
     from nexusLIMS.extractors.base import ExtractionContext
 
@@ -62,9 +65,6 @@ def detect_diffraction_from_filename(
 
 
 # Register the profile
-from nexusLIMS.extractors.base import InstrumentProfile
-from nexusLIMS.extractors.profiles import get_profile_registry
-
 jeol_jem_642_profile = InstrumentProfile(
     instrument_id="JEOL-JEM-TEM",
     parsers={
