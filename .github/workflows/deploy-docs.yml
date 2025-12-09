@@ -1,0 +1,106 @@
+name: Deploy Documentation
+
+on:
+  # Trigger after the test workflow completes successfully
+  workflow_run:
+    workflows: ["Tests"]
+    types:
+      - completed
+    branches:
+      - main
+
+  # Allow manual deployment
+  workflow_dispatch:
+
+jobs:
+  deploy-docs:
+    # Only deploy if tests passed
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Required to push to gh-pages branch
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Download coverage artifact from test workflow
+        # Download coverage artifact from the workflow_run that triggered this
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const artifacts = await github.rest.actions.listWorkflowRunArtifacts({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: context.payload.workflow_run.id,
+            });
+
+            const coverageArtifact = artifacts.data.artifacts.find(
+              artifact => artifact.name === 'coverage-html-3.11'
+            );
+
+            if (coverageArtifact) {
+              const download = await github.rest.actions.downloadArtifact({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                artifact_id: coverageArtifact.id,
+                archive_format: 'zip',
+              });
+
+              const fs = require('fs');
+              fs.writeFileSync('coverage.zip', Buffer.from(download.data));
+
+              // Extract the zip file
+              const { execSync } = require('child_process');
+              execSync('unzip -q coverage.zip -d tests/coverage');
+            }
+
+      - name: Generate switcher.json
+        # Create version switcher for PyData Sphinx Theme navigation
+        run: python scripts/generate_switcher_json.py
+
+      - name: Build documentation
+        # Build Sphinx documentation (includes API docs, coverage link, and switcher.json)
+        run: ./scripts/build_docs.sh
+
+      - name: Deploy to gh-pages branch
+        # Deploy docs to gh-pages branch in latest/ directory
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Stash any local changes (e.g., uv.lock modifications from uv sync)
+          git stash --include-untracked || true
+
+          git fetch origin gh-pages
+          git checkout gh-pages
+          git pull origin gh-pages
+
+          # Deploy to latest directory (main branch = latest)
+          rm -rf latest
+          mkdir -p latest
+          rsync -avr _build/ latest/
+
+          # Add coverage if available
+          if [ -d "tests/coverage" ]; then
+            mkdir -p latest/coverage
+            rsync -avr tests/coverage/ latest/coverage/
+          fi
+
+          # Commit and push
+          git add latest
+          git commit -m "Deploy docs to latest from main branch" || echo "No changes to commit"
+          git push origin gh-pages
+          echo "✅ Documentation deployed to latest!"
+          echo "🔗 https://datasophos.github.io/NexusLIMS/latest/"
