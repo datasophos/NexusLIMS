@@ -36,9 +36,10 @@ from __future__ import annotations
 import importlib
 import importlib.util
 import logging
-import os
 import pkgutil
 from pathlib import Path
+
+from nexusLIMS import config
 
 logger = logging.getLogger(__name__)
 
@@ -73,19 +74,13 @@ def register_all_profiles() -> None:
     profile_count = _load_profiles_from_directory(package_path, __name__)
 
     # Load local profiles if configured
-    local_path = os.getenv("NX_LOCAL_PROFILES_PATH")
-    if local_path:
-        local_path_obj = Path(local_path)
-        if local_path_obj.exists() and local_path_obj.is_dir():
-            logger.info("Loading local profiles from: %s", local_path)
-            local_count = _load_profiles_from_directory(
-                local_path_obj, module_prefix=None
-            )
-            profile_count += local_count
-        else:
-            logger.warning(
-                "NX_LOCAL_PROFILES_PATH set but directory not found: %s", local_path
-            )
+    if config.settings.NX_LOCAL_PROFILES_PATH:
+        local_path_obj = config.settings.NX_LOCAL_PROFILES_PATH
+        logger.info("Loading local profiles from: %s", local_path_obj)
+        local_count = _load_profiles_from_directory(
+            local_path_obj, module_prefix=None
+        )
+        profile_count += local_count
 
     logger.info("Loaded %d total instrument profile modules", profile_count)
 

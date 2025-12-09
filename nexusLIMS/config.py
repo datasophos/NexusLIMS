@@ -244,6 +244,16 @@ class Settings(BaseSettings):
             "a 'uploaded' subdirectory."
         ),
     )
+    NX_LOCAL_PROFILES_PATH: DirectoryPath | None = Field(
+        None,
+        description=(
+            "Directory for site-specific instrument profiles. These profiles "
+            "customize metadata extraction for instruments unique to your deployment "
+            "without modifying the core NexusLIMS codebase. Profile files should be "
+            "Python modules that register InstrumentProfile objects. If not specified, "
+            "only built-in profiles will be loaded."
+        ),
+    )
 
     @property
     def nexuslims_instrument_data_path(self) -> Path:

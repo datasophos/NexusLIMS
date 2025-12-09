@@ -15,6 +15,7 @@ from unittest.mock import patch
 
 import pytest
 
+from nexusLIMS import config
 from nexusLIMS.extractors.base import InstrumentProfile
 from nexusLIMS.extractors.plugins.profiles import (
     _load_profiles_from_directory,
@@ -557,8 +558,9 @@ profile = InstrumentProfile(
 get_profile_registry().register(profile)
 """)
 
-            # Set environment variable
+            # Set environment variable and refresh config
             with patch.dict(os.environ, {"NX_LOCAL_PROFILES_PATH": str(tmp_path)}):
+                config.refresh_settings()
                 register_all_profiles()
 
             # Verify local profile was loaded
@@ -566,6 +568,7 @@ get_profile_registry().register(profile)
             assert "Custom-Instrument-12345" in all_profiles
         finally:
             registry.clear()
+            config.refresh_settings()  # Reset config after test
 
     def test_register_all_profiles_without_local_path(self):
         """register_all_profiles() works without NX_LOCAL_PROFILES_PATH set."""
@@ -582,34 +585,43 @@ get_profile_registry().register(profile)
 
         try:
             # Ensure variable is not set
-            with patch.dict(os.environ, {}, clear=True):
-                # Clear any existing env vars that might interfere
-                if "NX_LOCAL_PROFILES_PATH" in os.environ:
-                    del os.environ["NX_LOCAL_PROFILES_PATH"]
+            env_backup = os.environ.get("NX_LOCAL_PROFILES_PATH")
+            if "NX_LOCAL_PROFILES_PATH" in os.environ:
+                del os.environ["NX_LOCAL_PROFILES_PATH"]
 
-                # Should not raise
-                register_all_profiles()
+            config.refresh_settings()
 
-                # Profile count should be unchanged (modules already imported)
-                all_profiles = registry.get_all_profiles()
-                assert len(all_profiles) == profiles_before
+            # Should not raise
+            register_all_profiles()
+
+            # Profile count should be unchanged (modules already imported)
+            all_profiles = registry.get_all_profiles()
+            assert len(all_profiles) == profiles_before
         finally:
-            pass  # No cleanup needed - didn't modify registry
+            # Restore environment variable if it existed
+            if env_backup is not None:
+                os.environ["NX_LOCAL_PROFILES_PATH"] = env_backup
+            config.refresh_settings()
 
-    def test_register_all_profiles_with_invalid_path(self, registry, caplog):
-        """register_all_profiles() logs warning for nonexistent path."""
-        try:
-            fake_path = "/nonexistent/path/to/profiles"
+    def test_register_all_profiles_with_invalid_path(self, registry):
+        """Config validation prevents nonexistent NX_LOCAL_PROFILES_PATH."""
+        # Since NX_LOCAL_PROFILES_PATH is a DirectoryPath in pydantic settings,
+        # it will raise ValidationError if the path doesn't exist.
+        # This test verifies that behavior.
+        from pydantic import ValidationError
 
-            caplog.clear()
-            with patch.dict(os.environ, {"NX_LOCAL_PROFILES_PATH": fake_path}):
-                register_all_profiles()
+        fake_path = "/nonexistent/path/to/profiles"
 
-            # Should log warning
-            assert "NX_LOCAL_PROFILES_PATH set but directory not found" in caplog.text
-            assert fake_path in caplog.text
-        finally:
-            registry.clear()
+        with patch.dict(os.environ, {"NX_LOCAL_PROFILES_PATH": fake_path}):
+            # Should raise ValidationError during settings refresh
+            with pytest.raises(ValidationError) as exc_info:
+                config.refresh_settings()
+
+            # Verify the error is about the directory path
+            assert "NX_LOCAL_PROFILES_PATH" in str(exc_info.value)
+
+        # Clean up: refresh settings without the invalid path
+        config.refresh_settings()
 
     def test_local_profile_with_parsers(self, tmp_path, registry):
         """Local profiles can include custom parser functions."""
@@ -664,6 +676,7 @@ get_profile_registry().register(profile)
 """)
 
             with patch.dict(os.environ, {"NX_LOCAL_PROFILES_PATH": str(tmp_path)}):
+                config.refresh_settings()
                 register_all_profiles()
 
                 all_profiles = registry.get_all_profiles()
@@ -681,3 +694,4 @@ get_profile_registry().register(profile)
                 registry.clear()
                 for profile in all_profiles.values():
                     registry.register(profile)
+            config.refresh_settings()  # Reset config after test

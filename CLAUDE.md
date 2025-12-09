@@ -106,11 +106,24 @@ uv run python -m nexusLIMS.builder.record_builder
    - Harvesters create `ReservationEvent` objects with session metadata
 
 3. **Extractors** (`nexusLIMS/extractors/`)
-   - Extract metadata from microscopy file formats
-   - Supported formats: `.dm3/.dm4` (DigitalMicrograph), `.tif` (FEI/Thermo), `.ser/.emi` (FEI TIA), `.spc/.msa` (EDAX)
-   - `extension_reader_map` dictionary maps extensions to extractor functions
+   - Extract metadata from microscopy file formats using a **plugin-based architecture**
+   - **Plugin system** (`extractors/plugins/`):
+     - `basic_metadata.py`: Extracts file system metadata (size, timestamps, etc.)
+     - `quanta_tif.py`: FEI/Thermo `.tif` format extractor
+     - `digital_micrograph.py`: Gatan `.dm3/.dm4` format extractor
+     - `edax_spc_map.py`: EDAX `.spc/.msa` spectrum format extractor
+     - `fei_emi.py`: FEI TIA `.ser/.emi` format extractor
+     - Plugins auto-discovered via `discover_plugins()` function
+   - **Instrument profiles** (`extractors/plugins/profiles/`):
+     - Customize metadata extraction for specific instruments without modifying core extractors
+     - Supports both built-in profiles (shipped with codebase) and local profiles (external directory)
+     - Local profiles loaded from `NX_LOCAL_PROFILES_PATH` environment variable
+     - Profiles can add static metadata, parse/transform fields, add warnings, override extractors
+   - **Preview generators** (`extractors/plugins/preview_generators/`):
+     - Generate thumbnail images from microscopy data files
+     - Plugin-based system with image and text preview generators
    - Each extractor returns dict with `nx_meta` key containing NexusLIMS-specific metadata
-   - `thumbnail_generator.py` creates preview images
+   - `base.py` defines base classes: `ExtractorPlugin`, `InstrumentProfile`, `PreviewGeneratorPlugin`
 
 4. **Record Builder** (`nexusLIMS/builder/record_builder.py`)
    - Main orchestrator: `process_new_records()` is the entry point
@@ -159,6 +172,7 @@ Environment variables are loaded from `.env` file (see `.env.example`):
 - `NX_DB_PATH`: SQLite database path
 - `NX_LOG_PATH` (optional): Directory for application logs (defaults to `NX_DATA_PATH/logs/`)
 - `NX_RECORDS_PATH` (optional): Directory for generated XML records (defaults to `NX_DATA_PATH/records/`)
+- `NX_LOCAL_PROFILES_PATH` (optional): Directory for site-specific instrument profiles (loaded in addition to built-in profiles)
 
 **NEMO integration:**
 - Supports multiple NEMO instances via `NX_NEMO_ADDRESS_N`, `NX_NEMO_TOKEN_N` pattern
@@ -177,6 +191,8 @@ Sessions progress through states in `session_log.record_status`:
 - `COMPLETED`: Record successfully built and uploaded
 - `ERROR`: Record building failed
 - `NO_FILES_FOUND`: No files found (may retry if within delay window)
+- `NO_CONSENT`: A user did not consent to have their data harvested for the session
+- `NO_RESERVATION`: There was no matching reservation found for this session
 
 ### File Delay Mechanism
 `NX_FILE_DELAY_DAYS` controls retry window for NO_FILES_FOUND sessions. Record builder continues searching until delay expires.
@@ -201,6 +217,31 @@ Each instrument in `instruments` table must specify:
 - Pylint with custom configuration
 - NumPy-style docstrings
 
+### Configuration Management (CRITICAL RULE)
+
+**NEVER use `os.getenv()` or `os.environ` directly for configuration.**
+
+All environment variable access MUST go through the `nexusLIMS.config` module:
+
+```python
+# ❌ WRONG - Do not do this
+import os
+path = os.getenv("NX_DATA_PATH")
+
+# ✅ CORRECT - Always do this
+from nexusLIMS import config
+path = config.NX_DATA_PATH
+```
+
+**Why this rule exists:**
+- Centralizes configuration management in one place
+- Provides type safety and validation
+- Enables proper default values and error handling
+- Makes testing easier (can mock `config` module)
+- Ensures consistent behavior across the codebase
+
+**The only exception:** The `nexusLIMS/config.py` module itself, which is responsible for reading environment variables and exposing them as module-level attributes.
+
 ## Python Version Support
 
 Supports Python 3.11 and 3.12 only (as specified in `.python-version` and tested via tox).
@@ -209,6 +250,7 @@ Supports Python 3.11 and 3.12 only (as specified in `.python-version` and tested
 
 - This is a **fork** maintained by Datasophos, not affiliated with NIST
 - Original NIST documentation may be outdated: https://pages.nist.gov/NexusLIMS
-- When adding new file format support, create extractor in `extractors/` and add to `extension_reader_map`
+- **When adding new file format support**: Create an `ExtractorPlugin` subclass in `extractors/plugins/` - it will be auto-discovered
+- **When customizing instrument behavior**: Create an `InstrumentProfile` in `extractors/plugins/profiles/` (built-in) or in the directory specified by `NX_LOCAL_PROFILES_PATH` (local/site-specific)
 - HyperSpy is used extensively for reading/processing microscopy data
-- The project structure mirrors the data structure: `NEXUSLIMS_PATH` parallels `MMFNEXUS_PATH`
+- The project structure mirrors the data structure: `NX_DATA_PATH` parallels `NX_INSTRUMENT_DATA_PATH`
