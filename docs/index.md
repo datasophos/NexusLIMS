@@ -78,13 +78,12 @@ Complete API documentation and changelog.
 
 **Ready to streamline your microscopy data management?**
 
-> ```{button-link} https://datasophos.co/#contact
-> :color: secondary
-> :shadow:
-> :align: center
->
-> Contact Datasophos
-> ```
+```{button-link} https://datasophos.co/#contact
+:color: secondary
+:shadow:
+:align: center
+
+Contact Datasophos
 ```
 
 ````
@@ -93,6 +92,12 @@ Complete API documentation and changelog.
 
 ## Quick Links
 
-- **Repository**: https://github.com/datasophos/NexusLIMS
-- **Issues**: https://github.com/datasophos/NexusLIMS/issues
-- **Datasophos**: https://datasophos.co
+- **Repository**: [https://github.com/datasophos/NexusLIMS](https://github.com/datasophos/NexusLIMS)
+- **Issues**: [https://github.com/datasophos/NexusLIMS/issues](https://github.com/datasophos/NexusLIMS/issues)
+- **Datasophos**: [https://datasophos.co](https://datasophos.co)
+
+---
+
+```{note}
+**Documentation built:** {sub-ref}`today`
+```
