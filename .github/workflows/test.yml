@@ -68,6 +68,7 @@ jobs:
 
   coverage:
     # Combine coverage from all test runs and upload to Codecov
+    name: Coverage Reports
     needs: test
     runs-on: ubuntu-latest
     steps:

@@ -9,6 +9,7 @@ on:
 
 jobs:
   deploy-pr-docs:
+    name: Build/Deploy PR Docs
     # Only deploy if:
     # 1. Tests passed
     # 2. It was triggered by a pull_request event
