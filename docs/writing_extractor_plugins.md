@@ -411,6 +411,6 @@ Ensure your extractor:
 
 ## Further Reading
 
-- [Extractor Overview](extractors.rst)
+- [Extractor Overview](extractors.md)
 - [Instrument Profiles](instrument_profiles.md)
 - [API Documentation](api/nexusLIMS/nexusLIMS.extractors.md)

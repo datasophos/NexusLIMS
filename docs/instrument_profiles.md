@@ -512,6 +512,6 @@ profile = InstrumentProfile(
 ## See Also
 
 - [Writing Extractor Plugins](writing_extractor_plugins.md) - Learn to write new extractors
-- [Extractors Overview](extractors.rst) - Understanding the extraction system
+- [Extractors Overview](extractors.md) - Understanding the extraction system
 - API Reference: {class}`nexusLIMS.extractors.base.InstrumentProfile`
 - API Reference: {class}`nexusLIMS.extractors.profiles.InstrumentProfileRegistry`
