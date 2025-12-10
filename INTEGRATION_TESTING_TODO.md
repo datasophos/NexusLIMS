@@ -27,14 +27,16 @@ This file tracks progress on implementing Docker-based integration testing for N
 - [x] Add NEMO service to `docker-compose.yml`
 - [x] Test NEMO service manually
 
-## Phase 3: CDCS Docker Service (Week 3) ⏸️ PENDING
+## Phase 3: CDCS Docker Service (Week 3) ✅ COMPLETED
 
-- [ ] Research nexuslims-cdcs-docker repository
-- [ ] Create `tests/integration/docker/cdcs/Dockerfile`
-- [ ] Create `tests/integration/docker/cdcs/init_schema.sh`
-- [ ] Copy schema to `tests/integration/docker/cdcs/fixtures/`
-- [ ] Add CDCS services to `docker-compose.yml`
-- [ ] Test CDCS service manually
+- [x] Research nexuslims-cdcs-docker repository
+- [x] Create `tests/integration/docker/cdcs/Dockerfile`
+- [x] Create `tests/integration/docker/cdcs/docker-entrypoint.sh`
+- [x] Create `tests/integration/docker/cdcs/init_schema.py`
+- [x] Mount schema from source (no duplication via volume mount)
+- [x] Add CDCS services to `docker-compose.yml`
+- [x] Create `tests/integration/docker/cdcs/README.md`
+- [ ] Test CDCS service manually (requires Docker daemon)
 
 ## Phase 4: Integration Test Fixtures (Week 4) ⏸️ PENDING
 
@@ -77,9 +79,9 @@ This file tracks progress on implementing Docker-based integration testing for N
 
 ## Progress Summary
 
-- **Completed Phases**: 2/9
-- **Current Phase**: Phase 3 (CDCS Docker Service)
-- **Overall Progress**: 22%
+- **Completed Phases**: 3/9
+- **Current Phase**: Phase 4 (Integration Test Fixtures)
+- **Overall Progress**: 33%
 - **Last Updated**: 2025-12-09
 
 ### Phase 1 Completion Notes
@@ -117,3 +119,44 @@ Phase 2 NEMO Docker service is complete:
 - Created `configure_settings.py` to enable periodic table plugin
 - Added NEMO service to docker-compose.yml with healthcheck
 - Comprehensive README.md with usage, testing, and troubleshooting documentation
+
+### Phase 3 Completion Notes
+
+Phase 3 CDCS Docker service is complete:
+- Researched NexusLIMS-CDCS-Docker repository for architecture patterns
+- Created comprehensive Dockerfile based on `datasophos/NexusLIMS-CDCS`:
+  - Python 3.11-slim base image
+  - Clones NexusLIMS-CDCS repository and installs dependencies
+  - Runs as unprivileged `cdcs` user for security
+- Implemented `docker-entrypoint.sh` initialization script:
+  - Waits for PostgreSQL and MongoDB to be ready
+  - Runs Django migrations and collects static files
+  - Creates default superuser (admin/admin)
+  - Runs schema initialization
+  - Starts Celery worker and beat for background tasks
+  - Starts uWSGI server on port 8080
+- Created `init_schema.py` for automated schema loading:
+  - Uploads Nexus Experiment XSD schema as CDCS template
+  - Creates "NexusLIMS Test Workspace" for testing
+  - Uses Django ORM for database operations
+- Added four services to docker-compose.yml:
+  - `cdcs-mongo`: MongoDB 7 for record storage
+  - `cdcs-postgres`: PostgreSQL 16 for Django data
+  - `cdcs-redis`: Redis 7 for Celery task queue
+  - `cdcs`: Main Django/Curator application
+- Schema file mounted as volume (no duplication):
+  - Volume mount: `../../../nexusLIMS/schemas/nexus-experiment.xsd:/fixtures/nexus-experiment.xsd:ro`
+  - Single source of truth for schema
+  - Changes immediately reflected in tests
+- Comprehensive health checks for all services:
+  - MongoDB: mongosh ping check (5s interval)
+  - PostgreSQL: pg_isready check (5s interval)
+  - Redis: redis-cli ping check (5s interval)
+  - CDCS: HTTP curl check (10s interval, 60s start period)
+- Created extensive README.md documentation:
+  - Architecture overview and service descriptions
+  - Configuration and environment variables
+  - Usage instructions and API endpoints
+  - Health check details and initialization process
+  - Troubleshooting guide with common issues
+  - Development notes for schema updates and debugging

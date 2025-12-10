@@ -37,6 +37,111 @@ services:
     networks:
       - nexuslims-test
 
+  # MongoDB for CDCS
+  cdcs-mongo:
+    image: mongo:7
+    container_name: nexuslims-test-cdcs-mongo
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=admin
+      - MONGO_INITDB_DATABASE=cdcs
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    networks:
+      - nexuslims-test
+
+  # PostgreSQL for CDCS
+  cdcs-postgres:
+    image: postgres:16
+    container_name: nexuslims-test-cdcs-postgres
+    environment:
+      - POSTGRES_USER=cdcs
+      - POSTGRES_PASSWORD=cdcs
+      - POSTGRES_DB=cdcs
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cdcs"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    networks:
+      - nexuslims-test
+
+  # Redis for CDCS
+  cdcs-redis:
+    image: redis:7-alpine
+    container_name: nexuslims-test-cdcs-redis
+    command: redis-server --requirepass cdcs
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    networks:
+      - nexuslims-test
+
+  # CDCS service (Curator/Django application)
+  cdcs:
+    build:
+      context: ./cdcs
+      dockerfile: Dockerfile
+    container_name: nexuslims-test-cdcs
+    ports:
+      - "8080:8080"
+    depends_on:
+      cdcs-mongo:
+        condition: service_healthy
+      cdcs-postgres:
+        condition: service_healthy
+      cdcs-redis:
+        condition: service_healthy
+    environment:
+      # Django configuration
+      - DJANGO_SETTINGS_MODULE=mdcs.settings
+      - DJANGO_SECRET_KEY=test-secret-key-not-for-production-use
+      - SERVER_URI=http://localhost:8080
+      - ALLOWED_HOSTS=*
+      - SERVER_NAME=NexusLIMS Test
+
+      # MongoDB configuration
+      - MONGO_HOST=cdcs-mongo
+      - MONGO_PORT=27017
+      - MONGO_DB=cdcs
+      - MONGO_USER=admin
+      - MONGO_PASS=admin
+
+      # PostgreSQL configuration
+      - POSTGRES_HOST=cdcs-postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=cdcs
+      - POSTGRES_USER=cdcs
+      - POSTGRES_PASS=cdcs
+
+      # Redis configuration
+      - REDIS_HOST=cdcs-redis
+      - REDIS_PORT=6379
+      - REDIS_PASS=cdcs
+
+      # uWSGI configuration
+      - UWSGI_PROCESSES=2
+    volumes:
+      # Mount the nexus-experiment.xsd schema from the source repository
+      # This avoids file duplication and ensures we always use the latest schema
+      - ../../../nexusLIMS/schemas/nexus-experiment.xsd:/fixtures/nexus-experiment.xsd:ro
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+      start_period: 60s
+    networks:
+      - nexuslims-test
+
 networks:
   nexuslims-test:
     name: nexuslims-test
