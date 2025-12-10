@@ -161,10 +161,20 @@ When the CDCS container starts:
 5. **Create superuser**: Default admin user is created if it doesn't exist
 6. **Load schema**: `init_schema.py` uploads Nexus Experiment XSD template
 7. **Create workspace**: Test workspace is created for record storage
-8. **Start Celery**: Background task worker and scheduler are started
-9. **Start uWSGI**: Web server begins accepting requests
+8. **Create marker file**: `/srv/curator/.init_complete` is created to prevent re-initialization
+9. **Start Celery**: Background task worker and scheduler are started
+10. **Start uWSGI**: Web server begins accepting requests
 
 The entire process takes approximately 30-60 seconds.
+
+### Idempotent Initialization
+
+The initialization script (`init_schema.py`) uses a marker file to prevent duplicate data creation:
+
+- **Marker file location**: `/srv/curator/.init_complete`
+- **Behavior**: If this file exists, initialization is skipped
+- **Benefit**: You can safely restart the container (`docker compose restart cdcs`) without creating duplicate schemas or workspaces
+- **Reset**: To force re-initialization, run `docker compose down -v` to remove all volumes
 
 ## Troubleshooting
 

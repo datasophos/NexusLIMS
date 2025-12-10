@@ -13,6 +13,7 @@ This script is run automatically during container startup by docker-entrypoint.s
 import os
 import sys
 import time
+from pathlib import Path
 
 # Set up Django environment
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mdcs.settings")
@@ -115,6 +116,14 @@ def main():
     print("CDCS Schema Initialization")
     print("=" * 50)
 
+    # Check if schema has already been initialized
+    marker_file = Path("/srv/curator/.init_complete")
+    if marker_file.exists():
+        print("Schema already initialized (marker file exists)")
+        print("To reinitialize, run: docker compose down -v")
+        print("=" * 50)
+        return
+
     try:
         # Give Django a moment to fully initialize
         time.sleep(1)
@@ -127,6 +136,10 @@ def main():
 
         # Create workspace
         workspace = create_workspace()
+
+        # Create marker file to prevent re-initialization
+        marker_file.touch()
+        print(f"Created initialization marker: {marker_file}")
 
         print("=" * 50)
         print("Initialization complete!")

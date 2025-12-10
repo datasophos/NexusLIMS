@@ -160,3 +160,9 @@ Phase 3 CDCS Docker service is complete:
   - Health check details and initialization process
   - Troubleshooting guide with common issues
   - Development notes for schema updates and debugging
+- **Enhancement to Phase 2**: Added idempotent initialization to both NEMO and CDCS:
+  - NEMO uses `/nemo/.init_complete` marker file
+  - CDCS uses `/srv/curator/.init_complete` marker file
+  - Prevents duplicate data creation on container restart
+  - Safe to run `docker compose restart` without `down -v`
+  - Forces clean slate only when explicitly requested via `docker compose down -v`

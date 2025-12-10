@@ -14,6 +14,7 @@ import json
 import os
 import sys
 from datetime import datetime
+from pathlib import Path
 
 import django
 
@@ -422,6 +423,14 @@ def main():
     print("Initializing NEMO test database")
     print("=" * 60)
 
+    # Check if database has already been initialized
+    marker_file = Path("/nemo/.init_complete")
+    if marker_file.exists():
+        print("Database already initialized (marker file exists)")
+        print("To reinitialize, run: docker compose down -v")
+        print("=" * 60)
+        return
+
     # Load seed data
     seed_data = load_seed_data()
 
@@ -442,6 +451,10 @@ def main():
     # Optionally create sample reservations and usage events
     if seed_data.get("create_sample_data", False):
         create_sample_reservations_and_usage(users, tools, projects)
+
+    # Create marker file to prevent re-initialization
+    marker_file.touch()
+    print(f"Created initialization marker: {marker_file}")
 
     print("=" * 60)
     print("Database initialization complete!")
