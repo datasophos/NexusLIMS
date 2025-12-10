@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Migration Guide: v1 to v2 &#8212; NexusLIMS 2.0.0 documentation</title>
+    <title>Migration Guide: v1 to v2 &#8212; NexusLIMS 2.1.0a0 documentation</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="_static/documentation_options.js?v=51b770b3"></script>
+    <script src="_static/documentation_options.js?v=cd47123d"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/design-tabs.js?v=f930bc37"></script>
@@ -49,7 +49,7 @@
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.0.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.1.0a0';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
@@ -61,8 +61,8 @@
     <link rel="prev" title="Getting Started" href="getting_started.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.0.0" />
-    <meta name="docbuild:last-update" content="Dec, 09, 2025"/>
+  <meta name="docsearch:version" content="2.1.0a0" />
+    <meta name="docbuild:last-update" content="Dec, 10, 2025"/>
   </head>
   
   
@@ -128,8 +128,8 @@
       
     
     
-    <img src="_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.0.0 documentation - Home"/>
-    <img src="_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.0.0 documentation - Home"/>
+    <img src="_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.1.0a0 documentation - Home"/>
+    <img src="_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.1.0a0 documentation - Home"/>
   
   
 </a></div>
@@ -471,7 +471,7 @@
 <li><p><strong>Dependency Management</strong>: Migration from Poetry to <code class="docutils literal notranslate"><span class="pre">uv</span></code> for faster, more reliable package management</p></li>
 <li><p><strong>Environment Variables</strong>: Standardized naming with <code class="docutils literal notranslate"><span class="pre">NX_</span></code> prefix for consistency</p></li>
 <li><p><strong>Configuration System</strong>: Centralized configuration via <code class="docutils literal notranslate"><span class="pre">nexusLIMS.config</span></code> module with validation</p></li>
-<li><p><strong>New Features</strong>: Email notifications, optional log/record paths, improved NEMO harvester support</p></li>
+<li><p><strong>New Features</strong>: Extensible extractor and instrument-specific parser pluging, email notifications, optional log/record paths, improved NEMO harvester support</p></li>
 </ol>
 </section>
 <section id="transition-to-uv">
@@ -524,16 +524,11 @@ pip<span class="w"> </span>uninstall<span class="w"> </span>poetry
 </section>
 <section id="environment-variable-changes">
 <h2>Environment Variable Changes<a class="headerlink" href="#environment-variable-changes" title="Link to this heading">#</a></h2>
-<p>Environment variable naming has been standardized for better consistency. <strong>You must update your ``.env`` file</strong> to use the new variable names.</p>
+<p>Environment variable naming has been standardized for better consistency. <strong>You must update your <code class="docutils literal notranslate"><span class="pre">.env</span></code> file</strong> to use the new variable names.</p>
 <section id="renamed-variables">
 <h3>Renamed Variables<a class="headerlink" href="#renamed-variables" title="Link to this heading">#</a></h3>
 <p>The following variables have been renamed:</p>
 <div class="pst-scrollable-table-container"><table class="table">
-<colgroup>
-<col style="width: 40.0%" />
-<col style="width: 40.0%" />
-<col style="width: 20.0%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p><strong>Old Name (v1.x)</strong></p></th>
 <th class="head"><p><strong>New Name (v2.0+)</strong></p></th>
@@ -581,10 +576,6 @@ pip<span class="w"> </span>uninstall<span class="w"> </span>poetry
 <h3>New Variables<a class="headerlink" href="#new-variables" title="Link to this heading">#</a></h3>
 <p>The following variables are new in v2.0:</p>
 <div class="pst-scrollable-table-container"><table class="table">
-<colgroup>
-<col style="width: 40.0%" />
-<col style="width: 60.0%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p><strong>Variable</strong></p></th>
 <th class="head"><p><strong>Purpose</strong></p></th>
@@ -628,11 +619,6 @@ pip<span class="w"> </span>uninstall<span class="w"> </span>poetry
 <section id="general-configuration">
 <h3>General Configuration<a class="headerlink" href="#general-configuration" title="Link to this heading">#</a></h3>
 <div class="pst-scrollable-table-container"><table class="table">
-<colgroup>
-<col style="width: 30.0%" />
-<col style="width: 50.0%" />
-<col style="width: 20.0%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p><strong>Variable</strong></p></th>
 <th class="head"><p><strong>Description</strong></p></th>
@@ -679,11 +665,6 @@ pip<span class="w"> </span>uninstall<span class="w"> </span>poetry
 <section id="cdcs-authentication">
 <h3>CDCS Authentication<a class="headerlink" href="#cdcs-authentication" title="Link to this heading">#</a></h3>
 <div class="pst-scrollable-table-container"><table class="table">
-<colgroup>
-<col style="width: 30.0%" />
-<col style="width: 50.0%" />
-<col style="width: 20.0%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p><strong>Variable</strong></p></th>
 <th class="head"><p><strong>Description</strong></p></th>
@@ -723,11 +704,6 @@ pip<span class="w"> </span>uninstall<span class="w"> </span>poetry
 <h3>NEMO Harvester Configuration<a class="headerlink" href="#nemo-harvester-configuration" title="Link to this heading">#</a></h3>
 <p>Multiple NEMO harvesters can be configured using numbered suffixes (<code class="docutils literal notranslate"><span class="pre">_1</span></code>, <code class="docutils literal notranslate"><span class="pre">_2</span></code>, etc.):</p>
 <div class="pst-scrollable-table-container"><table class="table">
-<colgroup>
-<col style="width: 30.0%" />
-<col style="width: 50.0%" />
-<col style="width: 20.0%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p><strong>Variable</strong></p></th>
 <th class="head"><p><strong>Description</strong></p></th>
@@ -763,11 +739,6 @@ pip<span class="w"> </span>uninstall<span class="w"> </span>poetry
 <h3>Email Notification Configuration<a class="headerlink" href="#email-notification-configuration" title="Link to this heading">#</a></h3>
 <p>Email notifications are sent by <code class="docutils literal notranslate"><span class="pre">nexuslims-process-records</span></code> when errors are detected:</p>
 <div class="pst-scrollable-table-container"><table class="table">
-<colgroup>
-<col style="width: 30.0%" />
-<col style="width: 50.0%" />
-<col style="width: 20.0%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p><strong>Variable</strong></p></th>
 <th class="head"><p><strong>Description</strong></p></th>
@@ -1029,11 +1000,11 @@ mkdir<span class="w"> </span>-p<span class="w"> </span>/path/to/nexuslims/logs
 <li><p><strong>Review the error message carefully</strong> - Pydantic provides detailed validation errors</p></li>
 <li><p><strong>Check the example file</strong>: Compare your <code class="docutils literal notranslate"><span class="pre">.env</span></code> with <code class="docutils literal notranslate"><span class="pre">.env.example</span></code></p></li>
 <li><p><strong>Consult the logs</strong>: Check <code class="docutils literal notranslate"><span class="pre">NX_LOG_PATH</span></code> (or <code class="docutils literal notranslate"><span class="pre">NX_DATA_PATH/logs/</span></code>) for details</p></li>
-<li><p><strong>Open an issue</strong>: <a class="github reference external" href="https://github.com/datasophos/NexusLIMS/issues">datasophos/NexusLIMS#issues</a></p></li>
+<li><p><strong>Open an issue</strong>: https://github.com/datasophos/NexusLIMS/issues</p></li>
 </ol>
 <p>For professional migration support, deployment assistance, or custom development:</p>
 <ul class="simple">
-<li><p><strong>Contact Datasophos</strong>: <a class="reference external" href="https://datasophos.co/#contact">https://datasophos.co/#contact</a></p></li>
+<li><p><strong>Contact Datasophos</strong>: https://datasophos.co/#contact</p></li>
 </ul>
 </section>
 <section id="further-reading">
@@ -1041,7 +1012,7 @@ mkdir<span class="w"> </span>-p<span class="w"> </span>/path/to/nexuslims/logs
 <ul class="simple">
 <li><p><a class="reference internal" href="getting_started.html#getting-started"><span class="std std-ref">Getting Started</span></a> - Fresh installation guide for v2.0</p></li>
 <li><p><a class="reference internal" href="record_building.html#record-building"><span class="std std-ref">Record building workflow</span></a> - Understanding the record building workflow</p></li>
-<li><p><a class="reference internal" href="api/nexusLIMS.html#module-nexusLIMS.config" title="nexusLIMS.config"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.config</span></code></a> - Configuration module API documentation</p></li>
+<li><p><a class="reference internal" href="api/nexusLIMS/nexusLIMS.config.html#module-nexusLIMS.config" title="nexusLIMS.config"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.config</span></code></a> - Configuration module API documentation</p></li>
 <li><p><a class="reference external" href="https://docs.astral.sh/uv/">uv documentation</a> - Learn more about uv</p></li>
 </ul>
 </section>
@@ -1150,7 +1121,7 @@ mkdir<span class="w"> </span>-p<span class="w"> </span>/path/to/nexuslims/logs
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="_sources/migration.rst.txt"
+      <li><a href="_sources/migration.md.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div></div>

@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Overview: module code &#8212; NexusLIMS 2.0.0 documentation</title>
+    <title>Overview: module code &#8212; NexusLIMS 2.1.0a0 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=51b770b3"></script>
+    <script src="../_static/documentation_options.js?v=cd47123d"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
@@ -48,7 +48,7 @@
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.0.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.1.0a0';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
@@ -58,8 +58,8 @@
     <link rel="search" title="Search" href="../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.0.0" />
-    <meta name="docbuild:last-update" content="Dec, 09, 2025"/>
+  <meta name="docsearch:version" content="2.1.0a0" />
+    <meta name="docbuild:last-update" content="Dec, 10, 2025"/>
   </head>
   
   
@@ -125,8 +125,8 @@
       
     
     
-    <img src="../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.0.0 documentation - Home"/>
-    <img src="../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.0.0 documentation - Home"/>
+    <img src="../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.1.0a0 documentation - Home"/>
+    <img src="../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.1.0a0 documentation - Home"/>
   
   
 </a></div>
@@ -448,6 +448,10 @@
                 <article class="bd-article">
                   
   <h1>All modules for which code is available</h1>
+<ul><li><a href="PIL/Image.html">PIL.Image</a></li>
+<li><a href="click/core.html">click.core</a></li>
+<li><a href="logging.html">logging</a></li>
+<li><a href="nexusLIMS.html">nexusLIMS</a></li>
 <ul><li><a href="nexusLIMS/builder/record_builder.html">nexusLIMS.builder.record_builder</a></li>
 <li><a href="nexusLIMS/cdcs.html">nexusLIMS.cdcs</a></li>
 <li><a href="nexusLIMS/cli/process_records.html">nexusLIMS.cli.process_records</a></li>
@@ -455,12 +459,22 @@
 <li><a href="nexusLIMS/db.html">nexusLIMS.db</a></li>
 <ul><li><a href="nexusLIMS/db/session_handler.html">nexusLIMS.db.session_handler</a></li>
 </ul><li><a href="nexusLIMS/extractors.html">nexusLIMS.extractors</a></li>
-<ul><li><a href="nexusLIMS/extractors/basic_metadata.html">nexusLIMS.extractors.basic_metadata</a></li>
-<li><a href="nexusLIMS/extractors/digital_micrograph.html">nexusLIMS.extractors.digital_micrograph</a></li>
-<li><a href="nexusLIMS/extractors/edax.html">nexusLIMS.extractors.edax</a></li>
-<li><a href="nexusLIMS/extractors/fei_emi.html">nexusLIMS.extractors.fei_emi</a></li>
-<li><a href="nexusLIMS/extractors/quanta_tif.html">nexusLIMS.extractors.quanta_tif</a></li>
-<li><a href="nexusLIMS/extractors/thumbnail_generator.html">nexusLIMS.extractors.thumbnail_generator</a></li>
+<ul><li><a href="nexusLIMS/extractors/base.html">nexusLIMS.extractors.base</a></li>
+<li><a href="nexusLIMS/extractors/plugins/basic_metadata.html">nexusLIMS.extractors.plugins.basic_metadata</a></li>
+<li><a href="nexusLIMS/extractors/plugins/digital_micrograph.html">nexusLIMS.extractors.plugins.digital_micrograph</a></li>
+<li><a href="nexusLIMS/extractors/plugins/edax.html">nexusLIMS.extractors.plugins.edax</a></li>
+<li><a href="nexusLIMS/extractors/plugins/fei_emi.html">nexusLIMS.extractors.plugins.fei_emi</a></li>
+<li><a href="nexusLIMS/extractors/plugins/preview_generators/hyperspy_preview.html">nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview</a></li>
+<li><a href="nexusLIMS/extractors/plugins/preview_generators/image_preview.html">nexusLIMS.extractors.plugins.preview_generators.image_preview</a></li>
+<li><a href="nexusLIMS/extractors/plugins/preview_generators/text_preview.html">nexusLIMS.extractors.plugins.preview_generators.text_preview</a></li>
+<li><a href="nexusLIMS/extractors/plugins/profiles.html">nexusLIMS.extractors.plugins.profiles</a></li>
+<ul><li><a href="nexusLIMS/extractors/plugins/profiles/fei_titan_stem_643.html">nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643</a></li>
+<li><a href="nexusLIMS/extractors/plugins/profiles/fei_titan_tem_642.html">nexusLIMS.extractors.plugins.profiles.fei_titan_tem_642</a></li>
+<li><a href="nexusLIMS/extractors/plugins/profiles/jeol_jem_642.html">nexusLIMS.extractors.plugins.profiles.jeol_jem_642</a></li>
+</ul><li><a href="nexusLIMS/extractors/plugins/quanta_tif.html">nexusLIMS.extractors.plugins.quanta_tif</a></li>
+<li><a href="nexusLIMS/extractors/profiles.html">nexusLIMS.extractors.profiles</a></li>
+<li><a href="nexusLIMS/extractors/registry.html">nexusLIMS.extractors.registry</a></li>
+<li><a href="nexusLIMS/extractors/utils.html">nexusLIMS.extractors.utils</a></li>
 </ul><li><a href="nexusLIMS/harvesters/nemo.html">nexusLIMS.harvesters.nemo</a></li>
 <ul><li><a href="nexusLIMS/harvesters/nemo/connector.html">nexusLIMS.harvesters.nemo.connector</a></li>
 <li><a href="nexusLIMS/harvesters/nemo/exceptions.html">nexusLIMS.harvesters.nemo.exceptions</a></li>
@@ -469,7 +483,8 @@
 <li><a href="nexusLIMS/instruments.html">nexusLIMS.instruments</a></li>
 <li><a href="nexusLIMS/schemas/activity.html">nexusLIMS.schemas.activity</a></li>
 <li><a href="nexusLIMS/utils.html">nexusLIMS.utils</a></li>
-<li><a href="pathlib.html">pathlib</a></li>
+</ul><li><a href="pathlib.html">pathlib</a></li>
+<li><a href="rich/console.html">rich.console</a></li>
 </ul>
 
                 </article>

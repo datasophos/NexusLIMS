@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Extractors &#8212; NexusLIMS 2.0.0 documentation</title>
+    <title>Extractors &#8212; NexusLIMS 2.1.0a0 documentation</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="_static/documentation_options.js?v=51b770b3"></script>
+    <script src="_static/documentation_options.js?v=cd47123d"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/design-tabs.js?v=f930bc37"></script>
@@ -49,7 +49,7 @@
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.0.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.1.0a0';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
@@ -61,8 +61,8 @@
     <link rel="prev" title="Record building workflow" href="record_building.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.0.0" />
-    <meta name="docbuild:last-update" content="Dec, 09, 2025"/>
+  <meta name="docsearch:version" content="2.1.0a0" />
+    <meta name="docbuild:last-update" content="Dec, 10, 2025"/>
   </head>
   
   
@@ -128,8 +128,8 @@
       
     
     
-    <img src="_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.0.0 documentation - Home"/>
-    <img src="_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.0.0 documentation - Home"/>
+    <img src="_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.1.0a0 documentation - Home"/>
+    <img src="_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.1.0a0 documentation - Home"/>
   
   
 </a></div>
@@ -406,6 +406,7 @@
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="record_building.html">Record building workflow</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Extractors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="taxonomy.html">NexusLIMS taxonomy</a></li>
@@ -477,15 +478,7 @@ supported file types, extraction capabilities, and level of support for
 each format.</p>
 <section id="quick-reference">
 <h2>Quick Reference<a class="headerlink" href="#quick-reference" title="Link to this heading">#</a></h2>
-<div class="pst-scrollable-table-container"><table class="table" id="id2">
-<caption><span class="caption-number">Table 1 </span><span class="caption-text">Supported File Formats</span><a class="headerlink" href="#id2" title="Link to this table">#</a></caption>
-<colgroup>
-<col style="width: 15.0%" />
-<col style="width: 15.0%" />
-<col style="width: 20.0%" />
-<col style="width: 15.0%" />
-<col style="width: 35.0%" />
-</colgroup>
+<div class="pst-scrollable-table-container"><table class="table">
 <thead>
 <tr class="row-odd"><th class="head"><p><strong>Extension</strong></p></th>
 <th class="head"><p><strong>Support</strong></p></th>
@@ -546,7 +539,7 @@ each format.</p>
 </tbody>
 </table>
 </div>
-<p><strong>Legend</strong>: ✅ Full = Comprehensive metadata extraction | ⚠️ Preview = Basic metadata + custom preview | ❌ Minimal = Timestamp only</p>
+<p><strong>Legend</strong>: ✅ Full = Comprehensive metadata extraction<br/>⚠️ Preview = Basic metadata + custom preview<br/>❌ Minimal = Timestamp only</p>
 </section>
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
@@ -564,7 +557,7 @@ each format.</p>
 <h3>Digital Micrograph Files (.dm3, .dm4)<a class="headerlink" href="#digital-micrograph-files-dm3-dm4" title="Link to this heading">#</a></h3>
 <p><strong>Support Level</strong>: ✅ Full</p>
 <p><strong>Description</strong>: Files saved by Gatan’s DigitalMicrograph (GMS) software, commonly used for TEM/STEM imaging, EELS, and EDS data.</p>
-<p><strong>Extractor Module</strong>: <a class="reference internal" href="api/nexusLIMS.extractors.html#module-nexusLIMS.extractors.digital_micrograph" title="nexusLIMS.extractors.digital_micrograph"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.digital_micrograph</span></code></a></p>
+<p><strong>Extractor Module</strong>: <a class="reference internal" href="api/nexusLIMS/nexusLIMS.extractors.plugins.digital_micrograph.html#module-nexusLIMS.extractors.plugins.digital_micrograph" title="nexusLIMS.extractors.plugins.digital_micrograph"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.digital_micrograph</span></code></a></p>
 <p><strong>Key Metadata Extracted</strong>:</p>
 <ul class="simple">
 <li><p>Microscope information (voltage, magnification, mode, illumination mode)</p></li>
@@ -620,7 +613,7 @@ each format.</p>
 <h3>FEI/Thermo Fisher TIF Files (.tif)<a class="headerlink" href="#fei-thermo-fisher-tif-files-tif" title="Link to this heading">#</a></h3>
 <p><strong>Support Level</strong>: ✅ Full</p>
 <p><strong>Description</strong>: TIFF images saved by FEI/Thermo Fisher FIB and SEM instruments (Quanta, Helios, etc.) with embedded metadata.</p>
-<p><strong>Extractor Module</strong>: <a class="reference internal" href="api/nexusLIMS.extractors.html#module-nexusLIMS.extractors.quanta_tif" title="nexusLIMS.extractors.quanta_tif"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.quanta_tif</span></code></a></p>
+<p><strong>Extractor Module</strong>: <a class="reference internal" href="api/nexusLIMS/nexusLIMS.extractors.plugins.quanta_tif.html#module-nexusLIMS.extractors.plugins.quanta_tif" title="nexusLIMS.extractors.plugins.quanta_tif"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.quanta_tif</span></code></a></p>
 <p><strong>Key Metadata Extracted</strong>:</p>
 <ul class="simple">
 <li><p>Beam settings (voltage, emission current, spot size, field widths, working distance)</p></li>
@@ -661,7 +654,7 @@ each format.</p>
 <h3>FEI TIA Files (.ser, .emi)<a class="headerlink" href="#fei-tia-files-ser-emi" title="Link to this heading">#</a></h3>
 <p><strong>Support Level</strong>: ✅ Full</p>
 <p><strong>Description</strong>: Files saved by FEI’s TIA (Tecnai Imaging and Analysis) software. Data is stored in <code class="docutils literal notranslate"><span class="pre">.ser</span></code> files with accompanying <code class="docutils literal notranslate"><span class="pre">.emi</span></code> metadata files.</p>
-<p><strong>Extractor Module</strong>: <a class="reference internal" href="api/nexusLIMS.extractors.html#module-nexusLIMS.extractors.fei_emi" title="nexusLIMS.extractors.fei_emi"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.fei_emi</span></code></a></p>
+<p><strong>Extractor Module</strong>: <a class="reference internal" href="api/nexusLIMS/nexusLIMS.extractors.plugins.fei_emi.html#module-nexusLIMS.extractors.plugins.fei_emi" title="nexusLIMS.extractors.plugins.fei_emi"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.fei_emi</span></code></a></p>
 <p><strong>File Relationship</strong>:</p>
 <ul class="simple">
 <li><p>Each <code class="docutils literal notranslate"><span class="pre">.emi</span></code> file can reference multiple <code class="docutils literal notranslate"><span class="pre">.ser</span></code> data files (named as <code class="docutils literal notranslate"><span class="pre">basename_1.ser</span></code>, <code class="docutils literal notranslate"><span class="pre">basename_2.ser</span></code>, etc.)</p></li>
@@ -702,9 +695,9 @@ each format.</p>
 <h3>EDAX EDS Files (.spc, .msa)<a class="headerlink" href="#edax-eds-files-spc-msa" title="Link to this heading">#</a></h3>
 <p><strong>Support Level</strong>: ✅ Full</p>
 <p><strong>Description</strong>: EDS spectrum files saved by EDAX software (Genesis, TEAM, etc.) in proprietary (<code class="docutils literal notranslate"><span class="pre">.spc</span></code>) or standard EMSA (<code class="docutils literal notranslate"><span class="pre">.msa</span></code>) format.</p>
-<p><strong>Extractor Module</strong>: <a class="reference internal" href="api/nexusLIMS.extractors.html#module-nexusLIMS.extractors.edax" title="nexusLIMS.extractors.edax"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.edax</span></code></a></p>
+<p><strong>Extractor Module</strong>: <a class="reference internal" href="api/nexusLIMS/nexusLIMS.extractors.plugins.edax.html#module-nexusLIMS.extractors.plugins.edax" title="nexusLIMS.extractors.plugins.edax"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.edax</span></code></a></p>
 <section id="spc-files">
-<h4><strong>.spc Files</strong><a class="headerlink" href="#spc-files" title="Link to this heading">#</a></h4>
+<h4>.spc Files<a class="headerlink" href="#spc-files" title="Link to this heading">#</a></h4>
 <p><strong>Key Metadata Extracted</strong>:</p>
 <ul class="simple">
 <li><p>Azimuthal and elevation angles</p></li>
@@ -722,7 +715,7 @@ each format.</p>
 </ul>
 </section>
 <section id="msa-files">
-<h4><strong>.msa Files</strong><a class="headerlink" href="#msa-files" title="Link to this heading">#</a></h4>
+<h4>.msa Files<a class="headerlink" href="#msa-files" title="Link to this heading">#</a></h4>
 <p><strong>Description</strong>: MSA (EMSA/MAS) format is a standard spectral data format. See the <a class="reference external" href="https://www.microscopy.org/resources/scientific_data/">Microscopy Society of America specification</a>.</p>
 <p><strong>Key Metadata Extracted</strong>:</p>
 <ul class="simple">
@@ -755,8 +748,8 @@ each format.</p>
 <h3>Image Formats<a class="headerlink" href="#image-formats" title="Link to this heading">#</a></h3>
 <p><strong>Support Level</strong>: ⚠️ Preview Only</p>
 <p><strong>Formats</strong>: <code class="docutils literal notranslate"><span class="pre">.png</span></code>, <code class="docutils literal notranslate"><span class="pre">.tiff</span></code>, <code class="docutils literal notranslate"><span class="pre">.bmp</span></code>, <code class="docutils literal notranslate"><span class="pre">.gif</span></code>, <code class="docutils literal notranslate"><span class="pre">.jpg</span></code>, <code class="docutils literal notranslate"><span class="pre">.jpeg</span></code></p>
-<p><strong>Extractor Module</strong>: <a class="reference internal" href="api/nexusLIMS.extractors.html#module-nexusLIMS.extractors.basic_metadata" title="nexusLIMS.extractors.basic_metadata"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.basic_metadata</span></code></a></p>
-<p><strong>Preview Generator</strong>: <a class="reference internal" href="api/nexusLIMS.extractors.html#nexusLIMS.extractors.thumbnail_generator.image_to_square_thumbnail" title="nexusLIMS.extractors.thumbnail_generator.image_to_square_thumbnail"><code class="xref py py-func docutils literal notranslate"><span class="pre">nexusLIMS.extractors.thumbnail_generator.image_to_square_thumbnail()</span></code></a></p>
+<p><strong>Extractor Module</strong>: <a class="reference internal" href="api/nexusLIMS/nexusLIMS.extractors.plugins.basic_metadata.html#module-nexusLIMS.extractors.plugins.basic_metadata" title="nexusLIMS.extractors.plugins.basic_metadata"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.basic_metadata</span></code></a></p>
+<p><strong>Preview Generator</strong>: <a class="reference internal" href="api/nexusLIMS/nexusLIMS.extractors.plugins.preview_generators.image_preview.html#module-nexusLIMS.extractors.plugins.preview_generators.image_preview" title="nexusLIMS.extractors.plugins.preview_generators.image_preview"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.preview_generators.image_preview</span></code></a></p>
 <p><strong>Metadata Extracted</strong>:</p>
 <ul class="simple">
 <li><p>File creation/modification time</p></li>
@@ -776,8 +769,8 @@ each format.</p>
 <section id="text-files-txt">
 <h3>Text Files (.txt)<a class="headerlink" href="#text-files-txt" title="Link to this heading">#</a></h3>
 <p><strong>Support Level</strong>: ⚠️ Preview Only</p>
-<p><strong>Extractor Module</strong>: <a class="reference internal" href="api/nexusLIMS.extractors.html#module-nexusLIMS.extractors.basic_metadata" title="nexusLIMS.extractors.basic_metadata"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.basic_metadata</span></code></a></p>
-<p><strong>Preview Generator</strong>: <a class="reference internal" href="api/nexusLIMS.extractors.html#nexusLIMS.extractors.thumbnail_generator.text_to_thumbnail" title="nexusLIMS.extractors.thumbnail_generator.text_to_thumbnail"><code class="xref py py-func docutils literal notranslate"><span class="pre">nexusLIMS.extractors.thumbnail_generator.text_to_thumbnail()</span></code></a></p>
+<p><strong>Extractor Module</strong>: <a class="reference internal" href="api/nexusLIMS/nexusLIMS.extractors.plugins.basic_metadata.html#module-nexusLIMS.extractors.plugins.basic_metadata" title="nexusLIMS.extractors.plugins.basic_metadata"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.basic_metadata</span></code></a></p>
+<p><strong>Preview Generator</strong>: <a class="reference internal" href="api/nexusLIMS/nexusLIMS.extractors.plugins.preview_generators.text_preview.html#module-nexusLIMS.extractors.plugins.preview_generators.text_preview" title="nexusLIMS.extractors.plugins.preview_generators.text_preview"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.preview_generators.text_preview</span></code></a></p>
 <p><strong>Metadata Extracted</strong>:</p>
 <ul class="simple">
 <li><p>File creation/modification time</p></li>
@@ -884,75 +877,19 @@ each format.</p>
 </section>
 <section id="adding-support-for-new-formats">
 <h2>Adding Support for New Formats<a class="headerlink" href="#adding-support-for-new-formats" title="Link to this heading">#</a></h2>
-<p>To add support for a new file format:</p>
-<ol class="arabic">
-<li><p><strong>Create an Extractor Module</strong></p>
-<p>Add a new Python module in <code class="docutils literal notranslate"><span class="pre">nexusLIMS/extractors/</span></code> (e.g., <code class="docutils literal notranslate"><span class="pre">my_format.py</span></code>):</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
-
-<span class="k">def</span><span class="w"> </span><span class="nf">get_my_format_metadata</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Extract metadata from my format.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    filename : Path</span>
-<span class="sd">        Path to the file</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    dict</span>
-<span class="sd">        Metadata dictionary with &#39;nx_meta&#39; key</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">mdict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">:</span> <span class="p">{}}</span>
-
-    <span class="c1"># Set basic required fields</span>
-    <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;DatasetType&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Image&quot;</span>  <span class="c1"># or Spectrum, etc.</span>
-    <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;Data Type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;TEM_Imaging&quot;</span>  <span class="c1"># descriptive string</span>
-
-    <span class="c1"># Add creation time</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.extractors.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">_set_instr_name_and_time</span>
-    <span class="n">_set_instr_name_and_time</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
-
-    <span class="c1"># Extract your format-specific metadata</span>
-    <span class="c1"># ...</span>
-
-    <span class="k">return</span> <span class="n">mdict</span>
-</pre></div>
-</div>
-</li>
-<li><p><strong>Register the Extractor</strong></p>
-<p>Add the mapping to <code class="docutils literal notranslate"><span class="pre">nexusLIMS/extractors/__init__.py</span></code>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">.my_format</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_my_format_metadata</span>
-
-<span class="n">extension_reader_map</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;dm3&quot;</span><span class="p">:</span> <span class="n">get_dm3_metadata</span><span class="p">,</span>
-    <span class="s2">&quot;dm4&quot;</span><span class="p">:</span> <span class="n">get_dm3_metadata</span><span class="p">,</span>
-    <span class="c1"># ... existing entries ...</span>
-    <span class="s2">&quot;myext&quot;</span><span class="p">:</span> <span class="n">get_my_format_metadata</span><span class="p">,</span>  <span class="c1"># Add your extension</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</li>
-<li><p><strong>Add Tests</strong></p>
-<p>Create tests in <code class="docutils literal notranslate"><span class="pre">tests/test_extractors/test_my_format.py</span></code> to verify metadata extraction.</p>
-</li>
-<li><p><strong>Update Documentation</strong></p>
-<p>Add your new format to this page with details about support level and extracted metadata.</p>
-</li>
-</ol>
+<p>See <a class="reference internal" href="writing_extractor_plugins.html"><span class="doc">Writing Extractor Plugins</span></a> for instructions on how to write a new extractor.</p>
 </section>
 <section id="api-reference">
 <h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading">#</a></h2>
 <p>For complete API documentation of the extractor modules, see:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="api/nexusLIMS.extractors.html#module-nexusLIMS.extractors" title="nexusLIMS.extractors"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors</span></code></a> - Main extractor module</p></li>
-<li><p><a class="reference internal" href="api/nexusLIMS.extractors.html#module-nexusLIMS.extractors.digital_micrograph" title="nexusLIMS.extractors.digital_micrograph"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.digital_micrograph</span></code></a> - DM3/DM4 file extractor</p></li>
-<li><p><a class="reference internal" href="api/nexusLIMS.extractors.html#module-nexusLIMS.extractors.quanta_tif" title="nexusLIMS.extractors.quanta_tif"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.quanta_tif</span></code></a> - FEI/Thermo TIF file extractor</p></li>
-<li><p><a class="reference internal" href="api/nexusLIMS.extractors.html#module-nexusLIMS.extractors.fei_emi" title="nexusLIMS.extractors.fei_emi"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.fei_emi</span></code></a> - FEI TIA .ser/.emi file extractor</p></li>
-<li><p><a class="reference internal" href="api/nexusLIMS.extractors.html#module-nexusLIMS.extractors.edax" title="nexusLIMS.extractors.edax"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.edax</span></code></a> - EDAX .spc/.msa file extractor</p></li>
-<li><p><a class="reference internal" href="api/nexusLIMS.extractors.html#module-nexusLIMS.extractors.basic_metadata" title="nexusLIMS.extractors.basic_metadata"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.basic_metadata</span></code></a> - Basic metadata fallback extractor</p></li>
-<li><p><a class="reference internal" href="api/nexusLIMS.extractors.html#module-nexusLIMS.extractors.thumbnail_generator" title="nexusLIMS.extractors.thumbnail_generator"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.thumbnail_generator</span></code></a> - Preview image generation utilities</p></li>
+<li><p><a class="reference internal" href="api/nexusLIMS/nexusLIMS.extractors.html#module-nexusLIMS.extractors" title="nexusLIMS.extractors"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors</span></code></a> - Main extractor module</p></li>
+<li><p><a class="reference internal" href="api/nexusLIMS/nexusLIMS.extractors.plugins.digital_micrograph.html#module-nexusLIMS.extractors.plugins.digital_micrograph" title="nexusLIMS.extractors.plugins.digital_micrograph"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.digital_micrograph</span></code></a> - DM3/DM4 file extractor</p></li>
+<li><p><a class="reference internal" href="api/nexusLIMS/nexusLIMS.extractors.plugins.quanta_tif.html#module-nexusLIMS.extractors.plugins.quanta_tif" title="nexusLIMS.extractors.plugins.quanta_tif"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.quanta_tif</span></code></a> - FEI/Thermo TIF file extractor</p></li>
+<li><p><a class="reference internal" href="api/nexusLIMS/nexusLIMS.extractors.plugins.fei_emi.html#module-nexusLIMS.extractors.plugins.fei_emi" title="nexusLIMS.extractors.plugins.fei_emi"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.fei_emi</span></code></a> - FEI TIA .ser/.emi file extractor</p></li>
+<li><p><a class="reference internal" href="api/nexusLIMS/nexusLIMS.extractors.plugins.edax.html#module-nexusLIMS.extractors.plugins.edax" title="nexusLIMS.extractors.plugins.edax"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.edax</span></code></a> - EDAX .spc/.msa file extractor</p></li>
+<li><p><a class="reference internal" href="api/nexusLIMS/nexusLIMS.extractors.plugins.basic_metadata.html#module-nexusLIMS.extractors.plugins.basic_metadata" title="nexusLIMS.extractors.plugins.basic_metadata"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.basic_metadata</span></code></a> - Basic metadata fallback extractor</p></li>
+<li><p><a class="reference internal" href="api/nexusLIMS/nexusLIMS.extractors.plugins.preview_generators.html#module-nexusLIMS.extractors.plugins.preview_generators" title="nexusLIMS.extractors.plugins.preview_generators"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.preview_generators</span></code></a> - Preview image generation utilities</p></li>
 </ul>
 </section>
 <section id="further-reading">
@@ -960,7 +897,7 @@ each format.</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="record_building.html#record-building"><span class="std std-ref">Record building workflow</span></a> - How extractors fit into the record building workflow</p></li>
 <li><p><a class="reference internal" href="taxonomy.html"><span class="doc">NexusLIMS taxonomy</span></a> - Data type classification and taxonomy</p></li>
-<li><p><a class="reference internal" href="api/nexusLIMS.extractors.html#module-nexusLIMS.extractors" title="nexusLIMS.extractors"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors</span></code></a> - Complete API documentation</p></li>
+<li><p><a class="reference internal" href="api/nexusLIMS/nexusLIMS.extractors.html#module-nexusLIMS.extractors" title="nexusLIMS.extractors"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors</span></code></a> - Complete API documentation</p></li>
 </ul>
 </section>
 </section>
@@ -1019,8 +956,8 @@ each format.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fei-thermo-fisher-tif-files-tif">FEI/Thermo Fisher TIF Files (.tif)</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fei-tia-files-ser-emi">FEI TIA Files (.ser, .emi)</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#edax-eds-files-spc-msa">EDAX EDS Files (.spc, .msa)</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spc-files"><strong>.spc Files</strong></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#msa-files"><strong>.msa Files</strong></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spc-files">.spc Files</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#msa-files">.msa Files</a></li>
 </ul>
 </li>
 </ul>
@@ -1047,7 +984,7 @@ each format.</p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="_sources/extractors.rst.txt"
+      <li><a href="_sources/extractors.md.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div></div>

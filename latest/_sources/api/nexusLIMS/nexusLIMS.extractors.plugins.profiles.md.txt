@@ -1,0 +1,89 @@
+# {py:mod}`nexusLIMS.extractors.plugins.profiles`
+
+```{py:module} nexusLIMS.extractors.plugins.profiles
+```
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.profiles
+:allowtitles:
+```
+
+## Submodules
+
+```{toctree}
+:titlesonly:
+:maxdepth: 1
+
+nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643
+nexusLIMS.extractors.plugins.profiles.jeol_jem_642
+nexusLIMS.extractors.plugins.profiles.fei_titan_tem_642
+```
+
+## Package Contents
+
+### Functions
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`register_all_profiles <nexusLIMS.extractors.plugins.profiles.register_all_profiles>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.profiles.register_all_profiles
+    :summary:
+    ```
+* - {py:obj}`_load_profiles_from_directory <nexusLIMS.extractors.plugins.profiles._load_profiles_from_directory>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.profiles._load_profiles_from_directory
+    :summary:
+    ```
+````
+
+### Data
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`logger <nexusLIMS.extractors.plugins.profiles.logger>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.profiles.logger
+    :summary:
+    ```
+* - {py:obj}`__all__ <nexusLIMS.extractors.plugins.profiles.__all__>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.profiles.__all__
+    :summary:
+    ```
+````
+
+### API
+
+````{py:data} logger
+:canonical: nexusLIMS.extractors.plugins.profiles.logger
+:value: >
+   'getLogger(...)'
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.profiles.logger
+```
+
+````
+
+````{py:data} __all__
+:canonical: nexusLIMS.extractors.plugins.profiles.__all__
+:value: >
+   ['register_all_profiles']
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.profiles.__all__
+```
+
+````
+
+````{py:function} register_all_profiles() -> None
+:canonical: nexusLIMS.extractors.plugins.profiles.register_all_profiles
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.profiles.register_all_profiles
+```
+````
+
+````{py:function} _load_profiles_from_directory(directory: pathlib.Path, module_prefix: str | None) -> int
+:canonical: nexusLIMS.extractors.plugins.profiles._load_profiles_from_directory
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.profiles._load_profiles_from_directory
+```
+````

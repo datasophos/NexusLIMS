@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>NexusLIMS database &#8212; NexusLIMS 2.0.0 documentation</title>
+    <title>NexusLIMS database &#8212; NexusLIMS 2.1.0a0 documentation</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="_static/documentation_options.js?v=51b770b3"></script>
+    <script src="_static/documentation_options.js?v=cd47123d"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/design-tabs.js?v=f930bc37"></script>
@@ -49,7 +49,7 @@
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.0.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.1.0a0';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
@@ -61,8 +61,8 @@
     <link rel="prev" title="Migration from Poetry to uv" href="uv_migration.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.0.0" />
-    <meta name="docbuild:last-update" content="Dec, 09, 2025"/>
+  <meta name="docsearch:version" content="2.1.0a0" />
+    <meta name="docbuild:last-update" content="Dec, 10, 2025"/>
   </head>
   
   
@@ -128,8 +128,8 @@
       
     
     
-    <img src="_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.0.0 documentation - Home"/>
-    <img src="_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.0.0 documentation - Home"/>
+    <img src="_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.1.0a0 documentation - Home"/>
+    <img src="_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.1.0a0 documentation - Home"/>
   
   
 </a></div>
@@ -407,6 +407,9 @@
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="development.html">Developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="writing_extractor_plugins.html">Writing Extractor Plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="instrument_profiles.html">Instrument Profiles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="uv_migration.html">Migration from Poetry to uv</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">NexusLIMS database</a></li>
 <li class="toctree-l1"><a class="reference internal" href="schema_documentation.html">XML Schema Reference</a></li>
@@ -472,15 +475,13 @@
                   
   <section id="nexuslims-database">
 <h1>NexusLIMS database<a class="headerlink" href="#nexuslims-database" title="Link to this heading">#</a></h1>
-<blockquote>
-<div><p><cite>Last updated: December 2025</cite></p>
-</div></blockquote>
+<p><code class="docutils literal notranslate"><span class="pre">Last</span> <span class="pre">updated:</span> <span class="pre">December</span> <span class="pre">2025</span></code></p>
 <p>In order to accurately know an Experimental session has occurred (and a record
 needs to be built) NexusLIMS relies on an external database that is stored
 as a file accessible to the back-end. Due to its simple design and requirements,
 the database is implemented using a single <a class="reference external" href="https://sqlite.org/index.html">SQLite</a>
 file stored in a location specified by the
-<a class="reference internal" href="api/nexusLIMS.html#nexuslims-db-path"><span class="std std-ref">NX_DB_PATH</span></a> environment variable. This database
+<a class="reference internal" href="api/nexusLIMS/nexusLIMS.html#nexuslims-db-path"><span class="std std-ref">NX_DB_PATH</span></a> environment variable. This database
 is created using a custom <a class="reference external" href="https://github.com/datasophos/NexusLIMS/blob/main/nexusLIMS/db/dev/NexusLIMS_db_creation_script.sql">SQL Schema Definition</a> (documented below) and can be
 easily backed up by simply copying the database file to a new location.
 The contents and structure of the database can be inspected using a number
@@ -490,14 +491,14 @@ of open source tools, including the cross-platform software
 First, it serves as a location for entries related to when
 a user has started and finished an Experiment on an instrument, as well as
 when the back-end has attempted (and completed) building a record based on that
-Experiment (these entries are made by harvester modules, such as <a class="reference internal" href="api/nexusLIMS.harvesters.nemo.html#module-nexusLIMS.harvesters.nemo" title="nexusLIMS.harvesters.nemo"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nemo</span></code></a>).
+Experiment (these entries are made by harvester modules, such as <a class="reference internal" href="api/nexusLIMS/nexusLIMS.harvesters.nemo.html#module-nexusLIMS.harvesters.nemo" title="nexusLIMS.harvesters.nemo"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nemo</span></code></a>).
 The second purpose is to contain authoritative information about
 the instruments in the facility, such as the instruments’
 names, their reservation URLs, where a given instrument stores its data, etc.
 Having this information centrally located facilitates maintenance in the event
 the configuration changes in the future. These two sources of data are
-represented as two <cite>tables</cite> within the database named <cite>session_log</cite> and
-<cite>instruments</cite>, respectively. Specific documentation of each table and their
+represented as two <code class="docutils literal notranslate"><span class="pre">tables</span></code> within the database named <code class="docutils literal notranslate"><span class="pre">session_log</span></code> and
+<code class="docutils literal notranslate"><span class="pre">instruments</span></code>, respectively. Specific documentation of each table and their
 data columns are provided below.</p>
 <section id="the-session-log-table">
 <h2>The <code class="docutils literal notranslate"><span class="pre">session_log</span></code> table<a class="headerlink" href="#the-session-log-table" title="Link to this heading">#</a></h2>
@@ -506,14 +507,14 @@ NexusLIMS back-end) store information that is used to determine what records
 need to be built and which files should be included in a given record (see the
 <a class="reference internal" href="record_building.html"><span class="doc">record building</span></a> documentation for more details).
 Each row of this table represents a single timestamped log of a certain type of
-event. The reservation and usage event harvester code (such as <a class="reference internal" href="api/nexusLIMS.harvesters.nemo.html#module-nexusLIMS.harvesters.nemo" title="nexusLIMS.harvesters.nemo"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nemo</span></code></a>) parses
+event. The reservation and usage event harvester code (such as <a class="reference internal" href="api/nexusLIMS/nexusLIMS.harvesters.nemo.html#module-nexusLIMS.harvesters.nemo" title="nexusLIMS.harvesters.nemo"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nemo</span></code></a>) parses
 the API response from the reservation system and adds rows to the <code class="docutils literal notranslate"><span class="pre">session_log</span></code> table
 as required to represent an experiment on a particular instrument.</p>
-<p>Together, these <cite>“START”</cite> and <cite>“END”</cite> logs (linked by a <code class="docutils literal notranslate"><span class="pre">session_identifier</span></code>) represent a unit
+<p>Together, these <code class="docutils literal notranslate"><span class="pre">&quot;START&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;END&quot;</span></code> logs (linked by a <code class="docutils literal notranslate"><span class="pre">session_identifier</span></code>) represent a unit
 of time on a given instrument, and indicate to the NexusLIMS back-end
 that a record needs to be built for that instrument, containing files created
 between the starting and ending timestamps. The back-end periodically polls
-this database table for any logs with a status of <cite>“TO_BE_BUILT”</cite>, and fires off
+this database table for any logs with a status of <code class="docutils literal notranslate"><span class="pre">&quot;TO_BE_BUILT&quot;</span></code>, and fires off
 the <a class="reference internal" href="record_building.html"><span class="doc">record building</span></a> process if any are found.
 Upon completion of record building, the back-end updates the <code class="docutils literal notranslate"><span class="pre">record_status</span></code>
 of these logs as needed so that duplicate records are not created. The back-end
@@ -532,82 +533,31 @@ placed on their values:</p>
 <tbody>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">id_session_log</span></code></p></td>
 <td><p>INTEGER</p></td>
-<td><p>The auto-incrementing primary key
-identifier for this table (just a
-generic number).</p>
-<p><cite>Checks:</cite> must not be <cite>NULL</cite></p>
-</td>
+<td><p>The auto-incrementing primary key identifier for this table (just a generic number).<br><br><em>Checks:</em> must not be <code class="docutils literal notranslate"><span class="pre">NULL</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">session_identifier</span></code></p></td>
 <td><p>VARCHAR(36)</p></td>
-<td><p>A unique string (could be a UUID)
-that is consistent among a single
-record’s <cite>“START”</cite>, <cite>“END”</cite>, and
-<cite>“RECORD_GENERATION”</cite> events.</p>
-<p><cite>Checks:</cite> must not be <cite>NULL</cite></p>
-</td>
+<td><p>A unique string (could be a UUID) that is consistent among a single record’s <code class="docutils literal notranslate"><span class="pre">&quot;START&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;END&quot;</span></code>, and <code class="docutils literal notranslate"><span class="pre">&quot;RECORD_GENERATION&quot;</span></code> events.<br><br><em>Checks:</em> must not be <code class="docutils literal notranslate"><span class="pre">NULL</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">instrument</span></code></p></td>
 <td><p>VARCHAR(100)</p></td>
-<td><p>The instrument PID associated with
-this session (this value is a
-foreign key reference to the
-<code class="docutils literal notranslate"><span class="pre">instruments</span></code> table).</p>
-<p><cite>Checks:</cite> value must be one of
-those from the <code class="docutils literal notranslate"><span class="pre">instrument_pid</span></code>
-column of the <a class="reference internal" href="#instr-table"><code class="docutils literal notranslate"><span class="pre">instruments</span></code></a>
-table.</p>
-</td>
+<td><p>The instrument PID associated with this session (this value is a foreign key reference to the <code class="docutils literal notranslate"><span class="pre">instruments</span></code> table).<br><br><em>Checks:</em> value must be one of those from the <code class="docutils literal notranslate"><span class="pre">instrument_pid</span></code> column of the <a class="reference internal" href="#instr-table"><span class="std std-ref"><code class="docutils literal notranslate"><span class="pre">instruments</span></code></span></a> table.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">timestamp</span></code></p></td>
 <td><p>DATETIME</p></td>
-<td><p>The date and time of the
-logged event in ISO timestamp
-format.</p>
-<p><cite>Default:</cite>
-<code class="docutils literal notranslate"><span class="pre">strftime('%Y-%m-%dT%H:%M:%f',</span>
-<span class="pre">'now',</span> <span class="pre">'localtime')</span></code></p>
-<p><cite>Checks:</cite> must not be <cite>NULL</cite></p>
-</td>
+<td><p>The date and time of the logged event in ISO timestamp format.<br><br><em>Default:</em> <code class="docutils literal notranslate"><span class="pre">strftime('%Y-%m-%dT%H:%M:%f',</span> <span class="pre">'now',</span> <span class="pre">'localtime')</span></code><br><br><em>Checks:</em> must not be <code class="docutils literal notranslate"><span class="pre">NULL</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">event_type</span></code></p></td>
 <td><p>TEXT</p></td>
-<td><p>The type of log for this session.</p>
-<p><cite>Checks:</cite> must be one of
-<cite>“START”</cite>, <cite>“END”</cite>, or
-<cite>“RECORD_GENERATION”</cite>.</p>
-</td>
+<td><p>The type of log for this session.<br><br><em>Checks:</em> must be one of <code class="docutils literal notranslate"><span class="pre">&quot;START&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;END&quot;</span></code>, or <code class="docutils literal notranslate"><span class="pre">&quot;RECORD_GENERATION&quot;</span></code>.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">record_status</span></code></p></td>
 <td><p>TEXT</p></td>
-<td><p>The status of the record
-associated with this session.
-This value will be updated after
-a record is built for a given
-session.</p>
-<p><cite>Default:</cite>
-<cite>“WAITING_FOR_END”</cite></p>
-<p><cite>Checks:</cite> must be one of
-<cite>“WAITING_FOR_END”</cite> (session has a
-start event, but no end event),
-<cite>“TO_BE_BUILT”</cite> (session has ended,
-but record not yet built),
-<cite>“COMPLETED”</cite> (record has been
-built successfully), <cite>“ERROR”</cite>
-(some error happened during
-record generation), or
-<cite>“NO_FILES_FOUND”</cite> (record
-generation occurred, but no files
-matched time span)</p>
-</td>
+<td><p>The status of the record associated with this session. This value will be updated after a record is built for a given session.<br><br><em>Default:</em> <code class="docutils literal notranslate"><span class="pre">&quot;WAITING_FOR_END&quot;</span></code><br><br><em>Checks:</em> must be one of <code class="docutils literal notranslate"><span class="pre">&quot;WAITING_FOR_END&quot;</span></code> (session has a start event, but no end event), <code class="docutils literal notranslate"><span class="pre">&quot;TO_BE_BUILT&quot;</span></code> (session has ended, but record not yet built), <code class="docutils literal notranslate"><span class="pre">&quot;COMPLETED&quot;</span></code> (record has been built successfully), <code class="docutils literal notranslate"><span class="pre">&quot;ERROR&quot;</span></code> (some error happened during record generation), or <code class="docutils literal notranslate"><span class="pre">&quot;NO_FILES_FOUND&quot;</span></code> (record generation occurred, but no files matched time span)</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">user</span></code></p></td>
 <td><p>VARCHAR(50)</p></td>
-<td><p>A username associated with this
-session (if known) – this value
-is not currently used by the
-back-end since it is not reliable
-across different instruments.</p></td>
+<td><p>A username associated with this session (if known) – this value is not currently used by the back-end since it is not reliable across different instruments.</p></td>
 </tr>
 </tbody>
 </table>
@@ -628,14 +578,14 @@ system to the NEMO-based one, reconfiguring the instruments was as simple as
 adding a duplicate row for each instrument with a different <code class="docutils literal notranslate"><span class="pre">harvester</span></code> value
 and the new API endpoint location for that instrument.</p>
 <p><strong>Back-end implementation details</strong></p>
-<p>When the <a class="reference internal" href="api/nexusLIMS.html#module-nexusLIMS" title="nexusLIMS"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS</span></code></a> module is imported, one of the “setup” tasks
+<p>When the <a class="reference internal" href="api/nexusLIMS/nexusLIMS.html#module-nexusLIMS" title="nexusLIMS"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS</span></code></a> module is imported, one of the “setup” tasks
 performed is to perform a basic object-relational mapping between rows of
 the <code class="docutils literal notranslate"><span class="pre">instruments</span></code> table from the database into
-<a class="reference internal" href="api/nexusLIMS.html#nexusLIMS.instruments.Instrument" title="nexusLIMS.instruments.Instrument"><code class="xref py py-class docutils literal notranslate"><span class="pre">Instrument</span></code></a> objects. These objects are
-stored in a dictionary attribute named <a class="reference internal" href="api/nexusLIMS.html#nexusLIMS.instruments.instrument_db" title="nexusLIMS.instruments.instrument_db"><code class="xref py py-data docutils literal notranslate"><span class="pre">nexusLIMS.instruments.instrument_db</span></code></a>.
+<a class="reference internal" href="api/nexusLIMS/nexusLIMS.instruments.html#nexusLIMS.instruments.Instrument" title="nexusLIMS.instruments.Instrument"><code class="xref py py-class docutils literal notranslate"><span class="pre">Instrument</span></code></a> objects. These objects are
+stored in a dictionary attribute named <a class="reference internal" href="api/nexusLIMS/nexusLIMS.instruments.html#nexusLIMS.instruments.instrument_db" title="nexusLIMS.instruments.instrument_db"><code class="xref py py-data docutils literal notranslate"><span class="pre">nexusLIMS.instruments.instrument_db</span></code></a>.
 This is done by querying the database specified in the environment variable
-<a class="reference internal" href="api/nexusLIMS.html#nexuslims-db-path"><span class="std std-ref">NX_DB_PATH</span></a> and creating a dictionary of
-<a class="reference internal" href="api/nexusLIMS.html#nexusLIMS.instruments.Instrument" title="nexusLIMS.instruments.Instrument"><code class="xref py py-class docutils literal notranslate"><span class="pre">Instrument</span></code></a> objects that contain information
+<a class="reference internal" href="api/nexusLIMS/nexusLIMS.html#nexuslims-db-path"><span class="std std-ref">NX_DB_PATH</span></a> and creating a dictionary of
+<a class="reference internal" href="api/nexusLIMS/nexusLIMS.instruments.html#nexusLIMS.instruments.Instrument" title="nexusLIMS.instruments.Instrument"><code class="xref py py-class docutils literal notranslate"><span class="pre">Instrument</span></code></a> objects that contain information
 about all of the instruments specified in the database. These objects are used
 widely throughout the code so that the database is only queried once at initial
 import, rather than every time information is needed.</p>
@@ -649,91 +599,55 @@ import, rather than every time information is needed.</p>
 <tbody>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">instrument_pid</span></code></p></td>
 <td><p>VARCHAR(100)</p></td>
-<td><p>The unique identifier for an instrument
-in the facility, typically built
-from the make, model, and type of
-instrument, plus a unique numeric code
-(e.g. <code class="docutils literal notranslate"><span class="pre">Vendor-Model-Type-12345</span></code> )</p></td>
+<td><p>The unique identifier for an instrument in the facility, typically built from the make, model, and type of instrument, plus a unique numeric code (e.g. <code class="docutils literal notranslate"><span class="pre">Vendor-Model-Type-12345</span></code> )</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">api_url</span></code></p></td>
 <td><p>TEXT</p></td>
-<td><p>The calendar API endpoint url for this
-instrument’s scheduler</p></td>
+<td><p>The calendar API endpoint url for this instrument’s scheduler</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">calendar_name</span></code></p></td>
 <td><p>TEXT</p></td>
-<td><p>The “user-friendly” name of the
-calendar for this instrument as
-displayed on the reservation system
-resource (e.g. “FEI Titan TEM”)</p></td>
+<td><p>The “user-friendly” name of the calendar for this instrument as displayed on the reservation system resource (e.g. “FEI Titan TEM”)</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">calendar_url</span></code></p></td>
 <td><p>TEXT</p></td>
-<td><p>The URL to this instrument’s
-web-accessible calendar on the
-SharePoint resource (if using)</p></td>
+<td><p>The URL to this instrument’s web-accessible calendar on the SharePoint resource (if using)</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">location</span></code></p></td>
 <td><p>VARCHAR(100)</p></td>
-<td><p>The physical location of this
-instrument</p></td>
+<td><p>The physical location of this instrument</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">schema_name</span></code></p></td>
 <td><p>TEXT</p></td>
-<td><p>The human-readable name of instrument
-as defined in the Nexus Microscopy
-schema and displayed in the records</p></td>
+<td><p>The human-readable name of instrument as defined in the Nexus Microscopy schema and displayed in the records</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">property_tag</span></code></p></td>
 <td><p>VARCHAR(20)</p></td>
-<td><p>A unique numeric identifier for this
-instrument (not used by NexusLIMS, but
-for reference and potential future use)</p></td>
+<td><p>A unique numeric identifier for this instrument (not used by NexusLIMS, but for reference and potential future use)</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">filestore_path</span></code></p></td>
 <td><p>TEXT</p></td>
-<td><p>The path (relative to central storage location specified in
-<a class="reference internal" href="api/nexusLIMS.html#nexuslims-instrument-data-path"><span class="std std-ref">NX_INSTRUMENT_DATA_PATH</span></a>)
-where this instrument stores its data (e.g. <code class="docutils literal notranslate"><span class="pre">./instrument_name</span></code>)</p></td>
+<td><p>The path (relative to central storage location specified in <a class="reference internal" href="api/nexusLIMS/nexusLIMS.html#nexuslims-instrument-data-path"><span class="std std-ref">NX_INSTRUMENT_DATA_PATH</span></a>) where this instrument stores its data (e.g. <code class="docutils literal notranslate"><span class="pre">./instrument_name</span></code>)</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">computer_name</span></code></p></td>
 <td><p>TEXT</p></td>
-<td><p>The hostname of the <cite>support PC</cite>
-connected to this instrument (for
-reference purposes)</p></td>
+<td><p>The hostname of the <code class="docutils literal notranslate"><span class="pre">support</span> <span class="pre">PC</span></code> connected to this instrument (for reference purposes)</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">computer_ip</span></code></p></td>
 <td><p>VARCHAR(15)</p></td>
-<td><p>The IP address of the <cite>support PC</cite>
-connected to this instrument (not
-currently utilized)</p></td>
+<td><p>The IP address of the <code class="docutils literal notranslate"><span class="pre">support</span> <span class="pre">PC</span></code> connected to this instrument (not currently utilized)</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">computer_mount</span></code></p></td>
 <td><p>TEXT</p></td>
-<td><p>The full path where the central file
-storage is mounted and files are
-saved on the ‘support PC’ for
-the instrument (for reference purposes)</p></td>
+<td><p>The full path where the central file storage is mounted and files are saved on the ‘support PC’ for the instrument (for reference purposes)</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">harvester</span></code></p></td>
 <td><p>TEXT</p></td>
-<td><p>The specific submodule within
-<a class="reference internal" href="api/nexusLIMS.harvesters.html#module-nexusLIMS.harvesters" title="nexusLIMS.harvesters"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.harvesters</span></code></a> that
-should be used to harvest reservation
-information for this instrument. At the
-time of writing, the only possible
-values are <code class="docutils literal notranslate"><span class="pre">nemo</span></code> or
-<code class="docutils literal notranslate"><span class="pre">sharepoint_calendar</span></code>.</p></td>
+<td><p>The specific submodule within <a class="reference internal" href="api/nexusLIMS/nexusLIMS.harvesters.html#module-nexusLIMS.harvesters" title="nexusLIMS.harvesters"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.harvesters</span></code></a> that should be used to harvest reservation information for this instrument. At the time of writing, the only possible values are <code class="docutils literal notranslate"><span class="pre">nemo</span></code> or <code class="docutils literal notranslate"><span class="pre">sharepoint_calendar</span></code>.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">timezone</span></code></p></td>
 <td><p>TEXT</p></td>
-<td><p>The timezone in which this instrument
-is located, in the format of the IANA
-timezone database (e.g.
-<code class="docutils literal notranslate"><span class="pre">America/New_York</span></code>). This is used
-to properly localize dates and times
-when communicating with the harvester
-APIs.</p></td>
+<td><p>The timezone in which this instrument is located, in the format of the IANA timezone database (e.g. <code class="docutils literal notranslate"><span class="pre">America/New_York</span></code>). This is used to properly localize dates and times when communicating with the harvester APIs.</p></td>
 </tr>
 </tbody>
 </table>
@@ -797,7 +711,7 @@ APIs.</p></td>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="_sources/database.rst.txt"
+      <li><a href="_sources/database.md.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div></div>

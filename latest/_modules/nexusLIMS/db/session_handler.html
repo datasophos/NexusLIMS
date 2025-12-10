@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>nexusLIMS.db.session_handler &#8212; NexusLIMS 2.0.0 documentation</title>
+    <title>nexusLIMS.db.session_handler &#8212; NexusLIMS 2.1.0a0 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../../_static/documentation_options.js?v=51b770b3"></script>
+    <script src="../../../_static/documentation_options.js?v=cd47123d"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -48,7 +48,7 @@
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.0.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.1.0a0';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
@@ -58,8 +58,8 @@
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.0.0" />
-    <meta name="docbuild:last-update" content="Dec, 09, 2025"/>
+  <meta name="docsearch:version" content="2.1.0a0" />
+    <meta name="docbuild:last-update" content="Dec, 10, 2025"/>
   </head>
   
   
@@ -125,8 +125,8 @@
       
     
     
-    <img src="../../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.0.0 documentation - Home"/>
-    <img src="../../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.0.0 documentation - Home"/>
+    <img src="../../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.1.0a0 documentation - Home"/>
+    <img src="../../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.1.0a0 documentation - Home"/>
   
   
 </a></div>
@@ -434,6 +434,9 @@
     <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
     
     
+    <li class="breadcrumb-item"><a href="../../nexusLIMS.html" class="nav-link">nexusLIMS</a></li>
+    
+    
     <li class="breadcrumb-item"><a href="../db.html" class="nav-link">nexusLIMS.db</a></li>
     
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">nexusLIMS.db.session_handler</span></li>
@@ -471,7 +474,7 @@
 
 
 <div class="viewcode-block" id="db_query">
-<a class="viewcode-back" href="../../../api/nexusLIMS.db.html#nexusLIMS.db.session_handler.db_query">[docs]</a>
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.db.session_handler.html#nexusLIMS.db.session_handler.db_query">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">db_query</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Make a query on the NexusLIMS database.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">args</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -491,7 +494,7 @@
 
 
 <div class="viewcode-block" id="SessionLog">
-<a class="viewcode-back" href="../../../api/nexusLIMS.db.html#nexusLIMS.db.session_handler.SessionLog">[docs]</a>
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.db.session_handler.html#nexusLIMS.db.session_handler.SessionLog">[docs]</a>
 <span class="nd">@dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">SessionLog</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -528,6 +531,8 @@
     <span class="n">user</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">record_status</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;TO_BE_BUILT&quot;</span>
 
+<div class="viewcode-block" id="SessionLog.__repr__">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.db.session_handler.html#nexusLIMS.db.session_handler.SessionLog.__repr__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return custom representation of a SessionLog.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span>
@@ -537,10 +542,11 @@
             <span class="sa">f</span><span class="s2">&quot;event_type=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">event_type</span><span class="si">}</span><span class="s2">, &quot;</span>
             <span class="sa">f</span><span class="s2">&quot;user=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">user</span><span class="si">}</span><span class="s2">, &quot;</span>
             <span class="sa">f</span><span class="s2">&quot;record_status=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">record_status</span><span class="si">}</span><span class="s2">)&quot;</span>
-        <span class="p">)</span>
+        <span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="SessionLog.insert_log">
-<a class="viewcode-back" href="../../../api/nexusLIMS.db.html#nexusLIMS.db.session_handler.SessionLog.insert_log">[docs]</a>
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.db.session_handler.html#nexusLIMS.db.session_handler.SessionLog.insert_log">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">insert_log</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Insert this log into the NexusLIMS database.</span>
@@ -595,7 +601,7 @@
 
 
 <div class="viewcode-block" id="Session">
-<a class="viewcode-back" href="../../../api/nexusLIMS.db.html#nexusLIMS.db.session_handler.Session">[docs]</a>
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.db.session_handler.html#nexusLIMS.db.session_handler.Session">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Session</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A representation of a session in the NexusLIMS database.</span>
@@ -630,15 +636,18 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">dt_from</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dt_to</span> <span class="o">=</span> <span class="n">dt_range</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">user</span> <span class="o">=</span> <span class="n">user</span>
 
+<div class="viewcode-block" id="Session.__repr__">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.db.session_handler.html#nexusLIMS.db.session_handler.Session.__repr__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return custom representation of a Session.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dt_from</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dt_to</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span><span class="si">}</span><span class="s2"> on &quot;</span>
             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">instrument</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="p">)</span>
+        <span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="Session.update_session_status">
-<a class="viewcode-back" href="../../../api/nexusLIMS.db.html#nexusLIMS.db.session_handler.Session.update_session_status">[docs]</a>
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.db.session_handler.html#nexusLIMS.db.session_handler.Session.update_session_status">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">update_session_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">status</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Update the status of this Session in the NexusLIMS database.</span>
@@ -676,7 +685,7 @@
 
 
 <div class="viewcode-block" id="Session.insert_record_generation_event">
-<a class="viewcode-back" href="../../../api/nexusLIMS.db.html#nexusLIMS.db.session_handler.Session.insert_record_generation_event">[docs]</a>
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.db.session_handler.html#nexusLIMS.db.session_handler.Session.insert_record_generation_event">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">insert_record_generation_event</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Insert record generation event to session log.</span>
@@ -750,7 +759,7 @@
 
 
 <div class="viewcode-block" id="get_sessions_to_build">
-<a class="viewcode-back" href="../../../api/nexusLIMS.db.html#nexusLIMS.db.session_handler.get_sessions_to_build">[docs]</a>
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.db.session_handler.html#nexusLIMS.db.session_handler.get_sessions_to_build">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_sessions_to_build</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Session</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get list of sessions that need to be built from the NexusLIMS database.</span>

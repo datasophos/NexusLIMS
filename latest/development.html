@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Developer documentation &#8212; NexusLIMS 2.0.0 documentation</title>
+    <title>Developer documentation &#8212; NexusLIMS 2.1.0a0 documentation</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="_static/documentation_options.js?v=51b770b3"></script>
+    <script src="_static/documentation_options.js?v=cd47123d"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/design-tabs.js?v=f930bc37"></script>
@@ -49,7 +49,7 @@
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.0.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.1.0a0';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
@@ -57,12 +57,12 @@
     <link rel="icon" href="_static/nexusLIMS_bare_logo.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Migration from Poetry to uv" href="uv_migration.html" />
+    <link rel="next" title="Writing Extractor Plugins" href="writing_extractor_plugins.html" />
     <link rel="prev" title="Developer Guide" href="dev_guide.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.0.0" />
-    <meta name="docbuild:last-update" content="Dec, 09, 2025"/>
+  <meta name="docsearch:version" content="2.1.0a0" />
+    <meta name="docbuild:last-update" content="Dec, 10, 2025"/>
   </head>
   
   
@@ -128,8 +128,8 @@
       
     
     
-    <img src="_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.0.0 documentation - Home"/>
-    <img src="_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.0.0 documentation - Home"/>
+    <img src="_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.1.0a0 documentation - Home"/>
+    <img src="_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.1.0a0 documentation - Home"/>
   
   
 </a></div>
@@ -407,6 +407,9 @@
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="writing_extractor_plugins.html">Writing Extractor Plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="instrument_profiles.html">Instrument Profiles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="uv_migration.html">Migration from Poetry to uv</a></li>
 <li class="toctree-l1"><a class="reference internal" href="database.html">NexusLIMS database</a></li>
 <li class="toctree-l1"><a class="reference internal" href="schema_documentation.html">XML Schema Reference</a></li>
@@ -471,10 +474,8 @@
                 <article class="bd-article">
                   
   <section id="developer-documentation">
-<h1>Developer documentation<a class="headerlink" href="#developer-documentation" title="Link to this heading">#</a></h1>
-<blockquote>
-<div><p><cite>Last updated: December 2025</cite></p>
-</div></blockquote>
+<span id="development"></span><h1>Developer documentation<a class="headerlink" href="#developer-documentation" title="Link to this heading">#</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">Last</span> <span class="pre">updated:</span> <span class="pre">December</span> <span class="pre">2025</span></code></p>
 <p>If you are interested in learning about how the NexusLIMS back-end works or
 adding new features, these instructions should get you up and running with a
 development environment that will allow you to modify how the code operates.</p>
@@ -537,7 +538,7 @@ as the <code class="docutils literal notranslate"><span class="pre">README.md</s
 load variables from this file when running any <code class="docutils literal notranslate"><span class="pre">nexusLIMS</span></code> code.
 As an example, the  <code class="docutils literal notranslate"><span class="pre">.env</span></code> file content should look something like the
 following (substituting real credentials, of course). See the
-environment variables <a class="reference internal" href="api/nexusLIMS.html#nexuslims-user"><span class="std std-ref">documentation</span></a> for more
+environment variables <a class="reference internal" href="api/nexusLIMS/nexusLIMS.html#nexuslims-user"><span class="std std-ref">documentation</span></a> for more
 details.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_CDCS_USER</span><span class="o">=</span><span class="s1">&#39;username&#39;</span>
 <span class="nv">NX_CDCS_PASS</span><span class="o">=</span><span class="s1">&#39;password&#39;</span>
@@ -599,7 +600,7 @@ access to the installed packages and environment variables set appropriately.</p
 <a class="reference internal" href="database.html"><span class="doc">database</span></a> for any logs (typically inserted by the
 NEMO harvester) with a status of
 <code class="docutils literal notranslate"><span class="pre">'TO_BE_BUILT'</span></code>. This can be accomplished simply by running the
-<a class="reference internal" href="api/nexusLIMS.builder.html#module-nexusLIMS.builder.record_builder" title="nexusLIMS.builder.record_builder"><code class="xref py py-mod docutils literal notranslate"><span class="pre">record_builder</span></code></a> module directly via:</p>
+<a class="reference internal" href="api/nexusLIMS/nexusLIMS.builder.record_builder.html#module-nexusLIMS.builder.record_builder" title="nexusLIMS.builder.record_builder"><code class="xref py py-mod docutils literal notranslate"><span class="pre">record_builder</span></code></a> module directly via:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>uv<span class="w"> </span>run<span class="w"> </span>nexuslims-process-records
 </pre></div>
 </div>
@@ -615,8 +616,8 @@ code of this library through the <code class="docutils literal notranslate"><spa
 tasks, such as extracting metadata or building previews images, etc.</p>
 <p>For example, to extract the metadata from a <code class="docutils literal notranslate"><span class="pre">.tif</span></code> file saved on the
 FEI Quanta, run the following code using the
-<a class="reference internal" href="api/nexusLIMS.extractors.html#nexusLIMS.extractors.quanta_tif.get_quanta_metadata" title="nexusLIMS.extractors.quanta_tif.get_quanta_metadata"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_quanta_metadata()</span></code></a> function:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.extractors.quanta_tif</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_quanta_metadata</span>
+<a class="reference internal" href="api/nexusLIMS/nexusLIMS.extractors.plugins.quanta_tif.html#nexusLIMS.extractors.plugins.quanta_tif.get_quanta_metadata" title="nexusLIMS.extractors.plugins.quanta_tif.get_quanta_metadata"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_quanta_metadata()</span></code></a> function:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.extractors.plugins.quanta_tif</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_quanta_metadata</span>
 <span class="n">meta</span> <span class="o">=</span> <span class="n">get_quanta_metadata</span><span class="p">(</span><span class="s2">&quot;path_to_file.tif&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -638,7 +639,7 @@ for examples) and that the coverage of any new features is 100%.</p>
 <p class="admonition-title">Note</p>
 <p>In the public version of this repository, the included tests will not run
 due to the exclusion of test files and the expectation of certain files being
-present. If you are contributing, please make sure <cite>your changes</cite> are covered
+present. If you are contributing, please make sure <code class="docutils literal notranslate"><span class="pre">your</span> <span class="pre">changes</span></code> are covered
 by tests, and the NexusLIMS developers will take care of integrating your
 PR fully in the code after it is accepted.</p>
 </div>
@@ -646,7 +647,7 @@ PR fully in the code after it is accepted.</p>
 (such as <a class="reference external" href="https://www.jetbrains.com/pycharm/">PyCharm</a>) or include the
 <code class="docutils literal notranslate"><span class="pre">--cov</span></code> flag when running the tests. To test the preview image generation,
 the <code class="docutils literal notranslate"><span class="pre">--mpl</span></code> option should also be provided, together with the path to
-the <cite>“reference”</cite> images that are tested against. For example:</p>
+the “reference” images that are tested against. For example:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>&lt;path_to_repo&gt;
 $<span class="w"> </span>uv<span class="w"> </span>run<span class="w"> </span>./scripts/run_tests.sh
 
@@ -702,8 +703,8 @@ $<span class="w"> </span>uv<span class="w"> </span>run<span class="w"> </span>./
 <span class="c1"># nexusLIMS/extractors/digital_micrograph.py      278      0   100%</span>
 <span class="c1"># nexusLIMS/extractors/edax.py                     33      0   100%</span>
 <span class="c1"># nexusLIMS/extractors/fei_emi.py                 200      0   100%</span>
-<span class="c1"># nexusLIMS/extractors/quanta_tif.py              237      0   100%</span>
-<span class="c1"># nexusLIMS/extractors/thumbnail_generator.py     402      0   100%</span>
+<span class="c1"># nexusLIMS/extractors/plugins/quanta_tif.py              237      0   100%</span>
+<span class="c1"># nexusLIMS/extractors/plugins/preview_generators/*       402      0   100%</span>
 <span class="c1"># nexusLIMS/extractors/utils.py                   163      0   100%</span>
 <span class="c1"># nexusLIMS/harvesters/__init__.py                  5      0   100%</span>
 <span class="c1"># nexusLIMS/harvesters/nemo/__init__.py            33      0   100%</span>
@@ -822,7 +823,7 @@ git<span class="w"> </span>pull<span class="w"> </span>origin<span class="w"> </
 <li><p>Creates GitHub Release with auto-generated notes</p></li>
 <li><p>Deploys versioned documentation to GitHub Pages</p></li>
 </ol>
-<p>Monitor progress at: <a class="github reference external" href="https://github.com/datasophos/NexusLIMS/actions">datasophos/NexusLIMS</a></p>
+<p>Monitor progress at: https://github.com/datasophos/NexusLIMS/actions</p>
 </section>
 </section>
 <section id="script-options">
@@ -837,8 +838,9 @@ Options:
   --draft       Generate draft changelog without committing
 </pre></div>
 </div>
+</section>
 <section id="common-scenarios">
-<h4>Common Scenarios<a class="headerlink" href="#common-scenarios" title="Link to this heading">#</a></h4>
+<h3>Common Scenarios<a class="headerlink" href="#common-scenarios" title="Link to this heading">#</a></h3>
 <p><strong>Preview release without making changes:</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./scripts/release.sh<span class="w"> </span><span class="m">2</span>.0.0<span class="w"> </span>--dry-run
 </pre></div>
@@ -855,7 +857,6 @@ Options:
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./scripts/release.sh<span class="w"> </span><span class="m">2</span>.0.0<span class="w"> </span>--yes
 </pre></div>
 </div>
-</section>
 </section>
 <section id="version-numbering">
 <h3>Version Numbering<a class="headerlink" href="#version-numbering" title="Link to this heading">#</a></h3>
@@ -937,9 +938,9 @@ git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </
 <section id="post-release-checklist">
 <h3>Post-Release Checklist<a class="headerlink" href="#post-release-checklist" title="Link to this heading">#</a></h3>
 <ul class="simple">
-<li><p>Verify package on PyPI: <a class="reference external" href="https://pypi.org/project/nexusLIMS/">https://pypi.org/project/nexusLIMS/</a></p></li>
-<li><p>Check GitHub Release: <a class="github reference external" href="https://github.com/datasophos/NexusLIMS/releases">datasophos/NexusLIMS</a></p></li>
-<li><p>Verify documentation: <a class="reference external" href="https://datasophos.github.io/NexusLIMS/stable/">https://datasophos.github.io/NexusLIMS/stable/</a></p></li>
+<li><p>Verify package on PyPI: https://pypi.org/project/nexusLIMS/</p></li>
+<li><p>Check GitHub Release: https://github.com/datasophos/NexusLIMS/releases</p></li>
+<li><p>Verify documentation: https://datasophos.github.io/NexusLIMS/stable/</p></li>
 <li><p>Test installation: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">nexusLIMS==2.0.0</span></code></p></li>
 <li><p>Announce release (if applicable)</p></li>
 <li><p>Update dependent projects/deployments</p></li>
@@ -968,11 +969,11 @@ git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </
       </div>
     </a>
     <a class="right-next"
-       href="uv_migration.html"
+       href="writing_extractor_plugins.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Migration from Poetry to uv</p>
+        <p class="prev-next-title">Writing Extractor Plugins</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -1012,10 +1013,8 @@ git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#monitor-automated-process">3. Monitor Automated Process</a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#script-options">Script Options</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#common-scenarios">Common Scenarios</a></li>
-</ul>
-</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#script-options">Script Options</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#common-scenarios">Common Scenarios</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#version-numbering">Version Numbering</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#troubleshooting">Troubleshooting</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#working-directory-is-not-clean">“Working directory is not clean”</a></li>
@@ -1035,7 +1034,7 @@ git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="_sources/development.rst.txt"
+      <li><a href="_sources/development.md.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div></div>

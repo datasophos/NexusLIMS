@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>User Guide &#8212; NexusLIMS 2.0.0 documentation</title>
+    <title>User Guide &#8212; NexusLIMS 2.1.0a0 documentation</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="_static/documentation_options.js?v=51b770b3"></script>
+    <script src="_static/documentation_options.js?v=cd47123d"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/design-tabs.js?v=f930bc37"></script>
@@ -49,7 +49,7 @@
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.0.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.1.0a0';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
@@ -57,12 +57,12 @@
     <link rel="icon" href="_static/nexusLIMS_bare_logo.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Record building workflow" href="record_building.html" />
+    <link rel="next" title="Configuration" href="configuration.html" />
     <link rel="prev" title="Migration Guide: v1 to v2" href="migration.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.0.0" />
-    <meta name="docbuild:last-update" content="Dec, 09, 2025"/>
+  <meta name="docsearch:version" content="2.1.0a0" />
+    <meta name="docbuild:last-update" content="Dec, 10, 2025"/>
   </head>
   
   
@@ -128,8 +128,8 @@
       
     
     
-    <img src="_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.0.0 documentation - Home"/>
-    <img src="_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.0.0 documentation - Home"/>
+    <img src="_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.1.0a0 documentation - Home"/>
+    <img src="_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.1.0a0 documentation - Home"/>
   
   
 </a></div>
@@ -406,6 +406,7 @@
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="record_building.html">Record building workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="extractors.html">Extractors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="taxonomy.html">NexusLIMS taxonomy</a></li>
@@ -471,6 +472,17 @@
 <p>This guide provides comprehensive information for users of NexusLIMS.</p>
 <div class="toctree-wrapper compound">
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#configuration-files">Configuration Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#required-configuration">Required Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#optional-configuration">Optional Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#configuration-in-code">Configuration in Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#configuration-validation">Configuration Validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#example-configurations">Example Configurations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#troubleshooting">Troubleshooting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#see-also">See Also</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="record_building.html">Record building workflow</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="record_building.html#general-approach">General Approach</a></li>
 <li class="toctree-l2"><a class="reference internal" href="record_building.html#finding-new-sessions">Finding New Sessions</a></li>
@@ -515,11 +527,11 @@
       </div>
     </a>
     <a class="right-next"
-       href="record_building.html"
+       href="configuration.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Record building workflow</p>
+        <p class="prev-next-title">Configuration</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -538,7 +550,7 @@
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="_sources/user_guide.rst.txt"
+      <li><a href="_sources/user_guide.md.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div></div>

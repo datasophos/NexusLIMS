@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>NexusLIMS taxonomy &#8212; NexusLIMS 2.0.0 documentation</title>
+    <title>NexusLIMS taxonomy &#8212; NexusLIMS 2.1.0a0 documentation</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="_static/documentation_options.js?v=51b770b3"></script>
+    <script src="_static/documentation_options.js?v=cd47123d"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/design-tabs.js?v=f930bc37"></script>
@@ -49,7 +49,7 @@
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.0.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.1.0a0';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
@@ -61,8 +61,8 @@
     <link rel="prev" title="Extractors" href="extractors.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.0.0" />
-    <meta name="docbuild:last-update" content="Dec, 09, 2025"/>
+  <meta name="docsearch:version" content="2.1.0a0" />
+    <meta name="docbuild:last-update" content="Dec, 10, 2025"/>
   </head>
   
   
@@ -128,8 +128,8 @@
       
     
     
-    <img src="_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.0.0 documentation - Home"/>
-    <img src="_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.0.0 documentation - Home"/>
+    <img src="_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.1.0a0 documentation - Home"/>
+    <img src="_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.1.0a0 documentation - Home"/>
   
   
 </a></div>
@@ -406,6 +406,7 @@
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="record_building.html">Record building workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="extractors.html">Extractors</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">NexusLIMS taxonomy</a></li>
@@ -477,36 +478,30 @@ used by the NexusLIMS development team and what is meant by them:</p>
 <ul class="simple">
 <li><p><strong>Harvester:</strong></p>
 <ul>
-<li><p>The harvesters (implemented in the <a class="reference internal" href="api/nexusLIMS.harvesters.html#module-nexusLIMS.harvesters" title="nexusLIMS.harvesters"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.harvesters</span></code></a> package)
+<li><p>The harvesters (implemented in the <a class="reference internal" href="api/nexusLIMS/nexusLIMS.harvesters.html#module-nexusLIMS.harvesters" title="nexusLIMS.harvesters"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.harvesters</span></code></a> package)
 are the portions of the code that connect to external data sources, such
 as the NEMO laboratory management system. The primary harvester is NEMO
-(<a class="reference internal" href="api/nexusLIMS.harvesters.nemo.html#module-nexusLIMS.harvesters.nemo" title="nexusLIMS.harvesters.nemo"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nemo</span></code></a>), with SharePoint being deprecated.</p></li>
+(<a class="reference internal" href="api/nexusLIMS/nexusLIMS.harvesters.nemo.html#module-nexusLIMS.harvesters.nemo" title="nexusLIMS.harvesters.nemo"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nemo</span></code></a>), with SharePoint being deprecated.</p></li>
 </ul>
 </li>
-</ul>
-<ul class="simple">
 <li><p><strong>Extractor:</strong></p>
 <ul>
-<li><p>The extractors (implemented in the <a class="reference internal" href="api/nexusLIMS.extractors.html#module-nexusLIMS.extractors" title="nexusLIMS.extractors"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors</span></code></a> package)
+<li><p>The extractors (implemented in the <a class="reference internal" href="api/nexusLIMS/nexusLIMS.extractors.html#module-nexusLIMS.extractors" title="nexusLIMS.extractors"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors</span></code></a> package)
 are the modules that inspect the data files collected during an Experiment
 and pull out the relevant metadata contained within for inclusion in the
 record. The preview image generation is also considered an extractor.</p></li>
 </ul>
 </li>
-</ul>
-<ul class="simple">
 <li><p><strong>Record Builder:</strong></p>
 <ul>
 <li><p>The record builder (implemented in the
-<a class="reference internal" href="api/nexusLIMS.builder.html#module-nexusLIMS.builder.record_builder" title="nexusLIMS.builder.record_builder"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.builder.record_builder</span></code></a> module) is the heart of the
+<a class="reference internal" href="api/nexusLIMS/nexusLIMS.builder.record_builder.html#module-nexusLIMS.builder.record_builder" title="nexusLIMS.builder.record_builder"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.builder.record_builder</span></code></a> module) is the heart of the
 NexusLIMS back-end, and is the portion of the library that orchestrates
 the creation of a new record and its insertion into the NexusLIMS CDCS
 instance. Further details are provided on the
 <a class="reference internal" href="record_building.html"><span class="doc">record building</span></a> documentation page.</p></li>
 </ul>
 </li>
-</ul>
-<ul class="simple">
 <li><p><strong>Session Logger:</strong></p>
 <ul>
 <li><p>The session logger (deprecated) was a portable Windows application that ran on
@@ -560,7 +555,7 @@ replaced by the NEMO harvester approach.</p></li>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="_sources/taxonomy.rst.txt"
+      <li><a href="_sources/taxonomy.md.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div></div>

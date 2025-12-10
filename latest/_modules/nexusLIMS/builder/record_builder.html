@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>nexusLIMS.builder.record_builder &#8212; NexusLIMS 2.0.0 documentation</title>
+    <title>nexusLIMS.builder.record_builder &#8212; NexusLIMS 2.1.0a0 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../../_static/documentation_options.js?v=51b770b3"></script>
+    <script src="../../../_static/documentation_options.js?v=cd47123d"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -48,7 +48,7 @@
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.0.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.1.0a0';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
@@ -58,8 +58,8 @@
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.0.0" />
-    <meta name="docbuild:last-update" content="Dec, 09, 2025"/>
+  <meta name="docsearch:version" content="2.1.0a0" />
+    <meta name="docbuild:last-update" content="Dec, 10, 2025"/>
   </head>
   
   
@@ -125,8 +125,8 @@
       
     
     
-    <img src="../../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.0.0 documentation - Home"/>
-    <img src="../../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.0.0 documentation - Home"/>
+    <img src="../../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.1.0a0 documentation - Home"/>
+    <img src="../../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.1.0a0 documentation - Home"/>
   
   
 </a></div>
@@ -433,6 +433,9 @@
     
     <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../nexusLIMS.html" class="nav-link">nexusLIMS</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">nexusLIMS.builder.record_builder</span></li>
   </ul>
 </nav>
@@ -481,7 +484,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.cdcs</span><span class="w"> </span><span class="kn">import</span> <span class="n">upload_record_files</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">settings</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.db.session_handler</span><span class="w"> </span><span class="kn">import</span> <span class="n">Session</span><span class="p">,</span> <span class="n">db_query</span><span class="p">,</span> <span class="n">get_sessions_to_build</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.extractors</span><span class="w"> </span><span class="kn">import</span> <span class="n">extension_reader_map</span> <span class="k">as</span> <span class="n">ext_map</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.extractors</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_registry</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.harvesters</span><span class="w"> </span><span class="kn">import</span> <span class="n">nemo</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.harvesters.nemo</span><span class="w"> </span><span class="kn">import</span> <span class="n">utils</span> <span class="k">as</span> <span class="n">nemo_utils</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.harvesters.reservation_event</span><span class="w"> </span><span class="kn">import</span> <span class="n">ReservationEvent</span>
@@ -499,7 +502,7 @@
 
 
 <div class="viewcode-block" id="build_record">
-<a class="viewcode-back" href="../../../api/nexusLIMS.builder.html#nexusLIMS.builder.record_builder.build_record">[docs]</a>
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.builder.record_builder.html#nexusLIMS.builder.record_builder.build_record">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">build_record</span><span class="p">(</span>
     <span class="n">session</span><span class="p">:</span> <span class="n">Session</span><span class="p">,</span>
     <span class="n">sample_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -585,7 +588,7 @@
 
 
 <div class="viewcode-block" id="get_reservation_event">
-<a class="viewcode-back" href="../../../api/nexusLIMS.builder.html#nexusLIMS.builder.record_builder.get_reservation_event">[docs]</a>
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.builder.record_builder.html#nexusLIMS.builder.record_builder.get_reservation_event">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_reservation_event</span><span class="p">(</span><span class="n">session</span><span class="p">:</span> <span class="n">Session</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ReservationEvent</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get a ReservationEvent representation of a Session.</span>
@@ -641,7 +644,7 @@
 
 
 <div class="viewcode-block" id="build_acq_activities">
-<a class="viewcode-back" href="../../../api/nexusLIMS.builder.html#nexusLIMS.builder.record_builder.build_acq_activities">[docs]</a>
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.builder.record_builder.html#nexusLIMS.builder.record_builder.build_acq_activities">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">build_acq_activities</span><span class="p">(</span><span class="n">instrument</span><span class="p">,</span> <span class="n">dt_from</span><span class="p">,</span> <span class="n">dt_to</span><span class="p">,</span> <span class="n">generate_previews</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Build an XML string representation of each AcquisitionActivity for a session.</span>
@@ -753,7 +756,7 @@
 
 
 <div class="viewcode-block" id="get_files">
-<a class="viewcode-back" href="../../../api/nexusLIMS.builder.html#nexusLIMS.builder.record_builder.get_files">[docs]</a>
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.builder.record_builder.html#nexusLIMS.builder.record_builder.get_files">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_files</span><span class="p">(</span>
     <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
     <span class="n">dt_from</span><span class="p">:</span> <span class="n">dt</span><span class="p">,</span>
@@ -791,7 +794,12 @@
         <span class="p">)</span>
         <span class="n">strategy</span> <span class="o">=</span> <span class="s2">&quot;exclusive&quot;</span>
 
-    <span class="n">extension_arg</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">strategy</span> <span class="o">==</span> <span class="s2">&quot;inclusive&quot;</span> <span class="k">else</span> <span class="n">ext_map</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+    <span class="c1"># Get supported extensions from the registry</span>
+    <span class="c1"># For exclusive strategy, only use extensions with specialized extractors</span>
+    <span class="c1"># (exclude extensions that only have the fallback basic_file_info_extractor)</span>
+    <span class="n">registry</span> <span class="o">=</span> <span class="n">get_registry</span><span class="p">()</span>
+    <span class="n">supported_extensions</span> <span class="o">=</span> <span class="n">registry</span><span class="o">.</span><span class="n">get_supported_extensions</span><span class="p">(</span><span class="n">exclude_fallback</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">extension_arg</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">strategy</span> <span class="o">==</span> <span class="s2">&quot;inclusive&quot;</span> <span class="k">else</span> <span class="n">supported_extensions</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="n">files</span> <span class="o">=</span> <span class="n">gnu_find_files_by_mtime</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">dt_from</span><span class="p">,</span> <span class="n">dt_to</span><span class="p">,</span> <span class="n">extensions</span><span class="o">=</span><span class="n">extension_arg</span><span class="p">)</span>
@@ -809,7 +817,7 @@
 
 
 <div class="viewcode-block" id="dump_record">
-<a class="viewcode-back" href="../../../api/nexusLIMS.builder.html#nexusLIMS.builder.record_builder.dump_record">[docs]</a>
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.builder.record_builder.html#nexusLIMS.builder.record_builder.dump_record">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">dump_record</span><span class="p">(</span>
     <span class="n">session</span><span class="p">:</span> <span class="n">Session</span><span class="p">,</span>
     <span class="n">filename</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -857,7 +865,7 @@
 
 
 <div class="viewcode-block" id="validate_record">
-<a class="viewcode-back" href="../../../api/nexusLIMS.builder.html#nexusLIMS.builder.record_builder.validate_record">[docs]</a>
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.builder.record_builder.html#nexusLIMS.builder.record_builder.validate_record">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">validate_record</span><span class="p">(</span><span class="n">xml_filename</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Validate an .xml record against the Nexus schema.</span>
@@ -882,7 +890,7 @@
 
 
 <div class="viewcode-block" id="build_new_session_records">
-<a class="viewcode-back" href="../../../api/nexusLIMS.builder.html#nexusLIMS.builder.record_builder.build_new_session_records">[docs]</a>
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.builder.record_builder.html#nexusLIMS.builder.record_builder.build_new_session_records">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">build_new_session_records</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Build records for new sessions from the database.</span>
@@ -974,6 +982,8 @@
 
 
 
+<div class="viewcode-block" id="_record_validation_flow">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.builder.record_builder.html#nexusLIMS.builder.record_builder._record_validation_flow">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">_record_validation_flow</span><span class="p">(</span><span class="n">record_text</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">xml_files</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]:</span>
     <span class="k">if</span> <span class="n">validate_record</span><span class="p">(</span><span class="n">BytesIO</span><span class="p">(</span><span class="nb">bytes</span><span class="p">(</span><span class="n">record_text</span><span class="p">,</span> <span class="s2">&quot;UTF-8&quot;</span><span class="p">))):</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Validated newly generated record&quot;</span><span class="p">)</span>
@@ -1001,11 +1011,12 @@
         <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Marking </span><span class="si">%s</span><span class="s1"> as &quot;ERROR&quot;&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">session_identifier</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Could not validate record, did not write to disk&quot;</span><span class="p">)</span>
         <span class="n">s</span><span class="o">.</span><span class="n">update_session_status</span><span class="p">(</span><span class="s2">&quot;ERROR&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">xml_files</span>
+    <span class="k">return</span> <span class="n">xml_files</span></div>
+
 
 
 <div class="viewcode-block" id="process_new_records">
-<a class="viewcode-back" href="../../../api/nexusLIMS.builder.html#nexusLIMS.builder.record_builder.process_new_records">[docs]</a>
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.builder.record_builder.html#nexusLIMS.builder.record_builder.process_new_records">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">process_new_records</span><span class="p">(</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">dry_run</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -1080,7 +1091,7 @@
 
 
 <div class="viewcode-block" id="dry_run_file_find">
-<a class="viewcode-back" href="../../../api/nexusLIMS.builder.html#nexusLIMS.builder.record_builder.dry_run_file_find">[docs]</a>
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.builder.record_builder.html#nexusLIMS.builder.record_builder.dry_run_file_find">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">dry_run_file_find</span><span class="p">(</span><span class="n">s</span><span class="p">:</span> <span class="n">Session</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the files that *would* be included for a record built for the supplied session.</span>

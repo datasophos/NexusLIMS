@@ -1,0 +1,17 @@
+# {py:mod}`nexusLIMS.cli`
+
+```{py:module} nexusLIMS.cli
+```
+
+```{autodoc2-docstring} nexusLIMS.cli
+:allowtitles:
+```
+
+## Submodules
+
+```{toctree}
+:titlesonly:
+:maxdepth: 1
+
+nexusLIMS.cli.process_records
+```

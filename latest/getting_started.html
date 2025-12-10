@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Getting Started &#8212; NexusLIMS 2.0.0 documentation</title>
+    <title>Getting Started &#8212; NexusLIMS 2.1.0a0 documentation</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="_static/documentation_options.js?v=51b770b3"></script>
+    <script src="_static/documentation_options.js?v=cd47123d"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/design-tabs.js?v=f930bc37"></script>
@@ -49,7 +49,7 @@
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.0.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.1.0a0';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
@@ -61,8 +61,8 @@
     <link rel="prev" title="NexusLIMS - An Automated Laboratory Information Management System for Electron Microscopy" href="index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.0.0" />
-    <meta name="docbuild:last-update" content="Dec, 09, 2025"/>
+  <meta name="docsearch:version" content="2.1.0a0" />
+    <meta name="docbuild:last-update" content="Dec, 10, 2025"/>
   </head>
   
   
@@ -128,8 +128,8 @@
       
     
     
-    <img src="_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.0.0 documentation - Home"/>
-    <img src="_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.0.0 documentation - Home"/>
+    <img src="_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.1.0a0 documentation - Home"/>
+    <img src="_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.1.0a0 documentation - Home"/>
   
   
 </a></div>
@@ -487,7 +487,7 @@
 <h3>Key Features<a class="headerlink" href="#key-features" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p><strong>Automatic Record Generation</strong>: Creates comprehensive experimental records without manual data entry</p></li>
-<li><p><strong>Multiple File Format Support</strong>: Reads metadata from <cite>.dm3/.dm4</cite>, <cite>.tif</cite>, <cite>.ser/.emi</cite>, <cite>.spc/.msa</cite> files</p></li>
+<li><p><strong>Multiple File Format Support</strong>: Reads metadata from <code class="docutils literal notranslate"><span class="pre">.dm3/.dm4</span></code>, <code class="docutils literal notranslate"><span class="pre">.tif</span></code>, <code class="docutils literal notranslate"><span class="pre">.ser/.emi</span></code>, <code class="docutils literal notranslate"><span class="pre">.spc/.msa</span></code> files</p></li>
 <li><p><strong>Calendar Integration</strong>: Connects with NEMO lab management systems</p></li>
 <li><p><strong>Temporal File Clustering</strong>: Intelligently groups files into acquisition activities</p></li>
 <li><p><strong>CDCS Integration</strong>: Publishes records to web-accessible data repositories</p></li>
@@ -539,84 +539,29 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 </section>
 <section id="configuration">
 <h2>Configuration<a class="headerlink" href="#configuration" title="Link to this heading">#</a></h2>
-<p>NexusLIMS requires configuration through environment variables, typically stored in a <cite>.env</cite> file.</p>
-<section id="create-configuration-file">
-<h3>Create Configuration File<a class="headerlink" href="#create-configuration-file" title="Link to this heading">#</a></h3>
-<p>Copy the example configuration file:</p>
+<p>NexusLIMS requires configuration through environment variables, typically stored in a <code class="docutils literal notranslate"><span class="pre">.env</span></code> file.</p>
+<section id="quick-start">
+<h3>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading">#</a></h3>
+<ol class="arabic">
+<li><p>Copy the example configuration file:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>.env.example<span class="w"> </span>.env
 </pre></div>
 </div>
-<p>Then edit <cite>.env</cite> with your settings.</p>
-</section>
-<section id="essential-configuration">
-<h3>Essential Configuration<a class="headerlink" href="#essential-configuration" title="Link to this heading">#</a></h3>
-<section id="critical-paths">
-<h4>Critical Paths<a class="headerlink" href="#critical-paths" title="Link to this heading">#</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Read-only mount of centralized instrument data</span>
-<span class="nv">NX_INSTRUMENT_DATA_PATH</span><span class="o">=</span>/path/to/instrument/data
-
-<span class="c1"># Writable parallel directory for metadata/previews</span>
-<span class="nv">NX_DATA_PATH</span><span class="o">=</span>/path/to/nexuslims/data
-
-<span class="c1"># SQLite database path</span>
-<span class="nv">NX_DB_PATH</span><span class="o">=</span>/path/to/nexuslims/data/nexuslims_db.sqlite
-</pre></div>
+</li>
+<li><p>Edit <code class="docutils literal notranslate"><span class="pre">.env</span></code> with your settings. At minimum, you’ll need to set:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">NX_INSTRUMENT_DATA_PATH</span></code> - Path to instrument data</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">NX_DATA_PATH</span></code> - Path for NexusLIMS data</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">NX_DB_PATH</span></code> - Path to SQLite database</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">NX_CDCS_URL</span></code>, <code class="docutils literal notranslate"><span class="pre">NX_CDCS_USER</span></code>, <code class="docutils literal notranslate"><span class="pre">NX_CDCS_PASS</span></code> - CDCS credentials</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">NX_NEMO_ADDRESS_N</span></code>, <code class="docutils literal notranslate"><span class="pre">NX_NEMO_TOKEN_N</span></code> - NEMO integration</p></li>
+</ul>
+</li>
+</ol>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>For complete configuration documentation including all available settings, validation rules, and troubleshooting, see the <a class="reference internal" href="configuration.html#configuration"><span class="std std-ref">Configuration</span></a> guide.</p>
 </div>
-</section>
-<section id="optional-paths">
-<h4>Optional Paths<a class="headerlink" href="#optional-paths" title="Link to this heading">#</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Directory for application logs (defaults to NX_DATA_PATH/logs/)</span>
-<span class="nv">NX_LOG_PATH</span><span class="o">=</span>/path/to/logs
-
-<span class="c1"># Directory for generated XML records (defaults to NX_DATA_PATH/records/)</span>
-<span class="nv">NX_RECORDS_PATH</span><span class="o">=</span>/path/to/records
-</pre></div>
-</div>
-</section>
-<section id="nemo-integration">
-<h4>NEMO Integration<a class="headerlink" href="#nemo-integration" title="Link to this heading">#</a></h4>
-<p>For multiple NEMO instances, use the pattern <cite>NX_NEMO_ADDRESS_N</cite> and <cite>NX_NEMO_TOKEN_N</cite>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># First NEMO instance</span>
-<span class="nv">NX_NEMO_ADDRESS_0</span><span class="o">=</span>https://nemo.example.com
-<span class="nv">NX_NEMO_TOKEN_0</span><span class="o">=</span>your_api_token_here
-
-<span class="c1"># Second NEMO instance (if applicable)</span>
-<span class="nv">NX_NEMO_ADDRESS_1</span><span class="o">=</span>https://nemo2.example.com
-<span class="nv">NX_NEMO_TOKEN_1</span><span class="o">=</span>another_api_token
-</pre></div>
-</div>
-<p>Optional timezone and datetime format overrides:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_NEMO_TIMEZONE_0</span><span class="o">=</span>America/New_York
-<span class="nv">NX_NEMO_DATEFMT_0</span><span class="o">=</span>%Y-%m-%dT%H:%M:%S%z
-</pre></div>
-</div>
-</section>
-<section id="cdcs-authentication">
-<h4>CDCS Authentication<a class="headerlink" href="#cdcs-authentication" title="Link to this heading">#</a></h4>
-<p>For uploading records to CDCS:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_CDCS_USER</span><span class="o">=</span>your_username
-<span class="nv">NX_CDCS_PASS</span><span class="o">=</span>your_password
-<span class="nv">NX_CDCS_URL</span><span class="o">=</span>https://cdcs.example.com
-</pre></div>
-</div>
-</section>
-<section id="file-processing-strategy">
-<h4>File Processing Strategy<a class="headerlink" href="#file-processing-strategy" title="Link to this heading">#</a></h4>
-<p>Control which files are included in records:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># exclusive: Only files with known extractors (default)</span>
-<span class="c1"># inclusive: All files (with basic metadata for unknowns)</span>
-<span class="nv">NEXUSLIMS_FILE_STRATEGY</span><span class="o">=</span>exclusive
-</pre></div>
-</div>
-</section>
-<section id="file-delay-window">
-<h4>File Delay Window<a class="headerlink" href="#file-delay-window" title="Link to this heading">#</a></h4>
-<p>Control retry window for sessions with no files found (useful if there are delays in your file management):</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Days to continue searching for files (default: 14)</span>
-<span class="nv">NX_FILE_DELAY_DAYS</span><span class="o">=</span><span class="m">14</span>
-</pre></div>
-</div>
-</section>
 </section>
 </section>
 <section id="database-setup">
@@ -635,7 +580,7 @@ sqlite3<span class="w"> </span><span class="nv">$NX_DB_PATH</span><span class="w
 <ul class="simple">
 <li><p><strong>name</strong>: Instrument identifier</p></li>
 <li><p><strong>harvester</strong>: “nemo” or “sharepoint”</p></li>
-<li><p><strong>filestore_path</strong>: Path relative to <cite>NX_INSTRUMENT_DATA_PATH</cite></p></li>
+<li><p><strong>filestore_path</strong>: Path relative to <code class="docutils literal notranslate"><span class="pre">NX_INSTRUMENT_DATA_PATH</span></code></p></li>
 <li><p><strong>timezone</strong>: Timezone for datetime handling</p></li>
 <li><p><strong>api_url</strong>: NEMO API URL (for NEMO harvester)</p></li>
 <li><p><strong>calendar_name</strong>: NEMO tool name (must match NEMO configuration)</p></li>
@@ -654,8 +599,8 @@ sqlite3<span class="w"> </span><span class="nv">$NX_DB_PATH</span><span class="w
 </div>
 </section>
 </section>
-<section id="quick-start">
-<h2>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading">#</a></h2>
+<section id="id2">
+<h2>Quick Start<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
 <section id="run-the-record-builder">
 <h3>Run the Record Builder<a class="headerlink" href="#run-the-record-builder" title="Link to this heading">#</a></h3>
 <p>Once configured, run the record builder:</p>
@@ -709,9 +654,9 @@ nexuslims-process-records<span class="w"> </span>-vv
 <h2>Getting Help<a class="headerlink" href="#getting-help" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p><strong>Documentation</strong>: You’re reading it! Browse the sections above</p></li>
-<li><p><strong>Issues</strong>: Report bugs at <a class="github reference external" href="https://github.com/datasophos/NexusLIMS/issues">datasophos/NexusLIMS#issues</a></p></li>
-<li><p><strong>Source Code</strong>: <a class="github reference external" href="https://github.com/datasophos/NexusLIMS">datasophos/NexusLIMS</a></p></li>
-<li><p><strong>Original NIST Docs</strong>: <a class="reference external" href="https://pages.nist.gov/NexusLIMS">https://pages.nist.gov/NexusLIMS</a> (may be outdated)</p></li>
+<li><p><strong>Issues</strong>: Report bugs at https://github.com/datasophos/NexusLIMS/issues</p></li>
+<li><p><strong>Source Code</strong>: https://github.com/datasophos/NexusLIMS</p></li>
+<li><p><strong>Original NIST Docs</strong>: https://pages.nist.gov/NexusLIMS (may be outdated)</p></li>
 </ul>
 <p><strong>Note</strong>: This is a fork maintained by <a class="reference external" href="https://datasophos.co">datasophos</a>, not affiliated with NIST.</p>
 </section>
@@ -775,16 +720,7 @@ nexuslims-process-records<span class="w"> </span>-vv
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuration">Configuration</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#create-configuration-file">Create Configuration File</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#essential-configuration">Essential Configuration</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#critical-paths">Critical Paths</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#optional-paths">Optional Paths</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nemo-integration">NEMO Integration</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#cdcs-authentication">CDCS Authentication</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#file-processing-strategy">File Processing Strategy</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#file-delay-window">File Delay Window</a></li>
-</ul>
-</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quick-start">Quick Start</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#database-setup">Database Setup</a><ul class="nav section-nav flex-column">
@@ -792,7 +728,7 @@ nexuslims-process-records<span class="w"> </span>-vv
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#configure-instruments">Configure Instruments</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quick-start">Quick Start</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Quick Start</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#run-the-record-builder">Run the Record Builder</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#understanding-the-workflow">Understanding the Workflow</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#session-states">Session States</a></li>
@@ -807,7 +743,7 @@ nexuslims-process-records<span class="w"> </span>-vv
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="_sources/getting_started.rst.txt"
+      <li><a href="_sources/getting_started.md.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div></div>

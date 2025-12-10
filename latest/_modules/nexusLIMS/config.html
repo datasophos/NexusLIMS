@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>nexusLIMS.config &#8212; NexusLIMS 2.0.0 documentation</title>
+    <title>nexusLIMS.config &#8212; NexusLIMS 2.1.0a0 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../_static/documentation_options.js?v=51b770b3"></script>
+    <script src="../../_static/documentation_options.js?v=cd47123d"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
@@ -48,7 +48,7 @@
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.0.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.1.0a0';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
@@ -58,8 +58,8 @@
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.0.0" />
-    <meta name="docbuild:last-update" content="Dec, 09, 2025"/>
+  <meta name="docsearch:version" content="2.1.0a0" />
+    <meta name="docbuild:last-update" content="Dec, 10, 2025"/>
   </head>
   
   
@@ -125,8 +125,8 @@
       
     
     
-    <img src="../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.0.0 documentation - Home"/>
-    <img src="../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.0.0 documentation - Home"/>
+    <img src="../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.1.0a0 documentation - Home"/>
+    <img src="../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.1.0a0 documentation - Home"/>
   
   
 </a></div>
@@ -433,6 +433,9 @@
     
     <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Module code</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../nexusLIMS.html" class="nav-link">nexusLIMS</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">nexusLIMS.config</span></li>
   </ul>
 </nav>
@@ -487,7 +490,7 @@
 
 
 <div class="viewcode-block" id="NemoHarvesterConfig">
-<a class="viewcode-back" href="../../api/nexusLIMS.html#nexusLIMS.config.NemoHarvesterConfig">[docs]</a>
+<a class="viewcode-back" href="../../api/nexusLIMS/nexusLIMS.config.html#nexusLIMS.config.NemoHarvesterConfig">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">NemoHarvesterConfig</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for a single NEMO harvester instance.&quot;&quot;&quot;</span>
 
@@ -529,7 +532,7 @@
     <span class="p">)</span>
 
 <div class="viewcode-block" id="NemoHarvesterConfig.validate_trailing_slash">
-<a class="viewcode-back" href="../../api/nexusLIMS.html#nexusLIMS.config.NemoHarvesterConfig.validate_trailing_slash">[docs]</a>
+<a class="viewcode-back" href="../../api/nexusLIMS/nexusLIMS.config.html#nexusLIMS.config.NemoHarvesterConfig.validate_trailing_slash">[docs]</a>
     <span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;address&quot;</span><span class="p">)</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">validate_trailing_slash</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="n">AnyHttpUrl</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AnyHttpUrl</span><span class="p">:</span>
@@ -543,7 +546,7 @@
 
 
 <div class="viewcode-block" id="EmailConfig">
-<a class="viewcode-back" href="../../api/nexusLIMS.html#nexusLIMS.config.EmailConfig">[docs]</a>
+<a class="viewcode-back" href="../../api/nexusLIMS/nexusLIMS.config.html#nexusLIMS.config.EmailConfig">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">EmailConfig</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Config for email notifications from the nexuslims-process-records script.&quot;&quot;&quot;</span>
 
@@ -579,7 +582,7 @@
 
 
 <div class="viewcode-block" id="Settings">
-<a class="viewcode-back" href="../../api/nexusLIMS.html#nexusLIMS.config.Settings">[docs]</a>
+<a class="viewcode-back" href="../../api/nexusLIMS/nexusLIMS.config.html#nexusLIMS.config.Settings">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Settings</span><span class="p">(</span><span class="n">BaseSettings</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Manage application settings loaded from environment variables and `.env` files.</span>
@@ -708,6 +711,16 @@
             <span class="s2">&quot;a &#39;uploaded&#39; subdirectory.&quot;</span>
         <span class="p">),</span>
     <span class="p">)</span>
+    <span class="n">NX_LOCAL_PROFILES_PATH</span><span class="p">:</span> <span class="n">DirectoryPath</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">&quot;Directory for site-specific instrument profiles. These profiles &quot;</span>
+            <span class="s2">&quot;customize metadata extraction for instruments unique to your deployment &quot;</span>
+            <span class="s2">&quot;without modifying the core NexusLIMS codebase. Profile files should be &quot;</span>
+            <span class="s2">&quot;Python modules that register InstrumentProfile objects. If not specified, &quot;</span>
+            <span class="s2">&quot;only built-in profiles will be loaded.&quot;</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">nexuslims_instrument_data_path</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
@@ -732,7 +745,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">NX_DATA_PATH</span> <span class="o">/</span> <span class="s2">&quot;records&quot;</span>
 
 <div class="viewcode-block" id="Settings.nemo_harvesters">
-<a class="viewcode-back" href="../../api/nexusLIMS.html#nexusLIMS.config.Settings.nemo_harvesters">[docs]</a>
+<a class="viewcode-back" href="../../api/nexusLIMS/nexusLIMS.config.html#nexusLIMS.config.Settings.nemo_harvesters">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">nemo_harvesters</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">NemoHarvesterConfig</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Dynamically discover and parse all NEMO harvester configurations.</span>
@@ -750,29 +763,29 @@
 <span class="sd">        --------</span>
 <span class="sd">        With environment variables:</span>
 
-<span class="sd">        .. code-block:: python</span>
-
-<span class="sd">            NX_NEMO_ADDRESS_1=https://nemo1.com/api/</span>
-<span class="sd">            NX_NEMO_TOKEN_1=token123</span>
-<span class="sd">            NX_NEMO_ADDRESS_2=https://nemo2.com/api/</span>
-<span class="sd">            NX_NEMO_TOKEN_2=token456</span>
-<span class="sd">            NX_NEMO_TZ_2=America/New_York</span>
+<span class="sd">        ```python</span>
+<span class="sd">        NX_NEMO_ADDRESS_1=https://nemo1.com/api/</span>
+<span class="sd">        NX_NEMO_TOKEN_1=token123</span>
+<span class="sd">        NX_NEMO_ADDRESS_2=https://nemo2.com/api/</span>
+<span class="sd">        NX_NEMO_TOKEN_2=token456</span>
+<span class="sd">        NX_NEMO_TZ_2=America/New_York</span>
+<span class="sd">        ```</span>
 
 <span class="sd">        The resulting output will be of the following format:</span>
 
-<span class="sd">        .. code-block:: python</span>
-
-<span class="sd">            {</span>
-<span class="sd">                1: NemoHarvesterConfig(</span>
-<span class="sd">                    address=&#39;https://nemo1.com/api/&#39;, token=&#39;token123&#39;, ...</span>
-<span class="sd">                ),</span>
-<span class="sd">                2: NemoHarvesterConfig(</span>
-<span class="sd">                    address=&#39;https://nemo2.com/api/&#39;,</span>
-<span class="sd">                    token=&#39;token456&#39;,</span>
-<span class="sd">                    tz=&#39;America/New_York&#39;,</span>
-<span class="sd">                    ...</span>
-<span class="sd">                )</span>
-<span class="sd">            }</span>
+<span class="sd">        ```python</span>
+<span class="sd">        {</span>
+<span class="sd">            1: NemoHarvesterConfig(</span>
+<span class="sd">                address=&#39;https://nemo1.com/api/&#39;, token=&#39;token123&#39;, ...</span>
+<span class="sd">            ),</span>
+<span class="sd">            2: NemoHarvesterConfig(</span>
+<span class="sd">                address=&#39;https://nemo2.com/api/&#39;,</span>
+<span class="sd">                token=&#39;token456&#39;,</span>
+<span class="sd">                tz=&#39;America/New_York&#39;,</span>
+<span class="sd">                ...</span>
+<span class="sd">            )</span>
+<span class="sd">        }</span>
+<span class="sd">        ```</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">harvesters</span> <span class="o">=</span> <span class="p">{}</span>
 
@@ -838,7 +851,7 @@
 
 
 <div class="viewcode-block" id="Settings.email_config">
-<a class="viewcode-back" href="../../api/nexusLIMS.html#nexusLIMS.config.Settings.email_config">[docs]</a>
+<a class="viewcode-back" href="../../api/nexusLIMS/nexusLIMS.config.html#nexusLIMS.config.Settings.email_config">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">email_config</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EmailConfig</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Load email configuration from environment variables if available.</span>
@@ -855,20 +868,20 @@
 <span class="sd">        --------</span>
 <span class="sd">        With environment variables:</span>
 
-<span class="sd">        .. code-block:: python</span>
-
-<span class="sd">            NX_EMAIL_SMTP_HOST=smtp.gmail.com</span>
-<span class="sd">            NX_EMAIL_SENDER=nexuslims@example.com</span>
-<span class="sd">            NX_EMAIL_RECIPIENTS=admin@example.com,team@example.com</span>
+<span class="sd">        ```python</span>
+<span class="sd">        NX_EMAIL_SMTP_HOST=smtp.gmail.com</span>
+<span class="sd">        NX_EMAIL_SENDER=nexuslims@example.com</span>
+<span class="sd">        NX_EMAIL_RECIPIENTS=admin@example.com,team@example.com</span>
+<span class="sd">        ```</span>
 
 <span class="sd">        Optional variables:</span>
 
-<span class="sd">        .. code-block:: python</span>
-
-<span class="sd">            NX_EMAIL_SMTP_PORT=587</span>
-<span class="sd">            NX_EMAIL_SMTP_USERNAME=user@example.com</span>
-<span class="sd">            NX_EMAIL_SMTP_PASSWORD=secret</span>
-<span class="sd">            NX_EMAIL_USE_TLS=true</span>
+<span class="sd">        ```python</span>
+<span class="sd">        NX_EMAIL_SMTP_PORT=587</span>
+<span class="sd">        NX_EMAIL_SMTP_USERNAME=user@example.com</span>
+<span class="sd">        NX_EMAIL_SMTP_PASSWORD=secret</span>
+<span class="sd">        NX_EMAIL_USE_TLS=true</span>
+<span class="sd">        ```</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Load .env file to get email variables</span>
         <span class="n">env_file_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;.env&quot;</span><span class="p">)</span>
@@ -914,6 +927,8 @@
 
 
 
+<div class="viewcode-block" id="_SettingsManager">
+<a class="viewcode-back" href="../../api/nexusLIMS/nexusLIMS.config.html#nexusLIMS.config._SettingsManager">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">_SettingsManager</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Internal manager for the settings singleton.</span>
@@ -925,20 +940,28 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="p">:</span> <span class="n">Settings</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 
+<div class="viewcode-block" id="_SettingsManager.get">
+<a class="viewcode-back" href="../../api/nexusLIMS/nexusLIMS.config.html#nexusLIMS.config._SettingsManager.get">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Settings</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the current settings instance, creating if needed.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create</span><span class="p">()</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span></div>
 
+
+<div class="viewcode-block" id="_SettingsManager._create">
+<a class="viewcode-back" href="../../api/nexusLIMS/nexusLIMS.config.html#nexusLIMS.config._SettingsManager._create">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">_create</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Settings</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a new Settings instance.&quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">Settings</span><span class="p">()</span>
         <span class="k">except</span> <span class="n">ValidationError</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Configuration validation error&quot;</span><span class="p">)</span>
-            <span class="k">raise</span>
+            <span class="k">raise</span></div>
 
+
+<div class="viewcode-block" id="_SettingsManager.refresh">
+<a class="viewcode-back" href="../../api/nexusLIMS/nexusLIMS.config.html#nexusLIMS.config._SettingsManager.refresh">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">refresh</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Settings</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Refresh settings from current environment variables.</span>
@@ -965,8 +988,11 @@
 <span class="sd">        &gt;&gt;&gt; assert settings.NX_FILE_STRATEGY == &quot;inclusive&quot;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create</span><span class="p">()</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span></div>
 
+
+<div class="viewcode-block" id="_SettingsManager.clear">
+<a class="viewcode-back" href="../../api/nexusLIMS/nexusLIMS.config.html#nexusLIMS.config._SettingsManager.clear">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Clear the settings cache.</span>
@@ -975,7 +1001,9 @@
 <span class="sd">        This is equivalent to refresh() but doesn&#39;t immediately create</span>
 <span class="sd">        a new instance.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span> <span class="o">=</span> <span class="kc">None</span></div>
+</div>
+
 
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
@@ -1023,7 +1051,7 @@
 
 
 <div class="viewcode-block" id="refresh_settings">
-<a class="viewcode-back" href="../../api/nexusLIMS.html#nexusLIMS.config.refresh_settings">[docs]</a>
+<a class="viewcode-back" href="../../api/nexusLIMS/nexusLIMS.config.html#nexusLIMS.config.refresh_settings">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">refresh_settings</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Settings</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Refresh the settings singleton from current environment variables.</span>
@@ -1051,7 +1079,7 @@
 
 
 <div class="viewcode-block" id="clear_settings">
-<a class="viewcode-back" href="../../api/nexusLIMS.html#nexusLIMS.config.clear_settings">[docs]</a>
+<a class="viewcode-back" href="../../api/nexusLIMS/nexusLIMS.config.html#nexusLIMS.config.clear_settings">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">clear_settings</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Clear the settings cache without immediately creating a new instance.</span>
