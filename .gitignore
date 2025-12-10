@@ -1,9 +1,5 @@
 # File patterns we want git to ignore
-
-# Markdown files
-*.md
-!README.md
-!MIGRATION_GUIDE.md
+docs/api/ 
 
 # backup
 *~
@@ -12,6 +8,7 @@ backups
 .~lock*
 
 # Other files
+TODO.txt
 nemo_api_schemas
 .access_token
 gitlab_backup.log

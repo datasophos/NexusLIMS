@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-from nexusLIMS.extractors.edax import get_msa_metadata, get_spc_metadata
+from nexusLIMS.extractors.plugins.edax import get_msa_metadata, get_spc_metadata
 
 
 class TestEDAXSPCExtractor:

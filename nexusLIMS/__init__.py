@@ -1,10 +1,10 @@
-"""The NexusLIMS back-end software.
+r"""The NexusLIMS back-end software.
 
 This module contains the software required to monitor a database for sessions
-logged by users on instruments that are part of the NIST Electron Microscopy
-Nexus Facility. Based off this information, records representing individual
-experiments are automatically generated and uploaded to the front-end NexusLIMS
-CDCS instance for users to browse, query, and edit.
+logged by users on electron microscopy instruments. Based off this information,
+records representing individual experiments are automatically generated and
+uploaded to the front-end NexusLIMS CDCS instance for users to browse, query,
+and edit.
 
 Example
 -------
@@ -12,9 +12,9 @@ In most cases, the only code that needs to be run directly is initiating the
 record builder to look for new sessions, which can be done by running the
 :py:mod:`~nexusLIMS.builder.record_builder` module directly:
 
-.. code-block:: bash
-
-    $ python -m nexusLIMS.builder.record_builder
+```bash
+$ python -m nexusLIMS.builder.record_builder
+```
 
 Refer to :ref:`record-building` for more details.
 
@@ -24,7 +24,7 @@ The following variables should be defined as environment variables in your
 session, or in the ``.env`` file in the root of this package's repository.
 See the ``.env.example`` file for more documentation and examples.
 
-.. _NexusLIMS-file-strategy:
+(NexusLIMS-file-strategy)=
 
 `NX_FILE_STRATEGY`
     Defines the strategy used to find files associated with experimental records.
@@ -33,7 +33,7 @@ See the ``.env.example`` file for more documentation and examples.
     will include all files found, even if preview generation/detailed metadata
     extraction is not possible.
 
-.. _NexusLIMS-ignore-patterns:
+(NexusLIMS-ignore-patterns)=
 
 `NX_IGNORE_PATTERNS`
     The patterns defined in this variable (which should be provided as a
@@ -41,17 +41,31 @@ See the ``.env.example`` file for more documentation and examples.
     is provided in the ``.env.example`` file that should work for most users,
     but this setting allows for further customization of the file-finding routine.
 
-.. _nexusLIMS-user:
+(nexuslims-user)=
 
 `NX_CDCS_USER`
     The username used to authenticate to CDCS API
 
-.. _nexusLIMS-pass:
+(nexuslims-pass)=
 
 `NX_CDCS_PASS`
     The password used to authenticate to CDCS API
 
-.. _nexuslims-instrument-data-path:
+(nexuslims-cdcs-url)=
+
+`NX_CDCS_URL`
+    The root URL of the NexusLIMS CDCS front-end. This will be the target for
+    record uploads that are authenticated using the CDCS credentials.
+
+(nexuslims-test-cdcs-url)=
+
+`NX_TEST_CDCS_URL`
+    (development setting) The root URL of a NexusLIMS CDCS instance to use
+    for integration testing. If defined, this URL will be used for the CDCS
+    tests rather than the "actual" URL defined in ``NX_CDCS_URL``. If not
+    defined, no integration tests will be run.
+
+(nexuslims-instrument-data-path)=
 
 `NX_INSTRUMENT_DATA_PATH`
     The path (should be already mounted) to the root folder containing data
@@ -60,7 +74,7 @@ See the ``.env.example`` file for more documentation and examples.
     Microscopy Nexus. The file paths for specific instruments (specified in
     the NexusLIMS database) are relative to this root.
 
-.. _nexuslims-data-path:
+(nexuslims-data-path)=
 
 `NX_DATA_PATH`
     The root path used by NexusLIMS for various needs. This folder is used to
@@ -68,29 +82,66 @@ See the ``.env.example`` file for more documentation and examples.
     dumps and preview images, and anything else that is needed by the back-end
     system.
 
-.. _nexusLIMS-db-path:
+(nexuslims-db-path)=
 
 `NX_DB_PATH`
     The direct path to the NexusLIMS SQLite database file that contains
     information about the instruments in the Nexus Facility, as well as logs
     for the sessions created by users using the Session Logger Application.
 
-.. _nexusLIMS-log-path:
+(nexuslims-log-path)=
 
 `NX_LOG_PATH`
     Directory for application logs. If not specified, defaults to
     ``${NX_DATA_PATH}/logs/``. Logs are organized by date: ``logs/YYYY/MM/DD/``
 
-.. _nexusLIMS-records-path:
+(nexuslims-records-path)=
 
 `NX_RECORDS_PATH`
     Directory for generated XML records. If not specified, defaults to
     ``${NX_DATA_PATH}/records/``. Successfully uploaded records are moved to
     an 'uploaded' subdirectory upon upload.
 
-.. _nemo-address:
+(nexuslims-cert-bundle-file)=
 
-`NEMO_address_X`
+`NX_CERT_BUNDLE_FILE`
+    If needed, a custom SSL certificate CA bundle can be used to verify
+    requests to the CDCS or NEMO APIs. Provide this value with the full
+    path to a certificate bundle and any certificates provided in the
+    bundle will be appended to the existing system for all requests made
+    by NexusLIMS.
+
+(nexuslims-cert-bundle)=
+
+`NX_CERT_BUNDLE`
+    As an alternative to ``NX_CERT_BUNDLE_FILE``, you can provide the entire
+    certificate bundle as a single string (this can be useful for CI/CD
+    pipelines). Lines should be separated by a single ``\n`` character. If
+    defined, this value will take precedence over ``NX_CERT_BUNDLE_FILE``.
+
+(nexuslims-file-delay-days)=
+
+`NX_FILE_DELAY_DAYS`
+    Controls the maximum delay between observing a session ending and when
+    the files are expected to be present. For the number of days set (can be
+    a fraction of a day, if desired), record building will not fail if no
+    files are found, and the builder will search again until the delay has
+    passed. For example, if the value is ``2``, and a session ended Monday
+    at 5PM, the record builder will continue to try looking for files until
+    Wednesday at 5PM. Default is ``2.0`` days.
+
+(nexuslims-local-profiles-path)=
+
+`NX_LOCAL_PROFILES_PATH`
+    Directory for site-specific instrument profiles. These profiles customize
+    metadata extraction for instruments unique to your deployment without
+    modifying the core NexusLIMS codebase. Profile files should be Python
+    modules that register ``InstrumentProfile`` objects. If not specified,
+    only built-in profiles will be loaded.
+
+(nemo-address)=
+
+`NX_NEMO_ADDRESS_X`
     The path to a NEMO instance's API endpoint. Should be something like
     ``https://www.nemo.com/api/`` (make sure to include the trailing slash).
     The value ``_X`` can be replaced with any value (such as
@@ -101,11 +152,11 @@ See the ``.env.example`` file for more documentation and examples.
     changes for each pair (`e.g.` you could have ``NX_NEMO_ADDRESS_1`` paired with
     ``NX_NEMO_TOKEN_1``, ``NX_NEMO_ADDRESS_2`` paired with ``NX_NEMO_TOKEN_2``, etc.).
 
-.. _nemo-token:
+(nemo-token)=
 
-`NEMO_token_X`
+`NX_NEMO_TOKEN_X`
     An API authentication token from the corresponding NEMO installation
-    (specified in ``NEMO_address_X``) that
+    (specified in ``NX_NEMO_ADDRESS_X``) that
     will be used to authorize requests to the NEMO API. This token can be
     obtained by visiting the "Detailed Administration" page in the NEMO
     instance, and then creating a new token under the "Tokens" menu. Note that
@@ -113,10 +164,10 @@ See the ``.env.example`` file for more documentation and examples.
     up a "dummy" or "functional" user account in the NEMO instance for these
     operations.
 
-.. _nemo-strftime-fmt:
-.. _nemo-strptime-fmt:
+(nemo-strftime-fmt)=
+(nemo-strptime-fmt)=
 
-`NEMO_strftime_fmt_X` and `NEMO_strptime_fmt_X`
+`NX_NEMO_STRFTIME_FMT_X` and `NX_NEMO_STRPTIME_FMT_X`
     These options are optional, and control how dates/times are sent to
     (`strftime`) and interpreted from (`strptime`) the API. If "`strftime_fmt`"
     and/or "`strptime_fmt`" are not provided, the standard ISO 8601 format
@@ -127,9 +178,9 @@ See the ``.env.example`` file for more documentation and examples.
     encoding date and time information (see :ref:`strftime-strptime-behavior`
     for details).
 
-.. _nemo-tz:
+(nemo-tz)=
 
-`NX_NEMO_TZ_1`
+`NX_NEMO_TZ_X`
     Also optional; If the "`tz`" option is provided, the datetime
     strings received from the NEMO API will be coerced into the given timezone.
     The timezone should be specified using the IANA "tz database" name (see
@@ -139,6 +190,44 @@ See the ``.env.example`` file for more documentation and examples.
     data. It is mostly useful for servers that return reservation/usage event
     times without any timezone information. Providing it helps properly map
     file creation times to usage event times.
+
+(email-smtp-host)=
+
+`NX_EMAIL_SMTP_HOST`
+    SMTP server hostname for sending email notifications from the
+    ``nexuslims-process-records`` script (e.g., ``smtp.gmail.com``).
+    Required for email notifications.
+
+(email-smtp-port)=
+
+`NX_EMAIL_SMTP_PORT`
+    SMTP server port. Default is ``587`` for STARTTLS.
+
+(email-smtp-username)=
+
+`NX_EMAIL_SMTP_USERNAME`
+    SMTP username for authentication (if required by your SMTP server).
+
+(email-smtp-password)=
+
+`NX_EMAIL_SMTP_PASSWORD`
+    SMTP password for authentication (if required by your SMTP server).
+
+(email-use-tls)=
+
+`NX_EMAIL_USE_TLS`
+    Use TLS encryption for SMTP connection. Default is ``true``.
+
+(email-sender)=
+
+`NX_EMAIL_SENDER`
+    Email address to send notifications from. Required for email notifications.
+
+(email-recipients)=
+
+`NX_EMAIL_RECIPIENTS`
+    Comma-separated list of recipient email addresses for error notifications
+    (e.g., ``admin@example.com,team@example.com``). Required for email notifications.
 """
 
 # pylint: disable=invalid-name

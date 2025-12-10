@@ -29,62 +29,38 @@ from typing import Any, Callable, Dict, Tuple
 import hyperspy.api as hs
 import numpy as np
 
+from nexusLIMS.extractors.base import ExtractionContext
+from nexusLIMS.extractors.registry import get_registry
 from nexusLIMS.instruments import get_instr_from_filepath
 from nexusLIMS.utils import current_system_tz, replace_instrument_data_path
 from nexusLIMS.version import __version__
 
 from . import utils
-from .basic_metadata import get_basic_metadata
-from .digital_micrograph import get_dm3_metadata
-from .edax import get_msa_metadata, get_spc_metadata
-from .fei_emi import get_ser_metadata
-from .quanta_tif import get_quanta_metadata
-from .thumbnail_generator import (
+from .plugins.preview_generators.hyperspy_preview import sig_to_thumbnail
+from .plugins.preview_generators.image_preview import (
     down_sample_image,
     image_to_square_thumbnail,
-    sig_to_thumbnail,
-    text_to_thumbnail,
 )
+from .plugins.preview_generators.text_preview import text_to_thumbnail
 
 logger = logging.getLogger(__name__)
-PLACEHOLDER_PREVIEW = Path(__file__).parent / "extractor_error.png"
+PLACEHOLDER_PREVIEW = Path(__file__).parent / "assets" / "extractor_error.png"
 
 __all__ = [
     "PLACEHOLDER_PREVIEW",
-    "basic_metadata",
     "create_preview",
-    "digital_micrograph",
     "down_sample_image",
-    "edax",
-    "extension_reader_map",
-    "fei_emi",
     "flatten_dict",
-    "get_basic_metadata",
-    "get_dm3_metadata",
     "get_instr_from_filepath",
-    "get_msa_metadata",
-    "get_quanta_metadata",
-    "get_ser_metadata",
-    "get_spc_metadata",
+    "get_registry",
     "image_to_square_thumbnail",
     "logger",
     "parse_metadata",
-    "quanta_tif",
     "sig_to_thumbnail",
     "text_to_thumbnail",
-    "thumbnail_generator",
     "unextracted_preview_map",
     "utils",
 ]
-
-extension_reader_map = {
-    "dm3": get_dm3_metadata,
-    "dm4": get_dm3_metadata,
-    "tif": get_quanta_metadata,
-    "ser": get_ser_metadata,
-    "spc": get_spc_metadata,
-    "msa": get_msa_metadata,
-}
 
 # filetypes that will only have basic metadata extracted but will nonetheless
 # have a custom preview image generated
@@ -131,9 +107,25 @@ def _add_extraction_details(
         An updated ``nx_meta`` dictionary, containing extraction details
 
     """
+    # PHASE 1 MIGRATION: Handle both old-style functions and new-style extractors
+    # Try to get the module name in different ways for backward compatibility
+    module_name = None
+
+    # Try __module__ attribute first (works for new extractor system)
+    if hasattr(extractor_module, "__module__"):
+        module_name = extractor_module.__module__
+
+    # Fallback to inspect.getmodule() for old-style functions
+    if module_name is None:  # pragma: no cover
+        module = inspect.getmodule(extractor_module)  # pragma: no cover
+        # Last resort - use "unknown"
+        module_name = (  # pragma: no cover
+            module.__name__ if module is not None else "unknown"
+        )
+
     nx_meta["nx_meta"]["NexusLIMS Extraction"] = {
         "Date": dt.now(tz=current_system_tz()).isoformat(),
-        "Module": inspect.getmodule(extractor_module).__name__,
+        "Module": module_name,
         "Version": __version__,
     }
 
@@ -182,27 +174,49 @@ def parse_metadata(
     """
     extension = fname.suffix[1:]
 
-    # Dealing with files we can't parse and extract
-    if extension.lower() not in extension_reader_map:
-        extractor_method = get_basic_metadata
+    # Create extraction context
+    instrument = get_instr_from_filepath(fname)
+    context = ExtractionContext(file_path=fname, instrument=instrument)
+
+    # Get extractor from registry
+    registry = get_registry()
+    extractor = registry.get_extractor(context)
+
+    # Extract metadata using the selected extractor
+    nx_meta = extractor.extract(context)
+
+    # Create a pseudo-module for extraction details tracking
+    class ExtractorMethod:
+        """Pseudo-module for extraction details tracking."""
+
+        def __init__(self, extractor_name: str):
+            # Use the plugin module path for all extractors
+            self.__module__ = f"nexusLIMS.extractors.plugins.{extractor_name}"
+            self.__name__ = self.__module__
+
+        def __call__(self, f: Path) -> dict:  # noqa: ARG002
+            return nx_meta  # pragma: no cover
+
+    extractor_method = ExtractorMethod(extractor.name)
+
+    # Handle preview generation logic if the extractor is
+    # the basic fallback and extension is not in unextracted_preview_map,
+    # don't generate a preview
+    if extractor.name == "basic_file_info_extractor":
         if extension not in unextracted_preview_map:
             generate_preview = False
             logger.info(
-                "file extension was not in extension_reader_map; "
+                "No specialized extractor found for file extension; "
                 "setting generate_preview to False",
             )
         else:
             generate_preview = True
             logger.info(
-                "file extension was not in extension_reader_map; "
+                "No specialized extractor found for file extension; "
                 "but file extension was in unextracted_preview_map; "
                 "setting generate_preview to True",
             )
 
-    else:
-        extractor_method = extension_reader_map[extension.lower()]
-
-    nx_meta = extractor_method(fname)
     nx_meta = _add_extraction_details(nx_meta, extractor_method)
     preview_fname = None
 
@@ -243,12 +257,13 @@ def parse_metadata(
     return nx_meta, preview_fname
 
 
-def create_preview(fname: Path, *, overwrite: bool) -> Path | None:
+def create_preview(fname: Path, *, overwrite: bool) -> Path | None:  # noqa: PLR0911
     """
-    Generate a preview image for a given file using one of a few different methods.
+    Generate a preview image for a given file using the plugin system.
 
-    For most files, this method will try to load the file using HyperSpy and generate
-    a preview using that library's capabilities.
+    This method uses the preview generator plugin system to create thumbnail
+    previews. It first tries to find a suitable preview generator plugin, and
+    falls back to legacy methods if no plugin is found.
 
     Parameters
     ----------
@@ -266,15 +281,49 @@ def create_preview(fname: Path, *, overwrite: bool) -> Path | None:
     """
     preview_fname = replace_instrument_data_path(fname, ".thumb.png")
 
-    extension = fname.suffix[1:]
+    # Skip if preview exists and overwrite is False
+    if preview_fname.is_file() and not overwrite:
+        logger.info("Preview already exists: %s", preview_fname)
+        return preview_fname
 
+    # Create context for preview generation
+    instrument = get_instr_from_filepath(fname)
+    context = ExtractionContext(file_path=fname, instrument=instrument)
+
+    # Try to get a preview generator from the registry
+    registry = get_registry()
+    generator = registry.get_preview_generator(context)
+
+    if generator:
+        # Use plugin-based preview generation
+        logger.info("Generating preview using %s: %s", generator.name, preview_fname)
+        # Create the directory for the thumbnail, if needed
+        preview_fname.parent.mkdir(parents=True, exist_ok=True)
+
+        success = generator.generate(context, preview_fname)
+        if success:
+            return preview_fname
+
+        logger.warning(
+            "Preview generator %s failed for %s",
+            generator.name,
+            fname,
+        )
+        # Fall through to legacy methods
+
+    # Legacy fallback for .tif files (special case with downsampling)
+    extension = fname.suffix[1:]
     if extension == "tif":
+        logger.info("Using legacy downsampling for .tif: %s", preview_fname)
+        preview_fname.parent.mkdir(parents=True, exist_ok=True)
         factor = 2
         down_sample_image(fname, out_path=preview_fname, factor=factor)
+        return preview_fname
 
-    elif extension in unextracted_preview_map:
-        # use preview generation function from the map of functions defined
-        # at the top of this file (unextracted_preview_map)
+    # Legacy fallback for files in unextracted_preview_map
+    if extension in unextracted_preview_map:
+        logger.info("Using legacy preview map for %s: %s", extension, preview_fname)
+        preview_fname.parent.mkdir(parents=True, exist_ok=True)
         preview_return = unextracted_preview_map[extension](
             f=fname,
             out_path=preview_fname,
@@ -285,53 +334,46 @@ def create_preview(fname: Path, *, overwrite: bool) -> Path | None:
         if preview_return is False:
             return None
 
-    else:
-        load_options = {"lazy": True}
-        if extension == "ser":
-            load_options["only_valid_data"] = True
+        return preview_fname
 
-        # noinspection PyBroadException
-        try:
-            s = hs.load(fname, **load_options)
-        except Exception:  # pylint: disable=broad-exception-caught
-            logger.warning(
-                "Signal could not be loaded by HyperSpy. "
-                "Using placeholder image for preview.",
-            )
-            preview_fname = replace_instrument_data_path(fname, ".thumb.png")
-            shutil.copyfile(PLACEHOLDER_PREVIEW, preview_fname)
-            return preview_fname
+    # Legacy fallback for HyperSpy-loadable files
+    logger.info("Trying legacy HyperSpy preview generation: %s", preview_fname)
+    load_options = {"lazy": True}
+    if extension == "ser":
+        load_options["only_valid_data"] = True
 
-        # If s is a list of signals, use just the first one for
-        # our purposes
-        if isinstance(s, list):
-            num_sigs = len(s)
-            fname = s[0].metadata.General.original_filename
-            s = s[0]
-            s.metadata.General.title = (
-                s.metadata.General.title
-                + f' (1 of {num_sigs} total signals in file "{fname}")'
-            )
-        elif not s.metadata.General.title:
-            s.metadata.General.title = s.metadata.General.original_filename.replace(
-                extension,
-                "",
-            ).strip(".")
+    # noinspection PyBroadException
+    try:
+        s = hs.load(fname, **load_options)
+    except Exception:  # pylint: disable=broad-exception-caught
+        logger.warning(
+            "Signal could not be loaded by HyperSpy. "
+            "Using placeholder image for preview.",
+        )
+        preview_fname.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(PLACEHOLDER_PREVIEW, preview_fname)
+        return preview_fname
 
-        # only generate the preview if it doesn't exist, or overwrite
-        # parameter is explicitly provided
-        if not preview_fname.is_file() or overwrite:
-            logger.info("Generating preview: %s", preview_fname)
-            # Create the directory for the thumbnail, if needed
-            preview_fname.parent.mkdir(
-                parents=True,
-                exist_ok=True,
-            )
-            # Generate the thumbnail
-            s.compute(show_progressbar=False)
-            sig_to_thumbnail(s, out_path=preview_fname)
-        else:
-            logger.info("Preview already exists: %s", preview_fname)
+    # If s is a list of signals, use just the first one for our purposes
+    if isinstance(s, list):
+        num_sigs = len(s)
+        fname = s[0].metadata.General.original_filename
+        s = s[0]
+        s.metadata.General.title = (
+            s.metadata.General.title
+            + f' (1 of {num_sigs} total signals in file "{fname}")'
+        )
+    elif not s.metadata.General.title:
+        s.metadata.General.title = s.metadata.General.original_filename.replace(
+            extension,
+            "",
+        ).strip(".")
+
+    # Generate the preview
+    logger.info("Generating HyperSpy preview: %s", preview_fname)
+    preview_fname.parent.mkdir(parents=True, exist_ok=True)
+    s.compute(show_progressbar=False)
+    sig_to_thumbnail(s, out_path=preview_fname)
 
     return preview_fname
 

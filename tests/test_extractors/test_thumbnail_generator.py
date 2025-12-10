@@ -13,11 +13,19 @@ import pytest
 from hyperspy.io import load as hs_load
 from hyperspy.misc.utils import stack as hs_stack
 
-from nexusLIMS.extractors import thumbnail_generator
-from nexusLIMS.extractors.thumbnail_generator import (
+from nexusLIMS.extractors.plugins.preview_generators import (
+    hyperspy_preview,
+)
+from nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview import (
+    _get_markers_list,
+    add_annotation_markers,
+    sig_to_thumbnail,
+)
+from nexusLIMS.extractors.plugins.preview_generators.image_preview import (
     down_sample_image,
     image_to_square_thumbnail,
-    sig_to_thumbnail,
+)
+from nexusLIMS.extractors.plugins.preview_generators.text_preview import (
     text_to_thumbnail,
 )
 from tests.utils import assert_images_equal
@@ -175,11 +183,11 @@ class TestThumbnailGenerator:  # pylint: disable=too-many-public-methods
             raise ValueError(msg)
 
         monkeypatch.setattr(
-            thumbnail_generator,
+            hyperspy_preview,
             "_get_markers_list",
             monkey_get_annotation,
         )
-        thumbnail_generator.add_annotation_markers(hs_load(survey_titan))
+        add_annotation_markers(hs_load(survey_titan))
 
     def test_label_marker_creation_error(self, monkeypatch, caplog):
         """Test exception handling when label marker creation fails."""
@@ -187,7 +195,9 @@ class TestThumbnailGenerator:  # pylint: disable=too-many-public-methods
         from unittest.mock import Mock
 
         # Set the logger to DEBUG level for this module
-        logger = logging.getLogger("nexusLIMS.extractors.thumbnail_generator")
+        logger = logging.getLogger(
+            "nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview"
+        )
         logger.setLevel(logging.DEBUG)
 
         # Create a mock signal with the necessary structure
@@ -221,15 +231,16 @@ class TestThumbnailGenerator:  # pylint: disable=too-many-public-methods
             raise RuntimeError(msg)
 
         monkeypatch.setattr(
-            "nexusLIMS.extractors.thumbnail_generator.hs_api.plot.markers.Texts",
+            "nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.hs_api.plot.markers.Texts",
             mock_texts_raises,
         )
 
         with caplog.at_level(
-            "DEBUG", logger="nexusLIMS.extractors.thumbnail_generator"
+            "DEBUG",
+            logger="nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview",
         ):
             # This should trigger the label marker creation and catch the exception
-            _ = thumbnail_generator._get_markers_list(mock_signal, tags_dict)  # noqa: SLF001
+            _ = _get_markers_list(mock_signal, tags_dict)
 
             # Verify the exception was logged
             assert "Failed to create label marker" in caplog.text
@@ -241,7 +252,9 @@ class TestThumbnailGenerator:  # pylint: disable=too-many-public-methods
         from unittest.mock import Mock
 
         # Set the logger to DEBUG level for this module
-        logger = logging.getLogger("nexusLIMS.extractors.thumbnail_generator")
+        logger = logging.getLogger(
+            "nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview"
+        )
         logger.setLevel(logging.DEBUG)
 
         # Create a mock signal with the necessary structure
@@ -274,15 +287,16 @@ class TestThumbnailGenerator:  # pylint: disable=too-many-public-methods
             raise RuntimeError(msg)
 
         monkeypatch.setattr(
-            "nexusLIMS.extractors.thumbnail_generator.hs_api.plot.markers.Rectangles",
+            "nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.hs_api.plot.markers.Rectangles",
             mock_rectangles_raises,
         )
 
         with caplog.at_level(
-            "DEBUG", logger="nexusLIMS.extractors.thumbnail_generator"
+            "DEBUG",
+            logger="nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview",
         ):
             # This should trigger the main marker creation and catch the exception
-            _ = thumbnail_generator._get_markers_list(mock_signal, tags_dict)  # noqa: SLF001
+            _ = _get_markers_list(mock_signal, tags_dict)
 
             # Verify the exception was logged with the marker type
             assert "Failed to create Rectangle marker" in caplog.text
@@ -375,3 +389,94 @@ class TestThumbnailGenerator:  # pylint: disable=too-many-public-methods
         """Sanity check that for images that are not the same."""
         with pytest.raises(AssertionError):
             assert_images_equal(image_thumb_source_tif, quanta_test_file[0])
+
+    def test_image_preview_generator_exception(
+        self, monkeypatch, basic_image_file, output_path
+    ):
+        """Test that I/O errors during image preview generation are caught."""
+        from nexusLIMS.extractors.base import ExtractionContext
+        from nexusLIMS.extractors.plugins.preview_generators.image_preview import (
+            ImagePreviewGenerator,
+        )
+
+        gen = ImagePreviewGenerator()
+
+        # Mock image_to_square_thumbnail to raise exception
+        def mock_fail(*_args, **_kwargs):
+            msg = "Simulated disk full error"
+            raise OSError(msg)
+
+        monkeypatch.setattr(
+            "nexusLIMS.extractors.plugins.preview_generators.image_preview.image_to_square_thumbnail",
+            mock_fail,
+        )
+
+        context = ExtractionContext(basic_image_file, None)
+        result = gen.generate(context, output_path)
+        assert result is False
+
+    def test_text_preview_file_read_exception(
+        self, monkeypatch, basic_txt_file, output_path, caplog
+    ):
+        """Test that file read exceptions are caught in text preview."""
+        from nexusLIMS.extractors.plugins.preview_generators.text_preview import (
+            text_to_thumbnail,
+        )
+
+        # Mock Path.read_bytes() to raise PermissionError
+        def mock_read_bytes_fail(_):
+            msg = "Permission denied"
+            raise PermissionError(msg)
+
+        monkeypatch.setattr("pathlib.Path.read_bytes", mock_read_bytes_fail)
+
+        result = text_to_thumbnail(basic_txt_file, output_path)
+        assert result is False
+        assert "Failed to read text file" in caplog.text
+
+    def test_text_preview_figure_save_exception(
+        self, monkeypatch, basic_txt_file, output_path, caplog
+    ):
+        """Test that figure save exceptions are caught in text preview."""
+        from nexusLIMS.extractors.plugins.preview_generators.text_preview import (
+            text_to_thumbnail,
+        )
+
+        # Mock fig.savefig to raise exception
+        def mock_savefig_fail(*_args, **_kwargs):
+            msg = "Disk write error"
+            raise OSError(msg)
+
+        # Patch matplotlib's savefig
+
+        monkeypatch.setattr("matplotlib.figure.Figure.savefig", mock_savefig_fail)
+
+        result = text_to_thumbnail(basic_txt_file, output_path)
+        assert result is False
+        assert "Failed to save text thumbnail" in caplog.text
+
+    def test_text_preview_generator_exception(
+        self, monkeypatch, basic_txt_file, output_path, caplog
+    ):
+        """Test TextPreviewGenerator exception handler."""
+        from nexusLIMS.extractors.base import ExtractionContext
+        from nexusLIMS.extractors.plugins.preview_generators.text_preview import (
+            TextPreviewGenerator,
+        )
+
+        gen = TextPreviewGenerator()
+
+        # Mock text_to_thumbnail to raise exception
+        def mock_fail(*_args, **_kwargs):
+            msg = "Simulated text preview failure"
+            raise RuntimeError(msg)
+
+        monkeypatch.setattr(
+            "nexusLIMS.extractors.plugins.preview_generators.text_preview.text_to_thumbnail",
+            mock_fail,
+        )
+
+        context = ExtractionContext(basic_txt_file, None)
+        result = gen.generate(context, output_path)
+        assert result is False
+        assert "Failed to generate text preview" in caplog.text

@@ -1,0 +1,1 @@
+Implemented instrument profile system for site-specific metadata customization through profiles that can add static metadata, transform fields, and inject custom parsers. Profiles can be built-in (shipped with the package) or local (loaded from ``NX_LOCAL_PROFILES_PATH`` environment variable).

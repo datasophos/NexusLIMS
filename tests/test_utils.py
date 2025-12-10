@@ -16,8 +16,8 @@ import responses
 from requests.exceptions import RetryError
 
 from nexusLIMS import utils
-from nexusLIMS.extractors import extension_reader_map as ext_map
-from nexusLIMS.extractors import quanta_tif
+from nexusLIMS.extractors import get_registry
+from nexusLIMS.extractors.plugins import quanta_tif
 from nexusLIMS.utils import (
     _zero_bytes,
     find_dirs_by_mtime,
@@ -88,7 +88,7 @@ class TestUtils:
             self.instr_data_path / "Titan_TEM",
             dt_from=datetime.fromisoformat("2018-11-13T13:00:00.000-05:00"),
             dt_to=datetime.fromisoformat("2018-11-13T16:00:00.000-05:00"),
-            extensions=ext_map.keys(),
+            extensions=get_registry().get_supported_extensions(exclude_fallback=True),
         )
 
         assert len(files) == self.TITAN_FILE_COUNT
@@ -98,7 +98,7 @@ class TestUtils:
             self.instr_data_path / "Titan_TEM",
             dt_from=datetime.fromisoformat("2018-11-13T13:00:00.000-05:00"),
             dt_to=datetime.fromisoformat("2018-11-13T16:00:00.000-05:00"),
-            extensions=ext_map.keys(),
+            extensions=get_registry().get_supported_extensions(exclude_fallback=True),
         )
 
         assert len(files) == self.TITAN_FILE_COUNT
@@ -111,7 +111,7 @@ class TestUtils:
             self.instr_data_path / "Titan_TEM",
             dt_from=datetime.fromisoformat("2018-11-13T13:00:00.000-05:00"),
             dt_to=datetime.fromisoformat("2018-11-13T16:00:00.000-05:00"),
-            extensions=ext_map.keys(),
+            extensions=get_registry().get_supported_extensions(exclude_fallback=True),
             followlinks=False,
         )
 
@@ -126,7 +126,9 @@ class TestUtils:
                 self.instr_data_path / "643Titan",
                 dt_from=datetime.fromisoformat("2019-11-06T15:00:00.000"),
                 dt_to=datetime.fromisoformat("2019-11-06T18:00:00.000"),
-                extensions=ext_map.keys(),
+                extensions=get_registry().get_supported_extensions(
+                    exclude_fallback=True
+                ),
             )
         assert str(exception.value) == "find command was not found on the system PATH"
 
@@ -137,7 +139,9 @@ class TestUtils:
                 Path("..............."),
                 dt_from=datetime.fromisoformat("2019-11-06T15:00:00.000"),
                 dt_to=datetime.fromisoformat("2019-11-06T18:00:00.000"),
-                extensions=ext_map.keys(),
+                extensions=get_registry().get_supported_extensions(
+                    exclude_fallback=True
+                ),
             )
         assert "..............." in str(exception.value)
 

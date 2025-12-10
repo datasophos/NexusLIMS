@@ -77,6 +77,112 @@ class TestRecordBuilder:
         ) in file_list_list[2]
 
     @pytest.mark.usefixtures("mock_nemo_reservation")
+    def test_dry_run_file_find_mixed_case_extensions(
+        self,
+        test_record_files,
+    ):
+        """Test file finding with mixed-case extensions (e.g., .dm3 and .DM3)."""
+        # Get the Titan TEM session
+        sessions = session_handler.get_sessions_to_build()
+        titan_session = sessions[0]  # FEI-Titan-TEM session
+
+        # Create copies of existing files with uppercase extensions
+        test_dir = (
+            self.instr_data_path / "Titan_TEM/researcher_a/project_alpha/20181113"
+        )
+
+        # Copy image_001.dm3 to image_001_copy.DM3 (uppercase)
+        src_file = test_dir / "image_001.dm3"
+        uppercase_copy = test_dir / "image_001_copy.DM3"
+        shutil.copy2(src_file, uppercase_copy)
+
+        # Copy image_002.dm3 to image_002_copy.Dm3 (mixed case)
+        src_file2 = test_dir / "image_002.dm3"
+        mixedcase_copy = test_dir / "image_002_copy.Dm3"
+        shutil.copy2(src_file2, mixedcase_copy)
+
+        try:
+            # Find files - should now include the uppercase/mixed-case copies
+            found_files = record_builder.dry_run_file_find(titan_session)
+
+            # Original count: 10 files (8 .dm3 + 2 .ser, .emi excluded)
+            # New count: 12 files (10 original + 2 uppercase copies)
+            assert len(found_files) == 12
+
+            # Verify both lowercase and uppercase versions are found
+            assert (test_dir / "image_001.dm3") in found_files
+            assert (test_dir / "image_001_copy.DM3") in found_files
+            assert (test_dir / "image_002.dm3") in found_files
+            assert (test_dir / "image_002_copy.Dm3") in found_files
+
+        finally:
+            # Clean up the test copies
+            uppercase_copy.unlink(missing_ok=True)
+            mixedcase_copy.unlink(missing_ok=True)
+
+    @pytest.mark.usefixtures("mock_nemo_reservation")
+    def test_dry_run_file_find_mixed_case_tif_extensions(
+        self,
+        test_record_files,
+    ):
+        """Test file finding with mixed-case .tif extensions (.tif/.TIF/.Tif)."""
+        # Get the Titan TEM session
+        sessions = session_handler.get_sessions_to_build()
+        titan_session = sessions[0]  # FEI-Titan-TEM session
+
+        # Create test TIFF files with various case combinations
+        test_dir = (
+            self.instr_data_path / "Titan_TEM/researcher_a/project_alpha/20181113"
+        )
+
+        # Use image_001.dm3 as source, copy to various .tif extensions
+        src_file = test_dir / "image_001.dm3"
+
+        # Create .tif files with different case combinations
+        # Note: The system uses -iname *.tif/*.tiff pattern, which matches
+        # case-insensitively
+        tif_lowercase = test_dir / "scan_lowercase.tif"
+        tif_uppercase = test_dir / "scan_uppercase.TIF"
+        tif_mixed1 = test_dir / "scan_mixed1.Tif"
+        tif_mixed2 = test_dir / "scan_mixed2.TiF"
+        tiff_lowercase = test_dir / "scan_lowercase.tiff"
+        tiff_uppercase = test_dir / "scan_uppercase.TIFF"
+        tiff_mixed1 = test_dir / "scan_mixed1.TifF"
+        tiff_mixed2 = test_dir / "scan_mixed2.TiFf"
+
+        test_files = [
+            tif_lowercase,
+            tif_uppercase,
+            tif_mixed1,
+            tif_mixed2,
+            tiff_lowercase,
+            tiff_uppercase,
+            tiff_mixed1,
+            tiff_mixed2,
+        ]
+
+        try:
+            # Create all test TIFF files
+            for test_file in test_files:
+                shutil.copy2(src_file, test_file)
+
+            # Find files - should now include all .tif variations
+            found_files = record_builder.dry_run_file_find(titan_session)
+
+            # Original count: 10 files (8 .dm3 + 2 .ser, .emi excluded)
+            # New count: 18 files (10 original + 4 .tif + 4 .tiff files)
+            assert len(found_files) == 18
+
+            # Verify all .tif variations are found
+            for test_file in test_files:
+                assert test_file in found_files, f"{test_file} not found in results"
+
+        finally:
+            # Clean up all test copies
+            for test_file in test_files:
+                test_file.unlink(missing_ok=True)
+
+    @pytest.mark.usefixtures("mock_nemo_reservation")
     def test_dry_run_file_find_no_files(
         self,
         test_record_files,

@@ -1,6 +1,6 @@
 # NexusLIMS - Automated Laboratory Information Management for Electron Microscopy
 
-[![Documentation](https://img.shields.io/badge/📖%20docs-stable-blue)](https://datasophos.github.io/NexusLIMS)
+[![Documentation](https://img.shields.io/badge/📖%20docs-stable-blue)](https://datasophos.github.io/NexusLIMS/stable/)
 [![Python 3.11+](https://img.shields.io/badge/🐍%20python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![Maintained by Datasophos](https://img.shields.io/badge/🏢%20maintained%20by-datasophos%20LLC-blue)](https://datasophos.co)
 
@@ -30,7 +30,7 @@ Originally developed by the NIST Office of Data and Informatics, NexusLIMS trans
 5. **Build** - Generate structured XML records
 6. **Publish** - Upload to searchable web frontend
 
-For more details, see the [Record Building Workflow](https://datasophos.github.io/NexusLIMS/record_building.html) documentation.
+For more details, see the [Record Building Workflow](https://datasophos.github.io/NexusLIMS/stable/user_guide/record_building.html) documentation.
 
 ## Quick Start
 
@@ -48,7 +48,7 @@ pip install nexusLIMS
 uv pip install nexusLIMS
 ```
 
-**Note**: When installing from PyPI, you'll need to manually create a `.env` file in your working directory or set environment variables for configuration. See the [Configuration Documentation](https://datasophos.github.io/NexusLIMS/getting_started.html#configuration) for required settings.
+**Note**: When installing from PyPI, you'll need to manually create a `.env` file in your working directory or set environment variables for configuration. See the [Configuration Documentation](https://datasophos.github.io/NexusLIMS/stable/getting_started.html#configuration) for required settings.
 
 #### Option 2: Install from Source (Recommended for Development)
 
@@ -82,7 +82,7 @@ uv sync
    - NEMO API credentials (if using)
    - Database path
 
-See [Configuration Documentation](https://datasophos.github.io/NexusLIMS/getting_started.html#configuration) for details.
+See [Configuration Documentation](https://datasophos.github.io/NexusLIMS/stable/getting_started.html#configuration) for details.
 
 ### Initialize Database
 
@@ -90,7 +90,7 @@ See [Configuration Documentation](https://datasophos.github.io/NexusLIMS/getting
 sqlite3 nexusLIMS.db < nexusLIMS/db/dev/NexusLIMS_db_creation_script.sql
 ```
 
-Then add your instruments to the `instruments` table (see [Database Documentation](https://datasophos.github.io/NexusLIMS/database.html)).
+Then add your instruments to the `instruments` table (see [Database Documentation](https://datasophos.github.io/NexusLIMS/stable/dev_guide/database.html)).
 
 ### Build Records
 
@@ -104,12 +104,12 @@ uv run python -m nexusLIMS.builder.record_builder
 
 ## Documentation
 
-📚 **Full documentation**: https://datasophos.github.io/NexusLIMS
+📚 **Full documentation**: https://datasophos.github.io/NexusLIMS/stable/
 
-- [Getting Started Guide](https://datasophos.github.io/NexusLIMS/getting_started.html)
-- [User Guide](https://datasophos.github.io/NexusLIMS/user_guide.html)
-- [Developer Guide](https://datasophos.github.io/NexusLIMS/dev_guide.html)
-- [API Reference](https://datasophos.github.io/NexusLIMS/reference.html)
+- [Getting Started Guide](https://datasophos.github.io/NexusLIMS/stable/getting_started.html)
+- [User Guide](https://datasophos.github.io/NexusLIMS/stable/user_guide.html)
+- [Developer Guide](https://datasophos.github.io/NexusLIMS/stable/dev_guide.html)
+- [API Reference](https://datasophos.github.io/NexusLIMS/stable/reference.html)
 
 ## System Requirements
 
@@ -145,7 +145,7 @@ uv sync --dev
 ./scripts/build_docs.sh
 ```
 
-See the [Developer Guide](https://datasophos.github.io/NexusLIMS/development.html) for detailed information about:
+See the [Developer Guide](https://datasophos.github.io/NexusLIMS/stable/dev_guide/development.html) for detailed information about:
 - Architecture overview
 - Adding new file format extractors
 - Creating custom harvesters
@@ -161,7 +161,7 @@ We welcome contributions! Please:
 3. Make your changes with tests (100% coverage required)
 4. Submit a pull request to `main`
 
-See [Contributing Guidelines](https://datasophos.github.io/NexusLIMS/development.html#contributing) for more details.
+See [Contributing Guidelines](https://datasophos.github.io/NexusLIMS/stable/dev_guide/development.html#contributing) for more details.
 
 ## About the Logo
 
@@ -186,7 +186,7 @@ See [LICENSE](LICENSE) for details.
 ---
 
 **Links:**
-- 📖 [Documentation](https://datasophos.github.io/NexusLIMS)
+- 📖 [Documentation](https://datasophos.github.io/NexusLIMS/stable/)
 - 🐛 [Issue Tracker](https://github.com/datasophos/NexusLIMS/issues)
 - 🏢 [Datasophos](https://datasophos.co)
 - 📜 [Original NIST Repository](https://github.com/usnistgov/NexusLIMS)

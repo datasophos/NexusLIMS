@@ -43,56 +43,55 @@ def res_event_from_session(session: Session) -> ReservationEvent:
     Questions" that will satisfy the expectations of this method. Please see the
     NEMO documentation on this feature for more details.
 
-    .. highlight:: json
-    .. code-block:: json
-
-        [
+    ```json
+    [
+      {
+        "type": "textbox",
+        "name": "project_id",
+        "title": "Project ID",
+      },
+      {
+        "type": "textbox",
+        "name": "experiment_title",
+        "title": "Title of Experiment",
+      },
+      {
+        "type": "textarea",
+        "name": "experiment_purpose",
+        "title": "Experiment Purpose",
+      },
+      {
+        "type": "radio",
+        "title": "Agree to NexusLIMS curation",
+        "choices": ["Agree", "Disagree"],
+        "name": "data_consent",
+        "default_choice": "Agree"
+      },
+      {
+        "type": "group",
+        "title": "Sample information",
+        "name": "sample_group",
+        "questions": [
           {
             "type": "textbox",
-            "name": "project_id",
-            "title": "Project ID",
-          },
-          {
-            "type": "textbox",
-            "name": "experiment_title",
-            "title": "Title of Experiment",
-          },
-          {
-            "type": "textarea",
-            "name": "experiment_purpose",
-            "title": "Experiment Purpose",
+            "name": "sample_name",
+            "title": "Sample Name / PID",
           },
           {
             "type": "radio",
-            "title": "Agree to NexusLIMS curation",
-            "choices": ["Agree", "Disagree"],
-            "name": "data_consent",
-            "default_choice": "Agree"
+            "title": "Sample or PID?",
+            "choices": ["Sample Name", "PID"],
+            "name": "sample_or_pid",
           },
           {
-            "type": "group",
-            "title": "Sample information",
-            "name": "sample_group",
-            "questions": [
-              {
-                "type": "textbox",
-                "name": "sample_name",
-                "title": "Sample Name / PID",
-              },
-              {
-                "type": "radio",
-                "title": "Sample or PID?",
-                "choices": ["Sample Name", "PID"],
-                "name": "sample_or_pid",
-              },
-              {
-                "type": "textarea",
-                "name": "sample_details",
-                "title": "Sample Details",
-              }
-            ]
+            "type": "textarea",
+            "name": "sample_details",
+            "title": "Sample Details",
           }
         ]
+      }
+    ]
+    ```
 
     Parameters
     ----------

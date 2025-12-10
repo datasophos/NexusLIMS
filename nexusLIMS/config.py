@@ -244,6 +244,16 @@ class Settings(BaseSettings):
             "a 'uploaded' subdirectory."
         ),
     )
+    NX_LOCAL_PROFILES_PATH: DirectoryPath | None = Field(
+        None,
+        description=(
+            "Directory for site-specific instrument profiles. These profiles "
+            "customize metadata extraction for instruments unique to your deployment "
+            "without modifying the core NexusLIMS codebase. Profile files should be "
+            "Python modules that register InstrumentProfile objects. If not specified, "
+            "only built-in profiles will be loaded."
+        ),
+    )
 
     @property
     def nexuslims_instrument_data_path(self) -> Path:
@@ -284,29 +294,29 @@ class Settings(BaseSettings):
         --------
         With environment variables:
 
-        .. code-block:: python
-
-            NX_NEMO_ADDRESS_1=https://nemo1.com/api/
-            NX_NEMO_TOKEN_1=token123
-            NX_NEMO_ADDRESS_2=https://nemo2.com/api/
-            NX_NEMO_TOKEN_2=token456
-            NX_NEMO_TZ_2=America/New_York
+        ```python
+        NX_NEMO_ADDRESS_1=https://nemo1.com/api/
+        NX_NEMO_TOKEN_1=token123
+        NX_NEMO_ADDRESS_2=https://nemo2.com/api/
+        NX_NEMO_TOKEN_2=token456
+        NX_NEMO_TZ_2=America/New_York
+        ```
 
         The resulting output will be of the following format:
 
-        .. code-block:: python
-
-            {
-                1: NemoHarvesterConfig(
-                    address='https://nemo1.com/api/', token='token123', ...
-                ),
-                2: NemoHarvesterConfig(
-                    address='https://nemo2.com/api/',
-                    token='token456',
-                    tz='America/New_York',
-                    ...
-                )
-            }
+        ```python
+        {
+            1: NemoHarvesterConfig(
+                address='https://nemo1.com/api/', token='token123', ...
+            ),
+            2: NemoHarvesterConfig(
+                address='https://nemo2.com/api/',
+                token='token456',
+                tz='America/New_York',
+                ...
+            )
+        }
+        ```
         """
         harvesters = {}
 
@@ -386,20 +396,20 @@ class Settings(BaseSettings):
         --------
         With environment variables:
 
-        .. code-block:: python
-
-            NX_EMAIL_SMTP_HOST=smtp.gmail.com
-            NX_EMAIL_SENDER=nexuslims@example.com
-            NX_EMAIL_RECIPIENTS=admin@example.com,team@example.com
+        ```python
+        NX_EMAIL_SMTP_HOST=smtp.gmail.com
+        NX_EMAIL_SENDER=nexuslims@example.com
+        NX_EMAIL_RECIPIENTS=admin@example.com,team@example.com
+        ```
 
         Optional variables:
 
-        .. code-block:: python
-
-            NX_EMAIL_SMTP_PORT=587
-            NX_EMAIL_SMTP_USERNAME=user@example.com
-            NX_EMAIL_SMTP_PASSWORD=secret
-            NX_EMAIL_USE_TLS=true
+        ```python
+        NX_EMAIL_SMTP_PORT=587
+        NX_EMAIL_SMTP_USERNAME=user@example.com
+        NX_EMAIL_SMTP_PASSWORD=secret
+        NX_EMAIL_USE_TLS=true
+        ```
         """
         # Load .env file to get email variables
         env_file_path = Path(".env")

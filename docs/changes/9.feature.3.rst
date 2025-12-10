@@ -1,0 +1,1 @@
+Preview generation has been migrated to a plugin-based system with separate image and text preview generators.

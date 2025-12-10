@@ -5,7 +5,7 @@
 
 from datetime import datetime as dt
 
-from nexusLIMS.extractors.basic_metadata import get_basic_metadata
+from nexusLIMS.extractors.plugins.basic_metadata import get_basic_metadata
 
 
 class TestBasicExtractor:

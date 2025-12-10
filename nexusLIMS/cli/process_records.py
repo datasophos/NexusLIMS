@@ -8,25 +8,25 @@ It replaces the functionality previously provided by process_new_records.sh.
 Usage
 -----
 
-.. code-block:: bash
-
-    uv run python -m nexusLIMS.cli.process_records [OPTIONS]
+```bash
+uv run python -m nexusLIMS.cli.process_records [OPTIONS]
+```
 
 or
 
-.. code-block:: bash
-
-    uv run nexuslims-process-records [OPTIONS]
+```bash
+uv run nexuslims-process-records [OPTIONS]
+```
 
 Options
 -------
 
-.. code-block:: bash
-
-    -n, --dry-run   : Dry run mode (find files without building records)
-    -v, --verbose   : Increase verbosity (-v for INFO, -vv for DEBUG)
-    --version       : Show version and exit
-    --help          : Show help message and exit
+```bash
+-n, --dry-run   : Dry run mode (find files without building records)
+-v, --verbose   : Increase verbosity (-v for INFO, -vv for DEBUG)
+--version       : Show version and exit
+--help          : Show help message and exit
+```
 """
 
 import logging
