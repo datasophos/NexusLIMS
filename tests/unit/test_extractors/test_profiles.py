@@ -25,7 +25,7 @@ from nexusLIMS.extractors.profiles import (
     InstrumentProfileRegistry,
     get_profile_registry,
 )
-from tests.test_instrument_factory import make_quanta_sem, make_titan_stem
+from tests.unit.test_instrument_factory import make_quanta_sem, make_titan_stem
 
 # ============================================================================
 # FIXTURES
@@ -448,7 +448,7 @@ class TestLocalProfileLoading:
         # This test verifies that the existing built-in profile loading still works
         # We use the actual built-in profiles directory
         built_in_dir = (
-            Path(__file__).parent.parent.parent
+            Path(__file__).parent.parent.parent.parent
             / "nexusLIMS"
             / "extractors"
             / "plugins"

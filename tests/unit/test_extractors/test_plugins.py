@@ -49,7 +49,7 @@ class TestDM3Extractor:
 
     def test_extract_with_real_file(self, list_signal, mock_instrument_from_filepath):
         """Test extraction with a real DM3 file."""
-        from tests.test_instrument_factory import make_test_tool
+        from tests.unit.test_instrument_factory import make_test_tool
 
         mock_instrument_from_filepath(make_test_tool())
 
@@ -143,7 +143,7 @@ class TestSerEmiExtractor:
 
     def test_extract_with_real_file(self, fei_ser_files):
         """Test extraction with a real SER file."""
-        from tests.utils import get_full_file_path
+        from tests.unit.utils import get_full_file_path
 
         test_file = get_full_file_path(
             "Titan_TEM_1_STEM_image_dataZeroed_1.ser",
