@@ -98,6 +98,9 @@ Contact Datasophos
 
 ---
 
-```{note}
+```{admonition} Build Metadata
+:class: note
+
+**Package version:** {sub-ref}`version`\
 **Documentation built:** {sub-ref}`today`
 ```

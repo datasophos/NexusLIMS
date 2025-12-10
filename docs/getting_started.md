@@ -81,89 +81,22 @@ python -c "import nexusLIMS; print(nexusLIMS.version.__version__)"
 
 NexusLIMS requires configuration through environment variables, typically stored in a `.env` file.
 
-### Create Configuration File
+### Quick Start
 
-Copy the example configuration file:
+1. Copy the example configuration file:
+   ```bash
+   cp .env.example .env
+   ```
 
-```bash
-cp .env.example .env
-```
+2. Edit `.env` with your settings. At minimum, you'll need to set:
+   - `NX_INSTRUMENT_DATA_PATH` - Path to instrument data
+   - `NX_DATA_PATH` - Path for NexusLIMS data
+   - `NX_DB_PATH` - Path to SQLite database
+   - `NX_CDCS_URL`, `NX_CDCS_USER`, `NX_CDCS_PASS` - CDCS credentials
+   - `NX_NEMO_ADDRESS_N`, `NX_NEMO_TOKEN_N` - NEMO integration
 
-Then edit `.env` with your settings.
-
-### Essential Configuration
-
-#### Critical Paths
-
-```bash
-# Read-only mount of centralized instrument data
-NX_INSTRUMENT_DATA_PATH=/path/to/instrument/data
-
-# Writable parallel directory for metadata/previews
-NX_DATA_PATH=/path/to/nexuslims/data
-
-# SQLite database path
-NX_DB_PATH=/path/to/nexuslims/data/nexuslims_db.sqlite
-```
-
-#### Optional Paths
-
-```bash
-# Directory for application logs (defaults to NX_DATA_PATH/logs/)
-NX_LOG_PATH=/path/to/logs
-
-# Directory for generated XML records (defaults to NX_DATA_PATH/records/)
-NX_RECORDS_PATH=/path/to/records
-```
-
-#### NEMO Integration
-
-For multiple NEMO instances, use the pattern `NX_NEMO_ADDRESS_N` and `NX_NEMO_TOKEN_N`:
-
-```bash
-# First NEMO instance
-NX_NEMO_ADDRESS_0=https://nemo.example.com
-NX_NEMO_TOKEN_0=your_api_token_here
-
-# Second NEMO instance (if applicable)
-NX_NEMO_ADDRESS_1=https://nemo2.example.com
-NX_NEMO_TOKEN_1=another_api_token
-```
-
-Optional timezone and datetime format overrides:
-
-```bash
-NX_NEMO_TIMEZONE_0=America/New_York
-NX_NEMO_DATEFMT_0=%Y-%m-%dT%H:%M:%S%z
-```
-
-#### CDCS Authentication
-
-For uploading records to CDCS:
-
-```bash
-NX_CDCS_USER=your_username
-NX_CDCS_PASS=your_password
-NX_CDCS_URL=https://cdcs.example.com
-```
-
-#### File Processing Strategy
-
-Control which files are included in records:
-
-```bash
-# exclusive: Only files with known extractors (default)
-# inclusive: All files (with basic metadata for unknowns)
-NEXUSLIMS_FILE_STRATEGY=exclusive
-```
-
-#### File Delay Window
-
-Control retry window for sessions with no files found (useful if there are delays in your file management):
-
-```bash
-# Days to continue searching for files (default: 14)
-NX_FILE_DELAY_DAYS=14
+```{seealso}
+For complete configuration documentation including all available settings, validation rules, and troubleshooting, see the {ref}`configuration` guide.
 ```
 
 ## Database Setup
