@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>nexusLIMS.extractors.plugins.digital_micrograph &#8212; NexusLIMS 2.0.0 documentation</title>
+    <title>nexusLIMS.extractors.plugins.digital_micrograph &#8212; NexusLIMS 2.1.0a0 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../../../_static/documentation_options.js?v=51b770b3"></script>
+    <script src="../../../../_static/documentation_options.js?v=cd47123d"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -48,7 +48,7 @@
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.0.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.1.0a0';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
@@ -58,8 +58,8 @@
     <link rel="search" title="Search" href="../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.0.0" />
-    <meta name="docbuild:last-update" content="Dec, 09, 2025"/>
+  <meta name="docsearch:version" content="2.1.0a0" />
+    <meta name="docbuild:last-update" content="Dec, 10, 2025"/>
   </head>
   
   
@@ -125,8 +125,8 @@
       
     
     
-    <img src="../../../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.0.0 documentation - Home"/>
-    <img src="../../../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.0.0 documentation - Home"/>
+    <img src="../../../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.1.0a0 documentation - Home"/>
+    <img src="../../../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.1.0a0 documentation - Home"/>
   
   
 </a></div>
@@ -477,6 +477,7 @@
 <span class="p">)</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.extractors.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExtractionContext</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.extractors.plugins.basic_metadata</span><span class="w"> </span><span class="kn">import</span> <span class="n">BasicFileInfoExtractor</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.extractors.plugins.profiles</span><span class="w"> </span><span class="kn">import</span> <span class="n">register_all_profiles</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.extractors.profiles</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_profile_registry</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.extractors.utils</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
@@ -554,83 +555,28 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        dict</span>
-<span class="sd">            Metadata dictionary with &#39;nx_meta&#39; key containing NexusLIMS metadata</span>
+<span class="sd">            Metadata dictionary with &#39;nx_meta&#39; key containing NexusLIMS metadata.</span>
+<span class="sd">            If the file cannot be opened, returns basic metadata with a warning.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Extracting metadata from DM3/DM4 file: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">context</span><span class="o">.</span><span class="n">file_path</span><span class="p">)</span>
+        <span class="c1"># get_dm3_metadata() handles profile application internally</span>
         <span class="n">metadata</span> <span class="o">=</span> <span class="n">get_dm3_metadata</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">file_path</span><span class="p">,</span> <span class="n">context</span><span class="o">.</span><span class="n">instrument</span><span class="p">)</span>
 
-        <span class="c1"># Apply instrument profile if available</span>
-        <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">instrument</span><span class="p">:</span>
-            <span class="n">metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_profile</span><span class="p">(</span><span class="n">metadata</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">metadata</span></div>
-
-
-<div class="viewcode-block" id="DM3Extractor._apply_profile">
-<a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.digital_micrograph.html#nexusLIMS.extractors.plugins.digital_micrograph.DM3Extractor._apply_profile">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">_apply_profile</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">context</span><span class="p">:</span> <span class="n">ExtractionContext</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Apply instrument-specific profile transformations.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        metadata</span>
-<span class="sd">            Metadata dictionary with &#39;nx_meta&#39; key</span>
-<span class="sd">        context</span>
-<span class="sd">            Extraction context containing instrument information</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        dict</span>
-<span class="sd">            Modified metadata dictionary with profile transformations applied</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">profile</span> <span class="o">=</span> <span class="n">get_profile_registry</span><span class="p">()</span><span class="o">.</span><span class="n">get_profile</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">instrument</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">profile</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                <span class="s2">&quot;No profile found for instrument: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
-                <span class="n">context</span><span class="o">.</span><span class="n">instrument</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">instrument</span> <span class="k">else</span> <span class="s2">&quot;None&quot;</span><span class="p">,</span>
+        <span class="c1"># If extraction failed, return minimal metadata with a warning</span>
+        <span class="k">if</span> <span class="n">metadata</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s2">&quot;Failed to extract DM3/DM4 metadata from </span><span class="si">%s</span><span class="s2">, &quot;</span>
+                <span class="s2">&quot;falling back to basic metadata&quot;</span><span class="p">,</span>
+                <span class="n">context</span><span class="o">.</span><span class="n">file_path</span><span class="p">,</span>
             <span class="p">)</span>
-            <span class="k">return</span> <span class="n">metadata</span>
-
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Applying profile for instrument: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">context</span><span class="o">.</span><span class="n">instrument</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-
-        <span class="c1"># Apply custom parsers in order</span>
-        <span class="k">for</span> <span class="n">parser_name</span><span class="p">,</span> <span class="n">parser_func</span> <span class="ow">in</span> <span class="n">profile</span><span class="o">.</span><span class="n">parsers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">metadata</span> <span class="o">=</span> <span class="n">parser_func</span><span class="p">(</span><span class="n">metadata</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                    <span class="s2">&quot;Profile parser &#39;</span><span class="si">%s</span><span class="s2">&#39; failed: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
-                    <span class="n">parser_name</span><span class="p">,</span>
-                    <span class="n">e</span><span class="p">,</span>
-                <span class="p">)</span>
-
-        <span class="c1"># Apply transformations</span>
-        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">transform_func</span> <span class="ow">in</span> <span class="n">profile</span><span class="o">.</span><span class="n">transformations</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">metadata</span><span class="p">:</span>
-                    <span class="n">metadata</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">transform_func</span><span class="p">(</span><span class="n">metadata</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
-            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                    <span class="s2">&quot;Profile transformation &#39;</span><span class="si">%s</span><span class="s2">&#39; failed: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
-                    <span class="n">key</span><span class="p">,</span>
-                    <span class="n">e</span><span class="p">,</span>
-                <span class="p">)</span>
-
-        <span class="c1"># Inject static metadata</span>
-        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">profile</span><span class="o">.</span><span class="n">static_metadata</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">keys</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
-                <span class="n">set_nested_dict_value</span><span class="p">(</span><span class="n">metadata</span><span class="p">,</span> <span class="n">keys</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                    <span class="s2">&quot;Profile static metadata injection &#39;</span><span class="si">%s</span><span class="s2">&#39; failed: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
-                    <span class="n">key</span><span class="p">,</span>
-                    <span class="n">e</span><span class="p">,</span>
-                <span class="p">)</span>
+            <span class="c1"># Use basic metadata extractor as fallback</span>
+            <span class="n">basic_extractor</span> <span class="o">=</span> <span class="n">BasicFileInfoExtractor</span><span class="p">()</span>
+            <span class="n">metadata</span> <span class="o">=</span> <span class="n">basic_extractor</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+            <span class="c1"># Add a warning to indicate extraction failed</span>
+            <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;warnings&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;warnings&quot;</span><span class="p">,</span> <span class="p">[])</span>
+            <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;warnings&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="p">[</span><span class="s2">&quot;DM3/DM4 file could not be read by HyperSpy&quot;</span><span class="p">]</span>
+            <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">metadata</span></div>
 </div>

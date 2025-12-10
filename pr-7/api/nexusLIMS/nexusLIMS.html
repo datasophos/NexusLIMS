@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>nexusLIMS &#8212; NexusLIMS 2.0.0 documentation</title>
+    <title>nexusLIMS &#8212; NexusLIMS 2.1.0a0 documentation</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../_static/documentation_options.js?v=51b770b3"></script>
+    <script src="../../_static/documentation_options.js?v=cd47123d"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
@@ -49,7 +49,7 @@
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.0.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.1.0a0';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
@@ -61,8 +61,8 @@
     <link rel="prev" title="API documentation" href="../../api.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.0.0" />
-    <meta name="docbuild:last-update" content="Dec, 09, 2025"/>
+  <meta name="docsearch:version" content="2.1.0a0" />
+    <meta name="docbuild:last-update" content="Dec, 10, 2025"/>
   </head>
   
   
@@ -128,8 +128,8 @@
       
     
     
-    <img src="../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.0.0 documentation - Home"/>
-    <img src="../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.0.0 documentation - Home"/>
+    <img src="../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.1.0a0 documentation - Home"/>
+    <img src="../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.1.0a0 documentation - Home"/>
   
   
 </a></div>
@@ -531,6 +531,14 @@ but this setting allows for further customization of the file-finding routine.</
 The username used to authenticate to CDCS API</p>
 <p id="nexuslims-pass"><code class="docutils literal notranslate"><span class="pre">NX_CDCS_PASS</span></code>
 The password used to authenticate to CDCS API</p>
+<p id="nexuslims-cdcs-url"><code class="docutils literal notranslate"><span class="pre">NX_CDCS_URL</span></code>
+The root URL of the NexusLIMS CDCS front-end. This will be the target for
+record uploads that are authenticated using the CDCS credentials.</p>
+<p id="nexuslims-test-cdcs-url"><code class="docutils literal notranslate"><span class="pre">NX_TEST_CDCS_URL</span></code>
+(development setting) The root URL of a NexusLIMS CDCS instance to use
+for integration testing. If defined, this URL will be used for the CDCS
+tests rather than the “actual” URL defined in <code class="docutils literal notranslate"><span class="pre">NX_CDCS_URL</span></code>. If not
+defined, no integration tests will be run.</p>
 <p id="nexuslims-instrument-data-path"><code class="docutils literal notranslate"><span class="pre">NX_INSTRUMENT_DATA_PATH</span></code>
 The path (should be already mounted) to the root folder containing data
 from the Electron Microscopy Nexus. This folder is accessible read-only,
@@ -553,7 +561,32 @@ Directory for application logs. If not specified, defaults to
 Directory for generated XML records. If not specified, defaults to
 <code class="docutils literal notranslate"><span class="pre">${NX_DATA_PATH}/records/</span></code>. Successfully uploaded records are moved to
 an ‘uploaded’ subdirectory upon upload.</p>
-<p id="nemo-address"><code class="docutils literal notranslate"><span class="pre">NEMO_address_X</span></code>
+<p id="nexuslims-cert-bundle-file"><code class="docutils literal notranslate"><span class="pre">NX_CERT_BUNDLE_FILE</span></code>
+If needed, a custom SSL certificate CA bundle can be used to verify
+requests to the CDCS or NEMO APIs. Provide this value with the full
+path to a certificate bundle and any certificates provided in the
+bundle will be appended to the existing system for all requests made
+by NexusLIMS.</p>
+<p id="nexuslims-cert-bundle"><code class="docutils literal notranslate"><span class="pre">NX_CERT_BUNDLE</span></code>
+As an alternative to <code class="docutils literal notranslate"><span class="pre">NX_CERT_BUNDLE_FILE</span></code>, you can provide the entire
+certificate bundle as a single string (this can be useful for CI/CD
+pipelines). Lines should be separated by a single <code class="docutils literal notranslate"><span class="pre">\n</span></code> character. If
+defined, this value will take precedence over <code class="docutils literal notranslate"><span class="pre">NX_CERT_BUNDLE_FILE</span></code>.</p>
+<p id="nexuslims-file-delay-days"><code class="docutils literal notranslate"><span class="pre">NX_FILE_DELAY_DAYS</span></code>
+Controls the maximum delay between observing a session ending and when
+the files are expected to be present. For the number of days set (can be
+a fraction of a day, if desired), record building will not fail if no
+files are found, and the builder will search again until the delay has
+passed. For example, if the value is <code class="docutils literal notranslate"><span class="pre">2</span></code>, and a session ended Monday
+at 5PM, the record builder will continue to try looking for files until
+Wednesday at 5PM. Default is <code class="docutils literal notranslate"><span class="pre">2.0</span></code> days.</p>
+<p id="nexuslims-local-profiles-path"><code class="docutils literal notranslate"><span class="pre">NX_LOCAL_PROFILES_PATH</span></code>
+Directory for site-specific instrument profiles. These profiles customize
+metadata extraction for instruments unique to your deployment without
+modifying the core NexusLIMS codebase. Profile files should be Python
+modules that register <code class="docutils literal notranslate"><span class="pre">InstrumentProfile</span></code> objects. If not specified,
+only built-in profiles will be loaded.</p>
+<p id="nemo-address"><code class="docutils literal notranslate"><span class="pre">NX_NEMO_ADDRESS_X</span></code>
 The path to a NEMO instance’s API endpoint. Should be something like
 <code class="docutils literal notranslate"><span class="pre">https://www.nemo.com/api/</span></code> (make sure to include the trailing slash).
 The value <code class="docutils literal notranslate"><span class="pre">_X</span></code> can be replaced with any value (such as
@@ -563,16 +596,16 @@ different management systems). To enable this behavior, create multiple
 pairs of environment variables for each instance, where the suffix <code class="docutils literal notranslate"><span class="pre">_X</span></code>
 changes for each pair (<code class="docutils literal notranslate"><span class="pre">e.g.</span></code> you could have <code class="docutils literal notranslate"><span class="pre">NX_NEMO_ADDRESS_1</span></code> paired with
 <code class="docutils literal notranslate"><span class="pre">NX_NEMO_TOKEN_1</span></code>, <code class="docutils literal notranslate"><span class="pre">NX_NEMO_ADDRESS_2</span></code> paired with <code class="docutils literal notranslate"><span class="pre">NX_NEMO_TOKEN_2</span></code>, etc.).</p>
-<p id="nemo-token"><code class="docutils literal notranslate"><span class="pre">NEMO_token_X</span></code>
+<p id="nemo-token"><code class="docutils literal notranslate"><span class="pre">NX_NEMO_TOKEN_X</span></code>
 An API authentication token from the corresponding NEMO installation
-(specified in <code class="docutils literal notranslate"><span class="pre">NEMO_address_X</span></code>) that
+(specified in <code class="docutils literal notranslate"><span class="pre">NX_NEMO_ADDRESS_X</span></code>) that
 will be used to authorize requests to the NEMO API. This token can be
 obtained by visiting the “Detailed Administration” page in the NEMO
 instance, and then creating a new token under the “Tokens” menu. Note that
 this token will authenticate as a particular user, so you may wish to set
 up a “dummy” or “functional” user account in the NEMO instance for these
 operations.</p>
-<p id="nemo-strptime-fmt"><span id="nemo-strftime-fmt"></span><code class="docutils literal notranslate"><span class="pre">NEMO_strftime_fmt_X</span></code> and <code class="docutils literal notranslate"><span class="pre">NEMO_strptime_fmt_X</span></code>
+<p id="nemo-strptime-fmt"><span id="nemo-strftime-fmt"></span><code class="docutils literal notranslate"><span class="pre">NX_NEMO_STRFTIME_FMT_X</span></code> and <code class="docutils literal notranslate"><span class="pre">NX_NEMO_STRPTIME_FMT_X</span></code>
 These options are optional, and control how dates/times are sent to
 (<code class="docutils literal notranslate"><span class="pre">strftime</span></code>) and interpreted from (<code class="docutils literal notranslate"><span class="pre">strptime</span></code>) the API. If “<code class="docutils literal notranslate"><span class="pre">strftime_fmt</span></code>”
 and/or “<code class="docutils literal notranslate"><span class="pre">strptime_fmt</span></code>” are not provided, the standard ISO 8601 format
@@ -582,7 +615,7 @@ support of non-default date format settings on a NEMO server. The formats
 should be provided using the standard datetime library syntax for
 encoding date and time information (see :ref:<code class="docutils literal notranslate"><span class="pre">strftime-strptime-behavior</span></code>
 for details).</p>
-<p id="nemo-tz"><code class="docutils literal notranslate"><span class="pre">NX_NEMO_TZ_1</span></code>
+<p id="nemo-tz"><code class="docutils literal notranslate"><span class="pre">NX_NEMO_TZ_X</span></code>
 Also optional; If the “<code class="docutils literal notranslate"><span class="pre">tz</span></code>” option is provided, the datetime
 strings received from the NEMO API will be coerced into the given timezone.
 The timezone should be specified using the IANA “tz database” name (see
@@ -592,13 +625,30 @@ their API response, since it will override the timezone of the returned
 data. It is mostly useful for servers that return reservation/usage event
 times without any timezone information. Providing it helps properly map
 file creation times to usage event times.</p>
+<p id="email-smtp-host"><code class="docutils literal notranslate"><span class="pre">NX_EMAIL_SMTP_HOST</span></code>
+SMTP server hostname for sending email notifications from the
+<code class="docutils literal notranslate"><span class="pre">nexuslims-process-records</span></code> script (e.g., <code class="docutils literal notranslate"><span class="pre">smtp.gmail.com</span></code>).
+Required for email notifications.</p>
+<p id="email-smtp-port"><code class="docutils literal notranslate"><span class="pre">NX_EMAIL_SMTP_PORT</span></code>
+SMTP server port. Default is <code class="docutils literal notranslate"><span class="pre">587</span></code> for STARTTLS.</p>
+<p id="email-smtp-username"><code class="docutils literal notranslate"><span class="pre">NX_EMAIL_SMTP_USERNAME</span></code>
+SMTP username for authentication (if required by your SMTP server).</p>
+<p id="email-smtp-password"><code class="docutils literal notranslate"><span class="pre">NX_EMAIL_SMTP_PASSWORD</span></code>
+SMTP password for authentication (if required by your SMTP server).</p>
+<p id="email-use-tls"><code class="docutils literal notranslate"><span class="pre">NX_EMAIL_USE_TLS</span></code>
+Use TLS encryption for SMTP connection. Default is <code class="docutils literal notranslate"><span class="pre">true</span></code>.</p>
+<p id="email-sender"><code class="docutils literal notranslate"><span class="pre">NX_EMAIL_SENDER</span></code>
+Email address to send notifications from. Required for email notifications.</p>
+<p id="email-recipients"><code class="docutils literal notranslate"><span class="pre">NX_EMAIL_RECIPIENTS</span></code>
+Comma-separated list of recipient email addresses for error notifications
+(e.g., <code class="docutils literal notranslate"><span class="pre">admin&#64;example.com,team&#64;example.com</span></code>). Required for email notifications.</p>
 </section>
 <p>The NexusLIMS back-end software.</p>
 <p>This module contains the software required to monitor a database for sessions
-logged by users on instruments that are part of the NIST Electron Microscopy
-Nexus Facility. Based off this information, records representing individual
-experiments are automatically generated and uploaded to the front-end NexusLIMS
-CDCS instance for users to browse, query, and edit.</p>
+logged by users on electron microscopy instruments. Based off this information,
+records representing individual experiments are automatically generated and
+uploaded to the front-end NexusLIMS CDCS instance for users to browse, query,
+and edit.</p>
 <section id="subpackages">
 <h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading">#</a></h2>
 <div class="toctree-wrapper compound">

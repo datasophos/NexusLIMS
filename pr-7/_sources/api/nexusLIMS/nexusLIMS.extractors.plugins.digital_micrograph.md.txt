@@ -135,14 +135,6 @@
 
 ````
 
-````{py:method} _apply_profile(metadata: dict[str, typing.Any], context: nexusLIMS.extractors.base.ExtractionContext) -> dict[str, typing.Any]
-:canonical: nexusLIMS.extractors.plugins.digital_micrograph.DM3Extractor._apply_profile
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph.DM3Extractor._apply_profile
-```
-
-````
-
 `````
 
 ````{py:function} get_dm3_metadata(filename: pathlib.Path, instrument=None)

@@ -1,3 +1,4 @@
+(instrument-profiles)=
 # Instrument Profiles
 
 ## Overview
