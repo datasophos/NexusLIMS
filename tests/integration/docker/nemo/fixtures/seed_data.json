@@ -1,0 +1,135 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "username": "captain",
+      "first_name": "Captain",
+      "last_name": "Nemo",
+      "email": "captain.nemo@nautilus.com",
+      "badge_number": "1",
+      "is_active": true,
+      "is_staff": true,
+      "is_facility_manager": true,
+      "is_superuser": true
+    },
+    {
+      "id": 2,
+      "username": "professor",
+      "first_name": "Pierre",
+      "last_name": "Aronnax",
+      "email": "pierre.aronnax@nautilus.com",
+      "badge_number": "2",
+      "is_active": true,
+      "is_staff": true,
+      "is_facility_manager": false,
+      "is_superuser": false
+    },
+    {
+      "id": 3,
+      "username": "ned",
+      "first_name": "Ned",
+      "last_name": "Land",
+      "email": "ned.land@nautilus.com",
+      "badge_number": "3",
+      "is_active": true,
+      "is_staff": false,
+      "is_facility_manager": false,
+      "is_superuser": false
+    },
+    {
+      "id": 4,
+      "username": "commander",
+      "first_name": "Commander",
+      "last_name": "Farragut",
+      "email": "commander.farragut@nautilus.com",
+      "badge_number": "4",
+      "is_active": true,
+      "is_staff": false,
+      "is_facility_manager": false,
+      "is_superuser": false,
+      "is_accounting_officer": true
+    }
+  ],
+  "tools": [
+    {
+      "id": 1,
+      "name": "643 Titan (S)TEM",
+      "category": "TEM",
+      "visible": true,
+      "operational": true,
+      "_location": "Building 217",
+      "_maximum_usage_block_time": null,
+      "_minimum_usage_block_time": null,
+      "_maximum_reservations_per_day": null,
+      "_minimum_time_between_reservations": null,
+      "_maximum_future_reservation_time": null,
+      "_missed_reservation_threshold": null,
+      "requires_area_access": null,
+      "grant_physical_access_level_upon_qualification": null,
+      "grant_badge_reader_access_upon_qualification": null,
+      "interlock": null,
+      "allow_delayed_logoff": false,
+      "is_configurable": false,
+      "ask_to_leave_area_when_done_using": false,
+      "pre_usage_questions": "",
+      "post_usage_questions": "",
+      "policy_off_between_times": false,
+      "policy_off_start_time": null,
+      "policy_off_end_time": null,
+      "policy_off_weekend": false,
+      "reservation_horizon": 14,
+      "missed_reservation_threshold": 5,
+      "maximum_usage_block_time": null
+    },
+    {
+      "id": 3,
+      "name": "642 FEI Titan",
+      "category": "TEM",
+      "visible": true,
+      "operational": true,
+      "_location": "Building 217",
+      "reservation_horizon": 14,
+      "missed_reservation_threshold": 5
+    },
+    {
+      "id": 5,
+      "name": "JEOL JEM-3010",
+      "category": "TEM",
+      "visible": true,
+      "operational": true,
+      "_location": "Building 217",
+      "reservation_horizon": 14,
+      "missed_reservation_threshold": 5
+    }
+  ],
+  "projects": [
+    {
+      "id": 1,
+      "name": "Project Alpha",
+      "application_identifier": "PROJ-001",
+      "account": null,
+      "active": true,
+      "start_date": "2023-01-01",
+      "only_allow_tools": []
+    },
+    {
+      "id": 2,
+      "name": "Project Beta",
+      "application_identifier": "PROJ-002",
+      "account": null,
+      "active": true,
+      "start_date": "2023-01-01",
+      "only_allow_tools": []
+    },
+    {
+      "id": 3,
+      "name": "Project Gamma",
+      "application_identifier": "PROJ-003",
+      "account": null,
+      "active": true,
+      "start_date": "2023-01-01",
+      "only_allow_tools": []
+    }
+  ],
+  "create_sample_data": true
+}

@@ -1,0 +1,54 @@
+[
+  {
+    "type": "textbox",
+    "name": "project_id",
+    "title": "Project ID"
+  },
+  {
+    "type": "textbox",
+    "name": "experiment_title",
+    "title": "Title of Experiment"
+  },
+  {
+    "type": "textarea",
+    "name": "experiment_purpose",
+    "title": "Experiment Purpose"
+  },
+  {
+    "type": "radio",
+    "title": "Agree to NexusLIMS curation",
+    "choices": ["Agree", "Disagree"],
+    "name": "data_consent",
+    "default_choice": "Agree"
+  },
+  {
+    "type": "group",
+    "title": "Sample information",
+    "name": "sample_group",
+    "questions": [
+      {
+        "type": "textbox",
+        "name": "sample_name",
+        "title": "Sample Name / PID"
+      },
+      {
+        "type": "radio",
+        "title": "Sample or PID?",
+        "choices": ["Sample Name", "PID"],
+        "name": "sample_or_pid"
+      },
+      {
+        "type": "textarea",
+        "name": "sample_details",
+        "title": "Sample Details"
+      },
+      {
+        "type": "periodic-table",
+        "name": "periodic_table",
+        "title": "Elements in Sample",
+        "help_text": "Select the chemical elements present in your sample (optional)",
+        "required": false
+      }
+    ]
+  }
+]

@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  # NEMO service (uses internal SQLite database)
+  nemo:
+    build:
+      context: ./nemo
+      dockerfile: Dockerfile
+    container_name: nexuslims-test-nemo
+    ports:
+      - "8000:8000"
+    environment:
+      # Django configuration
+      - DJANGO_SETTINGS_MODULE=splash_pad_settings
+      - PYTHONPATH=/nemo/
+      - PYTHONUNBUFFERED=1
+
+      # NEMO-specific settings
+      - ALLOWED_HOSTS=*
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    command:
+      - /bin/sh
+      - -c
+      - |
+        cd /nemo
+        echo 'Configuring periodic table plugin...'
+        python /configure_settings.py
+        echo 'Seeding test data...'
+        python /init_data.py
+        echo 'Starting NEMO server...'
+        exec django-admin runserver 0.0.0.0:8000
+    networks:
+      - nexuslims-test
+
+networks:
+  nexuslims-test:
+    name: nexuslims-test
+    driver: bridge

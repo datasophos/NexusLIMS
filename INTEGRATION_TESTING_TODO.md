@@ -18,14 +18,14 @@ This file tracks progress on implementing Docker-based integration testing for N
   - [x] Add markers configuration
   - [x] Add optional integration test dependencies
 
-## Phase 2: NEMO Docker Service (Week 2) ⏸️ PENDING
+## Phase 2: NEMO Docker Service (Week 2) ✅ COMPLETED
 
-- [ ] Create `tests/integration/docker/nemo/Dockerfile`
-- [ ] Create `tests/integration/docker/nemo/init_data.py`
-- [ ] Create `tests/integration/docker/nemo/fixtures/seed_data.json`
-- [ ] Create `tests/integration/docker/nemo/wait-for-it.sh`
-- [ ] Add NEMO service to `docker-compose.yml`
-- [ ] Test NEMO service manually
+- [x] Create `tests/integration/docker/nemo/Dockerfile`
+- [x] Create `tests/integration/docker/nemo/init_data.py`
+- [x] Create `tests/integration/docker/nemo/fixtures/seed_data.json`
+- [x] Create `tests/integration/docker/nemo/wait-for-it.sh`
+- [x] Add NEMO service to `docker-compose.yml`
+- [x] Test NEMO service manually
 
 ## Phase 3: CDCS Docker Service (Week 3) ⏸️ PENDING
 
@@ -77,9 +77,9 @@ This file tracks progress on implementing Docker-based integration testing for N
 
 ## Progress Summary
 
-- **Completed Phases**: 1/9
-- **Current Phase**: Phase 2 (NEMO Docker Service)
-- **Overall Progress**: 11%
+- **Completed Phases**: 2/9
+- **Current Phase**: Phase 3 (CDCS Docker Service)
+- **Overall Progress**: 22%
 - **Last Updated**: 2025-12-09
 
 ### Phase 1 Completion Notes
@@ -97,3 +97,23 @@ Phase 1 restructuring is complete:
   - Test paths configuration
   - Marker definitions
   - Integration testing dependencies (pytest-docker, docker, pytest-timeout)
+
+### Phase 2 Completion Notes
+
+Phase 2 NEMO Docker service is complete:
+- Created comprehensive Dockerfile based on `nanofab/nemo_splash_pad:latest`
+- Implemented `init_data.py` with Django ORM-based database seeding:
+  - Creates users, tools, projects from seed_data.json
+  - Configures NexusLIMS reservation questions with periodic table plugin
+  - Generates sample reservations and usage events for testing
+- Created `seed_data.json` with test data matching unit test fixtures:
+  - 4 test users (captain, professor, ned, commander)
+  - 3 tools (643 Titan STEM, 642 FEI Titan, JEOL JEM-3010)
+  - 3 projects (Alpha, Beta, Gamma)
+- Created `reservation_questions.json` with NexusLIMS-style questions:
+  - Project ID, Experiment Title, Purpose, Data Consent
+  - Sample information group with periodic table element selector
+- Implemented `wait-for-it.sh` health check script
+- Created `configure_settings.py` to enable periodic table plugin
+- Added NEMO service to docker-compose.yml with healthcheck
+- Comprehensive README.md with usage, testing, and troubleshooting documentation
