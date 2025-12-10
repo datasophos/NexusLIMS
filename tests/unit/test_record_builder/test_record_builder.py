@@ -21,7 +21,7 @@ from nexusLIMS.harvesters.nemo.exceptions import NoMatchingReservationError
 from nexusLIMS.harvesters.reservation_event import ReservationEvent
 from nexusLIMS.instruments import Instrument
 from nexusLIMS.utils import current_system_tz
-from tests.test_instrument_factory import (
+from tests.unit.test_instrument_factory import (
     make_test_tool,
     make_titan_tem,
 )

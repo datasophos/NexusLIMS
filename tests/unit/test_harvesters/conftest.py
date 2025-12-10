@@ -7,9 +7,6 @@ import pytest
 
 from nexusLIMS.harvesters.nemo.connector import NemoConnector
 
-# Import mock data fixtures - these are pytest fixtures used via dependency injection
-pytest_plugins = ["tests.fixtures.nemo_mock_data"]
-
 warnings.filterwarnings(
     action="ignore",
     message=r"DeprecationWarning: Using Ntlm()*",
@@ -37,7 +34,7 @@ def nemo_connector_test_instance(  # noqa: PLR0913
     This fixture mocks the _api_caller method to return test data instead of
     making real HTTP requests to a NEMO server.
     """
-    from tests.fixtures.nemo_mock_data import filter_by_params
+    from tests.unit.fixtures.nemo_mock_data import filter_by_params
 
     connector = NemoConnector(
         base_url="https://nemo.example.com/api/",

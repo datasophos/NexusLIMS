@@ -8,8 +8,8 @@ from datetime import datetime as dt
 import pytest
 
 from nexusLIMS.extractors.plugins import fei_emi
-from tests.test_instrument_factory import make_titan_stem, make_titan_tem
-from tests.utils import get_full_file_path
+from tests.unit.test_instrument_factory import make_titan_stem, make_titan_tem
+from tests.unit.utils import get_full_file_path
 
 
 class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods

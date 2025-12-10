@@ -6,7 +6,7 @@
 import pytest
 
 from nexusLIMS.extractors.plugins.quanta_tif import get_quanta_metadata
-from tests.test_instrument_factory import make_test_tool
+from tests.unit.test_instrument_factory import make_test_tool
 
 
 class TestQuantaExtractor:

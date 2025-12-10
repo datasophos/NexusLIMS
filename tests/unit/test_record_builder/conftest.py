@@ -6,7 +6,7 @@ import pytest
 
 from nexusLIMS.builder import record_builder
 from nexusLIMS.harvesters.reservation_event import ReservationEvent
-from tests.test_instrument_factory import make_titan_tem
+from tests.unit.test_instrument_factory import make_titan_tem
 
 
 @pytest.fixture(name="mock_nemo_reservation")

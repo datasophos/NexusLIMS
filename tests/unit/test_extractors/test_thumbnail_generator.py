@@ -28,7 +28,7 @@ from nexusLIMS.extractors.plugins.preview_generators.image_preview import (
 from nexusLIMS.extractors.plugins.preview_generators.text_preview import (
     text_to_thumbnail,
 )
-from tests.utils import assert_images_equal
+from tests.unit.utils import assert_images_equal
 
 
 class TestThumbnailGenerator:  # pylint: disable=too-many-public-methods

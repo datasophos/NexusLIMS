@@ -62,6 +62,10 @@ dev = [
     "sphinx-autodoc-typehints>=3.5.2",
     "sphinx-autodoc2>=0.5.0",
     "myst-parser>=4.0.1",
+    # Integration testing dependencies (optional)
+    "pytest-docker>=3.1.1",
+    "docker>=7.0.0",
+    "pytest-timeout>=2.2.0",
 ]
 
 [project.urls]
@@ -165,6 +169,25 @@ exclude_lines = [
 [tool.pytest.ini_options]
 log_cli = false
 log_cli_level = "DEBUG"
+# Test discovery paths
+testpaths = ["tests/unit", "tests/integration"]
+# Python files and test functions/classes pattern
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+# Matplotlib baseline image directory for pytest-mpl
+mpl-baseline-path = "tests/unit/files/figs"
+# Markers for organizing tests
+markers = [
+    "unit: Unit tests (isolated, fast)",
+    "integration: Integration tests (require Docker services)",
+    "slow: Tests that take significant time to run",
+    "network: Tests that require network connectivity",
+    "database: Tests that interact with database",
+    "harvester: Tests for harvester modules (NEMO, SharePoint)",
+    "extractor: Tests for metadata extractor modules",
+    "record_builder: Tests for record builder functionality",
+]
 filterwarnings = [
     "ignore:Using Ntlm\\(\\) is deprecated:DeprecationWarning",
     "ignore:Manually creating the cbt stuct:DeprecationWarning",

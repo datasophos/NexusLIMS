@@ -486,6 +486,20 @@ wheels = [
 ]
 
 [[package]]
+name = "docker"
+version = "7.1.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pywin32", marker = "sys_platform == 'win32'" },
+    { name = "requests" },
+    { name = "urllib3" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/91/9b/4a2ea29aeba62471211598dac5d96825bb49348fa07e906ea930394a83ce/docker-7.1.0.tar.gz", hash = "sha256:ad8c70e6e3f8926cb8a92619b832b4ea5299e2831c14284663184e200546fa6c", size = 117834, upload-time = "2024-05-23T11:13:57.216Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/e3/26/57c6fb270950d476074c087527a558ccb6f4436657314bfb6cdf484114c4/docker-7.1.0-py3-none-any.whl", hash = "sha256:c96b93b7f0a746f9e77d325bcfb87422a3d8bd4f03136ae8a85b37f1898d5fc0", size = 147774, upload-time = "2024-05-23T11:13:55.01Z" },
+]
+
+[[package]]
 name = "docutils"
 version = "0.21.2"
 source = { registry = "https://pypi.org/simple" }
@@ -1188,12 +1202,15 @@ dependencies = [
 dev = [
     { name = "autodoc-pydantic" },
     { name = "coverage" },
+    { name = "docker" },
     { name = "freezegun" },
     { name = "myst-parser" },
     { name = "pydata-sphinx-theme" },
     { name = "pytest" },
     { name = "pytest-cov" },
+    { name = "pytest-docker" },
     { name = "pytest-mpl" },
+    { name = "pytest-timeout" },
     { name = "python-semantic-release" },
     { name = "responses" },
     { name = "roman-numerals" },
@@ -1232,12 +1249,15 @@ requires-dist = [
 dev = [
     { name = "autodoc-pydantic", specifier = ">=2.2.0" },
     { name = "coverage", specifier = ">=7.0.0" },
+    { name = "docker", specifier = ">=7.0.0" },
     { name = "freezegun", specifier = ">=1.5.5" },
     { name = "myst-parser", specifier = ">=4.0.1" },
     { name = "pydata-sphinx-theme", specifier = ">=0.16.1" },
     { name = "pytest", specifier = ">=7.2" },
     { name = "pytest-cov", specifier = ">=4.0.0" },
+    { name = "pytest-docker", specifier = ">=3.1.1" },
     { name = "pytest-mpl", specifier = ">=0.16.1" },
+    { name = "pytest-timeout", specifier = ">=2.2.0" },
     { name = "python-semantic-release", specifier = ">=10.5.2" },
     { name = "responses", specifier = ">=0.25.8" },
     { name = "roman-numerals", specifier = ">=3.1.0" },
@@ -1785,6 +1805,19 @@ wheels = [
 ]
 
 [[package]]
+name = "pytest-docker"
+version = "3.2.5"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "attrs" },
+    { name = "pytest" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/66/05/b7e47dc3e01b505838372e296bd780180b3b699a9a134bb8d6be85f3d567/pytest_docker-3.2.5.tar.gz", hash = "sha256:c9662567522911280b394af4da2edd57facaf644494601fac962ff1e396d7ab6", size = 13717, upload-time = "2025-11-12T13:42:19.641Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/9f/e4/3a76a393f808edb0ee08ecc25e5c00bce0522a45b8fcf8693ec9441739c8/pytest_docker-3.2.5-py3-none-any.whl", hash = "sha256:79f3d209f928f45d4385cb825944861bc8a8cccd309804d9c9cd63bcef03edba", size = 8724, upload-time = "2025-11-12T13:42:18.631Z" },
+]
+
+[[package]]
 name = "pytest-mpl"
 version = "0.17.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1798,6 +1831,18 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/a9/81/636f9ea4ec0182abc0ab96e5abeab39fc1d9ce8fecf19e2943d685de519f/pytest-mpl-0.17.0.tar.gz", hash = "sha256:fbef05d7e664b4b33452fb698ac188e522791f327de34e7ea37dbdfe9d52cac6", size = 885613, upload-time = "2024-02-14T20:12:05.711Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/f3/32/3b5d6973cc8bdc320736ee608377e2756b1042ed162ca2d2ee5555f2d117/pytest_mpl-0.17.0-py3-none-any.whl", hash = "sha256:2ee7cf902ef071e45ae14fe190b3d8a9839c2fd8933e0514bf58df310d8ed66b", size = 27555, upload-time = "2024-02-14T20:12:03.504Z" },
+]
+
+[[package]]
+name = "pytest-timeout"
+version = "2.4.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pytest" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ac/82/4c9ecabab13363e72d880f2fb504c5f750433b2b6f16e99f4ec21ada284c/pytest_timeout-2.4.0.tar.gz", hash = "sha256:7e68e90b01f9eff71332b25001f85c75495fc4e3a836701876183c4bcfd0540a", size = 17973, upload-time = "2025-05-05T19:44:34.99Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/fa/b6/3127540ecdf1464a00e5a01ee60a1b09175f6913f0644ac748494d9c4b21/pytest_timeout-2.4.0-py3-none-any.whl", hash = "sha256:c42667e5cdadb151aeb5b26d114aff6bdf5a907f176a007a30b940d3d865b5c2", size = 14382, upload-time = "2025-05-05T19:44:33.502Z" },
 ]
 
 [[package]]
@@ -1880,6 +1925,19 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/f8/bf/abbd3cdfb8fbc7fb3d4d38d320f2441b1e7cbe29be4f23797b4a2b5d8aac/pytz-2025.2.tar.gz", hash = "sha256:360b9e3dbb49a209c21ad61809c7fb453643e048b38924c765813546746e81c3", size = 320884, upload-time = "2025-03-25T02:25:00.538Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/81/c4/34e93fe5f5429d7570ec1fa436f1986fb1f00c3e0f43a589fe2bbcd22c3f/pytz-2025.2-py2.py3-none-any.whl", hash = "sha256:5ddf76296dd8c44c26eb8f4b6f35488f3ccbf6fbbd7adee0b7262d43f0ec2f00", size = 509225, upload-time = "2025-03-25T02:24:58.468Z" },
+]
+
+[[package]]
+name = "pywin32"
+version = "311"
+source = { registry = "https://pypi.org/simple" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/7c/af/449a6a91e5d6db51420875c54f6aff7c97a86a3b13a0b4f1a5c13b988de3/pywin32-311-cp311-cp311-win32.whl", hash = "sha256:184eb5e436dea364dcd3d2316d577d625c0351bf237c4e9a5fabbcfa5a58b151", size = 8697031, upload-time = "2025-07-14T20:13:13.266Z" },
+    { url = "https://files.pythonhosted.org/packages/51/8f/9bb81dd5bb77d22243d33c8397f09377056d5c687aa6d4042bea7fbf8364/pywin32-311-cp311-cp311-win_amd64.whl", hash = "sha256:3ce80b34b22b17ccbd937a6e78e7225d80c52f5ab9940fe0506a1a16f3dab503", size = 9508308, upload-time = "2025-07-14T20:13:15.147Z" },
+    { url = "https://files.pythonhosted.org/packages/44/7b/9c2ab54f74a138c491aba1b1cd0795ba61f144c711daea84a88b63dc0f6c/pywin32-311-cp311-cp311-win_arm64.whl", hash = "sha256:a733f1388e1a842abb67ffa8e7aad0e70ac519e09b0f6a784e65a136ec7cefd2", size = 8703930, upload-time = "2025-07-14T20:13:16.945Z" },
+    { url = "https://files.pythonhosted.org/packages/e7/ab/01ea1943d4eba0f850c3c61e78e8dd59757ff815ff3ccd0a84de5f541f42/pywin32-311-cp312-cp312-win32.whl", hash = "sha256:750ec6e621af2b948540032557b10a2d43b0cee2ae9758c54154d711cc852d31", size = 8706543, upload-time = "2025-07-14T20:13:20.765Z" },
+    { url = "https://files.pythonhosted.org/packages/d1/a8/a0e8d07d4d051ec7502cd58b291ec98dcc0c3fff027caad0470b72cfcc2f/pywin32-311-cp312-cp312-win_amd64.whl", hash = "sha256:b8c095edad5c211ff31c05223658e71bf7116daa0ecf3ad85f3201ea3190d067", size = 9495040, upload-time = "2025-07-14T20:13:22.543Z" },
+    { url = "https://files.pythonhosted.org/packages/ba/3a/2ae996277b4b50f17d61f0603efd8253cb2d79cc7ae159468007b586396d/pywin32-311-cp312-cp312-win_arm64.whl", hash = "sha256:e286f46a9a39c4a18b319c28f59b61de793654af2f395c102b4f819e584b5852", size = 8710102, upload-time = "2025-07-14T20:13:24.682Z" },
 ]
 
 [[package]]
