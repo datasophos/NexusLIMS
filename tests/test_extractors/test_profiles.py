@@ -704,9 +704,8 @@ get_profile_registry().register(profile)
 
     def test_load_profile_with_null_loader(self, tmp_path, caplog, monkeypatch):
         """Test error handling when importlib returns spec with no loader."""
-        from unittest.mock import Mock
-
         import importlib.util
+        from unittest.mock import Mock
 
         from nexusLIMS.extractors.plugins.profiles import _load_profiles_from_directory
 

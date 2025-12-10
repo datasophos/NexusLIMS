@@ -393,7 +393,7 @@ class TestThumbnailGenerator:  # pylint: disable=too-many-public-methods
     def test_image_preview_generator_exception(
         self, monkeypatch, basic_image_file, output_path
     ):
-        """Test that I/O errors during image preview generation are caught (line 209-215)."""
+        """Test that I/O errors during image preview generation are caught."""
         from nexusLIMS.extractors.base import ExtractionContext
         from nexusLIMS.extractors.plugins.preview_generators.image_preview import (
             ImagePreviewGenerator,
@@ -424,7 +424,7 @@ class TestThumbnailGenerator:  # pylint: disable=too-many-public-methods
         )
 
         # Mock Path.read_bytes() to raise PermissionError
-        def mock_read_bytes_fail(self):
+        def mock_read_bytes_fail(_):
             msg = "Permission denied"
             raise PermissionError(msg)
 
@@ -443,14 +443,11 @@ class TestThumbnailGenerator:  # pylint: disable=too-many-public-methods
         )
 
         # Mock fig.savefig to raise exception
-        original_savefig = None
-
         def mock_savefig_fail(*_args, **_kwargs):
             msg = "Disk write error"
             raise OSError(msg)
 
         # Patch matplotlib's savefig
-        import matplotlib.pyplot as plt
 
         monkeypatch.setattr("matplotlib.figure.Figure.savefig", mock_savefig_fail)
 

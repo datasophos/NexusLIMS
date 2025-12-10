@@ -2087,8 +2087,6 @@ class TestRegistryCoverageComplete:
         """Test exception in supports() during registration."""
         import logging
 
-        from nexusLIMS.extractors.base import ExtractionContext
-
         logger = logging.getLogger("nexusLIMS.extractors.registry")
         logger.setLevel(logging.DEBUG)
 
@@ -2153,7 +2151,7 @@ class TestRegistryCoverageComplete:
             is_during_registration["value"] = False
             context = ExtractionContext(Path("test.txt"), None)
             caplog.clear()
-            gen = registry.get_preview_generator(context)
+            registry.get_preview_generator(context)
 
             # Should have logged the exception
             assert "Error in conditional_failing.supports()" in caplog.text
@@ -2162,6 +2160,7 @@ class TestRegistryCoverageComplete:
 
     def test_register_profiles_import_error(self, registry, caplog, monkeypatch):
         """Test ImportError when registering profiles."""
+
         def mock_register_fail():
             msg = "No module named 'fake_module'"
             raise ImportError(msg)
@@ -2178,6 +2177,7 @@ class TestRegistryCoverageComplete:
 
     def test_register_profiles_generic_exception(self, registry, caplog, monkeypatch):
         """Test generic Exception when registering profiles."""
+
         def mock_register_fail():
             msg = "Unexpected error"
             raise ValueError(msg)

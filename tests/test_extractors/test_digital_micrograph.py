@@ -604,7 +604,6 @@ class TestDigitalMicrographExtractor:
 
         # Verify warning was logged
         assert (
-            "Profile static metadata injection 'nx_meta.TestKey' failed"
-            in caplog.text
+            "Profile static metadata injection 'nx_meta.TestKey' failed" in caplog.text
         )
         assert "Intentional failure" in caplog.text
