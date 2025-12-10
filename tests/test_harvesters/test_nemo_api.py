@@ -364,11 +364,11 @@ class TestNemoConnectorEvents:
         with caplog.at_level("WARNING"):
             nemo_connector.write_usage_event_to_session_log(30)
 
-            # Verify warning was logged for duplicate START log (lines 644-650)
+            # Verify warning was logged for duplicate START log
             assert "A 'START' log with session id" in caplog.text
             assert "so a new one will not be inserted for this event" in caplog.text
 
-            # Verify warning was logged for duplicate END log (lines 669-675)
+            # Verify warning was logged for duplicate END log
             assert "An 'END' log with session id" in caplog.text
             # Both warnings should mention the DB check
             assert caplog.text.count("was found in the the DB") == 2

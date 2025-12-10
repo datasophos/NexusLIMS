@@ -701,3 +701,39 @@ get_profile_registry().register(profile)
                 for profile in all_profiles.values():
                     registry.register(profile)
             config.refresh_settings()  # Reset config after test
+
+    def test_load_profile_with_null_loader(self, tmp_path, caplog, monkeypatch):
+        """Test error handling when importlib returns spec with no loader."""
+        from unittest.mock import Mock
+
+        import importlib.util
+
+        from nexusLIMS.extractors.plugins.profiles import _load_profiles_from_directory
+
+        # Save original
+        original_spec_from_file = importlib.util.spec_from_file_location
+
+        try:
+            # Create a test profile file
+            profile_file = tmp_path / "test_profile.py"
+            profile_file.write_text("# test profile")
+
+            # Mock spec_from_file_location to return spec with loader=None
+            def mock_spec_from_file(*_args, **_kwargs):
+                mock_spec = Mock()
+                mock_spec.loader = None
+                return mock_spec
+
+            monkeypatch.setattr(
+                "importlib.util.spec_from_file_location",
+                mock_spec_from_file,
+            )
+
+            caplog.clear()
+            count = _load_profiles_from_directory(tmp_path, module_prefix=None)
+
+            assert "Failed to create module spec for local profile" in caplog.text
+            assert count == 0
+        finally:
+            # Explicitly restore
+            importlib.util.spec_from_file_location = original_spec_from_file

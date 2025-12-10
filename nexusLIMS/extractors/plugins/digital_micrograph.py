@@ -18,6 +18,7 @@ from rsciio.utils.exceptions import (
 )
 
 from nexusLIMS.extractors.base import ExtractionContext
+from nexusLIMS.extractors.plugins.basic_metadata import BasicFileInfoExtractor
 from nexusLIMS.extractors.plugins.profiles import register_all_profiles
 from nexusLIMS.extractors.profiles import get_profile_registry
 from nexusLIMS.extractors.utils import (
@@ -88,80 +89,28 @@ class DM3Extractor:
         Returns
         -------
         dict
-            Metadata dictionary with 'nx_meta' key containing NexusLIMS metadata
+            Metadata dictionary with 'nx_meta' key containing NexusLIMS metadata.
+            If the file cannot be opened, returns basic metadata with a warning.
         """
         logger.debug("Extracting metadata from DM3/DM4 file: %s", context.file_path)
+        # get_dm3_metadata() handles profile application internally
         metadata = get_dm3_metadata(context.file_path, context.instrument)
 
-        # Apply instrument profile if available
-        if context.instrument:
-            metadata = self._apply_profile(metadata, context)
-
-        return metadata
-
-    def _apply_profile(
-        self, metadata: dict[str, Any], context: ExtractionContext
-    ) -> dict[str, Any]:
-        """
-        Apply instrument-specific profile transformations.
-
-        Parameters
-        ----------
-        metadata
-            Metadata dictionary with 'nx_meta' key
-        context
-            Extraction context containing instrument information
-
-        Returns
-        -------
-        dict
-            Modified metadata dictionary with profile transformations applied
-        """
-        profile = get_profile_registry().get_profile(context.instrument)
-
-        if profile is None:
-            logger.debug(
-                "No profile found for instrument: %s",
-                context.instrument.name if context.instrument else "None",
+        # If extraction failed, return minimal metadata with a warning
+        if metadata is None:
+            logger.warning(
+                "Failed to extract DM3/DM4 metadata from %s, "
+                "falling back to basic metadata",
+                context.file_path,
             )
-            return metadata
-
-        logger.debug("Applying profile for instrument: %s", context.instrument.name)
-
-        # Apply custom parsers in order
-        for parser_name, parser_func in profile.parsers.items():
-            try:
-                metadata = parser_func(metadata, context)
-            except Exception as e:
-                logger.warning(
-                    "Profile parser '%s' failed: %s",
-                    parser_name,
-                    e,
-                )
-
-        # Apply transformations
-        for key, transform_func in profile.transformations.items():
-            try:
-                if key in metadata:
-                    metadata[key] = transform_func(metadata[key])
-            except Exception as e:
-                logger.warning(
-                    "Profile transformation '%s' failed: %s",
-                    key,
-                    e,
-                )
-
-        # Inject static metadata
-        for key, value in profile.static_metadata.items():
-            try:
-                keys = key.split(".")
-                set_nested_dict_value(metadata, keys, value)
-            except Exception as e:
-                logger.warning(
-                    "Profile static metadata injection '%s' failed: %s",
-                    key,
-                    e,
-                )
+            # Use basic metadata extractor as fallback
+            basic_extractor = BasicFileInfoExtractor()
+            metadata = basic_extractor.extract(context)
+            # Add a warning to indicate extraction failed
+            metadata["nx_meta"]["warnings"] = metadata["nx_meta"].get("warnings", [])
+            metadata["nx_meta"]["warnings"].append(
+                ["DM3/DM4 file could not be read by HyperSpy"]
+            )
 
         return metadata
 

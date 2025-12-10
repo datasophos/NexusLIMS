@@ -389,3 +389,97 @@ class TestThumbnailGenerator:  # pylint: disable=too-many-public-methods
         """Sanity check that for images that are not the same."""
         with pytest.raises(AssertionError):
             assert_images_equal(image_thumb_source_tif, quanta_test_file[0])
+
+    def test_image_preview_generator_exception(
+        self, monkeypatch, basic_image_file, output_path
+    ):
+        """Test that I/O errors during image preview generation are caught (line 209-215)."""
+        from nexusLIMS.extractors.base import ExtractionContext
+        from nexusLIMS.extractors.plugins.preview_generators.image_preview import (
+            ImagePreviewGenerator,
+        )
+
+        gen = ImagePreviewGenerator()
+
+        # Mock image_to_square_thumbnail to raise exception
+        def mock_fail(*_args, **_kwargs):
+            msg = "Simulated disk full error"
+            raise OSError(msg)
+
+        monkeypatch.setattr(
+            "nexusLIMS.extractors.plugins.preview_generators.image_preview.image_to_square_thumbnail",
+            mock_fail,
+        )
+
+        context = ExtractionContext(basic_image_file, None)
+        result = gen.generate(context, output_path)
+        assert result is False
+
+    def test_text_preview_file_read_exception(
+        self, monkeypatch, basic_txt_file, output_path, caplog
+    ):
+        """Test that file read exceptions are caught in text preview."""
+        from nexusLIMS.extractors.plugins.preview_generators.text_preview import (
+            text_to_thumbnail,
+        )
+
+        # Mock Path.read_bytes() to raise PermissionError
+        def mock_read_bytes_fail(self):
+            msg = "Permission denied"
+            raise PermissionError(msg)
+
+        monkeypatch.setattr("pathlib.Path.read_bytes", mock_read_bytes_fail)
+
+        result = text_to_thumbnail(basic_txt_file, output_path)
+        assert result is False
+        assert "Failed to read text file" in caplog.text
+
+    def test_text_preview_figure_save_exception(
+        self, monkeypatch, basic_txt_file, output_path, caplog
+    ):
+        """Test that figure save exceptions are caught in text preview."""
+        from nexusLIMS.extractors.plugins.preview_generators.text_preview import (
+            text_to_thumbnail,
+        )
+
+        # Mock fig.savefig to raise exception
+        original_savefig = None
+
+        def mock_savefig_fail(*_args, **_kwargs):
+            msg = "Disk write error"
+            raise OSError(msg)
+
+        # Patch matplotlib's savefig
+        import matplotlib.pyplot as plt
+
+        monkeypatch.setattr("matplotlib.figure.Figure.savefig", mock_savefig_fail)
+
+        result = text_to_thumbnail(basic_txt_file, output_path)
+        assert result is False
+        assert "Failed to save text thumbnail" in caplog.text
+
+    def test_text_preview_generator_exception(
+        self, monkeypatch, basic_txt_file, output_path, caplog
+    ):
+        """Test TextPreviewGenerator exception handler."""
+        from nexusLIMS.extractors.base import ExtractionContext
+        from nexusLIMS.extractors.plugins.preview_generators.text_preview import (
+            TextPreviewGenerator,
+        )
+
+        gen = TextPreviewGenerator()
+
+        # Mock text_to_thumbnail to raise exception
+        def mock_fail(*_args, **_kwargs):
+            msg = "Simulated text preview failure"
+            raise RuntimeError(msg)
+
+        monkeypatch.setattr(
+            "nexusLIMS.extractors.plugins.preview_generators.text_preview.text_to_thumbnail",
+            mock_fail,
+        )
+
+        context = ExtractionContext(basic_txt_file, None)
+        result = gen.generate(context, output_path)
+        assert result is False
+        assert "Failed to generate text preview" in caplog.text

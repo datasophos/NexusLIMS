@@ -31,7 +31,10 @@ def registry():
     reg.clear()  # Start with clean slate
     # Prevent auto-discovery of real plugins in tests
     reg._discovered = True
-    return reg
+    yield reg
+    # Ensure cleanup after test - force rediscovery for next test
+    reg.clear()
+    reg._discovered = False
 
 
 @pytest.fixture
@@ -962,6 +965,18 @@ class TestPluginDiscovery:
         assert registry._discovered
         registry.clear()
 
+    def test_lazy_discovery_on_get_preview_generator(self, registry):
+        """get_preview_generator() should trigger discovery automatically."""
+        # Enable discovery for this test
+        registry._discovered = False
+
+        context = ExtractionContext(Path("test.dm3"), None)
+        registry.get_preview_generator(context)
+
+        # Discovery should have happened
+        assert registry._discovered
+        registry.clear()
+
 
 class TestPriorityOrdering:
     """Test priority-based selection in detail."""
@@ -1188,7 +1203,7 @@ class TestErrorHandling:
     """Test error handling and robustness."""
 
     def test_supports_raises_exception(self, registry, caplog):
-        """Exception in supports() should be caught and logged (lines 387-388)."""
+        """Exception in supports() should be caught and logged."""
         import logging
 
         # Track if we're in registration phase
@@ -1942,3 +1957,237 @@ class TestErrorHandlingEdgeCases:
             assert hasattr(extractor, "extract")
         finally:
             registry.clear()
+
+
+class TestRegistryCoverageComplete:
+    """Tests to achieve 100% coverage of registry.py."""
+
+    def test_is_preview_generator_not_a_class(self):
+        """Test _is_preview_generator with non-class objects (line 266)."""
+        from nexusLIMS.extractors.registry import ExtractorRegistry
+
+        registry = ExtractorRegistry()
+
+        assert registry._is_preview_generator("not a class") is False
+        assert registry._is_preview_generator(123) is False
+        assert registry._is_preview_generator(None) is False
+        assert registry._is_preview_generator(lambda x: x) is False
+
+    def test_is_preview_generator_missing_name(self):
+        """Test _is_preview_generator missing name attribute (line 270)."""
+        from nexusLIMS.extractors.registry import ExtractorRegistry
+
+        registry = ExtractorRegistry()
+
+        class NoName:
+            priority = 100
+
+            def supports(self, context):
+                return True
+
+            def generate(self, file_path, output_path):
+                return True
+
+        assert registry._is_preview_generator(NoName) is False
+
+        class WrongTypeName:
+            name = 123  # Not a string
+            priority = 100
+
+            def supports(self, context):
+                return True
+
+            def generate(self, file_path, output_path):
+                return True
+
+        assert registry._is_preview_generator(WrongTypeName) is False
+
+    def test_is_preview_generator_missing_priority(self):
+        """Test _is_preview_generator missing priority attribute (line 273)."""
+        from nexusLIMS.extractors.registry import ExtractorRegistry
+
+        registry = ExtractorRegistry()
+
+        class NoPriority:
+            name = "test"
+
+            def supports(self, context):
+                return True
+
+            def generate(self, file_path, output_path):
+                return True
+
+        assert registry._is_preview_generator(NoPriority) is False
+
+        class WrongTypePriority:
+            name = "test"
+            priority = "100"  # Not an int
+
+            def supports(self, context):
+                return True
+
+            def generate(self, file_path, output_path):
+                return True
+
+        assert registry._is_preview_generator(WrongTypePriority) is False
+
+    def test_is_preview_generator_missing_supports(self):
+        """Test _is_preview_generator missing supports method (line 277)."""
+        from nexusLIMS.extractors.registry import ExtractorRegistry
+
+        registry = ExtractorRegistry()
+
+        class NoSupports:
+            name = "test"
+            priority = 100
+
+            def generate(self, file_path, output_path):
+                return True
+
+        assert registry._is_preview_generator(NoSupports) is False
+
+        class SupportsNotCallable:
+            name = "test"
+            priority = 100
+            supports = "not callable"
+
+            def generate(self, file_path, output_path):
+                return True
+
+        assert registry._is_preview_generator(SupportsNotCallable) is False
+
+    def test_is_preview_generator_missing_generate(self):
+        """Test _is_preview_generator missing generate method (line 280)."""
+        from nexusLIMS.extractors.registry import ExtractorRegistry
+
+        registry = ExtractorRegistry()
+
+        class NoGenerate:
+            name = "test"
+            priority = 100
+
+            def supports(self, context):
+                return True
+
+        assert registry._is_preview_generator(NoGenerate) is False
+
+        class GenerateNotCallable:
+            name = "test"
+            priority = 100
+            generate = "not callable"
+
+            def supports(self, context):
+                return True
+
+        assert registry._is_preview_generator(GenerateNotCallable) is False
+
+    def test_preview_generator_supports_exception_during_registration(
+        self, registry, caplog
+    ):
+        """Test exception in supports() during registration."""
+        import logging
+
+        from nexusLIMS.extractors.base import ExtractionContext
+
+        logger = logging.getLogger("nexusLIMS.extractors.registry")
+        logger.setLevel(logging.DEBUG)
+
+        class FailingGenerator:
+            name = "failing"
+            priority = 100
+
+            def supports(self, context):
+                msg = "Intentional failure"
+                raise RuntimeError(msg)
+
+            def generate(self, file_path, output_path):
+                return True
+
+        try:
+            caplog.clear()
+            registry.register_preview_generator(FailingGenerator)
+
+            # Should have logged the exception during registration
+            assert "Error checking if failing supports" in caplog.text
+        finally:
+            registry.clear()
+
+    def test_preview_generator_supports_exception_during_selection(
+        self, registry, caplog
+    ):
+        """Test exception in supports() during generator selection."""
+        import logging
+
+        from nexusLIMS.extractors.base import ExtractionContext
+
+        logger = logging.getLogger("nexusLIMS.extractors.registry")
+        logger.setLevel(logging.WARNING)
+
+        # Create a generator that returns True for .txt during registration
+        # but then raises during actual selection
+        is_during_registration = {"value": True}
+
+        class ConditionallyFailingGenerator:
+            name = "conditional_failing"
+            priority = 100
+
+            def supports(self, context):
+                # During registration, return True for .txt
+                # During selection, raise exception
+                ext = context.file_path.suffix.lstrip(".").lower()
+                if is_during_registration["value"]:
+                    return ext == "txt"
+                # After registration, always fail
+                msg = "Intentional failure during selection"
+                raise RuntimeError(msg)
+
+            def generate(self, file_path, output_path):
+                return True
+
+        try:
+            # Register with flag set to pass registration
+            is_during_registration["value"] = True
+            registry.register_preview_generator(ConditionallyFailingGenerator)
+
+            # Now switch flag and try to get the generator - should fail
+            is_during_registration["value"] = False
+            context = ExtractionContext(Path("test.txt"), None)
+            caplog.clear()
+            gen = registry.get_preview_generator(context)
+
+            # Should have logged the exception
+            assert "Error in conditional_failing.supports()" in caplog.text
+        finally:
+            registry.clear()
+
+    def test_register_profiles_import_error(self, registry, caplog, monkeypatch):
+        """Test ImportError when registering profiles."""
+        def mock_register_fail():
+            msg = "No module named 'fake_module'"
+            raise ImportError(msg)
+
+        monkeypatch.setattr(
+            "nexusLIMS.extractors.registry.register_all_profiles",
+            mock_register_fail,
+        )
+
+        caplog.clear()
+        registry._register_instrument_profiles()
+
+        assert "Could not import profiles package" in caplog.text
+
+    def test_register_profiles_generic_exception(self, registry, caplog, monkeypatch):
+        """Test generic Exception when registering profiles."""
+        def mock_register_fail():
+            msg = "Unexpected error"
+            raise ValueError(msg)
+
+        monkeypatch.setattr(
+            "nexusLIMS.extractors.registry.register_all_profiles",
+            mock_register_fail,
+        )
+
+        caplog.clear()
+        registry._register_instrument_profiles()
+
+        assert "Error registering instrument profiles" in caplog.text

@@ -26,18 +26,17 @@ uv add --dev <package-name>
 
 ### Testing
 
+Tests should always be run with mpl comparison:
+
 ```bash
 # Run all tests with coverage (recommended)
 ./scripts/run_tests.sh
 
 # Run a specific test file
-uv run pytest tests/test_extractors.py
+uv run pytest --mpl --mpl-baseline-path=tests/files/figs tests/test_extractors.py
 
 # Run a specific test
-uv run pytest tests/test_extractors.py::TestClassName::test_method_name
-
-# Run tests in parallel
-uv run pytest -n auto tests/
+uv run pytest --mpl --mpl-baseline-path=tests/files/figs tests/test_extractors.py::TestClassName::test_method_name
 
 # Generate matplotlib baseline figures for image comparison tests
 ./scripts/generate_mpl_baseline.sh
@@ -217,6 +216,11 @@ Each instrument in `instruments` table must specify:
 - Pylint with custom configuration
 - NumPy-style docstrings
 
+### Changelog management
+- Changelog content is managed by the `towncrier` package
+- Whenever adding a feature or making a significant change, create a corresponding changelog blurb in docs/changes at commit time
+- When creating these blurbs, follow the instructions in `docs/changes/README.rst`
+
 ### Configuration Management (CRITICAL RULE)
 
 **NEVER use `os.getenv()` or `os.environ` directly for configuration.**
@@ -244,7 +248,7 @@ path = config.NX_DATA_PATH
 
 ## Python Version Support
 
-Supports Python 3.11 and 3.12 only (as specified in `.python-version` and tested via tox).
+Supports Python 3.11 and 3.12 only (as specified in `pyproject.toml`).
 
 ## Development Notes
 

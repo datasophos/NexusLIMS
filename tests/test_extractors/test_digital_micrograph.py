@@ -20,8 +20,56 @@ from tests.test_instrument_factory import (
 class TestDigitalMicrographExtractor:
     """Tests nexusLIMS.extractors.digital_micrograph."""
 
+    @pytest.fixture
+    def profile_registry_manager(self):
+        """Fixture that saves and restores profile registry state.
+
+        This ensures that test profiles don't pollute the registry for
+        subsequent tests. Use this when registering temporary test profiles.
+
+        Yields
+        ------
+        InstrumentProfileRegistry
+            The profile registry instance
+        """
+        from nexusLIMS.extractors.profiles import get_profile_registry
+
+        registry = get_profile_registry()
+        # Save existing profiles before test
+        existing_profiles = registry.get_all_profiles()
+
+        yield registry
+
+        # Restore original state after test
+        registry.clear()
+        for profile in existing_profiles.values():
+            registry.register(profile)
+
     def test_corrupted_file(self, corrupted_file):
         assert digital_micrograph.get_dm3_metadata(corrupted_file) is None
+
+    def test_corrupted_file_via_extractor(self, corrupted_file):
+        """Test that the extractor class handles corrupted files gracefully."""
+        from nexusLIMS.extractors.base import ExtractionContext
+        from nexusLIMS.extractors.plugins.digital_micrograph import DM3Extractor
+
+        # Create extractor and context
+        extractor = DM3Extractor()
+        context = ExtractionContext(file_path=corrupted_file[0], instrument=None)
+
+        # Extract should return basic metadata with a warning, not raise
+        metadata = extractor.extract(context)
+
+        # Should have basic metadata structure
+        assert metadata is not None
+        assert "nx_meta" in metadata
+
+        # Should have a warning about the failure
+        assert "warnings" in metadata["nx_meta"]
+        warnings = metadata["nx_meta"]["warnings"]
+        assert any(
+            "DM3/DM4 file could not be read by HyperSpy" in str(w) for w in warnings
+        )
 
     def test_dm3_list_file(self, list_signal, mock_instrument_from_filepath):
         """Test DM3 metadata extraction from list signal file.
@@ -291,3 +339,272 @@ class TestDigitalMicrographExtractor:
 
         for filename in [fname_1, fname_2, fname_3]:
             filename.unlink(missing_ok=True)
+
+    def test_apply_profile_with_parsers(
+        self,
+        list_signal,
+        mock_instrument_from_filepath,
+        caplog,
+        profile_registry_manager,
+    ):
+        """Test _apply_profile with custom parsers."""
+        import logging
+
+        from nexusLIMS.extractors.base import InstrumentProfile
+
+        # Create instrument and setup context
+        instrument = make_test_tool()
+        mock_instrument_from_filepath(instrument)
+
+        # Create a profile with a custom parser
+        def custom_parser(metadata, ctx):  # noqa: ARG001
+            metadata["nx_meta"]["CustomField"] = "CustomValue"
+            return metadata
+
+        profile = InstrumentProfile(
+            instrument_id=instrument.name,
+            parsers={"custom": custom_parser},
+        )
+
+        # Register the profile using the manager fixture
+        profile_registry_manager.register(profile)
+
+        # Extract metadata - should apply profile
+        digital_micrograph.logger.setLevel(logging.DEBUG)
+        result = digital_micrograph.get_dm3_metadata(
+            list_signal[0], instrument=instrument
+        )
+
+        # Verify parser was applied
+        assert result["nx_meta"]["CustomField"] == "CustomValue"
+
+        # Verify log message (line 129)
+        assert f"Applying profile for instrument: {instrument.name}" in caplog.text
+
+    def test_apply_profile_parser_failure(
+        self,
+        list_signal,
+        mock_instrument_from_filepath,
+        caplog,
+        profile_registry_manager,
+    ):
+        """Test _apply_profile when parser raises exception."""
+        import logging
+
+        from nexusLIMS.extractors.base import InstrumentProfile
+
+        # Create instrument and setup context
+        instrument = make_test_tool()
+        mock_instrument_from_filepath(instrument)
+
+        # Create a profile with a failing parser
+        def failing_parser(metadata, ctx):  # noqa: ARG001
+            msg = "Parser intentionally failed"
+            raise ValueError(msg)
+
+        profile = InstrumentProfile(
+            instrument_id=instrument.name,
+            parsers={"failing": failing_parser},
+        )
+
+        # Register the profile using the manager fixture
+        profile_registry_manager.register(profile)
+
+        # Extract metadata - should handle parser failure gracefully
+        digital_micrograph.logger.setLevel(logging.WARNING)
+
+        result = digital_micrograph.get_dm3_metadata(
+            list_signal[0], instrument=instrument
+        )
+
+        # Metadata should still be extracted despite parser failure
+        assert result is not None
+        assert "nx_meta" in result
+
+        # Verify warning was logged
+        assert "Profile parser 'failing' failed" in caplog.text
+        assert "Parser intentionally failed" in caplog.text
+
+    def test_apply_profile_with_transformations(
+        self,
+        list_signal,
+        mock_instrument_from_filepath,
+        profile_registry_manager,
+    ):
+        """Test _apply_profile with transformations."""
+        from nexusLIMS.extractors.base import InstrumentProfile
+
+        # Create instrument and setup context
+        instrument = make_test_tool()
+        mock_instrument_from_filepath(instrument)
+
+        # Create a profile with a transformation on the nx_meta dict
+        # Transformations work on top-level keys in the metadata dict
+        def add_custom_field(nx_meta_dict):
+            """Transform nx_meta by adding a custom field."""
+            nx_meta_dict["TransformedField"] = "TRANSFORMATION_APPLIED"
+            return nx_meta_dict
+
+        profile = InstrumentProfile(
+            instrument_id=instrument.name,
+            # Transform the "nx_meta" top-level key
+            transformations={"nx_meta": add_custom_field},
+        )
+
+        # Register the profile using the manager fixture
+        profile_registry_manager.register(profile)
+
+        # Extract metadata - should apply transformation
+        result = digital_micrograph.get_dm3_metadata(
+            list_signal[0], instrument=instrument
+        )
+
+        # Verify transformation was applied (line 146)
+        # The nx_meta dict should have the transformed field
+        assert result["nx_meta"]["TransformedField"] == "TRANSFORMATION_APPLIED"
+
+    def test_apply_profile_transformation_failure(
+        self,
+        list_signal,
+        mock_instrument_from_filepath,
+        caplog,
+        profile_registry_manager,
+    ):
+        """Test _apply_profile when transformation raises exception."""
+        import logging
+
+        from nexusLIMS.extractors.base import InstrumentProfile
+
+        # Create instrument and setup context
+        instrument = make_test_tool()
+        mock_instrument_from_filepath(instrument)
+
+        # Create a profile with a failing transformation
+        def failing_transform(value):  # noqa: ARG001
+            msg = "Transform intentionally failed"
+            raise RuntimeError(msg)
+
+        profile = InstrumentProfile(
+            instrument_id=instrument.name,
+            transformations={"nx_meta": failing_transform},
+        )
+
+        # Register the profile using the manager fixture
+        profile_registry_manager.register(profile)
+
+        # Extract metadata - should handle transformation failure gracefully
+        digital_micrograph.logger.setLevel(logging.WARNING)
+
+        result = digital_micrograph.get_dm3_metadata(
+            list_signal[0], instrument=instrument
+        )
+
+        # Metadata should still be extracted despite transformation failure
+        assert result is not None
+        assert "nx_meta" in result
+
+        # Verify warning was logged
+        assert "Profile transformation 'nx_meta' failed" in caplog.text
+        assert "Transform intentionally failed" in caplog.text
+
+    def test_apply_profile_with_static_metadata(
+        self,
+        list_signal,
+        mock_instrument_from_filepath,
+        profile_registry_manager,
+    ):
+        """Test _apply_profile with static metadata injection."""
+        from nexusLIMS.extractors.base import InstrumentProfile
+
+        # Create instrument and setup context
+        instrument = make_test_tool()
+        mock_instrument_from_filepath(instrument)
+
+        # Create a profile with static metadata
+        profile = InstrumentProfile(
+            instrument_id=instrument.name,
+            static_metadata={
+                "nx_meta.Facility": "Test Facility",
+                "nx_meta.Building": "Building 123",
+                "nx_meta.CustomInfo.SubKey": "Nested Value",
+            },
+        )
+
+        # Register the profile using the manager fixture
+        profile_registry_manager.register(profile)
+
+        # Extract metadata - should inject static metadata
+        result = digital_micrograph.get_dm3_metadata(
+            list_signal[0], instrument=instrument
+        )
+
+        # Verify static metadata was injected (line 158)
+        assert result["nx_meta"]["Facility"] == "Test Facility"
+        assert result["nx_meta"]["Building"] == "Building 123"
+        assert result["nx_meta"]["CustomInfo"]["SubKey"] == "Nested Value"
+
+    def test_apply_profile_static_metadata_failure(
+        self,
+        monkeypatch,
+        list_signal,
+        mock_instrument_from_filepath,
+        caplog,
+        profile_registry_manager,
+    ):
+        """Test _apply_profile when static metadata injection fails."""
+        import logging
+
+        from nexusLIMS.extractors.base import InstrumentProfile
+
+        # Create instrument and setup context
+        instrument = make_test_tool()
+        mock_instrument_from_filepath(instrument)
+
+        # Save the original set_nested_dict_value function
+        original_func = digital_micrograph.set_nested_dict_value
+
+        # Track calls to set_nested_dict_value
+        calls = {"count": 0}
+
+        # Mock set_nested_dict_value to fail only for profile static metadata
+        def mock_set_nested_selective(*args, **kwargs):
+            calls["count"] += 1
+            # Only fail on profile-injected keys (which come after initial metadata)
+            # We check if this is a profile call by seeing if it's for TestKey
+            if len(args) >= 2 and "TestKey" in str(args[1]):
+                msg = "Intentional failure in set_nested_dict_value"
+                raise KeyError(msg)
+            # Otherwise, use original function
+            return original_func(*args, **kwargs)
+
+        monkeypatch.setattr(
+            "nexusLIMS.extractors.plugins.digital_micrograph.set_nested_dict_value",
+            mock_set_nested_selective,
+        )
+
+        # Create a profile with static metadata
+        profile = InstrumentProfile(
+            instrument_id=instrument.name,
+            static_metadata={"nx_meta.TestKey": "TestValue"},
+        )
+
+        # Register the profile using the manager fixture
+        profile_registry_manager.register(profile)
+
+        # Extract metadata - should handle static metadata failure gracefully
+        digital_micrograph.logger.setLevel(logging.WARNING)
+
+        result = digital_micrograph.get_dm3_metadata(
+            list_signal[0], instrument=instrument
+        )
+
+        # Metadata should still be extracted despite static metadata failure
+        assert result is not None
+        assert "nx_meta" in result
+
+        # Verify warning was logged
+        assert (
+            "Profile static metadata injection 'nx_meta.TestKey' failed"
+            in caplog.text
+        )
+        assert "Intentional failure" in caplog.text

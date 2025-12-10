@@ -459,3 +459,219 @@ class TestExtractorModule:
         meta, thumb_fname = parse_metadata(fname=parse_meta_titan[0])
         assert meta is not None
         self.remove_thumb_and_json(thumb_fname)
+
+    def test_preview_generation_pil_failure(
+        self, monkeypatch, unreadable_image_file, caplog
+    ):
+        """Test create_preview returns None when PIL can't open image (line 337)."""
+        from nexusLIMS.extractors import create_preview
+
+        # The unreadable_image_file fixture should already cause PIL to fail
+        # but let's be explicit and mock to ensure line 337 is hit
+        def mock_image_to_square_thumb_fail(*_args, **_kwargs):
+            return False
+
+        monkeypatch.setattr(
+            "nexusLIMS.extractors.image_to_square_thumbnail",
+            mock_image_to_square_thumb_fail,
+        )
+
+        result = create_preview(fname=unreadable_image_file, overwrite=False)
+        # When PIL fails, should return None (line 337)
+        assert result is None
+
+    def test_hyperspy_signal_empty_title(self, tmp_path):
+        """Test that HyperSpy signals with empty titles are handled (line 367)."""
+        import hyperspy.api as hs
+
+        from nexusLIMS.extractors import create_preview
+
+        # Create a simple signal with no title
+        signal = hs.signals.Signal2D(np.random.random((10, 10)))
+        signal.metadata.General.title = ""  # Empty title
+        signal.metadata.General.original_filename = "test_empty_title.hspy"
+
+        # Save to temp file in a supported format
+        test_file = tmp_path / "test_empty_title.hspy"
+        signal.save(test_file, overwrite=True)
+
+        # This should handle the empty title (line 367) by using the filename
+        result = create_preview(fname=test_file, overwrite=True)
+
+        # The preview should have been generated successfully
+        assert result is not None
+
+        # Cleanup
+        if result and result.exists():
+            result.unlink()
+            json_file = Path(str(result).replace(".thumb.png", ".json"))
+            if json_file.exists():
+                json_file.unlink()
+
+    def test_legacy_tif_downsampling(self, monkeypatch, tmp_path, caplog):
+        """Test legacy downsampling for .tif files.
+
+        This test ensures that when no preview generator plugin is found
+        for a .tif file, the legacy downsampling fallback is triggered
+        with factor=2.
+        """
+        from unittest.mock import Mock
+
+        from PIL import Image
+
+        from nexusLIMS.extractors import create_preview
+
+        # Create a test .tif file
+        test_tif = tmp_path / "test_image.tif"
+        test_image = Image.new("RGB", (1000, 1000), color="blue")
+        test_image.save(test_tif)
+
+        # Mock get_instr_from_filepath to return None (no instrument context)
+        monkeypatch.setattr(
+            "nexusLIMS.extractors.get_instr_from_filepath",
+            lambda _fname: None,
+        )
+
+        # Mock the registry to return None (no preview generator plugin)
+        mock_registry = Mock()
+        mock_registry.get_preview_generator.return_value = None
+
+        monkeypatch.setattr(
+            "nexusLIMS.extractors.get_registry",
+            lambda: mock_registry,
+        )
+
+        # Mock replace_instrument_data_path to use tmp_path
+        output_path = tmp_path / "output" / "test_image.thumb.png"
+
+        monkeypatch.setattr(
+            "nexusLIMS.extractors.replace_instrument_data_path",
+            lambda _fname, _ext: output_path,
+        )
+
+        # Track the down_sample_image call
+        downsample_called = {"called": False, "factor": None}
+
+        def mock_downsample(
+            _fname,
+            out_path=None,
+            output_size=None,  # noqa: ARG001
+            factor=None,
+        ):
+            downsample_called["called"] = True
+            downsample_called["factor"] = factor
+            # Create output
+            if out_path:
+                out_path.parent.mkdir(parents=True, exist_ok=True)
+                img = Image.new("RGB", (500, 500), color="red")
+                img.save(out_path)
+
+        monkeypatch.setattr(
+            "nexusLIMS.extractors.down_sample_image",
+            mock_downsample,
+        )
+
+        # Execute create_preview - should hit lines 316-321
+        import logging
+
+        import nexusLIMS.extractors
+
+        nexusLIMS.extractors.logger.setLevel(logging.INFO)
+
+        result = create_preview(fname=test_tif, overwrite=True)
+
+        # Verify legacy downsampling was called with factor=2
+        assert downsample_called["called"], "down_sample_image should have been called"
+        assert (
+            downsample_called["factor"] == 2  # noqa: PLR2004
+        ), "Factor should be 2 for legacy TIF downsampling"
+        assert result == output_path, "Should return the output path"
+        assert output_path.exists(), "Preview file should have been created"
+
+        # Verify the log message (line 317)
+        assert "Using legacy downsampling for .tif" in caplog.text
+
+    def test_legacy_preview_map_success(self, monkeypatch, tmp_path, caplog):
+        """Test legacy preview map fallback success path (line 337).
+
+        This test ensures that when a file extension is in unextracted_preview_map
+        and the preview generation succeeds, the correct path is returned (line 337).
+        """
+        from unittest.mock import Mock
+
+        from PIL import Image
+
+        from nexusLIMS.extractors import create_preview
+
+        # Create a test .png file (in unextracted_preview_map)
+        test_png = tmp_path / "test_image.png"
+        test_image = Image.new("RGB", (800, 800), color="green")
+        test_image.save(test_png)
+
+        # Mock get_instr_from_filepath to return None
+        monkeypatch.setattr(
+            "nexusLIMS.extractors.get_instr_from_filepath",
+            lambda _fname: None,
+        )
+
+        # Mock the registry to return None (force legacy fallback)
+        mock_registry = Mock()
+        mock_registry.get_preview_generator.return_value = None
+
+        monkeypatch.setattr(
+            "nexusLIMS.extractors.get_registry",
+            lambda: mock_registry,
+        )
+
+        # Mock replace_instrument_data_path to use tmp_path
+        output_path = tmp_path / "output" / "test_image.thumb.png"
+
+        monkeypatch.setattr(
+            "nexusLIMS.extractors.replace_instrument_data_path",
+            lambda _fname, _ext: output_path,
+        )
+
+        # Track if image_to_square_thumbnail is called
+        thumbnail_called = {"called": False}
+
+        def mock_image_to_square_thumbnail(
+            f=None,  # noqa: ARG001
+            out_path=None,
+            output_size=None,  # noqa: ARG001
+        ):
+            thumbnail_called["called"] = True
+            # Create output to simulate success
+            if out_path:
+                out_path.parent.mkdir(parents=True, exist_ok=True)
+                img = Image.new("RGB", (500, 500), color="yellow")
+                img.save(out_path)
+            # Return anything except False to indicate success
+            return True
+
+        # Patch unextracted_preview_map directly
+        import nexusLIMS.extractors
+
+        monkeypatch.setitem(
+            nexusLIMS.extractors.unextracted_preview_map,
+            "png",
+            mock_image_to_square_thumbnail,
+        )
+
+        # Execute create_preview - should hit lines 324-337
+        import logging
+
+        import nexusLIMS.extractors
+
+        nexusLIMS.extractors.logger.setLevel(logging.INFO)
+
+        result = create_preview(fname=test_png, overwrite=True)
+
+        # Verify legacy preview map was used successfully
+        assert thumbnail_called["called"], (
+            "image_to_square_thumbnail should have been called"
+        )
+        assert result == output_path, "Should return the output path (line 337)"
+        assert output_path.exists(), "Preview file should have been created"
+
+        # Verify the log message (line 325)
+        assert "Using legacy preview map for png" in caplog.text

@@ -349,3 +349,41 @@ class TestProfileAutoDiscovery:
 
         # If we got here, all imports succeeded
         assert True
+
+    def test_pycache_directories_are_skipped(self, monkeypatch):
+        """Test that __pycache__ directories are skipped during discovery."""
+        import importlib
+        import pkgutil
+        from unittest.mock import MagicMock
+
+        from nexusLIMS.extractors.plugins.profiles import register_all_profiles
+
+        # Create a mock that simulates finding __pycache__ modules
+        def mock_walk_packages(*args, **kwargs):  # noqa: ARG001
+            # Simulate finding a __pycache__ module and a real module
+            yield (None, "nexusLIMS.extractors.plugins.profiles.__pycache__", False)
+            yield (None, "nexusLIMS.extractors.plugins.profiles.real_module", False)
+            yield (None, "nexusLIMS.extractors.plugins.profiles", False)  # __init__
+
+        # Mock pkgutil.walk_packages to control what modules are "found"
+        monkeypatch.setattr(pkgutil, "walk_packages", mock_walk_packages)
+
+        # Mock importlib.import_module to track what gets imported
+        import_calls = []
+
+        def mock_import_module(name):
+            import_calls.append(name)
+            # Return a mock module
+            return MagicMock()
+
+        monkeypatch.setattr(importlib, "import_module", mock_import_module)
+
+        # Run discovery by calling register_all_profiles
+        register_all_profiles()
+
+        # Verify __pycache__ and __init__ were skipped
+        assert "nexusLIMS.extractors.plugins.profiles.__pycache__" not in import_calls
+        assert "nexusLIMS.extractors.plugins.profiles" not in import_calls
+
+        # Verify the real module was imported
+        assert "nexusLIMS.extractors.plugins.profiles.real_module" in import_calls
