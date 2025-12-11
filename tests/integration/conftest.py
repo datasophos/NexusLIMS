@@ -9,9 +9,16 @@ CDCS services, database setup, and cleanup operations.
 import subprocess
 import time
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 import pytest
 import requests
+
+if TYPE_CHECKING:
+    # Import statements or code that should only be evaluated during type checking
+    # This code will be ignored at runtime
+    from nexusLIMS.harvesters.nemo.connector import NemoConnector
+
 
 # Docker compose directory
 DOCKER_DIR = Path(__file__).parent / "docker"
@@ -292,6 +299,32 @@ def nemo_client(nemo_api_url, monkeypatch):
     }
 
 
+@pytest.fixture
+def nemo_connector(nemo_client) -> "NemoConnector":
+    """
+    Provide a NemoConnector instance for integration tests.
+
+    This fixture creates a NemoConnector instance using the configured
+    NEMO client settings, avoiding repeated connector creation in tests.
+
+    Parameters
+    ----------
+    nemo_client : dict
+        NEMO connection configuration from nemo_client fixture
+
+    Returns
+    -------
+    NemoConnector
+        Configured NemoConnector instance
+    """
+    from nexusLIMS.harvesters.nemo.connector import NemoConnector
+
+    return NemoConnector(
+        base_url=nemo_client["url"],
+        token=nemo_client["token"],
+    )
+
+
 # NEMO test data fixtures are imported from unit test fixtures
 # See tests/unit/fixtures/nemo_mock_data.py for:
 # - mock_users_data: User data (captain, professor, ned, commander)
@@ -531,6 +564,11 @@ def populated_test_database(test_database, mock_tools_data):
             "property_tag": "642",
             "filestore_path": "./642_Titan",
         },
+        10: {  # Test Tool
+            "instrument_pid": "TEST-TOOL-010",
+            "property_tag": "TEST",
+            "filestore_path": "./Test_Tool",
+        },
     }
 
     instruments = []
@@ -582,8 +620,37 @@ def populated_test_database(test_database, mock_tools_data):
 
     yield test_database
 
+# Test Data Fixtures
+# ============================================================================
+
+@pytest.fixture
+def test_instrument_db(populated_test_database):
+    """
+    Provide instrument database loaded from the test database.
+
+    This fixture loads the instrument database from the populated test database,
+    making it easy for tests to access the instruments that were created by the
+    populated_test_database fixture.
+
+    Parameters
+    ----------
+    populated_test_database : Path
+        Path to the populated test database from populated_test_database fixture
+
+    Returns
+    -------
+    dict
+        Dictionary of Instrument objects loaded from the test database
+    """
+    from nexusLIMS.instruments import _get_instrument_db
+    
+    # Load instrument database from the test database path
+    return _get_instrument_db(db_path=populated_test_database)
+
 
 # ============================================================================
+# Test Data Fixtures
+# ========================================================================================================================================================
 # Test Data Fixtures
 # ============================================================================
 

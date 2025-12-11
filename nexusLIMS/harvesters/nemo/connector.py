@@ -478,6 +478,7 @@ class NemoConnector:
             user = self.get_users(reservation["cancelled_by"])
             if user:
                 reservation.update({"cancelled_by": user[0]})
+
         return reservation
 
     def get_usage_events(
