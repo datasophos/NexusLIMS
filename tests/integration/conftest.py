@@ -55,9 +55,36 @@ def docker_services():
     - Health checks wait up to 180 seconds for all services to be ready
     - Services are torn down with `docker compose down -v` after all tests
     - Volumes are removed to ensure clean state for next test run
+    - Test data directories are cleaned before starting to ensure clean slate
     """
+    import shutil
+
+    # Check test data directories before starting Docker services
+    # Fail if they exist to catch cleanup failures from previous runs
+    print("\n[*] Checking test data directories...")
+    for test_dir in [TEST_INSTRUMENT_DATA_DIR, TEST_DATA_DIR]:
+        if test_dir.exists():
+            msg = (
+                f"\n{'='*70}\n"
+                f"ERROR: Test data directory already exists: {test_dir}\n"
+                f"\n"
+                f"This indicates a previous test run did not clean up properly.\n"
+                f"Or there were pre-existing files in the temporary directory.\n"
+                f"This could cause test isolation issues and unreliable results.\n"
+                f"\n"
+                f"To fix this, manually remove the directory:\n"
+                f"  rm -rf {test_dir}\n"
+                f"\n"
+                f"Or remove all test directories:\n"
+                f"  rm -rf /tmp/nexuslims-test-*\n"
+                f"{'='*70}"
+            )
+            raise RuntimeError(msg)
+        test_dir.mkdir(parents=True, exist_ok=True)
+        print(f"[+] Created {test_dir}")
+
     # Start services
-    print("\n[*] Starting Docker services...")
+    print("[*] Starting Docker services...")
 
     # Build docker compose command - use CI override if available
     compose_cmd = ["docker", "compose"]
@@ -135,6 +162,29 @@ def docker_services():
         capture_output=True,
     )
     print("[+] Docker services cleaned up")
+
+    # Clean test data directories after stopping Docker services
+    # Use try/except to ensure we attempt all cleanups even if one fails
+    print("[*] Cleaning test data directories...")
+    cleanup_errors = []
+    for test_dir in [TEST_INSTRUMENT_DATA_DIR, TEST_DATA_DIR]:
+        if test_dir.exists():
+            try:
+                shutil.rmtree(test_dir)
+                print(f"[+] Removed {test_dir}")
+            except Exception as e:
+                error_msg = f"Failed to remove {test_dir}: {e}"
+                print(f"[!] {error_msg}")
+                cleanup_errors.append(error_msg)
+
+    if cleanup_errors:
+        print("\n[!] WARNING: Some cleanup operations failed:")
+        for error in cleanup_errors:
+            print(f"    - {error}")
+        print("\nYou may need to manually remove directories:")
+        print("  rm -rf /tmp/nexuslims-test-*")
+    else:
+        print("[+] Test environment cleanup complete")
 
 
 @pytest.fixture(scope="session")
@@ -581,8 +631,9 @@ def test_data_dirs(tmp_path, monkeypatch) -> dict[str, Path]:
         "nexuslims_data": nexuslims_data_dir,
     }
 
-    # Note: Cleanup happens when Docker services are torn down
-    # The directories in /tmp persist across tests within the session
+    # Note: The directories persist across individual tests within the session,
+    # but are cleaned at the start and end of each test session by the
+    # docker_services fixture to ensure a clean slate for each test run
 
 
 @pytest.fixture
