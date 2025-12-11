@@ -340,6 +340,11 @@ class TestExtractorModule:
         )
         assert meta["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
 
+        # Clean up JSON file (no thumbnail is generated for this file type)
+        json_path = Path(str(unreadable_image_file) + ".json")
+        if json_path.exists():
+            json_path.unlink()
+
     def test_no_thumb_for_binary_text_file(self, binary_text_file):
         meta, thumb_fname = parse_metadata(fname=binary_text_file)
 
@@ -352,6 +357,11 @@ class TestExtractorModule:
             == "nexusLIMS.extractors.plugins.basic_file_info_extractor"
         )
         assert meta["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
+
+        # Clean up JSON file (no thumbnail is generated for this file type)
+        json_path = Path(str(binary_text_file) + ".json")
+        if json_path.exists():
+            json_path.unlink()
 
     def test_create_preview_non_quanta_tif(
         self, monkeypatch, quanta_test_file, tmp_path

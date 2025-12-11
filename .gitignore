@@ -16,13 +16,15 @@ gitlab_backup.log
 .coverage
 .coverage.*
 tests/coverage
-tests/files/*.dm[3-4]
-tests/files/*.ser
-tests/files/*.emi
-tests/files/*.xml
-tests/files/*.tif
-tests/files/*.hdf5
-tests/files/**/*.json
+# Test data files (extracted from archives)
+tests/unit/files/*.dm[3-4]
+tests/unit/files/*.ser
+tests/unit/files/*.emi
+tests/unit/files/*.xml
+tests/unit/files/*.tif
+tests/unit/files/*.hdf5
+tests/unit/files/**/*.json
+tests/integration/**/*.json
 tests/**/*.xml
 tests/test_report.xml
 .env
