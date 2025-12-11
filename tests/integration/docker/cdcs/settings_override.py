@@ -10,14 +10,11 @@ import os
 # Enable anonymous access to public documents
 # This allows unauthenticated users to view and search public data
 CAN_ANONYMOUS_ACCESS_PUBLIC_DOCUMENT = (
-    os.environ.get("CAN_ANONYMOUS_ACCESS_PUBLIC_DOCUMENT", "True").lower()
-    == "true"
+    os.environ.get("CAN_ANONYMOUS_ACCESS_PUBLIC_DOCUMENT", "True").lower() == "true"
 )
 
 # Disable data access verification to allow anonymous keyword search
-VERIFY_DATA_ACCESS = (
-    os.environ.get("VERIFY_DATA_ACCESS", "False").lower() == "true"
-)
+VERIFY_DATA_ACCESS = os.environ.get("VERIFY_DATA_ACCESS", "False").lower() == "true"
 
 # Configure anonymous permissions for explore endpoints
 ANONYMOUS_EXPLORE_ENABLED = CAN_ANONYMOUS_ACCESS_PUBLIC_DOCUMENT
@@ -27,9 +24,42 @@ print(
     f"{CAN_ANONYMOUS_ACCESS_PUBLIC_DOCUMENT}"
 )
 print(f"[NexusLIMS Settings Override] Verify data access: {VERIFY_DATA_ACCESS}")
+print(f"[NexusLIMS Settings Override] Anonymous explore: {ANONYMOUS_EXPLORE_ENABLED}")
+
+# Ensure core_main_app is properly configured for workspace REST API
+# This ensures that workspace endpoints like /rest/workspace/read_access are available
 print(
-    f"[NexusLIMS Settings Override] Anonymous explore: "
-    f"{ANONYMOUS_EXPLORE_ENABLED}"
+    "[NexusLIMS Settings Override] Configuring core_main_app for workspace REST API..."
+)
+
+# Verify that core_main_app is in INSTALLED_APPS
+from django.conf import settings
+
+# Add core_main_app to INSTALLED_APPS if not already present
+if "core_main_app" not in settings.INSTALLED_APPS:
+    settings.INSTALLED_APPS.append("core_main_app")
+    print("[NexusLIMS Settings Override] Added core_main_app to INSTALLED_APPS")
+else:
+    print("[NexusLIMS Settings Override] core_main_app already in INSTALLED_APPS")
+
+# Add tz_detect to INSTALLED_APPS if not already present
+if "tz_detect" not in settings.INSTALLED_APPS:
+    settings.INSTALLED_APPS.append("tz_detect")
+    print("[NexusLIMS Settings Override] Added tz_detect to INSTALLED_APPS")
+else:
+    print("[NexusLIMS Settings Override] tz_detect already in INSTALLED_APPS")
+
+# Add tz_detect middleware if not already present
+if "tz_detect.middleware.TimezoneMiddleware" not in settings.MIDDLEWARE:
+    settings.MIDDLEWARE.append("tz_detect.middleware.TimezoneMiddleware")
+    print("[NexusLIMS Settings Override] Added tz_detect middleware")
+else:
+    print("[NexusLIMS Settings Override] tz_detect middleware already present")
+
+# Note: We don't check core_main_app URLs here because Django might not be fully
+# initialized yet. The core_main_app configuration will be checked during runtime.
+print(
+    "[NexusLIMS Settings Override] core_main_app configuration will be verified at runtime"
 )
 
 

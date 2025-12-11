@@ -35,13 +35,10 @@ def _handle_upload_result(result):
 MINIMAL_TEST_RECORD = """<?xml version="1.0" encoding="UTF-8"?>
 <Experiment xmlns="https://data.nist.gov/od/dm/nexus/experiment/v1.0">
     <summary>
+        <instrument pid="test-instrument-001">Test Instrument</instrument>
+        <reservationStart>2024-01-01T10:00:00</reservationStart>
+        <reservationEnd>2024-01-01T12:00:00</reservationEnd>
         <motivation>Testing CDCS integration</motivation>
-        <instrument>
-            <pid>test-instrument-001</pid>
-            <location>Integration Test Lab</location>
-            <reservationStart>2024-01-01T10:00:00</reservationStart>
-            <reservationEnd>2024-01-01T12:00:00</reservationEnd>
-        </instrument>
     </summary>
 </Experiment>
 """
@@ -166,10 +163,12 @@ class TestCdcsRecordOperations:
         """Test deleting an existing record from CDCS."""
         # First upload a record
         title = "Test Record - To Be Deleted"
-        upload_response, record_id = _handle_upload_result(cdcs.upload_record_content(
-            MINIMAL_TEST_RECORD,
-            title,
-        ))
+        upload_response, record_id = _handle_upload_result(
+            cdcs.upload_record_content(
+                MINIMAL_TEST_RECORD,
+                title,
+            )
+        )
         assert upload_response.status_code == HTTPStatus.CREATED
 
         # Now delete it
@@ -195,11 +194,13 @@ class TestCdcsRecordOperations:
         record_ids = []
 
         for i in range(3):
-            title = f"Test Record - Multiple Upload {i+1}"
-            response, record_id = _handle_upload_result(cdcs.upload_record_content(
-                MINIMAL_TEST_RECORD,
-                title,
-            ))
+            title = f"Test Record - Multiple Upload {i + 1}"
+            response, record_id = _handle_upload_result(
+                cdcs.upload_record_content(
+                    MINIMAL_TEST_RECORD,
+                    title,
+                )
+            )
 
             assert response.status_code == HTTPStatus.CREATED
             assert record_id is not None
@@ -220,10 +221,12 @@ class TestCdcsRecordRetrieval:
         """Test that an uploaded record can be retrieved via API."""
         # Upload a record first
         title = "Test Record - Retrieval"
-        upload_response, record_id = _handle_upload_result(cdcs.upload_record_content(
-            MINIMAL_TEST_RECORD,
-            title,
-        ))
+        upload_response, record_id = _handle_upload_result(
+            cdcs.upload_record_content(
+                MINIMAL_TEST_RECORD,
+                title,
+            )
+        )
         assert upload_response.status_code == HTTPStatus.CREATED
 
         # Register for cleanup
@@ -247,10 +250,12 @@ class TestCdcsRecordRetrieval:
         """Test retrieving the XML content of an uploaded record."""
         # Upload a record first
         title = "Test Record - XML Content Retrieval"
-        upload_response, record_id = _handle_upload_result(cdcs.upload_record_content(
-            MINIMAL_TEST_RECORD,
-            title,
-        ))
+        upload_response, record_id = _handle_upload_result(
+            cdcs.upload_record_content(
+                MINIMAL_TEST_RECORD,
+                title,
+            )
+        )
         assert upload_response.status_code == HTTPStatus.CREATED
 
         # Register for cleanup
@@ -271,7 +276,7 @@ class TestCdcsRecordRetrieval:
         assert "xml_content" in record_data
         # The uploaded XML should be in the response
         assert "Experiment" in record_data["xml_content"]
-        assert "Integration test experiment record" in record_data["xml_content"]
+        assert "Testing CDCS integration" in record_data["xml_content"]
 
 
 @pytest.mark.integration
@@ -282,10 +287,12 @@ class TestCdcsWorkspaceAssignment:
         """Test that uploaded records are assigned to the workspace."""
         # Upload a record
         title = "Test Record - Workspace Assignment"
-        upload_response, record_id = _handle_upload_result(cdcs.upload_record_content(
-            MINIMAL_TEST_RECORD,
-            title,
-        ))
+        upload_response, record_id = _handle_upload_result(
+            cdcs.upload_record_content(
+                MINIMAL_TEST_RECORD,
+                title,
+            )
+        )
         assert upload_response.status_code == HTTPStatus.CREATED
 
         # Register for cleanup
@@ -299,7 +306,7 @@ class TestCdcsWorkspaceAssignment:
         workspace_id = cdcs.get_workspace_id()
         endpoint = urljoin(
             cdcs_url,
-            f"rest/data/workspace/{workspace_id}/",
+            f"rest/workspace/{workspace_id}/data/",
         )
         response = nexus_req(endpoint, "GET", basic_auth=True)
 
@@ -318,7 +325,9 @@ class TestCdcsErrorHandling:
     def test_upload_with_empty_xml(self, cdcs_client):
         """Test handling of empty XML content."""
         title = "Test Record - Empty XML"
-        response, record_id = _handle_upload_result(cdcs.upload_record_content("", title))
+        response, record_id = _handle_upload_result(
+            cdcs.upload_record_content("", title)
+        )
 
         # Should fail (not return 201 CREATED)
         assert response.status_code != HTTPStatus.CREATED
@@ -327,7 +336,9 @@ class TestCdcsErrorHandling:
         """Test handling of malformed XML."""
         malformed_xml = "<Experiment><unclosed>"
         title = "Test Record - Malformed XML"
-        response, record_id = _handle_upload_result(cdcs.upload_record_content(malformed_xml, title))
+        response, record_id = _handle_upload_result(
+            cdcs.upload_record_content(malformed_xml, title)
+        )
 
         # Should fail (not return 201 CREATED)
         assert response.status_code != HTTPStatus.CREATED
@@ -336,7 +347,9 @@ class TestCdcsErrorHandling:
         """Test uploading a record with empty title."""
         # This might be allowed by CDCS, or it might fail
         # Either way, we should handle it gracefully
-        response, record_id = _handle_upload_result(cdcs.upload_record_content(MINIMAL_TEST_RECORD, ""))
+        response, record_id = _handle_upload_result(
+            cdcs.upload_record_content(MINIMAL_TEST_RECORD, "")
+        )
 
         # Check result - either succeeds with empty title or fails gracefully
         if response.status_code == HTTPStatus.CREATED:
@@ -354,10 +367,11 @@ class TestCdcsUrlConfiguration:
     def test_get_cdcs_url(self, cdcs_client, cdcs_url):
         """Test retrieving configured CDCS URL."""
         url = cdcs.get_cdcs_url()
-        assert url == cdcs_url
+        # Pydantic may add trailing slash, so normalize for comparison
+        assert url.rstrip("/") == cdcs_url.rstrip("/")
         assert url.startswith("http")
 
-    def test_cdcs_url_with_trailing_slash(self, cdcs_url, monkeypatch):
+    def test_cdcs_url_with_trailing_slash(self, cdcs_client, cdcs_url, monkeypatch):
         """Test that CDCS URLs are handled correctly with/without trailing slash."""
         from nexusLIMS.config import refresh_settings
 
