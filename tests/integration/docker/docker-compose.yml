@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # NEMO service (uses internal SQLite database)
   nemo:
@@ -45,6 +43,10 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=admin
       - MONGO_INITDB_ROOT_PASSWORD=admin
       - MONGO_INITDB_DATABASE=cdcs
+      - MONGO_USER=cdcs
+      - MONGO_PASS=cdcs
+    volumes:
+      - ./cdcs/mongo-init.sh:/docker-entrypoint-initdb.d/mongo-init.sh:ro
     healthcheck:
       test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
       interval: 5s
@@ -108,12 +110,16 @@ services:
       - ALLOWED_HOSTS=*
       - SERVER_NAME=NexusLIMS Test
 
+      # Anonymous access configuration
+      - CAN_ANONYMOUS_ACCESS_PUBLIC_DOCUMENT=True
+      - VERIFY_DATA_ACCESS=False
+
       # MongoDB configuration
       - MONGO_HOST=cdcs-mongo
       - MONGO_PORT=27017
       - MONGO_DB=cdcs
-      - MONGO_USER=admin
-      - MONGO_PASS=admin
+      - MONGO_USER=cdcs
+      - MONGO_PASS=cdcs
 
       # PostgreSQL configuration
       - POSTGRES_HOST=cdcs-postgres

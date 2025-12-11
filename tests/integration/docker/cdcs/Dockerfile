@@ -1,52 +1,40 @@
 # Dockerfile for NexusLIMS CDCS testing service
 # Based on datasophos/NexusLIMS-CDCS-Docker
 
-FROM python:3.11-slim
+FROM python:3.7-slim-bookworm
 
 LABEL maintainer="datasophos, llc"
 LABEL description="NexusLIMS CDCS test instance for integration testing"
 
-# Environment variables
-ENV DOCKYARD_SRVPROJ=/srv/curator \
-    PYTHONUNBUFFERED=1
+# Directory in container for project source files
+ENV DOCKYARD_SRVPROJ="/srv/curator"
 
-# Install system dependencies
+# Install necessary packages
 RUN apt-get update && apt-get install -y \
-    netcat-openbsd \
-    vim \
-    curl \
-    git \
-    dnsutils \
-    gettext \
-    libxml2-dev \
-    libxslt-dev \
-    libssl-dev \
-    libpq-dev \
-    postgresql-client \
-    xmlsec1 \
-    && rm -rf /var/lib/apt/lists/*
+    netcat-openbsd vim python3 curl git dnsutils gettext \
+    libxml2-dev libxslt-dev python3-dev libssl-dev \
+    python3-pip libpq-dev postgresql-client xmlsec1
 
 # Install uwsgi and psycopg2
-RUN pip install --no-cache-dir uwsgi psycopg2-binary==2.9.9
+RUN pip install uwsgi psycopg2==2.8.6
 
 # Clone NexusLIMS-CDCS repository
-# Using datasophos fork with NexusLIMS customizations
-ARG CDCS_REPO=https://github.com/datasophos/NexusLIMS-CDCS.git
-ARG BRANCH=master
-
-RUN git clone $CDCS_REPO $DOCKYARD_SRVPROJ && \
-    cd $DOCKYARD_SRVPROJ && \
-    git checkout $BRANCH
+RUN git clone https://github.com/datasophos/nexuslims-cdcs.git $DOCKYARD_SRVPROJ
+RUN cd $DOCKYARD_SRVPROJ \
+    && git checkout NexusLIMS_master
 
 # Install Python dependencies
 WORKDIR $DOCKYARD_SRVPROJ
-RUN pip install --no-cache-dir -r requirements.txt && \
-    pip install --no-cache-dir -r requirements.core.txt
+RUN pip install -r requirements.txt
+RUN pip install -r requirements.core.txt
 
 # Copy entrypoint script and initialization files
 COPY ./docker-entrypoint.sh /
 COPY ./init_schema.py /
-RUN chmod +x /docker-entrypoint.sh
+COPY ./settings_override.py /
+RUN chmod 755 /docker-entrypoint.sh && \
+    chmod 644 /init_schema.py && \
+    chmod 644 /settings_override.py
 
 # Create necessary directories
 # Note: /fixtures/nexus-experiment.xsd will be mounted as a volume at runtime

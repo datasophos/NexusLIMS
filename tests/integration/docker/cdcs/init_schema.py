@@ -5,14 +5,17 @@ Initialize CDCS test instance with NexusLIMS schema and test data.
 This script:
 1. Uploads the Nexus Experiment XSD schema as a template
 2. Creates a test workspace
-3. Configures the system for testing
+3. Downloads and registers XSLT stylesheets
+4. Configures the system for testing
 
 This script is run automatically during container startup by docker-entrypoint.sh.
 """
 
+import hashlib
 import os
 import sys
 import time
+import urllib.request
 from pathlib import Path
 
 # Set up Django environment
@@ -24,17 +27,36 @@ import django
 django.setup()
 
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group, Permission
+from django.contrib.contenttypes.models import ContentType
 from core_main_app.components.template.models import Template
 from core_main_app.components.template_version_manager.models import (
     TemplateVersionManager,
 )
+from core_main_app.components.template_xsl_rendering.models import (
+    TemplateXslRendering,
+)
 from core_main_app.components.workspace.models import Workspace
+from core_main_app.components.xsl_transformation.models import XslTransformation
 
 User = get_user_model()
 
+# XSLT stylesheet URLs
+XSLT_BASE_URL = "https://raw.githubusercontent.com/datasophos/NexusLIMS-CDCS/NexusLIMS_master/xslt"
+XSLT_STYLESHEETS = {
+    "detail": {
+        "name": "detail_stylesheet.xsl",
+        "url": f"{XSLT_BASE_URL}/detail_stylesheet.xsl",
+    },
+    "list": {
+        "name": "list_stylesheet.xsl",
+        "url": f"{XSLT_BASE_URL}/list_stylesheet.xsl",
+    },
+}
+
 
 def load_schema():
-    """Load the Nexus Experiment XSD schema as a template."""
+    """Load the Nexus Experiment XSD schema as a global template."""
     print("Loading Nexus Experiment schema...")
 
     schema_path = "/fixtures/nexus-experiment.xsd"
@@ -52,21 +74,20 @@ def load_schema():
         tvm = TemplateVersionManager.objects.get(title=template_title)
         return tvm
 
-    # Get admin user to own the template
-    admin_user = User.objects.get(username="admin")
-
-    # Create the template
+    # Create the Template
+    # Compute hash manually since auto-computation may not be enabled
+    content_hash = hashlib.sha1(schema_content.encode("utf-8")).hexdigest()
     template = Template(
         filename="nexus-experiment.xsd",
         content=schema_content,
-        _hash=Template.get_hash(schema_content),
+        hash=content_hash,
     )
     template.save()
 
-    # Create version manager
+    # Create TemplateVersionManager with user=None to make it global
     tvm = TemplateVersionManager(
         title=template_title,
-        user=str(admin_user.id),
+        user=None,  # None makes it a global template (appears in /admin/templates)
         is_disabled=False,
     )
     tvm.save()
@@ -98,16 +119,138 @@ def create_workspace():
     # Get admin user to own the workspace
     admin_user = User.objects.get(username="admin")
 
-    # Create workspace
+    # Create permission groups for the workspace
+    # Read permission group
+    read_group = Group.objects.create(name=f"{workspace_title} - Read")
+    read_group.save()
+
+    # Write permission group
+    write_group = Group.objects.create(name=f"{workspace_title} - Write")
+    write_group.save()
+
+    # Create workspace with permission groups
     workspace = Workspace(
         title=workspace_title,
         owner=str(admin_user.id),
         is_public=True,
+        read_perm_id=str(read_group.id),
+        write_perm_id=str(write_group.id),
     )
     workspace.save()
 
     print(f"  Workspace '{workspace_title}' created successfully (ID: {workspace.id})")
     return workspace
+
+
+def register_xslt_stylesheets(template_vm):
+    """Download and register XSLT stylesheets for the template."""
+    print("Registering XSLT stylesheets...")
+
+    # Get the current template
+    template = Template.objects.get(id=template_vm.current)
+
+    # Track created XSLTs
+    xslt_map = {}
+
+    for stylesheet_type, stylesheet_info in XSLT_STYLESHEETS.items():
+        stylesheet_name = stylesheet_info["name"]
+        stylesheet_url = stylesheet_info["url"]
+
+        # Check if stylesheet already exists
+        if XslTransformation.objects.filter(name=stylesheet_name).exists():
+            print(f"  Stylesheet '{stylesheet_name}' already exists")
+            xslt = XslTransformation.objects.get(name=stylesheet_name)
+        else:
+            # Download stylesheet content
+            print(f"  Downloading {stylesheet_name} from {stylesheet_url}")
+            try:
+                with urllib.request.urlopen(stylesheet_url) as response:
+                    stylesheet_content = response.read().decode("utf-8")
+            except Exception as e:
+                print(f"  ERROR: Failed to download {stylesheet_name}: {e}")
+                continue
+
+            # Create XSLT transformation
+            xslt = XslTransformation(
+                name=stylesheet_name,
+                filename=stylesheet_name,
+                content=stylesheet_content,
+            )
+            xslt.save()
+            print(f"  Stylesheet '{stylesheet_name}' created (ID: {xslt.id})")
+
+        # Store XSLT reference
+        xslt_map[stylesheet_type] = xslt
+
+    # Check if TemplateXslRendering already exists for this template
+    if TemplateXslRendering.objects.filter(template=template.id).exists():
+        print("  TemplateXslRendering already exists, updating...")
+        rendering = TemplateXslRendering.objects.get(template=template.id)
+        if "list" in xslt_map:
+            rendering.list_xslt = xslt_map["list"]
+            rendering.list_detail_xslt = [xslt_map["list"].id]
+        if "detail" in xslt_map:
+            rendering.default_detail_xslt = xslt_map["detail"]
+        rendering.save()
+    else:
+        # Create TemplateXslRendering to link template with default XSLTs
+        print("  Creating TemplateXslRendering...")
+        rendering = TemplateXslRendering(
+            template=template,
+            list_xslt=xslt_map.get("list"),
+            default_detail_xslt=xslt_map.get("detail"),
+            list_detail_xslt=[xslt_map["list"].id] if "list" in xslt_map else [],
+        )
+        rendering.save()
+        print(f"  TemplateXslRendering created (ID: {rendering.id})")
+
+    print("  All stylesheets registered")
+
+
+def configure_anonymous_access():
+    """Configure anonymous access to explore keyword functionality."""
+    print("Configuring anonymous access permissions...")
+
+    # Get or verify the anonymous group exists
+    try:
+        anonymous_group = Group.objects.get(name="anonymous")
+        print(f"  Found anonymous group (ID: {anonymous_group.id})")
+    except Group.DoesNotExist:
+        print("  ERROR: Anonymous group not found")
+        return
+
+    # Define the permissions to grant
+    permissions_to_grant = [
+        ("core_explore_keyword_app", "access_explore_keyword"),
+        ("core_main_app", "access_explore"),
+        ("core_explore_common_app", "access_explore"),
+    ]
+
+    for app_label, codename in permissions_to_grant:
+        try:
+            # Get the content type for the app
+            content_type = ContentType.objects.get(app_label=app_label)
+
+            # Get or create the permission
+            permission, created = Permission.objects.get_or_create(
+                codename=codename,
+                content_type=content_type,
+                defaults={"name": f"Can {codename.replace('_', ' ')}"},
+            )
+
+            # Add permission to anonymous group if not already present
+            if permission not in anonymous_group.permissions.all():
+                anonymous_group.permissions.add(permission)
+                print(f"  Granted {app_label}.{codename} to anonymous group")
+            else:
+                print(f"  Permission {app_label}.{codename} already granted")
+
+        except ContentType.DoesNotExist:
+            print(f"  WARNING: ContentType for {app_label} not found")
+        except Exception as e:
+            print(f"  ERROR granting {app_label}.{codename}: {e}")
+
+    print("  Anonymous access configuration complete")
 
 
 def main():
@@ -136,6 +279,12 @@ def main():
 
         # Create workspace
         workspace = create_workspace()
+
+        # Register XSLT stylesheets
+        register_xslt_stylesheets(template_vm)
+
+        # Configure anonymous access
+        configure_anonymous_access()
 
         # Create marker file to prevent re-initialization
         marker_file.touch()

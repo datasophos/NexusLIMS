@@ -26,6 +26,19 @@ until curl -s http://$MONGO_HOST:$MONGO_PORT > /dev/null 2>&1; do
 done
 echo "  MongoDB is ready!"
 
+# Apply settings override for anonymous access
+echo "Applying settings override..."
+if ! grep -q "settings_override" /srv/curator/mdcs/settings.py; then
+    echo "" >> /srv/curator/mdcs/settings.py
+    echo "# NexusLIMS test instance overrides" >> /srv/curator/mdcs/settings.py
+    echo "import sys" >> /srv/curator/mdcs/settings.py
+    echo "sys.path.insert(0, '/')" >> /srv/curator/mdcs/settings.py
+    echo "from settings_override import *" >> /srv/curator/mdcs/settings.py
+    echo "  Settings override applied"
+else
+    echo "  Settings override already applied"
+fi
+
 # Run Django migrations
 echo "Running Django migrations..."
 echo "  Migrating auth..."
@@ -73,9 +86,10 @@ echo "========================================"
 exec uwsgi --chdir /srv/curator/ \
       --uid cdcs \
       --gid cdcs \
-      --http-socket 0.0.0.0:8080 \
+      --http 0.0.0.0:8080 \
       --wsgi-file /srv/curator/$PROJECT_NAME/wsgi.py \
       --touch-reload=/srv/curator/$PROJECT_NAME/wsgi.py \
+      --static-map /static=/srv/curator/static.prod \
       --processes=2 \
       --enable-threads \
       --lazy-apps \
