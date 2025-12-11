@@ -47,6 +47,7 @@ if [[ "$*" == *"-s"* ]] || [[ "$*" == *"--verbose"* ]]; then
 fi
 
 rm -rf tests/coverage 2>/dev/null
+rm -rf /tmp/nexuslims-test* 2>/dev/null
 uv run pytest "$TEST_PATH" $PYTEST_FLAGS --cov=nexusLIMS \
         --cov-report html:tests/coverage \
         --cov-report term-missing \

@@ -8,11 +8,13 @@ calendering and laboratory logistics application.
 
 import logging
 from datetime import timedelta
+from typing import Optional
 
 from nexusLIMS.db.session_handler import Session
 from nexusLIMS.harvesters.reservation_event import ReservationEvent
 from nexusLIMS.utils import get_timespan_overlap
 
+from .connector import NemoConnector
 from .exceptions import NoDataConsentError, NoMatchingReservationError
 from .utils import (
     _get_res_question_value,
@@ -24,7 +26,7 @@ from .utils import (
 logger = logging.getLogger(__name__)
 
 
-def res_event_from_session(session: Session) -> ReservationEvent:
+def res_event_from_session(session: Session, connector: Optional[NemoConnector] = None) -> ReservationEvent:
     """
     Create reservation event from session.
 
@@ -97,6 +99,8 @@ def res_event_from_session(session: Session) -> ReservationEvent:
     ----------
     session
         The session for which to get a reservation event
+    connector : Optional[NemoConnector], optional
+        Optional NemoConnector to use instead of looking one up. Useful for testing.
 
     Returns
     -------
@@ -111,7 +115,10 @@ def res_event_from_session(session: Session) -> ReservationEvent:
     # will enable/reserve on behalf of others, etc.
 
     # in order to get reservations, we need a NemoConnector
-    nemo_connector = get_connector_for_session(session)
+    if connector is None:
+        nemo_connector = get_connector_for_session(session)
+    else:
+        nemo_connector = connector
 
     # get reservation with maximum overlap
     reservations = nemo_connector.get_reservations(

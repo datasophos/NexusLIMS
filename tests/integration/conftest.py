@@ -275,8 +275,9 @@ def nemo_client(nemo_api_url, monkeypatch):
         NEMO connection configuration
     """
     # Set environment variables for NEMO configuration
+    token_val = "test-api-token"
     monkeypatch.setenv("NX_NEMO_ADDRESS_1", nemo_api_url)
-    monkeypatch.setenv("NX_NEMO_TOKEN_1", "test-api-token")
+    monkeypatch.setenv("NX_NEMO_TOKEN_1", token_val)
     monkeypatch.setenv("NX_NEMO_TZ_1", "America/Denver")
 
     # Refresh settings to pick up new environment variables
@@ -286,7 +287,7 @@ def nemo_client(nemo_api_url, monkeypatch):
 
     return {
         "url": nemo_api_url,
-        "token": "test-api-token",
+        "token": f"{token_val}_captain",
         "timezone": "America/Denver",
     }
 

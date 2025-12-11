@@ -206,14 +206,18 @@ class NemoConnector:
             Raised if the request to the API did not go through correctly
         """
         if hasattr(tool_id, "__iter__"):
-            if all(t_id in self.tools for t_id in tool_id):
+            # Handle empty list case - should return all tools
+            if len(tool_id) == 0:
+                params = {}
+            elif all(t_id in self.tools for t_id in tool_id):
                 logger.debug(
                     "Using cached tool info for tools %s: %s",
                     tool_id,
                     [self.tools[t]["name"] for t in tool_id],
                 )
                 return [self.tools[t_id] for t_id in tool_id]
-            params = {"id__in": ",".join([str(i) for i in tool_id])}
+            else:
+                params = {"id__in": ",".join([str(i) for i in tool_id])}
         else:
             if tool_id in self.tools:
                 logger.debug(
@@ -349,14 +353,18 @@ class NemoConnector:
             Raised if the request to the API did not go through correctly
         """
         if hasattr(proj_id, "__iter__"):
-            if all(p_id in self.projects for p_id in proj_id):
+            # Handle empty list case - should return all projects
+            if len(proj_id) == 0:
+                params = {}
+            elif all(p_id in self.projects for p_id in proj_id):
                 logger.debug(
                     "Using cached project info for projects %s: %s",
                     proj_id,
                     [self.projects[p]["name"] for p in proj_id],
                 )
                 return [self.projects[p_id] for p_id in proj_id]
-            params = {"id__in": ",".join([str(i) for i in proj_id])}
+            else:
+                params = {"id__in": ",".join([str(i) for i in proj_id])}
         else:
             if proj_id in self.projects:
                 logger.debug(

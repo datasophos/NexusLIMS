@@ -27,6 +27,7 @@ def nemo_connector_test_instance(  # noqa: PLR0913
     mock_projects_data,
     mock_reservations_data,
     mock_usage_events_data,
+    filter_by_params,
 ):
     """
     Return a NemoConnector instance with mocked API calls.
@@ -34,8 +35,6 @@ def nemo_connector_test_instance(  # noqa: PLR0913
     This fixture mocks the _api_caller method to return test data instead of
     making real HTTP requests to a NEMO server.
     """
-    from tests.unit.fixtures.nemo_mock_data import filter_by_params
-
     connector = NemoConnector(
         base_url="https://nemo.example.com/api/",
         token="test-token-12345",
