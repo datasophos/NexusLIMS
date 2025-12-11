@@ -149,6 +149,12 @@ def register_xslt_stylesheets(template_vm):
     # Get the current template
     template = Template.objects.get(id=template_vm.current)
 
+    # Get fileserver URLs from environment
+    dataset_url = os.getenv("FILESERVER_DATASET_URL", "https://CHANGE.THIS.VALUE")
+    preview_url = os.getenv("FILESERVER_PREVIEW_URL", "https://CHANGE.THIS.VALUE")
+    print(f"  Dataset URL: {dataset_url}")
+    print(f"  Preview URL: {preview_url}")
+
     # Track created XSLTs
     xslt_map = {}
 
@@ -169,6 +175,17 @@ def register_xslt_stylesheets(template_vm):
             except Exception as e:
                 print(f"  ERROR: Failed to download {stylesheet_name}: {e}")
                 continue
+
+            # Patch XSLT variables with fileserver URLs
+            print(f"  Patching XSLT variables in {stylesheet_name}")
+            stylesheet_content = stylesheet_content.replace(
+                '<xsl:variable name="datasetBaseUrl">https://CHANGE.THIS.VALUE</xsl:variable>',
+                f'<xsl:variable name="datasetBaseUrl">{dataset_url}</xsl:variable>',
+            )
+            stylesheet_content = stylesheet_content.replace(
+                '<xsl:variable name="previewBaseUrl">https://CHANGE.THIS.VALUE</xsl:variable>',
+                f'<xsl:variable name="previewBaseUrl">{preview_url}</xsl:variable>',
+            )
 
             # Create XSLT transformation
             xslt = XslTransformation(

@@ -87,6 +87,20 @@ services:
     networks:
       - nexuslims-test
 
+  # Caddy fileserver for serving test instrument data and previews
+  fileserver:
+    image: caddy:2-alpine
+    container_name: nexuslims-test-fileserver
+    ports:
+      - "8081:80"
+    volumes:
+      # These directories will be created by test fixtures
+      - /tmp/nexuslims-test-instrument-data:/srv/instrument-data:ro
+      - /tmp/nexuslims-test-data:/srv/data:rw
+    command: caddy file-server --root /srv --browse
+    networks:
+      - nexuslims-test
+
   # CDCS service (Curator/Django application)
   cdcs:
     build:
@@ -135,6 +149,10 @@ services:
 
       # uWSGI configuration
       - UWSGI_PROCESSES=2
+
+      # Fileserver URLs for XSLT rendering
+      - FILESERVER_DATASET_URL=http://localhost:8081/instrument-data
+      - FILESERVER_PREVIEW_URL=http://localhost:8081/data
     volumes:
       # Mount the nexus-experiment.xsd schema from the source repository
       # This avoids file duplication and ensures we always use the latest schema

@@ -238,13 +238,63 @@ docker-compose -f docker-compose.yml -f docker-compose.ci.yml up -d
 - [x] Add NEMO service to `docker-compose.yml`
 - [x] Manual testing documentation
 
-### Phase 3: CDCS Docker Service (Next)
+### Phase 3: CDCS Docker Service ✅ COMPLETED
 
-- [ ] Create `cdcs/Dockerfile`
-- [ ] Create `cdcs/init_schema.sh`
-- [ ] Copy schema to `cdcs/fixtures/`
-- [ ] Add CDCS services to `docker-compose.yml`
-- [ ] Test CDCS service manually
+- [x] Create `cdcs/Dockerfile`
+- [x] Create `cdcs/init_schema.py`
+- [x] Mount schema from source repository
+- [x] Add CDCS services to `docker-compose.yml` (CDCS, MongoDB, PostgreSQL, Redis)
+- [x] Add Caddy fileserver for test data
+- [x] Configure XSLT patching with fileserver URLs
+- [x] Test CDCS service manually
+
+## CDCS Service
+
+### Accessing CDCS
+
+- **URL**: http://localhost:8080
+- **Admin Panel**: http://localhost:8080/admin/
+- **Admin Credentials**: admin / admin
+- **Templates Page**: http://localhost:8080/admin/templates
+
+### File Server
+
+- **URL**: http://localhost:8081
+- **Instrument Data**: http://localhost:8081/instrument-data
+- **Preview Data**: http://localhost:8081/data
+
+The file server uses Caddy and serves test data from:
+- `/tmp/nexuslims-test-instrument-data` → Instrument files
+- `/tmp/nexuslims-test-data` → Preview images and metadata
+
+**Note:** Test fixtures must create and populate these directories before running tests.
+
+### Schema Initialization
+
+The Nexus Experiment schema is automatically loaded on first startup:
+
+1. Schema loaded from `nexusLIMS/schemas/nexus-experiment.xsd` as a global template
+2. XSLT stylesheets downloaded from NexusLIMS-CDCS repository
+3. XSLT variables patched with fileserver URLs:
+   - `datasetBaseUrl` → `http://localhost:8081/instrument-data`
+   - `previewBaseUrl` → `http://localhost:8081/data`
+4. Template registered with XSLT rendering configuration
+5. Test workspace created
+6. Anonymous access configured
+
+To re-initialize the schema:
+```bash
+docker compose down -v
+docker compose up -d
+```
+
+### XSLT Configuration
+
+XSLT stylesheet URLs are controlled by environment variables in `docker-compose.yml`:
+- `FILESERVER_DATASET_URL`: Base URL for instrument data files
+- `FILESERVER_PREVIEW_URL`: Base URL for preview images
+
+These are automatically patched into the XSLTs during initialization.
 
 ## See Also
 
