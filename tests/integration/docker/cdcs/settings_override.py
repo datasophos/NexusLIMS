@@ -7,6 +7,11 @@ anonymous access to public documents and keyword search.
 
 import os
 
+# Reverse proxy configuration
+# Trust X-Forwarded-Host header from Caddy proxy
+USE_X_FORWARDED_HOST = True
+print("[NexusLIMS Settings Override] Enabled USE_X_FORWARDED_HOST for reverse proxy")
+
 # Enable anonymous access to public documents
 # This allows unauthenticated users to view and search public data
 CAN_ANONYMOUS_ACCESS_PUBLIC_DOCUMENT = (

@@ -1,5 +1,6 @@
 # File patterns we want git to ignore
-docs/api/ 
+docs/api/
+api_tests/
 
 # backup
 *~
@@ -25,6 +26,8 @@ tests/unit/files/*.tif
 tests/unit/files/*.hdf5
 tests/unit/files/**/*.json
 tests/integration/**/*.json
+!seed_data.json
+!reservation_questsions.json
 tests/**/*.xml
 tests/test_report.xml
 .env
@@ -41,6 +44,7 @@ nexuslims_db.sqlite
 *.pyc
 .idea
 .vscode
+.zed
 test_data/
 tests/dev/
 **/doc/build

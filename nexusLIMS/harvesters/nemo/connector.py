@@ -85,6 +85,12 @@ class NemoConnector:
         """Return custom representation of a NemoConnector."""
         return f"Connection to NEMO API at {self.config['base_url']}"
 
+    def __eq__(self, other):
+        """Compare two NemoConnector instances based on their config."""
+        if not isinstance(other, NemoConnector):
+            return False
+        return self.config == other.config
+
     def strftime(self, date_dt) -> str:
         """
         Convert datetime to appropriate string format for this connector.
@@ -266,6 +272,10 @@ class NemoConnector:
 
         # list of user ids
         if hasattr(user_id, "__iter__"):
+            # Check if user_id is an empty list - if so, return all users
+            if len(user_id) == 0:
+                return self._get_users_helper(params)
+
             params["id__in"] = ",".join([str(i) for i in user_id])
             if all(u_id in self.users for u_id in user_id):
                 logger.debug(

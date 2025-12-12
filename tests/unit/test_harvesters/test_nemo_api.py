@@ -159,9 +159,9 @@ class TestNemoConnectorProjects:
     @pytest.mark.parametrize(
         ("test_proj_id_input", "expected_names"),
         [
-            (16, ["Test"]),
-            ([13, 14], ["Gaithersburg", "Boulder"]),
-            ([13, 14, 15], ["Gaithersburg", "Boulder", "ODI"]),
+            (16, ["Project delta"]),
+            ([13, 14], ["Project alpha", "Project beta"]),
+            ([13, 14, 15], ["Project alpha", "Project beta", "Project gamma"]),
             (-1, []),
         ],
     )
@@ -179,9 +179,9 @@ class TestNemoConnectorProjects:
     def test_get_projects_memoization(self, nemo_connector):
         # Test memoization with the fixture connector across multiple calls
         to_test = [
-            ([13, 14, 15], ["Gaithersburg", "Boulder", "ODI"]),
-            (16, ["Test"]),
-            ([13, 14], ["Gaithersburg", "Boulder"]),
+            ([13, 14, 15], ["Project alpha", "Project beta", "Project gamma"]),
+            (16, ["Project delta"]),
+            ([13, 14], ["Project alpha", "Project beta"]),
         ]
         for p_id, expected in to_test:
             projects = nemo_connector.get_projects(p_id)

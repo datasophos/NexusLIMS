@@ -516,6 +516,104 @@
       "id": 189,
       "question_data": {
         "project_id": {
+          "user_input": "Project-for-CancelledReservations"
+        },
+        "experiment_title": {
+          "user_input": "Cancelled Reservation 1"
+        },
+        "experiment_purpose": {
+          "user_input": "Testing cancelled reservations"
+        },
+        "data_consent": {
+          "user_input": "Agree"
+        },
+        "sample_group": {
+          "user_input": {
+            "0": {
+              "sample_name": "cancelled_sample_1",
+              "sample_or_pid": "Sample Name",
+              "sample_details": "A cancelled test sample"
+            }
+          }
+        }
+      },
+      "creation_time": "2021-08-05T10:00:00-06:00",
+      "start": "2021-08-05T11:00:00-06:00",
+      "end": "2021-08-05T16:00:00-06:00",
+      "short_notice": false,
+      "cancelled": true,
+      "cancellation_time": "2021-08-05T12:00:00-06:00",
+      "missed": false,
+      "shortened": false,
+      "additional_information": null,
+      "self_configuration": false,
+      "title": "",
+      "validated": false,
+      "waived": false,
+      "waived_on": null,
+      "user": 3,
+      "creator": 3,
+      "tool": 10,
+      "area": null,
+      "project": 13,
+      "cancelled_by": 1,
+      "descendant": null,
+      "validated_by": null,
+      "waived_by": null
+    },
+    {
+      "id": 190,
+      "question_data": {
+        "project_id": {
+          "user_input": "Project-for-CancelledReservations"
+        },
+        "experiment_title": {
+          "user_input": "Cancelled Reservation 2"
+        },
+        "experiment_purpose": {
+          "user_input": "Testing another cancelled reservation"
+        },
+        "data_consent": {
+          "user_input": "Agree"
+        },
+        "sample_group": {
+          "user_input": {
+            "0": {
+              "sample_name": "cancelled_sample_2",
+              "sample_or_pid": "Sample Name",
+              "sample_details": "Another cancelled test sample"
+            }
+          }
+        }
+      },
+      "creation_time": "2021-08-06T09:00:00-06:00",
+      "start": "2021-08-06T10:00:00-06:00",
+      "end": "2021-08-06T17:00:00-06:00",
+      "short_notice": false,
+      "cancelled": true,
+      "cancellation_time": "2021-08-06T11:00:00-06:00",
+      "missed": false,
+      "shortened": false,
+      "additional_information": null,
+      "self_configuration": false,
+      "title": "",
+      "validated": false,
+      "waived": false,
+      "waived_on": null,
+      "user": 2,
+      "creator": 2,
+      "tool": 10,
+      "area": null,
+      "project": 13,
+      "cancelled_by": 1,
+      "descendant": null,
+      "validated_by": null,
+      "waived_by": null
+    },
+    {
+      "id": 191,
+      "question_data": {
+        "project_id": {
           "user_input": "DisagreeConsent"
         },
         "experiment_title": {
@@ -915,6 +1013,25 @@
       "operator": 3,
       "project": 13,
       "tool": 10,
+      "validated_by": null,
+      "waived_by": null
+    },
+    {
+      "id": 31,
+      "start": "2023-09-05T13:57:00.000000-06:00",
+      "end": "2023-09-05T17:00:00.000000-06:00",
+      "has_ended": 27,
+      "validated": false,
+      "remote_work": false,
+      "training": false,
+      "pre_run_data": "",
+      "run_data": "",
+      "waived": false,
+      "waived_on": null,
+      "user": 3,
+      "operator": 3,
+      "project": 13,
+      "tool": 1,
       "validated_by": null,
       "waived_by": null
     }

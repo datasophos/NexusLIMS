@@ -8,6 +8,7 @@ CDCS services, database setup, and cleanup operations.
 
 import subprocess
 import time
+from http import HTTPStatus
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -24,9 +25,9 @@ if TYPE_CHECKING:
 DOCKER_DIR = Path(__file__).parent / "docker"
 
 # Service URLs
-NEMO_URL = "http://localhost:8000"
-CDCS_URL = "http://localhost:8080"
-FILESERVER_URL = "http://localhost:8081"
+NEMO_URL = "http://nemo.localhost"
+CDCS_URL = "http://cdcs.localhost"
+FILESERVER_URL = "http://fileserver.localhost"
 
 # Service health check endpoints
 NEMO_HEALTH_URL = f"{NEMO_URL}/"
@@ -43,13 +44,18 @@ TEST_DATA_DIR = Path("/tmp/nexuslims-test-data")
 
 
 @pytest.fixture(scope="session")
-def docker_services():
+def docker_services(request):
     """
     Start Docker services once per test session.
 
     This fixture manages the lifecycle of all Docker services defined in
     docker-compose.yml including NEMO, CDCS, MongoDB, PostgreSQL, Redis,
     and the fileserver.
+
+    Parameters
+    ----------
+    request : pytest.FixtureRequest
+        Pytest request object to access configuration
 
     Yields
     ------
@@ -63,11 +69,17 @@ def docker_services():
     - Services are torn down with `docker compose down -v` after all tests
     - Volumes are removed to ensure clean state for next test run
     - Test data directories are cleaned before starting to ensure clean slate
+    - Set NX_TESTS_KEEP_DOCKER_RUNNING=1 environment variable to skip teardown for debugging
     """
+    import os
     import shutil
 
-    # Check test data directories before starting Docker services
-    # Remove them if they exist to ensure clean state
+    # Check if we should keep Docker services running for debugging
+    keep_running = os.environ.get("NX_TESTS_KEEP_DOCKER_RUNNING", "0") == "1"
+    # Debug: Show keep_running status before yield (during test execution)
+    print(f"\n[DEBUG] keep_running status before tests: {keep_running}")
+
+    # Always clean test data directories to ensure clean state
     print("\n[*] Checking test data directories...")
     for test_dir in [TEST_INSTRUMENT_DATA_DIR, TEST_DATA_DIR]:
         if test_dir.exists():
@@ -80,51 +92,27 @@ def docker_services():
         test_dir.mkdir(parents=True, exist_ok=True)
         print(f"[+] Created {test_dir}")
 
-    # Start services
-    print("[*] Starting Docker services...")
-
-    # Build docker compose command - use CI override if available
-    compose_cmd = ["docker", "compose"]
-
-    # Always use base docker-compose.yml
-    compose_cmd.extend(["-f", "docker-compose.yml"])
-
-    # Add CI override if it exists (for pre-built images in CI)
-    ci_override = DOCKER_DIR / "docker-compose.ci.yml"
-    if ci_override.exists():
-        print("[*] Using CI override with pre-built images")
-        compose_cmd.extend(["-f", "docker-compose.ci.yml"])
-
-    compose_cmd.extend(["up", "-d"])
-
-    subprocess.run(
-        compose_cmd,
-        cwd=DOCKER_DIR,
-        check=True,
-        capture_output=True,
-    )
-
-    # Wait for health checks
-    max_wait = 180  # 3 minutes
+    # Check if services are already running
+    max_wait = 1  # Short timeout for checking existing services
     start_time = time.time()
     nemo_ready = False
     cdcs_ready = False
 
-    print("[*] Waiting for services to be healthy...")
+    print("[*] Checking if Docker services are already running...")
 
     while time.time() - start_time < max_wait:
         try:
             # Check NEMO
             if not nemo_ready:
                 nemo_response = requests.get(NEMO_HEALTH_URL, timeout=2)
-                nemo_ready = nemo_response.status_code == 200
+                nemo_ready = nemo_response.status_code == HTTPStatus.OK
                 if nemo_ready:
                     print("[+] NEMO service is ready")
 
             # Check CDCS
             if not cdcs_ready:
                 cdcs_response = requests.get(CDCS_HEALTH_URL, timeout=2)
-                cdcs_ready = cdcs_response.status_code == 200
+                cdcs_ready = cdcs_response.status_code == HTTPStatus.OK
                 if cdcs_ready:
                     print("[+] CDCS service is ready")
 
@@ -136,52 +124,124 @@ def docker_services():
         except (requests.ConnectionError, requests.Timeout):
             pass
 
-        time.sleep(2)
-    else:
-        # Timeout - collect logs for debugging
-        print("[-] Service health checks timed out")
+        time.sleep(1)
+
+    # If services are not running, start them
+    if not (nemo_ready and cdcs_ready):
+        print("[*] Docker services not running - starting them now...")
+
+        # Build docker compose command - use CI override if available
+        compose_cmd = ["docker", "compose"]
+
+        # Always use base docker-compose.yml
+        compose_cmd.extend(["-f", "docker-compose.yml"])
+
+        # Add CI override if it exists (for pre-built images in CI)
+        ci_override = DOCKER_DIR / "docker-compose.ci.yml"
+        if ci_override.exists():
+            print("[*] Using CI override with pre-built images")
+            compose_cmd.extend(["-f", "docker-compose.ci.yml"])
+
+        compose_cmd.extend(["up", "-d"])
+
         subprocess.run(
-            ["docker", "compose", "logs"],
+            compose_cmd,
             cwd=DOCKER_DIR,
+            check=True,
+            capture_output=True,
         )
-        raise RuntimeError(
-            f"Services failed to start within {max_wait} seconds. "
-            "Check Docker logs above for details."
-        )
+
+        # Wait for health checks
+        max_wait = 60  # 1 minute
+        start_time = time.time()
+        nemo_ready = False
+        cdcs_ready = False
+
+        print("[*] Waiting for services to be healthy...")
+
+        while time.time() - start_time < max_wait:
+            try:
+                # Check NEMO
+                if not nemo_ready:
+                    nemo_response = requests.get(NEMO_HEALTH_URL, timeout=2)
+                    nemo_ready = nemo_response.status_code == 200
+                    if nemo_ready:
+                        print("[+] NEMO service is ready")
+
+                # Check CDCS
+                if not cdcs_ready:
+                    cdcs_response = requests.get(CDCS_HEALTH_URL, timeout=2)
+                    cdcs_ready = cdcs_response.status_code == 200
+                    if cdcs_ready:
+                        print("[+] CDCS service is ready")
+
+                # All services ready
+                if nemo_ready and cdcs_ready:
+                    print("[+] All services are ready!")
+                    break
+
+            except (requests.ConnectionError, requests.Timeout):
+                pass
+
+            time.sleep(2)
+        else:
+            # Timeout - collect logs for debugging
+            print("[-] Service health checks timed out")
+            subprocess.run(
+                ["docker", "compose", "logs"],
+                cwd=DOCKER_DIR,
+            )
+            raise RuntimeError(
+                f"Services failed to start within {max_wait} seconds. "
+                "Check Docker logs above for details."
+            )
 
     yield
+    # Debug: Show keep_running status after yield (during cleanup)
+    print(f"\n[DEBUG] keep_running status during cleanup: {keep_running}")
 
-    # Cleanup - tear down services and remove volumes
-    print("\n[*] Cleaning up Docker services...")
-    subprocess.run(
-        ["docker", "compose", "down", "-v"],
-        cwd=DOCKER_DIR,
-        capture_output=True,
-    )
-    print("[+] Docker services cleaned up")
-
-    # Clean test data directories after stopping Docker services
-    # Use try/except to ensure we attempt all cleanups even if one fails
-    print("[*] Cleaning test data directories...")
-    cleanup_errors = []
-    for test_dir in [TEST_INSTRUMENT_DATA_DIR, TEST_DATA_DIR]:
-        if test_dir.exists():
-            try:
-                shutil.rmtree(test_dir)
-                print(f"[+] Removed {test_dir}")
-            except Exception as e:
-                error_msg = f"Failed to remove {test_dir}: {e}"
-                print(f"[!] {error_msg}")
-                cleanup_errors.append(error_msg)
-
-    if cleanup_errors:
-        print("\n[!] WARNING: Some cleanup operations failed:")
-        for error in cleanup_errors:
-            print(f"    - {error}")
-        print("\nYou may need to manually remove directories:")
-        print("  rm -rf /tmp/nexuslims-test-*")
+    # Cleanup logic based on keep_running flag
+    if keep_running:
+        print(
+            "\n[*] NX_TESTS_KEEP_DOCKER_RUNNING=1: Keeping Docker services running for debugging"
+        )
+        print("[!] Remember to manually clean up with: docker compose down -v")
+        print(
+            "\n[*] NX_TESTS_KEEP_DOCKER_RUNNING=1: Keeping test data directories for debugging"
+        )
+        print(f"[!] Test instrument data: {TEST_INSTRUMENT_DATA_DIR}")
+        print(f"[!] Test NexusLIMS data: {TEST_DATA_DIR}")
     else:
-        print("[+] Test environment cleanup complete")
+        # Always stop services (regardless of who started them)
+        print("\n[*] Cleaning up Docker services...")
+        subprocess.run(
+            ["docker", "compose", "down", "-v"],
+            cwd=DOCKER_DIR,
+            capture_output=True,
+        )
+        print("[+] Docker services cleaned up")
+
+        # Clean test data directories
+        print("[*] Cleaning test data directories...")
+        cleanup_errors = []
+        for test_dir in [TEST_INSTRUMENT_DATA_DIR, TEST_DATA_DIR]:
+            if test_dir.exists():
+                try:
+                    shutil.rmtree(test_dir)
+                    print(f"[+] Removed {test_dir}")
+                except Exception as e:
+                    error_msg = f"Failed to remove {test_dir}: {e}"
+                    print(f"[!] {error_msg}")
+                    cleanup_errors.append(error_msg)
+
+        if cleanup_errors:
+            print("\n[!] WARNING: Some cleanup operations failed:")
+            for error in cleanup_errors:
+                print(f"    - {error}")
+            print("\nYou may need to manually remove directories:")
+            print("  rm -rf /tmp/nexuslims-test-*")
+        else:
+            print("[+] Test environment cleanup complete")
 
 
 @pytest.fixture(scope="session")
@@ -228,7 +288,7 @@ def nemo_url(docker_services) -> str:
     Returns
     -------
     str
-        Base URL for NEMO API (e.g., "http://localhost:8000")
+        Base URL for NEMO API (e.g., "http://nemo.localhost")
     """
     return NEMO_URL
 
@@ -246,7 +306,7 @@ def nemo_api_url(nemo_url) -> str:
     Returns
     -------
     str
-        Full API base URL (e.g., "http://localhost:8000/api/")
+        Full API base URL (e.g., "http://nemo.localhost/api/")
     """
     return f"{nemo_url}/api/"
 
@@ -272,7 +332,7 @@ def nemo_client(nemo_api_url, monkeypatch):
         NEMO connection configuration
     """
     # Set environment variables for NEMO configuration
-    token_val = "test-api-token"
+    token_val = "test-api-token_captain"
     monkeypatch.setenv("NX_NEMO_ADDRESS_1", nemo_api_url)
     monkeypatch.setenv("NX_NEMO_TOKEN_1", token_val)
     monkeypatch.setenv("NX_NEMO_TZ_1", "America/Denver")
@@ -284,32 +344,48 @@ def nemo_client(nemo_api_url, monkeypatch):
 
     return {
         "url": nemo_api_url,
-        "token": f"{token_val}_captain",
+        "token": token_val,
         "timezone": "America/Denver",
     }
 
 
 @pytest.fixture
-def nemo_connector(nemo_client) -> "NemoConnector":
+def nemo_connector(
+    nemo_client, populated_test_database, monkeypatch
+) -> "NemoConnector":
     """
     Provide a NemoConnector instance for integration tests.
 
     This fixture creates a NemoConnector instance using the configured
     NEMO client settings, avoiding repeated connector creation in tests.
+    It patches the instrument_db to use the test database.
 
     Parameters
     ----------
     nemo_client : dict
         NEMO connection configuration from nemo_client fixture
+    populated_test_database : Path
+        Ensures the test database is populated before creating connector
+    monkeypatch : pytest.MonkeyPatch
+        Pytest monkeypatch fixture for patching
 
     Returns
     -------
     NemoConnector
-        Configured NemoConnector instance
+        Configured NemoConnector instance with test database
     """
-    from nexusLIMS.harvesters.nemo.connector import NemoConnector
+    from nexusLIMS import instruments
+    from nexusLIMS.harvesters.nemo import connector
 
-    return NemoConnector(
+    # Reload instrument_db from the test database
+    test_instrument_db = instruments._get_instrument_db(db_path=populated_test_database)
+
+    # Patch the instrument_db in both the instruments module and the connector module
+    # This is necessary because the connector imports instrument_db at module level
+    monkeypatch.setattr(connector, "instrument_db", test_instrument_db)
+    monkeypatch.setattr(instruments, "instrument_db", test_instrument_db)
+
+    return connector.NemoConnector(
         base_url=nemo_client["url"],
         token=nemo_client["token"],
     )
@@ -344,7 +420,7 @@ def cdcs_url(docker_services) -> str:
     Returns
     -------
     str
-        Base URL for CDCS (e.g., "http://localhost:8080")
+        Base URL for CDCS (e.g., "http://cdcs.localhost")
     """
     return CDCS_URL
 
@@ -876,9 +952,9 @@ def pytest_runtest_makereport(item, call):
         print(f"{'=' * 70}")
 
         try:
-            # Capture Docker compose logs
+            # Capture Docker compose logs (last 100 lines only)
             result = subprocess.run(
-                ["docker", "compose", "logs", "--no-color", "cdcs"],
+                ["docker", "compose", "logs", "--no-color", "--tail", "100", "cdcs"],
                 cwd=DOCKER_DIR,
                 capture_output=True,
                 text=True,

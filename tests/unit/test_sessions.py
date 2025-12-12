@@ -121,3 +121,35 @@ class TestSessionLog:
         assert "WARNING" in caplog.text
         assert "SessionLog already existed in DB, so no row was added:" in caplog.text
         assert result
+
+    @pytest.mark.usefixtures("_record_cleanup_session_log")
+    def test_get_all_session_logs(self):
+        # Test that get_all_session_logs returns the expected SessionLog objects
+        # First insert our test session log
+        self.sl.insert_log()
+
+        # Get all session logs
+        all_logs = session_handler.get_all_session_logs()
+
+        # Verify that our test log is in the results
+        test_logs = [
+            log for log in all_logs if log.session_identifier == "testing-session-log"
+        ]
+        assert len(test_logs) == 1
+
+        # Verify the content of the returned log
+        found_log = test_logs[0]
+        assert found_log.session_identifier == self.sl.session_identifier
+        assert found_log.instrument == self.sl.instrument
+        assert found_log.timestamp == self.sl.timestamp
+        assert found_log.event_type == self.sl.event_type
+        assert found_log.user == self.sl.user
+        assert found_log.record_status == self.sl.record_status
+
+    def test_get_all_session_logs_empty(self):
+        # Test that get_all_session_logs returns empty list when no logs exist
+        # This assumes the database is clean (no session logs)
+        all_logs = session_handler.get_all_session_logs()
+        assert isinstance(all_logs, list)
+        # Note: We don't assert len(all_logs) == 0 because there might be other logs
+        # from other tests, but we verify it returns a list

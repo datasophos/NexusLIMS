@@ -14,9 +14,9 @@ services:
       - PYTHONUNBUFFERED=1
 
       # NEMO-specific settings
-      - ALLOWED_HOSTS=*
+      - ALLOWED_HOSTS=nemo.localhost,localhost
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/"]
+      test: ["CMD", "curl", "-f", "http://nemo:8000/"]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -101,6 +101,25 @@ services:
     networks:
       - nexuslims-test
 
+  # Caddy reverse proxy for easy-to-remember URLs
+  caddy-proxy:
+    image: caddy:2-alpine
+    container_name: nexuslims-test-caddy-proxy
+    ports:
+      - "80:80"
+    extra_hosts:
+      - "nemo.localhost:127.0.0.1"
+      - "cdcs.localhost:127.0.0.1"
+      - "fileserver.localhost:127.0.0.1"
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+    depends_on:
+      - nemo
+      - cdcs
+      - fileserver
+    networks:
+      - nexuslims-test
+
   # CDCS service (Curator/Django application)
   cdcs:
     build:
@@ -109,6 +128,11 @@ services:
     container_name: nexuslims-test-cdcs
     ports:
       - "8080:8080"
+    extra_hosts:
+      # Allow CDCS to resolve *.localhost URLs via host gateway (where Caddy proxy listens on port 80)
+      - "cdcs.localhost:host-gateway"
+      - "nemo.localhost:host-gateway"
+      - "fileserver.localhost:host-gateway"
     depends_on:
       cdcs-mongo:
         condition: service_healthy
@@ -120,7 +144,7 @@ services:
       # Django configuration
       - DJANGO_SETTINGS_MODULE=mdcs.settings
       - DJANGO_SECRET_KEY=test-secret-key-not-for-production-use
-      - SERVER_URI=http://localhost:8080
+      - SERVER_URI=http://cdcs.localhost
       - ALLOWED_HOSTS=*
       - SERVER_NAME=NexusLIMS Test
 
@@ -151,14 +175,14 @@ services:
       - UWSGI_PROCESSES=2
 
       # Fileserver URLs for XSLT rendering
-      - FILESERVER_DATASET_URL=http://localhost:8081/instrument-data
-      - FILESERVER_PREVIEW_URL=http://localhost:8081/data
+      - FILESERVER_DATASET_URL=http://fileserver.localhost/instrument-data
+      - FILESERVER_PREVIEW_URL=http://fileserver.localhost/data
     volumes:
       # Mount the nexus-experiment.xsd schema from the source repository
       # This avoids file duplication and ensures we always use the latest schema
       - ../../../nexusLIMS/schemas/nexus-experiment.xsd:/fixtures/nexus-experiment.xsd:ro
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/"]
+      test: ["CMD", "curl", "-f", "http://cdcs:8080/"]
       interval: 10s
       timeout: 5s
       retries: 15

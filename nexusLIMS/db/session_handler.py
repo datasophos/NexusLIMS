@@ -340,3 +340,37 @@ def get_sessions_to_build() -> List[Session]:
 
     logger.info("Found %i new sessions to build", len(sessions))
     return sessions
+
+
+def get_all_session_logs() -> list[SessionLog]:
+    """
+    Fetch all session logs from the database and return SessionLogs.
+
+    Returns
+    -------
+    session_logs : list[SessionLog]
+        A list of all SessionLog objects from the database, ordered by timestamp.
+        Will be an empty list if there are no session logs.
+    """
+    session_logs = []
+
+    query_string = (
+        "SELECT session_identifier, instrument, timestamp, "
+        "event_type, user, record_status "
+        "FROM session_log ORDER BY timestamp"
+    )
+
+    # use contextlib to auto-close the connection and database cursors
+    with (
+        contextlib.closing(
+            sqlite3.connect(str(settings.NX_DB_PATH)),
+        ) as conn,
+        conn,
+        contextlib.closing(conn.cursor()) as cursor,
+    ):  # auto-commits
+        results = cursor.execute(query_string).fetchall()
+
+    session_logs = [SessionLog(*i) for i in results]
+
+    logger.info("Found %i session logs in database", len(session_logs))
+    return session_logs
