@@ -109,8 +109,8 @@ def upload_record_content(xml_content, title):
     post_r : :py:class:`~requests.Response`
         The REST response returned from the CDCS instance after attempting
         the upload
-    record_id : str
-        The id (on the server) of the record that was uploaded
+    record_id : str | None
+        The id (on the server) of the record that was uploaded, or None if error
     """
     endpoint = urljoin(get_cdcs_url(), "rest/data/")
 
@@ -125,7 +125,7 @@ def upload_record_content(xml_content, title):
     if post_r.status_code != HTTPStatus.CREATED:
         # anything other than 201 status means something went wrong
         logger.error("Got error while uploading %s:\n%s", title, post_r.text)
-        return post_r
+        return post_r, None
 
     # assign this record to the public workspace
     record_id = post_r.json()["id"]
@@ -168,7 +168,7 @@ def upload_record_files(
     files_to_upload: List[Path] | None,
     *,
     progress: bool = False,
-) -> List[Path]:
+) -> tuple[List[Path], List[str]]:
     """
     Upload record files to CDCS.
 

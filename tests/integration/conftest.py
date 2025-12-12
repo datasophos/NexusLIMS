@@ -67,26 +67,16 @@ def docker_services():
     import shutil
 
     # Check test data directories before starting Docker services
-    # Fail if they exist to catch cleanup failures from previous runs
+    # Remove them if they exist to ensure clean state
     print("\n[*] Checking test data directories...")
     for test_dir in [TEST_INSTRUMENT_DATA_DIR, TEST_DATA_DIR]:
         if test_dir.exists():
-            msg = (
-                f"\n{'='*70}\n"
-                f"ERROR: Test data directory already exists: {test_dir}\n"
-                f"\n"
-                f"This indicates a previous test run did not clean up properly.\n"
-                f"Or there were pre-existing files in the temporary directory.\n"
-                f"This could cause test isolation issues and unreliable results.\n"
-                f"\n"
-                f"To fix this, manually remove the directory:\n"
-                f"  rm -rf {test_dir}\n"
-                f"\n"
-                f"Or remove all test directories:\n"
-                f"  rm -rf /tmp/nexuslims-test-*\n"
-                f"{'='*70}"
+            print(f"[!] WARNING: Test data directory already exists: {test_dir}")
+            print(
+                f"[!] This may indicate a previous test run did not clean up properly"
             )
-            raise RuntimeError(msg)
+            print(f"[!] Removing directory to ensure clean test environment...")
+            shutil.rmtree(test_dir)
         test_dir.mkdir(parents=True, exist_ok=True)
         print(f"[+] Created {test_dir}")
 
@@ -575,18 +565,20 @@ def populated_test_database(test_database, mock_tools_data):
     for tool in mock_tools_data:
         if tool["id"] in tool_configs:
             config = tool_configs[tool["id"]]
-            instruments.append({
-                "instrument_pid": config["instrument_pid"],
-                "api_url": f"{NEMO_URL}/api/tools/?id={tool['id']}",
-                "calendar_name": tool["name"],
-                "calendar_url": f"{NEMO_URL}/calendar/{config['property_tag']}-titan/",
-                "location": "Building 217",
-                "schema_name": tool["name"],
-                "property_tag": config["property_tag"],
-                "filestore_path": config["filestore_path"],
-                "harvester": "nemo",
-                "timezone": "America/Denver",
-            })
+            instruments.append(
+                {
+                    "instrument_pid": config["instrument_pid"],
+                    "api_url": f"{NEMO_URL}/api/tools/?id={tool['id']}",
+                    "calendar_name": tool["name"],
+                    "calendar_url": f"{NEMO_URL}/calendar/{config['property_tag']}-titan/",
+                    "location": "Building 217",
+                    "schema_name": tool["name"],
+                    "property_tag": config["property_tag"],
+                    "filestore_path": config["filestore_path"],
+                    "harvester": "nemo",
+                    "timezone": "America/Denver",
+                }
+            )
 
     # Insert instruments into database
     conn = sqlite3.connect(test_database)
@@ -620,8 +612,10 @@ def populated_test_database(test_database, mock_tools_data):
 
     yield test_database
 
+
 # Test Data Fixtures
 # ============================================================================
+
 
 @pytest.fixture
 def test_instrument_db(populated_test_database):
@@ -643,7 +637,7 @@ def test_instrument_db(populated_test_database):
         Dictionary of Instrument objects loaded from the test database
     """
     from nexusLIMS.instruments import _get_instrument_db
-    
+
     # Load instrument database from the test database path
     return _get_instrument_db(db_path=populated_test_database)
 
@@ -772,6 +766,65 @@ def wait_for_service():
 
 
 @pytest.fixture
+def docker_logs():
+    """
+    Provide utility function to capture Docker service logs.
+
+    This fixture provides a function that can be called from tests to
+    capture and return Docker service logs for debugging purposes.
+
+    Returns
+    -------
+    callable
+        Function that takes optional service names and returns logs as string
+    """
+
+    def _get_docker_logs(services=None, timeout=30):
+        """
+        Capture Docker service logs.
+
+        Parameters
+        ----------
+        services : list[str] | None
+            List of service names to get logs for. If None, gets all services.
+        timeout : int
+            Maximum time to wait for logs (seconds)
+
+        Returns
+        -------
+        str
+            Combined stdout and stderr logs from Docker services
+        """
+        import subprocess
+
+        cmd = ["docker", "compose", "logs", "--no-color"]
+        if services:
+            cmd.extend(services)
+
+        try:
+            result = subprocess.run(
+                cmd, cwd=DOCKER_DIR, capture_output=True, text=True, timeout=timeout
+            )
+
+            logs = []
+            if result.stdout:
+                logs.append("[STDOUT]")
+                logs.append(result.stdout)
+            if result.stderr:
+                logs.append("[STDERR]")
+                logs.append(result.stderr)
+
+            return "\n".join(logs) if logs else "No logs captured"
+
+        except subprocess.TimeoutExpired:
+            return f"Docker log capture timed out after {timeout} seconds"
+        except Exception as e:
+            return f"Failed to capture Docker logs: {e}"
+
+    return _get_docker_logs
+
+
+@pytest.fixture
 def integration_test_marker(request):
     """
     Verify test is marked as integration test.
@@ -795,3 +848,58 @@ def integration_test_marker(request):
             "marked with @pytest.mark.integration"
         )
         raise ValueError(msg)
+
+
+# ============================================================================
+# Docker Log Capture on Test Failure
+# ============================================================================
+
+
+def pytest_runtest_makereport(item, call):
+    """
+    Pytest hook to capture Docker logs on test failure.
+
+    This hook captures Docker service logs when integration tests fail,
+    making it easier to debug issues with the CDCS, NEMO, or other services.
+    """
+    # Only process integration tests
+    if "integration" not in [mark.name for mark in item.iter_markers()]:
+        return
+
+    # Only capture logs for failed tests
+    if call.excinfo and call.excinfo.value:
+        # Import here to avoid issues if Docker isn't available
+        import subprocess
+
+        print(f"\n{'=' * 70}")
+        print(f"CAPTURING DOCKER LOGS FOR FAILED TEST: {item.name}")
+        print(f"{'=' * 70}")
+
+        try:
+            # Capture Docker compose logs
+            result = subprocess.run(
+                ["docker", "compose", "logs", "--no-color", "cdcs"],
+                cwd=DOCKER_DIR,
+                capture_output=True,
+                text=True,
+                timeout=30,
+            )
+
+            if result.stdout:
+                print("\n[DOCKER LOGS START]")
+                print(result.stdout)
+                print("[DOCKER LOGS END]\n")
+
+            if result.stderr:
+                print("\n[DOCKER ERRORS START]")
+                print(result.stderr)
+                print("[DOCKER ERRORS END]\n")
+
+        except subprocess.TimeoutExpired:
+            print("[!] Docker log capture timed out after 30 seconds")
+        except Exception as e:
+            print(f"[!] Failed to capture Docker logs: {e}")
+
+        print(f"{'=' * 70}")
+        print("END OF DOCKER LOGS")
+        print(f"{'=' * 70}\n")

@@ -124,9 +124,10 @@ class TestCDCS:
 
         monkeypatch.setattr(cdcs, "nexus_req", mock_req)
 
-        resp = cdcs.upload_record_content("<xml>content</xml>", "title")
-        # When upload fails, only the response is returned (not a tuple)
+        resp, record_id = cdcs.upload_record_content("<xml>content</xml>", "title")
+        # When upload fails, a tuple is returned with response and None
         assert isinstance(resp, (MockResponse, MockResponseWithJson))
+        assert record_id is None
         assert "Got error while uploading title:" in caplog.text
         assert "This is a fake request error!" in caplog.text
 
