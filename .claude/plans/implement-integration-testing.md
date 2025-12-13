@@ -395,7 +395,7 @@ tests/
        return nexusLIMS.cdcs
 
    @pytest.fixture
-   def test_database(tmp_path, monkeypatch):
+   def test_database(tmp_path, monkeypatch) -> Path:
        """Create fresh test database for integration tests."""
        from nexusLIMS.db.session_handler import Session
 

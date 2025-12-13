@@ -58,12 +58,12 @@ This file tracks progress on implementing Docker-based integration testing for N
 **Status**: Coverage gap analysis completed, implementation pending
 
 ### Critical Missing Tests (High Priority)
-- [ ] **End-to-End Workflow Test** (CRITICAL)
-  - [ ] Test complete `process_new_records()` workflow: NEMO → Record Builder → CDCS
-  - [ ] Verify NEMO usage event → Session → Record → CDCS upload
-  - [ ] Verify session_log.record_status transitions (TO_BE_BUILT → COMPLETED)
-  - [ ] Test file clustering into Acquisition Activities
-  - [ ] Test metadata extraction and XML generation
+- [x] **End-to-End Workflow Test** (CRITICAL)
+  - [x] Test complete `process_new_records()` workflow: NEMO → Record Builder → CDCS
+  - [x] Verify NEMO usage event → Session → Record → CDCS upload
+  - [x] Verify session_log.record_status transitions (TO_BE_BUILT → COMPLETED)
+  - [x] Test file clustering into Acquisition Activities
+  - [x] Test metadata extraction and XML generation
 
 - [ ] **Partial Failure Recovery** (CRITICAL)
   - [ ] Test NEMO succeeds but CDCS fails → verify database rollback
@@ -76,6 +76,10 @@ This file tracks progress on implementing Docker-based integration testing for N
   - [ ] Test timeout handling (no timeout parameter currently)
   - [ ] Test connection failures mid-request
   - [ ] Test rate limiting (429) handling
+  
+- [ ] **Default entrypoint handling** (HIGH)
+  - [ ] Add test SMTP to docker integration stack to test email sending behavior
+  - [ ] Fully exercise behavior of the nexuslims-process-records script
 
 ### Medium Priority Tests
 - [ ] **Multi-Instance Support**
@@ -94,11 +98,10 @@ This file tracks progress on implementing Docker-based integration testing for N
   - [ ] Test credential validation at startup
 
 ### Coverage Gaps Identified
-- [ ] Create `tests/integration/test_end_to_end_workflow.py`
+- [x] Create `tests/integration/test_end_to_end_workflow.py`
 - [ ] Create `tests/integration/test_error_scenarios.py`
 - [ ] Create `tests/integration/test_network_resilience.py`
-- [ ] Add test data files to `tests/integration/data/`
-- [ ] Add mock instrument files for record building tests
+- [x] Add mock instrument files for record building tests
 
 ## Phase 7: Docker Image Registry (Week 7) ⏸️ PENDING
 

@@ -133,3 +133,99 @@ class TestCDCS:
 
     # Note: test_no_env_variable removed - pydantic Settings now validates
     # NX_CDCS_URL at module import time, not at function call time
+
+    def test_search_records_unauthorized(self, monkeypatch):
+        """Test search_records with authentication error."""
+        from http import HTTPStatus
+
+        def mock_nexus_req_unauthorized(_url, _method, **_kwargs):
+            return MockResponse(
+                status_code=HTTPStatus.UNAUTHORIZED,
+                text="Unauthorized",
+            )
+
+        monkeypatch.setattr(cdcs, "nexus_req", mock_nexus_req_unauthorized)
+
+        with pytest.raises(AuthenticationError, match="Could not authenticate to CDCS"):
+            cdcs.search_records(title="test")
+
+    def test_search_records_bad_request(self, monkeypatch, caplog):
+        """Test search_records with bad request error."""
+        from http import HTTPStatus
+
+        def mock_nexus_req_bad_request(_url, _method, **_kwargs):
+            return MockResponse(
+                status_code=HTTPStatus.BAD_REQUEST,
+                text="Invalid query parameters",
+            )
+
+        monkeypatch.setattr(cdcs, "nexus_req", mock_nexus_req_bad_request)
+
+        with pytest.raises(ValueError, match="Invalid search parameters"):
+            cdcs.search_records(title="test")
+
+        assert "Bad request while searching records" in caplog.text
+
+    def test_search_records_server_error(self, monkeypatch, caplog):
+        """Test search_records with server error returns empty list."""
+        from http import HTTPStatus
+
+        def mock_nexus_req_server_error(_url, _method, **_kwargs):
+            return MockResponse(
+                status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
+                text="Server error",
+            )
+
+        monkeypatch.setattr(cdcs, "nexus_req", mock_nexus_req_server_error)
+
+        results = cdcs.search_records(title="test")
+
+        assert results == []
+        assert "Got error while searching records" in caplog.text
+
+    def test_download_record_unauthorized(self, monkeypatch):
+        """Test download_record with authentication error."""
+        from http import HTTPStatus
+
+        def mock_nexus_req_unauthorized(_url, _method, **_kwargs):
+            return MockResponse(
+                status_code=HTTPStatus.UNAUTHORIZED,
+                text="Unauthorized",
+            )
+
+        monkeypatch.setattr(cdcs, "nexus_req", mock_nexus_req_unauthorized)
+
+        with pytest.raises(AuthenticationError, match="Could not authenticate to CDCS"):
+            cdcs.download_record("test_id")
+
+    def test_download_record_not_found(self, monkeypatch):
+        """Test download_record with record not found."""
+        from http import HTTPStatus
+
+        def mock_nexus_req_not_found(_url, _method, **_kwargs):
+            return MockResponse(
+                status_code=HTTPStatus.NOT_FOUND,
+                text="Not found",
+            )
+
+        monkeypatch.setattr(cdcs, "nexus_req", mock_nexus_req_not_found)
+
+        with pytest.raises(ValueError, match="Record with id test_id not found"):
+            cdcs.download_record("test_id")
+
+    def test_download_record_server_error(self, monkeypatch, caplog):
+        """Test download_record with server error."""
+        from http import HTTPStatus
+
+        def mock_nexus_req_server_error(_url, _method, **_kwargs):
+            return MockResponse(
+                status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
+                text="Server error",
+            )
+
+        monkeypatch.setattr(cdcs, "nexus_req", mock_nexus_req_server_error)
+
+        with pytest.raises(ValueError, match="Failed to download record test_id"):
+            cdcs.download_record("test_id")
+
+        assert "Got error while downloading test_id" in caplog.text

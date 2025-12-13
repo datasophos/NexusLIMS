@@ -583,8 +583,6 @@ def process_new_records(
             get_reservation_event(s)
             dry_run_file_find(s)
     else:
-        # DONE: NEMO usage events fetcher should take a time range; we also
-        #  need a consistent response for testing
         nemo_utils.add_all_usage_events_to_db(dt_from=dt_from, dt_to=dt_to)
         xml_files = build_new_session_records()
         if len(xml_files) == 0:

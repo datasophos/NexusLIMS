@@ -20,7 +20,7 @@ http://cdcs.localhost {
     }
 }
 
-# Fileserver
+# Fileserver (served by host Python server to avoid Docker volume issues)
 http://fileserver.localhost {
-    reverse_proxy fileserver:80
+    reverse_proxy host.docker.internal:8081
 }

@@ -243,10 +243,11 @@ class TestNemoAPIConnectivity:
         This test uses actual dates from seed_data.json to verify that
         the NEMO API correctly returns usage events within the specified range.
 
-        Seed data contains three usage events (stored as Eastern Time in NEMO):
+        Seed data contains four usage events (stored as Eastern Time in NEMO):
         - 2021-09-01: 17:00-20:00 ET (ID 29, tool 10, user 3, project 13)
         - 2021-09-05: 15:57-19:00 ET (ID 30, tool 10, user 3, project 13)
         - 2023-09-05: 15:57-19:00 ET (ID 31, tool 1, user 3, project 13)
+        - 2018-11-13: 06:57-18:00 ET (ID 32, tool 3, user 3, project 13)
 
         Note: The connector filters usage events by tools in the NexusLIMS database,
         so this test queries without specific tool filtering to test date ranges.
@@ -302,7 +303,7 @@ class TestNemoAPIConnectivity:
 
         assert isinstance(all_usage_events, list)
         # Should have at least as many events as our September query
-        assert len(all_usage_events) == 3
+        assert len(all_usage_events) == 4
 
 
 @pytest.mark.integration
@@ -620,17 +621,6 @@ class TestNemoAPIEdgeCases:
         mock_reservation_ids = {r["id"] for r in mock_reservations_data}
         assert mock_reservation_ids.issubset(reservation_ids)
 
-    def test_get_usage_events_with_none_parameters(
-        self, nemo_connector: NemoConnector, mock_usage_events_data: dict
-    ):
-        """Test get_usage_events with all None parameters."""
-        # Should return all usage events (might be limited by API)
-        usage_events = nemo_connector.get_usage_events()
-        assert isinstance(usage_events, list)
-        usage_event_ids = {u["id"] for u in usage_events}
-        mock_usage_event_ids = {u["id"] for u in mock_usage_events_data}
-        assert mock_usage_event_ids.issubset(usage_event_ids)
-
     def test_get_reservations_with_cancelled_filter(
         self, nemo_connector: NemoConnector
     ):
@@ -646,9 +636,20 @@ class TestNemoAPIEdgeCases:
         # Test with cancelled=False
         reservations_not_cancelled = nemo_connector.get_reservations(cancelled=False)
 
-        # Should return a list of length 7
+        # Should return a list of length 8
         assert isinstance(reservations_not_cancelled, list)
-        assert len(reservations_not_cancelled) == 7
+        assert len(reservations_not_cancelled) == 8
+
+    def test_get_usage_events_with_none_parameters(
+        self, nemo_connector: NemoConnector, mock_usage_events_data: dict
+    ):
+        """Test get_usage_events with all None parameters."""
+        # Should return all usage events (might be limited by API)
+        usage_events = nemo_connector.get_usage_events()
+        assert isinstance(usage_events, list)
+        usage_event_ids = {u["id"] for u in usage_events}
+        mock_usage_event_ids = {u["id"] for u in mock_usage_events_data}
+        assert mock_usage_event_ids.issubset(usage_event_ids)
 
     def test_get_usage_events_with_event_id_filter(self, nemo_connector: NemoConnector):
         """Test get_usage_events with event_id parameter."""
@@ -674,9 +675,9 @@ class TestNemoAPIEdgeCases:
         # Get usage events for this user
         usage_events = nemo_connector.get_usage_events(user=user_id)
 
-        # Should return a list with three events
+        # Should return a list with four events
         assert isinstance(usage_events, list)
-        assert len(usage_events) == 3
+        assert len(usage_events) == 4
 
         # Verify that all events are for the specified user
         for event in usage_events:
@@ -809,10 +810,10 @@ class TestNemoUtilityFunctions:
         # Query all session logs
         after_logs = get_all_session_logs()
 
-        # Check that we added exactly 6 new session logs
-        # (2 per usage event * 3 usage events)
+        # Check that we added exactly 8 new session logs
+        # (2 per usage event * 4 usage events)
         new_logs_count = len(after_logs) - len(before_logs)
-        assert new_logs_count == 6, f"Expected 6 new session logs, got {new_logs_count}"
+        assert new_logs_count == 8, f"Expected 8 new session logs, got {new_logs_count}"
 
         # Also verify that the new logs contain the expected usage event IDs
         # Each usage event should have a START and END log
@@ -824,8 +825,8 @@ class TestNemoUtilityFunctions:
                 event_id = log.session_identifier.split("?id=")[1].split("&")[0]
                 usage_event_ids.add(event_id)
 
-        # We expect usage events 29, 30, and 31
-        expected_event_ids = {"29", "30", "31"}
+        # We expect usage events 29, 30, 31, and 32
+        expected_event_ids = {"29", "30", "31", "32"}
         assert usage_event_ids == expected_event_ids, (
             f"Expected event IDs {expected_event_ids}, got {usage_event_ids}"
         )

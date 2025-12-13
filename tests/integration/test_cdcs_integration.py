@@ -364,6 +364,200 @@ class TestCdcsUrlConfiguration:
 
 
 @pytest.mark.integration
+class TestCdcsSearchAndDownload:
+    """Test CDCS record search and download functionality."""
+
+    def test_search_records_by_title(self, cdcs_client, cdcs_test_record):
+        """Test searching for each record individually by exact title match."""
+        # Both test records should be searchable by their unique titles
+        for record in cdcs_test_record:
+            test_record_title = record["title"]
+            results = cdcs.search_records(title=test_record_title)
+
+            # Should find exactly one record with this title
+            assert len(results) == 1, f"Expected 1 record, found {len(results)}"
+            assert isinstance(results, list)
+
+            # Verify the returned record has expected fields
+            assert "id" in results[0]
+            assert "title" in results[0]
+            assert results[0]["title"] == test_record_title
+            assert results[0]["id"] == record["record_id"]
+
+    def test_search_records_by_template(self, cdcs_client, cdcs_test_record):
+        """Test that searching by template returns all test records."""
+        template_id = cdcs.get_template_id()
+        results = cdcs.search_records(template_id=template_id)
+
+        # Should find at least our two test records
+        assert len(results) >= 2, f"Expected at least 2 records, found {len(results)}"
+        assert isinstance(results, list)
+
+        # Verify both test records are in the results
+        result_ids = {r["id"] for r in results}
+        for record in cdcs_test_record:
+            assert "template" in record or any("template" in r for r in results)
+            assert (
+                record["record_id"] in result_ids
+            ), f"Record {record['title']} not found in search results"
+
+    def test_search_records_with_no_parameters(self, cdcs_client):
+        """Test that search_records raises ValueError with no parameters."""
+        with pytest.raises(ValueError, match="At least one search parameter"):
+            cdcs.search_records()
+
+    def test_search_records_with_nonexistent_title(self, cdcs_client):
+        """Test searching for a record that doesn't exist."""
+        results = cdcs.search_records(title="This Record Does Not Exist XYZ123")
+
+        # Should return empty list
+        assert isinstance(results, list)
+        assert len(results) == 0
+
+    def test_search_records_by_keyword(self, cdcs_client, cdcs_test_record):
+        """Test keyword search functionality."""
+        # Search for "STEM" keyword - should find the first record
+        results = cdcs.search_records(keyword="STEM")
+
+        assert isinstance(results, list)
+        assert len(results) >= 1, "Should find at least the STEM test record"
+
+        # Verify at least one result is the STEM record
+        result_ids = {r["id"] for r in results}
+        assert cdcs_test_record[0]["record_id"] in result_ids
+
+    def test_search_records_by_keyword_with_template(self, cdcs_client, cdcs_test_record):
+        """Test keyword search combined with template filter."""
+        template_id = cdcs.get_template_id()
+
+        # Search for "SEM" keyword with template filter
+        results = cdcs.search_records(keyword="SEM", template_id=template_id)
+
+        assert isinstance(results, list)
+        assert len(results) >= 1, "Should find at least the SEM test record"
+
+        # Verify the SEM record is in results
+        result_ids = {r["id"] for r in results}
+        assert cdcs_test_record[1]["record_id"] in result_ids
+
+    def test_search_records_keyword_empty_string(self, cdcs_client):
+        """Test that keyword search with empty string raises ValueError."""
+        with pytest.raises(ValueError, match="Keyword parameter cannot be empty"):
+            cdcs.search_records(keyword="")
+
+        with pytest.raises(ValueError, match="Keyword parameter cannot be empty"):
+            cdcs.search_records(keyword="   ")
+
+    def test_search_records_keyword_nonexistent(self, cdcs_client):
+        """Test keyword search with term that doesn't exist."""
+        results = cdcs.search_records(keyword="NonexistentKeywordXYZ123")
+
+        # Should return empty list
+        assert isinstance(results, list)
+        assert len(results) == 0
+
+    def test_download_multiple_records(self, cdcs_client, cdcs_test_record):
+        """Test downloading both test records and verify their unique content."""
+        from lxml import etree
+
+        from nexusLIMS.builder import record_builder
+
+        # Load schema for validation
+        schema_doc = etree.parse(str(record_builder.XSD_PATH))
+        schema = etree.XMLSchema(schema_doc)
+
+        downloaded_records = []
+        for record in cdcs_test_record:
+            xml_content = cdcs.download_record(record["record_id"])
+            downloaded_records.append(xml_content)
+
+            # Verify basic XML structure
+            assert isinstance(xml_content, str)
+            assert len(xml_content) > 0
+            assert "<?xml" in xml_content
+            assert "Experiment" in xml_content
+
+            # Validate against schema
+            xml_doc = etree.fromstring(xml_content.encode())
+            is_valid = schema.validate(xml_doc)
+            if not is_valid:
+                errors = "\n".join(str(e) for e in schema.error_log)
+                raise AssertionError(f"Downloaded XML is not valid:\n{errors}")
+
+        # Verify the records have different content
+        assert downloaded_records[0] != downloaded_records[1]
+
+        # Verify instrument PIDs are different
+        assert "TEST-INSTRUMENT-001" in downloaded_records[0]
+        assert "TEST-INSTRUMENT-002" in downloaded_records[1]
+
+        # Verify unique content in each record
+        assert "STEM" in downloaded_records[0]
+        assert "SEM" in downloaded_records[1]
+        assert "Integration test seed record" in downloaded_records[0]
+
+    def test_download_nonexistent_record(self, cdcs_client):
+        """Test downloading a record that doesn't exist."""
+        fake_record_id = "000000000000000000000000"  # 24-character hex string
+
+        with pytest.raises(ValueError, match="Record with id .* not found"):
+            cdcs.download_record(fake_record_id)
+
+    def test_search_and_download_workflow(self, cdcs_client, cdcs_test_record):
+        """Test complete workflow: search by title -> verify -> download -> validate."""
+        from lxml import etree
+
+        # 1. Search for the first test record by title
+        test_record_title = cdcs_test_record[0]["title"]
+        search_results = cdcs.search_records(title=test_record_title)
+
+        assert len(search_results) > 0, "Test record not found"
+        assert search_results[0]["title"] == test_record_title
+
+        # 2. Extract and verify record ID
+        record_id = search_results[0]["id"]
+        assert record_id is not None
+        assert len(record_id) > 0
+        assert record_id == cdcs_test_record[0]["record_id"]
+
+        # 3. Download the record
+        xml_content = cdcs.download_record(record_id)
+
+        # 4. Verify content
+        assert "Integration test seed record" in xml_content
+        assert "TEST-INSTRUMENT-001" in xml_content
+
+        # 5. Parse XML and validate structure
+        xml_doc = etree.fromstring(xml_content.encode())
+        assert xml_doc.tag.endswith("Experiment")
+        assert (
+            xml_doc.tag
+            == "{https://data.nist.gov/od/dm/nexus/experiment/v1.0}Experiment"
+        )
+
+    def test_upload_and_search_new_record(self, cdcs_client):
+        """Test uploading a new record and then searching for it."""
+        # Upload a new record
+        test_title = "Test Record - Search After Upload"
+        upload_response, record_id = cdcs.upload_record_content(
+            MINIMAL_TEST_RECORD,
+            test_title,
+        )
+        assert upload_response.status_code == HTTPStatus.CREATED
+        cdcs_client["register_record"](record_id)
+
+        # Search for it
+        search_results = cdcs.search_records(title=test_title)
+        assert len(search_results) > 0
+        assert search_results[0]["title"] == test_title
+        assert search_results[0]["id"] == record_id
+
+        # Download it
+        downloaded_xml = cdcs.download_record(record_id)
+        assert "Testing CDCS integration" in downloaded_xml
+
+
+@pytest.mark.integration
 class TestCdcsFileUploadOperations:
     """Test the upload_record_files function for batch file uploads."""
 

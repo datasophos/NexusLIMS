@@ -87,20 +87,6 @@ services:
     networks:
       - nexuslims-test
 
-  # Caddy fileserver for serving test instrument data and previews
-  fileserver:
-    image: caddy:2-alpine
-    container_name: nexuslims-test-fileserver
-    ports:
-      - "8081:80"
-    volumes:
-      # These directories will be created by test fixtures
-      - /tmp/nexuslims-test-instrument-data:/srv/instrument-data:ro
-      - /tmp/nexuslims-test-data:/srv/data:rw
-    command: caddy file-server --root /srv --browse
-    networks:
-      - nexuslims-test
-
   # Caddy reverse proxy for easy-to-remember URLs
   caddy-proxy:
     image: caddy:2-alpine
@@ -116,7 +102,6 @@ services:
     depends_on:
       - nemo
       - cdcs
-      - fileserver
     networks:
       - nexuslims-test
 

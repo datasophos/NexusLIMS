@@ -26,9 +26,6 @@ import django
 
 django.setup()
 
-from django.contrib.auth import get_user_model
-from django.contrib.auth.models import Group, Permission
-from django.contrib.contenttypes.models import ContentType
 from core_main_app.components.template.models import Template
 from core_main_app.components.template_version_manager.models import (
     TemplateVersionManager,
@@ -38,11 +35,16 @@ from core_main_app.components.template_xsl_rendering.models import (
 )
 from core_main_app.components.workspace.models import Workspace
 from core_main_app.components.xsl_transformation.models import XslTransformation
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group, Permission
+from django.contrib.contenttypes.models import ContentType
 
 User = get_user_model()
 
 # XSLT stylesheet URLs
-XSLT_BASE_URL = "https://raw.githubusercontent.com/datasophos/NexusLIMS-CDCS/NexusLIMS_master/xslt"
+XSLT_BASE_URL = (
+    "https://raw.githubusercontent.com/datasophos/NexusLIMS-CDCS/NexusLIMS_master/xslt"
+)
 XSLT_STYLESHEETS = {
     "detail": {
         "name": "detail_stylesheet.xsl",
@@ -302,6 +304,9 @@ def main():
 
         # Configure anonymous access
         configure_anonymous_access()
+
+        # Note: Test records are created by pytest fixtures after server is running
+        # See tests/integration/conftest.py::cdcs_test_record fixture
 
         # Create marker file to prevent re-initialization
         marker_file.touch()

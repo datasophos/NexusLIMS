@@ -194,7 +194,7 @@ class TestNemoConnectorEvents:
     def test_get_reservations(self, nemo_connector):
         # Test with mocked data - should return all mock reservations
         defaults = nemo_connector.get_reservations()
-        assert len(defaults) == 7  # We have 7 mock reservations
+        assert len(defaults) == 8  # We have 8 mock reservations that are not in a cancelled state
         assert all(
             key in defaults[0]
             for key in ["id", "question_data", "creation_time", "start", "end"]

@@ -7,8 +7,9 @@ from dataclasses import dataclass
 from datetime import datetime as dt
 from typing import List, Tuple
 
+from nexusLIMS import instruments
 from nexusLIMS.config import settings
-from nexusLIMS.instruments import Instrument, instrument_db
+from nexusLIMS.instruments import Instrument
 from nexusLIMS.utils import current_system_tz
 
 logger = logging.getLogger(__name__)
@@ -332,7 +333,7 @@ def get_sessions_to_build() -> List[Session]:
         dt_to = dt.fromisoformat(end_l.timestamp)
         session = Session(
             session_identifier=start_l.session_identifier,
-            instrument=instrument_db[start_l.instrument],
+            instrument=instruments.instrument_db[start_l.instrument],
             dt_range=(dt_from, dt_to),
             user=start_l.user,
         )

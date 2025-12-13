@@ -39,23 +39,191 @@ TEST_DATA_DIR = Path("/tmp/nexuslims-test-data")
 
 
 # ============================================================================
+# Pytest Hooks
+# ============================================================================
+
+
+def pytest_configure(config):
+    """
+    Pytest hook that runs before test collection.
+
+    This hook ensures that the directories expected by the root .env file
+    exist before any module imports occur. This is necessary because some
+    NexusLIMS modules access settings at import time, which triggers
+    Pydantic validation of directory paths.
+
+    The root .env file typically points to /tmp/nx_instrument_data and
+    /tmp/nx_data for development, but integration tests use different paths.
+    We create both sets of directories to ensure tests can run regardless
+    of which .env file is loaded.
+    """
+    from dotenv import dotenv_values
+
+    # Read directories from root .env file (for import-time validation)
+    root_env_path = Path(__file__).parents[2] / ".env"
+    root_env_dirs = []
+
+    if root_env_path.exists():
+        env_vars = dotenv_values(root_env_path)
+        if "NX_INSTRUMENT_DATA_PATH" in env_vars:
+            root_env_dirs.append(Path(env_vars["NX_INSTRUMENT_DATA_PATH"]))
+        if "NX_DATA_PATH" in env_vars:
+            root_env_dirs.append(Path(env_vars["NX_DATA_PATH"]))
+
+    # Create test directories (for actual test execution)
+    test_dirs = [
+        TEST_INSTRUMENT_DATA_DIR,
+        TEST_DATA_DIR,
+    ]
+
+    # Ensure all directories exist
+    for dir_path in root_env_dirs + test_dirs:
+        dir_path.mkdir(parents=True, exist_ok=True)
+
+
+# ============================================================================
 # Docker Service Management
 # ============================================================================
 
 
+def start_fileserver():
+    """
+    Start a host-based fileserver to serve test files.
+
+    This avoids Docker volume mount issues on macOS by running the fileserver
+    directly on the host machine instead of in a Docker container.
+
+    Returns
+    -------
+    ThreadingHTTPServer
+        The running HTTP server instance. Call shutdown() and server_close() to stop.
+
+    Notes
+    -----
+    - Fileserver runs on port 8081
+    - Serves files from TEST_INSTRUMENT_DATA_DIR and TEST_DATA_DIR
+    - Uses Python's built-in HTTP server with custom routing
+    - Server runs in a daemon thread
+    """
+    import threading
+    from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
+    from urllib.parse import unquote, urlparse
+
+    class TestFileHandler(SimpleHTTPRequestHandler):
+        """Custom handler that serves files from test directories."""
+
+        def __init__(self, *args, **kwargs):
+            self.instrument_data_dir = TEST_INSTRUMENT_DATA_DIR
+            self.nexuslims_data_dir = TEST_DATA_DIR
+            super().__init__(*args, **kwargs)
+
+        def translate_path(self, path):
+            """Translate URL path to filesystem path, handling our test directories."""
+            # Decode URL and normalize path
+            path = unquote(path)
+            path = urlparse(path).path
+            path = path.lstrip('/')
+
+            # Handle instrument-data requests
+            if path.startswith('instrument-data/'):
+                relative_path = path[len('instrument-data/'):]
+                full_path = self.instrument_data_dir / relative_path
+
+            # Handle data requests
+            elif path.startswith('data/'):
+                relative_path = path[len('data/'):]
+                full_path = self.nexuslims_data_dir / relative_path
+
+            else:
+                # Reject any other paths - only serve from our two test directories
+                # Return a non-existent path to trigger 404
+                return '/dev/null/nonexistent'
+
+            return str(full_path)
+
+        def do_GET(self):
+            """Handle GET requests with CORS headers."""
+            # Call parent method to handle the actual file serving first
+            super().do_GET()
+
+            # Then add CORS headers to the response
+            # Note: We need to override end_headers to add our custom headers
+
+        def end_headers(self):
+            """Override to add CORS and cache control headers."""
+            # Add CORS headers
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.send_header('Access-Control-Allow-Methods', 'GET, OPTIONS')
+            self.send_header('Access-Control-Allow-Headers', '*')
+
+            # Disable caching
+            self.send_header('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0')
+            self.send_header('Pragma', 'no-cache')
+            self.send_header('Expires', '0')
+
+            # Call parent method to finalize headers
+            super().end_headers()
+
+        def log_message(self, format, *args):
+            """Override to reduce logging verbosity."""
+            # Only log errors, not every request
+            if "404" in format or "500" in format:
+                import sys
+                sys.stderr.write("[%s] %s\n" % (self.log_date_time_string(), format % args))
+
+    # Create and start the server
+    server_address = ('', 8081)
+    httpd = ThreadingHTTPServer(server_address, TestFileHandler)
+
+    print(f"[+] Host fileserver started successfully on port 8081")
+    print(f"[+] Serving instrument data from: {TEST_INSTRUMENT_DATA_DIR}")
+    print(f"[+] Serving NexusLIMS data from: {TEST_DATA_DIR}")
+
+    # Start server in a separate thread
+    server_thread = threading.Thread(target=httpd.serve_forever, daemon=True)
+    server_thread.start()
+
+    return httpd
+
+
 @pytest.fixture(scope="session")
-def docker_services(request):
+def host_fileserver():
+    """
+    Pytest fixture for host-based fileserver.
+
+    Yields
+    ------
+    None
+        Fileserver is running when fixture yields control to tests
+    """
+    httpd = start_fileserver()
+
+    try:
+        yield
+    finally:
+        # Clean up server
+        print("[*] Stopping host fileserver...")
+        httpd.shutdown()
+        httpd.server_close()
+        print("[+] Host fileserver stopped successfully")
+
+
+@pytest.fixture(scope="session")
+def docker_services(request, host_fileserver):
     """
     Start Docker services once per test session.
 
     This fixture manages the lifecycle of all Docker services defined in
-    docker-compose.yml including NEMO, CDCS, MongoDB, PostgreSQL, Redis,
-    and the fileserver.
+    docker-compose.yml including NEMO, CDCS, MongoDB, PostgreSQL, Redis.
+    Note that the fileserver now runs on the host machine (via host_fileserver fixture)
+    to avoid Docker volume mount issues on macOS.
 
     Parameters
     ----------
     request : pytest.FixtureRequest
         Pytest request object to access configuration
+    host_fileserver : None
+        Dependency on host_fileserver fixture to ensure it's running
 
     Yields
     ------
@@ -407,7 +575,7 @@ def nemo_connector(
 # ============================================================================
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def cdcs_url(docker_services) -> str:
     """
     Provide CDCS service URL.
@@ -425,7 +593,7 @@ def cdcs_url(docker_services) -> str:
     return CDCS_URL
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def cdcs_credentials() -> dict[str, str]:
     """
     Provide CDCS authentication credentials.
@@ -439,6 +607,36 @@ def cdcs_credentials() -> dict[str, str]:
         "username": "admin",
         "password": "admin",
     }
+
+
+def setup_cdcs_environment(cdcs_url, cdcs_credentials):
+    """
+    Set up CDCS environment variables and refresh settings.
+
+    This is a helper function used by both cdcs_client and cdcs_test_record
+    fixtures to configure the CDCS environment.
+
+    Parameters
+    ----------
+    cdcs_url : str
+        CDCS base URL
+    cdcs_credentials : dict
+        Authentication credentials with 'username' and 'password' keys
+
+    Returns
+    -------
+    None
+        Environment variables are set as a side effect
+    """
+    import os
+
+    os.environ["NX_CDCS_URL"] = cdcs_url
+    os.environ["NX_CDCS_USER"] = cdcs_credentials["username"]
+    os.environ["NX_CDCS_PASS"] = cdcs_credentials["password"]
+
+    from nexusLIMS.config import refresh_settings
+
+    refresh_settings()
 
 
 @pytest.fixture
@@ -463,12 +661,11 @@ def cdcs_client(cdcs_url, cdcs_credentials, monkeypatch):
     dict
         CDCS connection configuration and utilities
     """
-    # Set environment variables for CDCS configuration
+    # Use monkeypatch for function-scoped environment setup
     monkeypatch.setenv("NX_CDCS_URL", cdcs_url)
     monkeypatch.setenv("NX_CDCS_USER", cdcs_credentials["username"])
     monkeypatch.setenv("NX_CDCS_PASS", cdcs_credentials["password"])
 
-    # Refresh settings to pick up new environment variables
     from nexusLIMS.config import refresh_settings
 
     refresh_settings()
@@ -497,6 +694,192 @@ def cdcs_client(cdcs_url, cdcs_credentials, monkeypatch):
         except Exception as e:
             # Log but don't fail test on cleanup error
             print(f"[!] Failed to cleanup record {record_id}: {e}")
+
+
+@pytest.fixture(scope="session")
+def cdcs_test_record_xml():
+    """
+    Provide test XML content for CDCS integration tests.
+
+    This fixture returns two valid Nexus Experiment XML records with different
+    characteristics to enable testing of search and filtering functionality.
+    The XML is validated against the nexus-experiment.xsd schema.
+
+    Returns
+    -------
+    list of tuple
+        A list of (title, xml_content) tuples where:
+        - title: The record title
+        - xml_content: The complete XML as a string
+    """
+    # First record: STEM imaging with EDS spectrum
+    test_record_1_title = "NexusLIMS Integration Test Record - STEM"
+    test_record_1_xml = f"""<?xml version="1.0" encoding="UTF-8"?>
+<Experiment xmlns="https://data.nist.gov/od/dm/nexus/experiment/v1.0">
+    <title>{test_record_1_title}</title>
+    <summary>
+        <instrument pid="TEST-INSTRUMENT-001">Test STEM for Integration Tests</instrument>
+        <reservationStart>2024-12-01T09:00:00-07:00</reservationStart>
+        <reservationEnd>2024-12-01T17:00:00-07:00</reservationEnd>
+        <motivation>Integration test seed record for testing CDCS search and download functionality</motivation>
+    </summary>
+    <acquisitionActivity seqno="1">
+        <startTime>2024-12-01T09:30:00-07:00</startTime>
+        <dataset type="Image" role="Experimental">
+            <name>test_image_001.dm3</name>
+            <location>/path/to/data/test_image_001.dm3</location>
+            <format>Digital Micrograph DM3</format>
+            <description>Test STEM image for integration testing</description>
+            <meta name="magnification">50000x</meta>
+            <meta name="beam_energy">200 kV</meta>
+            <meta name="pixel_size">0.5 nm</meta>
+        </dataset>
+        <dataset type="Spectrum" role="Experimental">
+            <name>test_spectrum_001.msa</name>
+            <location>/path/to/data/test_spectrum_001.msa</location>
+            <format>EMSA-MSA Spectrum</format>
+            <description>Test EDS spectrum for integration testing</description>
+            <meta name="dwell_time">10 ms</meta>
+            <meta name="detector">EDS Detector</meta>
+        </dataset>
+    </acquisitionActivity>
+    <acquisitionActivity seqno="2">
+        <startTime>2024-12-01T10:15:00-07:00</startTime>
+        <dataset type="Image" role="Experimental">
+            <name>test_image_002.tif</name>
+            <location>/path/to/data/test_image_002.tif</location>
+            <format>TIFF</format>
+            <description>Test TEM image for integration testing</description>
+            <meta name="magnification">100000x</meta>
+            <meta name="defocus">-500 nm</meta>
+        </dataset>
+    </acquisitionActivity>
+</Experiment>
+"""
+
+    # Second record: SEM imaging with different instrument and metadata
+    test_record_2_title = "NexusLIMS Integration Test Record - SEM"
+    test_record_2_xml = f"""<?xml version="1.0" encoding="UTF-8"?>
+<Experiment xmlns="https://data.nist.gov/od/dm/nexus/experiment/v1.0">
+    <title>{test_record_2_title}</title>
+    <summary>
+        <instrument pid="TEST-INSTRUMENT-002">Test SEM for Integration Tests</instrument>
+        <reservationStart>2024-12-02T08:00:00-07:00</reservationStart>
+        <reservationEnd>2024-12-02T16:00:00-07:00</reservationEnd>
+        <motivation>Second integration test record with different instrument and parameters for testing search/filter</motivation>
+    </summary>
+    <acquisitionActivity seqno="1">
+        <startTime>2024-12-02T08:30:00-07:00</startTime>
+        <dataset type="Image" role="Experimental">
+            <name>sem_image_001.tif</name>
+            <location>/path/to/data/sem_image_001.tif</location>
+            <format>TIFF</format>
+            <description>Test SEM image for integration testing</description>
+            <meta name="magnification">10000x</meta>
+            <meta name="beam_energy">15 kV</meta>
+            <meta name="working_distance">10 mm</meta>
+        </dataset>
+    </acquisitionActivity>
+    <acquisitionActivity seqno="2">
+        <startTime>2024-12-02T09:45:00-07:00</startTime>
+        <dataset type="Image" role="Experimental">
+            <name>sem_image_002.tif</name>
+            <location>/path/to/data/sem_image_002.tif</location>
+            <format>TIFF</format>
+            <description>High resolution SEM image</description>
+            <meta name="magnification">50000x</meta>
+            <meta name="beam_energy">10 kV</meta>
+            <meta name="working_distance">5 mm</meta>
+        </dataset>
+        <dataset type="Spectrum" role="Experimental">
+            <name>sem_eds_001.spc</name>
+            <location>/path/to/data/sem_eds_001.spc</location>
+            <format>EDAX SPC Spectrum</format>
+            <description>EDS spectrum from SEM analysis</description>
+            <meta name="live_time">60 s</meta>
+            <meta name="detector">EDAX EDS</meta>
+        </dataset>
+    </acquisitionActivity>
+</Experiment>
+"""
+
+    return [
+        (test_record_1_title, test_record_1_xml),
+        (test_record_2_title, test_record_2_xml),
+    ]
+
+
+@pytest.fixture(scope="session")
+def cdcs_test_record(
+    docker_services_running, cdcs_url, cdcs_credentials, cdcs_test_record_xml
+):
+    """
+    Create test records in CDCS for search/download integration tests.
+
+    This fixture uploads two test records to CDCS with different characteristics
+    to enable testing of search and filtering functionality.
+
+    Parameters
+    ----------
+    docker_services_running : dict
+        Ensures Docker services are running
+    cdcs_url : str
+        CDCS base URL
+    cdcs_credentials : dict
+        Authentication credentials
+    cdcs_test_record_xml : list of tuple
+        List of test record (title, XML content) tuples from fixture
+
+    Returns
+    -------
+    list of dict
+        Information about the created test records, each containing:
+        - title: Record title
+        - record_id: CDCS record ID
+        - xml_content: Original XML content
+    """
+    # Set up CDCS environment for session scope
+    setup_cdcs_environment(cdcs_url, cdcs_credentials)
+
+    import nexusLIMS.cdcs as cdcs_module
+
+    # Upload all test records
+    created_records = []
+    for test_record_title, test_record_xml in cdcs_test_record_xml:
+        response, record_id = cdcs_module.upload_record_content(
+            test_record_xml, test_record_title
+        )
+
+        if response.status_code != 201:
+            # Cleanup any previously created records before raising
+            for record in created_records:
+                try:
+                    cdcs_module.delete_record(record["record_id"])
+                except Exception:
+                    pass
+            raise RuntimeError(
+                f"Failed to create test record '{test_record_title}': "
+                f"{response.status_code} - {response.text}"
+            )
+
+        print(f"[+] Created test record: {test_record_title} (ID: {record_id})")
+        created_records.append(
+            {
+                "title": test_record_title,
+                "record_id": record_id,
+                "xml_content": test_record_xml,
+            }
+        )
+
+    yield created_records
+
+    # Cleanup: Delete all test records
+    for record in created_records:
+        try:
+            cdcs_module.delete_record(record["record_id"])
+            print(f"[+] Deleted test record: {record['record_id']}")
+        except Exception as e:
+            print(f"[!] Failed to cleanup test record {record['record_id']}: {e}")
 
 
 # ============================================================================
@@ -536,49 +919,20 @@ def test_database(tmp_path, monkeypatch):
     # Create database in temporary directory
     db_path = tmp_path / "test_integration.db"
 
-    # Initialize database schema (same approach as unit tests)
+    # Initialize database schema using production SQL script
     # NOTE: Must create database BEFORE refreshing settings since NX_DB_PATH
     # validation requires the file to exist
+    schema_script = (
+        Path(__file__).parent.parent.parent
+        / "nexusLIMS"
+        / "db"
+        / "dev"
+        / "NexusLIMS_db_creation_script.sql"
+    )
+
     conn = sqlite3.connect(db_path)
-    cursor = conn.cursor()
-
-    # Create instruments table
-    cursor.execute(
-        """
-        CREATE TABLE IF NOT EXISTS instruments (
-            instrument_pid TEXT PRIMARY KEY,
-            api_url TEXT,
-            calendar_name TEXT,
-            calendar_url TEXT,
-            location TEXT,
-            schema_name TEXT,
-            property_tag TEXT,
-            filestore_path TEXT,
-            computer_name TEXT,
-            computer_ip TEXT,
-            computer_mount TEXT,
-            harvester TEXT,
-            timezone TEXT
-        )
-        """
-    )
-
-    # Create session_log table
-    cursor.execute(
-        """
-        CREATE TABLE IF NOT EXISTS session_log (
-            session_identifier TEXT,
-            instrument TEXT,
-            timestamp TEXT,
-            event_type TEXT,
-            record_status TEXT,
-            user TEXT,
-            FOREIGN KEY(instrument) REFERENCES instruments(instrument_pid)
-        )
-        """
-    )
-
-    conn.commit()
+    with schema_script.open() as f:
+        conn.executescript(f.read())
     conn.close()
 
     # Now that the database file exists, update the config
@@ -621,19 +975,19 @@ def populated_test_database(test_database, mock_tools_data):
     # Map tool IDs to instrument configurations
     tool_configs = {
         1: {  # 643 Titan (S)TEM
-            "instrument_pid": "FEI-Titan-TEM-643",
-            "property_tag": "643",
-            "filestore_path": "./643_Titan",
+            "instrument_pid": "FEI-Titan-STEM",
+            "property_tag": "STEM_3840284",
+            "filestore_path": "./Titan_STEM",
         },
         3: {  # 642 FEI Titan
-            "instrument_pid": "FEI-Titan-TEM-642",
-            "property_tag": "642",
-            "filestore_path": "./642_Titan",
+            "instrument_pid": "FEI-Titan-TEM",
+            "property_tag": "TEM_12039485",
+            "filestore_path": "./Titan_TEM",
         },
         10: {  # Test Tool
             "instrument_pid": "TEST-TOOL-010",
             "property_tag": "TEST",
-            "filestore_path": "./Test_Tool",
+            "filestore_path": "./Nexus_Test_Instrument",
         },
     }
 

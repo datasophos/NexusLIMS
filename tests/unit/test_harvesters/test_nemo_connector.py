@@ -359,6 +359,143 @@ class TestNemoConnectorAuthentication:
         assert "401" in str(exception.value)
         assert "Unauthorized" in str(exception.value)
 
+
+class TestNemoConnectorEquality:
+    """Test the equality comparison of NemoConnector instances."""
+
+    def test_equal_connectors(self):
+        """Test that two connectors with identical configs are equal."""
+        connector1 = NemoConnector(
+            base_url="https://nemo.example.com/api/",
+            token="test-token-12345",
+            timezone="America/Denver",
+        )
+        connector2 = NemoConnector(
+            base_url="https://nemo.example.com/api/",
+            token="test-token-12345",
+            timezone="America/Denver",
+        )
+        assert connector1 == connector2
+
+    def test_unequal_base_url(self):
+        """Test that connectors with different base URLs are not equal."""
+        connector1 = NemoConnector(
+            base_url="https://nemo.example.com/api/",
+            token="test-token-12345",
+        )
+        connector2 = NemoConnector(
+            base_url="https://different.example.com/api/",
+            token="test-token-12345",
+        )
+        assert connector1 != connector2
+
+    def test_unequal_token(self):
+        """Test that connectors with different tokens are not equal."""
+        connector1 = NemoConnector(
+            base_url="https://nemo.example.com/api/",
+            token="test-token-12345",
+        )
+        connector2 = NemoConnector(
+            base_url="https://nemo.example.com/api/",
+            token="different-token-67890",
+        )
+        assert connector1 != connector2
+
+    def test_unequal_timezone(self):
+        """Test that connectors with different timezones are not equal."""
+        connector1 = NemoConnector(
+            base_url="https://nemo.example.com/api/",
+            token="test-token-12345",
+            timezone="America/Denver",
+        )
+        connector2 = NemoConnector(
+            base_url="https://nemo.example.com/api/",
+            token="test-token-12345",
+            timezone="America/New_York",
+        )
+        assert connector1 != connector2
+
+    def test_unequal_retries(self):
+        """Test that connectors with different retry counts are not equal."""
+        connector1 = NemoConnector(
+            base_url="https://nemo.example.com/api/",
+            token="test-token-12345",
+            retries=3,
+        )
+        connector2 = NemoConnector(
+            base_url="https://nemo.example.com/api/",
+            token="test-token-12345",
+            retries=5,
+        )
+        assert connector1 != connector2
+
+    def test_non_nemo_connector_comparison(self):
+        """Test that comparison with non-NemoConnector objects returns False."""
+        connector = NemoConnector(
+            base_url="https://nemo.example.com/api/",
+            token="test-token-12345",
+        )
+        assert connector != "not a connector"
+        assert connector != 42
+        assert connector != None
+        assert connector != {"base_url": "https://nemo.example.com/api/"}
+
+    def test_same_instance_equality(self):
+        """Test that a connector is equal to itself."""
+        connector = NemoConnector(
+            base_url="https://nemo.example.com/api/",
+            token="test-token-12345",
+        )
+        assert connector == connector
+
+    def test_all_config_parameters(self):
+        """Test equality with all configuration parameters."""
+        connector1 = NemoConnector(
+            base_url="https://nemo.example.com/api/",
+            token="test-token-12345",
+            strftime_fmt="%Y-%m-%d",
+            strptime_fmt="%Y-%m-%d",
+            timezone="America/Denver",
+            retries=3,
+        )
+        connector2 = NemoConnector(
+            base_url="https://nemo.example.com/api/",
+            token="test-token-12345",
+            strftime_fmt="%Y-%m-%d",
+            strptime_fmt="%Y-%m-%d",
+            timezone="America/Denver",
+            retries=3,
+        )
+        assert connector1 == connector2
+
+    def test_unequal_strftime_fmt(self):
+        """Test that connectors with different strftime_fmt are not equal."""
+        connector1 = NemoConnector(
+            base_url="https://nemo.example.com/api/",
+            token="test-token-12345",
+            strftime_fmt="%Y-%m-%d",
+        )
+        connector2 = NemoConnector(
+            base_url="https://nemo.example.com/api/",
+            token="test-token-12345",
+            strftime_fmt="%d-%m-%Y",
+        )
+        assert connector1 != connector2
+
+    def test_unequal_strptime_fmt(self):
+        """Test that connectors with different strptime_fmt are not equal."""
+        connector1 = NemoConnector(
+            base_url="https://nemo.example.com/api/",
+            token="test-token-12345",
+            strptime_fmt="%Y-%m-%d",
+        )
+        connector2 = NemoConnector(
+            base_url="https://nemo.example.com/api/",
+            token="test-token-12345",
+            strptime_fmt="%d-%m-%Y",
+        )
+        assert connector1 != connector2
+
     def test_api_caller_raise_for_status(self, monkeypatch):
         """Test that _api_caller calls raise_for_status on bad responses (line 829)."""
         from unittest.mock import Mock

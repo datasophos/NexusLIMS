@@ -32,9 +32,11 @@ RUN pip install -r requirements.core.txt
 COPY ./docker-entrypoint.sh /
 COPY ./init_schema.py /
 COPY ./settings_override.py /
+COPY ./fixtures/test_record.xml /fixtures/
 RUN chmod 755 /docker-entrypoint.sh && \
     chmod 644 /init_schema.py && \
-    chmod 644 /settings_override.py
+    chmod 644 /settings_override.py && \
+    chmod 644 /fixtures/test_record.xml
 
 # Create necessary directories
 # Note: /fixtures/nexus-experiment.xsd will be mounted as a volume at runtime

@@ -452,6 +452,82 @@ Integration tests use environment variables defined in `env/.env.integration`:
 
 **Note:** Fixtures automatically patch these variables through `nexusLIMS.config`, so you typically don't need to set them manually.
 
+## Debugging Tools
+
+### Standalone Fileserver
+
+The integration tests include a standalone fileserver for debugging HTTP file serving and testing file access patterns without running the full test suite.
+
+**Location:** `tests/integration/debug_fileserver.py`
+
+**Usage:**
+```bash
+# From repository root
+python tests/integration/debug_fileserver.py
+
+# Or run directly (executable)
+./tests/integration/debug_fileserver.py
+```
+
+**What it does:**
+- Runs the same fileserver used in integration tests on port 8081
+- Serves files from test data directories:
+  - `http://localhost:8081/instrument-data/` → `/tmp/nexuslims-test-instrument-data/`
+  - `http://localhost:8081/data/` → `/tmp/nexuslims-test-data/`
+- Shows directory contents and diagnostics on startup
+- Runs until stopped with Ctrl+C
+
+**Security:**
+- Only serves files from the two designated test directories
+- Rejects all other paths (returns 404)
+- Includes CORS headers for cross-origin testing
+- No caching headers for development convenience
+
+**Example session:**
+```bash
+$ python tests/integration/debug_fileserver.py
+[*] Checking test data directories...
+[+] Directory exists: /tmp/nexuslims-test-instrument-data
+    Contents (4 items):
+      - JEOL_TEM
+      - Titan_TEM
+      - test_proxy.txt
+      - Nexus_Test_Instrument
+[+] Directory exists: /tmp/nexuslims-test-data
+    Contents (2 items):
+      - records
+      - Titan_TEM
+
+======================================================================
+[+] Starting fileserver on port 8081
+[+] Serving instrument data from: /tmp/nexuslims-test-instrument-data
+[+] Serving NexusLIMS data from: /tmp/nexuslims-test-data
+======================================================================
+
+Access URLs:
+  - http://localhost:8081/instrument-data/
+  - http://localhost:8081/data/
+
+Press Ctrl+C to stop the server...
+======================================================================
+
+# Test access
+$ curl http://localhost:8081/instrument-data/
+# Returns directory listing
+
+$ curl http://localhost:8081/some-other-path
+# Returns 404
+```
+
+**Use cases:**
+- Testing file access patterns during development
+- Debugging fileserver configuration issues
+- Manual verification of file serving before running tests
+- Testing client applications that need to fetch files
+
+**Implementation:**
+The script imports the `start_fileserver()` function from `conftest.py`, ensuring no code duplication. The same HTTP handler logic is used in both the standalone script and the pytest fixture.
+
 ## Troubleshooting
 
 ### Services Fail to Start

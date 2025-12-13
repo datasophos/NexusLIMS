@@ -143,6 +143,20 @@ uv run python -m nexusLIMS.builder.record_builder
 6. **CDCS Integration** (`cdcs.py`)
    - Uploads records to NexusLIMS CDCS frontend
    - Uses credentials from environment variables
+   - **CDCS REST API Query Endpoint** (`rest/data/query/`):
+     - Defined in `core_main_app` repository
+     - POST request parameters:
+       - `query` (required): MongoDB-style query object (e.g., `{}` for all, `{"root.element.value": 2}` for filtering)
+       - `templates`: List of template objects `[{"id": "template_id"}]`
+       - `workspaces`: List of workspace objects `[{"id": "workspace_id"}]` (use `[{"id": "None"}]` for private)
+       - `title`: Filter by document title string
+       - `all`: Boolean (`"true"`/`"false"`) to disable pagination
+       - `xpath`: XPath expression to extract specific content (e.g., `"/ns:root/@element"`)
+       - `namespaces`: Namespace mappings for XPath (e.g., `{"ns": "http://example.com/ns"}`)
+       - `options`: Query options dict (can include `VISIBILITY_OPTION`)
+       - `order_by_field`: Comma-separated field names for sorting
+     - URL parameter: `page` for pagination (e.g., `?page=2`)
+     - Multiple filters can be combined in a single query
 
 ### Key Workflows
 

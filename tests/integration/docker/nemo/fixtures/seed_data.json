@@ -975,6 +975,55 @@
       "descendant": null,
       "validated_by": null,
       "waived_by": null
+    },
+    {
+      "id": 204,
+      "question_data": {
+        "project_id": {
+          "user_input": "Integration Testing"
+        },
+        "experiment_title": {
+          "user_input": "Test reservation for end-to-end integration test"
+        },
+        "experiment_purpose": {
+          "user_input": "End-to-end testing of the record building process"
+        },
+        "data_consent": {
+          "user_input": "Agree"
+        },
+        "sample_group": {
+          "user_input": {
+            "0": {
+              "sample_name": "The name of the sample in this reservation",
+              "sample_or_pid": "Sample Name",
+              "sample_details": "Sample for testing partial overlap of reservation and usage event"
+            }
+          }
+        }
+      },
+      "creation_time": "2018-11-13T09:00:00-06:00",
+      "start": "2018-11-13T09:00:00-06:00",
+      "end": "2018-11-13T14:00:00-06:00",
+      "short_notice": false,
+      "cancelled": false,
+      "cancellation_time": null,
+      "missed": false,
+      "shortened": false,
+      "additional_information": null,
+      "self_configuration": false,
+      "title": "",
+      "validated": false,
+      "waived": false,
+      "waived_on": null,
+      "user": 3,
+      "creator": 3,
+      "tool": 3,
+      "area": null,
+      "project": 13,
+      "cancelled_by": null,
+      "descendant": null,
+      "validated_by": null,
+      "waived_by": null
     }
   ],
   "usage_events": [
@@ -1032,6 +1081,25 @@
       "operator": 3,
       "project": 13,
       "tool": 1,
+      "validated_by": null,
+      "waived_by": null
+    },
+    {
+      "id": 32,
+      "start": "2018-11-13T04:57:00.000000-06:00",
+      "end": "2018-11-13T16:00:00.000000-06:00",
+      "has_ended": 27,
+      "validated": false,
+      "remote_work": false,
+      "training": false,
+      "pre_run_data": "",
+      "run_data": "",
+      "waived": false,
+      "waived_on": null,
+      "user": 3,
+      "operator": 3,
+      "project": 13,
+      "tool": 3,
       "validated_by": null,
       "waived_by": null
     }
