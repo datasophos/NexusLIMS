@@ -13,77 +13,7 @@ from lxml import etree
 from nexusLIMS.builder import record_builder
 from nexusLIMS.db.session_handler import db_query
 
-
-@pytest.fixture
-def test_environment_setup(
-    nemo_connector, populated_test_database, extracted_test_files, monkeypatch
-):
-    """
-    Set up the test environment for end-to-end workflow testing.
-
-    This fixture configures the environment so that process_new_records()
-    can run naturally, including NEMO harvesting. It does NOT create sessions
-    directly - that's left to the NEMO harvester to do.
-
-    Parameters
-    ----------
-    nemo_connector : NemoConnector
-        Configured NEMO connector from fixture (already mocked to return test usage events)
-    populated_test_database : Path
-        Test database with instruments
-    extracted_test_files : dict
-        Extracted test files information
-    monkeypatch : pytest.MonkeyPatch
-        Pytest monkeypatch fixture
-
-    Returns
-    -------
-    dict
-        Test environment information:
-        - 'instrument_pid': Instrument PID to use for testing
-        - 'dt_from': Expected session start datetime
-        - 'dt_to': Expected session end datetime
-        - 'user': Expected username
-        - 'instrument_db': Test instrument database
-    """
-    from nexusLIMS import instruments
-    from nexusLIMS.config import refresh_settings
-
-    # Patch settings to use test database
-    monkeypatch.setenv("NX_DB_PATH", str(populated_test_database))
-    refresh_settings()
-
-    # Patch the instrument_db to use test database
-    test_instrument_db = instruments._get_instrument_db(db_path=populated_test_database)
-    monkeypatch.setattr(instruments, "instrument_db", test_instrument_db)
-
-    # Get Titan instrument from test database (should be FEI-Titan-TEM)
-    instrument = test_instrument_db["FEI-Titan-TEM"]
-
-    # Reload instrument database to pick up the change
-    test_instrument_db = instruments._get_instrument_db(db_path=populated_test_database)
-    instrument = test_instrument_db["FEI-Titan-TEM"]
-
-    # Create expected session timespan that covers the test files
-    # Files are dated 2018-11-13, so expect a session around that time
-    # (the nemo_connector fixture should already be configured to return this)
-    session_start = extracted_test_files["titan_date"].replace(
-        hour=4, minute=0, second=0
-    )
-    session_end = session_start + timedelta(hours=12)
-
-    print(f"\n[+] Test environment configured")
-    print(f"    Instrument: {instrument.name}")
-    print(f"    Expected session time: {session_start} to {session_end}")
-    print(f"    Expected user: captain")
-
-    return {
-        "instrument_pid": instrument.name,  # instrument.name is the PID
-        "dt_from": session_start,
-        "dt_to": session_end,
-        "user": "captain",
-        "instrument_db": test_instrument_db,
-    }
+# test_environment_setup fixture is now defined in conftest.py
 
 
 @pytest.mark.integration
@@ -92,13 +22,7 @@ class TestEndToEndWorkflow:
 
     def test_complete_record_building_workflow(
         self,
-        docker_services_running,
-        nemo_connector,
-        cdcs_client,
-        populated_test_database,
-        extracted_test_files,
         test_environment_setup,
-        monkeypatch,
     ):
         """
         Test complete workflow using process_new_records().
@@ -119,20 +43,10 @@ class TestEndToEndWorkflow:
 
         Parameters
         ----------
-        docker_services_running : dict
-            Docker services status
-        nemo_connector : NemoConnector
-            NEMO connector fixture (mocked to return test usage events)
-        cdcs_client : dict
-            CDCS client configuration
-        populated_test_database : Path
-            Test database with instruments
-        extracted_test_files : dict
-            Extracted test files
         test_environment_setup : dict
-            Test environment configuration
-        monkeypatch : pytest.MonkeyPatch
-            Pytest monkeypatch fixture
+            Test environment configuration (includes nemo_connector, cdcs_client,
+            database, extracted_test_files, and session timespan via fixture
+            dependencies)
         """
         from nexusLIMS.config import settings
         from nexusLIMS.db.session_handler import get_sessions_to_build
@@ -232,6 +146,56 @@ class TestEndToEndWorkflow:
         downloaded_doc = etree.fromstring(downloaded_xml.encode())
         is_valid_download = schema.validate(downloaded_doc)
         assert is_valid_download, "Downloaded XML from CDCS is not valid against schema"
+
+        # Verify fileserver URLs are accessible
+        # Extract dataset location and preview URLs from the downloaded XML
+        import requests
+
+        # Find a dataset with a location
+        dataset_locations = downloaded_doc.findall(f".//{nx_ns}dataset/{nx_ns}location")
+        assert len(dataset_locations) > 0, "No dataset locations found in XML"
+
+        # Test accessing a dataset file via fileserver
+        dataset_location = dataset_locations[0].text
+        # Location is relative path like "/path/to/data/file.dm3"
+        # Convert to fileserver URL
+        # The XML should contain the full path from NX_INSTRUMENT_DATA_PATH
+        dataset_url = f"http://fileserver.localhost/instrument-data{dataset_location}"
+
+        print(f"\n[*] Testing fileserver access to dataset: {dataset_url}")
+        dataset_response = requests.get(dataset_url, timeout=10)
+        assert dataset_response.status_code == 200, (
+            f"Failed to access dataset via fileserver: {dataset_response.status_code}"
+        )
+        assert len(dataset_response.content) > 0, "Dataset file is empty"
+        print(
+            f"[+] Successfully accessed dataset file ({len(dataset_response.content)} bytes)"
+        )
+
+        # Find a preview image URL (these are in <preview> elements)
+        preview_elements = downloaded_doc.findall(f".//{nx_ns}dataset/{nx_ns}preview")
+        if len(preview_elements) > 0:
+            preview_path = preview_elements[0].text
+            # Preview paths are relative to NX_DATA_PATH
+            # Convert to fileserver URL using /data/ prefix
+            preview_url = f"http://fileserver.localhost/data{preview_path}"
+            print(f"\n[*] Testing fileserver access to preview: {preview_url}")
+
+            preview_response = requests.get(preview_url, timeout=10)
+            assert preview_response.status_code == 200, (
+                f"Failed to access preview via fileserver: {preview_response.status_code}"
+            )
+            assert len(preview_response.content) > 0, "Preview file is empty"
+            # Verify it's an image (should have image content type or be PNG/JPG)
+            content_type = preview_response.headers.get("Content-Type", "")
+            assert "image" in content_type or preview_url.endswith(
+                (".png", ".jpg", ".jpeg")
+            ), f"Preview doesn't appear to be an image: {content_type}"
+            print(
+                f"[+] Successfully accessed preview image ({len(preview_response.content)} bytes)"
+            )
+        else:
+            print("[!] No preview elements found in XML (this may be expected)")
 
         # clean up uploaded record on success
         cdcs_module.delete_record(record_id)

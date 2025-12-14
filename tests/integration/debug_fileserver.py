@@ -100,6 +100,7 @@ def main():
 
         # Keep the script running until interrupted
         import time
+
         while True:
             time.sleep(1)
     except KeyboardInterrupt:

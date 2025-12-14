@@ -32,7 +32,11 @@ def configure_periodic_table_plugin():
             for i, line in enumerate(lines):
                 new_lines.append(line)
                 # Look for INSTALLED_APPS = [ or INSTALLED_APPS=[
-                if not found_installed_apps and "INSTALLED_APPS" in line and "[" in line:
+                if (
+                    not found_installed_apps
+                    and "INSTALLED_APPS" in line
+                    and "[" in line
+                ):
                     # Add the plugin on the next line
                     found_installed_apps = True
                     indent = "    "  # Standard Django indent

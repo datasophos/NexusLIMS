@@ -24,3 +24,8 @@ http://cdcs.localhost {
 http://fileserver.localhost {
     reverse_proxy host.docker.internal:8081
 }
+
+# Mailpit SMTP testing UI
+http://mailpit.localhost {
+    reverse_proxy mailpit:8025
+}

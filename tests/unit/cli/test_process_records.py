@@ -28,18 +28,22 @@ class TestSetupFileLogging:
 
         monkeypatch.setattr("nexusLIMS.config.settings", mock_settings)
 
-        # Call function
-        log_file = setup_file_logging(dry_run=False)
+        # Call function - now returns tuple (log_file_path, file_handler)
+        log_file_path, file_handler = setup_file_logging(dry_run=False)
 
         # Check directory structure was created (YYYY/MM/DD)
         # log_file is at logs/YYYY/MM/DD/filename.log
         # So parent.parent.parent.parent should be the base logs dir
-        assert log_file.parent.parent.parent.parent == tmp_path / "logs"
+        assert log_file_path.parent.parent.parent.parent == tmp_path / "logs"
         # Verify year, month, day are numeric
-        assert log_file.parent.parent.parent.name.isdigit()  # Year (4 digits)
-        assert log_file.parent.parent.name.isdigit()  # Month (2 digits)
-        assert log_file.parent.name.isdigit()  # Day (2 digits)
-        assert log_file.name.endswith(".log")
+        assert log_file_path.parent.parent.parent.name.isdigit()  # Year (4 digits)
+        assert log_file_path.parent.parent.name.isdigit()  # Month (2 digits)
+        assert log_file_path.parent.name.isdigit()  # Day (2 digits)
+        assert log_file_path.name.endswith(".log")
+
+        # Clean up the file handler
+        logging.root.removeHandler(file_handler)
+        file_handler.close()
 
     def test_dry_run_suffix(self, tmp_path, monkeypatch):
         """Test that dry run adds _dryrun suffix to filename."""
@@ -48,9 +52,13 @@ class TestSetupFileLogging:
 
         monkeypatch.setattr("nexusLIMS.config.settings", mock_settings)
 
-        log_file = setup_file_logging(dry_run=True)
+        log_file_path, file_handler = setup_file_logging(dry_run=True)
 
-        assert "_dryrun.log" in log_file.name
+        assert "_dryrun.log" in log_file_path.name
+
+        # Clean up the file handler
+        logging.root.removeHandler(file_handler)
+        file_handler.close()
 
     def test_adds_file_handler_to_logger(self, tmp_path, monkeypatch):
         """Test that a file handler is added to the root logger."""
@@ -63,10 +71,18 @@ class TestSetupFileLogging:
         initial_handlers = len(logging.root.handlers)
 
         # Call function
-        setup_file_logging(dry_run=False)
+        log_file_path, file_handler = setup_file_logging(dry_run=False)
 
-        # Check that a handler was added
-        assert len(logging.root.handlers) > initial_handlers
+        # Check that a handler was added (function removes existing handlers first)
+        # So we should have exactly 1 file handler added
+        file_handlers = [
+            h for h in logging.root.handlers if isinstance(h, logging.FileHandler)
+        ]
+        assert len(file_handlers) == 1
+
+        # Clean up the file handler
+        logging.root.removeHandler(file_handler)
+        file_handler.close()
 
 
 class TestCheckLogForErrors:
@@ -190,7 +206,7 @@ class TestSendErrorNotification:
     def test_email_not_configured(self, tmp_path, monkeypatch):
         """Test that email sending is skipped when not configured."""
         mock_settings = Mock()
-        mock_settings.email_config = None
+        mock_settings.email_config.return_value = None
 
         monkeypatch.setattr("nexusLIMS.config.settings", mock_settings)
 
@@ -214,7 +230,7 @@ class TestSendErrorNotification:
         mock_email_config.recipients = ["recipient@example.com"]
 
         mock_settings = Mock()
-        mock_settings.email_config = mock_email_config
+        mock_settings.email_config.return_value = mock_email_config
 
         monkeypatch.setattr("nexusLIMS.config.settings", mock_settings)
 
@@ -249,7 +265,7 @@ class TestSendErrorNotification:
         mock_email_config.recipients = ["recipient@example.com"]
 
         mock_settings = Mock()
-        mock_settings.email_config = mock_email_config
+        mock_settings.email_config.return_value = mock_email_config
 
         monkeypatch.setattr("nexusLIMS.config.settings", mock_settings)
 
@@ -278,7 +294,7 @@ class TestSendErrorNotification:
         mock_email_config.recipients = ["recipient@example.com"]
 
         mock_settings = Mock()
-        mock_settings.email_config = mock_email_config
+        mock_settings.email_config.return_value = mock_email_config
 
         monkeypatch.setattr("nexusLIMS.config.settings", mock_settings)
 
@@ -307,7 +323,7 @@ class TestSendErrorNotification:
         mock_email_config.recipients = ["recipient@example.com"]
 
         mock_settings = Mock()
-        mock_settings.email_config = mock_email_config
+        mock_settings.email_config.return_value = mock_email_config
 
         monkeypatch.setattr("nexusLIMS.config.settings", mock_settings)
 
@@ -336,7 +352,7 @@ class TestSendErrorNotification:
         mock_email_config.recipients = ["recipient@example.com"]
 
         mock_settings = Mock()
-        mock_settings.email_config = mock_email_config
+        mock_settings.email_config.return_value = mock_email_config
 
         monkeypatch.setattr("nexusLIMS.config.settings", mock_settings)
 

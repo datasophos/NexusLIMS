@@ -26,7 +26,9 @@ from .utils import (
 logger = logging.getLogger(__name__)
 
 
-def res_event_from_session(session: Session, connector: Optional[NemoConnector] = None) -> ReservationEvent:
+def res_event_from_session(
+    session: Session, connector: Optional[NemoConnector] = None
+) -> ReservationEvent:
     """
     Create reservation event from session.
 

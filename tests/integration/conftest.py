@@ -28,10 +28,16 @@ DOCKER_DIR = Path(__file__).parent / "docker"
 NEMO_URL = "http://nemo.localhost"
 CDCS_URL = "http://cdcs.localhost"
 FILESERVER_URL = "http://fileserver.localhost"
+MAILPIT_URL = "http://mailpit.localhost"
+MAILPIT_SMTP_HOST = "localhost"
+MAILPIT_SMTP_PORT = 1025
+MAILPIT_SMTP_USER = "test"
+MAILPIT_SMTP_PASS = "testpass"
 
 # Service health check endpoints
 NEMO_HEALTH_URL = f"{NEMO_URL}/"
 CDCS_HEALTH_URL = f"{CDCS_URL}/"
+MAILPIT_HEALTH_URL = f"{MAILPIT_URL}/"
 
 # Test data directories (these should match docker-compose volume mounts)
 TEST_INSTRUMENT_DATA_DIR = Path("/tmp/nexuslims-test-instrument-data")
@@ -122,22 +128,22 @@ def start_fileserver():
             # Decode URL and normalize path
             path = unquote(path)
             path = urlparse(path).path
-            path = path.lstrip('/')
+            path = path.lstrip("/")
 
             # Handle instrument-data requests
-            if path.startswith('instrument-data/'):
-                relative_path = path[len('instrument-data/'):]
+            if path.startswith("instrument-data/"):
+                relative_path = path[len("instrument-data/") :]
                 full_path = self.instrument_data_dir / relative_path
 
             # Handle data requests
-            elif path.startswith('data/'):
-                relative_path = path[len('data/'):]
+            elif path.startswith("data/"):
+                relative_path = path[len("data/") :]
                 full_path = self.nexuslims_data_dir / relative_path
 
             else:
                 # Reject any other paths - only serve from our two test directories
                 # Return a non-existent path to trigger 404
-                return '/dev/null/nonexistent'
+                return "/dev/null/nonexistent"
 
             return str(full_path)
 
@@ -152,14 +158,17 @@ def start_fileserver():
         def end_headers(self):
             """Override to add CORS and cache control headers."""
             # Add CORS headers
-            self.send_header('Access-Control-Allow-Origin', '*')
-            self.send_header('Access-Control-Allow-Methods', 'GET, OPTIONS')
-            self.send_header('Access-Control-Allow-Headers', '*')
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.send_header("Access-Control-Allow-Methods", "GET, OPTIONS")
+            self.send_header("Access-Control-Allow-Headers", "*")
 
             # Disable caching
-            self.send_header('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0')
-            self.send_header('Pragma', 'no-cache')
-            self.send_header('Expires', '0')
+            self.send_header(
+                "Cache-Control",
+                "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0",
+            )
+            self.send_header("Pragma", "no-cache")
+            self.send_header("Expires", "0")
 
             # Call parent method to finalize headers
             super().end_headers()
@@ -169,10 +178,13 @@ def start_fileserver():
             # Only log errors, not every request
             if "404" in format or "500" in format:
                 import sys
-                sys.stderr.write("[%s] %s\n" % (self.log_date_time_string(), format % args))
+
+                sys.stderr.write(
+                    "[%s] %s\n" % (self.log_date_time_string(), format % args)
+                )
 
     # Create and start the server
-    server_address = ('', 8081)
+    server_address = ("", 8081)
     httpd = ThreadingHTTPServer(server_address, TestFileHandler)
 
     print(f"[+] Host fileserver started successfully on port 8081")
@@ -265,6 +277,7 @@ def docker_services(request, host_fileserver):
     start_time = time.time()
     nemo_ready = False
     cdcs_ready = False
+    mailpit_ready = False
 
     print("[*] Checking if Docker services are already running...")
 
@@ -284,8 +297,15 @@ def docker_services(request, host_fileserver):
                 if cdcs_ready:
                     print("[+] CDCS service is ready")
 
+            # Check Mailpit
+            if not mailpit_ready:
+                mailpit_response = requests.get(MAILPIT_HEALTH_URL, timeout=2)
+                mailpit_ready = mailpit_response.status_code == HTTPStatus.OK
+                if mailpit_ready:
+                    print("[+] Mailpit service is ready")
+
             # All services ready
-            if nemo_ready and cdcs_ready:
+            if nemo_ready and cdcs_ready and mailpit_ready:
                 print("[+] All services are ready!")
                 break
 
@@ -295,7 +315,7 @@ def docker_services(request, host_fileserver):
         time.sleep(1)
 
     # If services are not running, start them
-    if not (nemo_ready and cdcs_ready):
+    if not (nemo_ready and cdcs_ready and mailpit_ready):
         print("[*] Docker services not running - starting them now...")
 
         # Build docker compose command - use CI override if available
@@ -324,6 +344,7 @@ def docker_services(request, host_fileserver):
         start_time = time.time()
         nemo_ready = False
         cdcs_ready = False
+        mailpit_ready = False
 
         print("[*] Waiting for services to be healthy...")
 
@@ -343,8 +364,15 @@ def docker_services(request, host_fileserver):
                     if cdcs_ready:
                         print("[+] CDCS service is ready")
 
+                # Check Mailpit
+                if not mailpit_ready:
+                    mailpit_response = requests.get(MAILPIT_HEALTH_URL, timeout=2)
+                    mailpit_ready = mailpit_response.status_code == 200
+                    if mailpit_ready:
+                        print("[+] Mailpit service is ready")
+
                 # All services ready
-                if nemo_ready and cdcs_ready:
+                if nemo_ready and cdcs_ready and mailpit_ready:
                     print("[+] All services are ready!")
                     break
 
@@ -434,7 +462,176 @@ def docker_services_running(docker_services):
         "nemo_url": NEMO_URL,
         "cdcs_url": CDCS_URL,
         "fileserver_url": FILESERVER_URL,
+        "mailpit_url": MAILPIT_URL,
+        "mailpit_smtp_host": MAILPIT_SMTP_HOST,
+        "mailpit_smtp_port": MAILPIT_SMTP_PORT,
         "status": "ready",
+    }
+
+
+# ============================================================================
+# Mailpit Integration Fixtures
+# ============================================================================
+
+
+@pytest.fixture
+def mailpit_client(docker_services, monkeypatch):
+    """
+    Provide Mailpit client for email testing.
+
+    This fixture provides utilities to interact with the Mailpit SMTP testing
+    server, including checking for received emails and clearing the mailbox.
+    It also configures the NX_EMAIL_* environment variables to point to the
+    Mailpit SMTP server.
+
+    Parameters
+    ----------
+    docker_services : None
+        Ensures Docker services are running
+    monkeypatch : pytest.MonkeyPatch
+        Pytest monkeypatch fixture
+
+    Returns
+    -------
+    dict
+        Mailpit client configuration and utilities with keys:
+        - 'smtp_host': SMTP server host
+        - 'smtp_port': SMTP server port
+        - 'smtp_user': SMTP username for authentication
+        - 'smtp_password': SMTP password for authentication
+        - 'api_url': Mailpit API base URL
+        - 'web_url': Mailpit web UI URL
+        - 'get_messages': Function to retrieve all messages
+        - 'clear_messages': Function to delete all messages
+        - 'search_messages': Function to search messages by subject/recipient
+
+    Examples
+    --------
+    >>> def test_email_sending(mailpit_client):
+    ...     # Clear mailbox before test
+    ...     mailpit_client['clear_messages']()
+    ...
+    ...     # Send email via your code
+    ...     send_email(to='test@example.com', subject='Test')
+    ...
+    ...     # Check email was received
+    ...     messages = mailpit_client['get_messages']()
+    ...     assert len(messages) == 1
+    ...     assert messages[0]['Subject'] == 'Test'
+    """
+    # Configure email environment variables to use Mailpit
+    monkeypatch.setenv("NX_EMAIL_SMTP_HOST", MAILPIT_SMTP_HOST)
+    monkeypatch.setenv("NX_EMAIL_SMTP_PORT", str(MAILPIT_SMTP_PORT))
+    monkeypatch.setenv("NX_EMAIL_SMTP_USERNAME", MAILPIT_SMTP_USER)
+    monkeypatch.setenv("NX_EMAIL_SMTP_PASSWORD", MAILPIT_SMTP_PASS)
+    monkeypatch.setenv("NX_EMAIL_SENDER", "nexuslims-test@localhost.net")
+    monkeypatch.setenv(
+        "NX_EMAIL_RECIPIENTS", "admin@localhost.net,errors@localhost.net"
+    )
+    monkeypatch.setenv("NX_EMAIL_USE_TLS", "false")  # Mailpit doesn't use TLS
+
+    # Refresh settings to pick up new environment variables
+    from nexusLIMS.config import refresh_settings
+
+    refresh_settings()
+
+    def get_messages():
+        """Get all messages from Mailpit."""
+        response = requests.get(f"{MAILPIT_URL}/api/v1/messages", timeout=5)
+        response.raise_for_status()
+        data = response.json()
+        return data.get("messages", [])
+
+    def get_message(message_id):
+        """
+        Get a specific message by ID from Mailpit.
+
+        Parameters
+        ----------
+        message_id : str
+            The message ID to retrieve
+
+        Returns
+        -------
+        dict
+            The complete message object including headers, body, and attachments
+
+        Raises
+        ------
+        requests.HTTPError
+            If the message is not found (404) or other HTTP errors occur
+        """
+        response = requests.get(f"{MAILPIT_URL}/api/v1/message/{message_id}", timeout=5)
+        response.raise_for_status()
+        return response.json()
+
+    def clear_messages():
+        """Delete all messages from Mailpit."""
+        requests.delete(f"{MAILPIT_URL}/api/v1/messages", timeout=5)
+
+    def search_messages(subject=None, to=None, sender=None):
+        """
+        Search for messages matching criteria.
+
+        Parameters
+        ----------
+        subject : str, optional
+            Subject line to search for (partial match)
+        to : str, optional
+            Recipient email address to search for
+        sender : str, optional
+            Sender email address to search for
+
+        Returns
+        -------
+        list
+            List of matching messages
+        """
+        messages = get_messages()
+        results = []
+
+        for msg in messages:
+            # Mailpit API structure: msg.Subject, msg.To, msg.From (not nested in Content.Headers)
+            # Check subject
+            if subject is not None:
+                msg_subject = msg.get("Subject", "")
+                if subject.lower() not in msg_subject.lower():
+                    continue
+
+            # Check recipient
+            if to is not None:
+                msg_to_list = msg.get("To", [])
+                # msg_to_list is a list of {"Address": "email@domain.com", "Name": "..."} dicts
+                if not any(
+                    to.lower() in recipient.get("Address", "").lower()
+                    for recipient in msg_to_list
+                ):
+                    continue
+
+            # Check sender
+            if sender is not None:
+                msg_from = msg.get("From", {}).get("Address", "")
+                if sender.lower() not in msg_from.lower():
+                    continue
+
+            results.append(msg)
+
+        return results
+
+    # Clear mailbox before each test
+    clear_messages()
+
+    return {
+        "smtp_host": MAILPIT_SMTP_HOST,
+        "smtp_port": MAILPIT_SMTP_PORT,
+        "smtp_user": MAILPIT_SMTP_USER,
+        "smtp_password": MAILPIT_SMTP_PASS,
+        "api_url": f"{MAILPIT_URL}/api",
+        "web_url": MAILPIT_URL,
+        "get_messages": get_messages,
+        "get_message": get_message,
+        "clear_messages": clear_messages,
+        "search_messages": search_messages,
     }
 
 
@@ -1241,6 +1438,82 @@ def extracted_test_files(test_data_dirs):
         if metadata_dir.exists():
             print(f"[*] Removing generated metadata {metadata_dir}")
             shutil.rmtree(metadata_dir)
+
+
+@pytest.fixture
+def test_environment_setup(
+    docker_services_running,
+    nemo_connector,
+    populated_test_database,
+    extracted_test_files,
+    cdcs_client,
+    monkeypatch,
+):
+    """
+    Set up the test environment for end-to-end workflow testing.
+
+    This fixture configures the environment so that process_new_records()
+    can run naturally, including NEMO harvesting and CDCS uploads. It does NOT
+    create sessions directly - that's left to the NEMO harvester to do.
+
+    Parameters
+    ----------
+    docker_services_running : dict
+        Ensures all Docker services (including fileserver) are running
+    nemo_connector : NemoConnector
+        Configured NEMO connector from fixture (already mocked to return test usage events)
+    populated_test_database : Path
+        Test database with instruments (also configures NX_DB_PATH)
+    extracted_test_files : dict
+        Extracted test files information
+    cdcs_client : dict
+        CDCS client configuration for record uploads
+    monkeypatch : pytest.MonkeyPatch
+        Pytest monkeypatch fixture
+
+    Returns
+    -------
+    dict
+        Test environment information:
+        - 'instrument_pid': Instrument PID to use for testing
+        - 'dt_from': Expected session start datetime
+        - 'dt_to': Expected session end datetime
+        - 'user': Expected username
+        - 'instrument_db': Test instrument database
+        - 'cdcs_client': CDCS client configuration
+    """
+    from datetime import timedelta
+
+    from nexusLIMS import instruments
+
+    # Patch the instrument_db to use test database
+    test_instrument_db = instruments._get_instrument_db(db_path=populated_test_database)
+    monkeypatch.setattr(instruments, "instrument_db", test_instrument_db)
+
+    # Get Titan instrument from test database (should be FEI-Titan-TEM)
+    instrument = test_instrument_db["FEI-Titan-TEM"]
+
+    # Create expected session timespan that covers the test files
+    # Files are dated 2018-11-13, so expect a session around that time
+    # (the nemo_connector fixture should already be configured to return this)
+    session_start = extracted_test_files["titan_date"].replace(
+        hour=4, minute=0, second=0
+    )
+    session_end = session_start + timedelta(hours=12)
+
+    print(f"\n[+] Test environment configured")
+    print(f"    Instrument: {instrument.name}")
+    print(f"    Expected session time: {session_start} to {session_end}")
+    print(f"    Expected user: captain")
+
+    return {
+        "instrument_pid": instrument.name,  # instrument.name is the PID
+        "dt_from": session_start,
+        "dt_to": session_end,
+        "user": "captain",
+        "instrument_db": test_instrument_db,
+        "cdcs_client": cdcs_client,
+    }
 
 
 # ============================================================================

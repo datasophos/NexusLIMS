@@ -58,14 +58,17 @@ class TestHostFileserver:
 
         # Verify CORS headers
         assert response.status_code == 200
-        assert response.headers['Access-Control-Allow-Origin'] == '*'
-        assert 'Access-Control-Allow-Methods' in response.headers
-        assert 'Access-Control-Allow-Headers' in response.headers
+        assert response.headers["Access-Control-Allow-Origin"] == "*"
+        assert "Access-Control-Allow-Methods" in response.headers
+        assert "Access-Control-Allow-Headers" in response.headers
 
         # Verify cache control headers
-        assert response.headers['Cache-Control'] == 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0'
-        assert response.headers['Pragma'] == 'no-cache'
-        assert response.headers['Expires'] == '0'
+        assert (
+            response.headers["Cache-Control"]
+            == "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0"
+        )
+        assert response.headers["Pragma"] == "no-cache"
+        assert response.headers["Expires"] == "0"
 
         # Clean up
         test_file.unlink()

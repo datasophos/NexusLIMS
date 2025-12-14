@@ -63,13 +63,18 @@ EXCLUDE_PATTERNS = [
 ]
 
 
-def setup_file_logging(dry_run: bool = False) -> Path:  # noqa: FBT001, FBT002
+def setup_file_logging(dry_run: bool = False) -> tuple[Path, logging.FileHandler]:  # noqa: FBT001, FBT002
     """
     Set up file logging with timestamped log file.
 
     Creates a log directory structure based on the current date and adds a
     FileHandler to the root logger. Log files are named with timestamps
     in the format YYYYMMDD-HHMM.log (or YYYYMMDD-HHMM_dryrun.log for dry runs).
+
+    Note: This function removes any existing FileHandlers from the root logger
+    before adding the new handler to prevent handler accumulation across multiple
+    invocations (important for testing scenarios where the same process runs
+    multiple CLI commands).
 
     Parameters
     ----------
@@ -78,8 +83,10 @@ def setup_file_logging(dry_run: bool = False) -> Path:  # noqa: FBT001, FBT002
 
     Returns
     -------
-    log_file: pathlib.Path
-        Path to the created log file
+    tuple[pathlib.Path, logging.FileHandler]
+        A tuple containing:
+        - Path to the created log file
+        - The FileHandler instance that was added to the root logger
 
     Raises
     ------
@@ -88,11 +95,20 @@ def setup_file_logging(dry_run: bool = False) -> Path:  # noqa: FBT001, FBT002
     """
     from nexusLIMS.config import settings  # noqa: PLC0415
 
+    # Remove any existing FileHandlers from root logger to prevent accumulation
+    # This is critical when the function is called multiple times (e.g., in tests)
+    # to ensure log messages go only to the current log file
+    for handler in logging.root.handlers[:]:  # Use slice to avoid modifying list during iteration
+        if isinstance(handler, logging.FileHandler):
+            logging.root.removeHandler(handler)
+            handler.close()
+
     now = datetime.now(tz=UTC)
     year = now.strftime("%Y")
     month = now.strftime("%m")
     day = now.strftime("%d")
-    timestamp = now.strftime("%Y%m%d-%H%M")
+    # Include seconds in timestamp to prevent collisions when multiple runs happen in same minute
+    timestamp = now.strftime("%Y%m%d-%H%M%S")
 
     # Create log directory structure: logs/YYYY/MM/DD/
     log_dir = settings.log_dir_path / year / month / day
@@ -111,7 +127,7 @@ def setup_file_logging(dry_run: bool = False) -> Path:  # noqa: FBT001, FBT002
 
     logger.info("Logging to file: %s", log_file)
 
-    return log_file
+    return log_file, file_handler
 
 
 def check_log_for_errors(log_path: Path) -> tuple[bool, list[str]]:
@@ -195,7 +211,7 @@ def send_error_notification(log_path: Path, found_patterns: list[str]) -> None:
     from nexusLIMS.config import settings  # noqa: PLC0415
 
     # Check if email is configured
-    email_config = settings.email_config
+    email_config = settings.email_config()
     if email_config is None:
         logger.info("Email not configured, skipping notification")
         return
@@ -284,7 +300,7 @@ def main(*, dry_run: bool, verbose: int) -> None:
     sessions and generate XML records. It provides file locking to prevent
     concurrent runs, timestamped logging, and email notifications on errors.
     """
-    from nexusLIMS.builder.record_builder import process_new_records  # noqa: PLC0415
+    from nexusLIMS.builder import record_builder  # noqa: PLC0415
     from nexusLIMS.config import settings  # noqa: PLC0415
     from nexusLIMS.utils import setup_loggers  # noqa: PLC0415
 
@@ -307,16 +323,16 @@ def main(*, dry_run: bool, verbose: int) -> None:
     # Setup all nexusLIMS loggers
     setup_loggers(log_level)
 
-    logger.info("Starting NexusLIMS record processor")
-    logger.info("Dry run: %s", dry_run)
-
     # Setup file logging
     try:
-        log_file = setup_file_logging(dry_run)
+        log_file, file_handler = setup_file_logging(dry_run)
     except OSError:
         logger.exception("Failed to setup file logging")
         console.print("[bold red]Failed to setup file logging[/bold red]")
         sys.exit(1)
+
+    logger.info("Starting NexusLIMS record processor")
+    logger.info("Dry run: %s", dry_run)
 
     # Acquire file lock
     lock_file = settings.lock_file_path
@@ -329,7 +345,7 @@ def main(*, dry_run: bool, verbose: int) -> None:
 
             # Run the record builder
             try:
-                process_new_records(dry_run=dry_run)
+                record_builder.process_new_records(dry_run=dry_run)
                 logger.info("Record processing completed")
             except Exception:
                 logger.exception("Error during record processing")
@@ -342,6 +358,13 @@ def main(*, dry_run: bool, verbose: int) -> None:
         console.print(f"[yellow]Lock file already exists at {lock_file}[/yellow]")
         console.print("[yellow]Another instance is already running. Exiting.[/yellow]")
         sys.exit(0)
+    finally:
+        # Ensure file handler is flushed before checking log
+        # This is important for error detection to work correctly
+        file_handler.flush()
+
+    # Log completion before cleaning up handlers
+    logger.info("NexusLIMS record processor finished")
 
     # Check log for errors and send email if needed
     try:
@@ -353,8 +376,10 @@ def main(*, dry_run: bool, verbose: int) -> None:
             logger.info("No errors detected in log")
     except Exception:
         logger.exception("Error while checking log or sending notification")
-
-    logger.info("NexusLIMS record processor finished")
+    finally:
+        # Clean up file handler after all logging is complete
+        logging.root.removeHandler(file_handler)
+        file_handler.close()
 
 
 if __name__ == "__main__":  # pragma: no cover

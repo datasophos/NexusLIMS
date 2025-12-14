@@ -397,9 +397,9 @@ class TestCdcsSearchAndDownload:
         result_ids = {r["id"] for r in results}
         for record in cdcs_test_record:
             assert "template" in record or any("template" in r for r in results)
-            assert (
-                record["record_id"] in result_ids
-            ), f"Record {record['title']} not found in search results"
+            assert record["record_id"] in result_ids, (
+                f"Record {record['title']} not found in search results"
+            )
 
     def test_search_records_with_no_parameters(self, cdcs_client):
         """Test that search_records raises ValueError with no parameters."""
@@ -426,7 +426,9 @@ class TestCdcsSearchAndDownload:
         result_ids = {r["id"] for r in results}
         assert cdcs_test_record[0]["record_id"] in result_ids
 
-    def test_search_records_by_keyword_with_template(self, cdcs_client, cdcs_test_record):
+    def test_search_records_by_keyword_with_template(
+        self, cdcs_client, cdcs_test_record
+    ):
         """Test keyword search combined with template filter."""
         template_id = cdcs.get_template_id()
 

@@ -29,6 +29,7 @@ def mock_retry_request():
     - success_status: HTTP status code to return on success (default 200)
     - success_data: Dict to return from .json() on success
     """
+
     def _create_mock(
         error_status,
         error_text,
@@ -77,8 +78,10 @@ class TestNetworkResilience:
             success_data={"status": "ok"},
         )
 
-        with patch("nexusLIMS.utils.Session.request") as mock_request, \
-             patch("nexusLIMS.utils.time.sleep") as mock_sleep:
+        with (
+            patch("nexusLIMS.utils.Session.request") as mock_request,
+            patch("nexusLIMS.utils.time.sleep") as mock_sleep,
+        ):
             mock_request.side_effect = mock_side_effect
 
             # Make the request
@@ -105,8 +108,10 @@ class TestNetworkResilience:
             success_data={"data": "test"},
         )
 
-        with patch("nexusLIMS.utils.Session.request") as mock_request, \
-             patch("nexusLIMS.utils.time.sleep"):
+        with (
+            patch("nexusLIMS.utils.Session.request") as mock_request,
+            patch("nexusLIMS.utils.time.sleep"),
+        ):
             mock_request.side_effect = mock_side_effect
 
             response = nexus_req("http://test.example.com/api", "GET", retries=3)
@@ -128,8 +133,10 @@ class TestNetworkResilience:
             success_data={"id": "123"},
         )
 
-        with patch("nexusLIMS.utils.Session.request") as mock_request, \
-             patch("nexusLIMS.utils.time.sleep"):
+        with (
+            patch("nexusLIMS.utils.Session.request") as mock_request,
+            patch("nexusLIMS.utils.time.sleep"),
+        ):
             mock_request.side_effect = mock_side_effect
 
             response = nexus_req("http://test.example.com/api", "POST", retries=5)
@@ -151,8 +158,10 @@ class TestNetworkResilience:
             failures_before_success=999,  # Never succeeds
         )
 
-        with patch("nexusLIMS.utils.Session.request") as mock_request, \
-             patch("nexusLIMS.utils.time.sleep"):
+        with (
+            patch("nexusLIMS.utils.Session.request") as mock_request,
+            patch("nexusLIMS.utils.time.sleep"),
+        ):
             mock_request.side_effect = mock_side_effect
 
             # Request with only 2 retries
@@ -178,8 +187,10 @@ class TestNetworkResilience:
             failures_before_success=999,  # Never succeeds, but won't retry anyway
         )
 
-        with patch("nexusLIMS.utils.Session.request") as mock_request, \
-             patch("nexusLIMS.utils.time.sleep"):
+        with (
+            patch("nexusLIMS.utils.Session.request") as mock_request,
+            patch("nexusLIMS.utils.time.sleep"),
+        ):
             mock_request.side_effect = mock_side_effect
 
             response = nexus_req("http://test.example.com/api", "GET", retries=5)
@@ -207,8 +218,10 @@ class TestNetworkResilience:
         )
 
         sleep_calls = []
-        with patch("nexusLIMS.utils.Session.request") as mock_request, \
-             patch("nexusLIMS.utils.time.sleep") as mock_sleep:
+        with (
+            patch("nexusLIMS.utils.Session.request") as mock_request,
+            patch("nexusLIMS.utils.time.sleep") as mock_sleep,
+        ):
             mock_request.side_effect = mock_side_effect
             mock_sleep.side_effect = lambda x: sleep_calls.append(x)
 
@@ -271,8 +284,10 @@ class TestNetworkResilience:
             success_data=[{"id": "workspace-123"}],
         )
 
-        with patch("nexusLIMS.utils.Session.request") as mock_req, \
-             patch("nexusLIMS.utils.time.sleep"):
+        with (
+            patch("nexusLIMS.utils.Session.request") as mock_req,
+            patch("nexusLIMS.utils.time.sleep"),
+        ):
             mock_req.side_effect = mock_side_effect
 
             from nexusLIMS import cdcs
@@ -312,8 +327,10 @@ class TestNetworkResilience:
             base_url="http://nemo.example.com/api/", token="test-token"
         )
 
-        with patch("nexusLIMS.utils.Session.request") as mock_request, \
-             patch("nexusLIMS.utils.time.sleep"):
+        with (
+            patch("nexusLIMS.utils.Session.request") as mock_request,
+            patch("nexusLIMS.utils.time.sleep"),
+        ):
             mock_request.side_effect = mock_request_side_effect
 
             # This should retry and succeed
@@ -410,7 +427,9 @@ class TestNetworkResilience:
 
             # Current behavior: returns 429 without retrying
             assert response.status_code == 429
-            assert mock_request.call_count == 1, "Should not retry on 429 (current behavior)"
+            assert mock_request.call_count == 1, (
+                "Should not retry on 429 (current behavior)"
+            )
 
     def test_connection_timeout_handling(self):
         """

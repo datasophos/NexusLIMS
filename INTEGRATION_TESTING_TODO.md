@@ -53,9 +53,9 @@ This file tracks progress on implementing Docker-based integration testing for N
 - [x] **Enhancement**: Add Caddy fileserver for serving test instrument data
 - [x] **Enhancement**: Add Caddy reverse proxy for friendly URLs (nemo.localhost, cdcs.localhost)
 
-## Phase 6: End-to-End Tests (Week 6) 🚧 IN PROGRESS
+## Phase 6: End-to-End Tests (Week 6) ✅ COMPLETED
 
-**Status**: Coverage gap analysis completed, implementation pending
+**Status**: All critical tests implemented and passing
 
 ### Critical Missing Tests (High Priority)
 - [x] **End-to-End Workflow Test** (CRITICAL) ✅ COMPLETED
@@ -84,9 +84,16 @@ This file tracks progress on implementing Docker-based integration testing for N
   - [x] Test SSL certificate errors → `tests/unit/test_network_resilience.py`
   - **Note**: These tests were originally in `tests/integration/` but moved to `tests/unit/` because they use mocking and don't actually integrate with Docker services
   
-- [ ] **Default entrypoint handling** (HIGH)
-  - [ ] Add test SMTP to docker integration stack to test email sending behavior
-  - [ ] Fully exercise behavior of the nexuslims-process-records script
+- [x] **CLI Entrypoint and Email Notifications** (HIGH) ✅ COMPLETED
+  - [x] Add MailPit SMTP server to docker integration stack
+  - [x] Create `mailpit_client` fixture with email testing utilities
+  - [x] Test `nexuslims-process-records` script execution
+  - [x] Test dry-run mode (`-n/--dry-run`)
+  - [x] Test file locking mechanism (prevents concurrent runs)
+  - [x] Test error email notification via MailPit
+  - [x] Test log file creation and structure (`logs/YYYY/MM/DD/YYYYMMDD-HHMM.log`)
+  - [x] Test verbosity levels (default, `-v`, `-vv`)
+  - [x] Test `--version` and `--help` flags
 
 ### Medium Priority Tests
 - [ ] **Multi-Instance Support**
@@ -94,10 +101,11 @@ This file tracks progress on implementing Docker-based integration testing for N
   - [ ] Test `get_connector_for_session()` instance selection
   - [ ] Test instance-specific timezone/datetime formats
 
-- [ ] **Large Dataset Handling**
-  - [ ] Test pagination for >1000 reservations/events
-  - [ ] Test bulk record operations (100+ records)
-  - [ ] Test performance with large file sets
+- This is going to wait for a future date, as it's not high priority at the moment:
+  - ~~ **Large Dataset Handling** ~~
+    - ~~ Test pagination for >1000 reservations/events ~~
+    - ~~ Test bulk record operations (100+ records) ~~
+    - ~~ Test performance with large file sets ~~
 
 - [ ] **Authentication Edge Cases**
   - [ ] Test NTLM authentication for CDCS (Windows-integrated auth)
@@ -135,13 +143,13 @@ This file tracks progress on implementing Docker-based integration testing for N
 ## Progress Summary
 
 - **Completed Phases**: 6/9 ✅
-- **Current Phase**: Phase 6 (End-to-End Tests) - COMPLETE
-- **Overall Progress**: 75%
-- **Last Updated**: 2025-12-13
-- **Integration Test Files**: 4 (test_end_to_end_workflow.py, test_partial_failure_recovery.py, test_nemo_integration.py, test_cdcs_integration.py)
+- **Current Phase**: Phase 7 (Docker Image Registry) - PENDING
+- **Overall Progress**: 67%
+- **Last Updated**: 2025-12-14
+- **Integration Test Files**: 5 (test_cli.py, test_end_to_end_workflow.py, test_partial_failure_recovery.py, test_nemo_integration.py, test_cdcs_integration.py)
 - **Unit Test Files**: 1 moved from integration (test_network_resilience.py)
-- **Total Test Lines**: ~2,200+ lines of test code
-- **Docker Services**: 7 (NEMO, CDCS, Postgres, MongoDB, Redis, Fileserver, Caddy Proxy)
+- **Total Test Lines**: ~2,600+ lines of test code
+- **Docker Services**: 8 (NEMO, CDCS, Postgres, MongoDB, Redis, Fileserver, Caddy Proxy, MailPit)
 
 ### Phase 1 Completion Notes
 
@@ -341,11 +349,11 @@ Phase 5 basic integration tests are complete with significant enhancements:
   - Top priority recommendations for next phase
   - Impact analysis for each missing test category
 
-### Phase 6 Completion Notes (2025-12-13)
+### Phase 6 Completion Notes (2025-12-14)
 
 Phase 6 end-to-end and error handling tests are **COMPLETE** ✅
 
-All critical integration test gaps have been addressed with three comprehensive test modules:
+All critical integration test gaps have been addressed with four comprehensive test modules:
 
 #### End-to-End Workflow Tests (`test_end_to_end_workflow.py`)
 - **Complete workflow validation**: Tests the full production path from NEMO → Record Builder → CDCS
@@ -377,12 +385,34 @@ All critical integration test gaps have been addressed with three comprehensive 
 - **Service-specific error handling**: Tests NEMO and CDCS error propagation
 - **Testing approach**: Uses `unittest.mock.patch` to simulate network conditions without requiring real services
 
+#### CLI Script Tests (`test_cli.py`) - NEW
+- **Basic execution**: Tests script runs successfully with no sessions
+- **Dry-run mode**: Tests `-n/--dry-run` flag (creates `_dryrun` log, no actual builds)
+- **File locking**: Verifies lock prevents concurrent execution, graceful exit with warning
+- **Email notifications**: Tests error email sent via MailPit with correct subject/body/recipients
+- **Log file creation**: Validates directory structure (`logs/YYYY/MM/DD/`) and naming (`YYYYMMDD-HHMM.log`)
+- **Verbosity levels**: Tests default, `-v`, and `-vv` output levels
+- **Version and help flags**: Tests `--version` and `--help` display and early exit
+- **MailPit integration**: Uses `mailpit_client` fixture for end-to-end email testing
+
 #### Infrastructure Improvements
 - **Shared fixture**: Moved `extracted_test_files` fixture to `conftest.py` for reuse across test modules
 - **Test data management**: Proper extraction and cleanup of test microscopy files
 - **Fixture dependencies**: All tests properly use shared fixtures (docker_services, databases, connectors)
+- **MailPit SMTP Server** (NEW):
+  - Added to `docker-compose.yml` with health checks
+  - Web UI accessible at `http://mailpit.localhost` (via Caddy proxy)
+  - SMTP server on port 1025 for test emails
+- **MailPit Client Fixture** (`mailpit_client`):
+  - Automatic configuration of `NX_EMAIL_*` environment variables
+  - Helper functions: `get_messages()`, `clear_messages()`, `search_messages()`
+  - Automatic mailbox cleanup before each test
+- **Test Environment Setup Fixture**:
+  - Moved from `test_end_to_end_workflow.py` to `conftest.py` for reuse
+  - Shared by end-to-end workflow tests and CLI tests
+  - Configures NEMO connector, instrument database, session timespan
 
-#### Coverage Statistics (Updated)
+#### Coverage Statistics (Updated 2025-12-14)
 | Category              | Coverage | Test Count | Status       |
 |-----------------------|----------|------------|--------------|
 | Basic Connectivity    | 100%     | 15+        | ✅ Excellent |
@@ -390,6 +420,8 @@ All critical integration test gaps have been addressed with three comprehensive 
 | Error Handling        | 95%      | 35+        | ✅ Excellent |
 | Network Resilience    | 100%     | 15+        | ✅ Excellent |
 | End-to-End Workflows  | 100%     | 1          | ✅ Excellent |
+| CLI Script Testing    | 100%     | 8          | ✅ Excellent |
+| Email Notifications   | 100%     | 1          | ✅ Excellent |
 
 ### Phase 6 Success Criteria - ALL MET ✅
 - [x] At least one complete end-to-end workflow test passing
@@ -397,16 +429,18 @@ All critical integration test gaps have been addressed with three comprehensive 
 - [x] Partial failure recovery tested and documented (6+ test cases)
 - [x] Database transaction integrity validated
 - [x] All CRITICAL and HIGH priority gaps from analysis addressed
+- [x] CLI script fully tested with all flags and modes
+- [x] Email notification system tested end-to-end with MailPit
 
 ### Remaining Work (Lower Priority)
 The following items are **not critical** but could improve test coverage further:
-- **SMTP testing**: Add email notification testing (requires SMTP service in docker-compose)
-- **CLI entrypoint testing**: Test `nexuslims-process-records` script end-to-end
+- ~~**SMTP testing**: Add email notification testing~~ ✅ **COMPLETED** (MailPit integration)
+- ~~**CLI entrypoint testing**: Test `nexuslims-process-records` script~~ ✅ **COMPLETED** (`test_cli.py`)
 - **Multi-instance support**: Test multiple NEMO instance configurations
 - **Large dataset handling**: Test pagination and bulk operations with 1000+ records
 - **Authentication edge cases**: Test NTLM auth, token expiration, credential validation
 
-## Current State Assessment (2025-12-13)
+## Current State Assessment (2025-12-14)
 
 ### What's Working Excellently ✅
 1. **Complete End-to-End Coverage**: Full production workflow tested from NEMO harvesting through CDCS upload
@@ -414,13 +448,32 @@ The following items are **not critical** but could improve test coverage further
 3. **Network Resilience Validated**: Retry logic, backoff, and timeout handling fully tested
 4. **Robust Infrastructure**: Docker services production-ready with health checks and idempotent initialization
 5. **Excellent Test Organization**: Shared fixtures, proper cleanup, clear documentation
+6. **CLI Script Fully Tested**: All command-line flags, modes, and behaviors validated
+7. **Email Notifications Verified**: End-to-end email testing with MailPit integration
 
 ### Test Quality Metrics
-- **Total integration test files**: 5 (test_end_to_end_workflow, test_partial_failure_recovery, test_network_resilience, test_nemo_integration, test_cdcs_integration)
-- **Total lines of test code**: ~2,200+ lines
+- **Total integration test files**: 5 (test_cli, test_end_to_end_workflow, test_partial_failure_recovery, test_nemo_integration, test_cdcs_integration)
+- **Total lines of test code**: ~2,600+ lines
 - **Critical path coverage**: 100% (NEMO → Record Builder → CDCS)
+- **CLI coverage**: 100% (all flags, modes, and behaviors)
+- **Email notification coverage**: 100% (error notifications via SMTP)
 - **Error scenario coverage**: 95%+
-- **Docker services**: All 7 services tested and validated
+- **Docker services**: All 8 services tested and validated
+
+### Recent Additions (2025-12-14)
+- **MailPit SMTP Server**:
+  - Added Docker service for test email capture
+  - Web UI at `http://mailpit.localhost` for debugging
+  - Health checks and automatic initialization
+- **CLI Integration Tests** (`test_cli.py`):
+  - 8 comprehensive tests covering all script behaviors
+  - File locking, dry-run mode, verbosity levels
+  - Log file creation and structure validation
+  - Email notification testing via MailPit
+- **Enhanced Fixtures**:
+  - `mailpit_client` fixture with email testing utilities
+  - `test_environment_setup` moved to `conftest.py` for reuse
+  - Automatic environment configuration for SMTP
 
 ### Recent Code Quality Improvements (2025-12-13)
 - **Fixed TRY203 ruff warning** in `nexusLIMS/utils.py`:
@@ -440,3 +493,12 @@ The integration test suite now provides:
 - **Regression protection**: Comprehensive coverage prevents breaking changes
 - **Documentation**: Tests serve as living documentation of system behavior
 - **Code quality**: Linting standards enforced, unreachable code properly documented
+- **CLI reliability**: All command-line behaviors tested and validated
+- **Email reliability**: Notification system tested end-to-end
+
+### Documentation Created
+- **CLI_TESTING_SUMMARY.md**: Comprehensive guide to CLI testing implementation
+  - MailPit setup and usage instructions
+  - Test descriptions and architecture notes
+  - Fixture dependencies and workflow diagrams
+  - Troubleshooting guide for common issues

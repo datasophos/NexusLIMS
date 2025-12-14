@@ -87,6 +87,26 @@ services:
     networks:
       - nexuslims-test
 
+  # Mailpit SMTP testing server
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: nexuslims-test-mailpit
+    ports:
+      - "1025:1025" # SMTP server
+      - "8025:8025" # Web UI
+    environment:
+      # Require SMTP authentication with specific credentials
+      - MP_SMTP_AUTH=test:testpass
+      - MP_SMTP_AUTH_ALLOW_INSECURE=1
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://mailpit:8025/"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    networks:
+      - nexuslims-test
+
   # Caddy reverse proxy for easy-to-remember URLs
   caddy-proxy:
     image: caddy:2-alpine
@@ -97,11 +117,13 @@ services:
       - "nemo.localhost:127.0.0.1"
       - "cdcs.localhost:127.0.0.1"
       - "fileserver.localhost:127.0.0.1"
+      - "mailpit.localhost:127.0.0.1"
     volumes:
       - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
     depends_on:
       - nemo
       - cdcs
+      - mailpit
     networks:
       - nexuslims-test
 
