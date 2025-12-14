@@ -5,94 +5,13 @@ This module tests the complete workflow from NEMO usage events through record
 building to CDCS upload, verifying that all components work together correctly.
 """
 
-import shutil
-import tarfile
-from datetime import datetime, timedelta
-from pathlib import Path
+from datetime import timedelta
 
 import pytest
 from lxml import etree
 
 from nexusLIMS.builder import record_builder
-from nexusLIMS.db.session_handler import Session, db_query
-from nexusLIMS.harvesters.nemo import utils as nemo_utils
-
-# Test data archive location
-TEST_RECORD_FILES_ARCHIVE = (
-    Path(__file__).parents[1] / "unit/files/test_record_files.tar.gz"
-)
-
-
-@pytest.fixture
-def extracted_test_files(tmp_path, test_data_dirs):
-    """
-    Extract test_record_files.tar.gz to test instrument data directory.
-
-    This fixture extracts the test record files archive to the temporary
-    test instrument data directory, making them available for end-to-end
-    record building tests.
-
-    Parameters
-    ----------
-    tmp_path : Path
-        Pytest temporary directory fixture
-
-    Yields
-    ------
-    dict
-        Dictionary with paths and metadata:
-        - 'base_dir': Base directory where files were extracted
-        - 'titan_dir': Path to Titan_TEM instrument directory
-        - 'jeol_dir': Path to JEOL_TEM instrument directory
-        - 'titan_date': Expected date for Titan files (2018-11-13)
-        - 'jeol_date': Expected date for JEOL files (2019-07-24)
-    """
-    from nexusLIMS.config import settings
-
-    # Get the test instrument data directory from settings
-    instrument_data_dir = Path(settings.NX_INSTRUMENT_DATA_PATH)
-    nx_data_dir = Path(settings.NX_DATA_PATH)
-
-    # Extract archive to instrument data directory and track what was extracted
-    print(f"\n[*] Extracting test files to {instrument_data_dir}")
-    extracted_top_level_dirs = []
-
-    with tarfile.open(TEST_RECORD_FILES_ARCHIVE, "r:gz") as tar:
-        # Get list of top-level directories that will be extracted
-        for member in tar.getmembers():
-            if member.isdir():
-                top_level = member.name.split("/")[0]
-                if top_level not in extracted_top_level_dirs:
-                    extracted_top_level_dirs.append(top_level)
-
-        tar.extractall(instrument_data_dir)
-
-    print(f"[+] Top-level directories extracted: {extracted_top_level_dirs}")
-
-    # Dates from the archive structure (Titan: 20181113, JEOL: 20190724)
-    titan_date = datetime(2018, 11, 13)
-    jeol_date = datetime(2019, 7, 24)
-
-    yield {
-        "base_dir": instrument_data_dir,
-        "titan_date": titan_date,
-        "jeol_date": jeol_date,
-    }
-
-    # # Cleanup: Remove extracted directories from both instrument data and NX_DATA_PATH
-    # print("\n[*] Cleaning up extracted test files and generated metadata")
-    # for dir_name in extracted_top_level_dirs:
-    #     # Clean up source files in instrument data directory
-    #     source_dir = instrument_data_dir / dir_name
-    #     if source_dir.exists():
-    #         print(f"[*] Removing {source_dir}")
-    #         shutil.rmtree(source_dir)
-
-    #     # Clean up generated metadata in NX_DATA_PATH
-    #     metadata_dir = nx_data_dir / dir_name
-    #     if metadata_dir.exists():
-    #         print(f"[*] Removing generated metadata {metadata_dir}")
-    #         shutil.rmtree(metadata_dir)
+from nexusLIMS.db.session_handler import db_query
 
 
 @pytest.fixture

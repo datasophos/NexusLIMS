@@ -415,7 +415,7 @@ def validate_record(xml_filename):
     return xml_schema.validate(xml_doc)
 
 
-def build_new_session_records() -> List[Path]:
+def build_new_session_records(generate_previews: bool = True) -> List[Path]:
     """
     Build records for new sessions from the database.
 
@@ -441,7 +441,7 @@ def build_new_session_records() -> List[Path]:
     for s in sessions:
         try:
             db_row = s.insert_record_generation_event()
-            record_text = build_record(session=s)
+            record_text = build_record(session=s, generate_previews=generate_previews)
         except (  # pylint: disable=broad-exception-caught
             FileNotFoundError,
             Exception,

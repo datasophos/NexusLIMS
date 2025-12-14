@@ -13,7 +13,6 @@ from unittest.mock import Mock
 
 import pytest
 import responses
-from requests.exceptions import RetryError
 
 from nexusLIMS import utils
 from nexusLIMS.extractors import get_registry
@@ -275,7 +274,11 @@ class TestUtils:
     # settings (NX_CDCS_USER and NX_CDCS_PASS environment variables)
 
     @responses.activate
-    def test_request_retry(self):
+    def test_request_retry(self, monkeypatch):
+        # Mock time.sleep to avoid waiting during test
+        sleep_calls = []
+        monkeypatch.setattr("time.sleep", lambda x: sleep_calls.append(x))
+
         # Mock the service to always return 503
         responses.add(
             responses.GET,
@@ -284,9 +287,16 @@ class TestUtils:
             status=503,
         )
 
-        with pytest.raises(RetryError) as exception:
-            _ = nexus_req("https://httpstat.us/503", "GET")
-        assert "Max retries exceeded with url" in str(exception)
+        # The new implementation returns the failed response instead of raising
+        # Use fewer retries (2) to speed up the test
+        response = nexus_req("https://httpstat.us/503", "GET", retries=2)
+        assert response.status_code == 503
+
+        # Verify it retried the correct number of times (2 retries + 1 initial = 3 total)
+        assert len(responses.calls) == 3
+
+        # Verify exponential backoff was used (2^0=1s, 2^1=2s)
+        assert sleep_calls == [1, 2]
 
     def test_get_find_command_not_found(self, monkeypatch):
         """Test _get_find_command when find is not on PATH."""

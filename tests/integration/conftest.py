@@ -1163,6 +1163,86 @@ def sample_microscopy_files():
     delete_files("TEST_RECORD_FILES")
 
 
+@pytest.fixture
+def extracted_test_files(test_data_dirs):
+    """
+    Extract test_record_files.tar.gz to test instrument data directory.
+
+    This fixture extracts the test record files archive to the temporary
+    test instrument data directory with metadata about the extracted files.
+    This is useful for end-to-end and error recovery tests that need to know
+    the expected file dates and directory structure.
+
+    Parameters
+    ----------
+    test_data_dirs : dict
+        Test data directories fixture
+
+    Yields
+    ------
+    dict
+        Dictionary with paths and metadata:
+        - 'base_dir': Base directory where files were extracted
+        - 'titan_date': Expected date for Titan files (2018-11-13)
+        - 'jeol_date': Expected date for JEOL files (2019-07-24)
+        - 'extracted_dirs': List of top-level directories extracted
+    """
+    import shutil
+    import tarfile
+    from datetime import datetime
+
+    from nexusLIMS.config import settings
+
+    # Test data archive location
+    archive_path = Path(__file__).parents[1] / "unit/files/test_record_files.tar.gz"
+
+    # Get the test instrument data directory from settings
+    instrument_data_dir = Path(settings.NX_INSTRUMENT_DATA_PATH)
+    nx_data_dir = Path(settings.NX_DATA_PATH)
+
+    # Extract archive to instrument data directory and track what was extracted
+    print(f"\n[*] Extracting test files to {instrument_data_dir}")
+    extracted_top_level_dirs = []
+
+    with tarfile.open(archive_path, "r:gz") as tar:
+        # Get list of top-level directories that will be extracted
+        for member in tar.getmembers():
+            if member.isdir():
+                top_level = member.name.split("/")[0]
+                if top_level not in extracted_top_level_dirs:
+                    extracted_top_level_dirs.append(top_level)
+
+        tar.extractall(instrument_data_dir)
+
+    print(f"[+] Top-level directories extracted: {extracted_top_level_dirs}")
+
+    # Dates from the archive structure (Titan: 20181113, JEOL: 20190724)
+    titan_date = datetime(2018, 11, 13)
+    jeol_date = datetime(2019, 7, 24)
+
+    yield {
+        "base_dir": instrument_data_dir,
+        "titan_date": titan_date,
+        "jeol_date": jeol_date,
+        "extracted_dirs": extracted_top_level_dirs,
+    }
+
+    # Cleanup: Remove extracted directories from both instrument data and NX_DATA_PATH
+    print("\n[*] Cleaning up extracted test files and generated metadata")
+    for dir_name in extracted_top_level_dirs:
+        # Clean up source files in instrument data directory
+        source_dir = instrument_data_dir / dir_name
+        if source_dir.exists():
+            print(f"[*] Removing {source_dir}")
+            shutil.rmtree(source_dir)
+
+        # Clean up generated metadata in NX_DATA_PATH
+        metadata_dir = nx_data_dir / dir_name
+        if metadata_dir.exists():
+            print(f"[*] Removing generated metadata {metadata_dir}")
+            shutil.rmtree(metadata_dir)
+
+
 # ============================================================================
 # Utility Fixtures
 # ============================================================================
