@@ -881,4 +881,4 @@ class TestNemoEndToEndWorkflow:
         """Test NemoConnector __repr__ method."""
         # Simple test that repr works
         repr_str = repr(nemo_connector)
-        assert repr_str == f"Connection to NEMO API at {NEMO_URL}/api/"
+        assert repr_str == f"Connection to NEMO API at {NEMO_URL}"

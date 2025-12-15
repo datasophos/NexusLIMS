@@ -10,6 +10,16 @@ http://nemo.localhost {
     }
 }
 
+# Second NEMO instance hostname (same backend, for multi-instance testing)
+http://nemo2.localhost {
+    reverse_proxy nemo:8000 {
+        # Forward headers needed for Django
+        header_up X-Forwarded-Proto {scheme}
+        header_up X-Forwarded-Host {host}
+        header_up X-Forwarded-For {remote}
+    }
+}
+
 # CDCS service
 http://cdcs.localhost {
     reverse_proxy cdcs:8080 {

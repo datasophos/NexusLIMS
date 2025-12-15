@@ -14,7 +14,7 @@ services:
       - PYTHONUNBUFFERED=1
 
       # NEMO-specific settings
-      - ALLOWED_HOSTS=nemo.localhost,localhost
+      - ALLOWED_HOSTS=nemo.localhost,nemo2.localhost,localhost
     healthcheck:
       test: ["CMD", "curl", "-f", "http://nemo:8000/"]
       interval: 10s
@@ -115,6 +115,7 @@ services:
       - "80:80"
     extra_hosts:
       - "nemo.localhost:127.0.0.1"
+      - "nemo2.localhost:127.0.0.1"
       - "cdcs.localhost:127.0.0.1"
       - "fileserver.localhost:127.0.0.1"
       - "mailpit.localhost:127.0.0.1"
@@ -139,6 +140,7 @@ services:
       # Allow CDCS to resolve *.localhost URLs via host gateway (where Caddy proxy listens on port 80)
       - "cdcs.localhost:host-gateway"
       - "nemo.localhost:host-gateway"
+      - "nemo2.localhost:host-gateway"
       - "fileserver.localhost:host-gateway"
     depends_on:
       cdcs-mongo:

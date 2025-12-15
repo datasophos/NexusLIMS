@@ -24,8 +24,11 @@ if TYPE_CHECKING:
 # Docker compose directory
 DOCKER_DIR = Path(__file__).parent / "docker"
 
-# Service URLs
-NEMO_URL = "http://nemo.localhost"
+# Service URLs (base URLs without /api/)
+NEMO_BASE_URL = "http://nemo.localhost"
+NEMO2_BASE_URL = (
+    "http://nemo2.localhost"  # Second NEMO instance for multi-instance testing
+)
 CDCS_URL = "http://cdcs.localhost"
 FILESERVER_URL = "http://fileserver.localhost"
 MAILPIT_URL = "http://mailpit.localhost"
@@ -34,8 +37,12 @@ MAILPIT_SMTP_PORT = 1025
 MAILPIT_SMTP_USER = "test"
 MAILPIT_SMTP_PASS = "testpass"
 
+# NEMO API URLs (base URLs + /api/)
+NEMO_URL = f"{NEMO_BASE_URL}/api/"
+NEMO2_URL = f"{NEMO2_BASE_URL}/api/"
+
 # Service health check endpoints
-NEMO_HEALTH_URL = f"{NEMO_URL}/"
+NEMO_HEALTH_URL = f"{NEMO_BASE_URL}/"
 CDCS_HEALTH_URL = f"{CDCS_URL}/"
 MAILPIT_HEALTH_URL = f"{MAILPIT_URL}/"
 
@@ -653,9 +660,9 @@ def nemo_url(docker_services) -> str:
     Returns
     -------
     str
-        Base URL for NEMO API (e.g., "http://nemo.localhost")
+        Base URL for NEMO (e.g., "http://nemo.localhost")
     """
-    return NEMO_URL
+    return NEMO_BASE_URL
 
 
 @pytest.fixture
@@ -1195,9 +1202,9 @@ def populated_test_database(test_database, mock_tools_data):
             instruments.append(
                 {
                     "instrument_pid": config["instrument_pid"],
-                    "api_url": f"{NEMO_URL}/api/tools/?id={tool['id']}",
+                    "api_url": f"{NEMO_URL}tools/?id={tool['id']}",
                     "calendar_name": tool["name"],
-                    "calendar_url": f"{NEMO_URL}/calendar/{config['property_tag']}-titan/",
+                    "calendar_url": f"{NEMO_BASE_URL}/calendar/{config['property_tag']}-titan/",
                     "location": "Building 217",
                     "schema_name": tool["name"],
                     "property_tag": config["property_tag"],

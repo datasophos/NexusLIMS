@@ -48,7 +48,7 @@ class TestProcessRecordsScript:
         from nexusLIMS.config import settings
 
         # Capture current time to compare against log file path
-        test_start_time = datetime.now()
+        test_start_time = datetime.now().astimezone()
 
         # Mock sys.argv to pass verbose flag
         monkeypatch.setattr("sys.argv", ["nexuslims-process-records", "-vv"])
@@ -282,7 +282,10 @@ with lock:
 
         runner = CliRunner()
         # Patch using the full module path to ensure it works with CliRunner
-        with patch("nexusLIMS.builder.record_builder.process_new_records", side_effect=failing_process):
+        with patch(
+            "nexusLIMS.builder.record_builder.process_new_records",
+            side_effect=failing_process,
+        ):
             result = runner.invoke(main, [])
 
             # Check that the command succeeded (even with errors, main() should handle them gracefully)
@@ -352,13 +355,13 @@ with lock:
         monkeypatch : pytest.MonkeyPatch
             Pytest fixture for modifying environment and mocking
         """
-        from datetime import UTC, datetime
+        from datetime import datetime
 
         from nexusLIMS.cli.process_records import main
         from nexusLIMS.config import settings
 
         # Note the time before running
-        start_time = datetime.now(tz=UTC)
+        start_time = datetime.now().astimezone()
         start_timestamp = start_time.timestamp()
 
         # Mock sys.argv to pass dry-run and verbose flags

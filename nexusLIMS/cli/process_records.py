@@ -33,7 +33,7 @@ import logging
 import re
 import smtplib
 import sys
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 from email.mime.text import MIMEText
 from pathlib import Path
 
@@ -98,12 +98,14 @@ def setup_file_logging(dry_run: bool = False) -> tuple[Path, logging.FileHandler
     # Remove any existing FileHandlers from root logger to prevent accumulation
     # This is critical when the function is called multiple times (e.g., in tests)
     # to ensure log messages go only to the current log file
-    for handler in logging.root.handlers[:]:  # Use slice to avoid modifying list during iteration
+    for handler in logging.root.handlers[
+        :
+    ]:  # Use slice to avoid modifying list during iteration
         if isinstance(handler, logging.FileHandler):
             logging.root.removeHandler(handler)
             handler.close()
 
-    now = datetime.now(tz=UTC)
+    now = datetime.now().astimezone()
     year = now.strftime("%Y")
     month = now.strftime("%m")
     day = now.strftime("%d")

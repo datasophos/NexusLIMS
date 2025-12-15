@@ -96,10 +96,13 @@ This file tracks progress on implementing Docker-based integration testing for N
   - [x] Test `--version` and `--help` flags
 
 ### Medium Priority Tests
-- [ ] **Multi-Instance Support**
-  - [ ] Test multiple NEMO instances (NX_NEMO_ADDRESS_1, NX_NEMO_ADDRESS_2)
-  - [ ] Test `get_connector_for_session()` instance selection
-  - [ ] Test instance-specific timezone/datetime formats
+- [x] **Multi-Instance Support** ✅ COMPLETED (2025-12-14)
+  - [x] Test multiple NEMO instances (NX_NEMO_ADDRESS_1, NX_NEMO_ADDRESS_2)
+  - [x] Test `get_connector_for_session()` instance selection
+  - [x] Test instance-specific timezone/datetime formats
+  - [x] Test different base URLs for NEMO instances (nemo.localhost, nemo2.localhost)
+  - [x] Test connector selection by base_url matching
+  - [x] Test both instances can fetch data independently
 
 - This is going to wait for a future date, as it's not high priority at the moment:
   - ~~ **Large Dataset Handling** ~~
@@ -145,10 +148,10 @@ This file tracks progress on implementing Docker-based integration testing for N
 - **Completed Phases**: 6/9 ✅
 - **Current Phase**: Phase 7 (Docker Image Registry) - PENDING
 - **Overall Progress**: 67%
-- **Last Updated**: 2025-12-14
-- **Integration Test Files**: 5 (test_cli.py, test_end_to_end_workflow.py, test_partial_failure_recovery.py, test_nemo_integration.py, test_cdcs_integration.py)
+- **Last Updated**: 2025-12-15
+- **Integration Test Files**: 6 (test_cli.py, test_end_to_end_workflow.py, test_partial_failure_recovery.py, test_nemo_integration.py, test_nemo_multi_instance.py, test_cdcs_integration.py)
 - **Unit Test Files**: 1 moved from integration (test_network_resilience.py)
-- **Total Test Lines**: ~2,600+ lines of test code
+- **Total Test Lines**: ~3,200+ lines of test code
 - **Docker Services**: 8 (NEMO, CDCS, Postgres, MongoDB, Redis, Fileserver, Caddy Proxy, MailPit)
 
 ### Phase 1 Completion Notes
@@ -412,7 +415,34 @@ All critical integration test gaps have been addressed with four comprehensive t
   - Shared by end-to-end workflow tests and CLI tests
   - Configures NEMO connector, instrument database, session timespan
 
-#### Coverage Statistics (Updated 2025-12-14)
+#### Multi-Instance NEMO Tests (`test_nemo_multi_instance.py`) - NEW (2025-12-15)
+- **TestMultiInstanceNemoConfiguration**: Configuration validation tests
+  - Multiple NEMO instances properly configured from environment variables
+  - `get_harvesters_enabled()` returns all configured instances
+  - Instance-specific timezone settings (America/Denver vs America/New_York)
+  - Instance-specific datetime format customization
+- **TestMultiInstanceConnectorSelection**: Connector routing tests
+  - `get_connector_for_session()` selects correct instance based on instrument
+  - `get_connector_by_base_url()` finds correct connector by URL
+  - Proper error handling for unknown NEMO instances
+- **TestMultiInstanceTimezoneHandling**: Timezone behavior tests
+  - Each connector uses its configured timezone independently
+  - Datetime formatting respects instance-specific formats
+- **TestMultiInstanceDataRetrieval**: Data fetching tests
+  - Both instances can fetch users independently
+  - Both instances can fetch tools independently
+  - Both instances can fetch reservations independently
+  - Both instances can fetch usage events independently
+- **TestMultiInstanceEdgeCases**: Edge case handling
+  - Single-instance configuration still works correctly
+  - Missing token properly skips instance with warning
+  - Non-sequential instance numbers handled (e.g., 1 and 3, skip 2)
+- **Infrastructure**: Caddy proxy provides virtual instances
+  - `nemo.localhost` and `nemo2.localhost` both point to same NEMO container
+  - Different base URLs allow realistic multi-instance testing without second container
+  - Lightweight approach validates URL routing and connector selection
+
+#### Coverage Statistics (Updated 2025-12-15)
 | Category              | Coverage | Test Count | Status       |
 |-----------------------|----------|------------|--------------|
 | Basic Connectivity    | 100%     | 15+        | ✅ Excellent |
@@ -422,6 +452,7 @@ All critical integration test gaps have been addressed with four comprehensive t
 | End-to-End Workflows  | 100%     | 1          | ✅ Excellent |
 | CLI Script Testing    | 100%     | 8          | ✅ Excellent |
 | Email Notifications   | 100%     | 1          | ✅ Excellent |
+| Multi-Instance NEMO   | 100%     | 16         | ✅ Excellent |
 
 ### Phase 6 Success Criteria - ALL MET ✅
 - [x] At least one complete end-to-end workflow test passing
@@ -436,7 +467,7 @@ All critical integration test gaps have been addressed with four comprehensive t
 The following items are **not critical** but could improve test coverage further:
 - ~~**SMTP testing**: Add email notification testing~~ ✅ **COMPLETED** (MailPit integration)
 - ~~**CLI entrypoint testing**: Test `nexuslims-process-records` script~~ ✅ **COMPLETED** (`test_cli.py`)
-- **Multi-instance support**: Test multiple NEMO instance configurations
+- ~~**Multi-instance support**: Test multiple NEMO instance configurations~~ ✅ **COMPLETED** (`test_nemo_multi_instance.py`)
 - **Large dataset handling**: Test pagination and bulk operations with 1000+ records
 - **Authentication edge cases**: Test NTLM auth, token expiration, credential validation
 
@@ -460,7 +491,20 @@ The following items are **not critical** but could improve test coverage further
 - **Error scenario coverage**: 95%+
 - **Docker services**: All 8 services tested and validated
 
-### Recent Additions (2025-12-14)
+### Recent Additions (2025-12-15)
+- **Multi-Instance NEMO Tests** (`test_nemo_multi_instance.py`):
+  - 16 comprehensive tests for multi-NEMO-instance configurations
+  - Tests configuration, connector selection, timezone handling, and data retrieval
+  - Virtual instances via Caddy proxy (nemo.localhost, nemo2.localhost)
+  - Validates instance-specific settings (timezones, datetime formats)
+  - Edge case handling (single instance, missing tokens, non-sequential numbers)
+- **Infrastructure Updates**:
+  - Caddy proxy now routes both nemo.localhost and nemo2.localhost
+  - Updated conftest.py with NEMO_BASE_URL and NEMO2_BASE_URL constants
+  - Fixed URL construction to properly handle /api/ paths
+  - All 124 integration tests passing
+
+### Previous Additions (2025-12-14)
 - **MailPit SMTP Server**:
   - Added Docker service for test email capture
   - Web UI at `http://mailpit.localhost` for debugging
