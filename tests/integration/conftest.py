@@ -927,12 +927,22 @@ def cdcs_client(cdcs_url, cdcs_credentials, monkeypatch):
     dict
         CDCS connection configuration and utilities
     """
+    from nexusLIMS.config import refresh_settings
+
     # Use monkeypatch for function-scoped environment setup
     monkeypatch.setenv("NX_CDCS_URL", cdcs_url)
     monkeypatch.setenv("NX_CDCS_USER", cdcs_credentials["username"])
     monkeypatch.setenv("NX_CDCS_PASS", cdcs_credentials["password"])
 
-    from nexusLIMS.config import refresh_settings
+    # Ensure the database file exists (Settings validation requires it)
+    # Get the current NX_DB_PATH from environment
+    import os
+
+    db_path = Path(
+        os.environ.get("NX_DB_PATH", "/tmp/nexuslims-test-data/nexuslims_test.db")
+    )
+    db_path.parent.mkdir(parents=True, exist_ok=True)
+    db_path.touch(exist_ok=True)
 
     refresh_settings()
 
