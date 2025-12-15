@@ -6,9 +6,12 @@ and that the routing works correctly.
 """
 
 from pathlib import Path
+
+import pytest
 import requests
 
 
+@pytest.mark.integration
 class TestHostFileserver:
     """Test the host-based fileserver fixture."""
 
