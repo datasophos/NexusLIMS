@@ -76,15 +76,16 @@ class TestCdcsAuthentication:
         assert isinstance(workspace_id, str)
         assert len(workspace_id) > 0
 
-    def test_get_workspace_id_with_invalid_credentials(self, cdcs_url, monkeypatch):
+    def test_get_workspace_id_with_invalid_credentials(
+        self, cdcs_url, safe_refresh_settings
+    ):
         """Test that invalid credentials raise AuthenticationError."""
-        from nexusLIMS.config import refresh_settings
-
-        # Set invalid credentials
-        monkeypatch.setenv("NX_CDCS_URL", cdcs_url)
-        monkeypatch.setenv("NX_CDCS_USER", "invalid_user")
-        monkeypatch.setenv("NX_CDCS_PASS", "invalid_password")
-        refresh_settings()
+        # Set invalid credentials using safe_refresh_settings helper
+        safe_refresh_settings(
+            NX_CDCS_URL=cdcs_url,
+            NX_CDCS_USER="invalid_user",
+            NX_CDCS_PASS="invalid_password",
+        )
 
         # Should raise AuthenticationError
         with pytest.raises(AuthenticationError):
@@ -97,15 +98,16 @@ class TestCdcsAuthentication:
         assert isinstance(template_id, str)
         assert len(template_id) > 0
 
-    def test_get_template_id_with_invalid_credentials(self, cdcs_url, monkeypatch):
+    def test_get_template_id_with_invalid_credentials(
+        self, cdcs_url, safe_refresh_settings
+    ):
         """Test that invalid credentials raise AuthenticationError."""
-        from nexusLIMS.config import refresh_settings
-
-        # Set invalid credentials
-        monkeypatch.setenv("NX_CDCS_URL", cdcs_url)
-        monkeypatch.setenv("NX_CDCS_USER", "invalid_user")
-        monkeypatch.setenv("NX_CDCS_PASS", "invalid_password")
-        refresh_settings()
+        # Set invalid credentials using safe_refresh_settings helper
+        safe_refresh_settings(
+            NX_CDCS_URL=cdcs_url,
+            NX_CDCS_USER="invalid_user",
+            NX_CDCS_PASS="invalid_password",
+        )
 
         # Should raise AuthenticationError
         with pytest.raises(AuthenticationError):

@@ -813,6 +813,68 @@ def cdcs_credentials() -> dict[str, str]:
     }
 
 
+@pytest.fixture
+def safe_refresh_settings(monkeypatch, tmp_path):
+    """
+    Provide a helper to safely refresh settings with valid required paths.
+
+    This fixture is useful for tests that need to call refresh_settings() with
+    custom environment variables (e.g., to test invalid credentials) but still
+    need to satisfy the validation requirements for path settings.
+
+    Parameters
+    ----------
+    monkeypatch : pytest.MonkeyPatch
+        Pytest monkeypatch fixture
+    tmp_path : Path
+        Pytest temporary path fixture
+
+    Returns
+    -------
+    callable
+        A function that accepts **env_vars keyword arguments and safely
+        refreshes settings with those variables plus valid paths
+
+    Examples
+    --------
+    >>> def test_invalid_credentials(safe_refresh_settings):
+    ...     safe_refresh_settings(
+    ...         NX_CDCS_USER="invalid",
+    ...         NX_CDCS_PASS="invalid",
+    ...     )
+    """
+    from nexusLIMS.config import refresh_settings
+
+    def _refresh(**env_vars):
+        """Refresh settings with provided env vars plus valid required paths."""
+        # Create temporary database file
+        db_path = tmp_path / "test.db"
+        db_path.touch()
+
+        # Create temporary directories
+        instrument_data_path = tmp_path / "instrument"
+        data_path = tmp_path / "data"
+        instrument_data_path.mkdir(exist_ok=True)
+        data_path.mkdir(exist_ok=True)
+
+        # Set required path variables if not provided
+        if "NX_DB_PATH" not in env_vars:
+            monkeypatch.setenv("NX_DB_PATH", str(db_path))
+        if "NX_INSTRUMENT_DATA_PATH" not in env_vars:
+            monkeypatch.setenv("NX_INSTRUMENT_DATA_PATH", str(instrument_data_path))
+        if "NX_DATA_PATH" not in env_vars:
+            monkeypatch.setenv("NX_DATA_PATH", str(data_path))
+
+        # Set all provided environment variables
+        for key, value in env_vars.items():
+            monkeypatch.setenv(key, str(value))
+
+        # Refresh settings
+        refresh_settings()
+
+    return _refresh
+
+
 def setup_cdcs_environment(cdcs_url, cdcs_credentials):
     """
     Set up CDCS environment variables and refresh settings.
