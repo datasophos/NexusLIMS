@@ -142,11 +142,13 @@ This file tracks progress on implementing Docker-based integration testing for N
 
 ## Phase 9: Documentation (Week 9) ⏸️ PENDING
 
+- [ ] Create issue documenting the need for integration testing
 - [ ] Create `tests/integration/README.md`
-- [ ] Create `docs/testing/integration-tests.md`
-- [ ] Update `CONTRIBUTING.md`
+- [ ] Create `docs/testing/integration-tests.md` and add to dev guide
 - [ ] Add docstrings to all integration test files
 - [ ] Create troubleshooting guide
+- [ ] Create PR for the integration testing branch
+- [ ] Add towncrier changelog blurb for new integration test suite
 
 ## Progress Summary
 

@@ -124,36 +124,49 @@ jobs:
           NX_CDCS_PASS=admin
           EOF
 
+      - name: Run unit tests
+        run: |
+          uv run pytest tests/ \
+            --ignore=tests/integration \
+            -v \
+            --mpl \
+            --mpl-baseline-path=tests/unit/files/figs \
+            --cov=nexusLIMS \
+            --cov-report term-missing \
+            --tb=short \
+            --maxfail=5
+
       - name: Run integration tests
         run: |
           uv run pytest tests/integration/ \
             -v \
             -m integration \
             --cov=nexusLIMS \
-            --cov-report html:tests/coverage-integration \
+            --cov-append \
+            --cov-report html:tests/coverage-combined \
             --cov-report term-missing \
-            --cov-report=xml:coverage-integration.xml \
+            --cov-report=xml:coverage-combined.xml \
             --tb=short \
             --maxfail=5
         env:
           # Integration test environment variables
           PYTEST_TIMEOUT: 600
 
-      - name: Upload integration test coverage
+      - name: Upload combined test coverage
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-integration-${{ matrix.python-version }}
+          name: coverage-combined-${{ matrix.python-version }}
           path: |
             .coverage
-            coverage-integration.xml
+            coverage-combined.xml
           include-hidden-files: true
 
       - name: Upload HTML coverage report
         if: matrix.python-version == '3.11'
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-integration-html
-          path: tests/coverage-integration
+          name: coverage-combined-html
+          path: tests/coverage-combined
 
       - name: Show Docker logs on failure
         if: failure()
@@ -178,7 +191,7 @@ jobs:
           docker compose down -v --remove-orphans || true
 
   upload-coverage:
-    name: Upload Integration Coverage to Codecov
+    name: Upload Combined Coverage to Codecov
     needs: integration-test
     runs-on: ubuntu-latest
     if: always()
@@ -189,13 +202,13 @@ jobs:
       - name: Download all coverage artifacts
         uses: actions/download-artifact@v4
         with:
-          pattern: coverage-integration-*
+          pattern: coverage-combined-*
           path: coverage-reports
 
-      - name: Upload integration coverage to Codecov
+      - name: Upload combined coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage-reports/**/*.xml
-          flags: integration
+          flags: combined
           fail_ci_if_error: false
