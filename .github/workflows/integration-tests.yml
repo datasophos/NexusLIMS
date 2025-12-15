@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
   schedule:
     # Run integration tests nightly at 3 AM UTC to catch integration issues early
-    - cron: '0 3 * * *'
+    - cron: "0 3 * * *"
 
 env:
   REGISTRY: ghcr.io
@@ -97,6 +97,32 @@ jobs:
 
       - name: Install dependencies
         run: uv sync
+
+      - name: Create test environment for module imports
+        run: |
+          # Create test directories
+          mkdir -p /tmp/nexuslims-test-instrument-data
+          mkdir -p /tmp/nexuslims-test-data
+
+          # Create empty database file (Settings validates it exists)
+          touch /tmp/nexuslims-test-data/nexuslims_test.db
+
+          # Create .env file with minimal config for import-time validation
+          cat > .env << 'EOF'
+          # CI Integration Test Environment
+          # These values allow NexusLIMS modules to be imported during test collection
+          # The actual test fixtures will override these with monkeypatch
+
+          # Test data paths
+          NX_INSTRUMENT_DATA_PATH=/tmp/nexuslims-test-instrument-data
+          NX_DATA_PATH=/tmp/nexuslims-test-data
+          NX_DB_PATH=/tmp/nexuslims-test-data/nexuslims_test.db
+
+          # CDCS configuration (will be overridden by fixtures)
+          NX_CDCS_URL=http://localhost:8080
+          NX_CDCS_USER=admin
+          NX_CDCS_PASS=admin
+          EOF
 
       - name: Run integration tests
         run: |
