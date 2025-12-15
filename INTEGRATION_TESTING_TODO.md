@@ -133,12 +133,12 @@ This file tracks progress on implementing Docker-based integration testing for N
 
 **Note**: Images will be automatically published as public packages when the workflow runs. No manual configuration needed in GitHub package settings - the workflow handles this automatically.
 
-## Phase 8: CI/CD Integration (Week 8) ⏸️ PENDING
+## Phase 8: CI/CD Integration (Week 8) ✅ COMPLETED
 
-- [ ] Create `.github/workflows/integration-tests.yml`
-- [ ] Update `.gitlab-ci.yml`
-- [ ] Update `pyproject.toml` pytest configuration
-- [ ] Add CI status badges to README.md
+- [x] Create `.github/workflows/integration-tests.yml`
+- [x] Remove `.gitlab-ci.yml` since GitLab is no longer used
+- [x] Update `pyproject.toml` pytest configuration to exclude integration tests by default
+- [x] Add CI status badges to README.md for unit tests, integration tests, and image builds
 
 ## Phase 9: Documentation (Week 9) ⏸️ PENDING
 
@@ -150,9 +150,9 @@ This file tracks progress on implementing Docker-based integration testing for N
 
 ## Progress Summary
 
-- **Completed Phases**: 7/9 ✅
-- **Current Phase**: Phase 8 (CI/CD Integration) - PENDING
-- **Overall Progress**: 78%
+- **Completed Phases**: 8/9 ✅
+- **Current Phase**: Phase 9 (Documentation) - PENDING
+- **Overall Progress**: 89%
 - **Last Updated**: 2025-12-15
 - **Integration Test Files**: 6 (test_cli.py, test_end_to_end_workflow.py, test_partial_failure_recovery.py, test_nemo_integration.py, test_nemo_multi_instance.py, test_cdcs_integration.py)
 - **Unit Test Files**: 1 moved from integration (test_network_resilience.py)
@@ -607,4 +607,82 @@ IMAGE_TAG=main-abc1234 docker compose -f docker-compose.ci.yml up -d
 
 # Or from a different registry/owner
 REGISTRY=ghcr.io IMAGE_OWNER=myorg IMAGE_TAG=v1.0 docker compose -f docker-compose.ci.yml up -d
+```
+
+### Phase 8 Completion Notes (2025-12-15)
+
+Phase 8 CI/CD Integration is **COMPLETE** ✅
+
+#### GitHub Actions Workflow (`integration-tests.yml`)
+- **Automated Integration Testing**: Runs full integration test suite on every push to main/feature branches
+- **Matrix Testing**: Tests against Python 3.11 and 3.12
+- **Pre-built Image Support**: Uses pre-built images from GHCR when available, falls back to local builds
+- **Service Health Checks**: Waits for NEMO, CDCS, and MailPit to be fully ready before running tests
+- **Comprehensive Logging**: Shows Docker service logs on failure for debugging
+- **Nightly Schedule**: Runs integration tests nightly at 3 AM UTC to catch issues early
+- **Coverage Reporting**: Uploads integration test coverage to Codecov with `integration` flag
+- **Smart Cleanup**: Always cleans up Docker services, even on failure
+
+#### Workflow Features
+- **Service Startup Strategy**:
+  1. Attempts to pull pre-built images from GHCR
+  2. Tags images for local use
+  3. Uses `docker-compose.ci.yml` if images available
+  4. Falls back to `docker-compose.yml` (builds locally) if images not found
+- **Health Check Timeouts**:
+  - NEMO: 180 seconds (3 minutes)
+  - CDCS: 240 seconds (4 minutes)
+  - MailPit: 60 seconds (1 minute)
+- **Test Execution**:
+  - Runs tests with `-m integration` marker
+  - Verbose output for debugging
+  - Fails fast after 5 failures (`--maxfail=5`)
+  - 600-second timeout for long-running tests
+- **Artifact Upload**:
+  - Coverage data for each Python version
+  - HTML coverage report for Python 3.11
+  - Automatic upload to Codecov
+
+#### pytest Configuration Updates (`pyproject.toml`)
+- **Changed `testpaths`**: Now only includes `["tests/unit"]` by default
+- **Added `addopts`**: `-m 'not integration'` excludes integration tests from default runs
+- **Benefits**:
+  - `pytest` runs only fast unit tests by default
+  - Integration tests require explicit: `pytest -m integration tests/integration/`
+  - Developers can run quick tests without Docker services
+  - CI workflows explicitly opt-in to integration tests
+
+#### GitLab CI Removal
+- **Removed `.gitlab-ci.yml`**: Project no longer uses GitLab CI/CD
+- **GitHub Actions Only**: All CI/CD now runs on GitHub Actions
+
+#### README Badges
+Added four new CI status badges showing:
+1. **Unit Tests**: Status of unit test runs (Python 3.11 & 3.12, Ubuntu & macOS)
+2. **Integration Tests**: Status of Docker-based integration tests
+3. **Build Test Images**: Status of Docker image builds and registry pushes
+4. **Code Coverage**: Overall code coverage from Codecov
+
+#### Benefits
+- **Comprehensive CI Coverage**: Both unit and integration tests run automatically
+- **Fast Feedback**: Unit tests run quickly without Docker overhead
+- **Nightly Validation**: Integration tests catch issues before they affect users
+- **Clear Status**: Badges provide instant visibility into CI health
+- **Developer Friendly**: Local development doesn't require Docker unless needed
+- **Production Ready**: CI validates full stack integration before merging
+
+#### Running Tests Locally
+```bash
+# Run unit tests only (fast, no Docker needed)
+pytest
+
+# Run integration tests (requires Docker services)
+docker compose -f tests/integration/docker/docker-compose.yml up -d
+pytest -m integration tests/integration/
+
+# Run all tests
+pytest tests/
+
+# Run specific integration test
+pytest -m integration tests/integration/test_nemo_integration.py::TestNemoConnector::test_basic_connectivity
 ```
