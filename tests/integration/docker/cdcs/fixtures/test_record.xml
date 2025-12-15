@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Experiment xmlns="https://data.nist.gov/od/dm/nexus/experiment/v1.0">
+    <summary>
+        <instrument pid="TEST-INSTRUMENT-001">Test Instrument for Integration Tests</instrument>
+        <reservationStart>2024-12-01T09:00:00-07:00</reservationStart>
+        <reservationEnd>2024-12-01T17:00:00-07:00</reservationEnd>
+        <motivation>Integration test seed record for testing CDCS search and download functionality</motivation>
+        <user>testuser</user>
+        <project>Integration Test Project</project>
+    </summary>
+</Experiment>

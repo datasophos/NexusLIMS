@@ -29,6 +29,7 @@ tests/integration/**/*.json
 !seed_data.json
 !reservation_questsions.json
 tests/**/*.xml
+!tests/integration/docker/cdcs/fixtures/test_record.xml
 tests/test_report.xml
 .env
 cert_bundle.pem

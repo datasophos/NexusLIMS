@@ -127,7 +127,7 @@ This file tracks progress on implementing Docker-based integration testing for N
 - [x] Create `.github/workflows/build-test-images.yml`
 - [x] Create `tests/integration/docker/docker-compose.ci.yml`
 - [x] Configure workflow to build and push images to GHCR
-- [x] Add multi-platform support (linux/amd64, linux/arm64)
+- [x] Add linux/amd64 platform support (ARM64 not supported by base images)
 - [x] Add automated image testing in workflow
 - [x] Configure weekly rebuilds for security updates
 
@@ -558,7 +558,7 @@ Phase 7 Docker Image Registry is **COMPLETE** ✅
 
 #### GitHub Actions Workflow (`build-test-images.yml`)
 - **Automated Image Building**: Builds NEMO and CDCS test images on every push to main/feature branches
-- **Multi-Platform Support**: Builds for linux/amd64 and linux/arm64 architectures
+- **Platform Support**: Builds for linux/amd64 architecture (ARM64 not supported due to base image constraints)
 - **Container Registry**: Publishes to GitHub Container Registry (GHCR) at `ghcr.io/datasophos/nexuslims-test-{nemo,cdcs}`
 - **Intelligent Tagging**: 
   - Branch-based tags (`main`, `feature/integration_tests`)
@@ -586,7 +586,7 @@ Phase 7 Docker Image Registry is **COMPLETE** ✅
 - **Faster Testing**: Pre-built images reduce CI pipeline time from ~10-15 minutes to ~2-3 minutes
 - **Consistency**: Same images used across all CI runs and local development
 - **Security**: Weekly rebuilds ensure images have latest security patches
-- **Multi-Architecture**: Supports both Intel and ARM (M1/M2) development machines
+- **Architecture Support**: linux/amd64 only (NEMO base image does not support ARM64)
 - **Cost Effective**: GitHub Actions cache reduces redundant builds
 
 #### Image Publishing
