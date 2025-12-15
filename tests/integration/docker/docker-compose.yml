@@ -119,6 +119,8 @@ services:
       - "cdcs.localhost:127.0.0.1"
       - "fileserver.localhost:127.0.0.1"
       - "mailpit.localhost:127.0.0.1"
+      # Map host.docker.internal to host gateway for fileserver access
+      - "host.docker.internal:host-gateway"
     volumes:
       - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
     depends_on:
