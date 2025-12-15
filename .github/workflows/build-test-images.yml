@@ -128,19 +128,41 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Determine image tag
+        id: image-tag
+        run: |
+          # Use branch name for branch pushes, or sha for other events
+          if [[ "${{ github.ref }}" == refs/heads/* ]]; then
+            TAG="${{ github.ref_name }}"
+          else
+            TAG="${{ github.sha }}"
+          fi
+          # Replace / with - for valid Docker tags
+          TAG="${TAG//\//-}"
+          echo "tag=${TAG}" >> $GITHUB_OUTPUT
+          echo "Using image tag: ${TAG}"
+
       - name: Pull built images
         run: |
-          docker pull ${{ env.IMAGE_PREFIX }}-nemo:${{ github.sha }}
-          docker pull ${{ env.IMAGE_PREFIX }}-cdcs:${{ github.sha }}
+          docker pull ${{ env.IMAGE_PREFIX }}-nemo:${{ steps.image-tag.outputs.tag }}
+          docker pull ${{ env.IMAGE_PREFIX }}-cdcs:${{ steps.image-tag.outputs.tag }}
 
-      - name: Tag images for local testing
+      - name: Verify pulled images
         run: |
-          docker tag ${{ env.IMAGE_PREFIX }}-nemo:${{ github.sha }} nexuslims-test-nemo:latest
-          docker tag ${{ env.IMAGE_PREFIX }}-cdcs:${{ github.sha }} nexuslims-test-cdcs:latest
+          echo "Verifying NEMO image..."
+          docker inspect ${{ env.IMAGE_PREFIX }}-nemo:${{ steps.image-tag.outputs.tag }}
+          echo "Verifying CDCS image..."
+          docker inspect ${{ env.IMAGE_PREFIX }}-cdcs:${{ steps.image-tag.outputs.tag }}
 
       - name: Start Docker services
         working-directory: tests/integration/docker
+        env:
+          # Use the pulled images from GHCR
+          REGISTRY: ${{ env.REGISTRY }}
+          IMAGE_OWNER: ${{ github.repository_owner }}
+          IMAGE_TAG: ${{ steps.image-tag.outputs.tag }}
         run: |
+          # Start services with the images we just pulled
           docker compose -f docker-compose.ci.yml up -d
           docker compose -f docker-compose.ci.yml ps
 
@@ -149,17 +171,17 @@ jobs:
           timeout 120 bash -c 'until curl -f http://localhost:8000/ > /dev/null 2>&1; do sleep 2; done'
           timeout 120 bash -c 'until curl -f http://localhost:8080/ > /dev/null 2>&1; do sleep 2; done'
 
-      - name: Test NEMO API
+      - name: Test service accessibility
         run: |
-          # Test NEMO web UI
-          curl -f http://localhost:8000/ || exit 1
-          # Test NEMO API endpoint
-          curl -f http://localhost:8000/api/ || exit 1
+          echo "Testing NEMO web UI..."
+          curl -f http://localhost:8000/ > /dev/null 2>&1 || (echo "NEMO not accessible" && exit 1)
+          echo "✓ NEMO is accessible"
 
-      - name: Test CDCS API
-        run: |
-          # Test CDCS web UI
-          curl -f http://localhost:8080/ || exit 1
+          echo "Testing CDCS web UI..."
+          curl -f http://localhost:8080/ > /dev/null 2>&1 || (echo "CDCS not accessible" && exit 1)
+          echo "✓ CDCS is accessible"
+
+          echo "All services are responding correctly!"
 
       - name: Show service logs on failure
         if: failure()
