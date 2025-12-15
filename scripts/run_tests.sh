@@ -36,6 +36,9 @@ PYTEST_FLAGS=""
 if [[ "$*" == *"--integration"* ]]; then
     echo "Running unit and integration tests..."
     TEST_PATH="tests/"
+    # Override the default marker filter from pyproject.toml to include integration tests
+    # Use --override-ini to clear the addopts marker filter
+    PYTEST_FLAGS="$PYTEST_FLAGS --override-ini=addopts="
 else
     echo "Running unit tests only (use --integration to include integration tests)..."
 fi
