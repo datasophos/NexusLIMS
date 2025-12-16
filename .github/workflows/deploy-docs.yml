@@ -3,7 +3,7 @@ name: Deploy Documentation
 on:
   # Trigger after the test workflow completes successfully
   workflow_run:
-    workflows: ["Tests"]
+    workflows: ["Unit Tests"]
     types:
       - completed
     branches:

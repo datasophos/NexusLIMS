@@ -3,7 +3,7 @@ name: Deploy PR Documentation
 on:
   # Trigger after the test workflow completes for PRs
   workflow_run:
-    workflows: ["Tests"]
+    workflows: ["Unit Tests"]
     types:
       - completed
 
