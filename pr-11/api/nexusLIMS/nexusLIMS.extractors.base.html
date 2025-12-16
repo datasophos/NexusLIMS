@@ -1,0 +1,1145 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>nexusLIMS.extractors.base &#8212; NexusLIMS 2.1.0a0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=af02a5b6" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../_static/documentation_options.js?v=cd47123d"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api/nexusLIMS/nexusLIMS.extractors.base';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.1.0a0';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/pr-11/api/nexusLIMS/nexusLIMS.extractors.base.html" />
+    <link rel="icon" href="../../_static/nexusLIMS_bare_logo.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="nexusLIMS.cli" href="nexusLIMS.cli.html" />
+    <link rel="prev" title="nexusLIMS.extractors.registry" href="nexusLIMS.extractors.registry.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="2.1.0a0" />
+    <meta name="docbuild:last-update" content="Dec, 16, 2025"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.1.0a0 documentation - Home"/>
+    <img src="../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.1.0a0 documentation - Home"/>
+  
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../migration.html">
+    Migration Guide: v1 to v2
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../dev_guide.html">
+    Developer Guide
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="../../reference.html">
+    Reference
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datasophos/NexusLIMS" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://datasophos.co" title="Datasophos" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-globe fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Datasophos</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../migration.html">
+    Migration Guide: v1 to v2
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../dev_guide.html">
+    Developer Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../reference.html">
+    Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datasophos/NexusLIMS" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://datasophos.co" title="Datasophos" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-globe fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Datasophos</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../api.html">API documentation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="nexusLIMS.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS</span></code></a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.db.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.db</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.builder.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.builder</span></code></a></li>
+<li class="toctree-l3 current active has-children"><a class="reference internal" href="nexusLIMS.extractors.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors</span></code></a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="nexusLIMS.extractors.plugins.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nexusLIMS.extractors.profiles.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.profiles</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nexusLIMS.extractors.utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.utils</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nexusLIMS.extractors.registry.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.registry</span></code></a></li>
+<li class="toctree-l4 current active"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.base</span></code></a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.cli.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.harvesters.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.harvesters</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.schemas.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.schemas</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.instruments.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.instruments</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.cdcs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cdcs</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.__main__.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.__main__</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.config.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.config</span></code></a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../reference.html" class="nav-link">Reference</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../../api.html" class="nav-link">API documentation</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="nexusLIMS.html" class="nav-link"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS</span></code></a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="nexusLIMS.extractors.html" class="nav-link"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors</span></code></a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.base</span></code></span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="module-nexusLIMS.extractors.base">
+<span id="nexuslims-extractors-base"></span><h1><a class="reference internal" href="#module-nexusLIMS.extractors.base" title="nexusLIMS.extractors.base"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.base</span></code></a><a class="headerlink" href="#module-nexusLIMS.extractors.base" title="Link to this heading">#</a></h1>
+<p>Base protocols and data structures for the extractor plugin system.</p>
+<p>This module defines the core interfaces that all extractors must implement,
+along with supporting data structures for passing context to extractors.</p>
+<p>The plugin system uses Protocol-based structural typing (PEP 544) rather than
+inheritance, allowing flexibility in implementation while maintaining type safety.</p>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
+<section id="classes">
+<h3>Classes<a class="headerlink" href="#classes" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table table-left">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.extractors.base.ExtractionContext" title="nexusLIMS.extractors.base.ExtractionContext"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ExtractionContext</span></code></a></p></td>
+<td><p>Context information passed to extractors and preview generators.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.extractors.base.BaseExtractor" title="nexusLIMS.extractors.base.BaseExtractor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BaseExtractor</span></code></a></p></td>
+<td><p>Protocol defining the interface for metadata extractors.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.extractors.base.PreviewGenerator" title="nexusLIMS.extractors.base.PreviewGenerator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PreviewGenerator</span></code></a></p></td>
+<td><p>Protocol for thumbnail/preview image generation.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.extractors.base.InstrumentProfile" title="nexusLIMS.extractors.base.InstrumentProfile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">InstrumentProfile</span></code></a></p></td>
+<td><p>Instrument-specific customization profile.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="data">
+<h3>Data<a class="headerlink" href="#data" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table table-left">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.extractors.base.logger" title="nexusLIMS.extractors.base.logger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">logger</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.extractors.base.__all__" title="nexusLIMS.extractors.base.__all__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__all__</span></code></a></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="api">
+<h3>API<a class="headerlink" href="#api" title="Link to this heading">#</a></h3>
+<dl class="py data">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.base.logger">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.base.</span></span><span class="sig-name descname"><span class="pre">logger</span></span><a class="headerlink" href="#nexusLIMS.extractors.base.logger" title="Link to this definition">#</a></dt>
+<dd><p>‘getLogger(…)’</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.base.__all__">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.base.</span></span><span class="sig-name descname"><span class="pre">__all__</span></span><a class="headerlink" href="#nexusLIMS.extractors.base.__all__" title="Link to this definition">#</a></dt>
+<dd><p>[‘BaseExtractor’, ‘ExtractionContext’, ‘PreviewGenerator’]</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.base.ExtractionContext">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.base.</span></span><span class="sig-name descname"><span class="pre">ExtractionContext</span></span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/base.html#ExtractionContext"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.base.ExtractionContext" title="Link to this definition">#</a></dt>
+<dd><p>Context information passed to extractors and preview generators.</p>
+<p>This dataclass encapsulates all the information an extractor needs to
+process a file. Using a context object allows us to add new parameters
+in the future without breaking existing extractors.</p>
+<p class="rubric" id="id7">Attributes</p>
+<p>file_path
+Path to the file to be processed
+instrument
+The instrument that created this file, if known. Can be None for
+files that cannot be associated with a specific instrument.</p>
+<p class="rubric" id="id8">Examples</p>
+<blockquote>
+<div><blockquote>
+<div><blockquote>
+<div><p>from pathlib import Path
+from nexusLIMS.instruments import get_instr_from_filepath
+file_path = Path(“/path/to/data.dm3”)
+instrument = get_instr_from_filepath(file_path)
+context = ExtractionContext(file_path, instrument)</p>
+</div></blockquote>
+</div></blockquote>
+</div></blockquote>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.base.ExtractionContext.file_path">
+<span class="sig-name descname"><span class="pre">file_path</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a></em><a class="headerlink" href="#nexusLIMS.extractors.base.ExtractionContext.file_path" title="Link to this definition">#</a></dt>
+<dd><p>None</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.base.ExtractionContext.instrument">
+<span class="sig-name descname"><span class="pre">instrument</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="nexusLIMS.instruments.html#nexusLIMS.instruments.Instrument" title="nexusLIMS.instruments.Instrument"><span class="pre">Instrument</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.extractors.base.ExtractionContext.instrument" title="Link to this definition">#</a></dt>
+<dd><p>None</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.base.BaseExtractor">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.base.</span></span><span class="sig-name descname"><span class="pre">BaseExtractor</span></span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/base.html#BaseExtractor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.base.BaseExtractor" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Protocol" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">typing.Protocol</span></code></a></p>
+<p>Protocol defining the interface for metadata extractors.</p>
+<p>This is a Protocol (structural subtype) rather than an ABC, meaning any class
+that implements these attributes and methods is automatically considered a
+valid extractor - no inheritance required.</p>
+<p>All extractors MUST implement defensive error handling:</p>
+<ul class="simple">
+<li><p>Never raise exceptions from extract() - catch all and return minimal metadata</p></li>
+<li><p>Always return a dict with an ‘nx_meta’ key</p></li>
+<li><p>Log errors for debugging but don’t propagate them</p></li>
+</ul>
+<p class="rubric" id="id9">Attributes</p>
+<p>name : str
+Unique identifier for this extractor (e.g., “dm3_extractor”).
+Should be a valid Python identifier.
+priority : int
+Priority for this extractor (0-1000, higher = preferred).
+See notes below for conventions.</p>
+<p class="rubric" id="id10">Notes</p>
+<p><strong>Priority Conventions:</strong></p>
+<ul class="simple">
+<li><p>0-49: Low priority (generic/fallback extractors)</p></li>
+<li><p>50-149: Normal priority (standard extractors)</p></li>
+<li><p>150-249: High priority (specialized/optimized extractors)</p></li>
+<li><p>250+: Override priority (force specific behavior)</p></li>
+</ul>
+<p>When multiple extractors support the same file, the registry will
+try them in descending priority order until one’s supports() method
+returns True.</p>
+<p class="rubric" id="id11">Examples</p>
+<blockquote>
+<div><blockquote>
+<div><blockquote>
+<div><p>class DM3Extractor:
+…     “””Extract metadata from DigitalMicrograph .dm3/.dm4 files.”””
+…
+…     name = “dm3_extractor”
+…     priority = 100
+…
+…     def supports(self, context: ExtractionContext) -&gt; bool:
+…         ext = context.file_path.suffix.lower().lstrip(‘.’)
+…         return ext in (‘dm3’, ‘dm4’)
+…
+…     def extract(self, context: ExtractionContext) -&gt; dict[str, Any]:
+…         # Extraction logic here
+…         return {“nx_meta”: {…}}</p>
+</div></blockquote>
+</div></blockquote>
+</div></blockquote>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.base.BaseExtractor.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></em><a class="headerlink" href="#nexusLIMS.extractors.base.BaseExtractor.name" title="Link to this definition">#</a></dt>
+<dd><p>None</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.base.BaseExtractor.priority">
+<span class="sig-name descname"><span class="pre">priority</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></em><a class="headerlink" href="#nexusLIMS.extractors.base.BaseExtractor.priority" title="Link to this definition">#</a></dt>
+<dd><p>None</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.base.BaseExtractor.supports">
+<span class="sig-name descname"><span class="pre">supports</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#nexusLIMS.extractors.base.ExtractionContext" title="nexusLIMS.extractors.base.ExtractionContext"><span class="pre">ExtractionContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/base.html#BaseExtractor.supports"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.base.BaseExtractor.supports" title="Link to this definition">#</a></dt>
+<dd><p>Determine if this extractor can handle the given file.</p>
+<p>This method allows complex logic beyond simple extension matching:</p>
+<ul class="simple">
+<li><p>Content sniffing (read file headers)</p></li>
+<li><p>File size checks</p></li>
+<li><p>Instrument-specific handling</p></li>
+<li><p>Metadata validation</p></li>
+</ul>
+<p>The registry will call supports() on extractors in priority order
+until one returns True.</p>
+<p class="rubric" id="parameters">Parameters</p>
+<p>context
+Context containing file path, instrument info, etc.</p>
+<p class="rubric" id="returns">Returns</p>
+<p>bool
+True if this extractor can handle this file, False otherwise</p>
+<p class="rubric" id="id12">Examples</p>
+<p>Extension-based matching:</p>
+<blockquote>
+<div><blockquote>
+<div><blockquote>
+<div><p>def supports(self, context: ExtractionContext) -&gt; bool:
+…     ext = context.file_path.suffix.lower().lstrip(‘.’)
+…     return ext in (‘dm3’, ‘dm4’)</p>
+</div></blockquote>
+</div></blockquote>
+</div></blockquote>
+<p>Content sniffing:</p>
+<blockquote>
+<div><blockquote>
+<div><blockquote>
+<div><p>def supports(self, context: ExtractionContext) -&gt; bool:
+…     if context.file_path.suffix.lower() != ‘.tif’:
+…         return False
+…     with open(context.file_path, ‘rb’) as f:
+…         header = f.read(1024)
+…         return b’[User]’ in header  # FEI signature</p>
+</div></blockquote>
+</div></blockquote>
+</div></blockquote>
+<p>Instrument-specific:</p>
+<blockquote>
+<div><blockquote>
+<div><blockquote>
+<div><p>def supports(self, context: ExtractionContext) -&gt; bool:
+…     return (context.instrument is not None and
+…             context.instrument.name.startswith(“FEI-Quanta”))</p>
+</div></blockquote>
+</div></blockquote>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.base.BaseExtractor.extract">
+<span class="sig-name descname"><span class="pre">extract</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#nexusLIMS.extractors.base.ExtractionContext" title="nexusLIMS.extractors.base.ExtractionContext"><span class="pre">ExtractionContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/base.html#BaseExtractor.extract"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.base.BaseExtractor.extract" title="Link to this definition">#</a></dt>
+<dd><p>Extract metadata from the file.</p>
+<p>CRITICAL: This method MUST follow defensive design principles:</p>
+<ul class="simple">
+<li><p>Never raise exceptions - catch all errors and return minimal metadata</p></li>
+<li><p>Always return a dict with an ‘nx_meta’ key</p></li>
+<li><p>Log errors for debugging but continue gracefully</p></li>
+</ul>
+<p>The returned dictionary should contain:</p>
+<ul class="simple">
+<li><p>‘nx_meta’: NexusLIMS-specific metadata (required)</p></li>
+<li><p>Other keys: Raw metadata as extracted from the file (optional)</p></li>
+</ul>
+<p>The ‘nx_meta’ sub-dictionary should contain:</p>
+<ul class="simple">
+<li><p>‘Creation Time’: ISO format datetime string</p></li>
+<li><p>‘Data Type’: Human-readable data type (e.g., “STEM_Imaging”)</p></li>
+<li><p>‘DatasetType’: Dataset type per schema (e.g., “Image”, “Spectrum”)</p></li>
+<li><p>‘Data Dimensions’: String like “(1024, 1024)” or “(12, 1024, 1024)”</p></li>
+<li><p>‘Instrument ID’: Instrument PID from database</p></li>
+<li><p>‘warnings’: List of warning messages (optional)</p></li>
+</ul>
+<p class="rubric" id="id13">Parameters</p>
+<p>context
+Context containing file path, instrument info, etc.</p>
+<p class="rubric" id="id14">Returns</p>
+<p>dict
+Metadata dictionary with mandatory ‘nx_meta’ key</p>
+<p class="rubric" id="id15">Examples</p>
+<p>Successful extraction:</p>
+<blockquote>
+<div><blockquote>
+<div><blockquote>
+<div><p>def extract(self, context: ExtractionContext) -&gt; dict[str, Any]:
+…     try:
+…         # Extraction logic
+…         metadata = {“nx_meta”: {
+…             “Creation Time”: “2024-01-15T10:30:00-05:00”,
+…             “Data Type”: “STEM_Imaging”,
+…             “DatasetType”: “Image”,
+…             “Data Dimensions”: “(1024, 1024)”,
+…             “Instrument ID”: “643-Titan”
+…         }}
+…         return metadata
+…     except Exception as e:
+…         logger.error(f”Extraction failed: {e}”)
+…         return self._minimal_metadata(context)</p>
+</div></blockquote>
+</div></blockquote>
+</div></blockquote>
+<p>Minimal metadata on error:</p>
+<blockquote>
+<div><blockquote>
+<div><blockquote>
+<div><p>def _minimal_metadata(self, context: ExtractionContext) -&gt; dict:
+…     return {
+…         “nx_meta”: {
+…             “DatasetType”: “Unknown”,
+…             “Data Type”: “Unknown”,
+…             “Creation Time”: context.file_path.stat().st_mtime,
+…             “Instrument ID”: None,
+…             “warnings”: [“Extraction failed”]
+…         }
+…     }</p>
+</div></blockquote>
+</div></blockquote>
+</div></blockquote>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.base.PreviewGenerator">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.base.</span></span><span class="sig-name descname"><span class="pre">PreviewGenerator</span></span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/base.html#PreviewGenerator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.base.PreviewGenerator" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Protocol" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">typing.Protocol</span></code></a></p>
+<p>Protocol for thumbnail/preview image generation.</p>
+<p>Preview generators are separate from extractors to allow:</p>
+<ul class="simple">
+<li><p>Different preview strategies for the same file type</p></li>
+<li><p>Reusable preview logic across extractors</p></li>
+<li><p>Batch preview generation independent of extraction</p></li>
+</ul>
+<p>Like BaseExtractor, this is a Protocol (structural subtype).</p>
+<p class="rubric" id="id16">Attributes</p>
+<p>name : str
+Unique identifier for this generator
+priority : int
+Priority (same conventions as BaseExtractor)</p>
+<p class="rubric" id="id17">Examples</p>
+<blockquote>
+<div><blockquote>
+<div><blockquote>
+<div><p>class HyperSpyPreview:
+…     “””Generate previews using HyperSpy.”””
+…
+…     name = “hyperspy_preview”
+…     priority = 100
+…
+…     def supports(self, context: ExtractionContext) -&gt; bool:
+…         ext = context.file_path.suffix.lower().lstrip(‘.’)
+…         return ext in (‘dm3’, ‘dm4’, ‘ser’)
+…
+…     def generate(self, context: ExtractionContext,
+…                  output_path: Path) -&gt; bool:
+…         # Preview generation logic
+…         return True</p>
+</div></blockquote>
+</div></blockquote>
+</div></blockquote>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.base.PreviewGenerator.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></em><a class="headerlink" href="#nexusLIMS.extractors.base.PreviewGenerator.name" title="Link to this definition">#</a></dt>
+<dd><p>None</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.base.PreviewGenerator.priority">
+<span class="sig-name descname"><span class="pre">priority</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></em><a class="headerlink" href="#nexusLIMS.extractors.base.PreviewGenerator.priority" title="Link to this definition">#</a></dt>
+<dd><p>None</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.base.PreviewGenerator.supports">
+<span class="sig-name descname"><span class="pre">supports</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#nexusLIMS.extractors.base.ExtractionContext" title="nexusLIMS.extractors.base.ExtractionContext"><span class="pre">ExtractionContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/base.html#PreviewGenerator.supports"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.base.PreviewGenerator.supports" title="Link to this definition">#</a></dt>
+<dd><p>Determine if this generator can create a preview for the given file.</p>
+<p class="rubric" id="id18">Parameters</p>
+<p>context
+Context containing file path, instrument info, etc.</p>
+<p class="rubric" id="id19">Returns</p>
+<p>bool
+True if this generator can handle this file</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.base.PreviewGenerator.generate">
+<span class="sig-name descname"><span class="pre">generate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#nexusLIMS.extractors.base.ExtractionContext" title="nexusLIMS.extractors.base.ExtractionContext"><span class="pre">ExtractionContext</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/base.html#PreviewGenerator.generate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.base.PreviewGenerator.generate" title="Link to this definition">#</a></dt>
+<dd><p>Generate a thumbnail preview and save to output_path.</p>
+<p>This method should:</p>
+<ul class="simple">
+<li><p>Create a square thumbnail (typically 500x500 pixels)</p></li>
+<li><p>Save to output_path as PNG</p></li>
+<li><p>Return True on success, False on failure</p></li>
+<li><p>Never raise exceptions (catch all and return False)</p></li>
+</ul>
+<p class="rubric" id="id20">Parameters</p>
+<p>context
+Context containing file path, instrument info, etc.
+output_path
+Where to save the generated preview PNG</p>
+<p class="rubric" id="id21">Returns</p>
+<p>bool
+True if preview was successfully generated, False otherwise</p>
+<p class="rubric" id="id22">Examples</p>
+<blockquote>
+<div><blockquote>
+<div><blockquote>
+<div><p>def generate(self, context: ExtractionContext,
+…              output_path: Path) -&gt; bool:
+…     try:
+…         # Create thumbnail
+…         output_path.parent.mkdir(parents=True, exist_ok=True)
+…         # … generation logic …
+…         return True
+…     except Exception as e:
+…         logger.error(f”Preview generation failed: {e}”)
+…         return False</p>
+</div></blockquote>
+</div></blockquote>
+</div></blockquote>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.base.InstrumentProfile">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.base.</span></span><span class="sig-name descname"><span class="pre">InstrumentProfile</span></span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/base.html#InstrumentProfile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.base.InstrumentProfile" title="Link to this definition">#</a></dt>
+<dd><p>Instrument-specific customization profile.</p>
+<p>Decouples instrument-specific logic from extractors, making it easy to add
+custom behavior for specific microscopes without modifying extractor code.</p>
+<p>This is the CRITICAL component for extensibility - each NexusLIMS installation
+has unique instruments, and this system makes it trivial to add customizations.</p>
+<p class="rubric" id="id23">Attributes</p>
+<p>instrument_id
+Instrument identifier (e.g., “FEI-Titan-STEM-630901”)
+parsers
+Custom metadata parsing functions for this instrument.
+Keys are parser names, values are callables.
+transformations
+Metadata transformation functions applied after extraction.
+Keys are transform names, values are callables.
+extractor_overrides
+Force specific extractors for certain extensions.
+Keys are file extensions, values are extractor names.
+static_metadata
+Metadata to inject for all files from this instrument.
+Keys are metadata paths, values are static values.</p>
+<p class="rubric" id="id24">Examples</p>
+<p>Creating a custom profile for FEI Titan STEM:</p>
+<blockquote>
+<div><blockquote>
+<div><blockquote>
+<div><p>def parse_643_titan_microscope(metadata: dict) -&gt; dict:
+…     # Custom parsing logic
+…     return metadata</p>
+<p>titan_stem_profile = InstrumentProfile(
+…     instrument_id=”FEI-Titan-STEM-630901”,
+…     parsers={
+…         “microscope_info”: parse_643_titan_microscope,
+…     },
+…     static_metadata={
+…         “nx_meta.Facility”: “Nexus Facility”,
+…         “nx_meta.Building”: “Bldg. 1”,
+…     }
+… )</p>
+</div></blockquote>
+</div></blockquote>
+</div></blockquote>
+<p>Using extractor overrides:</p>
+<blockquote>
+<div><blockquote>
+<div><blockquote>
+<div><p>zeiss_profile = InstrumentProfile(
+…     instrument_id=”Zeiss-Merlin-12345”,
+…     extractor_overrides={
+…         “tif”: “zeiss_tif_extractor”,  # Use Zeiss-specific TIF extractor
+…     }
+… )</p>
+</div></blockquote>
+</div></blockquote>
+</div></blockquote>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.base.InstrumentProfile.instrument_id">
+<span class="sig-name descname"><span class="pre">instrument_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></em><a class="headerlink" href="#nexusLIMS.extractors.base.InstrumentProfile.instrument_id" title="Link to this definition">#</a></dt>
+<dd><p>None</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.base.InstrumentProfile.parsers">
+<span class="sig-name descname"><span class="pre">parsers</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Callable" title="(in Python v3.11)"><span class="pre">Callable</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#nexusLIMS.extractors.base.InstrumentProfile.parsers" title="Link to this definition">#</a></dt>
+<dd><p>‘field(…)’</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.base.InstrumentProfile.transformations">
+<span class="sig-name descname"><span class="pre">transformations</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Callable" title="(in Python v3.11)"><span class="pre">Callable</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#nexusLIMS.extractors.base.InstrumentProfile.transformations" title="Link to this definition">#</a></dt>
+<dd><p>‘field(…)’</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.base.InstrumentProfile.extractor_overrides">
+<span class="sig-name descname"><span class="pre">extractor_overrides</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#nexusLIMS.extractors.base.InstrumentProfile.extractor_overrides" title="Link to this definition">#</a></dt>
+<dd><p>‘field(…)’</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.base.InstrumentProfile.static_metadata">
+<span class="sig-name descname"><span class="pre">static_metadata</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#nexusLIMS.extractors.base.InstrumentProfile.static_metadata" title="Link to this definition">#</a></dt>
+<dd><p>‘field(…)’</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="nexusLIMS.extractors.registry.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.registry</span></code></p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="nexusLIMS.cli.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli</span></code></p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#classes">Classes</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data">Data</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#api">API</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.base.logger"><code class="docutils literal notranslate"><span class="pre">logger</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.base.__all__"><code class="docutils literal notranslate"><span class="pre">__all__</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.base.ExtractionContext"><code class="docutils literal notranslate"><span class="pre">ExtractionContext</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.base.ExtractionContext.file_path"><code class="docutils literal notranslate"><span class="pre">ExtractionContext.file_path</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.base.ExtractionContext.instrument"><code class="docutils literal notranslate"><span class="pre">ExtractionContext.instrument</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.base.BaseExtractor"><code class="docutils literal notranslate"><span class="pre">BaseExtractor</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.base.BaseExtractor.name"><code class="docutils literal notranslate"><span class="pre">BaseExtractor.name</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.base.BaseExtractor.priority"><code class="docutils literal notranslate"><span class="pre">BaseExtractor.priority</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.base.BaseExtractor.supports"><code class="docutils literal notranslate"><span class="pre">BaseExtractor.supports()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.base.BaseExtractor.extract"><code class="docutils literal notranslate"><span class="pre">BaseExtractor.extract()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.base.PreviewGenerator"><code class="docutils literal notranslate"><span class="pre">PreviewGenerator</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.base.PreviewGenerator.name"><code class="docutils literal notranslate"><span class="pre">PreviewGenerator.name</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.base.PreviewGenerator.priority"><code class="docutils literal notranslate"><span class="pre">PreviewGenerator.priority</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.base.PreviewGenerator.supports"><code class="docutils literal notranslate"><span class="pre">PreviewGenerator.supports()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.base.PreviewGenerator.generate"><code class="docutils literal notranslate"><span class="pre">PreviewGenerator.generate()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.base.InstrumentProfile"><code class="docutils literal notranslate"><span class="pre">InstrumentProfile</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.base.InstrumentProfile.instrument_id"><code class="docutils literal notranslate"><span class="pre">InstrumentProfile.instrument_id</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.base.InstrumentProfile.parsers"><code class="docutils literal notranslate"><span class="pre">InstrumentProfile.parsers</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.base.InstrumentProfile.transformations"><code class="docutils literal notranslate"><span class="pre">InstrumentProfile.transformations</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.base.InstrumentProfile.extractor_overrides"><code class="docutils literal notranslate"><span class="pre">InstrumentProfile.extractor_overrides</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.base.InstrumentProfile.static_metadata"><code class="docutils literal notranslate"><span class="pre">InstrumentProfile.static_metadata</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/api/nexusLIMS/nexusLIMS.extractors.base.md.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2025, datasophos, LLC.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
