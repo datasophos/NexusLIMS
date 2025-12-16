@@ -3,6 +3,13 @@
 
 FROM nanofab/nemo_splash_pad:latest
 
+# OCI image labels for container registry
+LABEL org.opencontainers.image.title="NexusLIMS NEMO Integration Test Image"
+LABEL org.opencontainers.image.description="NEMO lab management system instance for integration testing the NexusLIMS main codebase. Provides reservation and usage event data harvesting."
+LABEL org.opencontainers.image.source="https://github.com/datasophos/NexusLIMS"
+LABEL org.opencontainers.image.documentation="https://github.com/datasophos/NexusLIMS/blob/main/tests/integration/README.md"
+LABEL org.opencontainers.image.vendor="datasophos, LLC"
+
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
     netcat-openbsd \

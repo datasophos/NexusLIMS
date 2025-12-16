@@ -3,8 +3,14 @@
 
 FROM python:3.7-slim-bookworm
 
-LABEL maintainer="datasophos, llc"
-LABEL description="NexusLIMS CDCS test instance for integration testing"
+LABEL maintainer="datasophos, LLC"
+
+# OCI image labels for container registry
+LABEL org.opencontainers.image.title="NexusLIMS CDCS Integration Test Image"
+LABEL org.opencontainers.image.description="CDCS (Curator Data Collection System) instance for integration testing the NexusLIMS main codebase. Handles record upload, retrieval, and validation."
+LABEL org.opencontainers.image.source="https://github.com/datasophos/NexusLIMS"
+LABEL org.opencontainers.image.documentation="https://github.com/datasophos/NexusLIMS/blob/main/tests/integration/README.md"
+LABEL org.opencontainers.image.vendor="datasophos, LLC"
 
 # Directory in container for project source files
 ENV DOCKYARD_SRVPROJ="/srv/curator"

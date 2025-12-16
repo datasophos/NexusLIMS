@@ -22,7 +22,7 @@ env:
 
 jobs:
   build-nemo:
-    name: Build NEMO Test Image
+    name: Build NEMO Integration Test Image
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -66,7 +66,7 @@ jobs:
           platforms: linux/amd64
 
   build-cdcs:
-    name: Build CDCS Test Image
+    name: Build CDCS Integration Test Image
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -110,7 +110,7 @@ jobs:
           platforms: linux/amd64
 
   test-images:
-    name: Test Docker Images
+    name: Test Integration Test Docker Images
     needs: [build-nemo, build-cdcs]
     runs-on: ubuntu-latest
     permissions:
