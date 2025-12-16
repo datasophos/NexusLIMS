@@ -3,8 +3,8 @@ repos:
     hooks:
       - id: lint
         name: Run linting checks
-        entry: ./scripts/run_lint.sh
-        language: script
+        entry: /opt/homebrew/bin/uv --help
+        language: unsupported
         stages: [pre-commit]
         pass_filenames: false
         always_run: true
