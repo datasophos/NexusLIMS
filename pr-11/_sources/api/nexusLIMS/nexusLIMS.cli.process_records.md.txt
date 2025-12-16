@@ -27,6 +27,22 @@
   - ```{autodoc2-docstring} nexusLIMS.cli.process_records.send_error_notification
     :summary:
     ```
+* - {py:obj}`_get_log_level <nexusLIMS.cli.process_records._get_log_level>`
+  - ```{autodoc2-docstring} nexusLIMS.cli.process_records._get_log_level
+    :summary:
+    ```
+* - {py:obj}`_setup_logging <nexusLIMS.cli.process_records._setup_logging>`
+  - ```{autodoc2-docstring} nexusLIMS.cli.process_records._setup_logging
+    :summary:
+    ```
+* - {py:obj}`_run_with_lock <nexusLIMS.cli.process_records._run_with_lock>`
+  - ```{autodoc2-docstring} nexusLIMS.cli.process_records._run_with_lock
+    :summary:
+    ```
+* - {py:obj}`_handle_error_notification <nexusLIMS.cli.process_records._handle_error_notification>`
+  - ```{autodoc2-docstring} nexusLIMS.cli.process_records._handle_error_notification
+    :summary:
+    ```
 * - {py:obj}`main <nexusLIMS.cli.process_records.main>`
   - ```{autodoc2-docstring} nexusLIMS.cli.process_records.main
     :summary:
@@ -117,6 +133,34 @@
 :canonical: nexusLIMS.cli.process_records.send_error_notification
 
 ```{autodoc2-docstring} nexusLIMS.cli.process_records.send_error_notification
+```
+````
+
+````{py:function} _get_log_level(verbose: int) -> int
+:canonical: nexusLIMS.cli.process_records._get_log_level
+
+```{autodoc2-docstring} nexusLIMS.cli.process_records._get_log_level
+```
+````
+
+````{py:function} _setup_logging(log_level: int, dry_run: bool) -> tuple[pathlib.Path, logging.FileHandler]
+:canonical: nexusLIMS.cli.process_records._setup_logging
+
+```{autodoc2-docstring} nexusLIMS.cli.process_records._setup_logging
+```
+````
+
+````{py:function} _run_with_lock(dry_run: bool) -> None
+:canonical: nexusLIMS.cli.process_records._run_with_lock
+
+```{autodoc2-docstring} nexusLIMS.cli.process_records._run_with_lock
+```
+````
+
+````{py:function} _handle_error_notification(log_file: pathlib.Path, file_handler: logging.FileHandler) -> None
+:canonical: nexusLIMS.cli.process_records._handle_error_notification
+
+```{autodoc2-docstring} nexusLIMS.cli.process_records._handle_error_notification
 ```
 ````
 

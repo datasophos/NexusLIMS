@@ -829,7 +829,6 @@ window.addEventListener("load", load);
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">timedelta</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.db.session_handler</span><span class="w"> </span><span class="kn">import</span> <span class="n">Session</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.harvesters.reservation_event</span><span class="w"> </span><span class="kn">import</span> <span class="n">ReservationEvent</span>
@@ -850,7 +849,7 @@ window.addEventListener("load", load);
 <div class="viewcode-block" id="res_event_from_session">
 <a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.harvesters.nemo.html#nexusLIMS.harvesters.nemo.res_event_from_session">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">res_event_from_session</span><span class="p">(</span>
-    <span class="n">session</span><span class="p">:</span> <span class="n">Session</span><span class="p">,</span> <span class="n">connector</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">NemoConnector</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">Session</span><span class="p">,</span> <span class="n">connector</span><span class="p">:</span> <span class="n">NemoConnector</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ReservationEvent</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create reservation event from session.</span>
