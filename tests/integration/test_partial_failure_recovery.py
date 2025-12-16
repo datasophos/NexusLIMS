@@ -23,12 +23,13 @@ from nexusLIMS.db.session_handler import Session, db_query
 class TestPartialFailureRecovery:
     """Test error handling and recovery for partial failures."""
 
-    def test_cdcs_upload_failure_after_record_built(
+    def test_cdcs_upload_failure_after_record_built(  # noqa: PLR0913
         self,
         docker_services_running,
         nemo_connector,
         populated_test_database,
         extracted_test_files,
+        cdcs_client,
         monkeypatch,
     ):
         """
@@ -53,6 +54,8 @@ class TestPartialFailureRecovery:
             Test database with instruments
         extracted_test_files : dict
             Extracted test files
+        cdcs_client : dict
+            CDCS client configuration (ensures CDCS environment is set up)
         monkeypatch : pytest.MonkeyPatch
             Pytest monkeypatch fixture
         """
@@ -142,12 +145,13 @@ class TestPartialFailureRecovery:
         for xml_file in xml_files:
             assert xml_file.exists(), f"Original XML file {xml_file} should still exist"
 
-    def test_cdcs_partial_upload_failure(
+    def test_cdcs_partial_upload_failure(  # noqa: PLR0913
         self,
         docker_services_running,
         nemo_connector,
         populated_test_database,
         extracted_test_files,
+        cdcs_client,
         monkeypatch,
     ):
         """
@@ -169,6 +173,8 @@ class TestPartialFailureRecovery:
             Test database
         extracted_test_files : dict
             Extracted test files
+        cdcs_client : dict
+            CDCS client configuration (ensures CDCS environment is set up)
         monkeypatch : pytest.MonkeyPatch
             Pytest monkeypatch fixture
         """

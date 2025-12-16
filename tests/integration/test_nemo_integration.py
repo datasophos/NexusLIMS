@@ -676,9 +676,9 @@ class TestNemoAPIEdgeCases:
         # Get usage events for this user
         usage_events = nemo_connector.get_usage_events(user=user_id)
 
-        # Should return a list with four events
+        # Should return a list with three events (IDs 29, 30, 31 from seed data)
         assert isinstance(usage_events, list)
-        assert len(usage_events) == 4
+        assert len(usage_events) == 3
 
         # Verify that all events are for the specified user
         for event in usage_events:

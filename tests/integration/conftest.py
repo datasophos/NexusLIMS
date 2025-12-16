@@ -1514,8 +1514,13 @@ def extracted_test_files(test_data_dirs):
     print(f"[+] Top-level directories extracted: {extracted_top_level_dirs}")
 
     # Dates from the archive structure (Titan: 20181113, JEOL: 20190724)
-    titan_date = datetime(2018, 11, 13).astimezone()
-    jeol_date = datetime(2019, 7, 24).astimezone()
+    # Use America/Denver timezone to properly handle DST and match NEMO seed data
+    # This ensures tests work consistently across different runner timezones
+    import zoneinfo
+
+    denver_tz = zoneinfo.ZoneInfo("America/Denver")
+    titan_date = datetime(2018, 11, 13, tzinfo=denver_tz)
+    jeol_date = datetime(2019, 7, 24, tzinfo=denver_tz)
 
     yield {
         "base_dir": instrument_data_dir,
