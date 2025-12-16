@@ -1,8 +1,12 @@
+# ruff: noqa: T201, E402
 """
 Settings override for NexusLIMS CDCS test instance.
 
 This file is imported at the end of mdcs/settings.py to enable
 anonymous access to public documents and keyword search.
+
+Note: E402 (module level imports not at top) is intentional - this file
+is imported after Django settings are configured.
 """
 
 import os
@@ -63,9 +67,7 @@ else:
 
 # Note: We don't check core_main_app URLs here because Django might not be fully
 # initialized yet. The core_main_app configuration will be checked during runtime.
-print(
-    "[NexusLIMS Settings Override] core_main_app configuration will be verified at runtime"
-)
+print("[NexusLIMS] core_main_app config will be verified at runtime")
 
 
 # Patch AnonymousUser after Django setup

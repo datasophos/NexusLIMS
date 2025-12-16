@@ -393,7 +393,7 @@ class TestExtractorModule:
         # Mock down_sample_image to verify factor=2 is used and create output
         def mock_downsample(_fname, out_path=None, factor=None, output_size=None):
             # This assertion verifies we hit lines 275-276 (else branch)
-            assert factor == 2, "Expected factor=2 for non-Quanta instruments"  # noqa: PLR2004
+            assert factor == 2, "Expected factor=2 for non-Quanta instruments"
             assert output_size is None, "Expected output_size=None for non-Quanta"
             # Create output
             if out_path:
@@ -592,9 +592,9 @@ class TestExtractorModule:
 
         # Verify legacy downsampling was called with factor=2
         assert downsample_called["called"], "down_sample_image should have been called"
-        assert (
-            downsample_called["factor"] == 2  # noqa: PLR2004
-        ), "Factor should be 2 for legacy TIF downsampling"
+        assert downsample_called["factor"] == 2, (
+            "Factor should be 2 for legacy TIF downsampling"
+        )
         assert result == output_path, "Should return the output path"
         assert output_path.exists(), "Preview file should have been created"
 

@@ -1,4 +1,4 @@
-# ruff: noqa: SLF001, ARG002, PLR2004
+# ruff: noqa: SLF001, ARG002
 """Tests for ExtractorRegistry plugin discovery and selection.
 
 This test suite comprehensively tests the plugin registry system while remaining

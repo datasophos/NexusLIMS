@@ -8,6 +8,7 @@ to upload, retrieve, and manage experiment records.
 import logging
 import os
 from http import HTTPStatus
+from pathlib import Path
 
 import pytest
 import requests
@@ -312,7 +313,7 @@ class TestCdcsErrorHandling:
     def test_upload_with_empty_xml(self, cdcs_client):
         """Test handling of empty XML content."""
         title = "Test Record - Empty XML"
-        response, record_id = cdcs.upload_record_content("", title)
+        response, _record_id = cdcs.upload_record_content("", title)
 
         # Should fail (not return 201 CREATED)
         assert response.status_code != HTTPStatus.CREATED
@@ -321,7 +322,7 @@ class TestCdcsErrorHandling:
         """Test handling of malformed XML."""
         malformed_xml = "<Experiment><unclosed>"
         title = "Test Record - Malformed XML"
-        response, record_id = cdcs.upload_record_content(malformed_xml, title)
+        response, _record_id = cdcs.upload_record_content(malformed_xml, title)
 
         # Should fail (not return 201 CREATED)
         assert response.status_code != HTTPStatus.CREATED
@@ -486,7 +487,8 @@ class TestCdcsSearchAndDownload:
             is_valid = schema.validate(xml_doc)
             if not is_valid:
                 errors = "\n".join(str(e) for e in schema.error_log)
-                raise AssertionError(f"Downloaded XML is not valid:\n{errors}")
+                error_msg = f"Downloaded XML is not valid:\n{errors}"
+                raise AssertionError(error_msg)
 
         # Verify the records have different content
         assert downloaded_records[0] != downloaded_records[1]
@@ -504,7 +506,7 @@ class TestCdcsSearchAndDownload:
         """Test downloading a record that doesn't exist."""
         fake_record_id = "000000000000000000000000"  # 24-character hex string
 
-        with pytest.raises(ValueError, match="Record with id .* not found"):
+        with pytest.raises(ValueError, match=r"Record with id .* not found"):
             cdcs.download_record(fake_record_id)
 
     def test_search_and_download_workflow(self, cdcs_client, cdcs_test_record):
@@ -568,18 +570,18 @@ class TestCdcsFileUploadOperations:
     def test_upload_record_files_with_no_files_found(self, cdcs_client, tmp_path):
         """Test upload_record_files when no .xml files are found."""
         # Change to a directory with no .xml files
-        original_cwd = os.getcwd()
+        original_cwd = Path.cwd()
         try:
             os.chdir(tmp_path)
 
             # Should raise ValueError when no files found
-            with pytest.raises(ValueError, match="No .xml files were found"):
+            with pytest.raises(ValueError, match=r"No \.xml files were found"):
                 cdcs.upload_record_files(None)
         finally:
             os.chdir(original_cwd)
 
     def test_upload_record_files_with_file_globs(self, cdcs_client, tmp_path):
-        """Test upload_record_files when files_to_upload is None (globs all .xml files)."""
+        """Test upload_record_files when files_to_upload is None (glob all .xml)."""
         # Create some test XML files
         test_files = []
         for i in range(3):
@@ -587,7 +589,7 @@ class TestCdcsFileUploadOperations:
             xml_file.write_text(MINIMAL_TEST_RECORD)
             test_files.append(xml_file)
 
-        original_cwd = os.getcwd()
+        original_cwd = Path.cwd()
         try:
             os.chdir(tmp_path)
 

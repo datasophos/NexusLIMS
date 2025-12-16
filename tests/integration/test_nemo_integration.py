@@ -1,4 +1,4 @@
-# ruff: noqa: DTZ005, PLR2004
+# ruff: noqa: DTZ005
 """
 Integration tests for NEMO harvester.
 
@@ -61,7 +61,8 @@ def _create_session_from_iso_timestamps(  # noqa: PLR0913
     # Get the instrument from the database
     instrument = instrument_db.get(instrument_pid, None)
     if instrument is None:
-        raise ValueError(f"Instrument with PID {instrument_pid} not found in database")
+        error_msg = f"Instrument with PID {instrument_pid} not found in database"
+        raise ValueError(error_msg)
 
     # Parse ISO timestamps to datetime objects
     session_start = datetime.fromisoformat(start_iso)

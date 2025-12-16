@@ -91,6 +91,10 @@ class NemoConnector:
             return False
         return self.config == other.config
 
+    def __hash__(self):
+        """Return hash of NemoConnector based on its config."""
+        return hash(frozenset(self.config.items()))
+
     def strftime(self, date_dt) -> str:
         """
         Convert datetime to appropriate string format for this connector.

@@ -1,3 +1,4 @@
+# ruff: noqa: DTZ001
 """
 Partial failure recovery integration tests for NexusLIMS.
 
@@ -9,7 +10,6 @@ error propagation.
 import shutil
 from datetime import datetime, timedelta
 from http import HTTPStatus
-from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -96,7 +96,7 @@ class TestPartialFailureRecovery:
         assert len(sessions_after_build) == 0, "Session should be COMPLETED"
 
         # Verify database has COMPLETED status
-        success, all_sessions = db_query(
+        _, all_sessions = db_query(
             "SELECT event_type, record_status FROM session_log "
             "ORDER BY session_identifier, event_type"
         )
@@ -121,7 +121,7 @@ class TestPartialFailureRecovery:
             assert len(record_ids) == 0, "No record IDs should be returned"
 
         # Verify session REMAINS COMPLETED (current behavior - no rollback)
-        success, sessions_after_upload_failure = db_query(
+        _success, sessions_after_upload_failure = db_query(
             "SELECT event_type, record_status FROM session_log "
             "WHERE record_status = 'COMPLETED'"
         )
@@ -207,12 +207,11 @@ class TestPartialFailureRecovery:
                 response.status_code = HTTPStatus.CREATED
                 response.json.return_value = {"id": "test-record-id-1"}
                 return (response, "test-record-id-1")
-            else:
-                # Second upload fails
-                response = MagicMock(spec=requests.Response)
-                response.status_code = HTTPStatus.BAD_REQUEST
-                response.text = "Invalid XML content"
-                return (response, None)
+            # Second upload fails
+            response = MagicMock(spec=requests.Response)
+            response.status_code = HTTPStatus.BAD_REQUEST
+            response.text = "Invalid XML content"
+            return (response, None)
 
         with patch(
             "nexusLIMS.cdcs.upload_record_content", side_effect=mock_upload_side_effect
@@ -259,7 +258,7 @@ class TestPartialFailureRecovery:
         from nexusLIMS.db.session_handler import get_sessions_to_build
         from nexusLIMS.harvesters.nemo import utils as nemo_utils
 
-        # Mock nexus_req (used internally by NemoConnector._api_caller) to raise an exception
+        # Mock nexus_req to raise an exception (used internally by NemoConnector)
         with patch("nexusLIMS.harvesters.nemo.connector.nexus_req") as mock_nexus_req:
             # Simulate network error
             mock_nexus_req.side_effect = requests.exceptions.ConnectionError(
@@ -280,7 +279,7 @@ class TestPartialFailureRecovery:
         assert len(sessions) == 0, "No sessions should be created on NEMO failure"
 
         # Verify database is empty
-        success, all_sessions = db_query("SELECT * FROM session_log")
+        _success, all_sessions = db_query("SELECT * FROM session_log")
         assert len(all_sessions) == 0, "Database should remain empty on failure"
 
     def test_database_constraint_validation_on_invalid_status(
@@ -335,7 +334,8 @@ class TestPartialFailureRecovery:
 
         # Verify START event was inserted
         success, rows = db_query(
-            "SELECT event_type, record_status FROM session_log WHERE session_identifier = ?",
+            "SELECT event_type, record_status FROM session_log "
+            "WHERE session_identifier = ?",
             ("test-session-001",),
         )
         assert len(rows) == 1
@@ -373,7 +373,7 @@ class TestPartialFailureRecovery:
         monkeypatch,
     ):
         """
-        Test that errors are properly propagated and logged through process_new_records().
+        Test that errors are properly propagated through process_new_records().
 
         This verifies that:
         1. Exceptions during record building are caught and logged

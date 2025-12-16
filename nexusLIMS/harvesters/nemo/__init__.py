@@ -8,7 +8,6 @@ calendering and laboratory logistics application.
 
 import logging
 from datetime import timedelta
-from typing import Optional
 
 from nexusLIMS.db.session_handler import Session
 from nexusLIMS.harvesters.reservation_event import ReservationEvent
@@ -27,7 +26,7 @@ logger = logging.getLogger(__name__)
 
 
 def res_event_from_session(
-    session: Session, connector: Optional[NemoConnector] = None
+    session: Session, connector: NemoConnector | None = None
 ) -> ReservationEvent:
     """
     Create reservation event from session.

@@ -115,21 +115,18 @@ def multi_instance_instruments(populated_test_database, multi_instance_env):
     dict
         Dictionary mapping instrument PIDs to Instrument objects
     """
-    from nexusLIMS import instruments
-
-    # Reload instrument_db from the test database
-    test_instrument_db = instruments._get_instrument_db(db_path=populated_test_database)
-
     # Add instruments to the database for each NEMO instance
     # We need to actually insert these into the database
     import sqlite3
+
+    from nexusLIMS import instruments
 
     conn = sqlite3.connect(populated_test_database)
     cursor = conn.cursor()
 
     try:
         # Update existing instruments to point to different NEMO instances
-        # Instrument 1: Update TEST-TOOL-010 (tool_id=10) to point to instance 1 (nemo.localhost)
+        # Instrument 1: Update TEST-TOOL-010 to point to instance 1
         cursor.execute(
             """
             UPDATE instruments
@@ -140,7 +137,7 @@ def multi_instance_instruments(populated_test_database, multi_instance_env):
             (f"{NEMO_URL}/api/tools/?id=10",),
         )
 
-        # Instrument 2: Update FEI-Titan-STEM (tool_id=1) to point to instance 2 (nemo2.localhost)
+        # Instrument 2: Update FEI-Titan-STEM to point to instance 2
         cursor.execute(
             """
             UPDATE instruments
@@ -154,7 +151,8 @@ def multi_instance_instruments(populated_test_database, multi_instance_env):
         conn.commit()
 
         # Reload the instrument database to pick up modified instruments
-        test_instrument_db = instruments._get_instrument_db(
+        # SLF001: Using private method is intentional for test setup
+        test_instrument_db = instruments._get_instrument_db(  # noqa: SLF001
             db_path=populated_test_database
         )
 

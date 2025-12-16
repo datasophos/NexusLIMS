@@ -1,3 +1,4 @@
+# ruff: noqa: T201
 """
 Integration test fixtures for NexusLIMS.
 
@@ -6,6 +7,7 @@ and integration test environments. Fixtures manage the lifecycle of NEMO and
 CDCS services, database setup, and cleanup operations.
 """
 
+import contextlib
 import subprocess
 import time
 from http import HTTPStatus
@@ -180,21 +182,21 @@ def start_fileserver():
             # Call parent method to finalize headers
             super().end_headers()
 
-        def log_message(self, format, *args):
+        def log_message(self, msg_format, *args):
             """Override to reduce logging verbosity."""
             # Only log errors, not every request
-            if "404" in format or "500" in format:
+            if "404" in msg_format or "500" in msg_format:
                 import sys
 
                 sys.stderr.write(
-                    "[%s] %s\n" % (self.log_date_time_string(), format % args)
+                    f"[{self.log_date_time_string()}] {msg_format % args}\n"
                 )
 
     # Create and start the server
     server_address = ("", 8081)
     httpd = ThreadingHTTPServer(server_address, TestFileHandler)
 
-    print(f"[+] Host fileserver started successfully on port 8081")
+    print("[+] Host fileserver started successfully on port 8081")
     print(f"[+] Serving instrument data from: {TEST_INSTRUMENT_DATA_DIR}")
     print(f"[+] Serving NexusLIMS data from: {TEST_DATA_DIR}")
 
@@ -228,7 +230,7 @@ def host_fileserver():
 
 
 @pytest.fixture(scope="session")
-def docker_services(request, host_fileserver):
+def docker_services(request, host_fileserver):  # noqa: PLR0912, PLR0915
     """
     Start Docker services once per test session.
 
@@ -256,7 +258,7 @@ def docker_services(request, host_fileserver):
     - Services are torn down with `docker compose down -v` after all tests
     - Volumes are removed to ensure clean state for next test run
     - Test data directories are cleaned before starting to ensure clean slate
-    - Set NX_TESTS_KEEP_DOCKER_RUNNING=1 environment variable to skip teardown for debugging
+    - Set NX_TESTS_KEEP_DOCKER_RUNNING=1 env var to skip teardown for debugging
     """
     import os
     import shutil
@@ -271,10 +273,8 @@ def docker_services(request, host_fileserver):
     for test_dir in [TEST_INSTRUMENT_DATA_DIR, TEST_DATA_DIR]:
         if test_dir.exists():
             print(f"[!] WARNING: Test data directory already exists: {test_dir}")
-            print(
-                f"[!] This may indicate a previous test run did not clean up properly"
-            )
-            print(f"[!] Removing directory to ensure clean test environment...")
+            print("[!] This may indicate a previous test run did not clean up properly")
+            print("[!] Removing directory to ensure clean test environment...")
             shutil.rmtree(test_dir)
         test_dir.mkdir(parents=True, exist_ok=True)
         print(f"[+] Created {test_dir}")
@@ -392,12 +392,14 @@ def docker_services(request, host_fileserver):
             print("[-] Service health checks timed out")
             subprocess.run(
                 ["docker", "compose", "logs"],
+                check=False,
                 cwd=DOCKER_DIR,
             )
-            raise RuntimeError(
+            msg = (
                 f"Services failed to start within {max_wait} seconds. "
                 "Check Docker logs above for details."
             )
+            raise RuntimeError(msg)
 
     yield
     # Debug: Show keep_running status after yield (during cleanup)
@@ -405,13 +407,9 @@ def docker_services(request, host_fileserver):
 
     # Cleanup logic based on keep_running flag
     if keep_running:
-        print(
-            "\n[*] NX_TESTS_KEEP_DOCKER_RUNNING=1: Keeping Docker services running for debugging"
-        )
+        print("\n[*] NX_TESTS_KEEP_DOCKER_RUNNING=1: Keeping Docker services running")
         print("[!] Remember to manually clean up with: docker compose down -v")
-        print(
-            "\n[*] NX_TESTS_KEEP_DOCKER_RUNNING=1: Keeping test data directories for debugging"
-        )
+        print("\n[*] NX_TESTS_KEEP_DOCKER_RUNNING=1: Keeping test data directories")
         print(f"[!] Test instrument data: {TEST_INSTRUMENT_DATA_DIR}")
         print(f"[!] Test NexusLIMS data: {TEST_DATA_DIR}")
     else:
@@ -419,6 +417,7 @@ def docker_services(request, host_fileserver):
         print("\n[*] Cleaning up Docker services...")
         subprocess.run(
             ["docker", "compose", "down", "-v"],
+            check=False,
             cwd=DOCKER_DIR,
             capture_output=True,
         )
@@ -465,7 +464,7 @@ def docker_services_running(docker_services):
     dict
         Service URLs and status information
     """
-    yield {
+    return {
         "nemo_url": NEMO_URL,
         "cdcs_url": CDCS_URL,
         "fileserver_url": FILESERVER_URL,
@@ -598,7 +597,7 @@ def mailpit_client(docker_services, monkeypatch):
         results = []
 
         for msg in messages:
-            # Mailpit API structure: msg.Subject, msg.To, msg.From (not nested in Content.Headers)
+            # Mailpit API: msg.Subject, msg.To, msg.From (not nested in Content.Headers)
             # Check subject
             if subject is not None:
                 msg_subject = msg.get("Subject", "")
@@ -608,7 +607,7 @@ def mailpit_client(docker_services, monkeypatch):
             # Check recipient
             if to is not None:
                 msg_to_list = msg.get("To", [])
-                # msg_to_list is a list of {"Address": "email@domain.com", "Name": "..."} dicts
+                # msg_to_list is a list of {"Address": email, "Name": ...} dicts
                 if not any(
                     to.lower() in recipient.get("Address", "").lower()
                     for recipient in msg_to_list
@@ -750,7 +749,9 @@ def nemo_connector(
     from nexusLIMS.harvesters.nemo import connector
 
     # Reload instrument_db from the test database
-    test_instrument_db = instruments._get_instrument_db(db_path=populated_test_database)
+    test_instrument_db = instruments._get_instrument_db(  # noqa: SLF001
+        db_path=populated_test_database
+    )
 
     # Patch the instrument_db in both the instruments module and the connector module
     # This is necessary because the connector imports instrument_db at module level
@@ -994,10 +995,11 @@ def cdcs_test_record_xml():
 <Experiment xmlns="https://data.nist.gov/od/dm/nexus/experiment/v1.0">
     <title>{test_record_1_title}</title>
     <summary>
-        <instrument pid="TEST-INSTRUMENT-001">Test STEM for Integration Tests</instrument>
+        <instrument pid="TEST-INSTRUMENT-001">Test STEM for Integration Tests
+        </instrument>
         <reservationStart>2024-12-01T09:00:00-07:00</reservationStart>
         <reservationEnd>2024-12-01T17:00:00-07:00</reservationEnd>
-        <motivation>Integration test seed record for testing CDCS search and download functionality</motivation>
+        <motivation>Integration test seed record for search and download</motivation>
     </summary>
     <acquisitionActivity seqno="1">
         <startTime>2024-12-01T09:30:00-07:00</startTime>
@@ -1039,10 +1041,12 @@ def cdcs_test_record_xml():
 <Experiment xmlns="https://data.nist.gov/od/dm/nexus/experiment/v1.0">
     <title>{test_record_2_title}</title>
     <summary>
-        <instrument pid="TEST-INSTRUMENT-002">Test SEM for Integration Tests</instrument>
+        <instrument pid="TEST-INSTRUMENT-002">Test SEM for Integration Tests
+        </instrument>
         <reservationStart>2024-12-02T08:00:00-07:00</reservationStart>
         <reservationEnd>2024-12-02T16:00:00-07:00</reservationEnd>
-        <motivation>Second integration test record with different instrument and parameters for testing search/filter</motivation>
+        <motivation>Second test record with different instrument for search/filter
+        </motivation>
     </summary>
     <acquisitionActivity seqno="1">
         <startTime>2024-12-02T08:30:00-07:00</startTime>
@@ -1129,14 +1133,13 @@ def cdcs_test_record(
         if response.status_code != 201:
             # Cleanup any previously created records before raising
             for record in created_records:
-                try:
+                with contextlib.suppress(Exception):
                     cdcs_module.delete_record(record["record_id"])
-                except Exception:
-                    pass
-            raise RuntimeError(
+            msg = (
                 f"Failed to create test record '{test_record_title}': "
                 f"{response.status_code} - {response.text}"
             )
+            raise RuntimeError(msg)
 
         print(f"[+] Created test record: {test_record_title} (ID: {record_id})")
         created_records.append(
@@ -1215,7 +1218,7 @@ def test_database(tmp_path, monkeypatch):
     monkeypatch.setenv("NX_DB_PATH", str(db_path))
     refresh_settings()
 
-    yield db_path
+    return db_path
 
     # Cleanup is automatic via tmp_path
 
@@ -1276,7 +1279,9 @@ def populated_test_database(test_database, mock_tools_data):
                     "instrument_pid": config["instrument_pid"],
                     "api_url": f"{NEMO_URL}tools/?id={tool['id']}",
                     "calendar_name": tool["name"],
-                    "calendar_url": f"{NEMO_BASE_URL}/calendar/{config['property_tag']}-titan/",
+                    "calendar_url": (
+                        f"{NEMO_BASE_URL}/calendar/{config['property_tag']}-titan/"
+                    ),
                     "location": "Building 217",
                     "schema_name": tool["name"],
                     "property_tag": config["property_tag"],
@@ -1316,7 +1321,7 @@ def populated_test_database(test_database, mock_tools_data):
     conn.commit()
     conn.close()
 
-    yield test_database
+    return test_database
 
 
 # Test Data Fixtures
@@ -1350,7 +1355,7 @@ def test_instrument_db(populated_test_database):
 
 # ============================================================================
 # Test Data Fixtures
-# ========================================================================================================================================================
+# ==================================================================================
 # Test Data Fixtures
 # ============================================================================
 
@@ -1394,7 +1399,7 @@ def test_data_dirs(tmp_path, monkeypatch) -> dict[str, Path]:
     # Refresh settings to pick up new environment variables
     refresh_settings()
 
-    yield {
+    return {
         "instrument_data": instrument_data_dir,
         "nexuslims_data": nexuslims_data_dir,
     }
@@ -1493,8 +1498,8 @@ def extracted_test_files(test_data_dirs):
     print(f"[+] Top-level directories extracted: {extracted_top_level_dirs}")
 
     # Dates from the archive structure (Titan: 20181113, JEOL: 20190724)
-    titan_date = datetime(2018, 11, 13)
-    jeol_date = datetime(2019, 7, 24)
+    titan_date = datetime(2018, 11, 13).astimezone()
+    jeol_date = datetime(2019, 7, 24).astimezone()
 
     yield {
         "base_dir": instrument_data_dir,
@@ -1520,7 +1525,7 @@ def extracted_test_files(test_data_dirs):
 
 
 @pytest.fixture
-def test_environment_setup(
+def test_environment_setup(  # noqa: PLR0913
     docker_services_running,
     nemo_connector,
     populated_test_database,
@@ -1540,7 +1545,7 @@ def test_environment_setup(
     docker_services_running : dict
         Ensures all Docker services (including fileserver) are running
     nemo_connector : NemoConnector
-        Configured NEMO connector from fixture (already mocked to return test usage events)
+        Configured NEMO connector from fixture (mocked for test usage events)
     populated_test_database : Path
         Test database with instruments (also configures NX_DB_PATH)
     extracted_test_files : dict
@@ -1566,7 +1571,9 @@ def test_environment_setup(
     from nexusLIMS import instruments
 
     # Patch the instrument_db to use test database
-    test_instrument_db = instruments._get_instrument_db(db_path=populated_test_database)
+    test_instrument_db = instruments._get_instrument_db(  # noqa: SLF001
+        db_path=populated_test_database
+    )
     monkeypatch.setattr(instruments, "instrument_db", test_instrument_db)
 
     # Get Titan instrument from test database (should be FEI-Titan-TEM)
@@ -1580,10 +1587,10 @@ def test_environment_setup(
     )
     session_end = session_start + timedelta(hours=12)
 
-    print(f"\n[+] Test environment configured")
+    print("\n[+] Test environment configured")
     print(f"    Instrument: {instrument.name}")
     print(f"    Expected session time: {session_start} to {session_end}")
-    print(f"    Expected user: captain")
+    print("    Expected user: captain")
 
     return {
         "instrument_pid": instrument.name,  # instrument.name is the PID
@@ -1665,7 +1672,12 @@ def docker_logs():
 
         try:
             result = subprocess.run(
-                cmd, cwd=DOCKER_DIR, capture_output=True, text=True, timeout=timeout
+                cmd,
+                check=False,
+                cwd=DOCKER_DIR,
+                capture_output=True,
+                text=True,
+                timeout=timeout,
             )
 
             logs = []
@@ -1741,6 +1753,7 @@ def pytest_runtest_makereport(item, call):
             # Capture Docker compose logs (last 100 lines only)
             result = subprocess.run(
                 ["docker", "compose", "logs", "--no-color", "--tail", "100", "cdcs"],
+                check=False,
                 cwd=DOCKER_DIR,
                 capture_output=True,
                 text=True,

@@ -1,3 +1,4 @@
+# ruff: noqa: FBT001
 """
 CLI command to process new NexusLIMS records.
 
@@ -33,7 +34,7 @@ import logging
 import re
 import smtplib
 import sys
-from datetime import datetime, timezone
+from datetime import datetime
 from email.mime.text import MIMEText
 from pathlib import Path
 
@@ -63,7 +64,7 @@ EXCLUDE_PATTERNS = [
 ]
 
 
-def setup_file_logging(dry_run: bool = False) -> tuple[Path, logging.FileHandler]:  # noqa: FBT001, FBT002
+def setup_file_logging(dry_run: bool = False) -> tuple[Path, logging.FileHandler]:  # noqa: FBT002
     """
     Set up file logging with timestamped log file.
 
@@ -109,7 +110,8 @@ def setup_file_logging(dry_run: bool = False) -> tuple[Path, logging.FileHandler
     year = now.strftime("%Y")
     month = now.strftime("%m")
     day = now.strftime("%d")
-    # Include seconds in timestamp to prevent collisions when multiple runs happen in same minute
+    # Include seconds in timestamp to prevent collisions when multiple runs
+    # happen in same minute
     timestamp = now.strftime("%Y%m%d-%H%M%S")
 
     # Create log directory structure: logs/YYYY/MM/DD/
@@ -264,6 +266,154 @@ To help you debug, the following "bad" strings were found in the output:
         logger.exception("Unexpected error while sending email")
 
 
+def _get_log_level(verbose: int) -> int:
+    """
+    Convert verbose count to logging level.
+
+    Parameters
+    ----------
+    verbose : int
+        Verbosity level (0 = WARNING, 1 = INFO, 2+ = DEBUG)
+
+    Returns
+    -------
+    int
+        Logging level constant from the logging module
+    """
+    if verbose == 0:
+        return logging.WARNING
+    if verbose == 1:
+        return logging.INFO
+    return logging.DEBUG
+
+
+def _setup_logging(log_level: int, dry_run: bool) -> tuple[Path, logging.FileHandler]:
+    """
+    Configure console and file logging.
+
+    Parameters
+    ----------
+    log_level : int
+        Logging level constant from the logging module
+    dry_run : bool
+        If True, append '_dryrun' to the log filename
+
+    Returns
+    -------
+    tuple[Path, logging.FileHandler]
+        Tuple of (log_file_path, file_handler)
+
+    Raises
+    ------
+    OSError
+        If file logging setup fails
+    SystemExit
+        If file logging setup fails (exits with code 1)
+    """
+    from nexusLIMS.utils import setup_loggers  # noqa: PLC0415
+
+    # Setup console logging with rich
+    logging.basicConfig(
+        level=log_level,
+        format="%(message)s",
+        handlers=[RichHandler(console=console, rich_tracebacks=True)],
+    )
+
+    # Setup all nexusLIMS loggers
+    setup_loggers(log_level)
+
+    # Setup file logging
+    try:
+        return setup_file_logging(dry_run)
+    except OSError:
+        logger.exception("Failed to setup file logging")
+        console.print("[bold red]Failed to setup file logging[/bold red]")
+        sys.exit(1)
+
+
+def _run_with_lock(dry_run: bool) -> None:
+    """
+    Run the record builder with file locking.
+
+    Parameters
+    ----------
+    dry_run : bool
+        If True, run in dry-run mode (find files without building records)
+
+    Returns
+    -------
+    None
+
+    Raises
+    ------
+    SystemExit
+        If lock cannot be acquired (another instance is running)
+    """
+    from nexusLIMS.builder import record_builder  # noqa: PLC0415
+    from nexusLIMS.config import settings  # noqa: PLC0415
+
+    lock_file = settings.lock_file_path
+    lock = FileLock(str(lock_file), timeout=0)
+
+    try:
+        logger.info("Attempting to acquire lock at %s", lock_file)
+        with lock:
+            logger.info("Lock acquired successfully")
+            try:
+                record_builder.process_new_records(dry_run=dry_run)
+                logger.info("Record processing completed")
+            except Exception:
+                logger.exception("Error during record processing")
+
+    except Timeout:
+        logger.warning(
+            "Lock file already exists at %s - another instance is running",
+            lock_file,
+        )
+        console.print(f"[yellow]Lock file already exists at {lock_file}[/yellow]")
+        console.print("[yellow]Another instance is already running. Exiting.[/yellow]")
+        sys.exit(0)
+
+
+def _handle_error_notification(
+    log_file: Path, file_handler: logging.FileHandler
+) -> None:
+    """
+    Check log for errors and send notification if needed.
+
+    Parameters
+    ----------
+    log_file : Path
+        Path to the log file to check
+    file_handler : logging.FileHandler
+        File handler to flush before checking log
+
+    Returns
+    -------
+    None
+        This function doesn't return anything. All errors are caught and logged.
+    """
+    # Ensure file handler is flushed before checking log
+    # This is important for error detection to work correctly
+    file_handler.flush()
+
+    logger.info("NexusLIMS record processor finished")
+
+    try:
+        has_errors, found_patterns = check_log_for_errors(log_file)
+        if has_errors:
+            logger.info("Errors detected in log, sending notification")
+            send_error_notification(log_file, found_patterns)
+        else:
+            logger.info("No errors detected in log")
+    except Exception:
+        logger.exception("Error while checking log or sending notification")
+    finally:
+        # Clean up file handler after all logging is complete
+        logging.root.removeHandler(file_handler)
+        file_handler.close()
+
+
 @click.command(
     epilog="""
 Examples:
@@ -302,86 +452,19 @@ def main(*, dry_run: bool, verbose: int) -> None:
     sessions and generate XML records. It provides file locking to prevent
     concurrent runs, timestamped logging, and email notifications on errors.
     """
-    from nexusLIMS.builder import record_builder  # noqa: PLC0415
-    from nexusLIMS.config import settings  # noqa: PLC0415
-    from nexusLIMS.utils import setup_loggers  # noqa: PLC0415
+    # Setup logging
+    log_level = _get_log_level(verbose)
+    log_file, file_handler = _setup_logging(log_level, dry_run)
 
-    # Determine log level from verbose count
-    # 0 = WARNING, 1 = INFO, 2+ = DEBUG
-    if verbose == 0:
-        log_level = logging.WARNING
-    elif verbose == 1:
-        log_level = logging.INFO
-    else:
-        log_level = logging.DEBUG
-
-    # Setup console logging with rich
-    logging.basicConfig(
-        level=log_level,
-        format="%(message)s",
-        handlers=[RichHandler(console=console, rich_tracebacks=True)],
-    )
-
-    # Setup all nexusLIMS loggers
-    setup_loggers(log_level)
-
-    # Setup file logging
-    try:
-        log_file, file_handler = setup_file_logging(dry_run)
-    except OSError:
-        logger.exception("Failed to setup file logging")
-        console.print("[bold red]Failed to setup file logging[/bold red]")
-        sys.exit(1)
-
+    # Log startup information
     logger.info("Starting NexusLIMS record processor")
     logger.info("Dry run: %s", dry_run)
 
-    # Acquire file lock
-    lock_file = settings.lock_file_path
-    lock = FileLock(str(lock_file), timeout=0)
+    # Run record builder with file locking
+    _run_with_lock(dry_run)
 
-    try:
-        logger.info("Attempting to acquire lock at %s", lock_file)
-        with lock:
-            logger.info("Lock acquired successfully")
-
-            # Run the record builder
-            try:
-                record_builder.process_new_records(dry_run=dry_run)
-                logger.info("Record processing completed")
-            except Exception:
-                logger.exception("Error during record processing")
-
-    except Timeout:
-        logger.warning(
-            "Lock file already exists at %s - another instance is running",
-            lock_file,
-        )
-        console.print(f"[yellow]Lock file already exists at {lock_file}[/yellow]")
-        console.print("[yellow]Another instance is already running. Exiting.[/yellow]")
-        sys.exit(0)
-    finally:
-        # Ensure file handler is flushed before checking log
-        # This is important for error detection to work correctly
-        file_handler.flush()
-
-    # Log completion before cleaning up handlers
-    logger.info("NexusLIMS record processor finished")
-
-    # Check log for errors and send email if needed
-    try:
-        has_errors, found_patterns = check_log_for_errors(log_file)
-        if has_errors:
-            logger.info("Errors detected in log, sending notification")
-            send_error_notification(log_file, found_patterns)
-        else:
-            logger.info("No errors detected in log")
-    except Exception:
-        logger.exception("Error while checking log or sending notification")
-    finally:
-        # Clean up file handler after all logging is complete
-        logging.root.removeHandler(file_handler)
-        file_handler.close()
+    # Handle error notifications and cleanup
+    _handle_error_notification(log_file, file_handler)
 
 
 if __name__ == "__main__":  # pragma: no cover

@@ -415,7 +415,7 @@ def validate_record(xml_filename):
     return xml_schema.validate(xml_doc)
 
 
-def build_new_session_records(generate_previews: bool = True) -> List[Path]:
+def build_new_session_records(generate_previews: bool = True) -> List[Path]:  # noqa: FBT002, FBT001
     """
     Build records for new sessions from the database.
 

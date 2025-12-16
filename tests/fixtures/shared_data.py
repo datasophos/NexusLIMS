@@ -1,3 +1,4 @@
+# ruff: noqa: DTZ001, E501
 """
 Shared test fixtures and data for both unit and integration tests.
 
@@ -11,7 +12,6 @@ from datetime import timedelta as td
 from pathlib import Path
 
 import pytest
-
 
 # ============================================================================
 # Common Test Constants

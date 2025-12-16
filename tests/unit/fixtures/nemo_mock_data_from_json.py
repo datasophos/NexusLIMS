@@ -23,24 +23,23 @@ def load_consolidated_nemo_data():
         / "seed_data.json"
     )
 
-    with open(json_path, "r", encoding="utf-8") as f:
+    with json_path.open(encoding="utf-8") as f:
         return json.load(f)
 
 
 def convert_to_python_types(data):
-    """Convert JSON-compatible types to Python types (e.g., convert JSON null to None)."""
+    """Convert JSON-compatible types to Python types (e.g., JSON null to None)."""
     if isinstance(data, list):
         return [convert_to_python_types(item) for item in data]
-    elif isinstance(data, dict):
+    if isinstance(data, dict):
         return {key: convert_to_python_types(value) for key, value in data.items()}
-    elif data == "null":
+    if data == "null":
         return None
-    elif data == "true":
+    if data == "true":
         return True
-    elif data == "false":
+    if data == "false":
         return False
-    else:
-        return data
+    return data
 
 
 # Load the consolidated data
@@ -128,7 +127,7 @@ def filter_by_params():
         """
         from datetime import datetime as dt
 
-        # Make a deep copy to avoid mutation issues when connector modifies returned objects
+        # Deep copy to avoid mutation when connector modifies returned objects
         filtered = copy.deepcopy(data)
 
         # Filter by ID

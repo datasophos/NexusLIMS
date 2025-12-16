@@ -10,7 +10,6 @@ import re
 import subprocess
 import time
 from datetime import datetime
-from pathlib import Path
 from unittest.mock import patch
 
 import pytest
@@ -88,9 +87,11 @@ class TestProcessRecordsScript:
         # Verify log file name format (YYYYMMDD-HHMM.log)
         log_file = log_files[0]
         expected_date_prefix = test_start_time.strftime("%Y%m%d-")
-        assert log_file.name.startswith(expected_date_prefix), (
-            f"Log file has incorrect date prefix: expected '{expected_date_prefix}*', got '{log_file.name}'"
+        msg = (
+            f"Log file has incorrect date prefix: "
+            f"expected '{expected_date_prefix}*', got '{log_file.name}'"
         )
+        assert log_file.name.startswith(expected_date_prefix), msg
 
     def test_script_dry_run_mode(
         self,
@@ -118,7 +119,7 @@ class TestProcessRecordsScript:
         from nexusLIMS.config import settings
 
         # Capture current time to compare against log file path
-        test_start_time = datetime.now()
+        test_start_time = datetime.now()  # noqa: DTZ005
 
         # Mock sys.argv to pass dry-run and verbose flags
         monkeypatch.setattr("sys.argv", ["nexuslims-process-records", "-n", "-vv"])
@@ -207,6 +208,7 @@ with lock:
             # Try to run the script - should exit immediately due to lock
             result = subprocess.run(
                 ["uv", "run", "nexuslims-process-records", "-vv"],
+                check=False,
                 capture_output=True,
                 text=True,
                 timeout=10,
@@ -254,14 +256,14 @@ with lock:
         """
         import logging
 
-        from nexusLIMS.cli import process_records
         from nexusLIMS.cli.process_records import main
 
         # Patch process_new_records to raise an error
         def failing_process(*args, **kwargs):
             logger = logging.getLogger(__name__)
             logger.error("This is a test error that should trigger email notification")
-            raise RuntimeError("Test error for email notification")
+            msg = "Test error for email notification"
+            raise RuntimeError(msg)
 
         # Mock sys.argv to pass no arguments (basic execution)
         monkeypatch.setattr("sys.argv", ["nexuslims-process-records"])
@@ -272,8 +274,9 @@ with lock:
 
         # Verify mailbox is actually empty
         messages_before = mailpit_client["get_messages"]()
-        assert len(messages_before) == 0, (
-            f"Mailbox should be empty before test, but contains {len(messages_before)} messages"
+        msg_count = len(messages_before)
+        assert msg_count == 0, (
+            f"Mailbox should be empty before test, but contains {msg_count} messages"
         )
 
         # Call main() directly with the patched function
@@ -281,14 +284,12 @@ with lock:
         from click.testing import CliRunner
 
         runner = CliRunner()
-        # Patch using the full module path to ensure it works with CliRunner
-        with patch(
-            "nexusLIMS.builder.record_builder.process_new_records",
-            side_effect=failing_process,
-        ):
+        # Patch using full module path to ensure it works with CliRunner
+        patch_path = "nexusLIMS.builder.record_builder.process_new_records"
+        with patch(patch_path, side_effect=failing_process):
             result = runner.invoke(main, [])
 
-            # Check that the command succeeded (even with errors, main() should handle them gracefully)
+            # Check that the command succeeded (main should handle errors gracefully)
             assert result.exit_code == 0, f"Command failed: {result.output}"
 
         # Give email more time to be processed (SMTP can be slow)
@@ -296,7 +297,7 @@ with lock:
         max_retries = 10
         retry_delay = 1
         messages = []
-        for i in range(max_retries):
+        for _i in range(max_retries):
             time.sleep(retry_delay)
             messages = mailpit_client["get_messages"]()
             if len(messages) > 0:
@@ -312,9 +313,9 @@ with lock:
             msg for msg in messages if "error" in msg.get("Subject", "").lower()
         ]
 
+        subjects = [msg.get("Subject") for msg in messages]
         assert len(error_emails) > 0, (
-            f"No error notification email found. Found {len(messages)} emails with subjects: "
-            f"{[msg.get('Subject') for msg in messages]}"
+            f"No error email found. {len(messages)} emails: {subjects}"
         )
 
         # Get the full message details for the first error email
@@ -397,9 +398,10 @@ with lock:
             if f.stat().st_mtime >= start_timestamp
         ]
 
+        log_names = [f.name for f in expected_log_dir.glob("*.log")]
         assert len(new_log_files) >= 1, (
-            f"Expected at least 1 new log file created after test start, found {len(new_log_files)}. "
-            f"All log files in directory: {[f.name for f in expected_log_dir.glob('*.log')]}"
+            f"Expected at least 1 new log file, found {len(new_log_files)}. "
+            f"All log files: {log_names}"
         )
 
         # Check the most recently created log file
@@ -510,6 +512,7 @@ with lock:
         """
         result = subprocess.run(
             ["uv", "run", "nexuslims-process-records", "--version"],
+            check=False,
             capture_output=True,
             text=True,
             timeout=10,
@@ -536,6 +539,7 @@ with lock:
         """
         result = subprocess.run(
             ["uv", "run", "nexuslims-process-records", "--help"],
+            check=False,
             capture_output=True,
             text=True,
             timeout=10,
@@ -585,7 +589,8 @@ with lock:
 
         # Create a temporary log file with error content
         log_file = tmp_path / "test_error.log"
-        log_content = """2025-12-14 10:00:00 nexusLIMS.builder INFO: Starting record build
+        log_content = """
+2025-12-14 10:00:00 nexusLIMS.builder INFO: Starting record build
 2025-12-14 10:00:05 nexusLIMS.extractor ERROR: Failed to extract metadata from file
 Traceback (most recent call last):
   File "nexusLIMS/extractor.py", line 42, in extract_metadata

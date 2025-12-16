@@ -103,7 +103,10 @@ select = [
 ignore = ["N999", "UP006", "UP007", "UP035", "B905", "RUF007", "S603", "COM812"]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/*" = ["S", "PLC0415"]
+"tests/*" = ["S", "PLC0415", "PLR2004"]
+"tests/fixtures/**/*.py" = ["F401", "E402"]
+"tests/integration/**/*.py" = ["ARG002", "ARG001"]
+
 
 [tool.ruff.lint.pydocstyle]
 convention = "numpy"

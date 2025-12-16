@@ -1,5 +1,5 @@
 # pylint: disable=C0116
-# ruff: noqa: D102, PLR2004
+# ruff: noqa: D102
 
 """Tests for nexusLIMS.extractors.edax."""
 

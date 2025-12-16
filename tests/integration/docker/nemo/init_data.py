@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# ruff: noqa: T201, E402
 """Initialize NEMO test database with seed data.
 
 This script seeds a NEMO instance with test data for integration testing.
@@ -8,12 +9,15 @@ creates sample usage events and reservations.
 The seed data is loaded from seed_data.json and should match the structure
 defined in tests/fixtures/shared_data.py to ensure consistency between
 unit and integration tests.
+
+Note: E402 (module level imports not at top) is ignored because Django setup
+must occur before importing Django models.
 """
 
 import json
 import os
 import sys
-from datetime import datetime
+from datetime import UTC, datetime, timedelta, timezone
 from pathlib import Path
 
 import django
@@ -22,7 +26,9 @@ import django
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "NEMO.settings")
 django.setup()
 
-# Import NEMO models after Django setup
+# Import NEMO models after Django setup (E402 is intentional)
+import contextlib
+
 from django.contrib.auth import get_user_model
 from NEMO.models import (
     Account,
@@ -38,90 +44,97 @@ User = get_user_model()
 
 def load_seed_data():
     """Load seed data from JSON file."""
-    seed_file = "/fixtures/seed_data.json"
+    seed_file = Path("/fixtures/seed_data.json")
     print(f"DEBUG: Looking for seed data file at: {seed_file}")
-    if not os.path.exists(seed_file):
+    if not seed_file.exists():
         print(f"ERROR: Seed data file not found: {seed_file}", file=sys.stderr)
-        print(f"DEBUG: Current working directory: {os.getcwd()}")
-        print(f"DEBUG: Files in current directory: {os.listdir('.')}")
+        print(f"DEBUG: Current working directory: {Path.cwd()}")
+        print(f"DEBUG: Files in current directory: {list(Path.cwd().iterdir())}")
         sys.exit(1)
 
     print(f"DEBUG: Loading seed data from {seed_file}")
-    with open(seed_file) as f:
+    with seed_file.open() as f:
         data = json.load(f)
-        print(
-            f"DEBUG: Loaded seed data with {len(data.get('users', []))} users, {len(data.get('tools', []))} tools, {len(data.get('projects', []))} projects"
-        )
+        num_users = len(data.get("users", []))
+        num_tools = len(data.get("tools", []))
+        num_projects = len(data.get("projects", []))
+        print(f"DEBUG: {num_users} users, {num_tools} tools, {num_projects} projects")
         return data
 
 
 def load_reservation_questions():
     """Load reservation questions from JSON file."""
-    questions_file = "/fixtures/reservation_questions.json"
+    questions_file = Path("/fixtures/reservation_questions.json")
     print(f"DEBUG: Looking for reservation questions file at: {questions_file}")
-    if not os.path.exists(questions_file):
+    if not questions_file.exists():
         print(f"WARNING: Reservation questions file not found: {questions_file}")
         return None
 
     print(f"DEBUG: Loading reservation questions from {questions_file}")
-    with open(questions_file) as f:
+    with questions_file.open() as f:
         questions = json.load(f)
         print(f"DEBUG: Loaded reservation questions with {len(questions)} questions")
         return json.dumps(questions)
 
 
-def _handle_existing_object(
+def _handle_existing_object(  # noqa: PLR0913
     model_class, object_id, name_field, name_value, object_type, seed_id
 ):
-    """Helper function to handle existing objects with conflict resolution."""
+    """Handle existing objects with conflict resolution."""
     # Check if object with this exact ID already exists
     if model_class.objects.filter(id=object_id).exists():
         existing_obj = model_class.objects.get(id=object_id)
         if getattr(existing_obj, name_field) == name_value:
             # Same object, same ID - use existing
-            print(
-                f"  - {object_type} '{name_value}' (seed ID: {seed_id}) already exists with correct DB ID: {existing_obj.id}, using existing"
+            msg = (
+                f"  - {object_type} '{name_value}' (seed {seed_id}) "
+                f"exists with correct DB ID: {existing_obj.id}"
             )
+            print(msg)
             return existing_obj, False
 
         # Different object has this ID - delete conflicting object
-        print(
-            f"  - WARNING: {object_type} ID {seed_id} conflict - existing {object_type} '{getattr(existing_obj, name_field)}' will be deleted"
+        existing_name = getattr(existing_obj, name_field)
+        msg = (
+            f"  - WARNING: {object_type} ID {seed_id} conflict - "
+            f"existing '{existing_name}' will be deleted"
         )
+        print(msg)
         existing_obj.delete()
-        print(
-            f"  - Deleted conflicting {object_type} '{getattr(existing_obj, name_field)}' to make way for '{name_value}'"
-        )
+        old_name = getattr(existing_obj, name_field)
+        print(f"  - Deleted conflicting '{old_name}' for '{name_value}'")
 
     # Check if object with same name but different ID exists
     if model_class.objects.filter(**{name_field: name_value}).exists():
         existing_obj = model_class.objects.get(**{name_field: name_value})
-        print(
-            f"  - WARNING: {object_type} '{name_value}' exists with different DB ID: {existing_obj.id}, will be deleted"
+        msg = (
+            f"  - WARNING: {object_type} '{name_value}' exists with "
+            f"different DB ID: {existing_obj.id}, will be deleted"
         )
+        print(msg)
         existing_obj.delete()
-        print(
-            f"  - Deleted existing {object_type} '{name_value}' (DB ID: {existing_obj.id}) to recreate with seed ID: {seed_id}"
+        msg = (
+            f"  - Deleted existing '{name_value}' (DB ID: {existing_obj.id}) "
+            f"to recreate with seed ID: {seed_id}"
         )
+        print(msg)
 
     return None, True
 
 
 def _create_object_with_id(model_class, object_id, seed_id, object_type, **fields):
-    """Helper function to create an object with a specific ID."""
+    """Create an object with a specific ID."""
     try:
         obj = model_class.objects.create(id=object_id, **fields)
-        print(
-            f"  - Created {object_type}: {fields.get('name', fields.get('username', 'unnamed'))} with exact seed ID: {seed_id} (DB ID: {obj.id})"
-        )
-        return obj
     except Exception as e:
         print(f"  - ERROR: Failed to create {object_type} with ID {seed_id}: {e}")
         print("  - This might indicate a database constraint violation")
         raise
+    print(f"  - Created {object_type} with seed ID {seed_id} (DB ID: {obj.id})")
+    return obj
 
 
-def create_users(users_data):
+def create_users(users_data):  # noqa: PLR0912, PLR0915
     """Create test users with comprehensive NEMO API data structure."""
     print("Creating test users...")
     print(f"DEBUG: Processing {len(users_data)} users from seed data")
@@ -175,16 +188,12 @@ def create_users(users_data):
 
         # Set date fields if they exist
         if hasattr(user, "date_joined") and user_data.get("date_joined"):
-            try:
+            with contextlib.suppress(ValueError, TypeError):
                 user.date_joined = datetime.fromisoformat(user_data["date_joined"])
-            except (ValueError, TypeError):
-                pass
 
         if hasattr(user, "last_login") and user_data.get("last_login"):
-            try:
+            with contextlib.suppress(ValueError, TypeError):
                 user.last_login = datetime.fromisoformat(user_data["last_login"])
-            except (ValueError, TypeError):
-                pass
 
         # Set additional metadata fields if they exist
         if hasattr(user, "domain"):
@@ -287,7 +296,7 @@ def create_projects(projects_data, users):
         account = None
         if (
             hasattr(Project, "account")
-            and Project._meta.get_field("account").null is False
+            and Project._meta.get_field("account").null is False  # noqa: SLF001
         ):
             # Account is required, create a default one
             account, _ = Account.objects.get_or_create(
@@ -310,7 +319,7 @@ def create_projects(projects_data, users):
         start_date = project_data.get("start_date")
         if isinstance(start_date, str):
             try:
-                start_date = datetime.strptime(start_date, "%Y-%m-%d").date()
+                start_date = datetime.strptime(start_date, "%Y-%m-%d").date()  # noqa: DTZ007
             except ValueError:
                 start_date = None
 
@@ -358,7 +367,7 @@ def create_api_tokens(users):
         # Check if user exists and create token
         from django.contrib.auth import get_user_model
 
-        User = get_user_model()
+        User = get_user_model()  # noqa: N806
 
         for user_obj in users:
             user = user_obj.username
@@ -369,15 +378,12 @@ def create_api_tokens(users):
                     token = Token.objects.get(user=u)
                     token.key = user_token
                     token.save()
-                    print(
-                        f"  - Updated API token for '{user}': {user_token} (user DB ID: {u.id})"
-                    )
+                    print(f"  - Updated API token for '{user}' (DB ID: {u.id})")
                 else:
                     # If token wasn't created, create it directly
                     Token.objects.create(user=u, key=user_token)
-                    print(
-                        f"  - Created API token for '{user}': {user_token} (user DB ID: {u.id})"
-                    )
+                    msg = f"  - Created API token for '{user}' (DB ID: {u.id})"
+                    print(msg)
             else:
                 print(f"  - WARNING: '{user}' user not found, cannot create API token")
 
@@ -390,7 +396,7 @@ def create_api_tokens(users):
             from django.contrib.auth import get_user_model
             from rest_framework.authtoken.models import Token
 
-            User = get_user_model()
+            User = get_user_model()  # noqa: N806
             if User.objects.filter(username="captain").exists():
                 captain = User.objects.get(username="captain")
                 Token.objects.create(user=captain, key=test_api_token)
@@ -439,30 +445,30 @@ def configure_reservation_questions(tools, reservation_questions_json):
 
 
 def _get_object_from_seed_id(object_dict, seed_id, object_type, data_id):
-    """Helper function to get database object from seed ID with error handling."""
+    """Get database object from seed ID with error handling."""
     if seed_id not in object_dict:
         print(
-            f"  - WARNING: {object_type} ID {seed_id} not found in created {object_type}s, "
-            f"skipping {data_id}"
+            f"  - WARNING: {object_type} ID {seed_id} not found in "
+            f"created {object_type}s, skipping {data_id}"
         )
         return None
     return object_dict[seed_id]
 
 
 def _parse_datetime(datetime_str, data_id, object_type):
-    """Helper function to parse datetime strings with fallback."""
+    """Parse datetime strings with fallback."""
     try:
         return datetime.fromisoformat(datetime_str.replace("Z", "+00:00"))
     except (ValueError, TypeError):
         print(
-            f"  - WARNING: Could not parse datetime '{datetime_str}' for {object_type} {data_id}, "
-            f"using default time"
+            f"  - WARNING: Could not parse datetime '{datetime_str}' "
+            f"for {object_type} {data_id}, using default time"
         )
         return timezone.now() - timedelta(days=7, hours=12)
 
 
 def _filter_valid_fields(fields_dict, model_class):
-    """Helper function to filter out None values and invalid model fields."""
+    """Filter out None values and invalid model fields."""
     valid_fields = {}
     for field_name, field_value in fields_dict.items():
         if field_value is not None and hasattr(model_class, field_name):
@@ -470,12 +476,8 @@ def _filter_valid_fields(fields_dict, model_class):
     return valid_fields
 
 
-def create_reservations_from_seed_data(seed_data, users, tools, projects):
+def create_reservations_from_seed_data(seed_data, users, tools, projects):  # noqa: PLR0915
     """Create reservations and usage events from seed data."""
-    from datetime import datetime, timedelta
-
-    from django.utils import timezone
-
     # Create reservations from seed data
     reservations_data = seed_data.get("reservations", [])
     if reservations_data:
@@ -556,16 +558,19 @@ def create_reservations_from_seed_data(seed_data, users, tools, projects):
                 if created:
                     print(
                         f"  - Created reservation {res.id}: {res.start} "
-                        f"(tool seed ID: {reservation_data['tool']}, user seed ID: {reservation_data['user']})"
+                        f"(tool seed ID: {reservation_data['tool']}, "
+                        f"user seed ID: {reservation_data['user']})"
                     )
                     created_reservations.append(res)
                 else:
                     print(f"  - Reservation {res.id} already exists, skipping")
 
             except Exception as e:
-                print(
-                    f"  - ERROR: Failed to create reservation {reservation_data.get('id', 'unknown')}: {e}"
+                msg = (
+                    f"  - ERROR: Failed to create reservation "
+                    f"{reservation_data.get('id', 'unknown')}: {e}"
                 )
+                print(msg)
 
         print(f"  - Created {len(created_reservations)} reservations from seed data")
 
@@ -642,26 +647,29 @@ def create_reservations_from_seed_data(seed_data, users, tools, projects):
                 if created:
                     print(
                         f"  - Created usage event {ue.id}: {ue.start} - {ue.end} "
-                        f"(tool seed ID: {usage_event_data['tool']}, user seed ID: {usage_event_data['user']})"
+                        f"(tool seed ID: {usage_event_data['tool']}, "
+                        f"user seed ID: {usage_event_data['user']})"
                     )
                     created_usage_events.append(ue)
                 else:
                     print(f"  - Usage event {ue.id} already exists, skipping")
 
             except Exception as e:
-                print(
-                    f"  - ERROR: Failed to create usage event {usage_event_data.get('id', 'unknown')}: {e}"
+                msg = (
+                    f"  - ERROR: Failed to create usage event "
+                    f"{usage_event_data.get('id', 'unknown')}: {e}"
                 )
+                print(msg)
 
         print(f"  - Created {len(created_usage_events)} usage events from seed data")
 
 
 def main():
-    """Main initialization function."""
+    """Initialize test data."""
     print("=" * 60)
     print("Initializing NEMO test database")
     print("=" * 60)
-    print(f"DEBUG: Starting initialization at {datetime.now()}")
+    print(f"DEBUG: Starting initialization at {datetime.now(UTC)}")
     print(f"DEBUG: Python version: {sys.version}")
     print(f"DEBUG: Django settings module: {os.environ.get('DJANGO_SETTINGS_MODULE')}")
 
@@ -724,7 +732,7 @@ def main():
     for seed_id, project_obj in projects.items():
         print(f"    Seed ID {seed_id} -> DB ID {project_obj.id}: {project_obj.name}")
 
-    print(f"DEBUG: Completed initialization at {datetime.now()}")
+    print(f"DEBUG: Completed initialization at {datetime.now(UTC)}")
     print("=" * 60)
 
 

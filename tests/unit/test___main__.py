@@ -11,7 +11,7 @@ class TestMainEntryPoint:
         import importlib.util
         from pathlib import Path
 
-        # Get the path to __main__.py (need parent.parent.parent since test is in tests/unit/)
+        # Get path to __main__.py (parent.parent.parent since test in tests/unit/)
         main_path = Path(__file__).parent.parent.parent / "nexusLIMS" / "__main__.py"
 
         # Mock runpy.run_module to prevent actual execution

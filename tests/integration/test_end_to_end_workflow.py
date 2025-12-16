@@ -1,3 +1,4 @@
+# ruff: noqa: T201
 """
 End-to-end workflow integration tests for NexusLIMS.
 
@@ -20,14 +21,15 @@ from nexusLIMS.db.session_handler import db_query
 class TestEndToEndWorkflow:
     """Test complete end-to-end workflows from NEMO to CDCS."""
 
-    def test_complete_record_building_workflow(
+    def test_complete_record_building_workflow(  # noqa: PLR0915
         self,
         test_environment_setup,
     ):
         """
         Test complete workflow using process_new_records().
 
-        NEMO Usage Event → NEMO Reservation → Session → Files → Record → CDCS upload
+        NEMO Usage Event → NEMO Reservation → Session → Files → Record →
+        CDCS upload
 
         This is the most critical integration test. It verifies that:
         1. NEMO harvester detects usage events via add_all_usage_events_to_db()
@@ -70,20 +72,21 @@ class TestEndToEndWorkflow:
 
         # Verify that sessions were created and then completed
         sessions_after = get_sessions_to_build()
-        assert len(sessions_after) == 0, (
-            f"All sessions should be completed, but {len(sessions_after)} remain TO_BE_BUILT"
+        count = len(sessions_after)
+        assert count == 0, (
+            f"All sessions should be completed, but {count} remain TO_BE_BUILT"
         )
 
         # Verify database has correct session log entries
         # Should have 3 COMPLETED entries: START, END, and RECORD_GENERATION
-        success, all_sessions = db_query(
-            "SELECT event_type, record_status FROM session_log ORDER BY session_identifier, event_type"
+        _success, all_sessions = db_query(
+            "SELECT event_type, record_status FROM session_log "
+            "ORDER BY session_identifier, event_type"
         )
 
         completed_sessions = [s for s in all_sessions if s[1] == "COMPLETED"]
-        assert len(completed_sessions) == 3, (
-            f"Expected 3 COMPLETED sessions (START, END, RECORD_GENERATION), got {len(completed_sessions)}"
-        )
+        count = len(completed_sessions)
+        assert count == 3, f"Expected 3 COMPLETED sessions, got {count}"
 
         events = {s[0] for s in completed_sessions}
         assert events == {
@@ -103,7 +106,7 @@ class TestEndToEndWorkflow:
         test_record = uploaded_records[0]
         record_title = test_record.stem
 
-        with open(test_record, "r", encoding="utf-8") as f:
+        with test_record.open(encoding="utf-8") as f:
             xml_string = f.read()
 
         # Validate XML against schema
@@ -114,7 +117,8 @@ class TestEndToEndWorkflow:
         is_valid = schema.validate(xml_doc)
         if not is_valid:
             errors = "\n".join(str(e) for e in schema.error_log)
-            raise AssertionError(f"XML validation failed:\n{errors}")
+            msg = f"XML validation failed:\n{errors}"
+            raise AssertionError(msg)
 
         # Verify XML content structure
         assert xml_doc.tag.endswith("Experiment"), "Root element is not Experiment"
@@ -168,9 +172,8 @@ class TestEndToEndWorkflow:
             f"Failed to access dataset via fileserver: {dataset_response.status_code}"
         )
         assert len(dataset_response.content) > 0, "Dataset file is empty"
-        print(
-            f"[+] Successfully accessed dataset file ({len(dataset_response.content)} bytes)"
-        )
+        size = len(dataset_response.content)
+        print(f"[+] Successfully accessed dataset file ({size} bytes)")
 
         # Find a preview image URL (these are in <preview> elements)
         preview_elements = downloaded_doc.findall(f".//{nx_ns}dataset/{nx_ns}preview")
@@ -183,17 +186,19 @@ class TestEndToEndWorkflow:
 
             preview_response = requests.get(preview_url, timeout=10)
             assert preview_response.status_code == 200, (
-                f"Failed to access preview via fileserver: {preview_response.status_code}"
+                f"Failed to access preview via fileserver: "
+                f"{preview_response.status_code}"
             )
             assert len(preview_response.content) > 0, "Preview file is empty"
-            # Verify it's an image (should have image content type or be PNG/JPG)
+            # Verify it's an image (PNG/JPG or image content type)
             content_type = preview_response.headers.get("Content-Type", "")
-            assert "image" in content_type or preview_url.endswith(
-                (".png", ".jpg", ".jpeg")
-            ), f"Preview doesn't appear to be an image: {content_type}"
-            print(
-                f"[+] Successfully accessed preview image ({len(preview_response.content)} bytes)"
+            is_image_type = "image" in content_type
+            is_image_ext = preview_url.endswith((".png", ".jpg", ".jpeg"))
+            assert is_image_type or is_image_ext, (
+                f"Preview doesn't appear to be an image: {content_type}"
             )
+            size = len(preview_response.content)
+            print(f"[+] Successfully accessed preview image ({size} bytes)")
         else:
             print("[!] No preview elements found in XML (this may be expected)")
 

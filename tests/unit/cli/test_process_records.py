@@ -67,11 +67,8 @@ class TestSetupFileLogging:
 
         monkeypatch.setattr("nexusLIMS.config.settings", mock_settings)
 
-        # Get initial handler count
-        initial_handlers = len(logging.root.handlers)
-
         # Call function
-        log_file_path, file_handler = setup_file_logging(dry_run=False)
+        _log_file_path, file_handler = setup_file_logging(dry_run=False)
 
         # Check that a handler was added (function removes existing handlers first)
         # So we should have exactly 1 file handler added

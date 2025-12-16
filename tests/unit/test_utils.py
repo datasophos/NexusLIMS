@@ -292,7 +292,7 @@ class TestUtils:
         response = nexus_req("https://httpstat.us/503", "GET", retries=2)
         assert response.status_code == 503
 
-        # Verify it retried the correct number of times (2 retries + 1 initial = 3 total)
+        # Verify retried correct times (2 retries + 1 initial = 3 total)
         assert len(responses.calls) == 3
 
         # Verify exponential backoff was used (2^0=1s, 2^1=2s)

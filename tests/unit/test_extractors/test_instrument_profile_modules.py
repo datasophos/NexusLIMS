@@ -141,7 +141,7 @@ class TestFEITitanSTEMProfile:
         result = profile.parsers["metadata_warnings"](metadata, context)
 
         # Should have added warnings for all three fields
-        assert len(result["nx_meta"]["warnings"]) == 3  # noqa: PLR2004
+        assert len(result["nx_meta"]["warnings"]) == 3
         assert ["Detector"] in result["nx_meta"]["warnings"]
         assert ["Operator"] in result["nx_meta"]["warnings"]
         assert ["Specimen"] in result["nx_meta"]["warnings"]

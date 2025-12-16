@@ -36,7 +36,7 @@ def test_get_usage_events_as_sessions(mock_get_harvesters):
     assert len(sessions) == 1
     assert sessions[0] == mock_session
     mock_connector.get_usage_events.assert_called_once()
-    assert mock_connector.get_session_from_usage_event.call_count == 2  # noqa: PLR2004
+    assert mock_connector.get_session_from_usage_event.call_count == 2
 
 
 @patch("nexusLIMS.harvesters.nemo.utils.get_harvesters_enabled")

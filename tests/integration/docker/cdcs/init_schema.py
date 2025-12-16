@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# ruff: noqa: T201, E402
 """
 Initialize CDCS test instance with NexusLIMS schema and test data.
 
@@ -9,6 +10,9 @@ This script:
 4. Configures the system for testing
 
 This script is run automatically during container startup by docker-entrypoint.sh.
+
+Note: E402 (module level imports not at top) is ignored because Django setup
+must occur before importing Django models.
 """
 
 import hashlib
@@ -26,6 +30,7 @@ import django
 
 django.setup()
 
+# Django models must be imported after setup()
 from core_main_app.components.template.models import Template
 from core_main_app.components.template_version_manager.models import (
     TemplateVersionManager,
@@ -34,7 +39,9 @@ from core_main_app.components.template_xsl_rendering.models import (
     TemplateXslRendering,
 )
 from core_main_app.components.workspace.models import Workspace
-from core_main_app.components.xsl_transformation.models import XslTransformation
+from core_main_app.components.xsl_transformation.models import (
+    XslTransformation,
+)
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
@@ -61,20 +68,19 @@ def load_schema():
     """Load the Nexus Experiment XSD schema as a global template."""
     print("Loading Nexus Experiment schema...")
 
-    schema_path = "/fixtures/nexus-experiment.xsd"
-    if not os.path.exists(schema_path):
+    schema_path = Path("/fixtures/nexus-experiment.xsd")
+    if not schema_path.exists():
         print(f"  ERROR: Schema file not found at {schema_path}")
         return None
 
-    with open(schema_path, "r", encoding="utf-8") as f:
+    with schema_path.open(encoding="utf-8") as f:
         schema_content = f.read()
 
     # Check if template already exists
     template_title = "Nexus Experiment Schema"
     if TemplateVersionManager.objects.filter(title=template_title).exists():
         print(f"  Template '{template_title}' already exists")
-        tvm = TemplateVersionManager.objects.get(title=template_title)
-        return tvm
+        return TemplateVersionManager.objects.get(title=template_title)
 
     # Create the Template
     # Compute hash manually since auto-computation may not be enabled
@@ -104,6 +110,7 @@ def load_schema():
     template.save()
 
     print(f"  Template '{template_title}' created successfully (ID: {template.id})")
+
     return tvm
 
 
@@ -196,7 +203,8 @@ def register_xslt_stylesheets(template_vm):
                 content=stylesheet_content,
             )
             xslt.save()
-            print(f"  Stylesheet '{stylesheet_name}' created (ID: {xslt.id})")
+            xslt_id = xslt.id
+            print(f"  Stylesheet '{stylesheet_name}' created (ID: {xslt_id})")
 
         # Store XSLT reference
         xslt_map[stylesheet_type] = xslt
@@ -251,7 +259,7 @@ def configure_anonymous_access():
             content_type = ContentType.objects.get(app_label=app_label)
 
             # Get or create the permission
-            permission, created = Permission.objects.get_or_create(
+            permission, _ = Permission.objects.get_or_create(
                 codename=codename,
                 content_type=content_type,
                 defaults={"name": f"Can {codename.replace('_', ' ')}"},
@@ -273,7 +281,7 @@ def configure_anonymous_access():
 
 
 def main():
-    """Main initialization function."""
+    """Initialize the schema."""
     print("=" * 50)
     print("CDCS Schema Initialization")
     print("=" * 50)

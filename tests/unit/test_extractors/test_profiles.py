@@ -1,4 +1,4 @@
-# ruff: noqa: SLF001, PLR2004, ARG002
+# ruff: noqa: SLF001, ARG002
 """Tests for InstrumentProfileRegistry and profile system.
 
 This test suite comprehensively tests the instrument profile registry system,

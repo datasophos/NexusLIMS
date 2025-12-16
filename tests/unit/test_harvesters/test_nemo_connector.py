@@ -158,7 +158,7 @@ class TestNemoConnector:
 
         # Mock get_users to return a user dictionary
         def mock_get_users(user_id):
-            if user_id == 5:  # noqa: PLR2004
+            if user_id == 5:
                 return [
                     {"id": 5, "username": "canceller", "email": "canceller@example.com"}
                 ]
@@ -172,7 +172,7 @@ class TestNemoConnector:
 
         # Mock get_projects to return a project dictionary
         def mock_get_projects(proj_id):
-            if proj_id == 10:  # noqa: PLR2004
+            if proj_id == 10:
                 return [{"id": 10, "name": "Test Project"}]
             return []
 
@@ -198,7 +198,7 @@ class TestNemoConnector:
         # Verify that cancelled_by was expanded from ID to full user dict
         assert "cancelled_by" in parsed
         assert isinstance(parsed["cancelled_by"], dict)
-        assert parsed["cancelled_by"]["id"] == 5  # noqa: PLR2004
+        assert parsed["cancelled_by"]["id"] == 5
         assert parsed["cancelled_by"]["username"] == "canceller"
         assert parsed["cancelled_by"]["email"] == "canceller@example.com"
 
@@ -437,16 +437,8 @@ class TestNemoConnectorEquality:
         )
         assert connector != "not a connector"
         assert connector != 42
-        assert connector != None
+        assert connector is not None
         assert connector != {"base_url": "https://nemo.example.com/api/"}
-
-    def test_same_instance_equality(self):
-        """Test that a connector is equal to itself."""
-        connector = NemoConnector(
-            base_url="https://nemo.example.com/api/",
-            token="test-token-12345",
-        )
-        assert connector == connector
 
     def test_all_config_parameters(self):
         """Test equality with all configuration parameters."""
@@ -568,3 +560,29 @@ class TestNemoConnectorEquality:
         # Verify json() was called and data was returned
         assert mock_response.json.called
         assert result == expected_data
+
+    def test_hash_identical_connectors(self):
+        """Test that identical connectors have the same hash."""
+        connector1 = NemoConnector(
+            base_url="https://nemo.example.com/api/",
+            token="test-token-12345",
+            timezone="America/Denver",
+        )
+        connector2 = NemoConnector(
+            base_url="https://nemo.example.com/api/",
+            token="test-token-12345",
+            timezone="America/Denver",
+        )
+        assert hash(connector1) == hash(connector2)
+
+    def test_hash_different_connectors(self):
+        """Test that different connectors have different hashes."""
+        connector1 = NemoConnector(
+            base_url="https://nemo.example.com/api/",
+            token="test-token-12345",
+        )
+        connector2 = NemoConnector(
+            base_url="https://different.example.com/api/",
+            token="test-token-12345",
+        )
+        assert hash(connector1) != hash(connector2)

@@ -1,3 +1,4 @@
+# ruff: noqa: T201
 """Top-level pytest configuration for test discovery and plugin loading."""
 
 import os
@@ -19,7 +20,8 @@ try:
         env_vars = dotenv_values(env_path)
         filtered_vars = {k: v for k, v in env_vars.items() if k.startswith("NX_TESTS_")}
         print(
-            f"[DEBUG] Found {len(filtered_vars)} NX_TESTS_* variables: {list(filtered_vars.keys())}"
+            f"[DEBUG] Found {len(filtered_vars)} "
+            f"NX_TESTS_* variables: {list(filtered_vars.keys())}"
         )
         # Only set environment variables if they are not already set
         for k, v in filtered_vars.items():
@@ -43,4 +45,3 @@ try:
 except ImportError:
     # dotenv not installed, continue without it
     print("[DEBUG] dotenv library not available, skipping environment variable loading")
-    pass

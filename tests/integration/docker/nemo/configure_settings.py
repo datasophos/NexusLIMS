@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# ruff: noqa: T201
 """Configure NEMO settings to include periodic table plugin.
 
 This script modifies the splash_pad_settings.py file to add the
@@ -6,15 +7,15 @@ NEMO_periodic_table_question plugin to INSTALLED_APPS.
 """
 
 import sys
+from pathlib import Path
 
 
 def configure_periodic_table_plugin():
     """Add periodic table plugin to INSTALLED_APPS in settings."""
-    settings_file = "/nemo/splash_pad_settings.py"
+    settings_file = Path("/nemo/splash_pad_settings.py")
 
     try:
-        with open(settings_file, "r") as f:
-            content = f.read()
+        content = settings_file.read_text()
 
         # Check if already configured
         if "NEMO_periodic_table_question" in content:
@@ -29,7 +30,7 @@ def configure_periodic_table_plugin():
             new_lines = []
             found_installed_apps = False
 
-            for i, line in enumerate(lines):
+            for line in lines:
                 new_lines.append(line)
                 # Look for INSTALLED_APPS = [ or INSTALLED_APPS=[
                 if (
@@ -43,8 +44,7 @@ def configure_periodic_table_plugin():
                     new_lines.append(f"{indent}'NEMO_periodic_table_question',")
 
             if found_installed_apps:
-                with open(settings_file, "w") as f:
-                    f.write("\n".join(new_lines))
+                settings_file.write_text("\n".join(new_lines))
                 print("Successfully added periodic table plugin to INSTALLED_APPS")
             else:
                 print("WARNING: Could not find INSTALLED_APPS in settings file")

@@ -1,3 +1,4 @@
+# ruff: noqa: ARG001
 """
 Network resilience unit tests for NexusLIMS.
 
@@ -11,7 +12,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 import requests
-from requests.exceptions import ConnectionError, Timeout
+from requests.exceptions import Timeout
 
 from nexusLIMS.utils import nexus_req
 
@@ -19,7 +20,7 @@ from nexusLIMS.utils import nexus_req
 @pytest.fixture
 def mock_retry_request():
     """
-    Factory fixture for creating mock request handlers with configurable retry behavior.
+    Create mock request handlers with configurable retry behavior.
 
     Returns a function that creates a mock side effect function for testing retries.
     The returned function accepts:
@@ -243,10 +244,12 @@ class TestNetworkResilience:
 
         # Mock nexus_req to raise a ConnectionError
         with patch("nexusLIMS.cdcs.nexus_req") as mock_req:
-            mock_req.side_effect = ConnectionError("Connection refused")
+            mock_req.side_effect = requests.exceptions.ConnectionError(
+                "Connection refused"
+            )
 
             # This should raise a ConnectionError
-            with pytest.raises(ConnectionError):
+            with pytest.raises(requests.exceptions.ConnectionError):
                 cdcs.get_workspace_id()
 
     def test_nemo_connection_error_handling(self):
@@ -440,7 +443,8 @@ class TestNetworkResilience:
         """
 
         def mock_request_timeout(*args, **kwargs):
-            raise Timeout("Connection timed out")
+            msg = "Connection timed out"
+            raise Timeout(msg)
 
         with patch("nexusLIMS.utils.Session.request") as mock_request:
             mock_request.side_effect = mock_request_timeout
@@ -461,7 +465,8 @@ class TestNetworkResilience:
         """
 
         def mock_request_ssl_error(*args, **kwargs):
-            raise requests.exceptions.SSLError("Certificate verification failed")
+            msg = "Certificate verification failed"
+            raise requests.exceptions.SSLError(msg)
 
         with patch("nexusLIMS.utils.Session.request") as mock_request:
             mock_request.side_effect = mock_request_ssl_error

@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# ruff: noqa: T201
 """
 Standalone debugging script for running the fileserver outside of pytest context.
 
@@ -26,7 +27,7 @@ from pathlib import Path
 # Add tests/integration to path so we can import conftest
 sys.path.insert(0, str(Path(__file__).parent))
 
-from conftest import TEST_INSTRUMENT_DATA_DIR, TEST_DATA_DIR, start_fileserver
+from conftest import TEST_DATA_DIR, TEST_INSTRUMENT_DATA_DIR, start_fileserver
 
 
 def ensure_directories_exist():
@@ -56,7 +57,7 @@ def ensure_directories_exist():
 
 
 def main():
-    """Main entry point for the script."""
+    """Run the debugging script."""
     import argparse
 
     parser = argparse.ArgumentParser(
@@ -73,24 +74,22 @@ def main():
     args = parser.parse_args()
 
     if args.port != 8081:
+        print("[!] Warning: Port argument ignored. Fileserver always runs on port 8081")
         print(
-            f"[!] Warning: Port argument ignored. Fileserver always runs on port 8081"
-        )
-        print(
-            "[!] To change port, modify the server_address in conftest.py::host_fileserver"
+            "[!] To change port, modify server_address in conftest.py::host_fileserver"
         )
 
     # Ensure directories exist
     ensure_directories_exist()
 
     print(f"\n{'=' * 70}")
-    print(f"[+] Starting fileserver on port 8081")
+    print("[+] Starting fileserver on port 8081")
     print(f"[+] Serving instrument data from: {TEST_INSTRUMENT_DATA_DIR}")
     print(f"[+] Serving NexusLIMS data from: {TEST_DATA_DIR}")
     print(f"{'=' * 70}")
     print("\nAccess URLs:")
-    print(f"  - http://localhost:8081/instrument-data/")
-    print(f"  - http://localhost:8081/data/")
+    print("  - http://localhost:8081/instrument-data/")
+    print("  - http://localhost:8081/data/")
     print("\nPress Ctrl+C to stop the server...")
     print(f"{'=' * 70}\n")
 

@@ -93,7 +93,7 @@ def test_nemo_harvester_skipped_when_incomplete(monkeypatch, caplog):
 
     with caplog.at_level("WARNING"):
         harvesters = settings.nemo_harvesters()
-        assert 5 not in harvesters  # noqa: PLR2004
+        assert 5 not in harvesters
         assert "Skipping NEMO harvester 5" in caplog.text
 
 
@@ -135,7 +135,7 @@ def test_email_config_full(monkeypatch):
 
     assert email is not None
     assert email.smtp_host == "smtp.example.com"
-    assert email.smtp_port == 587  # noqa: PLR2004
+    assert email.smtp_port == 587
     assert email.sender == "sender@example.com"
     assert email.recipients == ["recipient1@example.com", "recipient2@example.com"]
     assert email.smtp_username == "user"
@@ -351,7 +351,7 @@ def test_email_config_loads_from_dotenv_file(monkeypatch, mock_nemo_env):
     assert email.smtp_host == "smtp.dotenv.com"
     assert email.sender == "dotenv@example.com"
     assert email.recipients == ["recipient@example.com"]
-    assert email.smtp_port == 465  # noqa: PLR2004
+    assert email.smtp_port == 465
 
 
 def test_nemo_harvesters_loads_from_dotenv_file(monkeypatch, mock_nemo_env):

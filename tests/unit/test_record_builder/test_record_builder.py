@@ -1,7 +1,7 @@
 """Tests for the record builder module."""
 
 # pylint: disable=missing-function-docstring,too-many-locals
-# ruff: noqa: D102, ARG001, ARG002, ARG005, PLR2004
+# ruff: noqa: D102, ARG001, ARG002, ARG005
 
 import re
 import shutil
@@ -25,6 +25,22 @@ from tests.unit.test_instrument_factory import (
     make_test_tool,
     make_titan_tem,
 )
+
+
+@pytest.fixture
+def skip_preview_generation(monkeypatch):
+    """Skip preview generation in tests to improve performance.
+
+    This fixture monkeypatches build_new_session_records to skip preview
+    generation, which is time-consuming and tested separately. This speeds
+    up tests that don't specifically need to test preview generation.
+    """
+    original_build_new_session_records = record_builder.build_new_session_records
+    monkeypatch.setattr(
+        record_builder,
+        "build_new_session_records",
+        lambda: original_build_new_session_records(generate_previews=False),
+    )
 
 
 class TestRecordBuilder:
@@ -426,7 +442,7 @@ class TestRecordBuilder:
         assert res[1][5] == "NO_RESERVATION"
         assert res[2][5] == "NO_RESERVATION"
 
-    @pytest.mark.usefixtures("mock_nemo_reservation")
+    @pytest.mark.usefixtures("mock_nemo_reservation", "skip_preview_generation")
     def test_new_session_processor(
         self,
         test_record_files,
@@ -435,14 +451,6 @@ class TestRecordBuilder:
         # make record uploader just pretend by returning all files provided
         # (as if they were actually uploaded)
         monkeypatch.setattr(record_builder, "upload_record_files", lambda x: (x, x))
-
-        # Override the build_records function to not generate previews (since
-        # this is tested elsewhere) to speed things up
-        monkeypatch.setattr(
-            record_builder,
-            "build_record",
-            partial(build_record, generate_previews=False),
-        )
 
         # Process all sessions in the database (all 3 test sessions)
         # The fresh_test_db fixture already has FEI-Titan-TEM, JEOL-JEM-TEM,
@@ -596,13 +604,14 @@ class TestRecordBuilder:
         ],
         ids=["inclusive_strategy", "default_strategy", "unsupported_strategy"],
     )
-    def test_record_builder_file_strategies(
+    def test_record_builder_file_strategies(  # noqa: PLR0913
         self,
         test_record_files,
         monkeypatch,
         strategy_name,
         env_value,
         expected_datasets,
+        skip_preview_generation,
     ):
         """Test record builder with different file-finding strategies.
 
@@ -690,7 +699,7 @@ class TestRecordBuilder:
             "['dummy_file1', 'dummy_file2', 'dummy_file3']" in caplog.text
         )
 
-    def test_build_record_error(self, monkeypatch, caplog):
+    def test_build_record_error(self, monkeypatch, caplog, skip_preview_generation):
         def mock_get_sessions():
             return [
                 session_handler.Session(
@@ -709,6 +718,7 @@ class TestRecordBuilder:
         self,
         monkeypatch,
         caplog,
+        skip_preview_generation,
     ):
         # pylint: disable=unused-argument
         def mock_get_sessions():
@@ -739,7 +749,7 @@ class TestRecordBuilder:
         assert "Could not validate record, did not write to disk" in caplog.text
 
     @pytest.mark.usefixtures("mock_nemo_reservation")
-    def test_dump_record(self, test_record_files):
+    def test_dump_record(self, test_record_files, monkeypatch):
         dt_str_from = "2021-08-02T09:00:00-07:00"
         dt_str_to = "2021-08-02T11:00:00-07:00"
         session = Session(
@@ -747,6 +757,12 @@ class TestRecordBuilder:
             instrument=make_test_tool(),
             dt_range=(dt.fromisoformat(dt_str_from), dt.fromisoformat(dt_str_to)),
             user="unused",
+        )
+        # Skip preview generation to speed up test
+        monkeypatch.setattr(
+            record_builder,
+            "build_record",
+            partial(build_record, generate_previews=False),
         )
         out_fname = record_builder.dump_record(session=session, generate_previews=False)
         out_fname.unlink()
@@ -762,6 +778,7 @@ class TestRecordBuilder:
         self,
         monkeypatch,
         caplog,
+        skip_preview_generation,
     ):
         # Mock res_event_from_session to raise NoDataConsentError
         from nexusLIMS.harvesters.nemo.exceptions import NoDataConsentError
@@ -799,7 +816,7 @@ class TestRecordBuilder:
         assert "Reservation requested not to have their data harvested" in caplog.text
         assert len(xmls_files) == 0  # no record should be returned
 
-    @pytest.mark.usefixtures("mock_nemo_reservation")
+    @pytest.mark.usefixtures("mock_nemo_reservation", "skip_preview_generation")
     def test_build_record_single_file(self, test_record_files, monkeypatch):
         """Test record builder with a narrow time window that captures only 1 file."""
 
@@ -861,6 +878,7 @@ class TestRecordBuilder:
         self,
         test_record_files,
         monkeypatch,
+        skip_preview_generation,
     ):
         # Mock res_event_from_session to return reservation with multiple samples
         def mock_res_event_with_samples(session):
