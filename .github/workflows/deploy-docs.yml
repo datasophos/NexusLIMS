@@ -13,10 +13,46 @@ on:
   workflow_dispatch:
 
 jobs:
+  check-conditions:
+    name: Check Deployment Conditions
+    runs-on: ubuntu-latest
+    outputs:
+      should_deploy: ${{ steps.check.outputs.should_deploy }}
+    steps:
+      - name: Check if deployment should proceed
+        id: check
+        run: |
+          echo "Event name: ${{ github.event_name }}"
+          echo "Workflow run conclusion: ${{ github.event.workflow_run.conclusion }}"
+          echo "Workflow run event: ${{ github.event.workflow_run.event }}"
+
+          # Check if manually triggered
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "✅ Conditions met: manual deployment triggered"
+            echo "should_deploy=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          # Check if triggered by successful push to main
+          if [[ "${{ github.event.workflow_run.conclusion }}" == "success" && \
+                "${{ github.event.workflow_run.event }}" == "push" ]]; then
+            echo "✅ Conditions met: will deploy main branch documentation"
+            echo "should_deploy=true" >> $GITHUB_OUTPUT
+          else
+            echo "⏭️  Skipping deployment:"
+            if [[ "${{ github.event.workflow_run.conclusion }}" != "success" ]]; then
+              echo "  - Tests did not pass (conclusion: ${{ github.event.workflow_run.conclusion }})"
+            fi
+            if [[ "${{ github.event.workflow_run.event }}" != "push" ]]; then
+              echo "  - Not triggered by a push to main (event: ${{ github.event.workflow_run.event }})"
+            fi
+            echo "should_deploy=false" >> $GITHUB_OUTPUT
+          fi
+
   deploy-docs:
     name: Build/Deploy main Docs
-    # Only deploy if tests passed
-    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
+    needs: check-conditions
+    if: needs.check-conditions.outputs.should_deploy == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: write # Required to push to gh-pages branch
@@ -69,7 +105,21 @@ jobs:
 
       - name: Generate switcher.json
         # Create version switcher for PyData Sphinx Theme navigation
-        run: python scripts/generate_switcher_json.py
+        run: |
+          echo "🔍 Generating switcher.json for main branch deployment..."
+          echo "Environment:"
+          echo "  GITHUB_EVENT_NAME: ${GITHUB_EVENT_NAME}"
+          echo "  GITHUB_REF: ${GITHUB_REF}"
+          echo ""
+
+          echo "Running generate_switcher_json.py..."
+          python scripts/generate_switcher_json.py
+
+          echo ""
+          echo "✅ Generated switcher.json:"
+          cat docs/_static/switcher.json
+          echo ""
+          echo "📊 switcher.json contains $(jq 'length' docs/_static/switcher.json) entries"
 
       - name: Build documentation
         # Build Sphinx documentation (includes API docs, coverage link, and switcher.json)
