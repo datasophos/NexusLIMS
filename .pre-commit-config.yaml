@@ -1,0 +1,10 @@
+repos:
+  - repo: local
+    hooks:
+      - id: lint
+        name: Run linting checks
+        entry: ./scripts/run_lint.sh
+        language: script
+        stages: [pre-commit]
+        pass_filenames: false
+        always_run: true

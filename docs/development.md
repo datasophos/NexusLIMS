@@ -111,6 +111,46 @@ the environment using the `$ source .venv/bin/activate` command from within the 
 repository. This will activate the virtual environment that ensures all commands will have
 access to the installed packages and environment variables set appropriately.
 
+## Pre-commit Hooks
+
+To ensure code quality and consistency, NexusLIMS uses [pre-commit](https://pre-commit.com/) hooks that automatically run linting checks before each commit. This prevents commits with linting errors from being pushed to the repository.
+
+### Installing Pre-commit Hooks
+
+Pre-commit is included as a dev dependency, so it's already installed when you run `uv sync --extra dev`. To set up the git hooks:
+
+```bash
+$ uv run pre-commit install
+```
+
+From now on, linting checks will run automatically whenever you attempt to commit code. If linting errors are found, the commit will be blocked until you fix them.
+
+### Running Pre-commit Manually
+
+To run linting checks on all files without committing:
+
+```bash
+$ uv run pre-commit run --all-files
+```
+
+To run checks on specific files:
+
+```bash
+$ uv run pre-commit run --files <file1> <file2>
+```
+
+### Bypassing Pre-commit (Not Recommended)
+
+If you need to bypass the pre-commit hooks in exceptional cases:
+
+```bash
+$ git commit --no-verify
+```
+
+```{warning}
+Only use `--no-verify` in exceptional cases. Pre-commit hooks exist to maintain code quality standards across the project.
+```
+
 ## Testing and Documentation
 
 ### Unit Testing

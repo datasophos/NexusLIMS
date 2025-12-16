@@ -67,6 +67,7 @@ dev = [
     "pytest-timeout>=2.2.0",
     "sphinxcontrib-mermaid>=1.2.3",
     "sphinx-design>=0.6.1",
+    "pre-commit>=4.5.0",
 ]
 
 [project.urls]
