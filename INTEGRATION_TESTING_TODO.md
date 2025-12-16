@@ -142,7 +142,7 @@ This file tracks progress on implementing Docker-based integration testing for N
 
 ## Phase 9: Documentation (Week 9) ⏸️ IN PROGRESS
 
-- [ ] Create issue documenting the need for integration testing (skipped - local work only)
+- [ ] Create issue documenting the need for integration testing
 - [x] Create `tests/integration/README.md` (verified - already comprehensive)
 - [x] Create `docs/testing/integration-tests.md` and add to dev guide
 - [x] Update any documetnation related to testing to include information about the integration tests as well
