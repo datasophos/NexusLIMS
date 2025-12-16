@@ -1,0 +1,1040 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Record building workflow &#8212; NexusLIMS 2.0.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=51baea2f" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="_static/documentation_options.js?v=51b770b3"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'record_building';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.0.0';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <link rel="icon" href="_static/nexusLIMS_bare_logo.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Extractors" href="extractors.html" />
+    <link rel="prev" title="User Guide" href="user_guide.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="2.0.0" />
+    <meta name="docbuild:last-update" content="Dec, 07, 2025"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.0.0 documentation - Home"/>
+    <img src="_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.0.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="getting_started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="migration.html">
+    Migration Guide: v1 to v2
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="dev_guide.html">
+    Developer Guide
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="reference.html">
+    Reference
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datasophos/NexusLIMS" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://datasophos.co" title="Datasophos" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-globe fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Datasophos</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="getting_started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="migration.html">
+    Migration Guide: v1 to v2
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="dev_guide.html">
+    Developer Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="reference.html">
+    Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datasophos/NexusLIMS" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://datasophos.co" title="Datasophos" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-globe fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Datasophos</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Record building workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extractors.html">Extractors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="taxonomy.html">NexusLIMS taxonomy</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="user_guide.html" class="nav-link">User Guide</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Record building workflow</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="record-building-workflow">
+<span id="record-building"></span><h1>Record building workflow<a class="headerlink" href="#record-building-workflow" title="Link to this heading">#</a></h1>
+<blockquote>
+<div><p><cite>Last updated: December 2025</cite></p>
+</div></blockquote>
+<p>This page describes the process used to build records based on the data saved by
+electron microscopy instruments using NexusLIMS.
+At the bottom is an <a class="reference internal" href="#activity-diagram">activity diagram</a> that illustrates
+how the different modules work together to generate records from the centralized
+file storage and the NexusLIMS session database. Throughout this page, links
+are made to the <a class="reference external" href="api.html">API Documentation</a> as appropriate for further
+detail about the methods and classes used during record generation.</p>
+<section id="general-approach">
+<span id="id1"></span><h2>General Approach<a class="headerlink" href="#general-approach" title="Link to this heading">#</a></h2>
+<p>Because the instruments cannot communicate directly with the NexusLIMS back-end,
+the system utilizes a polling approach to detect when a new record should be
+built. The process described on this page happens periodically (using a system
+scheduling tool such as <code class="docutils literal notranslate"><span class="pre">systemd</span></code> or <code class="docutils literal notranslate"><span class="pre">cron</span></code>). The record builder is begun by
+running <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">nexusLIMS.builder.record_builder</span></code>, which will run the
+<a class="reference internal" href="api/nexusLIMS.builder.html#nexusLIMS.builder.record_builder.process_new_records" title="nexusLIMS.builder.record_builder.process_new_records"><code class="xref py py-func docutils literal notranslate"><span class="pre">process_new_records()</span></code></a> function. This
+function initiates one iteration of the record builder, which will query the
+NexusLIMS database for any sessions that are waiting to have their record built
+and then proceed to build them and upload them to the NexusLIMS CDCS instance.
+As of November 2021, it also queries the API for any enabled NEMO-based
+harvesters, and will fetch any recent “usage events” to determine if a record
+needs to be built.
+As part of this process (and explained in detail below), the centralized file
+system is searched for files matching the session logs in the database, which
+then have their metadata extracted and are parsed into <cite>Acquisition Activities</cite>.
+These activities are written to the .xml record, which is validated against the
+Nexus Microscopy Schema, and finally uploaded to the NexusLIMS CDCS instance if
+everything goes according to plan. If not, an error is logged to the database for that session
+and the operators of NexusLIMS are notified so the issue can be corrected.</p>
+<div class="admonition-a-note-on-authentication admonition">
+<p class="admonition-title">A note on authentication…</p>
+<p>Since many of the resources accessed by the NexusLIMS back-end require
+authentication (such as the CDCS instance), it
+is necessary to provide suitable credentials, or no information will be able
+to be fetched. This is done by specifying two environment variables in the
+context the code is run: <a class="reference internal" href="api/nexusLIMS.html#nexuslims-user"><span class="std std-ref">NX_CDCS_USER</span></a> and
+<a class="reference internal" href="api/nexusLIMS.html#nexuslims-pass"><span class="std std-ref">NX_CDCS_PASS</span></a>. The
+values provided in these variables will be used for authentication to all
+network resources that require it. The easiest way to do
+this is by editing the <code class="docutils literal notranslate"><span class="pre">.env.example</span></code> file in the root of the NexusLIMS
+repository and renaming it to <code class="docutils literal notranslate"><span class="pre">.env</span></code> (make sure not to push this file to
+any remote source, since it has a password in it!). Furthermore, NEMO-based
+session harvesting is enabled by specifying one or more sets of environment
+variables named <code class="docutils literal notranslate"><span class="pre">NX_NEMO_ADDRESS_X</span></code> and <code class="docutils literal notranslate"><span class="pre">NX_NEMO_TOKEN_X</span></code>, where <code class="docutils literal notranslate"><span class="pre">X</span></code> is an
+integer value (<code class="docutils literal notranslate"><span class="pre">1</span></code>, <code class="docutils literal notranslate"><span class="pre">2</span></code>, <code class="docutils literal notranslate"><span class="pre">3</span></code>, etc.). The address variable should be
+a path to the API endpoint for a particular server (e.g.
+<code class="docutils literal notranslate"><span class="pre">https://www.nemo.com/api/</span></code>), while the token should be an API
+authentication token created on the “Detailed administration” page of the
+NEMO administration tools (ask your NEMO system administrator for more
+direction if this is unclear).</p>
+</div>
+</section>
+<section id="finding-new-sessions">
+<h2>Finding New Sessions<a class="headerlink" href="#finding-new-sessions" title="Link to this heading">#</a></h2>
+<p>The session finding is initiated by
+<a class="reference internal" href="api/nexusLIMS.builder.html#nexusLIMS.builder.record_builder.process_new_records" title="nexusLIMS.builder.record_builder.process_new_records"><code class="xref py py-func docutils literal notranslate"><span class="pre">process_new_records()</span></code></a>. This method
+uses <a class="reference internal" href="api/nexusLIMS.harvesters.nemo.html#nexusLIMS.harvesters.nemo.utils.add_all_usage_events_to_db" title="nexusLIMS.harvesters.nemo.utils.add_all_usage_events_to_db"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_all_usage_events_to_db()</span></code></a> to first
+query any enabled NEMO API Connectors, and adds rows to the NexusLIMS session
+log database for any newly created usage events (default is to look back seven
+days for usage events). The record builder then calls
+<a class="reference internal" href="api/nexusLIMS.builder.html#nexusLIMS.builder.record_builder.build_new_session_records" title="nexusLIMS.builder.record_builder.build_new_session_records"><code class="xref py py-func docutils literal notranslate"><span class="pre">build_new_session_records()</span></code></a>, which in
+turn uses <a class="reference internal" href="api/nexusLIMS.db.html#nexusLIMS.db.session_handler.get_sessions_to_build" title="nexusLIMS.db.session_handler.get_sessions_to_build"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_sessions_to_build()</span></code></a> to
+query the NexusLIMS database for any sessions awaiting processing (the database
+location can be referenced within the code using the environment variable
+<a class="reference internal" href="api/nexusLIMS.html#nexuslims-db-path"><span class="std std-ref">NX_DB_PATH</span></a> (<cite>e.g.</cite>
+<code class="docutils literal notranslate"><span class="pre">os.environ[&quot;NX_DB_PATH&quot;]</span></code>. This method interrogates the database for
+session logs with a status of <code class="docutils literal notranslate"><span class="pre">TO_BE_BUILT</span></code> using the SQL query:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="p">(</span><span class="n">session_identifier</span><span class="p">,</span><span class="w"> </span><span class="n">instrument</span><span class="p">,</span><span class="w"> </span><span class="k">timestamp</span><span class="p">,</span><span class="w"> </span><span class="n">event_type</span><span class="p">,</span><span class="w"> </span><span class="k">user</span><span class="p">)</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">session_log</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">record_status</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s1">&#39;TO_BE_BUILT&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>The results of this query are stored as
+<a class="reference internal" href="api/nexusLIMS.db.html#nexusLIMS.db.session_handler.SessionLog" title="nexusLIMS.db.session_handler.SessionLog"><code class="xref py py-class docutils literal notranslate"><span class="pre">SessionLog</span></code></a> objects, which are then
+combined into <a class="reference internal" href="api/nexusLIMS.db.html#nexusLIMS.db.session_handler.Session" title="nexusLIMS.db.session_handler.Session"><code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code></a> objects by
+finding <code class="docutils literal notranslate"><span class="pre">START</span></code> and <code class="docutils literal notranslate"><span class="pre">END</span></code> logs with the same <code class="docutils literal notranslate"><span class="pre">session_identifier</span></code> value.
+Each <a class="reference internal" href="api/nexusLIMS.db.html#nexusLIMS.db.session_handler.Session" title="nexusLIMS.db.session_handler.Session"><code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code></a> has five attributes
+that are used when building a record:</p>
+<blockquote id="session-contents">
+<div><dl>
+<dt>session_identifier<span class="classifier"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></dt><dd><p>An identifier for an individual session on an instrument. This is a UUIDv4
+for any Sharepoint Calendar events, but will be a resolvable URL for any
+NEMO-based events</p>
+</dd>
+<dt>instrument<span class="classifier"><a class="reference internal" href="api/nexusLIMS.html#nexusLIMS.instruments.Instrument" title="nexusLIMS.instruments.Instrument"><code class="xref py py-class docutils literal notranslate"><span class="pre">Instrument</span></code></a></span></dt><dd><p>An object representing the instrument associated with this session</p>
+</dd>
+<dt>dt_from<span class="classifier"><a class="reference external" href="https://docs.python.org/3.11/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a></span></dt><dd><p>A <a class="reference external" href="https://docs.python.org/3.11/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a> object representing the start of this
+session</p>
+</dd>
+<dt>dt_to<span class="classifier"><a class="reference external" href="https://docs.python.org/3.11/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a></span></dt><dd><p>A <a class="reference external" href="https://docs.python.org/3.11/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a> object representing the end of this
+session</p>
+</dd>
+<dt>user<span class="classifier"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></dt><dd><p>The username associated with this session (may not be trustworthy, since not
+every instrument requires the user to login)</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>The <a class="reference internal" href="api/nexusLIMS.db.html#nexusLIMS.db.session_handler.get_sessions_to_build" title="nexusLIMS.db.session_handler.get_sessions_to_build"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_sessions_to_build()</span></code></a> method
+returns a list of these <a class="reference internal" href="api/nexusLIMS.db.html#nexusLIMS.db.session_handler.Session" title="nexusLIMS.db.session_handler.Session"><code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code></a>
+objects to the record builder, which are processed one at a time.</p>
+</section>
+<section id="building-a-single-record">
+<h2>Building a Single Record<a class="headerlink" href="#building-a-single-record" title="Link to this heading">#</a></h2>
+<p>With the list of <a class="reference internal" href="api/nexusLIMS.db.html#nexusLIMS.db.session_handler.Session" title="nexusLIMS.db.session_handler.Session"><code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code></a> instances
+returned by <a class="reference internal" href="api/nexusLIMS.db.html#nexusLIMS.db.session_handler.get_sessions_to_build" title="nexusLIMS.db.session_handler.get_sessions_to_build"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_sessions_to_build()</span></code></a>, the
+code then loops through each <a class="reference internal" href="api/nexusLIMS.db.html#nexusLIMS.db.session_handler.Session" title="nexusLIMS.db.session_handler.Session"><code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code></a>,
+executing a number of steps at each iteration (which are expanded upon below —
+the link after each number will bring you directly to the details for that
+step).</p>
+<section id="overview">
+<span id="id2"></span><h3>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><a class="reference internal" href="#starting-record-builder">(link)</a>
+Execute <a class="reference internal" href="api/nexusLIMS.builder.html#nexusLIMS.builder.record_builder.build_record" title="nexusLIMS.builder.record_builder.build_record"><code class="xref py py-func docutils literal notranslate"><span class="pre">build_record()</span></code></a> for the
+<a class="reference internal" href="api/nexusLIMS.html#nexusLIMS.instruments.Instrument" title="nexusLIMS.instruments.Instrument"><code class="xref py py-class docutils literal notranslate"><span class="pre">Instrument</span></code></a> and time range specified by
+the <a class="reference internal" href="api/nexusLIMS.db.html#nexusLIMS.db.session_handler.Session" title="nexusLIMS.db.session_handler.Session"><code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code></a></p></li>
+</ol>
+<ol class="arabic simple" start="2">
+<li><p><a class="reference internal" href="#harvesting-calendar">(link)</a>
+Fetch any associated calendar information for this
+<a class="reference internal" href="api/nexusLIMS.db.html#nexusLIMS.db.session_handler.Session" title="nexusLIMS.db.session_handler.Session"><code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code></a> using one of the enabled
+harvesters (currently only <a class="reference internal" href="api/nexusLIMS.harvesters.nemo.html#module-nexusLIMS.harvesters.nemo" title="nexusLIMS.harvesters.nemo"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nemo</span></code></a>).</p></li>
+<li><p><a class="reference internal" href="#identifying-files">(link)</a>
+Identify files that NexusLIMS knows how to parse within the time range using
+<a class="reference internal" href="api/nexusLIMS.html#nexusLIMS.utils.find_files_by_mtime" title="nexusLIMS.utils.find_files_by_mtime"><code class="xref py py-func docutils literal notranslate"><span class="pre">find_files_by_mtime()</span></code></a>; if no files are found,
+mark the session as <code class="docutils literal notranslate"><span class="pre">NO_FILES_FOUND</span></code> in the database using
+<a class="reference internal" href="api/nexusLIMS.db.html#nexusLIMS.db.session_handler.Session.update_session_status" title="nexusLIMS.db.session_handler.Session.update_session_status"><code class="xref py py-meth docutils literal notranslate"><span class="pre">update_session_status()</span></code></a> and
+continue with step 1 for the next
+<a class="reference internal" href="api/nexusLIMS.db.html#nexusLIMS.db.session_handler.Session" title="nexusLIMS.db.session_handler.Session"><code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code></a> in the list.</p></li>
+<li><p><a class="reference internal" href="#build-activities">(link)</a>
+Separate the files into discrete activities (represented by
+<a class="reference internal" href="api/nexusLIMS.schemas.html#nexusLIMS.schemas.activity.AcquisitionActivity" title="nexusLIMS.schemas.activity.AcquisitionActivity"><code class="xref py py-class docutils literal notranslate"><span class="pre">AcquisitionActivity</span></code></a> objects) by
+inferring logical breaks in the file’s acquisition times using
+<a class="reference internal" href="api/nexusLIMS.schemas.html#nexusLIMS.schemas.activity.cluster_filelist_mtimes" title="nexusLIMS.schemas.activity.cluster_filelist_mtimes"><code class="xref py py-func docutils literal notranslate"><span class="pre">cluster_filelist_mtimes()</span></code></a>.</p></li>
+<li><p><a class="reference internal" href="#parse-metadata">(link)</a>
+For each file, add it to the appropriate activity using
+<a class="reference internal" href="api/nexusLIMS.schemas.html#nexusLIMS.schemas.activity.AcquisitionActivity.add_file" title="nexusLIMS.schemas.activity.AcquisitionActivity.add_file"><code class="xref py py-meth docutils literal notranslate"><span class="pre">add_file()</span></code></a>, which
+in turn uses <a class="reference internal" href="api/nexusLIMS.extractors.html#nexusLIMS.extractors.parse_metadata" title="nexusLIMS.extractors.parse_metadata"><code class="xref py py-func docutils literal notranslate"><span class="pre">parse_metadata()</span></code></a> to extract
+known metadata and <a class="reference internal" href="api/nexusLIMS.extractors.html#module-nexusLIMS.extractors.thumbnail_generator" title="nexusLIMS.extractors.thumbnail_generator"><code class="xref py py-mod docutils literal notranslate"><span class="pre">thumbnail_generator</span></code></a> to
+generate a web-accessible preview image of the dataset. These files are
+saved within the directory contained in the
+<a class="reference internal" href="api/nexusLIMS.html#nexuslims-data-path"><span class="std std-ref">NX_DATA_PATH</span></a> environment variable.</p></li>
+<li><p><a class="reference internal" href="#separate-setup-parameters">(link)</a>
+Once all the individual files have been processed, their metadata is
+inspected and any values that are common to all files are assigned as
+<a class="reference internal" href="api/nexusLIMS.schemas.html#nexusLIMS.schemas.activity.AcquisitionActivity" title="nexusLIMS.schemas.activity.AcquisitionActivity"><code class="xref py py-class docutils literal notranslate"><span class="pre">AcquisitionActivity</span></code></a>
+<cite>Setup Parameters</cite>, while unique values are left associated with the
+individual files.</p></li>
+<li><p><a class="reference internal" href="#validating-the-record">(link)</a>
+After all activities are processed and exported to XML, the records are
+validated against the schema using
+<a class="reference internal" href="api/nexusLIMS.builder.html#nexusLIMS.builder.record_builder.validate_record" title="nexusLIMS.builder.record_builder.validate_record"><code class="xref py py-func docutils literal notranslate"><span class="pre">validate_record()</span></code></a>.</p></li>
+<li><p><a class="reference internal" href="#upload-records">(link)</a>
+Any records created are uploaded to the NexusLIMS CDCS instance using
+<a class="reference internal" href="api/nexusLIMS.html#nexusLIMS.cdcs.upload_record_files" title="nexusLIMS.cdcs.upload_record_files"><code class="xref py py-func docutils literal notranslate"><span class="pre">upload_record_files()</span></code></a> and the NexusLIMS database
+is updated as needed.</p></li>
+</ol>
+</section>
+<section id="initiating-the-build">
+<span id="starting-record-builder"></span><h3>1. Initiating the Build<a class="headerlink" href="#initiating-the-build" title="Link to this heading">#</a></h3>
+<p>Prior to calling <a class="reference internal" href="api/nexusLIMS.builder.html#nexusLIMS.builder.record_builder.build_record" title="nexusLIMS.builder.record_builder.build_record"><code class="xref py py-func docutils literal notranslate"><span class="pre">build_record()</span></code></a> for
+a given <a class="reference internal" href="api/nexusLIMS.db.html#nexusLIMS.db.session_handler.Session" title="nexusLIMS.db.session_handler.Session"><code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code></a>,
+<a class="reference internal" href="api/nexusLIMS.db.html#nexusLIMS.db.session_handler.Session.insert_record_generation_event" title="nexusLIMS.db.session_handler.Session.insert_record_generation_event"><code class="xref py py-meth docutils literal notranslate"><span class="pre">insert_record_generation_event()</span></code></a>
+is called for the <a class="reference internal" href="api/nexusLIMS.db.html#nexusLIMS.db.session_handler.Session" title="nexusLIMS.db.session_handler.Session"><code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code></a> to insert a
+log into the database that a record building attempt was made. This is done
+to fully document all actions taken by NexusLIMS.</p>
+<p>After this log is inserted into the database,
+<a class="reference internal" href="api/nexusLIMS.builder.html#nexusLIMS.builder.record_builder.build_record" title="nexusLIMS.builder.record_builder.build_record"><code class="xref py py-func docutils literal notranslate"><span class="pre">build_record()</span></code></a> is called using the
+<a class="reference internal" href="api/nexusLIMS.html#nexusLIMS.instruments.Instrument" title="nexusLIMS.instruments.Instrument"><code class="xref py py-class docutils literal notranslate"><span class="pre">Instrument</span></code></a> and timestamps associated with
+the given <a class="reference internal" href="api/nexusLIMS.db.html#nexusLIMS.db.session_handler.Session" title="nexusLIMS.db.session_handler.Session"><code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code></a>. The code
+begins the record by writing basic XML header information before querying the
+reservation system for additional information about the experiment.
+<a class="reference internal" href="#overview">(go to top)</a></p>
+</section>
+<section id="querying-the-reservation-calendars">
+<span id="harvesting-calendar"></span><h3>2. Querying the Reservation Calendars<a class="headerlink" href="#querying-the-reservation-calendars" title="Link to this heading">#</a></h3>
+<p>Since users must make reservations on either the SharePoint calendar or the
+NEMO facility management system, these are
+important sources of metadata for the experimental records created by NexusLIMS.
+Information from these reservation “events” is included throughout the record,
+although it primarily informs the information contained in the <code class="docutils literal notranslate"><span class="pre">&lt;summary&gt;</span></code>
+element, including information such as who made the reservation, what the
+experiment’s motivation was, what sample was examined, etc.</p>
+<p>To obtain this information, the record builder uses whatever harvester module
+is listed in the <code class="docutils literal notranslate"><span class="pre">harvester</span></code> column of the NexusLIMS database for that
+instrument. (i.e. <a class="reference internal" href="api/nexusLIMS.harvesters.nemo.html#module-nexusLIMS.harvesters.nemo" title="nexusLIMS.harvesters.nemo"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nemo</span></code></a> as of version
+1.1.0). Each of these modules implements a <code class="docutils literal notranslate"><span class="pre">res_event_from_session</span></code> method,
+used by the record builder to return a
+<a class="reference internal" href="api/nexusLIMS.harvesters.html#nexusLIMS.harvesters.reservation_event.ReservationEvent" title="nexusLIMS.harvesters.reservation_event.ReservationEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ReservationEvent</span></code></a> object representing
+the reservation that overlaps maximally with the unit of time (or a very simple
+generic one, if no matching reservation was found). These functions operate
+serve as an adaptor layer to allow NexusLIMS to generate structurally-uniform
+representations of a reservation from differing calendaring applications.
+From this point on, identical code is used regardless of the original source of
+the reservation information. Once the
+<a class="reference internal" href="api/nexusLIMS.harvesters.html#nexusLIMS.harvesters.reservation_event.ReservationEvent" title="nexusLIMS.harvesters.reservation_event.ReservationEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ReservationEvent</span></code></a> is obtained,
+it is serialized into XML format that is compatible with the Nexus Microscopy
+Schema. <a class="reference internal" href="#overview">(go to top)</a></p>
+</section>
+<section id="identifying-files">
+<span id="identifying-files-to-include"></span><h3>3. Identifying Files to Include<a class="headerlink" href="#identifying-files" title="Link to this heading">#</a></h3>
+<p>The majority of the information included in an Experiment record is extracted
+from the files identified as part of a given session on one of the Electron
+Microscopy Nexus Facility microscopes. To do this, a few different sources of
+information are combined. As described <a class="reference internal" href="#session-contents">before</a>, a
+<a class="reference internal" href="api/nexusLIMS.db.html#nexusLIMS.db.session_handler.Session" title="nexusLIMS.db.session_handler.Session"><code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code></a> will provide an identifier,
+the timespan of interest, as well as the
+<a class="reference internal" href="api/nexusLIMS.html#nexusLIMS.instruments.Instrument" title="nexusLIMS.instruments.Instrument"><code class="xref py py-class docutils literal notranslate"><span class="pre">Instrument</span></code></a> that was used for the
+<a class="reference internal" href="api/nexusLIMS.db.html#nexusLIMS.db.session_handler.Session" title="nexusLIMS.db.session_handler.Session"><code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code></a>. The
+<a class="reference internal" href="api/nexusLIMS.html#nexusLIMS.instruments.Instrument" title="nexusLIMS.instruments.Instrument"><code class="xref py py-class docutils literal notranslate"><span class="pre">Instrument</span></code></a> objects attached to session logs
+are read from the <code class="docutils literal notranslate"><span class="pre">instruments</span></code> table of the NexusLIMS database, and contain
+known important information about the physical instrument, such as the
+persistent identifier for the microscope, its location, the URL where its
+reservations can be found, where it saves its files (relative to the directory
+specified in the <a class="reference internal" href="api/nexusLIMS.html#nexuslims-instrument-data-path"><span class="std std-ref">NX_INSTRUMENT_DATA_PATH</span></a> environment variable),
+etc. Sourcing this information from the master database allows for one central
+location for authoritative data. Thus, if something changes about the
+instruments’ configuration, the data needs to be updated in one location only.</p>
+<p>Using the <cite>Filestore path</cite> information from the database, NexusLIMS searches for files
+modified within the <a class="reference internal" href="api/nexusLIMS.html#nexusLIMS.instruments.Instrument" title="nexusLIMS.instruments.Instrument"><code class="xref py py-class docutils literal notranslate"><span class="pre">Instrument</span></code></a>’s path during
+the specified timespan. This is first tried using the
+<a class="reference internal" href="api/nexusLIMS.html#nexusLIMS.utils.gnu_find_files_by_mtime" title="nexusLIMS.utils.gnu_find_files_by_mtime"><code class="xref py py-meth docutils literal notranslate"><span class="pre">gnu_find_files_by_mtime()</span></code></a>, which attempts to use
+the Unix <a class="reference external" href="https://www.gnu.org/software/findutils/"><code class="docutils literal notranslate"><span class="pre">find</span></code> command</a> by spawning a sub-process. This only works on Linux, and may
+fail, so a slower pure-Python implementation (implemented in
+<a class="reference internal" href="api/nexusLIMS.html#nexusLIMS.utils.find_files_by_mtime" title="nexusLIMS.utils.find_files_by_mtime"><code class="xref py py-meth docutils literal notranslate"><span class="pre">find_files_by_mtime()</span></code></a>) is used as a fallback if so.
+All files within the <a class="reference internal" href="api/nexusLIMS.html#nexusLIMS.instruments.Instrument" title="nexusLIMS.instruments.Instrument"><code class="xref py py-class docutils literal notranslate"><span class="pre">Instrument</span></code></a>’s root-level
+folder are searched and only files with modification times with the timespan
+of interest are returned. Currently, this process takes on the order of tens of
+seconds for typical records (depending on how many files are in the instrument’s
+folder) when using the <a class="reference internal" href="api/nexusLIMS.html#nexusLIMS.utils.gnu_find_files_by_mtime" title="nexusLIMS.utils.gnu_find_files_by_mtime"><code class="xref py py-meth docutils literal notranslate"><span class="pre">gnu_find_files_by_mtime()</span></code></a>.
+Basic testing has revealed the pure Python implementation of
+<a class="reference internal" href="api/nexusLIMS.html#nexusLIMS.utils.find_files_by_mtime" title="nexusLIMS.utils.find_files_by_mtime"><code class="xref py py-meth docutils literal notranslate"><span class="pre">find_files_by_mtime()</span></code></a> to be approximately 3 times
+slower.</p>
+<p>If no files matching this session’s timespan are found (as could be the case if
+a user accidentally started the logger application or did not generate any
+data), the
+<a class="reference internal" href="api/nexusLIMS.db.html#nexusLIMS.db.session_handler.Session.update_session_status" title="nexusLIMS.db.session_handler.Session.update_session_status"><code class="xref py py-meth docutils literal notranslate"><span class="pre">update_session_status()</span></code></a> method is
+used to mark the session’s record status as <code class="docutils literal notranslate"><span class="pre">'NO_FILES_FOUND'</span></code> in the
+database, and the back-end proceeds with <a class="reference internal" href="#starting-record-builder">step 1</a> for
+the next <a class="reference internal" href="api/nexusLIMS.db.html#nexusLIMS.db.session_handler.Session" title="nexusLIMS.db.session_handler.Session"><code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code></a> to be processed.
+<a class="reference internal" href="#overview">(go to top)</a></p>
+</section>
+<section id="separating-acquisition-activities">
+<span id="build-activities"></span><h3>4. Separating Acquisition Activities<a class="headerlink" href="#separating-acquisition-activities" title="Link to this heading">#</a></h3>
+<p>Once the list of files that should be associated with this record is obtained,
+the next step is to separate those files into logical groupings to try and
+approximate conceptual boundaries that occur during an experiment. In the
+NexusLIMS schema, these groups are called <code class="docutils literal notranslate"><span class="pre">AcquisitionActivities</span></code>, which are
+represented by <a class="reference internal" href="api/nexusLIMS.schemas.html#nexusLIMS.schemas.activity.AcquisitionActivity" title="nexusLIMS.schemas.activity.AcquisitionActivity"><code class="xref py py-class docutils literal notranslate"><span class="pre">AcquisitionActivity</span></code></a>
+objects by the NexusLIMS back-end.</p>
+<p>To separate the list of files into groups, a statistical analysis of the file
+creation times is performed, as illustrated in <a class="reference internal" href="#cluster-fig"><span class="std std-numref">Fig. 1</span></a> for an
+example experiment consisting of groups of EELS spectrum images.
+In (a), the difference in creation time (compared to the first file)
+for each file is plotted against the sequential file number. From this, it is
+clear that there are 13 individual groupings of files that belong together
+(the first two, then next three, three after that, and so on…). These
+groupings represent files that were collected near-simultaneously, and each
+group is a collection of files (EELS, HAADF signal, and overview image) from
+slightly different areas. In (b), a histogram of time differences between
+consecutive pairs of files, it is clear that the majority of files have a very
+short time difference, and the larger time differences represent the gaps
+between groups.</p>
+<figure class="align-default" id="id3" style="width: 80%">
+<span id="cluster-fig"></span><a class="reference internal image-reference" href="_images/file_clustering.png"><img alt="How groups of files are separated into Acquisition Activities" src="_images/file_clustering.png" style="width: 640.0px; height: 480.0px;" />
+</a>
+<figcaption>
+<p><span class="caption-number">Fig. 1 </span><span class="caption-text">An example of determining the
+<a class="reference internal" href="api/nexusLIMS.schemas.html#nexusLIMS.schemas.activity.AcquisitionActivity" title="nexusLIMS.schemas.activity.AcquisitionActivity"><code class="xref py py-class docutils literal notranslate"><span class="pre">AcquisitionActivity</span></code></a> time boundaries
+for a group of files collected during an experiment. See the surrounding
+text for a full explanation of these plots.</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>Since the pattern of file times will vary (greatly) between experiments, a
+statistical approach is needed, as implemented in
+<a class="reference internal" href="api/nexusLIMS.schemas.html#nexusLIMS.schemas.activity.cluster_filelist_mtimes" title="nexusLIMS.schemas.activity.cluster_filelist_mtimes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">cluster_filelist_mtimes()</span></code></a>. In this method,
+a <a class="reference external" href="https://scikit-learn.org/stable/modules/density.html#kernel-density">Kernel Density Estimate</a> (KDE) of the file creation times is generated. The
+KDE will be peaked around times where many files are created in a short
+succession, and minimized at long gaps between acquisition times. In practice,
+there is an important parameter (the KDE bandwidth) that must be provided when
+generating the density estimate, and a grid search cross-validation approach is
+used to find the optimal value for each record’s files (see the documentation of
+<a class="reference internal" href="api/nexusLIMS.schemas.html#nexusLIMS.schemas.activity.cluster_filelist_mtimes" title="nexusLIMS.schemas.activity.cluster_filelist_mtimes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">cluster_filelist_mtimes()</span></code></a> for further
+details). Once the KDE is generated, the local minima are detected, and taken
+as the boundaries between groups of files, as illustrated in
+<a class="reference internal" href="#cluster-fig"><span class="std std-numref">Fig. 1</span></a> (c) (the KDE data is scaled for clarity).</p>
+<p>With those boundaries overlaid over the original file time plot as in
+<a class="reference internal" href="#cluster-fig"><span class="std std-numref">Fig. 1</span></a> (d), it can be seen that the method clearly delineates
+between the groups of files, and identifies 13 different groups, as a user
+performing the clustering manually would, as well. This approach has proven to
+be generalizable to many different sets of files and is robust across filetypes,
+as well. <a class="reference internal" href="#overview">(go to top)</a></p>
+</section>
+<section id="parsing-individual-files-metadata">
+<span id="parse-metadata"></span><h3>5. Parsing Individual Files’ Metadata<a class="headerlink" href="#parsing-individual-files-metadata" title="Link to this heading">#</a></h3>
+<p>Once the files have been assigned to specific
+<a class="reference internal" href="api/nexusLIMS.schemas.html#nexusLIMS.schemas.activity.AcquisitionActivity" title="nexusLIMS.schemas.activity.AcquisitionActivity"><code class="xref py py-class docutils literal notranslate"><span class="pre">AcquisitionActivity</span></code></a> objects, the
+instrument- and filetype-specific metadata extractors take over. These are all
+accessed by the single <a class="reference internal" href="api/nexusLIMS.extractors.html#nexusLIMS.extractors.parse_metadata" title="nexusLIMS.extractors.parse_metadata"><code class="xref py py-func docutils literal notranslate"><span class="pre">parse_metadata()</span></code></a> function,
+which is responsible for figuring out which specific extractor should be used
+for the provided file. The extractors are contained in the
+<a class="reference internal" href="api/nexusLIMS.extractors.html#module-nexusLIMS.extractors" title="nexusLIMS.extractors"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors</span></code></a> subpackage. Each extractor returns a
+<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>, containing all known metadata in its native (or close to)
+structure, that has a top-level key <code class="docutils literal notranslate"><span class="pre">'nx_meta'</span></code> containing a <a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>
+of metadata that gets fed into the eventual XML record (note, this is not
+currently enforced by any sort of schema validation, but will hopefully be in
+the future). In general, the <code class="docutils literal notranslate"><span class="pre">'nx_meta'</span></code> <a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> can be of arbitrary
+depth, although any nested structure is flattened into a <a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> of
+depth one with spaces separating nested keys, so it is important to avoid
+collisions. Apart from a few special keys, the key-value pairs from the
+<code class="docutils literal notranslate"><span class="pre">'nx_meta'</span></code> <a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> are reproduced verbatim in the XML record as
+either <cite>Setup Parameters</cite> or <cite>Dataset Metadata</cite>, and will be displayed in the
+CDCS front-end alongside the appropriate <code class="docutils literal notranslate"><span class="pre">&lt;AcquisitionActivity&gt;</span></code> or
+<code class="docutils literal notranslate"><span class="pre">&lt;dataset&gt;</span></code>. Again, these values are not subject to any particular schema,
+although this would be good place for validation against an instrument- or
+methodology-specific ontology/schema, were one to exist.</p>
+<div class="admonition-special-metadata-keys admonition">
+<p class="admonition-title">Special metadata keys</p>
+<p>A few keys within the <code class="docutils literal notranslate"><span class="pre">'nx_meta'</span></code> <a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> are reserved for
+internal use (again, not validated by a schema), and are parsed in a special
+way if they exist. These include (at present): <code class="docutils literal notranslate"><span class="pre">'DatasetType'</span></code>,
+<code class="docutils literal notranslate"><span class="pre">'Data</span> <span class="pre">Type'</span></code>, <code class="docutils literal notranslate"><span class="pre">'Creation</span> <span class="pre">Time'</span></code>, <code class="docutils literal notranslate"><span class="pre">'Extraction</span> <span class="pre">Details'</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">'warnings'</span></code>. <code class="docutils literal notranslate"><span class="pre">'DatasetType'</span></code> is mapped to the <code class="docutils literal notranslate"><span class="pre">&#64;type</span></code> attribute of
+<code class="docutils literal notranslate"><span class="pre">&lt;dataset&gt;</span></code> elements in the
+NexusLIMS schema, and has a controlled vocabulary (see the schema
+documentation for details). <code class="docutils literal notranslate"><span class="pre">'Data</span> <span class="pre">Type'</span></code> is non-controlled, and should
+contain a human-readable value that describes the data (with spaces
+replaced by <code class="docutils literal notranslate"><span class="pre">_</span></code> characters), such as <code class="docutils literal notranslate"><span class="pre">'TEM_Imaging'</span></code>, <code class="docutils literal notranslate"><span class="pre">'SEM_EDS'</span></code>,
+<code class="docutils literal notranslate"><span class="pre">'STEM_EELS'</span></code>, etc. These values will be parsed in the front-end to
+report each activity’s <cite>Activity contents</cite> and provide an overview of what
+types of data were collected during that activity. <code class="docutils literal notranslate"><span class="pre">'Creation</span> <span class="pre">Time'</span></code>
+should be an <a class="reference external" href="https://en.wikipedia.org/wiki/ISO_8601#Combined_date_and_time_representations">ISO format timestamp</a> and is displayed in
+the dataset table in the front-end. Finally, <code class="docutils literal notranslate"><span class="pre">'warnings'</span></code> should contain
+a list of metadata keys that will be marked as “unreliable”. These allow
+the front-end to display a warning for values that are worth including, but
+are known to sometimes have an incorrect value (see
+<a class="reference internal" href="api/nexusLIMS.extractors.html#nexusLIMS.extractors.digital_micrograph.parse_643_titan" title="nexusLIMS.extractors.digital_micrograph.parse_643_titan"><code class="xref py py-meth docutils literal notranslate"><span class="pre">parse_643_titan()</span></code></a> for an
+example of this).</p>
+</div>
+<p>As much as possible, the metadata extractors make use of widely adopted
+third-party libraries for proprietary data access. For most data files, this
+means the <a class="reference external" href="https://hyperspy.org/">HyperSpy</a> library is used, since it provides readers for
+a wide variety of formats commonly generated by electron microscopes. Otherwise,
+if a new format is to be supported, it will require decoding the binary format
+and implementing the extractors/preview generator manually.</p>
+<p><a class="reference internal" href="api/nexusLIMS.extractors.html#nexusLIMS.extractors.parse_metadata" title="nexusLIMS.extractors.parse_metadata"><code class="xref py py-func docutils literal notranslate"><span class="pre">parse_metadata()</span></code></a> will (by default) write a JSON
+representation of the metadata it extracts to a sub-directory within the
+directory contained in the <a class="reference internal" href="api/nexusLIMS.html#nexuslims-data-path"><span class="std std-ref">NX_DATA_PATH</span></a> environment
+variable that matches where the original raw
+data file was found in the directory from the
+<a class="reference internal" href="api/nexusLIMS.html#nexuslims-instrument-data-path"><span class="std std-ref">NX_INSTRUMENT_DATA_PATH</span></a> environment variable. A link to
+this file is included in the outputted XML record to provide users with an easy
+way to query the metadata for their files in a text-based format. Likewise, the
+<a class="reference internal" href="api/nexusLIMS.extractors.html#nexusLIMS.extractors.parse_metadata" title="nexusLIMS.extractors.parse_metadata"><code class="xref py py-func docutils literal notranslate"><span class="pre">parse_metadata()</span></code></a> function also handles
+generating a PNG format preview image (saved in a subdirectory within <a class="reference internal" href="api/nexusLIMS.html#nexuslims-data-path"><span class="std std-ref">NX_DATA_PATH</span></a>),
+which is saved in the same folder as the JSON file described above. The actual preview generation is currently
+implemented in
+<a class="reference internal" href="api/nexusLIMS.extractors.html#nexusLIMS.extractors.thumbnail_generator.sig_to_thumbnail" title="nexusLIMS.extractors.thumbnail_generator.sig_to_thumbnail"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sig_to_thumbnail()</span></code></a> for files
+that have a <a class="reference external" href="https://hyperspy.org/">HyperSpy</a> reader implemented, and in
+<a class="reference internal" href="api/nexusLIMS.extractors.html#nexusLIMS.extractors.thumbnail_generator.down_sample_image" title="nexusLIMS.extractors.thumbnail_generator.down_sample_image"><code class="xref py py-meth docutils literal notranslate"><span class="pre">down_sample_image()</span></code></a> for
+simpler formats, such as the TIF images produced by certain SEMs.</p>
+<p>The metadata dictionaries and path to the preview image are maintained at the
+<a class="reference internal" href="api/nexusLIMS.schemas.html#nexusLIMS.schemas.activity.AcquisitionActivity" title="nexusLIMS.schemas.activity.AcquisitionActivity"><code class="xref py py-class docutils literal notranslate"><span class="pre">AcquisitionActivity</span></code></a> level for all the
+files contained within a given activity. <a class="reference internal" href="#overview">(go to top)</a></p>
+</section>
+<section id="determining-setup-parameters">
+<span id="separate-setup-parameters"></span><h3>6. Determining Setup Parameters<a class="headerlink" href="#determining-setup-parameters" title="Link to this heading">#</a></h3>
+<p>For each <a class="reference internal" href="api/nexusLIMS.schemas.html#nexusLIMS.schemas.activity.AcquisitionActivity" title="nexusLIMS.schemas.activity.AcquisitionActivity"><code class="xref py py-class docutils literal notranslate"><span class="pre">AcquisitionActivity</span></code></a>, the
+record builder will identify metadata keys/values that are common across all the
+datasets contained in the activity after the individual files have been
+processed, and stores these values at the <code class="docutils literal notranslate"><span class="pre">&lt;AcquisitionActivity&gt;</span></code> level of the
+resulting XML record rather than at the <code class="docutils literal notranslate"><span class="pre">&lt;dataset&gt;</span></code> level. This allows for
+easier determination in the front-end of what metadata is unique to each file
+and also to see what metadata does not change during a given portion of an
+experiment.</p>
+<p>The code to do this determination is implemented in
+<a class="reference internal" href="api/nexusLIMS.schemas.html#nexusLIMS.schemas.activity.AcquisitionActivity.store_setup_params" title="nexusLIMS.schemas.activity.AcquisitionActivity.store_setup_params"><code class="xref py py-meth docutils literal notranslate"><span class="pre">store_setup_params()</span></code></a>,
+which loops through the metadata of each file of the given
+<a class="reference internal" href="api/nexusLIMS.schemas.html#nexusLIMS.schemas.activity.AcquisitionActivity" title="nexusLIMS.schemas.activity.AcquisitionActivity"><code class="xref py py-class docutils literal notranslate"><span class="pre">AcquisitionActivity</span></code></a>, testing to see if
+the values are identical in each file. If so, the metadata value is stored as an
+Activity <cite>Setup Parameter</cite>.</p>
+<p>Once this process has completed,
+<a class="reference internal" href="api/nexusLIMS.schemas.html#nexusLIMS.schemas.activity.AcquisitionActivity.store_unique_metadata" title="nexusLIMS.schemas.activity.AcquisitionActivity.store_unique_metadata"><code class="xref py py-meth docutils literal notranslate"><span class="pre">store_unique_metadata()</span></code></a>
+compares the metadata for each file to that of the
+<a class="reference internal" href="api/nexusLIMS.schemas.html#nexusLIMS.schemas.activity.AcquisitionActivity" title="nexusLIMS.schemas.activity.AcquisitionActivity"><code class="xref py py-class docutils literal notranslate"><span class="pre">AcquisitionActivity</span></code></a>, and stores only
+the values unique to that dataset (or at least not identical among all files
+in the <a class="reference internal" href="api/nexusLIMS.schemas.html#nexusLIMS.schemas.activity.AcquisitionActivity" title="nexusLIMS.schemas.activity.AcquisitionActivity"><code class="xref py py-class docutils literal notranslate"><span class="pre">AcquisitionActivity</span></code></a>).
+<a class="reference internal" href="#overview">(go to top)</a></p>
+</section>
+<section id="validating-the-built-records">
+<span id="validating-the-record"></span><h3>7. Validating the Built Records<a class="headerlink" href="#validating-the-built-records" title="Link to this heading">#</a></h3>
+<p>After the processing of each
+<a class="reference internal" href="api/nexusLIMS.schemas.html#nexusLIMS.schemas.activity.AcquisitionActivity" title="nexusLIMS.schemas.activity.AcquisitionActivity"><code class="xref py py-class docutils literal notranslate"><span class="pre">AcquisitionActivity</span></code></a> is finished, it is
+added to the XML record by converting the Python object to an XML string
+representation using
+<a class="reference internal" href="api/nexusLIMS.schemas.html#nexusLIMS.schemas.activity.AcquisitionActivity.as_xml" title="nexusLIMS.schemas.activity.AcquisitionActivity.as_xml"><code class="xref py py-meth docutils literal notranslate"><span class="pre">as_xml()</span></code></a>. Once this has
+been done for all the activities identified in the
+<a class="reference internal" href="#build-activities">earlier steps</a>, the record is completed.
+It is returned (as a <a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) to the
+<a class="reference internal" href="api/nexusLIMS.builder.html#nexusLIMS.builder.record_builder.build_new_session_records" title="nexusLIMS.builder.record_builder.build_new_session_records"><code class="xref py py-func docutils literal notranslate"><span class="pre">build_new_session_records()</span></code></a> function,
+and is validated against the NexusLIMS schema using
+<a class="reference internal" href="api/nexusLIMS.builder.html#nexusLIMS.builder.record_builder.validate_record" title="nexusLIMS.builder.record_builder.validate_record"><code class="xref py py-func docutils literal notranslate"><span class="pre">validate_record()</span></code></a>.</p>
+<p>If the record does not validate, something has gone wrong and an error is
+logged. Correspondingly, the
+<a class="reference internal" href="api/nexusLIMS.db.html#nexusLIMS.db.session_handler.Session.update_session_status" title="nexusLIMS.db.session_handler.Session.update_session_status"><code class="xref py py-meth docutils literal notranslate"><span class="pre">update_session_status()</span></code></a> method is
+used to mark the session’s record status as <code class="docutils literal notranslate"><span class="pre">'ERROR'</span></code> in the database so the
+root cause of the problem can be investigated.</p>
+<p>If the record does validate, it is written to a subdirectory of
+<a class="reference internal" href="api/nexusLIMS.html#nexuslims-data-path"><span class="std std-ref">NX_DATA_PATH</span></a> (environment variable) or
+<a class="reference internal" href="api/nexusLIMS.html#nexuslims-records-path"><span class="std std-ref">NX_RECORDS_PATH</span></a> if specified, for storage
+before it is uploaded to the CDCS instance.</p>
+<p>Regardless, the back-end then proceeds with <a class="reference internal" href="#starting-record-builder">step 1</a>
+for the next <a class="reference internal" href="api/nexusLIMS.db.html#nexusLIMS.db.session_handler.Session" title="nexusLIMS.db.session_handler.Session"><code class="xref py py-class docutils literal notranslate"><span class="pre">Session</span></code></a> to be processed,
+and repeats until all sessions have been analyzed.
+<a class="reference internal" href="#overview">(go to top)</a></p>
+</section>
+<section id="uploading-completed-records-and-updating-database">
+<span id="upload-records"></span><h3>8. Uploading Completed Records and Updating Database<a class="headerlink" href="#uploading-completed-records-and-updating-database" title="Link to this heading">#</a></h3>
+<p>Once all the new sessions have been processed, if there were any XML records
+generated, they are uploaded using the
+<a class="reference internal" href="api/nexusLIMS.html#nexusLIMS.cdcs.upload_record_files" title="nexusLIMS.cdcs.upload_record_files"><code class="xref py py-func docutils literal notranslate"><span class="pre">upload_record_files()</span></code></a> function of the
+<a class="reference internal" href="api/nexusLIMS.html#module-nexusLIMS.cdcs" title="nexusLIMS.cdcs"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cdcs</span></code></a> module. This function takes a list of XML files to
+upload, and attempts to insert them in the NexusLIMS CDCS instance using the
+REST API provided by CDCS (documented
+<a class="reference external" href="https://cdcs.nist.gov/cdcs-documentation/18-rest-api-examples.html">here</a>).
+The CDCS instance will validate the record again against the pre-loaded
+NexusLIMS schema. <a class="reference internal" href="api/nexusLIMS.html#nexusLIMS.cdcs.upload_record_files" title="nexusLIMS.cdcs.upload_record_files"><code class="xref py py-func docutils literal notranslate"><span class="pre">upload_record_files()</span></code></a> then assigns
+the record to the <cite>Global Public Workspace</cite> so it is viewable without login.
+<cite>Note:</cite> this will be changed in future versions once single-sign-on is
+implemented, since records will be owned by the user that creates them.</p>
+<p>At this point, the record generation process has completed. This entire logic
+is looped periodically as described <a class="reference internal" href="#general-approach">at the top</a> to
+continually parse new sessions, as they occur. <a class="reference internal" href="#overview">(go to top)</a></p>
+</section>
+</section>
+<section id="record-generation-diagram">
+<span id="activity-diagram"></span><h2>Record Generation Diagram<a class="headerlink" href="#record-generation-diagram" title="Link to this heading">#</a></h2>
+<p>The following diagram illustrates the logic (described above) that is used to
+generate <code class="docutils literal notranslate"><span class="pre">Experiment</span></code> records and upload them to the NexusLIMS CDCS instance.
+To better inspect the diagram, click the image to open just the figure in
+your browser to be able to zoom and pan.</p>
+<p>The diagram should be fairly self-explanatory, but in general: the green dot
+represents the start of the record builder code, and any red dots represent a
+possible ending point (depending on the conditions found during operation). The
+different columns represent the parts of the process that occur in different
+modules/sub-packages within the <code class="docutils literal notranslate"><span class="pre">nexusLIMS</span></code> package. In general, the diagram
+can be read by simply following the arrows. The only exception is for the orange
+boxes, which indicate a jump to the other orange box in the bottom left,
+representing when an individual session is updated in the database.</p>
+<a class="reference internal image-reference" href="_images/record_building.png"><img alt="Activity diagram for record building process" src="_images/record_building.png" style="width: 90%;" />
+</a>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="user_guide.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">User Guide</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="extractors.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Extractors</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#general-approach">General Approach</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#finding-new-sessions">Finding New Sessions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#building-a-single-record">Building a Single Record</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#record-generation-diagram">Record Generation Diagram</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/record_building.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2025, datasophos, LLC.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
