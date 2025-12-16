@@ -32,6 +32,8 @@ tests/**/*.xml
 !tests/integration/docker/cdcs/fixtures/test_record.xml
 tests/test_report.xml
 .env
+tests/.env.test
+!tests/.env.test.example
 cert_bundle.pem
 .directory
 test_db.sqlite
