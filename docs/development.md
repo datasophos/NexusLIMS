@@ -113,7 +113,9 @@ access to the installed packages and environment variables set appropriately.
 
 ## Testing and Documentation
 
-To run the complete test suite, use the provided shell script:
+### Unit Testing
+
+To run the complete unit test suite, use the provided shell script:
 
 ```bash
 $ ./scripts/run_tests.sh
@@ -122,8 +124,41 @@ $ ./scripts/run_tests.sh
 This will run all tests with coverage reporting. To run specific tests:
 
 ```bash
-$ pytest tests/test_extractors.py
+$ uv run pytest tests/test_extractors.py
 ```
+
+To run a specific test:
+
+```bash
+$ uv run pytest tests/test_extractors.py::TestClassName::test_method_name
+```
+
+To generate matplotlib baseline figures for image comparison tests, run:
+
+```bash
+$ ./scripts/generate_mpl_baseline.sh
+```
+
+### Integration Testing
+
+Integration tests validate end-to-end workflows using real Docker services (NEMO, CDCS, PostgreSQL, etc.) instead of mocks. These tests ensure the complete system works together correctly.
+
+```bash
+# run unit and integration tests together using the included script (requires Docker)
+$ ./scripts/run_tests.sh --integration
+
+# Run integration tests (requires Docker)
+$ uv run pytest tests/integration/ -v -m integration
+
+# Run with coverage
+$ uv run pytest tests/integration/ -v -m integration --cov=nexusLIMS
+```
+
+For detailed information about integration testing, setup, architecture, and best practices, see the {doc}`Integration Testing Guide <testing/integration-tests>`.
+
+**Note:** Integration tests require Docker and Docker Compose to be installed and running. Unit tests do not require Docker and can be run independently.
+
+### Documentation
 
 To build the documentation for the project, run:
 
@@ -131,13 +166,7 @@ To build the documentation for the project, run:
 $ ./scripts/build_docs.sh
 ```
 
-The documentation should then be present in the `./_build/` directory.
-
-To generate matplotlib baseline figures for the tests, run:
-
-```bash
-$ ./scripts/generate_mpl_baseline.sh
-```
+The documentation will then be present in the `./_build/` directory.
 
 ## Building new records
 
