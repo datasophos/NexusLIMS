@@ -1,0 +1,578 @@
+# {py:mod}`nexusLIMS.config`
+
+```{py:module} nexusLIMS.config
+```
+
+```{autodoc2-docstring} nexusLIMS.config
+:allowtitles:
+```
+
+## Module Contents
+
+### Classes
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`NemoHarvesterConfig <nexusLIMS.config.NemoHarvesterConfig>`
+  - ```{autodoc2-docstring} nexusLIMS.config.NemoHarvesterConfig
+    :summary:
+    ```
+* - {py:obj}`EmailConfig <nexusLIMS.config.EmailConfig>`
+  - ```{autodoc2-docstring} nexusLIMS.config.EmailConfig
+    :summary:
+    ```
+* - {py:obj}`Settings <nexusLIMS.config.Settings>`
+  - ```{autodoc2-docstring} nexusLIMS.config.Settings
+    :summary:
+    ```
+* - {py:obj}`_SettingsManager <nexusLIMS.config._SettingsManager>`
+  - ```{autodoc2-docstring} nexusLIMS.config._SettingsManager
+    :summary:
+    ```
+````
+
+### Functions
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`refresh_settings <nexusLIMS.config.refresh_settings>`
+  - ```{autodoc2-docstring} nexusLIMS.config.refresh_settings
+    :summary:
+    ```
+* - {py:obj}`clear_settings <nexusLIMS.config.clear_settings>`
+  - ```{autodoc2-docstring} nexusLIMS.config.clear_settings
+    :summary:
+    ```
+````
+
+### Data
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`logger <nexusLIMS.config.logger>`
+  - ```{autodoc2-docstring} nexusLIMS.config.logger
+    :summary:
+    ```
+* - {py:obj}`_manager <nexusLIMS.config._manager>`
+  - ```{autodoc2-docstring} nexusLIMS.config._manager
+    :summary:
+    ```
+* - {py:obj}`settings <nexusLIMS.config.settings>`
+  - ```{autodoc2-docstring} nexusLIMS.config.settings
+    :summary:
+    ```
+````
+
+### API
+
+````{py:data} logger
+:canonical: nexusLIMS.config.logger
+:value: >
+   'getLogger(...)'
+
+```{autodoc2-docstring} nexusLIMS.config.logger
+```
+
+````
+
+`````{py:class} NemoHarvesterConfig(/, **data: typing.Any)
+:canonical: nexusLIMS.config.NemoHarvesterConfig
+
+Bases: {py:obj}`pydantic.BaseModel`
+
+```{autodoc2-docstring} nexusLIMS.config.NemoHarvesterConfig
+```
+
+```{rubric} Initialization
+```
+
+```{autodoc2-docstring} nexusLIMS.config.NemoHarvesterConfig.__init__
+```
+
+````{py:attribute} address
+:canonical: nexusLIMS.config.NemoHarvesterConfig.address
+:type: pydantic.AnyHttpUrl
+:value: >
+   'Field(...)'
+
+```{autodoc2-docstring} nexusLIMS.config.NemoHarvesterConfig.address
+```
+
+````
+
+````{py:attribute} token
+:canonical: nexusLIMS.config.NemoHarvesterConfig.token
+:type: str
+:value: >
+   'Field(...)'
+
+```{autodoc2-docstring} nexusLIMS.config.NemoHarvesterConfig.token
+```
+
+````
+
+````{py:attribute} strftime_fmt
+:canonical: nexusLIMS.config.NemoHarvesterConfig.strftime_fmt
+:type: str
+:value: >
+   'Field(...)'
+
+```{autodoc2-docstring} nexusLIMS.config.NemoHarvesterConfig.strftime_fmt
+```
+
+````
+
+````{py:attribute} strptime_fmt
+:canonical: nexusLIMS.config.NemoHarvesterConfig.strptime_fmt
+:type: str
+:value: >
+   'Field(...)'
+
+```{autodoc2-docstring} nexusLIMS.config.NemoHarvesterConfig.strptime_fmt
+```
+
+````
+
+````{py:attribute} tz
+:canonical: nexusLIMS.config.NemoHarvesterConfig.tz
+:type: str | None
+:value: >
+   'Field(...)'
+
+```{autodoc2-docstring} nexusLIMS.config.NemoHarvesterConfig.tz
+```
+
+````
+
+````{py:method} validate_trailing_slash(v: pydantic.AnyHttpUrl) -> pydantic.AnyHttpUrl
+:canonical: nexusLIMS.config.NemoHarvesterConfig.validate_trailing_slash
+:classmethod:
+
+```{autodoc2-docstring} nexusLIMS.config.NemoHarvesterConfig.validate_trailing_slash
+```
+
+````
+
+`````
+
+`````{py:class} EmailConfig(/, **data: typing.Any)
+:canonical: nexusLIMS.config.EmailConfig
+
+Bases: {py:obj}`pydantic.BaseModel`
+
+```{autodoc2-docstring} nexusLIMS.config.EmailConfig
+```
+
+```{rubric} Initialization
+```
+
+```{autodoc2-docstring} nexusLIMS.config.EmailConfig.__init__
+```
+
+````{py:attribute} smtp_host
+:canonical: nexusLIMS.config.EmailConfig.smtp_host
+:type: str
+:value: >
+   'Field(...)'
+
+```{autodoc2-docstring} nexusLIMS.config.EmailConfig.smtp_host
+```
+
+````
+
+````{py:attribute} smtp_port
+:canonical: nexusLIMS.config.EmailConfig.smtp_port
+:type: int
+:value: >
+   'Field(...)'
+
+```{autodoc2-docstring} nexusLIMS.config.EmailConfig.smtp_port
+```
+
+````
+
+````{py:attribute} smtp_username
+:canonical: nexusLIMS.config.EmailConfig.smtp_username
+:type: str | None
+:value: >
+   'Field(...)'
+
+```{autodoc2-docstring} nexusLIMS.config.EmailConfig.smtp_username
+```
+
+````
+
+````{py:attribute} smtp_password
+:canonical: nexusLIMS.config.EmailConfig.smtp_password
+:type: str | None
+:value: >
+   'Field(...)'
+
+```{autodoc2-docstring} nexusLIMS.config.EmailConfig.smtp_password
+```
+
+````
+
+````{py:attribute} use_tls
+:canonical: nexusLIMS.config.EmailConfig.use_tls
+:type: bool
+:value: >
+   'Field(...)'
+
+```{autodoc2-docstring} nexusLIMS.config.EmailConfig.use_tls
+```
+
+````
+
+````{py:attribute} sender
+:canonical: nexusLIMS.config.EmailConfig.sender
+:type: pydantic.EmailStr
+:value: >
+   'Field(...)'
+
+```{autodoc2-docstring} nexusLIMS.config.EmailConfig.sender
+```
+
+````
+
+````{py:attribute} recipients
+:canonical: nexusLIMS.config.EmailConfig.recipients
+:type: list[pydantic.EmailStr]
+:value: >
+   'Field(...)'
+
+```{autodoc2-docstring} nexusLIMS.config.EmailConfig.recipients
+```
+
+````
+
+`````
+
+`````{py:class} Settings(_case_sensitive: bool | None = None, _nested_model_default_partial_update: bool | None = None, _env_prefix: str | None = None, _env_file: pydantic_settings.sources.DotenvType | None = ENV_FILE_SENTINEL, _env_file_encoding: str | None = None, _env_ignore_empty: bool | None = None, _env_nested_delimiter: str | None = None, _env_nested_max_split: int | None = None, _env_parse_none_str: str | None = None, _env_parse_enums: bool | None = None, _cli_prog_name: str | None = None, _cli_parse_args: bool | list[str] | tuple[str, ...] | None = None, _cli_settings_source: pydantic_settings.sources.CliSettingsSource[typing.Any] | None = None, _cli_parse_none_str: str | None = None, _cli_hide_none_type: bool | None = None, _cli_avoid_json: bool | None = None, _cli_enforce_required: bool | None = None, _cli_use_class_docs_for_groups: bool | None = None, _cli_exit_on_error: bool | None = None, _cli_prefix: str | None = None, _cli_flag_prefix_char: str | None = None, _cli_implicit_flags: bool | None = None, _cli_ignore_unknown_args: bool | None = None, _cli_kebab_case: bool | typing.Literal[all, no_enums] | None = None, _cli_shortcuts: collections.abc.Mapping[str, str | list[str]] | None = None, _secrets_dir: pydantic_settings.sources.PathType | None = None, **values: typing.Any)
+:canonical: nexusLIMS.config.Settings
+
+Bases: {py:obj}`pydantic_settings.BaseSettings`
+
+```{autodoc2-docstring} nexusLIMS.config.Settings
+```
+
+```{rubric} Initialization
+```
+
+```{autodoc2-docstring} nexusLIMS.config.Settings.__init__
+```
+
+````{py:attribute} model_config
+:canonical: nexusLIMS.config.Settings.model_config
+:value: >
+   'SettingsConfigDict(...)'
+
+```{autodoc2-docstring} nexusLIMS.config.Settings.model_config
+```
+
+````
+
+````{py:attribute} NX_FILE_STRATEGY
+:canonical: nexusLIMS.config.Settings.NX_FILE_STRATEGY
+:type: typing.Literal[exclusive, inclusive]
+:value: >
+   'Field(...)'
+
+```{autodoc2-docstring} nexusLIMS.config.Settings.NX_FILE_STRATEGY
+```
+
+````
+
+````{py:attribute} NX_IGNORE_PATTERNS
+:canonical: nexusLIMS.config.Settings.NX_IGNORE_PATTERNS
+:type: list[str]
+:value: >
+   'Field(...)'
+
+```{autodoc2-docstring} nexusLIMS.config.Settings.NX_IGNORE_PATTERNS
+```
+
+````
+
+````{py:attribute} NX_INSTRUMENT_DATA_PATH
+:canonical: nexusLIMS.config.Settings.NX_INSTRUMENT_DATA_PATH
+:type: pydantic.DirectoryPath
+:value: >
+   'Field(...)'
+
+```{autodoc2-docstring} nexusLIMS.config.Settings.NX_INSTRUMENT_DATA_PATH
+```
+
+````
+
+````{py:attribute} NX_DATA_PATH
+:canonical: nexusLIMS.config.Settings.NX_DATA_PATH
+:type: pydantic.DirectoryPath
+:value: >
+   'Field(...)'
+
+```{autodoc2-docstring} nexusLIMS.config.Settings.NX_DATA_PATH
+```
+
+````
+
+````{py:attribute} NX_DB_PATH
+:canonical: nexusLIMS.config.Settings.NX_DB_PATH
+:type: pydantic.FilePath
+:value: >
+   'Field(...)'
+
+```{autodoc2-docstring} nexusLIMS.config.Settings.NX_DB_PATH
+```
+
+````
+
+````{py:attribute} NX_CDCS_USER
+:canonical: nexusLIMS.config.Settings.NX_CDCS_USER
+:type: str
+:value: >
+   'Field(...)'
+
+```{autodoc2-docstring} nexusLIMS.config.Settings.NX_CDCS_USER
+```
+
+````
+
+````{py:attribute} NX_CDCS_PASS
+:canonical: nexusLIMS.config.Settings.NX_CDCS_PASS
+:type: str
+:value: >
+   'Field(...)'
+
+```{autodoc2-docstring} nexusLIMS.config.Settings.NX_CDCS_PASS
+```
+
+````
+
+````{py:attribute} NX_CDCS_URL
+:canonical: nexusLIMS.config.Settings.NX_CDCS_URL
+:type: pydantic.AnyHttpUrl
+:value: >
+   'Field(...)'
+
+```{autodoc2-docstring} nexusLIMS.config.Settings.NX_CDCS_URL
+```
+
+````
+
+````{py:attribute} NX_TEST_CDCS_URL
+:canonical: nexusLIMS.config.Settings.NX_TEST_CDCS_URL
+:type: pydantic.AnyHttpUrl | None
+:value: >
+   'Field(...)'
+
+```{autodoc2-docstring} nexusLIMS.config.Settings.NX_TEST_CDCS_URL
+```
+
+````
+
+````{py:attribute} NX_CERT_BUNDLE_FILE
+:canonical: nexusLIMS.config.Settings.NX_CERT_BUNDLE_FILE
+:type: pydantic.FilePath | None
+:value: >
+   'Field(...)'
+
+```{autodoc2-docstring} nexusLIMS.config.Settings.NX_CERT_BUNDLE_FILE
+```
+
+````
+
+````{py:attribute} NX_CERT_BUNDLE
+:canonical: nexusLIMS.config.Settings.NX_CERT_BUNDLE
+:type: str | None
+:value: >
+   'Field(...)'
+
+```{autodoc2-docstring} nexusLIMS.config.Settings.NX_CERT_BUNDLE
+```
+
+````
+
+````{py:attribute} NX_FILE_DELAY_DAYS
+:canonical: nexusLIMS.config.Settings.NX_FILE_DELAY_DAYS
+:type: float
+:value: >
+   'Field(...)'
+
+```{autodoc2-docstring} nexusLIMS.config.Settings.NX_FILE_DELAY_DAYS
+```
+
+````
+
+````{py:attribute} NX_LOG_PATH
+:canonical: nexusLIMS.config.Settings.NX_LOG_PATH
+:type: pydantic.DirectoryPath | None
+:value: >
+   'Field(...)'
+
+```{autodoc2-docstring} nexusLIMS.config.Settings.NX_LOG_PATH
+```
+
+````
+
+````{py:attribute} NX_RECORDS_PATH
+:canonical: nexusLIMS.config.Settings.NX_RECORDS_PATH
+:type: pydantic.DirectoryPath | None
+:value: >
+   'Field(...)'
+
+```{autodoc2-docstring} nexusLIMS.config.Settings.NX_RECORDS_PATH
+```
+
+````
+
+````{py:attribute} NX_LOCAL_PROFILES_PATH
+:canonical: nexusLIMS.config.Settings.NX_LOCAL_PROFILES_PATH
+:type: pydantic.DirectoryPath | None
+:value: >
+   'Field(...)'
+
+```{autodoc2-docstring} nexusLIMS.config.Settings.NX_LOCAL_PROFILES_PATH
+```
+
+````
+
+````{py:property} nexuslims_instrument_data_path
+:canonical: nexusLIMS.config.Settings.nexuslims_instrument_data_path
+:type: pathlib.Path
+
+```{autodoc2-docstring} nexusLIMS.config.Settings.nexuslims_instrument_data_path
+```
+
+````
+
+````{py:property} lock_file_path
+:canonical: nexusLIMS.config.Settings.lock_file_path
+:type: pathlib.Path
+
+```{autodoc2-docstring} nexusLIMS.config.Settings.lock_file_path
+```
+
+````
+
+````{py:property} log_dir_path
+:canonical: nexusLIMS.config.Settings.log_dir_path
+:type: pathlib.Path
+
+```{autodoc2-docstring} nexusLIMS.config.Settings.log_dir_path
+```
+
+````
+
+````{py:property} records_dir_path
+:canonical: nexusLIMS.config.Settings.records_dir_path
+:type: pathlib.Path
+
+```{autodoc2-docstring} nexusLIMS.config.Settings.records_dir_path
+```
+
+````
+
+````{py:method} nemo_harvesters() -> dict[int, nexusLIMS.config.NemoHarvesterConfig]
+:canonical: nexusLIMS.config.Settings.nemo_harvesters
+
+```{autodoc2-docstring} nexusLIMS.config.Settings.nemo_harvesters
+```
+
+````
+
+````{py:method} email_config() -> nexusLIMS.config.EmailConfig | None
+:canonical: nexusLIMS.config.Settings.email_config
+
+```{autodoc2-docstring} nexusLIMS.config.Settings.email_config
+```
+
+````
+
+`````
+
+`````{py:class} _SettingsManager()
+:canonical: nexusLIMS.config._SettingsManager
+
+```{autodoc2-docstring} nexusLIMS.config._SettingsManager
+```
+
+```{rubric} Initialization
+```
+
+```{autodoc2-docstring} nexusLIMS.config._SettingsManager.__init__
+```
+
+````{py:method} get() -> nexusLIMS.config.Settings
+:canonical: nexusLIMS.config._SettingsManager.get
+
+```{autodoc2-docstring} nexusLIMS.config._SettingsManager.get
+```
+
+````
+
+````{py:method} _create() -> nexusLIMS.config.Settings
+:canonical: nexusLIMS.config._SettingsManager._create
+
+```{autodoc2-docstring} nexusLIMS.config._SettingsManager._create
+```
+
+````
+
+````{py:method} refresh() -> nexusLIMS.config.Settings
+:canonical: nexusLIMS.config._SettingsManager.refresh
+
+```{autodoc2-docstring} nexusLIMS.config._SettingsManager.refresh
+```
+
+````
+
+````{py:method} clear() -> None
+:canonical: nexusLIMS.config._SettingsManager.clear
+
+```{autodoc2-docstring} nexusLIMS.config._SettingsManager.clear
+```
+
+````
+
+`````
+
+````{py:data} _manager
+:canonical: nexusLIMS.config._manager
+:value: >
+   '_SettingsManager(...)'
+
+```{autodoc2-docstring} nexusLIMS.config._manager
+```
+
+````
+
+````{py:function} refresh_settings() -> nexusLIMS.config.Settings
+:canonical: nexusLIMS.config.refresh_settings
+
+```{autodoc2-docstring} nexusLIMS.config.refresh_settings
+```
+````
+
+````{py:function} clear_settings() -> None
+:canonical: nexusLIMS.config.clear_settings
+
+```{autodoc2-docstring} nexusLIMS.config.clear_settings
+```
+````
+
+````{py:data} settings
+:canonical: nexusLIMS.config.settings
+:value: >
+   '_SettingsProxy(...)'
+
+```{autodoc2-docstring} nexusLIMS.config.settings
+```
+
+````

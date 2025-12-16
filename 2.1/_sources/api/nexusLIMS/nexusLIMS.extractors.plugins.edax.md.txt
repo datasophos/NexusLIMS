@@ -1,0 +1,168 @@
+# {py:mod}`nexusLIMS.extractors.plugins.edax`
+
+```{py:module} nexusLIMS.extractors.plugins.edax
+```
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.edax
+:allowtitles:
+```
+
+## Module Contents
+
+### Classes
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`SpcExtractor <nexusLIMS.extractors.plugins.edax.SpcExtractor>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.edax.SpcExtractor
+    :summary:
+    ```
+* - {py:obj}`MsaExtractor <nexusLIMS.extractors.plugins.edax.MsaExtractor>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.edax.MsaExtractor
+    :summary:
+    ```
+````
+
+### Functions
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`get_spc_metadata <nexusLIMS.extractors.plugins.edax.get_spc_metadata>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.edax.get_spc_metadata
+    :summary:
+    ```
+* - {py:obj}`get_msa_metadata <nexusLIMS.extractors.plugins.edax.get_msa_metadata>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.edax.get_msa_metadata
+    :summary:
+    ```
+````
+
+### Data
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`logger <nexusLIMS.extractors.plugins.edax.logger>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.edax.logger
+    :summary:
+    ```
+````
+
+### API
+
+````{py:data} logger
+:canonical: nexusLIMS.extractors.plugins.edax.logger
+:value: >
+   'getLogger(...)'
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.edax.logger
+```
+
+````
+
+`````{py:class} SpcExtractor
+:canonical: nexusLIMS.extractors.plugins.edax.SpcExtractor
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.edax.SpcExtractor
+```
+
+````{py:attribute} name
+:canonical: nexusLIMS.extractors.plugins.edax.SpcExtractor.name
+:value: >
+   'spc_extractor'
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.edax.SpcExtractor.name
+```
+
+````
+
+````{py:attribute} priority
+:canonical: nexusLIMS.extractors.plugins.edax.SpcExtractor.priority
+:value: >
+   100
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.edax.SpcExtractor.priority
+```
+
+````
+
+````{py:method} supports(context: nexusLIMS.extractors.base.ExtractionContext) -> bool
+:canonical: nexusLIMS.extractors.plugins.edax.SpcExtractor.supports
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.edax.SpcExtractor.supports
+```
+
+````
+
+````{py:method} extract(context: nexusLIMS.extractors.base.ExtractionContext) -> dict[str, typing.Any]
+:canonical: nexusLIMS.extractors.plugins.edax.SpcExtractor.extract
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.edax.SpcExtractor.extract
+```
+
+````
+
+`````
+
+`````{py:class} MsaExtractor
+:canonical: nexusLIMS.extractors.plugins.edax.MsaExtractor
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.edax.MsaExtractor
+```
+
+````{py:attribute} name
+:canonical: nexusLIMS.extractors.plugins.edax.MsaExtractor.name
+:value: >
+   'msa_extractor'
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.edax.MsaExtractor.name
+```
+
+````
+
+````{py:attribute} priority
+:canonical: nexusLIMS.extractors.plugins.edax.MsaExtractor.priority
+:value: >
+   100
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.edax.MsaExtractor.priority
+```
+
+````
+
+````{py:method} supports(context: nexusLIMS.extractors.base.ExtractionContext) -> bool
+:canonical: nexusLIMS.extractors.plugins.edax.MsaExtractor.supports
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.edax.MsaExtractor.supports
+```
+
+````
+
+````{py:method} extract(context: nexusLIMS.extractors.base.ExtractionContext) -> dict[str, typing.Any]
+:canonical: nexusLIMS.extractors.plugins.edax.MsaExtractor.extract
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.edax.MsaExtractor.extract
+```
+
+````
+
+`````
+
+````{py:function} get_spc_metadata(filename)
+:canonical: nexusLIMS.extractors.plugins.edax.get_spc_metadata
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.edax.get_spc_metadata
+```
+````
+
+````{py:function} get_msa_metadata(filename)
+:canonical: nexusLIMS.extractors.plugins.edax.get_msa_metadata
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.edax.get_msa_metadata
+```
+````

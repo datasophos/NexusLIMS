@@ -1,0 +1,156 @@
+# {py:mod}`nexusLIMS.extractors.plugins.preview_generators.image_preview`
+
+```{py:module} nexusLIMS.extractors.plugins.preview_generators.image_preview
+```
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.image_preview
+:allowtitles:
+```
+
+## Module Contents
+
+### Classes
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`ImagePreviewGenerator <nexusLIMS.extractors.plugins.preview_generators.image_preview.ImagePreviewGenerator>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.image_preview.ImagePreviewGenerator
+    :summary:
+    ```
+````
+
+### Functions
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`_pad_to_square <nexusLIMS.extractors.plugins.preview_generators.image_preview._pad_to_square>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.image_preview._pad_to_square
+    :summary:
+    ```
+* - {py:obj}`image_to_square_thumbnail <nexusLIMS.extractors.plugins.preview_generators.image_preview.image_to_square_thumbnail>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.image_preview.image_to_square_thumbnail
+    :summary:
+    ```
+* - {py:obj}`down_sample_image <nexusLIMS.extractors.plugins.preview_generators.image_preview.down_sample_image>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.image_preview.down_sample_image
+    :summary:
+    ```
+````
+
+### Data
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`logger <nexusLIMS.extractors.plugins.preview_generators.image_preview.logger>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.image_preview.logger
+    :summary:
+    ```
+* - {py:obj}`_LANCZOS <nexusLIMS.extractors.plugins.preview_generators.image_preview._LANCZOS>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.image_preview._LANCZOS
+    :summary:
+    ```
+````
+
+### API
+
+````{py:data} logger
+:canonical: nexusLIMS.extractors.plugins.preview_generators.image_preview.logger
+:value: >
+   'getLogger(...)'
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.image_preview.logger
+```
+
+````
+
+````{py:data} _LANCZOS
+:canonical: nexusLIMS.extractors.plugins.preview_generators.image_preview._LANCZOS
+:value: >
+   None
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.image_preview._LANCZOS
+```
+
+````
+
+````{py:function} _pad_to_square(im_path: pathlib.Path, new_width: int = 500)
+:canonical: nexusLIMS.extractors.plugins.preview_generators.image_preview._pad_to_square
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.image_preview._pad_to_square
+```
+````
+
+````{py:function} image_to_square_thumbnail(f: pathlib.Path, out_path: pathlib.Path, output_size: int) -> bool
+:canonical: nexusLIMS.extractors.plugins.preview_generators.image_preview.image_to_square_thumbnail
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.image_preview.image_to_square_thumbnail
+```
+````
+
+````{py:function} down_sample_image(fname: pathlib.Path, out_path: pathlib.Path, output_size: typing.Tuple[int, int] | None = None, factor: int | None = None)
+:canonical: nexusLIMS.extractors.plugins.preview_generators.image_preview.down_sample_image
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.image_preview.down_sample_image
+```
+````
+
+`````{py:class} ImagePreviewGenerator
+:canonical: nexusLIMS.extractors.plugins.preview_generators.image_preview.ImagePreviewGenerator
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.image_preview.ImagePreviewGenerator
+```
+
+````{py:attribute} name
+:canonical: nexusLIMS.extractors.plugins.preview_generators.image_preview.ImagePreviewGenerator.name
+:value: >
+   'image_preview'
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.image_preview.ImagePreviewGenerator.name
+```
+
+````
+
+````{py:attribute} priority
+:canonical: nexusLIMS.extractors.plugins.preview_generators.image_preview.ImagePreviewGenerator.priority
+:value: >
+   100
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.image_preview.ImagePreviewGenerator.priority
+```
+
+````
+
+````{py:attribute} SUPPORTED_EXTENSIONS
+:canonical: nexusLIMS.extractors.plugins.preview_generators.image_preview.ImagePreviewGenerator.SUPPORTED_EXTENSIONS
+:type: typing.ClassVar
+:value: >
+   None
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.image_preview.ImagePreviewGenerator.SUPPORTED_EXTENSIONS
+```
+
+````
+
+````{py:method} supports(context: nexusLIMS.extractors.base.ExtractionContext) -> bool
+:canonical: nexusLIMS.extractors.plugins.preview_generators.image_preview.ImagePreviewGenerator.supports
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.image_preview.ImagePreviewGenerator.supports
+```
+
+````
+
+````{py:method} generate(context: nexusLIMS.extractors.base.ExtractionContext, output_path: pathlib.Path) -> bool
+:canonical: nexusLIMS.extractors.plugins.preview_generators.image_preview.ImagePreviewGenerator.generate
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.image_preview.ImagePreviewGenerator.generate
+```
+
+````
+
+`````
