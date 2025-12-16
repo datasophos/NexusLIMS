@@ -109,6 +109,19 @@ def build_switcher_json(dirs, current_pr_num=None):
                     }
                 )
 
+    # Add versioned releases (e.g., 2.0, 1.5, etc.)
+    # Sort versions in descending order (newer versions first)
+    version_dirs = [d for d in dirs if re.match(r"^\d+\.\d+", d)]
+    version_dirs.sort(key=lambda x: tuple(map(int, x.split(".")[:2])), reverse=True)
+    for v in version_dirs:
+        entries.append(
+            {
+                "name": f"v{v}",
+                "version": v,
+                "url": f"{BASE_URL}/{v}/",
+            }
+        )
+
     # Add current PR first (if in PR context)
     if current_pr_num:
         current_pr_name = f"pr-{current_pr_num}"

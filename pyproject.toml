@@ -123,7 +123,7 @@ directory = "docs/changes"
 package = "nexusLIMS"
 package_dir = "nexusLIMS"
 title_format = "v{version} ({project_date})"
-filename = "docs/development_log.rst"
+filename = "docs/development_log.md"
 issue_format = "`#{issue} <https://github.com/datasophos/NexusLIMS/issues/{issue}>`_"
 
 [[tool.towncrier.type]]

@@ -124,7 +124,7 @@ CURRENT_BRANCH=$(git branch --show-current)
 info "Current branch: $CURRENT_BRANCH"
 
 # Check if there are any towncrier fragments
-FRAGMENT_COUNT=$(find docs/changes -name '+*.rst' 2>/dev/null | wc -l | tr -d ' ')
+FRAGMENT_COUNT=$(find docs/changes -name '*.rst' ! -name 'README.rst' 2>/dev/null | wc -l | tr -d ' ')
 if [ "$FRAGMENT_COUNT" -eq 0 ]; then
     warning "No towncrier fragments found in docs/changes/"
     if [ "$SKIP_CONFIRM" = false ]; then
@@ -222,11 +222,11 @@ success "Changelog generated"
 
 # Run linting to fix any formatting issues in generated files
 info "Running formatter on changed files..."
-uv run ruff format pyproject.toml docs/development_log.rst || true
+uv run ruff format pyproject.toml || true
 
 # Stage changes
 info "Staging changes..."
-git add pyproject.toml docs/development_log.rst docs/changes/
+git add pyproject.toml docs/development_log.md docs/changes/
 success "Changes staged"
 
 # Commit

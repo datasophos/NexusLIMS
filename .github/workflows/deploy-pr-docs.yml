@@ -6,16 +6,41 @@ on:
     workflows: ["Unit Tests"]
     types:
       - completed
+    branches-ignore:
+      - main # Don't trigger for main branch (that's handled by deploy-docs.yml)
 
 jobs:
+  check-conditions:
+    name: Check Deployment Conditions
+    runs-on: ubuntu-latest
+    outputs:
+      should_deploy: ${{ steps.check.outputs.should_deploy }}
+    steps:
+      - name: Check if deployment should proceed
+        id: check
+        run: |
+          echo "Workflow run conclusion: ${{ github.event.workflow_run.conclusion }}"
+          echo "Workflow run event: ${{ github.event.workflow_run.event }}"
+
+          if [[ "${{ github.event.workflow_run.conclusion }}" == "success" && \
+                "${{ github.event.workflow_run.event }}" == "pull_request" ]]; then
+            echo "✅ Conditions met: will deploy PR documentation"
+            echo "should_deploy=true" >> $GITHUB_OUTPUT
+          else
+            echo "⏭️  Skipping deployment:"
+            if [[ "${{ github.event.workflow_run.conclusion }}" != "success" ]]; then
+              echo "  - Tests did not pass (conclusion: ${{ github.event.workflow_run.conclusion }})"
+            fi
+            if [[ "${{ github.event.workflow_run.event }}" != "pull_request" ]]; then
+              echo "  - Not triggered by a pull request (event: ${{ github.event.workflow_run.event }})"
+            fi
+            echo "should_deploy=false" >> $GITHUB_OUTPUT
+          fi
+
   deploy-pr-docs:
     name: Build/Deploy PR Docs
-    # Only deploy if:
-    # 1. Tests passed
-    # 2. It was triggered by a pull_request event
-    if: >
-      ${{ github.event.workflow_run.conclusion == 'success' &&
-          github.event.workflow_run.event == 'pull_request' }}
+    needs: check-conditions
+    if: needs.check-conditions.outputs.should_deploy == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: write # Required to push to gh-pages branch
@@ -121,7 +146,21 @@ jobs:
           GITHUB_REF: refs/pull/${{ steps.pr.outputs.number }}/merge
         run: |
           cd pr-source
+          echo "🔍 Generating switcher.json for PR #${{ steps.pr.outputs.number }}..."
+          echo "Environment:"
+          echo "  GITHUB_EVENT_NAME: ${GITHUB_EVENT_NAME}"
+          echo "  GITHUB_REF: ${GITHUB_REF}"
+          echo "  PR_NUMBER: ${{ steps.pr.outputs.number }}"
+          echo ""
+
+          echo "Running generate_switcher_json.py..."
           python scripts/generate_switcher_json.py
+
+          echo ""
+          echo "✅ Generated switcher.json:"
+          cat docs/_static/switcher.json
+          echo ""
+          echo "📊 switcher.json contains $(jq 'length' docs/_static/switcher.json) entries"
 
       - name: Build documentation
         # Build Sphinx documentation for this PR (includes switcher.json from above)
