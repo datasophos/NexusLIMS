@@ -234,18 +234,6 @@ def build_switcher_json(dirs, current_pr_num=None):
                 }
             )
 
-    # Add latest dev build if it exists
-    if "latest" in dirs:
-        dev_version = get_current_dev_version()
-        label = dev_version if dev_version else f"({get_short_commit_hash()})"
-        entries.append(
-            {
-                "name": f"{label} (latest)",
-                "version": "dev",
-                "url": f"{BASE_URL}/latest/",
-            }
-        )
-
     # Add current PR first (if in PR context)
     if current_pr_num:
         current_pr_name = f"pr-{current_pr_num}"
@@ -268,6 +256,19 @@ def build_switcher_json(dirs, current_pr_num=None):
             continue
         entries.append(
             {"name": f"PR #{pr_num}", "version": d, "url": f"{BASE_URL}/{d}/"}
+        )
+
+    # Add latest dev build at the top (if it exists)
+    if "latest" in dirs:
+        dev_version = get_current_dev_version()
+        label = f"v{dev_version}" if dev_version else f"({get_short_commit_hash()})"
+        entries.insert(
+            0,
+            {
+                "name": f"{label} (latest)",
+                "version": "dev",
+                "url": f"{BASE_URL}/latest/",
+            },
         )
 
     # Add link to upstream NIST project documentation
