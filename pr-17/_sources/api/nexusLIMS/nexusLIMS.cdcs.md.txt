@@ -1,0 +1,130 @@
+# {py:mod}`nexusLIMS.cdcs`
+
+```{py:module} nexusLIMS.cdcs
+```
+
+```{autodoc2-docstring} nexusLIMS.cdcs
+:allowtitles:
+```
+
+## Module Contents
+
+### Functions
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`get_cdcs_url <nexusLIMS.cdcs.get_cdcs_url>`
+  - ```{autodoc2-docstring} nexusLIMS.cdcs.get_cdcs_url
+    :summary:
+    ```
+* - {py:obj}`get_workspace_id <nexusLIMS.cdcs.get_workspace_id>`
+  - ```{autodoc2-docstring} nexusLIMS.cdcs.get_workspace_id
+    :summary:
+    ```
+* - {py:obj}`get_template_id <nexusLIMS.cdcs.get_template_id>`
+  - ```{autodoc2-docstring} nexusLIMS.cdcs.get_template_id
+    :summary:
+    ```
+* - {py:obj}`upload_record_content <nexusLIMS.cdcs.upload_record_content>`
+  - ```{autodoc2-docstring} nexusLIMS.cdcs.upload_record_content
+    :summary:
+    ```
+* - {py:obj}`delete_record <nexusLIMS.cdcs.delete_record>`
+  - ```{autodoc2-docstring} nexusLIMS.cdcs.delete_record
+    :summary:
+    ```
+* - {py:obj}`search_records <nexusLIMS.cdcs.search_records>`
+  - ```{autodoc2-docstring} nexusLIMS.cdcs.search_records
+    :summary:
+    ```
+* - {py:obj}`download_record <nexusLIMS.cdcs.download_record>`
+  - ```{autodoc2-docstring} nexusLIMS.cdcs.download_record
+    :summary:
+    ```
+* - {py:obj}`upload_record_files <nexusLIMS.cdcs.upload_record_files>`
+  - ```{autodoc2-docstring} nexusLIMS.cdcs.upload_record_files
+    :summary:
+    ```
+````
+
+### Data
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`logger <nexusLIMS.cdcs.logger>`
+  - ```{autodoc2-docstring} nexusLIMS.cdcs.logger
+    :summary:
+    ```
+````
+
+### API
+
+````{py:data} logger
+:canonical: nexusLIMS.cdcs.logger
+:value: >
+   'getLogger(...)'
+
+```{autodoc2-docstring} nexusLIMS.cdcs.logger
+```
+
+````
+
+````{py:function} get_cdcs_url() -> str
+:canonical: nexusLIMS.cdcs.get_cdcs_url
+
+```{autodoc2-docstring} nexusLIMS.cdcs.get_cdcs_url
+```
+````
+
+````{py:function} get_workspace_id()
+:canonical: nexusLIMS.cdcs.get_workspace_id
+
+```{autodoc2-docstring} nexusLIMS.cdcs.get_workspace_id
+```
+````
+
+````{py:function} get_template_id()
+:canonical: nexusLIMS.cdcs.get_template_id
+
+```{autodoc2-docstring} nexusLIMS.cdcs.get_template_id
+```
+````
+
+````{py:function} upload_record_content(xml_content, title)
+:canonical: nexusLIMS.cdcs.upload_record_content
+
+```{autodoc2-docstring} nexusLIMS.cdcs.upload_record_content
+```
+````
+
+````{py:function} delete_record(record_id)
+:canonical: nexusLIMS.cdcs.delete_record
+
+```{autodoc2-docstring} nexusLIMS.cdcs.delete_record
+```
+````
+
+````{py:function} search_records(title=None, template_id=None, keyword=None)
+:canonical: nexusLIMS.cdcs.search_records
+
+```{autodoc2-docstring} nexusLIMS.cdcs.search_records
+```
+````
+
+````{py:function} download_record(record_id)
+:canonical: nexusLIMS.cdcs.download_record
+
+```{autodoc2-docstring} nexusLIMS.cdcs.download_record
+```
+````
+
+````{py:function} upload_record_files(files_to_upload: typing.List[pathlib.Path] | None, *, progress: bool = False) -> tuple[typing.List[pathlib.Path], typing.List[str]]
+:canonical: nexusLIMS.cdcs.upload_record_files
+
+```{autodoc2-docstring} nexusLIMS.cdcs.upload_record_files
+```
+````

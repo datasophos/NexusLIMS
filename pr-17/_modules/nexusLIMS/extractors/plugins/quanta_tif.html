@@ -1,0 +1,1660 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>nexusLIMS.extractors.plugins.quanta_tif &#8212; NexusLIMS 2.1.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=af02a5b6" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../../../_static/documentation_options.js?v=20623aea"></script>
+    <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";
+
+const defaultStyle = document.createElement('style');
+defaultStyle.textContent = `pre.mermaid {
+    /* Same as .mermaid-container > pre */
+    display: block;
+    width: 100%;
+}
+
+pre.mermaid > svg {
+    /* Same as .mermaid-container > pre > svg */
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+`;
+document.head.appendChild(defaultStyle);
+
+const fullscreenStyle = document.createElement('style');
+fullscreenStyle.textContent = `.mermaid-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.mermaid-container > pre {
+    display: block;
+    width: 100%;
+}
+
+.mermaid-container > pre > svg {
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+
+.mermaid-fullscreen-btn {
+    width: 28px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    font-size: 14px;
+    line-height: 1;
+    padding: 0;
+    color: #333;
+}
+
+.mermaid-fullscreen-btn:hover {
+    opacity: 100% !important;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-btn.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-btn.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 3px 10px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal {
+    display: none;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 95vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.98);
+    z-index: 9999;
+    padding: 20px;
+    overflow: auto;
+}
+
+.mermaid-fullscreen-modal.dark-theme {
+    background: rgba(0, 0, 0, 0.98);
+}
+
+.mermaid-fullscreen-modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen {
+    position: relative;
+    width: 95vw;
+    height: 90vh;
+    max-width: 95vw;
+    max-height: 90vh;
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    overflow: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen.dark-theme {
+    background: #1a1a1a;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+}
+
+.mermaid-container-fullscreen pre.mermaid {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen .mermaid svg {
+    height: 100% !important;
+    width: 100% !important;
+    cursor: grab;
+}
+
+.mermaid-fullscreen-close {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s;
+    font-size: 24px;
+    line-height: 1;
+    color: #333;
+}
+
+.mermaid-fullscreen-close:hover {
+    background: white;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-close.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-close.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal .mermaid-fullscreen-btn {
+    display: none !important;
+}`;
+document.head.appendChild(fullscreenStyle);
+
+// Detect if page has dark background
+const isDarkTheme = () => {
+    const bgColor = window.getComputedStyle(document.body).backgroundColor;
+    const match = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)/);
+    if (match) {
+        const r = parseInt(match[1]);
+        const g = parseInt(match[2]);
+        const b = parseInt(match[3]);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        return brightness < 128;
+    }
+    return false;
+};
+
+const load = async () => {
+    await mermaid.run();
+
+    const all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+
+    if ("True" === "True") {
+        const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+        if(mermaids_to_add_zoom > 0) {
+            var svgs = d3.selectAll(".mermaid svg");
+            if(all_mermaids.length !== mermaids_processed.length) {
+                setTimeout(load, 200);
+                return;
+            } else if(svgs.size() !== mermaids_to_add_zoom) {
+                setTimeout(load, 200);
+                return;
+            } else {
+                svgs.each(function() {
+                    var svg = d3.select(this);
+                    svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                    var inner = svg.select("g");
+                    var zoom = d3.zoom().on("zoom", function(event) {
+                        inner.attr("transform", event.transform);
+                    });
+                    svg.call(zoom);
+                });
+            }
+        }
+    } else if(all_mermaids.length !== mermaids_processed.length) {
+        // Wait for mermaid to process all diagrams
+        setTimeout(load, 200);
+        return;
+    }
+
+    const darkTheme = isDarkTheme();
+
+    // Stop here if not adding fullscreen capability
+    if ("True" !== "True") return;
+
+    const modal = document.createElement('div');
+    modal.className = 'mermaid-fullscreen-modal' + (darkTheme ? ' dark-theme' : '');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Fullscreen diagram viewer');
+    modal.innerHTML = `
+        <button class="mermaid-fullscreen-close${darkTheme ? ' dark-theme' : ''}" aria-label="Close fullscreen">✕</button>
+        <div class="mermaid-container-fullscreen${darkTheme ? ' dark-theme' : ''}"></div>
+    `;
+    document.body.appendChild(modal);
+
+    const modalContent = modal.querySelector('.mermaid-container-fullscreen');
+    const closeBtn = modal.querySelector('.mermaid-fullscreen-close');
+
+    let previousScrollOffset = [window.scrollX, window.scrollY];
+
+    const closeModal = () => {
+        modal.classList.remove('active');
+        modalContent.innerHTML = '';
+        document.body.style.overflow = ''
+        window.scrollTo({left: previousScrollOffset[0], top: previousScrollOffset[1], behavior: 'instant'});
+    };
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeModal();
+        }
+    });
+
+    const allButtons = [];
+
+    document.querySelectorAll('.mermaid').forEach((mermaidDiv) => {
+        if (mermaidDiv.parentNode.classList.contains('mermaid-container') ||
+            mermaidDiv.closest('.mermaid-fullscreen-modal')) {
+            return;
+        }
+
+        const container = document.createElement('div');
+        container.className = 'mermaid-container';
+        mermaidDiv.parentNode.insertBefore(container, mermaidDiv);
+        container.appendChild(mermaidDiv);
+
+        const fullscreenBtn = document.createElement('button');
+        fullscreenBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+        fullscreenBtn.setAttribute('aria-label', 'View diagram in fullscreen');
+        fullscreenBtn.textContent = '⛶';
+        fullscreenBtn.style.opacity = '50%';
+
+        // Calculate dynamic position based on diagram's margin and padding
+        const diagramStyle = window.getComputedStyle(mermaidDiv);
+        const marginTop = parseFloat(diagramStyle.marginTop) || 0;
+        const marginRight = parseFloat(diagramStyle.marginRight) || 0;
+        const paddingTop = parseFloat(diagramStyle.paddingTop) || 0;
+        const paddingRight = parseFloat(diagramStyle.paddingRight) || 0;
+        fullscreenBtn.style.top = `${marginTop + paddingTop + 4}px`;
+        fullscreenBtn.style.right = `${marginRight + paddingRight + 4}px`;
+
+        fullscreenBtn.addEventListener('click', () => {
+            previousScrollOffset = [window.scroll, window.scrollY];
+            const clone = mermaidDiv.cloneNode(true);
+            modalContent.innerHTML = '';
+            modalContent.appendChild(clone);
+
+            const svg = clone.querySelector('svg');
+            if (svg) {
+                svg.removeAttribute('width');
+                svg.removeAttribute('height');
+                svg.style.width = '100%';
+                svg.style.height = 'auto';
+                svg.style.maxWidth = '100%';
+                svg.style.sdisplay = 'block';
+
+                if ("True" === "True") {
+                    setTimeout(() => {
+                        const g = svg.querySelector('g');
+                        if (g) {
+                            var svgD3 = d3.select(svg);
+                            svgD3.html("<g class='wrapper'>" + svgD3.html() + "</g>");
+                            var inner = svgD3.select("g");
+                            var zoom = d3.zoom().on("zoom", function(event) {
+                                inner.attr("transform", event.transform);
+                            });
+                            svgD3.call(zoom);
+                        }
+                    }, 100);
+                }
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        container.appendChild(fullscreenBtn);
+        allButtons.push(fullscreenBtn);
+    });
+
+    // Update theme classes when theme changes
+    const updateTheme = () => {
+        const dark = isDarkTheme();
+        allButtons.forEach(btn => {
+            if (dark) {
+                btn.classList.add('dark-theme');
+            } else {
+                btn.classList.remove('dark-theme');
+            }
+        });
+        if (dark) {
+            modal.classList.add('dark-theme');
+            modalContent.classList.add('dark-theme');
+            closeBtn.classList.add('dark-theme');
+        } else {
+            modal.classList.remove('dark-theme');
+            modalContent.classList.remove('dark-theme');
+            closeBtn.classList.remove('dark-theme');
+        }
+    };
+
+    // Watch for theme changes
+    const observer = new MutationObserver(updateTheme);
+    observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+    observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class', 'style']
+    });
+};
+
+window.addEventListener("load", load);
+</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/nexusLIMS/extractors/plugins/quanta_tif';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'pr-17';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/pr-17/_modules/nexusLIMS/extractors/plugins/quanta_tif.html" />
+    <link rel="icon" href="../../../../_static/nexusLIMS_bare_logo.ico"/>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="2.1.0" />
+    <meta name="docbuild:last-update" content="Dec, 16, 2025"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.1.0 documentation - Home"/>
+    <img src="../../../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.1.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../getting_started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../migration.html">
+    Migration Guide: v1 to v2
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../dev_guide.html">
+    Developer Guide
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../reference.html">
+    Reference
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datasophos/NexusLIMS" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://datasophos.co" title="Datasophos" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-globe fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Datasophos</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../getting_started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../migration.html">
+    Migration Guide: v1 to v2
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../dev_guide.html">
+    Developer Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../reference.html">
+    Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datasophos/NexusLIMS" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://datasophos.co" title="Datasophos" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-globe fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Datasophos</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">Module code</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../../../nexusLIMS.html" class="nav-link">nexusLIMS</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../../extractors.html" class="nav-link">nexusLIMS.extractors</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">nexusLIMS.extractors.plugins.quanta_tif</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for nexusLIMS.extractors.plugins.quanta_tif</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;FEI/Thermo Fisher TIFF extractor plugin.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">configparser</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">contextlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">io</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">decimal</span><span class="w"> </span><span class="kn">import</span> <span class="n">Decimal</span><span class="p">,</span> <span class="n">InvalidOperation</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">math</span><span class="w"> </span><span class="kn">import</span> <span class="n">degrees</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">lxml</span><span class="w"> </span><span class="kn">import</span> <span class="n">etree</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.extractors.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExtractionContext</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.extractors.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">_set_instr_name_and_time</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.instruments</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_instr_from_filepath</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_nested_dict_value</span><span class="p">,</span> <span class="n">sort_dict</span><span class="p">,</span> <span class="n">try_getting_dict_value</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="QuantaTiffExtractor">
+<a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.quanta_tif.html#nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">QuantaTiffExtractor</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Extractor for FEI/Thermo Fisher TIFF files.</span>
+
+<span class="sd">    This extractor handles metadata extraction from .tif files saved by</span>
+<span class="sd">    FEI/Thermo Fisher FIBs and SEMs (e.g., Quanta, Helios, etc.).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;quanta_tif_extractor&quot;</span>
+    <span class="n">priority</span> <span class="o">=</span> <span class="mi">100</span>
+
+<div class="viewcode-block" id="QuantaTiffExtractor.supports">
+<a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.quanta_tif.html#nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor.supports">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">supports</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ExtractionContext</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check if this extractor supports the given file.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        context</span>
+<span class="sd">            The extraction context containing file information</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        bool</span>
+<span class="sd">            True if file extension is .tif or .tiff</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">extension</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">file_path</span><span class="o">.</span><span class="n">suffix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">extension</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;tif&quot;</span><span class="p">,</span> <span class="s2">&quot;tiff&quot;</span><span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="QuantaTiffExtractor.extract">
+<a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.quanta_tif.html#nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor.extract">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">extract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ExtractionContext</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extract metadata from a FEI/Thermo TIFF file.</span>
+
+<span class="sd">        Returns the metadata (as a dictionary) from a .tif file saved by the FEI</span>
+<span class="sd">        Quanta SEM in the Nexus Microscopy Facility. Specific tags of interest are</span>
+<span class="sd">        duplicated under the root-level ``nx_meta`` node in the dictionary.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        context</span>
+<span class="sd">            The extraction context containing file information</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict</span>
+<span class="sd">            Metadata dictionary with &#39;nx_meta&#39; key containing NexusLIMS metadata</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">file_path</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Extracting metadata from FEI TIFF file: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="n">filename</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">content</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="n">user_idx</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;[User]&quot;</span><span class="p">)</span>
+
+        <span class="n">mdict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">:</span> <span class="p">{}}</span>
+        <span class="c1"># assume all datasets coming from Quanta are Images, currently</span>
+        <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;DatasetType&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Image&quot;</span>
+        <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;Data Type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;SEM_Imaging&quot;</span>
+
+        <span class="n">_set_instr_name_and_time</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+
+        <span class="c1"># if the user_idx is -1, it means the [User] tag was not found in the</span>
+        <span class="c1"># file, and so the metadata is missing (so we should just return 0)</span>
+        <span class="k">if</span> <span class="n">user_idx</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Did not find expected FEI tags in .tif file: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+            <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;Data Type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Unknown&quot;</span>
+            <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;Extractor Warnings&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="s2">&quot;Did not find expected FEI tags. Could not read metadata&quot;</span>
+            <span class="p">)</span>
+            <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sort_dict</span><span class="p">(</span><span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">])</span>
+
+            <span class="k">return</span> <span class="n">mdict</span>
+
+        <span class="n">metadata_bytes</span> <span class="o">=</span> <span class="n">content</span><span class="p">[</span><span class="n">user_idx</span><span class="p">:]</span>
+        <span class="c1"># remove any null bytes since they break the extractor</span>
+        <span class="n">metadata_bytes</span> <span class="o">=</span> <span class="n">metadata_bytes</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;</span><span class="se">\x00</span><span class="s2">&quot;</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">metadata_str</span> <span class="o">=</span> <span class="n">metadata_bytes</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">metadata_str</span> <span class="o">=</span> <span class="n">metadata_str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">metadata_str</span> <span class="o">=</span> <span class="n">_fix_duplicate_multigis_metadata_tags</span><span class="p">(</span><span class="n">metadata_str</span><span class="p">)</span>
+
+        <span class="c1"># test if file has XML metadata and if so, extract it separately</span>
+        <span class="n">metadata_str</span><span class="p">,</span> <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;FEI_XML_Metadata&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_detect_and_process_xml_metadata</span><span class="p">(</span>
+            <span class="n">metadata_str</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">buf</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">(</span><span class="n">metadata_str</span><span class="p">)</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="n">configparser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">()</span>
+        <span class="c1"># make ConfigParser respect upper/lowercase values</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">optionxform</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">option</span><span class="p">:</span> <span class="n">option</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">buf</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">itm</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">itm</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;DEFAULT&quot;</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">mdict</span><span class="p">[</span><span class="n">itm</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">itm</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">mdict</span><span class="p">[</span><span class="n">itm</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+
+        <span class="n">mdict</span> <span class="o">=</span> <span class="n">parse_nx_meta</span><span class="p">(</span><span class="n">mdict</span><span class="p">)</span>
+
+        <span class="c1"># sort the nx_meta dictionary (recursively) for nicer display</span>
+        <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sort_dict</span><span class="p">(</span><span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">mdict</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="_detect_and_process_xml_metadata">
+<a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.quanta_tif.html#nexusLIMS.extractors.plugins.quanta_tif._detect_and_process_xml_metadata">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">_detect_and_process_xml_metadata</span><span class="p">(</span>
+    <span class="n">metadata_str</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Find and (if necessary) parse XML metadata in a Thermo Fisher FIB/SEM TIF file.</span>
+
+<span class="sd">    Some Thermo Fisher FIB/SEM files have additional metadata embedded as XML at the end</span>
+<span class="sd">    of the TIF file, which cannot be handled by the ``ConfigParser`` implementation of</span>
+<span class="sd">    :py:meth:`get_quanta_metadata`. This method will detect, parse, and remove the XML</span>
+<span class="sd">    from the metadata if present.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    metadata_str</span>
+<span class="sd">        The metadata at the end of the TIF file as a string. May or may not include</span>
+<span class="sd">        an XML section (this depends on the version of the Thermo software that saved</span>
+<span class="sd">        the image).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    metadata_str</span>
+<span class="sd">        The originally provided metadata as a string, but with the XML portion removed</span>
+<span class="sd">        if it was present</span>
+
+<span class="sd">    xml_metadata</span>
+<span class="sd">        A dictionary containing the metadata that was present in the XML portion. Will</span>
+<span class="sd">        be an empty dictionary if there was no XML.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">xml_regex</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;&lt;\?xml version=&quot;.+&quot;\?&gt;&#39;</span><span class="p">)</span>
+    <span class="n">regex_match</span> <span class="o">=</span> <span class="n">xml_regex</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">metadata_str</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">regex_match</span><span class="p">:</span>
+        <span class="c1"># there is an xml declaration in the metadata of this file, so parse it:</span>
+        <span class="n">xml_str</span> <span class="o">=</span> <span class="n">metadata_str</span><span class="p">[</span><span class="n">regex_match</span><span class="o">.</span><span class="n">span</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="p">:]</span>
+        <span class="n">metadata_str</span> <span class="o">=</span> <span class="n">metadata_str</span><span class="p">[:</span> <span class="n">regex_match</span><span class="o">.</span><span class="n">span</span><span class="p">()[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">xml_str</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">metadata_str</span><span class="p">,</span> <span class="n">_xml_el_to_dict</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">metadata_str</span><span class="p">,</span> <span class="p">{}</span></div>
+
+
+
+<div class="viewcode-block" id="_xml_el_to_dict">
+<a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.quanta_tif.html#nexusLIMS.extractors.plugins.quanta_tif._xml_el_to_dict">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">_xml_el_to_dict</span><span class="p">(</span><span class="n">node</span><span class="p">:</span> <span class="n">etree</span><span class="o">.</span><span class="n">ElementBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert an lxml.etree node tree into a dict.</span>
+
+<span class="sd">    This is used to transform the XML metadata section into a dictionary representation</span>
+<span class="sd">    so it can be stored alongside the other metadata.</span>
+
+<span class="sd">    Taken from https://stackoverflow.com/a/66103841/1435788</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">iterchildren</span><span class="p">():</span>
+        <span class="c1"># Remove namespace prefix</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">tag</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;}&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="s2">&quot;}&quot;</span> <span class="ow">in</span> <span class="n">element</span><span class="o">.</span><span class="n">tag</span> <span class="k">else</span> <span class="n">element</span><span class="o">.</span><span class="n">tag</span>
+
+        <span class="c1"># Process element as tree element if the inner XML contains</span>
+        <span class="c1"># non-whitespace content</span>
+        <span class="k">if</span> <span class="n">element</span><span class="o">.</span><span class="n">text</span> <span class="ow">and</span> <span class="n">element</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">text</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">_xml_el_to_dict</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="n">result</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>  <span class="c1"># pragma: no cover</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">tempvalue</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                <span class="n">result</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">tempvalue</span><span class="p">,</span> <span class="n">value</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">result</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="k">return</span> <span class="n">result</span></div>
+
+
+
+<div class="viewcode-block" id="_fix_duplicate_multigis_metadata_tags">
+<a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.quanta_tif.html#nexusLIMS.extractors.plugins.quanta_tif._fix_duplicate_multigis_metadata_tags">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">_fix_duplicate_multigis_metadata_tags</span><span class="p">(</span><span class="n">metadata_str</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Rename the metadata section headers to allow parsing by ``ConfigParser``.</span>
+
+<span class="sd">    Some instruments have metadata section titles like so:</span>
+
+<span class="sd">        [MultiGIS]</span>
+<span class="sd">        [MultiGISUnit1]</span>
+<span class="sd">        [MultiGISGas1]</span>
+<span class="sd">        [MultiGISGas2]</span>
+<span class="sd">        [MultiGISGas3]</span>
+<span class="sd">        [MultiGISUnit2]</span>
+<span class="sd">        [MultiGISGas1]</span>
+<span class="sd">        [MultiGISGas2]</span>
+<span class="sd">        [MultiGISGas3]</span>
+<span class="sd">        [MultiGISUnit3]</span>
+<span class="sd">        [MultiGISGas1]</span>
+<span class="sd">        [MultiGISGas2]</span>
+<span class="sd">        [MultiGISGas3]</span>
+
+<span class="sd">    Which causes errors because ``ConfigParser`` raises a ``DuplicateSectionError`` on</span>
+<span class="sd">    the first time it sees a duplicate of ``MultiGISGas1``. As a workaround, this method</span>
+<span class="sd">    will modify an entire string of &quot;Quanta&quot; metadata so that it instead reads like so:</span>
+
+<span class="sd">        [MultiGIS]</span>
+<span class="sd">        [MultiGISUnit1]</span>
+<span class="sd">        [MultiGISUnit1.MultiGISGas1]</span>
+<span class="sd">        [MultiGISUnit1.MultiGISGas2]</span>
+<span class="sd">        [MultiGISUnit1.MultiGISGas3]</span>
+<span class="sd">        [MultiGISUnit2]</span>
+<span class="sd">        [MultiGISUnit2.MultiGISGas1]</span>
+<span class="sd">        [MultiGISUnit2.MultiGISGas2]</span>
+<span class="sd">        [MultiGISUnit2.MultiGISGas3]</span>
+<span class="sd">        [MultiGISUnit3]</span>
+<span class="sd">        [MultiGISUnit3.MultiGISGas1]</span>
+<span class="sd">        [MultiGISUnit3.MultiGISGas2]</span>
+<span class="sd">        [MultiGISUnit3.MultiGISGas3]</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">metadata_to_return</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">multi_gis_section_numbers</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\[MultiGISUnit(\d+)\]&quot;</span><span class="p">,</span> <span class="n">metadata_str</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">multi_gis_section_numbers</span><span class="p">:</span>
+        <span class="n">multi_gis_unit_indices</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">metadata_str</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[MultiGISUnit</span><span class="si">{</span><span class="n">num</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="n">multi_gis_section_numbers</span>
+        <span class="p">]</span>
+        <span class="n">metadata_to_return</span> <span class="o">+=</span> <span class="n">metadata_str</span><span class="p">[:</span> <span class="n">multi_gis_unit_indices</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">num</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">multi_gis_section_numbers</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">multi_gis_unit_indices</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">to_process</span> <span class="o">=</span> <span class="n">metadata_str</span><span class="p">[</span>
+                    <span class="n">multi_gis_unit_indices</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="p">:</span> <span class="n">multi_gis_unit_indices</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+                <span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">to_process</span> <span class="o">=</span> <span class="n">metadata_str</span><span class="p">[</span><span class="n">multi_gis_unit_indices</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="p">:]</span>
+            <span class="n">multi_gis_gas_tags</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\[(MultiGISGas\d+)\]&quot;</span><span class="p">,</span> <span class="n">to_process</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">multi_gis_gas_tags</span><span class="p">:</span>
+                <span class="n">to_process</span> <span class="o">=</span> <span class="n">to_process</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;MultiGISUnit</span><span class="si">{</span><span class="n">num</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">metadata_to_return</span> <span class="o">+=</span> <span class="n">to_process</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">metadata_to_return</span> <span class="o">=</span> <span class="n">metadata_str</span>
+
+    <span class="k">return</span> <span class="n">metadata_to_return</span></div>
+
+
+
+<div class="viewcode-block" id="parse_nx_meta">
+<a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.quanta_tif.html#nexusLIMS.extractors.plugins.quanta_tif.parse_nx_meta">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_nx_meta</span><span class="p">(</span><span class="n">mdict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parse metadata into NexusLIMS format.</span>
+
+<span class="sd">    Parse the &quot;important&quot; metadata that is saved at specific places within</span>
+<span class="sd">    the Quanta tag structure into a consistent place in the metadata dictionary</span>
+<span class="sd">    returned by :py:meth:`get_quanta_metadata`.</span>
+
+<span class="sd">    The metadata contained in the XML section (if present) is not parsed, since it</span>
+<span class="sd">    appears to only contain duplicates or slightly renamed metadata values compared</span>
+<span class="sd">    to the typical config-style section that is always present.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mdict : dict</span>
+<span class="sd">        A metadata dictionary as returned by :py:meth:`get_quanta_metadata`</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    mdict : dict</span>
+<span class="sd">        The same metadata dictionary with some values added under the</span>
+<span class="sd">        root-level ``nx_meta`` key</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># The name of the beam, scan, and detector will determine which sections are</span>
+    <span class="c1"># present (have not seen more than one beam/detector -- although likely</span>
+    <span class="c1"># will be the case for dual beam FIB/SEM)</span>
+    <span class="n">beam_name</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Beam&quot;</span><span class="p">,</span> <span class="s2">&quot;Beam&quot;</span><span class="p">])</span>
+    <span class="n">det_name</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Detectors&quot;</span><span class="p">,</span> <span class="s2">&quot;Name&quot;</span><span class="p">])</span>
+    <span class="n">scan_name</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Beam&quot;</span><span class="p">,</span> <span class="s2">&quot;Scan&quot;</span><span class="p">])</span>
+
+    <span class="c1"># some parsers are broken off into helper methods:</span>
+    <span class="n">mdict</span> <span class="o">=</span> <span class="n">parse_beam_info</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="n">beam_name</span><span class="p">)</span>
+    <span class="n">mdict</span> <span class="o">=</span> <span class="n">parse_scan_info</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="n">scan_name</span><span class="p">)</span>
+    <span class="n">mdict</span> <span class="o">=</span> <span class="n">parse_det_info</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="n">det_name</span><span class="p">)</span>
+    <span class="n">mdict</span> <span class="o">=</span> <span class="n">parse_system_info</span><span class="p">(</span><span class="n">mdict</span><span class="p">)</span>
+
+    <span class="c1"># process the rest of the metadata tags:</span>
+
+    <span class="c1"># process beam spot size</span>
+    <span class="n">val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Beam&quot;</span><span class="p">,</span> <span class="s2">&quot;Spot&quot;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">val</span> <span class="o">!=</span> <span class="s2">&quot;not found&quot;</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="n">InvalidOperation</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="n">Decimal</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+        <span class="n">set_nested_dict_value</span><span class="p">(</span>
+            <span class="n">mdict</span><span class="p">,</span>
+            <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="s2">&quot;Spot Size&quot;</span><span class="p">],</span>
+            <span class="nb">float</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">Decimal</span><span class="p">)</span> <span class="k">else</span> <span class="n">val</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="n">mdict</span> <span class="o">=</span> <span class="n">parse_image_info</span><span class="p">(</span><span class="n">mdict</span><span class="p">)</span>
+
+    <span class="c1"># test for specimen temperature value if present and non-empty</span>
+    <span class="n">temp_val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Specimen&quot;</span><span class="p">,</span> <span class="s2">&quot;Temperature&quot;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">temp_val</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;not found&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="n">InvalidOperation</span><span class="p">):</span>
+            <span class="n">temp_val</span> <span class="o">=</span> <span class="n">Decimal</span><span class="p">(</span><span class="n">temp_val</span><span class="p">)</span>
+        <span class="n">set_nested_dict_value</span><span class="p">(</span>
+            <span class="n">mdict</span><span class="p">,</span>
+            <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="s2">&quot;Specimen Temperature (K)&quot;</span><span class="p">],</span>
+            <span class="nb">float</span><span class="p">(</span><span class="n">temp_val</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">temp_val</span><span class="p">,</span> <span class="n">Decimal</span><span class="p">)</span> <span class="k">else</span> <span class="n">temp_val</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="c1"># parse SpecTilt (think this is specimen pre-tilt, but not definite)</span>
+    <span class="c1"># # tests showed that this is always the same value as StageT, so we do not</span>
+    <span class="c1"># # need to parse this one</span>
+
+    <span class="c1"># if val != &#39;not found&#39; and val != &#39;0&#39;:</span>
+    <span class="c1">#     set_nested_dict_value(mdict, [&#39;nx_meta&#39;, &#39;Stage Position&#39;,</span>
+    <span class="c1">#                                &#39;Specimen Tilt&#39;], val)</span>
+
+    <span class="c1"># Get user ID (sometimes it&#39;s not correct because the person left the</span>
+    <span class="c1"># instrument logged in as the previous user, so make sure to add it to</span>
+    <span class="c1"># the warnings list</span>
+    <span class="n">user_val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;User&quot;</span><span class="p">,</span> <span class="s2">&quot;User&quot;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">user_val</span> <span class="o">!=</span> <span class="s2">&quot;not found&quot;</span><span class="p">:</span>
+        <span class="n">set_nested_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="s2">&quot;Operator&quot;</span><span class="p">],</span> <span class="n">user_val</span><span class="p">)</span>
+        <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;warnings&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="s2">&quot;Operator&quot;</span><span class="p">])</span>
+
+    <span class="c1"># parse acquisition date and time</span>
+    <span class="n">acq_date_val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;User&quot;</span><span class="p">,</span> <span class="s2">&quot;Date&quot;</span><span class="p">])</span>
+    <span class="n">acq_time_val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;User&quot;</span><span class="p">,</span> <span class="s2">&quot;Time&quot;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">acq_date_val</span> <span class="o">!=</span> <span class="s2">&quot;not found&quot;</span><span class="p">:</span>
+        <span class="n">set_nested_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="s2">&quot;Acquisition Date&quot;</span><span class="p">],</span> <span class="n">acq_date_val</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">acq_time_val</span> <span class="o">!=</span> <span class="s2">&quot;not found&quot;</span><span class="p">:</span>
+        <span class="n">set_nested_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="s2">&quot;Acquisition Time&quot;</span><span class="p">],</span> <span class="n">acq_time_val</span><span class="p">)</span>
+
+    <span class="c1"># parse vacuum mode</span>
+    <span class="n">vac_val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Vacuum&quot;</span><span class="p">,</span> <span class="s2">&quot;UserMode&quot;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">user_val</span> <span class="o">!=</span> <span class="s2">&quot;not found&quot;</span><span class="p">:</span>
+        <span class="n">set_nested_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="s2">&quot;Vacuum Mode&quot;</span><span class="p">],</span> <span class="n">vac_val</span><span class="p">)</span>
+
+    <span class="c1"># parse chamber pressure</span>
+    <span class="n">ch_pres_val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Vacuum&quot;</span><span class="p">,</span> <span class="s2">&quot;ChPressure&quot;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">ch_pres_val</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;not found&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
+        <span class="c1"># keep track of original digits so we don&#39;t propagate float errors</span>
+        <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="n">InvalidOperation</span><span class="p">):</span>
+            <span class="n">ch_pres_val</span> <span class="o">=</span> <span class="n">Decimal</span><span class="p">(</span><span class="n">ch_pres_val</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="s2">&quot;Vacuum Mode&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="s2">&quot;High vacuum&quot;</span><span class="p">:</span>
+            <span class="n">ch_pres_str</span> <span class="o">=</span> <span class="s2">&quot;Chamber Pressure (mPa)&quot;</span>
+            <span class="n">ch_pres_val</span> <span class="o">=</span> <span class="n">ch_pres_val</span> <span class="o">*</span> <span class="mi">10</span><span class="o">**</span><span class="mi">3</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ch_pres_str</span> <span class="o">=</span> <span class="s2">&quot;Chamber Pressure (Pa)&quot;</span>
+        <span class="n">set_nested_dict_value</span><span class="p">(</span>
+            <span class="n">mdict</span><span class="p">,</span>
+            <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="n">ch_pres_str</span><span class="p">],</span>
+            <span class="nb">float</span><span class="p">(</span><span class="n">ch_pres_val</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ch_pres_val</span><span class="p">,</span> <span class="n">Decimal</span><span class="p">)</span> <span class="k">else</span> <span class="n">ch_pres_val</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">mdict</span></div>
+
+
+
+<div class="viewcode-block" id="parse_beam_info">
+<a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.quanta_tif.html#nexusLIMS.extractors.plugins.quanta_tif.parse_beam_info">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_beam_info</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="n">beam_name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parse the &quot;Beam info&quot; section of the metadata.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mdict : dict</span>
+<span class="sd">        A metadata dictionary as returned by :py:meth:`get_quanta_metadata`</span>
+<span class="sd">    beam_name : str</span>
+<span class="sd">        The &quot;beam name&quot; read from the root-level ``Beam`` node of the</span>
+<span class="sd">        metadata dictionary</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    mdict : dict</span>
+<span class="sd">        The same metadata dictionary with some values added under the</span>
+<span class="sd">        root-level ``nx_meta`` key</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">beam_name</span> <span class="o">==</span> <span class="s2">&quot;not found&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">mdict</span>
+
+    <span class="c1"># Values are in SI units, but we want easy to display, so include the</span>
+    <span class="c1"># exponential factor that will get us from input unit (such as seconds)</span>
+    <span class="c1"># to output unit (such as μs -- meaning factor = 6)</span>
+    <span class="n">to_parse</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">([</span><span class="n">beam_name</span><span class="p">,</span> <span class="s2">&quot;EmissionCurrent&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;Emission Current (μA)&quot;</span><span class="p">],</span> <span class="mi">6</span><span class="p">),</span>
+        <span class="p">([</span><span class="n">beam_name</span><span class="p">,</span> <span class="s2">&quot;HFW&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;Horizontal Field Width (μm)&quot;</span><span class="p">],</span> <span class="mi">6</span><span class="p">),</span>
+        <span class="p">([</span><span class="n">beam_name</span><span class="p">,</span> <span class="s2">&quot;HV&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;Voltage (kV)&quot;</span><span class="p">],</span> <span class="o">-</span><span class="mi">3</span><span class="p">),</span>
+        <span class="p">([</span><span class="n">beam_name</span><span class="p">,</span> <span class="s2">&quot;SourceTiltX&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;Beam Tilt X&quot;</span><span class="p">],</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="p">([</span><span class="n">beam_name</span><span class="p">,</span> <span class="s2">&quot;SourceTiltY&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;Beam Tilt Y&quot;</span><span class="p">],</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="p">([</span><span class="n">beam_name</span><span class="p">,</span> <span class="s2">&quot;StageR&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;Stage Position&quot;</span><span class="p">,</span> <span class="s2">&quot;R&quot;</span><span class="p">],</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="p">([</span><span class="n">beam_name</span><span class="p">,</span> <span class="s2">&quot;StageTa&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;Stage Position&quot;</span><span class="p">,</span> <span class="s2">&quot;α&quot;</span><span class="p">],</span> <span class="mi">0</span><span class="p">),</span>  <span class="c1"># noqa: RUF001</span>
+        <span class="c1"># all existing quanta images have a value of zero for beta</span>
+        <span class="c1"># ([beam_name, &#39;StageTb&#39;], [&#39;Stage Position&#39;, &#39;β&#39;], 0),  # noqa: ERA001</span>
+        <span class="p">([</span><span class="n">beam_name</span><span class="p">,</span> <span class="s2">&quot;StageX&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;Stage Position&quot;</span><span class="p">,</span> <span class="s2">&quot;X&quot;</span><span class="p">],</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="p">([</span><span class="n">beam_name</span><span class="p">,</span> <span class="s2">&quot;StageY&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;Stage Position&quot;</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">],</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="p">([</span><span class="n">beam_name</span><span class="p">,</span> <span class="s2">&quot;StageZ&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;Stage Position&quot;</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span><span class="p">],</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="p">([</span><span class="n">beam_name</span><span class="p">,</span> <span class="s2">&quot;StigmatorX&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;Stigmator X Value&quot;</span><span class="p">],</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="p">([</span><span class="n">beam_name</span><span class="p">,</span> <span class="s2">&quot;StigmatorY&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;Stigmator Y Value&quot;</span><span class="p">],</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="p">([</span><span class="n">beam_name</span><span class="p">,</span> <span class="s2">&quot;VFW&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;Vertical Field Width (μm)&quot;</span><span class="p">],</span> <span class="mi">6</span><span class="p">),</span>
+        <span class="p">([</span><span class="n">beam_name</span><span class="p">,</span> <span class="s2">&quot;WD&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;Working Distance (mm)&quot;</span><span class="p">],</span> <span class="mi">3</span><span class="p">),</span>
+    <span class="p">]</span>
+    <span class="k">for</span> <span class="n">m_in</span><span class="p">,</span> <span class="n">m_out</span><span class="p">,</span> <span class="n">factor</span> <span class="ow">in</span> <span class="n">to_parse</span><span class="p">:</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="n">m_in</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">val</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;not found&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="n">Decimal</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="o">*</span> <span class="n">Decimal</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="mi">10</span><span class="o">**</span><span class="n">factor</span><span class="p">))</span>
+            <span class="n">set_nested_dict_value</span><span class="p">(</span>
+                <span class="n">mdict</span><span class="p">,</span>
+                <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">m_out</span><span class="p">],</span>
+                <span class="nb">float</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">Decimal</span><span class="p">)</span> <span class="k">else</span> <span class="n">val</span><span class="p">,</span>
+            <span class="p">)</span>
+
+    <span class="c1"># Add beam name to metadata:</span>
+    <span class="n">set_nested_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="s2">&quot;Beam Name&quot;</span><span class="p">],</span> <span class="n">beam_name</span><span class="p">)</span>
+
+    <span class="c1"># BeamShiftX and BeamShiftY require an additional test:</span>
+    <span class="n">bs_x_val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="n">beam_name</span><span class="p">,</span> <span class="s2">&quot;BeamShiftX&quot;</span><span class="p">])</span>
+    <span class="n">bs_y_val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="n">beam_name</span><span class="p">,</span> <span class="s2">&quot;BeamShiftY&quot;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">bs_x_val</span> <span class="o">!=</span> <span class="s2">&quot;not found&quot;</span> <span class="ow">and</span> <span class="n">Decimal</span><span class="p">(</span><span class="n">bs_x_val</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">set_nested_dict_value</span><span class="p">(</span>
+            <span class="n">mdict</span><span class="p">,</span>
+            <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="s2">&quot;Beam Shift X&quot;</span><span class="p">],</span>
+            <span class="nb">float</span><span class="p">(</span><span class="n">Decimal</span><span class="p">(</span><span class="n">bs_x_val</span><span class="p">)),</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">bs_y_val</span> <span class="o">!=</span> <span class="s2">&quot;not found&quot;</span> <span class="ow">and</span> <span class="n">Decimal</span><span class="p">(</span><span class="n">bs_y_val</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">set_nested_dict_value</span><span class="p">(</span>
+            <span class="n">mdict</span><span class="p">,</span>
+            <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="s2">&quot;Beam Shift Y&quot;</span><span class="p">],</span>
+            <span class="nb">float</span><span class="p">(</span><span class="n">Decimal</span><span class="p">(</span><span class="n">bs_y_val</span><span class="p">)),</span>
+        <span class="p">)</span>
+
+    <span class="c1"># only parse scan rotation if value is not zero:</span>
+    <span class="c1"># Not sure what the units of this value are... looks like radians because</span>
+    <span class="c1"># unique values range from 0 to 6.24811 - convert to degrees for display</span>
+    <span class="n">scan_rot_val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="n">beam_name</span><span class="p">,</span> <span class="s2">&quot;ScanRotation&quot;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">scan_rot_val</span> <span class="o">!=</span> <span class="s2">&quot;not found&quot;</span> <span class="ow">and</span> <span class="n">Decimal</span><span class="p">(</span><span class="n">scan_rot_val</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">scan_rot_dec</span> <span class="o">=</span> <span class="n">Decimal</span><span class="p">(</span><span class="n">scan_rot_val</span><span class="p">)</span>  <span class="c1"># make scan_rot a Decimal</span>
+        <span class="c1"># get number of digits in Decimal value (so we don&#39;t artificially</span>
+        <span class="c1"># introduce extra precision)</span>
+        <span class="n">digits</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">scan_rot_dec</span><span class="o">.</span><span class="n">as_tuple</span><span class="p">()</span><span class="o">.</span><span class="n">exponent</span><span class="p">)</span>
+        <span class="c1"># round the final float value to that number of digits</span>
+        <span class="n">scan_rot_val</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">degrees</span><span class="p">(</span><span class="n">scan_rot_dec</span><span class="p">),</span> <span class="n">digits</span><span class="p">)</span>
+        <span class="n">set_nested_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="s2">&quot;Scan Rotation (°)&quot;</span><span class="p">],</span> <span class="n">scan_rot_val</span><span class="p">)</span>
+
+    <span class="c1"># TiltCorrectionAngle only if TiltCorrectionIsOn == &#39;yes&#39;</span>
+    <span class="n">tilt_corr_on</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="n">beam_name</span><span class="p">,</span> <span class="s2">&quot;TiltCorrectionIsOn&quot;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">tilt_corr_on</span> <span class="o">==</span> <span class="s2">&quot;yes&quot;</span><span class="p">:</span>
+        <span class="n">tilt_corr_val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span>
+            <span class="n">mdict</span><span class="p">,</span>
+            <span class="p">[</span><span class="n">beam_name</span><span class="p">,</span> <span class="s2">&quot;TiltCorrectionAngle&quot;</span><span class="p">],</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">tilt_corr_val</span> <span class="o">!=</span> <span class="s2">&quot;not found&quot;</span><span class="p">:</span>
+            <span class="n">tilt_corr_val</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">Decimal</span><span class="p">(</span><span class="n">tilt_corr_val</span><span class="p">))</span>
+            <span class="n">set_nested_dict_value</span><span class="p">(</span>
+                <span class="n">mdict</span><span class="p">,</span>
+                <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="s2">&quot;Tilt Correction Angle&quot;</span><span class="p">],</span>
+                <span class="n">tilt_corr_val</span><span class="p">,</span>
+            <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">mdict</span></div>
+
+
+
+<div class="viewcode-block" id="parse_scan_info">
+<a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.quanta_tif.html#nexusLIMS.extractors.plugins.quanta_tif.parse_scan_info">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_scan_info</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="n">scan_name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parse the &quot;Scan info&quot; section of the metadata.</span>
+
+<span class="sd">    Parses the `Scan` portion of the metadata dictionary (on a Quanta this is</span>
+<span class="sd">    always `&quot;EScan&quot;`) to get values such as dwell time, field width, and pixel</span>
+<span class="sd">    size.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mdict : dict</span>
+<span class="sd">        A metadata dictionary as returned by :py:meth:`get_quanta_metadata`</span>
+<span class="sd">    scan_name : str</span>
+<span class="sd">        The &quot;scan name&quot; read from the root-level ``Beam`` node of the</span>
+<span class="sd">        metadata dictionary</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    mdict : dict</span>
+<span class="sd">        The same metadata dictionary with some values added under the</span>
+<span class="sd">        root-level ``nx_meta`` key</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">scan_name</span> <span class="o">==</span> <span class="s2">&quot;not found&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">mdict</span>
+
+    <span class="c1"># Values are in SI units, but we want easy to display, so include the</span>
+    <span class="c1"># exponential factor that will get us from input unit (such as seconds)</span>
+    <span class="c1"># to output unit (such as μs -- meaning factor = 6)</span>
+    <span class="n">to_parse</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">([</span><span class="n">scan_name</span><span class="p">,</span> <span class="s2">&quot;Dwell&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;Pixel Dwell Time (μs)&quot;</span><span class="p">],</span> <span class="mi">6</span><span class="p">),</span>
+        <span class="p">([</span><span class="n">scan_name</span><span class="p">,</span> <span class="s2">&quot;FrameTime&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;Total Frame Time (s)&quot;</span><span class="p">],</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="p">([</span><span class="n">scan_name</span><span class="p">,</span> <span class="s2">&quot;HorFieldsize&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;Horizontal Field Width (μm)&quot;</span><span class="p">],</span> <span class="mi">6</span><span class="p">),</span>
+        <span class="p">([</span><span class="n">scan_name</span><span class="p">,</span> <span class="s2">&quot;VerFieldsize&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;Vertical Field Width (μm)&quot;</span><span class="p">],</span> <span class="mi">6</span><span class="p">),</span>
+        <span class="p">([</span><span class="n">scan_name</span><span class="p">,</span> <span class="s2">&quot;PixelHeight&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;Pixel Width (nm)&quot;</span><span class="p">],</span> <span class="mi">9</span><span class="p">),</span>
+        <span class="p">([</span><span class="n">scan_name</span><span class="p">,</span> <span class="s2">&quot;PixelWidth&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;Pixel Height (nm)&quot;</span><span class="p">],</span> <span class="mi">9</span><span class="p">),</span>
+    <span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">m_in</span><span class="p">,</span> <span class="n">m_out</span><span class="p">,</span> <span class="n">factor</span> <span class="ow">in</span> <span class="n">to_parse</span><span class="p">:</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="n">m_in</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">val</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;not found&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="n">Decimal</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="o">*</span> <span class="n">Decimal</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="mi">10</span><span class="o">**</span><span class="n">factor</span><span class="p">))</span>
+            <span class="n">set_nested_dict_value</span><span class="p">(</span>
+                <span class="n">mdict</span><span class="p">,</span>
+                <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">m_out</span><span class="p">],</span>
+                <span class="nb">float</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">Decimal</span><span class="p">)</span> <span class="k">else</span> <span class="n">val</span><span class="p">,</span>
+            <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">mdict</span></div>
+
+
+
+<div class="viewcode-block" id="parse_det_info">
+<a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.quanta_tif.html#nexusLIMS.extractors.plugins.quanta_tif.parse_det_info">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_det_info</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="n">det_name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parse the &quot;Detector info&quot; section of the metadata.</span>
+
+<span class="sd">    Parses the `Detector` portion of the metadata dictionary from the Quanta to</span>
+<span class="sd">    get values such as brightness, contrast, signal, etc.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mdict : dict</span>
+<span class="sd">        A metadata dictionary as returned by :py:meth:`get_quanta_metadata`</span>
+<span class="sd">    det_name : str</span>
+<span class="sd">        The &quot;detector name&quot; read from the root-level ``Beam`` node of the</span>
+<span class="sd">        metadata dictionary</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    mdict : dict</span>
+<span class="sd">        The same metadata dictionary with some values added under the</span>
+<span class="sd">        root-level ``nx_meta`` key</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">det_name</span> <span class="o">==</span> <span class="s2">&quot;not found&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">mdict</span>
+
+    <span class="n">to_parse</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">([</span><span class="n">det_name</span><span class="p">,</span> <span class="s2">&quot;Brightness&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;Detector Brightness Setting&quot;</span><span class="p">]),</span>
+        <span class="p">([</span><span class="n">det_name</span><span class="p">,</span> <span class="s2">&quot;Contrast&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;Detector Contrast Setting&quot;</span><span class="p">]),</span>
+        <span class="p">([</span><span class="n">det_name</span><span class="p">,</span> <span class="s2">&quot;EnhancedContrast&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;Detector Enhanced Contrast Setting&quot;</span><span class="p">]),</span>
+        <span class="p">([</span><span class="n">det_name</span><span class="p">,</span> <span class="s2">&quot;Signal&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;Detector Signal&quot;</span><span class="p">]),</span>
+        <span class="p">([</span><span class="n">det_name</span><span class="p">,</span> <span class="s2">&quot;Grid&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;Detector Grid Voltage (V)&quot;</span><span class="p">]),</span>
+        <span class="p">([</span><span class="n">det_name</span><span class="p">,</span> <span class="s2">&quot;Setting&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;Detector Setting&quot;</span><span class="p">]),</span>
+    <span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">m_in</span><span class="p">,</span> <span class="n">m_out</span> <span class="ow">in</span> <span class="n">to_parse</span><span class="p">:</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="n">m_in</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">val</span> <span class="o">!=</span> <span class="s2">&quot;not found&quot;</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="n">Decimal</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">m_in</span> <span class="o">==</span> <span class="p">[</span><span class="n">det_name</span><span class="p">,</span> <span class="s2">&quot;Setting&quot;</span><span class="p">]:</span>
+                    <span class="c1"># if &quot;Setting&quot; value is numeric, it&#39;s just the Grid</span>
+                    <span class="c1"># voltage so skip it</span>
+                    <span class="k">continue</span>
+            <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="n">InvalidOperation</span><span class="p">):</span>
+                <span class="k">pass</span>
+            <span class="n">set_nested_dict_value</span><span class="p">(</span>
+                <span class="n">mdict</span><span class="p">,</span>
+                <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">m_out</span><span class="p">],</span>
+                <span class="nb">float</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">Decimal</span><span class="p">)</span> <span class="k">else</span> <span class="n">val</span><span class="p">,</span>
+            <span class="p">)</span>
+
+    <span class="n">set_nested_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="s2">&quot;Detector Name&quot;</span><span class="p">],</span> <span class="n">det_name</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">mdict</span></div>
+
+
+
+<div class="viewcode-block" id="parse_system_info">
+<a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.quanta_tif.html#nexusLIMS.extractors.plugins.quanta_tif.parse_system_info">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_system_info</span><span class="p">(</span><span class="n">mdict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parse the &quot;System info&quot; section of the metadata.</span>
+
+<span class="sd">    Parses the `System` portion of the metadata dictionary from the Quanta to</span>
+<span class="sd">    get values such as software version, chamber config, etc.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mdict : dict</span>
+<span class="sd">        A metadata dictionary as returned by :py:meth:`get_quanta_metadata`</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    mdict : dict</span>
+<span class="sd">        The same metadata dictionary with some values added under the</span>
+<span class="sd">        root-level ``nx_meta`` key</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;System&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="s2">&quot;not found&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">mdict</span>
+
+    <span class="n">to_parse</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">([</span><span class="s2">&quot;System&quot;</span><span class="p">,</span> <span class="s2">&quot;Chamber&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;Chamber ID&quot;</span><span class="p">]),</span>
+        <span class="p">([</span><span class="s2">&quot;System&quot;</span><span class="p">,</span> <span class="s2">&quot;Pump&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;Vacuum Pump&quot;</span><span class="p">]),</span>
+        <span class="p">([</span><span class="s2">&quot;System&quot;</span><span class="p">,</span> <span class="s2">&quot;SystemType&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;System Type&quot;</span><span class="p">]),</span>
+        <span class="p">([</span><span class="s2">&quot;System&quot;</span><span class="p">,</span> <span class="s2">&quot;Stage&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;Stage Description&quot;</span><span class="p">]),</span>
+    <span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">m_in</span><span class="p">,</span> <span class="n">m_out</span> <span class="ow">in</span> <span class="n">to_parse</span><span class="p">:</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="n">m_in</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">val</span> <span class="o">!=</span> <span class="s2">&quot;not found&quot;</span><span class="p">:</span>
+            <span class="n">set_nested_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">m_out</span><span class="p">],</span> <span class="n">val</span><span class="p">)</span>
+
+    <span class="c1"># Parse software info into one output tag:</span>
+    <span class="n">output_vals</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;System&quot;</span><span class="p">,</span> <span class="s2">&quot;Software&quot;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">val</span> <span class="o">!=</span> <span class="s2">&quot;not found&quot;</span><span class="p">:</span>
+        <span class="n">output_vals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+    <span class="n">val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;System&quot;</span><span class="p">,</span> <span class="s2">&quot;BuildNr&quot;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">val</span> <span class="o">!=</span> <span class="s2">&quot;not found&quot;</span><span class="p">:</span>
+        <span class="n">output_vals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;(build </span><span class="si">{</span><span class="n">val</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">output_vals</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">set_nested_dict_value</span><span class="p">(</span>
+            <span class="n">mdict</span><span class="p">,</span>
+            <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="s2">&quot;Software Version&quot;</span><span class="p">],</span>
+            <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_vals</span><span class="p">),</span>
+        <span class="p">)</span>
+
+    <span class="c1"># parse column and type into one output tag:</span>
+    <span class="n">output_vals</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;System&quot;</span><span class="p">,</span> <span class="s2">&quot;Column&quot;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">val</span> <span class="o">!=</span> <span class="s2">&quot;not found&quot;</span><span class="p">:</span>
+        <span class="n">output_vals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+    <span class="n">val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;System&quot;</span><span class="p">,</span> <span class="s2">&quot;Type&quot;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">val</span> <span class="o">!=</span> <span class="s2">&quot;not found&quot;</span><span class="p">:</span>
+        <span class="n">output_vals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">output_vals</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">set_nested_dict_value</span><span class="p">(</span>
+            <span class="n">mdict</span><span class="p">,</span>
+            <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="s2">&quot;Column Type&quot;</span><span class="p">],</span>
+            <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_vals</span><span class="p">),</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">mdict</span></div>
+
+
+
+<div class="viewcode-block" id="parse_image_info">
+<a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.quanta_tif.html#nexusLIMS.extractors.plugins.quanta_tif.parse_image_info">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_image_info</span><span class="p">(</span><span class="n">mdict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parse the &quot;Image info&quot; section of the metadata.</span>
+
+<span class="sd">    Parses the `Image` portion of the metadata dictionary from the Quanta to</span>
+<span class="sd">    get values such as drift correction, image integration settings, etc.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mdict : dict</span>
+<span class="sd">        A metadata dictionary as returned by :py:meth:`get_quanta_metadata`</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    mdict : dict</span>
+<span class="sd">        The same metadata dictionary with some values added under the</span>
+<span class="sd">        root-level ``nx_meta`` key</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># process drift correction</span>
+    <span class="n">val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Image&quot;</span><span class="p">,</span> <span class="s2">&quot;DriftCorrected&quot;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">val</span> <span class="o">!=</span> <span class="s2">&quot;not found&quot;</span><span class="p">:</span>
+        <span class="c1"># set to true if the value is &#39;On&#39;</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="n">val</span> <span class="o">==</span> <span class="s2">&quot;On&quot;</span>
+        <span class="n">set_nested_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="s2">&quot;Drift Correction Applied&quot;</span><span class="p">],</span> <span class="n">val</span><span class="p">)</span>
+
+    <span class="c1"># process frame integration</span>
+    <span class="n">val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Image&quot;</span><span class="p">,</span> <span class="s2">&quot;Integrate&quot;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">val</span> <span class="o">!=</span> <span class="s2">&quot;not found&quot;</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">val</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">set_nested_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="s2">&quot;Frames Integrated&quot;</span><span class="p">],</span> <span class="n">val</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+    <span class="c1"># process mag mode</span>
+    <span class="n">val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Image&quot;</span><span class="p">,</span> <span class="s2">&quot;MagnificationMode&quot;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">val</span> <span class="o">!=</span> <span class="s2">&quot;not found&quot;</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+        <span class="n">set_nested_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="s2">&quot;Magnification Mode&quot;</span><span class="p">],</span> <span class="n">val</span><span class="p">)</span>
+
+    <span class="c1"># Process &quot;ResolutionX/Y&quot; (data size)</span>
+    <span class="n">x_val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Image&quot;</span><span class="p">,</span> <span class="s2">&quot;ResolutionX&quot;</span><span class="p">])</span>
+    <span class="n">y_val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Image&quot;</span><span class="p">,</span> <span class="s2">&quot;ResolutionY&quot;</span><span class="p">])</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">x_val</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">x_val</span><span class="p">)</span>
+        <span class="n">y_val</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">y_val</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">if</span> <span class="n">x_val</span> <span class="o">!=</span> <span class="s2">&quot;not found&quot;</span> <span class="ow">and</span> <span class="n">y_val</span> <span class="o">!=</span> <span class="s2">&quot;not found&quot;</span><span class="p">:</span>
+        <span class="n">set_nested_dict_value</span><span class="p">(</span>
+            <span class="n">mdict</span><span class="p">,</span>
+            <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="s2">&quot;Data Dimensions&quot;</span><span class="p">],</span>
+            <span class="nb">str</span><span class="p">((</span><span class="n">x_val</span><span class="p">,</span> <span class="n">y_val</span><span class="p">)),</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">mdict</span></div>
+
+
+
+<span class="c1"># Backward compatibility function for tests</span>
+<div class="viewcode-block" id="get_quanta_metadata">
+<a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.quanta_tif.html#nexusLIMS.extractors.plugins.quanta_tif.get_quanta_metadata">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_quanta_metadata</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get metadata from a Quanta TIF file.</span>
+
+<span class="sd">    .. deprecated::</span>
+<span class="sd">        This function is deprecated. Use QuantaTiffExtractor class instead.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename : pathlib.Path</span>
+<span class="sd">        path to a file saved in the harvested directory of the instrument</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    mdict : dict</span>
+<span class="sd">        A description of the file&#39;s metadata.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">context</span> <span class="o">=</span> <span class="n">ExtractionContext</span><span class="p">(</span>
+        <span class="n">file_path</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span> <span class="n">instrument</span><span class="o">=</span><span class="n">get_instr_from_filepath</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">extractor</span> <span class="o">=</span> <span class="n">QuantaTiffExtractor</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">extractor</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">context</span><span class="p">)</span></div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2025, datasophos, LLC.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
