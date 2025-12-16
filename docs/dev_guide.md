@@ -13,4 +13,5 @@ examples
 uv_migration
 database
 schema_documentation
+testing/integration-tests
 ```

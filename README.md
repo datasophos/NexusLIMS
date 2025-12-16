@@ -4,6 +4,11 @@
 [![Python 3.11+](https://img.shields.io/badge/🐍%20python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![Maintained by Datasophos](https://img.shields.io/badge/🏢%20maintained%20by-datasophos%20LLC-blue)](https://datasophos.co)
 
+[![Tests](https://github.com/datasophos/NexusLIMS/actions/workflows/test.yml/badge.svg)](https://github.com/datasophos/NexusLIMS/actions/workflows/test.yml)
+[![Integration Tests](https://github.com/datasophos/NexusLIMS/actions/workflows/integration-tests.yml/badge.svg)](https://github.com/datasophos/NexusLIMS/actions/workflows/integration-tests.yml)
+[![Build Test Images](https://github.com/datasophos/NexusLIMS/actions/workflows/build-test-images.yml/badge.svg)](https://github.com/datasophos/NexusLIMS/actions/workflows/build-test-images.yml)
+[![codecov](https://codecov.io/gh/datasophos/NexusLIMS/branch/main/graph/badge.svg)](https://codecov.io/gh/datasophos/NexusLIMS)
+
 > **⚠️ Notice**: This is a fork of the original NexusLIMS project, created after the lead developer (@jat255) left NIST and founded [Datasophos](https://datasophos.co). This fork is maintained by Datasophos and is **not affiliated with NIST** in any way. For the official NIST version, please visit the [original repository](https://github.com/usnistgov/NexusLIMS).
 
 ## What is NexusLIMS?

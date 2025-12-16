@@ -1,0 +1,214 @@
+name: Integration Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+  schedule:
+    # Run integration tests nightly at 3 AM UTC to catch integration issues early
+    - cron: "0 3 * * *"
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_PREFIX: ghcr.io/${{ github.repository_owner }}/nexuslims-test
+
+jobs:
+  integration-test:
+    name: Integration Tests (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pull pre-built test images
+        run: |
+          docker pull ${{ env.IMAGE_PREFIX }}-nemo:latest || echo "NEMO image not found, will build locally"
+          docker pull ${{ env.IMAGE_PREFIX }}-cdcs:latest || echo "CDCS image not found, will build locally"
+
+      - name: Tag images for local use
+        continue-on-error: true
+        run: |
+          docker tag ${{ env.IMAGE_PREFIX }}-nemo:latest nexuslims-test-nemo:latest 2>/dev/null || true
+          docker tag ${{ env.IMAGE_PREFIX }}-cdcs:latest nexuslims-test-cdcs:latest 2>/dev/null || true
+
+      - name: Start Docker services
+        working-directory: tests/integration/docker
+        run: |
+          # Try to use pre-built images first, fall back to building if needed
+          if docker image inspect nexuslims-test-nemo:latest >/dev/null 2>&1 && \
+             docker image inspect nexuslims-test-cdcs:latest >/dev/null 2>&1; then
+            echo "Using pre-built images from registry"
+            docker compose -f docker-compose.ci.yml up -d
+          else
+            echo "Building images locally (pre-built images not available)"
+            docker compose up -d
+          fi
+
+      - name: Wait for services to be healthy
+        run: |
+          echo "Waiting for NEMO to be ready..."
+          timeout 180 bash -c 'until curl -f http://localhost:8000/ > /dev/null 2>&1; do echo -n "."; sleep 3; done'
+          echo "✓ NEMO is ready"
+
+          echo "Waiting for CDCS to be ready..."
+          timeout 240 bash -c 'until curl -f http://localhost:8080/ > /dev/null 2>&1; do echo -n "."; sleep 5; done'
+          echo "✓ CDCS is ready"
+
+          echo "Waiting for MailPit to be ready..."
+          timeout 60 bash -c 'until curl -f http://localhost:8025/ > /dev/null 2>&1; do echo -n "."; sleep 2; done'
+          echo "✓ MailPit is ready"
+
+      - name: Show Docker service status
+        if: always()
+        working-directory: tests/integration/docker
+        run: docker compose ps
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y findutils
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Create test environment for module imports
+        run: |
+          # Create test directories
+          mkdir -p /tmp/nexuslims-test-instrument-data
+          mkdir -p /tmp/nexuslims-test-data
+
+          # Create empty database file (Settings validates it exists)
+          touch /tmp/nexuslims-test-data/nexuslims_test.db
+
+          # Create .env file with minimal config for import-time validation
+          cat > .env << 'EOF'
+          # CI Integration Test Environment
+          # These values allow NexusLIMS modules to be imported during test collection
+          # The actual test fixtures will override these with monkeypatch
+
+          # Test data paths
+          NX_INSTRUMENT_DATA_PATH=/tmp/nexuslims-test-instrument-data
+          NX_DATA_PATH=/tmp/nexuslims-test-data
+          NX_DB_PATH=/tmp/nexuslims-test-data/nexuslims_test.db
+
+          # CDCS configuration (will be overridden by fixtures)
+          NX_CDCS_URL=http://localhost:8080
+          NX_CDCS_USER=admin
+          NX_CDCS_PASS=admin
+          EOF
+
+      - name: Run unit tests
+        run: |
+          uv run pytest tests/ \
+            --ignore=tests/integration \
+            -v \
+            --mpl \
+            --mpl-baseline-path=tests/unit/files/figs \
+            --cov=nexusLIMS \
+            --cov-report term-missing \
+            --tb=short \
+            --maxfail=5
+
+      - name: Run integration tests
+        run: |
+          uv run pytest tests/integration/ \
+            -v \
+            -m integration \
+            --cov=nexusLIMS \
+            --cov-append \
+            --cov-report html:tests/coverage-combined \
+            --cov-report term-missing \
+            --cov-report=xml:coverage-combined.xml \
+            --tb=short \
+            --maxfail=5
+        env:
+          # Integration test environment variables
+          PYTEST_TIMEOUT: 600
+
+      - name: Upload combined test coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-combined-${{ matrix.python-version }}
+          path: |
+            .coverage
+            coverage-combined.xml
+          include-hidden-files: true
+
+      - name: Upload HTML coverage report
+        if: matrix.python-version == '3.11'
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-combined-html
+          path: tests/coverage-combined
+
+      - name: Show Docker logs on failure
+        if: failure()
+        working-directory: tests/integration/docker
+        run: |
+          echo "=== NEMO Logs ==="
+          docker compose logs nemo | tail -100
+          echo ""
+          echo "=== CDCS Logs ==="
+          docker compose logs cdcs | tail -100
+          echo ""
+          echo "=== MongoDB Logs ==="
+          docker compose logs cdcs-mongo | tail -50
+          echo ""
+          echo "=== PostgreSQL Logs ==="
+          docker compose logs cdcs-postgres | tail -50
+
+      - name: Cleanup Docker services
+        if: always()
+        working-directory: tests/integration/docker
+        run: |
+          docker compose down -v --remove-orphans || true
+
+  upload-coverage:
+    name: Upload Combined Coverage to Codecov
+    needs: integration-test
+    runs-on: ubuntu-latest
+    if: always()
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download all coverage artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: coverage-combined-*
+          path: coverage-reports
+
+      - name: Upload combined coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage-reports/**/*.xml
+          flags: combined
+          fail_ci_if_error: false

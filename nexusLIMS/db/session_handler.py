@@ -7,8 +7,9 @@ from dataclasses import dataclass
 from datetime import datetime as dt
 from typing import List, Tuple
 
+from nexusLIMS import instruments
 from nexusLIMS.config import settings
-from nexusLIMS.instruments import Instrument, instrument_db
+from nexusLIMS.instruments import Instrument
 from nexusLIMS.utils import current_system_tz
 
 logger = logging.getLogger(__name__)
@@ -332,7 +333,7 @@ def get_sessions_to_build() -> List[Session]:
         dt_to = dt.fromisoformat(end_l.timestamp)
         session = Session(
             session_identifier=start_l.session_identifier,
-            instrument=instrument_db[start_l.instrument],
+            instrument=instruments.instrument_db[start_l.instrument],
             dt_range=(dt_from, dt_to),
             user=start_l.user,
         )
@@ -340,3 +341,37 @@ def get_sessions_to_build() -> List[Session]:
 
     logger.info("Found %i new sessions to build", len(sessions))
     return sessions
+
+
+def get_all_session_logs() -> list[SessionLog]:
+    """
+    Fetch all session logs from the database and return SessionLogs.
+
+    Returns
+    -------
+    session_logs : list[SessionLog]
+        A list of all SessionLog objects from the database, ordered by timestamp.
+        Will be an empty list if there are no session logs.
+    """
+    session_logs = []
+
+    query_string = (
+        "SELECT session_identifier, instrument, timestamp, "
+        "event_type, user, record_status "
+        "FROM session_log ORDER BY timestamp"
+    )
+
+    # use contextlib to auto-close the connection and database cursors
+    with (
+        contextlib.closing(
+            sqlite3.connect(str(settings.NX_DB_PATH)),
+        ) as conn,
+        conn,
+        contextlib.closing(conn.cursor()) as cursor,
+    ):  # auto-commits
+        results = cursor.execute(query_string).fetchall()
+
+    session_logs = [SessionLog(*i) for i in results]
+
+    logger.info("Found %i session logs in database", len(session_logs))
+    return session_logs

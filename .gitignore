@@ -1,5 +1,6 @@
 # File patterns we want git to ignore
-docs/api/ 
+docs/api/
+api_tests/
 
 # backup
 *~
@@ -16,16 +17,23 @@ gitlab_backup.log
 .coverage
 .coverage.*
 tests/coverage
-tests/files/*.dm[3-4]
-tests/files/*.ser
-tests/files/*.emi
-tests/files/*.xml
-tests/files/*.tif
-tests/files/*.hdf5
-tests/files/**/*.json
+# Test data files (extracted from archives)
+tests/unit/files/*.dm[3-4]
+tests/unit/files/*.ser
+tests/unit/files/*.emi
+tests/unit/files/*.xml
+tests/unit/files/*.tif
+tests/unit/files/*.hdf5
+tests/unit/files/**/*.json
+tests/integration/**/*.json
+!seed_data.json
+!reservation_questsions.json
 tests/**/*.xml
+!tests/integration/docker/cdcs/fixtures/test_record.xml
 tests/test_report.xml
 .env
+tests/.env.test
+!tests/.env.test.example
 cert_bundle.pem
 .directory
 test_db.sqlite
@@ -39,6 +47,7 @@ nexuslims_db.sqlite
 *.pyc
 .idea
 .vscode
+.zed
 test_data/
 tests/dev/
 **/doc/build

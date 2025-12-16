@@ -13,7 +13,7 @@ from typing import Any, Dict, List, Tuple, Union
 
 import certifi
 from requests import Session
-from requests.adapters import HTTPAdapter, Retry
+from requests.adapters import HTTPAdapter
 from requests_ntlm import HttpNtlmAuth
 
 from .config import settings
@@ -63,8 +63,8 @@ def nexus_req(
 
     A helper method that wraps a function from :py:mod:`requests`, but adds a
     local certificate authority chain to validate any custom certificates and
-    allow authenticatation using NTLM. Will automatically retry on 500 errors
-    using a strategy suggested here: https://stackoverflow.com/a/35636367.
+    allow authenticatation using NTLM. Will automatically retry on transient
+    server errors (502, 503, 504) with exponential backoff.
 
     Parameters
     ----------
@@ -74,7 +74,7 @@ def nexus_req(
         The function from the ``requests`` library to use (e.g.
         ``'GET'``, ``'POST'``, ``'PATCH'``, etc.)
     retries
-        The number of retries to attempt before failing
+        The maximum number of retry attempts (total attempts = retries + 1)
     basic_auth
         If True, use only username and password for authentication rather than
         NTLM
@@ -110,13 +110,17 @@ def nexus_req(
         else:
             kwargs["headers"] = {"Authorization": f"Token {token_auth}"}
 
-    # set up a session to retry requests as needed
+    # Status codes that should trigger a retry (transient server errors)
+    retry_status_codes = {502, 503, 504}
+
+    # Set up a session (without urllib3 retry logic - we'll handle it ourselves)
     s = Session()
-    retries = Retry(total=retries, backoff_factor=1, status_forcelist=[502, 503, 504])
-    s.mount("https://", HTTPAdapter(max_retries=retries))
-    s.mount("http://", HTTPAdapter(max_retries=retries))
+    s.mount("https://", HTTPAdapter())
+    s.mount("http://", HTTPAdapter())
 
     verify_arg = True
+    response = None
+
     with tempfile.NamedTemporaryFile() as tmp:
         if CA_BUNDLE_CONTENT:
             with Path(certifi.where()).open(mode="rb") as sys_cert:
@@ -126,18 +130,48 @@ def nexus_req(
             tmp.seek(0)
             verify_arg = tmp.name
 
-        if token_auth:
-            response = s.request(function, url, verify=verify_arg, **kwargs)
-        else:
-            response = s.request(
-                function,
-                url,
-                auth=get_auth(basic=basic_auth),
-                verify=verify_arg,
-                **kwargs,
-            )
+        # Retry loop with exponential backoff
+        for attempt in range(retries + 1):
+            if token_auth:
+                response = s.request(function, url, verify=verify_arg, **kwargs)
+            else:
+                response = s.request(
+                    function,
+                    url,
+                    auth=get_auth(basic=basic_auth),
+                    verify=verify_arg,
+                    **kwargs,
+                )
 
-    return response
+            # If we got a successful response or non-retryable error, return it
+            if response.status_code not in retry_status_codes:
+                return response
+
+            # If this is our last attempt, return the failed response
+            if attempt == retries:
+                logger.warning(
+                    "Request to %s failed with %s after %s attempts",
+                    url,
+                    response.status_code,
+                    retries + 1,
+                )
+                return response
+
+            # Calculate backoff delay: 1s, 2s, 4s, 8s, etc.
+            delay = 2**attempt
+            logger.debug(
+                "Request to %s returned %s, retrying in %ss (attempt %s/%s)",
+                url,
+                response.status_code,
+                delay,
+                attempt + 1,
+                retries + 1,
+            )
+            time.sleep(delay)
+
+    # This should never be reached in normal execution, but provides a fallback
+    # if the retry loop somehow doesn't execute (e.g., invalid retries parameter)
+    return response  # pragma: no cover
 
 
 def is_subpath(path: Path, of_paths: Union[Path, List[Path]]):
@@ -507,7 +541,8 @@ def _get_find_command():
     if not _is_gnu_find(find_command):
         import platform  # noqa: PLC0415
 
-        if platform.system() == "Darwin":  # macOS
+        if platform.system() == "Darwin":  # pragma: no cover
+            # macOS
             if _which("gfind"):
                 find_command = "gfind"
                 logger.info("BSD find detected, using gfind (GNU find) instead")

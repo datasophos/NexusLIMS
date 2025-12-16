@@ -1,1 +1,1 @@
-"""Tests for the NexusLIMS package."""
+"""Test package for NexusLIMS."""

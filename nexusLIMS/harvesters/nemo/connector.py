@@ -85,6 +85,16 @@ class NemoConnector:
         """Return custom representation of a NemoConnector."""
         return f"Connection to NEMO API at {self.config['base_url']}"
 
+    def __eq__(self, other):
+        """Compare two NemoConnector instances based on their config."""
+        if not isinstance(other, NemoConnector):
+            return False
+        return self.config == other.config
+
+    def __hash__(self):
+        """Return hash of NemoConnector based on its config."""
+        return hash(frozenset(self.config.items()))
+
     def strftime(self, date_dt) -> str:
         """
         Convert datetime to appropriate string format for this connector.
@@ -206,14 +216,18 @@ class NemoConnector:
             Raised if the request to the API did not go through correctly
         """
         if hasattr(tool_id, "__iter__"):
-            if all(t_id in self.tools for t_id in tool_id):
+            # Handle empty list case - should return all tools
+            if len(tool_id) == 0:
+                params = {}
+            elif all(t_id in self.tools for t_id in tool_id):
                 logger.debug(
                     "Using cached tool info for tools %s: %s",
                     tool_id,
                     [self.tools[t]["name"] for t in tool_id],
                 )
                 return [self.tools[t_id] for t_id in tool_id]
-            params = {"id__in": ",".join([str(i) for i in tool_id])}
+            else:
+                params = {"id__in": ",".join([str(i) for i in tool_id])}
         else:
             if tool_id in self.tools:
                 logger.debug(
@@ -262,6 +276,10 @@ class NemoConnector:
 
         # list of user ids
         if hasattr(user_id, "__iter__"):
+            # Check if user_id is an empty list - if so, return all users
+            if len(user_id) == 0:
+                return self._get_users_helper(params)
+
             params["id__in"] = ",".join([str(i) for i in user_id])
             if all(u_id in self.users for u_id in user_id):
                 logger.debug(
@@ -349,14 +367,18 @@ class NemoConnector:
             Raised if the request to the API did not go through correctly
         """
         if hasattr(proj_id, "__iter__"):
-            if all(p_id in self.projects for p_id in proj_id):
+            # Handle empty list case - should return all projects
+            if len(proj_id) == 0:
+                params = {}
+            elif all(p_id in self.projects for p_id in proj_id):
                 logger.debug(
                     "Using cached project info for projects %s: %s",
                     proj_id,
                     [self.projects[p]["name"] for p in proj_id],
                 )
                 return [self.projects[p_id] for p_id in proj_id]
-            params = {"id__in": ",".join([str(i) for i in proj_id])}
+            else:
+                params = {"id__in": ",".join([str(i) for i in proj_id])}
         else:
             if proj_id in self.projects:
                 logger.debug(
@@ -470,6 +492,7 @@ class NemoConnector:
             user = self.get_users(reservation["cancelled_by"])
             if user:
                 reservation.update({"cancelled_by": user[0]})
+
         return reservation
 
     def get_usage_events(

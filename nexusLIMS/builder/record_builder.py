@@ -415,7 +415,7 @@ def validate_record(xml_filename):
     return xml_schema.validate(xml_doc)
 
 
-def build_new_session_records() -> List[Path]:
+def build_new_session_records(generate_previews: bool = True) -> List[Path]:  # noqa: FBT002, FBT001
     """
     Build records for new sessions from the database.
 
@@ -441,7 +441,7 @@ def build_new_session_records() -> List[Path]:
     for s in sessions:
         try:
             db_row = s.insert_record_generation_event()
-            record_text = build_record(session=s)
+            record_text = build_record(session=s, generate_previews=generate_previews)
         except (  # pylint: disable=broad-exception-caught
             FileNotFoundError,
             Exception,
@@ -583,8 +583,6 @@ def process_new_records(
             get_reservation_event(s)
             dry_run_file_find(s)
     else:
-        # DONE: NEMO usage events fetcher should take a time range; we also
-        #  need a consistent response for testing
         nemo_utils.add_all_usage_events_to_db(dt_from=dt_from, dt_to=dt_to)
         xml_files = build_new_session_records()
         if len(xml_files) == 0:

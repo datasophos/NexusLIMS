@@ -1,8 +1,8 @@
-name: Tests
+name: Unit Tests
 
 on:
   push:
-    branches: [main, convert-to-uv]
+    branches: [main]
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -44,13 +44,13 @@ jobs:
       - name: Install dependencies
         run: uv sync
 
-      - name: Run tests
+      - name: Run unit tests
         run: |
-          uv run pytest tests/ --cov=nexusLIMS \
+          uv run pytest tests/unit/ --cov=nexusLIMS \
             --cov-report html:tests/coverage \
             --cov-report term-missing \
             --cov-report=xml \
-            --mpl --mpl-baseline-path=tests/files/figs
+            --mpl --mpl-baseline-path=tests/unit/files/figs
 
       - name: Upload coverage database
         uses: actions/upload-artifact@v4

@@ -1,1 +1,1 @@
-"""Test fixtures for NexusLIMS testing."""
+"""Shared test fixtures for NexusLIMS tests."""

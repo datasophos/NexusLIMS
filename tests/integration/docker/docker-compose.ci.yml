@@ -1,0 +1,214 @@
+# Docker Compose configuration for CI/CD pipelines
+# Uses pre-built images from GitHub Container Registry instead of building locally
+#
+# Usage:
+#   docker compose -f docker-compose.ci.yml up -d
+#
+# Environment variables:
+#   IMAGE_TAG: Tag to use for test images (default: latest)
+#   REGISTRY: Container registry URL (default: ghcr.io)
+#   IMAGE_OWNER: GitHub organization/user (default: datasophos)
+
+services:
+  # NEMO service (uses pre-built image from GHCR)
+  nemo:
+    image: ${REGISTRY:-ghcr.io}/${IMAGE_OWNER:-datasophos}/nexuslims-test-nemo:${IMAGE_TAG:-latest}
+    container_name: nexuslims-test-nemo
+    ports:
+      - "8000:8000"
+    environment:
+      # Django configuration
+      - DJANGO_SETTINGS_MODULE=splash_pad_settings
+      - PYTHONPATH=/nemo/
+      - PYTHONUNBUFFERED=1
+
+      # NEMO-specific settings
+      - ALLOWED_HOSTS=nemo.localhost,nemo2.localhost,localhost
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://nemo:8000/"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    command:
+      - /bin/sh
+      - -c
+      - |
+        cd /nemo
+        echo 'Configuring periodic table plugin...'
+        python /configure_settings.py
+        echo 'Seeding test data...'
+        python /init_data.py
+        echo 'Starting NEMO server...'
+        exec django-admin runserver 0.0.0.0:8000
+    networks:
+      - nexuslims-test
+
+  # MongoDB for CDCS
+  cdcs-mongo:
+    image: mongo:7
+    container_name: nexuslims-test-cdcs-mongo
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=admin
+      - MONGO_INITDB_DATABASE=cdcs
+      - MONGO_USER=cdcs
+      - MONGO_PASS=cdcs
+    volumes:
+      - ./cdcs/mongo-init.sh:/docker-entrypoint-initdb.d/mongo-init.sh:ro
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    networks:
+      - nexuslims-test
+
+  # PostgreSQL for CDCS
+  cdcs-postgres:
+    image: postgres:16
+    container_name: nexuslims-test-cdcs-postgres
+    environment:
+      - POSTGRES_USER=cdcs
+      - POSTGRES_PASSWORD=cdcs
+      - POSTGRES_DB=cdcs
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cdcs"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    networks:
+      - nexuslims-test
+
+  # Redis for CDCS
+  cdcs-redis:
+    image: redis:7-alpine
+    container_name: nexuslims-test-cdcs-redis
+    command: redis-server --requirepass cdcs
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    networks:
+      - nexuslims-test
+
+  # Mailpit SMTP testing server
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: nexuslims-test-mailpit
+    ports:
+      - "1025:1025" # SMTP server
+      - "8025:8025" # Web UI
+    environment:
+      # Require SMTP authentication with specific credentials
+      - MP_SMTP_AUTH=test:testpass
+      - MP_SMTP_AUTH_ALLOW_INSECURE=1
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://mailpit:8025/"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    networks:
+      - nexuslims-test
+
+  # Caddy reverse proxy for easy-to-remember URLs
+  caddy-proxy:
+    image: caddy:2-alpine
+    container_name: nexuslims-test-caddy-proxy
+    ports:
+      - "80:80"
+    extra_hosts:
+      - "nemo.localhost:127.0.0.1"
+      - "nemo2.localhost:127.0.0.1"
+      - "cdcs.localhost:127.0.0.1"
+      - "fileserver.localhost:127.0.0.1"
+      - "mailpit.localhost:127.0.0.1"
+      # Map host.docker.internal to host gateway for fileserver access
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+    depends_on:
+      - nemo
+      - cdcs
+      - mailpit
+    networks:
+      - nexuslims-test
+
+  # CDCS service (uses pre-built image from GHCR)
+  cdcs:
+    image: ${REGISTRY:-ghcr.io}/${IMAGE_OWNER:-datasophos}/nexuslims-test-cdcs:${IMAGE_TAG:-latest}
+    container_name: nexuslims-test-cdcs
+    ports:
+      - "8080:8080"
+    extra_hosts:
+      # Allow CDCS to resolve *.localhost URLs via host gateway (where Caddy proxy listens on port 80)
+      - "cdcs.localhost:host-gateway"
+      - "nemo.localhost:host-gateway"
+      - "nemo2.localhost:host-gateway"
+      - "fileserver.localhost:host-gateway"
+    depends_on:
+      cdcs-mongo:
+        condition: service_healthy
+      cdcs-postgres:
+        condition: service_healthy
+      cdcs-redis:
+        condition: service_healthy
+    environment:
+      # Django configuration
+      - DJANGO_SETTINGS_MODULE=mdcs.settings
+      - DJANGO_SECRET_KEY=test-secret-key-not-for-production-use
+      - SERVER_URI=http://cdcs.localhost
+      - ALLOWED_HOSTS=*
+      - SERVER_NAME=NexusLIMS Test
+
+      # Anonymous access configuration
+      - CAN_ANONYMOUS_ACCESS_PUBLIC_DOCUMENT=True
+      - VERIFY_DATA_ACCESS=False
+
+      # MongoDB configuration
+      - MONGO_HOST=cdcs-mongo
+      - MONGO_PORT=27017
+      - MONGO_DB=cdcs
+      - MONGO_USER=cdcs
+      - MONGO_PASS=cdcs
+
+      # PostgreSQL configuration
+      - POSTGRES_HOST=cdcs-postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=cdcs
+      - POSTGRES_USER=cdcs
+      - POSTGRES_PASS=cdcs
+
+      # Redis configuration
+      - REDIS_HOST=cdcs-redis
+      - REDIS_PORT=6379
+      - REDIS_PASS=cdcs
+
+      # uWSGI configuration
+      - UWSGI_PROCESSES=2
+
+      # Fileserver URLs for XSLT rendering
+      - FILESERVER_DATASET_URL=http://fileserver.localhost/instrument-data
+      - FILESERVER_PREVIEW_URL=http://fileserver.localhost/data
+    volumes:
+      # Mount the nexus-experiment.xsd schema from the source repository
+      # This avoids file duplication and ensures we always use the latest schema
+      - ../../../nexusLIMS/schemas/nexus-experiment.xsd:/fixtures/nexus-experiment.xsd:ro
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://cdcs:8080/"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+      start_period: 60s
+    networks:
+      - nexuslims-test
+
+networks:
+  nexuslims-test:
+    name: nexuslims-test
+    driver: bridge

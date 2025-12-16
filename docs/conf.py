@@ -98,9 +98,12 @@ extensions = [
     "sphinx_autodoc_typehints",
     "sphinx_design",
     "myst_parser",  # Support for Markdown files
+    "sphinxcontrib.mermaid",  # Support for Mermaid diagrams
     "xsd_documenter",  # Custom XSD documentation extension with D3.js diagrams
     "autodoc2",  # Automatic API documentation generation
 ]
+
+mermaid_d3_zoom = True
 
 autodoc_pydantic_model_show_json = False
 autodoc_pydantic_model_show_config_summary = False
