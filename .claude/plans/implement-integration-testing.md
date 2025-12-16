@@ -108,14 +108,6 @@ tests/
            "markers",
            "integration: Integration tests requiring Docker services"
        )
-       config.addinivalue_line(
-           "markers",
-           "e2e: End-to-end tests covering full record building workflow"
-       )
-       config.addinivalue_line(
-           "markers",
-           "slow: Tests that take >5 seconds to run"
-       )
    ```
 
 4. **Create shared fixture module `tests/fixtures/shared_data.py`**
@@ -597,8 +589,6 @@ tests/
    from nexusLIMS.db.session_handler import Session
 
    @pytest.mark.integration
-   @pytest.mark.e2e
-   @pytest.mark.slow
    class TestEndToEnd:
        def test_full_record_building_workflow(
            self,
@@ -938,9 +928,7 @@ tests/
    [tool.pytest.ini_options]
    testpaths = ["tests/unit", "tests/integration"]
    markers = [
-       "integration: Integration tests requiring Docker services",
-       "e2e: End-to-end tests covering full workflows",
-       "slow: Tests that take >5 seconds to run",
+       "integration: Integration tests requiring Docker services"
    ]
    # Run only unit tests by default
    addopts = "-v --strict-markers"

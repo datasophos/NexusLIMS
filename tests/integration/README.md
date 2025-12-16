@@ -396,8 +396,6 @@ import pytest
 from datetime import datetime, timedelta
 
 @pytest.mark.integration
-@pytest.mark.e2e
-@pytest.mark.slow
 def test_full_record_building_workflow(
     nemo_client,
     cdcs_client,
@@ -422,19 +420,11 @@ def test_full_record_building_workflow(
 Integration tests use pytest markers for organization:
 
 - `@pytest.mark.integration`: All integration tests (required)
-- `@pytest.mark.e2e`: End-to-end tests covering full workflows
-- `@pytest.mark.slow`: Tests that take >5 seconds
 
 **Running specific markers:**
 ```bash
 # Only integration tests
 pytest tests/integration/ -m integration
-
-# Only E2E tests
-pytest tests/integration/ -m "integration and e2e"
-
-# Exclude slow tests
-pytest tests/integration/ -m "integration and not slow"
 ```
 
 ## Environment Variables
