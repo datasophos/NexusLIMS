@@ -577,23 +577,49 @@ access to the installed packages and environment variables set appropriately.</p
 </section>
 <section id="testing-and-documentation">
 <h2>Testing and Documentation<a class="headerlink" href="#testing-and-documentation" title="Link to this heading">#</a></h2>
-<p>To run the complete test suite, use the provided shell script:</p>
+<section id="unit-testing">
+<h3>Unit Testing<a class="headerlink" href="#unit-testing" title="Link to this heading">#</a></h3>
+<p>To run the complete unit test suite, use the provided shell script:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>./scripts/run_tests.sh
 </pre></div>
 </div>
 <p>This will run all tests with coverage reporting. To run specific tests:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>pytest<span class="w"> </span>tests/test_extractors.py
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>tests/test_extractors.py
 </pre></div>
 </div>
+<p>To run a specific test:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>tests/test_extractors.py::TestClassName::test_method_name
+</pre></div>
+</div>
+<p>To generate matplotlib baseline figures for image comparison tests, run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>./scripts/generate_mpl_baseline.sh
+</pre></div>
+</div>
+</section>
+<section id="integration-testing">
+<h3>Integration Testing<a class="headerlink" href="#integration-testing" title="Link to this heading">#</a></h3>
+<p>Integration tests validate end-to-end workflows using real Docker services (NEMO, CDCS, PostgreSQL, etc.) instead of mocks. These tests ensure the complete system works together correctly.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># run unit and integration tests together using the included script (requires Docker)</span>
+$<span class="w"> </span>./scripts/run_tests.sh<span class="w"> </span>--integration
+
+<span class="c1"># Run integration tests (requires Docker)</span>
+$<span class="w"> </span>uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>tests/integration/<span class="w"> </span>-v<span class="w"> </span>-m<span class="w"> </span>integration
+
+<span class="c1"># Run with coverage</span>
+$<span class="w"> </span>uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>tests/integration/<span class="w"> </span>-v<span class="w"> </span>-m<span class="w"> </span>integration<span class="w"> </span>--cov<span class="o">=</span>nexusLIMS
+</pre></div>
+</div>
+<p>For detailed information about integration testing, setup, architecture, and best practices, see the <a class="reference internal" href="testing/integration-tests.html"><span class="doc">Integration Testing Guide</span></a>.</p>
+<p><strong>Note:</strong> Integration tests require Docker and Docker Compose to be installed and running. Unit tests do not require Docker and can be run independently.</p>
+</section>
+<section id="documentation">
+<h3>Documentation<a class="headerlink" href="#documentation" title="Link to this heading">#</a></h3>
 <p>To build the documentation for the project, run:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>./scripts/build_docs.sh
 </pre></div>
 </div>
-<p>The documentation should then be present in the <code class="docutils literal notranslate"><span class="pre">./_build/</span></code> directory.</p>
-<p>To generate matplotlib baseline figures for the tests, run:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>./scripts/generate_mpl_baseline.sh
-</pre></div>
-</div>
+<p>The documentation will then be present in the <code class="docutils literal notranslate"><span class="pre">./_build/</span></code> directory.</p>
+</section>
 </section>
 <section id="building-new-records">
 <h2>Building new records<a class="headerlink" href="#building-new-records" title="Link to this heading">#</a></h2>
@@ -1000,7 +1026,12 @@ git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation">Installation</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-up-the-environment">Setting up the environment</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-into-the-environment">Getting into the environment</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#testing-and-documentation">Testing and Documentation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#testing-and-documentation">Testing and Documentation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#unit-testing">Unit Testing</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#integration-testing">Integration Testing</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#documentation">Documentation</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#building-new-records">Building new records</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-other-features-of-the-library">Using other features of the library</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contributing">Contributing</a></li>
