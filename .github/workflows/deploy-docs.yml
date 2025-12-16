@@ -92,6 +92,8 @@ jobs:
           rm -rf latest
           mkdir -p latest
           rsync -avr _build/ latest/
+          mkdir -p latest/_static
+          cp docs/_static/switcher.json latest/_static/switcher.json
 
           # Add coverage if available
           if [ -d "tests/coverage" ]; then

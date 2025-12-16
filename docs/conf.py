@@ -56,8 +56,9 @@ author = "datasophos, LLC"
 numfig = True
 
 # The full version, including alpha/beta/rc tags
-version = nexusLIMS.version.__version__
-release = version
+release = nexusLIMS.version.__version__
+# Extract major.minor version for switcher matching (e.g., "2.0" from "2.0.0")
+version = ".".join(release.split(".")[:2])
 
 # Add PR number to context if available
 pr_number = os.environ.get("PR_NUMBER")
