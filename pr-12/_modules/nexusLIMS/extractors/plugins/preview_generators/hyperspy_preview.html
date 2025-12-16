@@ -1,0 +1,1851 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview &#8212; NexusLIMS 2.1.0a0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/custom.css?v=af02a5b6" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../../../../_static/documentation_options.js?v=cd47123d"></script>
+    <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";
+
+const defaultStyle = document.createElement('style');
+defaultStyle.textContent = `pre.mermaid {
+    /* Same as .mermaid-container > pre */
+    display: block;
+    width: 100%;
+}
+
+pre.mermaid > svg {
+    /* Same as .mermaid-container > pre > svg */
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+`;
+document.head.appendChild(defaultStyle);
+
+const fullscreenStyle = document.createElement('style');
+fullscreenStyle.textContent = `.mermaid-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.mermaid-container > pre {
+    display: block;
+    width: 100%;
+}
+
+.mermaid-container > pre > svg {
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+
+.mermaid-fullscreen-btn {
+    width: 28px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    font-size: 14px;
+    line-height: 1;
+    padding: 0;
+    color: #333;
+}
+
+.mermaid-fullscreen-btn:hover {
+    opacity: 100% !important;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-btn.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-btn.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 3px 10px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal {
+    display: none;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 95vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.98);
+    z-index: 9999;
+    padding: 20px;
+    overflow: auto;
+}
+
+.mermaid-fullscreen-modal.dark-theme {
+    background: rgba(0, 0, 0, 0.98);
+}
+
+.mermaid-fullscreen-modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen {
+    position: relative;
+    width: 95vw;
+    height: 90vh;
+    max-width: 95vw;
+    max-height: 90vh;
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    overflow: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen.dark-theme {
+    background: #1a1a1a;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+}
+
+.mermaid-container-fullscreen pre.mermaid {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen .mermaid svg {
+    height: 100% !important;
+    width: 100% !important;
+    cursor: grab;
+}
+
+.mermaid-fullscreen-close {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s;
+    font-size: 24px;
+    line-height: 1;
+    color: #333;
+}
+
+.mermaid-fullscreen-close:hover {
+    background: white;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-close.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-close.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal .mermaid-fullscreen-btn {
+    display: none !important;
+}`;
+document.head.appendChild(fullscreenStyle);
+
+// Detect if page has dark background
+const isDarkTheme = () => {
+    const bgColor = window.getComputedStyle(document.body).backgroundColor;
+    const match = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)/);
+    if (match) {
+        const r = parseInt(match[1]);
+        const g = parseInt(match[2]);
+        const b = parseInt(match[3]);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        return brightness < 128;
+    }
+    return false;
+};
+
+const load = async () => {
+    await mermaid.run();
+
+    const all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+
+    if ("True" === "True") {
+        const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+        if(mermaids_to_add_zoom > 0) {
+            var svgs = d3.selectAll(".mermaid svg");
+            if(all_mermaids.length !== mermaids_processed.length) {
+                setTimeout(load, 200);
+                return;
+            } else if(svgs.size() !== mermaids_to_add_zoom) {
+                setTimeout(load, 200);
+                return;
+            } else {
+                svgs.each(function() {
+                    var svg = d3.select(this);
+                    svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                    var inner = svg.select("g");
+                    var zoom = d3.zoom().on("zoom", function(event) {
+                        inner.attr("transform", event.transform);
+                    });
+                    svg.call(zoom);
+                });
+            }
+        }
+    } else if(all_mermaids.length !== mermaids_processed.length) {
+        // Wait for mermaid to process all diagrams
+        setTimeout(load, 200);
+        return;
+    }
+
+    const darkTheme = isDarkTheme();
+
+    // Stop here if not adding fullscreen capability
+    if ("True" !== "True") return;
+
+    const modal = document.createElement('div');
+    modal.className = 'mermaid-fullscreen-modal' + (darkTheme ? ' dark-theme' : '');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Fullscreen diagram viewer');
+    modal.innerHTML = `
+        <button class="mermaid-fullscreen-close${darkTheme ? ' dark-theme' : ''}" aria-label="Close fullscreen">✕</button>
+        <div class="mermaid-container-fullscreen${darkTheme ? ' dark-theme' : ''}"></div>
+    `;
+    document.body.appendChild(modal);
+
+    const modalContent = modal.querySelector('.mermaid-container-fullscreen');
+    const closeBtn = modal.querySelector('.mermaid-fullscreen-close');
+
+    let previousScrollOffset = [window.scrollX, window.scrollY];
+
+    const closeModal = () => {
+        modal.classList.remove('active');
+        modalContent.innerHTML = '';
+        document.body.style.overflow = ''
+        window.scrollTo({left: previousScrollOffset[0], top: previousScrollOffset[1], behavior: 'instant'});
+    };
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeModal();
+        }
+    });
+
+    const allButtons = [];
+
+    document.querySelectorAll('.mermaid').forEach((mermaidDiv) => {
+        if (mermaidDiv.parentNode.classList.contains('mermaid-container') ||
+            mermaidDiv.closest('.mermaid-fullscreen-modal')) {
+            return;
+        }
+
+        const container = document.createElement('div');
+        container.className = 'mermaid-container';
+        mermaidDiv.parentNode.insertBefore(container, mermaidDiv);
+        container.appendChild(mermaidDiv);
+
+        const fullscreenBtn = document.createElement('button');
+        fullscreenBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+        fullscreenBtn.setAttribute('aria-label', 'View diagram in fullscreen');
+        fullscreenBtn.textContent = '⛶';
+        fullscreenBtn.style.opacity = '50%';
+
+        // Calculate dynamic position based on diagram's margin and padding
+        const diagramStyle = window.getComputedStyle(mermaidDiv);
+        const marginTop = parseFloat(diagramStyle.marginTop) || 0;
+        const marginRight = parseFloat(diagramStyle.marginRight) || 0;
+        const paddingTop = parseFloat(diagramStyle.paddingTop) || 0;
+        const paddingRight = parseFloat(diagramStyle.paddingRight) || 0;
+        fullscreenBtn.style.top = `${marginTop + paddingTop + 4}px`;
+        fullscreenBtn.style.right = `${marginRight + paddingRight + 4}px`;
+
+        fullscreenBtn.addEventListener('click', () => {
+            previousScrollOffset = [window.scroll, window.scrollY];
+            const clone = mermaidDiv.cloneNode(true);
+            modalContent.innerHTML = '';
+            modalContent.appendChild(clone);
+
+            const svg = clone.querySelector('svg');
+            if (svg) {
+                svg.removeAttribute('width');
+                svg.removeAttribute('height');
+                svg.style.width = '100%';
+                svg.style.height = 'auto';
+                svg.style.maxWidth = '100%';
+                svg.style.sdisplay = 'block';
+
+                if ("True" === "True") {
+                    setTimeout(() => {
+                        const g = svg.querySelector('g');
+                        if (g) {
+                            var svgD3 = d3.select(svg);
+                            svgD3.html("<g class='wrapper'>" + svgD3.html() + "</g>");
+                            var inner = svgD3.select("g");
+                            var zoom = d3.zoom().on("zoom", function(event) {
+                                inner.attr("transform", event.transform);
+                            });
+                            svgD3.call(zoom);
+                        }
+                    }, 100);
+                }
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        container.appendChild(fullscreenBtn);
+        allButtons.push(fullscreenBtn);
+    });
+
+    // Update theme classes when theme changes
+    const updateTheme = () => {
+        const dark = isDarkTheme();
+        allButtons.forEach(btn => {
+            if (dark) {
+                btn.classList.add('dark-theme');
+            } else {
+                btn.classList.remove('dark-theme');
+            }
+        });
+        if (dark) {
+            modal.classList.add('dark-theme');
+            modalContent.classList.add('dark-theme');
+            closeBtn.classList.add('dark-theme');
+        } else {
+            modal.classList.remove('dark-theme');
+            modalContent.classList.remove('dark-theme');
+            closeBtn.classList.remove('dark-theme');
+        }
+    };
+
+    // Watch for theme changes
+    const observer = new MutationObserver(updateTheme);
+    observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+    observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class', 'style']
+    });
+};
+
+window.addEventListener("load", load);
+</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/nexusLIMS/extractors/plugins/preview_generators/hyperspy_preview';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.1';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/pr-12/_modules/nexusLIMS/extractors/plugins/preview_generators/hyperspy_preview.html" />
+    <link rel="icon" href="../../../../../_static/nexusLIMS_bare_logo.ico"/>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="2.1" />
+    <meta name="docbuild:last-update" content="Dec, 16, 2025"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.1.0a0 documentation - Home"/>
+    <img src="../../../../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.1.0a0 documentation - Home"/>
+  
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../getting_started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../migration.html">
+    Migration Guide: v1 to v2
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../dev_guide.html">
+    Developer Guide
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../../reference.html">
+    Reference
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datasophos/NexusLIMS" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://datasophos.co" title="Datasophos" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-globe fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Datasophos</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../getting_started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../migration.html">
+    Migration Guide: v1 to v2
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../dev_guide.html">
+    Developer Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../reference.html">
+    Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datasophos/NexusLIMS" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://datasophos.co" title="Datasophos" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-globe fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Datasophos</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../../../index.html" class="nav-link">Module code</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../../../../nexusLIMS.html" class="nav-link">nexusLIMS</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../../../extractors.html" class="nav-link">nexusLIMS.extractors</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;HyperSpy-based preview generator for microscopy data files.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tempfile</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">textwrap</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClassVar</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">hyperspy.api</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">hs_api</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mpl</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.offsetbox</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnchoredOffsetbox</span><span class="p">,</span> <span class="n">OffsetImage</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.transforms</span><span class="w"> </span><span class="kn">import</span> <span class="n">Bbox</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PIL</span><span class="w"> </span><span class="kn">import</span> <span class="n">Image</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">skimage</span><span class="w"> </span><span class="kn">import</span> <span class="n">transform</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">skimage.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">imread</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">skimage.transform</span><span class="w"> </span><span class="kn">import</span> <span class="n">resize</span>  <span class="c1"># pylint: disable=no-name-in-module</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">nexusLIMS.extractors</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.extractors.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExtractionContext</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="c1"># Use modern HyperSpy 2.0+ API only</span>
+<span class="c1"># Marker functionality has changed significantly in HyperSpy 2.0+</span>
+<span class="c1"># The old dict2marker approach is no longer supported</span>
+
+<span class="n">_LANCZOS</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">Resampling</span><span class="o">.</span><span class="n">LANCZOS</span>
+<span class="n">_POINT_SIZE</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">SPECTRUM_IMAGE_LOGO</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Path</span><span class="p">(</span><span class="n">nexusLIMS</span><span class="o">.</span><span class="n">extractors</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span>
+    <span class="o">/</span> <span class="s2">&quot;assets&quot;</span>
+    <span class="o">/</span> <span class="s2">&quot;spectrum_image_logo.svg.png&quot;</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="_full_extent">
+<a class="viewcode-back" href="../../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.html#nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._full_extent">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">_full_extent</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">items</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the full extent of items in an axis.</span>
+
+<span class="sd">    Adapted from https://stackoverflow.com/a/26432947/1435788.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># For text objects, we need to draw the figure first, otherwise the extents</span>
+    <span class="c1"># are undefined.</span>
+    <span class="n">axis</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+    <span class="n">bbox</span> <span class="o">=</span> <span class="n">Bbox</span><span class="o">.</span><span class="n">union</span><span class="p">([</span><span class="n">item</span><span class="o">.</span><span class="n">get_window_extent</span><span class="p">()</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">items</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">bbox</span><span class="o">.</span><span class="n">expanded</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">pad</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="n">pad</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="_set_title">
+<a class="viewcode-back" href="../../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.html#nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._set_title">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">_set_title</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">title</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Set an axis title with maximum width.</span>
+
+<span class="sd">    Makes sure it is no wider than 60 characters (so it doesn&#39;t run over the edges</span>
+<span class="sd">    of the plot)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ax : :py:mod:`matplotlib.axis`</span>
+<span class="sd">        A matplotlib axis instance on which to operate</span>
+<span class="sd">    title : str</span>
+<span class="sd">        The desired axis title</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">new_title</span> <span class="o">=</span> <span class="n">textwrap</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+    <span class="n">axis</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">new_title</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="_get_visible_labels">
+<a class="viewcode-back" href="../../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.html#nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._get_visible_labels">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_visible_labels</span><span class="p">(</span><span class="n">axis</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get labels that are visible for plot.</span>
+
+<span class="sd">    Helper method to return only the tick labels that are visible given the</span>
+<span class="sd">    current extent of the axes. Useful when calculating the extent of the figure</span>
+<span class="sd">    to save so extra white space from invisible labels is not included.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ax : :py:mod:`matplotlib.axis`</span>
+<span class="sd">        A matplotlib axis instance on which to operate</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    vis_labels_x, vis_labels_y : tuple of lists</span>
+<span class="sd">        lists of only the label objects that are visible on the current axis</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">vis_labels_x</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">cbook</span><span class="o">.</span><span class="n">silent_list</span><span class="p">(</span><span class="s2">&quot;Text xticklabel&quot;</span><span class="p">)</span>
+    <span class="n">vis_labels_y</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">cbook</span><span class="o">.</span><span class="n">silent_list</span><span class="p">(</span><span class="s2">&quot;Text yticklabel&quot;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">axis</span><span class="o">.</span><span class="n">get_xticklabels</span><span class="p">():</span>
+        <span class="n">label_pos</span> <span class="o">=</span> <span class="n">label</span><span class="o">.</span><span class="n">get_position</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">x_limits</span> <span class="o">=</span> <span class="n">axis</span><span class="o">.</span><span class="n">get_xlim</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">x_limits</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">label_pos</span> <span class="o">&lt;</span> <span class="n">x_limits</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">vis_labels_x</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">axis</span><span class="o">.</span><span class="n">get_yticklabels</span><span class="p">():</span>
+        <span class="n">label_pos</span> <span class="o">=</span> <span class="n">label</span><span class="o">.</span><span class="n">get_position</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">y_limits</span> <span class="o">=</span> <span class="n">axis</span><span class="o">.</span><span class="n">get_ylim</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">y_limits</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">label_pos</span> <span class="o">&lt;</span> <span class="n">y_limits</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">vis_labels_y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">vis_labels_x</span><span class="p">,</span> <span class="n">vis_labels_y</span></div>
+
+
+
+<div class="viewcode-block" id="_project_image_stack">
+<a class="viewcode-back" href="../../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.html#nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._project_image_stack">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">_project_image_stack</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">92</span><span class="p">,</span> <span class="n">v_shear</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">h_scale</span><span class="o">=</span><span class="mf">0.3</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Project an image stack.</span>
+
+<span class="sd">    Create a preview of an image stack by selecting a number of example frames</span>
+<span class="sd">    and projecting them into a pseudo-3D display.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    s : :py:class:`hyperspy.signal.BaseSignal` (or subclass)</span>
+<span class="sd">        The HyperSpy signal for which an image stack preview should be</span>
+<span class="sd">        generated. Should have a signal dimension of 2 and a navigation</span>
+<span class="sd">        dimension of 1.</span>
+<span class="sd">    num : int</span>
+<span class="sd">        The number of frames in the image stack to use to make the preview</span>
+<span class="sd">    dpi : int</span>
+<span class="sd">        The &quot;dots per inch&quot; of the individual frames within the preview</span>
+<span class="sd">    v_shear : float</span>
+<span class="sd">        The factor by which to vertically shear (0.5 means shear the top border</span>
+<span class="sd">        down by half of the original image&#39;s height)</span>
+<span class="sd">    h_scale : float</span>
+<span class="sd">        The factor by which to scale in the horizontal direction (0.3 means</span>
+<span class="sd">        each projected frame will be 30% the width of the original image)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    output : :py:class:`numpy.ndarray`</span>
+<span class="sd">        The `num` frames loaded into a single NumPy array for plotting</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">tmps</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">axes_manager</span><span class="o">.</span><span class="n">navigation_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="n">num</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">):</span>
+        <span class="n">hs_api</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">plot_images</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">s</span><span class="o">.</span><span class="n">inav</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">as_signal2D</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))],</span>
+            <span class="n">axes_decor</span><span class="o">=</span><span class="s2">&quot;off&quot;</span><span class="p">,</span>
+            <span class="n">colorbar</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">scalebar</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span>
+            <span class="n">label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">()</span>  <span class="c1"># noqa: SIM115</span>
+        <span class="n">axis</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+        <span class="n">axis</span><span class="o">.</span><span class="n">set_position</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">axis</span><span class="o">.</span><span class="n">set_axis_on</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">axis_side</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;top&quot;</span><span class="p">,</span> <span class="s2">&quot;bottom&quot;</span><span class="p">,</span> <span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="s2">&quot;right&quot;</span><span class="p">]:</span>
+            <span class="n">axis</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="n">axis_side</span><span class="p">]</span><span class="o">.</span><span class="n">set_linewidth</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+        <span class="n">axis</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+        <span class="n">axis</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">tmp</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;.png&quot;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="n">dpi</span><span class="p">)</span>
+        <span class="n">tmps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">axis</span><span class="o">.</span><span class="n">figure</span><span class="p">)</span>
+
+    <span class="n">im_data</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">tmp</span> <span class="ow">in</span> <span class="n">tmps</span><span class="p">:</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">tmp</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;.png&quot;</span><span class="p">)</span>
+        <span class="n">img_trans</span> <span class="o">=</span> <span class="n">transform</span><span class="o">.</span><span class="n">warp</span><span class="p">(</span>
+            <span class="n">image</span><span class="o">=</span><span class="n">img</span><span class="p">,</span>
+            <span class="n">inverse_map</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">v_shear</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]),</span>  <span class="c1"># shear</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">h_scale</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]),</span>
+                <span class="p">),</span>  <span class="c1"># scale</span>
+            <span class="p">),</span>
+            <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">preserve_range</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;constant&quot;</span><span class="p">,</span>
+            <span class="n">cval</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
+            <span class="n">output_shape</span><span class="o">=</span><span class="p">(</span>
+                <span class="nb">int</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">v_shear</span><span class="p">)),</span>
+                <span class="nb">int</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">h_scale</span><span class="p">),</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+        <span class="n">im_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">img_trans</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">temp_file</span> <span class="ow">in</span> <span class="n">tmps</span><span class="p">:</span>
+        <span class="n">temp_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">Path</span><span class="p">(</span><span class="n">temp_file</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;.png&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span><span class="n">im_data</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="_pad_to_square">
+<a class="viewcode-back" href="../../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.html#nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._pad_to_square">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">_pad_to_square</span><span class="p">(</span><span class="n">im_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">new_width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">500</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pad an image to square.</span>
+
+<span class="sd">    Helper method to pad an image saved on disk to a square with size</span>
+<span class="sd">    ``width x width``. This ensures consistent display on the front-end web</span>
+<span class="sd">    page. Increasing the size of a dimension is done by padding with empty</span>
+<span class="sd">    space. The original image is overwritten.</span>
+
+<span class="sd">    Method adapted from:</span>
+<span class="sd">    https://jdhao.github.io/2017/11/06/resize-image-to-square-with-padding/</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    im_path</span>
+<span class="sd">        The path to the image that should be resized/padded</span>
+<span class="sd">    new_width</span>
+<span class="sd">        Desired output width/height of the image (in pixels)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">im_path</span><span class="p">)</span>
+    <span class="n">old_size</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">size</span>  <span class="c1"># old_size[0] is in (width, height) format</span>
+    <span class="n">ratio</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">new_width</span><span class="p">)</span> <span class="o">/</span> <span class="nb">max</span><span class="p">(</span><span class="n">old_size</span><span class="p">)</span>
+    <span class="n">new_size</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="n">ratio</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">old_size</span><span class="p">)</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">new_size</span><span class="p">,</span> <span class="n">_LANCZOS</span><span class="p">)</span>
+
+    <span class="n">new_im</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s2">&quot;RGBA&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">new_width</span><span class="p">,</span> <span class="n">new_width</span><span class="p">))</span>
+    <span class="n">new_im</span><span class="o">.</span><span class="n">paste</span><span class="p">(</span>
+        <span class="n">image</span><span class="p">,</span>
+        <span class="p">((</span><span class="n">new_width</span> <span class="o">-</span> <span class="n">new_size</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">//</span> <span class="mi">2</span><span class="p">,</span> <span class="p">(</span><span class="n">new_width</span> <span class="o">-</span> <span class="n">new_size</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">//</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">new_im</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">im_path</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="_get_marker_color">
+<a class="viewcode-back" href="../../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.html#nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._get_marker_color">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_marker_color</span><span class="p">(</span><span class="n">annotation</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the color of a DigitalMicrograph annotation.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    annotation : dict</span>
+<span class="sd">        The tag dictionary for a given annotation from a DigitalMicrograph</span>
+<span class="sd">        tag structure</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    color : str or tuple</span>
+<span class="sd">        Either an RGB tuple, or string containing a color name</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="s2">&quot;ForegroundColor&quot;</span> <span class="ow">in</span> <span class="n">annotation</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="s2">&quot;Color&quot;</span> <span class="ow">in</span> <span class="n">annotation</span><span class="p">):</span>
+        <span class="c1"># There seems to be 3 different colors in annotations in</span>
+        <span class="c1"># dm3-files: Color, ForegroundColor and BackgroundColor.</span>
+        <span class="c1"># ForegroundColor and BackgroundColor seems to be present</span>
+        <span class="c1"># for all annotations. Color is present in some of them.</span>
+        <span class="c1"># If Color is present, it seems to override the others.</span>
+        <span class="c1"># Currently, BackgroundColor is not utilized, due to</span>
+        <span class="c1"># HyperSpy markers only supporting a single color.</span>
+        <span class="k">if</span> <span class="s2">&quot;Color&quot;</span> <span class="ow">in</span> <span class="n">annotation</span><span class="p">:</span>
+            <span class="n">color_raw</span> <span class="o">=</span> <span class="n">annotation</span><span class="p">[</span><span class="s2">&quot;Color&quot;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">color_raw</span> <span class="o">=</span> <span class="n">annotation</span><span class="p">[</span><span class="s2">&quot;ForegroundColor&quot;</span><span class="p">]</span>
+        <span class="c1"># Colors in DM are saved as negative values</span>
+        <span class="c1"># Some values are also in 16-bit</span>
+        <span class="n">color</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">raw_value</span> <span class="ow">in</span> <span class="n">color_raw</span><span class="p">:</span>
+            <span class="n">raw_value_</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">raw_value</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">raw_value_</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">raw_value_</span> <span class="o">/=</span> <span class="mi">2</span><span class="o">**</span><span class="mi">16</span>
+            <span class="n">color</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">raw_value_</span><span class="p">)</span>
+        <span class="n">color</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">color</span> <span class="o">=</span> <span class="s2">&quot;red&quot;</span>
+
+    <span class="k">return</span> <span class="n">color</span></div>
+
+
+
+<div class="viewcode-block" id="_get_marker_props">
+<a class="viewcode-back" href="../../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.html#nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._get_marker_props">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_marker_props</span><span class="p">(</span><span class="n">annotation</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the properties and type of a DigitalMicrograph annotation.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    annotation : dict</span>
+<span class="sd">        The tag dictionary for a given annotation from a DigitalMicrograph</span>
+<span class="sd">        tag structure</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    marker_properties : dict</span>
+<span class="sd">        A dictionary containing various properties for this</span>
+<span class="sd">        annotation/marker, such as line width, style, etc.</span>
+<span class="sd">    marker_type : str or None</span>
+<span class="sd">        The type of marker (e.g., &quot;LineSegment&quot;, &quot;Rectangle&quot;, &quot;Text&quot;, &quot;Point&quot;)</span>
+<span class="sd">    marker_text : None or str</span>
+<span class="sd">        If present, the text of a textual annotation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">marker_properties</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">marker_type</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">marker_text</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">log_msg_map</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="mi">3</span><span class="p">:</span> <span class="s2">&quot;Arrow marker not loaded: not implemented&quot;</span><span class="p">,</span>
+        <span class="mi">4</span><span class="p">:</span> <span class="s2">&quot;Double arrow marker not loaded: not implemented&quot;</span><span class="p">,</span>
+        <span class="mi">6</span><span class="p">:</span> <span class="s2">&quot;Ellipse marker not loaded: not implemented&quot;</span><span class="p">,</span>
+        <span class="mi">8</span><span class="p">:</span> <span class="s2">&quot;Mask spot marker not loaded: not implemented&quot;</span><span class="p">,</span>
+        <span class="mi">9</span><span class="p">:</span> <span class="s2">&quot;Mask array marker not loaded: not implemented&quot;</span><span class="p">,</span>
+        <span class="mi">15</span><span class="p">:</span> <span class="s2">&quot;Mask band pass marker not loaded: not implemented&quot;</span><span class="p">,</span>
+        <span class="mi">19</span><span class="p">:</span> <span class="s2">&quot;Mask wedge marker not loaded: not implemented&quot;</span><span class="p">,</span>
+        <span class="mi">29</span><span class="p">:</span> <span class="s2">&quot;ROI curve marker not loaded: not implemented&quot;</span><span class="p">,</span>
+        <span class="mi">31</span><span class="p">:</span> <span class="s2">&quot;Scalebar marker not loaded: not implemented&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="n">line_segment_type</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">rectangle_type</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">text_type</span> <span class="o">=</span> <span class="mi">13</span>
+    <span class="n">roi_rectangle_type</span> <span class="o">=</span> <span class="mi">23</span>
+    <span class="n">roi_line_type</span> <span class="o">=</span> <span class="mi">25</span>
+    <span class="n">point_type</span> <span class="o">=</span> <span class="mi">27</span>
+
+    <span class="c1"># FillMode:</span>
+    <span class="n">FILL_NONE</span> <span class="o">=</span> <span class="mi">2</span>  <span class="c1"># noqa: N806</span>
+
+    <span class="k">if</span> <span class="s2">&quot;AnnotationType&quot;</span> <span class="ow">in</span> <span class="n">annotation</span><span class="p">:</span>
+        <span class="n">annotation_type</span> <span class="o">=</span> <span class="n">annotation</span><span class="p">[</span><span class="s2">&quot;AnnotationType&quot;</span><span class="p">]</span>
+        <span class="n">color</span> <span class="o">=</span> <span class="n">_get_marker_color</span><span class="p">(</span><span class="n">annotation</span><span class="p">)</span>
+        <span class="n">marker_properties</span><span class="p">[</span><span class="s2">&quot;color&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">color</span>
+        <span class="k">if</span> <span class="n">annotation_type</span> <span class="o">==</span> <span class="n">line_segment_type</span><span class="p">:</span>
+            <span class="n">marker_type</span> <span class="o">=</span> <span class="s2">&quot;LineSegment&quot;</span>
+            <span class="n">marker_properties</span><span class="p">[</span><span class="s2">&quot;linewidth&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="k">elif</span> <span class="n">annotation_type</span> <span class="ow">in</span> <span class="p">(</span><span class="n">rectangle_type</span><span class="p">,</span> <span class="n">roi_rectangle_type</span><span class="p">):</span>
+            <span class="n">marker_type</span> <span class="o">=</span> <span class="s2">&quot;Rectangle&quot;</span>
+            <span class="n">marker_properties</span><span class="p">[</span><span class="s2">&quot;linewidth&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>
+            <span class="c1"># ROI rectangles get dashed lines</span>
+            <span class="k">if</span> <span class="n">annotation_type</span> <span class="o">==</span> <span class="n">roi_rectangle_type</span><span class="p">:</span>
+                <span class="n">marker_properties</span><span class="p">[</span><span class="s2">&quot;linestyle&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;--&quot;</span>
+            <span class="k">if</span> <span class="n">annotation</span><span class="p">[</span><span class="s2">&quot;FillMode&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">FILL_NONE</span><span class="p">:</span>
+                <span class="n">marker_properties</span><span class="p">[</span><span class="s2">&quot;facecolor&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;none&quot;</span>
+                <span class="n">marker_properties</span><span class="p">[</span><span class="s2">&quot;edgecolor&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">marker_properties</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;color&quot;</span><span class="p">)</span>
+                <span class="n">marker_properties</span><span class="p">[</span><span class="s2">&quot;labelcolor&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">marker_properties</span><span class="p">[</span><span class="s2">&quot;edgecolor&quot;</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">annotation_type</span> <span class="o">==</span> <span class="n">text_type</span><span class="p">:</span>
+            <span class="n">marker_type</span> <span class="o">=</span> <span class="s2">&quot;Text&quot;</span>
+            <span class="n">marker_text</span> <span class="o">=</span> <span class="n">annotation</span><span class="p">[</span><span class="s2">&quot;Text&quot;</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">annotation_type</span> <span class="o">==</span> <span class="n">roi_line_type</span><span class="p">:</span>  <span class="c1"># roiline</span>
+            <span class="n">marker_type</span> <span class="o">=</span> <span class="s2">&quot;LineSegment&quot;</span>
+            <span class="n">marker_properties</span><span class="p">[</span><span class="s2">&quot;linestyle&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;--&quot;</span>
+            <span class="n">marker_properties</span><span class="p">[</span><span class="s2">&quot;linewidth&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="k">elif</span> <span class="n">annotation_type</span> <span class="o">==</span> <span class="n">point_type</span><span class="p">:</span>
+            <span class="n">marker_type</span> <span class="o">=</span> <span class="s2">&quot;Point&quot;</span>
+            <span class="n">marker_properties</span><span class="p">[</span><span class="s2">&quot;size&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_POINT_SIZE</span>
+        <span class="k">elif</span> <span class="n">annotation_type</span> <span class="ow">in</span> <span class="n">log_msg_map</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">log_msg_map</span><span class="p">[</span><span class="n">annotation_type</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">marker_properties</span><span class="p">,</span> <span class="n">marker_type</span><span class="p">,</span> <span class="n">marker_text</span></div>
+
+
+
+<div class="viewcode-block" id="_get_markers_list">
+<a class="viewcode-back" href="../../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.html#nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._get_markers_list">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_markers_list</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">tags_dict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get list of HyperSpy 2.0+ marker objects from a HyperSpy signal.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    s : :py:class:`hyperspy.signal.BaseSignal`</span>
+<span class="sd">        The HyperSpy signal from which annotations should be read</span>
+<span class="sd">    tags_dict : dict</span>
+<span class="sd">        The dictionary of DigitalMicrograph tags (saved as</span>
+<span class="sd">        ``s.original_metadata``)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    markers_list : list</span>
+<span class="sd">        List of HyperSpy 2.0+ marker objects that correspond to the</span>
+<span class="sd">        annotations found in `s`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">scale</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">axes_manager</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">scale</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">axes_manager</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">scale</span><span class="p">}</span>
+    <span class="n">offset</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">axes_manager</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">offset</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">axes_manager</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">offset</span><span class="p">}</span>
+
+    <span class="n">markers_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">annotations_dict</span> <span class="o">=</span> <span class="n">tags_dict</span><span class="p">[</span><span class="s2">&quot;DocumentObjectList&quot;</span><span class="p">][</span><span class="s2">&quot;TagGroup0&quot;</span><span class="p">][</span>
+        <span class="s2">&quot;AnnotationGroupList&quot;</span>
+    <span class="p">]</span>
+    <span class="k">for</span> <span class="n">annotation</span> <span class="ow">in</span> <span class="n">annotations_dict</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="n">position</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Initialize position to avoid pylint warning</span>
+        <span class="k">if</span> <span class="s2">&quot;Rectangle&quot;</span> <span class="ow">in</span> <span class="n">annotation</span><span class="p">:</span>
+            <span class="n">position</span> <span class="o">=</span> <span class="n">annotation</span><span class="p">[</span><span class="s2">&quot;Rectangle&quot;</span><span class="p">]</span>
+        <span class="n">marker_properties</span><span class="p">,</span> <span class="n">marker_type</span><span class="p">,</span> <span class="n">marker_text</span> <span class="o">=</span> <span class="n">_get_marker_props</span><span class="p">(</span><span class="n">annotation</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">marker_type</span><span class="p">:</span>
+            <span class="c1"># Add label text marker if present</span>
+            <span class="k">if</span> <span class="s2">&quot;Label&quot;</span> <span class="ow">in</span> <span class="n">annotation</span> <span class="ow">and</span> <span class="n">annotation</span><span class="p">[</span><span class="s2">&quot;Label&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="p">[]:</span>
+                <span class="n">marker_label</span> <span class="o">=</span> <span class="n">annotation</span><span class="p">[</span><span class="s2">&quot;Label&quot;</span><span class="p">]</span>
+                <span class="c1"># Add small vertical offset to position label below the marker</span>
+                <span class="n">label_offset_y</span> <span class="o">=</span> <span class="n">scale</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="o">-</span><span class="mi">4</span>  <span class="c1"># 4 pixels in data coordinates</span>
+                <span class="n">y1</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="p">(</span><span class="n">position</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">scale</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">offset</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">label_offset_y</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">position</span>
+                    <span class="k">else</span> <span class="mi">0</span>
+                <span class="p">)</span>
+                <span class="n">x1</span> <span class="o">=</span> <span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">scale</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">offset</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">position</span> <span class="k">else</span> <span class="mi">0</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">label_marker</span> <span class="o">=</span> <span class="n">hs_api</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">markers</span><span class="o">.</span><span class="n">Texts</span><span class="p">(</span>
+                        <span class="n">offsets</span><span class="o">=</span><span class="p">[(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">)],</span>
+                        <span class="n">texts</span><span class="o">=</span><span class="p">[</span><span class="n">marker_label</span><span class="p">],</span>
+                        <span class="n">color</span><span class="o">=</span><span class="n">marker_properties</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;labelcolor&quot;</span><span class="p">,</span> <span class="s2">&quot;none&quot;</span><span class="p">),</span>
+                        <span class="n">verticalalignment</span><span class="o">=</span><span class="s2">&quot;bottom&quot;</span><span class="p">,</span>
+                        <span class="n">horizontalalignment</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="n">markers_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">label_marker</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Failed to create label marker: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">err</span><span class="p">)</span>
+
+            <span class="c1"># Create the main marker based on type</span>
+            <span class="k">if</span> <span class="n">position</span><span class="p">:</span>
+                <span class="n">y1</span> <span class="o">=</span> <span class="n">position</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">scale</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">offset</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">]</span>
+                <span class="n">x1</span> <span class="o">=</span> <span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">scale</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">offset</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">]</span>
+                <span class="n">y2</span> <span class="o">=</span> <span class="n">position</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">scale</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">offset</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">]</span>
+                <span class="n">x2</span> <span class="o">=</span> <span class="n">position</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span> <span class="n">scale</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">offset</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">]</span>
+
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">marker_type</span> <span class="o">==</span> <span class="s2">&quot;Text&quot;</span><span class="p">:</span>
+                        <span class="n">marker</span> <span class="o">=</span> <span class="n">hs_api</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">markers</span><span class="o">.</span><span class="n">Texts</span><span class="p">(</span>
+                            <span class="n">offsets</span><span class="o">=</span><span class="p">[(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">)],</span>
+                            <span class="n">texts</span><span class="o">=</span><span class="p">[</span><span class="n">marker_text</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">],</span>
+                            <span class="n">verticalalignment</span><span class="o">=</span><span class="s2">&quot;bottom&quot;</span><span class="p">,</span>
+                            <span class="n">horizontalalignment</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">,</span>
+                            <span class="o">**</span><span class="n">marker_properties</span><span class="p">,</span>
+                        <span class="p">)</span>
+                        <span class="n">markers_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">marker</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="n">marker_type</span> <span class="o">==</span> <span class="s2">&quot;Point&quot;</span><span class="p">:</span>
+                        <span class="n">marker</span> <span class="o">=</span> <span class="n">hs_api</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">markers</span><span class="o">.</span><span class="n">Points</span><span class="p">(</span>
+                            <span class="n">offsets</span><span class="o">=</span><span class="p">[(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">)],</span>
+                            <span class="n">sizes</span><span class="o">=</span><span class="p">[</span><span class="n">marker_properties</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;size&quot;</span><span class="p">,</span> <span class="n">_POINT_SIZE</span><span class="p">)],</span>
+                            <span class="o">**</span><span class="n">marker_properties</span><span class="p">,</span>
+                        <span class="p">)</span>
+                        <span class="n">markers_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">marker</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="n">marker_type</span> <span class="o">==</span> <span class="s2">&quot;LineSegment&quot;</span><span class="p">:</span>
+                        <span class="n">marker</span> <span class="o">=</span> <span class="n">hs_api</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">markers</span><span class="o">.</span><span class="n">Lines</span><span class="p">(</span>
+                            <span class="n">segments</span><span class="o">=</span><span class="p">[[(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">),</span> <span class="p">(</span><span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">)]],</span>
+                            <span class="o">**</span><span class="n">marker_properties</span><span class="p">,</span>
+                        <span class="p">)</span>
+                        <span class="n">markers_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">marker</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="n">marker_type</span> <span class="o">==</span> <span class="s2">&quot;Rectangle&quot;</span><span class="p">:</span>
+                        <span class="n">width</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">x2</span> <span class="o">-</span> <span class="n">x1</span><span class="p">)</span>
+                        <span class="n">height</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">y2</span> <span class="o">-</span> <span class="n">y1</span><span class="p">)</span>
+                        <span class="n">x</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span> <span class="o">+</span> <span class="n">width</span> <span class="o">/</span> <span class="mi">2</span>
+                        <span class="n">y</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">y1</span><span class="p">,</span> <span class="n">y2</span><span class="p">)</span> <span class="o">+</span> <span class="n">height</span> <span class="o">/</span> <span class="mi">2</span>
+                        <span class="c1"># Work with a copy to avoid mutating original marker_properties</span>
+                        <span class="n">rect_props</span> <span class="o">=</span> <span class="n">marker_properties</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                        <span class="n">edgecolors</span> <span class="o">=</span> <span class="p">(</span>
+                            <span class="p">[</span><span class="n">rect_props</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;edgecolor&quot;</span><span class="p">)]</span>
+                            <span class="k">if</span> <span class="s2">&quot;edgecolor&quot;</span> <span class="ow">in</span> <span class="n">rect_props</span>
+                            <span class="k">else</span> <span class="kc">None</span>
+                        <span class="p">)</span>
+                        <span class="n">facecolors</span> <span class="o">=</span> <span class="p">(</span>
+                            <span class="p">[</span><span class="n">rect_props</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;facecolor&quot;</span><span class="p">)]</span>
+                            <span class="k">if</span> <span class="s2">&quot;facecolor&quot;</span> <span class="ow">in</span> <span class="n">rect_props</span>
+                            <span class="k">else</span> <span class="kc">None</span>
+                        <span class="p">)</span>
+                        <span class="c1"># Remove labelcolor if present (not used for rectangles)</span>
+                        <span class="n">rect_props</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;labelcolor&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+                        <span class="n">marker</span> <span class="o">=</span> <span class="n">hs_api</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">markers</span><span class="o">.</span><span class="n">Rectangles</span><span class="p">(</span>
+                            <span class="n">offsets</span><span class="o">=</span><span class="p">[(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)],</span>
+                            <span class="n">widths</span><span class="o">=</span><span class="p">[</span><span class="n">width</span><span class="p">],</span>
+                            <span class="n">heights</span><span class="o">=</span><span class="p">[</span><span class="n">height</span><span class="p">],</span>
+                            <span class="n">edgecolors</span><span class="o">=</span><span class="n">edgecolors</span><span class="p">,</span>
+                            <span class="n">facecolors</span><span class="o">=</span><span class="n">facecolors</span><span class="p">,</span>
+                            <span class="o">**</span><span class="n">rect_props</span><span class="p">,</span>
+                        <span class="p">)</span>
+                        <span class="n">markers_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">marker</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Failed to create </span><span class="si">%s</span><span class="s2"> marker: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">marker_type</span><span class="p">,</span> <span class="n">err</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">markers_list</span></div>
+
+
+
+<div class="viewcode-block" id="add_annotation_markers">
+<a class="viewcode-back" href="../../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.html#nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.add_annotation_markers">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">add_annotation_markers</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Add annotation markers from a DM3/DM4 file to a HyperSpy signal.</span>
+
+<span class="sd">    Read annotations from a signal originating from DigitalMicrograph and</span>
+<span class="sd">    convert the ones (that we can) into HyperSpy 2.0+ markers for plotting.</span>
+<span class="sd">    Uses the modern hs.plot.markers API instead of the deprecated dict2marker.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    s : :py:class:`hyperspy.signal.BaseSignal` (or subclass)</span>
+<span class="sd">        The HyperSpy signal for which a thumbnail should be generated</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># pylint: disable=broad-exception-caught</span>
+    <span class="c1"># Parsing markers can potentially lead to errors, so to avoid</span>
+    <span class="c1"># this any Exceptions are caught and logged instead of the files</span>
+    <span class="c1"># not being loaded at all.</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">markers_list</span> <span class="o">=</span> <span class="n">_get_markers_list</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">original_metadata</span><span class="o">.</span><span class="n">as_dictionary</span><span class="p">())</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Markers could not be loaded from the file due to: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">err</span><span class="p">)</span>
+        <span class="n">markers_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">markers_list</span><span class="p">:</span>
+        <span class="c1"># Add the HyperSpy 2.0+ Marker objects (in a list) to the signal</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">add_marker</span><span class="p">(</span><span class="n">markers_list</span><span class="p">,</span> <span class="n">permanent</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="_set_extent_and_save">
+<a class="viewcode-back" href="../../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.html#nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._set_extent_and_save">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">_set_extent_and_save</span><span class="p">(</span><span class="n">mpl_axis</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">out_path</span><span class="p">,</span> <span class="n">dpi</span><span class="p">):</span>
+    <span class="n">_set_title</span><span class="p">(</span><span class="n">mpl_axis</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">General</span><span class="o">.</span><span class="n">title</span><span class="p">)</span>
+    <span class="n">items</span> <span class="o">=</span> <span class="p">[</span><span class="n">mpl_axis</span><span class="p">,</span> <span class="n">mpl_axis</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="n">mpl_axis</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">label</span><span class="p">,</span> <span class="n">mpl_axis</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">label</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">labels</span> <span class="ow">in</span> <span class="n">_get_visible_labels</span><span class="p">(</span><span class="n">mpl_axis</span><span class="p">):</span>
+        <span class="n">items</span> <span class="o">+=</span> <span class="n">labels</span>
+    <span class="n">extent</span> <span class="o">=</span> <span class="n">_full_extent</span><span class="p">(</span><span class="n">mpl_axis</span><span class="p">,</span> <span class="n">items</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span><span class="o">.</span><span class="n">transformed</span><span class="p">(</span>
+        <span class="n">mpl_axis</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">dpi_scale_trans</span><span class="o">.</span><span class="n">inverted</span><span class="p">(),</span>
+    <span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">out_path</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="n">extent</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="n">dpi</span><span class="p">)</span>
+    <span class="n">_pad_to_square</span><span class="p">(</span><span class="n">out_path</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="_plot_spectrum">
+<a class="viewcode-back" href="../../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.html#nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._plot_spectrum">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">_plot_spectrum</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">out_path</span><span class="p">,</span> <span class="n">dpi</span><span class="p">):</span>
+    <span class="c1"># pylint: disable=protected-access</span>
+    <span class="n">s</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+    <span class="c1"># get signal plot figure</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">_plot</span><span class="o">.</span><span class="n">signal_plot</span><span class="o">.</span><span class="n">figure</span>  <span class="c1"># noqa: SLF001</span>
+    <span class="n">mpl_axis</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">get_axes</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="c1"># Change line color to matplotlib default</span>
+    <span class="n">mpl_axis</span><span class="o">.</span><span class="n">get_lines</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="s2">&quot;tab10&quot;</span><span class="p">)(</span><span class="mi">0</span><span class="p">))</span>
+    <span class="n">_set_extent_and_save</span><span class="p">(</span><span class="n">mpl_axis</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">out_path</span><span class="p">,</span> <span class="n">dpi</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">f</span></div>
+
+
+
+<div class="viewcode-block" id="_plot_linescan">
+<a class="viewcode-back" href="../../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.html#nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._plot_linescan">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">_plot_linescan</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">out_path</span><span class="p">,</span> <span class="n">dpi</span><span class="p">):</span>
+    <span class="c1"># pylint: disable=protected-access</span>
+    <span class="n">s</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+
+    <span class="n">f</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">_plot</span><span class="o">.</span><span class="n">navigator_plot</span><span class="o">.</span><span class="n">figure</span>  <span class="c1"># noqa: SLF001</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">get_axes</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>  <span class="c1"># remove colorbar scale</span>
+    <span class="n">mpl_axis</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">get_axes</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># workaround for above issue to remove pointer</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">mpl_axis</span><span class="o">.</span><span class="n">lines</span><span class="p">):</span>
+        <span class="n">line</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
+
+    <span class="n">_set_extent_and_save</span><span class="p">(</span><span class="n">mpl_axis</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">out_path</span><span class="p">,</span> <span class="n">dpi</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">f</span></div>
+
+
+
+<div class="viewcode-block" id="_plot_si">
+<a class="viewcode-back" href="../../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.html#nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._plot_si">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">_plot_si</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">out_path</span><span class="p">,</span> <span class="n">dpi</span><span class="p">):</span>
+    <span class="n">nav_size</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">axes_manager</span><span class="o">.</span><span class="n">navigation_size</span>
+    <span class="n">max_nav_size</span> <span class="o">=</span> <span class="mi">9</span>
+
+    <span class="c1"># temporarily unfold the signal so we can get spectra from all</span>
+    <span class="c1"># over the navigation space easily:</span>
+    <span class="k">with</span> <span class="n">s</span><span class="o">.</span><span class="n">unfolded</span><span class="p">():</span>
+        <span class="n">idx_to_plot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="n">nav_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="mi">9</span> <span class="k">if</span> <span class="n">nav_size</span> <span class="o">&gt;=</span> <span class="n">max_nav_size</span> <span class="k">else</span> <span class="n">nav_size</span><span class="p">,</span>
+            <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">s_to_plot</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span><span class="o">.</span><span class="n">inav</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">idx_to_plot</span><span class="p">]</span>
+
+    <span class="n">f</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+    <span class="n">hs_api</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">plot_spectra</span><span class="p">(</span><span class="n">s_to_plot</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;cascade&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">fig</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+    <span class="n">mpl_axis</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+
+    <span class="n">_set_title</span><span class="p">(</span><span class="n">mpl_axis</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">General</span><span class="o">.</span><span class="n">title</span><span class="p">)</span>
+    <span class="n">mpl_axis</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span>
+        <span class="n">mpl_axis</span><span class="o">.</span><span class="n">get_title</span><span class="p">()</span>
+        <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="o">+</span> <span class="sa">r</span><span class="s2">&quot;$\bf{&quot;</span>
+        <span class="o">+</span> <span class="sa">r</span><span class="s2">&quot;\ x\ &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">s</span><span class="o">.</span><span class="n">axes_manager</span><span class="o">.</span><span class="n">navigation_shape</span><span class="p">])</span>
+        <span class="o">+</span> <span class="sa">r</span><span class="s2">&quot;\ Spectrum\ Image}$&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Load &quot;watermark&quot; stamp and rescale to be appropriately sized</span>
+    <span class="n">stamp</span> <span class="o">=</span> <span class="n">imread</span><span class="p">(</span><span class="n">SPECTRUM_IMAGE_LOGO</span><span class="p">)</span>
+    <span class="n">stamp_width</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">mpl_axis</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">get_size_inches</span><span class="p">()</span> <span class="o">*</span> <span class="n">f</span><span class="o">.</span><span class="n">dpi</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="mf">2.5</span><span class="p">)</span>
+    <span class="n">scaling</span> <span class="o">=</span> <span class="n">stamp_width</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">stamp</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">stamp_height</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">stamp</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="nb">float</span><span class="p">(</span><span class="n">scaling</span><span class="p">))</span>
+    <span class="n">stamp</span> <span class="o">=</span> <span class="n">resize</span><span class="p">(</span><span class="n">stamp</span><span class="p">,</span> <span class="p">(</span><span class="n">stamp_width</span><span class="p">,</span> <span class="n">stamp_height</span><span class="p">),</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;wrap&quot;</span><span class="p">,</span> <span class="n">anti_aliasing</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Create matplotlib annotation with image in center</span>
+    <span class="n">imagebox</span> <span class="o">=</span> <span class="n">OffsetImage</span><span class="p">(</span><span class="n">stamp</span><span class="p">,</span> <span class="n">zoom</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.15</span><span class="p">)</span>
+    <span class="n">imagebox</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">axes</span> <span class="o">=</span> <span class="n">mpl_axis</span>
+    <span class="n">anchored_offset</span> <span class="o">=</span> <span class="n">AnchoredOffsetbox</span><span class="p">(</span><span class="s2">&quot;center&quot;</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">borderpad</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">child</span><span class="o">=</span><span class="n">imagebox</span><span class="p">)</span>
+    <span class="n">anchored_offset</span><span class="o">.</span><span class="n">patch</span><span class="o">.</span><span class="n">set_alpha</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">mpl_axis</span><span class="o">.</span><span class="n">add_artist</span><span class="p">(</span><span class="n">anchored_offset</span><span class="p">)</span>
+
+    <span class="c1"># Pack figure and save</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">out_path</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="n">dpi</span><span class="p">)</span>
+    <span class="n">_pad_to_square</span><span class="p">(</span><span class="n">out_path</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">f</span></div>
+
+
+
+<div class="viewcode-block" id="_plot_single_image">
+<a class="viewcode-back" href="../../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.html#nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._plot_single_image">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">_plot_single_image</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">out_path</span><span class="p">,</span> <span class="n">dpi</span><span class="p">):</span>
+    <span class="c1"># check to see if this is a dm3/dm4; if so try to plot with</span>
+    <span class="c1"># annotations</span>
+    <span class="n">orig_fname</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">General</span><span class="o">.</span><span class="n">original_filename</span>
+    <span class="k">if</span> <span class="s2">&quot;.dm3&quot;</span> <span class="ow">in</span> <span class="n">orig_fname</span> <span class="ow">or</span> <span class="s2">&quot;.dm4&quot;</span> <span class="ow">in</span> <span class="n">orig_fname</span><span class="p">:</span>
+        <span class="n">add_annotation_markers</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">colorbar</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">&quot;off&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">hs_api</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">plot_images</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">s</span><span class="p">],</span>
+            <span class="n">axes_decor</span><span class="o">=</span><span class="s2">&quot;off&quot;</span><span class="p">,</span>
+            <span class="n">colorbar</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">scalebar</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span>
+            <span class="n">label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="n">f</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span>
+    <span class="n">mpl_axis</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+    <span class="n">_set_title</span><span class="p">(</span><span class="n">mpl_axis</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">General</span><span class="o">.</span><span class="n">title</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">out_path</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="n">dpi</span><span class="p">)</span>
+    <span class="n">_pad_to_square</span><span class="p">(</span><span class="n">out_path</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">f</span></div>
+
+
+
+<div class="viewcode-block" id="_plot_image_stack">
+<a class="viewcode-back" href="../../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.html#nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._plot_image_stack">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">_plot_image_stack</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">out_path</span><span class="p">,</span> <span class="n">dpi</span><span class="p">):</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span>
+        <span class="n">_project_image_stack</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="nb">min</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">axes_manager</span><span class="o">.</span><span class="n">navigation_size</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="n">dpi</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">mpl_axis</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+    <span class="n">mpl_axis</span><span class="o">.</span><span class="n">set_position</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">])</span>
+    <span class="n">mpl_axis</span><span class="o">.</span><span class="n">set_axis_off</span><span class="p">()</span>
+    <span class="n">_set_title</span><span class="p">(</span><span class="n">mpl_axis</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">General</span><span class="o">.</span><span class="n">title</span><span class="p">)</span>
+    <span class="n">mpl_axis</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span>
+        <span class="n">mpl_axis</span><span class="o">.</span><span class="n">get_title</span><span class="p">()</span>
+        <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="o">+</span> <span class="sa">r</span><span class="s2">&quot;$\bf{&quot;</span>
+        <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">axes_manager</span><span class="o">.</span><span class="n">navigation_size</span><span class="p">)</span>
+        <span class="o">+</span> <span class="sa">r</span><span class="s2">&quot;-member&quot;</span>
+        <span class="o">+</span> <span class="sa">r</span><span class="s2">&quot;\ Image\ Series}$&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="c1"># use _full_extent to determine the bounding box needed to pick</span>
+    <span class="c1"># out just the items we&#39;re interested in</span>
+    <span class="n">extent</span> <span class="o">=</span> <span class="n">_full_extent</span><span class="p">(</span><span class="n">mpl_axis</span><span class="p">,</span> <span class="p">[</span><span class="n">mpl_axis</span><span class="p">,</span> <span class="n">mpl_axis</span><span class="o">.</span><span class="n">title</span><span class="p">],</span> <span class="n">pad</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span><span class="o">.</span><span class="n">transformed</span><span class="p">(</span>
+        <span class="n">mpl_axis</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">dpi_scale_trans</span><span class="o">.</span><span class="n">inverted</span><span class="p">(),</span>
+    <span class="p">)</span>
+    <span class="n">mpl_axis</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">out_path</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="n">extent</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="n">dpi</span><span class="p">)</span>
+    <span class="n">_pad_to_square</span><span class="p">(</span><span class="n">out_path</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">mpl_axis</span><span class="o">.</span><span class="n">figure</span></div>
+
+
+
+<div class="viewcode-block" id="_plot_tableau">
+<a class="viewcode-back" href="../../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.html#nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._plot_tableau">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">_plot_tableau</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">out_path</span><span class="p">,</span> <span class="n">dpi</span><span class="p">):</span>
+    <span class="n">tableau_3x3_limit</span> <span class="o">=</span> <span class="mi">9</span>
+    <span class="n">tableau_2x2_limit</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">asp_ratio</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">axes_manager</span><span class="o">.</span><span class="n">signal_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">s</span><span class="o">.</span><span class="n">axes_manager</span><span class="o">.</span><span class="n">signal_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span> <span class="o">*</span> <span class="n">asp_ratio</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">axes_manager</span><span class="o">.</span><span class="n">navigation_size</span> <span class="o">&gt;=</span> <span class="n">tableau_3x3_limit</span><span class="p">:</span>
+        <span class="n">square_n</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="k">elif</span> <span class="n">s</span><span class="o">.</span><span class="n">axes_manager</span><span class="o">.</span><span class="n">navigation_size</span> <span class="o">&gt;=</span> <span class="n">tableau_2x2_limit</span><span class="p">:</span>
+        <span class="n">square_n</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">square_n</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">num_to_plot</span> <span class="o">=</span> <span class="n">square_n</span><span class="o">**</span><span class="mi">2</span>
+    <span class="n">im_list</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">num_to_plot</span>
+    <span class="n">desc</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;\ x\ &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">s</span><span class="o">.</span><span class="n">axes_manager</span><span class="o">.</span><span class="n">navigation_shape</span><span class="p">])</span>
+    <span class="n">s</span><span class="o">.</span><span class="n">unfold_navigation_space</span><span class="p">()</span>
+    <span class="n">chunk_size</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">axes_manager</span><span class="o">.</span><span class="n">navigation_size</span> <span class="o">//</span> <span class="n">num_to_plot</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_to_plot</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">square_n</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">im_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">im_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">inav</span><span class="p">[</span><span class="n">i</span> <span class="o">*</span> <span class="n">chunk_size</span> <span class="p">:</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">chunk_size</span><span class="p">]</span><span class="o">.</span><span class="n">inav</span><span class="p">[</span>
+                <span class="n">chunk_size</span> <span class="o">//</span> <span class="mi">2</span>
+            <span class="p">]</span>
+    <span class="n">axlist</span> <span class="o">=</span> <span class="n">hs_api</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">plot_images</span><span class="p">(</span>
+        <span class="n">im_list</span><span class="p">,</span>
+        <span class="n">colorbar</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">axes_decor</span><span class="o">=</span><span class="s2">&quot;off&quot;</span><span class="p">,</span>
+        <span class="n">tight_layout</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">scalebar</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="n">per_row</span><span class="o">=</span><span class="n">square_n</span><span class="p">,</span>
+        <span class="n">fig</span><span class="o">=</span><span class="n">f</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Make sure scalebar is fully on plot:</span>
+    <span class="n">txt</span> <span class="o">=</span> <span class="n">axlist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">texts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">left_extent</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">txt</span><span class="o">.</span><span class="n">get_window_extent</span><span class="p">()</span><span class="o">.</span><span class="n">transformed</span><span class="p">(</span><span class="n">axlist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">transData</span><span class="o">.</span><span class="n">inverted</span><span class="p">())</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">left_extent</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+        <span class="c1"># Move scalebar text over if it overlaps outside of axis</span>
+        <span class="n">txt</span><span class="o">.</span><span class="n">set_x</span><span class="p">(</span><span class="n">txt</span><span class="o">.</span><span class="n">get_position</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">left_extent</span> <span class="o">*</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">f</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span>
+        <span class="n">textwrap</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">General</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+        <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="o">+</span> <span class="sa">r</span><span class="s2">&quot;$\bf{&quot;</span>
+        <span class="o">+</span> <span class="n">desc</span>
+        <span class="o">+</span> <span class="sa">r</span><span class="s2">&quot;\ Hyperimage}$&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">(</span>
+        <span class="n">rect</span><span class="o">=</span><span class="p">(</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">1</span><span class="p">,</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">texts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="o">.</span><span class="n">get_window_extent</span><span class="p">()</span>
+            <span class="o">.</span><span class="n">transformed</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">transFigure</span><span class="o">.</span><span class="n">inverted</span><span class="p">())</span>
+            <span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">out_path</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="n">dpi</span><span class="p">)</span>
+    <span class="n">_pad_to_square</span><span class="p">(</span><span class="n">out_path</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">f</span></div>
+
+
+
+<div class="viewcode-block" id="_plot_complex_signal">
+<a class="viewcode-back" href="../../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.html#nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._plot_complex_signal">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">_plot_complex_signal</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">out_path</span><span class="p">,</span> <span class="n">dpi</span><span class="p">):</span>
+    <span class="c1"># in tests, setting minimum to a percentile around 66% looks good</span>
+    <span class="n">s</span><span class="o">.</span><span class="n">amplitude</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+        <span class="n">interpolation</span><span class="o">=</span><span class="s2">&quot;bilinear&quot;</span><span class="p">,</span>
+        <span class="n">norm</span><span class="o">=</span><span class="s2">&quot;log&quot;</span><span class="p">,</span>
+        <span class="n">vmin</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanpercentile</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">amplitude</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="mi">66</span><span class="p">)),</span>
+        <span class="n">colorbar</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">axes_off</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span>
+    <span class="n">mpl_axis</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+    <span class="n">_set_title</span><span class="p">(</span><span class="n">mpl_axis</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">General</span><span class="o">.</span><span class="n">title</span><span class="p">)</span>
+    <span class="n">extent</span> <span class="o">=</span> <span class="n">_full_extent</span><span class="p">(</span><span class="n">mpl_axis</span><span class="p">,</span> <span class="p">[</span><span class="n">mpl_axis</span><span class="p">,</span> <span class="n">mpl_axis</span><span class="o">.</span><span class="n">title</span><span class="p">],</span> <span class="n">pad</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span><span class="o">.</span><span class="n">transformed</span><span class="p">(</span>
+        <span class="n">mpl_axis</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">dpi_scale_trans</span><span class="o">.</span><span class="n">inverted</span><span class="p">(),</span>
+    <span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">out_path</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="n">dpi</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="n">extent</span><span class="p">)</span>
+    <span class="n">_pad_to_square</span><span class="p">(</span><span class="n">out_path</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">f</span></div>
+
+
+
+<div class="viewcode-block" id="_plot_axes_manager">
+<a class="viewcode-back" href="../../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.html#nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._plot_axes_manager">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">_plot_axes_manager</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">out_path</span><span class="p">,</span> <span class="n">dpi</span><span class="p">):</span>
+    <span class="n">f</span><span class="p">,</span> <span class="n">mpl_axis</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+    <span class="n">mpl_axis</span><span class="o">.</span><span class="n">set_position</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+    <span class="n">mpl_axis</span><span class="o">.</span><span class="n">set_axis_off</span><span class="p">()</span>
+
+    <span class="c1"># Remove axes_manager text</span>
+    <span class="n">ax_m</span> <span class="o">=</span> <span class="nb">repr</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">axes_manager</span><span class="p">)</span>
+    <span class="n">ax_m</span> <span class="o">=</span> <span class="n">ax_m</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">ax_m</span> <span class="o">=</span> <span class="n">ax_m</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="n">ax_m</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ax_m</span><span class="p">)</span>
+
+    <span class="n">mpl_axis</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">0.03</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">General</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s2">&quot;bold&quot;</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s2">&quot;top&quot;</span><span class="p">)</span>
+    <span class="n">mpl_axis</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">0.03</span><span class="p">,</span> <span class="mf">0.85</span><span class="p">,</span> <span class="s2">&quot;Could not generate preview image&quot;</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s2">&quot;top&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">)</span>
+    <span class="n">mpl_axis</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">0.03</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="s2">&quot;Axes information:&quot;</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s2">&quot;top&quot;</span><span class="p">,</span> <span class="n">fontstyle</span><span class="o">=</span><span class="s2">&quot;italic&quot;</span><span class="p">)</span>
+    <span class="n">mpl_axis</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">0.03</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">,</span> <span class="n">ax_m</span><span class="p">,</span> <span class="n">fontfamily</span><span class="o">=</span><span class="s2">&quot;monospace&quot;</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s2">&quot;top&quot;</span><span class="p">)</span>
+
+    <span class="n">extent</span> <span class="o">=</span> <span class="n">_full_extent</span><span class="p">(</span><span class="n">mpl_axis</span><span class="p">,</span> <span class="n">mpl_axis</span><span class="o">.</span><span class="n">texts</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span><span class="o">.</span><span class="n">transformed</span><span class="p">(</span>
+        <span class="n">mpl_axis</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">dpi_scale_trans</span><span class="o">.</span><span class="n">inverted</span><span class="p">(),</span>
+    <span class="p">)</span>
+
+    <span class="n">f</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">out_path</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="n">extent</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="n">dpi</span><span class="p">)</span>
+    <span class="n">_pad_to_square</span><span class="p">(</span><span class="n">out_path</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">f</span></div>
+
+
+
+<div class="viewcode-block" id="_plot_1d_signal">
+<a class="viewcode-back" href="../../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.html#nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._plot_1d_signal">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">_plot_1d_signal</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">out_path</span><span class="p">,</span> <span class="n">dpi</span><span class="p">):</span>
+    <span class="c1"># signal is single spectrum</span>
+    <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">axes_manager</span><span class="o">.</span><span class="n">navigation_dimension</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_plot_spectrum</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">out_path</span><span class="p">,</span> <span class="n">dpi</span><span class="p">)</span>
+
+    <span class="c1"># signal is 1D linescan</span>
+    <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">axes_manager</span><span class="o">.</span><span class="n">navigation_dimension</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_plot_linescan</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">out_path</span><span class="p">,</span> <span class="n">dpi</span><span class="p">)</span>
+
+    <span class="c1"># otherwise we have spectrum image:</span>
+    <span class="k">return</span> <span class="n">_plot_si</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">out_path</span><span class="p">,</span> <span class="n">dpi</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="_plot_2d_signal">
+<a class="viewcode-back" href="../../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.html#nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._plot_2d_signal">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">_plot_2d_signal</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">out_path</span><span class="p">,</span> <span class="n">dpi</span><span class="p">):</span>
+    <span class="c1"># signal is single image</span>
+    <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">axes_manager</span><span class="o">.</span><span class="n">navigation_dimension</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_plot_single_image</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">out_path</span><span class="p">,</span> <span class="n">dpi</span><span class="p">)</span>
+
+    <span class="c1"># we&#39;re looking at an image stack</span>
+    <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">axes_manager</span><span class="o">.</span><span class="n">navigation_dimension</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_plot_image_stack</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">out_path</span><span class="p">,</span> <span class="n">dpi</span><span class="p">)</span>
+
+    <span class="c1"># This is a 4D-STEM type image, so display as tableau</span>
+    <span class="k">return</span> <span class="n">_plot_tableau</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">out_path</span><span class="p">,</span> <span class="n">dpi</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="sig_to_thumbnail">
+<a class="viewcode-back" href="../../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.html#nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.sig_to_thumbnail">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">sig_to_thumbnail</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">out_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">dpi</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">92</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate a preview thumbnail from an arbitrary HyperSpy signal.</span>
+
+<span class="sd">    For a 2D signal, the signal from the first navigation position is used (most</span>
+<span class="sd">    likely the top- and left-most position. For a 1D signal (*i.e.* a</span>
+<span class="sd">    spectrum or spectrum image), the output depends on the</span>
+<span class="sd">    number of navigation dimensions:</span>
+
+<span class="sd">    - 0: Image of spectrum</span>
+<span class="sd">    - 1: Image of linescan (*a la* DigitalMicrograph)</span>
+<span class="sd">    - 2: Image of spectra sampled from navigation space</span>
+<span class="sd">    - 2+: As for 2 dimensions</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    s : :py:class:`hyperspy.signal.BaseSignal` (or subclass)</span>
+<span class="sd">        The HyperSpy signal for which a thumbnail should be generated</span>
+<span class="sd">    out_path</span>
+<span class="sd">        A path to the desired thumbnail filename. All formats supported by</span>
+<span class="sd">        :py:meth:`~matplotlib.figure.Figure.savefig` can be used.</span>
+<span class="sd">    dpi : int</span>
+<span class="sd">        The &quot;dots per inch&quot; resolution for the outputted figure</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    f : :py:class:`matplotlib.figure.Figure`</span>
+<span class="sd">        Handle to a matplotlib Figure</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    This method heavily utilizes HyperSpy&#39;s existing plotting functions to</span>
+<span class="sd">    figure out how to best display the image</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># close all currently open plots to ensure we don&#39;t leave a mess behind</span>
+    <span class="c1"># in memory</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="s2">&quot;all&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s2">&quot;image.cmap&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;gray&quot;</span>
+
+    <span class="c1"># Set matplotlib backend to avoid GUI issues</span>
+    <span class="n">mpl</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s2">&quot;Agg&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Processing 1D signals (spectra, spectrum images, etc)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">hs_api</span><span class="o">.</span><span class="n">signals</span><span class="o">.</span><span class="n">Signal1D</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_plot_1d_signal</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">out_path</span><span class="p">,</span> <span class="n">dpi</span><span class="p">)</span>
+
+    <span class="c1"># Signal is an image of some sort, so we&#39;ll use hs.plot.plot_images</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">hs_api</span><span class="o">.</span><span class="n">signals</span><span class="o">.</span><span class="n">Signal2D</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_plot_2d_signal</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">out_path</span><span class="p">,</span> <span class="n">dpi</span><span class="p">)</span>
+
+    <span class="c1"># Complex image, so plot power spectrum (like an FFT)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">hs_api</span><span class="o">.</span><span class="n">signals</span><span class="o">.</span><span class="n">ComplexSignal2D</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_plot_complex_signal</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">out_path</span><span class="p">,</span> <span class="n">dpi</span><span class="p">)</span>
+
+    <span class="c1"># if we have a different type of signal, just output a graphical</span>
+    <span class="c1"># representation of the axis manager</span>
+    <span class="k">return</span> <span class="n">_plot_axes_manager</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">out_path</span><span class="p">,</span> <span class="n">dpi</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="HyperSpyPreviewGenerator">
+<a class="viewcode-back" href="../../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.html#nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.HyperSpyPreviewGenerator">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">HyperSpyPreviewGenerator</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Preview generator for files that can be loaded with HyperSpy.</span>
+
+<span class="sd">    This generator handles preview generation for scientific data files</span>
+<span class="sd">    that HyperSpy can load, including dm3, dm4, ser, and other formats.</span>
+<span class="sd">    It uses the sig_to_thumbnail function to create previews.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;hyperspy_preview&quot;</span>
+    <span class="n">priority</span> <span class="o">=</span> <span class="mi">100</span>
+
+    <span class="c1"># File extensions that HyperSpy can handle and we want to preview</span>
+    <span class="n">SUPPORTED_EXTENSIONS</span><span class="p">:</span> <span class="n">ClassVar</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;dm3&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;dm4&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ser&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;emi&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+
+<div class="viewcode-block" id="HyperSpyPreviewGenerator.supports">
+<a class="viewcode-back" href="../../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.html#nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.HyperSpyPreviewGenerator.supports">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">supports</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ExtractionContext</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check if this generator supports the given file.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        context</span>
+<span class="sd">            The extraction context containing file information</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        bool</span>
+<span class="sd">            True if file extension is supported by HyperSpy</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">extension</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">file_path</span><span class="o">.</span><span class="n">suffix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">extension</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">SUPPORTED_EXTENSIONS</span></div>
+
+
+<div class="viewcode-block" id="HyperSpyPreviewGenerator.generate">
+<a class="viewcode-back" href="../../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.html#nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.HyperSpyPreviewGenerator.generate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">generate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ExtractionContext</span><span class="p">,</span> <span class="n">output_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate a thumbnail preview using HyperSpy.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        context</span>
+<span class="sd">            The extraction context containing file information</span>
+<span class="sd">        output_path</span>
+<span class="sd">            Path where the preview image should be saved</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        bool</span>
+<span class="sd">            True if preview was successfully generated, False otherwise</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">hyperspy.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">load</span>  <span class="c1"># noqa: PLC0415</span>
+
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Generating HyperSpy preview for: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">context</span><span class="o">.</span><span class="n">file_path</span><span class="p">)</span>
+
+            <span class="c1"># Load the signal</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">file_path</span><span class="p">),</span> <span class="n">lazy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="c1"># Generate the thumbnail using the local function</span>
+            <span class="n">sig_to_thumbnail</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">output_path</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">92</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">output_path</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s2">&quot;Failed to generate HyperSpy preview for </span><span class="si">%s</span><span class="s2">: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="n">context</span><span class="o">.</span><span class="n">file_path</span><span class="p">,</span>
+                <span class="n">e</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+</div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2025, datasophos, LLC.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

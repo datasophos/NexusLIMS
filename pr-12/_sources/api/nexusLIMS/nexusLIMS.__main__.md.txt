@@ -1,0 +1,8 @@
+# {py:mod}`nexusLIMS.__main__`
+
+```{py:module} nexusLIMS.__main__
+```
+
+```{autodoc2-docstring} nexusLIMS.__main__
+:allowtitles:
+```
