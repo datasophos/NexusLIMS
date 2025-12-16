@@ -175,9 +175,6 @@ log_cli = false
 log_cli_level = "DEBUG"
 # Test discovery paths - unit tests run by default, integration tests require explicit -m integration
 testpaths = ["tests/unit"]
-# Exclude integration tests by default (require Docker services)
-# To run integration tests: pytest -m integration tests/integration/
-addopts = "-m 'not integration'"
 # Python files and test functions/classes pattern
 python_files = ["test_*.py"]
 python_classes = ["Test*"]

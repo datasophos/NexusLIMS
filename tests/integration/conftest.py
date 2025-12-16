@@ -92,7 +92,21 @@ def pytest_configure(config):
     # Create a temporary database file for validation
     db_path = TEST_DATA_DIR / "integration_test.db"
     if "NX_DB_PATH" not in os.environ:
-        db_path.touch(exist_ok=True)
+        # Initialize database with schema if it doesn't exist
+        if not db_path.exists():
+            import sqlite3
+
+            schema_script = (
+                Path(__file__).parent.parent.parent
+                / "nexusLIMS"
+                / "db"
+                / "dev"
+                / "NexusLIMS_db_creation_script.sql"
+            )
+            conn = sqlite3.connect(str(db_path))
+            with schema_script.open() as f:
+                conn.executescript(f.read())
+            conn.close()
         os.environ["NX_DB_PATH"] = str(db_path)
 
     # Set required CDCS environment variables to dummy values
@@ -294,6 +308,25 @@ def docker_services(request, host_fileserver):  # noqa: PLR0912, PLR0915
             shutil.rmtree(test_dir)
         test_dir.mkdir(parents=True, exist_ok=True)
         print(f"[+] Created {test_dir}")
+
+    # Initialize default database for Settings validation
+    # (pytest_configure creates an empty file, but we need the schema)
+    print("[*] Initializing default test database...")
+    import sqlite3
+
+    db_path = TEST_DATA_DIR / "integration_test.db"
+    schema_script = (
+        Path(__file__).parent.parent.parent
+        / "nexusLIMS"
+        / "db"
+        / "dev"
+        / "NexusLIMS_db_creation_script.sql"
+    )
+    conn = sqlite3.connect(str(db_path))
+    with schema_script.open() as f:
+        conn.executescript(f.read())
+    conn.close()
+    print(f"[+] Initialized {db_path}")
 
     # Check if services are already running
     max_wait = 1  # Short timeout for checking existing services
