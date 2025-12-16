@@ -2,7 +2,7 @@ name: Build Test Docker Images
 
 on:
   push:
-    branches: [main, feature/integration_tests]
+    branches: [main]
     paths:
       - "tests/integration/docker/**"
       - ".github/workflows/build-test-images.yml"
@@ -50,7 +50,7 @@ jobs:
           tags: |
             type=ref,event=branch
             type=ref,event=pr
-            type=sha,prefix={{branch}}-
+            type=sha,prefix=sha-
             type=raw,value=latest,enable={{is_default_branch}}
 
       - name: Build and push NEMO image
@@ -94,7 +94,7 @@ jobs:
           tags: |
             type=ref,event=branch
             type=ref,event=pr
-            type=sha,prefix={{branch}}-
+            type=sha,prefix=sha-
             type=raw,value=latest,enable={{is_default_branch}}
 
       - name: Build and push CDCS image

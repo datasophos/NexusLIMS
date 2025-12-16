@@ -62,28 +62,14 @@ def pytest_configure(config):
     """
     Pytest hook that runs before test collection.
 
-    This hook ensures that the directories expected by the root .env file
-    exist before any module imports occur. This is necessary because some
-    NexusLIMS modules access settings at import time, which triggers
-    Pydantic validation of directory paths.
+    CRITICAL: This hook must set up the required environment variables
+    BEFORE any nexusLIMS modules are imported. The Settings class validates
+    path variables at import time, so we must ensure they're set here.
 
-    The root .env file typically points to /tmp/nx_instrument_data and
-    /tmp/nx_data for development, but integration tests use different paths.
-    We create both sets of directories to ensure tests can run regardless
-    of which .env file is loaded.
+    We use the integration test directories and set up minimal required
+    environment variables to allow imports to succeed.
     """
-    from dotenv import dotenv_values
-
-    # Read directories from root .env file (for import-time validation)
-    root_env_path = Path(__file__).parents[2] / ".env"
-    root_env_dirs = []
-
-    if root_env_path.exists():
-        env_vars = dotenv_values(root_env_path)
-        if "NX_INSTRUMENT_DATA_PATH" in env_vars:
-            root_env_dirs.append(Path(env_vars["NX_INSTRUMENT_DATA_PATH"]))
-        if "NX_DATA_PATH" in env_vars:
-            root_env_dirs.append(Path(env_vars["NX_DATA_PATH"]))
+    import os
 
     # Create test directories (for actual test execution)
     test_dirs = [
@@ -92,8 +78,38 @@ def pytest_configure(config):
     ]
 
     # Ensure all directories exist
-    for dir_path in root_env_dirs + test_dirs:
+    for dir_path in test_dirs:
         dir_path.mkdir(parents=True, exist_ok=True)
+
+    # Set up environment variables BEFORE any nexusLIMS imports
+    # These are the minimum required for Settings validation
+    if "NX_INSTRUMENT_DATA_PATH" not in os.environ:
+        os.environ["NX_INSTRUMENT_DATA_PATH"] = str(TEST_INSTRUMENT_DATA_DIR)
+
+    if "NX_DATA_PATH" not in os.environ:
+        os.environ["NX_DATA_PATH"] = str(TEST_DATA_DIR)
+
+    # Create a temporary database file for validation
+    db_path = TEST_DATA_DIR / "integration_test.db"
+    if "NX_DB_PATH" not in os.environ:
+        db_path.touch(exist_ok=True)
+        os.environ["NX_DB_PATH"] = str(db_path)
+
+    # Set required CDCS environment variables to dummy values
+    # (actual values will be set per-test via fixtures)
+    if "NX_CDCS_URL" not in os.environ:
+        os.environ["NX_CDCS_URL"] = "https://cdcs.example.com"
+
+    if "NX_CDCS_USER" not in os.environ:
+        os.environ["NX_CDCS_USER"] = "test_user"
+
+    if "NX_CDCS_PASS" not in os.environ:
+        os.environ["NX_CDCS_PASS"] = "test_password"
+
+    if "NX_CERT_BUNDLE" not in os.environ:
+        os.environ["NX_CERT_BUNDLE"] = (
+            "-----BEGIN CERTIFICATE-----\nDUMMY\n-----END CERTIFICATE-----"
+        )
 
 
 # ============================================================================

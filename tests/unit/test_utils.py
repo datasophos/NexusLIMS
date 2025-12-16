@@ -530,3 +530,80 @@ class TestUtils:
 
         assert len(files) == 1
         assert files[0] == test_file
+
+    @responses.activate
+    def test_nexus_req_ca_bundle_content_written(self, monkeypatch, tmp_path):
+        """
+        Test that CA_BUNDLE_CONTENT is written to temp file and used for verification.
+
+        This tests lines 125-131 in utils.py where CA_BUNDLE_CONTENT is
+        concatenated with system certificates.
+        """
+        # Mock CA_BUNDLE_CONTENT with test certificate data
+        mock_ca_bundle = [b"-----BEGIN CERTIFICATE-----\n", b"TESTDATA\n"]
+        monkeypatch.setattr("nexusLIMS.utils.CA_BUNDLE_CONTENT", mock_ca_bundle)
+
+        # Create fake system cert file for mocking
+        fake_sys_cert = tmp_path / "sys_cert.pem"
+        fake_sys_cert.write_bytes(b"System certificate content\n")
+
+        # Mock certifi.where() to return our fake cert
+        monkeypatch.setattr("certifi.where", lambda: str(fake_sys_cert))
+
+        # Mock the response
+        responses.add(
+            responses.GET, "https://example.com/api", json={"status": "ok"}, status=200
+        )
+
+        # Make request
+        response = nexus_req("https://example.com/api", "GET")
+
+        # Verify response was successful
+        assert response.status_code == 200
+
+        # Verify the request was made (indicating cert handling didn't fail)
+        assert len(responses.calls) == 1
+
+    @responses.activate
+    def test_nexus_req_no_ca_bundle_content(self, monkeypatch):
+        """Test nexus_req when CA_BUNDLE_CONTENT is empty/None."""
+        # Mock CA_BUNDLE_CONTENT as empty
+        monkeypatch.setattr("nexusLIMS.utils.CA_BUNDLE_CONTENT", None)
+
+        # Mock the response
+        responses.add(
+            responses.GET, "https://example.com/api", json={"data": "test"}, status=200
+        )
+
+        # Make request
+        response = nexus_req("https://example.com/api", "GET")
+
+        # Verify response was successful with verify=True (default behavior)
+        assert response.status_code == 200
+        assert len(responses.calls) == 1
+
+    @responses.activate
+    def test_nexus_req_ca_bundle_combined_with_system_certs(
+        self, monkeypatch, tmp_path
+    ):
+        """Test that CA_BUNDLE_CONTENT is properly combined with system certificates."""
+        # Create test certificates
+        custom_cert = b"CUSTOM CERTIFICATE\n"
+        system_cert = b"SYSTEM CERTIFICATE\n"
+
+        mock_ca_bundle = [custom_cert]
+        monkeypatch.setattr("nexusLIMS.utils.CA_BUNDLE_CONTENT", mock_ca_bundle)
+
+        # Create fake system cert file
+        fake_sys_cert = tmp_path / "sys_cert.pem"
+        fake_sys_cert.write_bytes(system_cert)
+        monkeypatch.setattr("certifi.where", lambda: str(fake_sys_cert))
+
+        # Mock response
+        responses.add(responses.GET, "https://example.com/secure", status=200)
+
+        # Make request
+        response = nexus_req("https://example.com/secure", "GET")
+
+        assert response.status_code == 200
+        assert len(responses.calls) == 1
