@@ -1,3 +1,22 @@
+v2.1.0 (2025-12-16)
+
+# New features
+
+- Implemented instrument profile system for site-specific metadata customization through profiles that can add static metadata, transform fields, and inject custom parsers. Profiles can be built-in (shipped with the package) or local (loaded from ``NX_LOCAL_PROFILES_PATH`` environment variable). (`#9 <https://github.com/datasophos/NexusLIMS/issues/9>`_)
+- Preview generation has been migrated to a plugin-based system with separate image and text preview generators. (`#9 <https://github.com/datasophos/NexusLIMS/issues/9>`_)
+- Addition of the plugin-based extractor system; All metadata extractors have been refactored into a plugin-based architecture with auto-discovery, enabling easier addition of new file format support without modifying core code. (`#9 <https://github.com/datasophos/NexusLIMS/issues/9>`_)
+- Comprehensive Docker-based integration test suite providing end-to-end validation of NexusLIMS workflows. The new test suite includes NEMO and CDCS Docker services, tests for record building, file clustering, metadata extraction, CLI operations, email notifications, multi-instance NEMO support, and extensive error handling scenarios. Includes automated CI/CD integration with GitHub Actions and pre-built Docker images in GitHub Container Registry. (`#10 <https://github.com/datasophos/NexusLIMS/issues/10>`_)
+
+# Bug fixes
+
+- Fixed issue where mixed-case or upper-case extensions were not being properly assigned to the correct extractors. (`#4 <https://github.com/datasophos/NexusLIMS/issues/4>`_)
+- Fixed version switcher to properly display released versions. The switcher now correctly extracts and displays versioned releases (e.g., 2.0, 1.5) from documentation directories and matches them with the proper major.minor version format. (`#5 <https://github.com/datasophos/NexusLIMS/issues/5>`_)
+
+# Miscellaneous/Development changes
+
+- Split documentation deployment into separate GitHub Actions workflows for improved modularity and independent execution of docs builds from test runs. (`#8 <https://github.com/datasophos/NexusLIMS/issues/8>`_)
+
+
 # v2.0.0 (2025-12-06)
 
 ## New features

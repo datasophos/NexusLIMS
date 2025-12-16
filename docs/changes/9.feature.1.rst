@@ -1,1 +1,0 @@
-Addition of the plugin-based extractor system; All metadata extractors have been refactored into a plugin-based architecture with auto-discovery, enabling easier addition of new file format support without modifying core code.
