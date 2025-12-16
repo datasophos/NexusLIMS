@@ -1,0 +1,1 @@
+Fixed version switcher to properly display released versions. The switcher now correctly extracts and displays versioned releases (e.g., 2.0, 1.5) from documentation directories and matches them with the proper major.minor version format.
