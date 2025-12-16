@@ -541,7 +541,8 @@ def _get_find_command():
     if not _is_gnu_find(find_command):
         import platform  # noqa: PLC0415
 
-        if platform.system() == "Darwin":  # macOS
+        if platform.system() == "Darwin":  # pragma: no cover
+            # macOS
             if _which("gfind"):
                 find_command = "gfind"
                 logger.info("BSD find detected, using gfind (GNU find) instead")
