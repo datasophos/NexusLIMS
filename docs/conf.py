@@ -13,10 +13,20 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
+import logging
 import os
 import sys
+import warnings
 from datetime import datetime
 from pathlib import Path
+
+# Suppress the specific database connection warning before any imports
+# This filter will catch the warning at the source before it's logged
+logging.basicConfig()
+logging.getLogger("nexusLIMS.instruments").addFilter(
+    lambda record: "Could not connect to database or retrieve instruments"
+    not in record.getMessage()
+)
 
 # Add custom extensions directory to path
 sys.path.insert(0, os.path.abspath("_ext"))
@@ -218,6 +228,7 @@ exclude_patterns = [
     ".DS_Store",
     "build",
     "changes/*.rst",
+    "changes/*.md",
     "README.rst",
     "dev_scripts",
     "_ext/README.md",
@@ -338,6 +349,7 @@ def skip(app, what, name, obj, would_skip, options):
 def setup(app):
     # app.connect("autodoc-skip-member", skip)
     app.connect("builder-inited", autodoc_mock_settings)
+
     # autodoc2 handles API doc generation automatically, no need for run_apidoc
     # app.connect('builder-inited', build_plantuml)
     print(

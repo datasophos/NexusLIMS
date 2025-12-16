@@ -164,7 +164,11 @@ class XSDDocumenter:
         choice = complex_type.find("xs:choice", namespaces=self.XS_NS)
         all_elem = complex_type.find("xs:all", namespaces=self.XS_NS)
 
-        container = sequence or choice or all_elem
+        container = (
+            sequence
+            if sequence is not None
+            else (choice if choice is not None else all_elem)
+        )
 
         if container is not None:
             elements = container.findall("xs:element", namespaces=self.XS_NS)
@@ -371,7 +375,11 @@ class XSDDocumenter:
             choice = ct.find("xs:choice", namespaces=self.XS_NS)
             all_elem = ct.find("xs:all", namespaces=self.XS_NS)
 
-            container = sequence or choice or all_elem
+            container = (
+                sequence
+                if sequence is not None
+                else (choice if choice is not None else all_elem)
+            )
             if container is not None:
                 child_elements = container.findall("xs:element", namespaces=self.XS_NS)
 
