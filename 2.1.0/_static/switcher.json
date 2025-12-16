@@ -1,24 +1,13 @@
 [
   {
-    "name": "Stable",
-    "version": "stable",
-    "url": "https://datasophos.github.io/NexusLIMS/stable/",
-    "preferred": true
+    "name": "v2.1.0",
+    "version": "2.1.0",
+    "url": "https://datasophos.github.io/NexusLIMS/2.1.0/"
   },
   {
-    "name": "879f47c (latest)",
+    "name": "Latest (394c217)",
     "version": "dev",
     "url": "https://datasophos.github.io/NexusLIMS/latest/"
-  },
-  {
-    "name": "v2.1",
-    "version": "2.1",
-    "url": "https://datasophos.github.io/NexusLIMS/2.1/"
-  },
-  {
-    "name": "v2.0",
-    "version": "2.0",
-    "url": "https://datasophos.github.io/NexusLIMS/2.0/"
   },
   {
     "name": "Upstream NIST docs",
