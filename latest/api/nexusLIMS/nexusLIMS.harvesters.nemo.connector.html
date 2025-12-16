@@ -33,7 +33,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/autodoc_pydantic.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=51baea2f" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=af02a5b6" />
   
   <!-- So that users can add custom icons -->
   <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -49,7 +49,7 @@
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.1.0a0';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.1';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
@@ -61,8 +61,8 @@
     <link rel="prev" title="nexusLIMS.harvesters.nemo.exceptions" href="nexusLIMS.harvesters.nemo.exceptions.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.1.0a0" />
-    <meta name="docbuild:last-update" content="Dec, 10, 2025"/>
+  <meta name="docsearch:version" content="2.1" />
+    <meta name="docbuild:last-update" content="Dec, 16, 2025"/>
   </head>
   
   
@@ -612,6 +612,18 @@ actually failing.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="nexusLIMS.harvesters.nemo.connector.NemoConnector.__eq__">
+<span class="sig-name descname"><span class="pre">__eq__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/harvesters/nemo/connector.html#NemoConnector.__eq__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.harvesters.nemo.connector.NemoConnector.__eq__" title="Link to this definition">#</a></dt>
+<dd><p>Compare two NemoConnector instances based on their config.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nexusLIMS.harvesters.nemo.connector.NemoConnector.__hash__">
+<span class="sig-name descname"><span class="pre">__hash__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/harvesters/nemo/connector.html#NemoConnector.__hash__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.harvesters.nemo.connector.NemoConnector.__hash__" title="Link to this definition">#</a></dt>
+<dd><p>Return hash of NemoConnector based on its config.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="nexusLIMS.harvesters.nemo.connector.NemoConnector.strftime">
 <span class="sig-name descname"><span class="pre">strftime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date_dt</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/harvesters/nemo/connector.html#NemoConnector.strftime"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.harvesters.nemo.connector.NemoConnector.strftime" title="Link to this definition">#</a></dt>
 <dd><p>Convert datetime to appropriate string format for this connector.</p>
@@ -954,6 +966,8 @@ The API response, formatted as a list of dict objects</p>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.harvesters.nemo.connector.NemoConnector.users_by_username"><code class="docutils literal notranslate"><span class="pre">NemoConnector.users_by_username</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.harvesters.nemo.connector.NemoConnector.projects"><code class="docutils literal notranslate"><span class="pre">NemoConnector.projects</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.harvesters.nemo.connector.NemoConnector.__repr__"><code class="docutils literal notranslate"><span class="pre">NemoConnector.__repr__()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.harvesters.nemo.connector.NemoConnector.__eq__"><code class="docutils literal notranslate"><span class="pre">NemoConnector.__eq__()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.harvesters.nemo.connector.NemoConnector.__hash__"><code class="docutils literal notranslate"><span class="pre">NemoConnector.__hash__()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.harvesters.nemo.connector.NemoConnector.strftime"><code class="docutils literal notranslate"><span class="pre">NemoConnector.strftime()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.harvesters.nemo.connector.NemoConnector.strptime"><code class="docutils literal notranslate"><span class="pre">NemoConnector.strptime()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.harvesters.nemo.connector.NemoConnector.get_tools"><code class="docutils literal notranslate"><span class="pre">NemoConnector.get_tools()</span></code></a></li>

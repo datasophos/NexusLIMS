@@ -33,7 +33,7 @@
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/autodoc_pydantic.css" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=51baea2f" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=af02a5b6" />
   
   <!-- So that users can add custom icons -->
   <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -49,7 +49,7 @@
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.1.0a0';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.1';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
@@ -61,8 +61,8 @@
     <link rel="prev" title="Developer Guide" href="dev_guide.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.1.0a0" />
-    <meta name="docbuild:last-update" content="Dec, 10, 2025"/>
+  <meta name="docsearch:version" content="2.1" />
+    <meta name="docbuild:last-update" content="Dec, 16, 2025"/>
   </head>
   
   
@@ -413,6 +413,7 @@
 <li class="toctree-l1"><a class="reference internal" href="uv_migration.html">Migration from Poetry to uv</a></li>
 <li class="toctree-l1"><a class="reference internal" href="database.html">NexusLIMS database</a></li>
 <li class="toctree-l1"><a class="reference internal" href="schema_documentation.html">XML Schema Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing/integration-tests.html">Integration Testing Guide</a></li>
 </ul>
 </div>
 </nav></div>
@@ -574,25 +575,85 @@ the environment using the <code class="docutils literal notranslate"><span class
 repository. This will activate the virtual environment that ensures all commands will have
 access to the installed packages and environment variables set appropriately.</p>
 </section>
+<section id="pre-commit-hooks">
+<h2>Pre-commit Hooks<a class="headerlink" href="#pre-commit-hooks" title="Link to this heading">#</a></h2>
+<p>To ensure code quality and consistency, NexusLIMS uses <a class="reference external" href="https://pre-commit.com/">pre-commit</a> hooks that automatically run linting checks before each commit. This prevents commits with linting errors from being pushed to the repository.</p>
+<section id="installing-pre-commit-hooks">
+<h3>Installing Pre-commit Hooks<a class="headerlink" href="#installing-pre-commit-hooks" title="Link to this heading">#</a></h3>
+<p>Pre-commit is included as a dev dependency, so it’s already installed when you run <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">sync</span> <span class="pre">--extra</span> <span class="pre">dev</span></code>. To set up the git hooks:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>uv<span class="w"> </span>run<span class="w"> </span>pre-commit<span class="w"> </span>install
+</pre></div>
+</div>
+<p>From now on, linting checks will run automatically whenever you attempt to commit code. If linting errors are found, the commit will be blocked until you fix them.</p>
+</section>
+<section id="running-pre-commit-manually">
+<h3>Running Pre-commit Manually<a class="headerlink" href="#running-pre-commit-manually" title="Link to this heading">#</a></h3>
+<p>To run linting checks on all files without committing:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>uv<span class="w"> </span>run<span class="w"> </span>pre-commit<span class="w"> </span>run<span class="w"> </span>--all-files
+</pre></div>
+</div>
+<p>To run checks on specific files:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>uv<span class="w"> </span>run<span class="w"> </span>pre-commit<span class="w"> </span>run<span class="w"> </span>--files<span class="w"> </span>&lt;file1&gt;<span class="w"> </span>&lt;file2&gt;
+</pre></div>
+</div>
+</section>
+<section id="bypassing-pre-commit-not-recommended">
+<h3>Bypassing Pre-commit (Not Recommended)<a class="headerlink" href="#bypassing-pre-commit-not-recommended" title="Link to this heading">#</a></h3>
+<p>If you need to bypass the pre-commit hooks in exceptional cases:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>git<span class="w"> </span>commit<span class="w"> </span>--no-verify
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Only use <code class="docutils literal notranslate"><span class="pre">--no-verify</span></code> in exceptional cases. Pre-commit hooks exist to maintain code quality standards across the project.</p>
+</div>
+</section>
+</section>
 <section id="testing-and-documentation">
 <h2>Testing and Documentation<a class="headerlink" href="#testing-and-documentation" title="Link to this heading">#</a></h2>
-<p>To run the complete test suite, use the provided shell script:</p>
+<section id="unit-testing">
+<h3>Unit Testing<a class="headerlink" href="#unit-testing" title="Link to this heading">#</a></h3>
+<p>To run the complete unit test suite, use the provided shell script:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>./scripts/run_tests.sh
 </pre></div>
 </div>
 <p>This will run all tests with coverage reporting. To run specific tests:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>pytest<span class="w"> </span>tests/test_extractors.py
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>tests/test_extractors.py
 </pre></div>
 </div>
+<p>To run a specific test:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>tests/test_extractors.py::TestClassName::test_method_name
+</pre></div>
+</div>
+<p>To generate matplotlib baseline figures for image comparison tests, run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>./scripts/generate_mpl_baseline.sh
+</pre></div>
+</div>
+</section>
+<section id="integration-testing">
+<h3>Integration Testing<a class="headerlink" href="#integration-testing" title="Link to this heading">#</a></h3>
+<p>Integration tests validate end-to-end workflows using real Docker services (NEMO, CDCS, PostgreSQL, etc.) instead of mocks. These tests ensure the complete system works together correctly.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># run unit and integration tests together using the included script (requires Docker)</span>
+$<span class="w"> </span>./scripts/run_tests.sh<span class="w"> </span>--integration
+
+<span class="c1"># Run integration tests (requires Docker)</span>
+$<span class="w"> </span>uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>tests/integration/<span class="w"> </span>-v<span class="w"> </span>-m<span class="w"> </span>integration
+
+<span class="c1"># Run with coverage</span>
+$<span class="w"> </span>uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>tests/integration/<span class="w"> </span>-v<span class="w"> </span>-m<span class="w"> </span>integration<span class="w"> </span>--cov<span class="o">=</span>nexusLIMS
+</pre></div>
+</div>
+<p>For detailed information about integration testing, setup, architecture, and best practices, see the <a class="reference internal" href="testing/integration-tests.html"><span class="doc">Integration Testing Guide</span></a>.</p>
+<p><strong>Note:</strong> Integration tests require Docker and Docker Compose to be installed and running. Unit tests do not require Docker and can be run independently.</p>
+</section>
+<section id="documentation">
+<h3>Documentation<a class="headerlink" href="#documentation" title="Link to this heading">#</a></h3>
 <p>To build the documentation for the project, run:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>./scripts/build_docs.sh
 </pre></div>
 </div>
-<p>The documentation should then be present in the <code class="docutils literal notranslate"><span class="pre">./_build/</span></code> directory.</p>
-<p>To generate matplotlib baseline figures for the tests, run:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>./scripts/generate_mpl_baseline.sh
-</pre></div>
-</div>
+<p>The documentation will then be present in the <code class="docutils literal notranslate"><span class="pre">./_build/</span></code> directory.</p>
+</section>
 </section>
 <section id="building-new-records">
 <h2>Building new records<a class="headerlink" href="#building-new-records" title="Link to this heading">#</a></h2>
@@ -999,7 +1060,18 @@ git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation">Installation</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-up-the-environment">Setting up the environment</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-into-the-environment">Getting into the environment</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#testing-and-documentation">Testing and Documentation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pre-commit-hooks">Pre-commit Hooks</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#installing-pre-commit-hooks">Installing Pre-commit Hooks</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#running-pre-commit-manually">Running Pre-commit Manually</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bypassing-pre-commit-not-recommended">Bypassing Pre-commit (Not Recommended)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#testing-and-documentation">Testing and Documentation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#unit-testing">Unit Testing</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#integration-testing">Integration Testing</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#documentation">Documentation</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#building-new-records">Building new records</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-other-features-of-the-library">Using other features of the library</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contributing">Contributing</a></li>

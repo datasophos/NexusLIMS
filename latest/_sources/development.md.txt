@@ -111,9 +111,51 @@ the environment using the `$ source .venv/bin/activate` command from within the 
 repository. This will activate the virtual environment that ensures all commands will have
 access to the installed packages and environment variables set appropriately.
 
+## Pre-commit Hooks
+
+To ensure code quality and consistency, NexusLIMS uses [pre-commit](https://pre-commit.com/) hooks that automatically run linting checks before each commit. This prevents commits with linting errors from being pushed to the repository.
+
+### Installing Pre-commit Hooks
+
+Pre-commit is included as a dev dependency, so it's already installed when you run `uv sync --extra dev`. To set up the git hooks:
+
+```bash
+$ uv run pre-commit install
+```
+
+From now on, linting checks will run automatically whenever you attempt to commit code. If linting errors are found, the commit will be blocked until you fix them.
+
+### Running Pre-commit Manually
+
+To run linting checks on all files without committing:
+
+```bash
+$ uv run pre-commit run --all-files
+```
+
+To run checks on specific files:
+
+```bash
+$ uv run pre-commit run --files <file1> <file2>
+```
+
+### Bypassing Pre-commit (Not Recommended)
+
+If you need to bypass the pre-commit hooks in exceptional cases:
+
+```bash
+$ git commit --no-verify
+```
+
+```{warning}
+Only use `--no-verify` in exceptional cases. Pre-commit hooks exist to maintain code quality standards across the project.
+```
+
 ## Testing and Documentation
 
-To run the complete test suite, use the provided shell script:
+### Unit Testing
+
+To run the complete unit test suite, use the provided shell script:
 
 ```bash
 $ ./scripts/run_tests.sh
@@ -122,8 +164,41 @@ $ ./scripts/run_tests.sh
 This will run all tests with coverage reporting. To run specific tests:
 
 ```bash
-$ pytest tests/test_extractors.py
+$ uv run pytest tests/test_extractors.py
 ```
+
+To run a specific test:
+
+```bash
+$ uv run pytest tests/test_extractors.py::TestClassName::test_method_name
+```
+
+To generate matplotlib baseline figures for image comparison tests, run:
+
+```bash
+$ ./scripts/generate_mpl_baseline.sh
+```
+
+### Integration Testing
+
+Integration tests validate end-to-end workflows using real Docker services (NEMO, CDCS, PostgreSQL, etc.) instead of mocks. These tests ensure the complete system works together correctly.
+
+```bash
+# run unit and integration tests together using the included script (requires Docker)
+$ ./scripts/run_tests.sh --integration
+
+# Run integration tests (requires Docker)
+$ uv run pytest tests/integration/ -v -m integration
+
+# Run with coverage
+$ uv run pytest tests/integration/ -v -m integration --cov=nexusLIMS
+```
+
+For detailed information about integration testing, setup, architecture, and best practices, see the {doc}`Integration Testing Guide <testing/integration-tests>`.
+
+**Note:** Integration tests require Docker and Docker Compose to be installed and running. Unit tests do not require Docker and can be run independently.
+
+### Documentation
 
 To build the documentation for the project, run:
 
@@ -131,13 +206,7 @@ To build the documentation for the project, run:
 $ ./scripts/build_docs.sh
 ```
 
-The documentation should then be present in the `./_build/` directory.
-
-To generate matplotlib baseline figures for the tests, run:
-
-```bash
-$ ./scripts/generate_mpl_baseline.sh
-```
+The documentation will then be present in the `./_build/` directory.
 
 ## Building new records
 

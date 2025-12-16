@@ -23,3 +23,19 @@
     margin-bottom: 0;
     margin-left: 0.5em;
 }
+
+/* mermaid dark theme */
+html[data-theme="dark"] pre.mermaid > svg {
+    filter: brightness(0.8) invert(0.82) contrast(1.2);
+}
+
+/* checklist theming */
+.checklist {
+    list-style: none;
+    padding-left: 0;
+    margin-left: 1em;
+}
+
+.checklist li {
+    margin-bottom: 0.5em;
+}

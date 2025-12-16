@@ -56,7 +56,7 @@ nexusLIMS.harvesters.nemo.connector
 
 ````
 
-````{py:function} res_event_from_session(session: nexusLIMS.db.session_handler.Session) -> nexusLIMS.harvesters.reservation_event.ReservationEvent
+````{py:function} res_event_from_session(session: nexusLIMS.db.session_handler.Session, connector: nexusLIMS.harvesters.nemo.connector.NemoConnector | None = None) -> nexusLIMS.harvesters.reservation_event.ReservationEvent
 :canonical: nexusLIMS.harvesters.nemo.res_event_from_session
 
 ```{autodoc2-docstring} nexusLIMS.harvesters.nemo.res_event_from_session

@@ -33,7 +33,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/autodoc_pydantic.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=51baea2f" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=af02a5b6" />
   
   <!-- So that users can add custom icons -->
   <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -49,7 +49,7 @@
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.1.0a0';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.1';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
@@ -61,8 +61,8 @@
     <link rel="prev" title="nexusLIMS.harvesters" href="nexusLIMS.harvesters.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.1.0a0" />
-    <meta name="docbuild:last-update" content="Dec, 10, 2025"/>
+  <meta name="docsearch:version" content="2.1" />
+    <meta name="docbuild:last-update" content="Dec, 16, 2025"/>
   </head>
   
   
@@ -561,7 +561,7 @@ calendering and laboratory logistics application.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="nexusLIMS.harvesters.nemo.res_event_from_session">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.harvesters.nemo.</span></span><span class="sig-name descname"><span class="pre">res_event_from_session</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="nexusLIMS.db.session_handler.html#nexusLIMS.db.session_handler.Session" title="nexusLIMS.db.session_handler.Session"><span class="pre">Session</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="nexusLIMS.harvesters.reservation_event.html#nexusLIMS.harvesters.reservation_event.ReservationEvent" title="nexusLIMS.harvesters.reservation_event.ReservationEvent"><span class="pre">ReservationEvent</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/harvesters/nemo.html#res_event_from_session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.harvesters.nemo.res_event_from_session" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.harvesters.nemo.</span></span><span class="sig-name descname"><span class="pre">res_event_from_session</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="nexusLIMS.db.session_handler.html#nexusLIMS.db.session_handler.Session" title="nexusLIMS.db.session_handler.Session"><span class="pre">Session</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">connector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="nexusLIMS.harvesters.nemo.connector.html#nexusLIMS.harvesters.nemo.connector.NemoConnector" title="nexusLIMS.harvesters.nemo.connector.NemoConnector"><span class="pre">NemoConnector</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="nexusLIMS.harvesters.reservation_event.html#nexusLIMS.harvesters.reservation_event.ReservationEvent" title="nexusLIMS.harvesters.reservation_event.ReservationEvent"><span class="pre">ReservationEvent</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/harvesters/nemo.html#res_event_from_session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.harvesters.nemo.res_event_from_session" title="Link to this definition">#</a></dt>
 <dd><p>Create reservation event from session.</p>
 <p>Create an internal
 :py:class:<code class="docutils literal notranslate"><span class="pre">~nexusLIMS.harvesters.reservation_event.ReservationEvent</span></code> representation
@@ -626,7 +626,9 @@ NEMO documentation on this feature for more details.</p>
 </div>
 <p class="rubric" id="id1">Parameters</p>
 <p>session
-The session for which to get a reservation event</p>
+The session for which to get a reservation event
+connector : Optional[NemoConnector], optional
+Optional NemoConnector to use instead of looking one up. Useful for testing.</p>
 <p class="rubric" id="id2">Returns</p>
 <p>res_event : ~nexusLIMS.harvesters.reservation_event.ReservationEvent
 The matching reservation event</p>

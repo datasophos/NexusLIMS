@@ -33,7 +33,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/autodoc_pydantic.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=51baea2f" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=af02a5b6" />
   
   <!-- So that users can add custom icons -->
   <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -49,7 +49,7 @@
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.1.0a0';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.1';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
@@ -61,8 +61,8 @@
     <link rel="prev" title="nexusLIMS.instruments" href="nexusLIMS.instruments.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.1.0a0" />
-    <meta name="docbuild:last-update" content="Dec, 10, 2025"/>
+  <meta name="docsearch:version" content="2.1" />
+    <meta name="docbuild:last-update" content="Dec, 16, 2025"/>
   </head>
   
   
@@ -629,8 +629,8 @@ The level of logging, such as <code class="docutils literal notranslate"><span c
 <dd><p>Make a request from NexusLIMS.</p>
 <p>A helper method that wraps a function from :py:mod:<code class="docutils literal notranslate"><span class="pre">requests</span></code>, but adds a
 local certificate authority chain to validate any custom certificates and
-allow authenticatation using NTLM. Will automatically retry on 500 errors
-using a strategy suggested here: https://stackoverflow.com/a/35636367.</p>
+allow authenticatation using NTLM. Will automatically retry on transient
+server errors (502, 503, 504) with exponential backoff.</p>
 <p class="rubric" id="id43">Parameters</p>
 <p>url
 The URL to fetch
@@ -638,7 +638,7 @@ function
 The function from the <code class="docutils literal notranslate"><span class="pre">requests</span></code> library to use (e.g.
 <code class="docutils literal notranslate"><span class="pre">'GET'</span></code>, <code class="docutils literal notranslate"><span class="pre">'POST'</span></code>, <code class="docutils literal notranslate"><span class="pre">'PATCH'</span></code>, etc.)
 retries
-The number of retries to attempt before failing
+The maximum number of retry attempts (total attempts = retries + 1)
 basic_auth
 If True, use only username and password for authentication rather than
 NTLM

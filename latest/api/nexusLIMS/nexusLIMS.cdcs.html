@@ -33,7 +33,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/autodoc_pydantic.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=51baea2f" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=af02a5b6" />
   
   <!-- So that users can add custom icons -->
   <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -49,7 +49,7 @@
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.1.0a0';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.1';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
@@ -61,8 +61,8 @@
     <link rel="prev" title="nexusLIMS.utils" href="nexusLIMS.utils.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.1.0a0" />
-    <meta name="docbuild:last-update" content="Dec, 10, 2025"/>
+  <meta name="docsearch:version" content="2.1" />
+    <meta name="docbuild:last-update" content="Dec, 16, 2025"/>
   </head>
   
   
@@ -532,6 +532,12 @@ invoking the record builder.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.cdcs.delete_record" title="nexusLIMS.cdcs.delete_record"><code class="xref py py-obj docutils literal notranslate"><span class="pre">delete_record</span></code></a></p></td>
 <td><p>Delete a Data record from the NexusLIMS CDCS instance via REST API.</p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.cdcs.search_records" title="nexusLIMS.cdcs.search_records"><code class="xref py py-obj docutils literal notranslate"><span class="pre">search_records</span></code></a></p></td>
+<td><p>Search for records in the CDCS instance by title, keyword, or other criteria.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.cdcs.download_record" title="nexusLIMS.cdcs.download_record"><code class="xref py py-obj docutils literal notranslate"><span class="pre">download_record</span></code></a></p></td>
+<td><p>Download the XML content of a record from the CDCS instance.</p></td>
+</tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.cdcs.upload_record_files" title="nexusLIMS.cdcs.upload_record_files"><code class="xref py py-obj docutils literal notranslate"><span class="pre">upload_record_files</span></code></a></p></td>
 <td><p>Upload record files to CDCS.</p></td>
 </tr>
@@ -562,10 +568,10 @@ invoking the record builder.</p>
 <dt class="sig sig-object py" id="nexusLIMS.cdcs.get_cdcs_url">
 <span class="sig-prename descclassname"><span class="pre">nexusLIMS.cdcs.</span></span><span class="sig-name descname"><span class="pre">get_cdcs_url</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/cdcs.html#get_cdcs_url"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.cdcs.get_cdcs_url" title="Link to this definition">#</a></dt>
 <dd><p>Return the url to the NexusLIMS CDCS instance by fetching it from the environment.</p>
-<p class="rubric" id="id8">Returns</p>
+<p class="rubric" id="id14">Returns</p>
 <p>url : str
 The URL of the NexusLIMS CDCS instance to use</p>
-<p class="rubric" id="id9">Raises</p>
+<p class="rubric" id="id15">Raises</p>
 <p>ValueError
 If the <code class="docutils literal notranslate"><span class="pre">NX_CDCS_URL</span></code> setting is not defined, raise a <code class="docutils literal notranslate"><span class="pre">ValueError</span></code></p>
 </dd></dl>
@@ -576,7 +582,7 @@ If the <code class="docutils literal notranslate"><span class="pre">NX_CDCS_URL<
 <dd><p>Get the workspace ID that the user has access to.</p>
 <p>This should be the Global Public Workspace in the current NexusLIMS CDCS
 implementation.</p>
-<p class="rubric" id="id10">Returns</p>
+<p class="rubric" id="id16">Returns</p>
 <p>workspace_id : str
 The workspace ID</p>
 </dd></dl>
@@ -585,7 +591,7 @@ The workspace ID</p>
 <dt class="sig sig-object py" id="nexusLIMS.cdcs.get_template_id">
 <span class="sig-prename descclassname"><span class="pre">nexusLIMS.cdcs.</span></span><span class="sig-name descname"><span class="pre">get_template_id</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/cdcs.html#get_template_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.cdcs.get_template_id" title="Link to this definition">#</a></dt>
 <dd><p>Get the template ID for the schema (so the record can be associated with it).</p>
-<p class="rubric" id="id11">Returns</p>
+<p class="rubric" id="id17">Returns</p>
 <p>template_id : str
 The template ID</p>
 </dd></dl>
@@ -594,45 +600,98 @@ The template ID</p>
 <dt class="sig sig-object py" id="nexusLIMS.cdcs.upload_record_content">
 <span class="sig-prename descclassname"><span class="pre">nexusLIMS.cdcs.</span></span><span class="sig-name descname"><span class="pre">upload_record_content</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xml_content</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/cdcs.html#upload_record_content"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.cdcs.upload_record_content" title="Link to this definition">#</a></dt>
 <dd><p>Upload a single XML record to the NexusLIMS CDCS instance.</p>
-<p class="rubric" id="id12">Parameters</p>
+<p class="rubric" id="id18">Parameters</p>
 <p>xml_content : str
 The actual content of an XML record (rather than a file)
 title : str
 The title to give to the record in CDCS</p>
-<p class="rubric" id="id13">Returns</p>
+<p class="rubric" id="id19">Returns</p>
 <p>post_r : :py:class:<code class="docutils literal notranslate"><span class="pre">~requests.Response</span></code>
 The REST response returned from the CDCS instance after attempting
 the upload
-record_id : str
-The id (on the server) of the record that was uploaded</p>
+record_id : str | None
+The id (on the server) of the record that was uploaded, or None if error</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="nexusLIMS.cdcs.delete_record">
 <span class="sig-prename descclassname"><span class="pre">nexusLIMS.cdcs.</span></span><span class="sig-name descname"><span class="pre">delete_record</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/cdcs.html#delete_record"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.cdcs.delete_record" title="Link to this definition">#</a></dt>
 <dd><p>Delete a Data record from the NexusLIMS CDCS instance via REST API.</p>
-<p class="rubric" id="id14">Parameters</p>
+<p class="rubric" id="id20">Parameters</p>
 <p>record_id : str
 The id value (on the CDCS server) of the record to be deleted</p>
-<p class="rubric" id="id15">Returns</p>
+<p class="rubric" id="id21">Returns</p>
 <p>response : :py:class:<code class="docutils literal notranslate"><span class="pre">~requests.Response</span></code>
 The REST response returned from the CDCS instance after attempting
 the delete operation</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.cdcs.search_records">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.cdcs.</span></span><span class="sig-name descname"><span class="pre">search_records</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">template_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keyword</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/cdcs.html#search_records"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.cdcs.search_records" title="Link to this definition">#</a></dt>
+<dd><p>Search for records in the CDCS instance by title, keyword, or other criteria.</p>
+<p>This function uses the CDCS query endpoint to search for records.
+At least one search parameter must be provided.</p>
+<p class="rubric" id="id22">Note</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">keyword</span></code> is provided, it takes precedence and the <code class="docutils literal notranslate"><span class="pre">title</span></code> parameter
+is ignored. The keyword search uses a different CDCS endpoint
+(<code class="docutils literal notranslate"><span class="pre">/rest/data/query/keyword/</span></code>) that performs full-text search but does not
+support title filtering. In this mode, only <code class="docutils literal notranslate"><span class="pre">template_id</span></code> can be combined
+with <code class="docutils literal notranslate"><span class="pre">keyword</span></code> to filter results.</p>
+<p class="rubric" id="id23">Parameters</p>
+<p>title : str, optional
+The title to search for (exact match). Only used when <code class="docutils literal notranslate"><span class="pre">keyword</span></code> is None.
+template_id : str, optional
+The template ID to filter by. Can be combined with either <code class="docutils literal notranslate"><span class="pre">title</span></code> or
+<code class="docutils literal notranslate"><span class="pre">keyword</span></code>.
+keyword : str, optional
+Keyword(s) for full-text search across record content. When provided,
+takes precedence over <code class="docutils literal notranslate"><span class="pre">title</span></code> parameter.</p>
+<p class="rubric" id="id24">Returns</p>
+<p>records : list of dict
+List of matching record objects from CDCS, each containing:
+- id: The record ID
+- title: The record title
+- xml_content: The XML content (if included in response)
+- template: The template ID
+- Other metadata fields</p>
+<p class="rubric" id="id25">Raises</p>
+<p>ValueError
+If no search parameters are provided or if keyword is empty
+AuthenticationError
+If authentication fails</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.cdcs.download_record">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.cdcs.</span></span><span class="sig-name descname"><span class="pre">download_record</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/cdcs.html#download_record"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.cdcs.download_record" title="Link to this definition">#</a></dt>
+<dd><p>Download the XML content of a record from the CDCS instance.</p>
+<p class="rubric" id="id26">Parameters</p>
+<p>record_id : str
+The id value (on the CDCS server) of the record to download</p>
+<p class="rubric" id="id27">Returns</p>
+<p>xml_content : str
+The XML content of the record</p>
+<p class="rubric" id="id28">Raises</p>
+<p>AuthenticationError
+If authentication fails
+ValueError
+If the record is not found or another error occurs</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="nexusLIMS.cdcs.upload_record_files">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.cdcs.</span></span><span class="sig-name descname"><span class="pre">upload_record_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">files_to_upload</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/nexusLIMS/cdcs.html#upload_record_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.cdcs.upload_record_files" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.cdcs.</span></span><span class="sig-name descname"><span class="pre">upload_record_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">files_to_upload</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#tuple" title="(in Python v3.11)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/nexusLIMS/cdcs.html#upload_record_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.cdcs.upload_record_files" title="Link to this definition">#</a></dt>
 <dd><p>Upload record files to CDCS.</p>
 <p>Upload a list of .xml files (or all .xml files in the current directory)
 to the NexusLIMS CDCS instance using :py:meth:<code class="docutils literal notranslate"><span class="pre">upload_record_content</span></code>.</p>
-<p class="rubric" id="id16">Parameters</p>
+<p class="rubric" id="id29">Parameters</p>
 <p>files_to_upload : typing.Optional[typing.List[pathlib.Path]]
 The list of .xml files to upload. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, all .xml files in the
 current directory will be used instead.
 progress : bool
 Whether to show a progress bar for uploading</p>
-<p class="rubric" id="id17">Returns</p>
+<p class="rubric" id="id30">Returns</p>
 <p>files_uploaded : list of pathlib.Path
 A list of the files that were successfully uploaded
 record_ids : list of str
@@ -700,6 +759,8 @@ A list of the record id values (on the server) that were uploaded</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.cdcs.get_template_id"><code class="docutils literal notranslate"><span class="pre">get_template_id()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.cdcs.upload_record_content"><code class="docutils literal notranslate"><span class="pre">upload_record_content()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.cdcs.delete_record"><code class="docutils literal notranslate"><span class="pre">delete_record()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.cdcs.search_records"><code class="docutils literal notranslate"><span class="pre">search_records()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.cdcs.download_record"><code class="docutils literal notranslate"><span class="pre">download_record()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.cdcs.upload_record_files"><code class="docutils literal notranslate"><span class="pre">upload_record_files()</span></code></a></li>
 </ul>
 </li>

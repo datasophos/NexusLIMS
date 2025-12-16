@@ -33,7 +33,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/autodoc_pydantic.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=51baea2f" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=af02a5b6" />
   
   <!-- So that users can add custom icons -->
   <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -49,7 +49,7 @@
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.1.0a0';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.1';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
@@ -61,8 +61,8 @@
     <link rel="prev" title="nexusLIMS.cli" href="nexusLIMS.cli.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.1.0a0" />
-    <meta name="docbuild:last-update" content="Dec, 10, 2025"/>
+  <meta name="docsearch:version" content="2.1" />
+    <meta name="docbuild:last-update" content="Dec, 16, 2025"/>
   </head>
   
   
@@ -550,6 +550,18 @@ It replaces the functionality previously provided by process_new_records.sh.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.cli.process_records.send_error_notification" title="nexusLIMS.cli.process_records.send_error_notification"><code class="xref py py-obj docutils literal notranslate"><span class="pre">send_error_notification</span></code></a></p></td>
 <td><p>Send error notification email.</p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.cli.process_records._get_log_level" title="nexusLIMS.cli.process_records._get_log_level"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_get_log_level</span></code></a></p></td>
+<td><p>Convert verbose count to logging level.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.cli.process_records._setup_logging" title="nexusLIMS.cli.process_records._setup_logging"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_setup_logging</span></code></a></p></td>
+<td><p>Configure console and file logging.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.cli.process_records._run_with_lock" title="nexusLIMS.cli.process_records._run_with_lock"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_run_with_lock</span></code></a></p></td>
+<td><p>Run the record builder with file locking.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.cli.process_records._handle_error_notification" title="nexusLIMS.cli.process_records._handle_error_notification"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_handle_error_notification</span></code></a></p></td>
+<td><p>Check log for errors and send notification if needed.</p></td>
+</tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.cli.process_records.main" title="nexusLIMS.cli.process_records.main"><code class="xref py py-obj docutils literal notranslate"><span class="pre">main</span></code></a></p></td>
 <td><p>Process new NexusLIMS records with logging and email notifications.</p></td>
 </tr>
@@ -605,18 +617,24 @@ It replaces the functionality previously provided by process_new_records.sh.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="nexusLIMS.cli.process_records.setup_file_logging">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.cli.process_records.</span></span><span class="sig-name descname"><span class="pre">setup_file_logging</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dry_run</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/cli/process_records.html#setup_file_logging"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.cli.process_records.setup_file_logging" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.cli.process_records.</span></span><span class="sig-name descname"><span class="pre">setup_file_logging</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dry_run</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#tuple" title="(in Python v3.11)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/logging.handlers.html#logging.FileHandler" title="(in Python v3.11)"><span class="pre">FileHandler</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/nexusLIMS/cli/process_records.html#setup_file_logging"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.cli.process_records.setup_file_logging" title="Link to this definition">#</a></dt>
 <dd><p>Set up file logging with timestamped log file.</p>
 <p>Creates a log directory structure based on the current date and adds a
 FileHandler to the root logger. Log files are named with timestamps
 in the format YYYYMMDD-HHMM.log (or YYYYMMDD-HHMM_dryrun.log for dry runs).</p>
-<p class="rubric" id="id6">Parameters</p>
+<p>Note: This function removes any existing FileHandlers from the root logger
+before adding the new handler to prevent handler accumulation across multiple
+invocations (important for testing scenarios where the same process runs
+multiple CLI commands).</p>
+<p class="rubric" id="id16">Parameters</p>
 <p>dry_run : bool
 If True, append ‘_dryrun’ to the log filename</p>
-<p class="rubric" id="id7">Returns</p>
-<p>log_file: pathlib.Path
-Path to the created log file</p>
-<p class="rubric" id="id8">Raises</p>
+<p class="rubric" id="id17">Returns</p>
+<p>tuple[pathlib.Path, logging.FileHandler]
+A tuple containing:
+- Path to the created log file
+- The FileHandler instance that was added to the root logger</p>
+<p class="rubric" id="id18">Raises</p>
 <p>OSError
 If log directory creation fails</p>
 </dd></dl>
@@ -627,15 +645,15 @@ If log directory creation fails</p>
 <dd><p>Check log file for error patterns.</p>
 <p>Reads the log file and searches for error patterns (critical, error, fatal)
 while excluding known non-critical error patterns.</p>
-<p class="rubric" id="id9">Parameters</p>
+<p class="rubric" id="id19">Parameters</p>
 <p>log_path : pathlib.Path
 Path to the log file to check</p>
-<p class="rubric" id="id10">Returns</p>
+<p class="rubric" id="id20">Returns</p>
 <p>tuple[bool, list[str]]
 A tuple containing:
 - bool: True if errors were found, False otherwise
 - list[str]: List of error pattern names that were found</p>
-<p class="rubric" id="id11">Raises</p>
+<p class="rubric" id="id21">Raises</p>
 <p>FileNotFoundError
 If the log file doesn’t exist</p>
 </dd></dl>
@@ -646,20 +664,79 @@ If the log file doesn’t exist</p>
 <dd><p>Send error notification email.</p>
 <p>Sends an email notification with the log file contents when errors are
 detected. Email sending is skipped if email configuration is not available.</p>
-<p class="rubric" id="id12">Parameters</p>
+<p class="rubric" id="id22">Parameters</p>
 <p>log_path : pathlib.Path
 Path to the log file to include in the email
 found_patterns : list[str]
 List of error pattern names that were found in the log</p>
-<p class="rubric" id="id13">Returns</p>
+<p class="rubric" id="id23">Returns</p>
 <p>None
 This function doesn’t return anything. Errors are logged but not raised.</p>
-<p class="rubric" id="id14">Notes</p>
+<p class="rubric" id="id24">Notes</p>
 <ul class="simple">
 <li><p>Email sending is gracefully skipped if configuration is missing</p></li>
 <li><p>Any email sending errors are logged but don’t cause the function to fail</p></li>
 <li><p>Uses SMTP with TLS encryption if configured</p></li>
 </ul>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.cli.process_records._get_log_level">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.cli.process_records.</span></span><span class="sig-name descname"><span class="pre">_get_log_level</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/cli/process_records.html#_get_log_level"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.cli.process_records._get_log_level" title="Link to this definition">#</a></dt>
+<dd><p>Convert verbose count to logging level.</p>
+<p class="rubric" id="id25">Parameters</p>
+<p>verbose : int
+Verbosity level (0 = WARNING, 1 = INFO, 2+ = DEBUG)</p>
+<p class="rubric" id="id26">Returns</p>
+<p>int
+Logging level constant from the logging module</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.cli.process_records._setup_logging">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.cli.process_records.</span></span><span class="sig-name descname"><span class="pre">_setup_logging</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">log_level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">dry_run</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#tuple" title="(in Python v3.11)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/logging.handlers.html#logging.FileHandler" title="(in Python v3.11)"><span class="pre">FileHandler</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/nexusLIMS/cli/process_records.html#_setup_logging"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.cli.process_records._setup_logging" title="Link to this definition">#</a></dt>
+<dd><p>Configure console and file logging.</p>
+<p class="rubric" id="id27">Parameters</p>
+<p>log_level : int
+Logging level constant from the logging module
+dry_run : bool
+If True, append ‘_dryrun’ to the log filename</p>
+<p class="rubric" id="id28">Returns</p>
+<p>tuple[Path, logging.FileHandler]
+Tuple of (log_file_path, file_handler)</p>
+<p class="rubric" id="id29">Raises</p>
+<p>OSError
+If file logging setup fails
+SystemExit
+If file logging setup fails (exits with code 1)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.cli.process_records._run_with_lock">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.cli.process_records.</span></span><span class="sig-name descname"><span class="pre">_run_with_lock</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dry_run</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/cli/process_records.html#_run_with_lock"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.cli.process_records._run_with_lock" title="Link to this definition">#</a></dt>
+<dd><p>Run the record builder with file locking.</p>
+<p class="rubric" id="id30">Parameters</p>
+<p>dry_run : bool
+If True, run in dry-run mode (find files without building records)</p>
+<p class="rubric" id="id31">Returns</p>
+<p>None</p>
+<p class="rubric" id="id32">Raises</p>
+<p>SystemExit
+If lock cannot be acquired (another instance is running)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.cli.process_records._handle_error_notification">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.cli.process_records.</span></span><span class="sig-name descname"><span class="pre">_handle_error_notification</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">log_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_handler</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/logging.handlers.html#logging.FileHandler" title="(in Python v3.11)"><span class="pre">FileHandler</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/cli/process_records.html#_handle_error_notification"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.cli.process_records._handle_error_notification" title="Link to this definition">#</a></dt>
+<dd><p>Check log for errors and send notification if needed.</p>
+<p class="rubric" id="id33">Parameters</p>
+<p>log_file : Path
+Path to the log file to check
+file_handler : logging.FileHandler
+File handler to flush before checking log</p>
+<p class="rubric" id="id34">Returns</p>
+<p>None
+This function doesn’t return anything. All errors are caught and logged.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -735,6 +812,10 @@ concurrent runs, timestamped logging, and email notifications on errors.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.cli.process_records.setup_file_logging"><code class="docutils literal notranslate"><span class="pre">setup_file_logging()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.cli.process_records.check_log_for_errors"><code class="docutils literal notranslate"><span class="pre">check_log_for_errors()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.cli.process_records.send_error_notification"><code class="docutils literal notranslate"><span class="pre">send_error_notification()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.cli.process_records._get_log_level"><code class="docutils literal notranslate"><span class="pre">_get_log_level()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.cli.process_records._setup_logging"><code class="docutils literal notranslate"><span class="pre">_setup_logging()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.cli.process_records._run_with_lock"><code class="docutils literal notranslate"><span class="pre">_run_with_lock()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.cli.process_records._handle_error_notification"><code class="docutils literal notranslate"><span class="pre">_handle_error_notification()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.cli.process_records.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
 </ul>
 </li>

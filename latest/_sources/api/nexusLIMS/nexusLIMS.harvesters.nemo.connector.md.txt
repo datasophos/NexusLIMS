@@ -109,6 +109,22 @@
 
 ````
 
+````{py:method} __eq__(other)
+:canonical: nexusLIMS.harvesters.nemo.connector.NemoConnector.__eq__
+
+```{autodoc2-docstring} nexusLIMS.harvesters.nemo.connector.NemoConnector.__eq__
+```
+
+````
+
+````{py:method} __hash__()
+:canonical: nexusLIMS.harvesters.nemo.connector.NemoConnector.__hash__
+
+```{autodoc2-docstring} nexusLIMS.harvesters.nemo.connector.NemoConnector.__hash__
+```
+
+````
+
 ````{py:method} strftime(date_dt) -> str
 :canonical: nexusLIMS.harvesters.nemo.connector.NemoConnector.strftime
 

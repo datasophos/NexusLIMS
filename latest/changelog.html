@@ -33,7 +33,7 @@
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/autodoc_pydantic.css" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=51baea2f" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=af02a5b6" />
   
   <!-- So that users can add custom icons -->
   <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -49,7 +49,7 @@
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.1.0a0';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.1';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
@@ -60,8 +60,8 @@
     <link rel="prev" title="nexusLIMS.config" href="api/nexusLIMS/nexusLIMS.config.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.1.0a0" />
-    <meta name="docbuild:last-update" content="Dec, 10, 2025"/>
+  <meta name="docsearch:version" content="2.1" />
+    <meta name="docbuild:last-update" content="Dec, 16, 2025"/>
   </head>
   
   
@@ -488,20 +488,22 @@
 <p>This changelog documents development history including the original NIST project
 up to version 1.4.3. The datasophos fork begins at version 2.0.</p>
 </div>
-<section id="vrelease-unreleased-2025-12-10">
-<h2>v2.1.0a0 [Unreleased] (2025-12-10)<a class="headerlink" href="#vrelease-unreleased-2025-12-10" title="Link to this heading">#</a></h2>
+<section id="vrelease-unreleased-2025-12-16">
+<h2>v2.1.0a0 [Unreleased] (2025-12-16)<a class="headerlink" href="#vrelease-unreleased-2025-12-16" title="Link to this heading">#</a></h2>
 <section id="new-features">
 <h3>New features<a class="headerlink" href="#new-features" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Implemented instrument profile system for site-specific metadata customization through profiles that can add static metadata, transform fields, and inject custom parsers. Profiles can be built-in (shipped with the package) or local (loaded from <code class="docutils literal notranslate"><span class="pre">NX_LOCAL_PROFILES_PATH</span></code> environment variable). (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/9">#9</a>)</p></li>
 <li><p>Addition of the plugin-based extractor system; All metadata extractors have been refactored into a plugin-based architecture with auto-discovery, enabling easier addition of new file format support without modifying core code. (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/9">#9</a>)</p></li>
 <li><p>Preview generation has been migrated to a plugin-based system with separate image and text preview generators. (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/9">#9</a>)</p></li>
+<li><p>Comprehensive Docker-based integration test suite providing end-to-end validation of NexusLIMS workflows. The new test suite includes NEMO and CDCS Docker services, tests for record building, file clustering, metadata extraction, CLI operations, email notifications, multi-instance NEMO support, and extensive error handling scenarios. Includes automated CI/CD integration with GitHub Actions and pre-built Docker images in GitHub Container Registry. (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/10">#10</a>)</p></li>
 </ul>
 </section>
 <section id="bug-fixes">
 <h3>Bug fixes<a class="headerlink" href="#bug-fixes" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Fixed issue where mixed-case or upper-case extensions were not being properly assigned to the correct extractors. (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/4">#4</a>)</p></li>
+<li><p>Fixed version switcher to properly display released versions. The switcher now correctly extracts and displays versioned releases (e.g., 2.0, 1.5) from documentation directories and matches them with the proper major.minor version format. (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/5">#5</a>)</p></li>
 </ul>
 </section>
 <section id="miscellaneous-development-changes">
@@ -1111,7 +1113,7 @@ delineate functionality of the various parts of NexusLIMS</p></li>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Changelog</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#vrelease-unreleased-2025-12-10">v2.1.0a0 [Unreleased] (2025-12-10)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#vrelease-unreleased-2025-12-16">v2.1.0a0 [Unreleased] (2025-12-16)</a></li>
 </ul>
 </li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#v2-0-0-2025-12-06">v2.0.0 (2025-12-06)</a><ul class="visible nav section-nav flex-column">

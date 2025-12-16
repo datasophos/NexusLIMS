@@ -35,6 +35,14 @@
   - ```{autodoc2-docstring} nexusLIMS.cdcs.delete_record
     :summary:
     ```
+* - {py:obj}`search_records <nexusLIMS.cdcs.search_records>`
+  - ```{autodoc2-docstring} nexusLIMS.cdcs.search_records
+    :summary:
+    ```
+* - {py:obj}`download_record <nexusLIMS.cdcs.download_record>`
+  - ```{autodoc2-docstring} nexusLIMS.cdcs.download_record
+    :summary:
+    ```
 * - {py:obj}`upload_record_files <nexusLIMS.cdcs.upload_record_files>`
   - ```{autodoc2-docstring} nexusLIMS.cdcs.upload_record_files
     :summary:
@@ -100,7 +108,21 @@
 ```
 ````
 
-````{py:function} upload_record_files(files_to_upload: typing.List[pathlib.Path] | None, *, progress: bool = False) -> typing.List[pathlib.Path]
+````{py:function} search_records(title=None, template_id=None, keyword=None)
+:canonical: nexusLIMS.cdcs.search_records
+
+```{autodoc2-docstring} nexusLIMS.cdcs.search_records
+```
+````
+
+````{py:function} download_record(record_id)
+:canonical: nexusLIMS.cdcs.download_record
+
+```{autodoc2-docstring} nexusLIMS.cdcs.download_record
+```
+````
+
+````{py:function} upload_record_files(files_to_upload: typing.List[pathlib.Path] | None, *, progress: bool = False) -> tuple[typing.List[pathlib.Path], typing.List[str]]
 :canonical: nexusLIMS.cdcs.upload_record_files
 
 ```{autodoc2-docstring} nexusLIMS.cdcs.upload_record_files

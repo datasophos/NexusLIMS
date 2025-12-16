@@ -39,6 +39,10 @@
   - ```{autodoc2-docstring} nexusLIMS.db.session_handler.get_sessions_to_build
     :summary:
     ```
+* - {py:obj}`get_all_session_logs <nexusLIMS.db.session_handler.get_all_session_logs>`
+  - ```{autodoc2-docstring} nexusLIMS.db.session_handler.get_all_session_logs
+    :summary:
+    ```
 ````
 
 ### Data
@@ -204,5 +208,12 @@
 :canonical: nexusLIMS.db.session_handler.get_sessions_to_build
 
 ```{autodoc2-docstring} nexusLIMS.db.session_handler.get_sessions_to_build
+```
+````
+
+````{py:function} get_all_session_logs() -> list[nexusLIMS.db.session_handler.SessionLog]
+:canonical: nexusLIMS.db.session_handler.get_all_session_logs
+
+```{autodoc2-docstring} nexusLIMS.db.session_handler.get_all_session_logs
 ```
 ````
