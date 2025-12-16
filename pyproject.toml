@@ -122,9 +122,9 @@ line-ending = "auto"
 directory = "docs/changes"
 package = "nexusLIMS"
 package_dir = "nexusLIMS"
-title_format = "v{version} ({project_date})"
+title_format = "# v{version} ({project_date})"
 filename = "docs/development_log.md"
-issue_format = "`#{issue} <https://github.com/datasophos/NexusLIMS/issues/{issue}>`_"
+issue_format = "[#{issue}](https://github.com/datasophos/NexusLIMS/issues/{issue})"
 
 [[tool.towncrier.type]]
 directory = "feature"
