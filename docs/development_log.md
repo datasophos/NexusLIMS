@@ -1,3 +1,10 @@
+v2.1.1 (2025-12-16)
+
+# Miscellaneous/Development changes
+
+- Fixed documentation version switcher to use full semantic version numbers (e.g., ``2.1.0``) instead of major.minor versions (e.g., ``2.1``), and properly highlight the current version being viewed. The switcher now shows only the most recent patch version for each minor release and marks the highest version as stable. (`#5 <https://github.com/datasophos/NexusLIMS/issues/5>`_)
+
+
 v2.1.0 (2025-12-16)
 
 # New features

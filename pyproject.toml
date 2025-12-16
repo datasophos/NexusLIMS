@@ -1,6 +1,6 @@
 [project]
 name = "nexusLIMS"
-version = "2.1.0"
+version = "2.1.1"
 description = "Electron Microscopy Nexus LIMS project (Datasophos fork)"
 authors = [
     {name = "Joshua Taillon", email = "josh@datasophos.co"}
