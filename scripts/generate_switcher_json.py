@@ -48,6 +48,26 @@ def get_current_pr_number():
     return None
 
 
+def get_current_dev_version():
+    """
+    Get the current development version from pyproject.toml.
+
+    Returns the version string (e.g., "2.1.2.dev0") if found, otherwise None.
+    """
+    pyproject_path = Path(__file__).parent.parent / "pyproject.toml"
+    try:
+        with pyproject_path.open() as f:
+            for line in f:
+                if line.startswith('version = "'):
+                    return line.split('"')[1]
+    except Exception as e:
+        print(
+            f"Warning: Could not read version from {pyproject_path}: {e}",
+            file=sys.stderr,
+        )
+    return None
+
+
 def get_short_commit_hash():
     """Get the short commit hash of the current HEAD."""
     try:
@@ -187,16 +207,14 @@ def build_switcher_json(dirs, current_pr_num=None):
     """
     entries = []
 
-    # Get the latest release version for labeling stable
-    latest_release = get_latest_release_version()
-
     # Add versioned releases (e.g., 2.1.0, 2.0.1, etc.)
     # Filter to only show latest patch version for each minor release
     version_dirs = [d for d in dirs if re.match(r"^\d+\.\d+\.\d+$", d)]
     filtered_versions = filter_latest_patch_versions(version_dirs)
 
     for idx, v in enumerate(filtered_versions):
-        # The first version in the list is the highest (filtered_versions is sorted descending)
+        # The first version in the list is the highest
+        # (filtered_versions is sorted descending)
         # Mark it as stable and preferred per PyData Sphinx Theme conventions
         if idx == 0:
             entries.append(
@@ -218,10 +236,11 @@ def build_switcher_json(dirs, current_pr_num=None):
 
     # Add latest dev build if it exists
     if "latest" in dirs:
-        commit_hash = get_short_commit_hash()
+        dev_version = get_current_dev_version()
+        label = dev_version if dev_version else f"({get_short_commit_hash()})"
         entries.append(
             {
-                "name": f"Latest ({commit_hash})",
+                "name": f"{label} (latest)",
                 "version": "dev",
                 "url": f"{BASE_URL}/latest/",
             }

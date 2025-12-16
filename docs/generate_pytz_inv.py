@@ -1,4 +1,16 @@
-import os
+# ruff: noqa: T201, INP001
+"""Generate a custom Sphinx inventory for pytz package documentation cross-referencing.
+
+This script creates a objects.inv file that enables Sphinx to properly link to
+pytz classes (like pytz.tzinfo.BaseTzInfo) in the documentation. The inventory
+is used by sphinx-autodoc-typehints and other Sphinx extensions for intersphinx
+cross-referencing.
+
+Output:
+    pytz_objects.inv: A compressed Sphinx inventory file in the docs/ directory.
+"""
+
+from pathlib import Path
 
 import sphobjinv as soi
 
@@ -22,7 +34,7 @@ inv.objects.append(o)
 
 # Define the output path for the custom objects.inv
 # Assuming it will be placed in the docs/ directory alongside conf.py
-output_path = os.path.join(os.path.dirname(__file__), "pytz_objects.inv")
+output_path = Path(__file__).parent / "pytz_objects.inv"
 
 # Save the inventory
 text = inv.data_file()  # Get the inventory data as a string

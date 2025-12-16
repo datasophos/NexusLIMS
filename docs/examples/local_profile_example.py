@@ -1,3 +1,4 @@
+# ruff: noqa: INP001, ERA001
 """Example local instrument profile for a custom microscope.
 
 This file demonstrates how to create a local instrument profile that can be
@@ -5,7 +6,7 @@ placed in a directory outside the NexusLIMS codebase and automatically loaded
 at runtime.
 
 To use this profile:
-1. Copy this file to your local profiles directory (e.g., /opt/nexuslims/local_profiles/)
+1. Copy the file to the local profiles directory (e.g., /opt/nexuslims/local_profiles/)
 2. Set NX_LOCAL_PROFILES_PATH in your .env file to point to that directory
 3. Update the instrument_id to match your instrument's name in the database
 4. Customize the parser functions for your instrument's specific needs
@@ -61,7 +62,7 @@ def add_facility_metadata(
 
 def add_instrument_warnings(
     metadata: dict[str, Any],
-    context: ExtractionContext,
+    context: ExtractionContext,  # noqa: ARG001
 ) -> dict[str, Any]:
     """
     Add warnings for metadata fields known to be unreliable on this instrument.
