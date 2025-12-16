@@ -2,15 +2,20 @@ name: Deploy Documentation
 
 on:
   # Trigger after the test workflow completes successfully
-  workflow_run:
-    workflows: ["Unit Tests"]
-    types:
-      - completed
-    branches:
-      - main
+  # workflow_run:
+  #   workflows: ["Unit Tests"]
+  #   types:
+  #     - completed
+  #   branches:
+  #     - main
 
   # Allow manual deployment
   workflow_dispatch:
+
+  # Temporarily trigger on push for testing
+  push:
+    branches:
+      - main
 
 jobs:
   check-conditions:
@@ -29,6 +34,13 @@ jobs:
           # Check if manually triggered
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             echo "✅ Conditions met: manual deployment triggered"
+            echo "should_deploy=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          # Temporarily allow push events for testing
+          if [[ "${{ github.event_name }}" == "push" ]]; then
+            echo "✅ Conditions met: push to main (testing mode)"
             echo "should_deploy=true" >> $GITHUB_OUTPUT
             exit 0
           fi
@@ -72,7 +84,9 @@ jobs:
       - name: Install dependencies
         run: uv sync
 
+      # Temporarily skip coverage download when testing without workflow_run trigger
       - name: Download coverage artifact from test workflow
+        if: github.event_name == 'workflow_run'
         # Download coverage artifact from the workflow_run that triggered this
         uses: actions/github-script@v7
         with:
@@ -126,7 +140,7 @@ jobs:
         run: ./scripts/build_docs.sh
 
       - name: Deploy to gh-pages branch
-        # Deploy docs to gh-pages branch in latest/ directory
+        # Deploy docs to gh-pages branch in latest/ directory for dev builds
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -138,7 +152,7 @@ jobs:
           git checkout gh-pages
           git pull origin gh-pages
 
-          # Deploy to latest directory (main branch = latest)
+          # Deploy to latest directory (main branch = latest dev build)
           rm -rf latest
           mkdir -p latest
           rsync -avr _build/ latest/
@@ -151,9 +165,32 @@ jobs:
             rsync -avr tests/coverage/ latest/coverage/
           fi
 
-          # Commit and push
-          git add latest
-          git commit -m "Deploy docs to latest from main branch" || echo "No changes to commit"
+          # Update switcher.json in all version directories
+          # This ensures all versions have the latest switcher with all available versions
+          echo "Updating switcher.json in all version directories..."
+          for dir in */; do
+            # Only process directories that look like version directories (X.Y.Z, latest, pr-N)
+            # Skip: _build, docs, nexusLIMS (source code), and hidden dirs
+            if [ -d "$dir" ] && [ "$dir" != "_build/" ] && \
+               [ "$dir" != "docs/" ] && [ "$dir" != "nexusLIMS/" ] && \
+               [[ ! "$dir" =~ ^\. ]]; then
+              # Check if this looks like a docs directory (has _static subdirectory)
+              dir_clean="${dir%/}"
+              if [ -d "$dir_clean/_static" ]; then
+                mkdir -p "$dir_clean/_static"
+                cp docs/_static/switcher.json "$dir_clean/_static/switcher.json"
+                echo "  Updated switcher.json in $dir"
+              fi
+            fi
+          done
+
+          # Commit and push - add all changes in documentation directories
+          # Note: We don't update index.html here because it should always point to the
+          # latest stable release, not to the dev build. It gets updated by release.yml.
+          git add -A latest/ 2>/dev/null || true
+          git add -A [0-9]*/ 2>/dev/null || true
+          git add -A pr-*/ 2>/dev/null || true
+          git commit -m "Deploy docs to latest from main branch and update switcher.json" || echo "No changes to commit"
           git push origin gh-pages
           echo "✅ Documentation deployed to latest!"
           echo "🔗 https://datasophos.github.io/NexusLIMS/latest/"

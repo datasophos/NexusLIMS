@@ -6,6 +6,11 @@ Auto-generate switcher.json for PyData Sphinx Theme version switcher.
 This script lists all deployed documentation versions in the gh-pages branch
 and generates docs/_static/switcher.json with correct URLs for each version.
 
+The switcher will show:
+- "v2.1.0 (stable)" for the latest release (in stable/ directory)
+- "abc1234 (latest)" for the main branch (in latest/ directory)
+- "v2.0.0", "v1.9.0", etc. for older releases
+
 Intended to be run in CI before copying docs/_static/switcher.json to the build.
 """
 
@@ -43,29 +48,125 @@ def get_current_pr_number():
     return None
 
 
+def get_short_commit_hash():
+    """Get the short commit hash of the current HEAD."""
+    try:
+        result = subprocess.run(
+            ["git", "rev-parse", "--short", "HEAD"],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        return result.stdout.strip()
+    except Exception:
+        return "unknown"
+
+
+def parse_version(version_str):
+    """
+    Parse a version string into a tuple of integers for comparison.
+
+    Parameters
+    ----------
+    version_str : str
+        Version string (e.g., "2.1.0").
+
+    Returns
+    -------
+    tuple
+        Tuple of integers (e.g., (2, 1, 0)).
+    """
+    return tuple(map(int, version_str.split(".")))
+
+
+def filter_latest_patch_versions(version_dirs):
+    """
+    Filter version directories to only include the latest patch for each minor version.
+
+    For example, if we have ["2.1.0", "2.1.1", "2.1.2", "2.0.0", "2.0.1"],
+    return ["2.1.2", "2.0.1"].
+
+    Parameters
+    ----------
+    version_dirs : list
+        List of version directory names (e.g., ["2.1.0", "2.1.1", "2.0.0"]).
+
+    Returns
+    -------
+    list
+        Filtered list with only the latest patch version for each minor version.
+    """
+    # Group versions by major.minor
+    from collections import defaultdict  # noqa: PLC0415
+
+    version_groups = defaultdict(list)
+    for v in version_dirs:
+        parts = v.split(".")
+        if len(parts) >= 2:  # noqa: PLR2004
+            minor_key = f"{parts[0]}.{parts[1]}"
+            version_groups[minor_key].append(v)
+
+    # Keep only the latest patch version for each minor version
+    latest_versions = []
+    for _, versions in version_groups.items():
+        # Sort by full version tuple and take the last (highest)
+        versions_sorted = sorted(versions, key=parse_version)
+        latest_versions.append(versions_sorted[-1])
+
+    # Sort final list by version in descending order
+    return sorted(latest_versions, key=parse_version, reverse=True)
+
+
 def get_gh_pages_dirs():
     """
     List top-level directories in the gh-pages branch.
 
-    Returns a list of directory names (e.g., ['latest', 'stable', ...]).
-    Excludes pr-X branches.
+    Returns a list of directory names (e.g., ['latest', 'stable', '2.0', ...]).
     """
     # Fetch latest gh-pages branch if not present
     try:
-        subprocess.run(["git", "fetch", "origin", "gh-pages"], check=True)
+        subprocess.run(
+            ["git", "fetch", "origin", "gh-pages"],
+            check=True,
+            capture_output=True,
+        )
     except Exception as e:
         print(f"Warning: Could not fetch gh-pages branch: {e}", file=sys.stderr)
 
     # List directories in gh-pages branch root
     result = subprocess.run(
-        ["git", "ls-tree", "--name-only", "origin/gh-pages"],
+        ["git", "ls-tree", "--name-only", "-d", "origin/gh-pages"],
         capture_output=True,
         text=True,
         check=True,
     )
-    dirs = [d.strip() for d in result.stdout.splitlines()]
-    # Only keep directories that match expected patterns
-    return [d for d in dirs if d in ("latest", "stable") or re.match(r"^\d+\.\d+", d)]
+    return [d.strip() for d in result.stdout.splitlines()]
+
+
+def get_latest_release_version():
+    """
+    Get the version string of the latest release tag.
+
+    Returns
+    -------
+    str or None
+        Version string (e.g., "2.1.0") or None if no tags found.
+    """
+    try:
+        # Get all tags sorted by version
+        result = subprocess.run(
+            ["git", "tag", "-l", "v*", "--sort=-version:refname"],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        tags = result.stdout.strip().split("\n")
+        if tags and tags[0]:
+            # Remove 'v' prefix
+            return tags[0].lstrip("v")
+    except Exception as e:
+        print(f"Warning: Could not fetch latest release tag: {e}", file=sys.stderr)
+    return None
 
 
 def build_switcher_json(dirs, current_pr_num=None):
@@ -86,64 +187,69 @@ def build_switcher_json(dirs, current_pr_num=None):
     """
     entries = []
 
-    # If no dirs and not in PR context, assume we're building latest
-    if not dirs and not current_pr_num:
-        entries.append(
-            {
-                "name": "Latest",
-                "version": "latest",
-                "url": f"{BASE_URL}/latest/",
-                "preferred": True,
-            }
-        )
-    else:
-        # Add stable and latest first, if present
-        for v in ["stable", "latest"]:
-            if v in dirs:
-                entries.append(
-                    {
-                        "name": v.capitalize(),
-                        "version": v,
-                        "url": f"{BASE_URL}/{v}/",
-                        "preferred": v == "stable",
-                    }
-                )
+    # Get the latest release version for labeling stable
+    latest_release = get_latest_release_version()
 
-    # Add versioned releases (e.g., 2.0, 1.5, etc.)
-    # Sort versions in descending order (newer versions first)
-    version_dirs = [d for d in dirs if re.match(r"^\d+\.\d+", d)]
-    version_dirs.sort(key=lambda x: tuple(map(int, x.split(".")[:2])), reverse=True)
-    for v in version_dirs:
+    # Add versioned releases (e.g., 2.1.0, 2.0.1, etc.)
+    # Filter to only show latest patch version for each minor release
+    version_dirs = [d for d in dirs if re.match(r"^\d+\.\d+\.\d+$", d)]
+    filtered_versions = filter_latest_patch_versions(version_dirs)
+
+    for idx, v in enumerate(filtered_versions):
+        # The first version in the list is the highest (filtered_versions is sorted descending)
+        # Mark it as stable and preferred per PyData Sphinx Theme conventions
+        if idx == 0:
+            entries.append(
+                {
+                    "name": f"v{v} (stable)",
+                    "version": v,
+                    "url": f"{BASE_URL}/{v}/",
+                    "preferred": True,
+                }
+            )
+        else:
+            entries.append(
+                {
+                    "name": f"v{v}",
+                    "version": v,
+                    "url": f"{BASE_URL}/{v}/",
+                }
+            )
+
+    # Add latest dev build if it exists
+    if "latest" in dirs:
+        commit_hash = get_short_commit_hash()
         entries.append(
             {
-                "name": f"v{v}",
-                "version": v,
-                "url": f"{BASE_URL}/{v}/",
+                "name": f"Latest ({commit_hash})",
+                "version": "dev",
+                "url": f"{BASE_URL}/latest/",
             }
         )
 
     # Add current PR first (if in PR context)
     if current_pr_num:
         current_pr_name = f"pr-{current_pr_num}"
-        entries.append(
+        entries.insert(
+            0,
             {
                 "name": f"PR #{current_pr_num} (current)",
                 "version": current_pr_name,
                 "url": f"{BASE_URL}/{current_pr_name}/",
                 "preferred": True,
-            }
+            },
         )
 
     # Add other PR previews from gh-pages
-    for d in dirs:
-        if d.startswith("pr-"):
-            pr_num = d.split("-")[1]
-            # Skip current PR if already added
-            if current_pr_num and pr_num == current_pr_num:
-                continue
-            entries.append(
-                {"name": f"PR #{pr_num}", "version": d, "url": f"{BASE_URL}/{d}/"}
-            )
+    pr_dirs = [d for d in dirs if d.startswith("pr-")]
+    for d in sorted(pr_dirs, reverse=True):  # Most recent PRs first
+        pr_num = d.split("-")[1]
+        # Skip current PR if already added
+        if current_pr_num and pr_num == current_pr_num:
+            continue
+        entries.append(
+            {"name": f"PR #{pr_num}", "version": d, "url": f"{BASE_URL}/{d}/"}
+        )
 
     # Add link to upstream NIST project documentation
     entries.append(
@@ -166,7 +272,7 @@ def main():
 
     dirs = get_gh_pages_dirs()
     if not dirs and not current_pr:
-        # First deployment case: no versions exist yet, create minimal switcher
+        # First deployment case: no versions exist yet
         print(
             "No deployed documentation versions found in gh-pages branch.",
             file=sys.stderr,
@@ -174,18 +280,38 @@ def main():
         print(
             "This appears to be the first deployment. Creating minimal switcher.json."
         )
-        dirs = []  # Will create a minimal switcher with just upstream link
+        # Create minimal switcher with just latest
+        commit_hash = get_short_commit_hash()
+        switcher = [
+            {
+                "name": f"{commit_hash} (latest)",
+                "version": "dev",
+                "url": f"{BASE_URL}/latest/",
+                "preferred": True,
+            },
+            {
+                "name": "Upstream NIST docs",
+                "version": "upstream",
+                "url": "https://pages.nist.gov/NexusLIMS/",
+            },
+        ]
+    else:
+        if not dirs and current_pr:
+            print(
+                "No deployed versions found, generating switcher for current PR only."
+            )
+        switcher = build_switcher_json(dirs, current_pr_num=current_pr)
 
-    if not dirs and current_pr:
-        print("No deployed versions found, generating switcher for current PR only.")
-
-    switcher = build_switcher_json(dirs, current_pr_num=current_pr)
     static_path = Path("docs/_static")
     static_path.mkdir(exist_ok=True, parents=True)
     out_path = static_path / "switcher.json"
     with out_path.open("w") as f:
         json.dump(switcher, f, indent=2)
     print(f"Generated {out_path} with {len(switcher)} entries.")
+    print("\nSwitcher content:")
+    for entry in switcher:
+        preferred = " [PREFERRED]" if entry.get("preferred") else ""
+        print(f"  - {entry['name']} (version={entry['version']}){preferred}")
 
 
 if __name__ == "__main__":

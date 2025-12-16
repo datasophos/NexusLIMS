@@ -57,17 +57,38 @@ numfig = True
 
 # The full version, including alpha/beta/rc tags
 release = nexusLIMS.version.__version__
-# Extract major.minor version for switcher matching (e.g., "2.0" from "2.0.0")
-version = ".".join(release.split(".")[:2])
+# Use full version everywhere
+version = release
 
 # Add PR number to context if available
 pr_number = os.environ.get("PR_NUMBER")
+
+# Determine version_match for switcher.json
+# This should match the "version" field in switcher.json entries
+if pr_number:
+    # PR builds use "pr-<number>" as version
+    version_match = f"pr-{pr_number}"
+elif os.environ.get("GITHUB_REF") == "refs/heads/main":
+    # Main branch builds use "dev" as version
+    version_match = "dev"
+else:
+    # Release builds use full version (e.g., "2.1.0") to match switcher.json
+    version_match = release
+
+# Debug output for version matching
+print(f"[DEBUG] Sphinx conf.py version info:")
+print(f"  release: {release}")
+print(f"  version: {version}")
+print(f"  version_match: {version_match}")
+print(f"  PR_NUMBER: {pr_number}")
+print(f"  GITHUB_REF: {os.environ.get('GITHUB_REF', 'not set')}")
 
 # Pass version and PR info to templates
 html_context = {
     "version": version,
     "release": release,
     "pr_number": pr_number,
+    "version_match": version_match,
 }
 
 # Set html_baseurl for proper asset loading in subdirectories
@@ -242,7 +263,7 @@ html_theme_options = {
     "navbar_center": ["navbar-nav"],
     "switcher": {
         "json_url": "_static/switcher.json",
-        "version_match": version,
+        "version_match": version_match,
     },
     "show_version_warning_banner": True,
     "logo": {

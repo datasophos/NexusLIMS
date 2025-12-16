@@ -122,11 +122,10 @@ jobs:
         run: |
           VERSION=${GITHUB_REF#refs/tags/v}
           echo "version=$VERSION" >> $GITHUB_OUTPUT
-          # Get major.minor for version directory (e.g., 2.0 from 2.0.1)
-          echo "version_short=$(echo $VERSION | cut -d. -f1,2)" >> $GITHUB_OUTPUT
 
-      - name: Generate switcher.json
-        run: python scripts/generate_switcher_json.py
+      - name: Generate root index.html redirect
+        # Create root index.html that redirects to latest stable version
+        run: python scripts/generate_index_redirect.py
 
       - name: Deploy versioned docs to gh-pages
         run: |
@@ -140,7 +139,7 @@ jobs:
           git checkout gh-pages
           git pull origin gh-pages
 
-          VERSION_DIR="${{ steps.version.outputs.version_short }}"
+          VERSION_DIR="${{ steps.version.outputs.version }}"
 
           # Remove old version if exists
           rm -rf "$VERSION_DIR"
@@ -148,21 +147,50 @@ jobs:
 
           # Copy built docs to version directory
           rsync -avr _build/ "$VERSION_DIR/"
-          mkdir -p "$VERSION_DIR/_static"
-          cp docs/_static/switcher.json "$VERSION_DIR/_static/switcher.json"
 
-          # Update stable to be a full copy of the documentation (not just a redirect)
-          # This allows subpath links like /stable/user_guide/record_building.html to work
-          rm -rf stable
-          mkdir -p stable
-          rsync -avr _build/ stable/
-          mkdir -p stable/_static
-          cp docs/_static/switcher.json stable/_static/switcher.json
+          # Update root index.html redirect to latest stable version
+          cp index.html ./
 
-          git add "$VERSION_DIR" stable
+          git add "$VERSION_DIR" index.html
           git commit -m "Deploy docs for version ${{ steps.version.outputs.version }}" || echo "No changes to commit"
           git push origin gh-pages
 
           echo "✅ Documentation deployed!"
           echo "🔗 Version docs: https://datasophos.github.io/NexusLIMS/$VERSION_DIR/"
-          echo "🔗 Stable docs: https://datasophos.github.io/NexusLIMS/stable/"
+          echo "🔗 Root redirect: https://datasophos.github.io/NexusLIMS/ → $VERSION_DIR/"
+
+      - name: Regenerate and deploy switcher.json to all versions
+        run: |
+          # Switch back to main to regenerate switcher.json with updated gh-pages
+          git checkout main
+
+          # Regenerate switcher.json now that gh-pages has the new version
+          python scripts/generate_switcher_json.py
+
+          # Switch back to gh-pages to update all versions
+          git checkout gh-pages
+
+          # Update switcher.json in all version directories
+          for dir in */; do
+            # Only process directories that look like version directories (X.Y.Z, latest, pr-N)
+            # Skip: _build, docs, nexusLIMS (source code), and hidden dirs
+            if [ -d "$dir" ] && [ "$dir" != "_build/" ] && \
+               [ "$dir" != "docs/" ] && [ "$dir" != "nexusLIMS/" ] && \
+               [[ ! "$dir" =~ ^\. ]]; then
+              # Check if this looks like a docs directory (has _static subdirectory)
+              dir_clean="${dir%/}"
+              if [ -d "$dir_clean/_static" ]; then
+                mkdir -p "$dir_clean/_static"
+                cp docs/_static/switcher.json "$dir_clean/_static/switcher.json"
+                echo "Updated switcher.json in $dir"
+              fi
+            fi
+          done
+
+          # Stage all switcher.json changes
+          git add -A "*/_static/switcher.json" 2>/dev/null || true
+          git add -A "docs/_static/switcher.json" 2>/dev/null || true
+          git commit -m "Update switcher.json with version ${{ steps.version.outputs.version }}" || echo "No changes to commit"
+          git push origin gh-pages
+
+          echo "✅ Switcher updated in all version directories!"
