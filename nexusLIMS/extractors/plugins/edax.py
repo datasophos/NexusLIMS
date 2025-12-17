@@ -1,7 +1,7 @@
 """EDAX EDS spectrum (.spc/.msa) extractor plugin."""
 
 import logging
-from typing import Any
+from typing import Any, ClassVar
 
 from hyperspy.io import load
 
@@ -23,6 +23,7 @@ class SpcExtractor:
 
     name = "spc_extractor"
     priority = 100
+    supported_extensions: ClassVar = {"spc"}
 
     def supports(self, context: ExtractionContext) -> bool:
         """
@@ -115,6 +116,7 @@ class MsaExtractor:
 
     name = "msa_extractor"
     priority = 100
+    supported_extensions: ClassVar = {"msa"}
 
     def supports(self, context: ExtractionContext) -> bool:
         """

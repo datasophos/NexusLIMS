@@ -3,7 +3,7 @@
 import logging
 import textwrap
 from pathlib import Path
-from typing import Union
+from typing import ClassVar, Union
 
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
@@ -204,6 +204,7 @@ class TextPreviewGenerator:
 
     name = "text_preview"
     priority = 100
+    supported_extensions: ClassVar = {"txt"}
 
     def supports(self, context: ExtractionContext) -> bool:
         """

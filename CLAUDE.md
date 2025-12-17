@@ -260,6 +260,12 @@ path = config.NX_DATA_PATH
 
 **The only exception:** The `nexusLIMS/config.py` module itself, which is responsible for reading environment variables and exposing them as module-level attributes.
 
+## Technical Notes & References
+
+Additional technical documentation for specific tasks:
+
+- **[Zeroing Compressed TIFF Files](.claude/notes/zeroing-compressed-tiff-files.md)**: Binary patching method for zeroing out LZW-compressed TIFF image data while preserving all metadata and file structure. Use when you need to create test fixtures or anonymized data files.
+
 ## Python Version Support
 
 Supports Python 3.11 and 3.12 only (as specified in `pyproject.toml`).
@@ -272,3 +278,55 @@ Supports Python 3.11 and 3.12 only (as specified in `pyproject.toml`).
 - **When customizing instrument behavior**: Create an `InstrumentProfile` in `extractors/plugins/profiles/` (built-in) or in the directory specified by `NX_LOCAL_PROFILES_PATH` (local/site-specific)
 - HyperSpy is used extensively for reading/processing microscopy data
 - The project structure mirrors the data structure: `NX_DATA_PATH` parallels `NX_INSTRUMENT_DATA_PATH`
+
+### Developing Extractor Plugins
+
+The NexusLIMS extractor system uses a **plugin-based architecture** for automatic discovery and registration of metadata extractors. To add support for a new file format:
+
+**See [docs/writing_extractor_plugins.md](docs/writing_extractor_plugins.md) for detailed guidance.**
+
+Quick reference:
+
+1. Create a class in `nexusLIMS/extractors/plugins/` with:
+   - `name` (str): Unique identifier
+   - `priority` (int): Selection priority (higher wins, 0-1000)
+   - `supported_extensions` (set[str] | None): Extensions like `{"xyz"}` or `None` for wildcard
+   - `supports(context: ExtractionContext) -> bool`: Determine if extractor handles file
+   - `extract(context: ExtractionContext) -> dict[str, Any]`: Extract metadata
+
+2. Return dict with `"nx_meta"` key containing:
+   - `"DatasetType"`: "Image", "Spectrum", "SpectrumImage", "Diffraction", or "Misc"
+   - `"Data Type"`: Descriptive string (e.g., "SEM_Imaging")
+   - `"Creation Time"`: ISO-8601 timestamp with timezone
+
+3. The registry auto-discovers your plugin on first use
+
+**Example:**
+```python
+from nexusLIMS.extractors.base import ExtractionContext
+
+class MyFormatExtractor:
+    name = "my_format_extractor"
+    priority = 100
+    supported_extensions = {"xyz"}
+    
+    def supports(self, context: ExtractionContext) -> bool:
+        return context.file_path.suffix.lower() == ".xyz"
+    
+    def extract(self, context: ExtractionContext) -> dict:
+        return {
+            "nx_meta": {
+                "DatasetType": "Image",
+                "Data Type": "SEM_Imaging",
+                "Creation Time": "2025-12-16T12:34:56+00:00",
+                # ... additional fields
+            }
+        }
+```
+
+Key patterns:
+- **Priority selection**: Higher priority extractors are tried first
+- **Content sniffing**: Use `supports()` for format validation beyond extension
+- **Instrument-specific**: Check `context.instrument` for instrument-specific behavior
+- **Error handling**: Gracefully handle missing/corrupted files, don't raise exceptions
+- **Testing**: Add tests to `tests/unit/test_extractors/` (see existing extractors for patterns)

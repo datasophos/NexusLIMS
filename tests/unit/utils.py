@@ -37,6 +37,7 @@ tars = {
     "RECORD": "2018-11-13_FEI-Titan-TEM-012345_7de34313.xml.tar.gz",
     "IMAGE_FILES": "test_image_thumb_sources.tar.gz",
     "TEST_RECORD_FILES": "test_record_files.tar.gz",
+    "ORION_FIBICS_ZEROED": "orion-fibics_dataZeroed.tif.tar.gz",
 }
 
 

@@ -165,6 +165,9 @@ autodoc2_render_plugin = "myst"
 autodoc2_output_dir = "api"
 autodoc2_index_template = None  # We'll use a custom api.rst instead
 
+# Exclude private members (those starting with underscore like _logger)
+autodoc2_hidden_objects = ["private", "inherited", "dunder"]
+
 # -- Options for towncrier_draft extension -----------------------------------
 towncrier_draft_autoversion_mode = "draft"
 towncrier_draft_include_empty = False

@@ -23,6 +23,10 @@ tests/unit/files/*.ser
 tests/unit/files/*.emi
 tests/unit/files/*.xml
 tests/unit/files/*.tif
+!orion-zeiss_dataZeroed.tif
+!quanta_just_modded_mdata.tif
+!quanta_bad_metadata.tif
+!test_STEM_image.dm3
 tests/unit/files/*.hdf5
 tests/unit/files/**/*.json
 tests/integration/**/*.json
@@ -30,6 +34,7 @@ tests/integration/**/*.json
 !reservation_questsions.json
 tests/**/*.xml
 !tests/integration/docker/cdcs/fixtures/test_record.xml
+!tests/unit/files/*metadata.xml
 tests/test_report.xml
 .env
 tests/.env.test

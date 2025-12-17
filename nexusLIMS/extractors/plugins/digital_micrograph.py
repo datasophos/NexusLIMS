@@ -5,7 +5,7 @@ from datetime import UTC
 from datetime import datetime as dt
 from pathlib import Path
 from struct import error
-from typing import Any, Dict, List
+from typing import Any, ClassVar, Dict, List
 
 import numpy as np
 from hyperspy.io import load as hs_load
@@ -59,6 +59,7 @@ class DM3Extractor:
 
     name = "dm3_extractor"
     priority = 100
+    supported_extensions: ClassVar = {"dm3", "dm4"}
 
     def supports(self, context: ExtractionContext) -> bool:
         """

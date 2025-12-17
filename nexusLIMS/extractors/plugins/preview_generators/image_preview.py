@@ -151,9 +151,7 @@ class ImagePreviewGenerator:
 
     name = "image_preview"
     priority = 100
-
-    # Supported image formats
-    SUPPORTED_EXTENSIONS: ClassVar = {
+    supported_extensions: ClassVar = {
         "png",
         "jpg",
         "jpeg",
@@ -178,7 +176,7 @@ class ImagePreviewGenerator:
             True if file extension is a supported image format
         """
         extension = context.file_path.suffix.lower().lstrip(".")
-        return extension in self.SUPPORTED_EXTENSIONS
+        return extension in self.supported_extensions
 
     def generate(self, context: ExtractionContext, output_path: Path) -> bool:
         """

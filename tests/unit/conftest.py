@@ -623,6 +623,21 @@ def binary_text_file():
     return Path(__file__).parent / "files" / "binary_text.txt"
 
 
+# Zeiss Orion/Fibics test files
+@pytest.fixture(scope="module")
+def orion_fibics_zeroed_file():
+    """Zeiss Orion with Fibics HIM data file (data zeroed for size)."""
+    files = extract_files("ORION_FIBICS_ZEROED")
+    yield files[0] if files else None
+    delete_files("ORION_FIBICS_ZEROED")
+
+
+@pytest.fixture(scope="module")
+def orion_zeiss_zeroed_file():
+    """Zeiss Orion with Zeiss XML metadata (data zeroed for size)."""
+    return Path(__file__).parent / "files" / "orion-zeiss_dataZeroed.tif"
+
+
 # XML record test file
 
 

@@ -826,9 +826,7 @@ class HyperSpyPreviewGenerator:
 
     name = "hyperspy_preview"
     priority = 100
-
-    # File extensions that HyperSpy can handle and we want to preview
-    SUPPORTED_EXTENSIONS: ClassVar = {
+    supported_extensions: ClassVar = {
         "dm3",
         "dm4",
         "ser",
@@ -850,7 +848,7 @@ class HyperSpyPreviewGenerator:
             True if file extension is supported by HyperSpy
         """
         extension = context.file_path.suffix.lower().lstrip(".")
-        return extension in self.SUPPORTED_EXTENSIONS
+        return extension in self.supported_extensions
 
     def generate(self, context: ExtractionContext, output_path: Path) -> bool:
         """
