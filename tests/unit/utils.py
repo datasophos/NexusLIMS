@@ -38,6 +38,7 @@ tars = {
     "IMAGE_FILES": "test_image_thumb_sources.tar.gz",
     "TEST_RECORD_FILES": "test_record_files.tar.gz",
     "ORION_FIBICS_ZEROED": "orion-fibics_dataZeroed.tif.tar.gz",
+    "TESCAN_PFIB": "tescan-pfib_dataZeroed.tar.gz",
 }
 
 

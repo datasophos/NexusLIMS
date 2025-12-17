@@ -140,10 +140,10 @@ class Settings(BaseSettings):
         ),
     )
     NX_IGNORE_PATTERNS: list[str] = Field(
-        ["*.mib", "*.db", "*.emi"],
+        ["*.mib", "*.db", "*.emi", "*.hdr"],
         description=(
             "List of glob patterns to ignore when searching for experiment files. "
-            "Default is `['*.mib','*.db','*.emi']`."
+            "Default is `['*.mib','*.db','*.emi','*.hdr']`."
         ),
     )
     NX_INSTRUMENT_DATA_PATH: DirectoryPath = Field(

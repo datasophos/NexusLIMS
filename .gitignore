@@ -27,6 +27,7 @@ tests/unit/files/*.tif
 !quanta_just_modded_mdata.tif
 !quanta_bad_metadata.tif
 !test_STEM_image.dm3
+!pfib-tescan.tif
 tests/unit/files/*.hdf5
 tests/unit/files/**/*.json
 tests/integration/**/*.json

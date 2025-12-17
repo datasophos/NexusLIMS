@@ -36,7 +36,7 @@ class TestUtils:
 
     CREDENTIAL_FILE_ABS = Path(utils.__file__).parent / "credentials.ini.example"
     CREDENTIAL_FILE_REL = Path("credentials.ini.example")
-    TITAN_FILE_COUNT = 10  # Files with known extensions (.dm3, .ser)
+    TITAN_FILE_COUNT = 11  # Files with known extensions (.dm3, .ser)
     TITAN_ALL_FILE_COUNT = 16  # All files (.db, .jpg, .jpeg, .raw, .txt, .emi)
     JEOL_DIRS_COUNT = 7  # All dirs with correct timestamp
     JEOL_FILE_COUNT = 8  # Total .dm3 files across all JEOL_TEM subdirs

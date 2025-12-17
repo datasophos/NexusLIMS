@@ -66,10 +66,11 @@ class TestRecordBuilder:
         assert len(sessions) == 3
 
         # Expected file counts for each session:
-        # - FEI-Titan-TEM (2018-11-13): 10 files (8 .dm3 + 2 .ser, .emi excluded)
+        # - FEI-Titan-TEM (2018-11-13): 11 files
+        #       (8 .dm3 + 2 .ser, .emi excluded, 1 .tif from Tescan)
         # - JEOL-JEM-TEM (2019-07-24): 8 files (.dm3 in subdirs)
         # - testtool-TEST-A1234567 (2021-08-02): 4 files (.dm3)
-        correct_files_per_session = [10, 8, 4]
+        correct_files_per_session = [11, 8, 4]
 
         file_list_list = []
         for session, expected_count in zip(sessions, correct_files_per_session):
@@ -121,9 +122,10 @@ class TestRecordBuilder:
             # Find files - should now include the uppercase/mixed-case copies
             found_files = record_builder.dry_run_file_find(titan_session)
 
-            # Original count: 10 files (8 .dm3 + 2 .ser, .emi excluded)
-            # New count: 12 files (10 original + 2 uppercase copies)
-            assert len(found_files) == 12
+            # Original count: 11 files
+            #   (8 .dm3 + 2 .ser, .emi excluded, 1 .tif from Tescan)
+            # New count: 13 files (11 original + 2 uppercase copies)
+            assert len(found_files) == 13
 
             # Verify both lowercase and uppercase versions are found
             assert (test_dir / "image_001.dm3") in found_files
@@ -185,9 +187,10 @@ class TestRecordBuilder:
             # Find files - should now include all .tif variations
             found_files = record_builder.dry_run_file_find(titan_session)
 
-            # Original count: 10 files (8 .dm3 + 2 .ser, .emi excluded)
-            # New count: 18 files (10 original + 4 .tif + 4 .tiff files)
-            assert len(found_files) == 18
+            # Original count: 11 files
+            #   (8 .dm3 + 2 .ser, .emi excluded, 1 .tif from Tescan)
+            # New count: 19 files (11 original + 4 .tif + 4 .tiff files)
+            assert len(found_files) == 19
 
             # Verify all .tif variations are found
             for test_file in test_files:
@@ -529,8 +532,8 @@ class TestRecordBuilder:
             # Titan TEM session (id=101)
             "2018-11-13_FEI-Titan-TEM_101.xml": {
                 f"/{{{nexus_ns}}}title": "Microstructure analysis of steel alloys",
-                f"//{{{nexus_ns}}}acquisitionActivity": 2,
-                f"//{{{nexus_ns}}}dataset": 10,
+                f"//{{{nexus_ns}}}acquisitionActivity": 3,
+                f"//{{{nexus_ns}}}dataset": 11,
                 f"/{{{nexus_ns}}}summary/{{{nexus_ns}}}motivation": (
                     "Characterize phase transformations in heat-treated steel"
                 ),
@@ -598,9 +601,9 @@ class TestRecordBuilder:
     @pytest.mark.parametrize(
         ("strategy_name", "env_value", "expected_datasets"),
         [
-            ("inclusive", "inclusive", 14),
-            ("default", None, 10),
-            ("unsupported", "bob", 10),
+            ("inclusive", "inclusive", 16),
+            ("default", None, 11),
+            ("unsupported", "bob", 11),
         ],
         ids=["inclusive_strategy", "default_strategy", "unsupported_strategy"],
     )
@@ -654,7 +657,7 @@ class TestRecordBuilder:
 
         # Parse and validate the XML
         root = etree.parse(f)
-        aa_count = 2  # Two temporal clusters based on file timestamps
+        aa_count = 3  # Three temporal clusters based on file timestamps
 
         assert (
             root.find(f"/{{{nexus_ns}}}title").text

@@ -200,6 +200,8 @@ filterwarnings = [
     "ignore:Using or importing the ABCs from:DeprecationWarning",
     "ignore:the imp module is deprecated in favour of:DeprecationWarning",
     "ignore:Glyph .* missing from font:UserWarning",
+    "ignore:The NumPy module was reloaded:UserWarning",
+    "ignore:Corrupt EXIF data.*:UserWarning",
 ]
 
 [tool.pyright]

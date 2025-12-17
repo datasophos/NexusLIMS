@@ -13,6 +13,7 @@ each format.
 | .dm3, .dm4 | ✅ Full | Gatan DigitalMicrograph | TEM/STEM Imaging, EELS, EDS, Diffraction, Spectrum Imaging | Comprehensive metadata, instrument-specific parsers, automatic type detection |
 | .tif | ✅ Full | FEI/Thermo Fisher SEM/FIB | SEM Imaging | Beam settings, stage position, vacuum conditions, detector config |
 | .tif | ✅ Full | Zeiss Orion HIM / Fibics HIM | HIM Imaging | Helium ion beam settings, stage position, detector configuration, image metadata |
+| .tif | ✅ Full | Tescan PFIB/SEM | SEM Imaging | High-voltage settings, stage position, detector gain/offset, scan parameters, stigmator values |
 | .ser, .emi | ✅ Full | FEI TIA Software | TEM/STEM Imaging, Diffraction, EELS/EDS Spectra & SI | Multi-file support, experimental conditions, acquisition parameters |
 | .spc | ✅ Full | EDAX (Genesis, TEAM) | EDS Spectrum | Detector angles, energy calibration, element identification |
 | .msa | ✅ Full | EDAX & others (standard) | EDS Spectrum | EMSA/MAS standard format, vendor extensions supported |
@@ -191,6 +192,89 @@ This content-based detection allows proper identification even when files use `.
 - The extractor uses content sniffing rather than extension alone, ensuring correct identification even if .tif files from multiple instruments are present
 - If XML metadata is missing or corrupted, the extractor gracefully falls back to basic file information
 - Both Zeiss Orion and Fibics HIM variants store metadata as embedded XML, making extraction reliable across different software versions
+
+### Tescan PFIB/SEM TIF Files (.tif)
+
+**Support Level**: ✅ Full
+
+**Description**: TIFF images saved by Tescan PFIB (Focused Ion Beam) and SEM instruments (e.g., AMBER X) with embedded INI-style metadata in custom TIFF tags or sidecar .hdr files.
+
+**Extractor Module**: {py:mod}`nexusLIMS.extractors.plugins.tescan_pfib_tif`
+
+**File Format Details**:
+
+The extractor uses a three-tier strategy for metadata extraction:
+
+1. **Primary**: Extracts metadata from embedded TIFF tag 50431 (custom Tescan metadata tag) containing INI-style metadata
+2. **Fallback**: If embedded metadata fails or is incomplete, looks for a sidecar `.hdr` file with full metadata in INI format (`[MAIN]` and `[SEM]` sections)
+3. **Supplementary**: Always extracts basic TIFF tags (tag 271 for Make, tag 305 for Software, tag 315 for Artist) to supplement or override other metadata
+
+This multi-tier approach ensures complete metadata is available whether metadata is embedded in the TIFF or stored in a sidecar `.hdr` file.
+
+**Key Metadata Extracted**:
+
+**From [MAIN] section**:
+- Instrument identification (Device, Model, Serial Number)
+- User information (Operator name)
+- Acquisition timestamp (Date and Time)
+- Magnification
+- Software version
+
+**From [SEM] section**:
+- Beam parameters (High Voltage, Spot Size, Emission Current)
+- Stage position (X, Y, Z coordinates and Rotation/Tilt angles)
+- Scan settings (Dwell time, Scan mode, Rotation)
+- Detector configuration (Name, Gain, Offset)
+- Vacuum conditions (Chamber pressure)
+- Stigmator values (X and Y corrections)
+- Gun type configuration
+- Working Distance
+- Session ID for traceability
+
+**Unit Conversions**:
+- Magnification: Converted from raw values to kiloX (kX)
+- Voltages: Converted from millivolts to kilovolts (kV)
+- Distances: Converted from meters to millimeters (mm) or nanometers (nm) as appropriate
+- Currents: Converted from amperes to microamperes (μA)
+- Pressure: Converted to millipascals (mPa)
+- Pixel sizes: Calculated from image dimensions and field of view, converted to nanometers (nm)
+
+**Data Types Detected**:
+
+- SEM Imaging
+
+**Special Features**:
+
+- Priority 150 - Checked before generic TIFF extractors to properly identify Tescan files
+- Content-based detection via custom TIFF tags even if `.hdr` file is missing
+- Comprehensive stage position tracking (X, Y, Z, Rotation, Tilt)
+- Detector settings extraction (Gain and Offset values)
+- Automatic conversion of physics units to display-friendly formats
+- Empty field exclusion - Fields with empty values are not included in output
+- Session tracking with unique Session ID
+
+**Preview Generation**:
+
+- Converts image to square thumbnail (500×500 px default)
+- Maintains aspect ratio with padding
+
+**Warnings**:
+
+The extractor flags the following fields as potentially unreliable:
+- **Operator**: May reflect a logged-in user rather than the actual operator who collected the data
+
+**Compatibility Notes**:
+
+- **Tescan AMBER X**: Fully tested and verified
+- **Other Tescan SEM/PFIB Instruments**: Likely compatible due to consistent INI metadata format, but not yet tested
+- Both `.tif` and `.tiff` extensions are supported
+
+**Notes**:
+
+- If `.hdr` file is present but cannot be read, the extractor falls back to embedded TIFF tag metadata
+- If both sidecar and embedded metadata are available, the sidecar is preferred (more reliable)
+- The extractor gracefully handles missing or incomplete metadata sections
+- Pixel size is calculated from magnification and field width when not directly available
 
 ### FEI TIA Files (.ser, .emi)
 
@@ -434,6 +518,7 @@ For complete API documentation of the extractor modules, see:
 - {py:mod}`nexusLIMS.extractors.plugins.digital_micrograph` - DM3/DM4 file extractor
 - {py:mod}`nexusLIMS.extractors.plugins.quanta_tif` - FEI/Thermo TIF file extractor
 - {py:mod}`nexusLIMS.extractors.plugins.orion_HIM_tif` - Zeiss Orion / Fibics HIM TIF file extractor
+- {py:mod}`nexusLIMS.extractors.plugins.tescan_pfib_tif` - Tescan PFIB/SEM TIF file extractor
 - {py:mod}`nexusLIMS.extractors.plugins.fei_emi` - FEI TIA .ser/.emi file extractor
 - {py:mod}`nexusLIMS.extractors.plugins.edax` - EDAX .spc/.msa file extractor
 - {py:mod}`nexusLIMS.extractors.plugins.basic_metadata` - Basic metadata fallback extractor
