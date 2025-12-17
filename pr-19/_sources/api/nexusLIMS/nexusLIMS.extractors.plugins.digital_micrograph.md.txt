@@ -1,0 +1,186 @@
+# {py:mod}`nexusLIMS.extractors.plugins.digital_micrograph`
+
+```{py:module} nexusLIMS.extractors.plugins.digital_micrograph
+```
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph
+:allowtitles:
+```
+
+## Module Contents
+
+### Classes
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`DM3Extractor <nexusLIMS.extractors.plugins.digital_micrograph.DM3Extractor>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph.DM3Extractor
+    :summary:
+    ```
+````
+
+### Functions
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`get_dm3_metadata <nexusLIMS.extractors.plugins.digital_micrograph.get_dm3_metadata>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph.get_dm3_metadata
+    :summary:
+    ```
+* - {py:obj}`get_pre_path <nexusLIMS.extractors.plugins.digital_micrograph.get_pre_path>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph.get_pre_path
+    :summary:
+    ```
+* - {py:obj}`parse_dm3_microscope_info <nexusLIMS.extractors.plugins.digital_micrograph.parse_dm3_microscope_info>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph.parse_dm3_microscope_info
+    :summary:
+    ```
+* - {py:obj}`parse_dm3_eels_info <nexusLIMS.extractors.plugins.digital_micrograph.parse_dm3_eels_info>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph.parse_dm3_eels_info
+    :summary:
+    ```
+* - {py:obj}`parse_dm3_eds_info <nexusLIMS.extractors.plugins.digital_micrograph.parse_dm3_eds_info>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph.parse_dm3_eds_info
+    :summary:
+    ```
+* - {py:obj}`parse_dm3_spectrum_image_info <nexusLIMS.extractors.plugins.digital_micrograph.parse_dm3_spectrum_image_info>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph.parse_dm3_spectrum_image_info
+    :summary:
+    ```
+* - {py:obj}`process_tecnai_microscope_info <nexusLIMS.extractors.plugins.digital_micrograph.process_tecnai_microscope_info>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph.process_tecnai_microscope_info
+    :summary:
+    ```
+````
+
+### Data
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`logger <nexusLIMS.extractors.plugins.digital_micrograph.logger>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph.logger
+    :summary:
+    ```
+````
+
+### API
+
+````{py:data} logger
+:canonical: nexusLIMS.extractors.plugins.digital_micrograph.logger
+:value: >
+   'getLogger(...)'
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph.logger
+```
+
+````
+
+`````{py:class} DM3Extractor
+:canonical: nexusLIMS.extractors.plugins.digital_micrograph.DM3Extractor
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph.DM3Extractor
+```
+
+````{py:attribute} name
+:canonical: nexusLIMS.extractors.plugins.digital_micrograph.DM3Extractor.name
+:value: >
+   'dm3_extractor'
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph.DM3Extractor.name
+```
+
+````
+
+````{py:attribute} priority
+:canonical: nexusLIMS.extractors.plugins.digital_micrograph.DM3Extractor.priority
+:value: >
+   100
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph.DM3Extractor.priority
+```
+
+````
+
+````{py:attribute} supported_extensions
+:canonical: nexusLIMS.extractors.plugins.digital_micrograph.DM3Extractor.supported_extensions
+:type: typing.ClassVar
+:value: >
+   None
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph.DM3Extractor.supported_extensions
+```
+
+````
+
+````{py:method} supports(context: nexusLIMS.extractors.base.ExtractionContext) -> bool
+:canonical: nexusLIMS.extractors.plugins.digital_micrograph.DM3Extractor.supports
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph.DM3Extractor.supports
+```
+
+````
+
+````{py:method} extract(context: nexusLIMS.extractors.base.ExtractionContext) -> dict[str, typing.Any]
+:canonical: nexusLIMS.extractors.plugins.digital_micrograph.DM3Extractor.extract
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph.DM3Extractor.extract
+```
+
+````
+
+`````
+
+````{py:function} get_dm3_metadata(filename: pathlib.Path, instrument=None)
+:canonical: nexusLIMS.extractors.plugins.digital_micrograph.get_dm3_metadata
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph.get_dm3_metadata
+```
+````
+
+````{py:function} get_pre_path(mdict: typing.Dict) -> typing.List[str]
+:canonical: nexusLIMS.extractors.plugins.digital_micrograph.get_pre_path
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph.get_pre_path
+```
+````
+
+````{py:function} parse_dm3_microscope_info(mdict)
+:canonical: nexusLIMS.extractors.plugins.digital_micrograph.parse_dm3_microscope_info
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph.parse_dm3_microscope_info
+```
+````
+
+````{py:function} parse_dm3_eels_info(mdict)
+:canonical: nexusLIMS.extractors.plugins.digital_micrograph.parse_dm3_eels_info
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph.parse_dm3_eels_info
+```
+````
+
+````{py:function} parse_dm3_eds_info(mdict)
+:canonical: nexusLIMS.extractors.plugins.digital_micrograph.parse_dm3_eds_info
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph.parse_dm3_eds_info
+```
+````
+
+````{py:function} parse_dm3_spectrum_image_info(mdict)
+:canonical: nexusLIMS.extractors.plugins.digital_micrograph.parse_dm3_spectrum_image_info
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph.parse_dm3_spectrum_image_info
+```
+````
+
+````{py:function} process_tecnai_microscope_info(microscope_info, delimiter='\u2028')
+:canonical: nexusLIMS.extractors.plugins.digital_micrograph.process_tecnai_microscope_info
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph.process_tecnai_microscope_info
+```
+````
