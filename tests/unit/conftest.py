@@ -647,6 +647,32 @@ def orion_zeiss_zeroed_file():
     return Path(__file__).parent / "files" / "orion-zeiss_dataZeroed.tif"
 
 
+# NeoArm Gatan test files
+@pytest.fixture(scope="module")
+def neoarm_gatan_si_file():
+    """NeoArm Gatan spectrum image file (data zeroed for size)."""
+    files = extract_files("NEOARM_GATAN_SI")
+    yield files[0] if files else None
+    delete_files("NEOARM_GATAN_SI")
+
+
+@pytest.fixture(scope="module")
+def neoarm_gatan_image_file():
+    """NeoArm Gatan image file (data zeroed for size)."""
+    files = extract_files("NEOARM_GATAN_IMAGE")
+    yield files[0] if files else None
+    delete_files("NEOARM_GATAN_IMAGE")
+
+
+# Quanta FEI 2 test file
+@pytest.fixture(scope="module")
+def quanta_fei_2_file():
+    """Quanta FEI 2 example TIFF file (data zeroed for size)."""
+    files = extract_files("QUANTA_FEI_2")
+    yield files[0] if files else None
+    delete_files("QUANTA_FEI_2")
+
+
 # XML record test file
 
 
