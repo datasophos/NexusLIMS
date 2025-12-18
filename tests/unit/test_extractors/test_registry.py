@@ -537,6 +537,261 @@ class TestExtractorSelection:
             registry.clear()
 
 
+class TestRegistryProperties:
+    """Test registry properties."""
+
+    def test_extractors_property_returns_dict(self, registry):
+        """Extractors property should return dictionary of extractors by extension."""
+
+        class DM3Extractor:
+            name = "dm3"
+            priority = 100
+            supported_extensions: ClassVar = {"dm3"}
+
+            def supports(self, context):
+                return context.file_path.suffix.lower() == ".dm3"
+
+            def extract(self, context):
+                return {"nx_meta": {}}
+
+        class TIFExtractor:
+            name = "tif"
+            priority = 100
+            supported_extensions: ClassVar = {"tif"}
+
+            def supports(self, context):
+                return context.file_path.suffix.lower() == ".tif"
+
+            def extract(self, context):
+                return {"nx_meta": {}}
+
+        try:
+            registry.register_extractor(DM3Extractor)
+            registry.register_extractor(TIFExtractor)
+
+            # Get extractors property
+            extractors_dict = registry.extractors
+
+            # Should be a dict mapping extension to list of extractor classes
+            assert isinstance(extractors_dict, dict)
+            assert "dm3" in extractors_dict
+            assert "tif" in extractors_dict
+
+            # Each value should be a list of extractor classes
+            assert isinstance(extractors_dict["dm3"], list)
+            assert isinstance(extractors_dict["tif"], list)
+            assert len(extractors_dict["dm3"]) > 0
+            assert len(extractors_dict["tif"]) > 0
+        finally:
+            registry.clear()
+
+    def test_extractors_property_triggers_discovery(self, registry):
+        """Extractors property should trigger auto-discovery if not done."""
+        try:
+            # Enable discovery
+            registry._discovered = False
+
+            # Access property
+            extractors_dict = registry.extractors
+
+            # Discovery should have happened
+            assert registry._discovered
+            # Should return a dict (even if empty)
+            assert isinstance(extractors_dict, dict)
+        finally:
+            registry.clear()
+
+    def test_extractor_names_property_returns_sorted_list(self, registry):
+        """extractor_names should return deduped, sorted list of class names."""
+
+        class ZebraExtractor:
+            name = "zebra"
+            priority = 100
+            supported_extensions: ClassVar = {"dm3"}
+
+            def supports(self, context):
+                return context.file_path.suffix.lower() == ".dm3"
+
+            def extract(self, context):
+                return {"nx_meta": {}}
+
+        class AppleExtractor:
+            name = "apple"
+            priority = 100
+            supported_extensions: ClassVar = {"tif"}
+
+            def supports(self, context):
+                return context.file_path.suffix.lower() == ".tif"
+
+            def extract(self, context):
+                return {"nx_meta": {}}
+
+        class BananaExtractor:
+            name = "banana"
+            priority = 100
+            supported_extensions: ClassVar = {"ser"}
+
+            def supports(self, context):
+                return context.file_path.suffix.lower() == ".ser"
+
+            def extract(self, context):
+                return {"nx_meta": {}}
+
+        try:
+            registry.register_extractor(ZebraExtractor)
+            registry.register_extractor(AppleExtractor)
+            registry.register_extractor(BananaExtractor)
+
+            # Get names
+            names = registry.extractor_names
+
+            # Should be a list
+            assert isinstance(names, list)
+
+            # Should be sorted alphabetically
+            assert names == sorted(names)
+
+            # Should contain all registered class names
+            assert "ZebraExtractor" in names
+            assert "AppleExtractor" in names
+            assert "BananaExtractor" in names
+
+            # Should be exactly these three
+            assert len(names) == 3
+            # Verify order (alphabetical by class name)
+            assert names == ["AppleExtractor", "BananaExtractor", "ZebraExtractor"]
+        finally:
+            registry.clear()
+
+    def test_extractor_names_property_deduplicates(self, registry):
+        """Extractor_names should dedupe names for extractors w/ multiple extensions."""
+
+        class MultiExtractorClass:
+            name = "multi"
+            priority = 100
+            supported_extensions: ClassVar = {"dm3", "dm4"}
+
+            def supports(self, context):
+                ext = context.file_path.suffix.lower().lstrip(".")
+                return ext in {"dm3", "dm4"}
+
+            def extract(self, context):
+                return {"nx_meta": {}}
+
+        class SingleExtractorClass:
+            name = "single"
+            priority = 100
+            supported_extensions: ClassVar = {"tif"}
+
+            def supports(self, context):
+                return context.file_path.suffix.lower() == ".tif"
+
+            def extract(self, context):
+                return {"nx_meta": {}}
+
+        try:
+            registry.register_extractor(MultiExtractorClass)
+            registry.register_extractor(SingleExtractorClass)
+
+            names = registry.extractor_names
+
+            # "MultiExtractorClass" should appear only once even
+            # though it supports 2 extensions
+            assert isinstance(names, list)
+            multi_count = sum(1 for n in names if n == "MultiExtractorClass")
+            assert multi_count == 1
+
+            # Should have exactly 2 unique names
+            assert len(names) == 2
+            assert set(names) == {"MultiExtractorClass", "SingleExtractorClass"}
+        finally:
+            registry.clear()
+
+    def test_extractor_names_includes_wildcards(self, registry):
+        """extractor_names property should include wildcard extractors."""
+
+        class SpecificExtractorClass:
+            name = "specific"
+            priority = 100
+            supported_extensions: ClassVar = {"dm3"}
+
+            def supports(self, context):
+                return context.file_path.suffix.lower() == ".dm3"
+
+            def extract(self, context):
+                return {"nx_meta": {}}
+
+        class WildcardExtractorClass:
+            name = "wildcard"
+            priority = 50
+            supported_extensions: ClassVar = None  # Wildcard - supports any extension
+
+            def supports(self, context):
+                ext = context.file_path.suffix.lower().lstrip(".")
+                common = {
+                    "dm3",
+                    "dm4",
+                    "ser",
+                    "emi",
+                    "tif",
+                    "tiff",
+                    "spc",
+                    "msa",
+                    "txt",
+                    "png",
+                    "jpg",
+                    "jpeg",
+                    "bmp",
+                    "gif",
+                }
+                return ext not in common
+
+            def extract(self, context):
+                return {"nx_meta": {}}
+
+        try:
+            registry.register_extractor(SpecificExtractorClass)
+            registry.register_extractor(WildcardExtractorClass)
+
+            names = registry.extractor_names
+
+            # Should include both specific and wildcard extractors (using class names)
+            assert "SpecificExtractorClass" in names
+            assert "WildcardExtractorClass" in names
+            assert len(names) == 2
+        finally:
+            registry.clear()
+
+    def test_extractor_names_property_triggers_discovery(self, registry):
+        """extractor_names property should trigger auto-discovery if not done."""
+        try:
+            # Enable discovery for this test
+            registry._discovered = False
+
+            # Access property
+            names = registry.extractor_names
+
+            # Discovery should have happened
+            assert registry._discovered
+            # Should return a list with actual extractor names from discovered plugins
+            assert isinstance(names, list)
+            # Should have discovered some extractors (at least the basic one)
+            assert len(names) > 0
+            # Names should be sorted
+            assert names == sorted(names)
+        finally:
+            registry.clear()
+
+    def test_extractor_names_empty_when_no_extractors(self, registry):
+        """extractor_names should return empty list when no extractors registered."""
+        # Registry starts empty with discovery disabled in fixture
+        names = registry.extractor_names
+
+        # Should be an empty list
+        assert isinstance(names, list)
+        assert len(names) == 0
+
+
 class TestExtensionQueries:
     """Test extension-related query methods."""
 

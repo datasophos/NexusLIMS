@@ -521,9 +521,42 @@ See {doc}`writing_extractor_plugins` for instructions on how to write a new extr
 
 ## API Reference
 
+### Extractor Registry Properties
+
+The {py:class}`nexusLIMS.extractors.registry.ExtractorRegistry` class provides convenient properties for querying registered extractors:
+
+**`extractors` Property**
+: Returns a dictionary mapping file extensions to lists of extractor classes, sorted by priority (descending). This property automatically triggers plugin discovery if not already performed.
+
+```python
+from nexusLIMS.extractors.registry import get_registry
+
+registry = get_registry()
+extractors_by_ext = registry.extractors
+# Returns: {
+#   'dm3': [<class digital_micrograph.DM3Extractor'>], 
+#   'dm4': [<class 'digital_micrograph.DM3Extractor'>], 
+#   'msa': [<class 'edax.MsaExtractor'>], 
+#   'spc': [<class 'edax.SpcExtractor'>], 
+#   ... 
+# }
+```
+
+**`extractor_names` Property**
+: Returns a deduplicated, alphabetically-sorted list of all registered extractor class names. Includes both extension-specific and wildcard extractors. This property also triggers auto-discovery if needed.
+
+```python
+registry = get_registry()
+names = registry.extractor_names
+# Returns: ["BasicFileInfoExtractor", "DM3Extractor", ..., "TescanTiffExtractor"]
+```
+
+### Extractor Modules
+
 For complete API documentation of the extractor modules, see:
 
 - {py:mod}`nexusLIMS.extractors` - Main extractor module
+- {py:mod}`nexusLIMS.extractors.registry` - Extractor registry and auto-discovery
 - {py:mod}`nexusLIMS.extractors.plugins.digital_micrograph` - DM3/DM4 file extractor
 - {py:mod}`nexusLIMS.extractors.plugins.quanta_tif` - FEI/Thermo TIF file extractor
 - {py:mod}`nexusLIMS.extractors.plugins.orion_HIM_tif` - Zeiss Orion / Fibics HIM TIF file extractor
