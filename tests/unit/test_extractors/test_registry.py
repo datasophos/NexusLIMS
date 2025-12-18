@@ -8,6 +8,7 @@ plugins exist in the library.
 """
 
 from pathlib import Path
+from typing import ClassVar
 
 import pytest
 
@@ -75,6 +76,7 @@ class TestRegistryBasics:
         class TestExtractor:
             name = "test"
             priority = 100
+            supported_extensions: ClassVar = {"dm3"}
 
             def supports(self, context):
                 return context.file_path.suffix.lower() == ".dm3"
@@ -112,6 +114,7 @@ class TestManualRegistration:
         class DM3Extractor:
             name = "test_dm3"
             priority = 100
+            supported_extensions: ClassVar = {"dm3"}
 
             def supports(self, context):
                 return context.file_path.suffix.lower() == ".dm3"
@@ -136,6 +139,7 @@ class TestManualRegistration:
         class MultiExtractor:
             name = "multi_ext"
             priority = 100
+            supported_extensions: ClassVar = {"dm3", "dm4"}
 
             def supports(self, context):
                 ext = context.file_path.suffix.lower().lstrip(".")
@@ -216,6 +220,7 @@ class TestManualRegistration:
         class LowPriority:
             name = "low"
             priority = 50
+            supported_extensions: ClassVar = {"tif"}
 
             def supports(self, context):
                 return context.file_path.suffix.lower() == ".tif"
@@ -226,6 +231,7 @@ class TestManualRegistration:
         class HighPriority:
             name = "high"
             priority = 200
+            supported_extensions: ClassVar = {"tif"}
 
             def supports(self, context):
                 return context.file_path.suffix.lower() == ".tif"
@@ -236,6 +242,7 @@ class TestManualRegistration:
         class MediumPriority:
             name = "medium"
             priority = 100
+            supported_extensions: ClassVar = {"tif"}
 
             def supports(self, context):
                 return context.file_path.suffix.lower() == ".tif"
@@ -264,6 +271,7 @@ class TestManualRegistration:
         class TestExtractor:
             name = "test"
             priority = 100
+            supported_extensions: ClassVar = {"dm3"}
 
             def supports(self, context):
                 return context.file_path.suffix.lower() == ".dm3"
@@ -292,6 +300,7 @@ class TestExtractorSelection:
         class DM3Extractor:
             name = "test_dm3"
             priority = 100
+            supported_extensions: ClassVar = {"dm3"}
 
             def supports(self, context):
                 return context.file_path.suffix.lower() == ".dm3"
@@ -320,6 +329,7 @@ class TestExtractorSelection:
         class LowPriorityExtractor:
             name = "low"
             priority = 50
+            supported_extensions: ClassVar = {"tif"}
 
             def supports(self, context):
                 return True
@@ -330,6 +340,7 @@ class TestExtractorSelection:
         class HighPriorityExtractor:
             name = "high"
             priority = 150
+            supported_extensions: ClassVar = {"tif"}
 
             def supports(self, context):
                 return True
@@ -355,6 +366,7 @@ class TestExtractorSelection:
         class FirstExtractor:
             name = "first"
             priority = 200
+            supported_extensions: ClassVar = {"tif"}
 
             def supports(self, context):
                 return False  # Skip this one
@@ -365,6 +377,7 @@ class TestExtractorSelection:
         class SecondExtractor:
             name = "second"
             priority = 150
+            supported_extensions: ClassVar = {"tif"}
 
             def supports(self, context):
                 return True  # This one matches!
@@ -375,6 +388,7 @@ class TestExtractorSelection:
         class ThirdExtractor:
             name = "third"
             priority = 100
+            supported_extensions: ClassVar = {"tif"}
 
             def supports(self, context):
                 return True  # Would match but not reached
@@ -401,6 +415,7 @@ class TestExtractorSelection:
         class AlwaysRejectExtractor:
             name = "reject"
             priority = 100
+            supported_extensions: ClassVar = {"dm3"}
 
             def supports(self, context):
                 return False
@@ -438,6 +453,7 @@ class TestExtractorSelection:
         class SpecificExtractor:
             name = "specific"
             priority = 150
+            supported_extensions: ClassVar = {"dm3"}
 
             def supports(self, context):
                 return False  # Doesn't match
@@ -473,6 +489,7 @@ class TestExtractorSelection:
         class DM3Extractor:
             name = "dm3"
             priority = 100
+            supported_extensions: ClassVar = {"dm3"}
 
             def supports(self, context):
                 return context.file_path.suffix.lower() == ".dm3"
@@ -497,6 +514,7 @@ class TestExtractorSelection:
         class TIFExtractor:
             name = "tif"
             priority = 100
+            supported_extensions: ClassVar = {"tif"}
 
             def supports(self, context):
                 ext = context.file_path.suffix.lower().lstrip(".")
@@ -528,6 +546,7 @@ class TestExtensionQueries:
         class Extractor1:
             name = "ext1"
             priority = 150
+            supported_extensions: ClassVar = {"dm3"}
 
             def supports(self, context):
                 return context.file_path.suffix.lower() == ".dm3"
@@ -538,6 +557,7 @@ class TestExtensionQueries:
         class Extractor2:
             name = "ext2"
             priority = 100
+            supported_extensions: ClassVar = {"dm3"}
 
             def supports(self, context):
                 return context.file_path.suffix.lower() == ".dm3"
@@ -569,6 +589,7 @@ class TestExtensionQueries:
         class DM3Extractor:
             name = "dm3"
             priority = 100
+            supported_extensions: ClassVar = {"dm3"}
 
             def supports(self, context):
                 return context.file_path.suffix.lower() == ".dm3"
@@ -579,6 +600,7 @@ class TestExtensionQueries:
         class TIFExtractor:
             name = "tif"
             priority = 100
+            supported_extensions: ClassVar = {"tif"}
 
             def supports(self, context):
                 return context.file_path.suffix.lower() == ".tif"
@@ -589,6 +611,7 @@ class TestExtensionQueries:
         class SERExtractor:
             name = "ser"
             priority = 100
+            supported_extensions: ClassVar = {"ser"}
 
             def supports(self, context):
                 return context.file_path.suffix.lower() == ".ser"
@@ -612,6 +635,7 @@ class TestExtensionQueries:
         class SpecificExtractor:
             name = "specific"
             priority = 100
+            supported_extensions: ClassVar = {"dm3"}
 
             def supports(self, context):
                 return context.file_path.suffix.lower() == ".dm3"
@@ -987,6 +1011,7 @@ class TestPriorityOrdering:
         class Priority10:
             name = "p10"
             priority = 10
+            supported_extensions: ClassVar = {"tif"}
 
             def supports(self, context):
                 return context.file_path.suffix.lower() == ".tif"
@@ -997,6 +1022,7 @@ class TestPriorityOrdering:
         class Priority200:
             name = "p200"
             priority = 200
+            supported_extensions: ClassVar = {"tif"}
 
             def supports(self, context):
                 return context.file_path.suffix.lower() == ".tif"
@@ -1007,6 +1033,7 @@ class TestPriorityOrdering:
         class Priority50:
             name = "p50"
             priority = 50
+            supported_extensions: ClassVar = {"tif"}
 
             def supports(self, context):
                 return context.file_path.suffix.lower() == ".tif"
@@ -1017,6 +1044,7 @@ class TestPriorityOrdering:
         class Priority150:
             name = "p150"
             priority = 150
+            supported_extensions: ClassVar = {"tif"}
 
             def supports(self, context):
                 return context.file_path.suffix.lower() == ".tif"
@@ -1027,6 +1055,7 @@ class TestPriorityOrdering:
         class Priority100:
             name = "p100"
             priority = 100
+            supported_extensions: ClassVar = {"tif"}
 
             def supports(self, context):
                 return context.file_path.suffix.lower() == ".tif"
@@ -1056,6 +1085,7 @@ class TestPriorityOrdering:
         class Priority0:
             name = "p0"
             priority = 0
+            supported_extensions: ClassVar = {"tif"}
 
             def supports(self, context):
                 return context.file_path.suffix.lower() == ".tif"
@@ -1066,6 +1096,7 @@ class TestPriorityOrdering:
         class Priority1000:
             name = "p1000"
             priority = 1000
+            supported_extensions: ClassVar = {"tif"}
 
             def supports(self, context):
                 return context.file_path.suffix.lower() == ".tif"
@@ -1076,6 +1107,7 @@ class TestPriorityOrdering:
         class PriorityNegative:
             name = "pneg"
             priority = -10
+            supported_extensions: ClassVar = {"tif"}
 
             def supports(self, context):
                 return context.file_path.suffix.lower() == ".tif"
@@ -1102,6 +1134,7 @@ class TestPriorityOrdering:
         class Extractor1:
             name = "ext1"
             priority = 100
+            supported_extensions: ClassVar = {"tif"}
 
             def supports(self, context):
                 return context.file_path.suffix.lower() == ".tif"
@@ -1112,6 +1145,7 @@ class TestPriorityOrdering:
         class Extractor2:
             name = "ext2"
             priority = 100
+            supported_extensions: ClassVar = {"tif"}
 
             def supports(self, context):
                 return context.file_path.suffix.lower() == ".tif"
@@ -1122,6 +1156,7 @@ class TestPriorityOrdering:
         class Extractor3:
             name = "ext3"
             priority = 100
+            supported_extensions: ClassVar = {"tif"}
 
             def supports(self, context):
                 return context.file_path.suffix.lower() == ".tif"
@@ -1151,6 +1186,7 @@ class TestPriorityOrdering:
         class Priority200:
             name = "p200"
             priority = 200
+            supported_extensions: ClassVar = {"tif"}
 
             def supports(self, context):
                 return context.file_path.suffix.lower() == ".tif"
@@ -1161,6 +1197,7 @@ class TestPriorityOrdering:
         class Priority100:
             name = "p100"
             priority = 100
+            supported_extensions: ClassVar = {"tif"}
 
             def supports(self, context):
                 return context.file_path.suffix.lower() == ".tif"
@@ -1171,6 +1208,7 @@ class TestPriorityOrdering:
         class Priority50:
             name = "p50"
             priority = 50
+            supported_extensions: ClassVar = {"tif"}
 
             def supports(self, context):
                 return context.file_path.suffix.lower() == ".tif"
@@ -1212,6 +1250,7 @@ class TestErrorHandling:
         class BrokenExtractor:
             name = "broken"
             priority = 200
+            supported_extensions: ClassVar = {"dm3"}
 
             def supports(self, context):
                 # Don't raise during registration, but raise during get_extractor
@@ -1227,6 +1266,7 @@ class TestErrorHandling:
         class WorkingExtractor:
             name = "working"
             priority = 100
+            supported_extensions: ClassVar = {"dm3"}
 
             def supports(self, context):
                 return context.file_path.suffix.lower() == ".dm3"
@@ -1259,6 +1299,7 @@ class TestErrorHandling:
         class BrokenExtractor:
             name = "broken"
             priority = 100
+            supported_extensions: ClassVar = {"dm3"}
 
             def supports(self, context):
                 msg = "Always fails"
@@ -1286,6 +1327,7 @@ class TestErrorHandling:
         class BrokenExtractMethod:
             name = "broken_extract"
             priority = 100
+            supported_extensions: ClassVar = {"dm3"}
 
             def supports(self, context):
                 return True
@@ -1349,6 +1391,7 @@ class TestInstanceCaching:
         class TestExtractor:
             name = "test"
             priority = 100
+            supported_extensions: ClassVar = {"dm3"}
             instance_count = 0
 
             def __init__(self):
@@ -1365,15 +1408,20 @@ class TestInstanceCaching:
             initial_count = TestExtractor.instance_count
 
             # Register class (not instance)
-            # Note: register_extractor will instantiate during extension detection
             registry.register_extractor(TestExtractor)
 
-            # Instance was created during registration (for extension detection)
-            assert TestExtractor.instance_count == initial_count + 1
+            # Instance should not be created until get_extractor() is called
+            # (since supported_extensions is a class attribute)
+            assert TestExtractor.instance_count == initial_count
 
-            # Getting extractor should reuse same instance
+            # Getting extractor should create instance
             context = ExtractionContext(Path("test.dm3"), None)
             extractor1 = registry.get_extractor(context)
+
+            # Instance should be created on first get_extractor
+            assert TestExtractor.instance_count == initial_count + 1
+
+            # Getting extractor again should reuse same instance
             extractor2 = registry.get_extractor(context)
 
             # Same instance should be reused (no additional instantiation)
@@ -1389,6 +1437,7 @@ class TestInstanceCaching:
         class TestExtractor:
             name = "test"
             priority = 100
+            supported_extensions: ClassVar = {"dm3"}
 
             def supports(self, context):
                 return context.file_path.suffix.lower() == ".dm3"
@@ -1414,6 +1463,7 @@ class TestInstanceCaching:
         class Extractor1:
             name = "ext1"
             priority = 100
+            supported_extensions: ClassVar = {"dm3"}
 
             def supports(self, context):
                 return context.file_path.suffix.lower() == ".dm3"
@@ -1424,6 +1474,7 @@ class TestInstanceCaching:
         class Extractor2:
             name = "ext2"
             priority = 90
+            supported_extensions: ClassVar = {"dm3"}
 
             def supports(self, context):
                 return context.file_path.suffix.lower() == ".dm3"
@@ -1451,6 +1502,7 @@ class TestInstanceCaching:
         class TestExtractor:
             name = "test"
             priority = 100
+            supported_extensions: ClassVar = {"dm3"}
             instance_count = 0
 
             def __init__(self):
@@ -1493,6 +1545,7 @@ class TestMultipleExtractorsPerExtension:
         class Extractor1:
             name = "ext1"
             priority = 200
+            supported_extensions: ClassVar = {"dm3"}
 
             def supports(self, context):
                 return False  # Skip
@@ -1503,6 +1556,7 @@ class TestMultipleExtractorsPerExtension:
         class Extractor2:
             name = "ext2"
             priority = 150
+            supported_extensions: ClassVar = {"dm3"}
 
             def supports(self, context):
                 return True  # Match!
@@ -1513,6 +1567,7 @@ class TestMultipleExtractorsPerExtension:
         class Extractor3:
             name = "ext3"
             priority = 100
+            supported_extensions: ClassVar = {"dm3"}
 
             def supports(self, context):
                 return True  # Would match but not reached
@@ -1540,6 +1595,7 @@ class TestMultipleExtractorsPerExtension:
         class SpecificExtractor:
             name = "specific"
             priority = 100
+            supported_extensions: ClassVar = {"xyz"}
 
             def supports(self, context):
                 # Match extension but reject file
@@ -1595,6 +1651,7 @@ class TestMultipleExtractorsPerExtension:
         class FEIExtractor:
             name = "fei"
             priority = 150
+            supported_extensions: ClassVar = {"tif"}
 
             def supports(self, context):
                 # Check for FEI in filename
@@ -1608,6 +1665,7 @@ class TestMultipleExtractorsPerExtension:
         class ZeissExtractor:
             name = "zeiss"
             priority = 150
+            supported_extensions: ClassVar = {"tif"}
 
             def supports(self, context):
                 # Check for Zeiss in filename
@@ -1866,6 +1924,7 @@ class TestExtractorValidation:
         class ValidExtractor:
             name = "valid"
             priority = 100
+            supported_extensions: ClassVar = {"tif"}
 
             def supports(self, context):
                 return True
@@ -1897,6 +1956,7 @@ class TestErrorHandlingEdgeCases:
         class WorkingFallback:
             name = "working_fallback"
             priority = 10
+            supported_extensions: ClassVar = {"xyz"}
 
             def supports(self, _context):
                 return True
@@ -1925,6 +1985,7 @@ class TestErrorHandlingEdgeCases:
         class BrokenExtractor1:
             name = "broken1"
             priority = 200
+            supported_extensions: ClassVar = {"dm3"}
 
             def supports(self, _context):
                 msg = "Broken 1"
@@ -1936,6 +1997,7 @@ class TestErrorHandlingEdgeCases:
         class BrokenExtractor2:
             name = "broken2"
             priority = 100
+            supported_extensions: ClassVar = {"dm3"}
 
             def supports(self, _context):
                 msg = "Broken 2"
@@ -2084,15 +2146,18 @@ class TestRegistryCoverageComplete:
     def test_preview_generator_supports_exception_during_registration(
         self, registry, caplog
     ):
-        """Test exception in supports() during registration."""
+        """Test exception in supports() during selection with a preview generator."""
         import logging
 
+        from nexusLIMS.extractors.base import ExtractionContext
+
         logger = logging.getLogger("nexusLIMS.extractors.registry")
-        logger.setLevel(logging.DEBUG)
+        logger.setLevel(logging.WARNING)
 
         class FailingGenerator:
             name = "failing"
             priority = 100
+            supported_extensions: ClassVar = {"txt"}
 
             def supports(self, context):
                 msg = "Intentional failure"
@@ -2105,8 +2170,13 @@ class TestRegistryCoverageComplete:
             caplog.clear()
             registry.register_preview_generator(FailingGenerator)
 
-            # Should have logged the exception during registration
-            assert "Error checking if failing supports" in caplog.text
+            # Generator registration should succeed
+            # Exception happens during selection when supports() is called
+            context = ExtractionContext(Path("test.txt"), None)
+            registry.get_preview_generator(context)
+
+            # Should have logged the exception during selection
+            assert "Error in failing.supports()" in caplog.text
         finally:
             registry.clear()
 
@@ -2128,6 +2198,7 @@ class TestRegistryCoverageComplete:
         class ConditionallyFailingGenerator:
             name = "conditional_failing"
             priority = 100
+            supported_extensions: ClassVar = {"txt"}
 
             def supports(self, context):
                 # During registration, return True for .txt
@@ -2191,3 +2262,348 @@ class TestRegistryCoverageComplete:
         registry._register_instrument_profiles()
 
         assert "Error registering instrument profiles" in caplog.text
+
+
+class TestDuplicateRegistration:
+    """Test duplicate extractor and generator registration."""
+
+    def test_register_duplicate_wildcard_extractor(self, registry):
+        """Registering duplicate extractor should skip and not create duplicate."""
+
+        class WildcardExtractor:
+            name = "wildcard"
+            priority = 50
+
+            def supports(self, context):
+                ext = context.file_path.suffix.lower().lstrip(".")
+                common = {
+                    "dm3",
+                    "dm4",
+                    "ser",
+                    "emi",
+                    "tif",
+                    "tiff",
+                    "spc",
+                    "msa",
+                    "txt",
+                    "png",
+                    "jpg",
+                    "jpeg",
+                    "bmp",
+                    "gif",
+                }
+                return ext not in common
+
+            def extract(self, context):
+                return {"nx_meta": {}}
+
+        try:
+            # First registration
+            registry.register_extractor(WildcardExtractor)
+            assert len(registry._wildcard_extractors) == 1
+
+            # Second registration (should skip duplicate and not add another)
+            registry.register_extractor(WildcardExtractor)
+            assert len(registry._wildcard_extractors) == 1  # Still 1, not 2
+
+            # Verify it still works
+            context = ExtractionContext(Path("test.xyz"), None)
+            extractor = registry.get_extractor(context)
+            assert extractor.name == "wildcard"
+        finally:
+            registry.clear()
+
+    def test_register_duplicate_specific_extractor(self, registry):
+        """Registering duplicate extractor should skip and not create duplicate."""
+
+        class TestExtractor:
+            name = "test"
+            priority = 100
+            supported_extensions: ClassVar = {"dm3"}
+
+            def supports(self, context):
+                return context.file_path.suffix.lower() == ".dm3"
+
+            def extract(self, context):
+                return {"nx_meta": {}}
+
+        try:
+            # First registration
+            registry.register_extractor(TestExtractor)
+            assert len(registry._extractors["dm3"]) == 1
+
+            # Second registration (should skip duplicate and not add another)
+            registry.register_extractor(TestExtractor)
+            assert len(registry._extractors["dm3"]) == 1  # Still 1, not 2
+
+            # Verify it still works
+            context = ExtractionContext(Path("test.dm3"), None)
+            extractor = registry.get_extractor(context)
+            assert extractor.name == "test"
+        finally:
+            registry.clear()
+
+
+class TestWildcardErrorHandling:
+    """Test error handling in wildcard extractor selection."""
+
+    def test_wildcard_supports_raises_exception(self, registry, caplog):
+        """Exception in wildcard extractor's supports() should be caught."""
+        import logging
+
+        in_registration = [True]
+
+        class BrokenWildcardExtractor:
+            name = "broken_wildcard"
+            priority = 50
+
+            def supports(self, context):
+                if not in_registration[0]:
+                    msg = "Wildcard support broken!"
+                    raise RuntimeError(msg)
+                # During registration, don't raise
+                ext = context.file_path.suffix.lower().lstrip(".")
+                common = {
+                    "dm3",
+                    "dm4",
+                    "ser",
+                    "emi",
+                    "tif",
+                    "tiff",
+                    "spc",
+                    "msa",
+                    "txt",
+                    "png",
+                    "jpg",
+                    "jpeg",
+                    "bmp",
+                    "gif",
+                }
+                return ext not in common
+
+            def extract(self, context):
+                return {"nx_meta": {}}
+
+        class WorkingWildcardExtractor:
+            name = "working_wildcard"
+            priority = 40
+
+            def supports(self, context):
+                ext = context.file_path.suffix.lower().lstrip(".")
+                common = {
+                    "dm3",
+                    "dm4",
+                    "ser",
+                    "emi",
+                    "tif",
+                    "tiff",
+                    "spc",
+                    "msa",
+                    "txt",
+                    "png",
+                    "jpg",
+                    "jpeg",
+                    "bmp",
+                    "gif",
+                }
+                return ext not in common
+
+            def extract(self, context):
+                return {"nx_meta": {}}
+
+        try:
+            registry.register_extractor(BrokenWildcardExtractor)
+            registry.register_extractor(WorkingWildcardExtractor)
+
+            # Exit registration phase to trigger exception
+            in_registration[0] = False
+
+            with caplog.at_level(logging.WARNING):
+                context = ExtractionContext(Path("test.xyz"), None)
+                extractor = registry.get_extractor(context)
+
+            # Should skip broken wildcard and use working one
+            assert extractor.name == "working_wildcard"
+            # Should have logged the warning (lines 474-475)
+            # The log format is "Error in wildcard <name>.supports(): <error>"
+            assert "Error in wildcard broken_wildcard.supports()" in caplog.text
+            assert "Wildcard support broken!" in caplog.text
+        finally:
+            registry.clear()
+
+
+class TestPreviewGeneratorRegistration:
+    """Test preview generator registration and error handling."""
+
+    def test_register_preview_generator_basic(self, registry):
+        """Test basic preview generator registration."""
+
+        class TestGenerator:
+            name = "test_gen"
+            priority = 100
+            supported_extensions: ClassVar = {"dm3"}
+
+            def supports(self, context):
+                return context.file_path.suffix.lower() == ".dm3"
+
+            def generate(self, context, output_path):
+                return True
+
+        try:
+            registry.register_preview_generator(TestGenerator)
+
+            # Verify registration
+            assert "dm3" in registry._preview_generators
+            assert len(registry._preview_generators["dm3"]) == 1
+        finally:
+            registry.clear()
+
+    def test_preview_generator_missing_supported_extensions(self, registry, caplog):
+        """Preview generator without supported_extensions should log warning."""
+        import logging
+
+        class MissingExtensions:
+            name = "missing_ext"
+            priority = 100
+            # No supported_extensions attribute
+
+            def supports(self, context):
+                return True
+
+            def generate(self, context, output_path):
+                return True
+
+        try:
+            with caplog.at_level(logging.WARNING):
+                result = registry._get_supported_extensions_for_generator(
+                    MissingExtensions
+                )
+
+            # Should return empty set
+            assert result == set()
+            # Should have logged warning (lines 662-666)
+            assert "Preview generator missing_ext does not have" in caplog.text
+            assert "supported_extensions attribute" in caplog.text
+        finally:
+            registry.clear()
+
+    def test_preview_generator_none_extensions(self, registry):
+        """Preview generator with None supported_extensions should return empty set."""
+
+        class WildcardGenerator:
+            name = "wildcard_gen"
+            priority = 100
+            supported_extensions = None  # Wildcard
+
+            def supports(self, context):
+                return True
+
+            def generate(self, context, output_path):
+                return True
+
+        try:
+            result = registry._get_supported_extensions_for_generator(WildcardGenerator)
+
+            # Wildcard generator should return empty set
+            assert result == set()
+        finally:
+            registry.clear()
+
+    def test_get_preview_generator_selection(self, registry):
+        """Test preview generator selection logic."""
+
+        class DM3Generator:
+            name = "dm3_gen"
+            priority = 100
+            supported_extensions: ClassVar = {"dm3"}
+
+            def supports(self, context):
+                return context.file_path.suffix.lower() == ".dm3"
+
+            def generate(self, context, output_path):
+                return True
+
+        try:
+            registry.register_preview_generator(DM3Generator)
+
+            context = ExtractionContext(Path("test.dm3"), None)
+            generator = registry.get_preview_generator(context)
+
+            assert generator is not None
+            assert generator.name == "dm3_gen"
+        finally:
+            registry.clear()
+
+    def test_get_preview_generator_no_match(self, registry):
+        """get_preview_generator should return None when no generator matches."""
+
+        class DM3Generator:
+            name = "dm3_gen"
+            priority = 100
+            supported_extensions: ClassVar = {"dm3"}
+
+            def supports(self, context):
+                return False  # Never matches
+
+            def generate(self, context, output_path):
+                return True
+
+        try:
+            registry.register_preview_generator(DM3Generator)
+
+            context = ExtractionContext(Path("test.dm3"), None)
+            generator = registry.get_preview_generator(context)
+
+            # Should return None when no generator matches
+            assert generator is None
+        finally:
+            registry.clear()
+
+    def test_preview_generator_supports_raises_exception(self, registry, caplog):
+        """Exception in preview generator's supports() should be caught."""
+        import logging
+
+        in_registration = [True]
+
+        class BrokenGenerator:
+            name = "broken_gen"
+            priority = 100
+            supported_extensions: ClassVar = {"dm3"}
+
+            def supports(self, context):
+                if not in_registration[0]:
+                    msg = "Generator support broken!"
+                    raise ValueError(msg)
+                return context.file_path.suffix.lower() == ".dm3"
+
+            def generate(self, context, output_path):
+                return True
+
+        class WorkingGenerator:
+            name = "working_gen"
+            priority = 90
+            supported_extensions: ClassVar = {"dm3"}
+
+            def supports(self, context):
+                return context.file_path.suffix.lower() == ".dm3"
+
+            def generate(self, context, output_path):
+                return True
+
+        try:
+            registry.register_preview_generator(BrokenGenerator)
+            registry.register_preview_generator(WorkingGenerator)
+
+            in_registration[0] = False
+
+            with caplog.at_level(logging.WARNING):
+                context = ExtractionContext(Path("test.dm3"), None)
+                generator = registry.get_preview_generator(context)
+
+            # Should skip broken and use working generator
+            assert generator is not None
+            assert generator.name == "working_gen"
+            # Should have logged warning about broken generator
+            assert "Error in broken_gen.supports()" in caplog.text
+        finally:
+            registry.clear()

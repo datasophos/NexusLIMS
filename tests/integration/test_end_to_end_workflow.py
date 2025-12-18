@@ -43,6 +43,14 @@ class TestEndToEndWorkflow:
         This test calls process_new_records() directly, which exercises the
         complete production code path.
 
+        **Test Record Composition:**
+        The example record contains files from multiple instruments (currently
+        Titan TEM and Orion HIM), which are clustered into separate
+        acquisitionActivity elements based on temporal analysis. This test does
+        NOT validate instrument-specific metadata parsing; it focuses on the
+        end-to-end workflow and proper XML generation/upload. Instrument-specific
+        parsing is tested in unit tests (see tests/unit/test_extractors/).
+
         Parameters
         ----------
         test_environment_setup : dict
@@ -128,10 +136,10 @@ class TestEndToEndWorkflow:
         assert summary is not None, "No Summary element found"
 
         activities = xml_doc.findall(f"{nx_ns}acquisitionActivity")
-        assert len(activities) == 2, "Expected to find 2 acquisitionActivity elements"
+        assert len(activities) == 3, "Expected to find 2 acquisitionActivity elements"
 
         datasets = xml_doc.findall(f"{nx_ns}acquisitionActivity/{nx_ns}dataset")
-        assert len(datasets) == 10, "Expected to find 10 dataset elements"
+        assert len(datasets) == 12, "Expected to find 10 dataset elements"
 
         # Verify record is present in CDCS via API
         import nexusLIMS.cdcs as cdcs_module

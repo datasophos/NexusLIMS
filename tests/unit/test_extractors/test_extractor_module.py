@@ -9,6 +9,7 @@ import json
 import logging
 import shutil
 from pathlib import Path
+from typing import ClassVar
 
 import numpy as np
 import pytest
@@ -223,6 +224,7 @@ class TestExtractorModule:
 
             name = "test_no_dataset_type"
             priority = 200  # Higher than normal extractors so it gets selected
+            supported_extensions: ClassVar = {"tif", "tiff"}
 
             def supports(self, context: ExtractionContext) -> bool:
                 return context.file_path.suffix.lower() == ".tif"
@@ -685,3 +687,55 @@ class TestExtractorModule:
 
         # Verify the log message (line 325)
         assert "Using legacy preview map for png" in caplog.text
+
+    def test_correct_extractor_dispatched_for_quanta_tif(self, quanta_test_file):
+        """Test that QuantaTiffExtractor is used for Quanta TIFF files.
+
+        This test verifies that the correct extractor is dispatched when
+        parsing metadata from a Quanta TIFF file, ensuring that the
+        extractor selection/priority system works correctly.
+        """
+        meta, thumb_fname = parse_metadata(fname=quanta_test_file[0])
+        assert meta is not None
+        assert (
+            meta["nx_meta"]["NexusLIMS Extraction"]["Module"]
+            == "nexusLIMS.extractors.plugins.quanta_tif_extractor"
+        )
+        assert meta["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
+        self.remove_thumb_and_json(thumb_fname)
+
+    def test_correct_extractor_dispatched_for_orion_fibics_tif(
+        self, orion_fibics_zeroed_file
+    ):
+        """Test that OrionFibicsTiffExtractor is used for Orion/Fibics TIFF files.
+
+        This test verifies that the OrionFibicsTiffExtractor is prioritized
+        over the QuantaTiffExtractor for Orion/Fibics TIFF files, ensuring
+        that the extractor selection by priority works correctly.
+        """
+        meta, thumb_fname = parse_metadata(fname=orion_fibics_zeroed_file)
+        assert meta is not None
+        assert (
+            meta["nx_meta"]["NexusLIMS Extraction"]["Module"]
+            == "nexusLIMS.extractors.plugins.orion_HIM_tif_extractor"
+        )
+        assert meta["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
+        self.remove_thumb_and_json(thumb_fname)
+
+    def test_correct_extractor_dispatched_for_orion_zeiss_tif(
+        self, orion_zeiss_zeroed_file
+    ):
+        """Test that OrionFibicsTiffExtractor is used for Orion Zeiss TIFF files.
+
+        This test verifies that the OrionFibicsTiffExtractor correctly handles
+        Orion TIF files with Zeiss XML metadata (not Fibics metadata), ensuring
+        it is properly detected and handled.
+        """
+        meta, thumb_fname = parse_metadata(fname=orion_zeiss_zeroed_file)
+        assert meta is not None
+        assert (
+            meta["nx_meta"]["NexusLIMS Extraction"]["Module"]
+            == "nexusLIMS.extractors.plugins.orion_HIM_tif_extractor"
+        )
+        assert meta["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
+        self.remove_thumb_and_json(thumb_fname)

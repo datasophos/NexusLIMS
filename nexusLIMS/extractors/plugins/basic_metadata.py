@@ -2,7 +2,7 @@
 
 import logging
 from datetime import datetime as dt
-from typing import Any
+from typing import Any, ClassVar
 
 from nexusLIMS.extractors.base import ExtractionContext
 from nexusLIMS.instruments import get_instr_from_filepath
@@ -21,6 +21,7 @@ class BasicFileInfoExtractor:
 
     name = "basic_file_info_extractor"
     priority = 0  # Lowest priority - only used as fallback
+    supported_extensions: ClassVar = None  # Wildcard extractor - supports all files
 
     def supports(self, context: ExtractionContext) -> bool:  # noqa: ARG002
         """

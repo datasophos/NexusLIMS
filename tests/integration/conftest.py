@@ -1555,11 +1555,25 @@ def extracted_test_files(test_data_dirs):
     titan_date = datetime(2018, 11, 13, tzinfo=denver_tz)
     jeol_date = datetime(2019, 7, 24, tzinfo=denver_tz)
 
+    # Locate Orion test files if Titan_TEM was extracted
+    orion_files = {}
+    if "Titan_TEM" in extracted_top_level_dirs:
+        titan_dir = (
+            instrument_data_dir / "Titan_TEM/researcher_a/project_alpha/20181113"
+        )
+        zeiss_file = titan_dir / "orion-zeiss_dataZeroed.tif"
+        fibics_file = titan_dir / "orion-fibics_dataZeroed.tif"
+        if zeiss_file.exists():
+            orion_files["zeiss"] = zeiss_file
+        if fibics_file.exists():
+            orion_files["fibics"] = fibics_file
+
     yield {
         "base_dir": instrument_data_dir,
         "titan_date": titan_date,
         "jeol_date": jeol_date,
         "extracted_dirs": extracted_top_level_dirs,
+        "orion_files": orion_files,
     }
 
     # Cleanup: Remove extracted directories from both instrument data and NX_DATA_PATH

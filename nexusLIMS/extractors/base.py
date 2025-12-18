@@ -78,6 +78,10 @@ class BaseExtractor(Protocol):
     priority : int
         Priority for this extractor (0-1000, higher = preferred).
         See notes below for conventions.
+    supported_extensions : set[str] | None
+        File extensions this extractor supports (without dots).
+        Set to None for wildcard extractors that support all files.
+        Empty set means no extensions are directly supported (content sniffing only).
 
     Notes
     -----
@@ -111,6 +115,7 @@ class BaseExtractor(Protocol):
 
     name: str
     priority: int
+    supported_extensions: set[str] | None
 
     def supports(self, context: ExtractionContext) -> bool:
         """
@@ -243,6 +248,10 @@ class PreviewGenerator(Protocol):
         Unique identifier for this generator
     priority : int
         Priority (same conventions as BaseExtractor)
+    supported_extensions : set[str] | None
+        File extensions this generator supports (without dots).
+        Set to None for wildcard generators that support all files.
+        Empty set means no extensions are directly supported (content sniffing only).
 
     Examples
     --------
@@ -264,6 +273,7 @@ class PreviewGenerator(Protocol):
 
     name: str
     priority: int
+    supported_extensions: set[str] | None
 
     def supports(self, context: ExtractionContext) -> bool:
         """

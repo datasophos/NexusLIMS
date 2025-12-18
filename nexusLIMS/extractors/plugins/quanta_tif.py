@@ -7,7 +7,7 @@ import logging
 import re
 from decimal import Decimal, InvalidOperation
 from math import degrees
-from typing import Any, Tuple
+from typing import Any, ClassVar, Tuple
 
 from lxml import etree
 
@@ -30,6 +30,7 @@ class QuantaTiffExtractor:
 
     name = "quanta_tif_extractor"
     priority = 100
+    supported_extensions: ClassVar = {"tif", "tiff"}
 
     def supports(self, context: ExtractionContext) -> bool:
         """

@@ -15,13 +15,13 @@ from collections import defaultdict
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
-from nexusLIMS.extractors.base import ExtractionContext
 from nexusLIMS.extractors.plugins.basic_metadata import BasicFileInfoExtractor
 from nexusLIMS.extractors.plugins.profiles import register_all_profiles
 
 if TYPE_CHECKING:
     from nexusLIMS.extractors.base import (
         BaseExtractor,
+        ExtractionContext,
         PreviewGenerator,
     )
 
@@ -54,25 +54,25 @@ class ExtractorRegistry:
     --------
     Get an extractor for a file:
 
-    >>> from nexusLIMS.extractors.registry import get_registry
-    >>> from nexusLIMS.extractors.base import ExtractionContext
-    >>> from pathlib import Path
-    >>>
-    >>> registry = get_registry()
-    >>> context = ExtractionContext(Path("data.dm3"), instrument=None)
-    >>> extractor = registry.get_extractor(context)
-    >>> metadata = extractor.extract(context)
+        >>> from nexusLIMS.extractors.registry import get_registry
+        >>> from nexusLIMS.extractors.base import ExtractionContext
+        >>> from pathlib import Path
+        >>>
+        >>> registry = get_registry()
+        >>> context = ExtractionContext(Path("data.dm3"), instrument=None)
+        >>> extractor = registry.get_extractor(context)
+        >>> metadata = extractor.extract(context)
 
     Manual registration (for testing):
 
-    >>> class MyExtractor:
-    ...     name = "my_extractor"
-    ...     priority = 100
-    ...     def supports(self, context): return True
-    ...     def extract(self, context): return {"nx_meta": {}}
-    >>>
-    >>> registry = get_registry()
-    >>> registry.register_extractor(MyExtractor)
+        >>> class MyExtractor:
+        ...     name = "my_extractor"
+        ...     priority = 100
+        ...     def supports(self, context): return True
+        ...     def extract(self, context): return {"nx_meta": {}}
+        >>>
+        >>> registry = get_registry()
+        >>> registry.register_extractor(MyExtractor)
     """
 
     def __init__(self):
@@ -111,10 +111,10 @@ class ExtractorRegistry:
 
         Examples
         --------
-        >>> registry = get_registry()
-        >>> registry.discover_plugins()
-        >>> extractors = registry.get_extractors_for_extension("dm3")
-        >>> print(f"Found {len(extractors)} extractors for .dm3 files")
+            >>> registry = get_registry()
+            >>> registry.discover_plugins()
+            >>> extractors = registry.get_extractors_for_extension("dm3")
+            >>> print(f"Found {len(extractors)} extractors for .dm3 files")
         """
         if self._discovered:
             logger.debug("Plugins already discovered, skipping")
@@ -295,14 +295,14 @@ class ExtractorRegistry:
 
         Examples
         --------
-        >>> class MyExtractor:
-        ...     name = "my_extractor"
-        ...     priority = 100
-        ...     def supports(self, context): return True
-        ...     def extract(self, context): return {"nx_meta": {}}
-        >>>
-        >>> registry = get_registry()
-        >>> registry.register_extractor(MyExtractor)
+            >>> class MyExtractor:
+            ...     name = "my_extractor"
+            ...     priority = 100
+            ...     def supports(self, context): return True
+            ...     def extract(self, context): return {"nx_meta": {}}
+            >>>
+            >>> registry = get_registry()
+            >>> registry.register_extractor(MyExtractor)
         """
         # Determine which extensions this extractor supports
         # We'll do this by creating a temporary instance and asking it
@@ -310,20 +310,33 @@ class ExtractorRegistry:
 
         if not extensions:
             # This is a wildcard extractor (supports any extension)
-            self._wildcard_extractors.append(extractor_class)
-            logger.debug(
-                "Registered wildcard extractor: %s",
-                extractor_class.name,
-            )
+            if extractor_class not in self._wildcard_extractors:
+                self._wildcard_extractors.append(extractor_class)
+                logger.debug(
+                    "Registered wildcard extractor: %s",
+                    extractor_class.name,
+                )
+            else:
+                logger.debug(
+                    "Extractor %s already registered (skipping duplicate)",
+                    extractor_class.name,
+                )
         else:
             # Register for specific extensions
             for ext in extensions:
-                self._extractors[ext].append(extractor_class)
-                logger.debug(
-                    "Registered %s for extension: .%s",
-                    extractor_class.name,
-                    ext,
-                )
+                if extractor_class not in self._extractors[ext]:
+                    self._extractors[ext].append(extractor_class)
+                    logger.debug(
+                        "Registered %s for extension: .%s",
+                        extractor_class.name,
+                        ext,
+                    )
+                else:
+                    logger.debug(
+                        "Extractor %s already registered for .%s (skipping duplicate)",
+                        extractor_class.name,
+                        ext,
+                    )
 
             # Sort by priority (descending) for each extension
             for ext in extensions:
@@ -334,10 +347,9 @@ class ExtractorRegistry:
         extractor_class: type[BaseExtractor],
     ) -> set[str]:
         """
-        Determine which file extensions an extractor supports.
+        Get supported file extensions from an extractor class.
 
-        This is a heuristic - we create a dummy context for common extensions
-        and check if the extractor supports them.
+        Uses the extractor's declared supported_extensions attribute.
 
         Parameters
         ----------
@@ -350,46 +362,20 @@ class ExtractorRegistry:
             Set of supported extensions (without dots), or empty set if
             this is a wildcard extractor
         """
-        # Common extensions to check
-        common_extensions = [
-            "dm3",
-            "dm4",
-            "ser",
-            "emi",
-            "tif",
-            "tiff",
-            "spc",
-            "msa",
-            "txt",
-            "png",
-            "jpg",
-            "jpeg",
-            "bmp",
-            "gif",
-        ]
+        if not hasattr(extractor_class, "supported_extensions"):
+            logger.warning(
+                "Extractor %s does not have supported_extensions attribute",
+                extractor_class.name if hasattr(extractor_class, "name") else "unknown",
+            )
+            return set()
 
-        # Import here to avoid circular imports
+        extensions = extractor_class.supported_extensions
+        if extensions is None:
+            # Wildcard extractor
+            return set()
 
-        # Instantiate the extractor
-        instance = self._get_instance(extractor_class)
-
-        supported = set()
-        for ext in common_extensions:
-            dummy_path = Path(f"test.{ext}")
-            dummy_context = ExtractionContext(dummy_path, instrument=None)
-
-            try:
-                if instance.supports(dummy_context):
-                    supported.add(ext)
-            except Exception as e:
-                logger.debug(
-                    "Error checking if %s supports .%s: %s",
-                    extractor_class.name,
-                    ext,
-                    e,
-                )
-
-        return supported
+        # Return the declared extensions
+        return extensions if isinstance(extensions, set) else set(extensions)
 
     def _get_instance(self, extractor_class: type[BaseExtractor]) -> BaseExtractor:
         """
@@ -439,13 +425,13 @@ class ExtractorRegistry:
 
         Examples
         --------
-        >>> from nexusLIMS.extractors.base import ExtractionContext
-        >>> from pathlib import Path
-        >>>
-        >>> context = ExtractionContext(Path("data.dm3"), None)
-        >>> registry = get_registry()
-        >>> extractor = registry.get_extractor(context)
-        >>> print(f"Selected: {extractor.name}")
+            >>> from nexusLIMS.extractors.base import ExtractionContext
+            >>> from pathlib import Path
+            >>>
+            >>> context = ExtractionContext(Path("data.dm3"), None)
+            >>> registry = get_registry()
+            >>> extractor = registry.get_extractor(context)
+            >>> print(f"Selected: {extractor.name}")
         """
         # Auto-discover if needed
         if not self._discovered:
@@ -527,10 +513,10 @@ class ExtractorRegistry:
 
         Examples
         --------
-        >>> registry = get_registry()
-        >>> extractors = registry.get_extractors_for_extension("dm3")
-        >>> for e in extractors:
-        ...     print(f"{e.name}: priority {e.priority}")
+            >>> registry = get_registry()
+            >>> extractors = registry.get_extractors_for_extension("dm3")
+            >>> for e in extractors:
+            ...     print(f"{e.name}: priority {e.priority}")
         """
         # Auto-discover if needed
         if not self._discovered:
@@ -561,11 +547,11 @@ class ExtractorRegistry:
 
         Examples
         --------
-        >>> registry = get_registry()
-        >>> extensions = registry.get_supported_extensions()
-        >>> print(f"Supported: {', '.join(sorted(extensions))}")
-        >>> specialized = registry.get_supported_extensions(exclude_fallback=True)
-        >>> print(f"Specialized: {', '.join(sorted(specialized))}")
+            >>> registry = get_registry()
+            >>> extensions = registry.get_supported_extensions()
+            >>> print(f"Supported: {', '.join(sorted(extensions))}")
+            >>> specialized = registry.get_supported_extensions(exclude_fallback=True)
+            >>> print(f"Specialized: {', '.join(sorted(specialized))}")
         """
         # Auto-discover if needed
         if not self._discovered:
@@ -595,9 +581,9 @@ class ExtractorRegistry:
 
         Examples
         --------
-        >>> registry = get_registry()
-        >>> registry.clear()
-        >>> # Will re-discover on next use
+            >>> registry = get_registry()
+            >>> registry.clear()
+            >>> # Will re-discover on next use
         """
         self._extractors.clear()
         self._instances.clear()
@@ -624,14 +610,14 @@ class ExtractorRegistry:
 
         Examples
         --------
-        >>> class MyGenerator:
-        ...     name = "my_generator"
-        ...     priority = 100
-        ...     def supports(self, context): return True
-        ...     def generate(self, context, output_path): return True
-        >>>
-        >>> registry = get_registry()
-        >>> registry.register_preview_generator(MyGenerator)
+            >>> class MyGenerator:
+            ...     name = "my_generator"
+            ...     priority = 100
+            ...     def supports(self, context): return True
+            ...     def generate(self, context, output_path): return True
+            >>>
+            >>> registry = get_registry()
+            >>> registry.register_preview_generator(MyGenerator)
         """
         # Determine which extensions this generator supports
         extensions = self._get_supported_extensions_for_generator(generator_class)
@@ -658,7 +644,9 @@ class ExtractorRegistry:
         generator_class: type[PreviewGenerator],
     ) -> set[str]:
         """
-        Determine which file extensions a preview generator supports.
+        Get supported file extensions from a preview generator class.
+
+        Uses the generator's declared supported_extensions attribute.
 
         Parameters
         ----------
@@ -670,44 +658,20 @@ class ExtractorRegistry:
         set[str]
             Set of supported extensions (without dots)
         """
-        # Common extensions to check
-        common_extensions = [
-            "dm3",
-            "dm4",
-            "ser",
-            "emi",
-            "tif",
-            "tiff",
-            "spc",
-            "msa",
-            "txt",
-            "png",
-            "jpg",
-            "jpeg",
-            "bmp",
-            "gif",
-        ]
+        if not hasattr(generator_class, "supported_extensions"):
+            logger.warning(
+                "Preview generator %s does not have supported_extensions attribute",
+                generator_class.name if hasattr(generator_class, "name") else "unknown",
+            )
+            return set()
 
-        # Instantiate the generator
-        instance = self._get_preview_instance(generator_class)
+        extensions = generator_class.supported_extensions
+        if extensions is None:
+            # Wildcard generator
+            return set()
 
-        supported = set()
-        for ext in common_extensions:
-            dummy_path = Path(f"test.{ext}")
-            dummy_context = ExtractionContext(dummy_path, instrument=None)
-
-            try:
-                if instance.supports(dummy_context):
-                    supported.add(ext)
-            except Exception as e:
-                logger.debug(
-                    "Error checking if %s supports .%s: %s",
-                    generator_class.name,
-                    ext,
-                    e,
-                )
-
-        return supported
+        # Return the declared extensions
+        return extensions if isinstance(extensions, set) else set(extensions)
 
     def _get_preview_instance(
         self,
@@ -760,14 +724,14 @@ class ExtractorRegistry:
 
         Examples
         --------
-        >>> from nexusLIMS.extractors.base import ExtractionContext
-        >>> from pathlib import Path
-        >>>
-        >>> context = ExtractionContext(Path("data.dm3"), None)
-        >>> registry = get_registry()
-        >>> generator = registry.get_preview_generator(context)
-        >>> if generator:
-        ...     generator.generate(context, Path("preview.png"))
+            >>> from nexusLIMS.extractors.base import ExtractionContext
+            >>> from pathlib import Path
+            >>>
+            >>> context = ExtractionContext(Path("data.dm3"), None)
+            >>> registry = get_registry()
+            >>> generator = registry.get_preview_generator(context)
+            >>> if generator:
+            ...     generator.generate(context, Path("preview.png"))
         """
         # Auto-discover if needed
         if not self._discovered:
@@ -819,10 +783,10 @@ def get_registry() -> ExtractorRegistry:
 
     Examples
     --------
-    >>> from nexusLIMS.extractors.registry import get_registry
-    >>> registry = get_registry()
-    >>> # Always returns the same instance
-    >>> assert get_registry() is registry
+        >>> from nexusLIMS.extractors.registry import get_registry
+        >>> registry = get_registry()
+        >>> # Always returns the same instance
+        >>> assert get_registry() is registry
     """
     global _registry  # noqa: PLW0603
     if _registry is None:

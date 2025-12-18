@@ -1,0 +1,58 @@
+<!-- Fibics XML example -->
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Fibics version="1.0">
+	<Application>
+		<Version>NPVE v4.5</Version>
+		<Date>2025-05-27T10:32:12.498-04:00</Date>
+		<SupportsTransparency>true</SupportsTransparency>
+		<TransparentPixelValue>0</TransparentPixelValue>
+	</Application>
+	<Image>
+		<Width>2048</Width>
+		<Height>2048</Height>
+		<BoundingBox.Left>0</BoundingBox.Left>
+		<BoundingBox.Right>2048</BoundingBox.Right>
+		<BoundingBox.Top>0</BoundingBox.Top>
+		<BoundingBox.Bottom>2048</BoundingBox.Bottom>
+		<Machine>CONSOLE18</Machine>
+		<Beam>Orion</Beam>
+		<Aperture>[1] Ne 10 µm (30.0kV|s=5.0)</Aperture>
+		<Detector>ET</Detector>
+		<Contrast>32.466667175293</Contrast>
+		<Brightness>55</Brightness>
+	</Image>
+	<Scan>
+		<Dwell units="ns">10000</Dwell>
+		<LineAvg>1</LineAvg>
+		<FOV_X units="um">2.5</FOV_X>
+		<FOV_Y units="um">2.5</FOV_Y>
+		<ScanRot units="deg">1.23797181004193E-5</ScanRot>
+		<Ux>0.001220703125</Ux>
+		<Uy>0</Uy>
+		<Vx>0</Vx>
+		<Vy>-0.001220703125</Vy>
+		<Focus>0.0118617592379451</Focus>
+		<StigX>-16.4666652679443</StigX>
+		<StigY>9.63332939147949 </StigY>
+	</Scan>
+	<Stage>
+		<X units="um">-21319.2368624182</X>
+		<Y units="um">-27311.808629448</Y>
+		<Z units="um">10.80012316379</Z>
+		<Tilt units="deg">0.191424190998077</Tilt>
+		<Rot units="deg">46.2030220031738</Rot>
+		<M units="mm">0</M>
+	</Stage>
+	<BeamInfo>
+		<item name="BeamI">1.3275146484375</item>
+		<item name="AccV">30000</item>
+		<item name="Aperture">0</item>
+		<item name="GFISGas">He</item>
+		<item name="GunGasPressure">0</item>
+		<item name="SpotControl">5</item>
+	</BeamInfo>
+	<DetectorInfo>
+		<item name="Collector">=500.0 V</item>
+		<item name="Stage Bias">=0.0 V</item>
+	</DetectorInfo>
+</Fibics>

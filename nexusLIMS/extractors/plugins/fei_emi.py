@@ -3,7 +3,7 @@
 import logging
 from datetime import datetime as dt
 from pathlib import Path
-from typing import Any, List, Tuple
+from typing import Any, ClassVar, List, Tuple
 
 import numpy as np
 from hyperspy.io import load as hs_load
@@ -27,6 +27,7 @@ class SerEmiExtractor:
 
     name = "ser_emi_extractor"
     priority = 100
+    supported_extensions: ClassVar = {"ser"}
 
     def supports(self, context: ExtractionContext) -> bool:
         """
