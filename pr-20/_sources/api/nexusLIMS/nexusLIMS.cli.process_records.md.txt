@@ -1,0 +1,128 @@
+# {py:mod}`nexusLIMS.cli.process_records`
+
+```{py:module} nexusLIMS.cli.process_records
+```
+
+```{autodoc2-docstring} nexusLIMS.cli.process_records
+:allowtitles:
+```
+
+## Module Contents
+
+### Functions
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`setup_file_logging <nexusLIMS.cli.process_records.setup_file_logging>`
+  - ```{autodoc2-docstring} nexusLIMS.cli.process_records.setup_file_logging
+    :summary:
+    ```
+* - {py:obj}`check_log_for_errors <nexusLIMS.cli.process_records.check_log_for_errors>`
+  - ```{autodoc2-docstring} nexusLIMS.cli.process_records.check_log_for_errors
+    :summary:
+    ```
+* - {py:obj}`send_error_notification <nexusLIMS.cli.process_records.send_error_notification>`
+  - ```{autodoc2-docstring} nexusLIMS.cli.process_records.send_error_notification
+    :summary:
+    ```
+* - {py:obj}`main <nexusLIMS.cli.process_records.main>`
+  - ```{autodoc2-docstring} nexusLIMS.cli.process_records.main
+    :summary:
+    ```
+````
+
+### Data
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`logger <nexusLIMS.cli.process_records.logger>`
+  - ```{autodoc2-docstring} nexusLIMS.cli.process_records.logger
+    :summary:
+    ```
+* - {py:obj}`console <nexusLIMS.cli.process_records.console>`
+  - ```{autodoc2-docstring} nexusLIMS.cli.process_records.console
+    :summary:
+    ```
+* - {py:obj}`ERROR_PATTERNS <nexusLIMS.cli.process_records.ERROR_PATTERNS>`
+  - ```{autodoc2-docstring} nexusLIMS.cli.process_records.ERROR_PATTERNS
+    :summary:
+    ```
+* - {py:obj}`EXCLUDE_PATTERNS <nexusLIMS.cli.process_records.EXCLUDE_PATTERNS>`
+  - ```{autodoc2-docstring} nexusLIMS.cli.process_records.EXCLUDE_PATTERNS
+    :summary:
+    ```
+````
+
+### API
+
+````{py:data} logger
+:canonical: nexusLIMS.cli.process_records.logger
+:value: >
+   'getLogger(...)'
+
+```{autodoc2-docstring} nexusLIMS.cli.process_records.logger
+```
+
+````
+
+````{py:data} console
+:canonical: nexusLIMS.cli.process_records.console
+:value: >
+   'Console(...)'
+
+```{autodoc2-docstring} nexusLIMS.cli.process_records.console
+```
+
+````
+
+````{py:data} ERROR_PATTERNS
+:canonical: nexusLIMS.cli.process_records.ERROR_PATTERNS
+:value: >
+   None
+
+```{autodoc2-docstring} nexusLIMS.cli.process_records.ERROR_PATTERNS
+```
+
+````
+
+````{py:data} EXCLUDE_PATTERNS
+:canonical: nexusLIMS.cli.process_records.EXCLUDE_PATTERNS
+:value: >
+   ['Temporary failure in name resolution', 'NoDataConsentError', 'NoMatchingReservationError']
+
+```{autodoc2-docstring} nexusLIMS.cli.process_records.EXCLUDE_PATTERNS
+```
+
+````
+
+````{py:function} setup_file_logging(dry_run: bool = False) -> tuple[pathlib.Path, logging.FileHandler]
+:canonical: nexusLIMS.cli.process_records.setup_file_logging
+
+```{autodoc2-docstring} nexusLIMS.cli.process_records.setup_file_logging
+```
+````
+
+````{py:function} check_log_for_errors(log_path: pathlib.Path) -> tuple[bool, list[str]]
+:canonical: nexusLIMS.cli.process_records.check_log_for_errors
+
+```{autodoc2-docstring} nexusLIMS.cli.process_records.check_log_for_errors
+```
+````
+
+````{py:function} send_error_notification(log_path: pathlib.Path, found_patterns: list[str]) -> None
+:canonical: nexusLIMS.cli.process_records.send_error_notification
+
+```{autodoc2-docstring} nexusLIMS.cli.process_records.send_error_notification
+```
+````
+
+````{py:function} main(*, dry_run: bool, verbose: int) -> None
+:canonical: nexusLIMS.cli.process_records.main
+
+```{autodoc2-docstring} nexusLIMS.cli.process_records.main
+```
+````

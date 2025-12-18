@@ -1,0 +1,208 @@
+# {py:mod}`nexusLIMS.extractors.plugins.fei_emi`
+
+```{py:module} nexusLIMS.extractors.plugins.fei_emi
+```
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi
+:allowtitles:
+```
+
+## Module Contents
+
+### Classes
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`SerEmiExtractor <nexusLIMS.extractors.plugins.fei_emi.SerEmiExtractor>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.SerEmiExtractor
+    :summary:
+    ```
+````
+
+### Functions
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`parse_basic_info <nexusLIMS.extractors.plugins.fei_emi.parse_basic_info>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.parse_basic_info
+    :summary:
+    ```
+* - {py:obj}`parse_experimental_conditions <nexusLIMS.extractors.plugins.fei_emi.parse_experimental_conditions>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.parse_experimental_conditions
+    :summary:
+    ```
+* - {py:obj}`parse_acquire_info <nexusLIMS.extractors.plugins.fei_emi.parse_acquire_info>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.parse_acquire_info
+    :summary:
+    ```
+* - {py:obj}`parse_experimental_description <nexusLIMS.extractors.plugins.fei_emi.parse_experimental_description>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.parse_experimental_description
+    :summary:
+    ```
+* - {py:obj}`get_emi_from_ser <nexusLIMS.extractors.plugins.fei_emi.get_emi_from_ser>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.get_emi_from_ser
+    :summary:
+    ```
+* - {py:obj}`split_fei_metadata_units <nexusLIMS.extractors.plugins.fei_emi.split_fei_metadata_units>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.split_fei_metadata_units
+    :summary:
+    ```
+* - {py:obj}`map_keys <nexusLIMS.extractors.plugins.fei_emi.map_keys>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.map_keys
+    :summary:
+    ```
+* - {py:obj}`parse_data_type <nexusLIMS.extractors.plugins.fei_emi.parse_data_type>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.parse_data_type
+    :summary:
+    ```
+* - {py:obj}`get_ser_metadata <nexusLIMS.extractors.plugins.fei_emi.get_ser_metadata>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.get_ser_metadata
+    :summary:
+    ```
+````
+
+### Data
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`logger <nexusLIMS.extractors.plugins.fei_emi.logger>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.logger
+    :summary:
+    ```
+````
+
+### API
+
+````{py:data} logger
+:canonical: nexusLIMS.extractors.plugins.fei_emi.logger
+:value: >
+   'getLogger(...)'
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.logger
+```
+
+````
+
+`````{py:class} SerEmiExtractor
+:canonical: nexusLIMS.extractors.plugins.fei_emi.SerEmiExtractor
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.SerEmiExtractor
+```
+
+````{py:attribute} name
+:canonical: nexusLIMS.extractors.plugins.fei_emi.SerEmiExtractor.name
+:value: >
+   'ser_emi_extractor'
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.SerEmiExtractor.name
+```
+
+````
+
+````{py:attribute} priority
+:canonical: nexusLIMS.extractors.plugins.fei_emi.SerEmiExtractor.priority
+:value: >
+   100
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.SerEmiExtractor.priority
+```
+
+````
+
+````{py:attribute} supported_extensions
+:canonical: nexusLIMS.extractors.plugins.fei_emi.SerEmiExtractor.supported_extensions
+:type: typing.ClassVar
+:value: >
+   None
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.SerEmiExtractor.supported_extensions
+```
+
+````
+
+````{py:method} supports(context: nexusLIMS.extractors.base.ExtractionContext) -> bool
+:canonical: nexusLIMS.extractors.plugins.fei_emi.SerEmiExtractor.supports
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.SerEmiExtractor.supports
+```
+
+````
+
+````{py:method} extract(context: nexusLIMS.extractors.base.ExtractionContext) -> dict[str, typing.Any]
+:canonical: nexusLIMS.extractors.plugins.fei_emi.SerEmiExtractor.extract
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.SerEmiExtractor.extract
+```
+
+````
+
+`````
+
+````{py:function} parse_basic_info(metadata, shape, instrument)
+:canonical: nexusLIMS.extractors.plugins.fei_emi.parse_basic_info
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.parse_basic_info
+```
+````
+
+````{py:function} parse_experimental_conditions(metadata)
+:canonical: nexusLIMS.extractors.plugins.fei_emi.parse_experimental_conditions
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.parse_experimental_conditions
+```
+````
+
+````{py:function} parse_acquire_info(metadata)
+:canonical: nexusLIMS.extractors.plugins.fei_emi.parse_acquire_info
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.parse_acquire_info
+```
+````
+
+````{py:function} parse_experimental_description(metadata)
+:canonical: nexusLIMS.extractors.plugins.fei_emi.parse_experimental_description
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.parse_experimental_description
+```
+````
+
+````{py:function} get_emi_from_ser(ser_fname: pathlib.Path) -> pathlib.Path
+:canonical: nexusLIMS.extractors.plugins.fei_emi.get_emi_from_ser
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.get_emi_from_ser
+```
+````
+
+````{py:function} split_fei_metadata_units(metadata_term)
+:canonical: nexusLIMS.extractors.plugins.fei_emi.split_fei_metadata_units
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.split_fei_metadata_units
+```
+````
+
+````{py:function} map_keys(term_mapping, base, metadata)
+:canonical: nexusLIMS.extractors.plugins.fei_emi.map_keys
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.map_keys
+```
+````
+
+````{py:function} parse_data_type(s, metadata)
+:canonical: nexusLIMS.extractors.plugins.fei_emi.parse_data_type
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.parse_data_type
+```
+````
+
+````{py:function} get_ser_metadata(filename)
+:canonical: nexusLIMS.extractors.plugins.fei_emi.get_ser_metadata
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.get_ser_metadata
+```
+````

@@ -1,0 +1,101 @@
+# {py:mod}`nexusLIMS.extractors.plugins.tescan_tif`
+
+```{py:module} nexusLIMS.extractors.plugins.tescan_tif
+```
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.tescan_tif
+:allowtitles:
+```
+
+## Module Contents
+
+### Classes
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`TescanTiffExtractor <nexusLIMS.extractors.plugins.tescan_tif.TescanTiffExtractor>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.tescan_tif.TescanTiffExtractor
+    :summary:
+    ```
+````
+
+### Data
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`TESCAN_TIFF_TAG <nexusLIMS.extractors.plugins.tescan_tif.TESCAN_TIFF_TAG>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.tescan_tif.TESCAN_TIFF_TAG
+    :summary:
+    ```
+````
+
+### API
+
+````{py:data} TESCAN_TIFF_TAG
+:canonical: nexusLIMS.extractors.plugins.tescan_tif.TESCAN_TIFF_TAG
+:value: >
+   50431
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.tescan_tif.TESCAN_TIFF_TAG
+```
+
+````
+
+`````{py:class} TescanTiffExtractor
+:canonical: nexusLIMS.extractors.plugins.tescan_tif.TescanTiffExtractor
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.tescan_tif.TescanTiffExtractor
+```
+
+````{py:attribute} name
+:canonical: nexusLIMS.extractors.plugins.tescan_tif.TescanTiffExtractor.name
+:value: >
+   'tescan_tif_extractor'
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.tescan_tif.TescanTiffExtractor.name
+```
+
+````
+
+````{py:attribute} priority
+:canonical: nexusLIMS.extractors.plugins.tescan_tif.TescanTiffExtractor.priority
+:value: >
+   150
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.tescan_tif.TescanTiffExtractor.priority
+```
+
+````
+
+````{py:attribute} supported_extensions
+:canonical: nexusLIMS.extractors.plugins.tescan_tif.TescanTiffExtractor.supported_extensions
+:type: typing.ClassVar
+:value: >
+   None
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.tescan_tif.TescanTiffExtractor.supported_extensions
+```
+
+````
+
+````{py:method} supports(context: nexusLIMS.extractors.base.ExtractionContext) -> bool
+:canonical: nexusLIMS.extractors.plugins.tescan_tif.TescanTiffExtractor.supports
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.tescan_tif.TescanTiffExtractor.supports
+```
+
+````
+
+````{py:method} extract(context: nexusLIMS.extractors.base.ExtractionContext) -> dict[str, typing.Any]
+:canonical: nexusLIMS.extractors.plugins.tescan_tif.TescanTiffExtractor.extract
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.tescan_tif.TescanTiffExtractor.extract
+```
+
+````
+
+`````
