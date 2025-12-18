@@ -588,6 +588,42 @@ Uses priority-based selection with content sniffing support.</p>
 </div>
 <p class="rubric">Initialization</p>
 <p>Initialize the extractor registry.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.registry.ExtractorRegistry.extractors">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">extractors</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#list" title="(in Python v3.11)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#type" title="(in Python v3.11)"><span class="pre">type</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="nexusLIMS.extractors.base.html#nexusLIMS.extractors.base.BaseExtractor" title="nexusLIMS.extractors.base.BaseExtractor"><span class="pre">BaseExtractor</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#nexusLIMS.extractors.registry.ExtractorRegistry.extractors" title="Link to this definition">#</a></dt>
+<dd><p>Get the extractor list.</p>
+<p>Returns a dictionary mapping file extensions to lists of extractor classes,
+sorted by priority (descending).</p>
+<p>Auto-discovers plugins if not already discovered.</p>
+<p class="rubric" id="id4">Returns</p>
+<p>dict[str, list[type[BaseExtractor]]]
+Maps extension (without dot) to list of extractor classes</p>
+<p class="rubric" id="id5">Examples</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; registry = get_registry()
+&gt;&gt;&gt; extractors_by_ext = registry.extractors
+&gt;&gt;&gt; print(extractors_by_ext.get(&quot;dm3&quot;, []))
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.registry.ExtractorRegistry.extractor_names">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">extractor_names</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#list" title="(in Python v3.11)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#nexusLIMS.extractors.registry.ExtractorRegistry.extractor_names" title="Link to this definition">#</a></dt>
+<dd><p>Get a deduplicated list of extractor names.</p>
+<p>Returns extractor names sorted alphabetically, with duplicates removed.</p>
+<p>Auto-discovers plugins if not already discovered.</p>
+<p class="rubric" id="id6">Returns</p>
+<p>list[str]
+Sorted list of unique extractor names</p>
+<p class="rubric" id="id7">Examples</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; registry = get_registry()
+&gt;&gt;&gt; names = registry.extractor_names
+&gt;&gt;&gt; print(names)
+[&#39;BasicFileInfoExtractor&#39;, &#39;DM3Extractor&#39;, &#39;QuantaTiffExtractor&#39;, ...]
+</pre></div>
+</div>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="nexusLIMS.extractors.registry.ExtractorRegistry.discover_plugins">
 <span class="sig-name descname"><span class="pre">discover_plugins</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/registry.html#ExtractorRegistry.discover_plugins"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.registry.ExtractorRegistry.discover_plugins" title="Link to this definition">#</a></dt>
@@ -596,7 +632,7 @@ Uses priority-based selection with content sniffing support.</p>
 and registers any classes that implement the BaseExtractor protocol.</p>
 <p>This is called automatically on first use, but can be called manually
 to force re-discovery.</p>
-<p class="rubric" id="id4">Examples</p>
+<p class="rubric" id="id8">Examples</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; registry = get_registry()
 &gt;&gt;&gt; registry.discover_plugins()
 &gt;&gt;&gt; extractors = registry.get_extractors_for_extension(&quot;dm3&quot;)
@@ -614,7 +650,7 @@ also be used to manually register extractors (useful for testing).</p>
 <p class="rubric" id="parameters">Parameters</p>
 <p>extractor_class
 The extractor class to register (not an instance)</p>
-<p class="rubric" id="id5">Examples</p>
+<p class="rubric" id="id9">Examples</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; class MyExtractor:
 ...     name = &quot;my_extractor&quot;
 ...     priority = 100
@@ -640,13 +676,13 @@ The extractor class to register (not an instance)</p>
 <li><p>If still none, return BasicMetadataExtractor fallback</p></li>
 </ol>
 <p>This method NEVER returns None - there is always a fallback.</p>
-<p class="rubric" id="id6">Parameters</p>
+<p class="rubric" id="id10">Parameters</p>
 <p>context
 Extraction context containing file path, instrument, etc.</p>
-<p class="rubric" id="id7">Returns</p>
+<p class="rubric" id="id11">Returns</p>
 <p>BaseExtractor
 The best extractor for this file (never None)</p>
-<p class="rubric" id="id8">Examples</p>
+<p class="rubric" id="id12">Examples</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; from nexusLIMS.extractors.base import ExtractionContext
 &gt;&gt;&gt; from pathlib import Path
 &gt;&gt;&gt;
@@ -662,13 +698,13 @@ The best extractor for this file (never None)</p>
 <dt class="sig sig-object py" id="nexusLIMS.extractors.registry.ExtractorRegistry.get_extractors_for_extension">
 <span class="sig-name descname"><span class="pre">get_extractors_for_extension</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">extension</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#list" title="(in Python v3.11)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="nexusLIMS.extractors.base.html#nexusLIMS.extractors.base.BaseExtractor" title="nexusLIMS.extractors.base.BaseExtractor"><span class="pre">BaseExtractor</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/registry.html#ExtractorRegistry.get_extractors_for_extension"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.registry.ExtractorRegistry.get_extractors_for_extension" title="Link to this definition">#</a></dt>
 <dd><p>Get all extractors registered for a specific extension.</p>
-<p class="rubric" id="id9">Parameters</p>
+<p class="rubric" id="id13">Parameters</p>
 <p>extension
 File extension (with or without leading dot)</p>
-<p class="rubric" id="id10">Returns</p>
+<p class="rubric" id="id14">Returns</p>
 <p>list[BaseExtractor]
 List of extractors, sorted by priority (descending)</p>
-<p class="rubric" id="id11">Examples</p>
+<p class="rubric" id="id15">Examples</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; registry = get_registry()
 &gt;&gt;&gt; extractors = registry.get_extractors_for_extension(&quot;dm3&quot;)
 &gt;&gt;&gt; for e in extractors:
@@ -681,13 +717,13 @@ List of extractors, sorted by priority (descending)</p>
 <dt class="sig sig-object py" id="nexusLIMS.extractors.registry.ExtractorRegistry.get_supported_extensions">
 <span class="sig-name descname"><span class="pre">get_supported_extensions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exclude_fallback</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#set" title="(in Python v3.11)"><span class="pre">set</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/registry.html#ExtractorRegistry.get_supported_extensions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.registry.ExtractorRegistry.get_supported_extensions" title="Link to this definition">#</a></dt>
 <dd><p>Get all file extensions that have registered extractors.</p>
-<p class="rubric" id="id12">Parameters</p>
+<p class="rubric" id="id16">Parameters</p>
 <p>exclude_fallback
 If True, exclude extensions that only have the fallback extractor</p>
-<p class="rubric" id="id13">Returns</p>
+<p class="rubric" id="id17">Returns</p>
 <p>set[str]
 Set of extensions (without dots)</p>
-<p class="rubric" id="id14">Examples</p>
+<p class="rubric" id="id18">Examples</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; registry = get_registry()
 &gt;&gt;&gt; extensions = registry.get_supported_extensions()
 &gt;&gt;&gt; print(f&quot;Supported: {&#39;, &#39;.join(sorted(extensions))}&quot;)
@@ -702,7 +738,7 @@ Set of extensions (without dots)</p>
 <span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/registry.html#ExtractorRegistry.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.registry.ExtractorRegistry.clear" title="Link to this definition">#</a></dt>
 <dd><p>Clear all registered extractors and reset discovery state.</p>
 <p>Primarily used for testing.</p>
-<p class="rubric" id="id15">Examples</p>
+<p class="rubric" id="id19">Examples</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; registry = get_registry()
 &gt;&gt;&gt; registry.clear()
 &gt;&gt;&gt; # Will re-discover on next use
@@ -716,10 +752,10 @@ Set of extensions (without dots)</p>
 <dd><p>Manually register a preview generator class.</p>
 <p>This method is called automatically during plugin discovery, but can
 also be used to manually register generators (useful for testing).</p>
-<p class="rubric" id="id16">Parameters</p>
+<p class="rubric" id="id20">Parameters</p>
 <p>generator_class
 The preview generator class to register (not an instance)</p>
-<p class="rubric" id="id17">Examples</p>
+<p class="rubric" id="id21">Examples</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; class MyGenerator:
 ...     name = &quot;my_generator&quot;
 ...     priority = 100
@@ -743,13 +779,13 @@ The preview generator class to register (not an instance)</p>
 <li><p>Try each in priority order (high to low) until one’s supports() returns True</p></li>
 <li><p>If none match, return None</p></li>
 </ol>
-<p class="rubric" id="id18">Parameters</p>
+<p class="rubric" id="id22">Parameters</p>
 <p>context
 Extraction context containing file path, instrument, etc.</p>
-<p class="rubric" id="id19">Returns</p>
+<p class="rubric" id="id23">Returns</p>
 <p>PreviewGenerator | None
 The best preview generator for this file, or None if no generator found</p>
-<p class="rubric" id="id20">Examples</p>
+<p class="rubric" id="id24">Examples</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; from nexusLIMS.extractors.base import ExtractionContext
 &gt;&gt;&gt; from pathlib import Path
 &gt;&gt;&gt;
@@ -768,10 +804,10 @@ The best preview generator for this file, or None if no generator found</p>
 <dt class="sig sig-object py" id="nexusLIMS.extractors.registry.get_registry">
 <span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.registry.</span></span><span class="sig-name descname"><span class="pre">get_registry</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#nexusLIMS.extractors.registry.ExtractorRegistry" title="nexusLIMS.extractors.registry.ExtractorRegistry"><span class="pre">ExtractorRegistry</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/registry.html#get_registry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.registry.get_registry" title="Link to this definition">#</a></dt>
 <dd><p>Get the global extractor registry (singleton).</p>
-<p class="rubric" id="id21">Returns</p>
+<p class="rubric" id="id25">Returns</p>
 <p>ExtractorRegistry
 The global registry instance</p>
-<p class="rubric" id="id22">Examples</p>
+<p class="rubric" id="id26">Examples</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; from nexusLIMS.extractors.registry import get_registry
 &gt;&gt;&gt; registry = get_registry()
 &gt;&gt;&gt; # Always returns the same instance
@@ -838,6 +874,8 @@ The global registry instance</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#api">API</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.registry.logger"><code class="docutils literal notranslate"><span class="pre">logger</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.registry.ExtractorRegistry"><code class="docutils literal notranslate"><span class="pre">ExtractorRegistry</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.registry.ExtractorRegistry.extractors"><code class="docutils literal notranslate"><span class="pre">ExtractorRegistry.extractors</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.registry.ExtractorRegistry.extractor_names"><code class="docutils literal notranslate"><span class="pre">ExtractorRegistry.extractor_names</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.registry.ExtractorRegistry.discover_plugins"><code class="docutils literal notranslate"><span class="pre">ExtractorRegistry.discover_plugins()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.registry.ExtractorRegistry.register_extractor"><code class="docutils literal notranslate"><span class="pre">ExtractorRegistry.register_extractor()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.registry.ExtractorRegistry.get_extractor"><code class="docutils literal notranslate"><span class="pre">ExtractorRegistry.get_extractor()</span></code></a></li>

@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>nexusLIMS.extractors.plugins &#8212; NexusLIMS 2.1.2.dev0 documentation</title>
+    <title>nexusLIMS.extractors.plugins.tescan_tif &#8212; NexusLIMS 2.1.2.dev0 documentation</title>
   
   
   
@@ -45,7 +45,7 @@
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'api/nexusLIMS/nexusLIMS.extractors.plugins';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api/nexusLIMS/nexusLIMS.extractors.plugins.tescan_tif';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
@@ -53,12 +53,12 @@
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
-    <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/latest/api/nexusLIMS/nexusLIMS.extractors.plugins.html" />
+    <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/latest/api/nexusLIMS/nexusLIMS.extractors.plugins.tescan_tif.html" />
     <link rel="icon" href="../../_static/nexusLIMS_bare_logo.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="nexusLIMS.extractors.plugins.preview_generators" href="nexusLIMS.extractors.plugins.preview_generators.html" />
-    <link rel="prev" title="nexusLIMS.extractors" href="nexusLIMS.extractors.html" />
+    <link rel="next" title="nexusLIMS.extractors.plugins.edax" href="nexusLIMS.extractors.plugins.edax.html" />
+    <link rel="prev" title="nexusLIMS.extractors.plugins.profiles.fei_titan_tem_642" href="nexusLIMS.extractors.plugins.profiles.fei_titan_tem_642.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.1.2.dev0" />
@@ -411,7 +411,7 @@
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.db.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.db</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.builder.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.builder</span></code></a></li>
 <li class="toctree-l3 current active has-children"><a class="reference internal" href="nexusLIMS.extractors.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors</span></code></a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l4 current active"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins</span></code></a></li>
+<li class="toctree-l4 current active"><a class="reference internal" href="nexusLIMS.extractors.plugins.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="nexusLIMS.extractors.profiles.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.profiles</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="nexusLIMS.extractors.utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.utils</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="nexusLIMS.extractors.registry.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.registry</span></code></a></li>
@@ -482,7 +482,10 @@
     
     <li class="breadcrumb-item"><a href="nexusLIMS.extractors.html" class="nav-link"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors</span></code></a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins</span></code></span></li>
+    
+    <li class="breadcrumb-item"><a href="nexusLIMS.extractors.plugins.html" class="nav-link"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins</span></code></a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.tescan_tif</span></code></span></li>
   </ul>
 </nav>
 </div>
@@ -499,78 +502,116 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="module-nexusLIMS.extractors.plugins">
-<span id="nexuslims-extractors-plugins"></span><h1><a class="reference internal" href="#module-nexusLIMS.extractors.plugins" title="nexusLIMS.extractors.plugins"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins</span></code></a><a class="headerlink" href="#module-nexusLIMS.extractors.plugins" title="Link to this heading">#</a></h1>
-<section id="examples">
-<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading">#</a></h2>
-<p>Creating a new extractor plugin::</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># plugins/my_extractor.py
-from nexusLIMS.extractors.base import ExtractionContext
-
-class MyFormatExtractor:
-    name = &quot;my_format_extractor&quot;
-    priority = 100
-
-    def supports(self, context: ExtractionContext) -&gt; bool:
-        return context.file_path.suffix.lower() == &#39;.myformat&#39;
-
-    def extract(self, context: ExtractionContext) -&gt; dict:
-        # Extract metadata
-        return {&quot;nx_meta&quot;: {...}}
-</pre></div>
+  <section id="module-nexusLIMS.extractors.plugins.tescan_tif">
+<span id="nexuslims-extractors-plugins-tescan-tif"></span><h1><a class="reference internal" href="#module-nexusLIMS.extractors.plugins.tescan_tif" title="nexusLIMS.extractors.plugins.tescan_tif"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.tescan_tif</span></code></a><a class="headerlink" href="#module-nexusLIMS.extractors.plugins.tescan_tif" title="Link to this heading">#</a></h1>
+<p>Tescan (P)FIB/SEM TIFF extractor plugin.</p>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
+<section id="classes">
+<h3>Classes<a class="headerlink" href="#classes" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table table-left">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.extractors.plugins.tescan_tif.TescanTiffExtractor" title="nexusLIMS.extractors.plugins.tescan_tif.TescanTiffExtractor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TescanTiffExtractor</span></code></a></p></td>
+<td><p>Extractor for Tescan FIB/SEM TIFF files.</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 </section>
-<p>Plugin package for NexusLIMS extractors.</p>
-<p>This package contains extractor plugins that are auto-discovered by the
-ExtractorRegistry. Any module in this package (or subpackages) that defines
-a class implementing the BaseExtractor protocol will be automatically
-registered.</p>
-<p>To create a new extractor plugin:</p>
+<section id="data">
+<h3>Data<a class="headerlink" href="#data" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table table-left">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.extractors.plugins.tescan_tif.TESCAN_TIFF_TAG" title="nexusLIMS.extractors.plugins.tescan_tif.TESCAN_TIFF_TAG"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TESCAN_TIFF_TAG</span></code></a></p></td>
+<td><p>TIFF tag ID where Tescan stores INI-style metadata in TIFF files.
+The tag contains holds instrument configuration, beam parameters, stage position,
+detector settings, and other acquisition metadata.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="api">
+<h3>API<a class="headerlink" href="#api" title="Link to this heading">#</a></h3>
+<dl class="py data">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.tescan_tif.TESCAN_TIFF_TAG">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.plugins.tescan_tif.</span></span><span class="sig-name descname"><span class="pre">TESCAN_TIFF_TAG</span></span><a class="headerlink" href="#nexusLIMS.extractors.plugins.tescan_tif.TESCAN_TIFF_TAG" title="Link to this definition">#</a></dt>
+<dd><p>50431</p>
+<p>TIFF tag ID where Tescan stores INI-style metadata in TIFF files.
+The tag contains holds instrument configuration, beam parameters, stage position,
+detector settings, and other acquisition metadata.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.tescan_tif.TescanTiffExtractor">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.plugins.tescan_tif.</span></span><span class="sig-name descname"><span class="pre">TescanTiffExtractor</span></span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/plugins/tescan_tif.html#TescanTiffExtractor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.plugins.tescan_tif.TescanTiffExtractor" title="Link to this definition">#</a></dt>
+<dd><p>Extractor for Tescan FIB/SEM TIFF files.</p>
+<p>This extractor handles metadata extraction from .tif files saved by
+Tescan FIB and SEM instruments (e.g., AMBER X). The extractor uses
+a two-tier strategy:</p>
 <ol class="arabic simple">
-<li><p>Create a new .py file in this directory</p></li>
-<li><p>Define a class with these attributes/methods:</p>
-<ul class="simple">
-<li><p>name: str (unique identifier)</p></li>
-<li><p>priority: int (0-1000, higher = preferred)</p></li>
-<li><p>supports(context: ExtractionContext) -&gt; bool</p></li>
-<li><p>extract(context: ExtractionContext) -&gt; dict[str, Any]</p></li>
-</ul>
-</li>
-<li><p>The registry will automatically discover and register it</p></li>
+<li><p>Primary: Look for sidecar .hdr file with full metadata in INI format</p></li>
+<li><p>Fallback: Extract basic metadata from TIFF tags if no .hdr file exists</p></li>
 </ol>
-<p>No manual registration required!</p>
-<section id="subpackages">
-<h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading">#</a></h2>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="nexusLIMS.extractors.plugins.preview_generators.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.preview_generators</span></code></a><ul>
-<li class="toctree-l2"><a class="reference internal" href="nexusLIMS.extractors.plugins.preview_generators.text_preview.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.preview_generators.text_preview</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="nexusLIMS.extractors.plugins.preview_generators.image_preview.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.preview_generators.image_preview</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="nexusLIMS.extractors.plugins.profiles.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.profiles</span></code></a><ul>
-<li class="toctree-l2"><a class="reference internal" href="nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="nexusLIMS.extractors.plugins.profiles.jeol_jem_642.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.profiles.jeol_jem_642</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="nexusLIMS.extractors.plugins.profiles.fei_titan_tem_642.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.profiles.fei_titan_tem_642</span></code></a></li>
-</ul>
-</li>
-</ul>
-</div>
+<p>The .hdr file contains comprehensive acquisition parameters in two sections:
+[MAIN] and [SEM], which are parsed using Python’s configparser.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.tescan_tif.TescanTiffExtractor.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#nexusLIMS.extractors.plugins.tescan_tif.TescanTiffExtractor.name" title="Link to this definition">#</a></dt>
+<dd><p>‘tescan_tif_extractor’</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.tescan_tif.TescanTiffExtractor.priority">
+<span class="sig-name descname"><span class="pre">priority</span></span><a class="headerlink" href="#nexusLIMS.extractors.plugins.tescan_tif.TescanTiffExtractor.priority" title="Link to this definition">#</a></dt>
+<dd><p>150</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.tescan_tif.TescanTiffExtractor.supported_extensions">
+<span class="sig-name descname"><span class="pre">supported_extensions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.ClassVar" title="(in Python v3.11)"><span class="pre">ClassVar</span></a></em><a class="headerlink" href="#nexusLIMS.extractors.plugins.tescan_tif.TescanTiffExtractor.supported_extensions" title="Link to this definition">#</a></dt>
+<dd><p>None</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.tescan_tif.TescanTiffExtractor.supports">
+<span class="sig-name descname"><span class="pre">supports</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="nexusLIMS.extractors.base.html#nexusLIMS.extractors.base.ExtractionContext" title="nexusLIMS.extractors.base.ExtractionContext"><span class="pre">ExtractionContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/plugins/tescan_tif.html#TescanTiffExtractor.supports"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.plugins.tescan_tif.TescanTiffExtractor.supports" title="Link to this definition">#</a></dt>
+<dd><p>Check if this extractor supports the given file.</p>
+<p>Performs content sniffing to verify this is a Tescan TIFF file by:</p>
+<ol class="arabic simple">
+<li><p>Checking file extension (.tif or .tiff)</p></li>
+<li><p>Looking for either a sidecar .hdr file or Tescan-specific TIFF tags</p></li>
+</ol>
+<p class="rubric" id="parameters">Parameters</p>
+<p>context
+The extraction context containing file information</p>
+<p class="rubric" id="returns">Returns</p>
+<p>bool
+True if this appears to be a Tescan TIFF file</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.tescan_tif.TescanTiffExtractor.extract">
+<span class="sig-name descname"><span class="pre">extract</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="nexusLIMS.extractors.base.html#nexusLIMS.extractors.base.ExtractionContext" title="nexusLIMS.extractors.base.ExtractionContext"><span class="pre">ExtractionContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/plugins/tescan_tif.html#TescanTiffExtractor.extract"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.plugins.tescan_tif.TescanTiffExtractor.extract" title="Link to this definition">#</a></dt>
+<dd><p>Extract metadata from a Tescan FIB/SEM TIFF file.</p>
+<p>Returns the metadata (as a dictionary) from a .tif file saved by
+Tescan instruments. Uses a three-tier extraction strategy:</p>
+<ol class="arabic simple">
+<li><p>Try to parse embedded HDR metadata from TIFF Tag 50431</p></li>
+<li><p>If that fails, look for a sidecar .hdr file</p></li>
+<li><p>Always extract basic TIFF tags as well</p></li>
+</ol>
+<p class="rubric" id="id1">Parameters</p>
+<p>context
+The extraction context containing file information</p>
+<p class="rubric" id="id2">Returns</p>
+<p>dict
+Metadata dictionary with ‘nx_meta’ key containing NexusLIMS metadata</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
-<section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">#</a></h2>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="nexusLIMS.extractors.plugins.tescan_tif.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.tescan_tif</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="nexusLIMS.extractors.plugins.edax.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.edax</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="nexusLIMS.extractors.plugins.digital_micrograph.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.digital_micrograph</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="nexusLIMS.extractors.plugins.quanta_tif.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.quanta_tif</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="nexusLIMS.extractors.plugins.fei_emi.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.fei_emi</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="nexusLIMS.extractors.plugins.basic_metadata.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.basic_metadata</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="nexusLIMS.extractors.plugins.orion_HIM_tif.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.orion_HIM_tif</span></code></a></li>
-</ul>
-</div>
 </section>
 </section>
 
@@ -585,20 +626,20 @@ registered.</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="nexusLIMS.extractors.html"
+       href="nexusLIMS.extractors.plugins.profiles.fei_titan_tem_642.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors</span></code></p>
+        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.profiles.fei_titan_tem_642</span></code></p>
       </div>
     </a>
     <a class="right-next"
-       href="nexusLIMS.extractors.plugins.preview_generators.html"
+       href="nexusLIMS.extractors.plugins.edax.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.preview_generators</span></code></p>
+        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.edax</span></code></p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -621,9 +662,23 @@ registered.</p>
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#examples">Examples</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#subpackages">Subpackages</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#classes">Classes</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data">Data</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#api">API</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.tescan_tif.TESCAN_TIFF_TAG"><code class="docutils literal notranslate"><span class="pre">TESCAN_TIFF_TAG</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.tescan_tif.TescanTiffExtractor"><code class="docutils literal notranslate"><span class="pre">TescanTiffExtractor</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.tescan_tif.TescanTiffExtractor.name"><code class="docutils literal notranslate"><span class="pre">TescanTiffExtractor.name</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.tescan_tif.TescanTiffExtractor.priority"><code class="docutils literal notranslate"><span class="pre">TescanTiffExtractor.priority</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.tescan_tif.TescanTiffExtractor.supported_extensions"><code class="docutils literal notranslate"><span class="pre">TescanTiffExtractor.supported_extensions</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.tescan_tif.TescanTiffExtractor.supports"><code class="docutils literal notranslate"><span class="pre">TescanTiffExtractor.supports()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.tescan_tif.TescanTiffExtractor.extract"><code class="docutils literal notranslate"><span class="pre">TescanTiffExtractor.extract()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
   </nav></div>
 
@@ -631,7 +686,7 @@ registered.</p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="../../_sources/api/nexusLIMS/nexusLIMS.extractors.plugins.md.txt"
+      <li><a href="../../_sources/api/nexusLIMS/nexusLIMS.extractors.plugins.tescan_tif.md.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div></div>

@@ -23,6 +23,7 @@ nexusLIMS.extractors.plugins.profiles
 :titlesonly:
 :maxdepth: 1
 
+nexusLIMS.extractors.plugins.tescan_tif
 nexusLIMS.extractors.plugins.edax
 nexusLIMS.extractors.plugins.digital_micrograph
 nexusLIMS.extractors.plugins.quanta_tif
