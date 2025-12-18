@@ -30,28 +30,12 @@ nexusLIMS.extractors.base
 
 ## Package Contents
 
-### Classes
-
-````{list-table}
-:class: autosummary longtable
-:align: left
-
-* - {py:obj}`_CustomEncoder <nexusLIMS.extractors._CustomEncoder>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors._CustomEncoder
-    :summary:
-    ```
-````
-
 ### Functions
 
 ````{list-table}
 :class: autosummary longtable
 :align: left
 
-* - {py:obj}`_add_extraction_details <nexusLIMS.extractors._add_extraction_details>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors._add_extraction_details
-    :summary:
-    ```
 * - {py:obj}`parse_metadata <nexusLIMS.extractors.parse_metadata>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.parse_metadata
     :summary:
@@ -78,10 +62,6 @@ nexusLIMS.extractors.base
     ```
 * - {py:obj}`PLACEHOLDER_PREVIEW <nexusLIMS.extractors.PLACEHOLDER_PREVIEW>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.PLACEHOLDER_PREVIEW
-    :summary:
-    ```
-* - {py:obj}`__all__ <nexusLIMS.extractors.__all__>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.__all__
     :summary:
     ```
 * - {py:obj}`unextracted_preview_map <nexusLIMS.extractors.unextracted_preview_map>`
@@ -112,16 +92,6 @@ nexusLIMS.extractors.base
 
 ````
 
-````{py:data} __all__
-:canonical: nexusLIMS.extractors.__all__
-:value: >
-   ['PLACEHOLDER_PREVIEW', 'create_preview', 'down_sample_image', 'flatten_dict', 'get_instr_from_filep...
-
-```{autodoc2-docstring} nexusLIMS.extractors.__all__
-```
-
-````
-
 ````{py:data} unextracted_preview_map
 :canonical: nexusLIMS.extractors.unextracted_preview_map
 :value: >
@@ -130,13 +100,6 @@ nexusLIMS.extractors.base
 ```{autodoc2-docstring} nexusLIMS.extractors.unextracted_preview_map
 ```
 
-````
-
-````{py:function} _add_extraction_details(nx_meta: typing.Dict, extractor_module: typing.Callable) -> typing.Dict[str, str]
-:canonical: nexusLIMS.extractors._add_extraction_details
-
-```{autodoc2-docstring} nexusLIMS.extractors._add_extraction_details
-```
 ````
 
 ````{py:function} parse_metadata(fname: pathlib.Path, *, write_output: bool = True, generate_preview: bool = True, overwrite: bool = True) -> typing.Tuple[typing.Dict[str, typing.Any] | None, pathlib.Path | None]
@@ -159,24 +122,3 @@ nexusLIMS.extractors.base
 ```{autodoc2-docstring} nexusLIMS.extractors.flatten_dict
 ```
 ````
-
-`````{py:class} _CustomEncoder(*, skipkeys=False, ensure_ascii=True, check_circular=True, allow_nan=True, sort_keys=False, indent=None, separators=None, default=None)
-:canonical: nexusLIMS.extractors._CustomEncoder
-
-Bases: {py:obj}`json.JSONEncoder`
-
-```{autodoc2-docstring} nexusLIMS.extractors._CustomEncoder
-```
-
-```{rubric} Initialization
-```
-
-```{autodoc2-docstring} nexusLIMS.extractors._CustomEncoder.__init__
-```
-
-````{py:method} default(o)
-:canonical: nexusLIMS.extractors._CustomEncoder.default
-
-````
-
-`````

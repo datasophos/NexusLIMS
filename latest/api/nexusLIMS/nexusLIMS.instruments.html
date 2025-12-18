@@ -62,7 +62,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 16, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 18, 2025"/>
   </head>
   
   
@@ -417,7 +417,6 @@
 <li class="toctree-l3 current active"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.instruments</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.cdcs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cdcs</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.__main__.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.__main__</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.config.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.config</span></code></a></li>
 </ul>
 </details></li>
@@ -519,16 +518,13 @@ NexusLIMS remote database.
 <h3>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h3>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table table-left">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.instruments._get_instrument_db" title="nexusLIMS.instruments._get_instrument_db"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_get_instrument_db</span></code></a></p></td>
-<td><p>Get dictionary of instruments from the NexusLIMS database.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.instruments.get_instr_from_filepath" title="nexusLIMS.instruments.get_instr_from_filepath"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_instr_from_filepath</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.instruments.get_instr_from_filepath" title="nexusLIMS.instruments.get_instr_from_filepath"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_instr_from_filepath</span></code></a></p></td>
 <td><p>Get an instrument object by a given path Using the NexusLIMS database.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.instruments.get_instr_from_calendar_name" title="nexusLIMS.instruments.get_instr_from_calendar_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_instr_from_calendar_name</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.instruments.get_instr_from_calendar_name" title="nexusLIMS.instruments.get_instr_from_calendar_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_instr_from_calendar_name</span></code></a></p></td>
 <td><p>Get an instrument object from the NexusLIMS database by its calendar name.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.instruments.get_instr_from_api_url" title="nexusLIMS.instruments.get_instr_from_api_url"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_instr_from_api_url</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.instruments.get_instr_from_api_url" title="nexusLIMS.instruments.get_instr_from_api_url"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_instr_from_api_url</span></code></a></p></td>
 <td><p>Get an instrument object from the NexusLIMS database by its <code class="docutils literal notranslate"><span class="pre">api_url</span></code>.</p></td>
 </tr>
 </tbody>
@@ -557,29 +553,13 @@ NexusLIMS remote database.
 <dd><p>‘getLogger(…)’</p>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="nexusLIMS.instruments._get_instrument_db">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.instruments.</span></span><span class="sig-name descname"><span class="pre">_get_instrument_db</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/instruments.html#_get_instrument_db"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.instruments._get_instrument_db" title="Link to this definition">#</a></dt>
-<dd><p>Get dictionary of instruments from the NexusLIMS database.</p>
-<p>Sort of like a very very basic ORM, but much worse.</p>
-<p class="rubric" id="id10">Parameters</p>
-<p>db_path : Path | str | None, optional
-Path to the database file. If None, uses the path from settings.
-This parameter is primarily for testing purposes.</p>
-<p class="rubric" id="id11">Returns</p>
-<p>instrument_db : dict
-A dictionary of <code class="docutils literal notranslate"><span class="pre">Instrument</span></code> instances that describe all the
-instruments that were found in the <code class="docutils literal notranslate"><span class="pre">instruments</span></code> table of the
-NexusLIMS database</p>
-</dd></dl>
-
 <dl class="py class">
 <dt class="sig sig-object py" id="nexusLIMS.instruments.Instrument">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nexusLIMS.instruments.</span></span><span class="sig-name descname"><span class="pre">Instrument</span></span><a class="reference internal" href="../../_modules/nexusLIMS/instruments.html#Instrument"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.instruments.Instrument" title="Link to this definition">#</a></dt>
 <dd><p>Representation of a NexusLIMS instrument.</p>
 <p>A simple object to hold information about an instrument in the Microscopy
 Nexus facility, fetched from the external NexusLIMS database.</p>
-<p class="rubric" id="id12">Parameters</p>
+<p class="rubric" id="id8">Parameters</p>
 <p>api_url : str or None
 The calendar API endpoint url for this instrument’s scheduler
 calendar_name : str or None
@@ -702,24 +682,6 @@ dates and times when communicating with the harvester APIs.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="nexusLIMS.instruments.Instrument.__post_init__">
-<span class="sig-name descname"><span class="pre">__post_init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/instruments.html#Instrument.__post_init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.instruments.Instrument.__post_init__" title="Link to this definition">#</a></dt>
-<dd><p>Post-initialization to convert timezone string to timezone object.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="nexusLIMS.instruments.Instrument.__repr__">
-<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/instruments.html#Instrument.__repr__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.instruments.Instrument.__repr__" title="Link to this definition">#</a></dt>
-<dd><p>Return custom representation of an Instrument.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="nexusLIMS.instruments.Instrument.__str__">
-<span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/instruments.html#Instrument.__str__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.instruments.Instrument.__str__" title="Link to this definition">#</a></dt>
-<dd><p>Return custom string representation of an Instrument.</p>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="nexusLIMS.instruments.Instrument.localize_datetime">
 <span class="sig-name descname"><span class="pre">localize_datetime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><span class="pre">datetime</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><span class="pre">datetime</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/instruments.html#Instrument.localize_datetime"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.instruments.Instrument.localize_datetime" title="Link to this definition">#</a></dt>
 <dd><p>Localize a datetime to an Instrument’s timezone.</p>
@@ -729,10 +691,10 @@ assumed to already be in the timezone of the instrument, and the
 displayed time will not change. If the timezone of the supplied
 datetime is different than the instrument’s, the time will be
 adjusted to compensate for the timezone offset.</p>
-<p class="rubric" id="id13">Parameters</p>
+<p class="rubric" id="id9">Parameters</p>
 <p>_dt
 The datetime object to localize</p>
-<p class="rubric" id="id14">Returns</p>
+<p class="rubric" id="id10">Returns</p>
 <p>datetime.datetime
 A datetime object with the same timezone as the instrument</p>
 </dd></dl>
@@ -744,12 +706,12 @@ A datetime object with the same timezone as the instrument</p>
 <p>Convert a date and time to the timezone of this instrument, returning
 a textual representation of the object, rather than the datetime
 itself. Uses :py:meth:<code class="docutils literal notranslate"><span class="pre">localize_datetime</span></code> for the actual conversion.</p>
-<p class="rubric" id="id15">Parameters</p>
+<p class="rubric" id="id11">Parameters</p>
 <p>_dt
 The datetime object ot localize
 fmt
 The strftime format string to use to format the output</p>
-<p class="rubric" id="id16">Returns</p>
+<p class="rubric" id="id12">Returns</p>
 <p>str
 The formatted textual representation of the localized datetime</p>
 </dd></dl>
@@ -760,7 +722,7 @@ The formatted textual representation of the localized datetime</p>
 <dd><p>Return a dictionary representation of the Instrument object.</p>
 <p>Handles special cases like renaming ‘name’ to ‘instrument_pid’ and
 converting timezone objects to strings.</p>
-<p class="rubric" id="id17">Returns</p>
+<p class="rubric" id="id13">Returns</p>
 <p>dict
 A dictionary representation of the instrument, suitable for database
 insertion or JSON serialization.</p>
@@ -770,10 +732,10 @@ insertion or JSON serialization.</p>
 <dt class="sig sig-object py" id="nexusLIMS.instruments.Instrument.to_json">
 <span class="sig-name descname"><span class="pre">to_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/instruments.html#Instrument.to_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.instruments.Instrument.to_json" title="Link to this definition">#</a></dt>
 <dd><p>Return a JSON string representation of the Instrument object.</p>
-<p class="rubric" id="id18">Parameters</p>
+<p class="rubric" id="id14">Parameters</p>
 <p>**kwargs
 Additional keyword arguments to pass to <code class="docutils literal notranslate"><span class="pre">json.dumps</span></code>.</p>
-<p class="rubric" id="id19">Returns</p>
+<p class="rubric" id="id15">Returns</p>
 <p>str
 A JSON string representation of the instrument.</p>
 </dd></dl>
@@ -790,15 +752,15 @@ A JSON string representation of the instrument.</p>
 <dt class="sig sig-object py" id="nexusLIMS.instruments.get_instr_from_filepath">
 <span class="sig-prename descclassname"><span class="pre">nexusLIMS.instruments.</span></span><span class="sig-name descname"><span class="pre">get_instr_from_filepath</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/instruments.html#get_instr_from_filepath"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.instruments.get_instr_from_filepath" title="Link to this definition">#</a></dt>
 <dd><p>Get an instrument object by a given path Using the NexusLIMS database.</p>
-<p class="rubric" id="id20">Parameters</p>
+<p class="rubric" id="id16">Parameters</p>
 <p>path
 A path (relative or absolute) to a file saved in the central
 filestore that will be used to search for a matching instrument</p>
-<p class="rubric" id="id21">Returns</p>
+<p class="rubric" id="id17">Returns</p>
 <p>instrument : Instrument or None
 An <code class="docutils literal notranslate"><span class="pre">Instrument</span></code> instance matching the path, or None if no match was
 found</p>
-<p class="rubric" id="id22">Examples</p>
+<p class="rubric" id="id18">Examples</p>
 <blockquote>
 <div><blockquote>
 <div><blockquote>
@@ -814,15 +776,15 @@ str(inst)
 <dt class="sig sig-object py" id="nexusLIMS.instruments.get_instr_from_calendar_name">
 <span class="sig-prename descclassname"><span class="pre">nexusLIMS.instruments.</span></span><span class="sig-name descname"><span class="pre">get_instr_from_calendar_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cal_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/instruments.html#get_instr_from_calendar_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.instruments.get_instr_from_calendar_name" title="Link to this definition">#</a></dt>
 <dd><p>Get an instrument object from the NexusLIMS database by its calendar name.</p>
-<p class="rubric" id="id23">Parameters</p>
+<p class="rubric" id="id19">Parameters</p>
 <p>cal_name : str
 A calendar name (e.g. “FEITitanTEMEvents”) that will be used to search
 for a matching instrument in the <code class="docutils literal notranslate"><span class="pre">api_url</span></code> values</p>
-<p class="rubric" id="id24">Returns</p>
+<p class="rubric" id="id20">Returns</p>
 <p>instrument : Instrument or None
 An <code class="docutils literal notranslate"><span class="pre">Instrument</span></code> instance matching the path, or None if no match was
 found</p>
-<p class="rubric" id="id25">Examples</p>
+<p class="rubric" id="id21">Examples</p>
 <blockquote>
 <div><blockquote>
 <div><blockquote>
@@ -838,15 +800,15 @@ str(inst)
 <dt class="sig sig-object py" id="nexusLIMS.instruments.get_instr_from_api_url">
 <span class="sig-prename descclassname"><span class="pre">nexusLIMS.instruments.</span></span><span class="sig-name descname"><span class="pre">get_instr_from_api_url</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api_url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#nexusLIMS.instruments.Instrument" title="nexusLIMS.instruments.Instrument"><span class="pre">Instrument</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/instruments.html#get_instr_from_api_url"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.instruments.get_instr_from_api_url" title="Link to this definition">#</a></dt>
 <dd><p>Get an instrument object from the NexusLIMS database by its <code class="docutils literal notranslate"><span class="pre">api_url</span></code>.</p>
-<p class="rubric" id="id26">Parameters</p>
+<p class="rubric" id="id22">Parameters</p>
 <p>api_url
 An api_url (e.g. “FEITitanTEMEvents”) that will be used to search
 for a matching instrument in the <code class="docutils literal notranslate"><span class="pre">api_url</span></code> values</p>
-<p class="rubric" id="id27">Returns</p>
+<p class="rubric" id="id23">Returns</p>
 <p>Instrument
 An <code class="docutils literal notranslate"><span class="pre">Instrument</span></code> instance matching the <code class="docutils literal notranslate"><span class="pre">api_url</span></code>, or <code class="docutils literal notranslate"><span class="pre">None</span></code> if no
 match was found</p>
-<p class="rubric" id="id28">Examples</p>
+<p class="rubric" id="id24">Examples</p>
 <blockquote>
 <div><blockquote>
 <div><blockquote>
@@ -916,7 +878,6 @@ str(inst)
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data">Data</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#api">API</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.instruments.logger"><code class="docutils literal notranslate"><span class="pre">logger</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.instruments._get_instrument_db"><code class="docutils literal notranslate"><span class="pre">_get_instrument_db()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.instruments.Instrument"><code class="docutils literal notranslate"><span class="pre">Instrument</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.instruments.Instrument.api_url"><code class="docutils literal notranslate"><span class="pre">Instrument.api_url</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.instruments.Instrument.calendar_name"><code class="docutils literal notranslate"><span class="pre">Instrument.calendar_name</span></code></a></li>
@@ -931,9 +892,6 @@ str(inst)
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.instruments.Instrument.computer_mount"><code class="docutils literal notranslate"><span class="pre">Instrument.computer_mount</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.instruments.Instrument.harvester"><code class="docutils literal notranslate"><span class="pre">Instrument.harvester</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.instruments.Instrument.timezone"><code class="docutils literal notranslate"><span class="pre">Instrument.timezone</span></code></a></li>
-<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.instruments.Instrument.__post_init__"><code class="docutils literal notranslate"><span class="pre">Instrument.__post_init__()</span></code></a></li>
-<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.instruments.Instrument.__repr__"><code class="docutils literal notranslate"><span class="pre">Instrument.__repr__()</span></code></a></li>
-<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.instruments.Instrument.__str__"><code class="docutils literal notranslate"><span class="pre">Instrument.__str__()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.instruments.Instrument.localize_datetime"><code class="docutils literal notranslate"><span class="pre">Instrument.localize_datetime()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.instruments.Instrument.localize_datetime_str"><code class="docutils literal notranslate"><span class="pre">Instrument.localize_datetime_str()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.instruments.Instrument.to_dict"><code class="docutils literal notranslate"><span class="pre">Instrument.to_dict()</span></code></a></li>

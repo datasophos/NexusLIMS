@@ -27,10 +27,6 @@
 :class: autosummary longtable
 :align: left
 
-* - {py:obj}`_pad_to_square <nexusLIMS.extractors.plugins.preview_generators.text_preview._pad_to_square>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.text_preview._pad_to_square
-    :summary:
-    ```
 * - {py:obj}`text_to_thumbnail <nexusLIMS.extractors.plugins.preview_generators.text_preview.text_to_thumbnail>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.text_preview.text_to_thumbnail
     :summary:
@@ -47,26 +43,6 @@
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.text_preview.logger
     :summary:
     ```
-* - {py:obj}`_LANCZOS <nexusLIMS.extractors.plugins.preview_generators.text_preview._LANCZOS>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.text_preview._LANCZOS
-    :summary:
-    ```
-* - {py:obj}`_MAX_ROWS_NOTE <nexusLIMS.extractors.plugins.preview_generators.text_preview._MAX_ROWS_NOTE>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.text_preview._MAX_ROWS_NOTE
-    :summary:
-    ```
-* - {py:obj}`_MAX_ROWS_DATA <nexusLIMS.extractors.plugins.preview_generators.text_preview._MAX_ROWS_DATA>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.text_preview._MAX_ROWS_DATA
-    :summary:
-    ```
-* - {py:obj}`_MAX_COLS <nexusLIMS.extractors.plugins.preview_generators.text_preview._MAX_COLS>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.text_preview._MAX_COLS
-    :summary:
-    ```
-* - {py:obj}`_DEFAULT_SIZE <nexusLIMS.extractors.plugins.preview_generators.text_preview._DEFAULT_SIZE>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.text_preview._DEFAULT_SIZE
-    :summary:
-    ```
 ````
 
 ### API
@@ -79,63 +55,6 @@
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.text_preview.logger
 ```
 
-````
-
-````{py:data} _LANCZOS
-:canonical: nexusLIMS.extractors.plugins.preview_generators.text_preview._LANCZOS
-:value: >
-   None
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.text_preview._LANCZOS
-```
-
-````
-
-````{py:data} _MAX_ROWS_NOTE
-:canonical: nexusLIMS.extractors.plugins.preview_generators.text_preview._MAX_ROWS_NOTE
-:value: >
-   18
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.text_preview._MAX_ROWS_NOTE
-```
-
-````
-
-````{py:data} _MAX_ROWS_DATA
-:canonical: nexusLIMS.extractors.plugins.preview_generators.text_preview._MAX_ROWS_DATA
-:value: >
-   17
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.text_preview._MAX_ROWS_DATA
-```
-
-````
-
-````{py:data} _MAX_COLS
-:canonical: nexusLIMS.extractors.plugins.preview_generators.text_preview._MAX_COLS
-:value: >
-   44
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.text_preview._MAX_COLS
-```
-
-````
-
-````{py:data} _DEFAULT_SIZE
-:canonical: nexusLIMS.extractors.plugins.preview_generators.text_preview._DEFAULT_SIZE
-:value: >
-   5
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.text_preview._DEFAULT_SIZE
-```
-
-````
-
-````{py:function} _pad_to_square(im_path: pathlib.Path, new_width: int = 500)
-:canonical: nexusLIMS.extractors.plugins.preview_generators.text_preview._pad_to_square
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.text_preview._pad_to_square
-```
 ````
 
 ````{py:function} text_to_thumbnail(f: pathlib.Path, out_path: pathlib.Path, output_size: int = 500) -> typing.Union[matplotlib.figure.Figure, bool]
@@ -167,6 +86,17 @@
    100
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.text_preview.TextPreviewGenerator.priority
+```
+
+````
+
+````{py:attribute} supported_extensions
+:canonical: nexusLIMS.extractors.plugins.preview_generators.text_preview.TextPreviewGenerator.supported_extensions
+:type: typing.ClassVar
+:value: >
+   None
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.text_preview.TextPreviewGenerator.supported_extensions
 ```
 
 ````

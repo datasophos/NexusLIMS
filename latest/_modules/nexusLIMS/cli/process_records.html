@@ -424,7 +424,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 16, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 18, 2025"/>
   </head>
   
   
@@ -798,9 +798,6 @@ window.addEventListener("load", load);
     
     <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
     
-    
-    <li class="breadcrumb-item"><a href="../../nexusLIMS.html" class="nav-link">nexusLIMS</a></li>
-    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">nexusLIMS.cli.process_records</span></li>
   </ul>
 </nav>
@@ -1096,8 +1093,6 @@ window.addEventListener("load", load);
 
 
 
-<div class="viewcode-block" id="_get_log_level">
-<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.cli.process_records.html#nexusLIMS.cli.process_records._get_log_level">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">_get_log_level</span><span class="p">(</span><span class="n">verbose</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert verbose count to logging level.</span>
@@ -1116,12 +1111,9 @@ window.addEventListener("load", load);
         <span class="k">return</span> <span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span>
     <span class="k">if</span> <span class="n">verbose</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">logging</span><span class="o">.</span><span class="n">INFO</span>
-    <span class="k">return</span> <span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span></div>
+    <span class="k">return</span> <span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span>
 
 
-
-<div class="viewcode-block" id="_setup_logging">
-<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.cli.process_records.html#nexusLIMS.cli.process_records._setup_logging">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">_setup_logging</span><span class="p">(</span><span class="n">log_level</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">dry_run</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="n">logging</span><span class="o">.</span><span class="n">FileHandler</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Configure console and file logging.</span>
@@ -1163,12 +1155,9 @@ window.addEventListener("load", load);
     <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Failed to setup file logging&quot;</span><span class="p">)</span>
         <span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="s2">&quot;[bold red]Failed to setup file logging[/bold red]&quot;</span><span class="p">)</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
 
-
-<div class="viewcode-block" id="_run_with_lock">
-<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.cli.process_records.html#nexusLIMS.cli.process_records._run_with_lock">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">_run_with_lock</span><span class="p">(</span><span class="n">dry_run</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Run the record builder with file locking.</span>
@@ -1210,12 +1199,9 @@ window.addEventListener("load", load);
         <span class="p">)</span>
         <span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[yellow]Lock file already exists at </span><span class="si">{</span><span class="n">lock_file</span><span class="si">}</span><span class="s2">[/yellow]&quot;</span><span class="p">)</span>
         <span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="s2">&quot;[yellow]Another instance is already running. Exiting.[/yellow]&quot;</span><span class="p">)</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
 
-
-<div class="viewcode-block" id="_handle_error_notification">
-<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.cli.process_records.html#nexusLIMS.cli.process_records._handle_error_notification">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">_handle_error_notification</span><span class="p">(</span>
     <span class="n">log_file</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">file_handler</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">FileHandler</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -1252,8 +1238,7 @@ window.addEventListener("load", load);
     <span class="k">finally</span><span class="p">:</span>
         <span class="c1"># Clean up file handler after all logging is complete</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">removeHandler</span><span class="p">(</span><span class="n">file_handler</span><span class="p">)</span>
-        <span class="n">file_handler</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
-
+        <span class="n">file_handler</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
 
 <span class="nd">@click</span><span class="o">.</span><span class="n">command</span><span class="p">(</span>

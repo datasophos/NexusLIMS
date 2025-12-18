@@ -424,7 +424,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 16, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 18, 2025"/>
   </head>
   
   
@@ -798,9 +798,6 @@ window.addEventListener("load", load);
     
     <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
     
-    
-    <li class="breadcrumb-item"><a href="../../nexusLIMS.html" class="nav-link">nexusLIMS</a></li>
-    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">nexusLIMS.harvesters.reservation_event</span></li>
   </ul>
 </nav>
@@ -938,8 +935,6 @@ window.addEventListener("load", load);
     <span class="n">group</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="ReservationEvent.__post_init__">
-<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.harvesters.reservation_event.html#nexusLIMS.harvesters.reservation_event.ReservationEvent.__post_init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Post-initialization to coerce arguments to lists and validate.&quot;&quot;&quot;</span>
         <span class="c1"># coerce sample arguments into lists</span>
@@ -979,11 +974,8 @@ window.addEventListener("load", load);
 
         <span class="c1"># raise error if all sample values are not none and have different</span>
         <span class="c1"># lengths (this shouldn&#39;t happen):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_check_arg_lists</span><span class="p">()</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_arg_lists</span><span class="p">()</span>
 
-
-<div class="viewcode-block" id="ReservationEvent._check_arg_lists">
-<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.harvesters.reservation_event.html#nexusLIMS.harvesters.reservation_event.ReservationEvent._check_arg_lists">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">_check_arg_lists</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">check_name</span><span class="p">,</span> <span class="n">arg_names</span><span class="p">,</span> <span class="n">lists</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
             <span class="p">[</span><span class="s2">&quot;sample&quot;</span><span class="p">,</span> <span class="s2">&quot;project&quot;</span><span class="p">],</span>
@@ -1005,11 +997,8 @@ window.addEventListener("load", load);
                         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">arg_names</span><span class="si">}</span><span class="s2"> : &quot;</span>
                         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">list_</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">list_</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">lists</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
                     <span class="p">)</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="ReservationEvent.__repr__">
-<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.harvesters.reservation_event.html#nexusLIMS.harvesters.reservation_event.ReservationEvent.__repr__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return custom representation of a ReservationEvent.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">username</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_time</span><span class="p">:</span>
@@ -1021,8 +1010,7 @@ window.addEventListener("load", load);
             <span class="p">)</span>
         <span class="k">return</span> <span class="s2">&quot;No matching calendar event&quot;</span> <span class="o">+</span> <span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot; for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">instrument</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">instrument</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
-        <span class="p">)</span></div>
-
+        <span class="p">)</span>
 
 <div class="viewcode-block" id="ReservationEvent.as_xml">
 <a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.harvesters.reservation_event.html#nexusLIMS.harvesters.reservation_event.ReservationEvent.as_xml">[docs]</a>
@@ -1060,8 +1048,6 @@ window.addEventListener("load", load);
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_project_nodes</span><span class="p">(</span><span class="n">root</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="ReservationEvent._add_summary_node">
-<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.harvesters.reservation_event.html#nexusLIMS.harvesters.reservation_event.ReservationEvent._add_summary_node">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">_add_summary_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">):</span>
         <span class="n">summary_el</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="s2">&quot;summary&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_full_name</span><span class="p">:</span>
@@ -1102,11 +1088,8 @@ window.addEventListener("load", load);
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">:</span>
             <span class="n">summary_el</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;ref&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">root</span></div>
+        <span class="k">return</span> <span class="n">root</span>
 
-
-<div class="viewcode-block" id="ReservationEvent._add_sample_nodes">
-<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.harvesters.reservation_event.html#nexusLIMS.harvesters.reservation_event.ReservationEvent._add_sample_nodes">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">_add_sample_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_pid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># if any of the sample arguments are not none, they should be</span>
@@ -1131,11 +1114,8 @@ window.addEventListener("load", load);
                     <span class="n">sample_elements_el</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">sample_el</span><span class="p">,</span> <span class="s2">&quot;elements&quot;</span><span class="p">)</span>
                     <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">elements</span><span class="p">:</span>
                         <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">sample_elements_el</span><span class="p">,</span> <span class="n">element</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">root</span></div>
+        <span class="k">return</span> <span class="n">root</span>
 
-
-<div class="viewcode-block" id="ReservationEvent._add_project_nodes">
-<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.harvesters.reservation_event.html#nexusLIMS.harvesters.reservation_event.ReservationEvent._add_project_nodes">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">_add_project_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">pid</span><span class="p">,</span> <span class="n">ref</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
@@ -1161,7 +1141,6 @@ window.addEventListener("load", load);
                     <span class="n">proj_ref_el</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">ref</span>
 
         <span class="k">return</span> <span class="n">root</span></div>
-</div>
 
 </pre></div>
 

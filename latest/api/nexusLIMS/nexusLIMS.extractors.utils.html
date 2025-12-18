@@ -62,7 +62,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 16, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 18, 2025"/>
   </head>
   
   
@@ -424,7 +424,6 @@
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.instruments.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.instruments</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.cdcs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cdcs</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.__main__.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.__main__</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.config.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.config</span></code></a></li>
 </ul>
 </details></li>
@@ -505,68 +504,6 @@
 <p>Methods (primarily intended to be private) that are used by the other extractors.</p>
 <section id="module-contents">
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
-<section id="functions">
-<h3>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h3>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table table-left">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.extractors.utils._coerce_to_list" title="nexusLIMS.extractors.utils._coerce_to_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_coerce_to_list</span></code></a></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.extractors.utils._get_mtime_iso" title="nexusLIMS.extractors.utils._get_mtime_iso"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_get_mtime_iso</span></code></a></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.extractors.utils._set_instr_name_and_time" title="nexusLIMS.extractors.utils._set_instr_name_and_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_set_instr_name_and_time</span></code></a></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.extractors.utils._set_acquisition_device_name" title="nexusLIMS.extractors.utils._set_acquisition_device_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_set_acquisition_device_name</span></code></a></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.extractors.utils._set_exposure_time" title="nexusLIMS.extractors.utils._set_exposure_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_set_exposure_time</span></code></a></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.extractors.utils._set_gms_version" title="nexusLIMS.extractors.utils._set_gms_version"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_set_gms_version</span></code></a></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.extractors.utils._set_camera_binning" title="nexusLIMS.extractors.utils._set_camera_binning"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_set_camera_binning</span></code></a></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.extractors.utils._set_image_processing" title="nexusLIMS.extractors.utils._set_image_processing"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_set_image_processing</span></code></a></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.extractors.utils._set_eels_meta" title="nexusLIMS.extractors.utils._set_eels_meta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_set_eels_meta</span></code></a></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.extractors.utils._set_eels_spectrometer_meta" title="nexusLIMS.extractors.utils._set_eels_spectrometer_meta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_set_eels_spectrometer_meta</span></code></a></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.extractors.utils._set_eels_processing" title="nexusLIMS.extractors.utils._set_eels_processing"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_set_eels_processing</span></code></a></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.extractors.utils._process_thickness_metadata" title="nexusLIMS.extractors.utils._process_thickness_metadata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_process_thickness_metadata</span></code></a></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.extractors.utils._set_eds_meta" title="nexusLIMS.extractors.utils._set_eds_meta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_set_eds_meta</span></code></a></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.extractors.utils._set_si_meta" title="nexusLIMS.extractors.utils._set_si_meta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_set_si_meta</span></code></a></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.extractors.utils._try_decimal" title="nexusLIMS.extractors.utils._try_decimal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_try_decimal</span></code></a></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.extractors.utils._parse_filter_settings" title="nexusLIMS.extractors.utils._parse_filter_settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_parse_filter_settings</span></code></a></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.extractors.utils._zero_data_in_dm3" title="nexusLIMS.extractors.utils._zero_data_in_dm3"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_zero_data_in_dm3</span></code></a></p></td>
-<td><p>Zero out data in a DM3 file.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.extractors.utils._find_val" title="nexusLIMS.extractors.utils._find_val"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_find_val</span></code></a></p></td>
-<td><p>Find a value in a list.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</section>
 <section id="data">
 <h3>Data<a class="headerlink" href="#data" title="Link to this heading">#</a></h3>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table table-left">
@@ -584,119 +521,6 @@
 <dt class="sig sig-object py" id="nexusLIMS.extractors.utils.logger">
 <span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.utils.</span></span><span class="sig-name descname"><span class="pre">logger</span></span><a class="headerlink" href="#nexusLIMS.extractors.utils.logger" title="Link to this definition">#</a></dt>
 <dd><p>‘getLogger(…)’</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="nexusLIMS.extractors.utils._coerce_to_list">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.utils.</span></span><span class="sig-name descname"><span class="pre">_coerce_to_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">meta_key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/utils.html#_coerce_to_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.utils._coerce_to_list" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="nexusLIMS.extractors.utils._get_mtime_iso">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.utils.</span></span><span class="sig-name descname"><span class="pre">_get_mtime_iso</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">instrument</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="nexusLIMS.instruments.html#nexusLIMS.instruments.Instrument" title="nexusLIMS.instruments.Instrument"><span class="pre">Instrument</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/utils.html#_get_mtime_iso"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.utils._get_mtime_iso" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="nexusLIMS.extractors.utils._set_instr_name_and_time">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.utils.</span></span><span class="sig-name descname"><span class="pre">_set_instr_name_and_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mdict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/utils.html#_set_instr_name_and_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.utils._set_instr_name_and_time" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="nexusLIMS.extractors.utils._set_acquisition_device_name">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.utils.</span></span><span class="sig-name descname"><span class="pre">_set_acquisition_device_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mdict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">pre_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/utils.html#_set_acquisition_device_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.utils._set_acquisition_device_name" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="nexusLIMS.extractors.utils._set_exposure_time">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.utils.</span></span><span class="sig-name descname"><span class="pre">_set_exposure_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mdict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">pre_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/utils.html#_set_exposure_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.utils._set_exposure_time" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="nexusLIMS.extractors.utils._set_gms_version">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.utils.</span></span><span class="sig-name descname"><span class="pre">_set_gms_version</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mdict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">pre_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/utils.html#_set_gms_version"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.utils._set_gms_version" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="nexusLIMS.extractors.utils._set_camera_binning">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.utils.</span></span><span class="sig-name descname"><span class="pre">_set_camera_binning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mdict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">pre_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/utils.html#_set_camera_binning"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.utils._set_camera_binning" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="nexusLIMS.extractors.utils._set_image_processing">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.utils.</span></span><span class="sig-name descname"><span class="pre">_set_image_processing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mdict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">pre_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/utils.html#_set_image_processing"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.utils._set_image_processing" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="nexusLIMS.extractors.utils._set_eels_meta">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.utils.</span></span><span class="sig-name descname"><span class="pre">_set_eels_meta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mdict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta_key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/utils.html#_set_eels_meta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.utils._set_eels_meta" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="nexusLIMS.extractors.utils._set_eels_spectrometer_meta">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.utils.</span></span><span class="sig-name descname"><span class="pre">_set_eels_spectrometer_meta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mdict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta_key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/utils.html#_set_eels_spectrometer_meta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.utils._set_eels_spectrometer_meta" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="nexusLIMS.extractors.utils._set_eels_processing">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.utils.</span></span><span class="sig-name descname"><span class="pre">_set_eels_processing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mdict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pre_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/utils.html#_set_eels_processing"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.utils._set_eels_processing" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="nexusLIMS.extractors.utils._process_thickness_metadata">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.utils.</span></span><span class="sig-name descname"><span class="pre">_process_thickness_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mdict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/utils.html#_process_thickness_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.utils._process_thickness_metadata" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="nexusLIMS.extractors.utils._set_eds_meta">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.utils.</span></span><span class="sig-name descname"><span class="pre">_set_eds_meta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mdict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta_key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/utils.html#_set_eds_meta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.utils._set_eds_meta" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="nexusLIMS.extractors.utils._set_si_meta">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.utils.</span></span><span class="sig-name descname"><span class="pre">_set_si_meta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mdict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pre_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta_key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/utils.html#_set_si_meta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.utils._set_si_meta" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="nexusLIMS.extractors.utils._try_decimal">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.utils.</span></span><span class="sig-name descname"><span class="pre">_try_decimal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/utils.html#_try_decimal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.utils._try_decimal" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="nexusLIMS.extractors.utils._parse_filter_settings">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.utils.</span></span><span class="sig-name descname"><span class="pre">_parse_filter_settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tecnai_info</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/utils.html#_parse_filter_settings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.utils._parse_filter_settings" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="nexusLIMS.extractors.utils._zero_data_in_dm3">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.utils.</span></span><span class="sig-name descname"><span class="pre">_zero_data_in_dm3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">compress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/utils.html#_zero_data_in_dm3"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.utils._zero_data_in_dm3" title="Link to this definition">#</a></dt>
-<dd><p>Zero out data in a DM3 file.</p>
-<p>Helper method that will overwrite the data in a dm3 image file  with
-zeros and save it as either another dm3, or as a compressed archive (used
-for creating files for the test suite that don’t take up tons of space).
-Since the resulting file is just some text metadata and zeros, it should
-be highly compressible (initial tests allowed for a 16MB file to be
-compressed to ~100KB).</p>
-<p class="rubric" id="id1">Parameters</p>
-<p>filename
-Path to file to be modified
-out_filename
-Name with which to save the output file. If None, it will be
-automatically generated from the <code class="docutils literal notranslate"><span class="pre">filename</span></code>.
-compress
-Whether to compress the files into a tar.gz file</p>
-<p class="rubric" id="id2">Returns</p>
-<p>Path
-The path of the compressed (or zeroed) file</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="nexusLIMS.extractors.utils._find_val">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.utils.</span></span><span class="sig-name descname"><span class="pre">_find_val</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s_to_find</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">list_to_search</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/utils.html#_find_val"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.utils._find_val" title="Link to this definition">#</a></dt>
-<dd><p>Find a value in a list.</p>
-<p>Return the first value in list_to_search that contains s_to_find, or
-None if it is not found.</p>
-<p>Note: If needed, this could be improved to use regex instead, which
-would provide more control over the patterns to return</p>
 </dd></dl>
 
 </section>
@@ -751,28 +575,9 @@ would provide more control over the patterns to return</p>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data">Data</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#api">API</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.utils.logger"><code class="docutils literal notranslate"><span class="pre">logger</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.utils._coerce_to_list"><code class="docutils literal notranslate"><span class="pre">_coerce_to_list()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.utils._get_mtime_iso"><code class="docutils literal notranslate"><span class="pre">_get_mtime_iso()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.utils._set_instr_name_and_time"><code class="docutils literal notranslate"><span class="pre">_set_instr_name_and_time()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.utils._set_acquisition_device_name"><code class="docutils literal notranslate"><span class="pre">_set_acquisition_device_name()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.utils._set_exposure_time"><code class="docutils literal notranslate"><span class="pre">_set_exposure_time()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.utils._set_gms_version"><code class="docutils literal notranslate"><span class="pre">_set_gms_version()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.utils._set_camera_binning"><code class="docutils literal notranslate"><span class="pre">_set_camera_binning()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.utils._set_image_processing"><code class="docutils literal notranslate"><span class="pre">_set_image_processing()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.utils._set_eels_meta"><code class="docutils literal notranslate"><span class="pre">_set_eels_meta()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.utils._set_eels_spectrometer_meta"><code class="docutils literal notranslate"><span class="pre">_set_eels_spectrometer_meta()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.utils._set_eels_processing"><code class="docutils literal notranslate"><span class="pre">_set_eels_processing()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.utils._process_thickness_metadata"><code class="docutils literal notranslate"><span class="pre">_process_thickness_metadata()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.utils._set_eds_meta"><code class="docutils literal notranslate"><span class="pre">_set_eds_meta()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.utils._set_si_meta"><code class="docutils literal notranslate"><span class="pre">_set_si_meta()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.utils._try_decimal"><code class="docutils literal notranslate"><span class="pre">_try_decimal()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.utils._parse_filter_settings"><code class="docutils literal notranslate"><span class="pre">_parse_filter_settings()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.utils._zero_data_in_dm3"><code class="docutils literal notranslate"><span class="pre">_zero_data_in_dm3()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.utils._find_val"><code class="docutils literal notranslate"><span class="pre">_find_val()</span></code></a></li>
 </ul>
 </li>
 </ul>

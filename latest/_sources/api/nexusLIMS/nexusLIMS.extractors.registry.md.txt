@@ -43,14 +43,6 @@
   - ```{autodoc2-docstring} nexusLIMS.extractors.registry.logger
     :summary:
     ```
-* - {py:obj}`__all__ <nexusLIMS.extractors.registry.__all__>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.registry.__all__
-    :summary:
-    ```
-* - {py:obj}`_registry <nexusLIMS.extractors.registry._registry>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.registry._registry
-    :summary:
-    ```
 ````
 
 ### API
@@ -61,16 +53,6 @@
    'getLogger(...)'
 
 ```{autodoc2-docstring} nexusLIMS.extractors.registry.logger
-```
-
-````
-
-````{py:data} __all__
-:canonical: nexusLIMS.extractors.registry.__all__
-:value: >
-   ['ExtractorRegistry', 'get_registry']
-
-```{autodoc2-docstring} nexusLIMS.extractors.registry.__all__
 ```
 
 ````
@@ -95,30 +77,6 @@
 
 ````
 
-````{py:method} _register_instrument_profiles() -> None
-:canonical: nexusLIMS.extractors.registry.ExtractorRegistry._register_instrument_profiles
-
-```{autodoc2-docstring} nexusLIMS.extractors.registry.ExtractorRegistry._register_instrument_profiles
-```
-
-````
-
-````{py:method} _is_extractor(obj: typing.Any) -> bool
-:canonical: nexusLIMS.extractors.registry.ExtractorRegistry._is_extractor
-
-```{autodoc2-docstring} nexusLIMS.extractors.registry.ExtractorRegistry._is_extractor
-```
-
-````
-
-````{py:method} _is_preview_generator(obj: typing.Any) -> bool
-:canonical: nexusLIMS.extractors.registry.ExtractorRegistry._is_preview_generator
-
-```{autodoc2-docstring} nexusLIMS.extractors.registry.ExtractorRegistry._is_preview_generator
-```
-
-````
-
 ````{py:method} register_extractor(extractor_class: type[nexusLIMS.extractors.base.BaseExtractor]) -> None
 :canonical: nexusLIMS.extractors.registry.ExtractorRegistry.register_extractor
 
@@ -127,34 +85,10 @@
 
 ````
 
-````{py:method} _get_supported_extensions(extractor_class: type[nexusLIMS.extractors.base.BaseExtractor]) -> set[str]
-:canonical: nexusLIMS.extractors.registry.ExtractorRegistry._get_supported_extensions
-
-```{autodoc2-docstring} nexusLIMS.extractors.registry.ExtractorRegistry._get_supported_extensions
-```
-
-````
-
-````{py:method} _get_instance(extractor_class: type[nexusLIMS.extractors.base.BaseExtractor]) -> nexusLIMS.extractors.base.BaseExtractor
-:canonical: nexusLIMS.extractors.registry.ExtractorRegistry._get_instance
-
-```{autodoc2-docstring} nexusLIMS.extractors.registry.ExtractorRegistry._get_instance
-```
-
-````
-
 ````{py:method} get_extractor(context: nexusLIMS.extractors.base.ExtractionContext) -> nexusLIMS.extractors.base.BaseExtractor
 :canonical: nexusLIMS.extractors.registry.ExtractorRegistry.get_extractor
 
 ```{autodoc2-docstring} nexusLIMS.extractors.registry.ExtractorRegistry.get_extractor
-```
-
-````
-
-````{py:method} _get_fallback_extractor() -> nexusLIMS.extractors.base.BaseExtractor
-:canonical: nexusLIMS.extractors.registry.ExtractorRegistry._get_fallback_extractor
-
-```{autodoc2-docstring} nexusLIMS.extractors.registry.ExtractorRegistry._get_fallback_extractor
 ```
 
 ````
@@ -191,22 +125,6 @@
 
 ````
 
-````{py:method} _get_supported_extensions_for_generator(generator_class: type[nexusLIMS.extractors.base.PreviewGenerator]) -> set[str]
-:canonical: nexusLIMS.extractors.registry.ExtractorRegistry._get_supported_extensions_for_generator
-
-```{autodoc2-docstring} nexusLIMS.extractors.registry.ExtractorRegistry._get_supported_extensions_for_generator
-```
-
-````
-
-````{py:method} _get_preview_instance(generator_class: type[nexusLIMS.extractors.base.PreviewGenerator]) -> nexusLIMS.extractors.base.PreviewGenerator
-:canonical: nexusLIMS.extractors.registry.ExtractorRegistry._get_preview_instance
-
-```{autodoc2-docstring} nexusLIMS.extractors.registry.ExtractorRegistry._get_preview_instance
-```
-
-````
-
 ````{py:method} get_preview_generator(context: nexusLIMS.extractors.base.ExtractionContext) -> nexusLIMS.extractors.base.PreviewGenerator | None
 :canonical: nexusLIMS.extractors.registry.ExtractorRegistry.get_preview_generator
 
@@ -216,17 +134,6 @@
 ````
 
 `````
-
-````{py:data} _registry
-:canonical: nexusLIMS.extractors.registry._registry
-:type: nexusLIMS.extractors.registry.ExtractorRegistry | None
-:value: >
-   None
-
-```{autodoc2-docstring} nexusLIMS.extractors.registry._registry
-```
-
-````
 
 ````{py:function} get_registry() -> nexusLIMS.extractors.registry.ExtractorRegistry
 :canonical: nexusLIMS.extractors.registry.get_registry

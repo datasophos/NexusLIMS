@@ -1,3 +1,7 @@
+---
+orphan: true
+---
+
 # {py:mod}`nexusLIMS.__main__`
 
 ```{py:module} nexusLIMS.__main__

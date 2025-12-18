@@ -91,6 +91,17 @@
 
 ````
 
+````{py:attribute} supported_extensions
+:canonical: nexusLIMS.extractors.plugins.edax.SpcExtractor.supported_extensions
+:type: typing.ClassVar
+:value: >
+   None
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.edax.SpcExtractor.supported_extensions
+```
+
+````
+
 ````{py:method} supports(context: nexusLIMS.extractors.base.ExtractionContext) -> bool
 :canonical: nexusLIMS.extractors.plugins.edax.SpcExtractor.supports
 
@@ -131,6 +142,17 @@
    100
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.edax.MsaExtractor.priority
+```
+
+````
+
+````{py:attribute} supported_extensions
+:canonical: nexusLIMS.extractors.plugins.edax.MsaExtractor.supported_extensions
+:type: typing.ClassVar
+:value: >
+   None
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.edax.MsaExtractor.supported_extensions
 ```
 
 ````

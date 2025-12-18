@@ -12,6 +12,7 @@ each format.
 |---------------|-------------|-------------------------|----------------|------------------|
 | .dm3, .dm4 | ✅ Full | Gatan DigitalMicrograph | TEM/STEM Imaging, EELS, EDS, Diffraction, Spectrum Imaging | Comprehensive metadata, instrument-specific parsers, automatic type detection |
 | .tif | ✅ Full | FEI/Thermo Fisher SEM/FIB | SEM Imaging | Beam settings, stage position, vacuum conditions, detector config |
+| .tif | ✅ Full | Zeiss Orion HIM / Fibics HIM | HIM Imaging | Helium ion beam settings, stage position, detector configuration, image metadata |
 | .ser, .emi | ✅ Full | FEI TIA Software | TEM/STEM Imaging, Diffraction, EELS/EDS Spectra & SI | Multi-file support, experimental conditions, acquisition parameters |
 | .spc | ✅ Full | EDAX (Genesis, TEAM) | EDS Spectrum | Detector angles, energy calibration, element identification |
 | .msa | ✅ Full | EDAX & others (standard) | EDS Spectrum | EMSA/MAS standard format, vendor extensions supported |
@@ -131,6 +132,65 @@ The extractor includes specialized parsers for specific instruments:
 - User/operator metadata is flagged as potentially unreliable (users may remain logged in)
 - Some instruments write duplicate metadata sections which are handled automatically
 - Works with both older config-style metadata and newer XML-based metadata
+
+### Zeiss Orion / Fibics HIM TIF Files (.tif)
+
+**Support Level**: ✅ Full
+
+**Description**: TIFF images saved by Zeiss Orion and Fibics helium ion microscope (HIM) systems with embedded XML metadata in custom TIFF tags.
+
+**Extractor Module**: {py:mod}`nexusLIMS.extractors.plugins.orion_HIM_tif`
+
+**File Format Details**:
+
+The extractor uses content sniffing to detect HIM TIFF files by checking for custom TIFF tags:
+- **Zeiss Orion**: TIFF tag 65000 contains `<ImageTags>` XML metadata
+- **Fibics**: TIFF tag 51023 contains `<Fibics>` XML metadata
+
+This content-based detection allows proper identification even when files use `.tif` extension (used by multiple instruments).
+
+**Key Metadata Extracted**:
+
+**Zeiss Orion Variant**:
+- Helium ion beam settings (energy, current, spot size, aperture)
+- Beam positioning (shift, scan rotation)
+- Stage position (X, Y, Z, R, tilt)
+- Scan parameters (dwell time, frame time, pixel size, resolution)
+- Detector configuration (type, brightness, contrast)
+- System information (vacuum pressure, chamber type)
+- Image acquisition parameters (line averaging, digital gain, overlay settings)
+- Scan speed and resolution settings
+
+**Fibics Variant**:
+- Helium ion beam parameters (energy, current, spot settings)
+- Stage coordinates and angles
+- Scan configuration (pixel dwell, acquisition time, resolution)
+- Detector settings and signal type
+- Image optimization parameters (contrast, brightness)
+- Data collection timestamps
+
+**Data Types Detected**:
+
+- HIM Imaging
+
+**Special Features**:
+
+- Content-based detection to differentiate from other TIFF formats (FEI, standard image files)
+- Priority 150 - checked before generic TIFF extractors to properly identify HIM files
+- Handles both Zeiss and Fibics XML metadata formats
+- Robust error handling for malformed or missing XML metadata
+- Supports .tif and .tiff extensions
+
+**Preview Generation**:
+
+- Converts image to square thumbnail (500×500 px default)
+- Maintains aspect ratio with padding
+
+**Notes**:
+
+- The extractor uses content sniffing rather than extension alone, ensuring correct identification even if .tif files from multiple instruments are present
+- If XML metadata is missing or corrupted, the extractor gracefully falls back to basic file information
+- Both Zeiss Orion and Fibics HIM variants store metadata as embedded XML, making extraction reliable across different software versions
 
 ### FEI TIA Files (.ser, .emi)
 
@@ -373,6 +433,7 @@ For complete API documentation of the extractor modules, see:
 - {py:mod}`nexusLIMS.extractors` - Main extractor module
 - {py:mod}`nexusLIMS.extractors.plugins.digital_micrograph` - DM3/DM4 file extractor
 - {py:mod}`nexusLIMS.extractors.plugins.quanta_tif` - FEI/Thermo TIF file extractor
+- {py:mod}`nexusLIMS.extractors.plugins.orion_HIM_tif` - Zeiss Orion / Fibics HIM TIF file extractor
 - {py:mod}`nexusLIMS.extractors.plugins.fei_emi` - FEI TIA .ser/.emi file extractor
 - {py:mod}`nexusLIMS.extractors.plugins.edax` - EDAX .spc/.msa file extractor
 - {py:mod}`nexusLIMS.extractors.plugins.basic_metadata` - Basic metadata fallback extractor

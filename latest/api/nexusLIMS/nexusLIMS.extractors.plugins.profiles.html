@@ -62,7 +62,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 16, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 18, 2025"/>
   </head>
   
   
@@ -424,7 +424,6 @@
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.instruments.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.instruments</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.cdcs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cdcs</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.__main__.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.__main__</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.config.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.config</span></code></a></li>
 </ul>
 </details></li>
@@ -557,9 +556,6 @@ directory and it will be discovered during plugin initialization.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.extractors.plugins.profiles.register_all_profiles" title="nexusLIMS.extractors.plugins.profiles.register_all_profiles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">register_all_profiles</span></code></a></p></td>
 <td><p>Auto-discover and register all instrument profiles.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.extractors.plugins.profiles._load_profiles_from_directory" title="nexusLIMS.extractors.plugins.profiles._load_profiles_from_directory"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_load_profiles_from_directory</span></code></a></p></td>
-<td><p>Load all profile modules from a directory.</p></td>
-</tr>
 </tbody>
 </table>
 </div>
@@ -569,9 +565,6 @@ directory and it will be discovered during plugin initialization.</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table table-left">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.extractors.plugins.profiles.logger" title="nexusLIMS.extractors.plugins.profiles.logger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">logger</span></code></a></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.extractors.plugins.profiles.__all__" title="nexusLIMS.extractors.plugins.profiles.__all__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__all__</span></code></a></p></td>
 <td></td>
 </tr>
 </tbody>
@@ -584,12 +577,6 @@ directory and it will be discovered during plugin initialization.</p>
 <dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.profiles.logger">
 <span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.plugins.profiles.</span></span><span class="sig-name descname"><span class="pre">logger</span></span><a class="headerlink" href="#nexusLIMS.extractors.plugins.profiles.logger" title="Link to this definition">#</a></dt>
 <dd><p>‘getLogger(…)’</p>
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.profiles.__all__">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.plugins.profiles.</span></span><span class="sig-name descname"><span class="pre">__all__</span></span><a class="headerlink" href="#nexusLIMS.extractors.plugins.profiles.__all__" title="Link to this definition">#</a></dt>
-<dd><p>[‘register_all_profiles’]</p>
 </dd></dl>
 
 <dl class="py function">
@@ -614,26 +601,6 @@ register_all_profiles()</p>
 </div></blockquote>
 </div></blockquote>
 </div></blockquote>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.profiles._load_profiles_from_directory">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.plugins.profiles.</span></span><span class="sig-name descname"><span class="pre">_load_profiles_from_directory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">directory</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">module_prefix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/plugins/profiles.html#_load_profiles_from_directory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.plugins.profiles._load_profiles_from_directory" title="Link to this definition">#</a></dt>
-<dd><p>Load all profile modules from a directory.</p>
-<p class="rubric" id="id4">Parameters</p>
-<p>directory
-Directory containing profile modules
-module_prefix
-Module name prefix for package-based imports (built-in profiles).
-If None, profiles are loaded as standalone files (local profiles).</p>
-<p class="rubric" id="id5">Returns</p>
-<p>int
-Number of profiles successfully loaded</p>
-<p class="rubric" id="id6">Notes</p>
-<p>Built-in profiles are loaded using Python’s standard import system
-(pkgutil.walk_packages), while local profiles are loaded directly
-from files using importlib.util. This allows local profiles to exist
-outside the package structure without needing to be installed.</p>
 </dd></dl>
 
 </section>
@@ -694,9 +661,7 @@ outside the package structure without needing to be installed.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data">Data</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#api">API</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.profiles.logger"><code class="docutils literal notranslate"><span class="pre">logger</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.profiles.__all__"><code class="docutils literal notranslate"><span class="pre">__all__</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.profiles.register_all_profiles"><code class="docutils literal notranslate"><span class="pre">register_all_profiles()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.profiles._load_profiles_from_directory"><code class="docutils literal notranslate"><span class="pre">_load_profiles_from_directory()</span></code></a></li>
 </ul>
 </li>
 </ul>

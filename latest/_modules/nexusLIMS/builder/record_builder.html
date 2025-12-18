@@ -424,7 +424,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 16, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 18, 2025"/>
   </head>
   
   
@@ -797,9 +797,6 @@ window.addEventListener("load", load);
     </li>
     
     <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
-    
-    
-    <li class="breadcrumb-item"><a href="../../nexusLIMS.html" class="nav-link">nexusLIMS</a></li>
     
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">nexusLIMS.builder.record_builder</span></li>
   </ul>
@@ -1347,8 +1344,6 @@ window.addEventListener("load", load);
 
 
 
-<div class="viewcode-block" id="_record_validation_flow">
-<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.builder.record_builder.html#nexusLIMS.builder.record_builder._record_validation_flow">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">_record_validation_flow</span><span class="p">(</span><span class="n">record_text</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">xml_files</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]:</span>
     <span class="k">if</span> <span class="n">validate_record</span><span class="p">(</span><span class="n">BytesIO</span><span class="p">(</span><span class="nb">bytes</span><span class="p">(</span><span class="n">record_text</span><span class="p">,</span> <span class="s2">&quot;UTF-8&quot;</span><span class="p">))):</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Validated newly generated record&quot;</span><span class="p">)</span>
@@ -1376,8 +1371,7 @@ window.addEventListener("load", load);
         <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Marking </span><span class="si">%s</span><span class="s1"> as &quot;ERROR&quot;&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">session_identifier</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Could not validate record, did not write to disk&quot;</span><span class="p">)</span>
         <span class="n">s</span><span class="o">.</span><span class="n">update_session_status</span><span class="p">(</span><span class="s2">&quot;ERROR&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">xml_files</span></div>
-
+    <span class="k">return</span> <span class="n">xml_files</span>
 
 
 <div class="viewcode-block" id="process_new_records">

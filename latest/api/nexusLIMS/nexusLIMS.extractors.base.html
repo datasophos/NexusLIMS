@@ -62,7 +62,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 16, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 18, 2025"/>
   </head>
   
   
@@ -424,7 +424,6 @@
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.instruments.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.instruments</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.cdcs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cdcs</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.__main__.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.__main__</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.config.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.config</span></code></a></li>
 </ul>
 </details></li>
@@ -536,9 +535,6 @@ inheritance, allowing flexibility in implementation while maintaining type safet
 <tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.extractors.base.logger" title="nexusLIMS.extractors.base.logger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">logger</span></code></a></p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.extractors.base.__all__" title="nexusLIMS.extractors.base.__all__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__all__</span></code></a></p></td>
-<td></td>
-</tr>
 </tbody>
 </table>
 </div>
@@ -549,12 +545,6 @@ inheritance, allowing flexibility in implementation while maintaining type safet
 <dt class="sig sig-object py" id="nexusLIMS.extractors.base.logger">
 <span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.base.</span></span><span class="sig-name descname"><span class="pre">logger</span></span><a class="headerlink" href="#nexusLIMS.extractors.base.logger" title="Link to this definition">#</a></dt>
 <dd><p>‘getLogger(…)’</p>
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="nexusLIMS.extractors.base.__all__">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.base.</span></span><span class="sig-name descname"><span class="pre">__all__</span></span><a class="headerlink" href="#nexusLIMS.extractors.base.__all__" title="Link to this definition">#</a></dt>
-<dd><p>[‘BaseExtractor’, ‘ExtractionContext’, ‘PreviewGenerator’]</p>
 </dd></dl>
 
 <dl class="py class">
@@ -616,7 +606,11 @@ Unique identifier for this extractor (e.g., “dm3_extractor”).
 Should be a valid Python identifier.
 priority : int
 Priority for this extractor (0-1000, higher = preferred).
-See notes below for conventions.</p>
+See notes below for conventions.
+supported_extensions : set[str] | None
+File extensions this extractor supports (without dots).
+Set to None for wildcard extractors that support all files.
+Empty set means no extensions are directly supported (content sniffing only).</p>
 <p class="rubric" id="id10">Notes</p>
 <p><strong>Priority Conventions:</strong></p>
 <ul class="simple">
@@ -657,6 +651,12 @@ returns True.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.extractors.base.BaseExtractor.priority">
 <span class="sig-name descname"><span class="pre">priority</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></em><a class="headerlink" href="#nexusLIMS.extractors.base.BaseExtractor.priority" title="Link to this definition">#</a></dt>
+<dd><p>None</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.base.BaseExtractor.supported_extensions">
+<span class="sig-name descname"><span class="pre">supported_extensions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#set" title="(in Python v3.11)"><span class="pre">set</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.extractors.base.BaseExtractor.supported_extensions" title="Link to this definition">#</a></dt>
 <dd><p>None</p>
 </dd></dl>
 
@@ -804,7 +804,11 @@ Metadata dictionary with mandatory ‘nx_meta’ key</p>
 <p>name : str
 Unique identifier for this generator
 priority : int
-Priority (same conventions as BaseExtractor)</p>
+Priority (same conventions as BaseExtractor)
+supported_extensions : set[str] | None
+File extensions this generator supports (without dots).
+Set to None for wildcard generators that support all files.
+Empty set means no extensions are directly supported (content sniffing only).</p>
 <p class="rubric" id="id17">Examples</p>
 <blockquote>
 <div><blockquote>
@@ -835,6 +839,12 @@ Priority (same conventions as BaseExtractor)</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.extractors.base.PreviewGenerator.priority">
 <span class="sig-name descname"><span class="pre">priority</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></em><a class="headerlink" href="#nexusLIMS.extractors.base.PreviewGenerator.priority" title="Link to this definition">#</a></dt>
+<dd><p>None</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.base.PreviewGenerator.supported_extensions">
+<span class="sig-name descname"><span class="pre">supported_extensions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#set" title="(in Python v3.11)"><span class="pre">set</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.extractors.base.PreviewGenerator.supported_extensions" title="Link to this definition">#</a></dt>
 <dd><p>None</p>
 </dd></dl>
 
@@ -1035,7 +1045,6 @@ Keys are metadata paths, values are static values.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data">Data</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#api">API</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.base.logger"><code class="docutils literal notranslate"><span class="pre">logger</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.base.__all__"><code class="docutils literal notranslate"><span class="pre">__all__</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.base.ExtractionContext"><code class="docutils literal notranslate"><span class="pre">ExtractionContext</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.base.ExtractionContext.file_path"><code class="docutils literal notranslate"><span class="pre">ExtractionContext.file_path</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.base.ExtractionContext.instrument"><code class="docutils literal notranslate"><span class="pre">ExtractionContext.instrument</span></code></a></li>
@@ -1044,6 +1053,7 @@ Keys are metadata paths, values are static values.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.base.BaseExtractor"><code class="docutils literal notranslate"><span class="pre">BaseExtractor</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.base.BaseExtractor.name"><code class="docutils literal notranslate"><span class="pre">BaseExtractor.name</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.base.BaseExtractor.priority"><code class="docutils literal notranslate"><span class="pre">BaseExtractor.priority</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.base.BaseExtractor.supported_extensions"><code class="docutils literal notranslate"><span class="pre">BaseExtractor.supported_extensions</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.base.BaseExtractor.supports"><code class="docutils literal notranslate"><span class="pre">BaseExtractor.supports()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.base.BaseExtractor.extract"><code class="docutils literal notranslate"><span class="pre">BaseExtractor.extract()</span></code></a></li>
 </ul>
@@ -1051,6 +1061,7 @@ Keys are metadata paths, values are static values.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.base.PreviewGenerator"><code class="docutils literal notranslate"><span class="pre">PreviewGenerator</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.base.PreviewGenerator.name"><code class="docutils literal notranslate"><span class="pre">PreviewGenerator.name</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.base.PreviewGenerator.priority"><code class="docutils literal notranslate"><span class="pre">PreviewGenerator.priority</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.base.PreviewGenerator.supported_extensions"><code class="docutils literal notranslate"><span class="pre">PreviewGenerator.supported_extensions</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.base.PreviewGenerator.supports"><code class="docutils literal notranslate"><span class="pre">PreviewGenerator.supports()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.base.PreviewGenerator.generate"><code class="docutils literal notranslate"><span class="pre">PreviewGenerator.generate()</span></code></a></li>
 </ul>

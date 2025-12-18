@@ -424,7 +424,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 16, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 18, 2025"/>
   </head>
   
   
@@ -798,9 +798,6 @@ window.addEventListener("load", load);
     
     <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
     
-    
-    <li class="breadcrumb-item"><a href="../../nexusLIMS.html" class="nav-link">nexusLIMS</a></li>
-    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">nexusLIMS.schemas.activity</span></li>
   </ul>
 </nav>
@@ -954,8 +951,6 @@ window.addEventListener("load", load);
 
 
 
-<div class="viewcode-block" id="_escape">
-<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.schemas.activity.html#nexusLIMS.schemas.activity._escape">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">_escape</span><span class="p">(</span><span class="n">val</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Check to see if a value needs to be escaped and escape it or just return it as is.</span>
@@ -972,12 +967,9 @@ window.addEventListener("load", load);
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span><span class="n">c</span> <span class="ow">in</span> <span class="n">val</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="s2">&quot;&lt;&amp;&quot;</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">escape</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">val</span></div>
+    <span class="k">return</span> <span class="n">val</span>
 
 
-
-<div class="viewcode-block" id="_add_dataset_element">
-<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.schemas.activity.html#nexusLIMS.schemas.activity._add_dataset_element">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">_add_dataset_element</span><span class="p">(</span>
     <span class="n">file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">aq_ac_xml_el</span><span class="p">:</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">,</span>
@@ -1027,8 +1019,7 @@ window.addEventListener("load", load);
                 <span class="n">meta_el</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;warning&quot;</span><span class="p">,</span> <span class="s2">&quot;true&quot;</span><span class="p">)</span>
             <span class="n">meta_el</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">meta_v</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">aq_ac_xml_el</span></div>
-
+    <span class="k">return</span> <span class="n">aq_ac_xml_el</span>
 
 
 <div class="viewcode-block" id="AcquisitionActivity">
@@ -1085,8 +1076,6 @@ window.addEventListener("load", load);
     <span class="n">meta</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
     <span class="n">warnings</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
 
-<div class="viewcode-block" id="AcquisitionActivity.__post_init__">
-<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.schemas.activity.html#nexusLIMS.schemas.activity.AcquisitionActivity.__post_init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Post-initialization to set defaults for start/end times.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -1094,26 +1083,19 @@ window.addEventListener("load", load);
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">end</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">end</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">tz</span><span class="o">=</span><span class="n">current_system_tz</span><span class="p">())</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">unique_params</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">unique_params</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 
-
-<div class="viewcode-block" id="AcquisitionActivity.__repr__">
-<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.schemas.activity.html#nexusLIMS.schemas.activity.AcquisitionActivity.__repr__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return custom representation of AcquisitionActivity.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="si">:</span><span class="s2">&lt;12</span><span class="si">}</span><span class="s2"> AcquisitionActivity; &quot;</span>
             <span class="sa">f</span><span class="s2">&quot;start: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span><span class="si">}</span><span class="s2">; &quot;</span>
             <span class="sa">f</span><span class="s2">&quot;end: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">end</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="p">)</span></div>
+        <span class="p">)</span>
 
-
-<div class="viewcode-block" id="AcquisitionActivity.__str__">
-<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.schemas.activity.html#nexusLIMS.schemas.activity.AcquisitionActivity.__str__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return custom string representation of AcquisitionActivity.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span><span class="si">}</span><span class="s2"> AcquisitionActivity </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="si">}</span><span class="s2">&quot;</span></div>
-
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span><span class="si">}</span><span class="s2"> AcquisitionActivity </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="si">}</span><span class="s2">&quot;</span>
 
 <div class="viewcode-block" id="AcquisitionActivity.add_file">
 <a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.schemas.activity.html#nexusLIMS.schemas.activity.AcquisitionActivity.add_file">[docs]</a>

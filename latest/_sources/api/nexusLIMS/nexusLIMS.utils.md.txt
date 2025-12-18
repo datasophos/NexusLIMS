@@ -55,18 +55,6 @@
   - ```{autodoc2-docstring} nexusLIMS.utils.find_files_by_mtime
     :summary:
     ```
-* - {py:obj}`_get_find_command <nexusLIMS.utils._get_find_command>`
-  - ```{autodoc2-docstring} nexusLIMS.utils._get_find_command
-    :summary:
-    ```
-* - {py:obj}`_find_symlink_dirs <nexusLIMS.utils._find_symlink_dirs>`
-  - ```{autodoc2-docstring} nexusLIMS.utils._find_symlink_dirs
-    :summary:
-    ```
-* - {py:obj}`_build_find_command <nexusLIMS.utils._build_find_command>`
-  - ```{autodoc2-docstring} nexusLIMS.utils._build_find_command
-    :summary:
-    ```
 * - {py:obj}`gnu_find_files_by_mtime <nexusLIMS.utils.gnu_find_files_by_mtime>`
   - ```{autodoc2-docstring} nexusLIMS.utils.gnu_find_files_by_mtime
     :summary:
@@ -81,10 +69,6 @@
     ```
 * - {py:obj}`remove_dict_nones <nexusLIMS.utils.remove_dict_nones>`
   - ```{autodoc2-docstring} nexusLIMS.utils.remove_dict_nones
-    :summary:
-    ```
-* - {py:obj}`_zero_bytes <nexusLIMS.utils._zero_bytes>`
-  - ```{autodoc2-docstring} nexusLIMS.utils._zero_bytes
     :summary:
     ```
 * - {py:obj}`get_timespan_overlap <nexusLIMS.utils.get_timespan_overlap>`
@@ -217,27 +201,6 @@
 ```
 ````
 
-````{py:function} _get_find_command()
-:canonical: nexusLIMS.utils._get_find_command
-
-```{autodoc2-docstring} nexusLIMS.utils._get_find_command
-```
-````
-
-````{py:function} _find_symlink_dirs(find_command, path)
-:canonical: nexusLIMS.utils._find_symlink_dirs
-
-```{autodoc2-docstring} nexusLIMS.utils._find_symlink_dirs
-```
-````
-
-````{py:function} _build_find_command(find_command, find_paths, dt_from, dt_to, extensions, followlinks)
-:canonical: nexusLIMS.utils._build_find_command
-
-```{autodoc2-docstring} nexusLIMS.utils._build_find_command
-```
-````
-
 ````{py:function} gnu_find_files_by_mtime(path: pathlib.Path, dt_from: datetime.datetime, dt_to: datetime.datetime, extensions: typing.List[str] | None = None, *, followlinks: bool = True) -> typing.List[pathlib.Path]
 :canonical: nexusLIMS.utils.gnu_find_files_by_mtime
 
@@ -263,13 +226,6 @@
 :canonical: nexusLIMS.utils.remove_dict_nones
 
 ```{autodoc2-docstring} nexusLIMS.utils.remove_dict_nones
-```
-````
-
-````{py:function} _zero_bytes(fname: pathlib.Path, bytes_from, bytes_to) -> pathlib.Path
-:canonical: nexusLIMS.utils._zero_bytes
-
-```{autodoc2-docstring} nexusLIMS.utils._zero_bytes
 ```
 ````
 

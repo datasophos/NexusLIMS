@@ -62,7 +62,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 16, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 18, 2025"/>
   </head>
   
   
@@ -424,7 +424,6 @@
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.instruments.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.instruments</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.cdcs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cdcs</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.__main__.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.__main__</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.config.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.config</span></code></a></li>
 </ul>
 </details></li>
@@ -523,34 +522,25 @@
 <h3>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h3>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table table-left">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.extractors.plugins.quanta_tif._detect_and_process_xml_metadata" title="nexusLIMS.extractors.plugins.quanta_tif._detect_and_process_xml_metadata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_detect_and_process_xml_metadata</span></code></a></p></td>
-<td><p>Find and (if necessary) parse XML metadata in a Thermo Fisher FIB/SEM TIF file.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.extractors.plugins.quanta_tif._xml_el_to_dict" title="nexusLIMS.extractors.plugins.quanta_tif._xml_el_to_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_xml_el_to_dict</span></code></a></p></td>
-<td><p>Convert an lxml.etree node tree into a dict.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.extractors.plugins.quanta_tif._fix_duplicate_multigis_metadata_tags" title="nexusLIMS.extractors.plugins.quanta_tif._fix_duplicate_multigis_metadata_tags"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_fix_duplicate_multigis_metadata_tags</span></code></a></p></td>
-<td><p>Rename the metadata section headers to allow parsing by <code class="docutils literal notranslate"><span class="pre">ConfigParser</span></code>.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.extractors.plugins.quanta_tif.parse_nx_meta" title="nexusLIMS.extractors.plugins.quanta_tif.parse_nx_meta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_nx_meta</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.extractors.plugins.quanta_tif.parse_nx_meta" title="nexusLIMS.extractors.plugins.quanta_tif.parse_nx_meta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_nx_meta</span></code></a></p></td>
 <td><p>Parse metadata into NexusLIMS format.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.extractors.plugins.quanta_tif.parse_beam_info" title="nexusLIMS.extractors.plugins.quanta_tif.parse_beam_info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_beam_info</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.extractors.plugins.quanta_tif.parse_beam_info" title="nexusLIMS.extractors.plugins.quanta_tif.parse_beam_info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_beam_info</span></code></a></p></td>
 <td><p>Parse the “Beam info” section of the metadata.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.extractors.plugins.quanta_tif.parse_scan_info" title="nexusLIMS.extractors.plugins.quanta_tif.parse_scan_info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_scan_info</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.extractors.plugins.quanta_tif.parse_scan_info" title="nexusLIMS.extractors.plugins.quanta_tif.parse_scan_info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_scan_info</span></code></a></p></td>
 <td><p>Parse the “Scan info” section of the metadata.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.extractors.plugins.quanta_tif.parse_det_info" title="nexusLIMS.extractors.plugins.quanta_tif.parse_det_info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_det_info</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.extractors.plugins.quanta_tif.parse_det_info" title="nexusLIMS.extractors.plugins.quanta_tif.parse_det_info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_det_info</span></code></a></p></td>
 <td><p>Parse the “Detector info” section of the metadata.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.extractors.plugins.quanta_tif.parse_system_info" title="nexusLIMS.extractors.plugins.quanta_tif.parse_system_info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_system_info</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.extractors.plugins.quanta_tif.parse_system_info" title="nexusLIMS.extractors.plugins.quanta_tif.parse_system_info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_system_info</span></code></a></p></td>
 <td><p>Parse the “System info” section of the metadata.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.extractors.plugins.quanta_tif.parse_image_info" title="nexusLIMS.extractors.plugins.quanta_tif.parse_image_info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_image_info</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.extractors.plugins.quanta_tif.parse_image_info" title="nexusLIMS.extractors.plugins.quanta_tif.parse_image_info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_image_info</span></code></a></p></td>
 <td><p>Parse the “Image info” section of the metadata.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.extractors.plugins.quanta_tif.get_quanta_metadata" title="nexusLIMS.extractors.plugins.quanta_tif.get_quanta_metadata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_quanta_metadata</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.extractors.plugins.quanta_tif.get_quanta_metadata" title="nexusLIMS.extractors.plugins.quanta_tif.get_quanta_metadata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_quanta_metadata</span></code></a></p></td>
 <td><p>Get metadata from a Quanta TIF file.</p></td>
 </tr>
 </tbody>
@@ -594,14 +584,20 @@ FEI/Thermo Fisher FIBs and SEMs (e.g., Quanta, Helios, etc.).</p>
 <dd><p>100</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor.supported_extensions">
+<span class="sig-name descname"><span class="pre">supported_extensions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.ClassVar" title="(in Python v3.11)"><span class="pre">ClassVar</span></a></em><a class="headerlink" href="#nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor.supported_extensions" title="Link to this definition">#</a></dt>
+<dd><p>None</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor.supports">
 <span class="sig-name descname"><span class="pre">supports</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="nexusLIMS.extractors.base.html#nexusLIMS.extractors.base.ExtractionContext" title="nexusLIMS.extractors.base.ExtractionContext"><span class="pre">ExtractionContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/plugins/quanta_tif.html#QuantaTiffExtractor.supports"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor.supports" title="Link to this definition">#</a></dt>
 <dd><p>Check if this extractor supports the given file.</p>
-<p class="rubric" id="id15">Parameters</p>
+<p class="rubric" id="id13">Parameters</p>
 <p>context
 The extraction context containing file information</p>
-<p class="rubric" id="id16">Returns</p>
+<p class="rubric" id="id14">Returns</p>
 <p>bool
 True if file extension is .tif or .tiff</p>
 </dd></dl>
@@ -613,85 +609,14 @@ True if file extension is .tif or .tiff</p>
 <p>Returns the metadata (as a dictionary) from a .tif file saved by the FEI
 Quanta SEM in the Nexus Microscopy Facility. Specific tags of interest are
 duplicated under the root-level <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code> node in the dictionary.</p>
-<p class="rubric" id="id17">Parameters</p>
+<p class="rubric" id="id15">Parameters</p>
 <p>context
 The extraction context containing file information</p>
-<p class="rubric" id="id18">Returns</p>
+<p class="rubric" id="id16">Returns</p>
 <p>dict
 Metadata dictionary with ‘nx_meta’ key containing NexusLIMS metadata</p>
 </dd></dl>
 
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.quanta_tif._detect_and_process_xml_metadata">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.plugins.quanta_tif.</span></span><span class="sig-name descname"><span class="pre">_detect_and_process_xml_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metadata_str</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Tuple" title="(in Python v3.11)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><span class="pre">dict</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/plugins/quanta_tif.html#_detect_and_process_xml_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.plugins.quanta_tif._detect_and_process_xml_metadata" title="Link to this definition">#</a></dt>
-<dd><p>Find and (if necessary) parse XML metadata in a Thermo Fisher FIB/SEM TIF file.</p>
-<p>Some Thermo Fisher FIB/SEM files have additional metadata embedded as XML at the end
-of the TIF file, which cannot be handled by the <code class="docutils literal notranslate"><span class="pre">ConfigParser</span></code> implementation of
-:py:meth:<code class="docutils literal notranslate"><span class="pre">get_quanta_metadata</span></code>. This method will detect, parse, and remove the XML
-from the metadata if present.</p>
-<p class="rubric" id="id19">Parameters</p>
-<p>metadata_str
-The metadata at the end of the TIF file as a string. May or may not include
-an XML section (this depends on the version of the Thermo software that saved
-the image).</p>
-<p class="rubric" id="id20">Returns</p>
-<p>metadata_str
-The originally provided metadata as a string, but with the XML portion removed
-if it was present</p>
-<p>xml_metadata
-A dictionary containing the metadata that was present in the XML portion. Will
-be an empty dictionary if there was no XML.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.quanta_tif._xml_el_to_dict">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.plugins.quanta_tif.</span></span><span class="sig-name descname"><span class="pre">_xml_el_to_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">lxml.etree.ElementBase</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/plugins/quanta_tif.html#_xml_el_to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.plugins.quanta_tif._xml_el_to_dict" title="Link to this definition">#</a></dt>
-<dd><p>Convert an lxml.etree node tree into a dict.</p>
-<p>This is used to transform the XML metadata section into a dictionary representation
-so it can be stored alongside the other metadata.</p>
-<p>Taken from https://stackoverflow.com/a/66103841/1435788</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.quanta_tif._fix_duplicate_multigis_metadata_tags">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.plugins.quanta_tif.</span></span><span class="sig-name descname"><span class="pre">_fix_duplicate_multigis_metadata_tags</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metadata_str</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/plugins/quanta_tif.html#_fix_duplicate_multigis_metadata_tags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.plugins.quanta_tif._fix_duplicate_multigis_metadata_tags" title="Link to this definition">#</a></dt>
-<dd><p>Rename the metadata section headers to allow parsing by <code class="docutils literal notranslate"><span class="pre">ConfigParser</span></code>.</p>
-<p>Some instruments have metadata section titles like so:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[MultiGIS]
-[MultiGISUnit1]
-[MultiGISGas1]
-[MultiGISGas2]
-[MultiGISGas3]
-[MultiGISUnit2]
-[MultiGISGas1]
-[MultiGISGas2]
-[MultiGISGas3]
-[MultiGISUnit3]
-[MultiGISGas1]
-[MultiGISGas2]
-[MultiGISGas3]
-</pre></div>
-</div>
-<p>Which causes errors because <code class="docutils literal notranslate"><span class="pre">ConfigParser</span></code> raises a <code class="docutils literal notranslate"><span class="pre">DuplicateSectionError</span></code> on
-the first time it sees a duplicate of <code class="docutils literal notranslate"><span class="pre">MultiGISGas1</span></code>. As a workaround, this method
-will modify an entire string of “Quanta” metadata so that it instead reads like so:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[MultiGIS]
-[MultiGISUnit1]
-[MultiGISUnit1.MultiGISGas1]
-[MultiGISUnit1.MultiGISGas2]
-[MultiGISUnit1.MultiGISGas3]
-[MultiGISUnit2]
-[MultiGISUnit2.MultiGISGas1]
-[MultiGISUnit2.MultiGISGas2]
-[MultiGISUnit2.MultiGISGas3]
-[MultiGISUnit3]
-[MultiGISUnit3.MultiGISGas1]
-[MultiGISUnit3.MultiGISGas2]
-[MultiGISUnit3.MultiGISGas3]
-</pre></div>
-</div>
 </dd></dl>
 
 <dl class="py function">
@@ -704,10 +629,10 @@ returned by :py:meth:<code class="docutils literal notranslate"><span class="pre
 <p>The metadata contained in the XML section (if present) is not parsed, since it
 appears to only contain duplicates or slightly renamed metadata values compared
 to the typical config-style section that is always present.</p>
-<p class="rubric" id="id21">Parameters</p>
+<p class="rubric" id="id17">Parameters</p>
 <p>mdict : dict
 A metadata dictionary as returned by :py:meth:<code class="docutils literal notranslate"><span class="pre">get_quanta_metadata</span></code></p>
-<p class="rubric" id="id22">Returns</p>
+<p class="rubric" id="id18">Returns</p>
 <p>mdict : dict
 The same metadata dictionary with some values added under the
 root-level <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code> key</p>
@@ -717,13 +642,13 @@ root-level <code class="docutils literal notranslate"><span class="pre">nx_meta<
 <dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.quanta_tif.parse_beam_info">
 <span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.plugins.quanta_tif.</span></span><span class="sig-name descname"><span class="pre">parse_beam_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mdict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beam_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/plugins/quanta_tif.html#parse_beam_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.plugins.quanta_tif.parse_beam_info" title="Link to this definition">#</a></dt>
 <dd><p>Parse the “Beam info” section of the metadata.</p>
-<p class="rubric" id="id23">Parameters</p>
+<p class="rubric" id="id19">Parameters</p>
 <p>mdict : dict
 A metadata dictionary as returned by :py:meth:<code class="docutils literal notranslate"><span class="pre">get_quanta_metadata</span></code>
 beam_name : str
 The “beam name” read from the root-level <code class="docutils literal notranslate"><span class="pre">Beam</span></code> node of the
 metadata dictionary</p>
-<p class="rubric" id="id24">Returns</p>
+<p class="rubric" id="id20">Returns</p>
 <p>mdict : dict
 The same metadata dictionary with some values added under the
 root-level <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code> key</p>
@@ -736,13 +661,13 @@ root-level <code class="docutils literal notranslate"><span class="pre">nx_meta<
 <p>Parses the <code class="docutils literal notranslate"><span class="pre">Scan</span></code> portion of the metadata dictionary (on a Quanta this is
 always <code class="docutils literal notranslate"><span class="pre">&quot;EScan&quot;</span></code>) to get values such as dwell time, field width, and pixel
 size.</p>
-<p class="rubric" id="id25">Parameters</p>
+<p class="rubric" id="id21">Parameters</p>
 <p>mdict : dict
 A metadata dictionary as returned by :py:meth:<code class="docutils literal notranslate"><span class="pre">get_quanta_metadata</span></code>
 scan_name : str
 The “scan name” read from the root-level <code class="docutils literal notranslate"><span class="pre">Beam</span></code> node of the
 metadata dictionary</p>
-<p class="rubric" id="id26">Returns</p>
+<p class="rubric" id="id22">Returns</p>
 <p>mdict : dict
 The same metadata dictionary with some values added under the
 root-level <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code> key</p>
@@ -754,13 +679,13 @@ root-level <code class="docutils literal notranslate"><span class="pre">nx_meta<
 <dd><p>Parse the “Detector info” section of the metadata.</p>
 <p>Parses the <code class="docutils literal notranslate"><span class="pre">Detector</span></code> portion of the metadata dictionary from the Quanta to
 get values such as brightness, contrast, signal, etc.</p>
-<p class="rubric" id="id27">Parameters</p>
+<p class="rubric" id="id23">Parameters</p>
 <p>mdict : dict
 A metadata dictionary as returned by :py:meth:<code class="docutils literal notranslate"><span class="pre">get_quanta_metadata</span></code>
 det_name : str
 The “detector name” read from the root-level <code class="docutils literal notranslate"><span class="pre">Beam</span></code> node of the
 metadata dictionary</p>
-<p class="rubric" id="id28">Returns</p>
+<p class="rubric" id="id24">Returns</p>
 <p>mdict : dict
 The same metadata dictionary with some values added under the
 root-level <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code> key</p>
@@ -772,10 +697,10 @@ root-level <code class="docutils literal notranslate"><span class="pre">nx_meta<
 <dd><p>Parse the “System info” section of the metadata.</p>
 <p>Parses the <code class="docutils literal notranslate"><span class="pre">System</span></code> portion of the metadata dictionary from the Quanta to
 get values such as software version, chamber config, etc.</p>
-<p class="rubric" id="id29">Parameters</p>
+<p class="rubric" id="id25">Parameters</p>
 <p>mdict : dict
 A metadata dictionary as returned by :py:meth:<code class="docutils literal notranslate"><span class="pre">get_quanta_metadata</span></code></p>
-<p class="rubric" id="id30">Returns</p>
+<p class="rubric" id="id26">Returns</p>
 <p>mdict : dict
 The same metadata dictionary with some values added under the
 root-level <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code> key</p>
@@ -787,10 +712,10 @@ root-level <code class="docutils literal notranslate"><span class="pre">nx_meta<
 <dd><p>Parse the “Image info” section of the metadata.</p>
 <p>Parses the <code class="docutils literal notranslate"><span class="pre">Image</span></code> portion of the metadata dictionary from the Quanta to
 get values such as drift correction, image integration settings, etc.</p>
-<p class="rubric" id="id31">Parameters</p>
+<p class="rubric" id="id27">Parameters</p>
 <p>mdict : dict
 A metadata dictionary as returned by :py:meth:<code class="docutils literal notranslate"><span class="pre">get_quanta_metadata</span></code></p>
-<p class="rubric" id="id32">Returns</p>
+<p class="rubric" id="id28">Returns</p>
 <p>mdict : dict
 The same metadata dictionary with some values added under the
 root-level <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code> key</p>
@@ -802,10 +727,10 @@ root-level <code class="docutils literal notranslate"><span class="pre">nx_meta<
 <dd><p>Get metadata from a Quanta TIF file.</p>
 <p>.. deprecated::
 This function is deprecated. Use QuantaTiffExtractor class instead.</p>
-<p class="rubric" id="id33">Parameters</p>
+<p class="rubric" id="id29">Parameters</p>
 <p>filename : pathlib.Path
 path to a file saved in the harvested directory of the instrument</p>
-<p class="rubric" id="id34">Returns</p>
+<p class="rubric" id="id30">Returns</p>
 <p>mdict : dict
 A description of the file’s metadata.</p>
 </dd></dl>
@@ -870,13 +795,11 @@ A description of the file’s metadata.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor"><code class="docutils literal notranslate"><span class="pre">QuantaTiffExtractor</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor.name"><code class="docutils literal notranslate"><span class="pre">QuantaTiffExtractor.name</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor.priority"><code class="docutils literal notranslate"><span class="pre">QuantaTiffExtractor.priority</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor.supported_extensions"><code class="docutils literal notranslate"><span class="pre">QuantaTiffExtractor.supported_extensions</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor.supports"><code class="docutils literal notranslate"><span class="pre">QuantaTiffExtractor.supports()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor.extract"><code class="docutils literal notranslate"><span class="pre">QuantaTiffExtractor.extract()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.quanta_tif._detect_and_process_xml_metadata"><code class="docutils literal notranslate"><span class="pre">_detect_and_process_xml_metadata()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.quanta_tif._xml_el_to_dict"><code class="docutils literal notranslate"><span class="pre">_xml_el_to_dict()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.quanta_tif._fix_duplicate_multigis_metadata_tags"><code class="docutils literal notranslate"><span class="pre">_fix_duplicate_multigis_metadata_tags()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.quanta_tif.parse_nx_meta"><code class="docutils literal notranslate"><span class="pre">parse_nx_meta()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.quanta_tif.parse_beam_info"><code class="docutils literal notranslate"><span class="pre">parse_beam_info()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.quanta_tif.parse_scan_info"><code class="docutils literal notranslate"><span class="pre">parse_scan_info()</span></code></a></li>

@@ -424,7 +424,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 16, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 18, 2025"/>
   </head>
   
   
@@ -798,9 +798,6 @@ window.addEventListener("load", load);
     
     <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Module code</a></li>
     
-    
-    <li class="breadcrumb-item"><a href="../nexusLIMS.html" class="nav-link">nexusLIMS</a></li>
-    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">nexusLIMS.extractors</span></li>
   </ul>
 </nav>
@@ -896,8 +893,6 @@ window.addEventListener("load", load);
 <span class="p">}</span>
 
 
-<div class="viewcode-block" id="_add_extraction_details">
-<a class="viewcode-back" href="../../api/nexusLIMS/nexusLIMS.extractors.html#nexusLIMS.extractors._add_extraction_details">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">_add_extraction_details</span><span class="p">(</span>
     <span class="n">nx_meta</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span>
     <span class="n">extractor_module</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
@@ -952,8 +947,7 @@ window.addEventListener("load", load);
         <span class="s2">&quot;Version&quot;</span><span class="p">:</span> <span class="n">__version__</span><span class="p">,</span>
     <span class="p">}</span>
 
-    <span class="k">return</span> <span class="n">nx_meta</span></div>
-
+    <span class="k">return</span> <span class="n">nx_meta</span>
 
 
 <div class="viewcode-block" id="parse_metadata">
@@ -1248,8 +1242,6 @@ window.addEventListener("load", load);
 
 
 
-<div class="viewcode-block" id="_CustomEncoder">
-<a class="viewcode-back" href="../../api/nexusLIMS/nexusLIMS.extractors.html#nexusLIMS.extractors._CustomEncoder">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">_CustomEncoder</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">JSONEncoder</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Allow non-serializable types to be written in a JSON format.</span>
@@ -1258,8 +1250,6 @@ window.addEventListener("load", load);
 <span class="sd">    not able to be by default (taken from https://stackoverflow.com/a/27050186).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="_CustomEncoder.default">
-<a class="viewcode-back" href="../../api/nexusLIMS/nexusLIMS.extractors.html#nexusLIMS.extractors._CustomEncoder.default">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">default</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">o</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">):</span>
             <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
@@ -1273,9 +1263,7 @@ window.addEventListener("load", load);
             <span class="c1"># np.void array may contain arbitary binary, so base64 encode it</span>
             <span class="k">return</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">o</span><span class="p">)</span></div>
-</div>
-
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
 </pre></div>
 
                 </article>

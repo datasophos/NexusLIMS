@@ -424,7 +424,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 16, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 18, 2025"/>
   </head>
   
   
@@ -799,9 +799,6 @@ window.addEventListener("load", load);
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">Module code</a></li>
     
     
-    <li class="breadcrumb-item"><a href="../../../nexusLIMS.html" class="nav-link">nexusLIMS</a></li>
-    
-    
     <li class="breadcrumb-item"><a href="../../extractors.html" class="nav-link">nexusLIMS.extractors</a></li>
     
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">nexusLIMS.extractors.plugins.digital_micrograph</span></li>
@@ -829,7 +826,7 @@ window.addEventListener("load", load);
 <span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span> <span class="k">as</span> <span class="n">dt</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">struct</span><span class="w"> </span><span class="kn">import</span> <span class="n">error</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">hyperspy.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">load</span> <span class="k">as</span> <span class="n">hs_load</span>
@@ -885,6 +882,7 @@ window.addEventListener("load", load);
 
     <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;dm3_extractor&quot;</span>
     <span class="n">priority</span> <span class="o">=</span> <span class="mi">100</span>
+    <span class="n">supported_extensions</span><span class="p">:</span> <span class="n">ClassVar</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;dm3&quot;</span><span class="p">,</span> <span class="s2">&quot;dm4&quot;</span><span class="p">}</span>
 
 <div class="viewcode-block" id="DM3Extractor.supports">
 <a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.digital_micrograph.html#nexusLIMS.extractors.plugins.digital_micrograph.DM3Extractor.supports">[docs]</a>
@@ -1105,8 +1103,6 @@ window.addEventListener("load", load);
 
 
 
-<div class="viewcode-block" id="_apply_profile_to_metadata">
-<a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.digital_micrograph.html#nexusLIMS.extractors.plugins.digital_micrograph._apply_profile_to_metadata">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">_apply_profile_to_metadata</span><span class="p">(</span><span class="n">metadata</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">instrument</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Apply instrument profile to metadata dictionary.</span>
@@ -1176,8 +1172,7 @@ window.addEventListener("load", load);
                 <span class="n">e</span><span class="p">,</span>
             <span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">metadata</span></div>
-
+    <span class="k">return</span> <span class="n">metadata</span>
 
 
 <div class="viewcode-block" id="get_pre_path">
@@ -1668,8 +1663,6 @@ window.addEventListener("load", load);
 
 
 
-<div class="viewcode-block" id="_parse_stage_position">
-<a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.digital_micrograph.html#nexusLIMS.extractors.plugins.digital_micrograph._parse_stage_position">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">_parse_stage_position</span><span class="p">(</span><span class="n">tecnai_info</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parse stage position from Tecnai metadata.</span>
@@ -1692,12 +1685,9 @@ window.addEventListener("load", load);
         <span class="s2">&quot;Stage_Position_z&quot;</span><span class="p">:</span> <span class="n">tmp</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
         <span class="s2">&quot;Stage_Position_theta&quot;</span><span class="p">:</span> <span class="n">tmp</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
         <span class="s2">&quot;Stage_Position_phi&quot;</span><span class="p">:</span> <span class="n">tmp</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span>
-    <span class="p">}</span></div>
+    <span class="p">}</span>
 
 
-
-<div class="viewcode-block" id="_parse_apertures">
-<a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.digital_micrograph.html#nexusLIMS.extractors.plugins.digital_micrograph._parse_apertures">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">_parse_apertures</span><span class="p">(</span><span class="n">tecnai_info</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parse aperture settings from Tecnai metadata.</span>
@@ -1726,8 +1716,7 @@ window.addEventListener("load", load);
         <span class="s2">&quot;C2_Aperture&quot;</span><span class="p">:</span> <span class="n">_read_aperture</span><span class="p">(</span><span class="s2">&quot;C2 Aperture: &quot;</span><span class="p">,</span> <span class="n">tecnai_info</span><span class="p">),</span>
         <span class="s2">&quot;Obj_Aperture&quot;</span><span class="p">:</span> <span class="n">_read_aperture</span><span class="p">(</span><span class="s2">&quot;OBJ Aperture: &quot;</span><span class="p">,</span> <span class="n">tecnai_info</span><span class="p">),</span>
         <span class="s2">&quot;SA_Aperture&quot;</span><span class="p">:</span> <span class="n">_read_aperture</span><span class="p">(</span><span class="s2">&quot;SA Aperture: &quot;</span><span class="p">,</span> <span class="n">tecnai_info</span><span class="p">),</span>
-    <span class="p">}</span></div>
-
+    <span class="p">}</span>
 
 
 <div class="viewcode-block" id="process_tecnai_microscope_info">

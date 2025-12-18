@@ -424,7 +424,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 16, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 18, 2025"/>
   </head>
   
   
@@ -799,9 +799,6 @@ window.addEventListener("load", load);
     <li class="breadcrumb-item"><a href="../../../../index.html" class="nav-link">Module code</a></li>
     
     
-    <li class="breadcrumb-item"><a href="../../../../nexusLIMS.html" class="nav-link">nexusLIMS</a></li>
-    
-    
     <li class="breadcrumb-item"><a href="../../../extractors.html" class="nav-link">nexusLIMS.extractors</a></li>
     
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">nexusLIMS.extractors.plugins.preview_generators.image_preview</span></li>
@@ -839,8 +836,6 @@ window.addEventListener("load", load);
 <span class="n">_LANCZOS</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">Resampling</span><span class="o">.</span><span class="n">LANCZOS</span>
 
 
-<div class="viewcode-block" id="_pad_to_square">
-<a class="viewcode-back" href="../../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.preview_generators.image_preview.html#nexusLIMS.extractors.plugins.preview_generators.image_preview._pad_to_square">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">_pad_to_square</span><span class="p">(</span><span class="n">im_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">new_width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">500</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Pad an image to square.</span>
@@ -871,8 +866,7 @@ window.addEventListener("load", load);
         <span class="n">image</span><span class="p">,</span>
         <span class="p">((</span><span class="n">new_width</span> <span class="o">-</span> <span class="n">new_size</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">//</span> <span class="mi">2</span><span class="p">,</span> <span class="p">(</span><span class="n">new_width</span> <span class="o">-</span> <span class="n">new_size</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">//</span> <span class="mi">2</span><span class="p">),</span>
     <span class="p">)</span>
-    <span class="n">new_im</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">im_path</span><span class="p">)</span></div>
-
+    <span class="n">new_im</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">im_path</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="image_to_square_thumbnail">
@@ -986,9 +980,7 @@ window.addEventListener("load", load);
 
     <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;image_preview&quot;</span>
     <span class="n">priority</span> <span class="o">=</span> <span class="mi">100</span>
-
-    <span class="c1"># Supported image formats</span>
-    <span class="n">SUPPORTED_EXTENSIONS</span><span class="p">:</span> <span class="n">ClassVar</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">supported_extensions</span><span class="p">:</span> <span class="n">ClassVar</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;png&quot;</span><span class="p">,</span>
         <span class="s2">&quot;jpg&quot;</span><span class="p">,</span>
         <span class="s2">&quot;jpeg&quot;</span><span class="p">,</span>
@@ -1015,7 +1007,7 @@ window.addEventListener("load", load);
 <span class="sd">            True if file extension is a supported image format</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">extension</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">file_path</span><span class="o">.</span><span class="n">suffix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">extension</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">SUPPORTED_EXTENSIONS</span></div>
+        <span class="k">return</span> <span class="n">extension</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">supported_extensions</span></div>
 
 
 <div class="viewcode-block" id="ImagePreviewGenerator.generate">

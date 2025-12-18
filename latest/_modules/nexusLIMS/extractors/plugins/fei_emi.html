@@ -424,7 +424,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 16, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 18, 2025"/>
   </head>
   
   
@@ -799,9 +799,6 @@ window.addEventListener("load", load);
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">Module code</a></li>
     
     
-    <li class="breadcrumb-item"><a href="../../../nexusLIMS.html" class="nav-link">nexusLIMS</a></li>
-    
-    
     <li class="breadcrumb-item"><a href="../../extractors.html" class="nav-link">nexusLIMS.extractors</a></li>
     
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">nexusLIMS.extractors.plugins.fei_emi</span></li>
@@ -827,7 +824,7 @@ window.addEventListener("load", load);
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span> <span class="k">as</span> <span class="n">dt</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">hyperspy.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">load</span> <span class="k">as</span> <span class="n">hs_load</span>
@@ -853,6 +850,7 @@ window.addEventListener("load", load);
 
     <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;ser_emi_extractor&quot;</span>
     <span class="n">priority</span> <span class="o">=</span> <span class="mi">100</span>
+    <span class="n">supported_extensions</span><span class="p">:</span> <span class="n">ClassVar</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;ser&quot;</span><span class="p">}</span>
 
 <div class="viewcode-block" id="SerEmiExtractor.supports">
 <a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.fei_emi.html#nexusLIMS.extractors.plugins.fei_emi.SerEmiExtractor.supports">[docs]</a>
@@ -1021,8 +1019,6 @@ window.addEventListener("load", load);
 
 
 
-<div class="viewcode-block" id="_handle_ser_error">
-<a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.fei_emi.html#nexusLIMS.extractors.plugins.fei_emi._handle_ser_error">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">_handle_ser_error</span><span class="p">(</span><span class="n">metadata</span><span class="p">):</span>
     <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;DatasetType&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Misc&quot;</span>
     <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;Data Type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Unknown&quot;</span>
@@ -1030,12 +1026,9 @@ window.addEventListener("load", load);
     <span class="c1"># sort the nx_meta dictionary (recursively) for nicer display</span>
     <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sort_dict</span><span class="p">(</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">])</span>
     <span class="k">del</span> <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;fname&quot;</span><span class="p">]</span>
-    <span class="k">return</span> <span class="n">metadata</span></div>
+    <span class="k">return</span> <span class="n">metadata</span>
 
 
-
-<div class="viewcode-block" id="_load_ser">
-<a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.fei_emi.html#nexusLIMS.extractors.plugins.fei_emi._load_ser">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">_load_ser</span><span class="p">(</span><span class="n">emi_filename</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">ser_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Load an data file given the .emi filename and an index of which signal to use.</span>
@@ -1071,8 +1064,7 @@ window.addEventListener("load", load);
     <span class="c1"># out the matching signal, otherwise use the signal as-is</span>
     <span class="n">s</span> <span class="o">=</span> <span class="n">emi_s</span><span class="p">[</span><span class="n">ser_index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">emi_s</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">else</span> <span class="n">emi_s</span>
 
-    <span class="k">return</span> <span class="n">s</span><span class="p">,</span> <span class="kc">True</span></div>
-
+    <span class="k">return</span> <span class="n">s</span><span class="p">,</span> <span class="kc">True</span>
 
 
 <div class="viewcode-block" id="parse_basic_info">
@@ -1489,8 +1481,6 @@ window.addEventListener("load", load);
 
 
 
-<div class="viewcode-block" id="_set_instrument_type">
-<a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.fei_emi.html#nexusLIMS.extractors.plugins.fei_emi._set_instrument_type">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">_set_instrument_type</span><span class="p">(</span><span class="n">instr_conf</span><span class="p">,</span> <span class="n">metadata</span><span class="p">):</span>
     <span class="c1"># sometimes there is no metadata for follow-on signals in an .emi/.ser</span>
     <span class="c1"># bundle (i.e. .ser files after the first one)</span>
@@ -1508,12 +1498,9 @@ window.addEventListener("load", load);
             <span class="n">instr_conf</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;TEM&quot;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># default to TEM, (since STEM is technically a sub-technique of TEM)</span>
-        <span class="n">instr_conf</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;TEM&quot;</span><span class="p">)</span></div>
+        <span class="n">instr_conf</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;TEM&quot;</span><span class="p">)</span>
 
 
-
-<div class="viewcode-block" id="_signal_dim_2">
-<a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.fei_emi.html#nexusLIMS.extractors.plugins.fei_emi._signal_dim_2">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">_signal_dim_2</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parse data type for a Signal with &quot;signal dimension&quot; of size 2.</span>
@@ -1546,12 +1533,9 @@ window.addEventListener("load", load);
             <span class="k">elif</span> <span class="s2">&quot;TEM&quot;</span> <span class="ow">in</span> <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;Mode&quot;</span><span class="p">]:</span>
                 <span class="n">instr_mod</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Diffraction&quot;</span><span class="p">]</span>
                 <span class="n">dataset_type</span> <span class="o">=</span> <span class="s2">&quot;Diffraction&quot;</span>
-    <span class="k">return</span> <span class="n">instr_mod</span><span class="p">,</span> <span class="n">dataset_type</span></div>
+    <span class="k">return</span> <span class="n">instr_mod</span><span class="p">,</span> <span class="n">dataset_type</span>
 
 
-
-<div class="viewcode-block" id="_convert_to_numeric">
-<a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.fei_emi.html#nexusLIMS.extractors.plugins.fei_emi._convert_to_numeric">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">_convert_to_numeric</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="k">if</span> <span class="s2">&quot;.&quot;</span> <span class="ow">in</span> <span class="n">val</span><span class="p">:</span>
@@ -1565,8 +1549,7 @@ window.addEventListener("load", load);
             <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">val</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">val</span></div>
-
+        <span class="k">return</span> <span class="n">val</span>
 
 
 <span class="c1"># Backward compatibility function for tests</span>

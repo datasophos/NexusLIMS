@@ -271,58 +271,10 @@
 
 ````
 
-````{py:method} __post_init__()
-:canonical: nexusLIMS.harvesters.reservation_event.ReservationEvent.__post_init__
-
-```{autodoc2-docstring} nexusLIMS.harvesters.reservation_event.ReservationEvent.__post_init__
-```
-
-````
-
-````{py:method} _check_arg_lists()
-:canonical: nexusLIMS.harvesters.reservation_event.ReservationEvent._check_arg_lists
-
-```{autodoc2-docstring} nexusLIMS.harvesters.reservation_event.ReservationEvent._check_arg_lists
-```
-
-````
-
-````{py:method} __repr__()
-:canonical: nexusLIMS.harvesters.reservation_event.ReservationEvent.__repr__
-
-```{autodoc2-docstring} nexusLIMS.harvesters.reservation_event.ReservationEvent.__repr__
-```
-
-````
-
 ````{py:method} as_xml() -> lxml.etree.Element
 :canonical: nexusLIMS.harvesters.reservation_event.ReservationEvent.as_xml
 
 ```{autodoc2-docstring} nexusLIMS.harvesters.reservation_event.ReservationEvent.as_xml
-```
-
-````
-
-````{py:method} _add_summary_node(root)
-:canonical: nexusLIMS.harvesters.reservation_event.ReservationEvent._add_summary_node
-
-```{autodoc2-docstring} nexusLIMS.harvesters.reservation_event.ReservationEvent._add_summary_node
-```
-
-````
-
-````{py:method} _add_sample_nodes(root)
-:canonical: nexusLIMS.harvesters.reservation_event.ReservationEvent._add_sample_nodes
-
-```{autodoc2-docstring} nexusLIMS.harvesters.reservation_event.ReservationEvent._add_sample_nodes
-```
-
-````
-
-````{py:method} _add_project_nodes(root)
-:canonical: nexusLIMS.harvesters.reservation_event.ReservationEvent._add_project_nodes
-
-```{autodoc2-docstring} nexusLIMS.harvesters.reservation_event.ReservationEvent._add_project_nodes
 ```
 
 ````

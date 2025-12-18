@@ -28,30 +28,5 @@ nexusLIMS.extractors.plugins.digital_micrograph
 nexusLIMS.extractors.plugins.quanta_tif
 nexusLIMS.extractors.plugins.fei_emi
 nexusLIMS.extractors.plugins.basic_metadata
+nexusLIMS.extractors.plugins.orion_HIM_tif
 ```
-
-## Package Contents
-
-### Data
-
-````{list-table}
-:class: autosummary longtable
-:align: left
-
-* - {py:obj}`__all__ <nexusLIMS.extractors.plugins.__all__>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.__all__
-    :summary:
-    ```
-````
-
-### API
-
-````{py:data} __all__
-:canonical: nexusLIMS.extractors.plugins.__all__
-:value: >
-   []
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.__all__
-```
-
-````

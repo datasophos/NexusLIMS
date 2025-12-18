@@ -31,14 +31,6 @@
   - ```{autodoc2-docstring} nexusLIMS.schemas.activity.cluster_filelist_mtimes
     :summary:
     ```
-* - {py:obj}`_escape <nexusLIMS.schemas.activity._escape>`
-  - ```{autodoc2-docstring} nexusLIMS.schemas.activity._escape
-    :summary:
-    ```
-* - {py:obj}`_add_dataset_element <nexusLIMS.schemas.activity._add_dataset_element>`
-  - ```{autodoc2-docstring} nexusLIMS.schemas.activity._add_dataset_element
-    :summary:
-    ```
 ````
 
 ### Data
@@ -69,20 +61,6 @@
 :canonical: nexusLIMS.schemas.activity.cluster_filelist_mtimes
 
 ```{autodoc2-docstring} nexusLIMS.schemas.activity.cluster_filelist_mtimes
-```
-````
-
-````{py:function} _escape(val: typing.Any) -> typing.Any
-:canonical: nexusLIMS.schemas.activity._escape
-
-```{autodoc2-docstring} nexusLIMS.schemas.activity._escape
-```
-````
-
-````{py:function} _add_dataset_element(file: str, aq_ac_xml_el: lxml.etree.Element, meta: typing.Dict, unique_meta: typing.Dict, warning: typing.List)
-:canonical: nexusLIMS.schemas.activity._add_dataset_element
-
-```{autodoc2-docstring} nexusLIMS.schemas.activity._add_dataset_element
 ```
 ````
 
@@ -197,30 +175,6 @@
    'field(...)'
 
 ```{autodoc2-docstring} nexusLIMS.schemas.activity.AcquisitionActivity.warnings
-```
-
-````
-
-````{py:method} __post_init__()
-:canonical: nexusLIMS.schemas.activity.AcquisitionActivity.__post_init__
-
-```{autodoc2-docstring} nexusLIMS.schemas.activity.AcquisitionActivity.__post_init__
-```
-
-````
-
-````{py:method} __repr__()
-:canonical: nexusLIMS.schemas.activity.AcquisitionActivity.__repr__
-
-```{autodoc2-docstring} nexusLIMS.schemas.activity.AcquisitionActivity.__repr__
-```
-
-````
-
-````{py:method} __str__()
-:canonical: nexusLIMS.schemas.activity.AcquisitionActivity.__str__
-
-```{autodoc2-docstring} nexusLIMS.schemas.activity.AcquisitionActivity.__str__
 ```
 
 ````

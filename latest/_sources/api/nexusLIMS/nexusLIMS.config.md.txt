@@ -27,10 +27,6 @@
   - ```{autodoc2-docstring} nexusLIMS.config.Settings
     :summary:
     ```
-* - {py:obj}`_SettingsManager <nexusLIMS.config._SettingsManager>`
-  - ```{autodoc2-docstring} nexusLIMS.config._SettingsManager
-    :summary:
-    ```
 ````
 
 ### Functions
@@ -57,10 +53,6 @@
 
 * - {py:obj}`logger <nexusLIMS.config.logger>`
   - ```{autodoc2-docstring} nexusLIMS.config.logger
-    :summary:
-    ```
-* - {py:obj}`_manager <nexusLIMS.config._manager>`
-  - ```{autodoc2-docstring} nexusLIMS.config._manager
     :summary:
     ```
 * - {py:obj}`settings <nexusLIMS.config.settings>`
@@ -496,62 +488,6 @@ Bases: {py:obj}`pydantic_settings.BaseSettings`
 ````
 
 `````
-
-`````{py:class} _SettingsManager()
-:canonical: nexusLIMS.config._SettingsManager
-
-```{autodoc2-docstring} nexusLIMS.config._SettingsManager
-```
-
-```{rubric} Initialization
-```
-
-```{autodoc2-docstring} nexusLIMS.config._SettingsManager.__init__
-```
-
-````{py:method} get() -> nexusLIMS.config.Settings
-:canonical: nexusLIMS.config._SettingsManager.get
-
-```{autodoc2-docstring} nexusLIMS.config._SettingsManager.get
-```
-
-````
-
-````{py:method} _create() -> nexusLIMS.config.Settings
-:canonical: nexusLIMS.config._SettingsManager._create
-
-```{autodoc2-docstring} nexusLIMS.config._SettingsManager._create
-```
-
-````
-
-````{py:method} refresh() -> nexusLIMS.config.Settings
-:canonical: nexusLIMS.config._SettingsManager.refresh
-
-```{autodoc2-docstring} nexusLIMS.config._SettingsManager.refresh
-```
-
-````
-
-````{py:method} clear() -> None
-:canonical: nexusLIMS.config._SettingsManager.clear
-
-```{autodoc2-docstring} nexusLIMS.config._SettingsManager.clear
-```
-
-````
-
-`````
-
-````{py:data} _manager
-:canonical: nexusLIMS.config._manager
-:value: >
-   '_SettingsManager(...)'
-
-```{autodoc2-docstring} nexusLIMS.config._manager
-```
-
-````
 
 ````{py:function} refresh_settings() -> nexusLIMS.config.Settings
 :canonical: nexusLIMS.config.refresh_settings

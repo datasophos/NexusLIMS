@@ -58,11 +58,11 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="nexusLIMS.extractors.utils" href="nexusLIMS.extractors.utils.html" />
-    <link rel="prev" title="nexusLIMS.extractors.plugins.basic_metadata" href="nexusLIMS.extractors.plugins.basic_metadata.html" />
+    <link rel="prev" title="nexusLIMS.extractors.plugins.orion_HIM_tif" href="nexusLIMS.extractors.plugins.orion_HIM_tif.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 16, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 18, 2025"/>
   </head>
   
   
@@ -424,7 +424,6 @@
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.instruments.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.instruments</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.cdcs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cdcs</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.__main__.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.__main__</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.config.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.config</span></code></a></li>
 </ul>
 </details></li>
@@ -540,12 +539,6 @@ instrument-specific behavior.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.extractors.profiles.logger" title="nexusLIMS.extractors.profiles.logger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">logger</span></code></a></p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.extractors.profiles.__all__" title="nexusLIMS.extractors.profiles.__all__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__all__</span></code></a></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.extractors.profiles._profile_registry" title="nexusLIMS.extractors.profiles._profile_registry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_profile_registry</span></code></a></p></td>
-<td></td>
-</tr>
 </tbody>
 </table>
 </div>
@@ -556,12 +549,6 @@ instrument-specific behavior.</p>
 <dt class="sig sig-object py" id="nexusLIMS.extractors.profiles.logger">
 <span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.profiles.</span></span><span class="sig-name descname"><span class="pre">logger</span></span><a class="headerlink" href="#nexusLIMS.extractors.profiles.logger" title="Link to this definition">#</a></dt>
 <dd><p>‘getLogger(…)’</p>
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="nexusLIMS.extractors.profiles.__all__">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.profiles.</span></span><span class="sig-name descname"><span class="pre">__all__</span></span><a class="headerlink" href="#nexusLIMS.extractors.profiles.__all__" title="Link to this definition">#</a></dt>
-<dd><p>[‘InstrumentProfileRegistry’, ‘get_profile_registry’]</p>
 </dd></dl>
 
 <dl class="py class">
@@ -692,12 +679,6 @@ registry.clear()</p>
 
 </dd></dl>
 
-<dl class="py data">
-<dt class="sig sig-object py" id="nexusLIMS.extractors.profiles._profile_registry">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.profiles.</span></span><span class="sig-name descname"><span class="pre">_profile_registry</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#nexusLIMS.extractors.profiles.InstrumentProfileRegistry" title="nexusLIMS.extractors.profiles.InstrumentProfileRegistry"><span class="pre">InstrumentProfileRegistry</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.extractors.profiles._profile_registry" title="Link to this definition">#</a></dt>
-<dd><p>None</p>
-</dd></dl>
-
 <dl class="py function">
 <dt class="sig sig-object py" id="nexusLIMS.extractors.profiles.get_profile_registry">
 <span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.profiles.</span></span><span class="sig-name descname"><span class="pre">get_profile_registry</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#nexusLIMS.extractors.profiles.InstrumentProfileRegistry" title="nexusLIMS.extractors.profiles.InstrumentProfileRegistry"><span class="pre">InstrumentProfileRegistry</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/profiles.html#get_profile_registry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.profiles.get_profile_registry" title="Link to this definition">#</a></dt>
@@ -733,12 +714,12 @@ registry = get_profile_registry()</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="nexusLIMS.extractors.plugins.basic_metadata.html"
+       href="nexusLIMS.extractors.plugins.orion_HIM_tif.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.basic_metadata</span></code></p>
+        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.orion_HIM_tif</span></code></p>
       </div>
     </a>
     <a class="right-next"
@@ -775,7 +756,6 @@ registry = get_profile_registry()</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data">Data</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#api">API</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.profiles.logger"><code class="docutils literal notranslate"><span class="pre">logger</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.profiles.__all__"><code class="docutils literal notranslate"><span class="pre">__all__</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.profiles.InstrumentProfileRegistry"><code class="docutils literal notranslate"><span class="pre">InstrumentProfileRegistry</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.profiles.InstrumentProfileRegistry.register"><code class="docutils literal notranslate"><span class="pre">InstrumentProfileRegistry.register()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.profiles.InstrumentProfileRegistry.get_profile"><code class="docutils literal notranslate"><span class="pre">InstrumentProfileRegistry.get_profile()</span></code></a></li>
@@ -783,7 +763,6 @@ registry = get_profile_registry()</p>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.profiles.InstrumentProfileRegistry.clear"><code class="docutils literal notranslate"><span class="pre">InstrumentProfileRegistry.clear()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.profiles._profile_registry"><code class="docutils literal notranslate"><span class="pre">_profile_registry</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.profiles.get_profile_registry"><code class="docutils literal notranslate"><span class="pre">get_profile_registry()</span></code></a></li>
 </ul>
 </li>

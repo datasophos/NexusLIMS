@@ -101,30 +101,6 @@
 
 ````
 
-````{py:method} __repr__()
-:canonical: nexusLIMS.harvesters.nemo.connector.NemoConnector.__repr__
-
-```{autodoc2-docstring} nexusLIMS.harvesters.nemo.connector.NemoConnector.__repr__
-```
-
-````
-
-````{py:method} __eq__(other)
-:canonical: nexusLIMS.harvesters.nemo.connector.NemoConnector.__eq__
-
-```{autodoc2-docstring} nexusLIMS.harvesters.nemo.connector.NemoConnector.__eq__
-```
-
-````
-
-````{py:method} __hash__()
-:canonical: nexusLIMS.harvesters.nemo.connector.NemoConnector.__hash__
-
-```{autodoc2-docstring} nexusLIMS.harvesters.nemo.connector.NemoConnector.__hash__
-```
-
-````
-
 ````{py:method} strftime(date_dt) -> str
 :canonical: nexusLIMS.harvesters.nemo.connector.NemoConnector.strftime
 
@@ -181,34 +157,10 @@
 
 ````
 
-````{py:method} _parse_reservation(reservation: dict) -> dict
-:canonical: nexusLIMS.harvesters.nemo.connector.NemoConnector._parse_reservation
-
-```{autodoc2-docstring} nexusLIMS.harvesters.nemo.connector.NemoConnector._parse_reservation
-```
-
-````
-
 ````{py:method} get_usage_events(event_id: typing.Union[int, typing.List[int]] | None = None, user: typing.Union[str, int] | None = None, dt_range: typing.Tuple[datetime.datetime | None, datetime.datetime | None] | None = None, tool_id: typing.Union[int, typing.List[int]] | None = None) -> typing.List
 :canonical: nexusLIMS.harvesters.nemo.connector.NemoConnector.get_usage_events
 
 ```{autodoc2-docstring} nexusLIMS.harvesters.nemo.connector.NemoConnector.get_usage_events
-```
-
-````
-
-````{py:method} _parse_dt_range(dt_range: typing.Tuple[datetime.datetime | None, datetime.datetime | None] | None, params: typing.Dict) -> typing.Dict
-:canonical: nexusLIMS.harvesters.nemo.connector.NemoConnector._parse_dt_range
-
-```{autodoc2-docstring} nexusLIMS.harvesters.nemo.connector.NemoConnector._parse_dt_range
-```
-
-````
-
-````{py:method} _parse_event(event: dict) -> dict
-:canonical: nexusLIMS.harvesters.nemo.connector.NemoConnector._parse_event
-
-```{autodoc2-docstring} nexusLIMS.harvesters.nemo.connector.NemoConnector._parse_event
 ```
 
 ````
@@ -233,22 +185,6 @@
 :canonical: nexusLIMS.harvesters.nemo.connector.NemoConnector.get_known_tool_ids
 
 ```{autodoc2-docstring} nexusLIMS.harvesters.nemo.connector.NemoConnector.get_known_tool_ids
-```
-
-````
-
-````{py:method} _get_users_helper(params: typing.Dict[str, str]) -> list
-:canonical: nexusLIMS.harvesters.nemo.connector.NemoConnector._get_users_helper
-
-```{autodoc2-docstring} nexusLIMS.harvesters.nemo.connector.NemoConnector._get_users_helper
-```
-
-````
-
-````{py:method} _api_caller(verb: str, endpoint: str, params: typing.Dict[str, str]) -> typing.List[typing.Dict[str, typing.Any]]
-:canonical: nexusLIMS.harvesters.nemo.connector.NemoConnector._api_caller
-
-```{autodoc2-docstring} nexusLIMS.harvesters.nemo.connector.NemoConnector._api_caller
 ```
 
 ````

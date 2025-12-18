@@ -424,7 +424,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 16, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 18, 2025"/>
   </head>
   
   
@@ -799,9 +799,6 @@ window.addEventListener("load", load);
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">Module code</a></li>
     
     
-    <li class="breadcrumb-item"><a href="../../../nexusLIMS.html" class="nav-link">nexusLIMS</a></li>
-    
-    
     <li class="breadcrumb-item"><a href="../../extractors.html" class="nav-link">nexusLIMS.extractors</a></li>
     
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">nexusLIMS.extractors.plugins.quanta_tif</span></li>
@@ -831,7 +828,7 @@ window.addEventListener("load", load);
 <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">decimal</span><span class="w"> </span><span class="kn">import</span> <span class="n">Decimal</span><span class="p">,</span> <span class="n">InvalidOperation</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">math</span><span class="w"> </span><span class="kn">import</span> <span class="n">degrees</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">Tuple</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">lxml</span><span class="w"> </span><span class="kn">import</span> <span class="n">etree</span>
 
@@ -856,6 +853,7 @@ window.addEventListener("load", load);
 
     <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;quanta_tif_extractor&quot;</span>
     <span class="n">priority</span> <span class="o">=</span> <span class="mi">100</span>
+    <span class="n">supported_extensions</span><span class="p">:</span> <span class="n">ClassVar</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;tif&quot;</span><span class="p">,</span> <span class="s2">&quot;tiff&quot;</span><span class="p">}</span>
 
 <div class="viewcode-block" id="QuantaTiffExtractor.supports">
 <a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.quanta_tif.html#nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor.supports">[docs]</a>
@@ -959,8 +957,6 @@ window.addEventListener("load", load);
 
 
 
-<div class="viewcode-block" id="_detect_and_process_xml_metadata">
-<a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.quanta_tif.html#nexusLIMS.extractors.plugins.quanta_tif._detect_and_process_xml_metadata">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">_detect_and_process_xml_metadata</span><span class="p">(</span>
     <span class="n">metadata_str</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]:</span>
@@ -998,12 +994,9 @@ window.addEventListener("load", load);
         <span class="n">root</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">xml_str</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">metadata_str</span><span class="p">,</span> <span class="n">_xml_el_to_dict</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">metadata_str</span><span class="p">,</span> <span class="p">{}</span></div>
+    <span class="k">return</span> <span class="n">metadata_str</span><span class="p">,</span> <span class="p">{}</span>
 
 
-
-<div class="viewcode-block" id="_xml_el_to_dict">
-<a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.quanta_tif.html#nexusLIMS.extractors.plugins.quanta_tif._xml_el_to_dict">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">_xml_el_to_dict</span><span class="p">(</span><span class="n">node</span><span class="p">:</span> <span class="n">etree</span><span class="o">.</span><span class="n">ElementBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert an lxml.etree node tree into a dict.</span>
@@ -1033,12 +1026,9 @@ window.addEventListener("load", load);
                 <span class="n">result</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">tempvalue</span><span class="p">,</span> <span class="n">value</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">result</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-    <span class="k">return</span> <span class="n">result</span></div>
+    <span class="k">return</span> <span class="n">result</span>
 
 
-
-<div class="viewcode-block" id="_fix_duplicate_multigis_metadata_tags">
-<a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.quanta_tif.html#nexusLIMS.extractors.plugins.quanta_tif._fix_duplicate_multigis_metadata_tags">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">_fix_duplicate_multigis_metadata_tags</span><span class="p">(</span><span class="n">metadata_str</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Rename the metadata section headers to allow parsing by ``ConfigParser``.</span>
@@ -1100,8 +1090,7 @@ window.addEventListener("load", load);
     <span class="k">else</span><span class="p">:</span>
         <span class="n">metadata_to_return</span> <span class="o">=</span> <span class="n">metadata_str</span>
 
-    <span class="k">return</span> <span class="n">metadata_to_return</span></div>
-
+    <span class="k">return</span> <span class="n">metadata_to_return</span>
 
 
 <div class="viewcode-block" id="parse_nx_meta">

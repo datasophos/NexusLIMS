@@ -62,7 +62,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 16, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 18, 2025"/>
   </head>
   
   
@@ -421,7 +421,6 @@
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.instruments.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.instruments</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.cdcs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cdcs</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.__main__.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.__main__</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.config.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.config</span></code></a></li>
 </ul>
 </details></li>
@@ -722,23 +721,6 @@ A web-accessible link to a summary of this reservation</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="nexusLIMS.harvesters.reservation_event.ReservationEvent.__post_init__">
-<span class="sig-name descname"><span class="pre">__post_init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/harvesters/reservation_event.html#ReservationEvent.__post_init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent.__post_init__" title="Link to this definition">#</a></dt>
-<dd><p>Post-initialization to coerce arguments to lists and validate.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="nexusLIMS.harvesters.reservation_event.ReservationEvent._check_arg_lists">
-<span class="sig-name descname"><span class="pre">_check_arg_lists</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/harvesters/reservation_event.html#ReservationEvent._check_arg_lists"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent._check_arg_lists" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="nexusLIMS.harvesters.reservation_event.ReservationEvent.__repr__">
-<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/harvesters/reservation_event.html#ReservationEvent.__repr__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent.__repr__" title="Link to this definition">#</a></dt>
-<dd><p>Return custom representation of a ReservationEvent.</p>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="nexusLIMS.harvesters.reservation_event.ReservationEvent.as_xml">
 <span class="sig-name descname"><span class="pre">as_xml</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://lxml.de/apidoc/lxml.etree.html#lxml.etree.Element" title="(in lxml v4.6.3)"><span class="pre">Element</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/harvesters/reservation_event.html#ReservationEvent.as_xml"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent.as_xml" title="Link to this definition">#</a></dt>
 <dd><p>Get an XML representation of this ReservationEvent.</p>
@@ -747,21 +729,6 @@ A web-accessible link to a summary of this reservation</p>
 The reservation event serialized as XML that matches the
 Nexus Experiment schema</p>
 </dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="nexusLIMS.harvesters.reservation_event.ReservationEvent._add_summary_node">
-<span class="sig-name descname"><span class="pre">_add_summary_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/harvesters/reservation_event.html#ReservationEvent._add_summary_node"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent._add_summary_node" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="nexusLIMS.harvesters.reservation_event.ReservationEvent._add_sample_nodes">
-<span class="sig-name descname"><span class="pre">_add_sample_nodes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/harvesters/reservation_event.html#ReservationEvent._add_sample_nodes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent._add_sample_nodes" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="nexusLIMS.harvesters.reservation_event.ReservationEvent._add_project_nodes">
-<span class="sig-name descname"><span class="pre">_add_project_nodes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/harvesters/reservation_event.html#ReservationEvent._add_project_nodes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent._add_project_nodes" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
 
 </dd></dl>
 
@@ -842,13 +809,7 @@ Nexus Experiment schema</p>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent.division"><code class="docutils literal notranslate"><span class="pre">ReservationEvent.division</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent.group"><code class="docutils literal notranslate"><span class="pre">ReservationEvent.group</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent.url"><code class="docutils literal notranslate"><span class="pre">ReservationEvent.url</span></code></a></li>
-<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent.__post_init__"><code class="docutils literal notranslate"><span class="pre">ReservationEvent.__post_init__()</span></code></a></li>
-<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent._check_arg_lists"><code class="docutils literal notranslate"><span class="pre">ReservationEvent._check_arg_lists()</span></code></a></li>
-<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent.__repr__"><code class="docutils literal notranslate"><span class="pre">ReservationEvent.__repr__()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent.as_xml"><code class="docutils literal notranslate"><span class="pre">ReservationEvent.as_xml()</span></code></a></li>
-<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent._add_summary_node"><code class="docutils literal notranslate"><span class="pre">ReservationEvent._add_summary_node()</span></code></a></li>
-<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent._add_sample_nodes"><code class="docutils literal notranslate"><span class="pre">ReservationEvent._add_sample_nodes()</span></code></a></li>
-<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent._add_project_nodes"><code class="docutils literal notranslate"><span class="pre">ReservationEvent._add_project_nodes()</span></code></a></li>
 </ul>
 </li>
 </ul>

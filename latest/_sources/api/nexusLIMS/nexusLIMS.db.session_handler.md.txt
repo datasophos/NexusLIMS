@@ -148,14 +148,6 @@
 
 ````
 
-````{py:method} __repr__()
-:canonical: nexusLIMS.db.session_handler.SessionLog.__repr__
-
-```{autodoc2-docstring} nexusLIMS.db.session_handler.SessionLog.__repr__
-```
-
-````
-
 ````{py:method} insert_log() -> bool
 :canonical: nexusLIMS.db.session_handler.SessionLog.insert_log
 
@@ -177,14 +169,6 @@
 
 ```{autodoc2-docstring} nexusLIMS.db.session_handler.Session.__init__
 ```
-
-````{py:method} __repr__()
-:canonical: nexusLIMS.db.session_handler.Session.__repr__
-
-```{autodoc2-docstring} nexusLIMS.db.session_handler.Session.__repr__
-```
-
-````
 
 ````{py:method} update_session_status(status)
 :canonical: nexusLIMS.db.session_handler.Session.update_session_status

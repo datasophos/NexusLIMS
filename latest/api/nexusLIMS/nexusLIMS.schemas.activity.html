@@ -62,7 +62,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 16, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 18, 2025"/>
   </head>
   
   
@@ -420,7 +420,6 @@
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.instruments.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.instruments</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.cdcs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cdcs</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.__main__.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.__main__</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.config.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.config</span></code></a></li>
 </ul>
 </details></li>
@@ -522,12 +521,6 @@ filenames by the files’ modification times.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.schemas.activity.cluster_filelist_mtimes" title="nexusLIMS.schemas.activity.cluster_filelist_mtimes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cluster_filelist_mtimes</span></code></a></p></td>
 <td><p>Cluster a list of files by modification time.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.schemas.activity._escape" title="nexusLIMS.schemas.activity._escape"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_escape</span></code></a></p></td>
-<td><p>Check to see if a value needs to be escaped and escape it or just return it as is.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.schemas.activity._add_dataset_element" title="nexusLIMS.schemas.activity._add_dataset_element"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_add_dataset_element</span></code></a></p></td>
-<td></td>
-</tr>
 </tbody>
 </table>
 </div>
@@ -575,33 +568,16 @@ The KDE minima approach was suggested <code class="docutils literal notranslate"
 .. _grid search: https://scikit-learn.org/stable/modules/grid_search.html#grid-search
 .. _Leave One Out: https://scikit-learn.org/stable/modules/cross_validation.html#leave-one-out-loo
 .. _here: https://stackoverflow.com/a/35151947/1435788</p>
-<p class="rubric" id="id4">Parameters</p>
+<p class="rubric" id="id2">Parameters</p>
 <p>filelist : List[str]
 The files (as a list) whose timestamps will be interrogated to find
 “relatively” large gaps in acquisition time (as a means to find the
 breaks between discrete Acquisition Activities)</p>
-<p class="rubric" id="id5">Returns</p>
+<p class="rubric" id="id3">Returns</p>
 <p>aa_boundaries : List[float]
 A list of the <code class="docutils literal notranslate"><span class="pre">mtime</span></code> values that represent boundaries between
 discrete Acquisition Activities</p>
 </dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="nexusLIMS.schemas.activity._escape">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.schemas.activity.</span></span><span class="sig-name descname"><span class="pre">_escape</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/schemas/activity.html#_escape"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.schemas.activity._escape" title="Link to this definition">#</a></dt>
-<dd><p>Check to see if a value needs to be escaped and escape it or just return it as is.</p>
-<p class="rubric" id="id6">Parameters</p>
-<p>val
-The value to conditionally escape</p>
-<p class="rubric" id="id7">Returns</p>
-<p>Any
-The value either as-is or escaped</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="nexusLIMS.schemas.activity._add_dataset_element">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.schemas.activity.</span></span><span class="sig-name descname"><span class="pre">_add_dataset_element</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">aq_ac_xml_el</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://lxml.de/apidoc/lxml.etree.html#lxml.etree.Element" title="(in lxml v4.6.3)"><span class="pre">Element</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">unique_meta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">warning</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/schemas/activity.html#_add_dataset_element"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.schemas.activity._add_dataset_element" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.activity.AcquisitionActivity">
@@ -609,7 +585,7 @@ The value either as-is or escaped</p>
 <dd><p>A collection of files/metadata attributed to a physical acquisition activity.</p>
 <p>Instances of this class correspond to AcquisitionActivity nodes in the
 <code class="docutils literal notranslate"><span class="pre">NexusLIMS</span> <span class="pre">schema</span> <span class="pre">&lt;https://data.nist.gov/od/dm/nexus/experiment/v1.0&gt;</span></code>_</p>
-<p class="rubric" id="id8">Parameters</p>
+<p class="rubric" id="id4">Parameters</p>
 <p>start : datetime.datetime
 The start point of this AcquisitionActivity
 end : datetime.datetime
@@ -699,31 +675,13 @@ software</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="nexusLIMS.schemas.activity.AcquisitionActivity.__post_init__">
-<span class="sig-name descname"><span class="pre">__post_init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/schemas/activity.html#AcquisitionActivity.__post_init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.schemas.activity.AcquisitionActivity.__post_init__" title="Link to this definition">#</a></dt>
-<dd><p>Post-initialization to set defaults for start/end times.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="nexusLIMS.schemas.activity.AcquisitionActivity.__repr__">
-<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/schemas/activity.html#AcquisitionActivity.__repr__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.schemas.activity.AcquisitionActivity.__repr__" title="Link to this definition">#</a></dt>
-<dd><p>Return custom representation of AcquisitionActivity.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="nexusLIMS.schemas.activity.AcquisitionActivity.__str__">
-<span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/schemas/activity.html#AcquisitionActivity.__str__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.schemas.activity.AcquisitionActivity.__str__" title="Link to this definition">#</a></dt>
-<dd><p>Return custom string representation of AcquisitionActivity.</p>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.activity.AcquisitionActivity.add_file">
 <span class="sig-name descname"><span class="pre">add_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">generate_preview</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/schemas/activity.html#AcquisitionActivity.add_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.schemas.activity.AcquisitionActivity.add_file" title="Link to this definition">#</a></dt>
 <dd><p>Add file to AcquisitionActivity.</p>
 <p>Add a file to this activity’s file list, parse its metadata (storing
 a flattened copy of it to this activity), generate a preview
 thumbnail, get the file’s type, and a lazy HyperSpy signal.</p>
-<p class="rubric" id="id9">Parameters</p>
+<p class="rubric" id="id5">Parameters</p>
 <p>fname : str
 The file to be added to the file list
 generate_preview : bool
@@ -749,7 +707,7 @@ datasets.</p>
 <p>Stores a dictionary containing the metadata keys and values that are
 consistent across all files in this AcquisitionActivity as an
 attribute (<code class="docutils literal notranslate"><span class="pre">self.setup_params</span></code>).</p>
-<p class="rubric" id="id10">Parameters</p>
+<p class="rubric" id="id6">Parameters</p>
 <p>values_to_search : list
 A list (or tuple, set, or other iterable type) containing values to
 search for in the metadata dictionary list. If None (default), all
@@ -771,14 +729,14 @@ are kept in <code class="docutils literal notranslate"><span class="pre">self.se
 <dd><p>Translate AcquisitionActivity to an XML representation.</p>
 <p>Build an XML (<code class="docutils literal notranslate"><span class="pre">lxml</span></code>) representation of this AcquisitionActivity (for
 use in instances of the NexusLIMS schema).</p>
-<p class="rubric" id="id11">Parameters</p>
+<p class="rubric" id="id7">Parameters</p>
 <p>seqno : int
 An integer number representing what number activity this is in a
 sequence of activities.
 sample_id : str
 A unique identifier pointing to a sample identifier. No checks
 are done on this value; it is merely reproduced in the XML output</p>
-<p class="rubric" id="id12">Returns</p>
+<p class="rubric" id="id8">Returns</p>
 <p>activity_xml : str
 A string representing this AcquisitionActivity (note: is not a
 properly-formed complete XML document since it does not have a
@@ -845,8 +803,6 @@ header or namespace definitions)</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#api">API</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.schemas.activity.logger"><code class="docutils literal notranslate"><span class="pre">logger</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.schemas.activity.cluster_filelist_mtimes"><code class="docutils literal notranslate"><span class="pre">cluster_filelist_mtimes()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.schemas.activity._escape"><code class="docutils literal notranslate"><span class="pre">_escape()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.schemas.activity._add_dataset_element"><code class="docutils literal notranslate"><span class="pre">_add_dataset_element()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.schemas.activity.AcquisitionActivity"><code class="docutils literal notranslate"><span class="pre">AcquisitionActivity</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.schemas.activity.AcquisitionActivity.start"><code class="docutils literal notranslate"><span class="pre">AcquisitionActivity.start</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.schemas.activity.AcquisitionActivity.end"><code class="docutils literal notranslate"><span class="pre">AcquisitionActivity.end</span></code></a></li>
@@ -858,9 +814,6 @@ header or namespace definitions)</p>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.schemas.activity.AcquisitionActivity.previews"><code class="docutils literal notranslate"><span class="pre">AcquisitionActivity.previews</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.schemas.activity.AcquisitionActivity.meta"><code class="docutils literal notranslate"><span class="pre">AcquisitionActivity.meta</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.schemas.activity.AcquisitionActivity.warnings"><code class="docutils literal notranslate"><span class="pre">AcquisitionActivity.warnings</span></code></a></li>
-<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.schemas.activity.AcquisitionActivity.__post_init__"><code class="docutils literal notranslate"><span class="pre">AcquisitionActivity.__post_init__()</span></code></a></li>
-<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.schemas.activity.AcquisitionActivity.__repr__"><code class="docutils literal notranslate"><span class="pre">AcquisitionActivity.__repr__()</span></code></a></li>
-<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.schemas.activity.AcquisitionActivity.__str__"><code class="docutils literal notranslate"><span class="pre">AcquisitionActivity.__str__()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.schemas.activity.AcquisitionActivity.add_file"><code class="docutils literal notranslate"><span class="pre">AcquisitionActivity.add_file()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.schemas.activity.AcquisitionActivity.store_unique_params"><code class="docutils literal notranslate"><span class="pre">AcquisitionActivity.store_unique_params()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.schemas.activity.AcquisitionActivity.store_setup_params"><code class="docutils literal notranslate"><span class="pre">AcquisitionActivity.store_setup_params()</span></code></a></li>

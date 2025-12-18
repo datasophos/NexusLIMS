@@ -424,7 +424,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 16, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 18, 2025"/>
   </head>
   
   
@@ -797,9 +797,6 @@ window.addEventListener("load", load);
     </li>
     
     <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Module code</a></li>
-    
-    
-    <li class="breadcrumb-item"><a href="../nexusLIMS.html" class="nav-link">nexusLIMS</a></li>
     
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">nexusLIMS.utils</span></li>
   </ul>
@@ -1344,8 +1341,6 @@ window.addEventListener("load", load);
 
 
 
-<div class="viewcode-block" id="_get_find_command">
-<a class="viewcode-back" href="../../api/nexusLIMS/nexusLIMS.utils.html#nexusLIMS.utils._get_find_command">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">_get_find_command</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the appropriate GNU find command for the system.</span>
@@ -1416,12 +1411,9 @@ window.addEventListener("load", load);
                 <span class="s2">&quot;please install GNU findutils.&quot;</span><span class="p">,</span>
             <span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">find_command</span></div>
+    <span class="k">return</span> <span class="n">find_command</span>
 
 
-
-<div class="viewcode-block" id="_find_symlink_dirs">
-<a class="viewcode-back" href="../../api/nexusLIMS/nexusLIMS.utils.html#nexusLIMS.utils._find_symlink_dirs">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">_find_symlink_dirs</span><span class="p">(</span><span class="n">find_command</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Find symbolic links pointing to directories.</span>
@@ -1448,12 +1440,9 @@ window.addEventListener("load", load);
     <span class="k">if</span> <span class="n">paths</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;find_path is: &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">paths</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">paths</span>
-    <span class="k">return</span> <span class="p">[</span><span class="n">find_path</span><span class="p">]</span></div>
+    <span class="k">return</span> <span class="p">[</span><span class="n">find_path</span><span class="p">]</span>
 
 
-
-<div class="viewcode-block" id="_build_find_command">
-<a class="viewcode-back" href="../../api/nexusLIMS/nexusLIMS.utils.html#nexusLIMS.utils._build_find_command">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">_build_find_command</span><span class="p">(</span>  <span class="c1"># noqa: PLR0913</span>
     <span class="n">find_command</span><span class="p">,</span>
     <span class="n">find_paths</span><span class="p">,</span>
@@ -1515,8 +1504,7 @@ window.addEventListener("load", load);
         <span class="n">cmd</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;)&quot;</span><span class="p">]</span>
 
     <span class="n">cmd</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;-print0&quot;</span><span class="p">]</span>
-    <span class="k">return</span> <span class="n">cmd</span></div>
-
+    <span class="k">return</span> <span class="n">cmd</span>
 
 
 <div class="viewcode-block" id="gnu_find_files_by_mtime">
@@ -1678,8 +1666,6 @@ window.addEventListener("load", load);
 
 
 
-<div class="viewcode-block" id="_zero_bytes">
-<a class="viewcode-back" href="../../api/nexusLIMS/nexusLIMS.utils.html#nexusLIMS.utils._zero_bytes">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">_zero_bytes</span><span class="p">(</span><span class="n">fname</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">bytes_from</span><span class="p">,</span> <span class="n">bytes_to</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Set certain byte locations within a file to zero.</span>
@@ -1718,8 +1704,7 @@ window.addEventListener("load", load);
             <span class="n">f</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">from_byte</span><span class="p">)</span>
             <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;</span><span class="se">\0</span><span class="s2">&quot;</span> <span class="o">*</span> <span class="p">(</span><span class="n">to_byte</span> <span class="o">-</span> <span class="n">from_byte</span><span class="p">))</span>
 
-    <span class="k">return</span> <span class="n">new_fname</span></div>
-
+    <span class="k">return</span> <span class="n">new_fname</span>
 
 
 <div class="viewcode-block" id="get_timespan_overlap">

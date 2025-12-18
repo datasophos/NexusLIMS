@@ -27,14 +27,6 @@
 :class: autosummary longtable
 :align: left
 
-* - {py:obj}`_handle_ser_error <nexusLIMS.extractors.plugins.fei_emi._handle_ser_error>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi._handle_ser_error
-    :summary:
-    ```
-* - {py:obj}`_load_ser <nexusLIMS.extractors.plugins.fei_emi._load_ser>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi._load_ser
-    :summary:
-    ```
 * - {py:obj}`parse_basic_info <nexusLIMS.extractors.plugins.fei_emi.parse_basic_info>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.parse_basic_info
     :summary:
@@ -65,18 +57,6 @@
     ```
 * - {py:obj}`parse_data_type <nexusLIMS.extractors.plugins.fei_emi.parse_data_type>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.parse_data_type
-    :summary:
-    ```
-* - {py:obj}`_set_instrument_type <nexusLIMS.extractors.plugins.fei_emi._set_instrument_type>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi._set_instrument_type
-    :summary:
-    ```
-* - {py:obj}`_signal_dim_2 <nexusLIMS.extractors.plugins.fei_emi._signal_dim_2>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi._signal_dim_2
-    :summary:
-    ```
-* - {py:obj}`_convert_to_numeric <nexusLIMS.extractors.plugins.fei_emi._convert_to_numeric>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi._convert_to_numeric
     :summary:
     ```
 * - {py:obj}`get_ser_metadata <nexusLIMS.extractors.plugins.fei_emi.get_ser_metadata>`
@@ -135,6 +115,17 @@
 
 ````
 
+````{py:attribute} supported_extensions
+:canonical: nexusLIMS.extractors.plugins.fei_emi.SerEmiExtractor.supported_extensions
+:type: typing.ClassVar
+:value: >
+   None
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.SerEmiExtractor.supported_extensions
+```
+
+````
+
 ````{py:method} supports(context: nexusLIMS.extractors.base.ExtractionContext) -> bool
 :canonical: nexusLIMS.extractors.plugins.fei_emi.SerEmiExtractor.supports
 
@@ -152,20 +143,6 @@
 ````
 
 `````
-
-````{py:function} _handle_ser_error(metadata)
-:canonical: nexusLIMS.extractors.plugins.fei_emi._handle_ser_error
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi._handle_ser_error
-```
-````
-
-````{py:function} _load_ser(emi_filename: pathlib.Path, ser_index: int)
-:canonical: nexusLIMS.extractors.plugins.fei_emi._load_ser
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi._load_ser
-```
-````
 
 ````{py:function} parse_basic_info(metadata, shape, instrument)
 :canonical: nexusLIMS.extractors.plugins.fei_emi.parse_basic_info
@@ -220,27 +197,6 @@
 :canonical: nexusLIMS.extractors.plugins.fei_emi.parse_data_type
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.parse_data_type
-```
-````
-
-````{py:function} _set_instrument_type(instr_conf, metadata)
-:canonical: nexusLIMS.extractors.plugins.fei_emi._set_instrument_type
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi._set_instrument_type
-```
-````
-
-````{py:function} _signal_dim_2(metadata) -> typing.Tuple[typing.List[str], str]
-:canonical: nexusLIMS.extractors.plugins.fei_emi._signal_dim_2
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi._signal_dim_2
-```
-````
-
-````{py:function} _convert_to_numeric(val)
-:canonical: nexusLIMS.extractors.plugins.fei_emi._convert_to_numeric
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi._convert_to_numeric
 ```
 ````
 

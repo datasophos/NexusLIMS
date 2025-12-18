@@ -31,10 +31,6 @@
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph.get_dm3_metadata
     :summary:
     ```
-* - {py:obj}`_apply_profile_to_metadata <nexusLIMS.extractors.plugins.digital_micrograph._apply_profile_to_metadata>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph._apply_profile_to_metadata
-    :summary:
-    ```
 * - {py:obj}`get_pre_path <nexusLIMS.extractors.plugins.digital_micrograph.get_pre_path>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph.get_pre_path
     :summary:
@@ -53,14 +49,6 @@
     ```
 * - {py:obj}`parse_dm3_spectrum_image_info <nexusLIMS.extractors.plugins.digital_micrograph.parse_dm3_spectrum_image_info>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph.parse_dm3_spectrum_image_info
-    :summary:
-    ```
-* - {py:obj}`_parse_stage_position <nexusLIMS.extractors.plugins.digital_micrograph._parse_stage_position>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph._parse_stage_position
-    :summary:
-    ```
-* - {py:obj}`_parse_apertures <nexusLIMS.extractors.plugins.digital_micrograph._parse_apertures>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph._parse_apertures
     :summary:
     ```
 * - {py:obj}`process_tecnai_microscope_info <nexusLIMS.extractors.plugins.digital_micrograph.process_tecnai_microscope_info>`
@@ -119,6 +107,17 @@
 
 ````
 
+````{py:attribute} supported_extensions
+:canonical: nexusLIMS.extractors.plugins.digital_micrograph.DM3Extractor.supported_extensions
+:type: typing.ClassVar
+:value: >
+   None
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph.DM3Extractor.supported_extensions
+```
+
+````
+
 ````{py:method} supports(context: nexusLIMS.extractors.base.ExtractionContext) -> bool
 :canonical: nexusLIMS.extractors.plugins.digital_micrograph.DM3Extractor.supports
 
@@ -141,13 +140,6 @@
 :canonical: nexusLIMS.extractors.plugins.digital_micrograph.get_dm3_metadata
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph.get_dm3_metadata
-```
-````
-
-````{py:function} _apply_profile_to_metadata(metadata: dict, instrument, file_path: pathlib.Path) -> dict
-:canonical: nexusLIMS.extractors.plugins.digital_micrograph._apply_profile_to_metadata
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph._apply_profile_to_metadata
 ```
 ````
 
@@ -183,20 +175,6 @@
 :canonical: nexusLIMS.extractors.plugins.digital_micrograph.parse_dm3_spectrum_image_info
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph.parse_dm3_spectrum_image_info
-```
-````
-
-````{py:function} _parse_stage_position(tecnai_info)
-:canonical: nexusLIMS.extractors.plugins.digital_micrograph._parse_stage_position
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph._parse_stage_position
-```
-````
-
-````{py:function} _parse_apertures(tecnai_info)
-:canonical: nexusLIMS.extractors.plugins.digital_micrograph._parse_apertures
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph._parse_apertures
 ```
 ````
 

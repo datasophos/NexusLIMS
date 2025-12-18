@@ -27,84 +27,8 @@
 :class: autosummary longtable
 :align: left
 
-* - {py:obj}`_full_extent <nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._full_extent>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._full_extent
-    :summary:
-    ```
-* - {py:obj}`_set_title <nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._set_title>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._set_title
-    :summary:
-    ```
-* - {py:obj}`_get_visible_labels <nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._get_visible_labels>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._get_visible_labels
-    :summary:
-    ```
-* - {py:obj}`_project_image_stack <nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._project_image_stack>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._project_image_stack
-    :summary:
-    ```
-* - {py:obj}`_pad_to_square <nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._pad_to_square>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._pad_to_square
-    :summary:
-    ```
-* - {py:obj}`_get_marker_color <nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._get_marker_color>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._get_marker_color
-    :summary:
-    ```
-* - {py:obj}`_get_marker_props <nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._get_marker_props>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._get_marker_props
-    :summary:
-    ```
-* - {py:obj}`_get_markers_list <nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._get_markers_list>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._get_markers_list
-    :summary:
-    ```
 * - {py:obj}`add_annotation_markers <nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.add_annotation_markers>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.add_annotation_markers
-    :summary:
-    ```
-* - {py:obj}`_set_extent_and_save <nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._set_extent_and_save>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._set_extent_and_save
-    :summary:
-    ```
-* - {py:obj}`_plot_spectrum <nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._plot_spectrum>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._plot_spectrum
-    :summary:
-    ```
-* - {py:obj}`_plot_linescan <nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._plot_linescan>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._plot_linescan
-    :summary:
-    ```
-* - {py:obj}`_plot_si <nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._plot_si>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._plot_si
-    :summary:
-    ```
-* - {py:obj}`_plot_single_image <nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._plot_single_image>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._plot_single_image
-    :summary:
-    ```
-* - {py:obj}`_plot_image_stack <nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._plot_image_stack>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._plot_image_stack
-    :summary:
-    ```
-* - {py:obj}`_plot_tableau <nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._plot_tableau>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._plot_tableau
-    :summary:
-    ```
-* - {py:obj}`_plot_complex_signal <nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._plot_complex_signal>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._plot_complex_signal
-    :summary:
-    ```
-* - {py:obj}`_plot_axes_manager <nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._plot_axes_manager>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._plot_axes_manager
-    :summary:
-    ```
-* - {py:obj}`_plot_1d_signal <nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._plot_1d_signal>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._plot_1d_signal
-    :summary:
-    ```
-* - {py:obj}`_plot_2d_signal <nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._plot_2d_signal>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._plot_2d_signal
     :summary:
     ```
 * - {py:obj}`sig_to_thumbnail <nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.sig_to_thumbnail>`
@@ -121,14 +45,6 @@
 
 * - {py:obj}`logger <nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.logger>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.logger
-    :summary:
-    ```
-* - {py:obj}`_LANCZOS <nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._LANCZOS>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._LANCZOS
-    :summary:
-    ```
-* - {py:obj}`_POINT_SIZE <nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._POINT_SIZE>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._POINT_SIZE
     :summary:
     ```
 * - {py:obj}`SPECTRUM_IMAGE_LOGO <nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.SPECTRUM_IMAGE_LOGO>`
@@ -149,26 +65,6 @@
 
 ````
 
-````{py:data} _LANCZOS
-:canonical: nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._LANCZOS
-:value: >
-   None
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._LANCZOS
-```
-
-````
-
-````{py:data} _POINT_SIZE
-:canonical: nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._POINT_SIZE
-:value: >
-   5
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._POINT_SIZE
-```
-
-````
-
 ````{py:data} SPECTRUM_IMAGE_LOGO
 :canonical: nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.SPECTRUM_IMAGE_LOGO
 :value: >
@@ -179,143 +75,10 @@
 
 ````
 
-````{py:function} _full_extent(axis, items, pad=0.0)
-:canonical: nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._full_extent
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._full_extent
-```
-````
-
-````{py:function} _set_title(axis, title)
-:canonical: nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._set_title
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._set_title
-```
-````
-
-````{py:function} _get_visible_labels(axis)
-:canonical: nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._get_visible_labels
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._get_visible_labels
-```
-````
-
-````{py:function} _project_image_stack(s, num=5, dpi=92, v_shear=0.3, h_scale=0.3)
-:canonical: nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._project_image_stack
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._project_image_stack
-```
-````
-
-````{py:function} _pad_to_square(im_path: pathlib.Path, new_width: int = 500)
-:canonical: nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._pad_to_square
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._pad_to_square
-```
-````
-
-````{py:function} _get_marker_color(annotation)
-:canonical: nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._get_marker_color
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._get_marker_color
-```
-````
-
-````{py:function} _get_marker_props(annotation)
-:canonical: nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._get_marker_props
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._get_marker_props
-```
-````
-
-````{py:function} _get_markers_list(s, tags_dict)
-:canonical: nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._get_markers_list
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._get_markers_list
-```
-````
-
 ````{py:function} add_annotation_markers(s)
 :canonical: nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.add_annotation_markers
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.add_annotation_markers
-```
-````
-
-````{py:function} _set_extent_and_save(mpl_axis, s, f, out_path, dpi)
-:canonical: nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._set_extent_and_save
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._set_extent_and_save
-```
-````
-
-````{py:function} _plot_spectrum(s, out_path, dpi)
-:canonical: nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._plot_spectrum
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._plot_spectrum
-```
-````
-
-````{py:function} _plot_linescan(s, out_path, dpi)
-:canonical: nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._plot_linescan
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._plot_linescan
-```
-````
-
-````{py:function} _plot_si(s, out_path, dpi)
-:canonical: nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._plot_si
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._plot_si
-```
-````
-
-````{py:function} _plot_single_image(s, out_path, dpi)
-:canonical: nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._plot_single_image
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._plot_single_image
-```
-````
-
-````{py:function} _plot_image_stack(s, out_path, dpi)
-:canonical: nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._plot_image_stack
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._plot_image_stack
-```
-````
-
-````{py:function} _plot_tableau(s, out_path, dpi)
-:canonical: nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._plot_tableau
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._plot_tableau
-```
-````
-
-````{py:function} _plot_complex_signal(s, out_path, dpi)
-:canonical: nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._plot_complex_signal
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._plot_complex_signal
-```
-````
-
-````{py:function} _plot_axes_manager(s, out_path, dpi)
-:canonical: nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._plot_axes_manager
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._plot_axes_manager
-```
-````
-
-````{py:function} _plot_1d_signal(s, out_path, dpi)
-:canonical: nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._plot_1d_signal
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._plot_1d_signal
-```
-````
-
-````{py:function} _plot_2d_signal(s, out_path, dpi)
-:canonical: nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._plot_2d_signal
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview._plot_2d_signal
 ```
 ````
 
@@ -352,13 +115,13 @@
 
 ````
 
-````{py:attribute} SUPPORTED_EXTENSIONS
-:canonical: nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.HyperSpyPreviewGenerator.SUPPORTED_EXTENSIONS
+````{py:attribute} supported_extensions
+:canonical: nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.HyperSpyPreviewGenerator.supported_extensions
 :type: typing.ClassVar
 :value: >
    None
 
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.HyperSpyPreviewGenerator.SUPPORTED_EXTENSIONS
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.HyperSpyPreviewGenerator.supported_extensions
 ```
 
 ````

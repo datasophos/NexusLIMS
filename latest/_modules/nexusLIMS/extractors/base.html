@@ -424,7 +424,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 16, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 18, 2025"/>
   </head>
   
   
@@ -799,9 +799,6 @@ window.addEventListener("load", load);
     <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
     
     
-    <li class="breadcrumb-item"><a href="../../nexusLIMS.html" class="nav-link">nexusLIMS</a></li>
-    
-    
     <li class="breadcrumb-item"><a href="../extractors.html" class="nav-link">nexusLIMS.extractors</a></li>
     
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">nexusLIMS.extractors.base</span></li>
@@ -852,7 +849,7 @@ window.addEventListener("load", load);
 
 
 <div class="viewcode-block" id="ExtractionContext">
-<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.plugins.profiles.fei_titan_tem_642.ExtractionContext">[docs]</a>
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643.ExtractionContext">[docs]</a>
 <span class="nd">@dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">ExtractionContext</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -885,7 +882,7 @@ window.addEventListener("load", load);
 
 
 <div class="viewcode-block" id="BaseExtractor">
-<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.plugins.profiles.fei_titan_tem_642.BaseExtractor">[docs]</a>
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643.BaseExtractor">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">BaseExtractor</span><span class="p">(</span><span class="n">Protocol</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Protocol defining the interface for metadata extractors.</span>
@@ -907,6 +904,10 @@ window.addEventListener("load", load);
 <span class="sd">    priority : int</span>
 <span class="sd">        Priority for this extractor (0-1000, higher = preferred).</span>
 <span class="sd">        See notes below for conventions.</span>
+<span class="sd">    supported_extensions : set[str] | None</span>
+<span class="sd">        File extensions this extractor supports (without dots).</span>
+<span class="sd">        Set to None for wildcard extractors that support all files.</span>
+<span class="sd">        Empty set means no extensions are directly supported (content sniffing only).</span>
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
@@ -940,9 +941,10 @@ window.addEventListener("load", load);
 
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">priority</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">supported_extensions</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="BaseExtractor.supports">
-<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.plugins.profiles.fei_titan_tem_642.BaseExtractor.supports">[docs]</a>
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643.BaseExtractor.supports">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">supports</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ExtractionContext</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Determine if this extractor can handle the given file.</span>
@@ -993,7 +995,7 @@ window.addEventListener("load", load);
 
 
 <div class="viewcode-block" id="BaseExtractor.extract">
-<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.plugins.profiles.fei_titan_tem_642.BaseExtractor.extract">[docs]</a>
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643.BaseExtractor.extract">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">extract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ExtractionContext</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Extract metadata from the file.</span>
@@ -1063,7 +1065,7 @@ window.addEventListener("load", load);
 
 
 <div class="viewcode-block" id="PreviewGenerator">
-<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.plugins.profiles.fei_titan_tem_642.PreviewGenerator">[docs]</a>
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643.PreviewGenerator">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">PreviewGenerator</span><span class="p">(</span><span class="n">Protocol</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Protocol for thumbnail/preview image generation.</span>
@@ -1081,6 +1083,10 @@ window.addEventListener("load", load);
 <span class="sd">        Unique identifier for this generator</span>
 <span class="sd">    priority : int</span>
 <span class="sd">        Priority (same conventions as BaseExtractor)</span>
+<span class="sd">    supported_extensions : set[str] | None</span>
+<span class="sd">        File extensions this generator supports (without dots).</span>
+<span class="sd">        Set to None for wildcard generators that support all files.</span>
+<span class="sd">        Empty set means no extensions are directly supported (content sniffing only).</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -1102,9 +1108,10 @@ window.addEventListener("load", load);
 
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">priority</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">supported_extensions</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="PreviewGenerator.supports">
-<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.plugins.profiles.fei_titan_tem_642.PreviewGenerator.supports">[docs]</a>
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643.PreviewGenerator.supports">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">supports</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ExtractionContext</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Determine if this generator can create a preview for the given file.</span>
@@ -1123,7 +1130,7 @@ window.addEventListener("load", load);
 
 
 <div class="viewcode-block" id="PreviewGenerator.generate">
-<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.plugins.profiles.fei_titan_tem_642.PreviewGenerator.generate">[docs]</a>
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643.PreviewGenerator.generate">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">generate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ExtractionContext</span><span class="p">,</span> <span class="n">output_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generate a thumbnail preview and save to output_path.</span>
@@ -1165,7 +1172,7 @@ window.addEventListener("load", load);
 
 
 <div class="viewcode-block" id="InstrumentProfile">
-<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.plugins.profiles.fei_titan_tem_642.InstrumentProfile">[docs]</a>
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643.InstrumentProfile">[docs]</a>
 <span class="nd">@dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">InstrumentProfile</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>

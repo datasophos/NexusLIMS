@@ -62,7 +62,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 16, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 18, 2025"/>
   </head>
   
   
@@ -510,6 +510,7 @@
     <span class="c1"># Required class attributes</span>
     <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;xyz_extractor&quot;</span>  <span class="c1"># Unique identifier</span>
     <span class="n">priority</span> <span class="o">=</span> <span class="mi">100</span>  <span class="c1"># Higher = preferred (0-1000)</span>
+    <span class="n">supported_extensions</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;xyz&quot;</span><span class="p">}</span>  <span class="c1"># Extensions this extractor supports</span>
     
     <span class="k">def</span><span class="w"> </span><span class="nf">supports</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ExtractionContext</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -589,6 +590,27 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>: Fallback extractors (like BasicFileInfoExtractor)</p></li>
 </ul>
 </section>
+<section id="supported-extensions-set-str-none">
+<h4><code class="docutils literal notranslate"><span class="pre">supported_extensions:</span> <span class="pre">set[str]</span> <span class="pre">|</span> <span class="pre">None</span></code><a class="headerlink" href="#supported-extensions-set-str-none" title="Link to this heading">#</a></h4>
+<p>File extensions this extractor supports (without leading dot). Required attribute.</p>
+<p><strong>Behavior:</strong></p>
+<ul class="simple">
+<li><p>If a <code class="docutils literal notranslate"><span class="pre">set</span></code> of extensions (e.g., <code class="docutils literal notranslate"><span class="pre">{&quot;dm3&quot;,</span> <span class="pre">&quot;dm4&quot;}</span></code>): Extractor is registered only for those extensions. The registry will prioritize this extractor when files with these extensions are encountered.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">None</span></code>: Extractor becomes a “wildcard” extractor tried only after all extension-specific extractors fail.</p></li>
+</ul>
+<p><strong>Note:</strong> The registry uses this attribute to determine registration, so <code class="docutils literal notranslate"><span class="pre">supports()</span></code> should match the declared extensions. Mismatches can lead to unexpected behavior.</p>
+<p><strong>Examples:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Single extension</span>
+<span class="n">supported_extensions</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;xyz&quot;</span><span class="p">}</span>
+
+<span class="c1"># Multiple extensions</span>
+<span class="n">supported_extensions</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;dm3&quot;</span><span class="p">,</span> <span class="s2">&quot;dm4&quot;</span><span class="p">}</span>
+
+<span class="c1"># Wildcard (fallback only)</span>
+<span class="n">supported_extensions</span> <span class="o">=</span> <span class="kc">None</span>
+</pre></div>
+</div>
+</section>
 </section>
 <section id="methods">
 <h3>Methods<a class="headerlink" href="#methods" title="Link to this heading">#</a></h3>
@@ -639,37 +661,48 @@
 <section id="content-based-detection">
 <h3>Content-Based Detection<a class="headerlink" href="#content-based-detection" title="Link to this heading">#</a></h3>
 <p>For formats where extension alone isn’t sufficient:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">supports</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ExtractionContext</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check file extension and validate file signature.&quot;&quot;&quot;</span>
-    <span class="n">ext</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">file_path</span><span class="o">.</span><span class="n">suffix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">ext</span> <span class="o">!=</span> <span class="s2">&quot;dat&quot;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">False</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MyFormatExtractor</span><span class="p">:</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;my_format_extractor&quot;</span>
+    <span class="n">priority</span> <span class="o">=</span> <span class="mi">100</span>
+    <span class="n">supported_extensions</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;dat&quot;</span><span class="p">}</span>  <span class="c1"># Register for .dat files</span>
     
-    <span class="c1"># Check file signature (magic bytes)</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="k">with</span> <span class="n">context</span><span class="o">.</span><span class="n">file_path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="n">header</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">header</span> <span class="o">==</span> <span class="sa">b</span><span class="s2">&quot;MYFT&quot;</span>  <span class="c1"># Your format&#39;s signature</span>
-    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">supports</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ExtractionContext</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check file extension and validate file signature.&quot;&quot;&quot;</span>
+        <span class="n">ext</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">file_path</span><span class="o">.</span><span class="n">suffix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ext</span> <span class="o">!=</span> <span class="s2">&quot;dat&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        
+        <span class="c1"># Check file signature (magic bytes)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">context</span><span class="o">.</span><span class="n">file_path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">header</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">header</span> <span class="o">==</span> <span class="sa">b</span><span class="s2">&quot;MYFT&quot;</span>  <span class="c1"># Your format&#39;s signature</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
 </pre></div>
 </div>
+<p><strong>Important:</strong> Keep <code class="docutils literal notranslate"><span class="pre">supported_extensions</span></code> synchronized with <code class="docutils literal notranslate"><span class="pre">supports()</span></code>. If your extractor is registered for <code class="docutils literal notranslate"><span class="pre">.dat</span></code> but <code class="docutils literal notranslate"><span class="pre">supports()</span></code> returns <code class="docutils literal notranslate"><span class="pre">False</span></code> for all <code class="docutils literal notranslate"><span class="pre">.dat</span></code> files, the registry will try other extractors.</p>
 </section>
 <section id="instrument-specific-extractors">
 <h3>Instrument-Specific Extractors<a class="headerlink" href="#instrument-specific-extractors" title="Link to this heading">#</a></h3>
 <p>Use the instrument information for instrument-specific handling:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">supports</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ExtractionContext</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Only support files from specific instruments.&quot;&quot;&quot;</span>
-    <span class="n">ext</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">file_path</span><span class="o">.</span><span class="n">suffix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">ext</span> <span class="o">!=</span> <span class="s2">&quot;tif&quot;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">False</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">QuantaTifExtractor</span><span class="p">:</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;quanta_tif_extractor&quot;</span>
+    <span class="n">priority</span> <span class="o">=</span> <span class="mi">150</span>  <span class="c1"># Higher priority for specific instrument</span>
+    <span class="n">supported_extensions</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;tif&quot;</span><span class="p">}</span>  <span class="c1"># Only .tif files</span>
     
-    <span class="c1"># Check instrument</span>
-    <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">instrument</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">False</span>
-    
-    <span class="c1"># Only handle files from Quanta SEMs</span>
-    <span class="k">return</span> <span class="s2">&quot;Quanta&quot;</span> <span class="ow">in</span> <span class="n">context</span><span class="o">.</span><span class="n">instrument</span><span class="o">.</span><span class="n">name</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">supports</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ExtractionContext</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Only support files from specific instruments.&quot;&quot;&quot;</span>
+        <span class="n">ext</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">file_path</span><span class="o">.</span><span class="n">suffix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ext</span> <span class="o">!=</span> <span class="s2">&quot;tif&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        
+        <span class="c1"># Check instrument</span>
+        <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">instrument</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        
+        <span class="c1"># Only handle files from Quanta SEMs</span>
+        <span class="k">return</span> <span class="s2">&quot;Quanta&quot;</span> <span class="ow">in</span> <span class="n">context</span><span class="o">.</span><span class="n">instrument</span><span class="o">.</span><span class="n">name</span>
 </pre></div>
 </div>
 </section>
@@ -677,10 +710,12 @@
 <h3>Using Existing Extraction Functions<a class="headerlink" href="#using-existing-extraction-functions" title="Link to this heading">#</a></h3>
 <p>If you have existing extraction code, wrap it in a plugin:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.extractors.my_format</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_my_format_metadata</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.extractors.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExtractionContext</span>
 
 <span class="k">class</span><span class="w"> </span><span class="nc">MyFormatExtractor</span><span class="p">:</span>
     <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;my_format_extractor&quot;</span>
     <span class="n">priority</span> <span class="o">=</span> <span class="mi">100</span>
+    <span class="n">supported_extensions</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;myformat&quot;</span><span class="p">}</span>
     
     <span class="k">def</span><span class="w"> </span><span class="nf">supports</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ExtractionContext</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="n">ext</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">file_path</span><span class="o">.</span><span class="n">suffix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
@@ -821,6 +856,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">MyFormatExtractor</span><span class="p">:</span>
     <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;my_format_extractor&quot;</span>
     <span class="n">priority</span> <span class="o">=</span> <span class="mi">100</span>
+    <span class="n">supported_extensions</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;myformat&quot;</span><span class="p">}</span>  <span class="c1"># Declare supported extensions</span>
     
     <span class="k">def</span><span class="w"> </span><span class="nf">supports</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ExtractionContext</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="n">ext</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">file_path</span><span class="o">.</span><span class="n">suffix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
@@ -860,18 +896,21 @@
 <p>Check that:</p>
 <ol class="arabic simple">
 <li><p>File is in <code class="docutils literal notranslate"><span class="pre">nexusLIMS/extractors/plugins/</span></code> (or subdirectory)</p></li>
-<li><p>Class has all required attributes (<code class="docutils literal notranslate"><span class="pre">name</span></code>, <code class="docutils literal notranslate"><span class="pre">priority</span></code>) and methods (<code class="docutils literal notranslate"><span class="pre">supports</span></code>, <code class="docutils literal notranslate"><span class="pre">extract</span></code>)</p></li>
+<li><p>Class has all required attributes (<code class="docutils literal notranslate"><span class="pre">name</span></code>, <code class="docutils literal notranslate"><span class="pre">priority</span></code>, <code class="docutils literal notranslate"><span class="pre">supported_extensions</span></code>) and methods (<code class="docutils literal notranslate"><span class="pre">supports</span></code>, <code class="docutils literal notranslate"><span class="pre">extract</span></code>)</p></li>
 <li><p>Class name doesn’t start with underscore</p></li>
 <li><p>No import errors (check logs)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">supported_extensions</span></code> is properly defined as a <code class="docutils literal notranslate"><span class="pre">set</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
 </ol>
 </section>
 <section id="my-extractor-isn-t-being-selected">
 <h3>My extractor isn’t being selected<a class="headerlink" href="#my-extractor-isn-t-being-selected" title="Link to this heading">#</a></h3>
 <p>Check that:</p>
 <ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">supported_extensions</span></code> includes the file’s extension (without dot)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">supports()</span></code> returns <code class="docutils literal notranslate"><span class="pre">True</span></code> for your test file</p></li>
 <li><p>Priority is high enough (higher priority extractors are tried first)</p></li>
 <li><p>No higher-priority extractor is matching first</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">supported_extensions</span></code> and <code class="docutils literal notranslate"><span class="pre">supports()</span></code> are synchronized (if registered for <code class="docutils literal notranslate"><span class="pre">.xyz</span></code>, <code class="docutils literal notranslate"><span class="pre">supports()</span></code> should return <code class="docutils literal notranslate"><span class="pre">True</span></code> for <code class="docutils literal notranslate"><span class="pre">.xyz</span></code> files)</p></li>
 </ol>
 <p>Enable debug logging to see selection process:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
@@ -954,6 +993,7 @@
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#class-attributes">Class Attributes</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#name-str"><code class="docutils literal notranslate"><span class="pre">name:</span> <span class="pre">str</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#priority-int"><code class="docutils literal notranslate"><span class="pre">priority:</span> <span class="pre">int</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#supported-extensions-set-str-none"><code class="docutils literal notranslate"><span class="pre">supported_extensions:</span> <span class="pre">set[str]</span> <span class="pre">|</span> <span class="pre">None</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#methods">Methods</a><ul class="nav section-nav flex-column">

@@ -62,7 +62,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 16, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 18, 2025"/>
   </head>
   
   
@@ -420,7 +420,6 @@
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.instruments.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.instruments</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.cdcs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cdcs</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.__main__.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.__main__</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.config.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.config</span></code></a></li>
 </ul>
 </details></li>
@@ -533,13 +532,10 @@ which is used to validate XML records built by this module</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.builder.record_builder.build_new_session_records" title="nexusLIMS.builder.record_builder.build_new_session_records"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build_new_session_records</span></code></a></p></td>
 <td><p>Build records for new sessions from the database.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.builder.record_builder._record_validation_flow" title="nexusLIMS.builder.record_builder._record_validation_flow"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_record_validation_flow</span></code></a></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.builder.record_builder.process_new_records" title="nexusLIMS.builder.record_builder.process_new_records"><code class="xref py py-obj docutils literal notranslate"><span class="pre">process_new_records</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.builder.record_builder.process_new_records" title="nexusLIMS.builder.record_builder.process_new_records"><code class="xref py py-obj docutils literal notranslate"><span class="pre">process_new_records</span></code></a></p></td>
 <td><p>Process new records (this is the main entrypoint to the record builder).</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.builder.record_builder.dry_run_file_find" title="nexusLIMS.builder.record_builder.dry_run_file_find"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dry_run_file_find</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.builder.record_builder.dry_run_file_find" title="nexusLIMS.builder.record_builder.dry_run_file_find"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dry_run_file_find</span></code></a></p></td>
 <td><p>Get the files that <em>would</em> be included for a record built for the supplied session.</p></td>
 </tr>
 </tbody>
@@ -718,11 +714,6 @@ centralized storage</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="nexusLIMS.builder.record_builder._record_validation_flow">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.builder.record_builder.</span></span><span class="sig-name descname"><span class="pre">_record_validation_flow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record_text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xml_files</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/nexusLIMS/builder/record_builder.html#_record_validation_flow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.builder.record_builder._record_validation_flow" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="nexusLIMS.builder.record_builder.process_new_records">
 <span class="sig-prename descclassname"><span class="pre">nexusLIMS.builder.record_builder.</span></span><span class="sig-name descname"><span class="pre">process_new_records</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">dry_run</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt_from</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><span class="pre">datetime</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt_to</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><span class="pre">datetime</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/builder/record_builder.html#process_new_records"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.builder.record_builder.process_new_records" title="Link to this definition">#</a></dt>
 <dd><p>Process new records (this is the main entrypoint to the record builder).</p>
@@ -822,7 +813,6 @@ record of this session (if it were not a dry run)</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.builder.record_builder.dump_record"><code class="docutils literal notranslate"><span class="pre">dump_record()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.builder.record_builder.validate_record"><code class="docutils literal notranslate"><span class="pre">validate_record()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.builder.record_builder.build_new_session_records"><code class="docutils literal notranslate"><span class="pre">build_new_session_records()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.builder.record_builder._record_validation_flow"><code class="docutils literal notranslate"><span class="pre">_record_validation_flow()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.builder.record_builder.process_new_records"><code class="docutils literal notranslate"><span class="pre">process_new_records()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.builder.record_builder.dry_run_file_find"><code class="docutils literal notranslate"><span class="pre">dry_run_file_find()</span></code></a></li>
 </ul>

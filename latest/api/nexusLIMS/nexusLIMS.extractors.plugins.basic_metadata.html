@@ -57,12 +57,12 @@
     <link rel="icon" href="../../_static/nexusLIMS_bare_logo.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="nexusLIMS.extractors.profiles" href="nexusLIMS.extractors.profiles.html" />
+    <link rel="next" title="nexusLIMS.extractors.plugins.orion_HIM_tif" href="nexusLIMS.extractors.plugins.orion_HIM_tif.html" />
     <link rel="prev" title="nexusLIMS.extractors.plugins.fei_emi" href="nexusLIMS.extractors.plugins.fei_emi.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 16, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 18, 2025"/>
   </head>
   
   
@@ -424,7 +424,6 @@
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.instruments.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.instruments</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.cdcs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cdcs</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.__main__.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.__main__</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.config.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.config</span></code></a></li>
 </ul>
 </details></li>
@@ -568,6 +567,12 @@ priority and will only be used if no other extractor supports the file.</p>
 <dd><p>0</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.basic_metadata.BasicFileInfoExtractor.supported_extensions">
+<span class="sig-name descname"><span class="pre">supported_extensions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.ClassVar" title="(in Python v3.11)"><span class="pre">ClassVar</span></a></em><a class="headerlink" href="#nexusLIMS.extractors.plugins.basic_metadata.BasicFileInfoExtractor.supported_extensions" title="Link to this definition">#</a></dt>
+<dd><p>None</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.basic_metadata.BasicFileInfoExtractor.supports">
 <span class="sig-name descname"><span class="pre">supports</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="nexusLIMS.extractors.base.html#nexusLIMS.extractors.base.ExtractionContext" title="nexusLIMS.extractors.base.ExtractionContext"><span class="pre">ExtractionContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/plugins/basic_metadata.html#BasicFileInfoExtractor.supports"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.plugins.basic_metadata.BasicFileInfoExtractor.supports" title="Link to this definition">#</a></dt>
@@ -636,11 +641,11 @@ A description of the file in lieu of any metadata extracted from it.</p>
       </div>
     </a>
     <a class="right-next"
-       href="nexusLIMS.extractors.profiles.html"
+       href="nexusLIMS.extractors.plugins.orion_HIM_tif.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.profiles</span></code></p>
+        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.orion_HIM_tif</span></code></p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -672,6 +677,7 @@ A description of the file in lieu of any metadata extracted from it.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.basic_metadata.BasicFileInfoExtractor"><code class="docutils literal notranslate"><span class="pre">BasicFileInfoExtractor</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.basic_metadata.BasicFileInfoExtractor.name"><code class="docutils literal notranslate"><span class="pre">BasicFileInfoExtractor.name</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.basic_metadata.BasicFileInfoExtractor.priority"><code class="docutils literal notranslate"><span class="pre">BasicFileInfoExtractor.priority</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.basic_metadata.BasicFileInfoExtractor.supported_extensions"><code class="docutils literal notranslate"><span class="pre">BasicFileInfoExtractor.supported_extensions</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.basic_metadata.BasicFileInfoExtractor.supports"><code class="docutils literal notranslate"><span class="pre">BasicFileInfoExtractor.supports()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.basic_metadata.BasicFileInfoExtractor.extract"><code class="docutils literal notranslate"><span class="pre">BasicFileInfoExtractor.extract()</span></code></a></li>
 </ul>

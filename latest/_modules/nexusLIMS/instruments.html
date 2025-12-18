@@ -424,7 +424,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 16, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 18, 2025"/>
   </head>
   
   
@@ -798,9 +798,6 @@ window.addEventListener("load", load);
     
     <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Module code</a></li>
     
-    
-    <li class="breadcrumb-item"><a href="../nexusLIMS.html" class="nav-link">nexusLIMS</a></li>
-    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">nexusLIMS.instruments</span></li>
   </ul>
 </nav>
@@ -851,8 +848,6 @@ window.addEventListener("load", load);
 <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="_get_instrument_db">
-<a class="viewcode-back" href="../../api/nexusLIMS/nexusLIMS.instruments.html#nexusLIMS.instruments._get_instrument_db">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">_get_instrument_db</span><span class="p">(</span><span class="n">db_path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get dictionary of instruments from the NexusLIMS database.</span>
@@ -924,8 +919,7 @@ window.addEventListener("load", load);
         <span class="p">)</span>
         <span class="k">return</span> <span class="p">{}</span>
 
-    <span class="k">return</span> <span class="n">instr_db</span></div>
-
+    <span class="k">return</span> <span class="n">instr_db</span>
 
 
 <div class="viewcode-block" id="Instrument">
@@ -999,16 +993,11 @@ window.addEventListener("load", load);
     <span class="n">harvester</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">timezone</span><span class="p">:</span> <span class="n">BaseTzInfo</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="Instrument.__post_init__">
-<a class="viewcode-back" href="../../api/nexusLIMS/nexusLIMS.instruments.html#nexusLIMS.instruments.Instrument.__post_init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Post-initialization to convert timezone string to timezone object.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timezone</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">timezone</span> <span class="o">=</span> <span class="n">pytz</span><span class="o">.</span><span class="n">timezone</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timezone</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">timezone</span> <span class="o">=</span> <span class="n">pytz</span><span class="o">.</span><span class="n">timezone</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timezone</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="Instrument.__repr__">
-<a class="viewcode-back" href="../../api/nexusLIMS/nexusLIMS.instruments.html#nexusLIMS.instruments.Instrument.__repr__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return custom representation of an Instrument.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span>
@@ -1025,15 +1014,11 @@ window.addEventListener("load", load);
             <span class="sa">f</span><span class="s2">&quot;Computer mount:   </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">computer_mount</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="sa">f</span><span class="s2">&quot;Harvester:        </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">harvester</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="sa">f</span><span class="s2">&quot;Timezone:         </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">timezone</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="p">)</span></div>
+        <span class="p">)</span>
 
-
-<div class="viewcode-block" id="Instrument.__str__">
-<a class="viewcode-back" href="../../api/nexusLIMS/nexusLIMS.instruments.html#nexusLIMS.instruments.Instrument.__str__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return custom string representation of an Instrument.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">location</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">location</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span></div>
-
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">location</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">location</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
 
 <div class="viewcode-block" id="Instrument.localize_datetime">
 <a class="viewcode-back" href="../../api/nexusLIMS/nexusLIMS.instruments.html#nexusLIMS.instruments.Instrument.localize_datetime">[docs]</a>

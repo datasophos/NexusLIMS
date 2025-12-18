@@ -30,10 +30,6 @@ nexusLIMS.extractors.plugins.profiles.fei_titan_tem_642
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.profiles.register_all_profiles
     :summary:
     ```
-* - {py:obj}`_load_profiles_from_directory <nexusLIMS.extractors.plugins.profiles._load_profiles_from_directory>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.profiles._load_profiles_from_directory
-    :summary:
-    ```
 ````
 
 ### Data
@@ -44,10 +40,6 @@ nexusLIMS.extractors.plugins.profiles.fei_titan_tem_642
 
 * - {py:obj}`logger <nexusLIMS.extractors.plugins.profiles.logger>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.profiles.logger
-    :summary:
-    ```
-* - {py:obj}`__all__ <nexusLIMS.extractors.plugins.profiles.__all__>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.profiles.__all__
     :summary:
     ```
 ````
@@ -64,26 +56,9 @@ nexusLIMS.extractors.plugins.profiles.fei_titan_tem_642
 
 ````
 
-````{py:data} __all__
-:canonical: nexusLIMS.extractors.plugins.profiles.__all__
-:value: >
-   ['register_all_profiles']
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.profiles.__all__
-```
-
-````
-
 ````{py:function} register_all_profiles() -> None
 :canonical: nexusLIMS.extractors.plugins.profiles.register_all_profiles
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.profiles.register_all_profiles
-```
-````
-
-````{py:function} _load_profiles_from_directory(directory: pathlib.Path, module_prefix: str | None) -> int
-:canonical: nexusLIMS.extractors.plugins.profiles._load_profiles_from_directory
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.profiles._load_profiles_from_directory
 ```
 ````

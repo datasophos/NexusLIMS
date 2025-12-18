@@ -17,29 +17,3 @@ nexusLIMS.extractors.plugins.preview_generators.text_preview
 nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview
 nexusLIMS.extractors.plugins.preview_generators.image_preview
 ```
-
-## Package Contents
-
-### Data
-
-````{list-table}
-:class: autosummary longtable
-:align: left
-
-* - {py:obj}`__all__ <nexusLIMS.extractors.plugins.preview_generators.__all__>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.__all__
-    :summary:
-    ```
-````
-
-### API
-
-````{py:data} __all__
-:canonical: nexusLIMS.extractors.plugins.preview_generators.__all__
-:value: >
-   ['HyperSpyPreviewGenerator', 'ImagePreviewGenerator', 'TextPreviewGenerator']
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.__all__
-```
-
-````

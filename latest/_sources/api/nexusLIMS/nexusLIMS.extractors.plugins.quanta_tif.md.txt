@@ -27,18 +27,6 @@
 :class: autosummary longtable
 :align: left
 
-* - {py:obj}`_detect_and_process_xml_metadata <nexusLIMS.extractors.plugins.quanta_tif._detect_and_process_xml_metadata>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.quanta_tif._detect_and_process_xml_metadata
-    :summary:
-    ```
-* - {py:obj}`_xml_el_to_dict <nexusLIMS.extractors.plugins.quanta_tif._xml_el_to_dict>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.quanta_tif._xml_el_to_dict
-    :summary:
-    ```
-* - {py:obj}`_fix_duplicate_multigis_metadata_tags <nexusLIMS.extractors.plugins.quanta_tif._fix_duplicate_multigis_metadata_tags>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.quanta_tif._fix_duplicate_multigis_metadata_tags
-    :summary:
-    ```
 * - {py:obj}`parse_nx_meta <nexusLIMS.extractors.plugins.quanta_tif.parse_nx_meta>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.quanta_tif.parse_nx_meta
     :summary:
@@ -119,6 +107,17 @@
 
 ````
 
+````{py:attribute} supported_extensions
+:canonical: nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor.supported_extensions
+:type: typing.ClassVar
+:value: >
+   None
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor.supported_extensions
+```
+
+````
+
 ````{py:method} supports(context: nexusLIMS.extractors.base.ExtractionContext) -> bool
 :canonical: nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor.supports
 
@@ -136,27 +135,6 @@
 ````
 
 `````
-
-````{py:function} _detect_and_process_xml_metadata(metadata_str: str) -> typing.Tuple[str, dict]
-:canonical: nexusLIMS.extractors.plugins.quanta_tif._detect_and_process_xml_metadata
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.quanta_tif._detect_and_process_xml_metadata
-```
-````
-
-````{py:function} _xml_el_to_dict(node: lxml.etree.ElementBase)
-:canonical: nexusLIMS.extractors.plugins.quanta_tif._xml_el_to_dict
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.quanta_tif._xml_el_to_dict
-```
-````
-
-````{py:function} _fix_duplicate_multigis_metadata_tags(metadata_str: str) -> str
-:canonical: nexusLIMS.extractors.plugins.quanta_tif._fix_duplicate_multigis_metadata_tags
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.quanta_tif._fix_duplicate_multigis_metadata_tags
-```
-````
 
 ````{py:function} parse_nx_meta(mdict)
 :canonical: nexusLIMS.extractors.plugins.quanta_tif.parse_nx_meta

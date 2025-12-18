@@ -62,7 +62,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 16, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 18, 2025"/>
   </head>
   
   
@@ -420,7 +420,6 @@
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.instruments.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.instruments</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.cdcs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cdcs</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.__main__.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.__main__</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.config.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.config</span></code></a></li>
 </ul>
 </details></li>
@@ -618,12 +617,6 @@ The status to use for this record (defaults to <code class="docutils literal not
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="nexusLIMS.db.session_handler.SessionLog.__repr__">
-<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/db/session_handler.html#SessionLog.__repr__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.db.session_handler.SessionLog.__repr__" title="Link to this definition">#</a></dt>
-<dd><p>Return custom representation of a SessionLog.</p>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="nexusLIMS.db.session_handler.SessionLog.insert_log">
 <span class="sig-name descname"><span class="pre">insert_log</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/db/session_handler.html#SessionLog.insert_log"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.db.session_handler.SessionLog.insert_log" title="Link to this definition">#</a></dt>
 <dd><p>Insert this log into the NexusLIMS database.</p>
@@ -657,12 +650,6 @@ and end of this session )in that order
 user : str
 The username associated with this session (may not be trustworthy)</p>
 <p class="rubric">Initialization</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="nexusLIMS.db.session_handler.Session.__repr__">
-<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/db/session_handler.html#Session.__repr__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.db.session_handler.Session.__repr__" title="Link to this definition">#</a></dt>
-<dd><p>Return custom representation of a Session.</p>
-</dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="nexusLIMS.db.session_handler.Session.update_session_status">
 <span class="sig-name descname"><span class="pre">update_session_status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">status</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/db/session_handler.html#Session.update_session_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.db.session_handler.Session.update_session_status" title="Link to this definition">#</a></dt>
@@ -784,12 +771,10 @@ Will be an empty list if there are no session logs.</p>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.session_handler.SessionLog.event_type"><code class="docutils literal notranslate"><span class="pre">SessionLog.event_type</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.session_handler.SessionLog.user"><code class="docutils literal notranslate"><span class="pre">SessionLog.user</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.session_handler.SessionLog.record_status"><code class="docutils literal notranslate"><span class="pre">SessionLog.record_status</span></code></a></li>
-<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.session_handler.SessionLog.__repr__"><code class="docutils literal notranslate"><span class="pre">SessionLog.__repr__()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.session_handler.SessionLog.insert_log"><code class="docutils literal notranslate"><span class="pre">SessionLog.insert_log()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.session_handler.Session"><code class="docutils literal notranslate"><span class="pre">Session</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.session_handler.Session.__repr__"><code class="docutils literal notranslate"><span class="pre">Session.__repr__()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.session_handler.Session.update_session_status"><code class="docutils literal notranslate"><span class="pre">Session.update_session_status()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.session_handler.Session.insert_record_generation_event"><code class="docutils literal notranslate"><span class="pre">Session.insert_record_generation_event()</span></code></a></li>
 </ul>

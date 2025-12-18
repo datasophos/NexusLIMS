@@ -43,14 +43,6 @@
   - ```{autodoc2-docstring} nexusLIMS.extractors.profiles.logger
     :summary:
     ```
-* - {py:obj}`__all__ <nexusLIMS.extractors.profiles.__all__>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.profiles.__all__
-    :summary:
-    ```
-* - {py:obj}`_profile_registry <nexusLIMS.extractors.profiles._profile_registry>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.profiles._profile_registry
-    :summary:
-    ```
 ````
 
 ### API
@@ -61,16 +53,6 @@
    'getLogger(...)'
 
 ```{autodoc2-docstring} nexusLIMS.extractors.profiles.logger
-```
-
-````
-
-````{py:data} __all__
-:canonical: nexusLIMS.extractors.profiles.__all__
-:value: >
-   ['InstrumentProfileRegistry', 'get_profile_registry']
-
-```{autodoc2-docstring} nexusLIMS.extractors.profiles.__all__
 ```
 
 ````
@@ -120,17 +102,6 @@
 ````
 
 `````
-
-````{py:data} _profile_registry
-:canonical: nexusLIMS.extractors.profiles._profile_registry
-:type: nexusLIMS.extractors.profiles.InstrumentProfileRegistry | None
-:value: >
-   None
-
-```{autodoc2-docstring} nexusLIMS.extractors.profiles._profile_registry
-```
-
-````
 
 ````{py:function} get_profile_registry() -> nexusLIMS.extractors.profiles.InstrumentProfileRegistry
 :canonical: nexusLIMS.extractors.profiles.get_profile_registry

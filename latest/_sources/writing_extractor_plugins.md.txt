@@ -36,6 +36,7 @@ class XYZExtractor:
     # Required class attributes
     name = "xyz_extractor"  # Unique identifier
     priority = 100  # Higher = preferred (0-1000)
+    supported_extensions = {"xyz"}  # Extensions this extractor supports
     
     def supports(self, context: ExtractionContext) -> bool:
         """
@@ -111,6 +112,27 @@ Priority for extractor selection (0-1000). Higher values are preferred. Guidelin
 - `50`: Generic extractors with content sniffing
 - `0`: Fallback extractors (like BasicFileInfoExtractor)
 
+#### `supported_extensions: set[str] | None`
+File extensions this extractor supports (without leading dot). Required attribute.
+
+**Behavior:**
+- If a `set` of extensions (e.g., `{"dm3", "dm4"}`): Extractor is registered only for those extensions. The registry will prioritize this extractor when files with these extensions are encountered.
+- If `None`: Extractor becomes a "wildcard" extractor tried only after all extension-specific extractors fail.
+
+**Note:** The registry uses this attribute to determine registration, so `supports()` should match the declared extensions. Mismatches can lead to unexpected behavior.
+
+**Examples:**
+```python
+# Single extension
+supported_extensions = {"xyz"}
+
+# Multiple extensions
+supported_extensions = {"dm3", "dm4"}
+
+# Wildcard (fallback only)
+supported_extensions = None
+```
+
 ### Methods
 
 #### `supports(context: ExtractionContext) -> bool`
@@ -159,38 +181,50 @@ def extract(self, context: ExtractionContext) -> dict[str, Any]:
 For formats where extension alone isn't sufficient:
 
 ```python
-def supports(self, context: ExtractionContext) -> bool:
-    """Check file extension and validate file signature."""
-    ext = context.file_path.suffix.lower().lstrip(".")
-    if ext != "dat":
-        return False
+class MyFormatExtractor:
+    name = "my_format_extractor"
+    priority = 100
+    supported_extensions = {"dat"}  # Register for .dat files
     
-    # Check file signature (magic bytes)
-    try:
-        with context.file_path.open("rb") as f:
-            header = f.read(4)
-            return header == b"MYFT"  # Your format's signature
-    except Exception:
-        return False
+    def supports(self, context: ExtractionContext) -> bool:
+        """Check file extension and validate file signature."""
+        ext = context.file_path.suffix.lower().lstrip(".")
+        if ext != "dat":
+            return False
+        
+        # Check file signature (magic bytes)
+        try:
+            with context.file_path.open("rb") as f:
+                header = f.read(4)
+                return header == b"MYFT"  # Your format's signature
+        except Exception:
+            return False
 ```
+
+**Important:** Keep `supported_extensions` synchronized with `supports()`. If your extractor is registered for `.dat` but `supports()` returns `False` for all `.dat` files, the registry will try other extractors.
 
 ### Instrument-Specific Extractors
 
 Use the instrument information for instrument-specific handling:
 
 ```python
-def supports(self, context: ExtractionContext) -> bool:
-    """Only support files from specific instruments."""
-    ext = context.file_path.suffix.lower().lstrip(".")
-    if ext != "tif":
-        return False
+class QuantaTifExtractor:
+    name = "quanta_tif_extractor"
+    priority = 150  # Higher priority for specific instrument
+    supported_extensions = {"tif"}  # Only .tif files
     
-    # Check instrument
-    if context.instrument is None:
-        return False
-    
-    # Only handle files from Quanta SEMs
-    return "Quanta" in context.instrument.name
+    def supports(self, context: ExtractionContext) -> bool:
+        """Only support files from specific instruments."""
+        ext = context.file_path.suffix.lower().lstrip(".")
+        if ext != "tif":
+            return False
+        
+        # Check instrument
+        if context.instrument is None:
+            return False
+        
+        # Only handle files from Quanta SEMs
+        return "Quanta" in context.instrument.name
 ```
 
 ### Using Existing Extraction Functions
@@ -199,10 +233,12 @@ If you have existing extraction code, wrap it in a plugin:
 
 ```python
 from nexusLIMS.extractors.my_format import get_my_format_metadata
+from nexusLIMS.extractors.base import ExtractionContext
 
 class MyFormatExtractor:
     name = "my_format_extractor"
     priority = 100
+    supported_extensions = {"myformat"}
     
     def supports(self, context: ExtractionContext) -> bool:
         ext = context.file_path.suffix.lower().lstrip(".")
@@ -348,6 +384,7 @@ from nexusLIMS.extractors.my_format import get_my_format_metadata
 class MyFormatExtractor:
     name = "my_format_extractor"
     priority = 100
+    supported_extensions = {"myformat"}  # Declare supported extensions
     
     def supports(self, context: ExtractionContext) -> bool:
         ext = context.file_path.suffix.lower().lstrip(".")
@@ -384,16 +421,19 @@ See the built-in extractors for real-world examples:
 
 Check that:
 1. File is in `nexusLIMS/extractors/plugins/` (or subdirectory)
-2. Class has all required attributes (`name`, `priority`) and methods (`supports`, `extract`)
+2. Class has all required attributes (`name`, `priority`, `supported_extensions`) and methods (`supports`, `extract`)
 3. Class name doesn't start with underscore
 4. No import errors (check logs)
+5. `supported_extensions` is properly defined as a `set` or `None`
 
 ### My extractor isn't being selected
 
 Check that:
-1. `supports()` returns `True` for your test file
-2. Priority is high enough (higher priority extractors are tried first)
-3. No higher-priority extractor is matching first
+1. `supported_extensions` includes the file's extension (without dot)
+2. `supports()` returns `True` for your test file
+3. Priority is high enough (higher priority extractors are tried first)
+4. No higher-priority extractor is matching first
+5. `supported_extensions` and `supports()` are synchronized (if registered for `.xyz`, `supports()` should return `True` for `.xyz` files)
 
 Enable debug logging to see selection process:
 ```python

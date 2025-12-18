@@ -424,7 +424,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 16, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 18, 2025"/>
   </head>
   
   
@@ -799,9 +799,6 @@ window.addEventListener("load", load);
     <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
     
     
-    <li class="breadcrumb-item"><a href="../../nexusLIMS.html" class="nav-link">nexusLIMS</a></li>
-    
-    
     <li class="breadcrumb-item"><a href="../db.html" class="nav-link">nexusLIMS.db</a></li>
     
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">nexusLIMS.db.session_handler</span></li>
@@ -897,8 +894,6 @@ window.addEventListener("load", load);
     <span class="n">user</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">record_status</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;TO_BE_BUILT&quot;</span>
 
-<div class="viewcode-block" id="SessionLog.__repr__">
-<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.db.session_handler.html#nexusLIMS.db.session_handler.SessionLog.__repr__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return custom representation of a SessionLog.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span>
@@ -908,8 +903,7 @@ window.addEventListener("load", load);
             <span class="sa">f</span><span class="s2">&quot;event_type=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">event_type</span><span class="si">}</span><span class="s2">, &quot;</span>
             <span class="sa">f</span><span class="s2">&quot;user=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">user</span><span class="si">}</span><span class="s2">, &quot;</span>
             <span class="sa">f</span><span class="s2">&quot;record_status=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">record_status</span><span class="si">}</span><span class="s2">)&quot;</span>
-        <span class="p">)</span></div>
-
+        <span class="p">)</span>
 
 <div class="viewcode-block" id="SessionLog.insert_log">
 <a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.db.session_handler.html#nexusLIMS.db.session_handler.SessionLog.insert_log">[docs]</a>
@@ -1002,15 +996,12 @@ window.addEventListener("load", load);
         <span class="bp">self</span><span class="o">.</span><span class="n">dt_from</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dt_to</span> <span class="o">=</span> <span class="n">dt_range</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">user</span> <span class="o">=</span> <span class="n">user</span>
 
-<div class="viewcode-block" id="Session.__repr__">
-<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.db.session_handler.html#nexusLIMS.db.session_handler.Session.__repr__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return custom representation of a Session.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dt_from</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dt_to</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span><span class="si">}</span><span class="s2"> on &quot;</span>
             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">instrument</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="p">)</span></div>
-
+        <span class="p">)</span>
 
 <div class="viewcode-block" id="Session.update_session_status">
 <a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.db.session_handler.html#nexusLIMS.db.session_handler.Session.update_session_status">[docs]</a>

@@ -58,11 +58,11 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Changelog" href="../../changelog.html" />
-    <link rel="prev" title="nexusLIMS.__main__" href="nexusLIMS.__main__.html" />
+    <link rel="prev" title="nexusLIMS.cdcs" href="nexusLIMS.cdcs.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 16, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 18, 2025"/>
   </head>
   
   
@@ -417,7 +417,6 @@
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.instruments.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.instruments</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.cdcs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cdcs</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.__main__.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.__main__</span></code></a></li>
 <li class="toctree-l3 current active"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.config</span></code></a></li>
 </ul>
 </details></li>
@@ -515,9 +514,6 @@ environment variables.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.config.Settings" title="nexusLIMS.config.Settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Settings</span></code></a></p></td>
 <td><p>Manage application settings loaded from environment variables and <code class="docutils literal notranslate"><span class="pre">.env</span></code> files.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.config._SettingsManager" title="nexusLIMS.config._SettingsManager"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_SettingsManager</span></code></a></p></td>
-<td><p>Internal manager for the settings singleton.</p></td>
-</tr>
 </tbody>
 </table>
 </div>
@@ -543,10 +539,7 @@ environment variables.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.config.logger" title="nexusLIMS.config.logger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">logger</span></code></a></p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.config._manager" title="nexusLIMS.config._manager"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_manager</span></code></a></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.config.settings" title="nexusLIMS.config.settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">settings</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.config.settings" title="nexusLIMS.config.settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">settings</span></code></a></p></td>
 <td></td>
 </tr>
 </tbody>
@@ -858,77 +851,16 @@ None otherwise (email notifications will be disabled).</p>
 
 </dd></dl>
 
-<dl class="py class">
-<dt class="sig sig-object py" id="nexusLIMS.config._SettingsManager">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nexusLIMS.config.</span></span><span class="sig-name descname"><span class="pre">_SettingsManager</span></span><a class="reference internal" href="../../_modules/nexusLIMS/config.html#_SettingsManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.config._SettingsManager" title="Link to this definition">#</a></dt>
-<dd><p>Internal manager for the settings singleton.</p>
-<p>Provides a refresh mechanism for testing while maintaining
-the convenient import pattern for production code.</p>
-<p class="rubric">Initialization</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="nexusLIMS.config._SettingsManager.get">
-<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#nexusLIMS.config.Settings" title="nexusLIMS.config.Settings"><span class="pre">Settings</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/config.html#_SettingsManager.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.config._SettingsManager.get" title="Link to this definition">#</a></dt>
-<dd><p>Get the current settings instance, creating if needed.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="nexusLIMS.config._SettingsManager._create">
-<span class="sig-name descname"><span class="pre">_create</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#nexusLIMS.config.Settings" title="nexusLIMS.config.Settings"><span class="pre">Settings</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/config.html#_SettingsManager._create"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.config._SettingsManager._create" title="Link to this definition">#</a></dt>
-<dd><p>Create a new Settings instance.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="nexusLIMS.config._SettingsManager.refresh">
-<span class="sig-name descname"><span class="pre">refresh</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#nexusLIMS.config.Settings" title="nexusLIMS.config.Settings"><span class="pre">Settings</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/config.html#_SettingsManager.refresh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.config._SettingsManager.refresh" title="Link to this definition">#</a></dt>
-<dd><p>Refresh settings from current environment variables.</p>
-<p>Creates a new Settings instance and replaces the cached singleton.
-Primarily used in testing when environment variables are modified.</p>
-<p class="rubric" id="id5">Returns</p>
-<p>Settings
-The newly created settings instance</p>
-<p class="rubric" id="id6">Examples</p>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>import os
-from nexusLIMS.config import settings, refresh_settings</p>
-<p class="rubric" id="in-a-test-modify-environment">In a test, modify environment</p>
-<p>os.environ[“NX_FILE_STRATEGY”] = “inclusive”</p>
-<p class="rubric" id="refresh-to-pick-up-changes">Refresh to pick up changes</p>
-<p>refresh_settings()</p>
-<p>assert settings.NX_FILE_STRATEGY == “inclusive”</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="nexusLIMS.config._SettingsManager.clear">
-<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/config.html#_SettingsManager.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.config._SettingsManager.clear" title="Link to this definition">#</a></dt>
-<dd><p>Clear the settings cache.</p>
-<p>The next access to settings will create a new instance.
-This is equivalent to refresh() but doesn’t immediately create
-a new instance.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="nexusLIMS.config._manager">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.config.</span></span><span class="sig-name descname"><span class="pre">_manager</span></span><a class="headerlink" href="#nexusLIMS.config._manager" title="Link to this definition">#</a></dt>
-<dd><p>‘_SettingsManager(…)’</p>
-</dd></dl>
-
 <dl class="py function">
 <dt class="sig sig-object py" id="nexusLIMS.config.refresh_settings">
 <span class="sig-prename descclassname"><span class="pre">nexusLIMS.config.</span></span><span class="sig-name descname"><span class="pre">refresh_settings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#nexusLIMS.config.Settings" title="nexusLIMS.config.Settings"><span class="pre">Settings</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/config.html#refresh_settings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.config.refresh_settings" title="Link to this definition">#</a></dt>
 <dd><p>Refresh the settings singleton from current environment variables.</p>
 <p>This forces a reload of all settings from the environment.
 Primarily useful for testing.</p>
-<p class="rubric" id="id7">Returns</p>
+<p class="rubric" id="id5">Returns</p>
 <p>Settings
 The newly created settings instance</p>
-<p class="rubric" id="id8">Examples</p>
+<p class="rubric" id="id6">Examples</p>
 <blockquote>
 <div><blockquote>
 <div><blockquote>
@@ -971,12 +903,12 @@ Useful in test teardown to ensure clean state.</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="nexusLIMS.__main__.html"
+       href="nexusLIMS.cdcs.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.__main__</span></code></p>
+        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cdcs</span></code></p>
       </div>
     </a>
     <a class="right-next"
@@ -1057,14 +989,6 @@ Useful in test teardown to ensure clean state.</p>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.email_config"><code class="docutils literal notranslate"><span class="pre">Settings.email_config()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config._SettingsManager"><code class="docutils literal notranslate"><span class="pre">_SettingsManager</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config._SettingsManager.get"><code class="docutils literal notranslate"><span class="pre">_SettingsManager.get()</span></code></a></li>
-<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config._SettingsManager._create"><code class="docutils literal notranslate"><span class="pre">_SettingsManager._create()</span></code></a></li>
-<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config._SettingsManager.refresh"><code class="docutils literal notranslate"><span class="pre">_SettingsManager.refresh()</span></code></a></li>
-<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config._SettingsManager.clear"><code class="docutils literal notranslate"><span class="pre">_SettingsManager.clear()</span></code></a></li>
-</ul>
-</li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config._manager"><code class="docutils literal notranslate"><span class="pre">_manager</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.refresh_settings"><code class="docutils literal notranslate"><span class="pre">refresh_settings()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.clear_settings"><code class="docutils literal notranslate"><span class="pre">clear_settings()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.settings"><code class="docutils literal notranslate"><span class="pre">settings</span></code></a></li>

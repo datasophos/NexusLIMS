@@ -43,10 +43,6 @@
   - ```{autodoc2-docstring} nexusLIMS.builder.record_builder.build_new_session_records
     :summary:
     ```
-* - {py:obj}`_record_validation_flow <nexusLIMS.builder.record_builder._record_validation_flow>`
-  - ```{autodoc2-docstring} nexusLIMS.builder.record_builder._record_validation_flow
-    :summary:
-    ```
 * - {py:obj}`process_new_records <nexusLIMS.builder.record_builder.process_new_records>`
   - ```{autodoc2-docstring} nexusLIMS.builder.record_builder.process_new_records
     :summary:
@@ -142,13 +138,6 @@
 :canonical: nexusLIMS.builder.record_builder.build_new_session_records
 
 ```{autodoc2-docstring} nexusLIMS.builder.record_builder.build_new_session_records
-```
-````
-
-````{py:function} _record_validation_flow(record_text, s, xml_files) -> typing.List[pathlib.Path]
-:canonical: nexusLIMS.builder.record_builder._record_validation_flow
-
-```{autodoc2-docstring} nexusLIMS.builder.record_builder._record_validation_flow
 ```
 ````
 

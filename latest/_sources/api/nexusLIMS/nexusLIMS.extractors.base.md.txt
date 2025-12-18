@@ -43,10 +43,6 @@
   - ```{autodoc2-docstring} nexusLIMS.extractors.base.logger
     :summary:
     ```
-* - {py:obj}`__all__ <nexusLIMS.extractors.base.__all__>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.base.__all__
-    :summary:
-    ```
 ````
 
 ### API
@@ -57,16 +53,6 @@
    'getLogger(...)'
 
 ```{autodoc2-docstring} nexusLIMS.extractors.base.logger
-```
-
-````
-
-````{py:data} __all__
-:canonical: nexusLIMS.extractors.base.__all__
-:value: >
-   ['BaseExtractor', 'ExtractionContext', 'PreviewGenerator']
-
-```{autodoc2-docstring} nexusLIMS.extractors.base.__all__
 ```
 
 ````
@@ -131,6 +117,17 @@ Bases: {py:obj}`typing.Protocol`
 
 ````
 
+````{py:attribute} supported_extensions
+:canonical: nexusLIMS.extractors.base.BaseExtractor.supported_extensions
+:type: set[str] | None
+:value: >
+   None
+
+```{autodoc2-docstring} nexusLIMS.extractors.base.BaseExtractor.supported_extensions
+```
+
+````
+
 ````{py:method} supports(context: nexusLIMS.extractors.base.ExtractionContext) -> bool
 :canonical: nexusLIMS.extractors.base.BaseExtractor.supports
 
@@ -175,6 +172,17 @@ Bases: {py:obj}`typing.Protocol`
    None
 
 ```{autodoc2-docstring} nexusLIMS.extractors.base.PreviewGenerator.priority
+```
+
+````
+
+````{py:attribute} supported_extensions
+:canonical: nexusLIMS.extractors.base.PreviewGenerator.supported_extensions
+:type: set[str] | None
+:value: >
+   None
+
+```{autodoc2-docstring} nexusLIMS.extractors.base.PreviewGenerator.supported_extensions
 ```
 
 ````

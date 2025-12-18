@@ -27,10 +27,6 @@
 :class: autosummary longtable
 :align: left
 
-* - {py:obj}`_get_instrument_db <nexusLIMS.instruments._get_instrument_db>`
-  - ```{autodoc2-docstring} nexusLIMS.instruments._get_instrument_db
-    :summary:
-    ```
 * - {py:obj}`get_instr_from_filepath <nexusLIMS.instruments.get_instr_from_filepath>`
   - ```{autodoc2-docstring} nexusLIMS.instruments.get_instr_from_filepath
     :summary:
@@ -71,13 +67,6 @@
 ```{autodoc2-docstring} nexusLIMS.instruments.logger
 ```
 
-````
-
-````{py:function} _get_instrument_db(db_path: pathlib.Path | str | None = None)
-:canonical: nexusLIMS.instruments._get_instrument_db
-
-```{autodoc2-docstring} nexusLIMS.instruments._get_instrument_db
-```
 ````
 
 `````{py:class} Instrument
@@ -225,30 +214,6 @@
    None
 
 ```{autodoc2-docstring} nexusLIMS.instruments.Instrument.timezone
-```
-
-````
-
-````{py:method} __post_init__()
-:canonical: nexusLIMS.instruments.Instrument.__post_init__
-
-```{autodoc2-docstring} nexusLIMS.instruments.Instrument.__post_init__
-```
-
-````
-
-````{py:method} __repr__()
-:canonical: nexusLIMS.instruments.Instrument.__repr__
-
-```{autodoc2-docstring} nexusLIMS.instruments.Instrument.__repr__
-```
-
-````
-
-````{py:method} __str__()
-:canonical: nexusLIMS.instruments.Instrument.__str__
-
-```{autodoc2-docstring} nexusLIMS.instruments.Instrument.__str__
 ```
 
 ````

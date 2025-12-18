@@ -62,7 +62,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 16, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 18, 2025"/>
   </head>
   
   
@@ -500,37 +500,43 @@ each format.</p>
 <td><p>SEM Imaging</p></td>
 <td><p>Beam settings, stage position, vacuum conditions, detector config</p></td>
 </tr>
-<tr class="row-even"><td><p>.ser, .emi</p></td>
+<tr class="row-even"><td><p>.tif</p></td>
+<td><p>✅ Full</p></td>
+<td><p>Zeiss Orion HIM / Fibics HIM</p></td>
+<td><p>HIM Imaging</p></td>
+<td><p>Helium ion beam settings, stage position, detector configuration, image metadata</p></td>
+</tr>
+<tr class="row-odd"><td><p>.ser, .emi</p></td>
 <td><p>✅ Full</p></td>
 <td><p>FEI TIA Software</p></td>
 <td><p>TEM/STEM Imaging, Diffraction, EELS/EDS Spectra &amp; SI</p></td>
 <td><p>Multi-file support, experimental conditions, acquisition parameters</p></td>
 </tr>
-<tr class="row-odd"><td><p>.spc</p></td>
+<tr class="row-even"><td><p>.spc</p></td>
 <td><p>✅ Full</p></td>
 <td><p>EDAX (Genesis, TEAM)</p></td>
 <td><p>EDS Spectrum</p></td>
 <td><p>Detector angles, energy calibration, element identification</p></td>
 </tr>
-<tr class="row-even"><td><p>.msa</p></td>
+<tr class="row-odd"><td><p>.msa</p></td>
 <td><p>✅ Full</p></td>
 <td><p>EDAX &amp; others (standard)</p></td>
 <td><p>EDS Spectrum</p></td>
 <td><p>EMSA/MAS standard format, vendor extensions supported</p></td>
 </tr>
-<tr class="row-odd"><td><p>.png, .jpg, .tiff, .bmp, .gif</p></td>
+<tr class="row-even"><td><p>.png, .jpg, .tiff, .bmp, .gif</p></td>
 <td><p>⚠️ Preview</p></td>
 <td><p>Various (exported images)</p></td>
 <td><p>Unknown</p></td>
 <td><p>Basic metadata, square thumbnail generation</p></td>
 </tr>
-<tr class="row-even"><td><p>.txt</p></td>
+<tr class="row-odd"><td><p>.txt</p></td>
 <td><p>⚠️ Preview</p></td>
 <td><p>Various (logs, notes)</p></td>
 <td><p>Unknown</p></td>
 <td><p>Basic metadata, text-to-image preview</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>others</em></p></td>
+<tr class="row-even"><td><p><em>others</em></p></td>
 <td><p>❌ Minimal</p></td>
 <td><p>N/A</p></td>
 <td><p>Unknown</p></td>
@@ -648,6 +654,63 @@ each format.</p>
 <li><p>User/operator metadata is flagged as potentially unreliable (users may remain logged in)</p></li>
 <li><p>Some instruments write duplicate metadata sections which are handled automatically</p></li>
 <li><p>Works with both older config-style metadata and newer XML-based metadata</p></li>
+</ul>
+</section>
+<section id="zeiss-orion-fibics-him-tif-files-tif">
+<h3>Zeiss Orion / Fibics HIM TIF Files (.tif)<a class="headerlink" href="#zeiss-orion-fibics-him-tif-files-tif" title="Link to this heading">#</a></h3>
+<p><strong>Support Level</strong>: ✅ Full</p>
+<p><strong>Description</strong>: TIFF images saved by Zeiss Orion and Fibics helium ion microscope (HIM) systems with embedded XML metadata in custom TIFF tags.</p>
+<p><strong>Extractor Module</strong>: <a class="reference internal" href="api/nexusLIMS/nexusLIMS.extractors.plugins.orion_HIM_tif.html#module-nexusLIMS.extractors.plugins.orion_HIM_tif" title="nexusLIMS.extractors.plugins.orion_HIM_tif"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.orion_HIM_tif</span></code></a></p>
+<p><strong>File Format Details</strong>:</p>
+<p>The extractor uses content sniffing to detect HIM TIFF files by checking for custom TIFF tags:</p>
+<ul class="simple">
+<li><p><strong>Zeiss Orion</strong>: TIFF tag 65000 contains <code class="docutils literal notranslate"><span class="pre">&lt;ImageTags&gt;</span></code> XML metadata</p></li>
+<li><p><strong>Fibics</strong>: TIFF tag 51023 contains <code class="docutils literal notranslate"><span class="pre">&lt;Fibics&gt;</span></code> XML metadata</p></li>
+</ul>
+<p>This content-based detection allows proper identification even when files use <code class="docutils literal notranslate"><span class="pre">.tif</span></code> extension (used by multiple instruments).</p>
+<p><strong>Key Metadata Extracted</strong>:</p>
+<p><strong>Zeiss Orion Variant</strong>:</p>
+<ul class="simple">
+<li><p>Helium ion beam settings (energy, current, spot size, aperture)</p></li>
+<li><p>Beam positioning (shift, scan rotation)</p></li>
+<li><p>Stage position (X, Y, Z, R, tilt)</p></li>
+<li><p>Scan parameters (dwell time, frame time, pixel size, resolution)</p></li>
+<li><p>Detector configuration (type, brightness, contrast)</p></li>
+<li><p>System information (vacuum pressure, chamber type)</p></li>
+<li><p>Image acquisition parameters (line averaging, digital gain, overlay settings)</p></li>
+<li><p>Scan speed and resolution settings</p></li>
+</ul>
+<p><strong>Fibics Variant</strong>:</p>
+<ul class="simple">
+<li><p>Helium ion beam parameters (energy, current, spot settings)</p></li>
+<li><p>Stage coordinates and angles</p></li>
+<li><p>Scan configuration (pixel dwell, acquisition time, resolution)</p></li>
+<li><p>Detector settings and signal type</p></li>
+<li><p>Image optimization parameters (contrast, brightness)</p></li>
+<li><p>Data collection timestamps</p></li>
+</ul>
+<p><strong>Data Types Detected</strong>:</p>
+<ul class="simple">
+<li><p>HIM Imaging</p></li>
+</ul>
+<p><strong>Special Features</strong>:</p>
+<ul class="simple">
+<li><p>Content-based detection to differentiate from other TIFF formats (FEI, standard image files)</p></li>
+<li><p>Priority 150 - checked before generic TIFF extractors to properly identify HIM files</p></li>
+<li><p>Handles both Zeiss and Fibics XML metadata formats</p></li>
+<li><p>Robust error handling for malformed or missing XML metadata</p></li>
+<li><p>Supports .tif and .tiff extensions</p></li>
+</ul>
+<p><strong>Preview Generation</strong>:</p>
+<ul class="simple">
+<li><p>Converts image to square thumbnail (500×500 px default)</p></li>
+<li><p>Maintains aspect ratio with padding</p></li>
+</ul>
+<p><strong>Notes</strong>:</p>
+<ul class="simple">
+<li><p>The extractor uses content sniffing rather than extension alone, ensuring correct identification even if .tif files from multiple instruments are present</p></li>
+<li><p>If XML metadata is missing or corrupted, the extractor gracefully falls back to basic file information</p></li>
+<li><p>Both Zeiss Orion and Fibics HIM variants store metadata as embedded XML, making extraction reliable across different software versions</p></li>
 </ul>
 </section>
 <section id="fei-tia-files-ser-emi">
@@ -886,6 +949,7 @@ each format.</p>
 <li><p><a class="reference internal" href="api/nexusLIMS/nexusLIMS.extractors.html#module-nexusLIMS.extractors" title="nexusLIMS.extractors"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors</span></code></a> - Main extractor module</p></li>
 <li><p><a class="reference internal" href="api/nexusLIMS/nexusLIMS.extractors.plugins.digital_micrograph.html#module-nexusLIMS.extractors.plugins.digital_micrograph" title="nexusLIMS.extractors.plugins.digital_micrograph"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.digital_micrograph</span></code></a> - DM3/DM4 file extractor</p></li>
 <li><p><a class="reference internal" href="api/nexusLIMS/nexusLIMS.extractors.plugins.quanta_tif.html#module-nexusLIMS.extractors.plugins.quanta_tif" title="nexusLIMS.extractors.plugins.quanta_tif"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.quanta_tif</span></code></a> - FEI/Thermo TIF file extractor</p></li>
+<li><p><a class="reference internal" href="api/nexusLIMS/nexusLIMS.extractors.plugins.orion_HIM_tif.html#module-nexusLIMS.extractors.plugins.orion_HIM_tif" title="nexusLIMS.extractors.plugins.orion_HIM_tif"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.orion_HIM_tif</span></code></a> - Zeiss Orion / Fibics HIM TIF file extractor</p></li>
 <li><p><a class="reference internal" href="api/nexusLIMS/nexusLIMS.extractors.plugins.fei_emi.html#module-nexusLIMS.extractors.plugins.fei_emi" title="nexusLIMS.extractors.plugins.fei_emi"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.fei_emi</span></code></a> - FEI TIA .ser/.emi file extractor</p></li>
 <li><p><a class="reference internal" href="api/nexusLIMS/nexusLIMS.extractors.plugins.edax.html#module-nexusLIMS.extractors.plugins.edax" title="nexusLIMS.extractors.plugins.edax"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.edax</span></code></a> - EDAX .spc/.msa file extractor</p></li>
 <li><p><a class="reference internal" href="api/nexusLIMS/nexusLIMS.extractors.plugins.basic_metadata.html#module-nexusLIMS.extractors.plugins.basic_metadata" title="nexusLIMS.extractors.plugins.basic_metadata"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.basic_metadata</span></code></a> - Basic metadata fallback extractor</p></li>
@@ -954,6 +1018,7 @@ each format.</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fully-supported-formats">Fully Supported Formats</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#digital-micrograph-files-dm3-dm4">Digital Micrograph Files (.dm3, .dm4)</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fei-thermo-fisher-tif-files-tif">FEI/Thermo Fisher TIF Files (.tif)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#zeiss-orion-fibics-him-tif-files-tif">Zeiss Orion / Fibics HIM TIF Files (.tif)</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fei-tia-files-ser-emi">FEI TIA Files (.ser, .emi)</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#edax-eds-files-spc-msa">EDAX EDS Files (.spc, .msa)</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spc-files">.spc Files</a></li>

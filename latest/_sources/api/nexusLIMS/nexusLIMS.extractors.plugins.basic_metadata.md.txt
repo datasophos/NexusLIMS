@@ -83,6 +83,17 @@
 
 ````
 
+````{py:attribute} supported_extensions
+:canonical: nexusLIMS.extractors.plugins.basic_metadata.BasicFileInfoExtractor.supported_extensions
+:type: typing.ClassVar
+:value: >
+   None
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.basic_metadata.BasicFileInfoExtractor.supported_extensions
+```
+
+````
+
 ````{py:method} supports(context: nexusLIMS.extractors.base.ExtractionContext) -> bool
 :canonical: nexusLIMS.extractors.plugins.basic_metadata.BasicFileInfoExtractor.supports
 

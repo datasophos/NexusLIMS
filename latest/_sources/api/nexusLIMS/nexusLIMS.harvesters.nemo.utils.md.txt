@@ -39,10 +39,6 @@
   - ```{autodoc2-docstring} nexusLIMS.harvesters.nemo.utils.process_res_question_samples
     :summary:
     ```
-* - {py:obj}`_get_res_question_value <nexusLIMS.harvesters.nemo.utils._get_res_question_value>`
-  - ```{autodoc2-docstring} nexusLIMS.harvesters.nemo.utils._get_res_question_value
-    :summary:
-    ```
 * - {py:obj}`id_from_url <nexusLIMS.harvesters.nemo.utils.id_from_url>`
   - ```{autodoc2-docstring} nexusLIMS.harvesters.nemo.utils.id_from_url
     :summary:
@@ -112,13 +108,6 @@
 :canonical: nexusLIMS.harvesters.nemo.utils.process_res_question_samples
 
 ```{autodoc2-docstring} nexusLIMS.harvesters.nemo.utils.process_res_question_samples
-```
-````
-
-````{py:function} _get_res_question_value(value: str, res_dict: typing.Dict) -> typing.Union[str, typing.Dict] | None
-:canonical: nexusLIMS.harvesters.nemo.utils._get_res_question_value
-
-```{autodoc2-docstring} nexusLIMS.harvesters.nemo.utils._get_res_question_value
 ```
 ````
 
