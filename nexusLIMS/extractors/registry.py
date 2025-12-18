@@ -99,6 +99,67 @@ class ExtractorRegistry:
 
         logger.debug("Initialized ExtractorRegistry")
 
+    @property
+    def extractors(self) -> dict[str, list[type[BaseExtractor]]]:
+        """
+        Get the extractor list.
+
+        Returns a dictionary mapping file extensions to lists of extractor classes,
+        sorted by priority (descending).
+
+        Auto-discovers plugins if not already discovered.
+
+        Returns
+        -------
+        dict[str, list[type[BaseExtractor]]]
+            Maps extension (without dot) to list of extractor classes
+
+        Examples
+        --------
+            >>> registry = get_registry()
+            >>> extractors_by_ext = registry.extractors
+            >>> print(extractors_by_ext.get("dm3", []))
+        """
+        if not self._discovered:
+            self.discover_plugins()
+        return dict(self._extractors)
+
+    @property
+    def extractor_names(self) -> list[str]:
+        """
+        Get a deduplicated list of extractor names.
+
+        Returns extractor names sorted alphabetically, with duplicates removed.
+
+        Auto-discovers plugins if not already discovered.
+
+        Returns
+        -------
+        list[str]
+            Sorted list of unique extractor names
+
+        Examples
+        --------
+            >>> registry = get_registry()
+            >>> names = registry.extractor_names
+            >>> print(names)
+            ['BasicFileInfoExtractor', 'DM3Extractor', 'QuantaTiffExtractor', ...]
+        """
+        if not self._discovered:
+            self.discover_plugins()
+
+        # Collect all extractor names
+        extractor_names_set = set()
+        for extractor_classes in self._extractors.values():
+            for extractor_class in extractor_classes:
+                extractor_names_set.add(extractor_class.__name__)
+
+        # Also add wildcard extractors
+        for extractor_class in self._wildcard_extractors:
+            extractor_names_set.add(extractor_class.__name__)
+
+        return sorted(extractor_names_set)
+
     def discover_plugins(self) -> None:
         """
         Auto-discover extractor plugins by walking the plugins directory.

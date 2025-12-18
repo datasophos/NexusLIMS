@@ -632,6 +632,15 @@ def orion_fibics_zeroed_file():
     delete_files("ORION_FIBICS_ZEROED")
 
 
+# Tescan PFIB/SEM test files
+@pytest.fixture(scope="module")
+def tescan_pfib_files():
+    """Tescan PFIB/SEM TIFF and HDR files (data zeroed for size)."""
+    files = extract_files("TESCAN_PFIB")
+    yield files
+    delete_files("TESCAN_PFIB")
+
+
 @pytest.fixture(scope="module")
 def orion_zeiss_zeroed_file():
     """Zeiss Orion with Zeiss XML metadata (data zeroed for size)."""

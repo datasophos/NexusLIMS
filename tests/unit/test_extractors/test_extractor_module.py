@@ -739,3 +739,24 @@ class TestExtractorModule:
         )
         assert meta["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
         self.remove_thumb_and_json(thumb_fname)
+
+    def test_correct_extractor_dispatched_for_tescan_pfib_tif(self, tescan_pfib_files):
+        """Test that TescanPfibTiffExtractor is used for Tescan PFIB TIFF files.
+
+        This test verifies that the correct extractor is dispatched when
+        parsing metadata from a Tescan PFIB TIFF file, ensuring that the
+        extractor selection/priority system works correctly.
+        """
+        # Find the TIF file from the fixtures
+        tif_file = next(
+            f for f in tescan_pfib_files if f.suffix.lower() in {".tif", ".tiff"}
+        )
+
+        meta, thumb_fname = parse_metadata(fname=tif_file)
+        assert meta is not None
+        assert (
+            meta["nx_meta"]["NexusLIMS Extraction"]["Module"]
+            == "nexusLIMS.extractors.plugins.tescan_tif_extractor"
+        )
+        assert meta["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
+        self.remove_thumb_and_json(thumb_fname)

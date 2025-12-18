@@ -136,10 +136,12 @@ class TestEndToEndWorkflow:
         assert summary is not None, "No Summary element found"
 
         activities = xml_doc.findall(f"{nx_ns}acquisitionActivity")
-        assert len(activities) == 3, "Expected to find 2 acquisitionActivity elements"
+        assert len(activities) == 2, "Expected to find 2 acquisitionActivity elements"
 
         datasets = xml_doc.findall(f"{nx_ns}acquisitionActivity/{nx_ns}dataset")
-        assert len(datasets) == 12, "Expected to find 10 dataset elements"
+        assert len(datasets) == 13, (
+            "Expected to find 13 dataset elements (including Tescan image)"
+        )
 
         # Verify record is present in CDCS via API
         import nexusLIMS.cdcs as cdcs_module

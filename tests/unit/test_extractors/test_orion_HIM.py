@@ -374,7 +374,7 @@ class TestOrionFibicsTiffExtractor:
         # Get extractors for .tif extension
         tif_extractors = self.registry.get_extractors_for_extension("tif")
 
-        assert len(tif_extractors) == 2  # Should have two extractors
+        assert len(tif_extractors) == 3  # Should have three tif extractors
         assert any(
             isinstance(i, OrionFibicsTiffExtractor) for i in tif_extractors
         )  # at least one should be the Orion extractor

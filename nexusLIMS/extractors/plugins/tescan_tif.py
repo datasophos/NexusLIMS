@@ -1,0 +1,746 @@
+"""Tescan (P)FIB/SEM TIFF extractor plugin."""
+
+import configparser
+import contextlib
+import io
+import logging
+from decimal import Decimal
+from pathlib import Path
+from typing import Any, ClassVar
+
+from PIL import Image
+
+from nexusLIMS.extractors.base import ExtractionContext
+from nexusLIMS.extractors.utils import _set_instr_name_and_time
+from nexusLIMS.utils import set_nested_dict_value, sort_dict
+
+TESCAN_TIFF_TAG = 50431
+"""
+TIFF tag ID where Tescan stores INI-style metadata in TIFF files.
+The tag contains holds instrument configuration, beam parameters, stage position,
+detector settings, and other acquisition metadata.
+"""
+
+_MAX_ASCII_VALUE = 128
+"""Maximum value for ASCII characters. Used to filter non-ASCII binary data."""
+
+_logger = logging.getLogger(__name__)
+_logger.setLevel(logging.INFO)
+
+
+class TescanTiffExtractor:
+    """
+    Extractor for Tescan FIB/SEM TIFF files.
+
+    This extractor handles metadata extraction from .tif files saved by
+    Tescan FIB and SEM instruments (e.g., AMBER X). The extractor uses
+    a two-tier strategy:
+
+    1. Primary: Look for sidecar .hdr file with full metadata in INI format
+    2. Fallback: Extract basic metadata from TIFF tags if no .hdr file exists
+
+    The .hdr file contains comprehensive acquisition parameters in two sections:
+    [MAIN] and [SEM], which are parsed using Python's configparser.
+    """
+
+    name = "tescan_tif_extractor"
+    priority = 150
+    supported_extensions: ClassVar = {"tif", "tiff"}
+
+    def supports(self, context: ExtractionContext) -> bool:
+        """
+        Check if this extractor supports the given file.
+
+        Performs content sniffing to verify this is a Tescan TIFF file by:
+        1. Checking file extension (.tif or .tiff)
+        2. Looking for either a sidecar .hdr file or Tescan-specific TIFF tags
+
+        Parameters
+        ----------
+        context
+            The extraction context containing file information
+
+        Returns
+        -------
+        bool
+            True if this appears to be a Tescan TIFF file
+        """
+        extension = context.file_path.suffix.lower().lstrip(".")
+        if extension not in {"tif", "tiff"}:
+            return False
+
+        # Check for sidecar HDR file
+        hdr_file = self._find_hdr_file(context.file_path)
+        if hdr_file is not None and self._is_tescan_hdr(hdr_file):
+            return True
+
+        # Fallback: check TIFF tags for Tescan signature
+        try:
+            with Image.open(context.file_path) as img:
+                # Check for TESCAN in Make tag (271) or Software tag (305)
+                make = img.tag_v2.get(271, "")
+                software = img.tag_v2.get(305, "")
+                if "TESCAN" in str(make).upper() or "TESCAN" in str(software).upper():
+                    return True
+                # check for custom Tescan metadata tag
+                tescan_metadata = img.tag_v2.get(TESCAN_TIFF_TAG, "")
+                if tescan_metadata != "":
+                    return True
+        except Exception as e:
+            _logger.debug(
+                "Could not read TIFF tags from %s: %s",
+                context.file_path,
+                e,
+            )
+            return False
+
+        return False
+
+    def extract(self, context: ExtractionContext) -> dict[str, Any]:
+        """
+        Extract metadata from a Tescan FIB/SEM TIFF file.
+
+        Returns the metadata (as a dictionary) from a .tif file saved by
+        Tescan instruments. Uses a three-tier extraction strategy:
+        1. Try to parse embedded HDR metadata from TIFF Tag 50431
+        2. If that fails, look for a sidecar .hdr file
+        3. Always extract basic TIFF tags as well
+
+        Parameters
+        ----------
+        context
+            The extraction context containing file information
+
+        Returns
+        -------
+        dict
+            Metadata dictionary with 'nx_meta' key containing NexusLIMS metadata
+        """
+        filename = context.file_path
+        _logger.debug("Extracting metadata from Tescan TIFF file: %s", filename)
+
+        mdict = {"nx_meta": {}}
+        # Assume all datasets coming from Tescan are SEM Images, originally
+        mdict["nx_meta"]["DatasetType"] = "Image"
+        mdict["nx_meta"]["Data Type"] = "SEM_Imaging"
+
+        _set_instr_name_and_time(mdict, filename)
+
+        hdr_parsed = False
+
+        # Strategy 1: Try to parse embedded HDR metadata from TIFF tag 50431
+        try:
+            embedded_metadata = self._extract_embedded_hdr(filename)
+            if embedded_metadata:
+                mdict.update(embedded_metadata)
+                mdict = self._parse_nx_meta(mdict)
+                hdr_parsed = True
+                _logger.debug("Successfully parsed embedded HDR from TIFF tag")
+        except Exception as e:
+            _logger.debug("Could not parse embedded HDR metadata: %s", e)
+
+        # Strategy 2: If embedded parsing failed, try sidecar HDR file
+        if not hdr_parsed:
+            hdr_file = self._find_hdr_file(filename)
+            if hdr_file is not None and self._is_tescan_hdr(hdr_file):
+                try:
+                    hdr_metadata = self._read_hdr_metadata(hdr_file)
+                    mdict.update(hdr_metadata)
+                    mdict = self._parse_nx_meta(mdict)
+                    hdr_parsed = True
+                    _logger.debug("Successfully parsed sidecar HDR file")
+                except Exception as e:
+                    _logger.warning(
+                        "Failed to parse HDR file %s: %s",
+                        hdr_file,
+                        e,
+                    )
+
+        # Strategy 3: Always extract basic TIFF tags (may supplement or override)
+        self._extract_from_tiff_tags(filename, mdict)
+
+        # Sort the nx_meta dictionary (recursively) for nicer display
+        mdict["nx_meta"] = sort_dict(mdict["nx_meta"])
+
+        return mdict
+
+    def _find_hdr_file(self, tiff_path: Path) -> Path | None:
+        """
+        Find the sidecar .hdr file for a given TIFF file.
+
+        Parameters
+        ----------
+        tiff_path
+            Path to the TIFF file
+
+        Returns
+        -------
+        Path or None
+            Path to the .hdr file if it exists, None otherwise
+        """
+        hdr_path = tiff_path.with_suffix(".hdr")
+        if hdr_path.exists():
+            return hdr_path
+        return None
+
+    def _is_tescan_hdr(self, hdr_path: Path) -> bool:
+        """
+        Verify that an HDR file is a Tescan format file.
+
+        Checks for the presence of [MAIN] and [SEM] sections which are
+        characteristic of Tescan HDR files.
+
+        Parameters
+        ----------
+        hdr_path
+            Path to the .hdr file
+
+        Returns
+        -------
+        bool
+            True if this appears to be a Tescan HDR file
+        """
+        try:
+            with hdr_path.open("r", encoding="utf-8", errors="ignore") as f:
+                content = f.read(500)  # Read first 500 chars
+                # Look for characteristic Tescan sections
+                return "[MAIN]" in content or "Device=TESCAN" in content
+        except Exception as e:
+            _logger.debug("Could not verify HDR file %s: %s", hdr_path, e)
+            return False
+
+    def _extract_embedded_hdr(
+        self, tiff_path: Path
+    ) -> dict[str, dict[str, str]] | None:
+        """
+        Extract embedded HDR metadata from TIFF Tag TESCAN_TIFF_TAG.
+
+        Tescan embeds the complete HDR metadata in TIFF tag TESCAN_TIFF_TAG as a
+        binary blob containing the INI-formatted text. The tag may contain binary
+        garbage at the beginning before the actual metadata starts.
+
+        Parameters
+        ----------
+        tiff_path
+            Path to the TIFF file
+
+        Returns
+        -------
+        dict or None
+            Dictionary with section names as keys and key-value dicts as values,
+            or None if tag is not present or cannot be parsed
+        """
+        try:
+            with Image.open(tiff_path) as img:
+                metadata_tag = img.tag_v2.get(TESCAN_TIFF_TAG)
+                if metadata_tag is None:
+                    return None
+
+                # Convert tag to bytes
+                metadata_bytes = self._tag_to_bytes(metadata_tag)
+
+                # Extract metadata string from binary data
+                metadata_str = self._extract_metadata_string(metadata_bytes)
+
+                # Clean up non-printable characters
+                metadata_str = self._clean_metadata_string(metadata_str)
+
+                # Add section headers if missing
+                metadata_str = self._add_section_headers_if_needed(metadata_str)
+
+                # Parse as INI format
+                return self._parse_hdr_string(metadata_str)
+
+        except Exception as e:
+            _logger.debug("Failed to extract embedded HDR from tag 50431: %s", e)
+            return None
+
+    def _tag_to_bytes(self, metadata_tag: Any) -> bytes:
+        """Convert TIFF tag data to bytes.
+
+        Parameters
+        ----------
+        metadata_tag
+            Tag data in various formats (bytes, str, etc.)
+
+        Returns
+        -------
+        bytes
+            Converted bytes
+
+        Raises
+        ------
+        TypeError
+            If tag data is not bytes or str
+        """
+        if isinstance(metadata_tag, bytes):
+            return metadata_tag
+        if isinstance(metadata_tag, str):
+            return metadata_tag.encode("utf-8")
+        msg = f"Unsupported metadata tag type: {type(metadata_tag)}"
+        raise TypeError(msg)
+
+    def _extract_metadata_string(self, metadata_bytes: bytes) -> str:
+        """Extract metadata string from binary data by removing garbage.
+
+        The tag may contain binary garbage at the beginning. This method looks
+        for known keys to find the start of actual metadata.
+
+        Parameters
+        ----------
+        metadata_bytes
+            Raw binary metadata from TIFF tag
+
+        Returns
+        -------
+        str
+            Cleaned metadata string
+        """
+        # Look for the start of metadata by searching for known keys
+        search_keys = [b"[MAIN]", b"AccFrames=", b"AccType=", b"Company=", b"Date="]
+        for search_key in search_keys:
+            pos = metadata_bytes.find(search_key)
+            if pos >= 0:
+                metadata_bytes = metadata_bytes[pos:]
+                return metadata_bytes.replace(b"\x00", b"").decode(
+                    "utf-8", errors="ignore"
+                )
+
+        # Fallback: decode whole thing
+        return metadata_bytes.replace(b"\x00", b"").decode("utf-8", errors="ignore")
+
+    def _clean_metadata_string(self, metadata_str: str) -> str:
+        """Remove non-printable binary characters from metadata string.
+
+        Parameters
+        ----------
+        metadata_str
+            Metadata string that may contain non-printable characters
+
+        Returns
+        -------
+        str
+            Cleaned metadata string
+        """
+        return "".join(
+            c
+            for c in metadata_str
+            if ord(c) < _MAX_ASCII_VALUE and (c.isprintable() or c in "\n\r\t")
+        )
+
+    def _add_section_headers_if_needed(self, metadata_str: str) -> str:
+        """Add [MAIN] and [SEM] section headers if missing.
+
+        Tescan's embedded metadata doesn't include section headers, so this
+        method detects where the SEM section starts and inserts headers.
+
+        Parameters
+        ----------
+        metadata_str
+            Metadata string potentially without section headers
+
+        Returns
+        -------
+        str
+            Metadata string with section headers
+        """
+        if "[MAIN]" in metadata_str or "[SEM]" in metadata_str:
+            return metadata_str
+
+        # Find where SEM section starts by looking for known SEM keys
+        sem_keys = [
+            "AcceleratorVoltage=",
+            "ApertureDiameter=",
+            "ApertureOptimization=",
+            "ChamberPressure=",
+            "CrossFree=",
+            "HV=",
+        ]
+        sem_start_pos = self._find_sem_section_start(metadata_str, sem_keys)
+
+        # Insert section headers at line boundaries
+        if sem_start_pos < len(metadata_str):
+            line_start = metadata_str.rfind("\n", 0, sem_start_pos)
+            if line_start < 0:
+                line_start = 0
+            else:
+                line_start += 1  # Move past the \n
+            return (
+                "[MAIN]\n"
+                + metadata_str[:line_start]
+                + "[SEM]\n"
+                + metadata_str[line_start:]
+            )
+
+        # No SEM section found
+        return "[MAIN]\n" + metadata_str
+
+    def _find_sem_section_start(self, metadata_str: str, sem_keys: list[str]) -> int:
+        """Find the position where SEM section starts.
+
+        Parameters
+        ----------
+        metadata_str
+            Metadata string to search
+        sem_keys
+            List of keys that typically appear in SEM section
+
+        Returns
+        -------
+        int
+            Position of first SEM key, or length of string if not found
+        """
+        sem_start_pos = len(metadata_str)
+        for sem_key in sem_keys:
+            pos = metadata_str.find(sem_key)
+            if pos >= 0 and pos < sem_start_pos:
+                sem_start_pos = pos
+        return sem_start_pos
+
+    def _parse_hdr_string(self, hdr_string: str) -> dict[str, dict[str, str]]:
+        """
+        Parse HDR metadata from a string in INI format.
+
+        Parameters
+        ----------
+        hdr_string
+            HDR metadata as a string in INI format
+
+        Returns
+        -------
+        dict
+            Dictionary with section names as keys and key-value dicts as values
+        """
+        # Normalize line endings
+        hdr_string = hdr_string.replace("\r\n", "\n").replace("\r", "\n")
+
+        # Parse with ConfigParser
+        config = configparser.ConfigParser()
+        # Make ConfigParser respect upper/lowercase values
+        config.optionxform = lambda option: option
+
+        # Use StringIO to read from string
+        buf = io.StringIO(hdr_string)
+        config.read_file(buf)
+
+        metadata = {}
+        for section in config.sections():
+            metadata[section] = dict(config.items(section))
+
+        return metadata
+
+    def _read_hdr_metadata(self, hdr_path: Path) -> dict[str, dict[str, str]]:
+        """
+        Read and parse a Tescan .hdr file.
+
+        The .hdr file is in INI format with sections like [MAIN] and [SEM].
+
+        Parameters
+        ----------
+        hdr_path
+            Path to the .hdr file
+
+        Returns
+        -------
+        dict
+            Dictionary with section names as keys and key-value dicts as values
+        """
+        with hdr_path.open("r", encoding="utf-8", errors="ignore") as f:
+            hdr_string = f.read()
+
+        return self._parse_hdr_string(hdr_string)
+
+    def _extract_from_tiff_tags(self, filename: Path, mdict: dict) -> None:
+        """
+        Extract basic metadata from TIFF tags.
+
+        This supplements metadata from HDR files with standard TIFF tags.
+        Only adds fields that haven't already been set by HDR parsing.
+        Updates mdict in place.
+
+        Parameters
+        ----------
+        filename
+            Path to the TIFF file
+        mdict
+            Metadata dictionary to update
+        """
+        try:
+            with Image.open(filename) as img:
+                # Extract standard TIFF tags
+                # 271 = Make
+                # 272 = Model
+                # 305 = Software
+                # 306 = DateTime
+                # 315 = Artist (username)
+
+                # Only add Make if not already present
+                if "Make" not in mdict["nx_meta"]:
+                    make = img.tag_v2.get(271)
+                    if make:
+                        mdict["nx_meta"]["Make"] = make
+
+                # Only add Model if not already present
+                if "Model" not in mdict["nx_meta"]:
+                    model = img.tag_v2.get(272)
+                    if model:
+                        mdict["nx_meta"]["Model"] = model
+
+                # Only add Software Version if not already present
+                if "Software Version" not in mdict["nx_meta"]:
+                    software = img.tag_v2.get(305)
+                    if software:
+                        mdict["nx_meta"]["Software Version"] = software
+
+                # Always add TIFF DateTime as supplemental info
+                datetime_str = img.tag_v2.get(306)
+                if datetime_str:
+                    mdict["nx_meta"]["TIFF DateTime"] = datetime_str
+
+                # Only add Operator from Artist tag if not already present
+                if "Operator" not in mdict["nx_meta"]:
+                    artist = img.tag_v2.get(315)
+                    if artist:
+                        mdict["nx_meta"]["Operator"] = artist
+
+                # Only add dimensions if not already present
+                if "Data Dimensions" not in mdict["nx_meta"]:
+                    width = img.tag_v2.get(256)  # ImageWidth
+                    height = img.tag_v2.get(257)  # ImageLength
+                    if width and height:
+                        mdict["nx_meta"]["Data Dimensions"] = str((width, height))
+
+        except Exception as e:
+            _logger.warning("Failed to extract TIFF tags from %s: %s", filename, e)
+            mdict["nx_meta"]["Extractor Warnings"] = f"Failed to extract TIFF tags: {e}"
+
+    def _parse_nx_meta(self, mdict: dict) -> dict:  # noqa: PLR0912
+        """
+        Parse metadata into NexusLIMS format.
+
+        Extracts important metadata from the [MAIN] and [SEM] sections
+        of the HDR file and places them in standardized locations under
+        the nx_meta key.
+
+        Parameters
+        ----------
+        mdict
+            Metadata dictionary with [MAIN] and [SEM] sections
+
+        Returns
+        -------
+        dict
+            Updated metadata dictionary with parsed nx_meta fields
+        """
+        # Initialize warnings list
+        if "warnings" not in mdict["nx_meta"]:
+            mdict["nx_meta"]["warnings"] = []
+
+        main_section = mdict.get("MAIN", {})
+        sem_section = mdict.get("SEM", {})
+
+        # Field definitions: (section, source_key, output_key, factor, is_str,
+        #                     suppress_zero)
+        # output_key can be string or list for nested dicts
+        # (e.g., ["Stage Position", "X"])
+        # suppress_zero: if True, skip field if value is zero
+        fields = [
+            # [MAIN] section - in order as they appear in HDR file
+            ("MAIN", "AccFrames", "Accumulated Frames", 1, False, False),
+            ("MAIN", "AccType", "Accumulation Type", 1, True, False),
+            ("MAIN", "Company", "Company", 1, True, False),
+            ("MAIN", "Date", "Acquisition Date", 1, True, False),
+            ("MAIN", "Description", "Description", 1, True, False),
+            ("MAIN", "Device", "Device", 1, True, False),
+            ("MAIN", "DeviceModel", "Device Model", 1, True, False),
+            ("MAIN", "FullUserName", "Full User Name", 1, True, False),
+            ("MAIN", "ImageStripSize", "Image Strip Size", 1, False, False),
+            ("MAIN", "Magnification", "Magnification (kX)", 1e-3, False, False),
+            (
+                "MAIN",
+                "MagnificationReference",
+                "Magnification Reference",
+                1,
+                False,
+                False,
+            ),
+            ("MAIN", "OrigFileName", "Original Filename", 1, True, False),
+            ("MAIN", "PixelSizeX", "Pixel Width (nm)", 1e9, False, False),
+            ("MAIN", "PixelSizeY", "Pixel Height (nm)", 1e9, False, False),
+            ("MAIN", "SerialNumber", "Serial Number", 1, True, False),
+            ("MAIN", "Sign", "Sign", 1, True, False),
+            ("MAIN", "SoftwareVersion", "Software Version", 1, True, False),
+            ("MAIN", "Time", "Acquisition Time", 1, True, False),
+            ("MAIN", "UserName", "User Name", 1, True, False),
+            ("MAIN", "ViewFieldsCountX", "View Fields Count X", 1, False, False),
+            ("MAIN", "ViewFieldsCountY", "View Fields Count Y", 1, False, False),
+            # [SEM] section - in order as they appear in HDR file
+            (
+                "SEM",
+                "AcceleratorVoltage",
+                "Accelerator Voltage (kV)",
+                1e-3,
+                False,
+                False,
+            ),
+            ("SEM", "ApertureDiameter", "Aperture Diameter (μm)", 1e6, False, False),
+            ("SEM", "ApertureOptimization", "Aperture Optimization", 1, False, False),
+            ("SEM", "ChamberPressure", "Chamber Pressure (mPa)", 1e3, False, False),
+            ("SEM", "CrossFree", "Cross Free", 1, False, False),
+            (
+                "SEM",
+                "CrossSectionShiftX",
+                "Cross Section Shift X (μm)",
+                1e6,
+                False,
+                False,
+            ),
+            (
+                "SEM",
+                "CrossSectionShiftY",
+                "Cross Section Shift Y (μm)",
+                1e6,
+                False,
+                False,
+            ),
+            ("SEM", "DepthOfFocus", "Depth of Focus (μm)", 1e6, False, False),
+            ("SEM", "Detector", "Detector Name", 1, True, False),
+            ("SEM", "Detector0", "Detector 0", 1, True, False),
+            ("SEM", "Detector0FlatField", "Detector 0 Flat Field", 1, False, False),
+            ("SEM", "Detector0Gain", "Detector 0 Gain", 1, False, False),
+            ("SEM", "Detector0Offset", "Detector 0 Offset", 1, False, False),
+            ("SEM", "DwellTime", "Pixel Dwell Time (μs)", 1e6, False, False),
+            ("SEM", "EmissionCurrent", "Emission Current (μA)", 1e6, False, False),
+            ("SEM", "Gun", "Gun Type", 1, True, False),
+            ("SEM", "GunShiftX", "Gun Shift X", 1, False, False),
+            ("SEM", "GunShiftY", "Gun Shift Y", 1, False, False),
+            ("SEM", "GunTiltX", "Gun Tilt X", 1, False, False),
+            ("SEM", "GunTiltY", "Gun Tilt Y", 1, False, False),
+            ("SEM", "HV", "HV Voltage (kV)", 1e-3, False, False),
+            ("SEM", "IMLCenteringX", "IML Centering X", 1, False, False),
+            ("SEM", "IMLCenteringY", "IML Centering Y", 1, False, False),
+            ("SEM", "ImageShiftX", "Image Shift X (m)", 1, False, False),
+            ("SEM", "ImageShiftY", "Image Shift Y (m)", 1, False, False),
+            ("SEM", "InjectedGas", "Injected Gas", 1, True, False),
+            ("SEM", "LUTGamma", "LUT Gamma", 1, False, False),
+            ("SEM", "LUTMaximum", "LUT Maximum", 1, False, False),
+            ("SEM", "LUTMinimum", "LUT Minimum", 1, False, False),
+            ("SEM", "MTDGrid", "MTD Grid (kV)", 1e-3, False, False),
+            ("SEM", "MTDScintillator", "MTD Scintillator (kV)", 1e-3, False, False),
+            ("SEM", "OBJCenteringX", "OBJ Centering X", 1, False, False),
+            ("SEM", "OBJCenteringY", "OBJ Centering Y", 1, False, False),
+            ("SEM", "OBJPreCenteringX", "OBJ Pre-Centering X", 1, False, False),
+            ("SEM", "OBJPreCenteringY", "OBJ Pre-Centering Y", 1, False, False),
+            ("SEM", "PotentialMode", "Potential Mode", 1, True, False),
+            (
+                "SEM",
+                "PredictedBeamCurrent",
+                "Predicted Beam Current (pA)",
+                1e12,
+                False,
+                False,
+            ),
+            ("SEM", "PrimaryDetectorGain", "Primary Detector Gain", 1, False, False),
+            (
+                "SEM",
+                "PrimaryDetectorOffset",
+                "Primary Detector Offset",
+                1,
+                False,
+                False,
+            ),
+            ("SEM", "SampleVoltage", "Sample Voltage (V)", 1, False, False),
+            ("SEM", "ScanID", "Scan ID", 1, False, False),
+            ("SEM", "ScanMode", "Scan Mode", 1, True, False),
+            ("SEM", "ScanRotation", "Scan Rotation (degrees)", 1, False, False),
+            ("SEM", "ScanSpeed", "Scan Speed", 1, False, False),
+            ("SEM", "SessionID", "Session ID", 1, True, False),
+            ("SEM", "SpecimenCurrent", "Specimen Current (pA)", 1e12, False, False),
+            ("SEM", "SpotSize", "Spot Size (nm)", 1e9, False, False),
+            (
+                "SEM",
+                "StageRotation",
+                ["Stage Position", "Rotation (degrees)"],
+                1,
+                False,
+                False,
+            ),
+            ("SEM", "StageTilt", ["Stage Position", "Tilt (degrees)"], 1, False, False),
+            ("SEM", "StageX", ["Stage Position", "X"], 1, False, False),
+            ("SEM", "StageY", ["Stage Position", "Y"], 1, False, False),
+            ("SEM", "StageZ", ["Stage Position", "Z"], 1, False, False),
+            ("SEM", "StigmatorX", "Stigmator X Value", 1, False, False),
+            ("SEM", "StigmatorY", "Stigmator Y Value", 1, False, False),
+            (
+                "SEM",
+                "SymmetrizationVoltage",
+                "Symmetrization Voltage (kV)",
+                1e-3,
+                False,
+                False,
+            ),
+            ("SEM", "SyncMains", "Sync to Mains", 1, True, False),
+            ("SEM", "TiltCorrection", "Tilt Correction", 1, False, False),
+            ("SEM", "TubeVoltage", "Tube Voltage (kV)", 1e-3, False, False),
+            (
+                "SEM",
+                "VirtualObserverDistance",
+                "Virtual Observer Distance (mm)",
+                1e3,
+                False,
+                False,
+            ),
+            ("SEM", "WD", "Working Distance (mm)", 1e3, False, False),
+        ]
+
+        # Extract standard fields
+        for (
+            section_name,
+            source_key,
+            output_key,
+            factor,
+            is_string,
+            suppress_zero,
+        ) in fields:
+            section = main_section if section_name == "MAIN" else sem_section
+            value = section.get(source_key)
+
+            # Try fallback keys for some fields
+            if value is None and source_key == "HV":
+                value = sem_section.get("AcceleratorVoltage")
+            elif value is None and source_key == "Detector0Gain":
+                value = sem_section.get("PrimaryDetectorGain")
+            elif value is None and source_key == "Detector0Offset":
+                value = sem_section.get("PrimaryDetectorOffset")
+
+            if value:
+                if is_string:
+                    # Handle nested dict paths vs flat keys
+                    # (impossible to test with existing metadata structure,
+                    # so exclude from coverage)
+                    if isinstance(output_key, list):  # pragma: no cover
+                        set_nested_dict_value(mdict, ["nx_meta", *output_key], value)
+                    else:
+                        mdict["nx_meta"][output_key] = value
+                else:
+                    with contextlib.suppress(ValueError):
+                        # Use Decimal for precise arithmetic to avoid floating-point
+                        # rounding errors during unit conversions
+                        float_val = float(Decimal(value) * Decimal(str(factor)))
+                        # Skip if suppress_zero is True and value is zero
+                        if not suppress_zero or float_val != 0.0:
+                            if isinstance(output_key, list):
+                                set_nested_dict_value(
+                                    mdict, ["nx_meta", *output_key], float_val
+                                )
+                            else:
+                                mdict["nx_meta"][output_key] = float_val
+
+        # Handle user information (prefer FullUserName over UserName)
+        full_username = main_section.get("FullUserName")
+        username = main_section.get("UserName")
+        if full_username or username:
+            mdict["nx_meta"]["Operator"] = full_username or username
+            mdict["nx_meta"]["warnings"].append(["Operator"])
+
+        return mdict
