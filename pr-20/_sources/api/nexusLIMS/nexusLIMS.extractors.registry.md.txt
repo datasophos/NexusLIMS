@@ -69,6 +69,24 @@
 ```{autodoc2-docstring} nexusLIMS.extractors.registry.ExtractorRegistry.__init__
 ```
 
+````{py:property} extractors
+:canonical: nexusLIMS.extractors.registry.ExtractorRegistry.extractors
+:type: dict[str, list[type[nexusLIMS.extractors.base.BaseExtractor]]]
+
+```{autodoc2-docstring} nexusLIMS.extractors.registry.ExtractorRegistry.extractors
+```
+
+````
+
+````{py:property} extractor_names
+:canonical: nexusLIMS.extractors.registry.ExtractorRegistry.extractor_names
+:type: list[str]
+
+```{autodoc2-docstring} nexusLIMS.extractors.registry.ExtractorRegistry.extractor_names
+```
+
+````
+
 ````{py:method} discover_plugins() -> None
 :canonical: nexusLIMS.extractors.registry.ExtractorRegistry.discover_plugins
 
