@@ -45,7 +45,14 @@ Upgrading from v1.x? Step-by-step instructions for migrating to v2.0+.
 Learn about the record building workflow and data taxonomy.
 ```
 
-```{grid-item-card} 🛠️ Developer Guide
+```{grid-item-card} 🛠️ Supported File Formats
+:link: extractors
+:link-type: doc
+
+Explore the comprehensive list of supported microscopy file formats and NexusLIMS's metadata extraction capabilities.
+```
+
+```{grid-item-card} ⌨️ Developer Guide
 :link: dev_guide
 :link-type: doc
 

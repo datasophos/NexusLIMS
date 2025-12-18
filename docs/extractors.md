@@ -8,18 +8,18 @@ each format.
 
 ## Quick Reference
 
-| **Extension** | **Support** | **Instrument/Software** | **Data Types** | **Key Features** |
-|---------------|-------------|-------------------------|----------------|------------------|
-| .dm3, .dm4 | ✅ Full | Gatan DigitalMicrograph | TEM/STEM Imaging, EELS, EDS, Diffraction, Spectrum Imaging | Comprehensive metadata, instrument-specific parsers, automatic type detection |
-| .tif | ✅ Full | FEI/Thermo Fisher SEM/FIB | SEM Imaging | Beam settings, stage position, vacuum conditions, detector config |
-| .tif | ✅ Full | Zeiss Orion HIM / Fibics HIM | HIM Imaging | Helium ion beam settings, stage position, detector configuration, image metadata |
-| .tif | ✅ Full | Tescan PFIB/SEM | SEM Imaging | High-voltage settings, stage position, detector gain/offset, scan parameters, stigmator values |
-| .ser, .emi | ✅ Full | FEI TIA Software | TEM/STEM Imaging, Diffraction, EELS/EDS Spectra & SI | Multi-file support, experimental conditions, acquisition parameters |
-| .spc | ✅ Full | EDAX (Genesis, TEAM) | EDS Spectrum | Detector angles, energy calibration, element identification |
-| .msa | ✅ Full | EDAX & others (standard) | EDS Spectrum | EMSA/MAS standard format, vendor extensions supported |
-| .png, .jpg, .tiff, .bmp, .gif | ⚠️ Preview | Various (exported images) | Unknown | Basic metadata, square thumbnail generation |
-| .txt | ⚠️ Preview | Various (logs, notes) | Unknown | Basic metadata, text-to-image preview |
-| *others* | ❌ Minimal | N/A | Unknown | Timestamp only, placeholder preview |
+| **Instrument/Software** | **Extension** | **Support** | **Data Types** | **Key Features** |
+|-------------------------|---------------|-------------|----------------|------------------|
+| [Gatan DigitalMicrograph](#digital-micrograph-files-dm3-dm4) | .dm3, .dm4 | ✅ Full | TEM/STEM Imaging, EELS, EDS, Diffraction, Spectrum Imaging | Comprehensive metadata, instrument-specific parsers, automatic type detection |
+| [FEI/Thermo Fisher SEM/FIB](#feithermo-fisher-tif-files-tif) | .tif | ✅ Full | SEM Imaging | Beam settings, stage position, vacuum conditions, detector config |
+| [Zeiss Orion HIM / Fibics HIM](#zeiss-orion-fibics-him-tif-files-tif) | .tif | ✅ Full | SEM/HIM Imaging | Helium ion beam settings, stage position, detector configuration, image metadata |
+| [Tescan (P)FIB/SEM](#tescan-pfibsem-tif-files-tif) | .tif | ✅ Full | SEM Imaging | High-voltage settings, stage position, detector gain/offset, scan parameters, stigmator values |
+| [FEI TIA Software](#fei-tia-files-ser-emi) | .ser, .emi | ✅ Full | TEM/STEM Imaging, Diffraction, EELS/EDS Spectra & SI | Multi-file support, experimental conditions, acquisition parameters |
+| [EDAX (Genesis, TEAM)](#edax-eds-files-spc-msa) | .spc | ✅ Full | EDS Spectrum | Detector angles, energy calibration, element identification |
+| [EDAX & others (standard)](#edax-eds-files-spc-msa) | .msa | ✅ Full | EDS Spectrum | EMSA/MAS standard format, vendor extensions supported |
+| [Various (exported images)](#image-formats) | .png, .jpg, .tiff, .bmp, .gif | ⚠️ Preview | Unknown | Basic metadata, square thumbnail generation |
+| [Various (logs, notes)](#text-files-txt) | .txt | ⚠️ Preview | Unknown | Basic metadata, text-to-image preview |
+| [Unknown Files](#unknown-files) | *others* | ❌ Minimal | Unknown | Timestamp only, placeholder preview |
 
 **Legend**: ✅ Full = Comprehensive metadata extraction<br/>⚠️ Preview = Basic metadata + custom preview<br/>❌ Minimal = Timestamp only
 
@@ -36,6 +36,7 @@ Extraction is performed automatically during record building. Each file is ident
 
 These formats have dedicated extractors that parse comprehensive metadata specific to their structure.
 
+(digital-micrograph-files-dm3-dm4)=  
 ### Digital Micrograph Files (.dm3, .dm4)
 
 **Support Level**: ✅ Full
@@ -91,6 +92,7 @@ The extractor includes specialized parsers for specific instruments:
 - For stacked images, metadata is extracted from the first plane
 - Session info (Operator, Specimen, Detector) may be unreliable and is flagged in warnings
 
+(feithermo-fisher-tif-files-tif)=  
 ### FEI/Thermo Fisher TIF Files (.tif)
 
 **Support Level**: ✅ Full
@@ -134,6 +136,7 @@ The extractor includes specialized parsers for specific instruments:
 - Some instruments write duplicate metadata sections which are handled automatically
 - Works with both older config-style metadata and newer XML-based metadata
 
+(zeiss-orion-fibics-him-tif-files-tif)=  
 ### Zeiss Orion / Fibics HIM TIF Files (.tif)
 
 **Support Level**: ✅ Full
@@ -193,13 +196,14 @@ This content-based detection allows proper identification even when files use `.
 - If XML metadata is missing or corrupted, the extractor gracefully falls back to basic file information
 - Both Zeiss Orion and Fibics HIM variants store metadata as embedded XML, making extraction reliable across different software versions
 
+(tescan-pfibsem-tif-files-tif)=  
 ### Tescan PFIB/SEM TIF Files (.tif)
 
 **Support Level**: ✅ Full
 
 **Description**: TIFF images saved by Tescan PFIB (Focused Ion Beam) and SEM instruments (e.g., AMBER X) with embedded INI-style metadata in custom TIFF tags or sidecar .hdr files.
 
-**Extractor Module**: {py:mod}`nexusLIMS.extractors.plugins.tescan_pfib_tif`
+**Extractor Module**: {py:mod}`nexusLIMS.extractors.plugins.tescan_tif`
 
 **File Format Details**:
 
@@ -276,6 +280,7 @@ The extractor flags the following fields as potentially unreliable:
 - The extractor gracefully handles missing or incomplete metadata sections
 - Pixel size is calculated from magnification and field width when not directly available
 
+(fei-tia-files-ser-emi)=  
 ### FEI TIA Files (.ser, .emi)
 
 **Support Level**: ✅ Full
@@ -319,6 +324,7 @@ The extractor flags the following fields as potentially unreliable:
 - Multiple signals in one `.emi` file are handled; metadata is extracted from the appropriate index
 - Later signals in a multi-file series may have less metadata than the first
 
+(edax-eds-files-spc-msa)=  
 ### EDAX EDS Files (.spc, .msa)
 
 **Support Level**: ✅ Full
@@ -373,6 +379,7 @@ The extractor flags the following fields as potentially unreliable:
 
 These formats receive basic metadata extraction and custom preview generation, but do not have dedicated metadata parsers.
 
+(image-formats)=  
 ### Image Formats
 
 **Support Level**: ⚠️ Preview Only
@@ -398,6 +405,7 @@ These formats receive basic metadata extraction and custom preview generation, b
 - These are typically auxiliary files (screenshots, exported images, etc.)
 - Marked as `DatasetType: Unknown` in records
 
+(text-files-txt)=  
 ### Text Files (.txt)
 
 **Support Level**: ⚠️ Preview Only
@@ -421,6 +429,7 @@ These formats receive basic metadata extraction and custom preview generation, b
 - Common for log files, notes, and exported data
 - Marked as `DatasetType: Unknown` in records
 
+(unknown-files)=
 ## Unsupported Formats
 
 **Support Level**: ❌ Minimal
@@ -518,7 +527,7 @@ For complete API documentation of the extractor modules, see:
 - {py:mod}`nexusLIMS.extractors.plugins.digital_micrograph` - DM3/DM4 file extractor
 - {py:mod}`nexusLIMS.extractors.plugins.quanta_tif` - FEI/Thermo TIF file extractor
 - {py:mod}`nexusLIMS.extractors.plugins.orion_HIM_tif` - Zeiss Orion / Fibics HIM TIF file extractor
-- {py:mod}`nexusLIMS.extractors.plugins.tescan_pfib_tif` - Tescan PFIB/SEM TIF file extractor
+- {py:mod}`nexusLIMS.extractors.plugins.tescan_tif` - Tescan PFIB/SEM TIF file extractor
 - {py:mod}`nexusLIMS.extractors.plugins.fei_emi` - FEI TIA .ser/.emi file extractor
 - {py:mod}`nexusLIMS.extractors.plugins.edax` - EDAX .spc/.msa file extractor
 - {py:mod}`nexusLIMS.extractors.plugins.basic_metadata` - Basic metadata fallback extractor
