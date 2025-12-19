@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Any, Callable, Protocol
+from typing import TYPE_CHECKING, Any, Callable, NamedTuple, Protocol
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -23,8 +23,62 @@ logger = logging.getLogger(__name__)
 __all__ = [
     "BaseExtractor",
     "ExtractionContext",
+    "FieldDefinition",
     "PreviewGenerator",
 ]
+
+
+class FieldDefinition(NamedTuple):
+    """
+    Configuration for extracting a single metadata field.
+
+    This NamedTuple provides a declarative way to define how metadata fields
+    should be extracted from instrument data files. It's used by TIFF-based
+    extractors (Quanta, Tescan, Orion HIM) to reduce code duplication.
+
+    Attributes
+    ----------
+    section : str
+        Section name in metadata dict (e.g., "Beam", "User", "System").
+        For nested dicts, this is the top-level key.
+    source_key : str
+        Key within the section to extract the value from.
+    output_key : str | list[str]
+        Output key in nx_meta. Can be a string for flat keys or a list
+        for nested paths (e.g., ["Stage Position", "X"]).
+    factor : float
+        Unit conversion factor. The extracted value is multiplied by this.
+        Use 1.0 for no conversion. For SI unit conversions, use powers of 10
+        (e.g., 1e6 to convert meters to micrometers).
+    is_string : bool
+        If True, keep value as string. If False, attempt numeric conversion
+        with Decimal for precision.
+    suppress_zero : bool, default=False
+        If True, skip field if the numeric value equals zero.
+        Only applies when is_string=False.
+
+    Examples
+    --------
+    >>> # Simple numeric field with unit conversion (m → μm)
+    >>> FieldDefinition("Beam", "HFW", "Horizontal Field Width (μm)", 1e6, False)
+
+    >>> # String field (no conversion)
+    >>> FieldDefinition("System", "Chamber", "Chamber ID", 1.0, True)
+
+    >>> # Nested output path
+    >>> FieldDefinition("Beam", "StageX", ["Stage Position", "X"], 1.0, False)
+
+    >>> # Suppress zero values
+    >>> FieldDefinition("Beam", "BeamShiftX", "Beam Shift X",
+    >>>                 1.0, False, suppress_zero=True)
+    """
+
+    section: str
+    source_key: str
+    output_key: str | list[str]
+    factor: float
+    is_string: bool
+    suppress_zero: bool = False
 
 
 @dataclass

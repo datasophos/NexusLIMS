@@ -1,4 +1,4 @@
-# ruff: noqa: S314
+# ruff: noqa: S314, N817, FBT003
 """Zeiss Orion/Fibics TIFF extractor plugin."""
 
 import logging
@@ -9,6 +9,7 @@ from typing import Any, ClassVar
 from PIL import Image
 
 from nexusLIMS.extractors.base import ExtractionContext
+from nexusLIMS.extractors.base import FieldDefinition as FD
 from nexusLIMS.extractors.utils import _set_instr_name_and_time
 from nexusLIMS.utils import set_nested_dict_value, sort_dict
 
@@ -202,111 +203,159 @@ class OrionFibicsTiffExtractor:
             mdict, ["nx_meta", "Data Dimensions"], str((width, height))
         )
 
-        # Define metadata fields: (xml_path, output_key, conversion_factor)
+        # Define metadata fields using FieldDefinition
         fields = [
             # GFIS
-            ("GFIS.AccelerationVoltage", ["GFIS", "Acceleration Voltage (kV)"], 1e-3),
-            ("GFIS.ExtractionVoltage", ["GFIS", "Extraction Voltage (kV)"], 1e-3),
-            ("GFIS.CondenserVoltage", ["GFIS", "Condenser Voltage (kV)"], 1e-3),
-            ("GFIS.ObjectiveVoltage", ["GFIS", "Objective Voltage (kV)"], 1e-3),
-            ("GFIS.BeamCurrent", ["GFIS", "Beam Current (pA)"], 1),
-            ("GFIS.PanX", ["GFIS", "Pan X (μm)"], 1),
-            ("GFIS.PanY", ["GFIS", "Pan Y (μm)"], 1),
-            ("GFIS.FieldOfView", ["GFIS", "Field of View (μm)"], 1),
-            ("GFIS.ScanRotation", ["GFIS", "Scan Rotation (degrees)"], 1),
-            ("GFIS.StigmationX", ["GFIS", "Stigmation X"], 1),
-            ("GFIS.StigmationY", ["GFIS", "Stigmation Y"], 1),
-            ("GFIS.ApertureSize", ["GFIS", "Aperture Size (μm)"], 1),
-            ("GFIS.ApertureIndex", ["GFIS", "Aperture Index"], 1),
-            ("GFIS.IonGas", ["GFIS", "Ion Gas"], 1),
-            ("GFIS.CrossoverPosition", ["GFIS", "Crossover Position (mm)"], 1),
-            ("GFIS.WorkingDistance", ["GFIS", "Working Distance (mm)"], 1),
+            FD(
+                "",
+                "GFIS.AccelerationVoltage",
+                ["GFIS", "Acceleration Voltage (kV)"],
+                1e-3,
+                False,
+            ),
+            FD(
+                "",
+                "GFIS.ExtractionVoltage",
+                ["GFIS", "Extraction Voltage (kV)"],
+                1e-3,
+                False,
+            ),
+            FD(
+                "",
+                "GFIS.CondenserVoltage",
+                ["GFIS", "Condenser Voltage (kV)"],
+                1e-3,
+                False,
+            ),
+            FD(
+                "",
+                "GFIS.ObjectiveVoltage",
+                ["GFIS", "Objective Voltage (kV)"],
+                1e-3,
+                False,
+            ),
+            FD("", "GFIS.BeamCurrent", ["GFIS", "Beam Current (pA)"], 1, False),
+            FD("", "GFIS.PanX", ["GFIS", "Pan X (μm)"], 1, False),
+            FD("", "GFIS.PanY", ["GFIS", "Pan Y (μm)"], 1, False),
+            FD("", "GFIS.FieldOfView", ["GFIS", "Field of View (μm)"], 1, False),
+            FD("", "GFIS.ScanRotation", ["GFIS", "Scan Rotation (degrees)"], 1, False),
+            FD("", "GFIS.StigmationX", ["GFIS", "Stigmation X"], 1, False),
+            FD("", "GFIS.StigmationY", ["GFIS", "Stigmation Y"], 1, False),
+            FD("", "GFIS.ApertureSize", ["GFIS", "Aperture Size (μm)"], 1, False),
+            FD("", "GFIS.ApertureIndex", ["GFIS", "Aperture Index"], 1, False),
+            FD("", "GFIS.IonGas", ["GFIS", "Ion Gas"], 1, False),
+            FD(
+                "",
+                "GFIS.CrossoverPosition",
+                ["GFIS", "Crossover Position (mm)"],
+                1,
+                False,
+            ),
+            FD("", "GFIS.WorkingDistance", ["GFIS", "Working Distance (mm)"], 1, False),
             # Beam
-            ("AccelerationVoltage", ["Beam", "Voltage (kV)"], 1e-3),
-            ("ExtractionVoltage", ["Beam", "Extraction Voltage (kV)"], 1e-3),
-            ("BlankerCurrent", ["Beam", "Blanker Current (pA)"], 1),
-            ("SampleCurrent", ["Beam", "Sample Current (pA)"], 1),
-            ("SpotNumber", ["Beam", "Spot Number"], 1),
-            ("WorkingDistance", ["Beam", "Working Distance (mm)"], 1),
-            ("Fov", ["Beam", "Field of View (μm)"], 1),
-            ("PanX", ["Beam", "Pan X (μm)"], 1),
-            ("PanY", ["Beam", "Pan Y (μm)"], 1),
-            ("StigmationX", ["Beam", "Stigmator X Value"], 1),
-            ("StigmationY", ["Beam", "Stigmator Y Value"], 1),
-            ("ApertureSize", ["Beam", "Aperture Size"], 1),
-            ("CrossOverPosition", ["Beam", "Crossover Position (mm)"], 1),
+            FD("", "AccelerationVoltage", ["Beam", "Voltage (kV)"], 1e-3, False),
+            FD(
+                "",
+                "ExtractionVoltage",
+                ["Beam", "Extraction Voltage (kV)"],
+                1e-3,
+                False,
+            ),
+            FD("", "BlankerCurrent", ["Beam", "Blanker Current (pA)"], 1, False),
+            FD("", "SampleCurrent", ["Beam", "Sample Current (pA)"], 1, False),
+            FD("", "SpotNumber", ["Beam", "Spot Number"], 1, False),
+            FD("", "WorkingDistance", ["Beam", "Working Distance (mm)"], 1, False),
+            FD("", "Fov", ["Beam", "Field of View (μm)"], 1, False),
+            FD("", "PanX", ["Beam", "Pan X (μm)"], 1, False),
+            FD("", "PanY", ["Beam", "Pan Y (μm)"], 1, False),
+            FD("", "StigmationX", ["Beam", "Stigmator X Value"], 1, False),
+            FD("", "StigmationY", ["Beam", "Stigmator Y Value"], 1, False),
+            FD("", "ApertureSize", ["Beam", "Aperture Size"], 1, False),
+            FD("", "CrossOverPosition", ["Beam", "Crossover Position (mm)"], 1, False),
             # Scan
-            ("FrameRetrace", ["Scan", "Frame Retrace (μs)"], 1),
-            ("LineRetrace", ["Scan", "Line Retrace (μs)"], 1),
-            ("AveragingMode", ["Scan", "Averaging Mode"], 1),
-            ("NumAverages", ["Scan", "Number of Averages"], 1),
-            ("ScanRotate", ["Scan", "Rotation (degrees)"], 1),
-            ("DwellTime", ["Scan", "Dwell Time (μs)"], 1),
-            ("SAS.ScanSize", ["Scan", "Scan Size"], 1),
+            FD("", "FrameRetrace", ["Scan", "Frame Retrace (μs)"], 1, False),
+            FD("", "LineRetrace", ["Scan", "Line Retrace (μs)"], 1, False),
+            FD("", "AveragingMode", ["Scan", "Averaging Mode"], 1, False),
+            FD("", "NumAverages", ["Scan", "Number of Averages"], 1, False),
+            FD("", "ScanRotate", ["Scan", "Rotation (degrees)"], 1, False),
+            FD("", "DwellTime", ["Scan", "Dwell Time (μs)"], 1, False),
+            FD("", "SAS.ScanSize", ["Scan", "Scan Size"], 1, False),
             # Stage
-            ("StageX", ["Stage Position", "X (μm)"], 1),
-            ("StageY", ["Stage Position", "Y (μm)"], 1),
-            ("StageZ", ["Stage Position", "Z (mm)"], 1),
-            ("StageTilt", ["Stage Position", "Tilt (degrees)"], 1),
-            ("StageRotate", ["Stage Position", "Rotation (degrees)"], 1),
-            ("Stage.XLocation", ["Stage Position", "X Location (μm)"], 1),
-            ("Stage.YLocation", ["Stage Position", "Y Location (μm)"], 1),
+            FD("", "StageX", ["Stage Position", "X (μm)"], 1, False),
+            FD("", "StageY", ["Stage Position", "Y (μm)"], 1, False),
+            FD("", "StageZ", ["Stage Position", "Z (mm)"], 1, False),
+            FD("", "StageTilt", ["Stage Position", "Tilt (degrees)"], 1, False),
+            FD("", "StageRotate", ["Stage Position", "Rotation (degrees)"], 1, False),
+            FD("", "Stage.XLocation", ["Stage Position", "X Location (μm)"], 1, False),
+            FD("", "Stage.YLocation", ["Stage Position", "Y Location (μm)"], 1, False),
             # Optics
-            ("sFimFOV", ["Optics", "sFIM Field of View (μm)"], 1),
-            ("McXShift", ["Optics", "MC X Shift (μrad)"], 1),
-            ("McXTilt", ["Optics", "MC X Tilt (μrad)"], 1),
-            ("McYShift", ["Optics", "MC Y Shift (μrad)"], 1),
-            ("McYTilt", ["Optics", "MC Y Tilt (μrad)"], 1),
-            ("ColumnMag", ["Optics", "Column Magnification"], 1),
-            ("ColumnMode", ["Optics", "Column Mode"], 1),
-            ("Lens1Voltage", ["Optics", "Lens 1 Voltage (kV)"], 1e-3),
-            ("Lens2Voltage", ["Optics", "Lens 2 Voltage (kV)"], 1e-3),
+            FD("", "sFimFOV", ["Optics", "sFIM Field of View (μm)"], 1, False),
+            FD("", "McXShift", ["Optics", "MC X Shift (μrad)"], 1, False),
+            FD("", "McXTilt", ["Optics", "MC X Tilt (μrad)"], 1, False),
+            FD("", "McYShift", ["Optics", "MC Y Shift (μrad)"], 1, False),
+            FD("", "McYTilt", ["Optics", "MC Y Tilt (μrad)"], 1, False),
+            FD("", "ColumnMag", ["Optics", "Column Magnification"], 1, False),
+            FD("", "ColumnMode", ["Optics", "Column Mode"], 1, False),
+            FD("", "Lens1Voltage", ["Optics", "Lens 1 Voltage (kV)"], 1e-3, False),
+            FD("", "Lens2Voltage", ["Optics", "Lens 2 Voltage (kV)"], 1e-3, False),
             # Detector
-            ("DetectorName", ["Detector", "Name"], 1),
-            ("ETGridVoltage", ["Detector", "ET Grid Voltage (V)"], 1),
-            ("ETContrast", ["Detector", "ET Contrast"], 1),
-            ("ETBrightness", ["Detector", "ET Brightness"], 1),
-            ("ETImageIntensity", ["Detector", "ET Image Intensity"], 1),
-            ("MCPContrast", ["Detector", "MCP Contrast"], 1),
-            ("MCPBrightness", ["Detector", "MCP Brightness"], 1),
-            ("MCPBias", ["Detector", "MCP Bias (V)"], 1),
-            ("MCPImageIntensity", ["Detector", "MCP Image Intensity"], 1),
-            ("Detector.Scintillator", ["Detector", "Scintillator (kV)"], 1e-3),
-            ("SampleBiasVoltage", ["Detector", "Sample Bias (V)"], 1),
+            FD("", "DetectorName", ["Detector", "Name"], 1, False),
+            FD("", "ETGridVoltage", ["Detector", "ET Grid Voltage (V)"], 1, False),
+            FD("", "ETContrast", ["Detector", "ET Contrast"], 1, False),
+            FD("", "ETBrightness", ["Detector", "ET Brightness"], 1, False),
+            FD("", "ETImageIntensity", ["Detector", "ET Image Intensity"], 1, False),
+            FD("", "MCPContrast", ["Detector", "MCP Contrast"], 1, False),
+            FD("", "MCPBrightness", ["Detector", "MCP Brightness"], 1, False),
+            FD("", "MCPBias", ["Detector", "MCP Bias (V)"], 1, False),
+            FD("", "MCPImageIntensity", ["Detector", "MCP Image Intensity"], 1, False),
+            FD(
+                "",
+                "Detector.Scintillator",
+                ["Detector", "Scintillator (kV)"],
+                1e-3,
+                False,
+            ),
+            FD("", "SampleBiasVoltage", ["Detector", "Sample Bias (V)"], 1, False),
             # System
-            ("GunPressure", ["System", "Gun Pressure (Torr)"], 1),
-            ("ColumnPressure", ["System", "Column Pressure (Torr)"], 1),
-            ("ChamberPressure", ["System", "Chamber Pressure (Torr)"], 1),
-            ("GunTemp", ["System", "Gun Temperature (K)"], 1),
-            ("HeliumPressure", ["System", "Helium Pressure (Torr)"], 1),
-            ("Magnification4x5", ["Optics", "Magnification 4x5"], 1),
-            ("MagnificationDisplay", ["Optics", "Magnification Display (x)"], 1),
-            ("System.Model", ["System", "Model"], 1),
-            ("System.Name", ["System", "Name"], 1),
-            ("TimeStamp", ["System", "Acquisition Date/Time"], 1),
-            ("ColumnType", ["System", "Column Type"], 1),
+            FD("", "GunPressure", ["System", "Gun Pressure (Torr)"], 1, False),
+            FD("", "ColumnPressure", ["System", "Column Pressure (Torr)"], 1, False),
+            FD("", "ChamberPressure", ["System", "Chamber Pressure (Torr)"], 1, False),
+            FD("", "GunTemp", ["System", "Gun Temperature (K)"], 1, False),
+            FD("", "HeliumPressure", ["System", "Helium Pressure (Torr)"], 1, False),
+            FD("", "Magnification4x5", ["Optics", "Magnification 4x5"], 1, False),
+            FD(
+                "",
+                "MagnificationDisplay",
+                ["Optics", "Magnification Display (x)"],
+                1,
+                False,
+            ),
+            FD("", "System.Model", ["System", "Model"], 1, False),
+            FD("", "System.Name", ["System", "Name"], 1, False),
+            FD("", "TimeStamp", ["System", "Acquisition Date/Time"], 1, False),
+            FD("", "ColumnType", ["System", "Column Type"], 1, False),
             # Flood gun
-            ("FloodGunMode", ["Flood Gun", "Mode"], 1),
-            ("FloodGunEnergy", ["Flood Gun", "Energy (eV)"], 1),
-            ("FloodGunTime", ["Flood Gun", "Time (μs)"], 1),
-            ("FloodGun.DeflectionX", ["Flood Gun", "Deflection X"], 1),
-            ("FloodGun.DeflectionY", ["Flood Gun", "Deflection Y"], 1),
+            FD("", "FloodGunMode", ["Flood Gun", "Mode"], 1, False),
+            FD("", "FloodGunEnergy", ["Flood Gun", "Energy (eV)"], 1, False),
+            FD("", "FloodGunTime", ["Flood Gun", "Time (μs)"], 1, False),
+            FD("", "FloodGun.DeflectionX", ["Flood Gun", "Deflection X"], 1, False),
+            FD("", "FloodGun.DeflectionY", ["Flood Gun", "Deflection Y"], 1, False),
             # Misc
-            ("ScalingX", ["Calibration", "X Scale (m)"], 1),
-            ("ScalingY", ["Calibration", "Y Scale (m)"], 1),
-            ("ImageWidth", ["Image", "Width (pixels)"], 1),
-            ("ImageHeight", ["Image", "Height (pixels)"], 1),
+            FD("", "ScalingX", ["Calibration", "X Scale (m)"], 1, False),
+            FD("", "ScalingY", ["Calibration", "Y Scale (m)"], 1, False),
+            FD("", "ImageWidth", ["Image", "Width (pixels)"], 1, False),
+            FD("", "ImageHeight", ["Image", "Height (pixels)"], 1, False),
             # Display
-            ("LutMode", ["Display", "LUT Mode"], 1),
-            ("LowGray", ["Display", "Low Gray Value"], 1),
-            ("HighGray", ["Display", "High Gray Value"], 1),
-            ("LUT.LUTGamma", ["Display", "LUT Gamma"], 1),
+            FD("", "LutMode", ["Display", "LUT Mode"], 1, False),
+            FD("", "LowGray", ["Display", "Low Gray Value"], 1, False),
+            FD("", "HighGray", ["Display", "High Gray Value"], 1, False),
+            FD("", "LUT.LUTGamma", ["Display", "LUT Gamma"], 1, False),
         ]
 
         # Extract all fields
-        for field_path, output_key, conversion_factor in fields:
+        for field in fields:
             self._parse_zeiss_field(
-                root, field_path, output_key, mdict, conversion_factor
+                root, field.source_key, field.output_key, mdict, field.factor
             )
 
         return mdict
@@ -343,85 +392,116 @@ class OrionFibicsTiffExtractor:
             mdict, ["nx_meta", "Data Dimensions"], str((width, height))
         )
 
-        # Define sections and their fields:
-        #   (section_name, [(field, output_key, conversion_factor)])  # noqa: ERA001
-        sections = {
-            "Application": [
-                ("Version", ["Application", "Software Version"], 1),
-                ("Date", ["Application", "Acquisition Date/Time"], 1),
-                ("SupportsTransparency", ["Application", "Supports Transparency"], 1),
-                (
-                    "TransparentPixelValue",
-                    ["Application", "Transparent Pixel Value"],
-                    1,
-                ),
-            ],
-            "Image": [
-                ("Width", ["Image", "Width (pixels)"], 1),
-                ("Height", ["Image", "Height (pixels)"], 1),
-                ("BoundingBox.Left", ["Image", "Bounding Box Left"], 1),
-                ("BoundingBox.Right", ["Image", "Bounding Box Right"], 1),
-                ("BoundingBox.Top", ["Image", "Bounding Box Top"], 1),
-                ("BoundingBox.Bottom", ["Image", "Bounding Box Bottom"], 1),
-                ("Machine", ["Image", "Machine Name"], 1),
-                ("Beam", ["Image", "Beam Type"], 1),
-                ("Aperture", ["Image", "Aperture Description"], 1),
-                ("Detector", ["Detector", "Name"], 1),
-                ("Contrast", ["Detector", "Contrast"], 1),
-                ("Brightness", ["Detector", "Brightness"], 1),
-            ],
-            "Scan": [
-                ("Dwell", ["Scan", "Pixel Dwell Time (μs)"], 1e-3),  # Convert ns to μs
-                ("LineAvg", ["Scan", "Line Averaging"], 1),
-                ("FOV_X", ["Scan", "Field of View X (μm)"], 1),
-                ("FOV_Y", ["Scan", "Field of View Y (μm)"], 1),
-                ("ScanRot", ["Scan", "Scan Rotation (degrees)"], 1),
-                ("Ux", ["Scan", "Affine Ux"], 1),
-                ("Uy", ["Scan", "Affine Uy"], 1),
-                ("Vx", ["Scan", "Affine Vx"], 1),
-                ("Vy", ["Scan", "Affine Vy"], 1),
-                ("Focus", ["Scan", "Focus Value"], 1),
-                ("StigX", ["Scan", "Stigmator X Value"], 1),
-                ("StigY", ["Scan", "Stigmator Y Value"], 1),
-            ],
-            "Stage": [
-                ("X", ["Stage Position", "X (μm)"], 1),
-                ("Y", ["Stage Position", "Y (μm)"], 1),
-                ("Z", ["Stage Position", "Z (μm)"], 1),
-                ("Tilt", ["Stage Position", "Tilt (degrees)"], 1),
-                ("Rot", ["Stage Position", "Rotation (degrees)"], 1),
-                ("M", ["Stage Position", "M (mm)"], 1),
-            ],
-            "BeamInfo": [
-                ("BeamI", ["Beam", "Beam Current (pA)"], 1),
-                ("AccV", ["Beam", "Acceleration Voltage (kV)"], 1e-3),
-                ("Aperture", ["Beam", "Aperture"], 1),
-                ("GFISGas", ["Beam", "GFIS Gas Type"], 1),
-                ("GunGasPressure", ["Beam", "Gun Gas Pressure"], 1),
-                ("SpotControl", ["Beam", "Spot Control"], 1),
-            ],
-            "DetectorInfo": [
-                ("Collector", ["Detector", "Collector Voltage (V)"], "strip_units"),
-                ("Stage Bias", ["Detector", "Stage Bias Voltage (V)"], "strip_units"),
-            ],
-        }
+        # Define Fibics metadata fields using FD
+        # Note: factor=-1 is a sentinel value for "strip_units" conversion
+        fibics_fields = [
+            # Application section
+            FD("Application", "Version", ["Application", "Software Version"], 1, False),
+            FD(
+                "Application",
+                "Date",
+                ["Application", "Acquisition Date/Time"],
+                1,
+                False,
+            ),
+            FD(
+                "Application",
+                "SupportsTransparency",
+                ["Application", "Supports Transparency"],
+                1,
+                False,
+            ),
+            FD(
+                "Application",
+                "TransparentPixelValue",
+                ["Application", "Transparent Pixel Value"],
+                1,
+                False,
+            ),
+            # Image section
+            FD("Image", "Width", ["Image", "Width (pixels)"], 1, False),
+            FD("Image", "Height", ["Image", "Height (pixels)"], 1, False),
+            FD("Image", "BoundingBox.Left", ["Image", "Bounding Box Left"], 1, False),
+            FD("Image", "BoundingBox.Right", ["Image", "Bounding Box Right"], 1, False),
+            FD("Image", "BoundingBox.Top", ["Image", "Bounding Box Top"], 1, False),
+            FD(
+                "Image",
+                "BoundingBox.Bottom",
+                ["Image", "Bounding Box Bottom"],
+                1,
+                False,
+            ),
+            FD("Image", "Machine", ["Image", "Machine Name"], 1, False),
+            FD("Image", "Beam", ["Image", "Beam Type"], 1, False),
+            FD("Image", "Aperture", ["Image", "Aperture Description"], 1, False),
+            FD("Image", "Detector", ["Detector", "Name"], 1, False),
+            FD("Image", "Contrast", ["Detector", "Contrast"], 1, False),
+            FD("Image", "Brightness", ["Detector", "Brightness"], 1, False),
+            # Scan section
+            FD(
+                "Scan", "Dwell", ["Scan", "Pixel Dwell Time (μs)"], 1e-3, False
+            ),  # Convert ns to μs
+            FD("Scan", "LineAvg", ["Scan", "Line Averaging"], 1, False),
+            FD("Scan", "FOV_X", ["Scan", "Field of View X (μm)"], 1, False),
+            FD("Scan", "FOV_Y", ["Scan", "Field of View Y (μm)"], 1, False),
+            FD("Scan", "ScanRot", ["Scan", "Scan Rotation (degrees)"], 1, False),
+            FD("Scan", "Ux", ["Scan", "Affine Ux"], 1, False),
+            FD("Scan", "Uy", ["Scan", "Affine Uy"], 1, False),
+            FD("Scan", "Vx", ["Scan", "Affine Vx"], 1, False),
+            FD("Scan", "Vy", ["Scan", "Affine Vy"], 1, False),
+            FD("Scan", "Focus", ["Scan", "Focus Value"], 1, False),
+            FD("Scan", "StigX", ["Scan", "Stigmator X Value"], 1, False),
+            FD("Scan", "StigY", ["Scan", "Stigmator Y Value"], 1, False),
+            # Stage section
+            FD("Stage", "X", ["Stage Position", "X (μm)"], 1, False),
+            FD("Stage", "Y", ["Stage Position", "Y (μm)"], 1, False),
+            FD("Stage", "Z", ["Stage Position", "Z (μm)"], 1, False),
+            FD("Stage", "Tilt", ["Stage Position", "Tilt (degrees)"], 1, False),
+            FD("Stage", "Rot", ["Stage Position", "Rotation (degrees)"], 1, False),
+            FD("Stage", "M", ["Stage Position", "M (mm)"], 1, False),
+            # BeamInfo section
+            FD("BeamInfo", "BeamI", ["Beam", "Beam Current (pA)"], 1, False),
+            FD("BeamInfo", "AccV", ["Beam", "Acceleration Voltage (kV)"], 1e-3, False),
+            FD("BeamInfo", "Aperture", ["Beam", "Aperture"], 1, False),
+            FD("BeamInfo", "GFISGas", ["Beam", "GFIS Gas Type"], 1, False),
+            FD("BeamInfo", "GunGasPressure", ["Beam", "Gun Gas Pressure"], 1, False),
+            FD("BeamInfo", "SpotControl", ["Beam", "Spot Control"], 1, False),
+            # DetectorInfo section - using -1 as sentinel for "strip_units"
+            FD(
+                "DetectorInfo",
+                "Collector",
+                ["Detector", "Collector Voltage (V)"],
+                -1,
+                False,
+            ),
+            FD(
+                "DetectorInfo",
+                "Stage Bias",
+                ["Detector", "Stage Bias Voltage (V)"],
+                -1,
+                False,
+            ),
+        ]
 
         # Extract fields from each section
-        for section_name, fields in sections.items():
-            section = self._find_fibics_section(root, section_name)
+        for field in fibics_fields:
+            section = self._find_fibics_section(root, field.section)
             if section is not None:
-                for field_name, output_key, conversion_factor in fields:
-                    value = self._parse_fibics_value(
-                        section, field_name, conversion_factor
+                # Use -1 as sentinel for "strip_units" conversion
+                conversion_factor = (
+                    "strip_units" if field.factor == -1 else field.factor
+                )
+                value = self._parse_fibics_value(
+                    section, field.source_key, conversion_factor
+                )
+                if value is not None:
+                    set_nested_dict_value(
+                        mdict,
+                        ["nx_meta", field.output_key]
+                        if isinstance(field.output_key, str)
+                        else ["nx_meta", *field.output_key],
+                        value,
                     )
-                    if value is not None:
-                        set_nested_dict_value(
-                            mdict,
-                            ["nx_meta", output_key]
-                            if isinstance(output_key, str)
-                            else ["nx_meta", *output_key],
-                            value,
-                        )
 
         return mdict
 

@@ -74,28 +74,58 @@ class TestDM3Extractor:
 class TestQuantaTiffExtractor:
     """Test QuantaTiffExtractor plugin."""
 
-    def test_supports_tif(self):
+    def test_supports_tif(self, quanta_test_file):
         """QuantaTiffExtractor should support .tif files."""
         extractor = QuantaTiffExtractor()
-        context = ExtractionContext(Path("test.tif"), None)
+        context = ExtractionContext(quanta_test_file[0], None)
         assert extractor.supports(context)
 
-    def test_supports_tiff(self):
+    def test_supports_tiff(self, quanta_test_file):
         """QuantaTiffExtractor should support .tiff files."""
         extractor = QuantaTiffExtractor()
-        context = ExtractionContext(Path("test.tiff"), None)
+        # Get a .tiff file or rename for testing
+        tif_file = quanta_test_file[0]
+        tiff_file = tif_file.parent / (tif_file.stem + ".tiff")
+        tif_file.rename(tiff_file)
+        context = ExtractionContext(tiff_file, None)
         assert extractor.supports(context)
+        # Rename back for other tests
+        tiff_file.rename(tif_file)
 
-    def test_supports_uppercase(self):
+    def test_supports_uppercase(self, quanta_test_file):
         """QuantaTiffExtractor should support uppercase extensions."""
         extractor = QuantaTiffExtractor()
-        context = ExtractionContext(Path("test.TIF"), None)
+        # Get a file with uppercase extension
+        tif_file = quanta_test_file[0]
+        uppercase_file = tif_file.parent / (tif_file.stem + ".TIF")
+        tif_file.rename(uppercase_file)
+        context = ExtractionContext(uppercase_file, None)
         assert extractor.supports(context)
+        # Rename back for other tests
+        uppercase_file.rename(tif_file)
 
     def test_does_not_support_other_extensions(self):
         """QuantaTiffExtractor should not support other extensions."""
         extractor = QuantaTiffExtractor()
         context = ExtractionContext(Path("test.dm3"), None)
+        assert not extractor.supports(context)
+
+    def test_does_not_support_tiff_without_fei_metadata(self, tmp_path):
+        """QuantaTiffExtractor should not support TIFF files without FEI metadata."""
+        # Create a minimal TIFF file without FEI metadata
+        import numpy as np
+        from PIL import Image
+
+        # Create a simple image
+        img_array = np.zeros((10, 10), dtype=np.uint8)
+        img = Image.fromarray(img_array, mode="L")
+
+        # Save as TIFF without FEI metadata
+        tiff_path = tmp_path / "test_no_fei.tif"
+        img.save(tiff_path)
+
+        extractor = QuantaTiffExtractor()
+        context = ExtractionContext(tiff_path, None)
         assert not extractor.supports(context)
 
     def test_extract_with_real_file(self, quanta_test_file):

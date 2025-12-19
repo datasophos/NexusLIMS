@@ -1,3 +1,4 @@
+# ruff: noqa: N817, FBT003
 """Tescan (P)FIB/SEM TIFF extractor plugin."""
 
 import configparser
@@ -11,6 +12,7 @@ from typing import Any, ClassVar
 from PIL import Image
 
 from nexusLIMS.extractors.base import ExtractionContext
+from nexusLIMS.extractors.base import FieldDefinition as FD
 from nexusLIMS.extractors.utils import _set_instr_name_and_time
 from nexusLIMS.utils import set_nested_dict_value, sort_dict
 
@@ -539,202 +541,154 @@ class TescanTiffExtractor:
         main_section = mdict.get("MAIN", {})
         sem_section = mdict.get("SEM", {})
 
-        # Field definitions: (section, source_key, output_key, factor, is_str,
-        #                     suppress_zero)
-        # output_key can be string or list for nested dicts
-        # (e.g., ["Stage Position", "X"])
-        # suppress_zero: if True, skip field if value is zero
+        # Field definitions using FD NamedTuple
         fields = [
             # [MAIN] section - in order as they appear in HDR file
-            ("MAIN", "AccFrames", "Accumulated Frames", 1, False, False),
-            ("MAIN", "AccType", "Accumulation Type", 1, True, False),
-            ("MAIN", "Company", "Company", 1, True, False),
-            ("MAIN", "Date", "Acquisition Date", 1, True, False),
-            ("MAIN", "Description", "Description", 1, True, False),
-            ("MAIN", "Device", "Device", 1, True, False),
-            ("MAIN", "DeviceModel", "Device Model", 1, True, False),
-            ("MAIN", "FullUserName", "Full User Name", 1, True, False),
-            ("MAIN", "ImageStripSize", "Image Strip Size", 1, False, False),
-            ("MAIN", "Magnification", "Magnification (kX)", 1e-3, False, False),
-            (
-                "MAIN",
-                "MagnificationReference",
-                "Magnification Reference",
-                1,
-                False,
-                False,
-            ),
-            ("MAIN", "OrigFileName", "Original Filename", 1, True, False),
-            ("MAIN", "PixelSizeX", "Pixel Width (nm)", 1e9, False, False),
-            ("MAIN", "PixelSizeY", "Pixel Height (nm)", 1e9, False, False),
-            ("MAIN", "SerialNumber", "Serial Number", 1, True, False),
-            ("MAIN", "Sign", "Sign", 1, True, False),
-            ("MAIN", "SoftwareVersion", "Software Version", 1, True, False),
-            ("MAIN", "Time", "Acquisition Time", 1, True, False),
-            ("MAIN", "UserName", "User Name", 1, True, False),
-            ("MAIN", "ViewFieldsCountX", "View Fields Count X", 1, False, False),
-            ("MAIN", "ViewFieldsCountY", "View Fields Count Y", 1, False, False),
+            FD("MAIN", "AccFrames", "Accumulated Frames", 1, False),
+            FD("MAIN", "AccType", "Accumulation Type", 1, True),
+            FD("MAIN", "Company", "Company", 1, True),
+            FD("MAIN", "Date", "Acquisition Date", 1, True),
+            FD("MAIN", "Description", "Description", 1, True),
+            FD("MAIN", "Device", "Device", 1, True),
+            FD("MAIN", "DeviceModel", "Device Model", 1, True),
+            FD("MAIN", "FullUserName", "Full User Name", 1, True),
+            FD("MAIN", "ImageStripSize", "Image Strip Size", 1, False),
+            FD("MAIN", "Magnification", "Magnification (kX)", 1e-3, False),
+            FD("MAIN", "MagnificationReference", "Magnification Reference", 1, False),
+            FD("MAIN", "OrigFileName", "Original Filename", 1, True),
+            FD("MAIN", "PixelSizeX", "Pixel Width (nm)", 1e9, False),
+            FD("MAIN", "PixelSizeY", "Pixel Height (nm)", 1e9, False),
+            FD("MAIN", "SerialNumber", "Serial Number", 1, True),
+            FD("MAIN", "Sign", "Sign", 1, True),
+            FD("MAIN", "SoftwareVersion", "Software Version", 1, True),
+            FD("MAIN", "Time", "Acquisition Time", 1, True),
+            FD("MAIN", "UserName", "User Name", 1, True),
+            FD("MAIN", "ViewFieldsCountX", "View Fields Count X", 1, False),
+            FD("MAIN", "ViewFieldsCountY", "View Fields Count Y", 1, False),
             # [SEM] section - in order as they appear in HDR file
-            (
-                "SEM",
-                "AcceleratorVoltage",
-                "Accelerator Voltage (kV)",
-                1e-3,
-                False,
-                False,
-            ),
-            ("SEM", "ApertureDiameter", "Aperture Diameter (μm)", 1e6, False, False),
-            ("SEM", "ApertureOptimization", "Aperture Optimization", 1, False, False),
-            ("SEM", "ChamberPressure", "Chamber Pressure (mPa)", 1e3, False, False),
-            ("SEM", "CrossFree", "Cross Free", 1, False, False),
-            (
-                "SEM",
-                "CrossSectionShiftX",
-                "Cross Section Shift X (μm)",
-                1e6,
-                False,
-                False,
-            ),
-            (
-                "SEM",
-                "CrossSectionShiftY",
-                "Cross Section Shift Y (μm)",
-                1e6,
-                False,
-                False,
-            ),
-            ("SEM", "DepthOfFocus", "Depth of Focus (μm)", 1e6, False, False),
-            ("SEM", "Detector", "Detector Name", 1, True, False),
-            ("SEM", "Detector0", "Detector 0", 1, True, False),
-            ("SEM", "Detector0FlatField", "Detector 0 Flat Field", 1, False, False),
-            ("SEM", "Detector0Gain", "Detector 0 Gain", 1, False, False),
-            ("SEM", "Detector0Offset", "Detector 0 Offset", 1, False, False),
-            ("SEM", "DwellTime", "Pixel Dwell Time (μs)", 1e6, False, False),
-            ("SEM", "EmissionCurrent", "Emission Current (μA)", 1e6, False, False),
-            ("SEM", "Gun", "Gun Type", 1, True, False),
-            ("SEM", "GunShiftX", "Gun Shift X", 1, False, False),
-            ("SEM", "GunShiftY", "Gun Shift Y", 1, False, False),
-            ("SEM", "GunTiltX", "Gun Tilt X", 1, False, False),
-            ("SEM", "GunTiltY", "Gun Tilt Y", 1, False, False),
-            ("SEM", "HV", "HV Voltage (kV)", 1e-3, False, False),
-            ("SEM", "IMLCenteringX", "IML Centering X", 1, False, False),
-            ("SEM", "IMLCenteringY", "IML Centering Y", 1, False, False),
-            ("SEM", "ImageShiftX", "Image Shift X (m)", 1, False, False),
-            ("SEM", "ImageShiftY", "Image Shift Y (m)", 1, False, False),
-            ("SEM", "InjectedGas", "Injected Gas", 1, True, False),
-            ("SEM", "LUTGamma", "LUT Gamma", 1, False, False),
-            ("SEM", "LUTMaximum", "LUT Maximum", 1, False, False),
-            ("SEM", "LUTMinimum", "LUT Minimum", 1, False, False),
-            ("SEM", "MTDGrid", "MTD Grid (kV)", 1e-3, False, False),
-            ("SEM", "MTDScintillator", "MTD Scintillator (kV)", 1e-3, False, False),
-            ("SEM", "OBJCenteringX", "OBJ Centering X", 1, False, False),
-            ("SEM", "OBJCenteringY", "OBJ Centering Y", 1, False, False),
-            ("SEM", "OBJPreCenteringX", "OBJ Pre-Centering X", 1, False, False),
-            ("SEM", "OBJPreCenteringY", "OBJ Pre-Centering Y", 1, False, False),
-            ("SEM", "PotentialMode", "Potential Mode", 1, True, False),
-            (
+            FD("SEM", "AcceleratorVoltage", "Accelerator Voltage (kV)", 1e-3, False),
+            FD("SEM", "ApertureDiameter", "Aperture Diameter (μm)", 1e6, False),
+            FD("SEM", "ApertureOptimization", "Aperture Optimization", 1, False),
+            FD("SEM", "ChamberPressure", "Chamber Pressure (mPa)", 1e3, False),
+            FD("SEM", "CrossFree", "Cross Free", 1, False),
+            FD("SEM", "CrossSectionShiftX", "Cross Section Shift X (μm)", 1e6, False),
+            FD("SEM", "CrossSectionShiftY", "Cross Section Shift Y (μm)", 1e6, False),
+            FD("SEM", "DepthOfFocus", "Depth of Focus (μm)", 1e6, False),
+            FD("SEM", "Detector", "Detector Name", 1, True),
+            FD("SEM", "Detector0", "Detector 0", 1, True),
+            FD("SEM", "Detector0FlatField", "Detector 0 Flat Field", 1, False),
+            FD("SEM", "Detector0Gain", "Detector 0 Gain", 1, False),
+            FD("SEM", "Detector0Offset", "Detector 0 Offset", 1, False),
+            FD("SEM", "DwellTime", "Pixel Dwell Time (μs)", 1e6, False),
+            FD("SEM", "EmissionCurrent", "Emission Current (μA)", 1e6, False),
+            FD("SEM", "Gun", "Gun Type", 1, True),
+            FD("SEM", "GunShiftX", "Gun Shift X", 1, False),
+            FD("SEM", "GunShiftY", "Gun Shift Y", 1, False),
+            FD("SEM", "GunTiltX", "Gun Tilt X", 1, False),
+            FD("SEM", "GunTiltY", "Gun Tilt Y", 1, False),
+            FD("SEM", "HV", "HV Voltage (kV)", 1e-3, False),
+            FD("SEM", "IMLCenteringX", "IML Centering X", 1, False),
+            FD("SEM", "IMLCenteringY", "IML Centering Y", 1, False),
+            FD("SEM", "ImageShiftX", "Image Shift X (m)", 1, False),
+            FD("SEM", "ImageShiftY", "Image Shift Y (m)", 1, False),
+            FD("SEM", "InjectedGas", "Injected Gas", 1, True),
+            FD("SEM", "LUTGamma", "LUT Gamma", 1, False),
+            FD("SEM", "LUTMaximum", "LUT Maximum", 1, False),
+            FD("SEM", "LUTMinimum", "LUT Minimum", 1, False),
+            FD("SEM", "MTDGrid", "MTD Grid (kV)", 1e-3, False),
+            FD("SEM", "MTDScintillator", "MTD Scintillator (kV)", 1e-3, False),
+            FD("SEM", "OBJCenteringX", "OBJ Centering X", 1, False),
+            FD("SEM", "OBJCenteringY", "OBJ Centering Y", 1, False),
+            FD("SEM", "OBJPreCenteringX", "OBJ Pre-Centering X", 1, False),
+            FD("SEM", "OBJPreCenteringY", "OBJ Pre-Centering Y", 1, False),
+            FD("SEM", "PotentialMode", "Potential Mode", 1, True),
+            FD(
                 "SEM",
                 "PredictedBeamCurrent",
                 "Predicted Beam Current (pA)",
                 1e12,
                 False,
-                False,
             ),
-            ("SEM", "PrimaryDetectorGain", "Primary Detector Gain", 1, False, False),
-            (
-                "SEM",
-                "PrimaryDetectorOffset",
-                "Primary Detector Offset",
-                1,
-                False,
-                False,
-            ),
-            ("SEM", "SampleVoltage", "Sample Voltage (V)", 1, False, False),
-            ("SEM", "ScanID", "Scan ID", 1, False, False),
-            ("SEM", "ScanMode", "Scan Mode", 1, True, False),
-            ("SEM", "ScanRotation", "Scan Rotation (degrees)", 1, False, False),
-            ("SEM", "ScanSpeed", "Scan Speed", 1, False, False),
-            ("SEM", "SessionID", "Session ID", 1, True, False),
-            ("SEM", "SpecimenCurrent", "Specimen Current (pA)", 1e12, False, False),
-            ("SEM", "SpotSize", "Spot Size (nm)", 1e9, False, False),
-            (
+            FD("SEM", "PrimaryDetectorGain", "Primary Detector Gain", 1, False),
+            FD("SEM", "PrimaryDetectorOffset", "Primary Detector Offset", 1, False),
+            FD("SEM", "SampleVoltage", "Sample Voltage (V)", 1, False),
+            FD("SEM", "ScanID", "Scan ID", 1, False),
+            FD("SEM", "ScanMode", "Scan Mode", 1, True),
+            FD("SEM", "ScanRotation", "Scan Rotation (degrees)", 1, False),
+            FD("SEM", "ScanSpeed", "Scan Speed", 1, False),
+            FD("SEM", "SessionID", "Session ID", 1, True),
+            FD("SEM", "SpecimenCurrent", "Specimen Current (pA)", 1e12, False),
+            FD("SEM", "SpotSize", "Spot Size (nm)", 1e9, False),
+            FD(
                 "SEM",
                 "StageRotation",
                 ["Stage Position", "Rotation (degrees)"],
                 1,
                 False,
-                False,
             ),
-            ("SEM", "StageTilt", ["Stage Position", "Tilt (degrees)"], 1, False, False),
-            ("SEM", "StageX", ["Stage Position", "X"], 1, False, False),
-            ("SEM", "StageY", ["Stage Position", "Y"], 1, False, False),
-            ("SEM", "StageZ", ["Stage Position", "Z"], 1, False, False),
-            ("SEM", "StigmatorX", "Stigmator X Value", 1, False, False),
-            ("SEM", "StigmatorY", "Stigmator Y Value", 1, False, False),
-            (
+            FD("SEM", "StageTilt", ["Stage Position", "Tilt (degrees)"], 1, False),
+            FD("SEM", "StageX", ["Stage Position", "X"], 1, False),
+            FD("SEM", "StageY", ["Stage Position", "Y"], 1, False),
+            FD("SEM", "StageZ", ["Stage Position", "Z"], 1, False),
+            FD("SEM", "StigmatorX", "Stigmator X Value", 1, False),
+            FD("SEM", "StigmatorY", "Stigmator Y Value", 1, False),
+            FD(
                 "SEM",
                 "SymmetrizationVoltage",
                 "Symmetrization Voltage (kV)",
                 1e-3,
                 False,
-                False,
             ),
-            ("SEM", "SyncMains", "Sync to Mains", 1, True, False),
-            ("SEM", "TiltCorrection", "Tilt Correction", 1, False, False),
-            ("SEM", "TubeVoltage", "Tube Voltage (kV)", 1e-3, False, False),
-            (
+            FD("SEM", "SyncMains", "Sync to Mains", 1, True),
+            FD("SEM", "TiltCorrection", "Tilt Correction", 1, False),
+            FD("SEM", "TubeVoltage", "Tube Voltage (kV)", 1e-3, False),
+            FD(
                 "SEM",
                 "VirtualObserverDistance",
                 "Virtual Observer Distance (mm)",
                 1e3,
                 False,
-                False,
             ),
-            ("SEM", "WD", "Working Distance (mm)", 1e3, False, False),
+            FD("SEM", "WD", "Working Distance (mm)", 1e3, False),
         ]
 
         # Extract standard fields
-        for (
-            section_name,
-            source_key,
-            output_key,
-            factor,
-            is_string,
-            suppress_zero,
-        ) in fields:
-            section = main_section if section_name == "MAIN" else sem_section
-            value = section.get(source_key)
+        for field in fields:
+            section = main_section if field.section == "MAIN" else sem_section
+            value = section.get(field.source_key)
 
             # Try fallback keys for some fields
-            if value is None and source_key == "HV":
+            if value is None and field.source_key == "HV":
                 value = sem_section.get("AcceleratorVoltage")
-            elif value is None and source_key == "Detector0Gain":
+            elif value is None and field.source_key == "Detector0Gain":
                 value = sem_section.get("PrimaryDetectorGain")
-            elif value is None and source_key == "Detector0Offset":
+            elif value is None and field.source_key == "Detector0Offset":
                 value = sem_section.get("PrimaryDetectorOffset")
 
             if value:
-                if is_string:
+                if field.is_string:
                     # Handle nested dict paths vs flat keys
                     # (impossible to test with existing metadata structure,
                     # so exclude from coverage)
-                    if isinstance(output_key, list):  # pragma: no cover
-                        set_nested_dict_value(mdict, ["nx_meta", *output_key], value)
+                    if isinstance(field.output_key, list):  # pragma: no cover
+                        set_nested_dict_value(
+                            mdict, ["nx_meta", *field.output_key], value
+                        )
                     else:
-                        mdict["nx_meta"][output_key] = value
+                        mdict["nx_meta"][field.output_key] = value
                 else:
                     with contextlib.suppress(ValueError):
                         # Use Decimal for precise arithmetic to avoid floating-point
                         # rounding errors during unit conversions
-                        float_val = float(Decimal(value) * Decimal(str(factor)))
+                        float_val = float(Decimal(value) * Decimal(str(field.factor)))
                         # Skip if suppress_zero is True and value is zero
-                        if not suppress_zero or float_val != 0.0:
-                            if isinstance(output_key, list):
+                        if not field.suppress_zero or float_val != 0.0:
+                            if isinstance(field.output_key, list):
                                 set_nested_dict_value(
-                                    mdict, ["nx_meta", *output_key], float_val
+                                    mdict, ["nx_meta", *field.output_key], float_val
                                 )
                             else:
-                                mdict["nx_meta"][output_key] = float_val
+                                mdict["nx_meta"][field.output_key] = float_val
 
         # Handle user information (prefer FullUserName over UserName)
         full_username = main_section.get("FullUserName")
