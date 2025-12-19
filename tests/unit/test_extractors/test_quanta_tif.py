@@ -114,7 +114,20 @@ class TestQuantaExtractor:
         )
 
     def test_quanta_fei_2_metadata_extraction(self, quanta_fei_2_file):
-        """Test extraction from file with special chars (%) in metadata."""
+        """Test extraction from file with special chars (%) in metadata.
+
+        Verifies extraction of metadata fields including:
+        - UserText (user-provided notes)
+        - ESEM (Environmental SEM column type)
+        - EucWD (Eucentric Working Distance)
+        - ScanRotation (Beam scan rotation angle)
+        - ImageMode (Acquisition mode)
+        - FrameTime (Total frame acquisition time)
+        - Gas (MultiGIS gas injection system)
+        - UserMode (Vacuum mode)
+        - Humidity (Chamber humidity)
+        - Temperature (Specimen temperature)
+        """
         metadata = get_quanta_metadata(quanta_fei_2_file)
 
         # Should extract successfully with RawConfigParser handling '%' characters
@@ -122,6 +135,23 @@ class TestQuantaExtractor:
         assert metadata["nx_meta"]["DatasetType"] == "Image"
         assert "Creation Time" in metadata["nx_meta"]
         assert "Extractor Warnings" not in metadata["nx_meta"]
+
+        # Verify extraction of standard Quanta metadata fields
+        assert "Horizontal Field Width (μm)" in metadata["nx_meta"]
+        assert "Voltage (kV)" in metadata["nx_meta"]
+        assert "Stage Position" in metadata["nx_meta"]
+
+        # Verify metadata values for fields that should be extracted
+        assert isinstance(metadata["nx_meta"]["User Text"], str)
+        assert (
+            "Specimen Temperature (K)" not in metadata["nx_meta"]
+        )  # Blank in test file
+        assert isinstance(metadata["nx_meta"]["Vacuum Mode"], str)
+        assert metadata["nx_meta"]["Scan Rotation (°)"] == 0
+        assert "Specimen Humidity (%)" not in metadata["nx_meta"]  # Blank in test file
+        assert metadata["nx_meta"]["Total Frame Time (s)"] > 0
+        assert metadata["nx_meta"]["Eucentric WD (mm)"] > 0  # EucWD extracted
+        assert isinstance(metadata["nx_meta"]["Image Mode"], str)  # ImageMode extracted
 
     def test_supports_method(self, quanta_test_file, tmp_path):
         """Test the supports() method for various file types."""
@@ -325,11 +355,9 @@ Contrast=62.0
         """Test zero suppression and conditional extraction features."""
         metadata = get_quanta_metadata(quanta_test_file[0])
 
-        # Zero values should be suppressed for certain fields
-        if "Scan Rotation (°)" in metadata["nx_meta"]:
-            assert metadata["nx_meta"]["Scan Rotation (°)"] != 0
-        if "Beam Shift X" in metadata["nx_meta"]:
-            assert metadata["nx_meta"]["Beam Shift X"] != 0
+        # Beam Shift values are not suppressed even when zero (suppress_zero=False)
+        assert "Beam Shift X" in metadata["nx_meta"]
+        assert "Beam Shift Y" in metadata["nx_meta"]
 
         # Frame integration only appears if > 1
         if "Frames Integrated" in metadata["nx_meta"]:

@@ -367,7 +367,7 @@ def get_pre_path(mdict: Dict) -> List[str]:
         mdict,
         ["ImageList", "TagGroup0", "ImageTags", "plane info"],
     )
-    if stack_val != "not found":
+    if stack_val is not None:
         # we're in a stack
         pre_path = [
             "ImageList",
@@ -436,11 +436,7 @@ def parse_dm3_microscope_info(mdict):
         val = try_getting_dict_value(mdict, base + meta_key)
         # only add the value to this list if we found it, and it's not one of
         # the "facility-wide" set values that do not have any meaning:
-        if (
-            val != "not found"
-            and val not in ["DO NOT EDIT", "DO NOT ENTER"]
-            and val != []
-        ):
+        if val is not None and val not in ["DO NOT EDIT", "DO NOT ENTER"] and val != []:
             # change output of "Stage Position" to unicode characters
             if "Stage Position" in meta_key:
                 meta_key[-1] = (
@@ -460,11 +456,7 @@ def parse_dm3_microscope_info(mdict):
         val = try_getting_dict_value(mdict, base + meta_key)
         # only add the value to this list if we found it, and it's not
         # one of the "facility-wide" set values that do not have any meaning:
-        if (
-            val != "not found"
-            and val not in ["DO NOT EDIT", "DO NOT ENTER"]
-            and val != []
-        ):
+        if val is not None and val not in ["DO NOT EDIT", "DO NOT ENTER"] and val != []:
             set_nested_dict_value(mdict, ["nx_meta", *meta_key], val)
 
     # General "Meta Data" .dm3 tags
@@ -481,11 +473,7 @@ def parse_dm3_microscope_info(mdict):
         val = try_getting_dict_value(mdict, base + meta_key)
         # only add the value to this list if we found it, and it's not
         # one of the "facility-wide" set values that do not have any meaning:
-        if (
-            val != "not found"
-            and val not in ["DO NOT EDIT", "DO NOT ENTER"]
-            and val != []
-        ):
+        if val is not None and val not in ["DO NOT EDIT", "DO NOT ENTER"] and val != []:
             if "Label" in meta_key:
                 set_nested_dict_value(mdict, ["nx_meta", "Analytic Label"], val)
             else:
@@ -643,7 +631,7 @@ def parse_dm3_eds_info(mdict):
     # If so, then some relevant EDS values are located there, rather
     # than in the root-level EDS tag (all the EDS.Acquisition tags from
     # above)
-    if try_getting_dict_value(mdict, [*pre_path, "SI"]) != "not found":
+    if try_getting_dict_value(mdict, [*pre_path, "SI"]) is not None:
         for meta_key in [
             ["Acquisition", "Continuous Mode"],
             ["Acquisition", "Count Rate Unit"],
@@ -691,7 +679,7 @@ def parse_dm3_eds_info(mdict):
         ["Live time"],
         ["Real time"],
     ]:
-        if try_getting_dict_value(mdict, base + meta_key) != "not found":
+        if try_getting_dict_value(mdict, base + meta_key) is not None:
             mdict["nx_meta"]["warnings"].append(
                 ["EDS", meta_key[-1] if len(meta_key) > 1 else meta_key[0]],
             )
@@ -753,7 +741,7 @@ def parse_dm3_spectrum_image_info(mdict):
         val = try_getting_dict_value(mdict, base + m_in)
         # only add the value to this list if we found it, and it's not
         # one of the "facility-wide" set values that do not have any meaning:
-        if val != "not found":
+        if val is not None:
             # add last value of each parameter to the "EDS" sub-tree of nx_meta
             set_nested_dict_value(mdict, ["nx_meta", "Spectrum Imaging", *m_out], val)
 
@@ -766,7 +754,7 @@ def parse_dm3_spectrum_image_info(mdict):
         mdict,
         [*base, "Acquisition", "Artefact Correction", "Spatial Drift", "Units"],
     )
-    if drift_per_val != "not found" and drift_unit_val != "not found":
+    if drift_per_val is not None and drift_unit_val is not None:
         val_to_set = f"Spatial drift correction every {drift_per_val} {drift_unit_val}"
         # make sure statement looks gramatically correct
         if drift_per_val == 1:
@@ -784,7 +772,7 @@ def parse_dm3_spectrum_image_info(mdict):
 
     start_val = try_getting_dict_value(mdict, [*base, "Acquisition", "Start time"])
     end_val = try_getting_dict_value(mdict, [*base, "Acquisition", "End time"])
-    if start_val != "not found" and end_val != "not found":
+    if start_val is not None and end_val is not None:
         start_dt = dt.strptime(start_val, "%I:%M:%S %p").replace(tzinfo=UTC)
         end_dt = dt.strptime(end_val, "%I:%M:%S %p").replace(tzinfo=UTC)
         duration = (end_dt - start_dt).seconds  # Calculate acquisition duration

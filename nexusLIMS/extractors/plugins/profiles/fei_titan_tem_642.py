@@ -109,13 +109,13 @@ def parse_tecnai_metadata(
             out_term = [out_term]  # noqa: PLW2901
         val = try_getting_dict_value(metadata, base + in_term)
         # only add the value to this list if we found it
-        if val != "not found" and val not in ["DO NOT EDIT", "DO NOT ENTER"]:
+        if val is not None and val not in ["DO NOT EDIT", "DO NOT ENTER"]:
             set_nested_dict_value(metadata, ["nx_meta", *out_term], val)
 
     # Parse specimen info
     path = [*list(path_to_tecnai), "Specimen Info"]
     val = try_getting_dict_value(metadata, path)
-    if val not in ["not found", "Specimen information is not available yet"]:
+    if val is not None and val != "Specimen information is not available yet":
         set_nested_dict_value(metadata, ["nx_meta", "Specimen"], val)
 
     return metadata

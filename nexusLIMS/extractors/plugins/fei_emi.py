@@ -263,7 +263,7 @@ def parse_basic_info(metadata, shape, instrument):
     """
     # try to set creation time to acquisition time from metadata
     acq_time = try_getting_dict_value(metadata, ["ObjectInfo", "AcquireDate"])
-    if acq_time != "not found":
+    if acq_time is not None:
         metadata["nx_meta"]["Creation Time"] = (
             dt.strptime(
                 acq_time,
@@ -275,7 +275,7 @@ def parse_basic_info(metadata, shape, instrument):
 
     # manufacturer is at high level, so parse it now
     manufacturer = try_getting_dict_value(metadata, ["ObjectInfo", "Manufacturer"])
-    if manufacturer != "not found":
+    if manufacturer is not None:
         metadata["nx_meta"]["Manufacturer"] = manufacturer
 
     metadata["nx_meta"]["Data Dimensions"] = str(shape)
@@ -322,7 +322,7 @@ def parse_experimental_conditions(metadata):
     }
     base = ["ObjectInfo", "AcquireInfo"]
 
-    if try_getting_dict_value(metadata, base) != "not found":
+    if try_getting_dict_value(metadata, base) is not None:
         metadata = map_keys(term_mapping, base, metadata)
 
     # remove units from beam position (if present)
@@ -361,7 +361,7 @@ def parse_acquire_info(metadata):
     }
     base = ["ObjectInfo", "ExperimentalConditions", "MicroscopeConditions"]
 
-    if try_getting_dict_value(metadata, base) != "not found":
+    if try_getting_dict_value(metadata, base) is not None:
         metadata = map_keys(term_mapping, base, metadata)
 
     return metadata
@@ -397,7 +397,7 @@ def parse_experimental_description(metadata):
     base = ["ObjectInfo", "ExperimentalDescription"]
 
     experimental_description = try_getting_dict_value(metadata, base)
-    if experimental_description != "not found" and isinstance(
+    if experimental_description is not None and isinstance(
         experimental_description,
         dict,
     ):
@@ -556,7 +556,7 @@ def map_keys(term_mapping, base, metadata):
             out_term = [out_term]
         val = try_getting_dict_value(metadata, base + in_term)
         # only add the value to this list if we found it
-        if val != "not found":
+        if val is not None:
             set_nested_dict_value(
                 metadata,
                 ["nx_meta", *out_term],

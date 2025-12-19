@@ -62,7 +62,7 @@ class TestUtils:
         nest = {"level1": {"level2.1": {"level3.1": "value"}}}
 
         assert try_getting_dict_value(non_nest, "level1") == "value_1"
-        assert try_getting_dict_value(non_nest, "level3") == "not found"
+        assert try_getting_dict_value(non_nest, "level3") is None
         assert try_getting_dict_value(nest, ["level1", "level2.1"]) == {
             "level3.1": "value",
         }

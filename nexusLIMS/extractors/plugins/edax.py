@@ -92,10 +92,7 @@ class SpcExtractor:
         }
 
         for in_term, out_term in term_mapping.items():
-            if (
-                try_getting_dict_value(mdict["original_metadata"], in_term)
-                != "not found"
-            ):
+            if try_getting_dict_value(mdict["original_metadata"], in_term) is not None:
                 mdict["nx_meta"][out_term] = mdict["original_metadata"][in_term]
 
         # add any elements present:
@@ -208,10 +205,7 @@ class MsaExtractor:
         }
 
         for in_term, out_term in term_mapping.items():
-            if (
-                try_getting_dict_value(mdict["original_metadata"], in_term)
-                != "not found"
-            ):
+            if try_getting_dict_value(mdict["original_metadata"], in_term) is not None:
                 mdict["nx_meta"][out_term] = mdict["original_metadata"][in_term]
 
         return mdict

@@ -33,7 +33,7 @@ _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.INFO)
 
 
-class OrionFibicsTiffExtractor:
+class OrionTiffExtractor:
     """
     Extractor for Zeiss Orion and Fibics helium ion microscope TIFF files.
 

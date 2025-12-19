@@ -45,9 +45,9 @@ def _set_instr_name_and_time(mdict: Dict, filename: Path):
 
 def _set_acquisition_device_name(mdict: Dict, pre_path: List[str]):
     val = try_getting_dict_value(mdict, [*pre_path, "Acquisition", "Device", "Name"])
-    if val == "not found":
+    if val is None:
         val = try_getting_dict_value(mdict, [*pre_path, "DataBar", "Device Name"])
-    if val != "not found":
+    if val is not None:
         set_nested_dict_value(mdict, ["nx_meta", "Acquisition Device"], val)
 
 
@@ -56,15 +56,15 @@ def _set_exposure_time(mdict: Dict, pre_path: List[str]):
         mdict,
         [*pre_path, "Acquisition", "Parameters", "High Level", "Exposure (s)"],
     )
-    if val == "not found":
+    if val is None:
         val = try_getting_dict_value(mdict, [*pre_path, "DataBar", "Exposure Time (s)"])
-    if val != "not found":
+    if val is not None:
         set_nested_dict_value(mdict, ["nx_meta", "Exposure Time (s)"], val)
 
 
 def _set_gms_version(mdict: Dict, pre_path: List[str]):
     val = try_getting_dict_value(mdict, [*pre_path, "GMS Version", "Created"])
-    if val != "not found":
+    if val is not None:
         set_nested_dict_value(mdict, ["nx_meta", "GMS Version"], val)
 
 
@@ -73,7 +73,7 @@ def _set_camera_binning(mdict: Dict, pre_path: List[str]):
         mdict,
         [*pre_path, "Acquisition", "Parameters", "High Level", "Binning"],
     )
-    if val != "not found":
+    if val is not None:
         set_nested_dict_value(mdict, ["nx_meta", "Binning (Horizontal)"], val[0])
         set_nested_dict_value(mdict, ["nx_meta", "Binning (Vertical)"], val[1])
 
@@ -86,7 +86,7 @@ def _set_image_processing(mdict: Dict, pre_path: List[str]):
         mdict,
         [*pre_path, "Acquisition", "Parameters", "High Level", "Processing"],
     )
-    if val != "not found":
+    if val is not None:
         set_nested_dict_value(mdict, ["nx_meta", "Camera/Detector Processing"], val)
 
 
@@ -94,14 +94,14 @@ def _set_eels_meta(mdict, base, meta_key):
     val = try_getting_dict_value(mdict, base + meta_key)
     # only add the value to this list if we found it, and it's not
     # one of the "facility-wide" set values that do not have any meaning:
-    if val != "not found":
+    if val is not None:
         # add last value of each parameter to the "EELS" sub-tree of nx_meta
         set_nested_dict_value(mdict, ["nx_meta", "EELS", meta_key[-1]], val)
 
 
 def _set_eels_spectrometer_meta(mdict, base, meta_key):
     val = try_getting_dict_value(mdict, base + meta_key)
-    if val != "not found":
+    if val is not None:
         # add last value of each param to the "EELS" sub-tree of nx_meta
         set_nested_dict_value(
             mdict,
@@ -115,7 +115,7 @@ def _set_eels_processing(mdict, pre_path):
     #   ImageTags.Processing will be a list of things done (in multiple
     #   TagGroups) - things like Compute thickness, etc.
     val = try_getting_dict_value(mdict, [*pre_path, "Processing"])
-    if val != "not found" and isinstance(val, dict):
+    if val is not None and isinstance(val, dict):
         # if val is a dict, then there were processing steps applied
         eels_ops = []
         for _, v in val.items():
@@ -129,7 +129,7 @@ def _set_eels_processing(mdict, pre_path):
                 eels_ops.append("Aligned parent SI By Peak")
             elif operation == "Background Removal":
                 val = try_getting_dict_value(param, ["Model"])
-                if val != "not found":
+                if val is not None:
                     set_nested_dict_value(
                         mdict,
                         ["nx_meta", "EELS", "Background Removal Model"],
@@ -168,19 +168,19 @@ def _process_thickness_metadata(mdict, base):
         mdict,
         [*base, "Thickness", "Relative", "Measurement"],
     )
-    if abs_thick != "not found":
+    if abs_thick is not None:
         set_nested_dict_value(
             mdict,
             ["nx_meta", "EELS", f"Thickness (absolute) [{abs_units}]"],
             abs_thick,
         )
-    if abs_mfp != "not found":
+    if abs_mfp is not None:
         set_nested_dict_value(
             mdict,
             ["nx_meta", "EELS", "Thickness (absolute) mean free path"],
             abs_mfp[0],
         )
-    if rel_thick != "not found":
+    if rel_thick is not None:
         set_nested_dict_value(
             mdict,
             ["nx_meta", "EELS", "Thickness (relative) [t/λ]"],
@@ -194,7 +194,7 @@ def _set_eds_meta(mdict, base, meta_key):
     val = try_getting_dict_value(mdict, base + meta_key)
     # only add the value to this list if we found it, and it's not
     # one of the "facility-wide" set values that do not have any meaning:
-    if val != "not found":
+    if val is not None:
         # add last value of each parameter to the "EDS" sub-tree of nx_meta
         set_nested_dict_value(
             mdict,
@@ -205,7 +205,7 @@ def _set_eds_meta(mdict, base, meta_key):
 
 def _set_si_meta(mdict, pre_path, meta_key):
     val = try_getting_dict_value(mdict, [*pre_path, "SI", *meta_key])
-    if val != "not found":
+    if val is not None:
         # add last value of each parameter to the "EDS" sub-tree of
         # nx_meta
         set_nested_dict_value(mdict, ["nx_meta", "EDS", meta_key[-1]], val)

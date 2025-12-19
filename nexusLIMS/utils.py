@@ -298,15 +298,15 @@ def get_nested_dict_value_by_path(nest_dict, path):
 
     Returns
     -------
-    value : object or str
+    value : object or None
         The value at the path within the nested dictionary; if there's no
-        value there, return the string `"not found"`
+        value there, return None
     """
     sub_dict = nest_dict
     for key in path:
-        if sub_dict == "not found":
+        if sub_dict is None:
             break
-        sub_dict = sub_dict.get(key, "not found")
+        sub_dict = sub_dict.get(key, None)
 
     return sub_dict
 
@@ -356,10 +356,9 @@ def try_getting_dict_value(dict_, key):
 
     Returns
     -------
-    val : object or str
+    val : object or None
         The value of the dictionary specified by `key`. If the dictionary
-        does not have a key, returns the string `"not found"` without raising an
-        error
+        does not have a key, returns None without raising an error
     """
     try:
         if isinstance(key, str):
@@ -367,11 +366,11 @@ def try_getting_dict_value(dict_, key):
         if hasattr(key, "__iter__"):
             return get_nested_dict_value_by_path(dict_, key)
     except (KeyError, TypeError):
-        return "not found"
+        return None
     else:
         # we shouldn't reach this line, but always good to return a consistent
         # value just in case
-        return "not found"  # pragma: no cover
+        return None  # pragma: no cover
 
 
 def find_dirs_by_mtime(

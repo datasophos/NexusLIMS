@@ -248,7 +248,7 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
             "Z (μm)": 76.932,
         }
         assert meta["nx_meta"]["Gun Lens"] == 5
-        assert meta["nx_meta"]["Tecnai Filter"]["Mode"] is None
+        assert "Tecnai Filter" not in meta["nx_meta"]
 
     def test_titan_tem_diffraction_stack(self, fei_ser_files):
         test_file = get_full_file_path(

@@ -12,7 +12,7 @@ from nexusLIMS.extractors.base import ExtractionContext
 from nexusLIMS.extractors.plugins.orion_HIM_tif import (
     FIBICS_TIFF_TAG,
     ZEISS_TIFF_TAG,
-    OrionFibicsTiffExtractor,
+    OrionTiffExtractor,
 )
 from nexusLIMS.extractors.registry import get_registry
 
@@ -99,10 +99,10 @@ class TestOrionFibicsTiffExtractor:
 
     def setup_method(self):
         """Set up test fixtures."""
-        self.extractor = OrionFibicsTiffExtractor()
+        self.extractor = OrionTiffExtractor()
         self.registry = get_registry()
         self.registry.clear()  # Clear registry for isolated testing
-        self.registry.register_extractor(OrionFibicsTiffExtractor)
+        self.registry.register_extractor(OrionTiffExtractor)
 
     def test_has_required_attributes(self):
         """Test that the extractor has required attributes."""
@@ -369,14 +369,14 @@ class TestOrionFibicsTiffExtractor:
     def test_extractor_registered_in_registry(self):
         """Test that the extractor is properly registered in the registry."""
         # Re-register to ensure it's in the registry
-        self.registry.register_extractor(OrionFibicsTiffExtractor)
+        self.registry.register_extractor(OrionTiffExtractor)
 
         # Get extractors for .tif extension
         tif_extractors = self.registry.get_extractors_for_extension("tif")
 
         assert len(tif_extractors) == 3  # Should have three tif extractors
         assert any(
-            isinstance(i, OrionFibicsTiffExtractor) for i in tif_extractors
+            isinstance(i, OrionTiffExtractor) for i in tif_extractors
         )  # at least one should be the Orion extractor
 
     def test_error_handling_in_supports(self):

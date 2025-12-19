@@ -467,7 +467,7 @@ class QuantaTiffExtractor:
         fields = []
 
         # Beam section fields
-        if beam_name != "not found":
+        if beam_name is not None:
             fields.extend(
                 [
                     FD(
@@ -486,17 +486,26 @@ class QuantaTiffExtractor:
                     FD(beam_name, "StageX", ["Stage Position", "X"], 1.0, False),
                     FD(beam_name, "StageY", ["Stage Position", "Y"], 1.0, False),
                     FD(beam_name, "StageZ", ["Stage Position", "Z"], 1.0, False),
+                    FD(
+                        beam_name,
+                        "StageTb",
+                        ["Stage Position", "β"],
+                        1.0,
+                        False,
+                        suppress_zero=False,
+                    ),
                     FD(beam_name, "StigmatorX", "Stigmator X Value", 1.0, False),
                     FD(beam_name, "StigmatorY", "Stigmator Y Value", 1.0, False),
                     FD(beam_name, "VFW", "Vertical Field Width (μm)", 1e6, False),
                     FD(beam_name, "WD", "Working Distance (mm)", 1e3, False),
+                    FD(beam_name, "EucWD", "Eucentric WD (mm)", 1e3, False),
+                    FD(beam_name, "ImageMode", "Image Mode", 1.0, True),
                     FD(
                         beam_name,
                         "BeamShiftX",
                         "Beam Shift X",
                         1.0,
                         False,
-                        suppress_zero=True,
                     ),
                     FD(
                         beam_name,
@@ -504,13 +513,14 @@ class QuantaTiffExtractor:
                         "Beam Shift Y",
                         1.0,
                         False,
-                        suppress_zero=True,
                     ),
+                    FD(beam_name, "BeamMode", "Beam Mode", 1.0, True),
+                    FD(beam_name, "PreTilt", "Pre-Tilt", 1.0, False),
                 ]
             )
 
         # Scan section fields
-        if scan_name != "not found":
+        if scan_name is not None:
             fields.extend(
                 [
                     FD(scan_name, "Dwell", "Pixel Dwell Time (μs)", 1e6, False),
@@ -531,11 +541,26 @@ class QuantaTiffExtractor:
                     ),
                     FD(scan_name, "PixelHeight", "Pixel Width (nm)", 1e9, False),
                     FD(scan_name, "PixelWidth", "Pixel Height (nm)", 1e9, False),
+                    FD(scan_name, "LineTime", "Line Time (s)", 1.0, False),
+                    FD(
+                        scan_name,
+                        "LineIntegration",
+                        "Line Integration",
+                        1.0,
+                        False,
+                    ),
+                    FD(
+                        scan_name,
+                        "ScanInterlacing",
+                        "Scan Interlacing",
+                        1.0,
+                        False,
+                    ),
                 ]
             )
 
         # Detector section fields
-        if det_name != "not found":
+        if det_name is not None:
             fields.extend(
                 [
                     FD(
@@ -555,6 +580,24 @@ class QuantaTiffExtractor:
                     ),
                     FD(det_name, "Signal", "Detector Signal", 1.0, False),
                     FD(det_name, "Grid", "Detector Grid Voltage (V)", 1.0, False),
+                    FD(
+                        det_name, "BrightnessDB", "Detector Brightness (DB)", 1.0, False
+                    ),
+                    FD(det_name, "ContrastDB", "Detector Contrast (DB)", 1.0, False),
+                    FD(
+                        det_name,
+                        "Mix",
+                        "Detector Mix (%)",
+                        1.0,
+                        False,
+                    ),
+                    FD(
+                        det_name,
+                        "MinimumDwellTime",
+                        "Minimum Dwell Time (μs)",
+                        1e6,
+                        False,
+                    ),
                 ]
             )
 
@@ -565,6 +608,11 @@ class QuantaTiffExtractor:
                 FD("System", "Pump", "Vacuum Pump", 1.0, True),
                 FD("System", "SystemType", "System Type", 1.0, True),
                 FD("System", "Stage", "Stage Description", 1.0, True),
+                FD("System", "Dnumber", "Device Number", 1.0, True),
+                FD("System", "Source", "Electron Source", 1.0, True),
+                FD("System", "FinalLens", "Final Lens", 1.0, True),
+                FD("System", "ESEM", "ESEM Setting", 1.0, True),
+                FD("System", "Aperture", "Aperture Type", 1.0, True),
             ]
         )
 
@@ -573,13 +621,72 @@ class QuantaTiffExtractor:
             [
                 FD("Beam", "Spot", "Spot Size", 1.0, False),
                 FD("Specimen", "Temperature", "Specimen Temperature (K)", 1.0, False),
+                FD("Specimen", "Humidity", "Specimen Humidity (%)", 1.0, False),
                 FD("User", "UserText", "User Text", 1.0, True),
                 FD("User", "Date", "Acquisition Date", 1.0, True),
                 FD("User", "Time", "Acquisition Time", 1.0, True),
                 FD("Vacuum", "UserMode", "Vacuum Mode", 1.0, True),
+                FD("Vacuum", "Gas", "Vacuum Gas", 1.0, False),
                 FD("Image", "MagnificationMode", "Magnification Mode", 1.0, False),
+                FD(
+                    "Image",
+                    "DigitalContrast",
+                    "Digital Contrast",
+                    1.0,
+                    False,
+                ),
+                FD(
+                    "Image",
+                    "DigitalBrightness",
+                    "Digital Brightness",
+                    1.0,
+                    False,
+                ),
+                FD(
+                    "Image",
+                    "DigitalGamma",
+                    "Digital Gamma",
+                    1.0,
+                    False,
+                ),
+                FD(
+                    "Image",
+                    "ZoomFactor",
+                    "Zoom Factor",
+                    1.0,
+                    False,
+                ),
+                FD("Image", "ZoomPanX", "Zoom Pan X", 1.0, False),
+                FD("Image", "ZoomPanY", "Zoom Pan Y", 1.0, False),
+                FD(
+                    "Image",
+                    "MagCanvasRealWidth",
+                    "Magnification Canvas Real Width",
+                    1.0,
+                    False,
+                ),
+                FD(
+                    "Image",
+                    "ScreenMagCanvasRealWidth",
+                    "Screen Magnification Canvas Real Width",
+                    1.0,
+                    False,
+                ),
+                FD(
+                    "Image",
+                    "ScreenMagnificationMode",
+                    "Screen Magnification Mode",
+                    1.0,
+                    False,
+                ),
+                FD("Image", "Average", "Frame Average", 1.0, False),
+                FD("Image", "PostProcessing", "Post Processing", 1.0, False),
             ]
         )
+
+        # EScan Mainslock field
+        if scan_name is not None:
+            fields.append(FD(scan_name, "Mainslock", "Mainslock", 1.0, True))
 
         return fields
 
@@ -590,7 +697,7 @@ class QuantaTiffExtractor:
         for field in fields:
             value = try_getting_dict_value(mdict, [field.section, field.source_key])
 
-            if value not in ("not found", ""):
+            if value is not None and value != "":
                 # Skip detector "Setting" if numeric (duplicate of Grid voltage)
                 if field.section == det_name and field.source_key == "Setting":
                     try:
@@ -631,19 +738,22 @@ class QuantaTiffExtractor:
             float_val = float(decimal_val)
             if not suppress_zero or float_val != 0.0:
                 self._set_field_value(mdict, output_key, float_val)
-        except (ValueError, InvalidOperation):
-            self._set_field_value(mdict, output_key, value)
+        except (ValueError, InvalidOperation, TypeError):
+            # TypeError can occur if value is None
+            if value is not None:
+                self._set_field_value(mdict, output_key, value)
 
     def _parse_special_cases(self, mdict: dict, beam_name: str, det_name: str) -> None:
         """Parse special case metadata fields."""
-        if beam_name != "not found":
+        if beam_name is not None:
             set_nested_dict_value(mdict, ["nx_meta", "Beam Name"], beam_name)
-        if det_name != "not found":
+        if det_name is not None:
             set_nested_dict_value(mdict, ["nx_meta", "Detector Name"], det_name)
 
-        if beam_name != "not found":
+        if beam_name is not None:
             self._parse_scan_rotation(mdict, beam_name)
             self._parse_tilt_correction(mdict, beam_name)
+            self._parse_beam_control_flags(mdict, beam_name)
         self._parse_drift_correction(mdict)
         self._parse_frame_integration(mdict)
         self._parse_resolution(mdict)
@@ -651,11 +761,12 @@ class QuantaTiffExtractor:
         self._parse_chamber_pressure(mdict)
         self._parse_software_version(mdict)
         self._parse_column_type(mdict)
+        self._parse_scan_settings(mdict)
 
     def _parse_scan_rotation(self, mdict: dict, beam_name: str) -> None:
         """Parse scan rotation (radians → degrees)."""
         scan_rot_val = try_getting_dict_value(mdict, [beam_name, "ScanRotation"])
-        if scan_rot_val != "not found" and Decimal(scan_rot_val) != 0:
+        if scan_rot_val is not None:
             scan_rot_dec = Decimal(scan_rot_val)
             digits = abs(scan_rot_dec.as_tuple().exponent)
             scan_rot_val = round(degrees(scan_rot_dec), digits)
@@ -668,17 +779,40 @@ class QuantaTiffExtractor:
             tilt_corr_val = try_getting_dict_value(
                 mdict, [beam_name, "TiltCorrectionAngle"]
             )
-            if tilt_corr_val != "not found":
+            if tilt_corr_val is not None:
                 set_nested_dict_value(
                     mdict,
                     ["nx_meta", "Tilt Correction Angle"],
                     float(Decimal(tilt_corr_val)),
                 )
 
+    def _parse_beam_control_flags(self, mdict: dict, beam_name: str) -> None:
+        """Parse beam control boolean flags."""
+        # Tilt correction on/off
+        tilt_corr_on = try_getting_dict_value(mdict, [beam_name, "TiltCorrectionIsOn"])
+        if tilt_corr_on is not None:
+            set_nested_dict_value(
+                mdict, ["nx_meta", "Tilt Correction Enabled"], tilt_corr_on == "yes"
+            )
+
+        # Dynamic focus on/off
+        dyn_focus = try_getting_dict_value(mdict, [beam_name, "DynamicFocusIsOn"])
+        if dyn_focus is not None:
+            set_nested_dict_value(
+                mdict, ["nx_meta", "Dynamic Focus Enabled"], dyn_focus == "yes"
+            )
+
+        # Dynamic WD on/off
+        dyn_wd = try_getting_dict_value(mdict, [beam_name, "DynamicWDIsOn"])
+        if dyn_wd is not None:
+            set_nested_dict_value(
+                mdict, ["nx_meta", "Dynamic WD Enabled"], dyn_wd == "yes"
+            )
+
     def _parse_drift_correction(self, mdict: dict) -> None:
         """Parse drift correction (boolean)."""
         drift_val = try_getting_dict_value(mdict, ["Image", "DriftCorrected"])
-        if drift_val != "not found":
+        if drift_val is not None:
             set_nested_dict_value(
                 mdict, ["nx_meta", "Drift Correction Applied"], drift_val == "On"
             )
@@ -686,7 +820,7 @@ class QuantaTiffExtractor:
     def _parse_frame_integration(self, mdict: dict) -> None:
         """Parse frame integration (only if > 1)."""
         integrate_val = try_getting_dict_value(mdict, ["Image", "Integrate"])
-        if integrate_val != "not found":
+        if integrate_val is not None:
             with contextlib.suppress(ValueError):
                 integrate_int = int(integrate_val)
                 if integrate_int > 1:
@@ -698,7 +832,7 @@ class QuantaTiffExtractor:
         """Parse resolution (paired X/Y as tuple string)."""
         x_val = try_getting_dict_value(mdict, ["Image", "ResolutionX"])
         y_val = try_getting_dict_value(mdict, ["Image", "ResolutionY"])
-        if x_val != "not found" and y_val != "not found":
+        if x_val is not None and y_val is not None:
             with contextlib.suppress(ValueError):
                 x_int = int(x_val)
                 y_int = int(y_val)
@@ -709,14 +843,14 @@ class QuantaTiffExtractor:
     def _parse_operator(self, mdict: dict) -> None:
         """Parse operator (with warning)."""
         user_val = try_getting_dict_value(mdict, ["User", "User"])
-        if user_val != "not found":
+        if user_val is not None:
             set_nested_dict_value(mdict, ["nx_meta", "Operator"], user_val)
             mdict["nx_meta"]["warnings"].append(["Operator"])
 
     def _parse_chamber_pressure(self, mdict: dict) -> None:
         """Parse chamber pressure (unit depends on vacuum mode)."""
         ch_pres_val = try_getting_dict_value(mdict, ["Vacuum", "ChPressure"])
-        if ch_pres_val not in ("not found", ""):
+        if ch_pres_val is not None and ch_pres_val != "":
             try:
                 ch_pres_decimal = Decimal(ch_pres_val)
                 if (
@@ -746,10 +880,10 @@ class QuantaTiffExtractor:
         """Parse software version (aggregate Software + BuildNr)."""
         software_parts = []
         software_val = try_getting_dict_value(mdict, ["System", "Software"])
-        if software_val != "not found":
+        if software_val is not None:
             software_parts.append(software_val)
         build_val = try_getting_dict_value(mdict, ["System", "BuildNr"])
-        if build_val != "not found":
+        if build_val is not None:
             software_parts.append(f"(build {build_val})")
         if software_parts:
             set_nested_dict_value(
@@ -760,15 +894,26 @@ class QuantaTiffExtractor:
         """Parse column type (aggregate Column + Type)."""
         column_parts = []
         column_val = try_getting_dict_value(mdict, ["System", "Column"])
-        if column_val != "not found":
+        if column_val is not None:
             column_parts.append(column_val)
         type_val = try_getting_dict_value(mdict, ["System", "Type"])
-        if type_val != "not found":
+        if type_val is not None:
             column_parts.append(type_val)
         if column_parts:
             set_nested_dict_value(
                 mdict, ["nx_meta", "Column Type"], " ".join(column_parts)
             )
+
+    def _parse_scan_settings(self, mdict: dict) -> None:
+        """Parse scan-related settings."""
+        # Internal scan flag
+        scan_name = try_getting_dict_value(mdict, ["Beam", "Scan"])
+        if scan_name is not None:
+            internal_scan = try_getting_dict_value(mdict, [scan_name, "InternalScan"])
+            if internal_scan is not None:
+                set_nested_dict_value(
+                    mdict, ["nx_meta", "Internal Scan"], internal_scan == "true"
+                )
 
     def _parse_nx_meta(self, mdict: dict) -> dict:
         """
