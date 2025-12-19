@@ -383,7 +383,7 @@ def get_pre_path(mdict: Dict) -> List[str]:
     return pre_path
 
 
-def parse_dm3_microscope_info(mdict):
+def parse_dm3_microscope_info(mdict):  # noqa: PLR0912
     """
     Parse the "microscope info" metadata.
 
@@ -424,6 +424,9 @@ def parse_dm3_microscope_info(mdict):
         "Name",
         "Field of View (\u00b5m)",
         "Facility",
+        "Condenser Aperture",
+        "Objective Aperture",
+        "Selected Area Aperture",
         ["Stage Position", "Stage Alpha"],
         ["Stage Position", "Stage Beta"],
         ["Stage Position", "Stage X"],
@@ -497,6 +500,20 @@ def parse_dm3_microscope_info(mdict):
 
     # image processing:
     _set_image_processing(mdict, pre_path)
+
+    # Signal Name (from DataBar):
+    signal_name = try_getting_dict_value(mdict, [*pre_path, "DataBar", "Signal Name"])
+    if signal_name is not None:
+        set_nested_dict_value(mdict, ["nx_meta", "Signal Name"], signal_name)
+
+    # DigiScan Sample Time (dwell time per pixel in microseconds):
+    sample_time = try_getting_dict_value(mdict, [*pre_path, "DigiScan", "Sample Time"])
+    if sample_time is not None:
+        set_nested_dict_value(
+            mdict,
+            ["nx_meta", "Sample Time (\u00b5s)"],
+            sample_time,
+        )
 
     if (
         "Illumination Mode" in mdict["nx_meta"]

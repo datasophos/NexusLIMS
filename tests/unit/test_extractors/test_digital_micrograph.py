@@ -607,3 +607,33 @@ class TestDigitalMicrographExtractor:
             "Profile static metadata injection 'nx_meta.TestKey' failed" in caplog.text
         )
         assert "Intentional failure" in caplog.text
+
+    def test_neoarm_gatan_image_metadata(
+        self,
+        neoarm_gatan_image_file,
+        mock_instrument_from_filepath,
+    ):
+        """Test Signal Name, Apertures, and Sample Time from NeoArm file."""
+        # Set up instrument for this test
+        mock_instrument_from_filepath(make_test_tool())
+
+        meta = digital_micrograph.get_dm3_metadata(neoarm_gatan_image_file)
+
+        assert meta is not None
+        assert "nx_meta" in meta
+
+        # Test Signal Name extraction
+        assert "Signal Name" in meta["nx_meta"]
+        assert meta["nx_meta"]["Signal Name"] == "ADF"
+
+        # Test aperture settings extraction
+        assert "Condenser Aperture" in meta["nx_meta"]
+        assert meta["nx_meta"]["Condenser Aperture"] == 5
+        assert "Objective Aperture" in meta["nx_meta"]
+        assert meta["nx_meta"]["Objective Aperture"] == 4
+        assert "Selected Area Aperture" in meta["nx_meta"]
+        assert meta["nx_meta"]["Selected Area Aperture"] == 0
+
+        # Test Sample Time (dwell time) extraction
+        assert "Sample Time (\u00b5s)" in meta["nx_meta"]
+        assert meta["nx_meta"]["Sample Time (\u00b5s)"] == pytest.approx(16.0)
