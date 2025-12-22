@@ -53,31 +53,31 @@ def _assert_tescan_raw_sections(metadata):
         Extracted metadata dictionary with MAIN and SEM sections
     """
     # Test raw [MAIN] section parsing
-    assert metadata["MAIN"]["Device"] == "TESCAN AMBER X"
-    assert metadata["MAIN"]["DeviceModel"] == "S12345"
-    assert metadata["MAIN"]["SerialNumber"] == "119-0053"
-    assert metadata["MAIN"]["UserName"] == "nxuser"
-    assert metadata["MAIN"]["FullUserName"] == "Nexus User"
-    assert metadata["MAIN"]["Date"] == "2025-12-03"
-    assert metadata["MAIN"]["Time"] == "17:19:26"
-    assert metadata["MAIN"]["Magnification"] == "160000.0"
+    assert metadata[0]["MAIN"]["Device"] == "TESCAN AMBER X"
+    assert metadata[0]["MAIN"]["DeviceModel"] == "S12345"
+    assert metadata[0]["MAIN"]["SerialNumber"] == "119-0053"
+    assert metadata[0]["MAIN"]["UserName"] == "nxuser"
+    assert metadata[0]["MAIN"]["FullUserName"] == "Nexus User"
+    assert metadata[0]["MAIN"]["Date"] == "2025-12-03"
+    assert metadata[0]["MAIN"]["Time"] == "17:19:26"
+    assert metadata[0]["MAIN"]["Magnification"] == "160000.0"
     assert (
-        metadata["MAIN"]["SoftwareVersion"]
+        metadata[0]["MAIN"]["SoftwareVersion"]
         == "TESCAN Essence Version 1.3.7.1, build 8915"
     )
 
     # Test raw [SEM] section parsing
-    assert metadata["SEM"]["HV"] == "15000.0"
-    assert metadata["SEM"]["WD"] == "0.005947501"
-    assert metadata["SEM"]["SpotSize"] == "0.000000003"
-    assert metadata["SEM"]["Detector"] == "E-T"
-    assert metadata["SEM"]["ScanMode"] == "UH-RESOLUTION"
-    assert metadata["SEM"]["ChamberPressure"] == "0.00061496"
-    assert metadata["SEM"]["StageX"] == "0.00407293"
-    assert metadata["SEM"]["StageY"] == "0.016073298"
-    assert metadata["SEM"]["StageZ"] == "0.006311907"
-    assert metadata["SEM"]["StageRotation"] == "30.0"
-    assert metadata["SEM"]["StageTilt"] == "0.0"
+    assert metadata[0]["SEM"]["HV"] == "15000.0"
+    assert metadata[0]["SEM"]["WD"] == "0.005947501"
+    assert metadata[0]["SEM"]["SpotSize"] == "0.000000003"
+    assert metadata[0]["SEM"]["Detector"] == "E-T"
+    assert metadata[0]["SEM"]["ScanMode"] == "UH-RESOLUTION"
+    assert metadata[0]["SEM"]["ChamberPressure"] == "0.00061496"
+    assert metadata[0]["SEM"]["StageX"] == "0.00407293"
+    assert metadata[0]["SEM"]["StageY"] == "0.016073298"
+    assert metadata[0]["SEM"]["StageZ"] == "0.006311907"
+    assert metadata[0]["SEM"]["StageRotation"] == "30.0"
+    assert metadata[0]["SEM"]["StageTilt"] == "0.0"
 
 
 def _assert_tescan_nx_meta(metadata):
@@ -89,67 +89,71 @@ def _assert_tescan_nx_meta(metadata):
         Extracted metadata dictionary
     """
     # Test nx_meta values of interest
-    assert metadata["nx_meta"]["Data Type"] == "SEM_Imaging"
-    assert metadata["nx_meta"]["DatasetType"] == "Image"
+    assert metadata[0]["nx_meta"]["Data Type"] == "SEM_Imaging"
+    assert metadata[0]["nx_meta"]["DatasetType"] == "Image"
 
     # Test parsed nx_meta values from [MAIN]
-    assert metadata["nx_meta"]["Device"] == "TESCAN AMBER X"
-    assert metadata["nx_meta"]["Device Model"] == "S12345"
-    assert metadata["nx_meta"]["Serial Number"] == "119-0053"
-    assert metadata["nx_meta"]["Operator"] == "Nexus User"
-    assert metadata["nx_meta"]["warnings"] == [["Operator"]]
-    assert metadata["nx_meta"]["Acquisition Date"] == "2025-12-03"
-    assert metadata["nx_meta"]["Acquisition Time"] == "17:19:26"
-    assert metadata["nx_meta"]["Magnification (kX)"] == pytest.approx(160.0)
+    assert metadata[0]["nx_meta"]["Device"] == "TESCAN AMBER X"
+    assert metadata[0]["nx_meta"]["Device Model"] == "S12345"
+    assert metadata[0]["nx_meta"]["Serial Number"] == "119-0053"
+    assert metadata[0]["nx_meta"]["Operator"] == "Nexus User"
+    assert metadata[0]["nx_meta"]["warnings"] == [["Operator"]]
+    assert metadata[0]["nx_meta"]["Acquisition Date"] == "2025-12-03"
+    assert metadata[0]["nx_meta"]["Acquisition Time"] == "17:19:26"
+    assert metadata[0]["nx_meta"]["Magnification (kX)"] == pytest.approx(160.0)
     assert (
-        metadata["nx_meta"]["Software Version"]
+        metadata[0]["nx_meta"]["Software Version"]
         == "TESCAN Essence Version 1.3.7.1, build 8915"
     )
 
     # Test pixel size parsing (converted from m to nm)
-    assert metadata["nx_meta"]["Pixel Width (nm)"] == pytest.approx(1.5625)
-    assert metadata["nx_meta"]["Pixel Height (nm)"] == pytest.approx(1.5625)
+    assert metadata[0]["nx_meta"]["Pixel Width (nm)"] == pytest.approx(1.5625)
+    assert metadata[0]["nx_meta"]["Pixel Height (nm)"] == pytest.approx(1.5625)
 
     # Test parsed nx_meta values from [SEM]
-    assert metadata["nx_meta"]["HV Voltage (kV)"] == pytest.approx(15.0)
-    assert metadata["nx_meta"]["Working Distance (mm)"] == pytest.approx(5.947501)
-    assert metadata["nx_meta"]["Spot Size (nm)"] == pytest.approx(3.0)
-    assert metadata["nx_meta"]["Detector Name"] == "E-T"
-    assert metadata["nx_meta"]["Scan Mode"] == "UH-RESOLUTION"
-    assert metadata["nx_meta"]["Chamber Pressure (mPa)"] == pytest.approx(0.61496)
+    assert metadata[0]["nx_meta"]["HV Voltage (kV)"] == pytest.approx(15.0)
+    assert metadata[0]["nx_meta"]["Working Distance (mm)"] == pytest.approx(5.947501)
+    assert metadata[0]["nx_meta"]["Spot Size (nm)"] == pytest.approx(3.0)
+    assert metadata[0]["nx_meta"]["Detector Name"] == "E-T"
+    assert metadata[0]["nx_meta"]["Scan Mode"] == "UH-RESOLUTION"
+    assert metadata[0]["nx_meta"]["Chamber Pressure (mPa)"] == pytest.approx(0.61496)
 
     # Test stage position parsing
-    assert metadata["nx_meta"]["Stage Position"]["X"] == pytest.approx(0.00407293)
-    assert metadata["nx_meta"]["Stage Position"]["Y"] == pytest.approx(0.016073298)
-    assert metadata["nx_meta"]["Stage Position"]["Z"] == pytest.approx(0.006311907)
-    assert metadata["nx_meta"]["Stage Position"]["Rotation (degrees)"] == pytest.approx(
-        30.0
+    assert metadata[0]["nx_meta"]["Stage Position"]["X"] == pytest.approx(0.00407293)
+    assert metadata[0]["nx_meta"]["Stage Position"]["Y"] == pytest.approx(0.016073298)
+    assert metadata[0]["nx_meta"]["Stage Position"]["Z"] == pytest.approx(0.006311907)
+    assert metadata[0]["nx_meta"]["Stage Position"][
+        "Rotation (degrees)"
+    ] == pytest.approx(30.0)
+    assert metadata[0]["nx_meta"]["Stage Position"]["Tilt (degrees)"] == pytest.approx(
+        0.0
     )
-    assert metadata["nx_meta"]["Stage Position"]["Tilt (degrees)"] == pytest.approx(0.0)
 
     # Test detector settings
-    assert metadata["nx_meta"]["Detector 0 Gain"] == pytest.approx(46.562)
-    assert metadata["nx_meta"]["Detector 0 Offset"] == pytest.approx(73.76)
+    assert metadata[0]["nx_meta"]["Detector 0 Gain"] == pytest.approx(46.562)
+    assert metadata[0]["nx_meta"]["Detector 0 Offset"] == pytest.approx(73.76)
 
     # Test scan parameters
-    assert metadata["nx_meta"]["Pixel Dwell Time (μs)"] == pytest.approx(10.0)
+    assert metadata[0]["nx_meta"]["Pixel Dwell Time (μs)"] == pytest.approx(10.0)
     # Scan rotation
-    assert metadata["nx_meta"]["Scan Rotation (degrees)"] == pytest.approx(0.0)
+    assert metadata[0]["nx_meta"]["Scan Rotation (degrees)"] == pytest.approx(0.0)
 
     # Test emission current (converted from A to μA)
-    assert metadata["nx_meta"]["Emission Current (μA)"] == pytest.approx(
+    assert metadata[0]["nx_meta"]["Emission Current (μA)"] == pytest.approx(
         217.642, rel=1e-3
     )
 
     # Test stigmator values
-    assert metadata["nx_meta"]["Stigmator X Value"] == pytest.approx(6.02430344)
-    assert metadata["nx_meta"]["Stigmator Y Value"] == pytest.approx(-2.90339509)
+    assert metadata[0]["nx_meta"]["Stigmator X Value"] == pytest.approx(6.02430344)
+    assert metadata[0]["nx_meta"]["Stigmator Y Value"] == pytest.approx(-2.90339509)
 
     # Test gun type
-    assert metadata["nx_meta"]["Gun Type"] == "Schottky"
+    assert metadata[0]["nx_meta"]["Gun Type"] == "Schottky"
 
     # Test session ID
-    assert metadata["nx_meta"]["Session ID"] == "abcdefgh-ijkl-mnop-qrst-uvwxyz123456"
+    assert (
+        metadata[0]["nx_meta"]["Session ID"] == "abcdefgh-ijkl-mnop-qrst-uvwxyz123456"
+    )
 
 
 def _assert_all_tescan_metadata(metadata):
@@ -312,10 +316,10 @@ class TestTescanPfibTiffExtractor:
 
         # These fields are empty in the HDR file and should NOT be in nx_meta
         # Empty fields: AccType, Company, Description, Sign
-        assert "Accumulation Type" not in metadata["nx_meta"]
-        assert "Company" not in metadata["nx_meta"]
-        assert "Description" not in metadata["nx_meta"]
-        assert "Sign" not in metadata["nx_meta"]
+        assert "Accumulation Type" not in metadata[0]["nx_meta"]
+        assert "Company" not in metadata[0]["nx_meta"]
+        assert "Description" not in metadata[0]["nx_meta"]
+        assert "Sign" not in metadata[0]["nx_meta"]
 
     def test_tescan_supports_exception_handling(self, tmp_path):
         """Test supports() method handles various exception scenarios gracefully."""
@@ -345,8 +349,8 @@ class TestTescanPfibTiffExtractor:
 
         context = ExtractionContext(file_path=fake_tif, instrument=None)
         metadata = extractor.extract(context)
-        assert "nx_meta" in metadata
-        assert "DatasetType" in metadata["nx_meta"]
+        assert "nx_meta" in metadata[0]
+        assert "DatasetType" in metadata[0]["nx_meta"]
 
     def test_tescan_extract_fallback_to_tiff_tags(self, tescan_tif_without_hdr):
         """Test extract() method fallback to TIFF tags when HDR parsing fails."""
@@ -363,9 +367,9 @@ class TestTescanPfibTiffExtractor:
         metadata = extractor.extract(context)
 
         # Should have basic metadata from TIFF tags
-        assert "nx_meta" in metadata
-        assert "DatasetType" in metadata["nx_meta"]
-        assert "Data Type" in metadata["nx_meta"]
+        assert "nx_meta" in metadata[0]
+        assert "DatasetType" in metadata[0]["nx_meta"]
+        assert "Data Type" in metadata[0]["nx_meta"]
 
     def test_tescan_helper_methods_exception_handling(self, tmp_path):
         """Test various helper methods handle exceptions gracefully."""
@@ -594,9 +598,9 @@ class TestTescanPfibTiffExtractor:
 
         # Should fallback through all strategies and still return basic metadata
         metadata = extractor.extract(context)
-        assert "nx_meta" in metadata
-        assert "DatasetType" in metadata["nx_meta"]
-        assert "Data Type" in metadata["nx_meta"]
+        assert "nx_meta" in metadata[0]
+        assert "DatasetType" in metadata[0]["nx_meta"]
+        assert "Data Type" in metadata[0]["nx_meta"]
 
     @pytest.fixture
     def _mock_image_class_factory(self):
@@ -819,7 +823,7 @@ class TestTescanPfibTiffExtractor:
 
         # Should return a result (not crash)
         assert result is not None
-        assert isinstance(result, dict)
+        assert isinstance(result, list)
 
         # Assert that the exception was logged with the correct message
         assert "Could not parse embedded HDR metadata:" in caplog.text
@@ -891,8 +895,8 @@ class TestTescanPfibTiffExtractor:
 
         # Should return a result (not crash)
         assert result is not None
-        assert isinstance(result, dict)
-        assert "nx_meta" in result
+        assert isinstance(result, list)
+        assert "nx_meta" in result[0]
 
         # Assert that the warning message is in the logs
         assert "Failed to parse HDR file" in caplog.text
@@ -946,33 +950,31 @@ WD=0.005
 
         # Should return a result with parsed metadata
         assert result is not None
-        assert isinstance(result, dict)
-        assert "nx_meta" in result
+        assert isinstance(result, list)
+        assert "nx_meta" in result[0]
 
         # Assert that the debug message is in the logs
         assert "Successfully parsed sidecar HDR file" in caplog.text
 
         # Assert that the metadata was parsed correctly
-        assert "MAIN" in result
-        assert "SEM" in result
-        assert result["MAIN"]["Device"] == "TESCAN AMBER X"
-        assert result["MAIN"]["UserName"] == "testuser"
-        assert result["SEM"]["HV"] == "15000.0"
+        assert "MAIN" in result[0]
+        assert "SEM" in result[0]
+        assert result[0]["MAIN"]["Device"] == "TESCAN AMBER X"
+        assert result[0]["MAIN"]["UserName"] == "testuser"
+        assert result[0]["SEM"]["HV"] == "15000.0"
 
         # Assert that nx_meta was also populated
-        assert "Device" in result["nx_meta"]
-        assert result["nx_meta"]["Device"] == "TESCAN AMBER X"
+        assert "Device" in result[0]["nx_meta"]
+        assert result[0]["nx_meta"]["Device"] == "TESCAN AMBER X"
 
     def test_tescan_extract_software_version_from_tiff_tags(
         self, tescan_tif_file, monkeypatch
     ):
         """Test extract() method extracts Software Version from TIFF tags when not in HDR.
 
-        This test specifically covers the case where the Software Version is extracted
-        from TIFF tag 305 when it's not already present in the HDR metadata.
-        This covers lines 426-427 in tescan_pfib_tif.py where:
-            if software:
-                mdict["nx_meta"]["Software Version"] = software
+        This test specifically covers the fallback case where Software Version is
+        extracted from TIFF tag 305 when it's not already present in the HDR metadata.
+
         """
         extractor = TescanTiffExtractor()
 
@@ -981,8 +983,10 @@ WD=0.005
         original_parse_nx_meta = extractor._parse_nx_meta
 
         def mock_parse_nx_meta(mdict):
-            # Call the original method but remove Software Version if it was added
+            # Call the original method
             result = original_parse_nx_meta(mdict)
+            # Remove Software Version if it was added from HDR
+            # This forces the code to extract it from TIFF tags instead (line 495)
             if "Software Version" in result["nx_meta"]:
                 del result["nx_meta"]["Software Version"]
             return result
@@ -997,10 +1001,11 @@ WD=0.005
         # Extract metadata
         metadata = extractor.extract(context)
 
-        # Verify that Software Version was extracted from TIFF tags
-        assert "Software Version" in metadata["nx_meta"]
+        # Verify that Software Version was extracted from TIFF tag 305
+        # This ensures line 495 is executed: mdict["nx_meta"]["Software Version"] = software
+        assert "Software Version" in metadata[0]["nx_meta"]
         assert (
-            metadata["nx_meta"]["Software Version"]
+            metadata[0]["nx_meta"]["Software Version"]
             == "TESCAN Essence Version 1.3.7.1, build 8915"
         )
 
@@ -1009,15 +1014,6 @@ WD=0.005
 
         This test specifically covers the case where the Operator is extracted
         from TIFF tag 315 (Artist) when it's not already present in the HDR metadata.
-        This covers lines 434-442 in tescan_pfib_tif.py where:
-            if "Operator" not in mdict["nx_meta"]:
-                artist = img.tag_v2.get(315)
-                if artist:
-                    mdict["nx_meta"]["Operator"] = artist
-                    # Add warning since username may not be current user
-                    if "warnings" not in mdict["nx_meta"]:
-                        mdict["nx_meta"]["warnings"] = []
-                    mdict["nx_meta"]["warnings"].append(["Operator"])
         """
         extractor = TescanTiffExtractor()
 
@@ -1043,14 +1039,14 @@ WD=0.005
         metadata = extractor.extract(context)
 
         # Verify that Operator was extracted from TIFF tags
-        assert "Operator" in metadata["nx_meta"]
-        assert isinstance(metadata["nx_meta"]["Operator"], str)
-        assert len(metadata["nx_meta"]["Operator"]) > 0
+        assert "Operator" in metadata[0]["nx_meta"]
+        assert isinstance(metadata[0]["nx_meta"]["Operator"], str)
+        assert len(metadata[0]["nx_meta"]["Operator"]) > 0
 
         # Verify it's the expected value from the TIFF tag (Artist tag 315)
         # From the debug output, we can see tag 315 contains "nxuser"
-        assert metadata["nx_meta"]["Operator"] == "nxuser"
+        assert metadata[0]["nx_meta"]["Operator"] == "nxuser"
 
         # Verify that the warning was added
-        assert "warnings" in metadata["nx_meta"]
-        assert ["Operator"] in metadata["nx_meta"]["warnings"]
+        assert "warnings" in metadata[0]["nx_meta"]
+        assert ["Operator"] in metadata[0]["nx_meta"]["warnings"]

@@ -23,41 +23,43 @@ class TestQuantaExtractor:
         metadata = get_quanta_metadata(quanta_test_file[0])
 
         # Test nx_meta values
-        assert metadata["nx_meta"]["Data Type"] == "SEM_Imaging"
-        assert metadata["nx_meta"]["DatasetType"] == "Image"
-        assert metadata["nx_meta"]["warnings"] == [["Operator"]]
+        assert metadata[0]["nx_meta"]["Data Type"] == "SEM_Imaging"
+        assert metadata[0]["nx_meta"]["DatasetType"] == "Image"
+        assert metadata[0]["nx_meta"]["warnings"] == [["Operator"]]
 
         # Sample values from each native section
-        assert metadata["User"]["User"] == "user_"
-        assert metadata["User"]["Date"] == "12/18/2017"
-        assert metadata["System"]["Type"] == "SEM"
-        assert metadata["Beam"]["HV"] == "30000"
-        assert metadata["EScan"]["InternalScan"]
-        assert metadata["Stage"]["StageX"] == "0.009654"
-        assert metadata["Image"]["ResolutionX"] == "1024"
-        assert metadata["Vacuum"]["ChPressure"] == "79.8238"
-        assert metadata["Detectors"]["Number"] == "1"
-        assert metadata["LFD"]["Contrast"] == "62.4088"
+        assert metadata[0]["User"]["User"] == "user_"
+        assert metadata[0]["User"]["Date"] == "12/18/2017"
+        assert metadata[0]["System"]["Type"] == "SEM"
+        assert metadata[0]["Beam"]["HV"] == "30000"
+        assert metadata[0]["EScan"]["InternalScan"]
+        assert metadata[0]["Stage"]["StageX"] == "0.009654"
+        assert metadata[0]["Image"]["ResolutionX"] == "1024"
+        assert metadata[0]["Vacuum"]["ChPressure"] == "79.8238"
+        assert metadata[0]["Detectors"]["Number"] == "1"
+        assert metadata[0]["LFD"]["Contrast"] == "62.4088"
 
     def test_bad_metadata(self, quanta_bad_metadata):
         """Test handling of file without expected FEI tags."""
         metadata = get_quanta_metadata(quanta_bad_metadata)
         assert (
-            metadata["nx_meta"]["Extractor Warnings"]
+            metadata[0]["nx_meta"]["Extractor Warnings"]
             == "Did not find expected FEI tags. Could not read metadata"
         )
-        assert metadata["nx_meta"]["Data Type"] == "Unknown"
+        assert metadata[0]["nx_meta"]["Data Type"] == "Unknown"
 
     def test_modded_metadata(self, quanta_just_modded_mdata):
         """Test extraction from file with modified metadata values."""
         metadata = get_quanta_metadata(quanta_just_modded_mdata)
 
-        assert metadata["nx_meta"]["Data Type"] == "SEM_Imaging"
-        assert metadata["nx_meta"]["DatasetType"] == "Image"
-        assert metadata["nx_meta"]["Scan Rotation (°)"] == pytest.approx(179.9947)
-        assert metadata["nx_meta"]["Tilt Correction Angle"] == pytest.approx(0.0121551)
+        assert metadata[0]["nx_meta"]["Data Type"] == "SEM_Imaging"
+        assert metadata[0]["nx_meta"]["DatasetType"] == "Image"
+        assert metadata[0]["nx_meta"]["Scan Rotation (°)"] == pytest.approx(179.9947)
+        assert metadata[0]["nx_meta"]["Tilt Correction Angle"] == pytest.approx(
+            0.0121551
+        )
         # Invalid format should be stored as-is
-        assert metadata["nx_meta"]["Chamber Pressure (mPa)"] == "79.8.38"
+        assert metadata[0]["nx_meta"]["Chamber Pressure (mPa)"] == "79.8.38"
 
     def test_no_beam_scan_or_system_metadata(
         self,
@@ -68,48 +70,51 @@ class TestQuantaExtractor:
         mock_instrument_from_filepath(make_test_tool())
 
         metadata = get_quanta_metadata(quanta_no_beam_meta[0])
-        assert metadata["nx_meta"]["Data Type"] == "SEM_Imaging"
-        assert metadata["nx_meta"]["DatasetType"] == "Image"
+        assert metadata[0]["nx_meta"]["Data Type"] == "SEM_Imaging"
+        assert metadata[0]["nx_meta"]["DatasetType"] == "Image"
         assert (
-            metadata["nx_meta"]["Creation Time"] == "2025-11-17T17:52:13.811711-07:00"
+            metadata[0]["nx_meta"]["Creation Time"]
+            == "2025-11-17T17:52:13.811711-07:00"
         )
-        assert metadata["nx_meta"]["Instrument ID"] == "testtool-TEST-A1234567"
-        assert metadata["nx_meta"]["Data Dimensions"] == "(1024, 884)"
-        assert metadata["nx_meta"]["Frames Integrated"] == 5
-        assert metadata["Image"]["ResolutionX"] == "1024"
+        assert metadata[0]["nx_meta"]["Instrument ID"] == "testtool-TEST-A1234567"
+        assert metadata[0]["nx_meta"]["Data Dimensions"] == "(1024, 884)"
+        assert metadata[0]["nx_meta"]["Frames Integrated"] == 5
+        assert metadata[0]["Image"]["ResolutionX"] == "1024"
 
     def test_scios_duplicate_metadata_sections(self, scios_multiple_gis_meta):
         """Test handling of duplicate MultiGIS metadata sections."""
         metadata = get_quanta_metadata(scios_multiple_gis_meta[0])
-        assert metadata["nx_meta"]["Data Type"] == "SEM_Imaging"
-        assert metadata["nx_meta"]["DatasetType"] == "Image"
+        assert metadata[0]["nx_meta"]["Data Type"] == "SEM_Imaging"
+        assert metadata[0]["nx_meta"]["DatasetType"] == "Image"
         assert (
-            metadata["nx_meta"]["Creation Time"] == "2025-11-18T00:53:37.585629+00:00"
+            metadata[0]["nx_meta"]["Creation Time"]
+            == "2025-11-18T00:53:37.585629+00:00"
         )
-        assert metadata["nx_meta"]["Operator"] == "xxxx"
-        assert metadata["CBS"]["Setting"] == "C+D"
+        assert metadata[0]["nx_meta"]["Operator"] == "xxxx"
+        assert metadata[0]["CBS"]["Setting"] == "C+D"
         # Verify renamed sections
-        assert metadata["MultiGISUnit1.MultiGISGas1"]["GasName"] == ""
-        assert metadata["MultiGISUnit2.MultiGISGas3"]["DutyCycle"] == "0"
-        assert metadata["MultiGISUnit3.MultiGISGas6"]["GasState"] == "Unknown"
+        assert metadata[0]["MultiGISUnit1.MultiGISGas1"]["GasName"] == ""
+        assert metadata[0]["MultiGISUnit2.MultiGISGas3"]["DutyCycle"] == "0"
+        assert metadata[0]["MultiGISUnit3.MultiGISGas6"]["GasState"] == "Unknown"
 
     def test_scios_xml_metadata(self, scios_xml_metadata):
         """Test extraction of XML metadata from tag 34683."""
         metadata = get_quanta_metadata(scios_xml_metadata[0])
-        assert metadata["nx_meta"]["Data Type"] == "SEM_Imaging"
-        assert metadata["nx_meta"]["Acquisition Date"] == "05/01/2024"
-        assert metadata["nx_meta"]["Beam Tilt X"] == pytest.approx(0.0)
-        assert metadata["CBS"]["Setting"] == "A+B"
-        assert metadata["nx_meta"]["Operator"] == "xxxx"
+        assert metadata[0]["nx_meta"]["Data Type"] == "SEM_Imaging"
+        assert metadata[0]["nx_meta"]["Acquisition Date"] == "05/01/2024"
+        assert metadata[0]["nx_meta"]["Beam Tilt X"] == pytest.approx(0.0)
+        assert metadata[0]["CBS"]["Setting"] == "A+B"
+        assert metadata[0]["nx_meta"]["Operator"] == "xxxx"
 
         # Verify XML metadata parsing
-        assert metadata["FEI_XML_Metadata"]["Core"]["ApplicationSoftware"] == "xT"
-        assert metadata["FEI_XML_Metadata"]["Core"]["UserID"] == "xxxx"
+        assert metadata[0]["FEI_XML_Metadata"]["Core"]["ApplicationSoftware"] == "xT"
+        assert metadata[0]["FEI_XML_Metadata"]["Core"]["UserID"] == "xxxx"
         assert (
-            metadata["FEI_XML_Metadata"]["Instrument"]["Manufacturer"] == "FEI Company"
+            metadata[0]["FEI_XML_Metadata"]["Instrument"]["Manufacturer"]
+            == "FEI Company"
         )
         assert (
-            metadata["FEI_XML_Metadata"]["GasInjectionSystems"]["Gis"][1]["PortName"]
+            metadata[0]["FEI_XML_Metadata"]["GasInjectionSystems"]["Gis"][1]["PortName"]
             == "Port2"
         )
 
@@ -131,27 +136,31 @@ class TestQuantaExtractor:
         metadata = get_quanta_metadata(quanta_fei_2_file)
 
         # Should extract successfully with RawConfigParser handling '%' characters
-        assert metadata["nx_meta"]["Data Type"] == "SEM_Imaging"
-        assert metadata["nx_meta"]["DatasetType"] == "Image"
-        assert "Creation Time" in metadata["nx_meta"]
-        assert "Extractor Warnings" not in metadata["nx_meta"]
+        assert metadata[0]["nx_meta"]["Data Type"] == "SEM_Imaging"
+        assert metadata[0]["nx_meta"]["DatasetType"] == "Image"
+        assert "Creation Time" in metadata[0]["nx_meta"]
+        assert "Extractor Warnings" not in metadata[0]["nx_meta"]
 
         # Verify extraction of standard Quanta metadata fields
-        assert "Horizontal Field Width (μm)" in metadata["nx_meta"]
-        assert "Voltage (kV)" in metadata["nx_meta"]
-        assert "Stage Position" in metadata["nx_meta"]
+        assert "Horizontal Field Width (μm)" in metadata[0]["nx_meta"]
+        assert "Voltage (kV)" in metadata[0]["nx_meta"]
+        assert "Stage Position" in metadata[0]["nx_meta"]
 
         # Verify metadata values for fields that should be extracted
-        assert isinstance(metadata["nx_meta"]["User Text"], str)
+        assert isinstance(metadata[0]["nx_meta"]["User Text"], str)
         assert (
-            "Specimen Temperature (K)" not in metadata["nx_meta"]
+            "Specimen Temperature (K)" not in metadata[0]["nx_meta"]
         )  # Blank in test file
-        assert isinstance(metadata["nx_meta"]["Vacuum Mode"], str)
-        assert metadata["nx_meta"]["Scan Rotation (°)"] == 0
-        assert "Specimen Humidity (%)" not in metadata["nx_meta"]  # Blank in test file
-        assert metadata["nx_meta"]["Total Frame Time (s)"] > 0
-        assert metadata["nx_meta"]["Eucentric WD (mm)"] > 0  # EucWD extracted
-        assert isinstance(metadata["nx_meta"]["Image Mode"], str)  # ImageMode extracted
+        assert isinstance(metadata[0]["nx_meta"]["Vacuum Mode"], str)
+        assert metadata[0]["nx_meta"]["Scan Rotation (°)"] == 0
+        assert (
+            "Specimen Humidity (%)" not in metadata[0]["nx_meta"]
+        )  # Blank in test file
+        assert metadata[0]["nx_meta"]["Total Frame Time (s)"] > 0
+        assert metadata[0]["nx_meta"]["Eucentric WD (mm)"] > 0  # EucWD extracted
+        assert isinstance(
+            metadata[0]["nx_meta"]["Image Mode"], str
+        )  # ImageMode extracted
 
     def test_supports_method(self, quanta_test_file, tmp_path):
         """Test the supports() method for various file types."""
@@ -266,8 +275,8 @@ Contrast=60.0
 """
         img.save(tiff_numeric, tiffinfo={34682: metadata_numeric})
         metadata = get_quanta_metadata(tiff_numeric)
-        assert "Detector Grid Voltage (V)" in metadata["nx_meta"]
-        assert metadata["nx_meta"]["Data Type"] == "SEM_Imaging"
+        assert "Detector Grid Voltage (V)" in metadata[0]["nx_meta"]
+        assert metadata[0]["nx_meta"]["Data Type"] == "SEM_Imaging"
 
         # Test non-numeric Setting
         from unittest.mock import patch
@@ -304,7 +313,7 @@ Contrast=60.0
         ):
             context = ExtractionContext(tiff_string, None)
             metadata = extractor.extract(context)
-            assert metadata["nx_meta"]["Data Type"] == "SEM_Imaging"
+            assert metadata[0]["nx_meta"]["Data Type"] == "SEM_Imaging"
 
     def test_chamber_pressure_modes(self, tmp_path, mock_instrument_from_filepath):
         """Test chamber pressure unit conversion for different vacuum modes."""
@@ -325,9 +334,9 @@ UserMode=Low vacuum
 """
         img.save(tiff_low_vac, tiffinfo={34682: metadata_low_vac})
         metadata = get_quanta_metadata(tiff_low_vac)
-        if "Chamber Pressure (Pa)" in metadata["nx_meta"]:
+        if "Chamber Pressure (Pa)" in metadata[0]["nx_meta"]:
             assert isinstance(
-                metadata["nx_meta"]["Chamber Pressure (Pa)"], (int, float)
+                metadata[0]["nx_meta"]["Chamber Pressure (Pa)"], (int, float)
             )
 
         # Test non-numeric pressure (error handling)
@@ -348,24 +357,24 @@ Contrast=62.0
 """
         img.save(tiff_bad_pressure, tiffinfo={34682: metadata_bad_pressure})
         metadata = get_quanta_metadata(tiff_bad_pressure)
-        assert metadata["nx_meta"]["Data Type"] == "SEM_Imaging"
-        assert metadata["nx_meta"]["Chamber Pressure (Pa)"] == "NOT_A_NUMBER"
+        assert metadata[0]["nx_meta"]["Data Type"] == "SEM_Imaging"
+        assert metadata[0]["nx_meta"]["Chamber Pressure (Pa)"] == "NOT_A_NUMBER"
 
     def test_suppression_features(self, quanta_test_file):
         """Test zero suppression and conditional extraction features."""
         metadata = get_quanta_metadata(quanta_test_file[0])
 
         # Beam Shift values are not suppressed even when zero (suppress_zero=False)
-        assert "Beam Shift X" in metadata["nx_meta"]
-        assert "Beam Shift Y" in metadata["nx_meta"]
+        assert "Beam Shift X" in metadata[0]["nx_meta"]
+        assert "Beam Shift Y" in metadata[0]["nx_meta"]
 
         # Frame integration only appears if > 1
-        if "Frames Integrated" in metadata["nx_meta"]:
-            assert metadata["nx_meta"]["Frames Integrated"] > 1
+        if "Frames Integrated" in metadata[0]["nx_meta"]:
+            assert metadata[0]["nx_meta"]["Frames Integrated"] > 1
 
         # Tilt correction only if enabled
-        if "Tilt Correction Angle" in metadata["nx_meta"]:
-            assert metadata["nx_meta"]["Tilt Correction Angle"] is not None
+        if "Tilt Correction Angle" in metadata[0]["nx_meta"]:
+            assert metadata[0]["nx_meta"]["Tilt Correction Angle"] is not None
 
     def test_error_handling_and_edge_cases(
         self, tmp_path, mock_instrument_from_filepath
@@ -383,17 +392,17 @@ Contrast=62.0
         img.save(minimal_tiff)
         context = ExtractionContext(minimal_tiff, None)
         metadata = extractor.extract(context)
-        assert metadata["nx_meta"]["DatasetType"] == "Image"
+        assert metadata[0]["nx_meta"]["DatasetType"] == "Image"
 
         # Test file with FEI marker but invalid metadata structure
         corrupted_tiff = tmp_path / "corrupted.tif"
         img.save(corrupted_tiff, tiffinfo={34682: b"[User]\nInvalid=Data"})
         metadata = get_quanta_metadata(corrupted_tiff)
-        assert metadata["nx_meta"]["DatasetType"] == "Image"
+        assert metadata[0]["nx_meta"]["DatasetType"] == "Image"
 
         # Test warnings list initialization
-        assert "warnings" in metadata["nx_meta"]
-        assert isinstance(metadata["nx_meta"]["warnings"], list)
+        assert "warnings" in metadata[0]["nx_meta"]
+        assert isinstance(metadata[0]["nx_meta"]["warnings"], list)
 
         # Test XML parsing exception in tag 34683
         bad_xml_tiff = tmp_path / "bad_xml.tif"
@@ -401,7 +410,7 @@ Contrast=62.0
             bad_xml_tiff, tiffinfo={34682: b"[User]\nUser=test", 34683: "<?xml><bad>"}
         )
         metadata = get_quanta_metadata(bad_xml_tiff)
-        assert metadata["nx_meta"]["DatasetType"] == "Image"
+        assert metadata[0]["nx_meta"]["DatasetType"] == "Image"
 
         # Test binary extraction exception
         with patch.object(
@@ -442,11 +451,11 @@ ResolutionY=768
         metadata = get_quanta_metadata(tiff_path)
 
         # Verify special field parsing
-        assert "Scan Rotation (°)" in metadata["nx_meta"]
-        assert "Tilt Correction Angle" in metadata["nx_meta"]
-        assert metadata["nx_meta"]["Drift Correction Applied"] is True
-        assert metadata["nx_meta"]["Frames Integrated"] == 4
-        assert metadata["nx_meta"]["Data Dimensions"] == "(1024, 768)"
+        assert "Scan Rotation (°)" in metadata[0]["nx_meta"]
+        assert "Tilt Correction Angle" in metadata[0]["nx_meta"]
+        assert metadata[0]["nx_meta"]["Drift Correction Applied"] is True
+        assert metadata[0]["nx_meta"]["Frames Integrated"] == 4
+        assert metadata[0]["nx_meta"]["Data Dimensions"] == "(1024, 768)"
 
     def test_software_and_column_aggregation(
         self, tmp_path, mock_instrument_from_filepath
@@ -471,8 +480,8 @@ Type=FEG
         img.save(tiff_path, tiffinfo={34682: metadata_str})
         metadata = get_quanta_metadata(tiff_path)
 
-        assert metadata["nx_meta"]["Software Version"] == "FEI Software (build 1234)"
-        assert metadata["nx_meta"]["Column Type"] == "ESEM FEG"
+        assert metadata[0]["nx_meta"]["Software Version"] == "FEI Software (build 1234)"
+        assert metadata[0]["nx_meta"]["Column Type"] == "ESEM FEG"
 
     def test_missing_coverage_paths(self, tmp_path, mock_instrument_from_filepath):
         """Test edge case: numeric Setting fields skipped, warning list is init'd."""
@@ -514,7 +523,7 @@ Grid=50.0
             context = ExtractionContext(tiff_numeric_setting, None)
             metadata = extractor.extract(context)
             # Numeric Setting should be skipped (continue at line 598)
-            assert "Detector Setting" not in metadata.get("nx_meta", {})
+            assert "Detector Setting" not in metadata[0].get("nx_meta", {})
 
         # Test line 796: warnings initialization when it doesn't exist
         # This is covered when _parse_nx_meta is called on a fresh nx_meta dict

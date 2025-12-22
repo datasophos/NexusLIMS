@@ -1,5 +1,5 @@
 # pylint: disable=C0116
-# ruff: noqa: D102, ARG002
+# ruff: noqa: D102, ARG002, ARG001
 
 """Tests for nexusLIMS.extractors top-level module functions."""
 
@@ -25,12 +25,23 @@ class TestExtractorModule:
 
     @classmethod
     def remove_thumb_and_json(cls, fname):
-        fname.unlink()
-        Path(str(fname).replace("thumb.png", "json")).unlink()
+        # Handle both single Path and list of Paths (for multi-signal files)
+        if isinstance(fname, list):
+            for f in fname:
+                if f is not None:
+                    f.unlink(missing_ok=True)
+                    Path(str(f).replace("thumb.png", "json")).unlink(missing_ok=True)
+        elif fname is not None:
+            fname.unlink(missing_ok=True)
+            Path(str(fname).replace("thumb.png", "json")).unlink(missing_ok=True)
 
     def test_parse_metadata_titan(self, parse_meta_titan):
-        meta, thumb_fname = parse_metadata(fname=parse_meta_titan[0])
-        assert meta is not None
+        meta_list, thumb_fnames = parse_metadata(fname=parse_meta_titan[0])
+        assert meta_list is not None
+        assert isinstance(meta_list, list)
+        assert len(meta_list) == 1
+
+        meta = meta_list[0]
         assert meta["nx_meta"]["Acquisition Device"] == "BM-UltraScan"
         assert meta["nx_meta"]["Actual Magnification"] == pytest.approx(17677.0)
         assert meta["nx_meta"]["Cs(mm)"] == pytest.approx(1.2)
@@ -45,7 +56,7 @@ class TestExtractorModule:
         )
         assert meta["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
 
-        self.remove_thumb_and_json(thumb_fname)
+        self.remove_thumb_and_json(thumb_fnames)
 
     def test_parse_metadata_titan_mixed_case_extension(
         self, parse_meta_titan, tmp_path
@@ -62,47 +73,63 @@ class TestExtractorModule:
         shutil.copy2(original_file, uppercase_file)
 
         # Test that metadata extraction works with mixed case extension
-        meta, thumb_fname = parse_metadata(fname=uppercase_file)
-        assert meta is not None
-        assert thumb_fname is not None
+        meta_list, thumb_fnames = parse_metadata(fname=uppercase_file)
+        assert meta_list is not None
+        assert isinstance(meta_list, list)
+        assert len(meta_list) == 1
+        assert thumb_fnames is not None
+
+        meta = meta_list[0]
         assert meta["nx_meta"]["Actual Magnification"] == pytest.approx(17677.0)
         assert (
             meta["nx_meta"]["NexusLIMS Extraction"]["Module"]
             == "nexusLIMS.extractors.plugins.dm3_extractor"
         )
         assert meta["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
-        self.remove_thumb_and_json(thumb_fname)
+        self.remove_thumb_and_json(thumb_fnames)
 
     def test_parse_metadata_list_signal(self, list_signal):
-        meta, thumb_fname = parse_metadata(fname=list_signal[0])
-        assert meta is not None
-        assert meta["nx_meta"]["Acquisition Device"] == "DigiScan"
-        assert meta["nx_meta"]["STEM Camera Length"] == pytest.approx(77.0)
-        assert meta["nx_meta"]["Cs(mm)"] == pytest.approx(1.0)
-        assert meta["nx_meta"]["Data Dimensions"] == "(512, 512)"
-        assert meta["nx_meta"]["Data Type"] == "STEM_Imaging"
-        assert meta["nx_meta"]["DatasetType"] == "Image"
-        assert len(meta["nx_meta"]["warnings"]) == 0
-        assert (
-            meta["nx_meta"]["NexusLIMS Extraction"]["Module"]
-            == "nexusLIMS.extractors.plugins.dm3_extractor"
-        )
-        assert meta["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
+        meta_list, thumb_fnames = parse_metadata(fname=list_signal[0])
+        assert meta_list is not None
 
-        self.remove_thumb_and_json(thumb_fname)
+        # This file has multiple signals, so it returns a list of dicts
+        assert isinstance(meta_list, list)
+        assert len(meta_list) == 2
+        assert isinstance(thumb_fnames, list)
+        assert len(thumb_fnames) == 2
+
+        # Check first signal metadata
+        first_signal = meta_list[0]
+        assert first_signal["nx_meta"]["Acquisition Device"] == "DigiScan"
+        assert first_signal["nx_meta"]["STEM Camera Length"] == pytest.approx(77.0)
+        assert first_signal["nx_meta"]["Cs(mm)"] == pytest.approx(1.0)
+        assert first_signal["nx_meta"]["Data Dimensions"] == "(512, 512)"
+        assert first_signal["nx_meta"]["Data Type"] == "STEM_Imaging"
+        assert first_signal["nx_meta"]["DatasetType"] == "Image"
+        assert len(first_signal["nx_meta"]["warnings"]) == 0
+
+        self.remove_thumb_and_json(thumb_fnames)
 
     def test_parse_metadata_overwrite_false(self, caplog, list_signal):
         from nexusLIMS.extractors import replace_instrument_data_path
 
-        thumb_fname = replace_instrument_data_path(list_signal[0], ".thumb.png")
-        thumb_fname.parent.mkdir(parents=True, exist_ok=True)
-        # create the thumbnail file so we can't overwrite
-        with thumb_fname.open(mode="a", encoding="utf-8") as _:
-            pass
+        # This is a multi-signal file with 2 signals, so create both preview files
+        base_path = replace_instrument_data_path(list_signal[0], "")
+        thumb_fnames = [
+            base_path.parent / f"{base_path.name}_signal0.thumb.png",
+            base_path.parent / f"{base_path.name}_signal1.thumb.png",
+        ]
+
+        # Create parent directory and preview files
+        thumb_fnames[0].parent.mkdir(parents=True, exist_ok=True)
+        for thumb in thumb_fnames:
+            with thumb.open(mode="a", encoding="utf-8") as _:
+                pass
+
         nexusLIMS.extractors.logger.setLevel(logging.INFO)
-        _, thumb_fname = parse_metadata(fname=list_signal[0], overwrite=False)
+        _, returned_thumb_fnames = parse_metadata(fname=list_signal[0], overwrite=False)
         assert "Preview already exists" in caplog.text
-        self.remove_thumb_and_json(thumb_fname)
+        self.remove_thumb_and_json(returned_thumb_fnames)
 
     def test_parse_metadata_quanta(
         self,
@@ -117,8 +144,11 @@ class TestExtractorModule:
         # Set up Quanta SEM instrument for this test
         mock_instrument_from_filepath(make_quanta_sem())
 
-        _, thumb_fname = parse_metadata(fname=quanta_test_file[0])
-        self.remove_thumb_and_json(thumb_fname)
+        meta_list, thumb_fnames = parse_metadata(fname=quanta_test_file[0])
+        assert meta_list is not None
+        assert isinstance(meta_list, list)
+        assert len(meta_list) == 1
+        self.remove_thumb_and_json(thumb_fnames)
 
     def test_parse_metadata_tif_other_instr(self, monkeypatch, quanta_test_file):
         def mock_instr(_):
@@ -130,14 +160,18 @@ class TestExtractorModule:
             mock_instr,
         )
 
-        meta, thumb_fname = parse_metadata(fname=quanta_test_file[0])
-        assert meta is not None
+        meta_list, thumb_fnames = parse_metadata(fname=quanta_test_file[0])
+        assert meta_list is not None
+        assert isinstance(meta_list, list)
+        assert len(meta_list) == 1
+
+        meta = meta_list[0]
         assert (
             meta["nx_meta"]["NexusLIMS Extraction"]["Module"]
             == "nexusLIMS.extractors.plugins.quanta_tif_extractor"
         )
         assert meta["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
-        self.remove_thumb_and_json(thumb_fname)
+        self.remove_thumb_and_json(thumb_fnames)
 
     def test_parse_metadata_tif_uppercase_extension(
         self, monkeypatch, quanta_test_file, tmp_path
@@ -165,22 +199,29 @@ class TestExtractorModule:
         shutil.copy2(original_file, uppercase_file)
 
         # Test that metadata extraction works with uppercase extension
-        meta, thumb_fname = parse_metadata(fname=uppercase_file)
-        assert meta is not None
-        assert thumb_fname is not None
+        meta_list, thumb_fnames = parse_metadata(fname=uppercase_file)
+        assert meta_list is not None
+        assert isinstance(meta_list, list)
+        assert len(meta_list) == 1
+        assert thumb_fnames is not None
+
+        meta = meta_list[0]
         assert (
             meta["nx_meta"]["NexusLIMS Extraction"]["Module"]
             == "nexusLIMS.extractors.plugins.quanta_tif_extractor"
         )
         assert meta["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
-        self.remove_thumb_and_json(thumb_fname)
+        self.remove_thumb_and_json(thumb_fnames)
 
     def test_parse_metadata_edax_spc(self):
         test_file = Path(__file__).parent.parent / "files" / "leo_edax_test.spc"
-        _, thumb_fname = parse_metadata(fname=test_file)
+        meta_list, thumb_fnames = parse_metadata(fname=test_file)
+        assert meta_list is not None
+        assert isinstance(meta_list, list)
+        assert len(meta_list) == 1
 
         # test encoding of np.void metadata filler values
-        json_path = Path(str(thumb_fname).replace("thumb.png", "json"))
+        json_path = Path(str(thumb_fnames[0]).replace("thumb.png", "json"))
         with json_path.open("r", encoding="utf-8") as _file:
             json_meta = json.load(_file)
 
@@ -190,12 +231,15 @@ class TestExtractorModule:
         expected_void = np.void(b"\x3d\x0a\x0e\x42\x00\x00\x80\x3f")
         assert np.void(base64.b64decode(filler_val)) == expected_void
 
-        self.remove_thumb_and_json(thumb_fname)
+        self.remove_thumb_and_json(thumb_fnames)
 
     def test_parse_metadata_edax_msa(self):
         test_file = Path(__file__).parent.parent / "files" / "leo_edax_test.msa"
-        _, thumb_fname = parse_metadata(fname=test_file)
-        self.remove_thumb_and_json(thumb_fname)
+        meta_list, thumb_fnames = parse_metadata(fname=test_file)
+        assert meta_list is not None
+        assert isinstance(meta_list, list)
+        assert len(meta_list) == 1
+        self.remove_thumb_and_json(thumb_fnames)
 
     def test_parse_metadata_ser(self, fei_ser_files):
         test_file = next(
@@ -204,14 +248,18 @@ class TestExtractorModule:
             if "Titan_TEM_1_test_ser_image_dataZeroed_1.ser" in str(i)
         )
 
-        meta, thumb_fname = parse_metadata(fname=test_file)
-        assert meta is not None
+        meta_list, thumb_fnames = parse_metadata(fname=test_file)
+        assert meta_list is not None
+        assert isinstance(meta_list, list)
+        assert len(meta_list) == 1
+
+        meta = meta_list[0]
         assert (
             meta["nx_meta"]["NexusLIMS Extraction"]["Module"]
             == "nexusLIMS.extractors.plugins.ser_emi_extractor"
         )
         assert meta["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
-        self.remove_thumb_and_json(thumb_fname)
+        self.remove_thumb_and_json(thumb_fnames)
 
     def test_parse_metadata_no_dataset_type(self, monkeypatch, quanta_test_file):
         # PHASE 1 MIGRATION: Instead of monkeypatching extension_reader_map,
@@ -229,22 +277,26 @@ class TestExtractorModule:
             def supports(self, context: ExtractionContext) -> bool:
                 return context.file_path.suffix.lower() == ".tif"
 
-            def extract(self, context: ExtractionContext) -> dict:
-                return {"nx_meta": {"key": "val"}}
+            def extract(self, context: ExtractionContext) -> list[dict]:
+                return [{"nx_meta": {"key": "val"}}]
 
         # Register the test extractor
         registry = get_registry()
         registry.register_extractor(TestExtractorNoDatasetType)
 
         try:
-            meta, thumb_fname = parse_metadata(fname=quanta_test_file[0])
-            assert meta is not None
+            meta_list, thumb_fnames = parse_metadata(fname=quanta_test_file[0])
+            assert meta_list is not None
+            assert isinstance(meta_list, list)
+            assert len(meta_list) == 1
+
+            meta = meta_list[0]
             assert meta["nx_meta"]["DatasetType"] == "Misc"
             assert meta["nx_meta"]["Data Type"] == "Miscellaneous"
             assert meta["nx_meta"]["key"] == "val"
             assert meta["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
 
-            self.remove_thumb_and_json(thumb_fname)
+            self.remove_thumb_and_json(thumb_fnames)
         finally:
             # Clean up - clear and re-discover to restore original state
             registry.clear()
@@ -256,11 +308,15 @@ class TestExtractorModule:
             i for i in fei_ser_files if "Titan_TEM_13_unreadable_ser_1.ser" in str(i)
         )
 
-        meta, thumb_fname = parse_metadata(fname=test_file)
-        assert thumb_fname is not None
-        assert meta is not None
+        meta_list, thumb_fnames = parse_metadata(fname=test_file)
+        assert meta_list is not None
+        assert isinstance(meta_list, list)
+        assert len(meta_list) == 1
+        assert thumb_fnames is not None
+
+        meta = meta_list[0]
         # assert that preview is same as our placeholder image (should be)
-        assert filecmp.cmp(PLACEHOLDER_PREVIEW, thumb_fname, shallow=False)
+        assert filecmp.cmp(PLACEHOLDER_PREVIEW, thumb_fnames[0], shallow=False)
         assert meta["nx_meta"]["Data Type"] == "Unknown"
         assert meta["nx_meta"]["DatasetType"] == "Misc"
         assert (
@@ -273,13 +329,18 @@ class TestExtractorModule:
             "The .ser file could not be opened" in meta["nx_meta"]["Extractor Warning"]
         )
 
-        self.remove_thumb_and_json(thumb_fname)
+        self.remove_thumb_and_json(thumb_fnames)
 
     def test_parse_metadata_basic_extractor(self, basic_txt_file_no_extension):
-        meta, thumb_fname = parse_metadata(fname=basic_txt_file_no_extension)
+        meta_list, thumb_fnames = parse_metadata(fname=basic_txt_file_no_extension)
 
-        assert thumb_fname is None
-        assert meta is not None
+        # For files without preview generation, thumb_fnames is [None]
+        assert thumb_fnames == [None]
+        assert meta_list is not None
+        assert isinstance(meta_list, list)
+        assert len(meta_list) == 1
+
+        meta = meta_list[0]
         assert meta["nx_meta"]["Data Type"] == "Unknown"
         assert meta["nx_meta"]["DatasetType"] == "Unknown"
         assert (
@@ -300,10 +361,16 @@ class TestExtractorModule:
         ).unlink()
 
     def test_parse_metadata_with_image_preview(self, basic_image_file):
-        meta, thumb_fname = parse_metadata(fname=basic_image_file)
-        assert thumb_fname is not None
-        assert thumb_fname.is_file()
-        assert meta is not None
+        meta_list, thumb_fnames = parse_metadata(fname=basic_image_file)
+        assert thumb_fnames is not None
+        assert isinstance(thumb_fnames, list)
+        assert len(thumb_fnames) == 1
+        assert thumb_fnames[0].is_file()
+        assert meta_list is not None
+        assert isinstance(meta_list, list)
+        assert len(meta_list) == 1
+
+        meta = meta_list[0]
         assert meta["nx_meta"]["Data Type"] == "Unknown"
         assert meta["nx_meta"]["DatasetType"] == "Unknown"
         assert (
@@ -312,13 +379,19 @@ class TestExtractorModule:
         )
         assert meta["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
 
-        self.remove_thumb_and_json(thumb_fname)
+        self.remove_thumb_and_json(thumb_fnames)
 
     def test_parse_metadata_with_text_preview(self, basic_txt_file):
-        meta, thumb_fname = parse_metadata(fname=basic_txt_file)
-        assert thumb_fname is not None
-        assert thumb_fname.is_file()
-        assert meta is not None
+        meta_list, thumb_fnames = parse_metadata(fname=basic_txt_file)
+        assert thumb_fnames is not None
+        assert isinstance(thumb_fnames, list)
+        assert len(thumb_fnames) == 1
+        assert thumb_fnames[0].is_file()
+        assert meta_list is not None
+        assert isinstance(meta_list, list)
+        assert len(meta_list) == 1
+
+        meta = meta_list[0]
         assert meta["nx_meta"]["Data Type"] == "Unknown"
         assert meta["nx_meta"]["DatasetType"] == "Unknown"
         assert (
@@ -327,13 +400,18 @@ class TestExtractorModule:
         )
         assert meta["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
 
-        self.remove_thumb_and_json(thumb_fname)
+        self.remove_thumb_and_json(thumb_fnames)
 
     def test_no_thumb_for_unreadable_image(self, unreadable_image_file):
-        meta, thumb_fname = parse_metadata(fname=unreadable_image_file)
+        meta_list, thumb_fnames = parse_metadata(fname=unreadable_image_file)
 
-        assert thumb_fname is None
-        assert meta is not None
+        # For files without preview generation, thumb_fnames is [None]
+        assert thumb_fnames == [None]
+        assert meta_list is not None
+        assert isinstance(meta_list, list)
+        assert len(meta_list) == 1
+
+        meta = meta_list[0]
         assert meta["nx_meta"]["Data Type"] == "Unknown"
         assert meta["nx_meta"]["DatasetType"] == "Unknown"
         assert (
@@ -348,10 +426,15 @@ class TestExtractorModule:
             json_path.unlink()
 
     def test_no_thumb_for_binary_text_file(self, binary_text_file):
-        meta, thumb_fname = parse_metadata(fname=binary_text_file)
+        meta_list, thumb_fnames = parse_metadata(fname=binary_text_file)
 
-        assert thumb_fname is None
-        assert meta is not None
+        # For files without preview generation, thumb_fnames is [None]
+        assert thumb_fnames == [None]
+        assert meta_list is not None
+        assert isinstance(meta_list, list)
+        assert len(meta_list) == 1
+
+        meta = meta_list[0]
         assert meta["nx_meta"]["Data Type"] == "Unknown"
         assert meta["nx_meta"]["DatasetType"] == "Unknown"
         assert (
@@ -567,7 +650,7 @@ class TestExtractorModule:
         def mock_downsample(
             _fname,
             out_path=None,
-            output_size=None,  # noqa: ARG001
+            output_size=None,
             factor=None,
         ):
             downsample_called["called"] = True
@@ -647,9 +730,9 @@ class TestExtractorModule:
         thumbnail_called = {"called": False}
 
         def mock_image_to_square_thumbnail(
-            f=None,  # noqa: ARG001
+            f=None,
             out_path=None,
-            output_size=None,  # noqa: ARG001
+            output_size=None,
         ):
             thumbnail_called["called"] = True
             # Create output to simulate success
@@ -695,14 +778,18 @@ class TestExtractorModule:
         parsing metadata from a Quanta TIFF file, ensuring that the
         extractor selection/priority system works correctly.
         """
-        meta, thumb_fname = parse_metadata(fname=quanta_test_file[0])
-        assert meta is not None
+        meta_list, thumb_fnames = parse_metadata(fname=quanta_test_file[0])
+        assert meta_list is not None
+        assert isinstance(meta_list, list)
+        assert len(meta_list) == 1
+
+        meta = meta_list[0]
         assert (
             meta["nx_meta"]["NexusLIMS Extraction"]["Module"]
             == "nexusLIMS.extractors.plugins.quanta_tif_extractor"
         )
         assert meta["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
-        self.remove_thumb_and_json(thumb_fname)
+        self.remove_thumb_and_json(thumb_fnames)
 
     def test_correct_extractor_dispatched_for_orion_fibics_tif(
         self, orion_fibics_zeroed_file
@@ -713,14 +800,18 @@ class TestExtractorModule:
         over the QuantaTiffExtractor for Orion/Fibics TIFF files, ensuring
         that the extractor selection by priority works correctly.
         """
-        meta, thumb_fname = parse_metadata(fname=orion_fibics_zeroed_file)
-        assert meta is not None
+        meta_list, thumb_fnames = parse_metadata(fname=orion_fibics_zeroed_file)
+        assert meta_list is not None
+        assert isinstance(meta_list, list)
+        assert len(meta_list) == 1
+
+        meta = meta_list[0]
         assert (
             meta["nx_meta"]["NexusLIMS Extraction"]["Module"]
             == "nexusLIMS.extractors.plugins.orion_HIM_tif_extractor"
         )
         assert meta["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
-        self.remove_thumb_and_json(thumb_fname)
+        self.remove_thumb_and_json(thumb_fnames)
 
     def test_correct_extractor_dispatched_for_orion_zeiss_tif(
         self, orion_zeiss_zeroed_file
@@ -731,14 +822,18 @@ class TestExtractorModule:
         Orion TIF files with Zeiss XML metadata (not Fibics metadata), ensuring
         it is properly detected and handled.
         """
-        meta, thumb_fname = parse_metadata(fname=orion_zeiss_zeroed_file)
-        assert meta is not None
+        meta_list, thumb_fnames = parse_metadata(fname=orion_zeiss_zeroed_file)
+        assert meta_list is not None
+        assert isinstance(meta_list, list)
+        assert len(meta_list) == 1
+
+        meta = meta_list[0]
         assert (
             meta["nx_meta"]["NexusLIMS Extraction"]["Module"]
             == "nexusLIMS.extractors.plugins.orion_HIM_tif_extractor"
         )
         assert meta["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
-        self.remove_thumb_and_json(thumb_fname)
+        self.remove_thumb_and_json(thumb_fnames)
 
     def test_correct_extractor_dispatched_for_tescan_pfib_tif(self, tescan_pfib_files):
         """Test that TescanPfibTiffExtractor is used for Tescan PFIB TIFF files.
@@ -752,11 +847,364 @@ class TestExtractorModule:
             f for f in tescan_pfib_files if f.suffix.lower() in {".tif", ".tiff"}
         )
 
-        meta, thumb_fname = parse_metadata(fname=tif_file)
-        assert meta is not None
+        meta_list, thumb_fnames = parse_metadata(fname=tif_file)
+        assert meta_list is not None
+        assert isinstance(meta_list, list)
+        assert len(meta_list) == 1
+
+        meta = meta_list[0]
         assert (
             meta["nx_meta"]["NexusLIMS Extraction"]["Module"]
             == "nexusLIMS.extractors.plugins.tescan_tif_extractor"
         )
         assert meta["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
-        self.remove_thumb_and_json(thumb_fname)
+        self.remove_thumb_and_json(thumb_fnames)
+
+    def test_parse_metadata_multi_signal_no_preview(self, list_signal):
+        """Test multi-signal file without preview generation creates None list.
+
+        This test ensures that when generate_preview=False is passed for a
+        multi-signal file, the function returns a list of None values for
+        preview_fnames (line 254: preview_fnames = [None] * signal_count).
+        """
+        meta, preview_fnames = parse_metadata(
+            fname=list_signal[0],
+            generate_preview=False,
+        )
+
+        # Verify metadata is returned as a list for multi-signal file
+        assert isinstance(meta, list)
+        assert len(meta) == 2
+
+        # Verify preview_fnames is a list of None values (line 254)
+        assert isinstance(preview_fnames, list)
+        assert len(preview_fnames) == 2
+        assert all(fname is None for fname in preview_fnames)
+
+        # Verify metadata content is still valid
+        assert meta[0]["nx_meta"]["Data Type"] == "STEM_Imaging"
+        assert meta[1]["nx_meta"]["Data Type"] == "TEM_Imaging"
+
+    def test_create_preview_multi_signal_list_with_index(self, tmp_path):
+        """Test HyperSpy list signal handling with signal_index (line 414-418).
+
+        When HyperSpy loads a file and returns a list of signals, and signal_index
+        is not None, the specified signal should be selected and its title updated
+        with "signal X of Y" format.
+        """
+        import unittest.mock
+        from contextlib import ExitStack
+
+        import hyperspy.api as hs
+        import numpy as np
+
+        from nexusLIMS.extractors import create_preview
+
+        # Create two simple signals to simulate multi-signal file
+        signal1 = hs.signals.Signal2D(np.random.random((10, 10)))
+        signal1.metadata.General.title = "Signal 1"
+        signal1.metadata.General.original_filename = "test_multi.hspy"
+
+        signal2 = hs.signals.Signal2D(np.random.random((10, 10)))
+        signal2.metadata.General.title = "Signal 2"
+        signal2.metadata.General.original_filename = "test_multi.hspy"
+
+        # Capture signal info to verify the title was updated
+        captured_signal = {"title": None}
+
+        def mock_sig_to_thumbnail(sig, out_path=None):
+            captured_signal["title"] = sig.metadata.General.title
+            if out_path:
+                out_path.parent.mkdir(parents=True, exist_ok=True)
+                from PIL import Image
+
+                img = Image.new("RGB", (100, 100), color="red")
+                img.save(out_path)
+
+        # Mock hs.load to return a list of signals
+        def mock_hs_load(fname, **kwargs):
+            # Mock the compute method on each signal
+            signal1.compute = unittest.mock.Mock()
+            signal2.compute = unittest.mock.Mock()
+            return [signal1, signal2]
+
+        # Mock registry to return None for preview generator
+        mock_reg_instance = unittest.mock.Mock()
+        mock_reg_instance.get_preview_generator.return_value = None
+
+        with ExitStack() as stack:
+            stack.enter_context(
+                unittest.mock.patch(
+                    "nexusLIMS.extractors.hs.load", side_effect=mock_hs_load
+                )
+            )
+            stack.enter_context(
+                unittest.mock.patch(
+                    "nexusLIMS.extractors.sig_to_thumbnail",
+                    side_effect=mock_sig_to_thumbnail,
+                )
+            )
+            stack.enter_context(
+                unittest.mock.patch(
+                    "nexusLIMS.extractors.replace_instrument_data_path",
+                    return_value=tmp_path / "preview_signal1.thumb.png",
+                )
+            )
+            stack.enter_context(
+                unittest.mock.patch(
+                    "nexusLIMS.extractors.get_registry",
+                    return_value=mock_reg_instance,
+                )
+            )
+
+            # Call create_preview with signal_index=1
+            result = create_preview(
+                fname=tmp_path / "test.dm3",
+                overwrite=True,
+                signal_index=1,
+            )
+
+            # Verify title was updated with signal index info (line 414-418)
+            assert captured_signal["title"] is not None
+            assert "signal 2 of 2" in captured_signal["title"].lower()
+
+            # Clean up
+            if result and result.exists():
+                result.unlink()
+
+    def test_create_preview_multi_signal_list_without_index(self, tmp_path):
+        """Test HyperSpy list signal handling without signal_index (line 420-424).
+
+        When HyperSpy loads a file and returns a list of signals, and signal_index
+        is None (legacy mode), the first signal should be selected and its title
+        updated with "1 of Y total signals" format.
+        """
+        import unittest.mock
+        from contextlib import ExitStack
+
+        import hyperspy.api as hs
+        import numpy as np
+
+        from nexusLIMS.extractors import create_preview
+
+        # Create two simple signals
+        signal1 = hs.signals.Signal2D(np.random.random((10, 10)))
+        signal1.metadata.General.title = "First Signal"
+        signal1.metadata.General.original_filename = "test_legacy.hspy"
+
+        signal2 = hs.signals.Signal2D(np.random.random((10, 10)))
+        signal2.metadata.General.title = "Second Signal"
+        signal2.metadata.General.original_filename = "test_legacy.hspy"
+
+        # Capture the signal to verify title format
+        captured_signal = {"title": None}
+
+        def mock_sig_to_thumbnail(sig, out_path=None):
+            captured_signal["title"] = sig.metadata.General.title
+            if out_path:
+                out_path.parent.mkdir(parents=True, exist_ok=True)
+                from PIL import Image
+
+                img = Image.new("RGB", (100, 100), color="blue")
+                img.save(out_path)
+
+        # Mock hs.load to return a list of signals
+        def mock_hs_load(fname, **kwargs):
+            # Mock the compute method on each signal
+            signal1.compute = unittest.mock.Mock()
+            signal2.compute = unittest.mock.Mock()
+            return [signal1, signal2]
+
+        # Mock registry to return None (legacy fallback)
+        mock_reg_instance = unittest.mock.Mock()
+        mock_reg_instance.get_preview_generator.return_value = None
+
+        with ExitStack() as stack:
+            stack.enter_context(
+                unittest.mock.patch(
+                    "nexusLIMS.extractors.hs.load", side_effect=mock_hs_load
+                )
+            )
+            stack.enter_context(
+                unittest.mock.patch(
+                    "nexusLIMS.extractors.sig_to_thumbnail",
+                    side_effect=mock_sig_to_thumbnail,
+                )
+            )
+            stack.enter_context(
+                unittest.mock.patch(
+                    "nexusLIMS.extractors.replace_instrument_data_path",
+                    return_value=tmp_path / "preview_legacy.thumb.png",
+                )
+            )
+            stack.enter_context(
+                unittest.mock.patch(
+                    "nexusLIMS.extractors.get_registry",
+                    return_value=mock_reg_instance,
+                )
+            )
+
+            # Call create_preview without signal_index (legacy mode)
+            result = create_preview(fname=tmp_path / "test.dm3", overwrite=True)
+
+            # Verify legacy format: "1 of Y total signals" (line 420-424)
+            assert captured_signal["title"] is not None
+            assert "1 of" in captured_signal["title"].lower()
+            assert "total signals" in captured_signal["title"].lower()
+
+            # Clean up
+            if result and result.exists():
+                result.unlink()
+
+    def test_create_preview_hyperspy_single_signal_empty_title(self, tmp_path):
+        """Test HyperSpy single signal with empty title gets filename (line 428-432).
+
+        When a single signal has an empty title, it should be populated with the
+        filename (without extension).
+        """
+        import unittest.mock
+        from contextlib import ExitStack
+
+        import hyperspy.api as hs
+        import numpy as np
+
+        from nexusLIMS.extractors import create_preview
+
+        # Create a signal with empty title
+        signal = hs.signals.Signal2D(np.random.random((10, 10)))
+        signal.metadata.General.title = ""  # Empty title
+        signal.metadata.General.original_filename = "test_single_empty.hspy"
+
+        # Capture the signal to verify title was populated
+        captured_signal = {"title": None}
+
+        def mock_sig_to_thumbnail(sig, out_path=None):
+            captured_signal["title"] = sig.metadata.General.title
+            if out_path:
+                out_path.parent.mkdir(parents=True, exist_ok=True)
+                from PIL import Image
+
+                img = Image.new("RGB", (100, 100), color="green")
+                img.save(out_path)
+
+        # Mock hs.load to return a single signal (not a list)
+        def mock_hs_load(fname, **kwargs):
+            # Mock the compute method on the signal
+            signal.compute = unittest.mock.Mock()
+            return signal
+
+        # Mock registry to return None (legacy fallback)
+        mock_reg_instance = unittest.mock.Mock()
+        mock_reg_instance.get_preview_generator.return_value = None
+
+        with ExitStack() as stack:
+            stack.enter_context(
+                unittest.mock.patch(
+                    "nexusLIMS.extractors.hs.load", side_effect=mock_hs_load
+                )
+            )
+            stack.enter_context(
+                unittest.mock.patch(
+                    "nexusLIMS.extractors.sig_to_thumbnail",
+                    side_effect=mock_sig_to_thumbnail,
+                )
+            )
+            stack.enter_context(
+                unittest.mock.patch(
+                    "nexusLIMS.extractors.replace_instrument_data_path",
+                    return_value=tmp_path / "preview_single.thumb.png",
+                )
+            )
+            stack.enter_context(
+                unittest.mock.patch(
+                    "nexusLIMS.extractors.get_registry",
+                    return_value=mock_reg_instance,
+                )
+            )
+
+            # Call create_preview with empty-title signal
+            result = create_preview(fname=tmp_path / "test.dm3", overwrite=True)
+
+            # Verify title was populated from filename (line 428-432)
+            assert captured_signal["title"] is not None
+            assert "test" in captured_signal["title"]
+
+            # Clean up
+            if result and result.exists():
+                result.unlink()
+
+    def test_parse_metadata_extractor_returns_none(self, monkeypatch, tmp_path):
+        """Test parse_metadata when extractor returns None (line 205-206).
+
+        This tests the defensive early return when nx_meta_list is None.
+        Although extractors are designed to always return at least one metadata
+        dict, this tests the defensive guard clause before processing metadata.
+        """
+        from unittest.mock import MagicMock, patch
+
+        from nexusLIMS.extractors import parse_metadata
+
+        # Create a temporary test file
+        test_file = tmp_path / "test_none.xyz"
+        test_file.write_text("test content")
+
+        # Mock the registry to return an extractor that returns None
+        mock_extractor = MagicMock()
+        mock_extractor.name = "mock_extractor"
+        mock_extractor.supported_extensions = {"xyz"}
+        mock_extractor.supports.return_value = True
+        # Return None instead of valid metadata list (breaks defensive assumption)
+        mock_extractor.extract.return_value = None
+
+        mock_registry = MagicMock()
+        mock_registry.get_extractor.return_value = mock_extractor
+
+        # Mock instrument
+        mock_instrument = MagicMock()
+
+        with (
+            patch("nexusLIMS.extractors.get_registry", return_value=mock_registry),
+            patch(
+                "nexusLIMS.extractors.get_instr_from_filepath",
+                return_value=mock_instrument,
+            ),
+        ):
+            # Call parse_metadata - should handle None gracefully
+            result = parse_metadata(fname=test_file, generate_preview=False)
+
+            # When nx_meta_list is None, should return None, None (line 282)
+            assert result == (None, None)
+
+    @pytest.mark.filterwarnings(
+        "ignore:invalid value encountered in divide:RuntimeWarning"
+    )
+    def test_parse_metadata_neoarm_gatan_si_multi_signal_previews(
+        self, neoarm_gatan_si_file
+    ):
+        """Test that four previews are generated for neoarm_gatan_si_file.
+
+        The neoarm_gatan_si_file fixture contains a Gatan DM4 file with
+        4 signals, so we expect 4 preview images to be generated.
+        """
+        meta_list, thumb_fnames = parse_metadata(
+            fname=neoarm_gatan_si_file, generate_preview=True
+        )
+
+        # Verify metadata list has 4 entries (one per signal)
+        assert meta_list is not None
+        assert isinstance(meta_list, list)
+        assert len(meta_list) == 4, "Expected 4 signals in neoarm_gatan_si_file"
+
+        # Verify 4 preview files were generated
+        assert thumb_fnames is not None
+        assert isinstance(thumb_fnames, list)
+        assert len(thumb_fnames) == 4, "Expected 4 preview files for 4 signals"
+
+        # Verify all preview files were created and exist
+        for i, thumb_fname in enumerate(thumb_fnames):
+            assert thumb_fname is not None, f"Preview {i} should not be None"
+            assert thumb_fname.exists(), f"Preview file {i} should exist: {thumb_fname}"
+            assert thumb_fname.suffix == ".png", f"Preview {i} should be a PNG file"
+
+        # Clean up generated files
+        self.remove_thumb_and_json(thumb_fnames)

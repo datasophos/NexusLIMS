@@ -480,3 +480,46 @@ class TestThumbnailGenerator:  # pylint: disable=too-many-public-methods
         result = gen.generate(context, output_path)
         assert result is False
         assert "Failed to generate text preview" in caplog.text
+
+    @pytest.mark.mpl_image_compare(style="default")
+    def test_hyperspy_preview_generator_multi_signal_no_index(
+        self, output_path, neoarm_gatan_si_file
+    ):
+        """Test HypersyPreviewGenerator with multi-signal file and no signal_index.
+
+        When HyperSpy loads a file that returns a list of signals and
+        signal_index is None, the first signal (s = s[0]) should be selected
+        for preview generation. This test uses a real multi-signal DM4 file
+        (spectrum image) which HyperSpy loads as a list of signals.
+        """
+        from nexusLIMS.extractors.base import ExtractionContext
+        from nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview import (
+            HyperSpyPreviewGenerator,
+        )
+
+        # Use the multi-signal test file from the fixture
+        test_file = neoarm_gatan_si_file
+
+        # Create context with signal_index=None (legacy mode)
+        # This triggers the code path where the first signal is selected
+        context = ExtractionContext(test_file, None, signal_index=None)
+
+        # Generate the preview - this should select the first signal
+        gen = HyperSpyPreviewGenerator()
+        result = gen.generate(context, output_path)
+
+        # Verify preview was generated successfully
+        assert result is True
+        assert output_path.exists()
+
+        # Return the generated figure for mpl comparison
+        # Re-generate to get the Figure object for comparison
+        from hyperspy.io import load as hs_load
+
+        signals = hs_load(test_file)
+        # Verify we have multiple signals (this is a spectrum image)
+        assert isinstance(signals, list)
+        assert len(signals) > 1
+        # Get the first signal (same as the code under test)
+        first_signal = signals[0]
+        return sig_to_thumbnail(first_signal, output_path)

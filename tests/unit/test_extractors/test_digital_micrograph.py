@@ -60,13 +60,17 @@ class TestDigitalMicrographExtractor:
         # Extract should return basic metadata with a warning, not raise
         metadata = extractor.extract(context)
 
-        # Should have basic metadata structure
+        # Should have basic metadata structure (now as a list)
         assert metadata is not None
-        assert "nx_meta" in metadata
+        assert isinstance(metadata, list)
+        assert len(metadata) == 1
+
+        meta = metadata[0]
+        assert "nx_meta" in meta
 
         # Should have a warning about the failure
-        assert "warnings" in metadata["nx_meta"]
-        warnings = metadata["nx_meta"]["warnings"]
+        assert "warnings" in meta["nx_meta"]
+        warnings = meta["nx_meta"]["warnings"]
         assert any(
             "DM3/DM4 file could not be read by HyperSpy" in str(w) for w in warnings
         )
@@ -80,9 +84,14 @@ class TestDigitalMicrographExtractor:
         # Set up instrument for this test
         mock_instrument_from_filepath(make_test_tool())
 
-        metadata = digital_micrograph.get_dm3_metadata(list_signal[0])
+        metadata_list = digital_micrograph.get_dm3_metadata(list_signal[0])
 
-        assert metadata is not None
+        assert metadata_list is not None
+        assert isinstance(metadata_list, list)
+        assert len(metadata_list) > 0
+
+        # Check first signal
+        metadata = metadata_list[0]
         assert metadata["nx_meta"]["Data Type"] == "STEM_Imaging"
         assert metadata["nx_meta"]["Imaging Mode"] == "DIFFRACTION"
         assert metadata["nx_meta"]["Microscope"] == "TEST Titan_______"
@@ -97,15 +106,19 @@ class TestDigitalMicrographExtractor:
         """Test DM3 diffraction metadata extraction from Titan TEM."""
         mock_instrument_from_filepath(make_titan_tem())
 
-        meta = digital_micrograph.get_dm3_metadata(stem_diff[0])
-        assert meta is not None
+        meta_list = digital_micrograph.get_dm3_metadata(stem_diff[0])
+        assert meta_list is not None
+        assert isinstance(meta_list, list)
+        meta = meta_list[0]
         assert meta["nx_meta"]["Data Type"] == "STEM_Diffraction"
         assert meta["nx_meta"]["Imaging Mode"] == "DIFFRACTION"
         assert meta["nx_meta"]["Microscope"] == "TEST Titan"
         assert meta["nx_meta"]["Voltage"] == pytest.approx(300000.0)
 
-        meta = digital_micrograph.get_dm3_metadata(opmode_diff[0])
-        assert meta is not None
+        meta_list = digital_micrograph.get_dm3_metadata(opmode_diff[0])
+        assert meta_list is not None
+        assert isinstance(meta_list, list)
+        meta = meta_list[0]
         assert meta["nx_meta"]["Data Type"] == "TEM_Diffraction"
         assert meta["nx_meta"]["Imaging Mode"] == "DIFFRACTION"
         assert meta["nx_meta"]["Microscope"] == "TEST Titan"
@@ -121,8 +134,10 @@ class TestDigitalMicrographExtractor:
         """Test DM3 EELS metadata extraction from Titan TEM."""
         mock_instrument_from_filepath(make_titan_tem())
 
-        meta = digital_micrograph.get_dm3_metadata(eels_proc_1_titan[0])
-        assert meta is not None
+        meta_list = digital_micrograph.get_dm3_metadata(eels_proc_1_titan[0])
+        assert meta_list is not None
+        assert isinstance(meta_list, list)
+        meta = meta_list[0]
         assert meta["nx_meta"]["Data Type"] == "STEM_EELS"
         assert meta["nx_meta"]["Imaging Mode"] == "DIFFRACTION"
         assert meta["nx_meta"]["Microscope"] == "TEST Titan"
@@ -133,8 +148,10 @@ class TestDigitalMicrographExtractor:
         )
         assert meta["nx_meta"]["EELS"]["Spectrometer Aperture label"] == "2mm"
 
-        meta = digital_micrograph.get_dm3_metadata(eels_si_drift[0])
-        assert meta is not None
+        meta_list = digital_micrograph.get_dm3_metadata(eels_si_drift[0])
+        assert meta_list is not None
+        assert isinstance(meta_list, list)
+        meta = meta_list[0]
         assert meta["nx_meta"]["Data Type"] == "EELS_Spectrum_Imaging"
         assert meta["nx_meta"]["Imaging Mode"] == "DIFFRACTION"
         assert meta["nx_meta"]["Microscope"] == "TEST Titan"
@@ -151,8 +168,10 @@ class TestDigitalMicrographExtractor:
             0.05,
         )
 
-        meta = digital_micrograph.get_dm3_metadata(tecnai_mag[0])
-        assert meta is not None
+        meta_list = digital_micrograph.get_dm3_metadata(tecnai_mag[0])
+        assert meta_list is not None
+        assert isinstance(meta_list, list)
+        meta = meta_list[0]
         assert meta["nx_meta"]["Data Type"] == "TEM_Imaging"
         assert meta["nx_meta"]["Imaging Mode"] == "IMAGING"
         assert meta["nx_meta"]["Microscope"] == "TEST Titan"
@@ -170,8 +189,10 @@ class TestDigitalMicrographExtractor:
         """Test DM3 metadata extraction from a Titan STEM."""
         mock_instrument_from_filepath(make_titan_stem())
 
-        meta = digital_micrograph.get_dm3_metadata(eftem_diff[0])
-        assert meta is not None
+        meta_list = digital_micrograph.get_dm3_metadata(eftem_diff[0])
+        assert meta_list is not None
+        assert isinstance(meta_list, list)
+        meta = meta_list[0]
         assert meta["nx_meta"]["Data Type"] == "TEM_EFTEM_Diffraction"
         assert meta["nx_meta"]["DatasetType"] == "Diffraction"
         assert meta["nx_meta"]["Imaging Mode"] == "EFTEM DIFFRACTION"
@@ -179,8 +200,10 @@ class TestDigitalMicrographExtractor:
         assert meta["nx_meta"]["STEM Camera Length"] == pytest.approx(5.0)
         assert meta["nx_meta"]["EELS"]["Spectrometer Aperture label"] == "5 mm"
 
-        meta = digital_micrograph.get_dm3_metadata(eds_si_titan[0])
-        assert meta is not None
+        meta_list = digital_micrograph.get_dm3_metadata(eds_si_titan[0])
+        assert meta_list is not None
+        assert isinstance(meta_list, list)
+        meta = meta_list[0]
         assert meta["nx_meta"]["Data Type"] == "EDS_Spectrum_Imaging"
         assert meta["nx_meta"]["DatasetType"] == "SpectrumImage"
         assert meta["nx_meta"]["Analytic Signal"] == "X-ray"
@@ -202,8 +225,10 @@ class TestDigitalMicrographExtractor:
             meta["nx_meta"]["Spectrum Imaging"]["Spatial Sampling (Horizontal)"] == 100
         )
 
-        meta = digital_micrograph.get_dm3_metadata(stem_stack_titan[0])
-        assert meta is not None
+        meta_list = digital_micrograph.get_dm3_metadata(stem_stack_titan[0])
+        assert meta_list is not None
+        assert isinstance(meta_list, list)
+        meta = meta_list[0]
         assert meta["nx_meta"]["Data Type"] == "STEM_Imaging"
         assert meta["nx_meta"]["DatasetType"] == "Image"
         assert meta["nx_meta"]["Acquisition Device"] == "DigiScan"
@@ -212,7 +237,7 @@ class TestDigitalMicrographExtractor:
         assert meta["nx_meta"]["Indicated Magnification"] == pytest.approx(7200000.0)
         assert meta["nx_meta"]["STEM Camera Length"] == pytest.approx(100.0)
 
-    def test_titan_stem_dm3_eels(
+    def test_titan_stem_dm3_eels(  # noqa: PLR0915
         self,
         eels_si_titan,
         eels_proc_int_bg_titan,
@@ -223,8 +248,10 @@ class TestDigitalMicrographExtractor:
         """Test DM3 EELS metadata extraction from Titan STEM."""
         mock_instrument_from_filepath(make_titan_stem())
 
-        meta = digital_micrograph.get_dm3_metadata(eels_si_titan[0])
-        assert meta is not None
+        meta_list = digital_micrograph.get_dm3_metadata(eels_si_titan[0])
+        assert meta_list is not None
+        assert isinstance(meta_list, list)
+        meta = meta_list[0]
         assert meta["nx_meta"]["Data Type"] == "EELS_Spectrum_Imaging"
         assert meta["nx_meta"]["DatasetType"] == "SpectrumImage"
         assert meta["nx_meta"]["Imaging Mode"] == "DIFFRACTION"
@@ -240,8 +267,10 @@ class TestDigitalMicrographExtractor:
         assert meta["nx_meta"]["Spectrum Imaging"]["Scan Mode"] == "LineScan"
         assert meta["nx_meta"]["Spectrum Imaging"]["Acquisition Duration (s)"] == 605
 
-        meta = digital_micrograph.get_dm3_metadata(eels_proc_int_bg_titan[0])
-        assert meta is not None
+        meta_list = digital_micrograph.get_dm3_metadata(eels_proc_int_bg_titan[0])
+        assert meta_list is not None
+        assert isinstance(meta_list, list)
+        meta = meta_list[0]
         assert meta["nx_meta"]["Data Type"] == "STEM_EELS"
         assert meta["nx_meta"]["DatasetType"] == "Spectrum"
         assert meta["nx_meta"]["Analytic Signal"] == "EELS"
@@ -253,8 +282,10 @@ class TestDigitalMicrographExtractor:
             == "Background Removal, Signal Integration"
         )
 
-        meta = digital_micrograph.get_dm3_metadata(eels_proc_thick_titan[0])
-        assert meta is not None
+        meta_list = digital_micrograph.get_dm3_metadata(eels_proc_thick_titan[0])
+        assert meta_list is not None
+        assert isinstance(meta_list, list)
+        meta = meta_list[0]
         assert meta["nx_meta"]["Data Type"] == "STEM_EELS"
         assert meta["nx_meta"]["DatasetType"] == "Spectrum"
         assert meta["nx_meta"]["Analytic Signal"] == "EELS"
@@ -271,8 +302,10 @@ class TestDigitalMicrographExtractor:
             0.1,
         )
 
-        meta = digital_micrograph.get_dm3_metadata(eels_si_drift_titan[0])
-        assert meta is not None
+        meta_list = digital_micrograph.get_dm3_metadata(eels_si_drift_titan[0])
+        assert meta_list is not None
+        assert isinstance(meta_list, list)
+        meta = meta_list[0]
         assert meta["nx_meta"]["Data Type"] == "EELS_Spectrum_Imaging"
         assert meta["nx_meta"]["DatasetType"] == "SpectrumImage"
         assert meta["nx_meta"]["Analytic Signal"] == "EELS"
@@ -293,8 +326,10 @@ class TestDigitalMicrographExtractor:
         # Set up JEOL 3010 instrument for this test
         mock_instrument_from_filepath(make_jeol_tem())
 
-        meta = digital_micrograph.get_dm3_metadata(jeol3010_diff[0])
-        assert meta is not None
+        meta_list = digital_micrograph.get_dm3_metadata(jeol3010_diff[0])
+        assert meta_list is not None
+        assert isinstance(meta_list, list)
+        meta = meta_list[0]
         assert meta["nx_meta"]["Data Type"] == "TEM_Diffraction"
         assert meta["nx_meta"]["DatasetType"] == "Diffraction"
         assert meta["nx_meta"]["Acquisition Device"] == "Orius "
@@ -325,12 +360,17 @@ class TestDigitalMicrographExtractor:
         # The last should be the same size
         assert input_path.stat().st_size == fname_3.stat().st_size
 
-        meta_in = digital_micrograph.get_dm3_metadata(input_path)
-        meta_3 = digital_micrograph.get_dm3_metadata(fname_3)
+        meta_in_list = digital_micrograph.get_dm3_metadata(input_path)
+        meta_3_list = digital_micrograph.get_dm3_metadata(fname_3)
 
         # Creation times will be different, so remove that metadata
-        assert meta_in is not None
-        assert meta_3 is not None
+        assert meta_in_list is not None
+        assert meta_3_list is not None
+        assert isinstance(meta_in_list, list)
+        assert isinstance(meta_3_list, list)
+
+        meta_in = meta_in_list[0]
+        meta_3 = meta_3_list[0]
         del meta_in["nx_meta"]["Creation Time"]
         del meta_3["nx_meta"]["Creation Time"]
 
@@ -371,11 +411,14 @@ class TestDigitalMicrographExtractor:
 
         # Extract metadata - should apply profile
         digital_micrograph.logger.setLevel(logging.DEBUG)
-        result = digital_micrograph.get_dm3_metadata(
+        result_list = digital_micrograph.get_dm3_metadata(
             list_signal[0], instrument=instrument
         )
 
         # Verify parser was applied
+        assert result_list is not None
+        assert isinstance(result_list, list)
+        result = result_list[0]
         assert result["nx_meta"]["CustomField"] == "CustomValue"
 
         # Verify log message (line 129)
@@ -413,12 +456,14 @@ class TestDigitalMicrographExtractor:
         # Extract metadata - should handle parser failure gracefully
         digital_micrograph.logger.setLevel(logging.WARNING)
 
-        result = digital_micrograph.get_dm3_metadata(
+        result_list = digital_micrograph.get_dm3_metadata(
             list_signal[0], instrument=instrument
         )
 
         # Metadata should still be extracted despite parser failure
-        assert result is not None
+        assert result_list is not None
+        assert isinstance(result_list, list)
+        result = result_list[0]
         assert "nx_meta" in result
 
         # Verify warning was logged
@@ -455,12 +500,15 @@ class TestDigitalMicrographExtractor:
         profile_registry_manager.register(profile)
 
         # Extract metadata - should apply transformation
-        result = digital_micrograph.get_dm3_metadata(
+        result_list = digital_micrograph.get_dm3_metadata(
             list_signal[0], instrument=instrument
         )
 
         # Verify transformation was applied (line 146)
         # The nx_meta dict should have the transformed field
+        assert result_list is not None
+        assert isinstance(result_list, list)
+        result = result_list[0]
         assert result["nx_meta"]["TransformedField"] == "TRANSFORMATION_APPLIED"
 
     def test_apply_profile_transformation_failure(
@@ -495,12 +543,14 @@ class TestDigitalMicrographExtractor:
         # Extract metadata - should handle transformation failure gracefully
         digital_micrograph.logger.setLevel(logging.WARNING)
 
-        result = digital_micrograph.get_dm3_metadata(
+        result_list = digital_micrograph.get_dm3_metadata(
             list_signal[0], instrument=instrument
         )
 
         # Metadata should still be extracted despite transformation failure
-        assert result is not None
+        assert result_list is not None
+        assert isinstance(result_list, list)
+        result = result_list[0]
         assert "nx_meta" in result
 
         # Verify warning was logged
@@ -534,11 +584,14 @@ class TestDigitalMicrographExtractor:
         profile_registry_manager.register(profile)
 
         # Extract metadata - should inject static metadata
-        result = digital_micrograph.get_dm3_metadata(
+        result_list = digital_micrograph.get_dm3_metadata(
             list_signal[0], instrument=instrument
         )
 
         # Verify static metadata was injected (line 158)
+        assert result_list is not None
+        assert isinstance(result_list, list)
+        result = result_list[0]
         assert result["nx_meta"]["Facility"] == "Test Facility"
         assert result["nx_meta"]["Building"] == "Building 123"
         assert result["nx_meta"]["CustomInfo"]["SubKey"] == "Nested Value"
@@ -594,12 +647,14 @@ class TestDigitalMicrographExtractor:
         # Extract metadata - should handle static metadata failure gracefully
         digital_micrograph.logger.setLevel(logging.WARNING)
 
-        result = digital_micrograph.get_dm3_metadata(
+        result_list = digital_micrograph.get_dm3_metadata(
             list_signal[0], instrument=instrument
         )
 
         # Metadata should still be extracted despite static metadata failure
-        assert result is not None
+        assert result_list is not None
+        assert isinstance(result_list, list)
+        result = result_list[0]
         assert "nx_meta" in result
 
         # Verify warning was logged
@@ -617,9 +672,13 @@ class TestDigitalMicrographExtractor:
         # Set up instrument for this test
         mock_instrument_from_filepath(make_test_tool())
 
-        meta = digital_micrograph.get_dm3_metadata(neoarm_gatan_image_file)
+        meta_list = digital_micrograph.get_dm3_metadata(neoarm_gatan_image_file)
 
-        assert meta is not None
+        assert meta_list is not None
+        assert isinstance(meta_list, list)
+        assert len(meta_list) > 0
+
+        meta = meta_list[0]
         assert "nx_meta" in meta
 
         # Test Signal Name extraction
@@ -637,3 +696,59 @@ class TestDigitalMicrographExtractor:
         # Test Sample Time (dwell time) extraction
         assert "Sample Time (\u00b5s)" in meta["nx_meta"]
         assert meta["nx_meta"]["Sample Time (\u00b5s)"] == pytest.approx(16.0)
+
+    def test_dm4_multi_signal_extraction(
+        self,
+        neoarm_gatan_si_file,
+        mock_instrument_from_filepath,
+    ):
+        """Test that all signals are extracted from multi-signal DM4 file."""
+        from nexusLIMS.extractors.base import ExtractionContext
+        from nexusLIMS.extractors.plugins.digital_micrograph import DM3Extractor
+
+        # Set up instrument for this test
+        mock_instrument_from_filepath(make_test_tool())
+
+        extractor = DM3Extractor()
+        context = ExtractionContext(file_path=neoarm_gatan_si_file, instrument=None)
+
+        result = extractor.extract(context)
+
+        # Should return a list of metadata dicts (multi-signal)
+        assert isinstance(result, list)
+        assert len(result) > 1  # Multiple signals
+
+        # Check that each signal has required metadata
+        for signal_meta in result:
+            assert "nx_meta" in signal_meta
+            assert "Creation Time" in signal_meta["nx_meta"]
+            assert "DatasetType" in signal_meta["nx_meta"]
+            assert "Data Type" in signal_meta["nx_meta"]
+
+    @pytest.mark.filterwarnings(
+        "ignore:invalid value encountered in divide:RuntimeWarning"
+    )
+    def test_dm4_multi_signal_previews(
+        self,
+        neoarm_gatan_si_file,
+        tmp_path,
+        monkeypatch,
+    ):
+        """Test that multiple preview images are generated with correct naming."""
+        from nexusLIMS.extractors import parse_metadata
+
+        # Mock the NX_DATA_PATH to use tmp_path
+        monkeypatch.setenv("NX_DATA_PATH", str(tmp_path))
+
+        _, previews = parse_metadata(
+            neoarm_gatan_si_file, generate_preview=True, write_output=False
+        )
+
+        # Should return list of preview paths for multi-signal file
+        assert isinstance(previews, list)
+        assert len(previews) > 1
+
+        # Check naming convention (should have _signalN suffix for multi-signal)
+        for i, preview in enumerate(previews):
+            if preview is not None:
+                assert f"_signal{i}.thumb.png" in str(preview)
