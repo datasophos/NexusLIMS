@@ -81,7 +81,7 @@ class OrionTiffExtractor:
             _logger.warning("Error checking TIFF tags for %s: %s", context.file_path, e)
             return False
 
-    def extract(self, context: ExtractionContext) -> dict[str, Any]:
+    def extract(self, context: ExtractionContext) -> list[dict[str, Any]]:
         """
         Extract metadata from a Zeiss Orion or Fibics TIFF file.
 
@@ -92,8 +92,8 @@ class OrionTiffExtractor:
 
         Returns
         -------
-        dict
-            Metadata dictionary with 'nx_meta' key containing NexusLIMS metadata
+        list[dict]
+            List containing a single metadata dict with 'nx_meta' key
         """
         filename = context.file_path
         _logger.debug("Extracting metadata from Zeiss/Fibics TIFF file: %s", filename)
@@ -132,7 +132,7 @@ class OrionTiffExtractor:
         # Sort the nx_meta dictionary for nicer display
         mdict["nx_meta"] = sort_dict(mdict["nx_meta"])
 
-        return mdict
+        return [mdict]
 
     def _detect_variant(self, img: Image.Image) -> str | None:
         """

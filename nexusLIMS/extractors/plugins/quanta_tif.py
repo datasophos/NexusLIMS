@@ -106,12 +106,12 @@ class QuantaTiffExtractor:
             # Check for FEI metadata markers in file
             return b"[User]" in content or b"[Beam]" in content
 
-    def extract(self, context: ExtractionContext) -> dict[str, Any]:
+    def extract(self, context: ExtractionContext) -> list[dict[str, Any]]:
         """
         Extract metadata from a FEI/Thermo TIFF file.
 
-        Returns the metadata (as a dictionary) from a .tif file saved by the FEI
-        Quanta SEM or related instruments. Specific tags of interest are
+        Returns the metadata (as a list of dictionaries) from a .tif file saved
+        by the FEI Quanta SEM or related instruments. Specific tags of interest are
         extracted and placed under the root-level ``nx_meta`` node.
 
         Parameters
@@ -121,8 +121,8 @@ class QuantaTiffExtractor:
 
         Returns
         -------
-        dict
-            Metadata dictionary with 'nx_meta' key containing NexusLIMS metadata
+        list[dict]
+            List containing a single metadata dict with 'nx_meta' key
         """
         filename = context.file_path
         _logger.debug("Extracting metadata from FEI TIFF file: %s", filename)
@@ -147,7 +147,7 @@ class QuantaTiffExtractor:
                     "Did not find expected FEI tags. Could not read metadata"
                 )
                 mdict["nx_meta"] = sort_dict(mdict["nx_meta"])
-                return mdict
+                return [mdict]
 
             # Handle XML metadata if present
             if xml_metadata:
@@ -170,7 +170,7 @@ class QuantaTiffExtractor:
         # sort the nx_meta dictionary (recursively) for nicer display
         mdict["nx_meta"] = sort_dict(mdict["nx_meta"])
 
-        return mdict
+        return [mdict]
 
     def _extract_metadata_from_tiff_tag(self, tiff_path: Path) -> Tuple[str, dict]:
         """

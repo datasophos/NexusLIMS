@@ -98,11 +98,11 @@ class TescanTiffExtractor:
 
         return False
 
-    def extract(self, context: ExtractionContext) -> dict[str, Any]:
+    def extract(self, context: ExtractionContext) -> list[dict[str, Any]]:
         """
         Extract metadata from a Tescan FIB/SEM TIFF file.
 
-        Returns the metadata (as a dictionary) from a .tif file saved by
+        Returns the metadata (as a list of dictionaries) from a .tif file saved by
         Tescan instruments. Uses a three-tier extraction strategy:
         1. Try to parse embedded HDR metadata from TIFF Tag 50431
         2. If that fails, look for a sidecar .hdr file
@@ -115,8 +115,8 @@ class TescanTiffExtractor:
 
         Returns
         -------
-        dict
-            Metadata dictionary with 'nx_meta' key containing NexusLIMS metadata
+        list[dict]
+            List containing a single metadata dict with 'nx_meta' key
         """
         filename = context.file_path
         _logger.debug("Extracting metadata from Tescan TIFF file: %s", filename)
@@ -164,7 +164,7 @@ class TescanTiffExtractor:
         # Sort the nx_meta dictionary (recursively) for nicer display
         mdict["nx_meta"] = sort_dict(mdict["nx_meta"])
 
-        return mdict
+        return [mdict]
 
     def _find_hdr_file(self, tiff_path: Path) -> Path | None:
         """

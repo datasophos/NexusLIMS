@@ -46,12 +46,12 @@ class SerEmiExtractor:
         extension = context.file_path.suffix.lower().lstrip(".")
         return extension == "ser"
 
-    def extract(self, context: ExtractionContext) -> dict[str, Any]:  # noqa: PLR0915
+    def extract(self, context: ExtractionContext) -> list[dict[str, Any]]:  # noqa: PLR0915
         """
         Extract metadata from a .ser file and its accompanying .emi file.
 
-        Returns metadata (as a dict) from an FEI .ser file + its associated .emi
-        files, with some non-relevant information stripped.
+        Returns metadata (as a list of dicts) from an FEI .ser file +
+        its associated .emi files, with some non-relevant information stripped.
 
         Parameters
         ----------
@@ -60,8 +60,8 @@ class SerEmiExtractor:
 
         Returns
         -------
-        dict
-            Metadata dictionary with 'nx_meta' key containing NexusLIMS metadata.
+        list[dict]
+            List containing a single metadata dict with 'nx_meta' key.
             If files cannot be opened, at least basic metadata will be returned (
             creation time, etc.)
         """
@@ -186,7 +186,7 @@ class SerEmiExtractor:
         # sort the nx_meta dictionary (recursively) for nicer display
         metadata["nx_meta"] = sort_dict(metadata["nx_meta"])
 
-        return metadata
+        return [metadata]
 
 
 def _handle_ser_error(metadata):
@@ -196,7 +196,7 @@ def _handle_ser_error(metadata):
     # sort the nx_meta dictionary (recursively) for nicer display
     metadata["nx_meta"] = sort_dict(metadata["nx_meta"])
     del metadata["nx_meta"]["fname"]
-    return metadata
+    return [metadata]
 
 
 def _load_ser(emi_filename: Path, ser_index: int):

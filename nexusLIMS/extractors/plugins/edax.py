@@ -42,11 +42,11 @@ class SpcExtractor:
         extension = context.file_path.suffix.lower().lstrip(".")
         return extension == "spc"
 
-    def extract(self, context: ExtractionContext) -> dict[str, Any]:
+    def extract(self, context: ExtractionContext) -> list[dict[str, Any]]:
         """
         Extract metadata from a .spc file.
 
-        Returns the metadata (as a dict) from a .spc file.
+        Returns the metadata (as a list of dicts) from a .spc file.
         This type of file is produced by EDAX EDS software. It is read by HyperSpy's
         file reader and relevant metadata extracted and returned
 
@@ -57,8 +57,8 @@ class SpcExtractor:
 
         Returns
         -------
-        dict
-            Metadata dictionary with 'nx_meta' key containing NexusLIMS metadata.
+        list[dict]
+            List containing a single metadata dict with 'nx_meta' key.
             If None, the file could not be opened
         """
         filename = context.file_path
@@ -99,7 +99,7 @@ class SpcExtractor:
         if "Sample" in s.metadata and "elements" in s.metadata.Sample:
             mdict["nx_meta"]["Elements"] = s.metadata.Sample.elements
 
-        return mdict
+        return [mdict]
 
 
 class MsaExtractor:
@@ -132,11 +132,11 @@ class MsaExtractor:
         extension = context.file_path.suffix.lower().lstrip(".")
         return extension == "msa"
 
-    def extract(self, context: ExtractionContext) -> dict[str, Any]:
+    def extract(self, context: ExtractionContext) -> list[dict[str, Any]]:
         """
         Extract metadata from an .msa file.
 
-        Returns the metadata (as a dict) from an .msa spectrum file.
+        Returns the metadata (as a list of dicts) from an .msa spectrum file.
         This file may be saved by a number of different EDS acquisition software, but
         most often is produced as an export from EDAX or Oxford software. This format is
         a standard, but vendors (such as EDAX) often add other values into the metadata
@@ -150,8 +150,8 @@ class MsaExtractor:
 
         Returns
         -------
-        dict
-            Metadata dictionary with 'nx_meta' key containing NexusLIMS metadata.
+        list[dict]
+            List containing a single metadata dict with 'nx_meta' key.
             If None, the file could not be opened
         """
         filename = context.file_path
@@ -208,7 +208,7 @@ class MsaExtractor:
             if try_getting_dict_value(mdict["original_metadata"], in_term) is not None:
                 mdict["nx_meta"][out_term] = mdict["original_metadata"][in_term]
 
-        return mdict
+        return [mdict]
 
 
 # Backward compatibility functions for tests
