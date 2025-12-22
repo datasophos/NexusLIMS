@@ -373,7 +373,7 @@ class TestNemoConnectorEvents:
             # Verify warning was logged for duplicate END log
             assert "An 'END' log with session id" in caplog.text
             # Both warnings should mention the DB check
-            assert caplog.text.count("was found in the the DB") == 2
+            assert caplog.text.count("was found in the DB") == 2
 
         # Verify no new logs were added (count should be same as after first insert)
         _, results_after_second = db_query("SELECT * FROM session_log;")
