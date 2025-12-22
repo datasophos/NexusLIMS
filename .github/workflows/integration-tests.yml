@@ -37,27 +37,51 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Pull pre-built test images
+      - name: Determine image tag
+        id: image-tag
         run: |
-          docker pull ${{ env.IMAGE_PREFIX }}-nemo:latest || echo "NEMO image not found, will build locally"
-          docker pull ${{ env.IMAGE_PREFIX }}-cdcs:latest || echo "CDCS image not found, will build locally"
+          # Match the tag generation from build-test-images.yml
+          # For branches: use branch name
+          # For PRs: use pr-<number>
+          # For other: use sha
+          if [[ "${{ github.ref }}" == refs/heads/* ]]; then
+            TAG="${{ github.ref_name }}"
+          elif [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            TAG="pr-${{ github.event.pull_request.number }}"
+          else
+            TAG="sha-${{ github.sha }}"
+          fi
+          # Replace / with - for valid Docker tags
+          TAG="${TAG//\//-}"
+          echo "tag=${TAG}" >> $GITHUB_OUTPUT
+          echo "Using image tag: ${TAG}"
+
+      - name: Pull pre-built test images
+        continue-on-error: true
+        run: |
+          docker pull ${{ env.IMAGE_PREFIX }}-nemo:${{ steps.image-tag.outputs.tag }} || echo "Tagged NEMO image not found"
+          docker pull ${{ env.IMAGE_PREFIX }}-cdcs:${{ steps.image-tag.outputs.tag }} || echo "Tagged CDCS image not found"
 
       - name: Tag images for local use
         continue-on-error: true
         run: |
-          docker tag ${{ env.IMAGE_PREFIX }}-nemo:latest nexuslims-test-nemo:latest 2>/dev/null || true
-          docker tag ${{ env.IMAGE_PREFIX }}-cdcs:latest nexuslims-test-cdcs:latest 2>/dev/null || true
+          docker tag ${{ env.IMAGE_PREFIX }}-nemo:${{ steps.image-tag.outputs.tag }} nexuslims-test-nemo:latest 2>/dev/null || true
+          docker tag ${{ env.IMAGE_PREFIX }}-cdcs:${{ steps.image-tag.outputs.tag }} nexuslims-test-cdcs:latest 2>/dev/null || true
 
       - name: Start Docker services
         working-directory: tests/integration/docker
+        env:
+          REGISTRY: ${{ env.REGISTRY }}
+          IMAGE_OWNER: ${{ github.repository_owner }}
+          IMAGE_TAG: ${{ steps.image-tag.outputs.tag }}
         run: |
-          # Try to use pre-built images first, fall back to building if needed
+          # Try to use pre-built images with the PR/branch tag from build-test-images.yml
           if docker image inspect nexuslims-test-nemo:latest >/dev/null 2>&1 && \
              docker image inspect nexuslims-test-cdcs:latest >/dev/null 2>&1; then
-            echo "Using pre-built images from registry"
+            echo "Using pre-built images from registry (tag: ${{ steps.image-tag.outputs.tag }})"
             docker compose -f docker-compose.ci.yml up -d
           else
-            echo "Building images locally (pre-built images not available)"
+            echo "Pre-built images not available - building locally"
             docker compose up -d
           fi
 
@@ -168,21 +192,76 @@ jobs:
           name: coverage-combined-html
           path: tests/coverage-combined
 
-      - name: Show Docker logs on failure
-        if: failure()
+      - name: Collect Docker container logs
+        if: always()
         working-directory: tests/integration/docker
         run: |
-          echo "=== NEMO Logs ==="
-          docker compose logs nemo | tail -100
+          mkdir -p ../../docker-logs
+          
+          # Debug: Show what containers exist
+          echo "=== Running Containers ==="
+          docker ps -a --filter "name=nexuslims-test" || true
           echo ""
-          echo "=== CDCS Logs ==="
-          docker compose logs cdcs | tail -100
+          
+          # Determine which compose file was used and collect logs
+          if docker image inspect nexuslims-test-nemo:latest >/dev/null 2>&1 && \
+             docker image inspect nexuslims-test-cdcs:latest >/dev/null 2>&1; then
+            COMPOSE_FILE="docker-compose.ci.yml"
+          else
+            COMPOSE_FILE="docker-compose.yml"
+          fi
+          
+          echo "Collecting logs from compose stack (using $COMPOSE_FILE)..."
+          
+          # Collect full compose logs (try both approaches)
+          docker compose -f "$COMPOSE_FILE" logs --no-color > ../../docker-logs/docker-compose.log 2>&1 || true
+          
+          # Also try collecting by container name directly as fallback
+          for container in nexuslims-test-nemo nexuslims-test-cdcs nexuslims-test-cdcs-mongo nexuslims-test-cdcs-postgres nexuslims-test-cdcs-redis nexuslims-test-mailpit nexuslims-test-caddy-proxy; do
+            docker logs "$container" > "../../docker-logs/${container##*-}.log" 2>&1 || true
+          done
+          
+          # Display summary to action logs
+          echo "=== Docker Logs Summary ==="
+          du -sh ../../docker-logs/* 2>/dev/null || echo "No logs collected"
           echo ""
-          echo "=== MongoDB Logs ==="
-          docker compose logs cdcs-mongo | tail -50
+          echo "=== Log Files Created ==="
+          ls -lh ../../docker-logs/ 2>/dev/null || echo "No log directory"
+
+      - name: Display Docker logs on failure
+        if: failure()
+        run: |
+          echo "=== Docker Compose Full Log ==="
+          cat docker-logs/docker-compose.log 2>/dev/null || echo "No compose log available"
           echo ""
-          echo "=== PostgreSQL Logs ==="
-          docker compose logs cdcs-postgres | tail -50
+          echo "=== NEMO Log ==="
+          cat docker-logs/nemo.log 2>/dev/null || echo "No NEMO log available"
+          echo ""
+          echo "=== CDCS Log ==="
+          cat docker-logs/cdcs.log 2>/dev/null || echo "No CDCS log available"
+          echo ""
+          echo "=== MongoDB Log ==="
+          cat docker-logs/mongo.log 2>/dev/null || echo "No MongoDB log available"
+          echo ""
+          echo "=== PostgreSQL Log ==="
+          cat docker-logs/postgres.log 2>/dev/null || echo "No PostgreSQL log available"
+          echo ""
+          echo "=== Redis Log ==="
+          cat docker-logs/redis.log 2>/dev/null || echo "No Redis log available"
+          echo ""
+          echo "=== Mailpit Log ==="
+          cat docker-logs/mailpit.log 2>/dev/null || echo "No Mailpit log available"
+          echo ""
+          echo "=== Caddy Proxy Log ==="
+          cat docker-logs/proxy.log 2>/dev/null || echo "No Caddy Proxy log available"
+
+      - name: Upload Docker logs artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-logs-${{ matrix.python-version }}
+          path: tests/docker-logs/
+          if-no-files-found: ignore
 
       - name: Cleanup Docker services
         if: always()
