@@ -78,7 +78,9 @@ class DM3Extractor:
         extension = context.file_path.suffix.lower().lstrip(".")
         return extension in {"dm3", "dm4"}
 
-    def extract(self, context: ExtractionContext) -> dict[str, Any]:
+    def extract(
+        self, context: ExtractionContext
+    ) -> dict[str, Any] | list[dict[str, Any]]:
         """
         Extract metadata from a DM3/DM4 file.
 
@@ -89,16 +91,19 @@ class DM3Extractor:
 
         Returns
         -------
-        dict
-            Metadata dictionary with 'nx_meta' key containing NexusLIMS metadata.
-            If the file cannot be opened, returns basic metadata with a warning.
+        list[dict] or dict
+            For DM3/DM4 files: Always returns a list of metadata dicts.
+            Each dict contains 'nx_meta' with NexusLIMS-specific metadata.
+            Single-signal files return a 1-element list for consistency.
+            If the file cannot be opened, returns basic metadata as a single dict
+            (following the standard extractor contract for error cases).
         """
         logger.debug("Extracting metadata from DM3/DM4 file: %s", context.file_path)
         # get_dm3_metadata() handles profile application internally
-        metadata = get_dm3_metadata(context.file_path, context.instrument)
+        metadata_list = get_dm3_metadata(context.file_path, context.instrument)
 
         # If extraction failed, return minimal metadata with a warning
-        if metadata is None:
+        if metadata_list is None:
             logger.warning(
                 "Failed to extract DM3/DM4 metadata from %s, "
                 "falling back to basic metadata",
@@ -106,14 +111,18 @@ class DM3Extractor:
             )
             # Use basic metadata extractor as fallback
             basic_extractor = BasicFileInfoExtractor()
-            metadata = basic_extractor.extract(context)
+            metadata_list = basic_extractor.extract(context)
             # Add a warning to indicate extraction failed
+            metadata = metadata_list[0]
             metadata["nx_meta"]["warnings"] = metadata["nx_meta"].get("warnings", [])
             metadata["nx_meta"]["warnings"].append(
                 ["DM3/DM4 file could not be read by HyperSpy"]
             )
+            return [metadata]
 
-        return metadata
+        # Always return a list of metadata dicts
+        # Single-signal files return a 1-element list for consistent interface
+        return metadata_list
 
 
 def get_dm3_metadata(filename: Path, instrument=None):
@@ -134,8 +143,9 @@ def get_dm3_metadata(filename: Path, instrument=None):
 
     Returns
     -------
-    metadata : dict or None
-        The extracted metadata of interest. If None, the file could not be opened
+    metadata : list[dict] or None
+        List of extracted metadata dicts, one per signal. If None, the file could
+        not be opened.
     """
     # We do lazy loading so we don't actually read the data from the disk to
     # save time and memory.
@@ -266,8 +276,8 @@ def get_dm3_metadata(filename: Path, instrument=None):
         # sort the nx_meta dictionary (recursively) for nicer display
         m_list[i]["nx_meta"] = sort_dict(m_list[i]["nx_meta"])
 
-    # return the first dictionary, which should contain the most information:
-    return remove_dict_nones(m_list[0])
+    # return all signals as a list of dictionaries:
+    return [remove_dict_nones(m) for m in m_list]
 
 
 def _apply_profile_to_metadata(metadata: dict, instrument, file_path: Path) -> dict:
