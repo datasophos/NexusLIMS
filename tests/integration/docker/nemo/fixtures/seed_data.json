@@ -1024,6 +1024,55 @@
       "descendant": null,
       "validated_by": null,
       "waived_by": null
+    },
+    {
+      "id": 999,
+      "question_data": {
+        "project_id": {
+          "user_input": "Multi-Signal Test Project"
+        },
+        "experiment_title": {
+          "user_input": "Multi-signal file testing"
+        },
+        "experiment_purpose": {
+          "user_input": "Testing multi-signal DM3/DM4 files with multiple datasets per file"
+        },
+        "data_consent": {
+          "user_input": "Agree"
+        },
+        "sample_group": {
+          "user_input": {
+            "0": {
+              "sample_name": "Multi-signal test sample",
+              "sample_or_pid": "Sample Name",
+              "sample_details": "Test sample for multi-signal microscopy data"
+            }
+          }
+        }
+      },
+      "creation_time": "2025-06-14T12:00:00-06:00",
+      "start": "2025-06-14T20:00:00-06:00",
+      "end": "2025-06-15T22:00:00-06:00",
+      "short_notice": false,
+      "cancelled": false,
+      "cancellation_time": null,
+      "missed": false,
+      "shortened": false,
+      "additional_information": null,
+      "self_configuration": false,
+      "title": "Multi-signal microscopy session",
+      "validated": false,
+      "waived": false,
+      "waived_on": null,
+      "user": 1,
+      "creator": 1,
+      "tool": 10,
+      "area": null,
+      "project": 13,
+      "cancelled_by": null,
+      "descendant": null,
+      "validated_by": null,
+      "waived_by": null
     }
   ],
   "usage_events": [

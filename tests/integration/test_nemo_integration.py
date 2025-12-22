@@ -637,9 +637,9 @@ class TestNemoAPIEdgeCases:
         # Test with cancelled=False
         reservations_not_cancelled = nemo_connector.get_reservations(cancelled=False)
 
-        # Should return a list of length 8
+        # Should return a list of length 9
         assert isinstance(reservations_not_cancelled, list)
-        assert len(reservations_not_cancelled) == 8
+        assert len(reservations_not_cancelled) == 9
 
     def test_get_usage_events_with_none_parameters(
         self, nemo_connector: NemoConnector, mock_usage_events_data: dict

@@ -163,9 +163,9 @@ class TestUtils:
         # check to ensure metadata remains the same
         mdata_new = quanta_tif.get_quanta_metadata(new_fname)
         mdata_old = quanta_tif.get_quanta_metadata(test_file)
-        del mdata_old["nx_meta"]["Creation Time"]
-        del mdata_new["nx_meta"]["Creation Time"]
-        assert mdata_new == mdata_old
+        del mdata_old[0]["nx_meta"]["Creation Time"]
+        del mdata_new[0]["nx_meta"]["Creation Time"]
+        assert mdata_new[0] == mdata_old[0]
 
         new_gz.unlink()
         new_fname.unlink()

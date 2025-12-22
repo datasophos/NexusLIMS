@@ -5,9 +5,13 @@ import os
 from pathlib import Path
 
 # This MUST be at the top-level conftest.py (not in subdirectories)
+# Include unit test fixtures in pytest_plugins to make them available to both
+# unit and integration tests. This allows fixtures like multi_signal_test_files
+# to be reused across the entire test suite.
 pytest_plugins = [
     "tests.unit.fixtures.cdcs_mock_data",
     "tests.unit.fixtures.nemo_mock_data_from_json",
+    "tests.unit.fixtures.multi_signal_test_files",
 ]
 
 # Load environment variables from .env file if it exists

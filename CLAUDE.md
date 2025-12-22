@@ -171,7 +171,7 @@ uv run python -m nexusLIMS.builder.record_builder
 8. Record uploaded to CDCS
 
 **File Finding Strategy:**
-- Controlled by `NEXUSLIMS_FILE_STRATEGY` env var
+- Controlled by `NX_FILE_STRATEGY` env var
 - `exclusive`: Only files with known extractors
 - `inclusive`: All files (with basic metadata for unknowns)
 
