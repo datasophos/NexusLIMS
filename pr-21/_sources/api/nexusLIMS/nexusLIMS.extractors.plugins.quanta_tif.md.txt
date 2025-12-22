@@ -1,0 +1,134 @@
+# {py:mod}`nexusLIMS.extractors.plugins.quanta_tif`
+
+```{py:module} nexusLIMS.extractors.plugins.quanta_tif
+```
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.quanta_tif
+:allowtitles:
+```
+
+## Module Contents
+
+### Classes
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`QuantaTiffExtractor <nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor
+    :summary:
+    ```
+````
+
+### Functions
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`get_quanta_metadata <nexusLIMS.extractors.plugins.quanta_tif.get_quanta_metadata>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.quanta_tif.get_quanta_metadata
+    :summary:
+    ```
+````
+
+### Data
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`FEI_TIFF_TAG <nexusLIMS.extractors.plugins.quanta_tif.FEI_TIFF_TAG>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.quanta_tif.FEI_TIFF_TAG
+    :summary:
+    ```
+* - {py:obj}`FEI_XML_TIFF_TAG <nexusLIMS.extractors.plugins.quanta_tif.FEI_XML_TIFF_TAG>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.quanta_tif.FEI_XML_TIFF_TAG
+    :summary:
+    ```
+````
+
+### API
+
+````{py:data} FEI_TIFF_TAG
+:canonical: nexusLIMS.extractors.plugins.quanta_tif.FEI_TIFF_TAG
+:value: >
+   34682
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.quanta_tif.FEI_TIFF_TAG
+```
+
+````
+
+````{py:data} FEI_XML_TIFF_TAG
+:canonical: nexusLIMS.extractors.plugins.quanta_tif.FEI_XML_TIFF_TAG
+:value: >
+   34683
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.quanta_tif.FEI_XML_TIFF_TAG
+```
+
+````
+
+`````{py:class} QuantaTiffExtractor
+:canonical: nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor
+```
+
+````{py:attribute} name
+:canonical: nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor.name
+:value: >
+   'quanta_tif_extractor'
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor.name
+```
+
+````
+
+````{py:attribute} priority
+:canonical: nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor.priority
+:value: >
+   100
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor.priority
+```
+
+````
+
+````{py:attribute} supported_extensions
+:canonical: nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor.supported_extensions
+:type: typing.ClassVar
+:value: >
+   None
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor.supported_extensions
+```
+
+````
+
+````{py:method} supports(context: nexusLIMS.extractors.base.ExtractionContext) -> bool
+:canonical: nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor.supports
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor.supports
+```
+
+````
+
+````{py:method} extract(context: nexusLIMS.extractors.base.ExtractionContext) -> list[dict[str, typing.Any]]
+:canonical: nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor.extract
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor.extract
+```
+
+````
+
+`````
+
+````{py:function} get_quanta_metadata(filename)
+:canonical: nexusLIMS.extractors.plugins.quanta_tif.get_quanta_metadata
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.quanta_tif.get_quanta_metadata
+```
+````

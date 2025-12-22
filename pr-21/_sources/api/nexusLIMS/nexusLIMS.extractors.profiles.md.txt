@@ -1,0 +1,111 @@
+# {py:mod}`nexusLIMS.extractors.profiles`
+
+```{py:module} nexusLIMS.extractors.profiles
+```
+
+```{autodoc2-docstring} nexusLIMS.extractors.profiles
+:allowtitles:
+```
+
+## Module Contents
+
+### Classes
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`InstrumentProfileRegistry <nexusLIMS.extractors.profiles.InstrumentProfileRegistry>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.profiles.InstrumentProfileRegistry
+    :summary:
+    ```
+````
+
+### Functions
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`get_profile_registry <nexusLIMS.extractors.profiles.get_profile_registry>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.profiles.get_profile_registry
+    :summary:
+    ```
+````
+
+### Data
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`logger <nexusLIMS.extractors.profiles.logger>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.profiles.logger
+    :summary:
+    ```
+````
+
+### API
+
+````{py:data} logger
+:canonical: nexusLIMS.extractors.profiles.logger
+:value: >
+   'getLogger(...)'
+
+```{autodoc2-docstring} nexusLIMS.extractors.profiles.logger
+```
+
+````
+
+`````{py:class} InstrumentProfileRegistry()
+:canonical: nexusLIMS.extractors.profiles.InstrumentProfileRegistry
+
+```{autodoc2-docstring} nexusLIMS.extractors.profiles.InstrumentProfileRegistry
+```
+
+```{rubric} Initialization
+```
+
+```{autodoc2-docstring} nexusLIMS.extractors.profiles.InstrumentProfileRegistry.__init__
+```
+
+````{py:method} register(profile: nexusLIMS.extractors.base.InstrumentProfile) -> None
+:canonical: nexusLIMS.extractors.profiles.InstrumentProfileRegistry.register
+
+```{autodoc2-docstring} nexusLIMS.extractors.profiles.InstrumentProfileRegistry.register
+```
+
+````
+
+````{py:method} get_profile(instrument: nexusLIMS.instruments.Instrument | None) -> nexusLIMS.extractors.base.InstrumentProfile | None
+:canonical: nexusLIMS.extractors.profiles.InstrumentProfileRegistry.get_profile
+
+```{autodoc2-docstring} nexusLIMS.extractors.profiles.InstrumentProfileRegistry.get_profile
+```
+
+````
+
+````{py:method} get_all_profiles() -> dict[str, nexusLIMS.extractors.base.InstrumentProfile]
+:canonical: nexusLIMS.extractors.profiles.InstrumentProfileRegistry.get_all_profiles
+
+```{autodoc2-docstring} nexusLIMS.extractors.profiles.InstrumentProfileRegistry.get_all_profiles
+```
+
+````
+
+````{py:method} clear() -> None
+:canonical: nexusLIMS.extractors.profiles.InstrumentProfileRegistry.clear
+
+```{autodoc2-docstring} nexusLIMS.extractors.profiles.InstrumentProfileRegistry.clear
+```
+
+````
+
+`````
+
+````{py:function} get_profile_registry() -> nexusLIMS.extractors.profiles.InstrumentProfileRegistry
+:canonical: nexusLIMS.extractors.profiles.get_profile_registry
+
+```{autodoc2-docstring} nexusLIMS.extractors.profiles.get_profile_registry
+```
+````
