@@ -874,6 +874,15 @@ class HyperSpyPreviewGenerator:
             # Load the signal
             s = load(str(context.file_path), lazy=True)
 
+            # Handle multi-signal files
+            if isinstance(s, list):
+                if context.signal_index is not None:
+                    # Use specified signal index
+                    s = s[context.signal_index]
+                else:
+                    # Legacy: use first signal only
+                    s = s[0]
+
             # Generate the thumbnail using the local function
             sig_to_thumbnail(s, output_path, dpi=92)
 
