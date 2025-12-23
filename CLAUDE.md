@@ -332,3 +332,9 @@ Key patterns:
 - **Instrument-specific**: Check `context.instrument` for instrument-specific behavior
 - **Error handling**: Gracefully handle missing/corrupted files, don't raise exceptions
 - **Testing**: Add tests to `tests/unit/test_extractors/` (see existing extractors for patterns)
+
+## Searching external project documentation
+
+Always use context7 when I need library/API documentation.
+This means you should automatically use the Context7 MCP
+tools to resolve library id and get library docs without me having to explicitly ask.

@@ -374,17 +374,25 @@ def docker_services(request, host_fileserver):  # noqa: PLR0912, PLR0915
     if not (nemo_ready and cdcs_ready and mailpit_ready):
         print("[*] Docker services not running - starting them now...")
 
-        # Build docker compose command - use CI override if available
+        # Build docker compose command - use CI override if available and in CI context
         compose_cmd = ["docker", "compose"]
 
         # Always use base docker-compose.yml
         compose_cmd.extend(["-f", "docker-compose.yml"])
 
-        # Add CI override if it exists (for pre-built images in CI)
+        # Add CI override only if running in CI environment (for pre-built images)
+        # Check common CI environment variables to detect CI context
         ci_override = DOCKER_DIR / "docker-compose.ci.yml"
-        if ci_override.exists():
-            print("[*] Using CI override with pre-built images")
+        in_ci = any(
+            os.environ.get(var) for var in ["CI", "GITHUB_ACTIONS", "GITLAB_CI"]
+        )
+        if ci_override.exists() and in_ci:
+            print(
+                "[*] Detected CI environment, using CI override with pre-built images"
+            )
             compose_cmd.extend(["-f", "docker-compose.ci.yml"])
+        elif not in_ci:
+            print("[*] Running locally, using base docker-compose.yml to build images")
 
         compose_cmd.extend(["up", "-d"])
 

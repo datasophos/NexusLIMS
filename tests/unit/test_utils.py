@@ -20,7 +20,6 @@ from nexusLIMS.extractors.plugins import quanta_tif
 from nexusLIMS.utils import (
     _zero_bytes,
     find_dirs_by_mtime,
-    get_nested_dict_value,
     gnu_find_files_by_mtime,
     nexus_req,
     replace_instrument_data_path,
@@ -48,15 +47,6 @@ class TestUtils:
 
         return Path(settings.NX_INSTRUMENT_DATA_PATH)
 
-    def test_get_nested_dict_value(self):
-        nest = {"level1": {"level2.1": {"level3.1": "value"}}}
-        assert get_nested_dict_value(nest, "value") == (
-            "level1",
-            "level2.1",
-            "level3.1",
-        )
-        assert get_nested_dict_value(nest, "bogus") is None
-
     def test_try_getting_dict_val(self):
         non_nest = {"level1": "value_1"}
         nest = {"level1": {"level2.1": {"level3.1": "value"}}}
@@ -66,6 +56,47 @@ class TestUtils:
         assert try_getting_dict_value(nest, ["level1", "level2.1"]) == {
             "level3.1": "value",
         }
+
+    def test_set_nested_dict_value_creates_intermediate_dicts(self):
+        from nexusLIMS.utils import set_nested_dict_value
+
+        d = {}
+        set_nested_dict_value(d, ["a", "b", "c"], "value")
+        assert d == {"a": {"b": {"c": "value"}}}
+
+    def test_set_nested_dict_value_preserves_existing_keys(self):
+        from nexusLIMS.utils import set_nested_dict_value
+
+        d = {"a": {"existing": "preserved"}}
+        set_nested_dict_value(d, ["a", "b"], "new")
+        assert d == {"a": {"existing": "preserved", "b": "new"}}
+
+    def test_set_nested_dict_value_with_special_chars_in_keys(self):
+        from nexusLIMS.utils import set_nested_dict_value
+
+        # Keys with dots work fine with benedict when keypath_separator is disabled
+        d = {}
+        set_nested_dict_value(d, ["key.with.dots", "nested"], "value")
+        assert d == {"key.with.dots": {"nested": "value"}}
+
+    def test_get_nested_dict_value_by_path_returns_value(self):
+        from nexusLIMS.utils import get_nested_dict_value_by_path
+
+        d = {"a": {"b": {"c": "value"}}}
+        assert get_nested_dict_value_by_path(d, ["a", "b", "c"]) == "value"
+
+    def test_get_nested_dict_value_by_path_returns_none_for_missing(self):
+        from nexusLIMS.utils import get_nested_dict_value_by_path
+
+        d = {"a": {"b": "value"}}
+        assert get_nested_dict_value_by_path(d, ["a", "c"]) is None
+        assert get_nested_dict_value_by_path(d, ["x", "y", "z"]) is None
+
+    def test_get_nested_dict_value_by_path_with_special_chars(self):
+        from nexusLIMS.utils import get_nested_dict_value_by_path
+
+        d = {"key.with.dots": {"nested": "value"}}
+        assert get_nested_dict_value_by_path(d, ["key.with.dots", "nested"]) == "value"
 
     def test_find_dirs_by_mtime(self, test_record_files):
         path = self.instr_data_path / "JEOL_TEM"
