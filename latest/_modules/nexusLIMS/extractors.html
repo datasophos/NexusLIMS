@@ -424,7 +424,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 18, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 23, 2025"/>
   </head>
   
   
@@ -952,13 +952,13 @@ window.addEventListener("load", load);
 
 <div class="viewcode-block" id="parse_metadata">
 <a class="viewcode-back" href="../../api/nexusLIMS/nexusLIMS.extractors.html#nexusLIMS.extractors.parse_metadata">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">parse_metadata</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_metadata</span><span class="p">(</span>  <span class="c1"># noqa: PLR0912</span>
     <span class="n">fname</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">write_output</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">generate_preview</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">Path</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parse metadata from a file and optionaly generate a preview image.</span>
 
@@ -967,6 +967,9 @@ window.addEventListener("load", load);
 <span class="sd">    what we are interested in, and return it as a dictionary (writing to the</span>
 <span class="sd">    NexusLIMS directory as JSON by default). Also calls the preview</span>
 <span class="sd">    generation method, if desired.</span>
+
+<span class="sd">    For files containing multiple signals (e.g., multi-signal DM3/DM4 files),</span>
+<span class="sd">    generates one preview per signal and returns a list of preview paths.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -985,12 +988,14 @@ window.addEventListener("load", load);
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    nx_meta : dict or None</span>
-<span class="sd">        The &quot;relevant&quot; metadata that is of use for NexusLIMS. If None,</span>
-<span class="sd">        the file could not be opened</span>
-<span class="sd">    preview_fname : Path or None</span>
-<span class="sd">        The file path of the generated preview image, or `None` if it was not</span>
-<span class="sd">        requested</span>
+<span class="sd">    nx_meta : list[dict] or None</span>
+<span class="sd">        A list of metadata dicts, one per signal in the file. If None,</span>
+<span class="sd">        the file could not be opened. Single-signal files return a list</span>
+<span class="sd">        with one dict, multi-signal files return a list with multiple dicts.</span>
+<span class="sd">    preview_fname : list[Path] or None</span>
+<span class="sd">        A list of file paths for the generated preview images, one per signal.</span>
+<span class="sd">        For single-signal files, returns a list with one path. Returns `None`</span>
+<span class="sd">        if preview generation was not requested.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">extension</span> <span class="o">=</span> <span class="n">fname</span><span class="o">.</span><span class="n">suffix</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
 
@@ -1003,7 +1008,8 @@ window.addEventListener("load", load);
     <span class="n">extractor</span> <span class="o">=</span> <span class="n">registry</span><span class="o">.</span><span class="n">get_extractor</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
 
     <span class="c1"># Extract metadata using the selected extractor</span>
-    <span class="n">nx_meta</span> <span class="o">=</span> <span class="n">extractor</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+    <span class="c1"># All extractors now return a list of dicts (one per signal)</span>
+    <span class="n">nx_meta_list</span> <span class="o">=</span> <span class="n">extractor</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
 
     <span class="c1"># Create a pseudo-module for extraction details tracking</span>
     <span class="k">class</span><span class="w"> </span><span class="nc">ExtractorMethod</span><span class="p">:</span>
@@ -1015,7 +1021,11 @@ window.addEventListener("load", load);
             <span class="bp">self</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__module__</span>
 
         <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>  <span class="c1"># noqa: ARG002</span>
-            <span class="k">return</span> <span class="n">nx_meta</span>  <span class="c1"># pragma: no cover</span>
+            <span class="k">return</span> <span class="n">nx_meta_list</span>  <span class="c1"># pragma: no cover</span>
+
+    <span class="c1"># Defensive check: extractors should always return a list but handle None gracefully</span>
+    <span class="k">if</span> <span class="n">nx_meta_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
 
     <span class="n">extractor_method</span> <span class="o">=</span> <span class="n">ExtractorMethod</span><span class="p">(</span><span class="n">extractor</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 
@@ -1037,19 +1047,28 @@ window.addEventListener("load", load);
                 <span class="s2">&quot;setting generate_preview to True&quot;</span><span class="p">,</span>
             <span class="p">)</span>
 
-    <span class="n">nx_meta</span> <span class="o">=</span> <span class="n">_add_extraction_details</span><span class="p">(</span><span class="n">nx_meta</span><span class="p">,</span> <span class="n">extractor_method</span><span class="p">)</span>
-    <span class="n">preview_fname</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="c1"># Add extraction details to metadata</span>
+    <span class="n">nx_meta_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">_add_extraction_details</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">extractor_method</span><span class="p">)</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">nx_meta_list</span><span class="p">]</span>
 
-    <span class="c1"># nx_meta should never be None, because the extractors are defensive and</span>
-    <span class="c1"># will always return _something_</span>
-    <span class="k">if</span> <span class="n">nx_meta</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="c1"># Set the dataset type to Misc if it was not set by the file reader</span>
+    <span class="n">signal_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">nx_meta_list</span><span class="p">)</span>
+    <span class="n">preview_fnames</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># Set the dataset type to Misc if it was not set by the file reader</span>
+    <span class="k">for</span> <span class="n">nx_meta</span> <span class="ow">in</span> <span class="n">nx_meta_list</span><span class="p">:</span>
         <span class="k">if</span> <span class="s2">&quot;DatasetType&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">nx_meta</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">]:</span>
             <span class="n">nx_meta</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;DatasetType&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Misc&quot;</span>
             <span class="n">nx_meta</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;Data Type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Miscellaneous&quot;</span>
 
-        <span class="k">if</span> <span class="n">write_output</span><span class="p">:</span>
-            <span class="n">out_fname</span> <span class="o">=</span> <span class="n">replace_instrument_data_path</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="s2">&quot;.json&quot;</span><span class="p">)</span>
+    <span class="c1"># Write output for each signal (single and multi-signal files)</span>
+    <span class="k">if</span> <span class="n">write_output</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">nx_meta</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">nx_meta_list</span><span class="p">):</span>
+            <span class="c1"># For single-signal files, omit suffix for backward compatibility</span>
+            <span class="k">if</span> <span class="n">signal_count</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">out_fname</span> <span class="o">=</span> <span class="n">replace_instrument_data_path</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="s2">&quot;.json&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># For multi-signal files, append signal index to filename</span>
+                <span class="n">base_path</span> <span class="o">=</span> <span class="n">replace_instrument_data_path</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+                <span class="n">out_fname</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">base_path</span><span class="si">}</span><span class="s2">_signal</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">.json&quot;</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="ow">not</span> <span class="n">out_fname</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">or</span> <span class="n">overwrite</span><span class="p">:</span>
                 <span class="c1"># Create the directory for the metadata file, if needed</span>
@@ -1071,16 +1090,29 @@ window.addEventListener("load", load);
                         <span class="bp">cls</span><span class="o">=</span><span class="n">_CustomEncoder</span><span class="p">,</span>
                     <span class="p">)</span>
 
+    <span class="c1"># Generate previews for each signal</span>
     <span class="k">if</span> <span class="n">generate_preview</span><span class="p">:</span>
-        <span class="n">preview_fname</span> <span class="o">=</span> <span class="n">create_preview</span><span class="p">(</span><span class="n">fname</span><span class="o">=</span><span class="n">fname</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">signal_count</span><span class="p">):</span>
+            <span class="c1"># For single-signal files, omit suffix for backward compatibility</span>
+            <span class="n">signal_idx</span> <span class="o">=</span> <span class="n">i</span> <span class="k">if</span> <span class="n">signal_count</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="kc">None</span>
+            <span class="n">preview</span> <span class="o">=</span> <span class="n">create_preview</span><span class="p">(</span>
+                <span class="n">fname</span><span class="o">=</span><span class="n">fname</span><span class="p">,</span>
+                <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">,</span>
+                <span class="n">signal_index</span><span class="o">=</span><span class="n">signal_idx</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">preview_fnames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">preview</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">preview_fnames</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">signal_count</span>
 
-    <span class="k">return</span> <span class="n">nx_meta</span><span class="p">,</span> <span class="n">preview_fname</span></div>
+    <span class="k">return</span> <span class="n">nx_meta_list</span><span class="p">,</span> <span class="n">preview_fnames</span></div>
 
 
 
 <div class="viewcode-block" id="create_preview">
 <a class="viewcode-back" href="../../api/nexusLIMS/nexusLIMS.extractors.html#nexusLIMS.extractors.create_preview">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">create_preview</span><span class="p">(</span><span class="n">fname</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># noqa: PLR0911</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_preview</span><span class="p">(</span>  <span class="c1"># noqa: PLR0911, PLR0912, PLR0915</span>
+    <span class="n">fname</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">signal_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate a preview image for a given file using the plugin system.</span>
 
@@ -1095,6 +1127,10 @@ window.addEventListener("load", load);
 <span class="sd">    overwrite</span>
 <span class="sd">        Whether to overwrite the .json metadata file and thumbnail</span>
 <span class="sd">        image if either exists</span>
+<span class="sd">    signal_index</span>
+<span class="sd">        For files with multiple signals, the index of the signal to preview.</span>
+<span class="sd">        If None, generates a single preview (legacy behavior). If an int,</span>
+<span class="sd">        generates preview with _signalN suffix in filename.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -1102,7 +1138,13 @@ window.addEventListener("load", load);
 <span class="sd">        The filename of the generated preview image; if None, a preview could not be</span>
 <span class="sd">        successfully generated.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">preview_fname</span> <span class="o">=</span> <span class="n">replace_instrument_data_path</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="s2">&quot;.thumb.png&quot;</span><span class="p">)</span>
+    <span class="c1"># Generate preview filename with signal index suffix if provided</span>
+    <span class="k">if</span> <span class="n">signal_index</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">preview_fname</span> <span class="o">=</span> <span class="n">replace_instrument_data_path</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="s2">&quot;.thumb.png&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">preview_fname</span> <span class="o">=</span> <span class="n">replace_instrument_data_path</span><span class="p">(</span>
+            <span class="n">fname</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;_signal</span><span class="si">{</span><span class="n">signal_index</span><span class="si">}</span><span class="s2">.thumb.png&quot;</span>
+        <span class="p">)</span>
 
     <span class="c1"># Skip if preview exists and overwrite is False</span>
     <span class="k">if</span> <span class="n">preview_fname</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span>
@@ -1111,7 +1153,9 @@ window.addEventListener("load", load);
 
     <span class="c1"># Create context for preview generation</span>
     <span class="n">instrument</span> <span class="o">=</span> <span class="n">get_instr_from_filepath</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
-    <span class="n">context</span> <span class="o">=</span> <span class="n">ExtractionContext</span><span class="p">(</span><span class="n">file_path</span><span class="o">=</span><span class="n">fname</span><span class="p">,</span> <span class="n">instrument</span><span class="o">=</span><span class="n">instrument</span><span class="p">)</span>
+    <span class="n">context</span> <span class="o">=</span> <span class="n">ExtractionContext</span><span class="p">(</span>
+        <span class="n">file_path</span><span class="o">=</span><span class="n">fname</span><span class="p">,</span> <span class="n">instrument</span><span class="o">=</span><span class="n">instrument</span><span class="p">,</span> <span class="n">signal_index</span><span class="o">=</span><span class="n">signal_index</span>
+    <span class="p">)</span>
 
     <span class="c1"># Try to get a preview generator from the registry</span>
     <span class="n">registry</span> <span class="o">=</span> <span class="n">get_registry</span><span class="p">()</span>
@@ -1177,15 +1221,25 @@ window.addEventListener("load", load);
         <span class="n">shutil</span><span class="o">.</span><span class="n">copyfile</span><span class="p">(</span><span class="n">PLACEHOLDER_PREVIEW</span><span class="p">,</span> <span class="n">preview_fname</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">preview_fname</span>
 
-    <span class="c1"># If s is a list of signals, use just the first one for our purposes</span>
+    <span class="c1"># If s is a list of signals, select the appropriate one</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
         <span class="n">num_sigs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
-        <span class="n">fname</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">General</span><span class="o">.</span><span class="n">original_filename</span>
-        <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">s</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">General</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">s</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">General</span><span class="o">.</span><span class="n">title</span>
-            <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39; (1 of </span><span class="si">{</span><span class="n">num_sigs</span><span class="si">}</span><span class="s1"> total signals in file &quot;</span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s1">&quot;)&#39;</span>
-        <span class="p">)</span>
+        <span class="n">original_fname</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">General</span><span class="o">.</span><span class="n">original_filename</span>
+        <span class="k">if</span> <span class="n">signal_index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Use specified signal index</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="n">signal_index</span><span class="p">]</span>
+            <span class="n">s</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">General</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">s</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">General</span><span class="o">.</span><span class="n">title</span>
+                <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot; (signal </span><span class="si">{</span><span class="n">signal_index</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2"> of &quot;</span>
+                <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">num_sigs</span><span class="si">}</span><span class="s1"> in file &quot;</span><span class="si">{</span><span class="n">original_fname</span><span class="si">}</span><span class="s1">&quot;)&#39;</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Legacy: use first signal only</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">s</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">General</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">s</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">General</span><span class="o">.</span><span class="n">title</span>
+                <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39; (1 of </span><span class="si">{</span><span class="n">num_sigs</span><span class="si">}</span><span class="s1"> total signals in file &quot;</span><span class="si">{</span><span class="n">original_fname</span><span class="si">}</span><span class="s1">&quot;)&#39;</span>
+            <span class="p">)</span>
     <span class="k">elif</span> <span class="ow">not</span> <span class="n">s</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">General</span><span class="o">.</span><span class="n">title</span><span class="p">:</span>
         <span class="n">s</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">General</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">General</span><span class="o">.</span><span class="n">original_filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
             <span class="n">extension</span><span class="p">,</span>

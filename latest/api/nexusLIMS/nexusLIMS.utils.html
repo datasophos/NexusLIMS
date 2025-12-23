@@ -62,7 +62,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 18, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 23, 2025"/>
   </head>
   
   
@@ -716,9 +716,9 @@ path : tuple
 A tuple (or other iterable type) that specifies the subsequent keys
 needed to get to a a value within <code class="docutils literal notranslate"><span class="pre">nest_dict</span></code></p>
 <p class="rubric" id="id46">Returns</p>
-<p>value : object or str
+<p>value : object or None
 The value at the path within the nested dictionary; if there’s no
-value there, return the string <code class="docutils literal notranslate"><span class="pre">&quot;not</span> <span class="pre">found&quot;</span></code></p>
+value there, return None</p>
 </dd></dl>
 
 <dl class="py function">
@@ -754,10 +754,9 @@ key : str or tuple
 The key to query, or if an iterable container type (tuple, list,
 etc.) is given, the path into a nested dictionary to follow</p>
 <p class="rubric" id="id50">Returns</p>
-<p>val : object or str
+<p>val : object or None
 The value of the dictionary specified by <code class="docutils literal notranslate"><span class="pre">key</span></code>. If the dictionary
-does not have a key, returns the string <code class="docutils literal notranslate"><span class="pre">&quot;not</span> <span class="pre">found&quot;</span></code> without raising an
-error</p>
+does not have a key, returns None without raising an error</p>
 </dd></dl>
 
 <dl class="py function">

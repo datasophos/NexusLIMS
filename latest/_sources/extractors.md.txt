@@ -25,12 +25,23 @@ each format.
 
 ## Overview
 
-The extraction system consists of two main components:
+The extraction system uses a **plugin-based architecture** for flexible and extensible metadata extraction. The system consists of three main components:
 
-1. **Full Metadata Extractors**: Parse comprehensive metadata from supported file formats
-2. **Preview Generators**: Create thumbnail images for visualization
+1. **Extractor Plugins**: Parse comprehensive metadata from supported file formats
+2. **Preview Generator Plugins**: Create thumbnail images for visualization  
+3. **Extractor Registry**: Manages plugin discovery, selection, and execution
 
-Extraction is performed automatically during record building. Each file is identified by its extension, processed by the appropriate extractor, and both metadata (saved as JSON) and preview images (saved as PNG thumbnails) are generated in parallel to the original data files.
+### Plugin Architecture
+
+The plugin system provides:
+
+- **Auto-discovery**: Plugins are automatically discovered from `nexusLIMS/extractors/plugins/`
+- **Priority-based selection**: Multiple extractors can support the same file type, with higher priority extractors preferred
+- **Content sniffing**: Extractors can examine file contents beyond just extensions
+- **Multi-signal support**: Files containing multiple datasets (e.g., DM3/DM4) are automatically expanded
+- **Defensive design**: All extractors implement robust error handling with graceful fallbacks
+
+Extraction is performed automatically during record building. Each file is processed by the best available extractor, and both metadata (saved as JSON) and preview images (saved as PNG thumbnails) are generated in parallel to the original data files.
 
 ## Fully Supported Formats
 
@@ -447,7 +458,7 @@ Files with extensions not in the above lists receive minimal processing:
 
 **Handling Strategy**:
 
-The system's behavior for unsupported files depends on the `NEXUSLIMS_FILE_STRATEGY` environment variable:
+The system's behavior for unsupported files depends on the `NX_FILE_STRATEGY` environment variable:
 
 - `exclusive` (default): Only files with full extractors are included in records
 - `inclusive`: All files are included, with basic metadata for unsupported types
@@ -460,60 +471,80 @@ During record building, NexusLIMS finds files within the session time window usi
 
 ```bash
 # Only include files with dedicated extractors
-NEXUSLIMS_FILE_STRATEGY=exclusive
+NX_FILE_STRATEGY=exclusive
 
 # Include all files found
-NEXUSLIMS_FILE_STRATEGY=inclusive
+NX_FILE_STRATEGY=inclusive
 ```
 
 ### Extraction Process
 
 For each discovered file:
 
-1. **Extension Detection**: File extension is checked against `extension_reader_map`
+1. **Plugin Discovery**: The extractor registry auto-discovers all available extractor plugins from `nexusLIMS/extractors/plugins/`
+
 2. **Extractor Selection**:
 
-   - If extension is in `extension_reader_map`: Use dedicated extractor
-   - If extension is in `unextracted_preview_map`: Use basic metadata + custom preview
-   - Otherwise: Use basic metadata + placeholder preview (if `inclusive` mode)
+   - The registry uses priority-based selection with content sniffing support
+   - Extractors are tried in descending priority order (higher priority first)
+   - Each extractor's `supports()` method is called to determine compatibility
+   - If no specialized extractor matches, the `BasicFileInfoExtractor` fallback is used
 
-3. **Metadata Parsing**: Extractor reads the file and returns a dictionary with:
+3. **Metadata Parsing**: The selected extractor reads the file and returns a **list** of metadata dictionaries:
 
-   - `nx_meta`: NexusLIMS-specific metadata (standardized keys)
-   - Additional keys: Format-specific "raw" metadata
+   - Each dictionary contains `nx_meta` with NexusLIMS-specific metadata (standardized keys)
+   - Additional keys contain format-specific "raw" metadata
+   - For multi-signal files, the list contains one entry per signal
+   - For single-signal files, the list contains one entry for consistency
 
-4. **Metadata Writing**: JSON file is written to parallel path in `NX_DATA_PATH`
+4. **Metadata Writing**: JSON file(s) are written to parallel path in `NX_DATA_PATH`
 
    - Path: `{NX_DATA_PATH}/{instrument}/{path/to/file}.json`
+   - For multi-signal files: Multiple JSON files with `_signalN` suffixes
 
-5. **Preview Generation**: Thumbnail PNG is created
+5. **Preview Generation**: Thumbnail PNG(s) are created
 
    - Path: `{NX_DATA_PATH}/{instrument}/{path/to/file}.thumb.png`
+   - For multi-signal files: Multiple previews with `_signalN.thumb.png` suffixes
    - Size: 500×500 px (default)
+   - Uses plugin-based preview generators with fallback to legacy methods
 
 ### Expected Metadata Structure
 
-All extractors return a dictionary with this structure:
+All extractors return a **list of metadata dictionaries**, with one entry per signal or dataset:
 
 ```python
-{
-    "nx_meta": {
-        "Creation Time": "ISO 8601 timestamp",
-        "Data Type": "Category_Modality_Technique",  # e.g., "STEM_EDS"
-        "DatasetType": "Image|Spectrum|SpectrumImage|Diffraction|Misc|Unknown",
-        "Data Dimensions": "(height, width)" or "(channels,)",
-        "Instrument ID": "instrument-name",
-        "warnings": [["field1"], ["field2", "subfield"]],  # Unreliable fields
-        # ... format-specific keys ...
+[
+    {
+        "nx_meta": {
+            "Creation Time": "ISO 8601 timestamp",
+            "Data Type": "Category_Modality_Technique",  # e.g., "STEM_EDS"
+            "DatasetType": "Image|Spectrum|SpectrumImage|Diffraction|Misc|Unknown",
+            "Data Dimensions": "(height, width)" or "(channels,)",
+            "Instrument ID": "instrument-name",
+            "warnings": [["field1"], ["field2", "subfield"]],  # Unreliable fields
+            # ... format-specific keys ...
+        },
+        # Additional format-specific metadata sections
+        "ImageList": { ... },  # Example: DM3/DM4 files
+        "ObjectInfo": { ... },  # Example: FEI .ser/.emi files
+        # etc.
     },
-    # Additional format-specific metadata sections
-    "ImageList": { ... },  # Example: DM3/DM4 files
-    "ObjectInfo": { ... },  # Example: FEI .ser/.emi files
-    # etc.
-}
+    # For multi-signal files, additional entries follow the same structure
+    {
+        "nx_meta": { ... },
+        # ... additional signal ...
+    }
+]
 ```
 
-The `nx_meta` section contains standardized, human-readable metadata that is displayed in the experimental record. The additional sections contain the complete "raw" metadata tree for reference.
+**Return Format:**
+- **Single-signal files**: Return a list with one element `[{...}]`
+- **Multi-signal files**: Return a list with multiple elements, one per signal `[{...}, {...}]`
+
+The `nx_meta` section in each element contains standardized, human-readable metadata that is displayed in the experimental record. The additional sections contain the complete "raw" metadata tree for reference.
+
+This consistent list-based approach allows the Activity layer to automatically expand multi-signal files into multiple datasets in the experimental record.
 
 ## Adding Support for New Formats
 

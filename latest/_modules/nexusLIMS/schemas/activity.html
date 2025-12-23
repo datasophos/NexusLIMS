@@ -424,7 +424,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 18, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 23, 2025"/>
   </head>
   
   
@@ -970,19 +970,29 @@ window.addEventListener("load", load);
     <span class="k">return</span> <span class="n">val</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_add_dataset_element</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_add_dataset_element</span><span class="p">(</span>  <span class="c1"># noqa: PLR0913</span>
     <span class="n">file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">aq_ac_xml_el</span><span class="p">:</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">,</span>
     <span class="n">meta</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span>
     <span class="n">unique_meta</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span>
     <span class="n">warning</span><span class="p">:</span> <span class="n">List</span><span class="p">,</span>
+    <span class="n">preview_path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">signal_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">total_signals</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
     <span class="c1"># escape any bad characters in the filename</span>
     <span class="n">file</span> <span class="o">=</span> <span class="n">_escape</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
 
     <span class="c1"># build path to thumbnail</span>
     <span class="n">rel_fname</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">NX_INSTRUMENT_DATA_PATH</span><span class="p">),</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
-    <span class="n">rel_thumb_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">rel_fname</span><span class="si">}</span><span class="s2">.thumb.png&quot;</span>
+
+    <span class="c1"># Use provided preview path if available, otherwise compute from filename</span>
+    <span class="k">if</span> <span class="n">preview_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># Convert preview path to relative path</span>
+        <span class="n">rel_thumb_name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">preview_path</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">NX_DATA_PATH</span><span class="p">),</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Legacy: compute from filename</span>
+        <span class="n">rel_thumb_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">rel_fname</span><span class="si">}</span><span class="s2">.thumb.png&quot;</span>
 
     <span class="c1"># encode for safe URLs</span>
     <span class="n">rel_fname</span> <span class="o">=</span> <span class="n">quote</span><span class="p">(</span><span class="n">rel_fname</span><span class="p">)</span>
@@ -994,7 +1004,13 @@ window.addEventListener("load", load);
     <span class="n">dset_el</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;role&quot;</span><span class="p">,</span> <span class="s2">&quot;Experimental&quot;</span><span class="p">)</span>
 
     <span class="n">dset_name_el</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">dset_el</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">)</span>
-    <span class="n">dset_name_el</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">file</span><span class="p">)</span><span class="o">.</span><span class="n">name</span>
+    <span class="c1"># For multi-signal files, append signal index to make names unique</span>
+    <span class="n">base_name</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">file</span><span class="p">)</span><span class="o">.</span><span class="n">name</span>
+    <span class="k">if</span> <span class="n">signal_index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">total_signals</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">total_signals</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="c1"># Append signal index in format: &quot;filename.ext (X of Y)&quot;</span>
+        <span class="n">dset_name_el</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">base_name</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">signal_index</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2"> of </span><span class="si">{</span><span class="n">total_signals</span><span class="si">}</span><span class="s2">)&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">dset_name_el</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">base_name</span>
 
     <span class="n">dset_loc_el</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">dset_el</span><span class="p">,</span> <span class="s2">&quot;location&quot;</span><span class="p">)</span>
     <span class="n">dset_loc_el</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">rel_fname</span>
@@ -1104,8 +1120,13 @@ window.addEventListener("load", load);
 <span class="sd">        Add file to AcquisitionActivity.</span>
 
 <span class="sd">        Add a file to this activity&#39;s file list, parse its metadata (storing</span>
-<span class="sd">        a flattened copy of it to this activity), generate a preview</span>
-<span class="sd">        thumbnail, get the file&#39;s type, and a lazy HyperSpy signal.</span>
+<span class="sd">        a flattened copy of it to this activity), and generate a preview</span>
+<span class="sd">        thumbnail.</span>
+
+<span class="sd">        parse_metadata always returns a list of metadata dicts (one per signal).</span>
+<span class="sd">        For files containing multiple signals (e.g., multi-signal DM3/DM4 files),</span>
+<span class="sd">        this method adds one entry per signal to the parallel lists, repeating</span>
+<span class="sd">        the filename for each signal but using different preview paths and metadata.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1115,22 +1136,36 @@ window.addEventListener("load", load);
 <span class="sd">            Whether or not to create the preview thumbnail images</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">fname</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">fname</span><span class="p">))</span>
             <span class="n">gen_prev</span> <span class="o">=</span> <span class="n">generate_preview</span>
-            <span class="n">meta</span><span class="p">,</span> <span class="n">preview_fname</span> <span class="o">=</span> <span class="n">parse_metadata</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">generate_preview</span><span class="o">=</span><span class="n">gen_prev</span><span class="p">)</span>
+            <span class="n">meta_list</span><span class="p">,</span> <span class="n">preview_fnames</span> <span class="o">=</span> <span class="n">parse_metadata</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">generate_preview</span><span class="o">=</span><span class="n">gen_prev</span><span class="p">)</span>
 
-            <span class="k">if</span> <span class="n">meta</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">meta_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="c1"># Something bad happened, so we need to alert the user</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Could not parse metadata of </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span>
+                <span class="c1"># Still add the file to maintain original behavior</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">fname</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">previews</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">append</span><span class="p">({})</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">warnings</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">previews</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">preview_fname</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">flatten_dict</span><span class="p">(</span><span class="n">meta</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">]))</span>
-                <span class="k">if</span> <span class="s2">&quot;warnings&quot;</span> <span class="ow">in</span> <span class="n">meta</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">]:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">warnings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                        <span class="p">[</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">meta</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;warnings&quot;</span><span class="p">]],</span>
-                    <span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">warnings</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+                <span class="c1"># meta_list is always a list of dicts, one per signal</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">signal_meta</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">meta_list</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="nb">str</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+                    <span class="p">)</span>  <span class="c1"># Same file, repeated for multi-signal</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">flatten_dict</span><span class="p">(</span><span class="n">signal_meta</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">]))</span>
+
+                    <span class="c1"># Handle previews (always a list)</span>
+                    <span class="k">if</span> <span class="n">preview_fnames</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">preview_fnames</span><span class="p">):</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">previews</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">preview_fnames</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+                    <span class="c1"># Handle warnings</span>
+                    <span class="k">if</span> <span class="s2">&quot;warnings&quot;</span> <span class="ow">in</span> <span class="n">signal_meta</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">]:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">warnings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                            <span class="p">[</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">signal_meta</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;warnings&quot;</span><span class="p">]],</span>
+                        <span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">warnings</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s2"> was not found&quot;</span>
             <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
@@ -1340,19 +1375,42 @@ window.addEventListener("load", load);
                     <span class="n">param_el</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;warning&quot;</span><span class="p">,</span> <span class="s2">&quot;true&quot;</span><span class="p">)</span>
                 <span class="n">param_el</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">param_v</span><span class="p">)</span>
 
-        <span class="k">for</span> <span class="n">_file</span><span class="p">,</span> <span class="n">meta</span><span class="p">,</span> <span class="n">unique_meta</span><span class="p">,</span> <span class="n">warning</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+        <span class="c1"># Count how many times each file appears (for multi-signal files)</span>
+        <span class="n">file_signal_counts</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">file_signal_indices</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">_file</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">_file</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">file_signal_counts</span><span class="p">:</span>
+                <span class="n">file_signal_counts</span><span class="p">[</span><span class="n">_file</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">file_signal_indices</span><span class="p">[</span><span class="n">_file</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">file_signal_counts</span><span class="p">[</span><span class="n">_file</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c1"># Reset counters for actual iteration</span>
+        <span class="n">file_signal_indices</span> <span class="o">=</span> <span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">file_signal_counts</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">_file</span><span class="p">,</span> <span class="n">meta</span><span class="p">,</span> <span class="n">unique_meta</span><span class="p">,</span> <span class="n">warning</span><span class="p">,</span> <span class="n">preview</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">unique_meta</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">warnings</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">previews</span><span class="p">,</span>
         <span class="p">):</span>
+            <span class="c1"># Get the signal index for this file</span>
+            <span class="n">signal_index</span> <span class="o">=</span> <span class="n">file_signal_indices</span><span class="p">[</span><span class="n">_file</span><span class="p">]</span>
+            <span class="n">total_signals</span> <span class="o">=</span> <span class="n">file_signal_counts</span><span class="p">[</span><span class="n">_file</span><span class="p">]</span>
+
             <span class="n">aq_ac_xml_el</span> <span class="o">=</span> <span class="n">_add_dataset_element</span><span class="p">(</span>
                 <span class="n">_file</span><span class="p">,</span>
                 <span class="n">aq_ac_xml_el</span><span class="p">,</span>
                 <span class="n">meta</span><span class="p">,</span>
                 <span class="n">unique_meta</span><span class="p">,</span>
                 <span class="n">warning</span><span class="p">,</span>
+                <span class="n">preview_path</span><span class="o">=</span><span class="n">preview</span><span class="p">,</span>
+                <span class="n">signal_index</span><span class="o">=</span><span class="n">signal_index</span><span class="p">,</span>
+                <span class="n">total_signals</span><span class="o">=</span><span class="n">total_signals</span><span class="p">,</span>
             <span class="p">)</span>
+
+            <span class="c1"># Increment the signal index for this file</span>
+            <span class="n">file_signal_indices</span><span class="p">[</span><span class="n">_file</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
 
         <span class="k">return</span> <span class="n">aq_ac_xml_el</span></div>
 </div>

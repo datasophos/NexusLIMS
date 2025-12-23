@@ -62,7 +62,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 18, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 23, 2025"/>
   </head>
   
   
@@ -592,9 +592,9 @@ True if this appears to be a Tescan TIFF file</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.tescan_tif.TescanTiffExtractor.extract">
-<span class="sig-name descname"><span class="pre">extract</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="nexusLIMS.extractors.base.html#nexusLIMS.extractors.base.ExtractionContext" title="nexusLIMS.extractors.base.ExtractionContext"><span class="pre">ExtractionContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/plugins/tescan_tif.html#TescanTiffExtractor.extract"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.plugins.tescan_tif.TescanTiffExtractor.extract" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">extract</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="nexusLIMS.extractors.base.html#nexusLIMS.extractors.base.ExtractionContext" title="nexusLIMS.extractors.base.ExtractionContext"><span class="pre">ExtractionContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#list" title="(in Python v3.11)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/plugins/tescan_tif.html#TescanTiffExtractor.extract"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.plugins.tescan_tif.TescanTiffExtractor.extract" title="Link to this definition">#</a></dt>
 <dd><p>Extract metadata from a Tescan FIB/SEM TIFF file.</p>
-<p>Returns the metadata (as a dictionary) from a .tif file saved by
+<p>Returns the metadata (as a list of dictionaries) from a .tif file saved by
 Tescan instruments. Uses a three-tier extraction strategy:</p>
 <ol class="arabic simple">
 <li><p>Try to parse embedded HDR metadata from TIFF Tag 50431</p></li>
@@ -605,8 +605,8 @@ Tescan instruments. Uses a three-tier extraction strategy:</p>
 <p>context
 The extraction context containing file information</p>
 <p class="rubric" id="id2">Returns</p>
-<p>dict
-Metadata dictionary with ‘nx_meta’ key containing NexusLIMS metadata</p>
+<p>list[dict]
+List containing a single metadata dict with ‘nx_meta’ key</p>
 </dd></dl>
 
 </dd></dl>

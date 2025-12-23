@@ -55,34 +55,36 @@ class XYZExtractor:
         extension = context.file_path.suffix.lower().lstrip(".")
         return extension == "xyz"
     
-    def extract(self, context: ExtractionContext) -> dict[str, Any]:
+    def extract(self, context: ExtractionContext) -> list[dict[str, Any]]:
         """
         Extract metadata from an XYZ file.
-        
+
         Parameters
         ----------
         context : ExtractionContext
             Contains file_path and instrument information
-            
+
         Returns
         -------
-        dict
-            Metadata dictionary with 'nx_meta' key
+        list[dict]
+            List of metadata dictionaries, one per signal.
+            Each dict has an 'nx_meta' key with NexusLIMS metadata.
         """
         logger.debug("Extracting metadata from XYZ file: %s", context.file_path)
-        
+
         # Your extraction logic here
         metadata = {"nx_meta": {}}
-        
+
         # Add required fields
         metadata["nx_meta"]["DatasetType"] = "Image"  # or "Spectrum", "SpectrumImage", etc.
         metadata["nx_meta"]["Data Type"] = "SEM_Imaging"
         metadata["nx_meta"]["Creation Time"] = self._get_creation_time(context.file_path)
-        
+
         # Add format-specific metadata
         # ...
-        
-        return metadata
+
+        # Always return a list (even for single-signal files)
+        return [metadata]
     
     def _get_creation_time(self, file_path: Path) -> str:
         """Helper to get ISO-formatted creation time."""
@@ -151,27 +153,32 @@ def supports(self, context: ExtractionContext) -> bool:
     return ext in {"dm3", "dm4"}
 ```
 
-#### `extract(context: ExtractionContext) -> dict[str, Any]`
+#### `extract(context: ExtractionContext) -> list[dict[str, Any]]`
 Extract metadata from the file.
 
 **Parameters:**
 - `context`: Contains `file_path` (Path) and `instrument` (Instrument or None)
 
-**Returns:** Dictionary with at minimum an `"nx_meta"` key containing NexusLIMS metadata
+**Returns:** A **list** of metadata dictionaries. Each dict must contain an `"nx_meta"` key with NexusLIMS metadata.
 
-**Required `nx_meta` fields:**
+**Format:**
+- Single-signal files: Return `[{...}]` - a list with one element
+- Multi-signal files: Return `[{...}, {...}]` - a list with multiple elements
+
+**Required `nx_meta` fields (in each dict):**
 - `"DatasetType"`: One of "Image", "Spectrum", "SpectrumImage", "Diffraction", "Misc"
 - `"Data Type"`: Descriptive string (e.g., "STEM_Imaging", "TEM_EDS")
 - `"Creation Time"`: ISO-8601 formatted timestamp
 
 **Example:**
 ```python
-def extract(self, context: ExtractionContext) -> dict[str, Any]:
+def extract(self, context: ExtractionContext) -> list[dict[str, Any]]:
     metadata = {"nx_meta": {}}
     metadata["nx_meta"]["DatasetType"] = "Image"
     metadata["nx_meta"]["Data Type"] = "SEM_Imaging"
     # ... extraction logic
-    return metadata
+    # Always return a list
+    return [metadata]
 ```
 
 ## Advanced Patterns
@@ -300,11 +307,16 @@ class TestXYZExtractor:
         # Create test file
         test_file = tmp_path / "test.xyz"
         test_file.write_text("XYZ test data")
-        
+
         extractor = XYZExtractor()
         context = ExtractionContext(test_file, instrument=None)
-        metadata = extractor.extract(context)
-        
+        metadata_list = extractor.extract(context)
+
+        # Extract returns a list, get the first element
+        assert isinstance(metadata_list, list)
+        assert len(metadata_list) == 1
+        metadata = metadata_list[0]
+
         # Verify required fields
         assert "nx_meta" in metadata
         assert "DatasetType" in metadata["nx_meta"]
@@ -319,10 +331,10 @@ class TestXYZExtractor:
 Always handle errors gracefully:
 
 ```python
-def extract(self, context: ExtractionContext) -> dict[str, Any]:
+def extract(self, context: ExtractionContext) -> list[dict[str, Any]]:
     """Extract metadata with defensive error handling."""
     try:
-        # Primary extraction logic
+        # Primary extraction logic (returns list)
         return self._extract_full_metadata(context)
     except Exception as e:
         logger.warning(
@@ -331,7 +343,7 @@ def extract(self, context: ExtractionContext) -> dict[str, Any]:
             e,
             exc_info=True
         )
-        # Return basic metadata as fallback
+        # Return basic metadata as fallback (also as list)
         return self._extract_basic_metadata(context)
 ```
 
@@ -385,13 +397,15 @@ class MyFormatExtractor:
     name = "my_format_extractor"
     priority = 100
     supported_extensions = {"myformat"}  # Declare supported extensions
-    
+
     def supports(self, context: ExtractionContext) -> bool:
         ext = context.file_path.suffix.lower().lstrip(".")
         return ext == "myformat"
-    
-    def extract(self, context: ExtractionContext) -> dict:
-        return get_my_format_metadata(context.file_path)
+
+    def extract(self, context: ExtractionContext) -> list[dict]:
+        # Legacy function returns dict, wrap in list
+        metadata = get_my_format_metadata(context.file_path)
+        return [metadata]  # Always return a list
 ```
 
 ## Registry Behavior

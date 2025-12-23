@@ -65,7 +65,7 @@
             <a id="nextFileLink" class="nav" href="z_bbf82248b99f4f3e_jeol_jem_642_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.11.3">coverage.py v7.11.3</a>,
-            created at 2025-12-18 19:24 +0000
+            created at 2025-12-23 00:25 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"></button>
@@ -191,13 +191,13 @@
     <p class="run"><span class="n"><a id="t109" href="#t109">109</a></span><span class="t">            <span class="nam">out_term</span> <span class="op">=</span> <span class="op">[</span><span class="nam">out_term</span><span class="op">]</span>  <span class="com"># noqa: PLW2901</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t110" href="#t110">110</a></span><span class="t">        <span class="nam">val</span> <span class="op">=</span> <span class="nam">try_getting_dict_value</span><span class="op">(</span><span class="nam">metadata</span><span class="op">,</span> <span class="nam">base</span> <span class="op">+</span> <span class="nam">in_term</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t111" href="#t111">111</a></span><span class="t">        <span class="com"># only add the value to this list if we found it</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t112" href="#t112">112</a></span><span class="t">        <span class="key">if</span> <span class="nam">val</span> <span class="op">!=</span> <span class="str">"not found"</span> <span class="key">and</span> <span class="nam">val</span> <span class="key">not</span> <span class="key">in</span> <span class="op">[</span><span class="str">"DO NOT EDIT"</span><span class="op">,</span> <span class="str">"DO NOT ENTER"</span><span class="op">]</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t112" href="#t112">112</a></span><span class="t">        <span class="key">if</span> <span class="nam">val</span> <span class="key">is</span> <span class="key">not</span> <span class="key">None</span> <span class="key">and</span> <span class="nam">val</span> <span class="key">not</span> <span class="key">in</span> <span class="op">[</span><span class="str">"DO NOT EDIT"</span><span class="op">,</span> <span class="str">"DO NOT ENTER"</span><span class="op">]</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t113" href="#t113">113</a></span><span class="t">            <span class="nam">set_nested_dict_value</span><span class="op">(</span><span class="nam">metadata</span><span class="op">,</span> <span class="op">[</span><span class="str">"nx_meta"</span><span class="op">,</span> <span class="op">*</span><span class="nam">out_term</span><span class="op">]</span><span class="op">,</span> <span class="nam">val</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t114" href="#t114">114</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t115" href="#t115">115</a></span><span class="t">    <span class="com"># Parse specimen info</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t116" href="#t116">116</a></span><span class="t">    <span class="nam">path</span> <span class="op">=</span> <span class="op">[</span><span class="op">*</span><span class="nam">list</span><span class="op">(</span><span class="nam">path_to_tecnai</span><span class="op">)</span><span class="op">,</span> <span class="str">"Specimen Info"</span><span class="op">]</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t117" href="#t117">117</a></span><span class="t">    <span class="nam">val</span> <span class="op">=</span> <span class="nam">try_getting_dict_value</span><span class="op">(</span><span class="nam">metadata</span><span class="op">,</span> <span class="nam">path</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t118" href="#t118">118</a></span><span class="t">    <span class="key">if</span> <span class="nam">val</span> <span class="key">not</span> <span class="key">in</span> <span class="op">[</span><span class="str">"not found"</span><span class="op">,</span> <span class="str">"Specimen information is not available yet"</span><span class="op">]</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t118" href="#t118">118</a></span><span class="t">    <span class="key">if</span> <span class="nam">val</span> <span class="key">is</span> <span class="key">not</span> <span class="key">None</span> <span class="key">and</span> <span class="nam">val</span> <span class="op">!=</span> <span class="str">"Specimen information is not available yet"</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t119" href="#t119">119</a></span><span class="t">        <span class="nam">set_nested_dict_value</span><span class="op">(</span><span class="nam">metadata</span><span class="op">,</span> <span class="op">[</span><span class="str">"nx_meta"</span><span class="op">,</span> <span class="str">"Specimen"</span><span class="op">]</span><span class="op">,</span> <span class="nam">val</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t120" href="#t120">120</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t121" href="#t121">121</a></span><span class="t">    <span class="key">return</span> <span class="nam">metadata</span>&nbsp;</span><span class="r"></span></p>
@@ -275,7 +275,7 @@
             <a class="nav" href="z_bbf82248b99f4f3e_jeol_jem_642_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.11.3">coverage.py v7.11.3</a>,
-            created at 2025-12-18 19:24 +0000
+            created at 2025-12-23 00:25 +0000
         </p>
     </div>
 </footer>

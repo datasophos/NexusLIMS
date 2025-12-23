@@ -27,30 +27,6 @@
 :class: autosummary longtable
 :align: left
 
-* - {py:obj}`parse_nx_meta <nexusLIMS.extractors.plugins.quanta_tif.parse_nx_meta>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.quanta_tif.parse_nx_meta
-    :summary:
-    ```
-* - {py:obj}`parse_beam_info <nexusLIMS.extractors.plugins.quanta_tif.parse_beam_info>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.quanta_tif.parse_beam_info
-    :summary:
-    ```
-* - {py:obj}`parse_scan_info <nexusLIMS.extractors.plugins.quanta_tif.parse_scan_info>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.quanta_tif.parse_scan_info
-    :summary:
-    ```
-* - {py:obj}`parse_det_info <nexusLIMS.extractors.plugins.quanta_tif.parse_det_info>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.quanta_tif.parse_det_info
-    :summary:
-    ```
-* - {py:obj}`parse_system_info <nexusLIMS.extractors.plugins.quanta_tif.parse_system_info>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.quanta_tif.parse_system_info
-    :summary:
-    ```
-* - {py:obj}`parse_image_info <nexusLIMS.extractors.plugins.quanta_tif.parse_image_info>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.quanta_tif.parse_image_info
-    :summary:
-    ```
 * - {py:obj}`get_quanta_metadata <nexusLIMS.extractors.plugins.quanta_tif.get_quanta_metadata>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.quanta_tif.get_quanta_metadata
     :summary:
@@ -63,20 +39,34 @@
 :class: autosummary longtable
 :align: left
 
-* - {py:obj}`logger <nexusLIMS.extractors.plugins.quanta_tif.logger>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.quanta_tif.logger
+* - {py:obj}`FEI_TIFF_TAG <nexusLIMS.extractors.plugins.quanta_tif.FEI_TIFF_TAG>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.quanta_tif.FEI_TIFF_TAG
+    :summary:
+    ```
+* - {py:obj}`FEI_XML_TIFF_TAG <nexusLIMS.extractors.plugins.quanta_tif.FEI_XML_TIFF_TAG>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.quanta_tif.FEI_XML_TIFF_TAG
     :summary:
     ```
 ````
 
 ### API
 
-````{py:data} logger
-:canonical: nexusLIMS.extractors.plugins.quanta_tif.logger
+````{py:data} FEI_TIFF_TAG
+:canonical: nexusLIMS.extractors.plugins.quanta_tif.FEI_TIFF_TAG
 :value: >
-   'getLogger(...)'
+   34682
 
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.quanta_tif.logger
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.quanta_tif.FEI_TIFF_TAG
+```
+
+````
+
+````{py:data} FEI_XML_TIFF_TAG
+:canonical: nexusLIMS.extractors.plugins.quanta_tif.FEI_XML_TIFF_TAG
+:value: >
+   34683
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.quanta_tif.FEI_XML_TIFF_TAG
 ```
 
 ````
@@ -126,7 +116,7 @@
 
 ````
 
-````{py:method} extract(context: nexusLIMS.extractors.base.ExtractionContext) -> dict[str, typing.Any]
+````{py:method} extract(context: nexusLIMS.extractors.base.ExtractionContext) -> list[dict[str, typing.Any]]
 :canonical: nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor.extract
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor.extract
@@ -135,48 +125,6 @@
 ````
 
 `````
-
-````{py:function} parse_nx_meta(mdict)
-:canonical: nexusLIMS.extractors.plugins.quanta_tif.parse_nx_meta
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.quanta_tif.parse_nx_meta
-```
-````
-
-````{py:function} parse_beam_info(mdict, beam_name)
-:canonical: nexusLIMS.extractors.plugins.quanta_tif.parse_beam_info
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.quanta_tif.parse_beam_info
-```
-````
-
-````{py:function} parse_scan_info(mdict, scan_name)
-:canonical: nexusLIMS.extractors.plugins.quanta_tif.parse_scan_info
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.quanta_tif.parse_scan_info
-```
-````
-
-````{py:function} parse_det_info(mdict, det_name)
-:canonical: nexusLIMS.extractors.plugins.quanta_tif.parse_det_info
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.quanta_tif.parse_det_info
-```
-````
-
-````{py:function} parse_system_info(mdict)
-:canonical: nexusLIMS.extractors.plugins.quanta_tif.parse_system_info
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.quanta_tif.parse_system_info
-```
-````
-
-````{py:function} parse_image_info(mdict)
-:canonical: nexusLIMS.extractors.plugins.quanta_tif.parse_image_info
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.quanta_tif.parse_image_info
-```
-````
 
 ````{py:function} get_quanta_metadata(filename)
 :canonical: nexusLIMS.extractors.plugins.quanta_tif.get_quanta_metadata

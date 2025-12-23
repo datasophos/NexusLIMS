@@ -424,7 +424,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 18, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 23, 2025"/>
   </head>
   
   
@@ -1133,15 +1133,15 @@ window.addEventListener("load", load);
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    value : object or str</span>
+<span class="sd">    value : object or None</span>
 <span class="sd">        The value at the path within the nested dictionary; if there&#39;s no</span>
-<span class="sd">        value there, return the string `&quot;not found&quot;`</span>
+<span class="sd">        value there, return None</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">sub_dict</span> <span class="o">=</span> <span class="n">nest_dict</span>
     <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">path</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">sub_dict</span> <span class="o">==</span> <span class="s2">&quot;not found&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">sub_dict</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">break</span>
-        <span class="n">sub_dict</span> <span class="o">=</span> <span class="n">sub_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s2">&quot;not found&quot;</span><span class="p">)</span>
+        <span class="n">sub_dict</span> <span class="o">=</span> <span class="n">sub_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">sub_dict</span></div>
 
@@ -1197,10 +1197,9 @@ window.addEventListener("load", load);
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    val : object or str</span>
+<span class="sd">    val : object or None</span>
 <span class="sd">        The value of the dictionary specified by `key`. If the dictionary</span>
-<span class="sd">        does not have a key, returns the string `&quot;not found&quot;` without raising an</span>
-<span class="sd">        error</span>
+<span class="sd">        does not have a key, returns None without raising an error</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
@@ -1208,11 +1207,11 @@ window.addEventListener("load", load);
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s2">&quot;__iter__&quot;</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">get_nested_dict_value_by_path</span><span class="p">(</span><span class="n">dict_</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
     <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s2">&quot;not found&quot;</span>
+        <span class="k">return</span> <span class="kc">None</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># we shouldn&#39;t reach this line, but always good to return a consistent</span>
         <span class="c1"># value just in case</span>
-        <span class="k">return</span> <span class="s2">&quot;not found&quot;</span>  <span class="c1"># pragma: no cover</span></div>
+        <span class="k">return</span> <span class="kc">None</span>  <span class="c1"># pragma: no cover</span></div>
 
 
 

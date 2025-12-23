@@ -110,7 +110,7 @@
 
 ````
 
-````{py:method} extract(context: nexusLIMS.extractors.base.ExtractionContext) -> dict[str, typing.Any]
+````{py:method} extract(context: nexusLIMS.extractors.base.ExtractionContext) -> list[dict[str, typing.Any]]
 :canonical: nexusLIMS.extractors.plugins.edax.SpcExtractor.extract
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.edax.SpcExtractor.extract
@@ -165,7 +165,7 @@
 
 ````
 
-````{py:method} extract(context: nexusLIMS.extractors.base.ExtractionContext) -> dict[str, typing.Any]
+````{py:method} extract(context: nexusLIMS.extractors.base.ExtractionContext) -> list[dict[str, typing.Any]]
 :canonical: nexusLIMS.extractors.plugins.edax.MsaExtractor.extract
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.edax.MsaExtractor.extract

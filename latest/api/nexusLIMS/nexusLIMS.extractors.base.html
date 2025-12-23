@@ -62,7 +62,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 18, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 23, 2025"/>
   </head>
   
   
@@ -512,16 +512,19 @@ inheritance, allowing flexibility in implementation while maintaining type safet
 <h3>Classes<a class="headerlink" href="#classes" title="Link to this heading">#</a></h3>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table table-left">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.extractors.base.ExtractionContext" title="nexusLIMS.extractors.base.ExtractionContext"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ExtractionContext</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.extractors.base.FieldDefinition" title="nexusLIMS.extractors.base.FieldDefinition"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FieldDefinition</span></code></a></p></td>
+<td><p>Configuration for extracting a single metadata field.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.extractors.base.ExtractionContext" title="nexusLIMS.extractors.base.ExtractionContext"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ExtractionContext</span></code></a></p></td>
 <td><p>Context information passed to extractors and preview generators.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.extractors.base.BaseExtractor" title="nexusLIMS.extractors.base.BaseExtractor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BaseExtractor</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.extractors.base.BaseExtractor" title="nexusLIMS.extractors.base.BaseExtractor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BaseExtractor</span></code></a></p></td>
 <td><p>Protocol defining the interface for metadata extractors.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.extractors.base.PreviewGenerator" title="nexusLIMS.extractors.base.PreviewGenerator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PreviewGenerator</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.extractors.base.PreviewGenerator" title="nexusLIMS.extractors.base.PreviewGenerator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PreviewGenerator</span></code></a></p></td>
 <td><p>Protocol for thumbnail/preview image generation.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.extractors.base.InstrumentProfile" title="nexusLIMS.extractors.base.InstrumentProfile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">InstrumentProfile</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.extractors.base.InstrumentProfile" title="nexusLIMS.extractors.base.InstrumentProfile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">InstrumentProfile</span></code></a></p></td>
 <td><p>Instrument-specific customization profile.</p></td>
 </tr>
 </tbody>
@@ -548,19 +551,121 @@ inheritance, allowing flexibility in implementation while maintaining type safet
 </dd></dl>
 
 <dl class="py class">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.base.FieldDefinition">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.base.</span></span><span class="sig-name descname"><span class="pre">FieldDefinition</span></span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/base.html#FieldDefinition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.base.FieldDefinition" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.NamedTuple" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">typing.NamedTuple</span></code></a></p>
+<p>Configuration for extracting a single metadata field.</p>
+<p>This NamedTuple provides a declarative way to define how metadata fields
+should be extracted from instrument data files. It’s used by TIFF-based
+extractors (Quanta, Tescan, Orion HIM) to reduce code duplication.</p>
+<p class="rubric" id="id9">Attributes</p>
+<p>section : str
+Section name in metadata dict (e.g., “Beam”, “User”, “System”).
+For nested dicts, this is the top-level key.
+source_key : str
+Key within the section to extract the value from.
+output_key : str | list[str]
+Output key in nx_meta. Can be a string for flat keys or a list
+for nested paths (e.g., [“Stage Position”, “X”]).
+factor : float
+Unit conversion factor. The extracted value is multiplied by this.
+Use 1.0 for no conversion. For SI unit conversions, use powers of 10
+(e.g., 1e6 to convert meters to micrometers).
+is_string : bool
+If True, keep value as string. If False, attempt numeric conversion
+with Decimal for precision.
+suppress_zero : bool, default=False
+If True, skip field if the numeric value equals zero.
+Only applies when is_string=False.</p>
+<p class="rubric" id="id10">Examples</p>
+<blockquote>
+<div><blockquote>
+<div><blockquote>
+<div><p class="rubric" id="id11">Simple numeric field with unit conversion (m → μm)</p>
+<p>FieldDefinition(“Beam”, “HFW”, “Horizontal Field Width (μm)”, 1e6, False)</p>
+</div></blockquote>
+</div></blockquote>
+</div></blockquote>
+<blockquote>
+<div><blockquote>
+<div><blockquote>
+<div><p class="rubric" id="id12">String field (no conversion)</p>
+<p>FieldDefinition(“System”, “Chamber”, “Chamber ID”, 1.0, True)</p>
+</div></blockquote>
+</div></blockquote>
+</div></blockquote>
+<blockquote>
+<div><blockquote>
+<div><blockquote>
+<div><p class="rubric" id="id13">Nested output path</p>
+<p>FieldDefinition(“Beam”, “StageX”, [“Stage Position”, “X”], 1.0, False)</p>
+</div></blockquote>
+</div></blockquote>
+</div></blockquote>
+<blockquote>
+<div><blockquote>
+<div><blockquote>
+<div><p class="rubric" id="id14">Suppress zero values</p>
+<p>FieldDefinition(“Beam”, “BeamShiftX”, “Beam Shift X”,
+1.0, False, suppress_zero=True)</p>
+</div></blockquote>
+</div></blockquote>
+</div></blockquote>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.base.FieldDefinition.section">
+<span class="sig-name descname"><span class="pre">section</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></em><a class="headerlink" href="#nexusLIMS.extractors.base.FieldDefinition.section" title="Link to this definition">#</a></dt>
+<dd><p>None</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.base.FieldDefinition.source_key">
+<span class="sig-name descname"><span class="pre">source_key</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></em><a class="headerlink" href="#nexusLIMS.extractors.base.FieldDefinition.source_key" title="Link to this definition">#</a></dt>
+<dd><p>None</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.base.FieldDefinition.output_key">
+<span class="sig-name descname"><span class="pre">output_key</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#list" title="(in Python v3.11)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#nexusLIMS.extractors.base.FieldDefinition.output_key" title="Link to this definition">#</a></dt>
+<dd><p>None</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.base.FieldDefinition.factor">
+<span class="sig-name descname"><span class="pre">factor</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a></em><a class="headerlink" href="#nexusLIMS.extractors.base.FieldDefinition.factor" title="Link to this definition">#</a></dt>
+<dd><p>None</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.base.FieldDefinition.is_string">
+<span class="sig-name descname"><span class="pre">is_string</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></em><a class="headerlink" href="#nexusLIMS.extractors.base.FieldDefinition.is_string" title="Link to this definition">#</a></dt>
+<dd><p>None</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.base.FieldDefinition.suppress_zero">
+<span class="sig-name descname"><span class="pre">suppress_zero</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></em><a class="headerlink" href="#nexusLIMS.extractors.base.FieldDefinition.suppress_zero" title="Link to this definition">#</a></dt>
+<dd><p>False</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="nexusLIMS.extractors.base.ExtractionContext">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.base.</span></span><span class="sig-name descname"><span class="pre">ExtractionContext</span></span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/base.html#ExtractionContext"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.base.ExtractionContext" title="Link to this definition">#</a></dt>
 <dd><p>Context information passed to extractors and preview generators.</p>
 <p>This dataclass encapsulates all the information an extractor needs to
 process a file. Using a context object allows us to add new parameters
 in the future without breaking existing extractors.</p>
-<p class="rubric" id="id7">Attributes</p>
+<p class="rubric" id="id15">Attributes</p>
 <p>file_path
 Path to the file to be processed
 instrument
 The instrument that created this file, if known. Can be None for
-files that cannot be associated with a specific instrument.</p>
-<p class="rubric" id="id8">Examples</p>
+files that cannot be associated with a specific instrument.
+signal_index
+For files with multiple signals, the index of the signal to process.
+If None, processes all signals or defaults to the first signal.</p>
+<p class="rubric" id="id16">Examples</p>
 <blockquote>
 <div><blockquote>
 <div><blockquote>
@@ -584,6 +689,12 @@ context = ExtractionContext(file_path, instrument)</p>
 <dd><p>None</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.base.ExtractionContext.signal_index">
+<span class="sig-name descname"><span class="pre">signal_index</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.extractors.base.ExtractionContext.signal_index" title="Link to this definition">#</a></dt>
+<dd><p>None</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -597,10 +708,10 @@ valid extractor - no inheritance required.</p>
 <p>All extractors MUST implement defensive error handling:</p>
 <ul class="simple">
 <li><p>Never raise exceptions from extract() - catch all and return minimal metadata</p></li>
-<li><p>Always return a dict with an ‘nx_meta’ key</p></li>
+<li><p>Always return a list of metadata dicts (one per signal)</p></li>
 <li><p>Log errors for debugging but don’t propagate them</p></li>
 </ul>
-<p class="rubric" id="id9">Attributes</p>
+<p class="rubric" id="id17">Attributes</p>
 <p>name : str
 Unique identifier for this extractor (e.g., “dm3_extractor”).
 Should be a valid Python identifier.
@@ -611,7 +722,7 @@ supported_extensions : set[str] | None
 File extensions this extractor supports (without dots).
 Set to None for wildcard extractors that support all files.
 Empty set means no extensions are directly supported (content sniffing only).</p>
-<p class="rubric" id="id10">Notes</p>
+<p class="rubric" id="id18">Notes</p>
 <p><strong>Priority Conventions:</strong></p>
 <ul class="simple">
 <li><p>0-49: Low priority (generic/fallback extractors)</p></li>
@@ -622,7 +733,7 @@ Empty set means no extensions are directly supported (content sniffing only).</p
 <p>When multiple extractors support the same file, the registry will
 try them in descending priority order until one’s supports() method
 returns True.</p>
-<p class="rubric" id="id11">Examples</p>
+<p class="rubric" id="id19">Examples</p>
 <blockquote>
 <div><blockquote>
 <div><blockquote>
@@ -636,9 +747,9 @@ returns True.</p>
 …         ext = context.file_path.suffix.lower().lstrip(‘.’)
 …         return ext in (‘dm3’, ‘dm4’)
 …
-…     def extract(self, context: ExtractionContext) -&gt; dict[str, Any]:
+…     def extract(self, context: ExtractionContext) -&gt; list[dict[str, Any]]:
 …         # Extraction logic here
-…         return {“nx_meta”: {…}}</p>
+…         return [{“nx_meta”: {…}}]</p>
 </div></blockquote>
 </div></blockquote>
 </div></blockquote>
@@ -679,7 +790,7 @@ Context containing file path, instrument info, etc.</p>
 <p class="rubric" id="returns">Returns</p>
 <p>bool
 True if this extractor can handle this file, False otherwise</p>
-<p class="rubric" id="id12">Examples</p>
+<p class="rubric" id="id20">Examples</p>
 <p>Extension-based matching:</p>
 <blockquote>
 <div><blockquote>
@@ -722,15 +833,19 @@ True if this extractor can handle this file, False otherwise</p>
 <p>CRITICAL: This method MUST follow defensive design principles:</p>
 <ul class="simple">
 <li><p>Never raise exceptions - catch all errors and return minimal metadata</p></li>
-<li><p>Always return a dict with an ‘nx_meta’ key</p></li>
+<li><p>Always return a list of metadata dicts where each contains an ‘nx_meta’ key</p></li>
 <li><p>Log errors for debugging but continue gracefully</p></li>
 </ul>
-<p>The returned dictionary should contain:</p>
+<p>Return Format:
+All extractors return a list of metadata dicts. Each dict contains:</p>
 <ul class="simple">
-<li><p>‘nx_meta’: NexusLIMS-specific metadata (required)</p></li>
-<li><p>Other keys: Raw metadata as extracted from the file (optional)</p></li>
+<li><p>‘nx_meta’: Required - NexusLIMS-specific metadata (dict)</p></li>
+<li><p>Other keys: Optional - Raw metadata extracted from the file</p></li>
 </ul>
-<p>The ‘nx_meta’ sub-dictionary should contain:</p>
+<p>Single-signal files return a list with one element. Multi-signal files return
+a list with one element per signal. This consistent list-based approach allows
+the Activity layer to expand multi-signal files into multiple datasets.</p>
+<p>Each ‘nx_meta’ dict should contain:</p>
 <ul class="simple">
 <li><p>‘Creation Time’: ISO format datetime string</p></li>
 <li><p>‘Data Type’: Human-readable data type (e.g., “STEM_Imaging”)</p></li>
@@ -739,28 +854,51 @@ True if this extractor can handle this file, False otherwise</p>
 <li><p>‘Instrument ID’: Instrument PID from database</p></li>
 <li><p>‘warnings’: List of warning messages (optional)</p></li>
 </ul>
-<p class="rubric" id="id13">Parameters</p>
+<p class="rubric" id="id21">Parameters</p>
 <p>context
-Context containing file path, instrument info, etc.</p>
-<p class="rubric" id="id14">Returns</p>
-<p>dict
-Metadata dictionary with mandatory ‘nx_meta’ key</p>
-<p class="rubric" id="id15">Examples</p>
-<p>Successful extraction:</p>
+Context containing file path, instrument info, etc.
+For multi-signal files, signal_index indicates which signal to process.
+If None, extractors may return all signals or the first signal.</p>
+<p class="rubric" id="id22">Returns</p>
+<p>list[dict]
+List of metadata dicts (one per signal). Each dict contains ‘nx_meta’
+key with NexusLIMS-specific metadata, plus optional raw metadata keys.</p>
+<p class="rubric" id="id23">Examples</p>
+<p>Single-signal extraction:</p>
 <blockquote>
 <div><blockquote>
 <div><blockquote>
-<div><p>def extract(self, context: ExtractionContext) -&gt; dict[str, Any]:
+<div><p>def extract(self, context: ExtractionContext) -&gt; list[dict[str, Any]]:
 …     try:
-…         # Extraction logic
-…         metadata = {“nx_meta”: {
+…         metadata = [{“nx_meta”: {
 …             “Creation Time”: “2024-01-15T10:30:00-05:00”,
 …             “Data Type”: “STEM_Imaging”,
 …             “DatasetType”: “Image”,
 …             “Data Dimensions”: “(1024, 1024)”,
 …             “Instrument ID”: “643-Titan”
-…         }}
+…         }}]
 …         return metadata
+…     except Exception as e:
+…         logger.error(f”Extraction failed: {e}”)
+…         return self._minimal_metadata(context)</p>
+</div></blockquote>
+</div></blockquote>
+</div></blockquote>
+<p>Multi-signal extraction:</p>
+<blockquote>
+<div><blockquote>
+<div><blockquote>
+<div><p>def extract(self, context: ExtractionContext) -&gt; list[dict[str, Any]]:
+…     try:
+…         # For a file with 2 signals
+…         return [
+…             {“nx_meta”: {
+…                 “Creation Time”: “2024-01-15T10:30:00-05:00”,
+…                 “Data Type”: “STEM_Imaging”, …}},
+…             {“nx_meta”: {
+…                 “Creation Time”: “2024-01-15T10:30:00-05:00”,
+…                 “Data Type”: “EDS_Spectrum”, …}}
+…         ]
 …     except Exception as e:
 …         logger.error(f”Extraction failed: {e}”)
 …         return self._minimal_metadata(context)</p>
@@ -771,8 +909,8 @@ Metadata dictionary with mandatory ‘nx_meta’ key</p>
 <blockquote>
 <div><blockquote>
 <div><blockquote>
-<div><p>def _minimal_metadata(self, context: ExtractionContext) -&gt; dict:
-…     return {
+<div><p>def _minimal_metadata(self, context: ExtractionContext) -&gt; list[dict]:
+…     return [{
 …         “nx_meta”: {
 …             “DatasetType”: “Unknown”,
 …             “Data Type”: “Unknown”,
@@ -780,7 +918,7 @@ Metadata dictionary with mandatory ‘nx_meta’ key</p>
 …             “Instrument ID”: None,
 …             “warnings”: [“Extraction failed”]
 …         }
-…     }</p>
+…     }]</p>
 </div></blockquote>
 </div></blockquote>
 </div></blockquote>
@@ -800,7 +938,7 @@ Metadata dictionary with mandatory ‘nx_meta’ key</p>
 <li><p>Batch preview generation independent of extraction</p></li>
 </ul>
 <p>Like BaseExtractor, this is a Protocol (structural subtype).</p>
-<p class="rubric" id="id16">Attributes</p>
+<p class="rubric" id="id24">Attributes</p>
 <p>name : str
 Unique identifier for this generator
 priority : int
@@ -809,7 +947,7 @@ supported_extensions : set[str] | None
 File extensions this generator supports (without dots).
 Set to None for wildcard generators that support all files.
 Empty set means no extensions are directly supported (content sniffing only).</p>
-<p class="rubric" id="id17">Examples</p>
+<p class="rubric" id="id25">Examples</p>
 <blockquote>
 <div><blockquote>
 <div><blockquote>
@@ -852,10 +990,10 @@ Empty set means no extensions are directly supported (content sniffing only).</p
 <dt class="sig sig-object py" id="nexusLIMS.extractors.base.PreviewGenerator.supports">
 <span class="sig-name descname"><span class="pre">supports</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#nexusLIMS.extractors.base.ExtractionContext" title="nexusLIMS.extractors.base.ExtractionContext"><span class="pre">ExtractionContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/base.html#PreviewGenerator.supports"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.base.PreviewGenerator.supports" title="Link to this definition">#</a></dt>
 <dd><p>Determine if this generator can create a preview for the given file.</p>
-<p class="rubric" id="id18">Parameters</p>
+<p class="rubric" id="id26">Parameters</p>
 <p>context
 Context containing file path, instrument info, etc.</p>
-<p class="rubric" id="id19">Returns</p>
+<p class="rubric" id="id27">Returns</p>
 <p>bool
 True if this generator can handle this file</p>
 </dd></dl>
@@ -871,15 +1009,15 @@ True if this generator can handle this file</p>
 <li><p>Return True on success, False on failure</p></li>
 <li><p>Never raise exceptions (catch all and return False)</p></li>
 </ul>
-<p class="rubric" id="id20">Parameters</p>
+<p class="rubric" id="id28">Parameters</p>
 <p>context
 Context containing file path, instrument info, etc.
 output_path
 Where to save the generated preview PNG</p>
-<p class="rubric" id="id21">Returns</p>
+<p class="rubric" id="id29">Returns</p>
 <p>bool
 True if preview was successfully generated, False otherwise</p>
-<p class="rubric" id="id22">Examples</p>
+<p class="rubric" id="id30">Examples</p>
 <blockquote>
 <div><blockquote>
 <div><blockquote>
@@ -908,7 +1046,7 @@ True if preview was successfully generated, False otherwise</p>
 custom behavior for specific microscopes without modifying extractor code.</p>
 <p>This is the CRITICAL component for extensibility - each NexusLIMS installation
 has unique instruments, and this system makes it trivial to add customizations.</p>
-<p class="rubric" id="id23">Attributes</p>
+<p class="rubric" id="id31">Attributes</p>
 <p>instrument_id
 Instrument identifier (e.g., “FEI-Titan-STEM-630901”)
 parsers
@@ -923,7 +1061,7 @@ Keys are file extensions, values are extractor names.
 static_metadata
 Metadata to inject for all files from this instrument.
 Keys are metadata paths, values are static values.</p>
-<p class="rubric" id="id24">Examples</p>
+<p class="rubric" id="id32">Examples</p>
 <p>Creating a custom profile for FEI Titan STEM:</p>
 <blockquote>
 <div><blockquote>
@@ -1045,9 +1183,19 @@ Keys are metadata paths, values are static values.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data">Data</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#api">API</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.base.logger"><code class="docutils literal notranslate"><span class="pre">logger</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.base.FieldDefinition"><code class="docutils literal notranslate"><span class="pre">FieldDefinition</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.base.FieldDefinition.section"><code class="docutils literal notranslate"><span class="pre">FieldDefinition.section</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.base.FieldDefinition.source_key"><code class="docutils literal notranslate"><span class="pre">FieldDefinition.source_key</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.base.FieldDefinition.output_key"><code class="docutils literal notranslate"><span class="pre">FieldDefinition.output_key</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.base.FieldDefinition.factor"><code class="docutils literal notranslate"><span class="pre">FieldDefinition.factor</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.base.FieldDefinition.is_string"><code class="docutils literal notranslate"><span class="pre">FieldDefinition.is_string</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.base.FieldDefinition.suppress_zero"><code class="docutils literal notranslate"><span class="pre">FieldDefinition.suppress_zero</span></code></a></li>
+</ul>
+</li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.base.ExtractionContext"><code class="docutils literal notranslate"><span class="pre">ExtractionContext</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.base.ExtractionContext.file_path"><code class="docutils literal notranslate"><span class="pre">ExtractionContext.file_path</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.base.ExtractionContext.instrument"><code class="docutils literal notranslate"><span class="pre">ExtractionContext.instrument</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.base.ExtractionContext.signal_index"><code class="docutils literal notranslate"><span class="pre">ExtractionContext.signal_index</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.base.BaseExtractor"><code class="docutils literal notranslate"><span class="pre">BaseExtractor</span></code></a><ul class="nav section-nav flex-column">

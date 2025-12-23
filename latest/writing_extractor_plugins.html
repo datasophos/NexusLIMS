@@ -62,7 +62,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 18, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 23, 2025"/>
   </head>
   
   
@@ -529,34 +529,36 @@
         <span class="n">extension</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">file_path</span><span class="o">.</span><span class="n">suffix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">extension</span> <span class="o">==</span> <span class="s2">&quot;xyz&quot;</span>
     
-    <span class="k">def</span><span class="w"> </span><span class="nf">extract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ExtractionContext</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">extract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ExtractionContext</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Extract metadata from an XYZ file.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        context : ExtractionContext</span>
 <span class="sd">            Contains file_path and instrument information</span>
-<span class="sd">            </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        dict</span>
-<span class="sd">            Metadata dictionary with &#39;nx_meta&#39; key</span>
+<span class="sd">        list[dict]</span>
+<span class="sd">            List of metadata dictionaries, one per signal.</span>
+<span class="sd">            Each dict has an &#39;nx_meta&#39; key with NexusLIMS metadata.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Extracting metadata from XYZ file: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">context</span><span class="o">.</span><span class="n">file_path</span><span class="p">)</span>
-        
+
         <span class="c1"># Your extraction logic here</span>
         <span class="n">metadata</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">:</span> <span class="p">{}}</span>
-        
+
         <span class="c1"># Add required fields</span>
         <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;DatasetType&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Image&quot;</span>  <span class="c1"># or &quot;Spectrum&quot;, &quot;SpectrumImage&quot;, etc.</span>
         <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;Data Type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;SEM_Imaging&quot;</span>
         <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;Creation Time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_creation_time</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">file_path</span><span class="p">)</span>
-        
+
         <span class="c1"># Add format-specific metadata</span>
         <span class="c1"># ...</span>
-        
-        <span class="k">return</span> <span class="n">metadata</span>
+
+        <span class="c1"># Always return a list (even for single-signal files)</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">metadata</span><span class="p">]</span>
     
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_creation_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Helper to get ISO-formatted creation time.&quot;&quot;&quot;</span>
@@ -630,27 +632,33 @@
 </pre></div>
 </div>
 </section>
-<section id="extract-context-extractioncontext-dict-str-any">
-<h4><code class="docutils literal notranslate"><span class="pre">extract(context:</span> <span class="pre">ExtractionContext)</span> <span class="pre">-&gt;</span> <span class="pre">dict[str,</span> <span class="pre">Any]</span></code><a class="headerlink" href="#extract-context-extractioncontext-dict-str-any" title="Link to this heading">#</a></h4>
+<section id="extract-context-extractioncontext-list-dict-str-any">
+<h4><code class="docutils literal notranslate"><span class="pre">extract(context:</span> <span class="pre">ExtractionContext)</span> <span class="pre">-&gt;</span> <span class="pre">list[dict[str,</span> <span class="pre">Any]]</span></code><a class="headerlink" href="#extract-context-extractioncontext-list-dict-str-any" title="Link to this heading">#</a></h4>
 <p>Extract metadata from the file.</p>
 <p><strong>Parameters:</strong></p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">context</span></code>: Contains <code class="docutils literal notranslate"><span class="pre">file_path</span></code> (Path) and <code class="docutils literal notranslate"><span class="pre">instrument</span></code> (Instrument or None)</p></li>
 </ul>
-<p><strong>Returns:</strong> Dictionary with at minimum an <code class="docutils literal notranslate"><span class="pre">&quot;nx_meta&quot;</span></code> key containing NexusLIMS metadata</p>
-<p><strong>Required <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code> fields:</strong></p>
+<p><strong>Returns:</strong> A <strong>list</strong> of metadata dictionaries. Each dict must contain an <code class="docutils literal notranslate"><span class="pre">&quot;nx_meta&quot;</span></code> key with NexusLIMS metadata.</p>
+<p><strong>Format:</strong></p>
+<ul class="simple">
+<li><p>Single-signal files: Return <code class="docutils literal notranslate"><span class="pre">[{...}]</span></code> - a list with one element</p></li>
+<li><p>Multi-signal files: Return <code class="docutils literal notranslate"><span class="pre">[{...},</span> <span class="pre">{...}]</span></code> - a list with multiple elements</p></li>
+</ul>
+<p><strong>Required <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code> fields (in each dict):</strong></p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">&quot;DatasetType&quot;</span></code>: One of “Image”, “Spectrum”, “SpectrumImage”, “Diffraction”, “Misc”</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">&quot;Data</span> <span class="pre">Type&quot;</span></code>: Descriptive string (e.g., “STEM_Imaging”, “TEM_EDS”)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">&quot;Creation</span> <span class="pre">Time&quot;</span></code>: ISO-8601 formatted timestamp</p></li>
 </ul>
 <p><strong>Example:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">extract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ExtractionContext</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">extract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ExtractionContext</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
     <span class="n">metadata</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">:</span> <span class="p">{}}</span>
     <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;DatasetType&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Image&quot;</span>
     <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;Data Type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;SEM_Imaging&quot;</span>
     <span class="c1"># ... extraction logic</span>
-    <span class="k">return</span> <span class="n">metadata</span>
+    <span class="c1"># Always return a list</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">metadata</span><span class="p">]</span>
 </pre></div>
 </div>
 </section>
@@ -776,11 +784,16 @@
         <span class="c1"># Create test file</span>
         <span class="n">test_file</span> <span class="o">=</span> <span class="n">tmp_path</span> <span class="o">/</span> <span class="s2">&quot;test.xyz&quot;</span>
         <span class="n">test_file</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="s2">&quot;XYZ test data&quot;</span><span class="p">)</span>
-        
+
         <span class="n">extractor</span> <span class="o">=</span> <span class="n">XYZExtractor</span><span class="p">()</span>
         <span class="n">context</span> <span class="o">=</span> <span class="n">ExtractionContext</span><span class="p">(</span><span class="n">test_file</span><span class="p">,</span> <span class="n">instrument</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-        <span class="n">metadata</span> <span class="o">=</span> <span class="n">extractor</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
-        
+        <span class="n">metadata_list</span> <span class="o">=</span> <span class="n">extractor</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+
+        <span class="c1"># Extract returns a list, get the first element</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">metadata_list</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">metadata_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+        <span class="n">metadata</span> <span class="o">=</span> <span class="n">metadata_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
         <span class="c1"># Verify required fields</span>
         <span class="k">assert</span> <span class="s2">&quot;nx_meta&quot;</span> <span class="ow">in</span> <span class="n">metadata</span>
         <span class="k">assert</span> <span class="s2">&quot;DatasetType&quot;</span> <span class="ow">in</span> <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">]</span>
@@ -794,10 +807,10 @@
 <section id="error-handling">
 <h3>Error Handling<a class="headerlink" href="#error-handling" title="Link to this heading">#</a></h3>
 <p>Always handle errors gracefully:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">extract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ExtractionContext</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">extract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ExtractionContext</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract metadata with defensive error handling.&quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="c1"># Primary extraction logic</span>
+        <span class="c1"># Primary extraction logic (returns list)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_full_metadata</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
@@ -806,7 +819,7 @@
             <span class="n">e</span><span class="p">,</span>
             <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span>
         <span class="p">)</span>
-        <span class="c1"># Return basic metadata as fallback</span>
+        <span class="c1"># Return basic metadata as fallback (also as list)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_basic_metadata</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -857,13 +870,15 @@
     <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;my_format_extractor&quot;</span>
     <span class="n">priority</span> <span class="o">=</span> <span class="mi">100</span>
     <span class="n">supported_extensions</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;myformat&quot;</span><span class="p">}</span>  <span class="c1"># Declare supported extensions</span>
-    
+
     <span class="k">def</span><span class="w"> </span><span class="nf">supports</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ExtractionContext</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="n">ext</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">file_path</span><span class="o">.</span><span class="n">suffix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ext</span> <span class="o">==</span> <span class="s2">&quot;myformat&quot;</span>
-    
-    <span class="k">def</span><span class="w"> </span><span class="nf">extract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ExtractionContext</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">get_my_format_metadata</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">file_path</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">extract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ExtractionContext</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+        <span class="c1"># Legacy function returns dict, wrap in list</span>
+        <span class="n">metadata</span> <span class="o">=</span> <span class="n">get_my_format_metadata</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">file_path</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">metadata</span><span class="p">]</span>  <span class="c1"># Always return a list</span>
 </pre></div>
 </div>
 </section>
@@ -998,7 +1013,7 @@
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#methods">Methods</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#supports-context-extractioncontext-bool"><code class="docutils literal notranslate"><span class="pre">supports(context:</span> <span class="pre">ExtractionContext)</span> <span class="pre">-&gt;</span> <span class="pre">bool</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#extract-context-extractioncontext-dict-str-any"><code class="docutils literal notranslate"><span class="pre">extract(context:</span> <span class="pre">ExtractionContext)</span> <span class="pre">-&gt;</span> <span class="pre">dict[str,</span> <span class="pre">Any]</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#extract-context-extractioncontext-list-dict-str-any"><code class="docutils literal notranslate"><span class="pre">extract(context:</span> <span class="pre">ExtractionContext)</span> <span class="pre">-&gt;</span> <span class="pre">list[dict[str,</span> <span class="pre">Any]]</span></code></a></li>
 </ul>
 </li>
 </ul>

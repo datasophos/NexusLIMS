@@ -62,7 +62,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 18, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 23, 2025"/>
   </head>
   
   
@@ -679,8 +679,12 @@ software</p>
 <span class="sig-name descname"><span class="pre">add_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">generate_preview</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/schemas/activity.html#AcquisitionActivity.add_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.schemas.activity.AcquisitionActivity.add_file" title="Link to this definition">#</a></dt>
 <dd><p>Add file to AcquisitionActivity.</p>
 <p>Add a file to this activity’s file list, parse its metadata (storing
-a flattened copy of it to this activity), generate a preview
-thumbnail, get the file’s type, and a lazy HyperSpy signal.</p>
+a flattened copy of it to this activity), and generate a preview
+thumbnail.</p>
+<p>parse_metadata always returns a list of metadata dicts (one per signal).
+For files containing multiple signals (e.g., multi-signal DM3/DM4 files),
+this method adds one entry per signal to the parallel lists, repeating
+the filename for each signal but using different preview paths and metadata.</p>
 <p class="rubric" id="id5">Parameters</p>
 <p>fname : str
 The file to be added to the file list

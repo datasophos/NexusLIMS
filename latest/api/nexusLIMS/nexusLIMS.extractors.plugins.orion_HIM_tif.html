@@ -62,7 +62,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 18, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 23, 2025"/>
   </head>
   
   
@@ -511,7 +511,7 @@
 <h3>Classes<a class="headerlink" href="#classes" title="Link to this heading">#</a></h3>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table table-left">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.extractors.plugins.orion_HIM_tif.OrionFibicsTiffExtractor" title="nexusLIMS.extractors.plugins.orion_HIM_tif.OrionFibicsTiffExtractor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OrionFibicsTiffExtractor</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.extractors.plugins.orion_HIM_tif.OrionTiffExtractor" title="nexusLIMS.extractors.plugins.orion_HIM_tif.OrionTiffExtractor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OrionTiffExtractor</span></code></a></p></td>
 <td><p>Extractor for Zeiss Orion and Fibics helium ion microscope TIFF files.</p></td>
 </tr>
 </tbody>
@@ -561,8 +561,8 @@ and detector settings.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.orion_HIM_tif.OrionFibicsTiffExtractor">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.plugins.orion_HIM_tif.</span></span><span class="sig-name descname"><span class="pre">OrionFibicsTiffExtractor</span></span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/plugins/orion_HIM_tif.html#OrionFibicsTiffExtractor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.plugins.orion_HIM_tif.OrionFibicsTiffExtractor" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.orion_HIM_tif.OrionTiffExtractor">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.plugins.orion_HIM_tif.</span></span><span class="sig-name descname"><span class="pre">OrionTiffExtractor</span></span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/plugins/orion_HIM_tif.html#OrionTiffExtractor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.plugins.orion_HIM_tif.OrionTiffExtractor" title="Link to this definition">#</a></dt>
 <dd><p>Extractor for Zeiss Orion and Fibics helium ion microscope TIFF files.</p>
 <p>This extractor handles metadata extraction from .tif files saved by
 Zeiss Orion and Fibics helium ion microscopes (HIM). These files contain
@@ -572,26 +572,26 @@ embedded XML metadata in custom TIFF tags:</p>
 <li><p>Fibics: TIFF tag 51023 with <Fibics> XML</p></li>
 </ul>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.orion_HIM_tif.OrionFibicsTiffExtractor.name">
-<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#nexusLIMS.extractors.plugins.orion_HIM_tif.OrionFibicsTiffExtractor.name" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.orion_HIM_tif.OrionTiffExtractor.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#nexusLIMS.extractors.plugins.orion_HIM_tif.OrionTiffExtractor.name" title="Link to this definition">#</a></dt>
 <dd><p>‘orion_HIM_tif_extractor’</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.orion_HIM_tif.OrionFibicsTiffExtractor.priority">
-<span class="sig-name descname"><span class="pre">priority</span></span><a class="headerlink" href="#nexusLIMS.extractors.plugins.orion_HIM_tif.OrionFibicsTiffExtractor.priority" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.orion_HIM_tif.OrionTiffExtractor.priority">
+<span class="sig-name descname"><span class="pre">priority</span></span><a class="headerlink" href="#nexusLIMS.extractors.plugins.orion_HIM_tif.OrionTiffExtractor.priority" title="Link to this definition">#</a></dt>
 <dd><p>150</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.orion_HIM_tif.OrionFibicsTiffExtractor.supported_extensions">
-<span class="sig-name descname"><span class="pre">supported_extensions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.ClassVar" title="(in Python v3.11)"><span class="pre">ClassVar</span></a></em><a class="headerlink" href="#nexusLIMS.extractors.plugins.orion_HIM_tif.OrionFibicsTiffExtractor.supported_extensions" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.orion_HIM_tif.OrionTiffExtractor.supported_extensions">
+<span class="sig-name descname"><span class="pre">supported_extensions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.ClassVar" title="(in Python v3.11)"><span class="pre">ClassVar</span></a></em><a class="headerlink" href="#nexusLIMS.extractors.plugins.orion_HIM_tif.OrionTiffExtractor.supported_extensions" title="Link to this definition">#</a></dt>
 <dd><p>None</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.orion_HIM_tif.OrionFibicsTiffExtractor.supports">
-<span class="sig-name descname"><span class="pre">supports</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="nexusLIMS.extractors.base.html#nexusLIMS.extractors.base.ExtractionContext" title="nexusLIMS.extractors.base.ExtractionContext"><span class="pre">ExtractionContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/plugins/orion_HIM_tif.html#OrionFibicsTiffExtractor.supports"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.plugins.orion_HIM_tif.OrionFibicsTiffExtractor.supports" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.orion_HIM_tif.OrionTiffExtractor.supports">
+<span class="sig-name descname"><span class="pre">supports</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="nexusLIMS.extractors.base.html#nexusLIMS.extractors.base.ExtractionContext" title="nexusLIMS.extractors.base.ExtractionContext"><span class="pre">ExtractionContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/plugins/orion_HIM_tif.html#OrionTiffExtractor.supports"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.plugins.orion_HIM_tif.OrionTiffExtractor.supports" title="Link to this definition">#</a></dt>
 <dd><p>Check if this extractor supports the given file.</p>
 <p>Uses content sniffing to detect Zeiss/Fibics TIFF files by checking
 for the presence of custom TIFF tags containing XML metadata.</p>
@@ -604,15 +604,15 @@ True if file is a Zeiss Orion or Fibics TIFF file</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.orion_HIM_tif.OrionFibicsTiffExtractor.extract">
-<span class="sig-name descname"><span class="pre">extract</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="nexusLIMS.extractors.base.html#nexusLIMS.extractors.base.ExtractionContext" title="nexusLIMS.extractors.base.ExtractionContext"><span class="pre">ExtractionContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/plugins/orion_HIM_tif.html#OrionFibicsTiffExtractor.extract"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.plugins.orion_HIM_tif.OrionFibicsTiffExtractor.extract" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.orion_HIM_tif.OrionTiffExtractor.extract">
+<span class="sig-name descname"><span class="pre">extract</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="nexusLIMS.extractors.base.html#nexusLIMS.extractors.base.ExtractionContext" title="nexusLIMS.extractors.base.ExtractionContext"><span class="pre">ExtractionContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#list" title="(in Python v3.11)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/plugins/orion_HIM_tif.html#OrionTiffExtractor.extract"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.plugins.orion_HIM_tif.OrionTiffExtractor.extract" title="Link to this definition">#</a></dt>
 <dd><p>Extract metadata from a Zeiss Orion or Fibics TIFF file.</p>
 <p class="rubric" id="id1">Parameters</p>
 <p>context
 The extraction context containing file information</p>
 <p class="rubric" id="id2">Returns</p>
-<p>dict
-Metadata dictionary with ‘nx_meta’ key containing NexusLIMS metadata</p>
+<p>list[dict]
+List containing a single metadata dict with ‘nx_meta’ key</p>
 </dd></dl>
 
 </dd></dl>
@@ -674,12 +674,12 @@ Metadata dictionary with ‘nx_meta’ key containing NexusLIMS metadata</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#api">API</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.orion_HIM_tif.ZEISS_TIFF_TAG"><code class="docutils literal notranslate"><span class="pre">ZEISS_TIFF_TAG</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.orion_HIM_tif.FIBICS_TIFF_TAG"><code class="docutils literal notranslate"><span class="pre">FIBICS_TIFF_TAG</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.orion_HIM_tif.OrionFibicsTiffExtractor"><code class="docutils literal notranslate"><span class="pre">OrionFibicsTiffExtractor</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.orion_HIM_tif.OrionFibicsTiffExtractor.name"><code class="docutils literal notranslate"><span class="pre">OrionFibicsTiffExtractor.name</span></code></a></li>
-<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.orion_HIM_tif.OrionFibicsTiffExtractor.priority"><code class="docutils literal notranslate"><span class="pre">OrionFibicsTiffExtractor.priority</span></code></a></li>
-<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.orion_HIM_tif.OrionFibicsTiffExtractor.supported_extensions"><code class="docutils literal notranslate"><span class="pre">OrionFibicsTiffExtractor.supported_extensions</span></code></a></li>
-<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.orion_HIM_tif.OrionFibicsTiffExtractor.supports"><code class="docutils literal notranslate"><span class="pre">OrionFibicsTiffExtractor.supports()</span></code></a></li>
-<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.orion_HIM_tif.OrionFibicsTiffExtractor.extract"><code class="docutils literal notranslate"><span class="pre">OrionFibicsTiffExtractor.extract()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.orion_HIM_tif.OrionTiffExtractor"><code class="docutils literal notranslate"><span class="pre">OrionTiffExtractor</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.orion_HIM_tif.OrionTiffExtractor.name"><code class="docutils literal notranslate"><span class="pre">OrionTiffExtractor.name</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.orion_HIM_tif.OrionTiffExtractor.priority"><code class="docutils literal notranslate"><span class="pre">OrionTiffExtractor.priority</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.orion_HIM_tif.OrionTiffExtractor.supported_extensions"><code class="docutils literal notranslate"><span class="pre">OrionTiffExtractor.supported_extensions</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.orion_HIM_tif.OrionTiffExtractor.supports"><code class="docutils literal notranslate"><span class="pre">OrionTiffExtractor.supports()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.orion_HIM_tif.OrionTiffExtractor.extract"><code class="docutils literal notranslate"><span class="pre">OrionTiffExtractor.extract()</span></code></a></li>
 </ul>
 </li>
 </ul>

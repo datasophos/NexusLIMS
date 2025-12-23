@@ -424,7 +424,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 18, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 23, 2025"/>
   </head>
   
   
@@ -1707,6 +1707,15 @@ window.addEventListener("load", load);
 
             <span class="c1"># Load the signal</span>
             <span class="n">s</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">file_path</span><span class="p">),</span> <span class="n">lazy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="c1"># Handle multi-signal files</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">signal_index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="c1"># Use specified signal index</span>
+                    <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="n">context</span><span class="o">.</span><span class="n">signal_index</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># Legacy: use first signal only</span>
+                    <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
             <span class="c1"># Generate the thumbnail using the local function</span>
             <span class="n">sig_to_thumbnail</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">output_path</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">92</span><span class="p">)</span>

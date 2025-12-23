@@ -134,7 +134,7 @@
 
 ````
 
-````{py:method} extract(context: nexusLIMS.extractors.base.ExtractionContext) -> dict[str, typing.Any]
+````{py:method} extract(context: nexusLIMS.extractors.base.ExtractionContext) -> list[dict[str, typing.Any]]
 :canonical: nexusLIMS.extractors.plugins.fei_emi.SerEmiExtractor.extract
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.SerEmiExtractor.extract

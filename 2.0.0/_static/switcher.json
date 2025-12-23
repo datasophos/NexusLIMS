@@ -16,11 +16,6 @@
     "url": "https://datasophos.github.io/NexusLIMS/2.0.0/"
   },
   {
-    "name": "PR #21",
-    "version": "pr-21",
-    "url": "https://datasophos.github.io/NexusLIMS/pr-21/"
-  },
-  {
     "name": "Upstream NIST docs",
     "version": "upstream",
     "url": "https://pages.nist.gov/NexusLIMS/"

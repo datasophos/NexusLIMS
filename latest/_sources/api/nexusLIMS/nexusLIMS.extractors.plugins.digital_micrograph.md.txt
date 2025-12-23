@@ -126,7 +126,7 @@
 
 ````
 
-````{py:method} extract(context: nexusLIMS.extractors.base.ExtractionContext) -> dict[str, typing.Any]
+````{py:method} extract(context: nexusLIMS.extractors.base.ExtractionContext) -> dict[str, typing.Any] | list[dict[str, typing.Any]]
 :canonical: nexusLIMS.extractors.plugins.digital_micrograph.DM3Extractor.extract
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph.DM3Extractor.extract

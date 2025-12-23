@@ -102,14 +102,14 @@ nexusLIMS.extractors.base
 
 ````
 
-````{py:function} parse_metadata(fname: pathlib.Path, *, write_output: bool = True, generate_preview: bool = True, overwrite: bool = True) -> typing.Tuple[typing.Dict[str, typing.Any] | None, pathlib.Path | None]
+````{py:function} parse_metadata(fname: pathlib.Path, *, write_output: bool = True, generate_preview: bool = True, overwrite: bool = True) -> typing.Tuple[typing.Dict[str, typing.Any] | None, pathlib.Path | list[pathlib.Path] | None]
 :canonical: nexusLIMS.extractors.parse_metadata
 
 ```{autodoc2-docstring} nexusLIMS.extractors.parse_metadata
 ```
 ````
 
-````{py:function} create_preview(fname: pathlib.Path, *, overwrite: bool) -> pathlib.Path | None
+````{py:function} create_preview(fname: pathlib.Path, *, overwrite: bool, signal_index: int | None = None) -> pathlib.Path | None
 :canonical: nexusLIMS.extractors.create_preview
 
 ```{autodoc2-docstring} nexusLIMS.extractors.create_preview

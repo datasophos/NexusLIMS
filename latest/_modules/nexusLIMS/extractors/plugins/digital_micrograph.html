@@ -424,7 +424,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 18, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 23, 2025"/>
   </head>
   
   
@@ -906,7 +906,9 @@ window.addEventListener("load", load);
 
 <div class="viewcode-block" id="DM3Extractor.extract">
 <a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.digital_micrograph.html#nexusLIMS.extractors.plugins.digital_micrograph.DM3Extractor.extract">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">extract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ExtractionContext</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">extract</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ExtractionContext</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Extract metadata from a DM3/DM4 file.</span>
 
@@ -917,16 +919,19 @@ window.addEventListener("load", load);
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        dict</span>
-<span class="sd">            Metadata dictionary with &#39;nx_meta&#39; key containing NexusLIMS metadata.</span>
-<span class="sd">            If the file cannot be opened, returns basic metadata with a warning.</span>
+<span class="sd">        list[dict] or dict</span>
+<span class="sd">            For DM3/DM4 files: Always returns a list of metadata dicts.</span>
+<span class="sd">            Each dict contains &#39;nx_meta&#39; with NexusLIMS-specific metadata.</span>
+<span class="sd">            Single-signal files return a 1-element list for consistency.</span>
+<span class="sd">            If the file cannot be opened, returns basic metadata as a single dict</span>
+<span class="sd">            (following the standard extractor contract for error cases).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Extracting metadata from DM3/DM4 file: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">context</span><span class="o">.</span><span class="n">file_path</span><span class="p">)</span>
         <span class="c1"># get_dm3_metadata() handles profile application internally</span>
-        <span class="n">metadata</span> <span class="o">=</span> <span class="n">get_dm3_metadata</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">file_path</span><span class="p">,</span> <span class="n">context</span><span class="o">.</span><span class="n">instrument</span><span class="p">)</span>
+        <span class="n">metadata_list</span> <span class="o">=</span> <span class="n">get_dm3_metadata</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">file_path</span><span class="p">,</span> <span class="n">context</span><span class="o">.</span><span class="n">instrument</span><span class="p">)</span>
 
         <span class="c1"># If extraction failed, return minimal metadata with a warning</span>
-        <span class="k">if</span> <span class="n">metadata</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">metadata_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
                 <span class="s2">&quot;Failed to extract DM3/DM4 metadata from </span><span class="si">%s</span><span class="s2">, &quot;</span>
                 <span class="s2">&quot;falling back to basic metadata&quot;</span><span class="p">,</span>
@@ -934,14 +939,18 @@ window.addEventListener("load", load);
             <span class="p">)</span>
             <span class="c1"># Use basic metadata extractor as fallback</span>
             <span class="n">basic_extractor</span> <span class="o">=</span> <span class="n">BasicFileInfoExtractor</span><span class="p">()</span>
-            <span class="n">metadata</span> <span class="o">=</span> <span class="n">basic_extractor</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+            <span class="n">metadata_list</span> <span class="o">=</span> <span class="n">basic_extractor</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
             <span class="c1"># Add a warning to indicate extraction failed</span>
+            <span class="n">metadata</span> <span class="o">=</span> <span class="n">metadata_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;warnings&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;warnings&quot;</span><span class="p">,</span> <span class="p">[])</span>
             <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;warnings&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                 <span class="p">[</span><span class="s2">&quot;DM3/DM4 file could not be read by HyperSpy&quot;</span><span class="p">]</span>
             <span class="p">)</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">metadata</span><span class="p">]</span>
 
-        <span class="k">return</span> <span class="n">metadata</span></div>
+        <span class="c1"># Always return a list of metadata dicts</span>
+        <span class="c1"># Single-signal files return a 1-element list for consistent interface</span>
+        <span class="k">return</span> <span class="n">metadata_list</span></div>
 </div>
 
 
@@ -966,8 +975,9 @@ window.addEventListener("load", load);
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    metadata : dict or None</span>
-<span class="sd">        The extracted metadata of interest. If None, the file could not be opened</span>
+<span class="sd">    metadata : list[dict] or None</span>
+<span class="sd">        List of extracted metadata dicts, one per signal. If None, the file could</span>
+<span class="sd">        not be opened.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># We do lazy loading so we don&#39;t actually read the data from the disk to</span>
     <span class="c1"># save time and memory.</span>
@@ -1098,8 +1108,8 @@ window.addEventListener("load", load);
         <span class="c1"># sort the nx_meta dictionary (recursively) for nicer display</span>
         <span class="n">m_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sort_dict</span><span class="p">(</span><span class="n">m_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">])</span>
 
-    <span class="c1"># return the first dictionary, which should contain the most information:</span>
-    <span class="k">return</span> <span class="n">remove_dict_nones</span><span class="p">(</span><span class="n">m_list</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></div>
+    <span class="c1"># return all signals as a list of dictionaries:</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">remove_dict_nones</span><span class="p">(</span><span class="n">m</span><span class="p">)</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">m_list</span><span class="p">]</span></div>
 
 
 
@@ -1202,7 +1212,7 @@ window.addEventListener("load", load);
         <span class="n">mdict</span><span class="p">,</span>
         <span class="p">[</span><span class="s2">&quot;ImageList&quot;</span><span class="p">,</span> <span class="s2">&quot;TagGroup0&quot;</span><span class="p">,</span> <span class="s2">&quot;ImageTags&quot;</span><span class="p">,</span> <span class="s2">&quot;plane info&quot;</span><span class="p">],</span>
     <span class="p">)</span>
-    <span class="k">if</span> <span class="n">stack_val</span> <span class="o">!=</span> <span class="s2">&quot;not found&quot;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">stack_val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># we&#39;re in a stack</span>
         <span class="n">pre_path</span> <span class="o">=</span> <span class="p">[</span>
             <span class="s2">&quot;ImageList&quot;</span><span class="p">,</span>
@@ -1221,7 +1231,7 @@ window.addEventListener("load", load);
 
 <div class="viewcode-block" id="parse_dm3_microscope_info">
 <a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.digital_micrograph.html#nexusLIMS.extractors.plugins.digital_micrograph.parse_dm3_microscope_info">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">parse_dm3_microscope_info</span><span class="p">(</span><span class="n">mdict</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_dm3_microscope_info</span><span class="p">(</span><span class="n">mdict</span><span class="p">):</span>  <span class="c1"># noqa: PLR0912</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parse the &quot;microscope info&quot; metadata.</span>
 
@@ -1262,6 +1272,9 @@ window.addEventListener("load", load);
         <span class="s2">&quot;Name&quot;</span><span class="p">,</span>
         <span class="s2">&quot;Field of View (</span><span class="se">\u00b5</span><span class="s2">m)&quot;</span><span class="p">,</span>
         <span class="s2">&quot;Facility&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Condenser Aperture&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Objective Aperture&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Selected Area Aperture&quot;</span><span class="p">,</span>
         <span class="p">[</span><span class="s2">&quot;Stage Position&quot;</span><span class="p">,</span> <span class="s2">&quot;Stage Alpha&quot;</span><span class="p">],</span>
         <span class="p">[</span><span class="s2">&quot;Stage Position&quot;</span><span class="p">,</span> <span class="s2">&quot;Stage Beta&quot;</span><span class="p">],</span>
         <span class="p">[</span><span class="s2">&quot;Stage Position&quot;</span><span class="p">,</span> <span class="s2">&quot;Stage X&quot;</span><span class="p">],</span>
@@ -1274,11 +1287,7 @@ window.addEventListener("load", load);
         <span class="n">val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="n">base</span> <span class="o">+</span> <span class="n">meta_key</span><span class="p">)</span>
         <span class="c1"># only add the value to this list if we found it, and it&#39;s not one of</span>
         <span class="c1"># the &quot;facility-wide&quot; set values that do not have any meaning:</span>
-        <span class="k">if</span> <span class="p">(</span>
-            <span class="n">val</span> <span class="o">!=</span> <span class="s2">&quot;not found&quot;</span>
-            <span class="ow">and</span> <span class="n">val</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;DO NOT EDIT&quot;</span><span class="p">,</span> <span class="s2">&quot;DO NOT ENTER&quot;</span><span class="p">]</span>
-            <span class="ow">and</span> <span class="n">val</span> <span class="o">!=</span> <span class="p">[]</span>
-        <span class="p">):</span>
+        <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">val</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;DO NOT EDIT&quot;</span><span class="p">,</span> <span class="s2">&quot;DO NOT ENTER&quot;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">val</span> <span class="o">!=</span> <span class="p">[]:</span>
             <span class="c1"># change output of &quot;Stage Position&quot; to unicode characters</span>
             <span class="k">if</span> <span class="s2">&quot;Stage Position&quot;</span> <span class="ow">in</span> <span class="n">meta_key</span><span class="p">:</span>
                 <span class="n">meta_key</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
@@ -1298,11 +1307,7 @@ window.addEventListener("load", load);
         <span class="n">val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="n">base</span> <span class="o">+</span> <span class="n">meta_key</span><span class="p">)</span>
         <span class="c1"># only add the value to this list if we found it, and it&#39;s not</span>
         <span class="c1"># one of the &quot;facility-wide&quot; set values that do not have any meaning:</span>
-        <span class="k">if</span> <span class="p">(</span>
-            <span class="n">val</span> <span class="o">!=</span> <span class="s2">&quot;not found&quot;</span>
-            <span class="ow">and</span> <span class="n">val</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;DO NOT EDIT&quot;</span><span class="p">,</span> <span class="s2">&quot;DO NOT ENTER&quot;</span><span class="p">]</span>
-            <span class="ow">and</span> <span class="n">val</span> <span class="o">!=</span> <span class="p">[]</span>
-        <span class="p">):</span>
+        <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">val</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;DO NOT EDIT&quot;</span><span class="p">,</span> <span class="s2">&quot;DO NOT ENTER&quot;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">val</span> <span class="o">!=</span> <span class="p">[]:</span>
             <span class="n">set_nested_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">meta_key</span><span class="p">],</span> <span class="n">val</span><span class="p">)</span>
 
     <span class="c1"># General &quot;Meta Data&quot; .dm3 tags</span>
@@ -1319,11 +1324,7 @@ window.addEventListener("load", load);
         <span class="n">val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="n">base</span> <span class="o">+</span> <span class="n">meta_key</span><span class="p">)</span>
         <span class="c1"># only add the value to this list if we found it, and it&#39;s not</span>
         <span class="c1"># one of the &quot;facility-wide&quot; set values that do not have any meaning:</span>
-        <span class="k">if</span> <span class="p">(</span>
-            <span class="n">val</span> <span class="o">!=</span> <span class="s2">&quot;not found&quot;</span>
-            <span class="ow">and</span> <span class="n">val</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;DO NOT EDIT&quot;</span><span class="p">,</span> <span class="s2">&quot;DO NOT ENTER&quot;</span><span class="p">]</span>
-            <span class="ow">and</span> <span class="n">val</span> <span class="o">!=</span> <span class="p">[]</span>
-        <span class="p">):</span>
+        <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">val</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;DO NOT EDIT&quot;</span><span class="p">,</span> <span class="s2">&quot;DO NOT ENTER&quot;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">val</span> <span class="o">!=</span> <span class="p">[]:</span>
             <span class="k">if</span> <span class="s2">&quot;Label&quot;</span> <span class="ow">in</span> <span class="n">meta_key</span><span class="p">:</span>
                 <span class="n">set_nested_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="s2">&quot;Analytic Label&quot;</span><span class="p">],</span> <span class="n">val</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
@@ -1347,6 +1348,20 @@ window.addEventListener("load", load);
 
     <span class="c1"># image processing:</span>
     <span class="n">_set_image_processing</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="n">pre_path</span><span class="p">)</span>
+
+    <span class="c1"># Signal Name (from DataBar):</span>
+    <span class="n">signal_name</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="o">*</span><span class="n">pre_path</span><span class="p">,</span> <span class="s2">&quot;DataBar&quot;</span><span class="p">,</span> <span class="s2">&quot;Signal Name&quot;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">signal_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">set_nested_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="s2">&quot;Signal Name&quot;</span><span class="p">],</span> <span class="n">signal_name</span><span class="p">)</span>
+
+    <span class="c1"># DigiScan Sample Time (dwell time per pixel in microseconds):</span>
+    <span class="n">sample_time</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="o">*</span><span class="n">pre_path</span><span class="p">,</span> <span class="s2">&quot;DigiScan&quot;</span><span class="p">,</span> <span class="s2">&quot;Sample Time&quot;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">sample_time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">set_nested_dict_value</span><span class="p">(</span>
+            <span class="n">mdict</span><span class="p">,</span>
+            <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="s2">&quot;Sample Time (</span><span class="se">\u00b5</span><span class="s2">s)&quot;</span><span class="p">],</span>
+            <span class="n">sample_time</span><span class="p">,</span>
+        <span class="p">)</span>
 
     <span class="k">if</span> <span class="p">(</span>
         <span class="s2">&quot;Illumination Mode&quot;</span> <span class="ow">in</span> <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">]</span>
@@ -1487,7 +1502,7 @@ window.addEventListener("load", load);
     <span class="c1"># If so, then some relevant EDS values are located there, rather</span>
     <span class="c1"># than in the root-level EDS tag (all the EDS.Acquisition tags from</span>
     <span class="c1"># above)</span>
-    <span class="k">if</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="o">*</span><span class="n">pre_path</span><span class="p">,</span> <span class="s2">&quot;SI&quot;</span><span class="p">])</span> <span class="o">!=</span> <span class="s2">&quot;not found&quot;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="o">*</span><span class="n">pre_path</span><span class="p">,</span> <span class="s2">&quot;SI&quot;</span><span class="p">])</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">meta_key</span> <span class="ow">in</span> <span class="p">[</span>
             <span class="p">[</span><span class="s2">&quot;Acquisition&quot;</span><span class="p">,</span> <span class="s2">&quot;Continuous Mode&quot;</span><span class="p">],</span>
             <span class="p">[</span><span class="s2">&quot;Acquisition&quot;</span><span class="p">,</span> <span class="s2">&quot;Count Rate Unit&quot;</span><span class="p">],</span>
@@ -1535,7 +1550,7 @@ window.addEventListener("load", load);
         <span class="p">[</span><span class="s2">&quot;Live time&quot;</span><span class="p">],</span>
         <span class="p">[</span><span class="s2">&quot;Real time&quot;</span><span class="p">],</span>
     <span class="p">]:</span>
-        <span class="k">if</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="n">base</span> <span class="o">+</span> <span class="n">meta_key</span><span class="p">)</span> <span class="o">!=</span> <span class="s2">&quot;not found&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="n">base</span> <span class="o">+</span> <span class="n">meta_key</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;warnings&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                 <span class="p">[</span><span class="s2">&quot;EDS&quot;</span><span class="p">,</span> <span class="n">meta_key</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">meta_key</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">meta_key</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
             <span class="p">)</span>
@@ -1600,7 +1615,7 @@ window.addEventListener("load", load);
         <span class="n">val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="n">base</span> <span class="o">+</span> <span class="n">m_in</span><span class="p">)</span>
         <span class="c1"># only add the value to this list if we found it, and it&#39;s not</span>
         <span class="c1"># one of the &quot;facility-wide&quot; set values that do not have any meaning:</span>
-        <span class="k">if</span> <span class="n">val</span> <span class="o">!=</span> <span class="s2">&quot;not found&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># add last value of each parameter to the &quot;EDS&quot; sub-tree of nx_meta</span>
             <span class="n">set_nested_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="s2">&quot;Spectrum Imaging&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">m_out</span><span class="p">],</span> <span class="n">val</span><span class="p">)</span>
 
@@ -1613,7 +1628,7 @@ window.addEventListener("load", load);
         <span class="n">mdict</span><span class="p">,</span>
         <span class="p">[</span><span class="o">*</span><span class="n">base</span><span class="p">,</span> <span class="s2">&quot;Acquisition&quot;</span><span class="p">,</span> <span class="s2">&quot;Artefact Correction&quot;</span><span class="p">,</span> <span class="s2">&quot;Spatial Drift&quot;</span><span class="p">,</span> <span class="s2">&quot;Units&quot;</span><span class="p">],</span>
     <span class="p">)</span>
-    <span class="k">if</span> <span class="n">drift_per_val</span> <span class="o">!=</span> <span class="s2">&quot;not found&quot;</span> <span class="ow">and</span> <span class="n">drift_unit_val</span> <span class="o">!=</span> <span class="s2">&quot;not found&quot;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">drift_per_val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">drift_unit_val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">val_to_set</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Spatial drift correction every </span><span class="si">{</span><span class="n">drift_per_val</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">drift_unit_val</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="c1"># make sure statement looks gramatically correct</span>
         <span class="k">if</span> <span class="n">drift_per_val</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -1631,7 +1646,7 @@ window.addEventListener("load", load);
 
     <span class="n">start_val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="o">*</span><span class="n">base</span><span class="p">,</span> <span class="s2">&quot;Acquisition&quot;</span><span class="p">,</span> <span class="s2">&quot;Start time&quot;</span><span class="p">])</span>
     <span class="n">end_val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="o">*</span><span class="n">base</span><span class="p">,</span> <span class="s2">&quot;Acquisition&quot;</span><span class="p">,</span> <span class="s2">&quot;End time&quot;</span><span class="p">])</span>
-    <span class="k">if</span> <span class="n">start_val</span> <span class="o">!=</span> <span class="s2">&quot;not found&quot;</span> <span class="ow">and</span> <span class="n">end_val</span> <span class="o">!=</span> <span class="s2">&quot;not found&quot;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">start_val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">end_val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">start_dt</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">start_val</span><span class="p">,</span> <span class="s2">&quot;%I:%M:%S %p&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">UTC</span><span class="p">)</span>
         <span class="n">end_dt</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">end_val</span><span class="p">,</span> <span class="s2">&quot;%I:%M:%S %p&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">UTC</span><span class="p">)</span>
         <span class="n">duration</span> <span class="o">=</span> <span class="p">(</span><span class="n">end_dt</span> <span class="o">-</span> <span class="n">start_dt</span><span class="p">)</span><span class="o">.</span><span class="n">seconds</span>  <span class="c1"># Calculate acquisition duration</span>

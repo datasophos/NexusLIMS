@@ -15,8 +15,8 @@
 :class: autosummary longtable
 :align: left
 
-* - {py:obj}`OrionFibicsTiffExtractor <nexusLIMS.extractors.plugins.orion_HIM_tif.OrionFibicsTiffExtractor>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.orion_HIM_tif.OrionFibicsTiffExtractor
+* - {py:obj}`OrionTiffExtractor <nexusLIMS.extractors.plugins.orion_HIM_tif.OrionTiffExtractor>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.orion_HIM_tif.OrionTiffExtractor
     :summary:
     ```
 ````
@@ -59,55 +59,55 @@
 
 ````
 
-`````{py:class} OrionFibicsTiffExtractor
-:canonical: nexusLIMS.extractors.plugins.orion_HIM_tif.OrionFibicsTiffExtractor
+`````{py:class} OrionTiffExtractor
+:canonical: nexusLIMS.extractors.plugins.orion_HIM_tif.OrionTiffExtractor
 
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.orion_HIM_tif.OrionFibicsTiffExtractor
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.orion_HIM_tif.OrionTiffExtractor
 ```
 
 ````{py:attribute} name
-:canonical: nexusLIMS.extractors.plugins.orion_HIM_tif.OrionFibicsTiffExtractor.name
+:canonical: nexusLIMS.extractors.plugins.orion_HIM_tif.OrionTiffExtractor.name
 :value: >
    'orion_HIM_tif_extractor'
 
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.orion_HIM_tif.OrionFibicsTiffExtractor.name
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.orion_HIM_tif.OrionTiffExtractor.name
 ```
 
 ````
 
 ````{py:attribute} priority
-:canonical: nexusLIMS.extractors.plugins.orion_HIM_tif.OrionFibicsTiffExtractor.priority
+:canonical: nexusLIMS.extractors.plugins.orion_HIM_tif.OrionTiffExtractor.priority
 :value: >
    150
 
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.orion_HIM_tif.OrionFibicsTiffExtractor.priority
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.orion_HIM_tif.OrionTiffExtractor.priority
 ```
 
 ````
 
 ````{py:attribute} supported_extensions
-:canonical: nexusLIMS.extractors.plugins.orion_HIM_tif.OrionFibicsTiffExtractor.supported_extensions
+:canonical: nexusLIMS.extractors.plugins.orion_HIM_tif.OrionTiffExtractor.supported_extensions
 :type: typing.ClassVar
 :value: >
    None
 
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.orion_HIM_tif.OrionFibicsTiffExtractor.supported_extensions
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.orion_HIM_tif.OrionTiffExtractor.supported_extensions
 ```
 
 ````
 
 ````{py:method} supports(context: nexusLIMS.extractors.base.ExtractionContext) -> bool
-:canonical: nexusLIMS.extractors.plugins.orion_HIM_tif.OrionFibicsTiffExtractor.supports
+:canonical: nexusLIMS.extractors.plugins.orion_HIM_tif.OrionTiffExtractor.supports
 
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.orion_HIM_tif.OrionFibicsTiffExtractor.supports
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.orion_HIM_tif.OrionTiffExtractor.supports
 ```
 
 ````
 
-````{py:method} extract(context: nexusLIMS.extractors.base.ExtractionContext) -> dict[str, typing.Any]
-:canonical: nexusLIMS.extractors.plugins.orion_HIM_tif.OrionFibicsTiffExtractor.extract
+````{py:method} extract(context: nexusLIMS.extractors.base.ExtractionContext) -> list[dict[str, typing.Any]]
+:canonical: nexusLIMS.extractors.plugins.orion_HIM_tif.OrionTiffExtractor.extract
 
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.orion_HIM_tif.OrionFibicsTiffExtractor.extract
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.orion_HIM_tif.OrionTiffExtractor.extract
 ```
 
 ````

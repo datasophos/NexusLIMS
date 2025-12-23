@@ -236,7 +236,7 @@ is copied from the original NIST [NexusLIMS project](https://github.com/usnistgo
   database, which is more efficient and greatly speeds up the harvesting process.
 - The record builder will now retry for a configurable number of days if it does not find
   any files for a session (useful for machines that have a delay in data syncing to
-  centralized file storage). Configured via the `NEXUSLIMS_FILE_DELAY_DAYS` environment
+  centralized file storage). Configured via the `NX_FILE_DELAY_DAYS` environment
   variable.
 - Made datetime formats for NEMO API harvester configurable (both sending and receiving)
   so that it can work regardless of configuration on the NEMO server.

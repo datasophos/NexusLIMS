@@ -424,7 +424,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 18, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 23, 2025"/>
   </head>
   
   
@@ -832,7 +832,7 @@ window.addEventListener("load", load);
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Protocol</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">NamedTuple</span><span class="p">,</span> <span class="n">Protocol</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
@@ -844,8 +844,65 @@ window.addEventListener("load", load);
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s2">&quot;BaseExtractor&quot;</span><span class="p">,</span>
     <span class="s2">&quot;ExtractionContext&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;FieldDefinition&quot;</span><span class="p">,</span>
     <span class="s2">&quot;PreviewGenerator&quot;</span><span class="p">,</span>
 <span class="p">]</span>
+
+
+<div class="viewcode-block" id="FieldDefinition">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643.FieldDefinition">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">FieldDefinition</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Configuration for extracting a single metadata field.</span>
+
+<span class="sd">    This NamedTuple provides a declarative way to define how metadata fields</span>
+<span class="sd">    should be extracted from instrument data files. It&#39;s used by TIFF-based</span>
+<span class="sd">    extractors (Quanta, Tescan, Orion HIM) to reduce code duplication.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    section : str</span>
+<span class="sd">        Section name in metadata dict (e.g., &quot;Beam&quot;, &quot;User&quot;, &quot;System&quot;).</span>
+<span class="sd">        For nested dicts, this is the top-level key.</span>
+<span class="sd">    source_key : str</span>
+<span class="sd">        Key within the section to extract the value from.</span>
+<span class="sd">    output_key : str | list[str]</span>
+<span class="sd">        Output key in nx_meta. Can be a string for flat keys or a list</span>
+<span class="sd">        for nested paths (e.g., [&quot;Stage Position&quot;, &quot;X&quot;]).</span>
+<span class="sd">    factor : float</span>
+<span class="sd">        Unit conversion factor. The extracted value is multiplied by this.</span>
+<span class="sd">        Use 1.0 for no conversion. For SI unit conversions, use powers of 10</span>
+<span class="sd">        (e.g., 1e6 to convert meters to micrometers).</span>
+<span class="sd">    is_string : bool</span>
+<span class="sd">        If True, keep value as string. If False, attempt numeric conversion</span>
+<span class="sd">        with Decimal for precision.</span>
+<span class="sd">    suppress_zero : bool, default=False</span>
+<span class="sd">        If True, skip field if the numeric value equals zero.</span>
+<span class="sd">        Only applies when is_string=False.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; # Simple numeric field with unit conversion (m → μm)</span>
+<span class="sd">    &gt;&gt;&gt; FieldDefinition(&quot;Beam&quot;, &quot;HFW&quot;, &quot;Horizontal Field Width (μm)&quot;, 1e6, False)</span>
+
+<span class="sd">    &gt;&gt;&gt; # String field (no conversion)</span>
+<span class="sd">    &gt;&gt;&gt; FieldDefinition(&quot;System&quot;, &quot;Chamber&quot;, &quot;Chamber ID&quot;, 1.0, True)</span>
+
+<span class="sd">    &gt;&gt;&gt; # Nested output path</span>
+<span class="sd">    &gt;&gt;&gt; FieldDefinition(&quot;Beam&quot;, &quot;StageX&quot;, [&quot;Stage Position&quot;, &quot;X&quot;], 1.0, False)</span>
+
+<span class="sd">    &gt;&gt;&gt; # Suppress zero values</span>
+<span class="sd">    &gt;&gt;&gt; FieldDefinition(&quot;Beam&quot;, &quot;BeamShiftX&quot;, &quot;Beam Shift X&quot;,</span>
+<span class="sd">    &gt;&gt;&gt;                 1.0, False, suppress_zero=True)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">section</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">source_key</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">output_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">factor</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">is_string</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="n">suppress_zero</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></div>
+
 
 
 <div class="viewcode-block" id="ExtractionContext">
@@ -866,6 +923,9 @@ window.addEventListener("load", load);
 <span class="sd">    instrument</span>
 <span class="sd">        The instrument that created this file, if known. Can be None for</span>
 <span class="sd">        files that cannot be associated with a specific instrument.</span>
+<span class="sd">    signal_index</span>
+<span class="sd">        For files with multiple signals, the index of the signal to process.</span>
+<span class="sd">        If None, processes all signals or defaults to the first signal.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -877,7 +937,8 @@ window.addEventListener("load", load);
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">file_path</span><span class="p">:</span> <span class="n">Path</span>
-    <span class="n">instrument</span><span class="p">:</span> <span class="n">Instrument</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></div>
+    <span class="n">instrument</span><span class="p">:</span> <span class="n">Instrument</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">signal_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></div>
 
 
 
@@ -893,7 +954,7 @@ window.addEventListener("load", load);
 
 <span class="sd">    All extractors MUST implement defensive error handling:</span>
 <span class="sd">    - Never raise exceptions from extract() - catch all and return minimal metadata</span>
-<span class="sd">    - Always return a dict with an &#39;nx_meta&#39; key</span>
+<span class="sd">    - Always return a list of metadata dicts (one per signal)</span>
 <span class="sd">    - Log errors for debugging but don&#39;t propagate them</span>
 
 <span class="sd">    Attributes</span>
@@ -934,9 +995,9 @@ window.addEventListener("load", load);
 <span class="sd">    ...         ext = context.file_path.suffix.lower().lstrip(&#39;.&#39;)</span>
 <span class="sd">    ...         return ext in (&#39;dm3&#39;, &#39;dm4&#39;)</span>
 <span class="sd">    ...</span>
-<span class="sd">    ...     def extract(self, context: ExtractionContext) -&gt; dict[str, Any]:</span>
+<span class="sd">    ...     def extract(self, context: ExtractionContext) -&gt; list[dict[str, Any]]:</span>
 <span class="sd">    ...         # Extraction logic here</span>
-<span class="sd">    ...         return {&quot;nx_meta&quot;: {...}}</span>
+<span class="sd">    ...         return [{&quot;nx_meta&quot;: {...}}]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
@@ -1002,14 +1063,19 @@ window.addEventListener("load", load);
 
 <span class="sd">        CRITICAL: This method MUST follow defensive design principles:</span>
 <span class="sd">        - Never raise exceptions - catch all errors and return minimal metadata</span>
-<span class="sd">        - Always return a dict with an &#39;nx_meta&#39; key</span>
+<span class="sd">        - Always return a list of metadata dicts where each contains an &#39;nx_meta&#39; key</span>
 <span class="sd">        - Log errors for debugging but continue gracefully</span>
 
-<span class="sd">        The returned dictionary should contain:</span>
-<span class="sd">        - &#39;nx_meta&#39;: NexusLIMS-specific metadata (required)</span>
-<span class="sd">        - Other keys: Raw metadata as extracted from the file (optional)</span>
+<span class="sd">        Return Format:</span>
+<span class="sd">        All extractors return a list of metadata dicts. Each dict contains:</span>
+<span class="sd">        - &#39;nx_meta&#39;: Required - NexusLIMS-specific metadata (dict)</span>
+<span class="sd">        - Other keys: Optional - Raw metadata extracted from the file</span>
 
-<span class="sd">        The &#39;nx_meta&#39; sub-dictionary should contain:</span>
+<span class="sd">        Single-signal files return a list with one element. Multi-signal files return</span>
+<span class="sd">        a list with one element per signal. This consistent list-based approach allows</span>
+<span class="sd">        the Activity layer to expand multi-signal files into multiple datasets.</span>
+
+<span class="sd">        Each &#39;nx_meta&#39; dict should contain:</span>
 <span class="sd">        - &#39;Creation Time&#39;: ISO format datetime string</span>
 <span class="sd">        - &#39;Data Type&#39;: Human-readable data type (e.g., &quot;STEM_Imaging&quot;)</span>
 <span class="sd">        - &#39;DatasetType&#39;: Dataset type per schema (e.g., &quot;Image&quot;, &quot;Spectrum&quot;)</span>
@@ -1021,35 +1087,54 @@ window.addEventListener("load", load);
 <span class="sd">        ----------</span>
 <span class="sd">        context</span>
 <span class="sd">            Context containing file path, instrument info, etc.</span>
+<span class="sd">            For multi-signal files, signal_index indicates which signal to process.</span>
+<span class="sd">            If None, extractors may return all signals or the first signal.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        dict</span>
-<span class="sd">            Metadata dictionary with mandatory &#39;nx_meta&#39; key</span>
+<span class="sd">        list[dict]</span>
+<span class="sd">            List of metadata dicts (one per signal). Each dict contains &#39;nx_meta&#39;</span>
+<span class="sd">            key with NexusLIMS-specific metadata, plus optional raw metadata keys.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        Successful extraction:</span>
+<span class="sd">        Single-signal extraction:</span>
 
-<span class="sd">        &gt;&gt;&gt; def extract(self, context: ExtractionContext) -&gt; dict[str, Any]:</span>
+<span class="sd">        &gt;&gt;&gt; def extract(self, context: ExtractionContext) -&gt; list[dict[str, Any]]:</span>
 <span class="sd">        ...     try:</span>
-<span class="sd">        ...         # Extraction logic</span>
-<span class="sd">        ...         metadata = {&quot;nx_meta&quot;: {</span>
+<span class="sd">        ...         metadata = [{&quot;nx_meta&quot;: {</span>
 <span class="sd">        ...             &quot;Creation Time&quot;: &quot;2024-01-15T10:30:00-05:00&quot;,</span>
 <span class="sd">        ...             &quot;Data Type&quot;: &quot;STEM_Imaging&quot;,</span>
 <span class="sd">        ...             &quot;DatasetType&quot;: &quot;Image&quot;,</span>
 <span class="sd">        ...             &quot;Data Dimensions&quot;: &quot;(1024, 1024)&quot;,</span>
 <span class="sd">        ...             &quot;Instrument ID&quot;: &quot;643-Titan&quot;</span>
-<span class="sd">        ...         }}</span>
+<span class="sd">        ...         }}]</span>
 <span class="sd">        ...         return metadata</span>
+<span class="sd">        ...     except Exception as e:</span>
+<span class="sd">        ...         logger.error(f&quot;Extraction failed: {e}&quot;)</span>
+<span class="sd">        ...         return self._minimal_metadata(context)</span>
+
+<span class="sd">        Multi-signal extraction:</span>
+
+<span class="sd">        &gt;&gt;&gt; def extract(self, context: ExtractionContext) -&gt; list[dict[str, Any]]:</span>
+<span class="sd">        ...     try:</span>
+<span class="sd">        ...         # For a file with 2 signals</span>
+<span class="sd">        ...         return [</span>
+<span class="sd">        ...             {&quot;nx_meta&quot;: {</span>
+<span class="sd">        ...                 &quot;Creation Time&quot;: &quot;2024-01-15T10:30:00-05:00&quot;,</span>
+<span class="sd">        ...                 &quot;Data Type&quot;: &quot;STEM_Imaging&quot;, ...}},</span>
+<span class="sd">        ...             {&quot;nx_meta&quot;: {</span>
+<span class="sd">        ...                 &quot;Creation Time&quot;: &quot;2024-01-15T10:30:00-05:00&quot;,</span>
+<span class="sd">        ...                 &quot;Data Type&quot;: &quot;EDS_Spectrum&quot;, ...}}</span>
+<span class="sd">        ...         ]</span>
 <span class="sd">        ...     except Exception as e:</span>
 <span class="sd">        ...         logger.error(f&quot;Extraction failed: {e}&quot;)</span>
 <span class="sd">        ...         return self._minimal_metadata(context)</span>
 
 <span class="sd">        Minimal metadata on error:</span>
 
-<span class="sd">        &gt;&gt;&gt; def _minimal_metadata(self, context: ExtractionContext) -&gt; dict:</span>
-<span class="sd">        ...     return {</span>
+<span class="sd">        &gt;&gt;&gt; def _minimal_metadata(self, context: ExtractionContext) -&gt; list[dict]:</span>
+<span class="sd">        ...     return [{</span>
 <span class="sd">        ...         &quot;nx_meta&quot;: {</span>
 <span class="sd">        ...             &quot;DatasetType&quot;: &quot;Unknown&quot;,</span>
 <span class="sd">        ...             &quot;Data Type&quot;: &quot;Unknown&quot;,</span>
@@ -1057,7 +1142,7 @@ window.addEventListener("load", load);
 <span class="sd">        ...             &quot;Instrument ID&quot;: None,</span>
 <span class="sd">        ...             &quot;warnings&quot;: [&quot;Extraction failed&quot;]</span>
 <span class="sd">        ...         }</span>
-<span class="sd">        ...     }</span>
+<span class="sd">        ...     }]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="o">...</span>  <span class="c1"># pragma: no cover</span></div>
 </div>

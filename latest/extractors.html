@@ -62,7 +62,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 18, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 23, 2025"/>
   </head>
   
   
@@ -555,12 +555,24 @@ each format.</p>
 </section>
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
-<p>The extraction system consists of two main components:</p>
+<p>The extraction system uses a <strong>plugin-based architecture</strong> for flexible and extensible metadata extraction. The system consists of three main components:</p>
 <ol class="arabic simple">
-<li><p><strong>Full Metadata Extractors</strong>: Parse comprehensive metadata from supported file formats</p></li>
-<li><p><strong>Preview Generators</strong>: Create thumbnail images for visualization</p></li>
+<li><p><strong>Extractor Plugins</strong>: Parse comprehensive metadata from supported file formats</p></li>
+<li><p><strong>Preview Generator Plugins</strong>: Create thumbnail images for visualization</p></li>
+<li><p><strong>Extractor Registry</strong>: Manages plugin discovery, selection, and execution</p></li>
 </ol>
-<p>Extraction is performed automatically during record building. Each file is identified by its extension, processed by the appropriate extractor, and both metadata (saved as JSON) and preview images (saved as PNG thumbnails) are generated in parallel to the original data files.</p>
+<section id="plugin-architecture">
+<h3>Plugin Architecture<a class="headerlink" href="#plugin-architecture" title="Link to this heading">#</a></h3>
+<p>The plugin system provides:</p>
+<ul class="simple">
+<li><p><strong>Auto-discovery</strong>: Plugins are automatically discovered from <code class="docutils literal notranslate"><span class="pre">nexusLIMS/extractors/plugins/</span></code></p></li>
+<li><p><strong>Priority-based selection</strong>: Multiple extractors can support the same file type, with higher priority extractors preferred</p></li>
+<li><p><strong>Content sniffing</strong>: Extractors can examine file contents beyond just extensions</p></li>
+<li><p><strong>Multi-signal support</strong>: Files containing multiple datasets (e.g., DM3/DM4) are automatically expanded</p></li>
+<li><p><strong>Defensive design</strong>: All extractors implement robust error handling with graceful fallbacks</p></li>
+</ul>
+<p>Extraction is performed automatically during record building. Each file is processed by the best available extractor, and both metadata (saved as JSON) and preview images (saved as PNG thumbnails) are generated in parallel to the original data files.</p>
+</section>
 </section>
 <section id="fully-supported-formats">
 <h2>Fully Supported Formats<a class="headerlink" href="#fully-supported-formats" title="Link to this heading">#</a></h2>
@@ -952,7 +964,7 @@ each format.</p>
 <li><p>A placeholder image is used indicating extraction failed</p></li>
 </ul>
 <p><strong>Handling Strategy</strong>:</p>
-<p>The system’s behavior for unsupported files depends on the <code class="docutils literal notranslate"><span class="pre">NEXUSLIMS_FILE_STRATEGY</span></code> environment variable:</p>
+<p>The system’s behavior for unsupported files depends on the <code class="docutils literal notranslate"><span class="pre">NX_FILE_STRATEGY</span></code> environment variable:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">exclusive</span></code> (default): Only files with full extractors are included in records</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">inclusive</span></code>: All files are included, with basic metadata for unsupported types</p></li>
@@ -964,10 +976,10 @@ each format.</p>
 <h3>File Discovery and Strategy<a class="headerlink" href="#file-discovery-and-strategy" title="Link to this heading">#</a></h3>
 <p>During record building, NexusLIMS finds files within the session time window using the configured strategy:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Only include files with dedicated extractors</span>
-<span class="nv">NEXUSLIMS_FILE_STRATEGY</span><span class="o">=</span>exclusive
+<span class="nv">NX_FILE_STRATEGY</span><span class="o">=</span>exclusive
 
 <span class="c1"># Include all files found</span>
-<span class="nv">NEXUSLIMS_FILE_STRATEGY</span><span class="o">=</span>inclusive
+<span class="nv">NX_FILE_STRATEGY</span><span class="o">=</span>inclusive
 </pre></div>
 </div>
 </section>
@@ -975,54 +987,73 @@ each format.</p>
 <h3>Extraction Process<a class="headerlink" href="#extraction-process" title="Link to this heading">#</a></h3>
 <p>For each discovered file:</p>
 <ol class="arabic simple">
-<li><p><strong>Extension Detection</strong>: File extension is checked against <code class="docutils literal notranslate"><span class="pre">extension_reader_map</span></code></p></li>
+<li><p><strong>Plugin Discovery</strong>: The extractor registry auto-discovers all available extractor plugins from <code class="docutils literal notranslate"><span class="pre">nexusLIMS/extractors/plugins/</span></code></p></li>
 <li><p><strong>Extractor Selection</strong>:</p>
 <ul class="simple">
-<li><p>If extension is in <code class="docutils literal notranslate"><span class="pre">extension_reader_map</span></code>: Use dedicated extractor</p></li>
-<li><p>If extension is in <code class="docutils literal notranslate"><span class="pre">unextracted_preview_map</span></code>: Use basic metadata + custom preview</p></li>
-<li><p>Otherwise: Use basic metadata + placeholder preview (if <code class="docutils literal notranslate"><span class="pre">inclusive</span></code> mode)</p></li>
+<li><p>The registry uses priority-based selection with content sniffing support</p></li>
+<li><p>Extractors are tried in descending priority order (higher priority first)</p></li>
+<li><p>Each extractor’s <code class="docutils literal notranslate"><span class="pre">supports()</span></code> method is called to determine compatibility</p></li>
+<li><p>If no specialized extractor matches, the <code class="docutils literal notranslate"><span class="pre">BasicFileInfoExtractor</span></code> fallback is used</p></li>
 </ul>
 </li>
-<li><p><strong>Metadata Parsing</strong>: Extractor reads the file and returns a dictionary with:</p>
+<li><p><strong>Metadata Parsing</strong>: The selected extractor reads the file and returns a <strong>list</strong> of metadata dictionaries:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">nx_meta</span></code>: NexusLIMS-specific metadata (standardized keys)</p></li>
-<li><p>Additional keys: Format-specific “raw” metadata</p></li>
+<li><p>Each dictionary contains <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code> with NexusLIMS-specific metadata (standardized keys)</p></li>
+<li><p>Additional keys contain format-specific “raw” metadata</p></li>
+<li><p>For multi-signal files, the list contains one entry per signal</p></li>
+<li><p>For single-signal files, the list contains one entry for consistency</p></li>
 </ul>
 </li>
-<li><p><strong>Metadata Writing</strong>: JSON file is written to parallel path in <code class="docutils literal notranslate"><span class="pre">NX_DATA_PATH</span></code></p>
+<li><p><strong>Metadata Writing</strong>: JSON file(s) are written to parallel path in <code class="docutils literal notranslate"><span class="pre">NX_DATA_PATH</span></code></p>
 <ul class="simple">
 <li><p>Path: <code class="docutils literal notranslate"><span class="pre">{NX_DATA_PATH}/{instrument}/{path/to/file}.json</span></code></p></li>
+<li><p>For multi-signal files: Multiple JSON files with <code class="docutils literal notranslate"><span class="pre">_signalN</span></code> suffixes</p></li>
 </ul>
 </li>
-<li><p><strong>Preview Generation</strong>: Thumbnail PNG is created</p>
+<li><p><strong>Preview Generation</strong>: Thumbnail PNG(s) are created</p>
 <ul class="simple">
 <li><p>Path: <code class="docutils literal notranslate"><span class="pre">{NX_DATA_PATH}/{instrument}/{path/to/file}.thumb.png</span></code></p></li>
+<li><p>For multi-signal files: Multiple previews with <code class="docutils literal notranslate"><span class="pre">_signalN.thumb.png</span></code> suffixes</p></li>
 <li><p>Size: 500×500 px (default)</p></li>
+<li><p>Uses plugin-based preview generators with fallback to legacy methods</p></li>
 </ul>
 </li>
 </ol>
 </section>
 <section id="expected-metadata-structure">
 <h3>Expected Metadata Structure<a class="headerlink" href="#expected-metadata-structure" title="Link to this heading">#</a></h3>
-<p>All extractors return a dictionary with this structure:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s2">&quot;nx_meta&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;Creation Time&quot;</span><span class="p">:</span> <span class="s2">&quot;ISO 8601 timestamp&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;Data Type&quot;</span><span class="p">:</span> <span class="s2">&quot;Category_Modality_Technique&quot;</span><span class="p">,</span>  <span class="c1"># e.g., &quot;STEM_EDS&quot;</span>
-        <span class="s2">&quot;DatasetType&quot;</span><span class="p">:</span> <span class="s2">&quot;Image|Spectrum|SpectrumImage|Diffraction|Misc|Unknown&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;Data Dimensions&quot;</span><span class="p">:</span> <span class="s2">&quot;(height, width)&quot;</span> <span class="ow">or</span> <span class="s2">&quot;(channels,)&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;Instrument ID&quot;</span><span class="p">:</span> <span class="s2">&quot;instrument-name&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;warnings&quot;</span><span class="p">:</span> <span class="p">[[</span><span class="s2">&quot;field1&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;field2&quot;</span><span class="p">,</span> <span class="s2">&quot;subfield&quot;</span><span class="p">]],</span>  <span class="c1"># Unreliable fields</span>
-        <span class="c1"># ... format-specific keys ...</span>
+<p>All extractors return a <strong>list of metadata dictionaries</strong>, with one entry per signal or dataset:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;nx_meta&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;Creation Time&quot;</span><span class="p">:</span> <span class="s2">&quot;ISO 8601 timestamp&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Data Type&quot;</span><span class="p">:</span> <span class="s2">&quot;Category_Modality_Technique&quot;</span><span class="p">,</span>  <span class="c1"># e.g., &quot;STEM_EDS&quot;</span>
+            <span class="s2">&quot;DatasetType&quot;</span><span class="p">:</span> <span class="s2">&quot;Image|Spectrum|SpectrumImage|Diffraction|Misc|Unknown&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Data Dimensions&quot;</span><span class="p">:</span> <span class="s2">&quot;(height, width)&quot;</span> <span class="ow">or</span> <span class="s2">&quot;(channels,)&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Instrument ID&quot;</span><span class="p">:</span> <span class="s2">&quot;instrument-name&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;warnings&quot;</span><span class="p">:</span> <span class="p">[[</span><span class="s2">&quot;field1&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;field2&quot;</span><span class="p">,</span> <span class="s2">&quot;subfield&quot;</span><span class="p">]],</span>  <span class="c1"># Unreliable fields</span>
+            <span class="c1"># ... format-specific keys ...</span>
+        <span class="p">},</span>
+        <span class="c1"># Additional format-specific metadata sections</span>
+        <span class="s2">&quot;ImageList&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="o">...</span> <span class="p">},</span>  <span class="c1"># Example: DM3/DM4 files</span>
+        <span class="s2">&quot;ObjectInfo&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="o">...</span> <span class="p">},</span>  <span class="c1"># Example: FEI .ser/.emi files</span>
+        <span class="c1"># etc.</span>
     <span class="p">},</span>
-    <span class="c1"># Additional format-specific metadata sections</span>
-    <span class="s2">&quot;ImageList&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="o">...</span> <span class="p">},</span>  <span class="c1"># Example: DM3/DM4 files</span>
-    <span class="s2">&quot;ObjectInfo&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="o">...</span> <span class="p">},</span>  <span class="c1"># Example: FEI .ser/.emi files</span>
-    <span class="c1"># etc.</span>
-<span class="p">}</span>
+    <span class="c1"># For multi-signal files, additional entries follow the same structure</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;nx_meta&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="o">...</span> <span class="p">},</span>
+        <span class="c1"># ... additional signal ...</span>
+    <span class="p">}</span>
+<span class="p">]</span>
 </pre></div>
 </div>
-<p>The <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code> section contains standardized, human-readable metadata that is displayed in the experimental record. The additional sections contain the complete “raw” metadata tree for reference.</p>
+<p><strong>Return Format:</strong></p>
+<ul class="simple">
+<li><p><strong>Single-signal files</strong>: Return a list with one element <code class="docutils literal notranslate"><span class="pre">[{...}]</span></code></p></li>
+<li><p><strong>Multi-signal files</strong>: Return a list with multiple elements, one per signal <code class="docutils literal notranslate"><span class="pre">[{...},</span> <span class="pre">{...}]</span></code></p></li>
+</ul>
+<p>The <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code> section in each element contains standardized, human-readable metadata that is displayed in the experimental record. The additional sections contain the complete “raw” metadata tree for reference.</p>
+<p>This consistent list-based approach allows the Activity layer to automatically expand multi-signal files into multiple datasets in the experimental record.</p>
 </section>
 </section>
 <section id="adding-support-for-new-formats">
@@ -1132,7 +1163,10 @@ each format.</p>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quick-reference">Quick Reference</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">Overview</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">Overview</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#plugin-architecture">Plugin Architecture</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fully-supported-formats">Fully Supported Formats</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#digital-micrograph-files-dm3-dm4">Digital Micrograph Files (.dm3, .dm4)</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fei-thermo-fisher-tif-files-tif">FEI/Thermo Fisher TIF Files (.tif)</a></li>

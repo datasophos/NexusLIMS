@@ -424,7 +424,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 18, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 23, 2025"/>
   </head>
   
   
@@ -874,12 +874,12 @@ window.addEventListener("load", load);
 
 <div class="viewcode-block" id="SerEmiExtractor.extract">
 <a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.fei_emi.html#nexusLIMS.extractors.plugins.fei_emi.SerEmiExtractor.extract">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">extract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ExtractionContext</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>  <span class="c1"># noqa: PLR0915</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">extract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ExtractionContext</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>  <span class="c1"># noqa: PLR0915</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Extract metadata from a .ser file and its accompanying .emi file.</span>
 
-<span class="sd">        Returns metadata (as a dict) from an FEI .ser file + its associated .emi</span>
-<span class="sd">        files, with some non-relevant information stripped.</span>
+<span class="sd">        Returns metadata (as a list of dicts) from an FEI .ser file +</span>
+<span class="sd">        its associated .emi files, with some non-relevant information stripped.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -888,8 +888,8 @@ window.addEventListener("load", load);
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        dict</span>
-<span class="sd">            Metadata dictionary with &#39;nx_meta&#39; key containing NexusLIMS metadata.</span>
+<span class="sd">        list[dict]</span>
+<span class="sd">            List containing a single metadata dict with &#39;nx_meta&#39; key.</span>
 <span class="sd">            If files cannot be opened, at least basic metadata will be returned (</span>
 <span class="sd">            creation time, etc.)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1014,7 +1014,7 @@ window.addEventListener("load", load);
         <span class="c1"># sort the nx_meta dictionary (recursively) for nicer display</span>
         <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sort_dict</span><span class="p">(</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">])</span>
 
-        <span class="k">return</span> <span class="n">metadata</span></div>
+        <span class="k">return</span> <span class="p">[</span><span class="n">metadata</span><span class="p">]</span></div>
 </div>
 
 
@@ -1026,7 +1026,7 @@ window.addEventListener("load", load);
     <span class="c1"># sort the nx_meta dictionary (recursively) for nicer display</span>
     <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sort_dict</span><span class="p">(</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">])</span>
     <span class="k">del</span> <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;fname&quot;</span><span class="p">]</span>
-    <span class="k">return</span> <span class="n">metadata</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">metadata</span><span class="p">]</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_load_ser</span><span class="p">(</span><span class="n">emi_filename</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">ser_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
@@ -1095,7 +1095,7 @@ window.addEventListener("load", load);
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># try to set creation time to acquisition time from metadata</span>
     <span class="n">acq_time</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">metadata</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;ObjectInfo&quot;</span><span class="p">,</span> <span class="s2">&quot;AcquireDate&quot;</span><span class="p">])</span>
-    <span class="k">if</span> <span class="n">acq_time</span> <span class="o">!=</span> <span class="s2">&quot;not found&quot;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">acq_time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;Creation Time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
             <span class="n">dt</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span>
                 <span class="n">acq_time</span><span class="p">,</span>
@@ -1107,7 +1107,7 @@ window.addEventListener("load", load);
 
     <span class="c1"># manufacturer is at high level, so parse it now</span>
     <span class="n">manufacturer</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">metadata</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;ObjectInfo&quot;</span><span class="p">,</span> <span class="s2">&quot;Manufacturer&quot;</span><span class="p">])</span>
-    <span class="k">if</span> <span class="n">manufacturer</span> <span class="o">!=</span> <span class="s2">&quot;not found&quot;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">manufacturer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;Manufacturer&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">manufacturer</span>
 
     <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;Data Dimensions&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
@@ -1157,7 +1157,7 @@ window.addEventListener("load", load);
     <span class="p">}</span>
     <span class="n">base</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ObjectInfo&quot;</span><span class="p">,</span> <span class="s2">&quot;AcquireInfo&quot;</span><span class="p">]</span>
 
-    <span class="k">if</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">metadata</span><span class="p">,</span> <span class="n">base</span><span class="p">)</span> <span class="o">!=</span> <span class="s2">&quot;not found&quot;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">metadata</span><span class="p">,</span> <span class="n">base</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">metadata</span> <span class="o">=</span> <span class="n">map_keys</span><span class="p">(</span><span class="n">term_mapping</span><span class="p">,</span> <span class="n">base</span><span class="p">,</span> <span class="n">metadata</span><span class="p">)</span>
 
     <span class="c1"># remove units from beam position (if present)</span>
@@ -1199,7 +1199,7 @@ window.addEventListener("load", load);
     <span class="p">}</span>
     <span class="n">base</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ObjectInfo&quot;</span><span class="p">,</span> <span class="s2">&quot;ExperimentalConditions&quot;</span><span class="p">,</span> <span class="s2">&quot;MicroscopeConditions&quot;</span><span class="p">]</span>
 
-    <span class="k">if</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">metadata</span><span class="p">,</span> <span class="n">base</span><span class="p">)</span> <span class="o">!=</span> <span class="s2">&quot;not found&quot;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">metadata</span><span class="p">,</span> <span class="n">base</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">metadata</span> <span class="o">=</span> <span class="n">map_keys</span><span class="p">(</span><span class="n">term_mapping</span><span class="p">,</span> <span class="n">base</span><span class="p">,</span> <span class="n">metadata</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">metadata</span></div>
@@ -1238,7 +1238,7 @@ window.addEventListener("load", load);
     <span class="n">base</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ObjectInfo&quot;</span><span class="p">,</span> <span class="s2">&quot;ExperimentalDescription&quot;</span><span class="p">]</span>
 
     <span class="n">experimental_description</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">metadata</span><span class="p">,</span> <span class="n">base</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">experimental_description</span> <span class="o">!=</span> <span class="s2">&quot;not found&quot;</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span>
+    <span class="k">if</span> <span class="n">experimental_description</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span>
         <span class="n">experimental_description</span><span class="p">,</span>
         <span class="nb">dict</span><span class="p">,</span>
     <span class="p">):</span>
@@ -1406,7 +1406,7 @@ window.addEventListener("load", load);
             <span class="n">out_term</span> <span class="o">=</span> <span class="p">[</span><span class="n">out_term</span><span class="p">]</span>
         <span class="n">val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">metadata</span><span class="p">,</span> <span class="n">base</span> <span class="o">+</span> <span class="n">in_term</span><span class="p">)</span>
         <span class="c1"># only add the value to this list if we found it</span>
-        <span class="k">if</span> <span class="n">val</span> <span class="o">!=</span> <span class="s2">&quot;not found&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">set_nested_dict_value</span><span class="p">(</span>
                 <span class="n">metadata</span><span class="p">,</span>
                 <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">out_term</span><span class="p">],</span>

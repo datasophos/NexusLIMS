@@ -54,8 +54,8 @@
             </div>
         </aside>
         <h2>
-            <span class="text">354 statements &nbsp;</span>
-            <button type="button" class="run button_toggle_run" value="run" data-shortcut="r" title="Toggle lines run">354<span class="text"> run</span></button>
+            <span class="text">358 statements &nbsp;</span>
+            <button type="button" class="run button_toggle_run" value="run" data-shortcut="r" title="Toggle lines run">358<span class="text"> run</span></button>
             <button type="button" class="mis show_mis button_toggle_mis" value="mis" data-shortcut="m" title="Toggle lines missing">0<span class="text"> missing</span></button>
             <button type="button" class="exc show_exc button_toggle_exc" value="exc" data-shortcut="x" title="Toggle lines excluded">2<span class="text"> excluded</span></button>
         </h2>
@@ -65,7 +65,7 @@
             <a id="nextFileLink" class="nav" href="z_7927d72d748437cd_image_preview_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.11.3">coverage.py v7.11.3</a>,
-            created at 2025-12-18 19:24 +0000
+            created at 2025-12-23 00:25 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"></button>
@@ -956,17 +956,26 @@
     <p class="pln"><span class="n"><a id="t874" href="#t874">874</a></span><span class="t">            <span class="com"># Load the signal</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t875" href="#t875">875</a></span><span class="t">            <span class="nam">s</span> <span class="op">=</span> <span class="nam">load</span><span class="op">(</span><span class="nam">str</span><span class="op">(</span><span class="nam">context</span><span class="op">.</span><span class="nam">file_path</span><span class="op">)</span><span class="op">,</span> <span class="nam">lazy</span><span class="op">=</span><span class="key">True</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t876" href="#t876">876</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t877" href="#t877">877</a></span><span class="t">            <span class="com"># Generate the thumbnail using the local function</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t878" href="#t878">878</a></span><span class="t">            <span class="nam">sig_to_thumbnail</span><span class="op">(</span><span class="nam">s</span><span class="op">,</span> <span class="nam">output_path</span><span class="op">,</span> <span class="nam">dpi</span><span class="op">=</span><span class="num">92</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t879" href="#t879">879</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t880" href="#t880">880</a></span><span class="t">            <span class="key">return</span> <span class="nam">output_path</span><span class="op">.</span><span class="nam">exists</span><span class="op">(</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t881" href="#t881">881</a></span><span class="t">        <span class="key">except</span> <span class="nam">Exception</span> <span class="key">as</span> <span class="nam">e</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t882" href="#t882">882</a></span><span class="t">            <span class="nam">logger</span><span class="op">.</span><span class="nam">warning</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run run2"><span class="n"><a id="t883" href="#t883">883</a></span><span class="t">                <span class="str">"Failed to generate HyperSpy preview for %s: %s"</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run run2"><span class="n"><a id="t884" href="#t884">884</a></span><span class="t">                <span class="nam">context</span><span class="op">.</span><span class="nam">file_path</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run run2"><span class="n"><a id="t885" href="#t885">885</a></span><span class="t">                <span class="nam">e</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run run2"><span class="n"><a id="t886" href="#t886">886</a></span><span class="t">            <span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t887" href="#t887">887</a></span><span class="t">            <span class="key">return</span> <span class="key">False</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t877" href="#t877">877</a></span><span class="t">            <span class="com"># Handle multi-signal files</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t878" href="#t878">878</a></span><span class="t">            <span class="key">if</span> <span class="nam">isinstance</span><span class="op">(</span><span class="nam">s</span><span class="op">,</span> <span class="nam">list</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t879" href="#t879">879</a></span><span class="t">                <span class="key">if</span> <span class="nam">context</span><span class="op">.</span><span class="nam">signal_index</span> <span class="key">is</span> <span class="key">not</span> <span class="key">None</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t880" href="#t880">880</a></span><span class="t">                    <span class="com"># Use specified signal index</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t881" href="#t881">881</a></span><span class="t">                    <span class="nam">s</span> <span class="op">=</span> <span class="nam">s</span><span class="op">[</span><span class="nam">context</span><span class="op">.</span><span class="nam">signal_index</span><span class="op">]</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t882" href="#t882">882</a></span><span class="t">                <span class="key">else</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t883" href="#t883">883</a></span><span class="t">                    <span class="com"># Legacy: use first signal only</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t884" href="#t884">884</a></span><span class="t">                    <span class="nam">s</span> <span class="op">=</span> <span class="nam">s</span><span class="op">[</span><span class="num">0</span><span class="op">]</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t885" href="#t885">885</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t886" href="#t886">886</a></span><span class="t">            <span class="com"># Generate the thumbnail using the local function</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t887" href="#t887">887</a></span><span class="t">            <span class="nam">sig_to_thumbnail</span><span class="op">(</span><span class="nam">s</span><span class="op">,</span> <span class="nam">output_path</span><span class="op">,</span> <span class="nam">dpi</span><span class="op">=</span><span class="num">92</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t888" href="#t888">888</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t889" href="#t889">889</a></span><span class="t">            <span class="key">return</span> <span class="nam">output_path</span><span class="op">.</span><span class="nam">exists</span><span class="op">(</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t890" href="#t890">890</a></span><span class="t">        <span class="key">except</span> <span class="nam">Exception</span> <span class="key">as</span> <span class="nam">e</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t891" href="#t891">891</a></span><span class="t">            <span class="nam">logger</span><span class="op">.</span><span class="nam">warning</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t892" href="#t892">892</a></span><span class="t">                <span class="str">"Failed to generate HyperSpy preview for %s: %s"</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t893" href="#t893">893</a></span><span class="t">                <span class="nam">context</span><span class="op">.</span><span class="nam">file_path</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t894" href="#t894">894</a></span><span class="t">                <span class="nam">e</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t895" href="#t895">895</a></span><span class="t">            <span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t896" href="#t896">896</a></span><span class="t">            <span class="key">return</span> <span class="key">False</span>&nbsp;</span><span class="r"></span></p>
 </main>
 <footer>
     <div class="content">
@@ -976,7 +985,7 @@
             <a class="nav" href="z_7927d72d748437cd_image_preview_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.11.3">coverage.py v7.11.3</a>,
-            created at 2025-12-18 19:24 +0000
+            created at 2025-12-23 00:25 +0000
         </p>
     </div>
 </footer>
