@@ -1,0 +1,19 @@
+# {py:mod}`nexusLIMS.extractors.plugins.preview_generators`
+
+```{py:module} nexusLIMS.extractors.plugins.preview_generators
+```
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators
+:allowtitles:
+```
+
+## Submodules
+
+```{toctree}
+:titlesonly:
+:maxdepth: 1
+
+nexusLIMS.extractors.plugins.preview_generators.text_preview
+nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview
+nexusLIMS.extractors.plugins.preview_generators.image_preview
+```
