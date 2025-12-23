@@ -117,14 +117,15 @@ class NexusMetadata(BaseModel):
         ``"Quanta-FEG-650-SEM-555555"``
 
     warnings : list of (str or list of str), optional
-        List of warning messages generated during metadata extraction.
-        Warnings indicate non-fatal issues such as missing metadata fields,
-        format inconsistencies, or data quality concerns. Each warning can
-        be either a plain string or a list containing a message and
-        additional context.
+        List of field names flagged as unreliable or missing during metadata
+        extraction. During record building, these field names are used to mark
+        corresponding metadata in the XML with a ``warning="true"`` attribute,
+        alerting users that the values may not be trustworthy. Each warning can
+        be either a plain string (field name) or a single-element list containing
+        the field name.
 
-        Examples: ``["Missing calibration data"]``,
-        ``[["Uncalibrated data", "No pixel size found in metadata"]]``,
+        Examples: ``["Operator", "Specimen"]`` (field names as strings),
+        ``[["Temperature"]]`` (field name in list format),
         ``[]`` (no warnings)
 
     Notes
@@ -249,10 +250,11 @@ class NexusMetadata(BaseModel):
     warnings: list[str | list[str]] = Field(
         default_factory=list,
         description=(
-            "List of warning messages generated during extraction. Each warning "
-            "can be a string or list containing [message, context]. Empty list "
-            "indicates no warnings. Examples: ['Missing calibration'], "
-            "[['Uncalibrated', 'No pixel size found']]"
+            "List of field names flagged as unreliable or missing. During record "
+            "building, these field names are used to mark corresponding metadata "
+            "in the XML with warning='true' attribute. Each entry can be a string "
+            "(field name) or single-element list containing the field name. "
+            "Examples: ['Operator', 'Specimen'], [['Temperature']]"
         ),
     )
 
