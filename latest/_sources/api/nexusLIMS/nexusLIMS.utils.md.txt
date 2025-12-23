@@ -27,14 +27,6 @@
   - ```{autodoc2-docstring} nexusLIMS.utils.is_subpath
     :summary:
     ```
-* - {py:obj}`get_nested_dict_value <nexusLIMS.utils.get_nested_dict_value>`
-  - ```{autodoc2-docstring} nexusLIMS.utils.get_nested_dict_value
-    :summary:
-    ```
-* - {py:obj}`get_nested_dict_key <nexusLIMS.utils.get_nested_dict_key>`
-  - ```{autodoc2-docstring} nexusLIMS.utils.get_nested_dict_key
-    :summary:
-    ```
 * - {py:obj}`get_nested_dict_value_by_path <nexusLIMS.utils.get_nested_dict_value_by_path>`
   - ```{autodoc2-docstring} nexusLIMS.utils.get_nested_dict_value_by_path
     :summary:
@@ -149,20 +141,6 @@
 :canonical: nexusLIMS.utils.is_subpath
 
 ```{autodoc2-docstring} nexusLIMS.utils.is_subpath
-```
-````
-
-````{py:function} get_nested_dict_value(nested_dict, value, prepath=())
-:canonical: nexusLIMS.utils.get_nested_dict_value
-
-```{autodoc2-docstring} nexusLIMS.utils.get_nested_dict_value
-```
-````
-
-````{py:function} get_nested_dict_key(nested_dict, key_to_find, prepath=())
-:canonical: nexusLIMS.utils.get_nested_dict_key
-
-```{autodoc2-docstring} nexusLIMS.utils.get_nested_dict_key
 ```
 ````
 

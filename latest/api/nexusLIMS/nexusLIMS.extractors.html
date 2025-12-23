@@ -674,12 +674,12 @@ successfully generated.</p>
 <p>Utility method to take a nested dictionary structure and flatten it into a
 single level, separating the levels by a string as specified by
 <code class="docutils literal notranslate"><span class="pre">separator</span></code>.</p>
-<p>Cribbed from: https://stackoverflow.com/a/6027615/1435788</p>
+<p>Uses python-benedict for robust nested dictionary operations.</p>
 <p class="rubric" id="id9">Parameters</p>
 <p>_dict : dict
 The dictionary to flatten
 parent_key : str
-The “root” key to add to the existing keys
+The “root” key to add to the existing keys (unused in current implementation)
 separator : str
 The string to use to separate values in the flattened keys (i.e.
 {‘a’: {‘b’: ‘c’}} would become {‘a’ + sep + ‘b’: ‘c’})</p>

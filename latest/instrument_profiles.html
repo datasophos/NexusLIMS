@@ -779,11 +779,8 @@
 <p>Parse vendor-specific metadata strings:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;Profile for FEI Titan TEM with Tecnai metadata parsing.&quot;&quot;&quot;</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.utils</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">get_nested_dict_key</span><span class="p">,</span>
-    <span class="n">get_nested_dict_value_by_path</span><span class="p">,</span>
-    <span class="n">set_nested_dict_value</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">benedict</span><span class="w"> </span><span class="kn">import</span> <span class="n">benedict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_nested_dict_value</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">parse_tecnai_metadata</span><span class="p">(</span><span class="n">metadata</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
@@ -793,13 +790,22 @@
         <span class="n">process_tecnai_microscope_info</span><span class="p">,</span>
     <span class="p">)</span>
 
-    <span class="c1"># Check if Tecnai metadata exists</span>
-    <span class="n">path_to_tecnai</span> <span class="o">=</span> <span class="n">get_nested_dict_key</span><span class="p">(</span><span class="n">metadata</span><span class="p">,</span> <span class="s2">&quot;Tecnai&quot;</span><span class="p">)</span>
+    <span class="c1"># Check if Tecnai metadata exists using benedict&#39;s keypaths method</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">benedict</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span>
+    <span class="n">keypaths_list</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">keypaths</span><span class="p">()</span>
+
+    <span class="c1"># Find the keypath that ends with &quot;Tecnai&quot;</span>
+    <span class="n">path_to_tecnai</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">keypath</span> <span class="ow">in</span> <span class="n">keypaths_list</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">keypath</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.Tecnai&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">keypath</span> <span class="o">==</span> <span class="s2">&quot;Tecnai&quot;</span><span class="p">:</span>
+            <span class="n">path_to_tecnai</span> <span class="o">=</span> <span class="n">keypath</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+            <span class="k">break</span>
+
     <span class="k">if</span> <span class="n">path_to_tecnai</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">metadata</span>
 
     <span class="c1"># Extract and process Tecnai microscope info</span>
-    <span class="n">tecnai_value</span> <span class="o">=</span> <span class="n">get_nested_dict_value_by_path</span><span class="p">(</span><span class="n">metadata</span><span class="p">,</span> <span class="n">path_to_tecnai</span><span class="p">)</span>
+    <span class="n">tecnai_value</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path_to_tecnai</span><span class="p">)]</span>
     <span class="n">microscope_info</span> <span class="o">=</span> <span class="n">tecnai_value</span><span class="p">[</span><span class="s2">&quot;Microscope Info&quot;</span><span class="p">]</span>
     <span class="n">processed</span> <span class="o">=</span> <span class="n">process_tecnai_microscope_info</span><span class="p">(</span><span class="n">microscope_info</span><span class="p">)</span>
 

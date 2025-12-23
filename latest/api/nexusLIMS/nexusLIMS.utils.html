@@ -507,12 +507,6 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.utils.is_subpath" title="nexusLIMS.utils.is_subpath"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_subpath</span></code></a></p></td>
 <td><p>Return if this path is a subpath of other paths.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.utils.get_nested_dict_value" title="nexusLIMS.utils.get_nested_dict_value"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_nested_dict_value</span></code></a></p></td>
-<td><p>Get a value from nested dictionaries.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.utils.get_nested_dict_key" title="nexusLIMS.utils.get_nested_dict_key"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_nested_dict_key</span></code></a></p></td>
-<td><p>Get a key from nested dictionaries.</p></td>
-</tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.utils.get_nested_dict_value_by_path" title="nexusLIMS.utils.get_nested_dict_value_by_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_nested_dict_value_by_path</span></code></a></p></td>
 <td><p>Get a nested dictionary value by path.</p></td>
 </tr>
@@ -591,7 +585,7 @@
 <dt class="sig sig-object py" id="nexusLIMS.utils.setup_loggers">
 <span class="sig-prename descclassname"><span class="pre">nexusLIMS.utils.</span></span><span class="sig-name descname"><span class="pre">setup_loggers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">log_level</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/utils.html#setup_loggers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.utils.setup_loggers" title="Link to this definition">#</a></dt>
 <dd><p>Set logging level of all NexusLIMS loggers.</p>
-<p class="rubric" id="id34">Parameters</p>
+<p class="rubric" id="id30">Parameters</p>
 <p>log_level : int
 The level of logging, such as <code class="docutils literal notranslate"><span class="pre">logging.DEBUG</span></code></p>
 </dd></dl>
@@ -604,7 +598,7 @@ The level of logging, such as <code class="docutils literal notranslate"><span c
 local certificate authority chain to validate any custom certificates and
 allow authenticatation using NTLM. Will automatically retry on transient
 server errors (502, 503, 504) with exponential backoff.</p>
-<p class="rubric" id="id35">Parameters</p>
+<p class="rubric" id="id31">Parameters</p>
 <p>url
 The URL to fetch
 function
@@ -621,10 +615,10 @@ If a value is provided, it will be used as a token for authentication
 method will error if both are provided
 **kwargs :
 Other keyword arguments are passed along to the <code class="docutils literal notranslate"><span class="pre">fn</span></code></p>
-<p class="rubric" id="id36">Returns</p>
+<p class="rubric" id="id32">Returns</p>
 <p>r : :py:class:<code class="docutils literal notranslate"><span class="pre">requests.Response</span></code>
 A requests response object</p>
-<p class="rubric" id="id37">Raises</p>
+<p class="rubric" id="id33">Raises</p>
 <p>ValueError
 If multiple methods of authentication are provided to the function</p>
 </dd></dl>
@@ -636,7 +630,7 @@ If multiple methods of authentication are provided to the function</p>
 <p>Helper function to determine if a given path is a “subpath” of a set of
 paths. Useful to help determine which instrument a given file comes from,
 given the instruments <code class="docutils literal notranslate"><span class="pre">filestore_path</span></code> and the path of the file to test.</p>
-<p class="rubric" id="id38">Parameters</p>
+<p class="rubric" id="id34">Parameters</p>
 <p>path
 The path of the file (or directory) to test. This will usually be the
 absolute path to a file on the local filesystem (to be compared using
@@ -645,10 +639,10 @@ of_paths
 The “higher-level” path to test against (or list thereof). In typical
 use, this will be a path joined of an instruments <code class="docutils literal notranslate"><span class="pre">filestore_path</span></code>
 with the root-level <code class="docutils literal notranslate"><span class="pre">nx_instrument_data_path</span></code></p>
-<p class="rubric" id="id39">Returns</p>
+<p class="rubric" id="id35">Returns</p>
 <p>result : bool
 Whether or not path is a subpath of one of the directories in of_paths</p>
-<p class="rubric" id="id40">Examples</p>
+<p class="rubric" id="id36">Examples</p>
 <blockquote>
 <div><blockquote>
 <div><blockquote>
@@ -662,60 +656,19 @@ True</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="nexusLIMS.utils.get_nested_dict_value">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.utils.</span></span><span class="sig-name descname"><span class="pre">get_nested_dict_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nested_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prepath</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/utils.html#get_nested_dict_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.utils.get_nested_dict_value" title="Link to this definition">#</a></dt>
-<dd><p>Get a value from nested dictionaries.</p>
-<p>Use a recursive method to find a value in a dictionary of dictionaries
-(such as the metadata dictionaries we receive from the file parsers).
-Cribbed from: https://stackoverflow.com/a/22171182/1435788.</p>
-<p class="rubric" id="id41">Parameters</p>
-<p>nested_dict : dict
-Dictionary to search
-value : object
-Value to search for
-prepath : tuple
-“path” to prepend to the search to limit the search to only part of
-the dictionary</p>
-<p class="rubric" id="id42">Returns</p>
-<p>path : tuple or None
-The “path” through the dictionary (expressed as a tuple of keys) where
-value was found. If None, the value was not found in the dictionary.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="nexusLIMS.utils.get_nested_dict_key">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.utils.</span></span><span class="sig-name descname"><span class="pre">get_nested_dict_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nested_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_to_find</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prepath</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/utils.html#get_nested_dict_key"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.utils.get_nested_dict_key" title="Link to this definition">#</a></dt>
-<dd><p>Get a key from nested dictionaries.</p>
-<p>Use a recursive method to find a key in a dictionary of dictionaries
-(such as the metadata dictionaries we receive from the file parsers).
-Cribbed from: https://stackoverflow.com/a/22171182/1435788.</p>
-<p class="rubric" id="id43">Parameters</p>
-<p>nested_dict : dict
-Dictionary to search
-key_to_find : object
-Value to search for
-prepath : tuple
-“path” to prepend to the search to limit the search to only part of
-the dictionary</p>
-<p class="rubric" id="id44">Returns</p>
-<p>path : tuple or None
-The “path” through the dictionary (expressed as a tuple of keys) where
-value was found. If None, the value was not found in the dictionary.</p>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="nexusLIMS.utils.get_nested_dict_value_by_path">
 <span class="sig-prename descclassname"><span class="pre">nexusLIMS.utils.</span></span><span class="sig-name descname"><span class="pre">get_nested_dict_value_by_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nest_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/utils.html#get_nested_dict_value_by_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.utils.get_nested_dict_value_by_path" title="Link to this definition">#</a></dt>
 <dd><p>Get a nested dictionary value by path.</p>
 <p>Get the value from within a nested dictionary structure by traversing into
 the dictionary as deep as that path found and returning that value.</p>
-<p class="rubric" id="id45">Parameters</p>
+<p>Uses python-benedict for robust nested dictionary operations.</p>
+<p class="rubric" id="id37">Parameters</p>
 <p>nest_dict : dict
 A dictionary of dictionaries that is to be queried
 path : tuple
 A tuple (or other iterable type) that specifies the subsequent keys
 needed to get to a a value within <code class="docutils literal notranslate"><span class="pre">nest_dict</span></code></p>
-<p class="rubric" id="id46">Returns</p>
+<p class="rubric" id="id38">Returns</p>
 <p>value : object or None
 The value at the path within the nested dictionary; if there’s no
 value there, return None</p>
@@ -726,9 +679,9 @@ value there, return None</p>
 <span class="sig-prename descclassname"><span class="pre">nexusLIMS.utils.</span></span><span class="sig-name descname"><span class="pre">set_nested_dict_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nest_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/utils.html#set_nested_dict_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.utils.set_nested_dict_value" title="Link to this definition">#</a></dt>
 <dd><p>Set a nested dictionary value by path.</p>
 <p>Set a value within a nested dictionary structure by traversing into
-the dictionary as deep as that path found and changing it to <code class="docutils literal notranslate"><span class="pre">value</span></code>.
-Cribbed from https://stackoverflow.com/a/13688108/1435788.</p>
-<p class="rubric" id="id47">Parameters</p>
+the dictionary as deep as that path found and changing it to <code class="docutils literal notranslate"><span class="pre">value</span></code>.</p>
+<p>Uses python-benedict for robust nested dictionary operations.</p>
+<p class="rubric" id="id39">Parameters</p>
 <p>nest_dict : dict
 A dictionary of dictionaries that is to be queried
 path : tuple
@@ -736,7 +689,7 @@ A tuple (or other iterable type) that specifies the subsequent keys
 needed to get to a a value within <code class="docutils literal notranslate"><span class="pre">nest_dict</span></code>
 value : object
 The value which will be given to the path in the nested dictionary</p>
-<p class="rubric" id="id48">Returns</p>
+<p class="rubric" id="id40">Returns</p>
 <p>value : object
 The value at the path within the nested dictionary</p>
 </dd></dl>
@@ -747,13 +700,13 @@ The value at the path within the nested dictionary</p>
 <dd><p>Try to get a nested dictionary value.</p>
 <p>This method will try to get a value from a dictionary (potentially
 nested) and fail silently if the value is not found, returning None.</p>
-<p class="rubric" id="id49">Parameters</p>
+<p class="rubric" id="id41">Parameters</p>
 <p>dict_ : dict
 The dictionary from which to get a value
 key : str or tuple
 The key to query, or if an iterable container type (tuple, list,
 etc.) is given, the path into a nested dictionary to follow</p>
-<p class="rubric" id="id50">Returns</p>
+<p class="rubric" id="id42">Returns</p>
 <p>val : object or None
 The value of the dictionary specified by <code class="docutils literal notranslate"><span class="pre">key</span></code>. If the dictionary
 does not have a key, returns None without raising an error</p>
@@ -771,7 +724,7 @@ record inclusion, because subsequent modifications to a directory
 (e.g. the user wrote a text file or did some analysis afterwards)
 means no files will be returned from that directory (because it is
 not searched)</p>
-<p class="rubric" id="id51">Parameters</p>
+<p class="rubric" id="id43">Parameters</p>
 <p>path
 The root path from which to start the search
 dt_from
@@ -781,7 +734,7 @@ The “ending” point of the search timeframe
 followlinks
 Argument passed on to py:func:<code class="docutils literal notranslate"><span class="pre">os.walk</span></code> to control whether
 symbolic links are followed</p>
-<p class="rubric" id="id52">Returns</p>
+<p class="rubric" id="id44">Returns</p>
 <p>dirs : list
 A list of the directories that have modification times within the
 time range provided</p>
@@ -793,14 +746,14 @@ time range provided</p>
 <dd><p>Find files motified between two times.</p>
 <p>Given two timestamps, find files under a path that were
 last modified between the two.</p>
-<p class="rubric" id="id53">Parameters</p>
+<p class="rubric" id="id45">Parameters</p>
 <p>path
 The root path from which to start the search
 dt_from : datetime.datetime
 The “starting” point of the search timeframe
 dt_to : datetime.datetime
 The “ending” point of the search timeframe</p>
-<p class="rubric" id="id54">Returns</p>
+<p class="rubric" id="id46">Returns</p>
 <p>files : list
 A list of the files that have modification times within the
 time range provided (sorted by modification time)</p>
@@ -815,7 +768,7 @@ last modified between the two. Uses the system-provided GNU <code class="docutil
 command. In basic testing, this method was found to be approximately 3 times
 faster than using :py:meth:<code class="docutils literal notranslate"><span class="pre">find_files_by_mtime</span></code> (which is implemented in
 pure Python).</p>
-<p class="rubric" id="id55">Parameters</p>
+<p class="rubric" id="id47">Parameters</p>
 <p>path
 The root path from which to start the search, relative to
 the :ref:<code class="docutils literal notranslate"><span class="pre">NX_INSTRUMENT_DATA_PATH</span> <span class="pre">&lt;nexuslims-instrument-data-path&gt;</span></code>
@@ -837,11 +790,11 @@ of symlinks. If this is the case and <code class="docutils literal notranslate">
 command will not “dereference” the symbolic links it finds.
 See comments in the code for more comments on implementation
 of this feature.</p>
-<p class="rubric" id="id56">Returns</p>
+<p class="rubric" id="id48">Returns</p>
 <p>List[str]
 A list of the files that have modification times within the
 time range provided (sorted by modification time)</p>
-<p class="rubric" id="id57">Raises</p>
+<p class="rubric" id="id49">Raises</p>
 <p>RuntimeError
 If the find command cannot be found, or running it results in output
 to <code class="docutils literal notranslate"><span class="pre">stderr</span></code></p>
@@ -860,12 +813,12 @@ to <code class="docutils literal notranslate"><span class="pre">stderr</span></c
 <p>Helper method that sets a specific leaf of a DictionaryTreeBrowser to None.
 Use with :py:meth:<code class="docutils literal notranslate"><span class="pre">remove_dict_nones</span></code> to fully remove the desired DTB element after
 setting it to None (after converting DTB to dictionary).</p>
-<p class="rubric" id="id58">Parameters</p>
+<p class="rubric" id="id50">Parameters</p>
 <p>tree : :py:class:<code class="docutils literal notranslate"><span class="pre">~hyperspy.misc.utils.DictionaryTreeBrowser</span></code>
 the <code class="docutils literal notranslate"><span class="pre">DictionaryTreeBrowser</span></code> object to remove the object from
 path : str
 period-delimited path to a DTB element</p>
-<p class="rubric" id="id59">Returns</p>
+<p class="rubric" id="id51">Returns</p>
 <p>tree : :py:class:<code class="docutils literal notranslate"><span class="pre">~hyperspy.misc.utils.DictionaryTreeBrowser</span></code></p>
 </dd></dl>
 
@@ -874,10 +827,10 @@ period-delimited path to a DTB element</p>
 <span class="sig-prename descclassname"><span class="pre">nexusLIMS.utils.</span></span><span class="sig-name descname"><span class="pre">remove_dict_nones</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dictionary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/nexusLIMS/utils.html#remove_dict_nones"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.utils.remove_dict_nones" title="Link to this definition">#</a></dt>
 <dd><p>Delete keys with a value of <code class="docutils literal notranslate"><span class="pre">None</span></code> in a dictionary, recursively.</p>
 <p>Taken from https://stackoverflow.com/a/4256027.</p>
-<p class="rubric" id="id60">Parameters</p>
+<p class="rubric" id="id52">Parameters</p>
 <p>dictionary
 The dictionary, with keys that have None values removed</p>
-<p class="rubric" id="id61">Returns</p>
+<p class="rubric" id="id53">Returns</p>
 <p>dict
 The same dictionary, but with “Nones” removed</p>
 </dd></dl>
@@ -887,14 +840,14 @@ The same dictionary, but with “Nones” removed</p>
 <span class="sig-prename descclassname"><span class="pre">nexusLIMS.utils.</span></span><span class="sig-name descname"><span class="pre">get_timespan_overlap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">range_1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Tuple" title="(in Python v3.11)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><span class="pre">datetime</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><span class="pre">datetime</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">range_2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Tuple" title="(in Python v3.11)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><span class="pre">datetime</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><span class="pre">datetime</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/datetime.html#datetime.timedelta" title="(in Python v3.11)"><span class="pre">timedelta</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/utils.html#get_timespan_overlap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.utils.get_timespan_overlap" title="Link to this definition">#</a></dt>
 <dd><p>Find the amount of overlap between two time spans.</p>
 <p>Adapted from https://stackoverflow.com/a/9044111.</p>
-<p class="rubric" id="id62">Parameters</p>
+<p class="rubric" id="id54">Parameters</p>
 <p>range_1
 Tuple of length 2 of datetime objects: first is the start of the time
 range and the second is the end of the time range
 range_2
 Tuple of length 2 of datetime objects: first is the start of the time
 range and the second is the end of the time range</p>
-<p class="rubric" id="id63">Returns</p>
+<p class="rubric" id="id55">Returns</p>
 <p>datetime.timedelta
 The amount of overlap between the time ranges</p>
 </dd></dl>
@@ -906,15 +859,15 @@ The amount of overlap between the time ranges</p>
 <p>Get authentication credentials from settings (NX_CDCS_USER and NX_CDCS_PASS
 environment variables) and return either NTLM authentication or basic
 username/password tuple.</p>
-<p class="rubric" id="id64">Parameters</p>
+<p class="rubric" id="id56">Parameters</p>
 <p>basic : bool
 If True, return only username and password tuple rather than NTLM
 authentication object</p>
-<p class="rubric" id="id65">Returns</p>
+<p class="rubric" id="id57">Returns</p>
 <p>auth : <code class="docutils literal notranslate"><span class="pre">requests_ntlm.HttpNtlmAuth</span></code> or tuple
 NTLM authentication handler for <code class="docutils literal notranslate"><span class="pre">requests</span></code> (default), or
 (username, password) tuple if basic=True</p>
-<p class="rubric" id="id66">Raises</p>
+<p class="rubric" id="id58">Raises</p>
 <p>AuthenticationError
 If NX_CDCS_USER or NX_CDCS_PASS are not configured in settings</p>
 </dd></dl>
@@ -927,10 +880,10 @@ If NX_CDCS_USER or NX_CDCS_PASS are not configured in settings</p>
 building delay configured in the <code class="docutils literal notranslate"><span class="pre">NX_FILE_DELAY_DAYS</span></code> environment variable.
 If the date given is timezone-aware, the current time in that timezone will be
 compared.</p>
-<p class="rubric" id="id67">Parameters</p>
+<p class="rubric" id="id59">Parameters</p>
 <p>date
 The datetime to check; can be either timezone aware or naive</p>
-<p class="rubric" id="id68">Returns</p>
+<p class="rubric" id="id60">Returns</p>
 <p>bool
 Whether the current time is greater than the given date plus the
 configurable delay.</p>
@@ -948,14 +901,14 @@ configurable delay.</p>
 <dd><p>Given an “NX_INSTRUMENT_DATA_PATH” path, generate equivalent”NX_DATA_PATH” path.</p>
 <p>If the given path is not a subpath of “NX_INSTRUMENT_DATA_PATH”, a warning will
 be logged and the suffix will just be added at the end.</p>
-<p class="rubric" id="id69">Parameters</p>
+<p class="rubric" id="id61">Parameters</p>
 <p>path
 The input path, which is expected to be a subpath of the
 NX_INSTRUMENT_DATA_PATH directory
 suffix
 Any added suffix to add to the path (useful for appending with a new extension,
 such as <code class="docutils literal notranslate"><span class="pre">.json</span></code>)</p>
-<p class="rubric" id="id70">Returns</p>
+<p class="rubric" id="id62">Returns</p>
 <p>pathlib.Path
 A resolved pathlib.Path object pointing to the new path</p>
 </dd></dl>
@@ -1029,8 +982,6 @@ A resolved pathlib.Path object pointing to the new path</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.utils.setup_loggers"><code class="docutils literal notranslate"><span class="pre">setup_loggers()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.utils.nexus_req"><code class="docutils literal notranslate"><span class="pre">nexus_req()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.utils.is_subpath"><code class="docutils literal notranslate"><span class="pre">is_subpath()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.utils.get_nested_dict_value"><code class="docutils literal notranslate"><span class="pre">get_nested_dict_value()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.utils.get_nested_dict_key"><code class="docutils literal notranslate"><span class="pre">get_nested_dict_key()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.utils.get_nested_dict_value_by_path"><code class="docutils literal notranslate"><span class="pre">get_nested_dict_value_by_path()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.utils.set_nested_dict_value"><code class="docutils literal notranslate"><span class="pre">set_nested_dict_value()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.utils.try_getting_dict_value"><code class="docutils literal notranslate"><span class="pre">try_getting_dict_value()</span></code></a></li>

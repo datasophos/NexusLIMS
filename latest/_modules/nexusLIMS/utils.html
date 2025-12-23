@@ -830,6 +830,7 @@ window.addEventListener("load", load);
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">certifi</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">benedict</span><span class="w"> </span><span class="kn">import</span> <span class="n">benedict</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">requests</span><span class="w"> </span><span class="kn">import</span> <span class="n">Session</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">requests.adapters</span><span class="w"> </span><span class="kn">import</span> <span class="n">HTTPAdapter</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">requests_ntlm</span><span class="w"> </span><span class="kn">import</span> <span class="n">HttpNtlmAuth</span>
@@ -1038,82 +1039,6 @@ window.addEventListener("load", load);
 
 
 
-<div class="viewcode-block" id="get_nested_dict_value">
-<a class="viewcode-back" href="../../api/nexusLIMS/nexusLIMS.utils.html#nexusLIMS.utils.get_nested_dict_value">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">get_nested_dict_value</span><span class="p">(</span><span class="n">nested_dict</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">prepath</span><span class="o">=</span><span class="p">()):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Get a value from nested dictionaries.</span>
-
-<span class="sd">    Use a recursive method to find a value in a dictionary of dictionaries</span>
-<span class="sd">    (such as the metadata dictionaries we receive from the file parsers).</span>
-<span class="sd">    Cribbed from: https://stackoverflow.com/a/22171182/1435788.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    nested_dict : dict</span>
-<span class="sd">        Dictionary to search</span>
-<span class="sd">    value : object</span>
-<span class="sd">        Value to search for</span>
-<span class="sd">    prepath : tuple</span>
-<span class="sd">        &quot;path&quot; to prepend to the search to limit the search to only part of</span>
-<span class="sd">        the dictionary</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    path : tuple or None</span>
-<span class="sd">        The &quot;path&quot; through the dictionary (expressed as a tuple of keys) where</span>
-<span class="sd">        value was found. If None, the value was not found in the dictionary.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">nested_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="n">path</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="n">prepath</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">v</span> <span class="o">==</span> <span class="n">value</span><span class="p">:</span>  <span class="c1"># found value</span>
-            <span class="k">return</span> <span class="n">path</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="s2">&quot;items&quot;</span><span class="p">):</span>  <span class="c1"># v is a dict</span>
-            <span class="n">dict_val</span> <span class="o">=</span> <span class="n">get_nested_dict_value</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>  <span class="c1"># recursive call</span>
-            <span class="k">if</span> <span class="n">dict_val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">dict_val</span>
-    <span class="k">return</span> <span class="kc">None</span></div>
-
-
-
-<div class="viewcode-block" id="get_nested_dict_key">
-<a class="viewcode-back" href="../../api/nexusLIMS/nexusLIMS.utils.html#nexusLIMS.utils.get_nested_dict_key">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">get_nested_dict_key</span><span class="p">(</span><span class="n">nested_dict</span><span class="p">,</span> <span class="n">key_to_find</span><span class="p">,</span> <span class="n">prepath</span><span class="o">=</span><span class="p">()):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Get a key from nested dictionaries.</span>
-
-<span class="sd">    Use a recursive method to find a key in a dictionary of dictionaries</span>
-<span class="sd">    (such as the metadata dictionaries we receive from the file parsers).</span>
-<span class="sd">    Cribbed from: https://stackoverflow.com/a/22171182/1435788.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    nested_dict : dict</span>
-<span class="sd">        Dictionary to search</span>
-<span class="sd">    key_to_find : object</span>
-<span class="sd">        Value to search for</span>
-<span class="sd">    prepath : tuple</span>
-<span class="sd">        &quot;path&quot; to prepend to the search to limit the search to only part of</span>
-<span class="sd">        the dictionary</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    path : tuple or None</span>
-<span class="sd">        The &quot;path&quot; through the dictionary (expressed as a tuple of keys) where</span>
-<span class="sd">        value was found. If None, the value was not found in the dictionary.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">nested_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="n">path</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="n">prepath</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="n">key_to_find</span><span class="p">:</span>  <span class="c1"># found key</span>
-            <span class="k">return</span> <span class="n">path</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="s2">&quot;items&quot;</span><span class="p">):</span>  <span class="c1"># v is a dict</span>
-            <span class="n">dict_key</span> <span class="o">=</span> <span class="n">get_nested_dict_key</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">key_to_find</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>  <span class="c1"># recursive call</span>
-            <span class="k">if</span> <span class="n">dict_key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">dict_key</span>
-    <span class="k">return</span> <span class="kc">None</span></div>
-
-
-
 <div class="viewcode-block" id="get_nested_dict_value_by_path">
 <a class="viewcode-back" href="../../api/nexusLIMS/nexusLIMS.utils.html#nexusLIMS.utils.get_nested_dict_value_by_path">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_nested_dict_value_by_path</span><span class="p">(</span><span class="n">nest_dict</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
@@ -1122,6 +1047,8 @@ window.addEventListener("load", load);
 
 <span class="sd">    Get the value from within a nested dictionary structure by traversing into</span>
 <span class="sd">    the dictionary as deep as that path found and returning that value.</span>
+
+<span class="sd">    Uses python-benedict for robust nested dictionary operations.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1137,13 +1064,8 @@ window.addEventListener("load", load);
 <span class="sd">        The value at the path within the nested dictionary; if there&#39;s no</span>
 <span class="sd">        value there, return None</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">sub_dict</span> <span class="o">=</span> <span class="n">nest_dict</span>
-    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">path</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">sub_dict</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">break</span>
-        <span class="n">sub_dict</span> <span class="o">=</span> <span class="n">sub_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">sub_dict</span></div>
+    <span class="c1"># Disable keypath_separator to avoid conflicts with keys containing special chars</span>
+    <span class="k">return</span> <span class="n">benedict</span><span class="p">(</span><span class="n">nest_dict</span><span class="p">,</span> <span class="n">keypath_separator</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">path</span><span class="p">))</span></div>
 
 
 
@@ -1155,7 +1077,8 @@ window.addEventListener("load", load);
 
 <span class="sd">    Set a value within a nested dictionary structure by traversing into</span>
 <span class="sd">    the dictionary as deep as that path found and changing it to `value`.</span>
-<span class="sd">    Cribbed from https://stackoverflow.com/a/13688108/1435788.</span>
+
+<span class="sd">    Uses python-benedict for robust nested dictionary operations.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1172,9 +1095,9 @@ window.addEventListener("load", load);
 <span class="sd">    value : object</span>
 <span class="sd">        The value at the path within the nested dictionary</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">path</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
-        <span class="n">nest_dict</span> <span class="o">=</span> <span class="n">nest_dict</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="p">{})</span>
-    <span class="n">nest_dict</span><span class="p">[</span><span class="n">path</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">value</span></div>
+    <span class="c1"># Disable keypath_separator to avoid conflicts with keys containing special chars</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">benedict</span><span class="p">(</span><span class="n">nest_dict</span><span class="p">,</span> <span class="n">keypath_separator</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">b</span><span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">path</span><span class="p">)]</span> <span class="o">=</span> <span class="n">value</span>  <span class="c1"># Updates in-place (benedict is dict subclass)</span></div>
 
 
 
