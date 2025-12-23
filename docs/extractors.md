@@ -546,17 +546,18 @@ All extractors return a **list of metadata dictionaries**, with one entry per si
 
 The `nx_meta` section is automatically validated against Pydantic schemas to ensure data consistency and quality. NexusLIMS provides the following built-in schemas:
 
-- **{py:class}`nexusLIMS.extractors.schemas.NexusMetadata`** (base schema): Required for all extractors
+- **{py:class}`nexusLIMS.extractors.schemas.NexusMetadata`** (base schema): Used for validating all extractors
   - **Required fields**: `Creation Time`, `Data Type`, `DatasetType`
   - **Validation**: Creation Time must be ISO-8601 with timezone (e.g., `"2024-01-15T10:30:00-05:00"` or `"2024-01-15T10:30:00Z"`)
   - **Optional fields**: `Data Dimensions`, `Instrument ID`, `warnings`
   - **Extra fields**: Allows arbitrary instrument-specific metadata without breaking validation
 
-- **{py:class}`nexusLIMS.extractors.schemas.TEMImageMetadata`** (extends base schema): For TEM/STEM imaging
-  - Adds optional fields: `Voltage`, `Magnification`, `Illumination Mode`, `Camera Length`, `Acquisition Device`
-
-- **{py:class}`nexusLIMS.extractors.schemas.SEMImageMetadata`** (extends base schema): For SEM/FIB imaging
-  - Adds optional fields: `Voltage`, `Magnification`, `Working Distance`, `Beam Current`, `Detector`, `Dwell Time`, `Scan Rotation`
+- **{py:class}`nexusLIMS.extractors.schemas.TEMImageMetadata`** and **{py:class}`nexusLIMS.extractors.schemas.SEMImageMetadata`** (reference schemas)
+  - **Status**: Currently provided as reference examples documenting common fields for TEM/STEM and SEM/FIB data
+  - **Not used for automatic validation** - only the base `NexusMetadata` schema is used during validation
+  - Can optionally be used in extractor or instrument profile code for manual validation of instrument-specific fields
+  - **TEMImageMetadata fields**: `Voltage`, `Magnification`, `Illumination Mode`, `Camera Length`, `Acquisition Device`
+  - **SEMImageMetadata fields**: `Voltage`, `Magnification`, `Working Distance`, `Beam Current`, `Detector`, `Dwell Time`, `Scan Rotation`
 
 **Validation Example:**
 
