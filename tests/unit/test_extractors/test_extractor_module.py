@@ -8,14 +8,21 @@ import filecmp
 import json
 import logging
 import shutil
+from datetime import UTC
 from pathlib import Path
 from typing import ClassVar
 
 import numpy as np
 import pytest
+from pydantic import ValidationError
 
 import nexusLIMS
-from nexusLIMS.extractors import PLACEHOLDER_PREVIEW, flatten_dict, parse_metadata
+from nexusLIMS.extractors import (
+    PLACEHOLDER_PREVIEW,
+    flatten_dict,
+    parse_metadata,
+    validate_nx_meta,
+)
 from nexusLIMS.version import __version__
 from tests.unit.test_instrument_factory import make_quanta_sem
 
@@ -278,7 +285,18 @@ class TestExtractorModule:
                 return context.file_path.suffix.lower() == ".tif"
 
             def extract(self, context: ExtractionContext) -> list[dict]:
-                return [{"nx_meta": {"key": "val"}}]
+                from datetime import datetime
+
+                # Return minimal valid metadata without DatasetType/Data Type
+                # to test that defaults are applied
+                return [
+                    {
+                        "nx_meta": {
+                            "Creation Time": datetime.now(tz=UTC).isoformat(),
+                            "key": "val",  # Custom field for testing
+                        }
+                    }
+                ]
 
         # Register the test extractor
         registry = get_registry()
@@ -1208,3 +1226,115 @@ class TestExtractorModule:
 
         # Clean up generated files
         self.remove_thumb_and_json(thumb_fnames)
+
+
+class TestValidateNxMeta:
+    """Tests for the validate_nx_meta function in nexusLIMS.extractors.__init__."""
+
+    def test_validate_nx_meta_valid_metadata_returns_unchanged(self):
+        """Test that valid metadata passes validation and is returned unchanged."""
+        # Create valid metadata dict with all required fields
+        metadata_dict = {
+            "nx_meta": {
+                "Creation Time": "2024-01-15T10:30:00-05:00",
+                "Data Type": "STEM_Imaging",
+                "DatasetType": "Image",
+                "Data Dimensions": "(1024, 1024)",
+                "Instrument ID": "FEI-Titan-TEM-635816",
+            }
+        }
+
+        # Call validate_nx_meta
+        result = validate_nx_meta(metadata_dict)
+
+        # Assert returned dict is the same object
+        assert result is metadata_dict
+        # Assert no fields were modified
+        assert result["nx_meta"]["Creation Time"] == "2024-01-15T10:30:00-05:00"
+        assert result["nx_meta"]["Data Type"] == "STEM_Imaging"
+        assert result["nx_meta"]["DatasetType"] == "Image"
+
+    def test_validate_nx_meta_raises_validation_error_on_invalid_metadata(self):
+        """Test that ValidationError is raised for invalid metadata."""
+        # Create invalid metadata (missing required field 'Creation Time')
+        metadata_dict = {
+            "nx_meta": {
+                "Data Type": "STEM_Imaging",
+                "DatasetType": "Image",
+            }
+        }
+
+        # Verify ValidationError is raised
+        with pytest.raises(ValidationError) as exc_info:
+            validate_nx_meta(metadata_dict)
+
+        # Check error message contains field information
+        assert "Creation Time" in str(exc_info.value)
+
+    def test_validate_nx_meta_logs_error_with_filename_context(self, caplog):
+        """Test that error message includes filename when provided."""
+        import logging
+
+        # Create invalid metadata
+        metadata_dict = {
+            "nx_meta": {
+                "Data Type": "STEM_Imaging",
+                "DatasetType": "Image",
+            }
+        }
+
+        # Set logger level to capture ERROR logs
+        nexusLIMS.extractors.logger.setLevel(logging.ERROR)
+
+        # Call validate_nx_meta with filename and catch ValidationError
+        with pytest.raises(ValidationError):
+            validate_nx_meta(metadata_dict, filename=Path("test_file.dm3"))
+
+        # Assert caplog contains error message with filename
+        assert "Validation failed for test_file.dm3" in caplog.text
+
+    def test_validate_nx_meta_logs_error_without_filename_context(self, caplog):
+        """Test that error message omits filename when not provided."""
+        import logging
+
+        # Create invalid metadata
+        metadata_dict = {
+            "nx_meta": {
+                "Data Type": "STEM_Imaging",
+                "DatasetType": "Image",
+            }
+        }
+
+        # Set logger level to capture ERROR logs
+        nexusLIMS.extractors.logger.setLevel(logging.ERROR)
+
+        # Call validate_nx_meta without filename and catch ValidationError
+        with pytest.raises(ValidationError):
+            validate_nx_meta(metadata_dict)
+
+        # Assert caplog contains error message without filename
+        assert "Validation failed:" in caplog.text
+        # Ensure it's not the filename version
+        assert "Validation failed for" not in caplog.text
+
+    def test_validate_nx_meta_multiple_validation_errors(self):
+        """Test behavior when multiple fields are invalid."""
+        # Create metadata with multiple invalid fields
+        metadata_dict = {
+            "nx_meta": {
+                # Missing 'Creation Time' (required)
+                "Data Type": "STEM_Imaging",
+                "DatasetType": "InvalidType",  # Invalid value (not in allowed list)
+            }
+        }
+
+        # Verify ValidationError is raised
+        with pytest.raises(ValidationError) as exc_info:
+            validate_nx_meta(metadata_dict)
+
+        # Check error message includes information about both invalid fields
+        error_str = str(exc_info.value)
+        # Should mention missing Creation Time
+        assert "Creation Time" in error_str
+        # Should mention invalid DatasetType
+        assert "DatasetType" in error_str or "InvalidType" in error_str

@@ -241,13 +241,23 @@ class BaseExtractor(Protocol):
         a list with one element per signal. This consistent list-based approach allows
         the Activity layer to expand multi-signal files into multiple datasets.
 
-        Each 'nx_meta' dict should contain:
-        - 'Creation Time': ISO format datetime string
-        - 'Data Type': Human-readable data type (e.g., "STEM_Imaging")
-        - 'DatasetType': Dataset type per schema (e.g., "Image", "Spectrum")
+        Each 'nx_meta' dict MUST contain these required fields (validated against
+        :class:`~nexusLIMS.extractors.schemas.NexusMetadata`):
+
+        - 'Creation Time': ISO-8601 timestamp string **with timezone** (REQUIRED)
+          Examples: "2024-01-15T10:30:00-05:00" or "2024-01-15T15:30:00Z"
+        - 'Data Type': Human-readable data type (e.g., "STEM_Imaging") (REQUIRED)
+        - 'DatasetType': Must be one of: "Image", "Spectrum", "SpectrumImage",
+          "Diffraction", "Misc", or "Unknown" (REQUIRED)
+
+        Optional standard fields:
         - 'Data Dimensions': String like "(1024, 1024)" or "(12, 1024, 1024)"
         - 'Instrument ID': Instrument PID from database
-        - 'warnings': List of warning messages (optional)
+        - 'warnings': List of warning messages (string or [message, context] pairs)
+
+        Additional instrument-specific fields beyond these are allowed.
+        The nx_meta structure is strictly validated after extraction - validation
+        failures will raise pydantic.ValidationError with detailed field errors.
 
         Parameters
         ----------

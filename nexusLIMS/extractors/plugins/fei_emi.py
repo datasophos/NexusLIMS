@@ -11,7 +11,12 @@ from hyperspy.signal import BaseSignal
 
 from nexusLIMS.extractors.base import ExtractionContext
 from nexusLIMS.instruments import get_instr_from_filepath
-from nexusLIMS.utils import set_nested_dict_value, sort_dict, try_getting_dict_value
+from nexusLIMS.utils import (
+    current_system_tz,
+    set_nested_dict_value,
+    sort_dict,
+    try_getting_dict_value,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -160,9 +165,10 @@ class SerEmiExtractor:
         instr_name = instr.name if instr is not None else None
         metadata["nx_meta"]["fname"] = filename
         # get the modification time:
+        # Use instrument timezone if available, otherwise fall back to system timezone
+        tz = instr.timezone if instr else current_system_tz()
         metadata["nx_meta"]["Creation Time"] = dt.fromtimestamp(
-            filename.stat().st_mtime,
-            tz=instr.timezone if instr else None,
+            filename.stat().st_mtime, tz=tz
         ).isoformat()
         metadata["nx_meta"]["Instrument ID"] = instr_name
 
@@ -264,13 +270,10 @@ def parse_basic_info(metadata, shape, instrument):
     # try to set creation time to acquisition time from metadata
     acq_time = try_getting_dict_value(metadata, ["ObjectInfo", "AcquireDate"])
     if acq_time is not None:
+        # Use instrument timezone if available, otherwise fall back to system timezone
+        tz = instrument.timezone if instrument else current_system_tz()
         metadata["nx_meta"]["Creation Time"] = (
-            dt.strptime(
-                acq_time,
-                "%a %b %d %H:%M:%S %Y",
-            )
-            .replace(tzinfo=instrument.timezone if instrument else None)
-            .isoformat()
+            dt.strptime(acq_time, "%a %b %d %H:%M:%S %Y").replace(tzinfo=tz).isoformat()
         )
 
     # manufacturer is at high level, so parse it now

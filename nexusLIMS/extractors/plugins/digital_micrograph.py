@@ -39,6 +39,7 @@ from nexusLIMS.extractors.utils import (
 )
 from nexusLIMS.instruments import get_instr_from_filepath
 from nexusLIMS.utils import (
+    current_system_tz,
     remove_dict_nones,
     remove_dtb_element,
     set_nested_dict_value,
@@ -246,10 +247,9 @@ def get_dm3_metadata(filename: Path, instrument=None):
         )
         # get the modification time (as ISO format):
         mtime = filename.stat().st_mtime
-        mtime_iso = dt.fromtimestamp(
-            mtime,
-            tz=instr.timezone if instr else None,
-        ).isoformat()
+        # Use instrument timezone if available, otherwise fall back to system timezone
+        tz = instr.timezone if instr else current_system_tz()
+        mtime_iso = dt.fromtimestamp(mtime, tz=tz).isoformat()
         # if we found the instrument, then store the name as string, else None
         instr_name = instr.name if instr is not None else None
         m_list[i]["nx_meta"] = {}

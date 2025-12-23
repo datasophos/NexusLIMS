@@ -1,19 +1,40 @@
 """
 Extract metadata from various electron microscopy file types.
 
-Extractors should return a dictionary containing the values to be displayed
-in NexusLIMS as a sub-dictionary under the key ``nx_meta``. The remaining keys
-will be for the metadata as extracted. Under ``nx_meta``, a few keys are
-expected (although not enforced):
+Extractors should return a list of dictionaries, where each dictionary contains
+the extracted metadata under the key ``nx_meta``. The ``nx_meta`` structure is
+validated against the :class:`~nexusLIMS.extractors.schemas.NexusMetadata` Pydantic
+schema to ensure consistency across all extractors.
 
-* ``'Creation Time'`` - ISO format date and time as a string
-* ``'Data Type'`` - a human-readable description of the data type separated by
-  underscores - e.g "STEM_Imaging", "TEM_EDS", etc.
-* ``'DatasetType'`` - determines the value of the Type attribute for the dataset
-  (defined in the schema)
-* ``'Data Dimensions'`` - dimensions of the dataset, surrounded by parentheses,
-  separated by commas as a string- e.g. '(12, 1024, 1024)'
-* ``'Instrument ID'`` - instrument PID pulled from the instrument database
+Required Fields
+---------------
+All extractors must include these fields in ``nx_meta``:
+
+* ``'Creation Time'`` - ISO-8601 timestamp string **with timezone** (e.g.,
+  ``"2024-01-15T10:30:00-05:00"`` or ``"2024-01-15T15:30:00Z"``)
+* ``'Data Type'`` - Human-readable description using underscores (e.g.,
+  ``"STEM_Imaging"``, ``"TEM_EDS"``, ``"SEM_Imaging"``)
+* ``'DatasetType'`` - Schema-defined category, must be one of: ``"Image"``,
+  ``"Spectrum"``, ``"SpectrumImage"``, ``"Diffraction"``, ``"Misc"``, or ``"Unknown"``
+
+Optional Fields
+---------------
+Common optional fields include:
+
+* ``'Data Dimensions'`` - Dataset shape as string (e.g., ``"(1024, 1024)"``)
+* ``'Instrument ID'`` - Instrument PID from database (e.g., ``"FEI-Titan-TEM-635816"``)
+* ``'warnings'`` - List of warning messages or [message, context] pairs
+
+Additional instrument-specific fields are allowed beyond these standard fields.
+
+Schema Validation
+-----------------
+The ``nx_meta`` structure is validated using Pydantic strict mode. Validation occurs
+after default values are set (e.g., missing ``DatasetType`` defaults to ``"Misc"``).
+If validation fails, a ``pydantic.ValidationError`` is raised with detailed information
+about which fields are invalid.
+
+For complete schema details, see :class:`~nexusLIMS.extractors.schemas.NexusMetadata`.
 """
 
 import base64
@@ -28,9 +49,11 @@ from typing import Any, Callable, Dict, Tuple
 import hyperspy.api as hs
 import numpy as np
 from benedict import benedict
+from pydantic import ValidationError
 
 from nexusLIMS.extractors.base import ExtractionContext
 from nexusLIMS.extractors.registry import get_registry
+from nexusLIMS.extractors.schemas import NexusMetadata
 from nexusLIMS.instruments import get_instr_from_filepath
 from nexusLIMS.utils import current_system_tz, replace_instrument_data_path
 from nexusLIMS.version import __version__
@@ -60,6 +83,7 @@ __all__ = [
     "text_to_thumbnail",
     "unextracted_preview_map",
     "utils",
+    "validate_nx_meta",
 ]
 
 # filetypes that will only have basic metadata extracted but will nonetheless
@@ -130,6 +154,98 @@ def _add_extraction_details(
     }
 
     return nx_meta
+
+
+def validate_nx_meta(
+    metadata_dict: dict[str, Any], *, filename: Path | None = None
+) -> dict[str, Any]:
+    """
+    Validate the nx_meta structure against the NexusMetadata schema.
+
+    This function ensures that metadata returned by extractor plugins conforms
+    to the required structure defined in
+    :class:`~nexusLIMS.extractors.schemas.NexusMetadata`. Validation is
+    performed strictly - any schema violations will raise a ValidationError
+    with detailed information about the failure.
+
+    Parameters
+    ----------
+    metadata_dict : dict[str, Any]
+        Dictionary containing an 'nx_meta' key with the metadata to validate.
+        This is the format returned by all extractor plugins.
+    filename : Path or None, optional
+        The file path being processed. Used only for error message context.
+        If None, error messages will not include file path information.
+
+    Returns
+    -------
+    dict[str, Any]
+        The original metadata_dict, unchanged. Validation does not modify data,
+        it only checks conformance to the schema.
+
+    Raises
+    ------
+    ValidationError
+        If the nx_meta structure fails validation. The error message will include
+        detailed information about which fields are invalid and why.
+
+    Notes
+    -----
+    This function validates:
+
+    - **Required fields**: 'Creation Time', 'Data Type', 'DatasetType' must be present
+    - **ISO-8601 timestamps**: 'Creation Time' must be valid ISO-8601 with timezone
+    - **Controlled vocabularies**: 'DatasetType' must be one of the allowed values
+    - **Type constraints**: All fields must match their expected types
+
+    Additional fields beyond the schema are allowed (for instrument-specific metadata).
+
+    Examples
+    --------
+    Valid metadata passes without modification:
+
+    >>> metadata = {
+    ...     "nx_meta": {
+    ...         "Creation Time": "2024-01-15T10:30:00-05:00",
+    ...         "Data Type": "STEM_Imaging",
+    ...         "DatasetType": "Image",
+    ...     }
+    ... }
+    >>> result = validate_nx_meta(metadata)
+    >>> result == metadata
+    True
+
+    Invalid metadata raises ValidationError:
+
+    >>> bad_metadata = {
+    ...     "nx_meta": {
+    ...         "Creation Time": "invalid-timestamp",
+    ...         "Data Type": "STEM_Imaging",
+    ...         "DatasetType": "Image",
+    ...     }
+    ... }
+    >>> validate_nx_meta(bad_metadata)  # doctest: +SKIP
+    Traceback (most recent call last):
+        ...
+    pydantic.ValidationError: ...
+
+    See Also
+    --------
+    NexusMetadata : The Pydantic schema model for nx_meta validation
+    parse_metadata : Main extraction function that uses this validator
+    """
+    try:
+        NexusMetadata.model_validate(metadata_dict["nx_meta"])
+    except ValidationError as e:
+        # Enhance error message with file context if available
+        if filename:
+            msg = f"Validation failed for {filename}: {e}"
+        else:
+            msg = f"Validation failed: {e}"
+        logger.exception(msg)
+        raise
+
+    return metadata_dict
 
 
 def parse_metadata(  # noqa: PLR0912
@@ -238,6 +354,11 @@ def parse_metadata(  # noqa: PLR0912
         if "DatasetType" not in nx_meta["nx_meta"]:
             nx_meta["nx_meta"]["DatasetType"] = "Misc"
             nx_meta["nx_meta"]["Data Type"] = "Miscellaneous"
+
+    # Validate each metadata dict against the schema (strict mode)
+    # This happens AFTER setting defaults to allow extractors to omit optional fields
+    for nx_meta in nx_meta_list:
+        validate_nx_meta(nx_meta, filename=fname)
 
     # Write output for each signal (single and multi-signal files)
     if write_output:
