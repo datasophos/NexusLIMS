@@ -153,7 +153,7 @@ class Instrument:
         The specific submodule within :py:mod:`nexusLIMS.harvesters` that should be
         used to harvest reservation information for this instrument. At the time of
         writing, the only possible value is ``nemo``.
-    timezone : pytz.tzinfo.BaseTzInfo or str or None
+    timezone : pytz.tzinfo.BaseTzInfo or None
         The timezone in which this instrument is located, in the format of the IANA
         timezone database (e.g. ``America/New_York``). This is used to properly localize
         dates and times when communicating with the harvester APIs.
@@ -171,7 +171,7 @@ class Instrument:
     computer_name: str | None = None
     computer_mount: str | None = None
     harvester: str | None = None
-    timezone: BaseTzInfo | str | None = None
+    timezone: BaseTzInfo | None = None
 
     def __post_init__(self):
         """Post-initialization to convert timezone string to timezone object."""
@@ -306,7 +306,7 @@ class Instrument:
 instrument_db = _get_instrument_db()
 
 
-def get_instr_from_filepath(path: Path):
+def get_instr_from_filepath(path: Path) -> Instrument | None:
     """
     Get an instrument object by a given path Using the NexusLIMS database.
 

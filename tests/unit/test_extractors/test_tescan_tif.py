@@ -555,10 +555,6 @@ class TestTescanPfibTiffExtractor:
 
         monkeypatch.setattr(Path, "open", mock_path_open)
 
-        # Set the logger level to capture the debug message
-        logger = logging.getLogger("nexusLIMS.extractors.plugins.tescan_tif")
-        logger.setLevel(logging.DEBUG)
-
         # Should return False without crashing
         with caplog.at_level(
             logging.DEBUG, logger="nexusLIMS.extractors.plugins.tescan_tif"
@@ -689,10 +685,6 @@ class TestTescanPfibTiffExtractor:
         # Return an integer (unsupported type) instead of bytes or str
         fake_tif, extractor = _setup_mock_tiff_file(12345)
 
-        # Set the logger level to DEBUG to capture the debug message
-        logger = logging.getLogger("nexusLIMS.extractors.plugins.tescan_tif")
-        logger.setLevel(logging.DEBUG)
-
         # Should return None and not crash - the TypeError should be caught internally
         with caplog.at_level(
             logging.DEBUG, logger="nexusLIMS.extractors.plugins.tescan_tif"
@@ -809,10 +801,6 @@ class TestTescanPfibTiffExtractor:
             extractor, "_extract_embedded_hdr", mock_extract_embedded_hdr_success
         )
         monkeypatch.setattr(extractor, "_parse_nx_meta", mock_parse_nx_meta_exception)
-
-        # Set the logger level to DEBUG to capture the debug message
-        logger = logging.getLogger("nexusLIMS.extractors.plugins.tescan_tif")
-        logger.setLevel(logging.DEBUG)
 
         # The extract method should handle the exception gracefully and not crash
         context = ExtractionContext(file_path=fake_tif, instrument=None)
@@ -936,10 +924,6 @@ WD=0.005
         monkeypatch.setattr(
             extractor, "_extract_embedded_hdr", mock_extract_embedded_hdr_failure
         )
-
-        # Set the logger level to capture the debug message
-        logger = logging.getLogger("nexusLIMS.extractors.plugins.tescan_tif")
-        logger.setLevel(logging.DEBUG)
 
         # The extract method should successfully parse the sidecar HDR file
         context = ExtractionContext(file_path=fake_tif, instrument=None)

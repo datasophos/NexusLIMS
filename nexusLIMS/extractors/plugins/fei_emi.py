@@ -10,7 +10,7 @@ from hyperspy.io import load as hs_load
 from hyperspy.signal import BaseSignal
 
 from nexusLIMS.extractors.base import ExtractionContext
-from nexusLIMS.instruments import get_instr_from_filepath
+from nexusLIMS.instruments import Instrument, get_instr_from_filepath
 from nexusLIMS.utils import (
     current_system_tz,
     set_nested_dict_value,
@@ -166,10 +166,11 @@ class SerEmiExtractor:
         metadata["nx_meta"]["fname"] = filename
         # get the modification time:
         # Use instrument timezone if available, otherwise fall back to system timezone
-        tz = instr.timezone if instr else current_system_tz()
-        metadata["nx_meta"]["Creation Time"] = dt.fromtimestamp(
-            filename.stat().st_mtime, tz=tz
-        ).isoformat()
+        mtime_naive_dt = dt.fromtimestamp(filename.stat().st_mtime)  # noqa: DTZ006
+        tz = instr.timezone if instr is not None else None
+        tz = tz if tz is not None else current_system_tz()
+        mtime_aware_dt = tz.localize(mtime_naive_dt)
+        metadata["nx_meta"]["Creation Time"] = mtime_aware_dt.isoformat()
         metadata["nx_meta"]["Instrument ID"] = instr_name
 
         # we could not read the signal, so add some basic metadata and return
@@ -243,7 +244,7 @@ def _load_ser(emi_filename: Path, ser_index: int):
     return s, True
 
 
-def parse_basic_info(metadata, shape, instrument):
+def parse_basic_info(metadata, shape, instrument: Instrument):
     """
     Parse basic metadata from file.
 
@@ -272,9 +273,11 @@ def parse_basic_info(metadata, shape, instrument):
     if acq_time is not None:
         # Use instrument timezone if available, otherwise fall back to system timezone
         tz = instrument.timezone if instrument else current_system_tz()
-        metadata["nx_meta"]["Creation Time"] = (
-            dt.strptime(acq_time, "%a %b %d %H:%M:%S %Y").replace(tzinfo=tz).isoformat()
-        )
+        naive_dt = dt.strptime(acq_time, "%a %b %d %H:%M:%S %Y")  # noqa: DTZ007
+        # Both instrument.timezone and current_system_tz() return pytz objects,
+        # so use localize() for proper DST handling
+        aware_dt = tz.localize(naive_dt)
+        metadata["nx_meta"]["Creation Time"] = aware_dt.isoformat()
 
     # manufacturer is at high level, so parse it now
     manufacturer = try_getting_dict_value(metadata, ["ObjectInfo", "Manufacturer"])

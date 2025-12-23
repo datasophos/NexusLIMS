@@ -1283,11 +1283,11 @@ class TestValidateNxMeta:
             }
         }
 
-        # Set logger level to capture ERROR logs
-        nexusLIMS.extractors.logger.setLevel(logging.ERROR)
-
         # Call validate_nx_meta with filename and catch ValidationError
-        with pytest.raises(ValidationError):
+        with (
+            caplog.at_level(logging.ERROR, logger="nexusLIMS.extractors"),
+            pytest.raises(ValidationError),
+        ):
             validate_nx_meta(metadata_dict, filename=Path("test_file.dm3"))
 
         # Assert caplog contains error message with filename
@@ -1305,11 +1305,11 @@ class TestValidateNxMeta:
             }
         }
 
-        # Set logger level to capture ERROR logs
-        nexusLIMS.extractors.logger.setLevel(logging.ERROR)
-
         # Call validate_nx_meta without filename and catch ValidationError
-        with pytest.raises(ValidationError):
+        with (
+            caplog.at_level(logging.ERROR, logger="nexusLIMS.extractors"),
+            pytest.raises(ValidationError),
+        ):
             validate_nx_meta(metadata_dict)
 
         # Assert caplog contains error message without filename

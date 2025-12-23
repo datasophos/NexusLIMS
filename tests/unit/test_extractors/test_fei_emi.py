@@ -1,20 +1,19 @@
 # pylint: disable=C0116,too-many-public-methods
-# ruff: noqa: D102
+# ruff: noqa: D102, DTZ001
 
 """Tests for nexusLIMS.extractors.fei_emi."""
 
 from datetime import datetime as dt
-from datetime import timedelta, timezone
 
 import pytest
 
 from nexusLIMS.extractors.plugins import fei_emi
+from nexusLIMS.utils import current_system_tz
 from tests.unit.test_instrument_factory import make_titan_stem, make_titan_tem
 from tests.unit.utils import get_full_file_path
 
-# Helper to create timezone-aware datetime for tests
-# FEI Titan instruments use UTC-6 (Central Time)
-CST = timezone(timedelta(hours=-6))
+# Use IANA timezone for proper DST handling
+SYSTEM_TZ = current_system_tz()
 
 
 class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
@@ -29,10 +28,8 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta[0]["nx_meta"]["DatasetType"] == "Image"
         assert meta[0]["nx_meta"]["Data Type"] == "STEM_Imaging"
         assert meta[0]["nx_meta"]["Data Dimensions"] == "(1024, 1024)"
-        assert (
-            meta[0]["nx_meta"]["Creation Time"]
-            == dt(2018, 11, 13, 15, 2, 43, tzinfo=CST).isoformat()
-        )
+        expected_iso = SYSTEM_TZ.localize(dt(2018, 11, 13, 15, 2, 43)).isoformat()
+        assert meta[0]["nx_meta"]["Creation Time"] == expected_iso
         assert meta[0]["nx_meta"]["Magnification (x)"] == pytest.approx(225000)
         assert meta[0]["nx_meta"]["Mode"] == "STEM nP SA Zoom Diffraction"
         assert meta[0]["nx_meta"]["Stage Position"] == {
@@ -58,10 +55,8 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta[0]["nx_meta"]["C2 Aperture (μm)"] == pytest.approx(50.0)
         assert meta[0]["nx_meta"]["DatasetType"] == "Image"
         assert meta[0]["nx_meta"]["Data Type"] == "STEM_Imaging"
-        assert (
-            meta[0]["nx_meta"]["Creation Time"]
-            == dt(2018, 11, 13, 15, 2, 43, tzinfo=CST).isoformat()
-        )
+        expected_iso = SYSTEM_TZ.localize(dt(2018, 11, 13, 15, 2, 43)).isoformat()
+        assert meta[0]["nx_meta"]["Creation Time"] == expected_iso
 
     def test_titan_tem_single_stem_image(self, fei_ser_files):
         test_file = get_full_file_path(
@@ -72,10 +67,8 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta[0]["nx_meta"]["DatasetType"] == "Image"
         assert meta[0]["nx_meta"]["Data Type"] == "STEM_Imaging"
         assert meta[0]["nx_meta"]["Data Dimensions"] == "(1024, 1024)"
-        assert (
-            meta[0]["nx_meta"]["Creation Time"]
-            == dt(2019, 6, 28, 15, 53, 31, tzinfo=CST).isoformat()
-        )
+        expected_iso = SYSTEM_TZ.localize(dt(2019, 6, 28, 15, 53, 31)).isoformat()
+        assert meta[0]["nx_meta"]["Creation Time"] == expected_iso
         assert meta[0]["nx_meta"]["C1 Aperture (μm)"] == 2000
         assert meta[0]["nx_meta"]["Mode"] == "STEM nP SA Zoom Image"
         assert meta[0]["nx_meta"]["Stage Position"] == {
@@ -97,10 +90,8 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta[0]["nx_meta"]["DatasetType"] == "SpectrumImage"
         assert meta[0]["nx_meta"]["Data Type"] == "STEM_EDS_Spectrum_Imaging"
         assert meta[0]["nx_meta"]["Data Dimensions"] == "(9, 10, 3993)"
-        assert (
-            meta[0]["nx_meta"]["Creation Time"]
-            == dt(2019, 7, 17, 13, 50, 22, tzinfo=CST).isoformat()
-        )
+        expected_iso = SYSTEM_TZ.localize(dt(2019, 7, 17, 13, 50, 22)).isoformat()
+        assert meta[0]["nx_meta"]["Creation Time"] == expected_iso
         assert meta[0]["nx_meta"]["Microscope Accelerating Voltage (V)"] == 300000
         assert meta[0]["nx_meta"]["Camera Length (m)"] == pytest.approx(0.195)
         assert meta[0]["nx_meta"]["Stage Position"] == {
@@ -122,10 +113,8 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta[0]["nx_meta"]["DatasetType"] == "SpectrumImage"
         assert meta[0]["nx_meta"]["Data Type"] == "STEM_EDS_Spectrum_Imaging"
         assert meta[0]["nx_meta"]["Data Dimensions"] == "(100, 3993)"
-        assert (
-            meta[0]["nx_meta"]["Creation Time"]
-            == dt(2019, 11, 1, 15, 42, 16, tzinfo=CST).isoformat()
-        )
+        expected_iso = SYSTEM_TZ.localize(dt(2019, 11, 1, 15, 42, 16)).isoformat()
+        assert meta[0]["nx_meta"]["Creation Time"] == expected_iso
         assert meta[0]["nx_meta"]["Dwell Time Path (s)"] == 6e-6
         assert meta[0]["nx_meta"]["Defocus (μm)"] == -1.12
         assert meta[0]["nx_meta"]["Stage Position"] == {
@@ -147,10 +136,8 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta[0]["nx_meta"]["DatasetType"] == "SpectrumImage"
         assert meta[0]["nx_meta"]["Data Type"] == "STEM_EDS_Spectrum_Imaging"
         assert meta[0]["nx_meta"]["Data Dimensions"] == "(6, 3993)"
-        assert (
-            meta[0]["nx_meta"]["Creation Time"]
-            == dt(2019, 7, 17, 15, 43, 21, tzinfo=CST).isoformat()
-        )
+        expected_iso = SYSTEM_TZ.localize(dt(2019, 7, 17, 15, 43, 21)).isoformat()
+        assert meta[0]["nx_meta"]["Creation Time"] == expected_iso
         assert meta[0]["nx_meta"]["Diffraction Lens (%)"] == pytest.approx(34.922)
         assert meta[0]["nx_meta"]["Defocus (μm)"] == -0.145
         assert meta[0]["nx_meta"]["Stage Position"] == {
@@ -175,10 +162,8 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta[0]["nx_meta"]["DatasetType"] == "Spectrum"
         assert meta[0]["nx_meta"]["Data Type"] == "TEM_EDS_Spectrum"
         assert meta[0]["nx_meta"]["Data Dimensions"] == "(3993,)"
-        assert (
-            meta[0]["nx_meta"]["Creation Time"]
-            == dt(2019, 12, 11, 16, 2, 38, tzinfo=CST).isoformat()
-        )
+        expected_iso = SYSTEM_TZ.localize(dt(2019, 12, 11, 16, 2, 38)).isoformat()
+        assert meta[0]["nx_meta"]["Creation Time"] == expected_iso
         assert meta[0]["nx_meta"]["Energy Resolution (eV)"] == 10
         assert meta[0]["nx_meta"]["Integration Time (s)"] == 25
         assert meta[0]["nx_meta"]["Stage Position"] == {
@@ -200,10 +185,8 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta[0]["nx_meta"]["DatasetType"] == "Diffraction"
         assert meta[0]["nx_meta"]["Data Type"] == "TEM_Diffraction"
         assert meta[0]["nx_meta"]["Data Dimensions"] == "(2048, 2048)"
-        assert (
-            meta[0]["nx_meta"]["Creation Time"]
-            == dt(2018, 10, 30, 17, 1, 3, tzinfo=CST).isoformat()
-        )
+        expected_iso = SYSTEM_TZ.localize(dt(2018, 10, 30, 17, 1, 3)).isoformat()
+        assert meta[0]["nx_meta"]["Creation Time"] == expected_iso
         assert meta[0]["nx_meta"]["Camera Name Path"] == "BM-UltraScan"
         assert meta[0]["nx_meta"]["Camera Length (m)"] == pytest.approx(0.3)
         assert meta[0]["nx_meta"]["Stage Position"] == {
@@ -225,10 +208,8 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta[0]["nx_meta"]["DatasetType"] == "Image"
         assert meta[0]["nx_meta"]["Data Type"] == "STEM_Imaging"
         assert meta[0]["nx_meta"]["Data Dimensions"] == "(20, 2048, 2048)"
-        assert (
-            meta[0]["nx_meta"]["Creation Time"]
-            == dt(2019, 3, 28, 21, 14, 16, tzinfo=CST).isoformat()
-        )
+        expected_iso = SYSTEM_TZ.localize(dt(2019, 3, 28, 21, 14, 16)).isoformat()
+        assert meta[0]["nx_meta"]["Creation Time"] == expected_iso
         assert meta[0]["nx_meta"]["Dwell Time Path (s)"] == pytest.approx(0.000002)
         assert meta[0]["nx_meta"]["C2 Aperture (μm)"] == pytest.approx(50.0)
         assert meta[0]["nx_meta"]["Stage Position"] == {
@@ -250,10 +231,8 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta[0]["nx_meta"]["DatasetType"] == "Image"
         assert meta[0]["nx_meta"]["Data Type"] == "STEM_Imaging"
         assert meta[0]["nx_meta"]["Data Dimensions"] == "(20, 2048, 2048)"
-        assert (
-            meta[0]["nx_meta"]["Creation Time"]
-            == dt(2019, 3, 28, 22, 41, 0, tzinfo=CST).isoformat()
-        )
+        expected_iso = SYSTEM_TZ.localize(dt(2019, 3, 28, 22, 41, 0)).isoformat()
+        assert meta[0]["nx_meta"]["Creation Time"] == expected_iso
         assert meta[0]["nx_meta"]["Frame Time (s)"] == 10
         assert meta[0]["nx_meta"]["C1 Aperture (μm)"] == 2000
         assert meta[0]["nx_meta"]["Stage Position"] == {
@@ -275,10 +254,8 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta[0]["nx_meta"]["DatasetType"] == "Diffraction"
         assert meta[0]["nx_meta"]["Data Type"] == "TEM_Diffraction"
         assert meta[0]["nx_meta"]["Data Dimensions"] == "(33, 1024, 1024)"
-        assert (
-            meta[0]["nx_meta"]["Creation Time"]
-            == dt(2018, 12, 13, 13, 33, 47, tzinfo=CST).isoformat()
-        )
+        expected_iso = SYSTEM_TZ.localize(dt(2018, 12, 13, 13, 33, 47)).isoformat()
+        assert meta[0]["nx_meta"]["Creation Time"] == expected_iso
         assert meta[0]["nx_meta"]["C2 Lens (%)"] == pytest.approx(43.465)
         assert meta[0]["nx_meta"]["C2 Aperture (μm)"] == 100
         assert meta[0]["nx_meta"]["Stage Position"] == {
@@ -360,10 +337,8 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta_1[0]["nx_meta"]["DatasetType"] == "Image"
         assert meta_1[0]["nx_meta"]["Data Type"] == "STEM_Imaging"
         assert meta_1[0]["nx_meta"]["Data Dimensions"] == "(512, 512)"
-        assert (
-            meta_1[0]["nx_meta"]["Creation Time"]
-            == dt(2019, 6, 13, 19, 52, 6, tzinfo=CST).isoformat()
-        )
+        expected_iso = SYSTEM_TZ.localize(dt(2019, 6, 13, 19, 52, 6)).isoformat()
+        assert meta_1[0]["nx_meta"]["Creation Time"] == expected_iso
         assert meta_1[0]["nx_meta"]["Diffraction Lens (%)"] == pytest.approx(37.347)
         assert meta_1[0]["nx_meta"]["Spot Size"] == 7
         assert meta_1[0]["nx_meta"]["Manufacturer"] == "FEI (ISAS)"
@@ -407,10 +382,8 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta_1[0]["nx_meta"]["DatasetType"] == "Diffraction"
         assert meta_1[0]["nx_meta"]["Data Type"] == "TEM_Diffraction"
         assert meta_1[0]["nx_meta"]["Data Dimensions"] == "(77, 1024, 1024)"
-        assert (
-            meta_1[0]["nx_meta"]["Creation Time"]
-            == dt(2018, 9, 21, 14, 17, 25, tzinfo=CST).isoformat()
-        )
+        expected_iso = SYSTEM_TZ.localize(dt(2018, 9, 21, 14, 17, 25)).isoformat()
+        assert meta_1[0]["nx_meta"]["Creation Time"] == expected_iso
         assert meta_1[0]["nx_meta"]["Binning"] == 2
         assert meta_1[0]["nx_meta"]["Tecnai Filter"]["Mode"] == "Spectroscopy"
         assert meta_1[0]["nx_meta"]["Tecnai Filter"]["Selected Aperture"] == "3mm"
@@ -427,10 +400,8 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta_2[0]["nx_meta"]["DatasetType"] == "Image"
         assert meta_2[0]["nx_meta"]["Data Type"] == "TEM_Imaging"
         assert meta_2[0]["nx_meta"]["Data Dimensions"] == "(4, 1024, 1024)"
-        assert (
-            meta_2[0]["nx_meta"]["Creation Time"]
-            == dt(2018, 9, 21, 14, 25, 11, tzinfo=CST).isoformat()
-        )
+        expected_iso = SYSTEM_TZ.localize(dt(2018, 9, 21, 14, 25, 11)).isoformat()
+        assert meta_2[0]["nx_meta"]["Creation Time"] == expected_iso
         assert meta_2[0]["nx_meta"]["Dwell Time Path (s)"] == pytest.approx(0.8)
         assert meta_2[0]["nx_meta"]["Emission (μA)"] == pytest.approx(135.0)
         assert meta_2[0]["nx_meta"]["Magnification (x)"] == 10000
@@ -470,10 +441,8 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
             assert meta[0]["nx_meta"]["Data Type"] == "STEM_Imaging"
             assert meta[0]["nx_meta"]["Data Dimensions"] == "(2048, 2048)"
 
-            assert (
-                meta[0]["nx_meta"]["Creation Time"]
-                == dt(2018, 11, 14, 17, 9, 55, tzinfo=CST).isoformat()
-            )
+            expected_iso = SYSTEM_TZ.localize(dt(2018, 11, 14, 17, 9, 55)).isoformat()
+            assert meta[0]["nx_meta"]["Creation Time"] == expected_iso
             assert meta[0]["nx_meta"]["Frame Time (s)"] == pytest.approx(30.199)
             assert (
                 meta[0]["nx_meta"]["Tecnai Filter"]["Selected Dispersion (eV/Channel)"]
@@ -504,10 +473,8 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta[0]["nx_meta"]["DatasetType"] == "Image"
         assert meta[0]["nx_meta"]["Data Type"] == "STEM_Imaging"
         assert meta[0]["nx_meta"]["Data Dimensions"] == "(1024, 1024)"
-        assert (
-            meta[0]["nx_meta"]["Creation Time"]
-            == dt(2011, 11, 16, 9, 46, 13, tzinfo=CST).isoformat()
-        )
+        expected_iso = SYSTEM_TZ.localize(dt(2011, 11, 16, 9, 46, 13)).isoformat()
+        assert meta[0]["nx_meta"]["Creation Time"] == expected_iso
         assert meta[0]["nx_meta"]["C2 Lens (%)"] == pytest.approx(8.967)
         assert meta[0]["nx_meta"]["C2 Aperture (μm)"] == 40
         assert meta[0]["nx_meta"]["Stage Position"] == {
@@ -539,10 +506,8 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta_1[0]["nx_meta"]["DatasetType"] == "SpectrumImage"
         assert meta_1[0]["nx_meta"]["Data Type"] == "STEM_EDS_Spectrum_Imaging"
         assert meta_1[0]["nx_meta"]["Data Dimensions"] == "(40, 70, 4000)"
-        assert (
-            meta_1[0]["nx_meta"]["Creation Time"]
-            == dt(2011, 11, 16, 16, 8, 54, tzinfo=CST).isoformat()
-        )
+        expected_iso = SYSTEM_TZ.localize(dt(2011, 11, 16, 16, 8, 54)).isoformat()
+        assert meta_1[0]["nx_meta"]["Creation Time"] == expected_iso
         assert meta_1[0]["nx_meta"]["Frame Time (s)"] == 10
         assert meta_1[0]["nx_meta"]["Emission (μA)"] == pytest.approx(237.3)
         assert meta_1[0]["nx_meta"]["Tecnai Filter"]["Selected Aperture"] == "2.5 mm"
@@ -551,10 +516,8 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta_2[0]["nx_meta"]["DatasetType"] == "SpectrumImage"
         assert meta_2[0]["nx_meta"]["Data Type"] == "STEM_EELS_Spectrum_Imaging"
         assert meta_2[0]["nx_meta"]["Data Dimensions"] == "(40, 70, 2048)"
-        assert (
-            meta_2[0]["nx_meta"]["Creation Time"]
-            == dt(2011, 11, 16, 16, 32, 27, tzinfo=CST).isoformat()
-        )
+        expected_iso = SYSTEM_TZ.localize(dt(2011, 11, 16, 16, 32, 27)).isoformat()
+        assert meta_2[0]["nx_meta"]["Creation Time"] == expected_iso
         assert meta_2[0]["nx_meta"]["Energy Resolution (eV)"] == 10
         assert meta_2[0]["nx_meta"]["Integration Time (s)"] == pytest.approx(0.5)
         assert meta_2[0]["nx_meta"]["Extraction Voltage (V)"] == 4500
@@ -571,10 +534,8 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta[0]["nx_meta"]["DatasetType"] == "Image"
         assert meta[0]["nx_meta"]["Data Type"] == "STEM_Imaging"
         assert meta[0]["nx_meta"]["Data Dimensions"] == "(5, 1024, 1024)"
-        assert (
-            meta[0]["nx_meta"]["Creation Time"]
-            == dt(2012, 1, 31, 13, 43, 40, tzinfo=CST).isoformat()
-        )
+        expected_iso = SYSTEM_TZ.localize(dt(2012, 1, 31, 13, 43, 40)).isoformat()
+        assert meta[0]["nx_meta"]["Creation Time"] == expected_iso
         assert meta[0]["nx_meta"]["Frame Time (s)"] == pytest.approx(2.0)
         assert meta[0]["nx_meta"]["C1 Aperture (μm)"] == 2000
         assert meta[0]["nx_meta"]["C2 Lens (%)"] == pytest.approx(14.99)
@@ -595,10 +556,8 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta[0]["nx_meta"]["DatasetType"] == "Image"
         assert meta[0]["nx_meta"]["Data Type"] == "STEM_Imaging"
         assert meta[0]["nx_meta"]["Data Dimensions"] == "(2, 512, 512)"
-        assert (
-            meta[0]["nx_meta"]["Creation Time"]
-            == dt(2020, 3, 11, 16, 33, 38, tzinfo=CST).isoformat()
-        )
+        expected_iso = SYSTEM_TZ.localize(dt(2020, 3, 11, 16, 33, 38)).isoformat()
+        assert meta[0]["nx_meta"]["Creation Time"] == expected_iso
         assert meta[0]["nx_meta"]["Frame Time (s)"] == pytest.approx(6.34179)
         assert meta[0]["nx_meta"]["Dwell Time Path (s)"] == pytest.approx(0.000001)
         assert meta[0]["nx_meta"]["C2 Aperture (μm)"] == 10
