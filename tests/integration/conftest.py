@@ -1803,6 +1803,329 @@ def integration_test_marker(request):
 
 
 # ============================================================================
+# Multi-signal Test Fixtures and Helpers
+# ============================================================================
+
+
+def _verify_json_metadata_accessible(metadata_url, index, total):
+    """
+    Verify a JSON metadata file is accessible and valid.
+
+    Helper function used by multi-signal fileserver tests.
+
+    Parameters
+    ----------
+    metadata_url : str
+        URL to the JSON metadata file
+    index : int
+        Current file index (for logging)
+    total : int
+        Total number of files (for logging)
+
+    Raises
+    ------
+    AssertionError
+        If the metadata file is not accessible or invalid
+    """
+    import json
+
+    import requests
+
+    print(f"  [{index}/{total}] {metadata_url}")
+    response = requests.get(metadata_url, timeout=10)
+
+    assert response.status_code == 200, (
+        f"Failed to access metadata JSON via fileserver: {response.status_code}\n"
+        f"URL: {metadata_url}"
+    )
+    assert len(response.content) > 0, f"Metadata file is empty: {metadata_url}"
+
+    # Verify it's valid JSON with nx_meta key
+    try:
+        metadata_json = json.loads(response.content)
+        assert "nx_meta" in metadata_json, "Metadata JSON missing 'nx_meta' key"
+    except json.JSONDecodeError as e:
+        pytest.fail(f"Invalid JSON in metadata file {metadata_url}: {e}")
+
+
+def _get_metadata_urls_for_datasets(xml_doc, namespace):
+    """
+    Extract metadata JSON URLs from XML datasets.
+
+    Helper function that builds metadata URLs based on dataset locations,
+    handling both single-signal and multi-signal files.
+
+    Parameters
+    ----------
+    xml_doc : lxml.etree.Element
+        Parsed XML document
+    namespace : str
+        XML namespace (e.g., "{https://data.nist.gov/od/dm/nexus/experiment/v1.0}")
+
+    Returns
+    -------
+    list[str]
+        List of metadata JSON URLs
+    """
+    import re
+
+    all_datasets = xml_doc.findall(f".//{namespace}dataset")
+
+    # Build mapping of location -> dataset names
+    location_to_names = {}
+    for dataset in all_datasets:
+        location_el = dataset.find(f"{namespace}location")
+        name_el = dataset.find(f"{namespace}name")
+        if location_el is not None and name_el is not None:
+            location = location_el.text
+            if location not in location_to_names:
+                location_to_names[location] = []
+            location_to_names[location].append(name_el.text)
+
+    # Build metadata URLs
+    metadata_urls = []
+    for location, names in location_to_names.items():
+        if len(names) == 1:
+            # Single signal
+            metadata_urls.append(f"http://fileserver.localhost/data{location}.json")
+        else:
+            # Multi-signal - extract signal indices from names
+            for name in names:
+                match = re.search(r"\((\d+) of \d+\)", name)
+                if match:
+                    signal_idx = int(match.group(1)) - 1
+                    url = f"http://fileserver.localhost/data{location}_signal{signal_idx}.json"
+                    metadata_urls.append(url)
+
+    return metadata_urls
+
+
+def _verify_url_accessible(url, index, total, expected_type=None):
+    """
+    Verify a URL is accessible via HTTP GET.
+
+    Helper function for fileserver accessibility tests.
+
+    Parameters
+    ----------
+    url : str
+        URL to verify
+    index : int
+        Current item index (for logging)
+    total : int
+        Total number of items (for logging)
+    expected_type : str, optional
+        Expected content type (e.g., "image"). If provided, validates content type.
+
+    Raises
+    ------
+    AssertionError
+        If the URL is not accessible or content type doesn't match
+    """
+    import requests
+
+    print(f"  [{index}/{total}] {url}")
+    response = requests.get(url, timeout=10)
+
+    assert response.status_code == 200, (
+        f"Failed to access URL: {response.status_code}\nURL: {url}"
+    )
+    assert len(response.content) > 0, f"Content is empty: {url}"
+
+    if expected_type == "image":
+        content_type = response.headers.get("Content-Type", "")
+        is_image_type = "image" in content_type
+        is_image_ext = url.endswith((".png", ".jpg", ".jpeg"))
+        assert is_image_type or is_image_ext, (
+            f"URL doesn't appear to be an image: {content_type}\nURL: {url}"
+        )
+
+
+@pytest.fixture
+def multi_signal_integration_record(  # noqa: PLR0913, PLR0915
+    docker_services_running,
+    nemo_connector,
+    populated_test_database,
+    cdcs_client,
+    multi_signal_test_files,
+    monkeypatch,
+):
+    """
+    Create and upload a multi-signal test record for integration tests.
+
+    This fixture sets up multi-signal test files, creates a database session,
+    runs record building, and uploads to CDCS. The generated record is cleaned
+    up after the test completes.
+
+    Parameters
+    ----------
+    docker_services_running : dict
+        Ensures Docker services are running
+    nemo_connector : NemoConnector
+        Configured NEMO connector
+    populated_test_database : Path
+        Test database with instruments
+    cdcs_client : dict
+        CDCS client configuration
+    multi_signal_test_files : list[Path]
+        Multi-signal test files from unit test fixtures
+    monkeypatch : pytest.MonkeyPatch
+        Pytest monkeypatch fixture
+
+    Yields
+    ------
+    dict
+        Multi-signal record information:
+        - 'record_id': CDCS record ID
+        - 'record_title': Record title
+        - 'xml_doc': Parsed XML document (lxml.etree.Element)
+        - 'xml_path': Path to the uploaded XML file
+        - 'session_identifier': Database session identifier
+    """
+    from datetime import datetime as dt
+    from datetime import timedelta
+
+    from lxml import etree
+
+    from nexusLIMS import instruments
+    from nexusLIMS.builder import record_builder
+    from nexusLIMS.config import refresh_settings
+    from nexusLIMS.db.session_handler import Session, db_query, get_sessions_to_build
+
+    # Explicitly set integration test directories in environment
+    # (unit test fixtures may have overwritten them)
+    monkeypatch.setenv("NX_INSTRUMENT_DATA_PATH", str(TEST_INSTRUMENT_DATA_DIR))
+    monkeypatch.setenv("NX_DATA_PATH", str(TEST_DATA_DIR))
+
+    # Ensure settings are using integration test directories
+    refresh_settings()
+
+    # Patch the instrument_db to use test database
+    test_instrument_db = instruments._get_instrument_db(  # noqa: SLF001
+        db_path=populated_test_database
+    )
+    monkeypatch.setattr(instruments, "instrument_db", test_instrument_db)
+
+    # Get the test instrument from database
+    instrument = test_instrument_db.get("TEST-TOOL-010")
+    if instrument is None:
+        pytest.fail("TEST-TOOL-010 instrument not found in database")
+
+    # Define session times matching NEMO seed data reservation 999
+    session_start = dt.fromisoformat("2025-06-15T02:00:00+00:00")
+    session_end = dt.fromisoformat("2025-06-16T04:00:00+00:00")
+
+    session = Session(
+        session_identifier="https://nemo.example.com/api/usage_events/?id=999",
+        instrument=instrument,
+        dt_range=(session_start, session_end),
+        user="captain",
+    )
+
+    # Insert session into database
+    print("\n[*] Creating database session...")
+    db_query(
+        "INSERT INTO session_log "
+        "(session_identifier, instrument, timestamp, event_type, record_status, user) "
+        "VALUES (?, ?, ?, ?, ?, ?)",
+        (
+            session.session_identifier,
+            session.instrument.name,
+            session.dt_from.isoformat(),
+            "START",
+            "TO_BE_BUILT",
+            session.user,
+        ),
+    )
+    db_query(
+        "INSERT INTO session_log "
+        "(session_identifier, instrument, timestamp, event_type, record_status, user) "
+        "VALUES (?, ?, ?, ?, ?, ?)",
+        (
+            session.session_identifier,
+            session.instrument.name,
+            session.dt_to.isoformat(),
+            "END",
+            "TO_BE_BUILT",
+            session.user,
+        ),
+    )
+    print(f"  Session created: {session.session_identifier}")
+
+    # Run record building
+    print("\n[*] Running record builder...")
+    record_builder.process_new_records(
+        dt_from=session_start - timedelta(hours=1),
+        dt_to=session_end + timedelta(hours=1),
+        dry_run=False,
+    )
+
+    # Verify session was completed
+    sessions_remaining = get_sessions_to_build()
+    if len(sessions_remaining) > 0:
+        pytest.fail(
+            f"Session should be completed but found "
+            f"{len(sessions_remaining)} TO_BE_BUILT"
+        )
+
+    # Get the uploaded record
+    from nexusLIMS.config import settings
+
+    uploaded_dir = settings.records_dir_path / "uploaded"
+    expected_record_name = f"{session_start.date()}_TEST-TOOL-010_999.xml"
+    record_path = uploaded_dir / expected_record_name
+
+    if not record_path.exists():
+        available_files = list(uploaded_dir.glob("*.xml"))
+        pytest.fail(
+            f"Expected record {expected_record_name} not found in {uploaded_dir}. "
+            f"Available files: {available_files}"
+        )
+
+    # Read and parse the XML
+    print(f"\n[*] Reading generated record: {expected_record_name}")
+    with record_path.open(encoding="utf-8") as f:
+        xml_string = f.read()
+
+    # Validate XML against schema
+    schema_doc = etree.parse(str(record_builder.XSD_PATH))
+    schema = etree.XMLSchema(schema_doc)
+    xml_doc = etree.fromstring(xml_string.encode())
+
+    is_valid = schema.validate(xml_doc)
+    if not is_valid:
+        pytest.fail(f"XML validation failed: {schema.error_log}")
+
+    # Get record ID from CDCS (record should already be uploaded by process_new_records)
+    import nexusLIMS.cdcs as cdcs_module
+
+    record_title = record_path.stem
+    search_results = cdcs_module.search_records(title=record_title)
+    if not search_results:
+        pytest.fail(f"Record '{record_title}' not found in CDCS after upload")
+
+    record_id = search_results[0]["id"]
+    print(f"  Record ID: {record_id}")
+    print("[+] Multi-signal record fixture setup complete")
+
+    yield {
+        "record_id": record_id,
+        "record_title": record_title,
+        "xml_doc": xml_doc,
+        "xml_path": record_path,
+        "session_identifier": session.session_identifier,
+    }
+
+    # Cleanup: Delete record from CDCS
+    print("\n[*] Cleaning up multi-signal test record...")
+    try:
+        cdcs_module.delete_record(record_id)
+        print(f"  Deleted record from CDCS: {record_id}")
+    except Exception as e:
+        print(f"[!] Failed to cleanup record {record_id}: {e}")
+
+
+# ============================================================================
 # Docker Log Capture on Test Failure
 # ============================================================================
 

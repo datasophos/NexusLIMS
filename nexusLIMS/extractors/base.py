@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Any, Callable, Protocol
+from typing import TYPE_CHECKING, Any, Callable, NamedTuple, Protocol
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -23,8 +23,62 @@ logger = logging.getLogger(__name__)
 __all__ = [
     "BaseExtractor",
     "ExtractionContext",
+    "FieldDefinition",
     "PreviewGenerator",
 ]
+
+
+class FieldDefinition(NamedTuple):
+    """
+    Configuration for extracting a single metadata field.
+
+    This NamedTuple provides a declarative way to define how metadata fields
+    should be extracted from instrument data files. It's used by TIFF-based
+    extractors (Quanta, Tescan, Orion HIM) to reduce code duplication.
+
+    Attributes
+    ----------
+    section : str
+        Section name in metadata dict (e.g., "Beam", "User", "System").
+        For nested dicts, this is the top-level key.
+    source_key : str
+        Key within the section to extract the value from.
+    output_key : str | list[str]
+        Output key in nx_meta. Can be a string for flat keys or a list
+        for nested paths (e.g., ["Stage Position", "X"]).
+    factor : float
+        Unit conversion factor. The extracted value is multiplied by this.
+        Use 1.0 for no conversion. For SI unit conversions, use powers of 10
+        (e.g., 1e6 to convert meters to micrometers).
+    is_string : bool
+        If True, keep value as string. If False, attempt numeric conversion
+        with Decimal for precision.
+    suppress_zero : bool, default=False
+        If True, skip field if the numeric value equals zero.
+        Only applies when is_string=False.
+
+    Examples
+    --------
+    >>> # Simple numeric field with unit conversion (m → μm)
+    >>> FieldDefinition("Beam", "HFW", "Horizontal Field Width (μm)", 1e6, False)
+
+    >>> # String field (no conversion)
+    >>> FieldDefinition("System", "Chamber", "Chamber ID", 1.0, True)
+
+    >>> # Nested output path
+    >>> FieldDefinition("Beam", "StageX", ["Stage Position", "X"], 1.0, False)
+
+    >>> # Suppress zero values
+    >>> FieldDefinition("Beam", "BeamShiftX", "Beam Shift X",
+    >>>                 1.0, False, suppress_zero=True)
+    """
+
+    section: str
+    source_key: str
+    output_key: str | list[str]
+    factor: float
+    is_string: bool
+    suppress_zero: bool = False
 
 
 @dataclass
@@ -43,6 +97,9 @@ class ExtractionContext:
     instrument
         The instrument that created this file, if known. Can be None for
         files that cannot be associated with a specific instrument.
+    signal_index
+        For files with multiple signals, the index of the signal to process.
+        If None, processes all signals or defaults to the first signal.
 
     Examples
     --------
@@ -55,6 +112,7 @@ class ExtractionContext:
 
     file_path: Path
     instrument: Instrument | None = None
+    signal_index: int | None = None
 
 
 class BaseExtractor(Protocol):
@@ -67,7 +125,7 @@ class BaseExtractor(Protocol):
 
     All extractors MUST implement defensive error handling:
     - Never raise exceptions from extract() - catch all and return minimal metadata
-    - Always return a dict with an 'nx_meta' key
+    - Always return a list of metadata dicts (one per signal)
     - Log errors for debugging but don't propagate them
 
     Attributes
@@ -108,9 +166,9 @@ class BaseExtractor(Protocol):
     ...         ext = context.file_path.suffix.lower().lstrip('.')
     ...         return ext in ('dm3', 'dm4')
     ...
-    ...     def extract(self, context: ExtractionContext) -> dict[str, Any]:
+    ...     def extract(self, context: ExtractionContext) -> list[dict[str, Any]]:
     ...         # Extraction logic here
-    ...         return {"nx_meta": {...}}
+    ...         return [{"nx_meta": {...}}]
     """
 
     name: str
@@ -171,14 +229,19 @@ class BaseExtractor(Protocol):
 
         CRITICAL: This method MUST follow defensive design principles:
         - Never raise exceptions - catch all errors and return minimal metadata
-        - Always return a dict with an 'nx_meta' key
+        - Always return a list of metadata dicts where each contains an 'nx_meta' key
         - Log errors for debugging but continue gracefully
 
-        The returned dictionary should contain:
-        - 'nx_meta': NexusLIMS-specific metadata (required)
-        - Other keys: Raw metadata as extracted from the file (optional)
+        Return Format:
+        All extractors return a list of metadata dicts. Each dict contains:
+        - 'nx_meta': Required - NexusLIMS-specific metadata (dict)
+        - Other keys: Optional - Raw metadata extracted from the file
 
-        The 'nx_meta' sub-dictionary should contain:
+        Single-signal files return a list with one element. Multi-signal files return
+        a list with one element per signal. This consistent list-based approach allows
+        the Activity layer to expand multi-signal files into multiple datasets.
+
+        Each 'nx_meta' dict should contain:
         - 'Creation Time': ISO format datetime string
         - 'Data Type': Human-readable data type (e.g., "STEM_Imaging")
         - 'DatasetType': Dataset type per schema (e.g., "Image", "Spectrum")
@@ -190,35 +253,54 @@ class BaseExtractor(Protocol):
         ----------
         context
             Context containing file path, instrument info, etc.
+            For multi-signal files, signal_index indicates which signal to process.
+            If None, extractors may return all signals or the first signal.
 
         Returns
         -------
-        dict
-            Metadata dictionary with mandatory 'nx_meta' key
+        list[dict]
+            List of metadata dicts (one per signal). Each dict contains 'nx_meta'
+            key with NexusLIMS-specific metadata, plus optional raw metadata keys.
 
         Examples
         --------
-        Successful extraction:
+        Single-signal extraction:
 
-        >>> def extract(self, context: ExtractionContext) -> dict[str, Any]:
+        >>> def extract(self, context: ExtractionContext) -> list[dict[str, Any]]:
         ...     try:
-        ...         # Extraction logic
-        ...         metadata = {"nx_meta": {
+        ...         metadata = [{"nx_meta": {
         ...             "Creation Time": "2024-01-15T10:30:00-05:00",
         ...             "Data Type": "STEM_Imaging",
         ...             "DatasetType": "Image",
         ...             "Data Dimensions": "(1024, 1024)",
         ...             "Instrument ID": "643-Titan"
-        ...         }}
+        ...         }}]
         ...         return metadata
+        ...     except Exception as e:
+        ...         logger.error(f"Extraction failed: {e}")
+        ...         return self._minimal_metadata(context)
+
+        Multi-signal extraction:
+
+        >>> def extract(self, context: ExtractionContext) -> list[dict[str, Any]]:
+        ...     try:
+        ...         # For a file with 2 signals
+        ...         return [
+        ...             {"nx_meta": {
+        ...                 "Creation Time": "2024-01-15T10:30:00-05:00",
+        ...                 "Data Type": "STEM_Imaging", ...}},
+        ...             {"nx_meta": {
+        ...                 "Creation Time": "2024-01-15T10:30:00-05:00",
+        ...                 "Data Type": "EDS_Spectrum", ...}}
+        ...         ]
         ...     except Exception as e:
         ...         logger.error(f"Extraction failed: {e}")
         ...         return self._minimal_metadata(context)
 
         Minimal metadata on error:
 
-        >>> def _minimal_metadata(self, context: ExtractionContext) -> dict:
-        ...     return {
+        >>> def _minimal_metadata(self, context: ExtractionContext) -> list[dict]:
+        ...     return [{
         ...         "nx_meta": {
         ...             "DatasetType": "Unknown",
         ...             "Data Type": "Unknown",
@@ -226,7 +308,7 @@ class BaseExtractor(Protocol):
         ...             "Instrument ID": None,
         ...             "warnings": ["Extraction failed"]
         ...         }
-        ...     }
+        ...     }]
         """
         ...  # pragma: no cover
 

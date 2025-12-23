@@ -130,3 +130,28 @@ class TestActivity:
         non_warning_params = root.xpath(".//setup/param[@name='Acquisition Device']")
         if len(non_warning_params) > 0:
             assert non_warning_params[0].get("warning") != "true"
+
+    def test_add_file_multi_signal_no_preview(self, list_signal):
+        """Test add_file with multi-signal file without preview generation.
+
+        This tests the code path where preview_fnames is None or empty
+        for a multi-signal file when generate_preview=False.
+        """
+        from nexusLIMS.schemas.activity import AcquisitionActivity
+
+        # Create activity and add multi-signal file without preview generation
+        test_activity = AcquisitionActivity()
+        test_activity.add_file(list_signal[0], generate_preview=False)
+
+        # Verify file was added with multiple signals
+        assert len(test_activity.files) == 2  # Multi-signal file
+        assert all(f == str(list_signal[0]) for f in test_activity.files)
+
+        # Verify previews are all None (because generate_preview=False)
+        assert len(test_activity.previews) == 2
+        assert all(p is None for p in test_activity.previews)
+
+        # Verify metadata was added
+        assert len(test_activity.meta) == 2
+        assert "Data Type" in test_activity.meta[0]
+        assert "Data Type" in test_activity.meta[1]

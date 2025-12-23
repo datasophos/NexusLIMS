@@ -26,6 +26,9 @@ from tests.unit.test_instrument_factory import (
     make_titan_tem,
 )
 
+NX_NS = "https://data.nist.gov/od/dm/nexus/experiment/v1.0"
+"""Nexus Schema XML namespace for use throughout the tests"""
+
 
 @pytest.fixture
 def skip_preview_generation(monkeypatch):
@@ -526,69 +529,68 @@ class TestRecordBuilder:
         assert len(xmls) == xml_count
 
         # test some various values from the records saved to disk:
-        nexus_ns = "https://data.nist.gov/od/dm/nexus/experiment/v1.0"
         expected = {
             # Updated for simplified test sessions with URL-based session identifiers
             # Titan TEM session (id=101)
             "2018-11-13_FEI-Titan-TEM_101.xml": {
-                f"/{{{nexus_ns}}}title": "Microstructure analysis of steel alloys",
-                f"//{{{nexus_ns}}}acquisitionActivity": 3,
-                f"//{{{nexus_ns}}}dataset": 11,
-                f"/{{{nexus_ns}}}summary/{{{nexus_ns}}}motivation": (
+                f"/{{{NX_NS}}}title": "Microstructure analysis of steel alloys",
+                f"//{{{NX_NS}}}acquisitionActivity": 3,
+                f"//{{{NX_NS}}}dataset": 11,
+                f"/{{{NX_NS}}}summary/{{{NX_NS}}}motivation": (
                     "Characterize phase transformations in heat-treated steel"
                 ),
-                f"/{{{nexus_ns}}}summary/{{{nexus_ns}}}instrument": "FEI-Titan-TEM",
-                f"//{{{nexus_ns}}}sample": 1,
+                f"/{{{NX_NS}}}summary/{{{NX_NS}}}instrument": "FEI-Titan-TEM",
+                f"//{{{NX_NS}}}sample": 1,
             },
             # JEOL TEM session (id=202)
             "2019-07-24_JEOL-JEM-TEM_202.xml": {
-                f"/{{{nexus_ns}}}title": "EELS mapping of multilayer thin films",
-                f"//{{{nexus_ns}}}acquisitionActivity": 1,
-                f"//{{{nexus_ns}}}dataset": 8,
-                f"/{{{nexus_ns}}}summary/{{{nexus_ns}}}motivation": (
+                f"/{{{NX_NS}}}title": "EELS mapping of multilayer thin films",
+                f"//{{{NX_NS}}}acquisitionActivity": 1,
+                f"//{{{NX_NS}}}dataset": 8,
+                f"/{{{NX_NS}}}summary/{{{NX_NS}}}motivation": (
                     "Study layer intermixing in deposited thin films"
                 ),
-                f"/{{{nexus_ns}}}summary/{{{nexus_ns}}}instrument": "JEOL-JEM-TEM",
-                f"//{{{nexus_ns}}}sample": 1,
+                f"/{{{NX_NS}}}summary/{{{NX_NS}}}instrument": "JEOL-JEM-TEM",
+                f"//{{{NX_NS}}}sample": 1,
             },
             # Nexus Test Instrument session (id=303)
             "2021-08-02_testtool-TEST-A1234567_303.xml": {
-                f"/{{{nexus_ns}}}title": "EDX spectroscopy of platinum-nickel alloys",
-                f"//{{{nexus_ns}}}acquisitionActivity": 1,
-                f"//{{{nexus_ns}}}dataset": 4,
-                f"/{{{nexus_ns}}}summary/{{{nexus_ns}}}motivation": (
+                f"/{{{NX_NS}}}title": "EDX spectroscopy of platinum-nickel alloys",
+                f"//{{{NX_NS}}}acquisitionActivity": 1,
+                f"//{{{NX_NS}}}dataset": 4,
+                f"/{{{NX_NS}}}summary/{{{NX_NS}}}motivation": (
                     "Determine composition of Pt-Ni alloy samples"
                 ),
-                f"/{{{nexus_ns}}}summary/{{{nexus_ns}}}instrument": (
+                f"/{{{NX_NS}}}summary/{{{NX_NS}}}instrument": (
                     "testtool-TEST-A1234567"
                 ),
-                f"//{{{nexus_ns}}}sample": 1,
+                f"//{{{NX_NS}}}sample": 1,
             },
         }
         for f in sorted(xmls):
             base_f = f.name
             root = etree.parse(f)
 
-            xpath = f"/{{{nexus_ns}}}title"
+            xpath = f"/{{{NX_NS}}}title"
             if root.find(xpath) is not None:
                 assert root.find(xpath).text == expected[base_f][xpath]
 
-            xpath = f"//{{{nexus_ns}}}acquisitionActivity"
+            xpath = f"//{{{NX_NS}}}acquisitionActivity"
             assert len(root.findall(xpath)) == expected[base_f][xpath]
 
-            xpath = f"//{{{nexus_ns}}}dataset"
+            xpath = f"//{{{NX_NS}}}dataset"
             assert len(root.findall(xpath)) == expected[base_f][xpath]
 
-            xpath = f"/{{{nexus_ns}}}summary/{{{nexus_ns}}}motivation"
+            xpath = f"/{{{NX_NS}}}summary/{{{NX_NS}}}motivation"
             if root.find(xpath) is not None:
                 assert root.find(xpath).text == expected[base_f][xpath]
             else:
                 assert root.find(xpath) == expected[base_f][xpath]
 
-            xpath = f"/{{{nexus_ns}}}summary/{{{nexus_ns}}}instrument"
+            xpath = f"/{{{NX_NS}}}summary/{{{NX_NS}}}instrument"
             assert root.find(xpath).get("pid") == expected[base_f][xpath]
 
-            xpath = f"//{{{nexus_ns}}}sample"
+            xpath = f"//{{{NX_NS}}}sample"
             assert len(root.findall(xpath)) == expected[base_f][xpath]
 
             # remove record
@@ -629,8 +631,6 @@ class TestRecordBuilder:
             all_sessions = session_handler.get_sessions_to_build()
             return [s for s in all_sessions if s.instrument.name == "FEI-Titan-TEM"]
 
-        nexus_ns = "https://data.nist.gov/od/dm/nexus/experiment/v1.0"
-
         monkeypatch.setattr(record_builder, "get_sessions_to_build", mock_get_sessions)
         monkeypatch.setattr(record_builder, "upload_record_files", lambda x: (x, x))
         monkeypatch.setattr(
@@ -660,20 +660,20 @@ class TestRecordBuilder:
         aa_count = 3  # Three temporal clusters based on file timestamps
 
         assert (
-            root.find(f"/{{{nexus_ns}}}title").text
+            root.find(f"/{{{NX_NS}}}title").text
             == "Microstructure analysis of steel alloys"
         )
-        assert len(root.findall(f"//{{{nexus_ns}}}acquisitionActivity")) == aa_count
-        assert len(root.findall(f"//{{{nexus_ns}}}dataset")) == expected_datasets
+        assert len(root.findall(f"//{{{NX_NS}}}acquisitionActivity")) == aa_count
+        assert len(root.findall(f"//{{{NX_NS}}}dataset")) == expected_datasets
         assert (
-            root.find(f"/{{{nexus_ns}}}summary/{{{nexus_ns}}}motivation").text
+            root.find(f"/{{{NX_NS}}}summary/{{{NX_NS}}}motivation").text
             == "Characterize phase transformations in heat-treated steel"
         )
         assert (
-            root.find(f"/{{{nexus_ns}}}summary/{{{nexus_ns}}}instrument").get("pid")
+            root.find(f"/{{{NX_NS}}}summary/{{{NX_NS}}}instrument").get("pid")
             == "FEI-Titan-TEM"
         )
-        assert len(root.findall(f"//{{{nexus_ns}}}sample")) == 1
+        assert len(root.findall(f"//{{{NX_NS}}}sample")) == 1
 
         # remove record
         f.unlink()
@@ -844,8 +844,6 @@ class TestRecordBuilder:
                 ),
             ]
 
-        nexus_ns = "https://data.nist.gov/od/dm/nexus/experiment/v1.0"
-
         monkeypatch.setattr(record_builder, "get_sessions_to_build", mock_get_sessions)
         monkeypatch.setattr(record_builder, "upload_record_files", lambda x: (x, x))
 
@@ -860,17 +858,17 @@ class TestRecordBuilder:
 
         # Verify it used the mock_nemo_reservation data for testtool-TEST-A1234567
         assert (
-            root.find(f"/{{{nexus_ns}}}title").text
+            root.find(f"/{{{NX_NS}}}title").text
             == "EDX spectroscopy of platinum-nickel alloys"
         )
-        assert len(root.findall(f"//{{{nexus_ns}}}acquisitionActivity")) == aa_count
-        assert len(root.findall(f"//{{{nexus_ns}}}dataset")) == dataset_count
+        assert len(root.findall(f"//{{{NX_NS}}}acquisitionActivity")) == aa_count
+        assert len(root.findall(f"//{{{NX_NS}}}dataset")) == dataset_count
         assert (
-            root.find(f"/{{{nexus_ns}}}summary/{{{nexus_ns}}}motivation").text
+            root.find(f"/{{{NX_NS}}}summary/{{{NX_NS}}}motivation").text
             == "Determine composition of Pt-Ni alloy samples"
         )
         assert (
-            root.find(f"/{{{nexus_ns}}}summary/{{{nexus_ns}}}instrument").get("pid")
+            root.find(f"/{{{NX_NS}}}summary/{{{NX_NS}}}instrument").get("pid")
             == "testtool-TEST-A1234567"
         )
 
@@ -922,8 +920,6 @@ class TestRecordBuilder:
                 s for s in all_sessions if s.instrument.name == "testtool-TEST-A1234567"
             ]
 
-        nexus_ns = "https://data.nist.gov/od/dm/nexus/experiment/v1.0"
-
         monkeypatch.setattr(record_builder, "get_sessions_to_build", mock_get_sessions)
 
         # make record uploader just pretend by returning all files provided (
@@ -948,36 +944,33 @@ class TestRecordBuilder:
         root = etree.parse(f)
 
         assert (
-            root.find(f"/{{{nexus_ns}}}title").text
+            root.find(f"/{{{NX_NS}}}title").text
             == "Test reservation for multiple samples, some with elements, some not"
         )
-        assert len(root.findall(f"//{{{nexus_ns}}}acquisitionActivity")) == aa_count
-        assert len(root.findall(f"//{{{nexus_ns}}}dataset")) == dataset_count
+        assert len(root.findall(f"//{{{NX_NS}}}acquisitionActivity")) == aa_count
+        assert len(root.findall(f"//{{{NX_NS}}}dataset")) == dataset_count
+        assert root.find(f"/{{{NX_NS}}}summary/{{{NX_NS}}}motivation").text == "testing"
         assert (
-            root.find(f"/{{{nexus_ns}}}summary/{{{nexus_ns}}}motivation").text
-            == "testing"
-        )
-        assert (
-            root.find(f"/{{{nexus_ns}}}summary/{{{nexus_ns}}}instrument").get("pid")
+            root.find(f"/{{{NX_NS}}}summary/{{{NX_NS}}}instrument").get("pid")
             == "testtool-TEST-A1234567"
         )
-        assert len(root.findall(f"//{{{nexus_ns}}}sample")) == sample_count
+        assert len(root.findall(f"//{{{NX_NS}}}sample")) == sample_count
 
         # test sample element tags
         expected = [
             None,
             [
-                f"{{{nexus_ns}}}S",
-                f"{{{nexus_ns}}}Rb",
-                f"{{{nexus_ns}}}Sb",
-                f"{{{nexus_ns}}}Re",
-                f"{{{nexus_ns}}}Cm",
+                f"{{{NX_NS}}}S",
+                f"{{{NX_NS}}}Rb",
+                f"{{{NX_NS}}}Sb",
+                f"{{{NX_NS}}}Re",
+                f"{{{NX_NS}}}Cm",
             ],
-            [f"{{{nexus_ns}}}Ir"],
+            [f"{{{NX_NS}}}Ir"],
         ]
-        sample_elements = root.findall(f"//{{{nexus_ns}}}sample")
+        sample_elements = root.findall(f"//{{{NX_NS}}}sample")
         for exp, element in zip(expected, sample_elements):
-            this_element = element.find(f"{{{nexus_ns}}}elements")
+            this_element = element.find(f"{{{NX_NS}}}elements")
             if exp is None:
                 assert exp == this_element
             else:
@@ -1025,3 +1018,124 @@ class TestRecordBuilder:
             assert "res_event_from_session has not been implemented for" in str(
                 exception.value,
             )
+
+    @pytest.mark.usefixtures("mock_nemo_reservation")
+    def test_process_new_records_multi_signal(
+        self,
+        multi_signal_test_files,
+        skip_preview_generation,
+        monkeypatch,
+    ):
+        """Test record builder with multi-signal microscopy files.
+
+        Tests processing of multi-signal data including:
+        - Gatan DM4 spectrum image with multiple signals (NEOARM_GATAN_SI) -- 4 signals
+        - DM3 file with list of signals (LIST_SIGNAL) -- 2 signals
+        - Single STEM image file (test_STEM_image.dm3) -- 1 signal
+
+        Files are in the testtool-TEST-A1234567 instrument directory with
+        mtimes set to 2025-06-15 03:00-03:30 UTC (21:00-21:30 MDT on 2025-06-14).
+        """
+
+        # Create a custom session that captures all three multi-signal files
+        # Session window: 2025-06-14 20:00 MDT - 2025-06-15 22:00 MDT
+        # (2025-06-15 02:00 UTC - 2025-06-16 04:00 UTC)
+        def mock_get_sessions():
+            all_sessions = session_handler.get_sessions_to_build()
+            test_instr = next(
+                s for s in all_sessions if s.instrument.name == "testtool-TEST-A1234567"
+            )
+            # Return a session with a custom time window for multi-signal files
+            return [
+                session_handler.Session(
+                    session_identifier=test_instr.session_identifier,
+                    instrument=test_instr.instrument,
+                    dt_range=(
+                        dt.fromisoformat("2025-06-15T02:00:00+00:00"),
+                        dt.fromisoformat("2025-06-16T04:00:00+00:00"),
+                    ),
+                    user="test_user",
+                ),
+            ]
+
+        monkeypatch.setattr(record_builder, "get_sessions_to_build", mock_get_sessions)
+        monkeypatch.setattr(record_builder, "upload_record_files", lambda x: (x, x))
+
+        xml_files = record_builder.build_new_session_records()
+        assert len(xml_files) == 1
+
+        f = xml_files[0]
+        root = etree.parse(f)
+
+        # Verify the XML record was generated with title from mock reservation
+        assert (
+            root.find(f"/{{{NX_NS}}}title").text
+            == "EDX spectroscopy of platinum-nickel alloys"
+        )
+
+        # Check that we have acquisition activities and datasets
+        acquisition_activities = root.findall(f"//{{{NX_NS}}}acquisitionActivity")
+        datasets = root.findall(f"//{{{NX_NS}}}dataset")
+
+        assert len(acquisition_activities) == 1
+
+        # should be 4 from neoarm gatan, 2 from TEM_list signal,
+        # and one from test_STEM_image.dm3
+        assert len(datasets) == 7, f"Expected at 7 datasets, got {len(datasets)}"
+
+        # Verify the datasets correspond to our multi-signal files
+        dataset_names = [ds.find(f"{{{NX_NS}}}name").text for ds in datasets]
+        assert any("neoarm" in name.lower() for name in dataset_names), (
+            f"Expected neoarm file in datasets: {dataset_names}"
+        )
+        assert any(
+            "list_signal" in name.lower() or "tem" in name.lower()
+            for name in dataset_names
+        ), f"Expected TEM signal file in datasets: {dataset_names}"
+
+        # Verify that multi-signal files have unique dataset names with signal indices
+        # NEOARM DM4 should have 4 datasets with names like "(1 of 4)", "(2 of 4)"...
+        neoarm_names = [name for name in dataset_names if "neoarm" in name.lower()]
+        assert len(neoarm_names) == 4, (
+            f"Expected 4 neoarm dataset names, got {len(neoarm_names)}: {neoarm_names}"
+        )
+        # Verify signal indices are in order
+        for i, name in enumerate(neoarm_names, start=1):
+            assert name.endswith(f"({i} of 4)"), (
+                f"Expected neoarm name {i} to end with '({i} of 4)', got: {name}"
+            )
+
+        # Verify that 4 different JSON metadata files were created for neoarm signals
+        import json
+
+        from nexusLIMS.config import settings
+
+        neoarm_json_files = []
+        data_path = Path(settings.NX_DATA_PATH)
+        multi_signal_dir = data_path / "Nexus_Test_Instrument" / "multi_signal_data"
+
+        for i in range(4):
+            json_file = (
+                multi_signal_dir / f"neoarm-gatan_SI_dataZeroed.dm4_signal{i}.json"
+            )
+            assert json_file.exists(), (
+                f"Expected JSON metadata for neoarm signal {i} not found: {json_file}"
+            )
+            # Verify it's valid JSON
+            with json_file.open() as json_fh:
+                metadata = json.load(json_fh)
+            assert "nx_meta" in metadata, f"Invalid JSON structure in {json_file}"
+            neoarm_json_files.append(json_file)
+
+        assert len(neoarm_json_files) == 4, (
+            f"Expected 4 JSON metadata files for neoarm, got {len(neoarm_json_files)}"
+        )
+
+        # Verify instrument information
+        assert (
+            root.find(f"/{{{NX_NS}}}summary/{{{NX_NS}}}instrument").get("pid")
+            == "testtool-TEST-A1234567"
+        )
+
+        # Remove record
+        f.unlink()

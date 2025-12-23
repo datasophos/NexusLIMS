@@ -46,12 +46,12 @@ class SerEmiExtractor:
         extension = context.file_path.suffix.lower().lstrip(".")
         return extension == "ser"
 
-    def extract(self, context: ExtractionContext) -> dict[str, Any]:  # noqa: PLR0915
+    def extract(self, context: ExtractionContext) -> list[dict[str, Any]]:  # noqa: PLR0915
         """
         Extract metadata from a .ser file and its accompanying .emi file.
 
-        Returns metadata (as a dict) from an FEI .ser file + its associated .emi
-        files, with some non-relevant information stripped.
+        Returns metadata (as a list of dicts) from an FEI .ser file +
+        its associated .emi files, with some non-relevant information stripped.
 
         Parameters
         ----------
@@ -60,8 +60,8 @@ class SerEmiExtractor:
 
         Returns
         -------
-        dict
-            Metadata dictionary with 'nx_meta' key containing NexusLIMS metadata.
+        list[dict]
+            List containing a single metadata dict with 'nx_meta' key.
             If files cannot be opened, at least basic metadata will be returned (
             creation time, etc.)
         """
@@ -186,7 +186,7 @@ class SerEmiExtractor:
         # sort the nx_meta dictionary (recursively) for nicer display
         metadata["nx_meta"] = sort_dict(metadata["nx_meta"])
 
-        return metadata
+        return [metadata]
 
 
 def _handle_ser_error(metadata):
@@ -196,7 +196,7 @@ def _handle_ser_error(metadata):
     # sort the nx_meta dictionary (recursively) for nicer display
     metadata["nx_meta"] = sort_dict(metadata["nx_meta"])
     del metadata["nx_meta"]["fname"]
-    return metadata
+    return [metadata]
 
 
 def _load_ser(emi_filename: Path, ser_index: int):
@@ -263,7 +263,7 @@ def parse_basic_info(metadata, shape, instrument):
     """
     # try to set creation time to acquisition time from metadata
     acq_time = try_getting_dict_value(metadata, ["ObjectInfo", "AcquireDate"])
-    if acq_time != "not found":
+    if acq_time is not None:
         metadata["nx_meta"]["Creation Time"] = (
             dt.strptime(
                 acq_time,
@@ -275,7 +275,7 @@ def parse_basic_info(metadata, shape, instrument):
 
     # manufacturer is at high level, so parse it now
     manufacturer = try_getting_dict_value(metadata, ["ObjectInfo", "Manufacturer"])
-    if manufacturer != "not found":
+    if manufacturer is not None:
         metadata["nx_meta"]["Manufacturer"] = manufacturer
 
     metadata["nx_meta"]["Data Dimensions"] = str(shape)
@@ -322,7 +322,7 @@ def parse_experimental_conditions(metadata):
     }
     base = ["ObjectInfo", "AcquireInfo"]
 
-    if try_getting_dict_value(metadata, base) != "not found":
+    if try_getting_dict_value(metadata, base) is not None:
         metadata = map_keys(term_mapping, base, metadata)
 
     # remove units from beam position (if present)
@@ -361,7 +361,7 @@ def parse_acquire_info(metadata):
     }
     base = ["ObjectInfo", "ExperimentalConditions", "MicroscopeConditions"]
 
-    if try_getting_dict_value(metadata, base) != "not found":
+    if try_getting_dict_value(metadata, base) is not None:
         metadata = map_keys(term_mapping, base, metadata)
 
     return metadata
@@ -397,7 +397,7 @@ def parse_experimental_description(metadata):
     base = ["ObjectInfo", "ExperimentalDescription"]
 
     experimental_description = try_getting_dict_value(metadata, base)
-    if experimental_description != "not found" and isinstance(
+    if experimental_description is not None and isinstance(
         experimental_description,
         dict,
     ):
@@ -556,7 +556,7 @@ def map_keys(term_mapping, base, metadata):
             out_term = [out_term]
         val = try_getting_dict_value(metadata, base + in_term)
         # only add the value to this list if we found it
-        if val != "not found":
+        if val is not None:
             set_nested_dict_value(
                 metadata,
                 ["nx_meta", *out_term],

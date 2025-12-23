@@ -18,6 +18,7 @@ gitlab_backup.log
 .coverage.*
 tests/coverage
 # Test data files (extracted from archives)
+client/
 tests/unit/files/*.dm[3-4]
 tests/unit/files/*.ser
 tests/unit/files/*.emi

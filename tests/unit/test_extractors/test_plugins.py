@@ -47,7 +47,7 @@ class TestDM3Extractor:
         assert not extractor.supports(context)
 
     def test_extract_with_real_file(self, list_signal, mock_instrument_from_filepath):
-        """Test extraction with a real DM3 file."""
+        """Test extraction with a real DM3 file (multi-signal)."""
         from tests.unit.test_instrument_factory import make_test_tool
 
         mock_instrument_from_filepath(make_test_tool())
@@ -58,9 +58,14 @@ class TestDM3Extractor:
         metadata = extractor.extract(context)
 
         assert metadata is not None
-        assert "nx_meta" in metadata
-        assert metadata["nx_meta"]["Data Type"] == "STEM_Imaging"
-        assert metadata["nx_meta"]["Microscope"] == "TEST Titan_______"
+        # All extractors now return a list of metadata dicts
+        assert isinstance(metadata, list)
+        # This is a multi-signal file with 2 signals
+        assert len(metadata) == 2
+
+        # Check first signal
+        assert metadata[0]["nx_meta"]["Data Type"] == "STEM_Imaging"
+        assert metadata[0]["nx_meta"]["Microscope"] == "TEST Titan_______"
 
     def test_has_required_attributes(self):
         """DM3Extractor should have required plugin attributes."""
@@ -74,28 +79,58 @@ class TestDM3Extractor:
 class TestQuantaTiffExtractor:
     """Test QuantaTiffExtractor plugin."""
 
-    def test_supports_tif(self):
+    def test_supports_tif(self, quanta_test_file):
         """QuantaTiffExtractor should support .tif files."""
         extractor = QuantaTiffExtractor()
-        context = ExtractionContext(Path("test.tif"), None)
+        context = ExtractionContext(quanta_test_file[0], None)
         assert extractor.supports(context)
 
-    def test_supports_tiff(self):
+    def test_supports_tiff(self, quanta_test_file):
         """QuantaTiffExtractor should support .tiff files."""
         extractor = QuantaTiffExtractor()
-        context = ExtractionContext(Path("test.tiff"), None)
+        # Get a .tiff file or rename for testing
+        tif_file = quanta_test_file[0]
+        tiff_file = tif_file.parent / (tif_file.stem + ".tiff")
+        tif_file.rename(tiff_file)
+        context = ExtractionContext(tiff_file, None)
         assert extractor.supports(context)
+        # Rename back for other tests
+        tiff_file.rename(tif_file)
 
-    def test_supports_uppercase(self):
+    def test_supports_uppercase(self, quanta_test_file):
         """QuantaTiffExtractor should support uppercase extensions."""
         extractor = QuantaTiffExtractor()
-        context = ExtractionContext(Path("test.TIF"), None)
+        # Get a file with uppercase extension
+        tif_file = quanta_test_file[0]
+        uppercase_file = tif_file.parent / (tif_file.stem + ".TIF")
+        tif_file.rename(uppercase_file)
+        context = ExtractionContext(uppercase_file, None)
         assert extractor.supports(context)
+        # Rename back for other tests
+        uppercase_file.rename(tif_file)
 
     def test_does_not_support_other_extensions(self):
         """QuantaTiffExtractor should not support other extensions."""
         extractor = QuantaTiffExtractor()
         context = ExtractionContext(Path("test.dm3"), None)
+        assert not extractor.supports(context)
+
+    def test_does_not_support_tiff_without_fei_metadata(self, tmp_path):
+        """QuantaTiffExtractor should not support TIFF files without FEI metadata."""
+        # Create a minimal TIFF file without FEI metadata
+        import numpy as np
+        from PIL import Image
+
+        # Create a simple image
+        img_array = np.zeros((10, 10), dtype=np.uint8)
+        img = Image.fromarray(img_array, mode="L")
+
+        # Save as TIFF without FEI metadata
+        tiff_path = tmp_path / "test_no_fei.tif"
+        img.save(tiff_path)
+
+        extractor = QuantaTiffExtractor()
+        context = ExtractionContext(tiff_path, None)
         assert not extractor.supports(context)
 
     def test_extract_with_real_file(self, quanta_test_file):
@@ -106,9 +141,11 @@ class TestQuantaTiffExtractor:
         metadata = extractor.extract(context)
 
         assert metadata is not None
-        assert "nx_meta" in metadata
-        assert metadata["nx_meta"]["Data Type"] == "SEM_Imaging"
-        assert metadata["nx_meta"]["DatasetType"] == "Image"
+        # All extractors now return a list
+        assert isinstance(metadata, list)
+        assert len(metadata) == 1
+        assert metadata[0]["nx_meta"]["Data Type"] == "SEM_Imaging"
+        assert metadata[0]["nx_meta"]["DatasetType"] == "Image"
 
     def test_has_required_attributes(self):
         """QuantaTiffExtractor should have required plugin attributes."""
@@ -155,9 +192,11 @@ class TestSerEmiExtractor:
         metadata = extractor.extract(context)
 
         assert metadata is not None
-        assert "nx_meta" in metadata
-        assert metadata["nx_meta"]["DatasetType"] == "Image"
-        assert metadata["nx_meta"]["Data Type"] == "STEM_Imaging"
+        # All extractors now return a list
+        assert isinstance(metadata, list)
+        assert len(metadata) == 1
+        assert metadata[0]["nx_meta"]["DatasetType"] == "Image"
+        assert metadata[0]["nx_meta"]["Data Type"] == "STEM_Imaging"
 
     def test_has_required_attributes(self):
         """SerEmiExtractor should have required plugin attributes."""
@@ -199,9 +238,11 @@ class TestSpcExtractor:
         metadata = extractor.extract(context)
 
         assert metadata is not None
-        assert "nx_meta" in metadata
-        assert metadata["nx_meta"]["Azimuthal Angle (deg)"] == pytest.approx(0.0)
-        assert metadata["nx_meta"]["Live Time (s)"] == pytest.approx(30.000002)
+        # All extractors now return a list
+        assert isinstance(metadata, list)
+        assert len(metadata) == 1
+        assert metadata[0]["nx_meta"]["Azimuthal Angle (deg)"] == pytest.approx(0.0)
+        assert metadata[0]["nx_meta"]["Live Time (s)"] == pytest.approx(30.000002)
 
     def test_has_required_attributes(self):
         """SpcExtractor should have required plugin attributes."""
@@ -243,9 +284,11 @@ class TestMsaExtractor:
         metadata = extractor.extract(context)
 
         assert metadata is not None
-        assert "nx_meta" in metadata
-        assert metadata["nx_meta"]["Azimuthal Angle (deg)"] == pytest.approx(0.0)
-        assert metadata["nx_meta"]["Beam Energy (keV)"] == pytest.approx(10.0)
+        # All extractors now return a list
+        assert isinstance(metadata, list)
+        assert len(metadata) == 1
+        assert metadata[0]["nx_meta"]["Azimuthal Angle (deg)"] == pytest.approx(0.0)
+        assert metadata[0]["nx_meta"]["Beam Energy (keV)"] == pytest.approx(10.0)
 
     def test_has_required_attributes(self):
         """MsaExtractor should have required plugin attributes."""
@@ -279,10 +322,12 @@ class TestBasicFileInfoExtractor:
         metadata = extractor.extract(context)
 
         assert metadata is not None
-        assert "nx_meta" in metadata
-        assert metadata["nx_meta"]["Data Type"] == "Unknown"
-        assert metadata["nx_meta"]["DatasetType"] == "Unknown"
-        assert "Creation Time" in metadata["nx_meta"]
+        # All extractors now return a list
+        assert isinstance(metadata, list)
+        assert len(metadata) == 1
+        assert metadata[0]["nx_meta"]["Data Type"] == "Unknown"
+        assert metadata[0]["nx_meta"]["DatasetType"] == "Unknown"
+        assert "Creation Time" in metadata[0]["nx_meta"]
 
     def test_has_required_attributes(self):
         """BasicFileInfoExtractor should have required plugin attributes."""

@@ -12,7 +12,7 @@ from nexusLIMS.extractors.base import ExtractionContext
 from nexusLIMS.extractors.plugins.orion_HIM_tif import (
     FIBICS_TIFF_TAG,
     ZEISS_TIFF_TAG,
-    OrionFibicsTiffExtractor,
+    OrionTiffExtractor,
 )
 from nexusLIMS.extractors.registry import get_registry
 
@@ -99,10 +99,10 @@ class TestOrionFibicsTiffExtractor:
 
     def setup_method(self):
         """Set up test fixtures."""
-        self.extractor = OrionFibicsTiffExtractor()
+        self.extractor = OrionTiffExtractor()
         self.registry = get_registry()
         self.registry.clear()  # Clear registry for isolated testing
-        self.registry.register_extractor(OrionFibicsTiffExtractor)
+        self.registry.register_extractor(OrionTiffExtractor)
 
     def test_has_required_attributes(self):
         """Test that the extractor has required attributes."""
@@ -144,22 +144,23 @@ class TestOrionFibicsTiffExtractor:
 
     def test_extract_returns_dict_with_nx_meta(self, minimal_tiff_file):
         """
-        Test that extract() returns a dictionary with 'nx_meta' key.
+        Test that extract() returns a list with a dictionary containing 'nx_meta' key.
 
         The extraction will fail because the TIFF doesn't have the required
         Zeiss/Fibics metadata tags, but should still return basic metadata.
         """
         context = ExtractionContext(minimal_tiff_file, instrument=None)
         result = self.extractor.extract(context)
-        assert isinstance(result, dict)
-        assert "nx_meta" in result
-        assert isinstance(result["nx_meta"], dict)
-        assert result["nx_meta"].get("Data Type") == "Unknown"
-        assert result["nx_meta"].get("DatasetType") == "Image"
-        assert "Could not detect Zeiss/Fibics variant" in result["nx_meta"].get(
+        assert isinstance(result, list)
+        assert len(result) > 0
+        assert "nx_meta" in result[0]
+        assert isinstance(result[0]["nx_meta"], dict)
+        assert result[0]["nx_meta"].get("Data Type") == "Unknown"
+        assert result[0]["nx_meta"].get("DatasetType") == "Image"
+        assert "Could not detect Zeiss/Fibics variant" in result[0]["nx_meta"].get(
             "Extractor Warnings", ""
         )
-        assert "Creation Time" in result["nx_meta"]
+        assert "Creation Time" in result[0]["nx_meta"]
 
     def test_extract_handles_corrupted_xml(self, zeiss_tiff_file):
         """Test that extract() handles corrupted XML gracefully."""
@@ -171,7 +172,7 @@ class TestOrionFibicsTiffExtractor:
             with patch("xml.etree.ElementTree.fromstring") as mock_fromstring:
                 mock_fromstring.side_effect = ET.ParseError("Corrupted XML")
                 result = self.extractor.extract(context)
-                nx_meta = result["nx_meta"]
+                nx_meta = result[0]["nx_meta"]
                 # Should handle the error gracefully
                 assert "Extractor Warnings" in nx_meta
                 assert (
@@ -182,7 +183,7 @@ class TestOrionFibicsTiffExtractor:
         """Test that extract() handles unknown variants gracefully."""
         context = ExtractionContext(unknown_xml_tiff_file, instrument=None)
         result = self.extractor.extract(context)
-        nx_meta = result["nx_meta"]
+        nx_meta = result[0]["nx_meta"]
         # Should handle unknown variant gracefully
         assert nx_meta["Data Type"] == "Unknown"
         assert "Extractor Warnings" in nx_meta
@@ -215,13 +216,13 @@ class TestOrionFibicsTiffExtractor:
         result = self.extractor.extract(context)
 
         # Should extract successfully
-        assert isinstance(result, dict)
-        assert "nx_meta" in result
-        assert result["nx_meta"]["Data Type"] == "HIM_Imaging"
-        assert result["nx_meta"]["DatasetType"] == "Image"
+        assert isinstance(result, list)
+        assert "nx_meta" in result[0]
+        assert result[0]["nx_meta"]["Data Type"] == "HIM_Imaging"
+        assert result[0]["nx_meta"]["DatasetType"] == "Image"
 
         # Random sampling of extracted values from real file
-        meta = result["nx_meta"]
+        meta = result[0]["nx_meta"]
         # Beam section
         assert meta["Beam"]["Voltage (kV)"] == 29.997
         assert meta["Beam"]["Spot Number"] == 6.0
@@ -259,7 +260,7 @@ class TestOrionFibicsTiffExtractor:
 
         context = ExtractionContext(orion_zeiss_zeroed_file, instrument=None)
         result = self.extractor.extract(context)
-        meta = result["nx_meta"]
+        meta = result[0]["nx_meta"]
 
         # Test various voltage conversions (V to kV, multiply by 1000)
         # Beam section voltages
@@ -292,13 +293,13 @@ class TestOrionFibicsTiffExtractor:
         result = self.extractor.extract(context)
 
         # Should extract successfully
-        assert isinstance(result, dict)
-        assert "nx_meta" in result
-        assert result["nx_meta"]["Data Type"] == "HIM_Imaging"
-        assert result["nx_meta"]["DatasetType"] == "Image"
+        assert isinstance(result, list)
+        assert "nx_meta" in result[0]
+        assert result[0]["nx_meta"]["Data Type"] == "HIM_Imaging"
+        assert result[0]["nx_meta"]["DatasetType"] == "Image"
 
         # Comprehensive value checks from orion_fibics_tif_metadata.xml
-        meta = result["nx_meta"]
+        meta = result[0]["nx_meta"]
 
         # Application section
         assert meta["Application"]["Software Version"] == "NPVE v4.5"
@@ -369,14 +370,14 @@ class TestOrionFibicsTiffExtractor:
     def test_extractor_registered_in_registry(self):
         """Test that the extractor is properly registered in the registry."""
         # Re-register to ensure it's in the registry
-        self.registry.register_extractor(OrionFibicsTiffExtractor)
+        self.registry.register_extractor(OrionTiffExtractor)
 
         # Get extractors for .tif extension
         tif_extractors = self.registry.get_extractors_for_extension("tif")
 
         assert len(tif_extractors) == 3  # Should have three tif extractors
         assert any(
-            isinstance(i, OrionFibicsTiffExtractor) for i in tif_extractors
+            isinstance(i, OrionTiffExtractor) for i in tif_extractors
         )  # at least one should be the Orion extractor
 
     def test_error_handling_in_supports(self):
@@ -397,11 +398,11 @@ class TestOrionFibicsTiffExtractor:
             result = self.extractor.extract(
                 ExtractionContext(Path("nonexistent.tif"), instrument=None)
             )
-            assert isinstance(result, dict)
-            assert "nx_meta" in result
-            assert "Extractor Warnings" in result["nx_meta"]
+            assert isinstance(result, list)
+            assert "nx_meta" in result[0]
+            assert "Extractor Warnings" in result[0]["nx_meta"]
             assert (
-                result["nx_meta"]["Extractor Warnings"]
+                result[0]["nx_meta"]["Extractor Warnings"]
                 == "Extraction failed: [Errno 2] No such file or directory: "
                 "'nonexistent.tif'"
             )
@@ -462,8 +463,8 @@ class TestOrionFibicsTiffExtractor:
         context = ExtractionContext(file_path, instrument=None)
         result = self.extractor.extract(context)
         # Should handle nested path without crashing
-        assert isinstance(result, dict)
-        assert "nx_meta" in result
+        assert isinstance(result, list)
+        assert "nx_meta" in result[0]
 
     def test_fibics_extraction_full_path(self, fibics_tiff_file):
         """
@@ -473,7 +474,7 @@ class TestOrionFibicsTiffExtractor:
         """
         context = ExtractionContext(fibics_tiff_file, instrument=None)
         result = self.extractor.extract(context)
-        meta = result["nx_meta"]
+        meta = result[0]["nx_meta"]
 
         # Verify dwell time conversion (ns to μs)
         assert meta["Scan"]["Pixel Dwell Time (μs)"] == 10.0

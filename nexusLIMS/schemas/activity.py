@@ -149,19 +149,29 @@ def _escape(val: Any) -> Any:
     return val
 
 
-def _add_dataset_element(
+def _add_dataset_element(  # noqa: PLR0913
     file: str,
     aq_ac_xml_el: etree.Element,
     meta: Dict,
     unique_meta: Dict,
     warning: List,
+    preview_path: Path | None = None,
+    signal_index: int | None = None,
+    total_signals: int | None = None,
 ):
     # escape any bad characters in the filename
     file = _escape(file)
 
     # build path to thumbnail
     rel_fname = file.replace(str(settings.NX_INSTRUMENT_DATA_PATH), "")
-    rel_thumb_name = f"{rel_fname}.thumb.png"
+
+    # Use provided preview path if available, otherwise compute from filename
+    if preview_path is not None:
+        # Convert preview path to relative path
+        rel_thumb_name = str(preview_path).replace(str(settings.NX_DATA_PATH), "")
+    else:
+        # Legacy: compute from filename
+        rel_thumb_name = f"{rel_fname}.thumb.png"
 
     # encode for safe URLs
     rel_fname = quote(rel_fname)
@@ -173,7 +183,13 @@ def _add_dataset_element(
     dset_el.set("role", "Experimental")
 
     dset_name_el = etree.SubElement(dset_el, "name")
-    dset_name_el.text = Path(file).name
+    # For multi-signal files, append signal index to make names unique
+    base_name = Path(file).name
+    if signal_index is not None and total_signals is not None and total_signals > 1:
+        # Append signal index in format: "filename.ext (X of Y)"
+        dset_name_el.text = f"{base_name} ({signal_index + 1} of {total_signals})"
+    else:
+        dset_name_el.text = base_name
 
     dset_loc_el = etree.SubElement(dset_el, "location")
     dset_loc_el.text = rel_fname
@@ -279,8 +295,13 @@ class AcquisitionActivity:
         Add file to AcquisitionActivity.
 
         Add a file to this activity's file list, parse its metadata (storing
-        a flattened copy of it to this activity), generate a preview
-        thumbnail, get the file's type, and a lazy HyperSpy signal.
+        a flattened copy of it to this activity), and generate a preview
+        thumbnail.
+
+        parse_metadata always returns a list of metadata dicts (one per signal).
+        For files containing multiple signals (e.g., multi-signal DM3/DM4 files),
+        this method adds one entry per signal to the parallel lists, repeating
+        the filename for each signal but using different preview paths and metadata.
 
         Parameters
         ----------
@@ -290,22 +311,36 @@ class AcquisitionActivity:
             Whether or not to create the preview thumbnail images
         """
         if fname.exists():
-            self.files.append(str(fname))
             gen_prev = generate_preview
-            meta, preview_fname = parse_metadata(fname, generate_preview=gen_prev)
+            meta_list, preview_fnames = parse_metadata(fname, generate_preview=gen_prev)
 
-            if meta is None:
+            if meta_list is None:
                 # Something bad happened, so we need to alert the user
                 logger.warning("Could not parse metadata of %s", fname)
+                # Still add the file to maintain original behavior
+                self.files.append(str(fname))
+                self.previews.append(None)
+                self.meta.append({})
+                self.warnings.append([])
             else:
-                self.previews.append(preview_fname)
-                self.meta.append(flatten_dict(meta["nx_meta"]))
-                if "warnings" in meta["nx_meta"]:
-                    self.warnings.append(
-                        [" ".join(w) for w in meta["nx_meta"]["warnings"]],
-                    )
-                else:
-                    self.warnings.append([])
+                # meta_list is always a list of dicts, one per signal
+                for i, signal_meta in enumerate(meta_list):
+                    self.files.append(
+                        str(fname)
+                    )  # Same file, repeated for multi-signal
+                    self.meta.append(flatten_dict(signal_meta["nx_meta"]))
+
+                    # Handle previews (always a list)
+                    if preview_fnames and i < len(preview_fnames):
+                        self.previews.append(preview_fnames[i])
+
+                    # Handle warnings
+                    if "warnings" in signal_meta["nx_meta"]:
+                        self.warnings.append(
+                            [" ".join(w) for w in signal_meta["nx_meta"]["warnings"]],
+                        )
+                    else:
+                        self.warnings.append([])
         else:
             msg = f"{fname} was not found"
             raise FileNotFoundError(msg)
@@ -503,18 +538,41 @@ class AcquisitionActivity:
                     param_el.set("warning", "true")
                 param_el.text = str(param_v)
 
-        for _file, meta, unique_meta, warning in zip(
+        # Count how many times each file appears (for multi-signal files)
+        file_signal_counts = {}
+        file_signal_indices = {}
+        for _file in self.files:
+            if _file not in file_signal_counts:
+                file_signal_counts[_file] = 0
+                file_signal_indices[_file] = 0
+            file_signal_counts[_file] += 1
+
+        # Reset counters for actual iteration
+        file_signal_indices = dict.fromkeys(file_signal_counts, 0)
+
+        for _file, meta, unique_meta, warning, preview in zip(
             self.files,
             self.meta,
             self.unique_meta,
             self.warnings,
+            self.previews,
         ):
+            # Get the signal index for this file
+            signal_index = file_signal_indices[_file]
+            total_signals = file_signal_counts[_file]
+
             aq_ac_xml_el = _add_dataset_element(
                 _file,
                 aq_ac_xml_el,
                 meta,
                 unique_meta,
                 warning,
+                preview_path=preview,
+                signal_index=signal_index,
+                total_signals=total_signals,
             )
+
+            # Increment the signal index for this file
+            file_signal_indices[_file] += 1
 
         return aq_ac_xml_el

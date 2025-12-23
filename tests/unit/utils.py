@@ -29,6 +29,7 @@ tars = {
     "QUANTA_TIF": "quanta_image.tif.tar.gz",
     "QUANTA_32BIT": "quanta_image_32bit.tif.tar.gz",
     "QUANTA_NO_BEAM": "quanta_no_beam_scan_or_system_meta.tif.tar.gz",
+    "QUANTA_FEI_2": "quanta-fei_2_dataZeroed.tif.tar.gz",
     "SCIOS_DUPLICATE_META_TIF": "scios_multigis_metadata_sections.tif.tar.gz",
     "SCIOS_XML_META_TIF": "scios_xml_metadata.tif.tar.gz",
     "4D_STEM": "4d_stem.hspy.tar.gz",
@@ -39,6 +40,8 @@ tars = {
     "TEST_RECORD_FILES": "test_record_files.tar.gz",
     "ORION_FIBICS_ZEROED": "orion-fibics_dataZeroed.tif.tar.gz",
     "TESCAN_PFIB": "tescan-pfib_dataZeroed.tar.gz",
+    "NEOARM_GATAN_SI": "neoarm-gatan_SI_dataZeroed.dm4.tar.gz",
+    "NEOARM_GATAN_IMAGE": "neoarm-gatan_image_dataZeroed.dm4.tar.gz",
 }
 
 

@@ -132,13 +132,13 @@ def _add_extraction_details(
     return nx_meta
 
 
-def parse_metadata(
+def parse_metadata(  # noqa: PLR0912
     fname: Path,
     *,
     write_output: bool = True,
     generate_preview: bool = True,
     overwrite: bool = True,
-) -> Tuple[Dict[str, Any] | None, Path | None]:
+) -> Tuple[Dict[str, Any] | None, Path | list[Path] | None]:
     """
     Parse metadata from a file and optionaly generate a preview image.
 
@@ -147,6 +147,9 @@ def parse_metadata(
     what we are interested in, and return it as a dictionary (writing to the
     NexusLIMS directory as JSON by default). Also calls the preview
     generation method, if desired.
+
+    For files containing multiple signals (e.g., multi-signal DM3/DM4 files),
+    generates one preview per signal and returns a list of preview paths.
 
     Parameters
     ----------
@@ -165,12 +168,14 @@ def parse_metadata(
 
     Returns
     -------
-    nx_meta : dict or None
-        The "relevant" metadata that is of use for NexusLIMS. If None,
-        the file could not be opened
-    preview_fname : Path or None
-        The file path of the generated preview image, or `None` if it was not
-        requested
+    nx_meta : list[dict] or None
+        A list of metadata dicts, one per signal in the file. If None,
+        the file could not be opened. Single-signal files return a list
+        with one dict, multi-signal files return a list with multiple dicts.
+    preview_fname : list[Path] or None
+        A list of file paths for the generated preview images, one per signal.
+        For single-signal files, returns a list with one path. Returns `None`
+        if preview generation was not requested.
     """
     extension = fname.suffix[1:]
 
@@ -183,7 +188,8 @@ def parse_metadata(
     extractor = registry.get_extractor(context)
 
     # Extract metadata using the selected extractor
-    nx_meta = extractor.extract(context)
+    # All extractors now return a list of dicts (one per signal)
+    nx_meta_list = extractor.extract(context)
 
     # Create a pseudo-module for extraction details tracking
     class ExtractorMethod:
@@ -195,7 +201,11 @@ def parse_metadata(
             self.__name__ = self.__module__
 
         def __call__(self, f: Path) -> dict:  # noqa: ARG002
-            return nx_meta  # pragma: no cover
+            return nx_meta_list  # pragma: no cover
+
+    # Defensive check: extractors should always return a list but handle None gracefully
+    if nx_meta_list is None:
+        return None, None
 
     extractor_method = ExtractorMethod(extractor.name)
 
@@ -217,19 +227,28 @@ def parse_metadata(
                 "setting generate_preview to True",
             )
 
-    nx_meta = _add_extraction_details(nx_meta, extractor_method)
-    preview_fname = None
+    # Add extraction details to metadata
+    nx_meta_list = [_add_extraction_details(m, extractor_method) for m in nx_meta_list]
 
-    # nx_meta should never be None, because the extractors are defensive and
-    # will always return _something_
-    if nx_meta is not None:
-        # Set the dataset type to Misc if it was not set by the file reader
+    signal_count = len(nx_meta_list)
+    preview_fnames = []
+
+    # Set the dataset type to Misc if it was not set by the file reader
+    for nx_meta in nx_meta_list:
         if "DatasetType" not in nx_meta["nx_meta"]:
             nx_meta["nx_meta"]["DatasetType"] = "Misc"
             nx_meta["nx_meta"]["Data Type"] = "Miscellaneous"
 
-        if write_output:
-            out_fname = replace_instrument_data_path(fname, ".json")
+    # Write output for each signal (single and multi-signal files)
+    if write_output:
+        for i, nx_meta in enumerate(nx_meta_list):
+            # For single-signal files, omit suffix for backward compatibility
+            if signal_count == 1:
+                out_fname = replace_instrument_data_path(fname, ".json")
+            else:
+                # For multi-signal files, append signal index to filename
+                base_path = replace_instrument_data_path(fname, "")
+                out_fname = Path(f"{base_path}_signal{i}.json")
 
             if not out_fname.exists() or overwrite:
                 # Create the directory for the metadata file, if needed
@@ -251,13 +270,26 @@ def parse_metadata(
                         cls=_CustomEncoder,
                     )
 
+    # Generate previews for each signal
     if generate_preview:
-        preview_fname = create_preview(fname=fname, overwrite=overwrite)
+        for i in range(signal_count):
+            # For single-signal files, omit suffix for backward compatibility
+            signal_idx = i if signal_count > 1 else None
+            preview = create_preview(
+                fname=fname,
+                overwrite=overwrite,
+                signal_index=signal_idx,
+            )
+            preview_fnames.append(preview)
+    else:
+        preview_fnames = [None] * signal_count
 
-    return nx_meta, preview_fname
+    return nx_meta_list, preview_fnames
 
 
-def create_preview(fname: Path, *, overwrite: bool) -> Path | None:  # noqa: PLR0911
+def create_preview(  # noqa: PLR0911, PLR0912, PLR0915
+    fname: Path, *, overwrite: bool, signal_index: int | None = None
+) -> Path | None:
     """
     Generate a preview image for a given file using the plugin system.
 
@@ -272,6 +304,10 @@ def create_preview(fname: Path, *, overwrite: bool) -> Path | None:  # noqa: PLR
     overwrite
         Whether to overwrite the .json metadata file and thumbnail
         image if either exists
+    signal_index
+        For files with multiple signals, the index of the signal to preview.
+        If None, generates a single preview (legacy behavior). If an int,
+        generates preview with _signalN suffix in filename.
 
     Returns
     -------
@@ -279,7 +315,13 @@ def create_preview(fname: Path, *, overwrite: bool) -> Path | None:  # noqa: PLR
         The filename of the generated preview image; if None, a preview could not be
         successfully generated.
     """
-    preview_fname = replace_instrument_data_path(fname, ".thumb.png")
+    # Generate preview filename with signal index suffix if provided
+    if signal_index is None:
+        preview_fname = replace_instrument_data_path(fname, ".thumb.png")
+    else:
+        preview_fname = replace_instrument_data_path(
+            fname, f"_signal{signal_index}.thumb.png"
+        )
 
     # Skip if preview exists and overwrite is False
     if preview_fname.is_file() and not overwrite:
@@ -288,7 +330,9 @@ def create_preview(fname: Path, *, overwrite: bool) -> Path | None:  # noqa: PLR
 
     # Create context for preview generation
     instrument = get_instr_from_filepath(fname)
-    context = ExtractionContext(file_path=fname, instrument=instrument)
+    context = ExtractionContext(
+        file_path=fname, instrument=instrument, signal_index=signal_index
+    )
 
     # Try to get a preview generator from the registry
     registry = get_registry()
@@ -354,15 +398,25 @@ def create_preview(fname: Path, *, overwrite: bool) -> Path | None:  # noqa: PLR
         shutil.copyfile(PLACEHOLDER_PREVIEW, preview_fname)
         return preview_fname
 
-    # If s is a list of signals, use just the first one for our purposes
+    # If s is a list of signals, select the appropriate one
     if isinstance(s, list):
         num_sigs = len(s)
-        fname = s[0].metadata.General.original_filename
-        s = s[0]
-        s.metadata.General.title = (
-            s.metadata.General.title
-            + f' (1 of {num_sigs} total signals in file "{fname}")'
-        )
+        original_fname = s[0].metadata.General.original_filename
+        if signal_index is not None:
+            # Use specified signal index
+            s = s[signal_index]
+            s.metadata.General.title = (
+                s.metadata.General.title
+                + f" (signal {signal_index + 1} of "
+                + f'{num_sigs} in file "{original_fname}")'
+            )
+        else:
+            # Legacy: use first signal only
+            s = s[0]
+            s.metadata.General.title = (
+                s.metadata.General.title
+                + f' (1 of {num_sigs} total signals in file "{original_fname}")'
+            )
     elif not s.metadata.General.title:
         s.metadata.General.title = s.metadata.General.original_filename.replace(
             extension,

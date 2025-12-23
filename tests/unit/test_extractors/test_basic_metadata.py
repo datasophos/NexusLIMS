@@ -15,16 +15,16 @@ class TestBasicExtractor:
         metadata = get_basic_metadata(basic_txt_file)
 
         # test 'nx_meta' values of interest
-        assert metadata["nx_meta"]["Data Type"] == "Unknown"
-        assert metadata["nx_meta"]["DatasetType"] == "Unknown"
-        assert "Creation Time" in metadata["nx_meta"]
-        assert dt.fromisoformat(metadata["nx_meta"]["Creation Time"])
+        assert metadata[0]["nx_meta"]["Data Type"] == "Unknown"
+        assert metadata[0]["nx_meta"]["DatasetType"] == "Unknown"
+        assert "Creation Time" in metadata[0]["nx_meta"]
+        assert dt.fromisoformat(metadata[0]["nx_meta"]["Creation Time"])
 
     def test_basic_extraction_no_extension(self, basic_txt_file_no_extension):
         metadata = get_basic_metadata(basic_txt_file_no_extension)
 
         # test 'nx_meta' values of interest
-        assert metadata["nx_meta"]["Data Type"] == "Unknown"
-        assert metadata["nx_meta"]["DatasetType"] == "Unknown"
-        assert "Creation Time" in metadata["nx_meta"]
-        assert dt.fromisoformat(metadata["nx_meta"]["Creation Time"])
+        assert metadata[0]["nx_meta"]["Data Type"] == "Unknown"
+        assert metadata[0]["nx_meta"]["DatasetType"] == "Unknown"
+        assert "Creation Time" in metadata[0]["nx_meta"]
+        assert dt.fromisoformat(metadata[0]["nx_meta"]["Creation Time"])

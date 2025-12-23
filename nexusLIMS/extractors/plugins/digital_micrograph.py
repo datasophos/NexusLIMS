@@ -78,7 +78,9 @@ class DM3Extractor:
         extension = context.file_path.suffix.lower().lstrip(".")
         return extension in {"dm3", "dm4"}
 
-    def extract(self, context: ExtractionContext) -> dict[str, Any]:
+    def extract(
+        self, context: ExtractionContext
+    ) -> dict[str, Any] | list[dict[str, Any]]:
         """
         Extract metadata from a DM3/DM4 file.
 
@@ -89,16 +91,19 @@ class DM3Extractor:
 
         Returns
         -------
-        dict
-            Metadata dictionary with 'nx_meta' key containing NexusLIMS metadata.
-            If the file cannot be opened, returns basic metadata with a warning.
+        list[dict] or dict
+            For DM3/DM4 files: Always returns a list of metadata dicts.
+            Each dict contains 'nx_meta' with NexusLIMS-specific metadata.
+            Single-signal files return a 1-element list for consistency.
+            If the file cannot be opened, returns basic metadata as a single dict
+            (following the standard extractor contract for error cases).
         """
         logger.debug("Extracting metadata from DM3/DM4 file: %s", context.file_path)
         # get_dm3_metadata() handles profile application internally
-        metadata = get_dm3_metadata(context.file_path, context.instrument)
+        metadata_list = get_dm3_metadata(context.file_path, context.instrument)
 
         # If extraction failed, return minimal metadata with a warning
-        if metadata is None:
+        if metadata_list is None:
             logger.warning(
                 "Failed to extract DM3/DM4 metadata from %s, "
                 "falling back to basic metadata",
@@ -106,14 +111,18 @@ class DM3Extractor:
             )
             # Use basic metadata extractor as fallback
             basic_extractor = BasicFileInfoExtractor()
-            metadata = basic_extractor.extract(context)
+            metadata_list = basic_extractor.extract(context)
             # Add a warning to indicate extraction failed
+            metadata = metadata_list[0]
             metadata["nx_meta"]["warnings"] = metadata["nx_meta"].get("warnings", [])
             metadata["nx_meta"]["warnings"].append(
                 ["DM3/DM4 file could not be read by HyperSpy"]
             )
+            return [metadata]
 
-        return metadata
+        # Always return a list of metadata dicts
+        # Single-signal files return a 1-element list for consistent interface
+        return metadata_list
 
 
 def get_dm3_metadata(filename: Path, instrument=None):
@@ -134,8 +143,9 @@ def get_dm3_metadata(filename: Path, instrument=None):
 
     Returns
     -------
-    metadata : dict or None
-        The extracted metadata of interest. If None, the file could not be opened
+    metadata : list[dict] or None
+        List of extracted metadata dicts, one per signal. If None, the file could
+        not be opened.
     """
     # We do lazy loading so we don't actually read the data from the disk to
     # save time and memory.
@@ -266,8 +276,8 @@ def get_dm3_metadata(filename: Path, instrument=None):
         # sort the nx_meta dictionary (recursively) for nicer display
         m_list[i]["nx_meta"] = sort_dict(m_list[i]["nx_meta"])
 
-    # return the first dictionary, which should contain the most information:
-    return remove_dict_nones(m_list[0])
+    # return all signals as a list of dictionaries:
+    return [remove_dict_nones(m) for m in m_list]
 
 
 def _apply_profile_to_metadata(metadata: dict, instrument, file_path: Path) -> dict:
@@ -367,7 +377,7 @@ def get_pre_path(mdict: Dict) -> List[str]:
         mdict,
         ["ImageList", "TagGroup0", "ImageTags", "plane info"],
     )
-    if stack_val != "not found":
+    if stack_val is not None:
         # we're in a stack
         pre_path = [
             "ImageList",
@@ -383,7 +393,7 @@ def get_pre_path(mdict: Dict) -> List[str]:
     return pre_path
 
 
-def parse_dm3_microscope_info(mdict):
+def parse_dm3_microscope_info(mdict):  # noqa: PLR0912
     """
     Parse the "microscope info" metadata.
 
@@ -424,6 +434,9 @@ def parse_dm3_microscope_info(mdict):
         "Name",
         "Field of View (\u00b5m)",
         "Facility",
+        "Condenser Aperture",
+        "Objective Aperture",
+        "Selected Area Aperture",
         ["Stage Position", "Stage Alpha"],
         ["Stage Position", "Stage Beta"],
         ["Stage Position", "Stage X"],
@@ -436,11 +449,7 @@ def parse_dm3_microscope_info(mdict):
         val = try_getting_dict_value(mdict, base + meta_key)
         # only add the value to this list if we found it, and it's not one of
         # the "facility-wide" set values that do not have any meaning:
-        if (
-            val != "not found"
-            and val not in ["DO NOT EDIT", "DO NOT ENTER"]
-            and val != []
-        ):
+        if val is not None and val not in ["DO NOT EDIT", "DO NOT ENTER"] and val != []:
             # change output of "Stage Position" to unicode characters
             if "Stage Position" in meta_key:
                 meta_key[-1] = (
@@ -460,11 +469,7 @@ def parse_dm3_microscope_info(mdict):
         val = try_getting_dict_value(mdict, base + meta_key)
         # only add the value to this list if we found it, and it's not
         # one of the "facility-wide" set values that do not have any meaning:
-        if (
-            val != "not found"
-            and val not in ["DO NOT EDIT", "DO NOT ENTER"]
-            and val != []
-        ):
+        if val is not None and val not in ["DO NOT EDIT", "DO NOT ENTER"] and val != []:
             set_nested_dict_value(mdict, ["nx_meta", *meta_key], val)
 
     # General "Meta Data" .dm3 tags
@@ -481,11 +486,7 @@ def parse_dm3_microscope_info(mdict):
         val = try_getting_dict_value(mdict, base + meta_key)
         # only add the value to this list if we found it, and it's not
         # one of the "facility-wide" set values that do not have any meaning:
-        if (
-            val != "not found"
-            and val not in ["DO NOT EDIT", "DO NOT ENTER"]
-            and val != []
-        ):
+        if val is not None and val not in ["DO NOT EDIT", "DO NOT ENTER"] and val != []:
             if "Label" in meta_key:
                 set_nested_dict_value(mdict, ["nx_meta", "Analytic Label"], val)
             else:
@@ -509,6 +510,20 @@ def parse_dm3_microscope_info(mdict):
 
     # image processing:
     _set_image_processing(mdict, pre_path)
+
+    # Signal Name (from DataBar):
+    signal_name = try_getting_dict_value(mdict, [*pre_path, "DataBar", "Signal Name"])
+    if signal_name is not None:
+        set_nested_dict_value(mdict, ["nx_meta", "Signal Name"], signal_name)
+
+    # DigiScan Sample Time (dwell time per pixel in microseconds):
+    sample_time = try_getting_dict_value(mdict, [*pre_path, "DigiScan", "Sample Time"])
+    if sample_time is not None:
+        set_nested_dict_value(
+            mdict,
+            ["nx_meta", "Sample Time (\u00b5s)"],
+            sample_time,
+        )
 
     if (
         "Illumination Mode" in mdict["nx_meta"]
@@ -643,7 +658,7 @@ def parse_dm3_eds_info(mdict):
     # If so, then some relevant EDS values are located there, rather
     # than in the root-level EDS tag (all the EDS.Acquisition tags from
     # above)
-    if try_getting_dict_value(mdict, [*pre_path, "SI"]) != "not found":
+    if try_getting_dict_value(mdict, [*pre_path, "SI"]) is not None:
         for meta_key in [
             ["Acquisition", "Continuous Mode"],
             ["Acquisition", "Count Rate Unit"],
@@ -691,7 +706,7 @@ def parse_dm3_eds_info(mdict):
         ["Live time"],
         ["Real time"],
     ]:
-        if try_getting_dict_value(mdict, base + meta_key) != "not found":
+        if try_getting_dict_value(mdict, base + meta_key) is not None:
             mdict["nx_meta"]["warnings"].append(
                 ["EDS", meta_key[-1] if len(meta_key) > 1 else meta_key[0]],
             )
@@ -753,7 +768,7 @@ def parse_dm3_spectrum_image_info(mdict):
         val = try_getting_dict_value(mdict, base + m_in)
         # only add the value to this list if we found it, and it's not
         # one of the "facility-wide" set values that do not have any meaning:
-        if val != "not found":
+        if val is not None:
             # add last value of each parameter to the "EDS" sub-tree of nx_meta
             set_nested_dict_value(mdict, ["nx_meta", "Spectrum Imaging", *m_out], val)
 
@@ -766,7 +781,7 @@ def parse_dm3_spectrum_image_info(mdict):
         mdict,
         [*base, "Acquisition", "Artefact Correction", "Spatial Drift", "Units"],
     )
-    if drift_per_val != "not found" and drift_unit_val != "not found":
+    if drift_per_val is not None and drift_unit_val is not None:
         val_to_set = f"Spatial drift correction every {drift_per_val} {drift_unit_val}"
         # make sure statement looks gramatically correct
         if drift_per_val == 1:
@@ -784,7 +799,7 @@ def parse_dm3_spectrum_image_info(mdict):
 
     start_val = try_getting_dict_value(mdict, [*base, "Acquisition", "Start time"])
     end_val = try_getting_dict_value(mdict, [*base, "Acquisition", "End time"])
-    if start_val != "not found" and end_val != "not found":
+    if start_val is not None and end_val is not None:
         start_dt = dt.strptime(start_val, "%I:%M:%S %p").replace(tzinfo=UTC)
         end_dt = dt.strptime(end_val, "%I:%M:%S %p").replace(tzinfo=UTC)
         duration = (end_dt - start_dt).seconds  # Calculate acquisition duration

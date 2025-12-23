@@ -13,6 +13,11 @@ from lxml import etree
 
 from nexusLIMS.builder import record_builder
 from nexusLIMS.db.session_handler import db_query
+from tests.integration.conftest import (
+    _get_metadata_urls_for_datasets,
+    _verify_json_metadata_accessible,
+    _verify_url_accessible,
+)
 
 # test_environment_setup fixture is now defined in conftest.py
 
@@ -216,3 +221,220 @@ class TestEndToEndWorkflow:
         cdcs_module.delete_record(record_id)
         with pytest.raises(ValueError, match=f"Record with id {record_id} not found"):
             cdcs_module.download_record(record_id)
+
+    # ========================================================================
+    # Multi-signal workflow tests - Refactored into focused test methods
+    # ========================================================================
+
+    @pytest.mark.integration
+    @pytest.mark.filterwarnings(
+        "ignore:invalid value encountered in divide:RuntimeWarning"
+    )
+    def test_multi_signal_record_generation_and_structure(
+        self,
+        multi_signal_integration_record,
+    ):
+        """
+        Test multi-signal file handling in record generation and XML structure.
+
+        This test verifies that multi-signal files (files containing multiple
+        signals/datasets extracted from a single file) are properly handled:
+        1. Each signal gets a unique dataset name with index: "filename.ext (X of Y)"
+        2. Multi-signal files share one source file location
+        3. Each signal gets its own preview image
+        4. XML record is valid against schema
+
+        Files tested:
+        - neoarm-gatan_SI_dataZeroed.dm4: Spectrum image with 4 signals
+        - TEM_list_signal_dataZeroed.dm3: File with list of 2 signals
+        - test_STEM_image.dm3: Single STEM image (control)
+
+        Parameters
+        ----------
+        multi_signal_integration_record : dict
+            Fixture providing the generated XML and metadata
+        """
+        xml_doc = multi_signal_integration_record["xml_doc"]
+        nx_ns = "{https://data.nist.gov/od/dm/nexus/experiment/v1.0}"
+
+        # Verify XML structure
+        assert xml_doc.tag.endswith("Experiment"), "Root element is not Experiment"
+
+        summary = xml_doc.find(f"{nx_ns}summary")
+        assert summary is not None, "No Summary element found"
+
+        # Verify all datasets are present
+        all_datasets = xml_doc.findall(f".//{nx_ns}dataset")
+        dataset_names = [ds.find(f"{nx_ns}name").text for ds in all_datasets]
+
+        # The neoarm DM4 should have 4 datasets with signal indices
+        neoarm_names = [name for name in dataset_names if "neoarm" in name.lower()]
+        assert len(neoarm_names) == 4, (
+            f"Expected 4 neoarm dataset names, got {len(neoarm_names)}: {neoarm_names}"
+        )
+
+        # Verify signal indices are in order and properly formatted
+        for i, name in enumerate(neoarm_names, start=1):
+            assert name.endswith(f"({i} of 4)"), (
+                f"Expected neoarm name {i} to end with '({i} of 4)', got: {name}"
+            )
+
+        # Verify multi-signal handling: 4 previews, 1 shared file location
+        neoarm_datasets = [
+            ds
+            for ds in all_datasets
+            if "neoarm" in ds.find(f"{nx_ns}name").text.lower()
+        ]
+        assert len(neoarm_datasets) == 4, (
+            f"Expected 4 neoarm datasets, got {len(neoarm_datasets)}"
+        )
+
+        # Collect preview paths and file locations
+        neoarm_preview_paths = set()
+        neoarm_file_locations = set()
+
+        for dataset in neoarm_datasets:
+            location_el = dataset.find(f"{nx_ns}location")
+            if location_el is not None:
+                neoarm_file_locations.add(location_el.text)
+
+            preview_el = dataset.find(f"{nx_ns}preview")
+            if preview_el is not None:
+                neoarm_preview_paths.add(preview_el.text)
+
+        # Verify 4 different preview images
+        assert len(neoarm_preview_paths) == 4, (
+            f"Expected 4 different neoarm preview images, got "
+            f"{len(neoarm_preview_paths)}: {neoarm_preview_paths}"
+        )
+
+        # Verify 1 shared file location
+        assert len(neoarm_file_locations) == 1, (
+            f"Expected 1 shared file location for all 4 neoarm signals, got "
+            f"{len(neoarm_file_locations)}: {neoarm_file_locations}"
+        )
+
+        # Verify all datasets have required elements
+        for dataset in all_datasets:
+            name_el = dataset.find(f"{nx_ns}name")
+            assert name_el is not None, "Dataset missing name element"
+            assert name_el.text, "Dataset name is empty"
+
+            location_el = dataset.find(f"{nx_ns}location")
+            assert location_el is not None, "Dataset missing location element"
+
+    @pytest.mark.integration
+    @pytest.mark.filterwarnings(
+        "ignore:invalid value encountered in divide:RuntimeWarning"
+    )
+    def test_multi_signal_cdcs_integration(
+        self,
+        multi_signal_integration_record,
+    ):
+        """
+        Test multi-signal record upload to and retrieval from CDCS.
+
+        This test verifies that:
+        1. Multi-signal records upload successfully to CDCS
+        2. Records can be searched and found by title
+        3. Records can be downloaded from CDCS
+        4. Downloaded XML is valid against schema
+
+        Parameters
+        ----------
+        multi_signal_integration_record : dict
+            Fixture providing the generated XML and metadata
+        """
+        import nexusLIMS.cdcs as cdcs_module
+        from nexusLIMS.builder import record_builder
+
+        record_title = multi_signal_integration_record["record_title"]
+        record_id = multi_signal_integration_record["record_id"]
+
+        # Verify record is present in CDCS
+        search_results = cdcs_module.search_records(title=record_title)
+        assert len(search_results) > 0, f"Record '{record_title}' not found in CDCS"
+
+        cdcs_record = search_results[0]
+        assert cdcs_record["id"] == record_id, "Record ID mismatch"
+
+        # Download the record from CDCS
+        downloaded_xml = cdcs_module.download_record(record_id)
+        assert len(downloaded_xml) > 0, "Downloaded XML is empty"
+
+        # Verify downloaded XML is valid against schema
+        schema_doc = etree.parse(str(record_builder.XSD_PATH))
+        schema = etree.XMLSchema(schema_doc)
+        downloaded_doc = etree.fromstring(downloaded_xml.encode())
+
+        is_valid = schema.validate(downloaded_doc)
+        assert is_valid, (
+            f"Downloaded XML from CDCS is not valid against schema: {schema.error_log}"
+        )
+
+    @pytest.mark.integration
+    @pytest.mark.filterwarnings(
+        "ignore:invalid value encountered in divide:RuntimeWarning"
+    )
+    def test_multi_signal_fileserver_accessibility(
+        self,
+        multi_signal_integration_record,
+    ):
+        """
+        Test fileserver accessibility for multi-signal record artifacts.
+
+        This test verifies that all files referenced in the multi-signal record
+        are accessible via the fileserver:
+        1. Original dataset files (instrument-data URLs)
+        2. JSON metadata files (data URLs with .json extension)
+        3. Preview images (data URLs)
+
+        Parameters
+        ----------
+        multi_signal_integration_record : dict
+            Fixture providing the generated XML and metadata
+        """
+        xml_doc = multi_signal_integration_record["xml_doc"]
+        nx_ns = "{https://data.nist.gov/od/dm/nexus/experiment/v1.0}"
+
+        print("\n[*] Verifying fileserver accessibility for multi-signal record...")
+
+        # Test dataset file accessibility
+        dataset_locations = xml_doc.findall(f".//{nx_ns}dataset/{nx_ns}location")
+        assert len(dataset_locations) == 7, (
+            "Unexpected number of dataset locations found in XML"
+        )
+
+        print(f"\n[*] Testing access to {len(dataset_locations)} dataset files...")
+        for i, location_el in enumerate(dataset_locations, 1):
+            dataset_location = location_el.text
+            dataset_url = (
+                f"http://fileserver.localhost/instrument-data{dataset_location}"
+            )
+            _verify_url_accessible(dataset_url, i, len(dataset_locations))
+
+        print(f"[+] Successfully accessed {len(dataset_locations)} dataset files")
+
+        # Test JSON metadata file accessibility
+        print("\n[*] Testing access to JSON metadata files...")
+        metadata_urls = _get_metadata_urls_for_datasets(xml_doc, nx_ns)
+
+        for i, metadata_url in enumerate(metadata_urls, 1):
+            _verify_json_metadata_accessible(metadata_url, i, len(metadata_urls))
+
+        print(f"[+] Successfully accessed {len(metadata_urls)} JSON metadata files")
+
+        # Test preview image accessibility
+        preview_elements = xml_doc.findall(f".//{nx_ns}dataset/{nx_ns}preview")
+        if len(preview_elements) > 0:
+            print(f"\n[*] Testing access to {len(preview_elements)} preview images...")
+            for i, preview_el in enumerate(preview_elements, 1):
+                preview_path = preview_el.text
+                preview_url = f"http://fileserver.localhost/data{preview_path}"
+                _verify_url_accessible(
+                    preview_url, i, len(preview_elements), expected_type="image"
+                )
+
+            print(f"[+] Successfully accessed {len(preview_elements)} preview images")
+
+        print("\n[+] All fileserver accessibility checks passed")

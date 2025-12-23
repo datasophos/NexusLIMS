@@ -4,7 +4,7 @@ small **ReST**-formatted text that will be added to the next change log.
 The changelog will be read by **users**, so this description should be aimed to
 users instead of describing internal changes which are only relevant to the developers.
 
-Each file should be named like ``<ISSUE>.<TYPE>.rst``, where
+Each file should be named like ``<ISSUE>.<TYPE>.md``, where
 ``<ISSUE>`` is an issue or merge/pull request number, and ``<TYPE>`` is one of:
 
 * ``feature``: new user facing features, like new command-line options and new behavior.
@@ -15,7 +15,7 @@ Each file should be named like ``<ISSUE>.<TYPE>.rst``, where
 * ``misc``: a change related to the test suite, packaging, etc. probably not of
             interest to regular users
 
-So for example ``1412.feature.rst`` or ``2773.bugfix.rst``.
+So for example ``1412.feature.md`` or ``2773.bugfix.md``.
 
 If your pull/merge request fixes an issue, use the number of the issue here. If there
 is no issue, then after you submit the PR and get the PR number you can add a changelog
@@ -37,8 +37,3 @@ command line:
        $ towncrier build --draft
 
 See https://towncrier.readthedocs.io/ for more details.
-
-.. note: 
-
-    This file was mostly copied from 
-    https://github.com/hyperspy/hyperspy/blob/RELEASE_next_minor/upcoming_changes/README.rst)

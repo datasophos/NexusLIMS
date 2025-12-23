@@ -41,7 +41,7 @@ class BasicFileInfoExtractor:
         """
         return True
 
-    def extract(self, context: ExtractionContext) -> dict[str, Any]:
+    def extract(self, context: ExtractionContext) -> list[dict[str, Any]]:
         """
         Extract basic metadata from any file.
 
@@ -55,8 +55,8 @@ class BasicFileInfoExtractor:
 
         Returns
         -------
-        dict
-            Metadata dictionary with 'nx_meta' key containing basic file information
+        list[dict]
+            List containing a single metadata dict with 'nx_meta' key
         """
         logger.debug(
             "Extracting basic metadata from file (no specialized extractor): %s",
@@ -75,7 +75,7 @@ class BasicFileInfoExtractor:
         ).isoformat()
         mdict["nx_meta"]["Creation Time"] = mtime_iso
 
-        return mdict
+        return [mdict]
 
 
 # Backward compatibility function for tests
