@@ -156,7 +156,7 @@ jobs:
           # This ensures all versions have the latest switcher with all available versions
           echo "Updating switcher.json in all version directories..."
           for dir in */; do
-            # Only process directories that look like version directories (X.Y.Z, latest, pr-N)
+            # Only process directories that look like version directories (X.Y.Z, latest, stable, pr-N)
             # Skip: _build, docs, nexusLIMS (source code), and hidden dirs
             if [ -d "$dir" ] && [ "$dir" != "_build/" ] && \
                [ "$dir" != "docs/" ] && [ "$dir" != "nexusLIMS/" ] && \

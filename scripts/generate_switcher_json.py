@@ -212,27 +212,29 @@ def build_switcher_json(dirs, current_pr_num=None):
     version_dirs = [d for d in dirs if re.match(r"^\d+\.\d+\.\d+$", d)]
     filtered_versions = filter_latest_patch_versions(version_dirs)
 
-    for idx, v in enumerate(filtered_versions):
-        # The first version in the list is the highest
-        # (filtered_versions is sorted descending)
-        # Mark it as stable and preferred per PyData Sphinx Theme conventions
-        if idx == 0:
-            entries.append(
-                {
-                    "name": f"v{v} (stable)",
-                    "version": v,
-                    "url": f"{BASE_URL}/{v}/",
-                    "preferred": True,
-                }
-            )
-        else:
-            entries.append(
-                {
-                    "name": f"v{v}",
-                    "version": v,
-                    "url": f"{BASE_URL}/{v}/",
-                }
-            )
+    # Add stable link at the top (if it exists)
+    if "stable" in dirs:
+        # Get the version number of the latest release
+        latest_version = filtered_versions[0] if filtered_versions else "stable"
+        entries.append(
+            {
+                "name": f"v{latest_version} (stable)",
+                "version": "stable",
+                "url": f"{BASE_URL}/stable/",
+                "preferred": True,
+            }
+        )
+
+    for v in filtered_versions:
+        # Add numbered version entries without marking any as stable/preferred
+        # since we now have a dedicated stable/ directory
+        entries.append(
+            {
+                "name": f"v{v}",
+                "version": v,
+                "url": f"{BASE_URL}/{v}/",
+            }
+        )
 
     # Add current PR first (if in PR context)
     if current_pr_num:
