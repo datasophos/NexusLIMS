@@ -321,11 +321,8 @@ Parse vendor-specific metadata strings:
 ```python
 """Profile for FEI Titan TEM with Tecnai metadata parsing."""
 
-from nexusLIMS.utils import (
-    get_nested_dict_key,
-    get_nested_dict_value_by_path,
-    set_nested_dict_value,
-)
+from benedict import benedict
+from nexusLIMS.utils import set_nested_dict_value
 
 
 def parse_tecnai_metadata(metadata, context):
@@ -335,13 +332,22 @@ def parse_tecnai_metadata(metadata, context):
         process_tecnai_microscope_info,
     )
 
-    # Check if Tecnai metadata exists
-    path_to_tecnai = get_nested_dict_key(metadata, "Tecnai")
+    # Check if Tecnai metadata exists using benedict's keypaths method
+    b = benedict(metadata)
+    keypaths_list = b.keypaths()
+
+    # Find the keypath that ends with "Tecnai"
+    path_to_tecnai = None
+    for keypath in keypaths_list:
+        if keypath.endswith(".Tecnai") or keypath == "Tecnai":
+            path_to_tecnai = keypath.split(".")
+            break
+
     if path_to_tecnai is None:
         return metadata
 
     # Extract and process Tecnai microscope info
-    tecnai_value = get_nested_dict_value_by_path(metadata, path_to_tecnai)
+    tecnai_value = b[".".join(path_to_tecnai)]
     microscope_info = tecnai_value["Microscope Info"]
     processed = process_tecnai_microscope_info(microscope_info)
 

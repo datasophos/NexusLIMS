@@ -21,13 +21,13 @@ import inspect
 import json
 import logging
 import shutil
-from collections import abc
 from datetime import datetime as dt
 from pathlib import Path
 from typing import Any, Callable, Dict, Tuple
 
 import hyperspy.api as hs
 import numpy as np
+from benedict import benedict
 
 from nexusLIMS.extractors.base import ExtractionContext
 from nexusLIMS.extractors.registry import get_registry
@@ -432,7 +432,7 @@ def create_preview(  # noqa: PLR0911, PLR0912, PLR0915
     return preview_fname
 
 
-def flatten_dict(_dict, parent_key="", separator=" "):
+def flatten_dict(_dict, parent_key="", separator=" "):  # noqa: ARG001
     """
     Flatten a nested dictionary into a single level.
 
@@ -440,14 +440,14 @@ def flatten_dict(_dict, parent_key="", separator=" "):
     single level, separating the levels by a string as specified by
     ``separator``.
 
-    Cribbed from: https://stackoverflow.com/a/6027615/1435788
+    Uses python-benedict for robust nested dictionary operations.
 
     Parameters
     ----------
     _dict : dict
         The dictionary to flatten
     parent_key : str
-        The "root" key to add to the existing keys
+        The "root" key to add to the existing keys (unused in current implementation)
     separator : str
         The string to use to separate values in the flattened keys (i.e.
         {'a': {'b': 'c'}} would become {'a' + sep + 'b': 'c'})
@@ -458,15 +458,9 @@ def flatten_dict(_dict, parent_key="", separator=" "):
         The dictionary with depth one, with nested dictionaries flattened
         into root-level keys
     """
-    items = []
-    for k, v in _dict.items():
-        new_key = parent_key + separator + k if parent_key else k
-        if isinstance(v, abc.MutableMapping):
-            items.extend(flatten_dict(v, new_key, separator=separator).items())
-        else:
-            items.append((new_key, v))
-
-    return dict(items)
+    # Disable keypath_separator to avoid conflicts with keys containing
+    # dots or other special chars
+    return benedict(_dict, keypath_separator=None).flatten(separator=separator)
 
 
 class _CustomEncoder(json.JSONEncoder):

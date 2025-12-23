@@ -12,6 +12,7 @@ from shutil import copyfile
 from typing import Any, Dict, List, Tuple, Union
 
 import certifi
+from benedict import benedict
 from requests import Session
 from requests.adapters import HTTPAdapter
 from requests_ntlm import HttpNtlmAuth
@@ -211,82 +212,14 @@ def is_subpath(path: Path, of_paths: Union[Path, List[Path]]):
     return any(subpath in path.parents for subpath in of_paths)
 
 
-def get_nested_dict_value(nested_dict, value, prepath=()):
-    """
-    Get a value from nested dictionaries.
-
-    Use a recursive method to find a value in a dictionary of dictionaries
-    (such as the metadata dictionaries we receive from the file parsers).
-    Cribbed from: https://stackoverflow.com/a/22171182/1435788.
-
-    Parameters
-    ----------
-    nested_dict : dict
-        Dictionary to search
-    value : object
-        Value to search for
-    prepath : tuple
-        "path" to prepend to the search to limit the search to only part of
-        the dictionary
-
-    Returns
-    -------
-    path : tuple or None
-        The "path" through the dictionary (expressed as a tuple of keys) where
-        value was found. If None, the value was not found in the dictionary.
-    """
-    for k, v in nested_dict.items():
-        path = (*prepath, k)
-        if v == value:  # found value
-            return path
-        if hasattr(v, "items"):  # v is a dict
-            dict_val = get_nested_dict_value(v, value, path)  # recursive call
-            if dict_val is not None:
-                return dict_val
-    return None
-
-
-def get_nested_dict_key(nested_dict, key_to_find, prepath=()):
-    """
-    Get a key from nested dictionaries.
-
-    Use a recursive method to find a key in a dictionary of dictionaries
-    (such as the metadata dictionaries we receive from the file parsers).
-    Cribbed from: https://stackoverflow.com/a/22171182/1435788.
-
-    Parameters
-    ----------
-    nested_dict : dict
-        Dictionary to search
-    key_to_find : object
-        Value to search for
-    prepath : tuple
-        "path" to prepend to the search to limit the search to only part of
-        the dictionary
-
-    Returns
-    -------
-    path : tuple or None
-        The "path" through the dictionary (expressed as a tuple of keys) where
-        value was found. If None, the value was not found in the dictionary.
-    """
-    for k, v in nested_dict.items():
-        path = (*prepath, k)
-        if k == key_to_find:  # found key
-            return path
-        if hasattr(v, "items"):  # v is a dict
-            dict_key = get_nested_dict_key(v, key_to_find, path)  # recursive call
-            if dict_key is not None:
-                return dict_key
-    return None
-
-
 def get_nested_dict_value_by_path(nest_dict, path):
     """
     Get a nested dictionary value by path.
 
     Get the value from within a nested dictionary structure by traversing into
     the dictionary as deep as that path found and returning that value.
+
+    Uses python-benedict for robust nested dictionary operations.
 
     Parameters
     ----------
@@ -302,13 +235,8 @@ def get_nested_dict_value_by_path(nest_dict, path):
         The value at the path within the nested dictionary; if there's no
         value there, return None
     """
-    sub_dict = nest_dict
-    for key in path:
-        if sub_dict is None:
-            break
-        sub_dict = sub_dict.get(key, None)
-
-    return sub_dict
+    # Disable keypath_separator to avoid conflicts with keys containing special chars
+    return benedict(nest_dict, keypath_separator=None).get(list(path))
 
 
 def set_nested_dict_value(nest_dict, path, value):
@@ -317,7 +245,8 @@ def set_nested_dict_value(nest_dict, path, value):
 
     Set a value within a nested dictionary structure by traversing into
     the dictionary as deep as that path found and changing it to `value`.
-    Cribbed from https://stackoverflow.com/a/13688108/1435788.
+
+    Uses python-benedict for robust nested dictionary operations.
 
     Parameters
     ----------
@@ -334,9 +263,9 @@ def set_nested_dict_value(nest_dict, path, value):
     value : object
         The value at the path within the nested dictionary
     """
-    for key in path[:-1]:
-        nest_dict = nest_dict.setdefault(key, {})
-    nest_dict[path[-1]] = value
+    # Disable keypath_separator to avoid conflicts with keys containing special chars
+    b = benedict(nest_dict, keypath_separator=None)
+    b[list(path)] = value  # Updates in-place (benedict is dict subclass)
 
 
 def try_getting_dict_value(dict_, key):
