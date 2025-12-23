@@ -1,0 +1,34 @@
+# {py:mod}`nexusLIMS.extractors.utils`
+
+```{py:module} nexusLIMS.extractors.utils
+```
+
+```{autodoc2-docstring} nexusLIMS.extractors.utils
+:allowtitles:
+```
+
+## Module Contents
+
+### Data
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`logger <nexusLIMS.extractors.utils.logger>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.utils.logger
+    :summary:
+    ```
+````
+
+### API
+
+````{py:data} logger
+:canonical: nexusLIMS.extractors.utils.logger
+:value: >
+   'getLogger(...)'
+
+```{autodoc2-docstring} nexusLIMS.extractors.utils.logger
+```
+
+````

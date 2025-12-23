@@ -1,0 +1,328 @@
+# {py:mod}`nexusLIMS.extractors.schemas`
+
+```{py:module} nexusLIMS.extractors.schemas
+```
+
+```{autodoc2-docstring} nexusLIMS.extractors.schemas
+:allowtitles:
+```
+
+## Module Contents
+
+### Classes
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`NexusMetadata <nexusLIMS.extractors.schemas.NexusMetadata>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.schemas.NexusMetadata
+    :summary:
+    ```
+* - {py:obj}`TEMImageMetadata <nexusLIMS.extractors.schemas.TEMImageMetadata>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.schemas.TEMImageMetadata
+    :summary:
+    ```
+* - {py:obj}`SEMImageMetadata <nexusLIMS.extractors.schemas.SEMImageMetadata>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.schemas.SEMImageMetadata
+    :summary:
+    ```
+````
+
+### Data
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`logger <nexusLIMS.extractors.schemas.logger>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.schemas.logger
+    :summary:
+    ```
+````
+
+### API
+
+````{py:data} logger
+:canonical: nexusLIMS.extractors.schemas.logger
+:value: >
+   'getLogger(...)'
+
+```{autodoc2-docstring} nexusLIMS.extractors.schemas.logger
+```
+
+````
+
+`````{py:class} NexusMetadata(/, **data: typing.Any)
+:canonical: nexusLIMS.extractors.schemas.NexusMetadata
+
+Bases: {py:obj}`pydantic.BaseModel`
+
+```{autodoc2-docstring} nexusLIMS.extractors.schemas.NexusMetadata
+```
+
+```{rubric} Initialization
+```
+
+```{autodoc2-docstring} nexusLIMS.extractors.schemas.NexusMetadata.__init__
+```
+
+````{py:attribute} creation_time
+:canonical: nexusLIMS.extractors.schemas.NexusMetadata.creation_time
+:type: str
+:value: >
+   'Field(...)'
+
+```{autodoc2-docstring} nexusLIMS.extractors.schemas.NexusMetadata.creation_time
+```
+
+````
+
+````{py:attribute} data_type
+:canonical: nexusLIMS.extractors.schemas.NexusMetadata.data_type
+:type: str
+:value: >
+   'Field(...)'
+
+```{autodoc2-docstring} nexusLIMS.extractors.schemas.NexusMetadata.data_type
+```
+
+````
+
+````{py:attribute} dataset_type
+:canonical: nexusLIMS.extractors.schemas.NexusMetadata.dataset_type
+:type: typing.Literal[Image, Spectrum, SpectrumImage, Diffraction, Misc, Unknown]
+:value: >
+   'Field(...)'
+
+```{autodoc2-docstring} nexusLIMS.extractors.schemas.NexusMetadata.dataset_type
+```
+
+````
+
+````{py:attribute} data_dimensions
+:canonical: nexusLIMS.extractors.schemas.NexusMetadata.data_dimensions
+:type: str | None
+:value: >
+   'Field(...)'
+
+```{autodoc2-docstring} nexusLIMS.extractors.schemas.NexusMetadata.data_dimensions
+```
+
+````
+
+````{py:attribute} instrument_id
+:canonical: nexusLIMS.extractors.schemas.NexusMetadata.instrument_id
+:type: str | None
+:value: >
+   'Field(...)'
+
+```{autodoc2-docstring} nexusLIMS.extractors.schemas.NexusMetadata.instrument_id
+```
+
+````
+
+````{py:attribute} warnings
+:canonical: nexusLIMS.extractors.schemas.NexusMetadata.warnings
+:type: list[str | list[str]]
+:value: >
+   'Field(...)'
+
+```{autodoc2-docstring} nexusLIMS.extractors.schemas.NexusMetadata.warnings
+```
+
+````
+
+````{py:attribute} model_config
+:canonical: nexusLIMS.extractors.schemas.NexusMetadata.model_config
+:value: >
+   None
+
+```{autodoc2-docstring} nexusLIMS.extractors.schemas.NexusMetadata.model_config
+```
+
+````
+
+````{py:method} validate_iso_timestamp(v: str) -> str
+:canonical: nexusLIMS.extractors.schemas.NexusMetadata.validate_iso_timestamp
+:classmethod:
+
+```{autodoc2-docstring} nexusLIMS.extractors.schemas.NexusMetadata.validate_iso_timestamp
+```
+
+````
+
+````{py:method} validate_data_type_not_empty(v: str) -> str
+:canonical: nexusLIMS.extractors.schemas.NexusMetadata.validate_data_type_not_empty
+:classmethod:
+
+```{autodoc2-docstring} nexusLIMS.extractors.schemas.NexusMetadata.validate_data_type_not_empty
+```
+
+````
+
+`````
+
+`````{py:class} TEMImageMetadata(/, **data: typing.Any)
+:canonical: nexusLIMS.extractors.schemas.TEMImageMetadata
+
+Bases: {py:obj}`nexusLIMS.extractors.schemas.NexusMetadata`
+
+```{autodoc2-docstring} nexusLIMS.extractors.schemas.TEMImageMetadata
+```
+
+```{rubric} Initialization
+```
+
+```{autodoc2-docstring} nexusLIMS.extractors.schemas.TEMImageMetadata.__init__
+```
+
+````{py:attribute} voltage
+:canonical: nexusLIMS.extractors.schemas.TEMImageMetadata.voltage
+:type: str | float | None
+:value: >
+   'Field(...)'
+
+```{autodoc2-docstring} nexusLIMS.extractors.schemas.TEMImageMetadata.voltage
+```
+
+````
+
+````{py:attribute} magnification
+:canonical: nexusLIMS.extractors.schemas.TEMImageMetadata.magnification
+:type: str | float | None
+:value: >
+   'Field(...)'
+
+```{autodoc2-docstring} nexusLIMS.extractors.schemas.TEMImageMetadata.magnification
+```
+
+````
+
+````{py:attribute} illumination_mode
+:canonical: nexusLIMS.extractors.schemas.TEMImageMetadata.illumination_mode
+:type: str | None
+:value: >
+   'Field(...)'
+
+```{autodoc2-docstring} nexusLIMS.extractors.schemas.TEMImageMetadata.illumination_mode
+```
+
+````
+
+````{py:attribute} camera_length
+:canonical: nexusLIMS.extractors.schemas.TEMImageMetadata.camera_length
+:type: str | float | None
+:value: >
+   'Field(...)'
+
+```{autodoc2-docstring} nexusLIMS.extractors.schemas.TEMImageMetadata.camera_length
+```
+
+````
+
+````{py:attribute} acquisition_device
+:canonical: nexusLIMS.extractors.schemas.TEMImageMetadata.acquisition_device
+:type: str | None
+:value: >
+   'Field(...)'
+
+```{autodoc2-docstring} nexusLIMS.extractors.schemas.TEMImageMetadata.acquisition_device
+```
+
+````
+
+`````
+
+`````{py:class} SEMImageMetadata(/, **data: typing.Any)
+:canonical: nexusLIMS.extractors.schemas.SEMImageMetadata
+
+Bases: {py:obj}`nexusLIMS.extractors.schemas.NexusMetadata`
+
+```{autodoc2-docstring} nexusLIMS.extractors.schemas.SEMImageMetadata
+```
+
+```{rubric} Initialization
+```
+
+```{autodoc2-docstring} nexusLIMS.extractors.schemas.SEMImageMetadata.__init__
+```
+
+````{py:attribute} voltage
+:canonical: nexusLIMS.extractors.schemas.SEMImageMetadata.voltage
+:type: str | float | None
+:value: >
+   'Field(...)'
+
+```{autodoc2-docstring} nexusLIMS.extractors.schemas.SEMImageMetadata.voltage
+```
+
+````
+
+````{py:attribute} magnification
+:canonical: nexusLIMS.extractors.schemas.SEMImageMetadata.magnification
+:type: str | float | None
+:value: >
+   'Field(...)'
+
+```{autodoc2-docstring} nexusLIMS.extractors.schemas.SEMImageMetadata.magnification
+```
+
+````
+
+````{py:attribute} working_distance
+:canonical: nexusLIMS.extractors.schemas.SEMImageMetadata.working_distance
+:type: str | float | None
+:value: >
+   'Field(...)'
+
+```{autodoc2-docstring} nexusLIMS.extractors.schemas.SEMImageMetadata.working_distance
+```
+
+````
+
+````{py:attribute} beam_current
+:canonical: nexusLIMS.extractors.schemas.SEMImageMetadata.beam_current
+:type: str | float | None
+:value: >
+   'Field(...)'
+
+```{autodoc2-docstring} nexusLIMS.extractors.schemas.SEMImageMetadata.beam_current
+```
+
+````
+
+````{py:attribute} detector
+:canonical: nexusLIMS.extractors.schemas.SEMImageMetadata.detector
+:type: str | None
+:value: >
+   'Field(...)'
+
+```{autodoc2-docstring} nexusLIMS.extractors.schemas.SEMImageMetadata.detector
+```
+
+````
+
+````{py:attribute} dwell_time
+:canonical: nexusLIMS.extractors.schemas.SEMImageMetadata.dwell_time
+:type: str | float | None
+:value: >
+   'Field(...)'
+
+```{autodoc2-docstring} nexusLIMS.extractors.schemas.SEMImageMetadata.dwell_time
+```
+
+````
+
+````{py:attribute} scan_rotation
+:canonical: nexusLIMS.extractors.schemas.SEMImageMetadata.scan_rotation
+:type: str | float | None
+:value: >
+   'Field(...)'
+
+```{autodoc2-docstring} nexusLIMS.extractors.schemas.SEMImageMetadata.scan_rotation
+```
+
+````
+
+`````

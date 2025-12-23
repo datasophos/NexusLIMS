@@ -1,0 +1,360 @@
+# {py:mod}`nexusLIMS.extractors.base`
+
+```{py:module} nexusLIMS.extractors.base
+```
+
+```{autodoc2-docstring} nexusLIMS.extractors.base
+:allowtitles:
+```
+
+## Module Contents
+
+### Classes
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`FieldDefinition <nexusLIMS.extractors.base.FieldDefinition>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.base.FieldDefinition
+    :summary:
+    ```
+* - {py:obj}`ExtractionContext <nexusLIMS.extractors.base.ExtractionContext>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.base.ExtractionContext
+    :summary:
+    ```
+* - {py:obj}`BaseExtractor <nexusLIMS.extractors.base.BaseExtractor>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.base.BaseExtractor
+    :summary:
+    ```
+* - {py:obj}`PreviewGenerator <nexusLIMS.extractors.base.PreviewGenerator>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.base.PreviewGenerator
+    :summary:
+    ```
+* - {py:obj}`InstrumentProfile <nexusLIMS.extractors.base.InstrumentProfile>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.base.InstrumentProfile
+    :summary:
+    ```
+````
+
+### Data
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`logger <nexusLIMS.extractors.base.logger>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.base.logger
+    :summary:
+    ```
+````
+
+### API
+
+````{py:data} logger
+:canonical: nexusLIMS.extractors.base.logger
+:value: >
+   'getLogger(...)'
+
+```{autodoc2-docstring} nexusLIMS.extractors.base.logger
+```
+
+````
+
+`````{py:class} FieldDefinition
+:canonical: nexusLIMS.extractors.base.FieldDefinition
+
+Bases: {py:obj}`typing.NamedTuple`
+
+```{autodoc2-docstring} nexusLIMS.extractors.base.FieldDefinition
+```
+
+````{py:attribute} section
+:canonical: nexusLIMS.extractors.base.FieldDefinition.section
+:type: str
+:value: >
+   None
+
+```{autodoc2-docstring} nexusLIMS.extractors.base.FieldDefinition.section
+```
+
+````
+
+````{py:attribute} source_key
+:canonical: nexusLIMS.extractors.base.FieldDefinition.source_key
+:type: str
+:value: >
+   None
+
+```{autodoc2-docstring} nexusLIMS.extractors.base.FieldDefinition.source_key
+```
+
+````
+
+````{py:attribute} output_key
+:canonical: nexusLIMS.extractors.base.FieldDefinition.output_key
+:type: str | list[str]
+:value: >
+   None
+
+```{autodoc2-docstring} nexusLIMS.extractors.base.FieldDefinition.output_key
+```
+
+````
+
+````{py:attribute} factor
+:canonical: nexusLIMS.extractors.base.FieldDefinition.factor
+:type: float
+:value: >
+   None
+
+```{autodoc2-docstring} nexusLIMS.extractors.base.FieldDefinition.factor
+```
+
+````
+
+````{py:attribute} is_string
+:canonical: nexusLIMS.extractors.base.FieldDefinition.is_string
+:type: bool
+:value: >
+   None
+
+```{autodoc2-docstring} nexusLIMS.extractors.base.FieldDefinition.is_string
+```
+
+````
+
+````{py:attribute} suppress_zero
+:canonical: nexusLIMS.extractors.base.FieldDefinition.suppress_zero
+:type: bool
+:value: >
+   False
+
+```{autodoc2-docstring} nexusLIMS.extractors.base.FieldDefinition.suppress_zero
+```
+
+````
+
+`````
+
+`````{py:class} ExtractionContext
+:canonical: nexusLIMS.extractors.base.ExtractionContext
+
+```{autodoc2-docstring} nexusLIMS.extractors.base.ExtractionContext
+```
+
+````{py:attribute} file_path
+:canonical: nexusLIMS.extractors.base.ExtractionContext.file_path
+:type: pathlib.Path
+:value: >
+   None
+
+```{autodoc2-docstring} nexusLIMS.extractors.base.ExtractionContext.file_path
+```
+
+````
+
+````{py:attribute} instrument
+:canonical: nexusLIMS.extractors.base.ExtractionContext.instrument
+:type: nexusLIMS.instruments.Instrument | None
+:value: >
+   None
+
+```{autodoc2-docstring} nexusLIMS.extractors.base.ExtractionContext.instrument
+```
+
+````
+
+````{py:attribute} signal_index
+:canonical: nexusLIMS.extractors.base.ExtractionContext.signal_index
+:type: int | None
+:value: >
+   None
+
+```{autodoc2-docstring} nexusLIMS.extractors.base.ExtractionContext.signal_index
+```
+
+````
+
+`````
+
+`````{py:class} BaseExtractor
+:canonical: nexusLIMS.extractors.base.BaseExtractor
+
+Bases: {py:obj}`typing.Protocol`
+
+```{autodoc2-docstring} nexusLIMS.extractors.base.BaseExtractor
+```
+
+````{py:attribute} name
+:canonical: nexusLIMS.extractors.base.BaseExtractor.name
+:type: str
+:value: >
+   None
+
+```{autodoc2-docstring} nexusLIMS.extractors.base.BaseExtractor.name
+```
+
+````
+
+````{py:attribute} priority
+:canonical: nexusLIMS.extractors.base.BaseExtractor.priority
+:type: int
+:value: >
+   None
+
+```{autodoc2-docstring} nexusLIMS.extractors.base.BaseExtractor.priority
+```
+
+````
+
+````{py:attribute} supported_extensions
+:canonical: nexusLIMS.extractors.base.BaseExtractor.supported_extensions
+:type: set[str] | None
+:value: >
+   None
+
+```{autodoc2-docstring} nexusLIMS.extractors.base.BaseExtractor.supported_extensions
+```
+
+````
+
+````{py:method} supports(context: nexusLIMS.extractors.base.ExtractionContext) -> bool
+:canonical: nexusLIMS.extractors.base.BaseExtractor.supports
+
+```{autodoc2-docstring} nexusLIMS.extractors.base.BaseExtractor.supports
+```
+
+````
+
+````{py:method} extract(context: nexusLIMS.extractors.base.ExtractionContext) -> dict[str, typing.Any]
+:canonical: nexusLIMS.extractors.base.BaseExtractor.extract
+
+```{autodoc2-docstring} nexusLIMS.extractors.base.BaseExtractor.extract
+```
+
+````
+
+`````
+
+`````{py:class} PreviewGenerator
+:canonical: nexusLIMS.extractors.base.PreviewGenerator
+
+Bases: {py:obj}`typing.Protocol`
+
+```{autodoc2-docstring} nexusLIMS.extractors.base.PreviewGenerator
+```
+
+````{py:attribute} name
+:canonical: nexusLIMS.extractors.base.PreviewGenerator.name
+:type: str
+:value: >
+   None
+
+```{autodoc2-docstring} nexusLIMS.extractors.base.PreviewGenerator.name
+```
+
+````
+
+````{py:attribute} priority
+:canonical: nexusLIMS.extractors.base.PreviewGenerator.priority
+:type: int
+:value: >
+   None
+
+```{autodoc2-docstring} nexusLIMS.extractors.base.PreviewGenerator.priority
+```
+
+````
+
+````{py:attribute} supported_extensions
+:canonical: nexusLIMS.extractors.base.PreviewGenerator.supported_extensions
+:type: set[str] | None
+:value: >
+   None
+
+```{autodoc2-docstring} nexusLIMS.extractors.base.PreviewGenerator.supported_extensions
+```
+
+````
+
+````{py:method} supports(context: nexusLIMS.extractors.base.ExtractionContext) -> bool
+:canonical: nexusLIMS.extractors.base.PreviewGenerator.supports
+
+```{autodoc2-docstring} nexusLIMS.extractors.base.PreviewGenerator.supports
+```
+
+````
+
+````{py:method} generate(context: nexusLIMS.extractors.base.ExtractionContext, output_path: pathlib.Path) -> bool
+:canonical: nexusLIMS.extractors.base.PreviewGenerator.generate
+
+```{autodoc2-docstring} nexusLIMS.extractors.base.PreviewGenerator.generate
+```
+
+````
+
+`````
+
+`````{py:class} InstrumentProfile
+:canonical: nexusLIMS.extractors.base.InstrumentProfile
+
+```{autodoc2-docstring} nexusLIMS.extractors.base.InstrumentProfile
+```
+
+````{py:attribute} instrument_id
+:canonical: nexusLIMS.extractors.base.InstrumentProfile.instrument_id
+:type: str
+:value: >
+   None
+
+```{autodoc2-docstring} nexusLIMS.extractors.base.InstrumentProfile.instrument_id
+```
+
+````
+
+````{py:attribute} parsers
+:canonical: nexusLIMS.extractors.base.InstrumentProfile.parsers
+:type: dict[str, typing.Callable]
+:value: >
+   'field(...)'
+
+```{autodoc2-docstring} nexusLIMS.extractors.base.InstrumentProfile.parsers
+```
+
+````
+
+````{py:attribute} transformations
+:canonical: nexusLIMS.extractors.base.InstrumentProfile.transformations
+:type: dict[str, typing.Callable]
+:value: >
+   'field(...)'
+
+```{autodoc2-docstring} nexusLIMS.extractors.base.InstrumentProfile.transformations
+```
+
+````
+
+````{py:attribute} extractor_overrides
+:canonical: nexusLIMS.extractors.base.InstrumentProfile.extractor_overrides
+:type: dict[str, str]
+:value: >
+   'field(...)'
+
+```{autodoc2-docstring} nexusLIMS.extractors.base.InstrumentProfile.extractor_overrides
+```
+
+````
+
+````{py:attribute} static_metadata
+:canonical: nexusLIMS.extractors.base.InstrumentProfile.static_metadata
+:type: dict[str, typing.Any]
+:value: >
+   'field(...)'
+
+```{autodoc2-docstring} nexusLIMS.extractors.base.InstrumentProfile.static_metadata
+```
+
+````
+
+`````

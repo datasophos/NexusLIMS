@@ -1,0 +1,17 @@
+# {py:mod}`nexusLIMS.schemas`
+
+```{py:module} nexusLIMS.schemas
+```
+
+```{autodoc2-docstring} nexusLIMS.schemas
+:allowtitles:
+```
+
+## Submodules
+
+```{toctree}
+:titlesonly:
+:maxdepth: 1
+
+nexusLIMS.schemas.activity
+```
