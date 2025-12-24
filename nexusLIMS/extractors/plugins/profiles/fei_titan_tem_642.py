@@ -186,7 +186,7 @@ fei_titan_tem_642_profile = InstrumentProfile(
     },
     transformations={},
     extractor_overrides={},
-    static_metadata={},
+    extension_fields={},
 )
 
 get_profile_registry().register(fei_titan_tem_642_profile)

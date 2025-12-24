@@ -445,9 +445,10 @@ class InstrumentProfile:
     extractor_overrides
         Force specific extractors for certain extensions.
         Keys are file extensions, values are extractor names.
-    static_metadata
-        Metadata to inject for all files from this instrument.
-        Keys are metadata paths, values are static values.
+    extension_fields
+        Metadata to inject into the extensions section for all files.
+        Keys are field names, values are static values.
+        These populate the nx_meta.extensions dict.
 
     Examples
     --------
@@ -462,9 +463,9 @@ class InstrumentProfile:
     ...     parsers={
     ...         "microscope_info": parse_643_titan_microscope,
     ...     },
-    ...     static_metadata={
-    ...         "nx_meta.Facility": "Nexus Facility",
-    ...         "nx_meta.Building": "Bldg. 1",
+    ...     extension_fields={
+    ...         "facility": "Nexus Facility",
+    ...         "building": "Bldg. 1",
     ...     }
     ... )
 
@@ -482,4 +483,4 @@ class InstrumentProfile:
     parsers: dict[str, Callable] = field(default_factory=dict)
     transformations: dict[str, Callable] = field(default_factory=dict)
     extractor_overrides: dict[str, str] = field(default_factory=dict)
-    static_metadata: dict[str, Any] = field(default_factory=dict)
+    extension_fields: dict[str, Any] = field(default_factory=dict)

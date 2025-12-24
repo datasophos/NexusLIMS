@@ -557,111 +557,79 @@ class TestDigitalMicrographExtractor:
         assert "Profile transformation 'nx_meta' failed" in caplog.text
         assert "Transform intentionally failed" in caplog.text
 
-    def test_apply_profile_with_static_metadata(
+    def test_apply_profile_with_extension_fields(
         self,
         list_signal,
         mock_instrument_from_filepath,
         profile_registry_manager,
     ):
-        """Test _apply_profile with static metadata injection."""
+        """Test _apply_profile with extension fields injection."""
         from nexusLIMS.extractors.base import InstrumentProfile
 
         # Create instrument and setup context
         instrument = make_test_tool()
         mock_instrument_from_filepath(instrument)
 
-        # Create a profile with static metadata
+        # Create a profile with extension fields
         profile = InstrumentProfile(
             instrument_id=instrument.name,
-            static_metadata={
-                "nx_meta.Facility": "Test Facility",
-                "nx_meta.Building": "Building 123",
-                "nx_meta.CustomInfo.SubKey": "Nested Value",
+            extension_fields={
+                "facility": "Test Facility",
+                "building": "Building 123",
+                "custom_info": "Custom Value",
             },
         )
 
         # Register the profile using the manager fixture
         profile_registry_manager.register(profile)
 
-        # Extract metadata - should inject static metadata
+        # Extract metadata - should inject extension fields
         result_list = digital_micrograph.get_dm3_metadata(
             list_signal[0], instrument=instrument
         )
 
-        # Verify static metadata was injected
+        # Verify extension fields were injected
         assert result_list is not None
         assert isinstance(result_list, list)
         result = result_list[0]
-        assert result["nx_meta"]["Facility"] == "Test Facility"
-        assert result["nx_meta"]["Building"] == "Building 123"
-        assert result["nx_meta"]["CustomInfo"]["SubKey"] == "Nested Value"
+        assert "extensions" in result["nx_meta"]
+        assert result["nx_meta"]["extensions"]["facility"] == "Test Facility"
+        assert result["nx_meta"]["extensions"]["building"] == "Building 123"
+        assert result["nx_meta"]["extensions"]["custom_info"] == "Custom Value"
 
-    def test_apply_profile_static_metadata_failure(
+    def test_apply_profile_empty_extension_fields(
         self,
-        monkeypatch,
         list_signal,
         mock_instrument_from_filepath,
-        caplog,
         profile_registry_manager,
     ):
-        """Test _apply_profile when static metadata injection fails."""
-        import logging
-
+        """Test _apply_profile with empty extension fields dict."""
         from nexusLIMS.extractors.base import InstrumentProfile
 
         # Create instrument and setup context
         instrument = make_test_tool()
         mock_instrument_from_filepath(instrument)
 
-        # Save the original set_nested_dict_value function
-        original_func = digital_micrograph.set_nested_dict_value
-
-        # Track calls to set_nested_dict_value
-        calls = {"count": 0}
-
-        # Mock set_nested_dict_value to fail only for profile static metadata
-        def mock_set_nested_selective(*args, **kwargs):
-            calls["count"] += 1
-            # Only fail on profile-injected keys (which come after initial metadata)
-            # We check if this is a profile call by seeing if it's for TestKey
-            if len(args) >= 2 and "TestKey" in str(args[1]):
-                msg = "Intentional failure in set_nested_dict_value"
-                raise KeyError(msg)
-            # Otherwise, use original function
-            return original_func(*args, **kwargs)
-
-        monkeypatch.setattr(
-            "nexusLIMS.extractors.plugins.digital_micrograph.set_nested_dict_value",
-            mock_set_nested_selective,
-        )
-
-        # Create a profile with static metadata
+        # Create a profile with empty extension fields
         profile = InstrumentProfile(
             instrument_id=instrument.name,
-            static_metadata={"nx_meta.TestKey": "TestValue"},
+            extension_fields={},
         )
 
-        # Register the profile using the manager fixture
+        # Register the profile
         profile_registry_manager.register(profile)
-
-        # Extract metadata - should handle static metadata failure gracefully
-        digital_micrograph.logger.setLevel(logging.WARNING)
 
         result_list = digital_micrograph.get_dm3_metadata(
             list_signal[0], instrument=instrument
         )
 
-        # Metadata should still be extracted despite static metadata failure
+        # Metadata should still be extracted
         assert result_list is not None
         assert isinstance(result_list, list)
         result = result_list[0]
         assert "nx_meta" in result
-
-        # Verify warning was logged
-        assert (
-            "Profile static metadata injection 'nx_meta.TestKey' failed" in caplog.text
-        )
-        assert "Intentional failure" in caplog.text
+        # Extensions section should not be created if there are no extension fields
+        assert "extensions" not in result["nx_meta"]
 
     def test_neoarm_gatan_image_metadata(
         self,
@@ -752,3 +720,55 @@ class TestDigitalMicrographExtractor:
         for i, preview in enumerate(previews):
             if preview is not None:
                 assert f"_signal{i}.thumb.png" in str(preview)
+
+    def test_apply_profile_extension_field_injection_failure(
+        self,
+        list_signal,
+        mock_instrument_from_filepath,
+        caplog,
+        profile_registry_manager,
+    ):
+        """Test _apply_profile when extension field injection raises exception."""
+        import logging
+
+        from nexusLIMS.extractors.base import InstrumentProfile
+
+        # Create instrument and setup context
+        instrument = make_test_tool()
+        mock_instrument_from_filepath(instrument)
+
+        # Create a profile with extension fields
+        profile = InstrumentProfile(
+            instrument_id=instrument.name,
+            extension_fields={
+                "test_field": "test_value",
+            },
+        )
+
+        # Register the profile
+        profile_registry_manager.register(profile)
+
+        # Set up logging to capture warnings
+        digital_micrograph.logger.setLevel(logging.WARNING)
+
+        # Create a nested dict structure where the extensions dict raises on assignment
+        class FailingExtensionsDict(dict):
+            def __setitem__(self, key, value):
+                # Raise on any key assignment to simulate field injection failure
+                msg = "Simulated injection failure"
+                raise RuntimeError(msg)
+
+        # Create metadata with pre-existing extensions dict that will fail
+        metadata = {"nx_meta": {"extensions": FailingExtensionsDict()}}
+
+        # Call _apply_profile_to_metadata directly
+        result = digital_micrograph._apply_profile_to_metadata(  # noqa: SLF001
+            metadata, instrument, list_signal[0]
+        )
+
+        # Should still return metadata despite the error
+        assert result is not None
+
+        # Verify warning was logged
+        assert "Profile extension field injection" in caplog.text
+        assert "failed" in caplog.text

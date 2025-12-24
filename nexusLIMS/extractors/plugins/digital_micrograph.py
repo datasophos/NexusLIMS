@@ -337,17 +337,19 @@ def _apply_profile_to_metadata(metadata: dict, instrument, file_path: Path) -> d
                 e,
             )
 
-    # Inject static metadata
-    for key, value in profile.static_metadata.items():
-        try:
-            keys = key.split(".")
-            set_nested_dict_value(metadata, keys, value)
-        except Exception as e:
-            logger.warning(
-                "Profile static metadata injection '%s' failed: %s",
-                key,
-                e,
-            )
+    # Inject extension fields
+    if profile.extension_fields:
+        if "extensions" not in metadata["nx_meta"]:
+            metadata["nx_meta"]["extensions"] = {}
+        for key, value in profile.extension_fields.items():
+            try:
+                metadata["nx_meta"]["extensions"][key] = value
+            except Exception as e:
+                logger.warning(
+                    "Profile extension field injection '%s' failed: %s",
+                    key,
+                    e,
+                )
 
     return metadata
 

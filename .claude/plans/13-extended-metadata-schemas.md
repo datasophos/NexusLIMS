@@ -2,7 +2,7 @@
 
 ## Implementation Progress
 
-**Current Status:** Phase 1 - Foundation (Completed)
+**Current Status:** Phase 2 - XML Serialization & Core Updates (Completed)
 
 **Completed:**
 - ✅ Created `nexusLIMS/schemas/units.py` - Pint unit registry, preferred units, QUDT mappings, serialization utilities
@@ -72,7 +72,7 @@ All foundation modules created and tested:
 
 **Phase 1 Complete:** All foundation modules and tests finished and committed ✅
 
-**Phase 2: XML Serialization & Core Updates (In Progress)**
+**Phase 2: XML Serialization & Core Updates (Completed)** ✅
 
 Completed:
 - ✅ Created `nexusLIMS/extractors/xml_serialization.py` for XML serialization
@@ -93,9 +93,17 @@ Completed:
   - Metadata preparation tests
   - QUDT and EMG lookup tests
 
+- ✅ Updated instrument profile system for extensions section
+  - Replaced `static_metadata` with `extension_fields` in InstrumentProfile
+  - Updated all built-in profiles (fei_titan_stem_643, fei_titan_tem_642, jeol_jem_642)
+  - Modified profile application logic in digital_micrograph.py to inject into nx_meta.extensions
+  - Updated all tests (test_profiles.py, test_digital_micrograph.py) - all passing
+  - Updated documentation example (local_profile_example.py)
+
+**Phase 2 Complete:** All XML serialization and profile infrastructure finished ✅
+
 Next Up:
-- Update instrument profile system for extensions section
-- Test XML generation with Pint Quantities
+- Test XML generation with Pint Quantities end-to-end
 - Then move to Phase 3: Extractor migration
 
 ---

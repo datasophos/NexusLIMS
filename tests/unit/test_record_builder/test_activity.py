@@ -155,3 +155,63 @@ class TestActivity:
         assert len(test_activity.meta) == 2
         assert "Data Type" in test_activity.meta[0]
         assert "Data Type" in test_activity.meta[1]
+
+    def test_as_xml_with_quantity_metadata(self, gnu_find_activities):
+        """Test Pint Quantity objects serialize to XML with unit attributes."""
+        from nexusLIMS.schemas.units import ureg
+
+        activity_1 = gnu_find_activities["activities_list"][0]
+
+        # Add Pint Quantity objects to unique_meta for the first file
+        activity_1.unique_meta[0]["Beam Energy"] = ureg.Quantity(200.0, "kilovolt")
+        activity_1.unique_meta[0]["Working Distance"] = ureg.Quantity(
+            10.5, "millimeter"
+        )
+        activity_1.unique_meta[0]["Beam Current"] = ureg.Quantity(100, "picoampere")
+
+        # Generate XML
+        root = activity_1.as_xml(seqno=0, sample_id="sample_id")
+
+        # Check that Quantity objects are serialized with magnitude and unit attribute
+        beam_energy_elements = root.xpath(".//dataset/meta[@name='Beam Energy']")
+        assert len(beam_energy_elements) >= 1
+        beam_energy_el = beam_energy_elements[0]
+        assert beam_energy_el.text == "200.0"
+        assert beam_energy_el.get("unit") == "kV"
+
+        working_distance_elements = root.xpath(
+            ".//dataset/meta[@name='Working Distance']",
+        )
+        assert len(working_distance_elements) >= 1
+        wd_el = working_distance_elements[0]
+        assert wd_el.text == "10.5"
+        assert wd_el.get("unit") == "mm"
+
+        beam_current_elements = root.xpath(".//dataset/meta[@name='Beam Current']")
+        assert len(beam_current_elements) >= 1
+        bc_el = beam_current_elements[0]
+        assert bc_el.text == "100.0"
+        assert bc_el.get("unit") == "pA"
+
+    def test_as_xml_with_quantity_and_warning(self, gnu_find_activities):
+        """Test Quantity objects with warnings get unit and warning attributes."""
+        from nexusLIMS.schemas.units import ureg
+
+        activity_1 = gnu_find_activities["activities_list"][0]
+
+        # Add a Quantity object with a warning
+        activity_1.unique_meta[0]["Magnification"] = ureg.Quantity(
+            50000, "dimensionless"
+        )
+        activity_1.warnings[0].append("Magnification")
+
+        # Generate XML
+        root = activity_1.as_xml(seqno=0, sample_id="sample_id")
+
+        # Check that the element has both warning and unit attributes
+        mag_elements = root.xpath(".//dataset/meta[@name='Magnification']")
+        assert len(mag_elements) >= 1
+        mag_el = mag_elements[0]
+        assert mag_el.text == "50000.0"
+        assert mag_el.get("warning") == "true"
+        assert mag_el.get("unit") == ""  # dimensionless has empty unit string

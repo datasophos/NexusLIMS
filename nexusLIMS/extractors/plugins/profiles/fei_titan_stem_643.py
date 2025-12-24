@@ -93,7 +93,7 @@ fei_titan_stem_643_profile = InstrumentProfile(
     },
     transformations={},
     extractor_overrides={},
-    static_metadata={},
+    extension_fields={},
 )
 
 get_profile_registry().register(fei_titan_stem_643_profile)

@@ -72,7 +72,7 @@ jeol_jem_642_profile = InstrumentProfile(
     },
     transformations={},
     extractor_overrides={},
-    static_metadata={},
+    extension_fields={},
 )
 
 get_profile_registry().register(jeol_jem_642_profile)
