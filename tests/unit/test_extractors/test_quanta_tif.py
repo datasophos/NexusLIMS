@@ -493,7 +493,7 @@ Type=FEG
         img_array = np.zeros((10, 10), dtype=np.uint8)
         img = Image.fromarray(img_array, mode="L")
 
-        # Test line 598: continue when Setting is numeric
+        # Test continue when Setting is numeric
         tiff_numeric_setting = tmp_path / "numeric_setting_skip.tif"
         metadata_str = """[User]
 User=test
@@ -513,7 +513,7 @@ Grid=50.0
 
         def mocked_build(mdict):
             fields = original_build(mdict)
-            # Add Setting field to trigger the check at line 595-598
+            # Add Setting field to trigger the check
             fields.append(FD("LFD", "Setting", "Detector Setting", 1.0, False))
             return fields
 
@@ -522,10 +522,10 @@ Grid=50.0
         ):
             context = ExtractionContext(tiff_numeric_setting, None)
             metadata = extractor.extract(context)
-            # Numeric Setting should be skipped (continue at line 598)
+            # Numeric Setting should be skipped
             assert "Detector Setting" not in metadata[0].get("nx_meta", {})
 
-        # Test line 796: warnings initialization when it doesn't exist
+        # Test warnings initialization when it doesn't exist
         # This is covered when _parse_nx_meta is called on a fresh nx_meta dict
         test_dict = {"nx_meta": {}, "User": {"User": "test"}}
         result = extractor._parse_nx_meta(test_dict)

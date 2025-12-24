@@ -483,7 +483,7 @@ class TestTescanPfibTiffExtractor:
         assert stage_pos["Y"] == pytest.approx(0.016073298)
         assert stage_pos["Z"] == pytest.approx(0.006311907)
 
-        # Test nested dictionary paths for string fields (covers line 654)
+        # Test nested dictionary paths for string fields
         # This test directly tests the set_nested_dict_value function call
         # by simulating the exact code path that would be executed
         from nexusLIMS.utils import set_nested_dict_value
@@ -541,7 +541,7 @@ class TestTescanPfibTiffExtractor:
         """Test _is_tescan_hdr() handles file reading exceptions.
 
         This test covers the exception handling in _is_tescan_hdr() method where it
-        catches exceptions during file reading (lines 208-210).
+        catches exceptions during file reading.
         """
         extractor = TescanTiffExtractor()
 
@@ -697,7 +697,7 @@ class TestTescanPfibTiffExtractor:
     def test_tescan_extract_embedded_hdr_fallback_decode(self, _setup_mock_tiff_file):  # noqa: PT019
         """Test _extract_embedded_hdr() fallback decode when no search keys found.
 
-        This test covers the fallback case in _extract_embedded_hdr() method (lines 273-278)
+        This test covers the fallback case in _extract_embedded_hdr() method
         where none of the search keys ([MAIN], AccFrames=, etc.) are found in the metadata,
         so it falls back to decoding the entire metadata bytes.
         """
@@ -719,7 +719,7 @@ class TestTescanPfibTiffExtractor:
     def test_tescan_extract_embedded_hdr_sem_key_at_start(self, _setup_mock_tiff_file):  # noqa: PT019
         """Test _extract_embedded_hdr() when SEM key is at start of string.
 
-        This test covers the else branch (line 315) where line_start = 0 is set
+        This test covers the else branch where line_start = 0 is set
         when no newline is found before the SEM key position.
         """
         # Return metadata where SEM key appears at start (no newline before it)
@@ -780,7 +780,7 @@ class TestTescanPfibTiffExtractor:
         """Test extract() method handles exceptions from _parse_nx_meta gracefully.
 
         This test covers the exception handling in extract() method where it catches
-        exceptions from _parse_nx_meta() and logs them with debug level (line 140).
+        exceptions from _parse_nx_meta() and logs them with debug level.
         """
         extractor = TescanTiffExtractor()
 
@@ -842,7 +842,7 @@ class TestTescanPfibTiffExtractor:
 
         This test covers the exception handling in extract() method where it catches
         exceptions from _read_hdr_metadata() and _parse_nx_meta() when parsing
-        sidecar HDR files (lines 151-157).
+        sidecar HDR files.
         """
         extractor = TescanTiffExtractor()
 
@@ -897,7 +897,7 @@ class TestTescanPfibTiffExtractor:
         """Test extract() method successfully parses sidecar HDR file.
 
         This test covers the successful path in extract() method where sidecar HDR
-        file parsing succeeds (lines 148-151).
+        file parsing succeeds.
         """
         extractor = TescanTiffExtractor()
 
@@ -970,7 +970,7 @@ WD=0.005
             # Call the original method
             result = original_parse_nx_meta(mdict)
             # Remove Software Version if it was added from HDR
-            # This forces the code to extract it from TIFF tags instead (line 495)
+            # This forces the code to extract it from TIFF tags instead
             if "Software Version" in result["nx_meta"]:
                 del result["nx_meta"]["Software Version"]
             return result
@@ -986,7 +986,6 @@ WD=0.005
         metadata = extractor.extract(context)
 
         # Verify that Software Version was extracted from TIFF tag 305
-        # This ensures line 495 is executed: mdict["nx_meta"]["Software Version"] = software
         assert "Software Version" in metadata[0]["nx_meta"]
         assert (
             metadata[0]["nx_meta"]["Software Version"]

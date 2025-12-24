@@ -129,7 +129,7 @@ class TestNemoConnector:
         assert nemo_conn.strftime(to_fmt) == "2022-02-16T23:06:12-0500"
 
         # test %z in strftime_fmt for NAIVE datetime with self.timezone set
-        # This tests line 117-118 in connector.py where naive datetimes are localized
+        # This tests connector.py where naive datetimes are localized
         nemo_conn_naive = NemoConnector(
             base_url="https://example.org",
             token="not_needed",
@@ -489,7 +489,7 @@ class TestNemoConnectorEquality:
         assert connector1 != connector2
 
     def test_api_caller_raise_for_status(self, monkeypatch):
-        """Test that _api_caller calls raise_for_status on bad responses (line 829)."""
+        """Test that _api_caller calls raise_for_status on bad responses."""
         from unittest.mock import Mock
 
         # Create a fresh connector WITHOUT the mocked _api_caller
@@ -527,7 +527,7 @@ class TestNemoConnectorEquality:
         assert "500 Server Error" in str(exc_info.value)
 
     def test_api_caller_returns_json(self, monkeypatch):
-        """Test that _api_caller returns parsed JSON (line 831)."""
+        """Test that _api_caller returns parsed JSON."""
         from unittest.mock import Mock
 
         # Create a fresh connector WITHOUT the mocked _api_caller

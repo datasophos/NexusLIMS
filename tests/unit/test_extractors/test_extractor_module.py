@@ -469,7 +469,7 @@ class TestExtractorModule:
     def test_create_preview_non_quanta_tif(
         self, monkeypatch, quanta_test_file, tmp_path
     ):
-        """Test create_preview for non-Quanta TIF files (else branch, lines 275-276)."""
+        """Test create_preview for non-Quanta TIF files (else branch)."""
         from unittest.mock import Mock
 
         from PIL import Image
@@ -495,7 +495,7 @@ class TestExtractorModule:
 
         # Mock down_sample_image to verify factor=2 is used and create output
         def mock_downsample(_fname, out_path=None, factor=None, output_size=None):
-            # This assertion verifies we hit lines 275-276 (else branch)
+            # This assertion verifies we hit else branch
             assert factor == 2, "Expected factor=2 for non-Quanta instruments"
             assert output_size is None, "Expected output_size=None for non-Quanta"
             # Create output
@@ -509,7 +509,7 @@ class TestExtractorModule:
             mock_downsample,
         )
 
-        # Execute the function - this should hit lines 275-276
+        # Execute the function
         _result = create_preview(fname=quanta_test_file[0], overwrite=False)
 
     def test_flatten_dict(self):
@@ -532,7 +532,7 @@ class TestExtractorModule:
         # Remove the __module__ attribute to force the fallback path
         delattr(mock_extractor, "__module__")
 
-        # Mock inspect.getmodule to return None (covers lines 151-156)
+        # Mock inspect.getmodule to return None
         monkeypatch.setattr("nexusLIMS.extractors.inspect.getmodule", lambda _: None)
 
         nx_meta: dict = {"nx_meta": {}}
@@ -544,10 +544,10 @@ class TestExtractorModule:
         assert result["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
 
     def test_extractor_method_callable(self, parse_meta_titan):
-        """Test that ExtractorMethod.__call__ is callable (covers line 245)."""
+        """Test that ExtractorMethod.__call__ is callable."""
         from pathlib import Path
 
-        # This test exercises the __call__ method on line 245
+        # This test exercises the __call__ method
         # We need to create the ExtractorMethod class and call it
         # The class is defined inside parse_metadata, so we replicate it here
         nx_meta_test = {"nx_meta": {"test": "value"}}
@@ -576,11 +576,11 @@ class TestExtractorModule:
     def test_preview_generation_pil_failure(
         self, monkeypatch, unreadable_image_file, caplog
     ):
-        """Test create_preview returns None when PIL can't open image (line 337)."""
+        """Test create_preview returns None when PIL can't open image."""
         from nexusLIMS.extractors import create_preview
 
         # The unreadable_image_file fixture should already cause PIL to fail
-        # but let's be explicit and mock to ensure line 337 is hit
+        # but let's be explicit and mock to ensure
         def mock_image_to_square_thumb_fail(*_args, **_kwargs):
             return False
 
@@ -590,11 +590,11 @@ class TestExtractorModule:
         )
 
         result = create_preview(fname=unreadable_image_file, overwrite=False)
-        # When PIL fails, should return None (line 337)
+        # When PIL fails, should return None
         assert result is None
 
     def test_hyperspy_signal_empty_title(self, tmp_path):
-        """Test that HyperSpy signals with empty titles are handled (line 367)."""
+        """Test that HyperSpy signals with empty titles are handled."""
         import hyperspy.api as hs
 
         from nexusLIMS.extractors import create_preview
@@ -608,7 +608,7 @@ class TestExtractorModule:
         test_file = tmp_path / "test_empty_title.hspy"
         signal.save(test_file, overwrite=True)
 
-        # This should handle the empty title (line 367) by using the filename
+        # This should handle the empty title by using the filename
         result = create_preview(fname=test_file, overwrite=True)
 
         # The preview should have been generated successfully
@@ -684,7 +684,7 @@ class TestExtractorModule:
             mock_downsample,
         )
 
-        # Execute create_preview - should hit lines 316-321
+        # Execute create_preview
         import logging
 
         import nexusLIMS.extractors
@@ -701,14 +701,14 @@ class TestExtractorModule:
         assert result == output_path, "Should return the output path"
         assert output_path.exists(), "Preview file should have been created"
 
-        # Verify the log message (line 317)
+        # Verify the log message
         assert "Using legacy downsampling for .tif" in caplog.text
 
     def test_legacy_preview_map_success(self, monkeypatch, tmp_path, caplog):
-        """Test legacy preview map fallback success path (line 337).
+        """Test legacy preview map fallback success path.
 
         This test ensures that when a file extension is in unextracted_preview_map
-        and the preview generation succeeds, the correct path is returned (line 337).
+        and the preview generation succeeds, the correct path is returned.
         """
         from unittest.mock import Mock
 
@@ -770,7 +770,7 @@ class TestExtractorModule:
             mock_image_to_square_thumbnail,
         )
 
-        # Execute create_preview - should hit lines 324-337
+        # Execute create_preview
         import logging
 
         import nexusLIMS.extractors
@@ -783,10 +783,10 @@ class TestExtractorModule:
         assert thumbnail_called["called"], (
             "image_to_square_thumbnail should have been called"
         )
-        assert result == output_path, "Should return the output path (line 337)"
+        assert result == output_path, "Should return the output path"
         assert output_path.exists(), "Preview file should have been created"
 
-        # Verify the log message (line 325)
+        # Verify the log message
         assert "Using legacy preview map for png" in caplog.text
 
     def test_correct_extractor_dispatched_for_quanta_tif(self, quanta_test_file):
@@ -883,7 +883,7 @@ class TestExtractorModule:
 
         This test ensures that when generate_preview=False is passed for a
         multi-signal file, the function returns a list of None values for
-        preview_fnames (line 254: preview_fnames = [None] * signal_count).
+        preview_fnames.
         """
         meta, preview_fnames = parse_metadata(
             fname=list_signal[0],
@@ -894,7 +894,7 @@ class TestExtractorModule:
         assert isinstance(meta, list)
         assert len(meta) == 2
 
-        # Verify preview_fnames is a list of None values (line 254)
+        # Verify preview_fnames is a list of None values
         assert isinstance(preview_fnames, list)
         assert len(preview_fnames) == 2
         assert all(fname is None for fname in preview_fnames)
@@ -904,7 +904,7 @@ class TestExtractorModule:
         assert meta[1]["nx_meta"]["Data Type"] == "TEM_Imaging"
 
     def test_create_preview_multi_signal_list_with_index(self, tmp_path):
-        """Test HyperSpy list signal handling with signal_index (line 414-418).
+        """Test HyperSpy list signal handling with signal_index.
 
         When HyperSpy loads a file and returns a list of signals, and signal_index
         is not None, the specified signal should be selected and its title updated
@@ -982,7 +982,7 @@ class TestExtractorModule:
                 signal_index=1,
             )
 
-            # Verify title was updated with signal index info (line 414-418)
+            # Verify title was updated with signal index info
             assert captured_signal["title"] is not None
             assert "signal 2 of 2" in captured_signal["title"].lower()
 
@@ -991,7 +991,7 @@ class TestExtractorModule:
                 result.unlink()
 
     def test_create_preview_multi_signal_list_without_index(self, tmp_path):
-        """Test HyperSpy list signal handling without signal_index (line 420-424).
+        """Test HyperSpy list signal handling without signal_index.
 
         When HyperSpy loads a file and returns a list of signals, and signal_index
         is None (legacy mode), the first signal should be selected and its title
@@ -1065,7 +1065,7 @@ class TestExtractorModule:
             # Call create_preview without signal_index (legacy mode)
             result = create_preview(fname=tmp_path / "test.dm3", overwrite=True)
 
-            # Verify legacy format: "1 of Y total signals" (line 420-424)
+            # Verify legacy format: "1 of Y total signals"
             assert captured_signal["title"] is not None
             assert "1 of" in captured_signal["title"].lower()
             assert "total signals" in captured_signal["title"].lower()
@@ -1075,7 +1075,7 @@ class TestExtractorModule:
                 result.unlink()
 
     def test_create_preview_hyperspy_single_signal_empty_title(self, tmp_path):
-        """Test HyperSpy single signal with empty title gets filename (line 428-432).
+        """Test HyperSpy single signal with empty title gets filename.
 
         When a single signal has an empty title, it should be populated with the
         filename (without extension).
@@ -1143,7 +1143,7 @@ class TestExtractorModule:
             # Call create_preview with empty-title signal
             result = create_preview(fname=tmp_path / "test.dm3", overwrite=True)
 
-            # Verify title was populated from filename (line 428-432)
+            # Verify title was populated from filename
             assert captured_signal["title"] is not None
             assert "test" in captured_signal["title"]
 
@@ -1152,7 +1152,7 @@ class TestExtractorModule:
                 result.unlink()
 
     def test_parse_metadata_extractor_returns_none(self, monkeypatch, tmp_path):
-        """Test parse_metadata when extractor returns None (line 205-206).
+        """Test parse_metadata when extractor returns None.
 
         This tests the defensive early return when nx_meta_list is None.
         Although extractors are designed to always return at least one metadata
@@ -1190,7 +1190,7 @@ class TestExtractorModule:
             # Call parse_metadata - should handle None gracefully
             result = parse_metadata(fname=test_file, generate_preview=False)
 
-            # When nx_meta_list is None, should return None, None (line 282)
+            # When nx_meta_list is None, should return None, None
             assert result == (None, None)
 
     @pytest.mark.filterwarnings(

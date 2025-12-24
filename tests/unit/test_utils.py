@@ -567,7 +567,7 @@ class TestUtils:
         """
         Test that CA_BUNDLE_CONTENT is written to temp file and used for verification.
 
-        This tests lines 125-131 in utils.py where CA_BUNDLE_CONTENT is
+        This tests utils.py where CA_BUNDLE_CONTENT is
         concatenated with system certificates.
         """
         # Mock CA_BUNDLE_CONTENT with test certificate data

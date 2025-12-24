@@ -343,7 +343,7 @@ def test_email_config_loads_from_dotenv_file(monkeypatch, mock_nemo_env):
 
     email = settings.email_config()
 
-    # Verify dotenv_values was called (exercises lines 375-376)
+    # Verify dotenv_values was called
     assert mock_dotenv_values.called
 
     # Verify email config was loaded from .env file
@@ -390,7 +390,7 @@ def test_nemo_harvesters_loads_from_dotenv_file(monkeypatch, mock_nemo_env):
 
     harvesters = settings.nemo_harvesters()
 
-    # Verify dotenv_values was called (exercises lines 291-292)
+    # Verify dotenv_values was called
     assert mock_dotenv_values.called
 
     # Verify harvester config was loaded from .env file

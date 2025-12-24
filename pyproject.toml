@@ -41,6 +41,8 @@ dependencies = [
     "rich>=13.0.0",
     "filelock>=3.0.0",
     "tzlocal>=5.3.1",
+    "pint>=0.24.0,<1.0.0",
+    "rdflib>=7.0.0,<8.0.0",
 ]
 
 [dependency-groups]

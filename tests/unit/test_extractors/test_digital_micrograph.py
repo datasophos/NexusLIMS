@@ -421,7 +421,7 @@ class TestDigitalMicrographExtractor:
         result = result_list[0]
         assert result["nx_meta"]["CustomField"] == "CustomValue"
 
-        # Verify log message (line 129)
+        # Verify log message
         assert f"Applying profile for instrument: {instrument.name}" in caplog.text
 
     def test_apply_profile_parser_failure(
@@ -504,7 +504,7 @@ class TestDigitalMicrographExtractor:
             list_signal[0], instrument=instrument
         )
 
-        # Verify transformation was applied (line 146)
+        # Verify transformation was applied
         # The nx_meta dict should have the transformed field
         assert result_list is not None
         assert isinstance(result_list, list)
@@ -588,7 +588,7 @@ class TestDigitalMicrographExtractor:
             list_signal[0], instrument=instrument
         )
 
-        # Verify static metadata was injected (line 158)
+        # Verify static metadata was injected
         assert result_list is not None
         assert isinstance(result_list, list)
         result = result_list[0]
