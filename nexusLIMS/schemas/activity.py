@@ -18,12 +18,14 @@ from xml.sax.saxutils import escape
 
 import numpy as np
 from lxml import etree
+from pint import Quantity
 from scipy.signal import argrelextrema
 from sklearn.model_selection import GridSearchCV, LeaveOneOut
 from sklearn.neighbors import KernelDensity
 
 from nexusLIMS.config import settings
 from nexusLIMS.extractors import flatten_dict, parse_metadata
+from nexusLIMS.extractors.xml_serialization import serialize_quantity_to_xml
 from nexusLIMS.utils import current_system_tz
 
 logger = logging.getLogger(__name__)
@@ -207,12 +209,20 @@ def _add_dataset_element(  # noqa: PLR0913
 
     for meta_k, meta_v in sorted(unique_meta.items(), key=lambda i: i[0].lower()):
         if meta_k not in ["warnings", "DatasetType"]:
-            meta_v = _escape(meta_v)  # noqa: PLW2901
             meta_el = etree.SubElement(dset_el, "meta")
             meta_el.set("name", str(meta_k))
             if meta_k in warning:
                 meta_el.set("warning", "true")
-            meta_el.text = str(meta_v)
+
+            # Handle Pint Quantity objects with unit attribute
+            if isinstance(meta_v, Quantity):
+                magnitude, unit = serialize_quantity_to_xml(meta_v)
+                meta_el.text = str(magnitude)
+                meta_el.set("unit", unit)
+            else:
+                # Handle regular values (strings, numbers, etc.)
+                meta_v = _escape(meta_v)  # noqa: PLW2901
+                meta_el.text = str(meta_v)
 
     return aq_ac_xml_el
 
