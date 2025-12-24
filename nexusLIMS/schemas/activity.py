@@ -449,18 +449,18 @@ class AcquisitionActivity:
                             vts,
                         )  # pragma: no cover
                         values_to_search.remove(vts)  # pragma: no cover
-                    if vts in meta and setup_params[vts] != meta[vts]:
-                        # value does not match, so this must be a
-                        # individual dataset metadata, so remove it from
-                        # setup_params, and remove it from values_to_search
+                    # Check if the parameter is missing in this file OR has a different value
+                    if vts not in meta or setup_params[vts] != meta[vts]:
+                        # Parameter is either missing or has different value,
+                        # so this must be individual dataset metadata.
+                        # Remove it from setup_params and values_to_search
                         logger.debug(
                             "iter: %i; vts=%s - "
-                            "meta[vts]=%s != setup_params[vts]=%s; "
+                            "%s; "
                             "removing %s from setup_params and values to search",
                             i,
                             vts,
-                            meta[vts],
-                            setup_params[vts],
+                            "not in meta" if vts not in meta else f"meta[vts]={meta[vts]} != setup_params[vts]={setup_params[vts]}",
                             vts,
                         )
                         del setup_params[vts]
@@ -538,7 +538,6 @@ class AcquisitionActivity:
         ):
             # metadata values to skip in XML output
             if param_k not in ["warnings", "DatasetType"]:
-                param_v = _escape(param_v)  # noqa: PLW2901
                 # for setup parameters, a key in the first dataset's warning
                 # list is the same as in all of them
                 pk_warning = param_k in self.warnings[0]
@@ -546,7 +545,15 @@ class AcquisitionActivity:
                 param_el.set("name", str(param_k))
                 if pk_warning:
                     param_el.set("warning", "true")
-                param_el.text = str(param_v)
+
+                # Handle Pint Quantity objects with unit attribute
+                if isinstance(param_v, Quantity):
+                    magnitude, unit = serialize_quantity_to_xml(param_v)
+                    param_el.text = str(magnitude)
+                    param_el.set("unit", unit)
+                else:
+                    param_v = _escape(param_v)  # noqa: PLW2901
+                    param_el.text = str(param_v)
 
         # Count how many times each file appears (for multi-signal files)
         file_signal_counts = {}

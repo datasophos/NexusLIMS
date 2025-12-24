@@ -102,9 +102,27 @@ Completed:
 
 **Phase 2 Complete:** All XML serialization and profile infrastructure finished ✅
 
+**Additional Improvements in Phase 2:**
+- ✅ Fixed critical bug in `store_setup_params()` - parameters missing in subsequent files are now correctly moved to unique_meta instead of incorrectly remaining in setup_params
+- ✅ Added Pint Quantity support for setup parameters in XML generation
+  - Modified [activity.py:549-556](nexusLIMS/schemas/activity.py#L549-L556) to serialize Quantities with unit attributes
+  - Setup params now handle Quantities identically to unique metadata
+- ✅ Created comprehensive end-to-end integration test [test_activity.py:219-356](tests/unit/test_record_builder/test_activity.py#L219-L356)
+  - Tests full flow: extractor → instrument profile extension_fields → XML generation
+  - Verifies Pint Quantities serialize correctly in both setup params and unique metadata
+  - Validates extension fields from profiles appear in correct XML structure
+- ✅ Created regression test [test_activity.py:358-414](tests/unit/test_record_builder/test_activity.py#L358-L414) for setup_params bug
+  - Ensures missing keys in subsequent files don't remain in setup_params
+  - Validates unique_meta correctly receives file-specific parameters
+
+**Testing Status:**
+- All 13 tests in test_activity.py passing
+- All XML serialization tests passing (45 tests)
+- All instrument profile tests passing (33 tests)
+- Complete end-to-end validation of Pint Quantities through entire system
+
 Next Up:
-- Test XML generation with Pint Quantities end-to-end
-- Then move to Phase 3: Extractor migration
+- Move to Phase 3: Extractor migration
 
 ---
 
