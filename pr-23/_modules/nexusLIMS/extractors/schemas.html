@@ -424,7 +424,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 23, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 24, 2025"/>
   </head>
   
   
@@ -940,14 +940,15 @@ window.addEventListener("load", load);
 <span class="sd">        ``&quot;Quanta-FEG-650-SEM-555555&quot;``</span>
 
 <span class="sd">    warnings : list of (str or list of str), optional</span>
-<span class="sd">        List of warning messages generated during metadata extraction.</span>
-<span class="sd">        Warnings indicate non-fatal issues such as missing metadata fields,</span>
-<span class="sd">        format inconsistencies, or data quality concerns. Each warning can</span>
-<span class="sd">        be either a plain string or a list containing a message and</span>
-<span class="sd">        additional context.</span>
+<span class="sd">        List of field names flagged as unreliable or missing during metadata</span>
+<span class="sd">        extraction. During record building, these field names are used to mark</span>
+<span class="sd">        corresponding metadata in the XML with a ``warning=&quot;true&quot;`` attribute,</span>
+<span class="sd">        alerting users that the values may not be trustworthy. Each warning can</span>
+<span class="sd">        be either a plain string (field name) or a single-element list containing</span>
+<span class="sd">        the field name.</span>
 
-<span class="sd">        Examples: ``[&quot;Missing calibration data&quot;]``,</span>
-<span class="sd">        ``[[&quot;Uncalibrated data&quot;, &quot;No pixel size found in metadata&quot;]]``,</span>
+<span class="sd">        Examples: ``[&quot;Operator&quot;, &quot;Specimen&quot;]`` (field names as strings),</span>
+<span class="sd">        ``[[&quot;Temperature&quot;]]`` (field name in list format),</span>
 <span class="sd">        ``[]`` (no warnings)</span>
 
 <span class="sd">    Notes</span>
@@ -1072,10 +1073,11 @@ window.addEventListener("load", load);
     <span class="n">warnings</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="p">(</span>
-            <span class="s2">&quot;List of warning messages generated during extraction. Each warning &quot;</span>
-            <span class="s2">&quot;can be a string or list containing [message, context]. Empty list &quot;</span>
-            <span class="s2">&quot;indicates no warnings. Examples: [&#39;Missing calibration&#39;], &quot;</span>
-            <span class="s2">&quot;[[&#39;Uncalibrated&#39;, &#39;No pixel size found&#39;]]&quot;</span>
+            <span class="s2">&quot;List of field names flagged as unreliable or missing. During record &quot;</span>
+            <span class="s2">&quot;building, these field names are used to mark corresponding metadata &quot;</span>
+            <span class="s2">&quot;in the XML with warning=&#39;true&#39; attribute. Each entry can be a string &quot;</span>
+            <span class="s2">&quot;(field name) or single-element list containing the field name. &quot;</span>
+            <span class="s2">&quot;Examples: [&#39;Operator&#39;, &#39;Specimen&#39;], [[&#39;Temperature&#39;]]&quot;</span>
         <span class="p">),</span>
     <span class="p">)</span>
 

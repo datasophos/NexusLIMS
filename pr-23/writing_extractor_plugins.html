@@ -62,7 +62,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 23, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 24, 2025"/>
   </head>
   
   
@@ -649,16 +649,52 @@
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">&quot;DatasetType&quot;</span></code>: One of “Image”, “Spectrum”, “SpectrumImage”, “Diffraction”, “Misc”</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">&quot;Data</span> <span class="pre">Type&quot;</span></code>: Descriptive string (e.g., “STEM_Imaging”, “TEM_EDS”)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">&quot;Creation</span> <span class="pre">Time&quot;</span></code>: ISO-8601 formatted timestamp</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;Creation</span> <span class="pre">Time&quot;</span></code>: ISO-8601 formatted timestamp <strong>with timezone</strong> (e.g., <code class="docutils literal notranslate"><span class="pre">&quot;2024-01-15T10:30:00-05:00&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;2024-01-15T10:30:00Z&quot;</span></code>)</p></li>
 </ul>
 <p><strong>Example:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">extract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ExtractionContext</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
     <span class="n">metadata</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">:</span> <span class="p">{}}</span>
     <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;DatasetType&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Image&quot;</span>
     <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;Data Type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;SEM_Imaging&quot;</span>
+    <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;Creation Time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;2024-01-15T10:30:00-05:00&quot;</span>
     <span class="c1"># ... extraction logic</span>
     <span class="c1"># Always return a list</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">metadata</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="metadata-validation">
+<h4>Metadata Validation<a class="headerlink" href="#metadata-validation" title="Link to this heading">#</a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code> section is automatically validated using Pydantic schemas. NexusLIMS provides built-in validation schemas:</p>
+<ul class="simple">
+<li><p><strong><a class="reference internal" href="api/nexusLIMS/nexusLIMS.extractors.schemas.html#nexusLIMS.extractors.schemas.NexusMetadata" title="nexusLIMS.extractors.schemas.NexusMetadata"><code class="xref py py-class docutils literal notranslate"><span class="pre">nexusLIMS.extractors.schemas.NexusMetadata</span></code></a></strong> - Base schema validating all extractors</p>
+<ul>
+<li><p>Validates required fields and ISO-8601 timestamp format with timezone</p></li>
+<li><p>Allows arbitrary additional fields for instrument-specific metadata</p></li>
+</ul>
+</li>
+<li><p><strong><a class="reference internal" href="api/nexusLIMS/nexusLIMS.extractors.schemas.html#nexusLIMS.extractors.schemas.TEMImageMetadata" title="nexusLIMS.extractors.schemas.TEMImageMetadata"><code class="xref py py-class docutils literal notranslate"><span class="pre">nexusLIMS.extractors.schemas.TEMImageMetadata</span></code></a></strong> and <strong><a class="reference internal" href="api/nexusLIMS/nexusLIMS.extractors.schemas.html#nexusLIMS.extractors.schemas.SEMImageMetadata" title="nexusLIMS.extractors.schemas.SEMImageMetadata"><code class="xref py py-class docutils literal notranslate"><span class="pre">nexusLIMS.extractors.schemas.SEMImageMetadata</span></code></a></strong> - Type-specific schemas (currently examples only)</p>
+<ul>
+<li><p>These schemas document common fields for TEM/STEM and SEM/FIB data</p></li>
+<li><p><strong>Note</strong>: These are provided as reference examples and are <strong>not currently used for automatic validation</strong></p></li>
+<li><p>Use the base <code class="docutils literal notranslate"><span class="pre">NexusMetadata</span></code> schema for actual validation</p></li>
+<li><p>If you need to validate instrument-specific fields, you can use these schemas in your extractor or profile code</p></li>
+</ul>
+</li>
+</ul>
+<p>The base <code class="docutils literal notranslate"><span class="pre">NexusMetadata</span></code> schema validation is <strong>automatically performed</strong> during record building, ensuring metadata consistency across all extractors:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.extractors.schemas</span><span class="w"> </span><span class="kn">import</span> <span class="n">NexusMetadata</span>
+
+<span class="c1"># This will be validated automatically when your extractor is used</span>
+<span class="n">nx_meta</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;Creation Time&quot;</span><span class="p">:</span> <span class="s2">&quot;2024-01-15T10:30:00-05:00&quot;</span><span class="p">,</span>  <span class="c1"># Required: ISO-8601 with timezone</span>
+    <span class="s2">&quot;Data Type&quot;</span><span class="p">:</span> <span class="s2">&quot;SEM_Imaging&quot;</span><span class="p">,</span>  <span class="c1"># Required: non-empty string</span>
+    <span class="s2">&quot;DatasetType&quot;</span><span class="p">:</span> <span class="s2">&quot;Image&quot;</span><span class="p">,</span>  <span class="c1"># Required: one of allowed values</span>
+    <span class="s2">&quot;Voltage&quot;</span><span class="p">:</span> <span class="s2">&quot;15 kV&quot;</span><span class="p">,</span>  <span class="c1"># Optional: extra fields are allowed</span>
+<span class="p">}</span>
+
+<span class="c1"># If you want to validate manually in your extractor:</span>
+<span class="n">validated</span> <span class="o">=</span> <span class="n">NexusMetadata</span><span class="o">.</span><span class="n">model_validate</span><span class="p">(</span><span class="n">nx_meta</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -1014,6 +1050,7 @@
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#methods">Methods</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#supports-context-extractioncontext-bool"><code class="docutils literal notranslate"><span class="pre">supports(context:</span> <span class="pre">ExtractionContext)</span> <span class="pre">-&gt;</span> <span class="pre">bool</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#extract-context-extractioncontext-list-dict-str-any"><code class="docutils literal notranslate"><span class="pre">extract(context:</span> <span class="pre">ExtractionContext)</span> <span class="pre">-&gt;</span> <span class="pre">list[dict[str,</span> <span class="pre">Any]]</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#metadata-validation">Metadata Validation</a></li>
 </ul>
 </li>
 </ul>

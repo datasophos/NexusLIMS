@@ -517,12 +517,12 @@ All extractors return a **list of metadata dictionaries**, with one entry per si
 [
     {
         "nx_meta": {
-            "Creation Time": "ISO 8601 timestamp",
+            "Creation Time": "ISO 8601 timestamp with timezone",
             "Data Type": "Category_Modality_Technique",  # e.g., "STEM_EDS"
             "DatasetType": "Image|Spectrum|SpectrumImage|Diffraction|Misc|Unknown",
-            "Data Dimensions": "(height, width)" or "(channels,)",
-            "Instrument ID": "instrument-name",
-            "warnings": [["field1"], ["field2", "subfield"]],  # Unreliable fields
+            "Data Dimensions": "(height, width)" or "(channels,)",  # Optional
+            "Instrument ID": "instrument-name",  # Optional
+            "warnings": ["field1", ["field2"]],  # Optional, list of field names flagged as unreliable
             # ... format-specific keys ...
         },
         # Additional format-specific metadata sections
@@ -542,9 +542,58 @@ All extractors return a **list of metadata dictionaries**, with one entry per si
 - **Single-signal files**: Return a list with one element `[{...}]`
 - **Multi-signal files**: Return a list with multiple elements, one per signal `[{...}, {...}]`
 
+**Validation Using Pydantic Models:**
+
+The `nx_meta` section is automatically validated against Pydantic schemas to ensure data consistency and quality. NexusLIMS provides the following built-in schemas:
+
+- **{py:class}`nexusLIMS.extractors.schemas.NexusMetadata`** (base schema): Used for validating all extractors
+  - **Required fields**: `Creation Time`, `Data Type`, `DatasetType`
+  - **Validation**: Creation Time must be ISO-8601 with timezone (e.g., `"2024-01-15T10:30:00-05:00"` or `"2024-01-15T10:30:00Z"`)
+  - **Optional fields**: `Data Dimensions`, `Instrument ID`, `warnings`
+  - **Extra fields**: Allows arbitrary instrument-specific metadata without breaking validation
+
+- **{py:class}`nexusLIMS.extractors.schemas.TEMImageMetadata`** and **{py:class}`nexusLIMS.extractors.schemas.SEMImageMetadata`** (reference schemas)
+  - **Status**: Currently provided as reference examples documenting common fields for TEM/STEM and SEM/FIB data
+  - **Not used for automatic validation** - only the base `NexusMetadata` schema is used during validation
+  - Can optionally be used in extractor or instrument profile code for manual validation of instrument-specific fields
+  - **TEMImageMetadata fields**: `Voltage`, `Magnification`, `Illumination Mode`, `Camera Length`, `Acquisition Device`
+  - **SEMImageMetadata fields**: `Voltage`, `Magnification`, `Working Distance`, `Beam Current`, `Detector`, `Dwell Time`, `Scan Rotation`
+
+**Validation Example:**
+
+When an extractor returns metadata, NexusLIMS automatically validates it:
+
+```python
+from nexusLIMS.extractors.schemas import NexusMetadata
+
+# Valid metadata that passes validation
+nx_meta = {
+    "Creation Time": "2024-01-15T10:30:00-05:00",  # Required: ISO-8601 with TZ
+    "Data Type": "STEM_Imaging",  # Required: non-empty string
+    "DatasetType": "Image",  # Required: one of Image|Spectrum|SpectrumImage|Diffraction|Misc|Unknown
+    "Data Dimensions": "(1024, 1024)",  # Optional
+    "Instrument ID": "FEI-Titan-TEM-635816",  # Optional
+    "warnings": ["Operator", "Specimen"],  # Optional: field names flagged as unreliable
+    "Voltage": "200 kV",  # Extra field - allowed
+}
+validated = NexusMetadata.model_validate(nx_meta)
+
+# Invalid metadata raises ValidationError with details
+bad_meta = {
+    "Creation Time": "2024-01-15 10:30:00",  # ❌ Missing timezone!
+    "Data Type": "STEM_Imaging",
+    "DatasetType": "InvalidType",  # ❌ Not in allowed values!
+}
+NexusMetadata.model_validate(bad_meta)  # Raises pydantic.ValidationError
+```
+
+**Backward Compatibility:**
+
+The schema uses `populate_by_name=True` to accept both Python-style field names (`creation_time`) and original dictionary keys (`Creation Time`), ensuring compatibility with existing code.
+
 The `nx_meta` section in each element contains standardized, human-readable metadata that is displayed in the experimental record. The additional sections contain the complete "raw" metadata tree for reference.
 
-This consistent list-based approach allows the Activity layer to automatically expand multi-signal files into multiple datasets in the experimental record.
+This consistent list-based approach combined with Pydantic validation ensures the Activity layer can automatically and safely expand multi-signal files into multiple datasets in the experimental record.
 
 ## Adding Support for New Formats
 

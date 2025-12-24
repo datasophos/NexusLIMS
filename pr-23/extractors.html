@@ -62,7 +62,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 23, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 24, 2025"/>
   </head>
   
   
@@ -1026,12 +1026,12 @@ each format.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
     <span class="p">{</span>
         <span class="s2">&quot;nx_meta&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;Creation Time&quot;</span><span class="p">:</span> <span class="s2">&quot;ISO 8601 timestamp&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Creation Time&quot;</span><span class="p">:</span> <span class="s2">&quot;ISO 8601 timestamp with timezone&quot;</span><span class="p">,</span>
             <span class="s2">&quot;Data Type&quot;</span><span class="p">:</span> <span class="s2">&quot;Category_Modality_Technique&quot;</span><span class="p">,</span>  <span class="c1"># e.g., &quot;STEM_EDS&quot;</span>
             <span class="s2">&quot;DatasetType&quot;</span><span class="p">:</span> <span class="s2">&quot;Image|Spectrum|SpectrumImage|Diffraction|Misc|Unknown&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;Data Dimensions&quot;</span><span class="p">:</span> <span class="s2">&quot;(height, width)&quot;</span> <span class="ow">or</span> <span class="s2">&quot;(channels,)&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;Instrument ID&quot;</span><span class="p">:</span> <span class="s2">&quot;instrument-name&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;warnings&quot;</span><span class="p">:</span> <span class="p">[[</span><span class="s2">&quot;field1&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;field2&quot;</span><span class="p">,</span> <span class="s2">&quot;subfield&quot;</span><span class="p">]],</span>  <span class="c1"># Unreliable fields</span>
+            <span class="s2">&quot;Data Dimensions&quot;</span><span class="p">:</span> <span class="s2">&quot;(height, width)&quot;</span> <span class="ow">or</span> <span class="s2">&quot;(channels,)&quot;</span><span class="p">,</span>  <span class="c1"># Optional</span>
+            <span class="s2">&quot;Instrument ID&quot;</span><span class="p">:</span> <span class="s2">&quot;instrument-name&quot;</span><span class="p">,</span>  <span class="c1"># Optional</span>
+            <span class="s2">&quot;warnings&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;field1&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;field2&quot;</span><span class="p">]],</span>  <span class="c1"># Optional, list of field names flagged as unreliable</span>
             <span class="c1"># ... format-specific keys ...</span>
         <span class="p">},</span>
         <span class="c1"># Additional format-specific metadata sections</span>
@@ -1052,8 +1052,56 @@ each format.</p>
 <li><p><strong>Single-signal files</strong>: Return a list with one element <code class="docutils literal notranslate"><span class="pre">[{...}]</span></code></p></li>
 <li><p><strong>Multi-signal files</strong>: Return a list with multiple elements, one per signal <code class="docutils literal notranslate"><span class="pre">[{...},</span> <span class="pre">{...}]</span></code></p></li>
 </ul>
+<p><strong>Validation Using Pydantic Models:</strong></p>
+<p>The <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code> section is automatically validated against Pydantic schemas to ensure data consistency and quality. NexusLIMS provides the following built-in schemas:</p>
+<ul class="simple">
+<li><p><strong><a class="reference internal" href="api/nexusLIMS/nexusLIMS.extractors.schemas.html#nexusLIMS.extractors.schemas.NexusMetadata" title="nexusLIMS.extractors.schemas.NexusMetadata"><code class="xref py py-class docutils literal notranslate"><span class="pre">nexusLIMS.extractors.schemas.NexusMetadata</span></code></a></strong> (base schema): Used for validating all extractors</p>
+<ul>
+<li><p><strong>Required fields</strong>: <code class="docutils literal notranslate"><span class="pre">Creation</span> <span class="pre">Time</span></code>, <code class="docutils literal notranslate"><span class="pre">Data</span> <span class="pre">Type</span></code>, <code class="docutils literal notranslate"><span class="pre">DatasetType</span></code></p></li>
+<li><p><strong>Validation</strong>: Creation Time must be ISO-8601 with timezone (e.g., <code class="docutils literal notranslate"><span class="pre">&quot;2024-01-15T10:30:00-05:00&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;2024-01-15T10:30:00Z&quot;</span></code>)</p></li>
+<li><p><strong>Optional fields</strong>: <code class="docutils literal notranslate"><span class="pre">Data</span> <span class="pre">Dimensions</span></code>, <code class="docutils literal notranslate"><span class="pre">Instrument</span> <span class="pre">ID</span></code>, <code class="docutils literal notranslate"><span class="pre">warnings</span></code></p></li>
+<li><p><strong>Extra fields</strong>: Allows arbitrary instrument-specific metadata without breaking validation</p></li>
+</ul>
+</li>
+<li><p><strong><a class="reference internal" href="api/nexusLIMS/nexusLIMS.extractors.schemas.html#nexusLIMS.extractors.schemas.TEMImageMetadata" title="nexusLIMS.extractors.schemas.TEMImageMetadata"><code class="xref py py-class docutils literal notranslate"><span class="pre">nexusLIMS.extractors.schemas.TEMImageMetadata</span></code></a></strong> and <strong><a class="reference internal" href="api/nexusLIMS/nexusLIMS.extractors.schemas.html#nexusLIMS.extractors.schemas.SEMImageMetadata" title="nexusLIMS.extractors.schemas.SEMImageMetadata"><code class="xref py py-class docutils literal notranslate"><span class="pre">nexusLIMS.extractors.schemas.SEMImageMetadata</span></code></a></strong> (reference schemas)</p>
+<ul>
+<li><p><strong>Status</strong>: Currently provided as reference examples documenting common fields for TEM/STEM and SEM/FIB data</p></li>
+<li><p><strong>Not used for automatic validation</strong> - only the base <code class="docutils literal notranslate"><span class="pre">NexusMetadata</span></code> schema is used during validation</p></li>
+<li><p>Can optionally be used in extractor or instrument profile code for manual validation of instrument-specific fields</p></li>
+<li><p><strong>TEMImageMetadata fields</strong>: <code class="docutils literal notranslate"><span class="pre">Voltage</span></code>, <code class="docutils literal notranslate"><span class="pre">Magnification</span></code>, <code class="docutils literal notranslate"><span class="pre">Illumination</span> <span class="pre">Mode</span></code>, <code class="docutils literal notranslate"><span class="pre">Camera</span> <span class="pre">Length</span></code>, <code class="docutils literal notranslate"><span class="pre">Acquisition</span> <span class="pre">Device</span></code></p></li>
+<li><p><strong>SEMImageMetadata fields</strong>: <code class="docutils literal notranslate"><span class="pre">Voltage</span></code>, <code class="docutils literal notranslate"><span class="pre">Magnification</span></code>, <code class="docutils literal notranslate"><span class="pre">Working</span> <span class="pre">Distance</span></code>, <code class="docutils literal notranslate"><span class="pre">Beam</span> <span class="pre">Current</span></code>, <code class="docutils literal notranslate"><span class="pre">Detector</span></code>, <code class="docutils literal notranslate"><span class="pre">Dwell</span> <span class="pre">Time</span></code>, <code class="docutils literal notranslate"><span class="pre">Scan</span> <span class="pre">Rotation</span></code></p></li>
+</ul>
+</li>
+</ul>
+<p><strong>Validation Example:</strong></p>
+<p>When an extractor returns metadata, NexusLIMS automatically validates it:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.extractors.schemas</span><span class="w"> </span><span class="kn">import</span> <span class="n">NexusMetadata</span>
+
+<span class="c1"># Valid metadata that passes validation</span>
+<span class="n">nx_meta</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;Creation Time&quot;</span><span class="p">:</span> <span class="s2">&quot;2024-01-15T10:30:00-05:00&quot;</span><span class="p">,</span>  <span class="c1"># Required: ISO-8601 with TZ</span>
+    <span class="s2">&quot;Data Type&quot;</span><span class="p">:</span> <span class="s2">&quot;STEM_Imaging&quot;</span><span class="p">,</span>  <span class="c1"># Required: non-empty string</span>
+    <span class="s2">&quot;DatasetType&quot;</span><span class="p">:</span> <span class="s2">&quot;Image&quot;</span><span class="p">,</span>  <span class="c1"># Required: one of Image|Spectrum|SpectrumImage|Diffraction|Misc|Unknown</span>
+    <span class="s2">&quot;Data Dimensions&quot;</span><span class="p">:</span> <span class="s2">&quot;(1024, 1024)&quot;</span><span class="p">,</span>  <span class="c1"># Optional</span>
+    <span class="s2">&quot;Instrument ID&quot;</span><span class="p">:</span> <span class="s2">&quot;FEI-Titan-TEM-635816&quot;</span><span class="p">,</span>  <span class="c1"># Optional</span>
+    <span class="s2">&quot;warnings&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Operator&quot;</span><span class="p">,</span> <span class="s2">&quot;Specimen&quot;</span><span class="p">],</span>  <span class="c1"># Optional: field names flagged as unreliable</span>
+    <span class="s2">&quot;Voltage&quot;</span><span class="p">:</span> <span class="s2">&quot;200 kV&quot;</span><span class="p">,</span>  <span class="c1"># Extra field - allowed</span>
+<span class="p">}</span>
+<span class="n">validated</span> <span class="o">=</span> <span class="n">NexusMetadata</span><span class="o">.</span><span class="n">model_validate</span><span class="p">(</span><span class="n">nx_meta</span><span class="p">)</span>
+
+<span class="c1"># Invalid metadata raises ValidationError with details</span>
+<span class="n">bad_meta</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;Creation Time&quot;</span><span class="p">:</span> <span class="s2">&quot;2024-01-15 10:30:00&quot;</span><span class="p">,</span>  <span class="c1"># ❌ Missing timezone!</span>
+    <span class="s2">&quot;Data Type&quot;</span><span class="p">:</span> <span class="s2">&quot;STEM_Imaging&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;DatasetType&quot;</span><span class="p">:</span> <span class="s2">&quot;InvalidType&quot;</span><span class="p">,</span>  <span class="c1"># ❌ Not in allowed values!</span>
+<span class="p">}</span>
+<span class="n">NexusMetadata</span><span class="o">.</span><span class="n">model_validate</span><span class="p">(</span><span class="n">bad_meta</span><span class="p">)</span>  <span class="c1"># Raises pydantic.ValidationError</span>
+</pre></div>
+</div>
+<p><strong>Backward Compatibility:</strong></p>
+<p>The schema uses <code class="docutils literal notranslate"><span class="pre">populate_by_name=True</span></code> to accept both Python-style field names (<code class="docutils literal notranslate"><span class="pre">creation_time</span></code>) and original dictionary keys (<code class="docutils literal notranslate"><span class="pre">Creation</span> <span class="pre">Time</span></code>), ensuring compatibility with existing code.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code> section in each element contains standardized, human-readable metadata that is displayed in the experimental record. The additional sections contain the complete “raw” metadata tree for reference.</p>
-<p>This consistent list-based approach allows the Activity layer to automatically expand multi-signal files into multiple datasets in the experimental record.</p>
+<p>This consistent list-based approach combined with Pydantic validation ensures the Activity layer can automatically and safely expand multi-signal files into multiple datasets in the experimental record.</p>
 </section>
 </section>
 <section id="adding-support-for-new-formats">

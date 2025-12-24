@@ -168,7 +168,7 @@ Extract metadata from the file.
 **Required `nx_meta` fields (in each dict):**
 - `"DatasetType"`: One of "Image", "Spectrum", "SpectrumImage", "Diffraction", "Misc"
 - `"Data Type"`: Descriptive string (e.g., "STEM_Imaging", "TEM_EDS")
-- `"Creation Time"`: ISO-8601 formatted timestamp
+- `"Creation Time"`: ISO-8601 formatted timestamp **with timezone** (e.g., `"2024-01-15T10:30:00-05:00"` or `"2024-01-15T10:30:00Z"`)
 
 **Example:**
 ```python
@@ -176,9 +176,41 @@ def extract(self, context: ExtractionContext) -> list[dict[str, Any]]:
     metadata = {"nx_meta": {}}
     metadata["nx_meta"]["DatasetType"] = "Image"
     metadata["nx_meta"]["Data Type"] = "SEM_Imaging"
+    metadata["nx_meta"]["Creation Time"] = "2024-01-15T10:30:00-05:00"
     # ... extraction logic
     # Always return a list
     return [metadata]
+```
+
+#### Metadata Validation
+
+The `nx_meta` section is automatically validated using Pydantic schemas. NexusLIMS provides built-in validation schemas:
+
+- **{py:class}`nexusLIMS.extractors.schemas.NexusMetadata`** - Base schema validating all extractors
+  - Validates required fields and ISO-8601 timestamp format with timezone
+  - Allows arbitrary additional fields for instrument-specific metadata
+
+- **{py:class}`nexusLIMS.extractors.schemas.TEMImageMetadata`** and **{py:class}`nexusLIMS.extractors.schemas.SEMImageMetadata`** - Type-specific schemas (currently examples only)
+  - These schemas document common fields for TEM/STEM and SEM/FIB data
+  - **Note**: These are provided as reference examples and are **not currently used for automatic validation**
+  - Use the base `NexusMetadata` schema for actual validation
+  - If you need to validate instrument-specific fields, you can use these schemas in your extractor or profile code
+
+The base `NexusMetadata` schema validation is **automatically performed** during record building, ensuring metadata consistency across all extractors:
+
+```python
+from nexusLIMS.extractors.schemas import NexusMetadata
+
+# This will be validated automatically when your extractor is used
+nx_meta = {
+    "Creation Time": "2024-01-15T10:30:00-05:00",  # Required: ISO-8601 with timezone
+    "Data Type": "SEM_Imaging",  # Required: non-empty string
+    "DatasetType": "Image",  # Required: one of allowed values
+    "Voltage": "15 kV",  # Optional: extra fields are allowed
+}
+
+# If you want to validate manually in your extractor:
+validated = NexusMetadata.model_validate(nx_meta)
 ```
 
 ## Advanced Patterns
