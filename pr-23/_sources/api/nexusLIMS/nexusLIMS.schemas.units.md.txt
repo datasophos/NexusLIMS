@@ -1,0 +1,178 @@
+# {py:mod}`nexusLIMS.schemas.units`
+
+```{py:module} nexusLIMS.schemas.units
+```
+
+```{autodoc2-docstring} nexusLIMS.schemas.units
+:allowtitles:
+```
+
+## Module Contents
+
+### Functions
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`normalize_quantity <nexusLIMS.schemas.units.normalize_quantity>`
+  - ```{autodoc2-docstring} nexusLIMS.schemas.units.normalize_quantity
+    :summary:
+    ```
+* - {py:obj}`parse_quantity <nexusLIMS.schemas.units.parse_quantity>`
+  - ```{autodoc2-docstring} nexusLIMS.schemas.units.parse_quantity
+    :summary:
+    ```
+* - {py:obj}`quantity_to_xml_parts <nexusLIMS.schemas.units.quantity_to_xml_parts>`
+  - ```{autodoc2-docstring} nexusLIMS.schemas.units.quantity_to_xml_parts
+    :summary:
+    ```
+* - {py:obj}`get_qudt_uri <nexusLIMS.schemas.units.get_qudt_uri>`
+  - ```{autodoc2-docstring} nexusLIMS.schemas.units.get_qudt_uri
+    :summary:
+    ```
+* - {py:obj}`serialize_quantity <nexusLIMS.schemas.units.serialize_quantity>`
+  - ```{autodoc2-docstring} nexusLIMS.schemas.units.serialize_quantity
+    :summary:
+    ```
+* - {py:obj}`deserialize_quantity <nexusLIMS.schemas.units.deserialize_quantity>`
+  - ```{autodoc2-docstring} nexusLIMS.schemas.units.deserialize_quantity
+    :summary:
+    ```
+````
+
+### Data
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`logger <nexusLIMS.schemas.units.logger>`
+  - ```{autodoc2-docstring} nexusLIMS.schemas.units.logger
+    :summary:
+    ```
+* - {py:obj}`ureg <nexusLIMS.schemas.units.ureg>`
+  - ```{autodoc2-docstring} nexusLIMS.schemas.units.ureg
+    :summary:
+    ```
+* - {py:obj}`QUDT_UNIT_TTL_PATH <nexusLIMS.schemas.units.QUDT_UNIT_TTL_PATH>`
+  - ```{autodoc2-docstring} nexusLIMS.schemas.units.QUDT_UNIT_TTL_PATH
+    :summary:
+    ```
+* - {py:obj}`QUDT_VERSION <nexusLIMS.schemas.units.QUDT_VERSION>`
+  - ```{autodoc2-docstring} nexusLIMS.schemas.units.QUDT_VERSION
+    :summary:
+    ```
+* - {py:obj}`QUDT_UNIT <nexusLIMS.schemas.units.QUDT_UNIT>`
+  - ```{autodoc2-docstring} nexusLIMS.schemas.units.QUDT_UNIT
+    :summary:
+    ```
+* - {py:obj}`PREFERRED_UNITS <nexusLIMS.schemas.units.PREFERRED_UNITS>`
+  - ```{autodoc2-docstring} nexusLIMS.schemas.units.PREFERRED_UNITS
+    :summary:
+    ```
+````
+
+### API
+
+````{py:data} logger
+:canonical: nexusLIMS.schemas.units.logger
+:value: >
+   'getLogger(...)'
+
+```{autodoc2-docstring} nexusLIMS.schemas.units.logger
+```
+
+````
+
+````{py:data} ureg
+:canonical: nexusLIMS.schemas.units.ureg
+:value: >
+   'UnitRegistry(...)'
+
+```{autodoc2-docstring} nexusLIMS.schemas.units.ureg
+```
+
+````
+
+````{py:data} QUDT_UNIT_TTL_PATH
+:canonical: nexusLIMS.schemas.units.QUDT_UNIT_TTL_PATH
+:value: >
+   None
+
+```{autodoc2-docstring} nexusLIMS.schemas.units.QUDT_UNIT_TTL_PATH
+```
+
+````
+
+````{py:data} QUDT_VERSION
+:canonical: nexusLIMS.schemas.units.QUDT_VERSION
+:value: >
+   '3.1.9'
+
+```{autodoc2-docstring} nexusLIMS.schemas.units.QUDT_VERSION
+```
+
+````
+
+````{py:data} QUDT_UNIT
+:canonical: nexusLIMS.schemas.units.QUDT_UNIT
+:value: >
+   'Namespace(...)'
+
+```{autodoc2-docstring} nexusLIMS.schemas.units.QUDT_UNIT
+```
+
+````
+
+````{py:data} PREFERRED_UNITS
+:canonical: nexusLIMS.schemas.units.PREFERRED_UNITS
+:value: >
+   None
+
+```{autodoc2-docstring} nexusLIMS.schemas.units.PREFERRED_UNITS
+```
+
+````
+
+````{py:function} normalize_quantity(field_name: str, quantity: typing.Any) -> typing.Any
+:canonical: nexusLIMS.schemas.units.normalize_quantity
+
+```{autodoc2-docstring} nexusLIMS.schemas.units.normalize_quantity
+```
+````
+
+````{py:function} parse_quantity(field_name: str, value: typing.Any) -> typing.Any
+:canonical: nexusLIMS.schemas.units.parse_quantity
+
+```{autodoc2-docstring} nexusLIMS.schemas.units.parse_quantity
+```
+````
+
+````{py:function} quantity_to_xml_parts(field_name: str, quantity: typing.Any) -> tuple[str, str, str | None]
+:canonical: nexusLIMS.schemas.units.quantity_to_xml_parts
+
+```{autodoc2-docstring} nexusLIMS.schemas.units.quantity_to_xml_parts
+```
+````
+
+````{py:function} get_qudt_uri(quantity: typing.Any) -> str | None
+:canonical: nexusLIMS.schemas.units.get_qudt_uri
+
+```{autodoc2-docstring} nexusLIMS.schemas.units.get_qudt_uri
+```
+````
+
+````{py:function} serialize_quantity(quantity: typing.Any) -> dict[str, typing.Any]
+:canonical: nexusLIMS.schemas.units.serialize_quantity
+
+```{autodoc2-docstring} nexusLIMS.schemas.units.serialize_quantity
+```
+````
+
+````{py:function} deserialize_quantity(data: dict[str, typing.Any]) -> typing.Any
+:canonical: nexusLIMS.schemas.units.deserialize_quantity
+
+```{autodoc2-docstring} nexusLIMS.schemas.units.deserialize_quantity
+```
+````

@@ -424,7 +424,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 24, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 25, 2025"/>
   </head>
   
   
@@ -826,7 +826,6 @@ window.addEventListener("load", load);
 <span class="kn">import</span><span class="w"> </span><span class="nn">contextlib</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">io</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">decimal</span><span class="w"> </span><span class="kn">import</span> <span class="n">Decimal</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">ClassVar</span>
 
@@ -835,6 +834,7 @@ window.addEventListener("load", load);
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.extractors.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExtractionContext</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.extractors.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">FieldDefinition</span> <span class="k">as</span> <span class="n">FD</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.extractors.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">_set_instr_name_and_time</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas.units</span><span class="w"> </span><span class="kn">import</span> <span class="n">ureg</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_nested_dict_value</span><span class="p">,</span> <span class="n">sort_dict</span>
 
 <span class="n">TESCAN_TIFF_TAG</span> <span class="o">=</span> <span class="mi">50431</span>
@@ -849,6 +849,52 @@ window.addEventListener("load", load);
 
 <span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 <span class="n">_logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_source_unit</span><span class="p">(</span><span class="n">target_unit</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>  <span class="c1"># noqa: PLR0911</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Determine the source unit (in SI base units) for a given target unit.</span>
+
+<span class="sd">    Tescan stores metadata in SI base units (meters, volts, amperes, seconds, etc.).</span>
+<span class="sd">    This function maps the target unit to the appropriate source unit.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    target_unit</span>
+<span class="sd">        The target Pint unit name (e.g., &#39;kilovolt&#39;, &#39;nanometer&#39;, &#39;microsecond&#39;)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    str</span>
+<span class="sd">        The source unit in SI base units</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Map unit dimensions to SI base units</span>
+    <span class="c1"># Voltage units</span>
+    <span class="k">if</span> <span class="n">target_unit</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;volt&quot;</span><span class="p">,</span> <span class="s2">&quot;kilovolt&quot;</span><span class="p">,</span> <span class="s2">&quot;millivolt&quot;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;volt&quot;</span>
+    <span class="c1"># Length units</span>
+    <span class="k">if</span> <span class="n">target_unit</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;meter&quot;</span><span class="p">,</span> <span class="s2">&quot;millimeter&quot;</span><span class="p">,</span> <span class="s2">&quot;micrometer&quot;</span><span class="p">,</span> <span class="s2">&quot;nanometer&quot;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;meter&quot;</span>
+    <span class="c1"># Current units</span>
+    <span class="k">if</span> <span class="n">target_unit</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;ampere&quot;</span><span class="p">,</span> <span class="s2">&quot;microampere&quot;</span><span class="p">,</span> <span class="s2">&quot;milliampere&quot;</span><span class="p">,</span> <span class="s2">&quot;picoampere&quot;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;ampere&quot;</span>
+    <span class="c1"># Time units</span>
+    <span class="k">if</span> <span class="n">target_unit</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;second&quot;</span><span class="p">,</span> <span class="s2">&quot;millisecond&quot;</span><span class="p">,</span> <span class="s2">&quot;microsecond&quot;</span><span class="p">,</span> <span class="s2">&quot;nanosecond&quot;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;second&quot;</span>
+    <span class="c1"># Pressure units</span>
+    <span class="k">if</span> <span class="n">target_unit</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;pascal&quot;</span><span class="p">,</span> <span class="s2">&quot;millipascal&quot;</span><span class="p">,</span> <span class="s2">&quot;kilopascal&quot;</span><span class="p">,</span> <span class="s2">&quot;megapascal&quot;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;pascal&quot;</span>
+    <span class="c1"># Angle units</span>
+    <span class="k">if</span> <span class="n">target_unit</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;radian&quot;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;degree&quot;</span>  <span class="c1"># Tescan uses degrees</span>
+    <span class="c1"># Magnification units</span>
+    <span class="k">if</span> <span class="n">target_unit</span> <span class="o">==</span> <span class="s2">&quot;kiloX&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="s2">&quot;dimensionless&quot;</span>  <span class="c1"># Tescan stores magnification as raw count (e.g., 160000x)</span>
+        <span class="p">)</span>
+
+    <span class="c1"># Default: return the target unit itself</span>
+    <span class="k">return</span> <span class="n">target_unit</span>
 
 
 <div class="viewcode-block" id="TescanTiffExtractor">
@@ -1371,6 +1417,9 @@ window.addEventListener("load", load);
         <span class="n">sem_section</span> <span class="o">=</span> <span class="n">mdict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="p">{})</span>
 
         <span class="c1"># Field definitions using FD NamedTuple</span>
+        <span class="c1"># Format:</span>
+        <span class="c1">#   FD(section, source_key, output_key, factor, is_string, unit)  # noqa: ERA001</span>
+        <span class="c1"># Note: factor is for legacy compatibility; unit should be the target unit name</span>
         <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span>
             <span class="c1"># [MAIN] section - in order as they appear in HDR file</span>
             <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;MAIN&quot;</span><span class="p">,</span> <span class="s2">&quot;AccFrames&quot;</span><span class="p">,</span> <span class="s2">&quot;Accumulated Frames&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
@@ -1382,11 +1431,11 @@ window.addEventListener("load", load);
             <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;MAIN&quot;</span><span class="p">,</span> <span class="s2">&quot;DeviceModel&quot;</span><span class="p">,</span> <span class="s2">&quot;Device Model&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
             <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;MAIN&quot;</span><span class="p">,</span> <span class="s2">&quot;FullUserName&quot;</span><span class="p">,</span> <span class="s2">&quot;Full User Name&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
             <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;MAIN&quot;</span><span class="p">,</span> <span class="s2">&quot;ImageStripSize&quot;</span><span class="p">,</span> <span class="s2">&quot;Image Strip Size&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
-            <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;MAIN&quot;</span><span class="p">,</span> <span class="s2">&quot;Magnification&quot;</span><span class="p">,</span> <span class="s2">&quot;Magnification (kX)&quot;</span><span class="p">,</span> <span class="mf">1e-3</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+            <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;MAIN&quot;</span><span class="p">,</span> <span class="s2">&quot;Magnification&quot;</span><span class="p">,</span> <span class="s2">&quot;Magnification&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;kiloX&quot;</span><span class="p">),</span>
             <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;MAIN&quot;</span><span class="p">,</span> <span class="s2">&quot;MagnificationReference&quot;</span><span class="p">,</span> <span class="s2">&quot;Magnification Reference&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
             <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;MAIN&quot;</span><span class="p">,</span> <span class="s2">&quot;OrigFileName&quot;</span><span class="p">,</span> <span class="s2">&quot;Original Filename&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
-            <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;MAIN&quot;</span><span class="p">,</span> <span class="s2">&quot;PixelSizeX&quot;</span><span class="p">,</span> <span class="s2">&quot;Pixel Width (nm)&quot;</span><span class="p">,</span> <span class="mf">1e9</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
-            <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;MAIN&quot;</span><span class="p">,</span> <span class="s2">&quot;PixelSizeY&quot;</span><span class="p">,</span> <span class="s2">&quot;Pixel Height (nm)&quot;</span><span class="p">,</span> <span class="mf">1e9</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+            <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;MAIN&quot;</span><span class="p">,</span> <span class="s2">&quot;PixelSizeX&quot;</span><span class="p">,</span> <span class="s2">&quot;Pixel Width&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;nanometer&quot;</span><span class="p">),</span>
+            <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;MAIN&quot;</span><span class="p">,</span> <span class="s2">&quot;PixelSizeY&quot;</span><span class="p">,</span> <span class="s2">&quot;Pixel Height&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;nanometer&quot;</span><span class="p">),</span>
             <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;MAIN&quot;</span><span class="p">,</span> <span class="s2">&quot;SerialNumber&quot;</span><span class="p">,</span> <span class="s2">&quot;Serial Number&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
             <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;MAIN&quot;</span><span class="p">,</span> <span class="s2">&quot;Sign&quot;</span><span class="p">,</span> <span class="s2">&quot;Sign&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
             <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;MAIN&quot;</span><span class="p">,</span> <span class="s2">&quot;SoftwareVersion&quot;</span><span class="p">,</span> <span class="s2">&quot;Software Version&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
@@ -1395,37 +1444,79 @@ window.addEventListener("load", load);
             <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;MAIN&quot;</span><span class="p">,</span> <span class="s2">&quot;ViewFieldsCountX&quot;</span><span class="p">,</span> <span class="s2">&quot;View Fields Count X&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
             <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;MAIN&quot;</span><span class="p">,</span> <span class="s2">&quot;ViewFieldsCountY&quot;</span><span class="p">,</span> <span class="s2">&quot;View Fields Count Y&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
             <span class="c1"># [SEM] section - in order as they appear in HDR file</span>
-            <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;AcceleratorVoltage&quot;</span><span class="p">,</span> <span class="s2">&quot;Accelerator Voltage (kV)&quot;</span><span class="p">,</span> <span class="mf">1e-3</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
-            <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;ApertureDiameter&quot;</span><span class="p">,</span> <span class="s2">&quot;Aperture Diameter (μm)&quot;</span><span class="p">,</span> <span class="mf">1e6</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+            <span class="n">FD</span><span class="p">(</span>
+                <span class="s2">&quot;SEM&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;AcceleratorVoltage&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Accelerator Voltage&quot;</span><span class="p">,</span>
+                <span class="mi">1</span><span class="p">,</span>
+                <span class="kc">False</span><span class="p">,</span>
+                <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;kilovolt&quot;</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">FD</span><span class="p">(</span>
+                <span class="s2">&quot;SEM&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;ApertureDiameter&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Aperture Diameter&quot;</span><span class="p">,</span>
+                <span class="mi">1</span><span class="p">,</span>
+                <span class="kc">False</span><span class="p">,</span>
+                <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;micrometer&quot;</span><span class="p">,</span>
+            <span class="p">),</span>
             <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;ApertureOptimization&quot;</span><span class="p">,</span> <span class="s2">&quot;Aperture Optimization&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
-            <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;ChamberPressure&quot;</span><span class="p">,</span> <span class="s2">&quot;Chamber Pressure (mPa)&quot;</span><span class="p">,</span> <span class="mf">1e3</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+            <span class="n">FD</span><span class="p">(</span>
+                <span class="s2">&quot;SEM&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;ChamberPressure&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Chamber Pressure&quot;</span><span class="p">,</span>
+                <span class="mi">1</span><span class="p">,</span>
+                <span class="kc">False</span><span class="p">,</span>
+                <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;millipascal&quot;</span><span class="p">,</span>
+            <span class="p">),</span>
             <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;CrossFree&quot;</span><span class="p">,</span> <span class="s2">&quot;Cross Free&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
-            <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;CrossSectionShiftX&quot;</span><span class="p">,</span> <span class="s2">&quot;Cross Section Shift X (μm)&quot;</span><span class="p">,</span> <span class="mf">1e6</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
-            <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;CrossSectionShiftY&quot;</span><span class="p">,</span> <span class="s2">&quot;Cross Section Shift Y (μm)&quot;</span><span class="p">,</span> <span class="mf">1e6</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
-            <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;DepthOfFocus&quot;</span><span class="p">,</span> <span class="s2">&quot;Depth of Focus (μm)&quot;</span><span class="p">,</span> <span class="mf">1e6</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+            <span class="n">FD</span><span class="p">(</span>
+                <span class="s2">&quot;SEM&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;CrossSectionShiftX&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Cross Section Shift X&quot;</span><span class="p">,</span>
+                <span class="mi">1</span><span class="p">,</span>
+                <span class="kc">False</span><span class="p">,</span>
+                <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;micrometer&quot;</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">FD</span><span class="p">(</span>
+                <span class="s2">&quot;SEM&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;CrossSectionShiftY&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Cross Section Shift Y&quot;</span><span class="p">,</span>
+                <span class="mi">1</span><span class="p">,</span>
+                <span class="kc">False</span><span class="p">,</span>
+                <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;micrometer&quot;</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;DepthOfFocus&quot;</span><span class="p">,</span> <span class="s2">&quot;Depth of Focus&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;micrometer&quot;</span><span class="p">),</span>
             <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;Detector&quot;</span><span class="p">,</span> <span class="s2">&quot;Detector Name&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
             <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;Detector0&quot;</span><span class="p">,</span> <span class="s2">&quot;Detector 0&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
             <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;Detector0FlatField&quot;</span><span class="p">,</span> <span class="s2">&quot;Detector 0 Flat Field&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
             <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;Detector0Gain&quot;</span><span class="p">,</span> <span class="s2">&quot;Detector 0 Gain&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
             <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;Detector0Offset&quot;</span><span class="p">,</span> <span class="s2">&quot;Detector 0 Offset&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
-            <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;DwellTime&quot;</span><span class="p">,</span> <span class="s2">&quot;Pixel Dwell Time (μs)&quot;</span><span class="p">,</span> <span class="mf">1e6</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
-            <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;EmissionCurrent&quot;</span><span class="p">,</span> <span class="s2">&quot;Emission Current (μA)&quot;</span><span class="p">,</span> <span class="mf">1e6</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+            <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;DwellTime&quot;</span><span class="p">,</span> <span class="s2">&quot;Pixel Dwell Time&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;microsecond&quot;</span><span class="p">),</span>
+            <span class="n">FD</span><span class="p">(</span>
+                <span class="s2">&quot;SEM&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;EmissionCurrent&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Emission Current&quot;</span><span class="p">,</span>
+                <span class="mi">1</span><span class="p">,</span>
+                <span class="kc">False</span><span class="p">,</span>
+                <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;microampere&quot;</span><span class="p">,</span>
+            <span class="p">),</span>
             <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;Gun&quot;</span><span class="p">,</span> <span class="s2">&quot;Gun Type&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
             <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;GunShiftX&quot;</span><span class="p">,</span> <span class="s2">&quot;Gun Shift X&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
             <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;GunShiftY&quot;</span><span class="p">,</span> <span class="s2">&quot;Gun Shift Y&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
             <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;GunTiltX&quot;</span><span class="p">,</span> <span class="s2">&quot;Gun Tilt X&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
             <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;GunTiltY&quot;</span><span class="p">,</span> <span class="s2">&quot;Gun Tilt Y&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
-            <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;HV&quot;</span><span class="p">,</span> <span class="s2">&quot;HV Voltage (kV)&quot;</span><span class="p">,</span> <span class="mf">1e-3</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+            <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;HV&quot;</span><span class="p">,</span> <span class="s2">&quot;HV Voltage&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;kilovolt&quot;</span><span class="p">),</span>
             <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;IMLCenteringX&quot;</span><span class="p">,</span> <span class="s2">&quot;IML Centering X&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
             <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;IMLCenteringY&quot;</span><span class="p">,</span> <span class="s2">&quot;IML Centering Y&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
-            <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;ImageShiftX&quot;</span><span class="p">,</span> <span class="s2">&quot;Image Shift X (m)&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
-            <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;ImageShiftY&quot;</span><span class="p">,</span> <span class="s2">&quot;Image Shift Y (m)&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+            <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;ImageShiftX&quot;</span><span class="p">,</span> <span class="s2">&quot;Image Shift X&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;meter&quot;</span><span class="p">),</span>
+            <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;ImageShiftY&quot;</span><span class="p">,</span> <span class="s2">&quot;Image Shift Y&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;meter&quot;</span><span class="p">),</span>
             <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;InjectedGas&quot;</span><span class="p">,</span> <span class="s2">&quot;Injected Gas&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
             <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;LUTGamma&quot;</span><span class="p">,</span> <span class="s2">&quot;LUT Gamma&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
             <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;LUTMaximum&quot;</span><span class="p">,</span> <span class="s2">&quot;LUT Maximum&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
             <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;LUTMinimum&quot;</span><span class="p">,</span> <span class="s2">&quot;LUT Minimum&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
-            <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;MTDGrid&quot;</span><span class="p">,</span> <span class="s2">&quot;MTD Grid (kV)&quot;</span><span class="p">,</span> <span class="mf">1e-3</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
-            <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;MTDScintillator&quot;</span><span class="p">,</span> <span class="s2">&quot;MTD Scintillator (kV)&quot;</span><span class="p">,</span> <span class="mf">1e-3</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+            <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;MTDGrid&quot;</span><span class="p">,</span> <span class="s2">&quot;MTD Grid&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;kilovolt&quot;</span><span class="p">),</span>
+            <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;MTDScintillator&quot;</span><span class="p">,</span> <span class="s2">&quot;MTD Scintillator&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;kilovolt&quot;</span><span class="p">),</span>
             <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;OBJCenteringX&quot;</span><span class="p">,</span> <span class="s2">&quot;OBJ Centering X&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
             <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;OBJCenteringY&quot;</span><span class="p">,</span> <span class="s2">&quot;OBJ Centering Y&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
             <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;OBJPreCenteringX&quot;</span><span class="p">,</span> <span class="s2">&quot;OBJ Pre-Centering X&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
@@ -1434,51 +1525,62 @@ window.addEventListener("load", load);
             <span class="n">FD</span><span class="p">(</span>
                 <span class="s2">&quot;SEM&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;PredictedBeamCurrent&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;Predicted Beam Current (pA)&quot;</span><span class="p">,</span>
-                <span class="mf">1e12</span><span class="p">,</span>
+                <span class="s2">&quot;Predicted Beam Current&quot;</span><span class="p">,</span>
+                <span class="mi">1</span><span class="p">,</span>
                 <span class="kc">False</span><span class="p">,</span>
+                <span class="s2">&quot;picoampere&quot;</span><span class="p">,</span>
             <span class="p">),</span>
             <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;PrimaryDetectorGain&quot;</span><span class="p">,</span> <span class="s2">&quot;Primary Detector Gain&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
             <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;PrimaryDetectorOffset&quot;</span><span class="p">,</span> <span class="s2">&quot;Primary Detector Offset&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
-            <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;SampleVoltage&quot;</span><span class="p">,</span> <span class="s2">&quot;Sample Voltage (V)&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+            <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;SampleVoltage&quot;</span><span class="p">,</span> <span class="s2">&quot;Sample Voltage&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;volt&quot;</span><span class="p">),</span>
             <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;ScanID&quot;</span><span class="p">,</span> <span class="s2">&quot;Scan ID&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
             <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;ScanMode&quot;</span><span class="p">,</span> <span class="s2">&quot;Scan Mode&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
-            <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;ScanRotation&quot;</span><span class="p">,</span> <span class="s2">&quot;Scan Rotation (degrees)&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+            <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;ScanRotation&quot;</span><span class="p">,</span> <span class="s2">&quot;Scan Rotation&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;degree&quot;</span><span class="p">),</span>
             <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;ScanSpeed&quot;</span><span class="p">,</span> <span class="s2">&quot;Scan Speed&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
             <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;SessionID&quot;</span><span class="p">,</span> <span class="s2">&quot;Session ID&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
-            <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;SpecimenCurrent&quot;</span><span class="p">,</span> <span class="s2">&quot;Specimen Current (pA)&quot;</span><span class="p">,</span> <span class="mf">1e12</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
-            <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;SpotSize&quot;</span><span class="p">,</span> <span class="s2">&quot;Spot Size (nm)&quot;</span><span class="p">,</span> <span class="mf">1e9</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+            <span class="n">FD</span><span class="p">(</span>
+                <span class="s2">&quot;SEM&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;SpecimenCurrent&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Specimen Current&quot;</span><span class="p">,</span>
+                <span class="mi">1</span><span class="p">,</span>
+                <span class="kc">False</span><span class="p">,</span>
+                <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;picoampere&quot;</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;SpotSize&quot;</span><span class="p">,</span> <span class="s2">&quot;Spot Size&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;nanometer&quot;</span><span class="p">),</span>
             <span class="n">FD</span><span class="p">(</span>
                 <span class="s2">&quot;SEM&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;StageRotation&quot;</span><span class="p">,</span>
-                <span class="p">[</span><span class="s2">&quot;Stage Position&quot;</span><span class="p">,</span> <span class="s2">&quot;Rotation (degrees)&quot;</span><span class="p">],</span>
+                <span class="p">[</span><span class="s2">&quot;Stage Position&quot;</span><span class="p">,</span> <span class="s2">&quot;Rotation&quot;</span><span class="p">],</span>
                 <span class="mi">1</span><span class="p">,</span>
                 <span class="kc">False</span><span class="p">,</span>
+                <span class="s2">&quot;degree&quot;</span><span class="p">,</span>
             <span class="p">),</span>
-            <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;StageTilt&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Stage Position&quot;</span><span class="p">,</span> <span class="s2">&quot;Tilt (degrees)&quot;</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
-            <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;StageX&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Stage Position&quot;</span><span class="p">,</span> <span class="s2">&quot;X&quot;</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
-            <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;StageY&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Stage Position&quot;</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
-            <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;StageZ&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Stage Position&quot;</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+            <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;StageTilt&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Stage Position&quot;</span><span class="p">,</span> <span class="s2">&quot;Tilt&quot;</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;degree&quot;</span><span class="p">),</span>
+            <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;StageX&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Stage Position&quot;</span><span class="p">,</span> <span class="s2">&quot;X&quot;</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;meter&quot;</span><span class="p">),</span>
+            <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;StageY&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Stage Position&quot;</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;meter&quot;</span><span class="p">),</span>
+            <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;StageZ&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Stage Position&quot;</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;meter&quot;</span><span class="p">),</span>
             <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;StigmatorX&quot;</span><span class="p">,</span> <span class="s2">&quot;Stigmator X Value&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
             <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;StigmatorY&quot;</span><span class="p">,</span> <span class="s2">&quot;Stigmator Y Value&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
             <span class="n">FD</span><span class="p">(</span>
                 <span class="s2">&quot;SEM&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;SymmetrizationVoltage&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;Symmetrization Voltage (kV)&quot;</span><span class="p">,</span>
-                <span class="mf">1e-3</span><span class="p">,</span>
+                <span class="s2">&quot;Symmetrization Voltage&quot;</span><span class="p">,</span>
+                <span class="mi">1</span><span class="p">,</span>
                 <span class="kc">False</span><span class="p">,</span>
+                <span class="s2">&quot;kilovolt&quot;</span><span class="p">,</span>
             <span class="p">),</span>
             <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;SyncMains&quot;</span><span class="p">,</span> <span class="s2">&quot;Sync to Mains&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
             <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;TiltCorrection&quot;</span><span class="p">,</span> <span class="s2">&quot;Tilt Correction&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
-            <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;TubeVoltage&quot;</span><span class="p">,</span> <span class="s2">&quot;Tube Voltage (kV)&quot;</span><span class="p">,</span> <span class="mf">1e-3</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+            <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;TubeVoltage&quot;</span><span class="p">,</span> <span class="s2">&quot;Tube Voltage&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;kilovolt&quot;</span><span class="p">),</span>
             <span class="n">FD</span><span class="p">(</span>
                 <span class="s2">&quot;SEM&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;VirtualObserverDistance&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;Virtual Observer Distance (mm)&quot;</span><span class="p">,</span>
-                <span class="mf">1e3</span><span class="p">,</span>
+                <span class="s2">&quot;Virtual Observer Distance&quot;</span><span class="p">,</span>
+                <span class="mi">1</span><span class="p">,</span>
                 <span class="kc">False</span><span class="p">,</span>
+                <span class="s2">&quot;millimeter&quot;</span><span class="p">,</span>
             <span class="p">),</span>
-            <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;WD&quot;</span><span class="p">,</span> <span class="s2">&quot;Working Distance (mm)&quot;</span><span class="p">,</span> <span class="mf">1e3</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+            <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;SEM&quot;</span><span class="p">,</span> <span class="s2">&quot;WD&quot;</span><span class="p">,</span> <span class="s2">&quot;Working Distance&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;millimeter&quot;</span><span class="p">),</span>
         <span class="p">]</span>
 
         <span class="c1"># Extract standard fields</span>
@@ -1507,17 +1609,37 @@ window.addEventListener("load", load);
                         <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="n">field</span><span class="o">.</span><span class="n">output_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
-                        <span class="c1"># Use Decimal for precise arithmetic to avoid floating-point</span>
-                        <span class="c1"># rounding errors during unit conversions</span>
-                        <span class="n">float_val</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">Decimal</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">*</span> <span class="n">Decimal</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">factor</span><span class="p">)))</span>
+                        <span class="c1"># Convert to float first</span>
+                        <span class="n">float_val</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
                         <span class="c1"># Skip if suppress_zero is True and value is zero</span>
-                        <span class="k">if</span> <span class="ow">not</span> <span class="n">field</span><span class="o">.</span><span class="n">suppress_zero</span> <span class="ow">or</span> <span class="n">float_val</span> <span class="o">!=</span> <span class="mf">0.0</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">suppress_zero</span> <span class="ow">and</span> <span class="n">float_val</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
+                            <span class="k">continue</span>
+
+                        <span class="c1"># Create Pint Quantity if unit is specified</span>
+                        <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">unit</span><span class="p">:</span>
+                            <span class="c1"># Source data is in base SI units (meters, volts, amperes,</span>
+                            <span class="c1"># seconds). Create Quantity from source value, then convert</span>
+                            <span class="c1"># to target unit. Determine source unit based on target unit</span>
+                            <span class="c1"># type</span>
+                            <span class="n">source_unit</span> <span class="o">=</span> <span class="n">_get_source_unit</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span>
+                            <span class="n">quantity</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">float_val</span><span class="p">,</span> <span class="n">source_unit</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span>
+                                <span class="n">field</span><span class="o">.</span><span class="n">unit</span>
+                            <span class="p">)</span>
+
                             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">output_key</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
                                 <span class="n">set_nested_dict_value</span><span class="p">(</span>
-                                    <span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">field</span><span class="o">.</span><span class="n">output_key</span><span class="p">],</span> <span class="n">float_val</span>
+                                    <span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">field</span><span class="o">.</span><span class="n">output_key</span><span class="p">],</span> <span class="n">quantity</span>
                                 <span class="p">)</span>
                             <span class="k">else</span><span class="p">:</span>
-                                <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="n">field</span><span class="o">.</span><span class="n">output_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">float_val</span>
+                                <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="n">field</span><span class="o">.</span><span class="n">output_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">quantity</span>
+                        <span class="c1"># No unit specified, just store as float</span>
+                        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">output_key</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                            <span class="n">set_nested_dict_value</span><span class="p">(</span>
+                                <span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">field</span><span class="o">.</span><span class="n">output_key</span><span class="p">],</span> <span class="n">float_val</span>
+                            <span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="n">field</span><span class="o">.</span><span class="n">output_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">float_val</span>
 
         <span class="c1"># Handle user information (prefer FullUserName over UserName)</span>
         <span class="n">full_username</span> <span class="o">=</span> <span class="n">main_section</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;FullUserName&quot;</span><span class="p">)</span>

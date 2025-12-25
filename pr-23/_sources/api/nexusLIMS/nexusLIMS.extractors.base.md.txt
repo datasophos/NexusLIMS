@@ -135,6 +135,17 @@ Bases: {py:obj}`typing.NamedTuple`
 
 ````
 
+````{py:attribute} unit
+:canonical: nexusLIMS.extractors.base.FieldDefinition.unit
+:type: str | None
+:value: >
+   None
+
+```{autodoc2-docstring} nexusLIMS.extractors.base.FieldDefinition.unit
+```
+
+````
+
 `````
 
 `````{py:class} ExtractionContext
@@ -346,13 +357,13 @@ Bases: {py:obj}`typing.Protocol`
 
 ````
 
-````{py:attribute} static_metadata
-:canonical: nexusLIMS.extractors.base.InstrumentProfile.static_metadata
+````{py:attribute} extension_fields
+:canonical: nexusLIMS.extractors.base.InstrumentProfile.extension_fields
 :type: dict[str, typing.Any]
 :value: >
    'field(...)'
 
-```{autodoc2-docstring} nexusLIMS.extractors.base.InstrumentProfile.static_metadata
+```{autodoc2-docstring} nexusLIMS.extractors.base.InstrumentProfile.extension_fields
 ```
 
 ````

@@ -424,7 +424,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 24, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 25, 2025"/>
   </head>
   
   
@@ -836,12 +836,14 @@ window.addEventListener("load", load);
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">lxml</span><span class="w"> </span><span class="kn">import</span> <span class="n">etree</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pint</span><span class="w"> </span><span class="kn">import</span> <span class="n">Quantity</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.signal</span><span class="w"> </span><span class="kn">import</span> <span class="n">argrelextrema</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">GridSearchCV</span><span class="p">,</span> <span class="n">LeaveOneOut</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.neighbors</span><span class="w"> </span><span class="kn">import</span> <span class="n">KernelDensity</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">settings</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.extractors</span><span class="w"> </span><span class="kn">import</span> <span class="n">flatten_dict</span><span class="p">,</span> <span class="n">parse_metadata</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.extractors.xml_serialization</span><span class="w"> </span><span class="kn">import</span> <span class="n">serialize_quantity_to_xml</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">current_system_tz</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
@@ -1028,12 +1030,20 @@ window.addEventListener("load", load);
 
     <span class="k">for</span> <span class="n">meta_k</span><span class="p">,</span> <span class="n">meta_v</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">unique_meta</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()):</span>
         <span class="k">if</span> <span class="n">meta_k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;warnings&quot;</span><span class="p">,</span> <span class="s2">&quot;DatasetType&quot;</span><span class="p">]:</span>
-            <span class="n">meta_v</span> <span class="o">=</span> <span class="n">_escape</span><span class="p">(</span><span class="n">meta_v</span><span class="p">)</span>  <span class="c1"># noqa: PLW2901</span>
             <span class="n">meta_el</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">dset_el</span><span class="p">,</span> <span class="s2">&quot;meta&quot;</span><span class="p">)</span>
             <span class="n">meta_el</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">meta_k</span><span class="p">))</span>
             <span class="k">if</span> <span class="n">meta_k</span> <span class="ow">in</span> <span class="n">warning</span><span class="p">:</span>
                 <span class="n">meta_el</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;warning&quot;</span><span class="p">,</span> <span class="s2">&quot;true&quot;</span><span class="p">)</span>
-            <span class="n">meta_el</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">meta_v</span><span class="p">)</span>
+
+            <span class="c1"># Handle Pint Quantity objects with unit attribute</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">meta_v</span><span class="p">,</span> <span class="n">Quantity</span><span class="p">):</span>
+                <span class="n">magnitude</span><span class="p">,</span> <span class="n">unit</span> <span class="o">=</span> <span class="n">serialize_quantity_to_xml</span><span class="p">(</span><span class="n">meta_v</span><span class="p">)</span>
+                <span class="n">meta_el</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">magnitude</span><span class="p">)</span>
+                <span class="n">meta_el</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;unit&quot;</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Handle regular values (strings, numbers, etc.)</span>
+                <span class="n">meta_v</span> <span class="o">=</span> <span class="n">_escape</span><span class="p">(</span><span class="n">meta_v</span><span class="p">)</span>  <span class="c1"># noqa: PLW2901</span>
+                <span class="n">meta_el</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">meta_v</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">aq_ac_xml_el</span>
 
@@ -1270,18 +1280,24 @@ window.addEventListener("load", load);
                             <span class="n">vts</span><span class="p">,</span>
                         <span class="p">)</span>  <span class="c1"># pragma: no cover</span>
                         <span class="n">values_to_search</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">vts</span><span class="p">)</span>  <span class="c1"># pragma: no cover</span>
-                    <span class="k">if</span> <span class="n">vts</span> <span class="ow">in</span> <span class="n">meta</span> <span class="ow">and</span> <span class="n">setup_params</span><span class="p">[</span><span class="n">vts</span><span class="p">]</span> <span class="o">!=</span> <span class="n">meta</span><span class="p">[</span><span class="n">vts</span><span class="p">]:</span>
-                        <span class="c1"># value does not match, so this must be a</span>
-                        <span class="c1"># individual dataset metadata, so remove it from</span>
-                        <span class="c1"># setup_params, and remove it from values_to_search</span>
+                    <span class="c1"># Check if the parameter is missing in this file OR</span>
+                    <span class="c1"># has a different value</span>
+                    <span class="k">if</span> <span class="n">vts</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">meta</span> <span class="ow">or</span> <span class="n">setup_params</span><span class="p">[</span><span class="n">vts</span><span class="p">]</span> <span class="o">!=</span> <span class="n">meta</span><span class="p">[</span><span class="n">vts</span><span class="p">]:</span>
+                        <span class="c1"># Parameter is either missing or has different value,</span>
+                        <span class="c1"># so this must be individual dataset metadata.</span>
+                        <span class="c1"># Remove it from setup_params and values_to_search</span>
                         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
                             <span class="s2">&quot;iter: </span><span class="si">%i</span><span class="s2">; vts=</span><span class="si">%s</span><span class="s2"> - &quot;</span>
-                            <span class="s2">&quot;meta[vts]=</span><span class="si">%s</span><span class="s2"> != setup_params[vts]=</span><span class="si">%s</span><span class="s2">; &quot;</span>
+                            <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">; &quot;</span>
                             <span class="s2">&quot;removing </span><span class="si">%s</span><span class="s2"> from setup_params and values to search&quot;</span><span class="p">,</span>
                             <span class="n">i</span><span class="p">,</span>
                             <span class="n">vts</span><span class="p">,</span>
-                            <span class="n">meta</span><span class="p">[</span><span class="n">vts</span><span class="p">],</span>
-                            <span class="n">setup_params</span><span class="p">[</span><span class="n">vts</span><span class="p">],</span>
+                            <span class="s2">&quot;not in meta&quot;</span>
+                            <span class="k">if</span> <span class="n">vts</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">meta</span>
+                            <span class="k">else</span> <span class="p">(</span>
+                                <span class="sa">f</span><span class="s2">&quot;meta[vts]=</span><span class="si">{</span><span class="n">meta</span><span class="p">[</span><span class="n">vts</span><span class="p">]</span><span class="si">}</span><span class="s2"> != &quot;</span>
+                                <span class="sa">f</span><span class="s2">&quot;setup_params[vts]=</span><span class="si">{</span><span class="n">setup_params</span><span class="p">[</span><span class="n">vts</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+                            <span class="p">),</span>
                             <span class="n">vts</span><span class="p">,</span>
                         <span class="p">)</span>
                         <span class="k">del</span> <span class="n">setup_params</span><span class="p">[</span><span class="n">vts</span><span class="p">]</span>
@@ -1365,7 +1381,6 @@ window.addEventListener("load", load);
         <span class="p">):</span>
             <span class="c1"># metadata values to skip in XML output</span>
             <span class="k">if</span> <span class="n">param_k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;warnings&quot;</span><span class="p">,</span> <span class="s2">&quot;DatasetType&quot;</span><span class="p">]:</span>
-                <span class="n">param_v</span> <span class="o">=</span> <span class="n">_escape</span><span class="p">(</span><span class="n">param_v</span><span class="p">)</span>  <span class="c1"># noqa: PLW2901</span>
                 <span class="c1"># for setup parameters, a key in the first dataset&#39;s warning</span>
                 <span class="c1"># list is the same as in all of them</span>
                 <span class="n">pk_warning</span> <span class="o">=</span> <span class="n">param_k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">warnings</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -1373,7 +1388,15 @@ window.addEventListener("load", load);
                 <span class="n">param_el</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">param_k</span><span class="p">))</span>
                 <span class="k">if</span> <span class="n">pk_warning</span><span class="p">:</span>
                     <span class="n">param_el</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;warning&quot;</span><span class="p">,</span> <span class="s2">&quot;true&quot;</span><span class="p">)</span>
-                <span class="n">param_el</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">param_v</span><span class="p">)</span>
+
+                <span class="c1"># Handle Pint Quantity objects with unit attribute</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">param_v</span><span class="p">,</span> <span class="n">Quantity</span><span class="p">):</span>
+                    <span class="n">magnitude</span><span class="p">,</span> <span class="n">unit</span> <span class="o">=</span> <span class="n">serialize_quantity_to_xml</span><span class="p">(</span><span class="n">param_v</span><span class="p">)</span>
+                    <span class="n">param_el</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">magnitude</span><span class="p">)</span>
+                    <span class="n">param_el</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;unit&quot;</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">param_v</span> <span class="o">=</span> <span class="n">_escape</span><span class="p">(</span><span class="n">param_v</span><span class="p">)</span>  <span class="c1"># noqa: PLW2901</span>
+                    <span class="n">param_el</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">param_v</span><span class="p">)</span>
 
         <span class="c1"># Count how many times each file appears (for multi-signal files)</span>
         <span class="n">file_signal_counts</span> <span class="o">=</span> <span class="p">{}</span>

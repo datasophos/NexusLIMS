@@ -1,0 +1,48 @@
+# {py:mod}`nexusLIMS.schemas.pint_types`
+
+```{py:module} nexusLIMS.schemas.pint_types
+```
+
+```{autodoc2-docstring} nexusLIMS.schemas.pint_types
+:allowtitles:
+```
+
+## Module Contents
+
+### Data
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`logger <nexusLIMS.schemas.pint_types.logger>`
+  - ```{autodoc2-docstring} nexusLIMS.schemas.pint_types.logger
+    :summary:
+    ```
+* - {py:obj}`PintQuantity <nexusLIMS.schemas.pint_types.PintQuantity>`
+  - ```{autodoc2-docstring} nexusLIMS.schemas.pint_types.PintQuantity
+    :summary:
+    ```
+````
+
+### API
+
+````{py:data} logger
+:canonical: nexusLIMS.schemas.pint_types.logger
+:value: >
+   'getLogger(...)'
+
+```{autodoc2-docstring} nexusLIMS.schemas.pint_types.logger
+```
+
+````
+
+````{py:data} PintQuantity
+:canonical: nexusLIMS.schemas.pint_types.PintQuantity
+:value: >
+   None
+
+```{autodoc2-docstring} nexusLIMS.schemas.pint_types.PintQuantity
+```
+
+````

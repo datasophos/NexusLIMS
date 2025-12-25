@@ -25,6 +25,7 @@ nexusLIMS.extractors.plugins
 nexusLIMS.extractors.profiles
 nexusLIMS.extractors.utils
 nexusLIMS.extractors.schemas
+nexusLIMS.extractors.xml_serialization
 nexusLIMS.extractors.registry
 nexusLIMS.extractors.base
 ```

@@ -47,12 +47,16 @@
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.get_emi_from_ser
     :summary:
     ```
+* - {py:obj}`fei_unit_to_pint <nexusLIMS.extractors.plugins.fei_emi.fei_unit_to_pint>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.fei_unit_to_pint
+    :summary:
+    ```
 * - {py:obj}`split_fei_metadata_units <nexusLIMS.extractors.plugins.fei_emi.split_fei_metadata_units>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.split_fei_metadata_units
     :summary:
     ```
-* - {py:obj}`map_keys <nexusLIMS.extractors.plugins.fei_emi.map_keys>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.map_keys
+* - {py:obj}`map_keys_with_units <nexusLIMS.extractors.plugins.fei_emi.map_keys_with_units>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.map_keys_with_units
     :summary:
     ```
 * - {py:obj}`parse_data_type <nexusLIMS.extractors.plugins.fei_emi.parse_data_type>`
@@ -179,6 +183,13 @@
 ```
 ````
 
+````{py:function} fei_unit_to_pint(fei_unit)
+:canonical: nexusLIMS.extractors.plugins.fei_emi.fei_unit_to_pint
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.fei_unit_to_pint
+```
+````
+
 ````{py:function} split_fei_metadata_units(metadata_term)
 :canonical: nexusLIMS.extractors.plugins.fei_emi.split_fei_metadata_units
 
@@ -186,10 +197,10 @@
 ```
 ````
 
-````{py:function} map_keys(term_mapping, base, metadata)
-:canonical: nexusLIMS.extractors.plugins.fei_emi.map_keys
+````{py:function} map_keys_with_units(term_mapping, base, metadata)
+:canonical: nexusLIMS.extractors.plugins.fei_emi.map_keys_with_units
 
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.map_keys
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.map_keys_with_units
 ```
 ````
 

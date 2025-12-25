@@ -1,0 +1,97 @@
+# {py:mod}`nexusLIMS.extractors.xml_serialization`
+
+```{py:module} nexusLIMS.extractors.xml_serialization
+```
+
+```{autodoc2-docstring} nexusLIMS.extractors.xml_serialization
+:allowtitles:
+```
+
+## Module Contents
+
+### Functions
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`serialize_quantity_to_xml <nexusLIMS.extractors.xml_serialization.serialize_quantity_to_xml>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.xml_serialization.serialize_quantity_to_xml
+    :summary:
+    ```
+* - {py:obj}`get_xml_field_name <nexusLIMS.extractors.xml_serialization.get_xml_field_name>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.xml_serialization.get_xml_field_name
+    :summary:
+    ```
+* - {py:obj}`prepare_metadata_for_xml <nexusLIMS.extractors.xml_serialization.prepare_metadata_for_xml>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.xml_serialization.prepare_metadata_for_xml
+    :summary:
+    ```
+* - {py:obj}`get_qudt_uri <nexusLIMS.extractors.xml_serialization.get_qudt_uri>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.xml_serialization.get_qudt_uri
+    :summary:
+    ```
+* - {py:obj}`get_emg_id <nexusLIMS.extractors.xml_serialization.get_emg_id>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.xml_serialization.get_emg_id
+    :summary:
+    ```
+````
+
+### Data
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`EM_GLOSSARY_TO_XML_DISPLAY_NAMES <nexusLIMS.extractors.xml_serialization.EM_GLOSSARY_TO_XML_DISPLAY_NAMES>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.xml_serialization.EM_GLOSSARY_TO_XML_DISPLAY_NAMES
+    :summary:
+    ```
+````
+
+### API
+
+````{py:data} EM_GLOSSARY_TO_XML_DISPLAY_NAMES
+:canonical: nexusLIMS.extractors.xml_serialization.EM_GLOSSARY_TO_XML_DISPLAY_NAMES
+:value: >
+   None
+
+```{autodoc2-docstring} nexusLIMS.extractors.xml_serialization.EM_GLOSSARY_TO_XML_DISPLAY_NAMES
+```
+
+````
+
+````{py:function} serialize_quantity_to_xml(qty: pint.Quantity) -> tuple[float, str]
+:canonical: nexusLIMS.extractors.xml_serialization.serialize_quantity_to_xml
+
+```{autodoc2-docstring} nexusLIMS.extractors.xml_serialization.serialize_quantity_to_xml
+```
+````
+
+````{py:function} get_xml_field_name(field_name: str) -> str
+:canonical: nexusLIMS.extractors.xml_serialization.get_xml_field_name
+
+```{autodoc2-docstring} nexusLIMS.extractors.xml_serialization.get_xml_field_name
+```
+````
+
+````{py:function} prepare_metadata_for_xml(metadata: dict[str, typing.Any]) -> dict[str, str | float]
+:canonical: nexusLIMS.extractors.xml_serialization.prepare_metadata_for_xml
+
+```{autodoc2-docstring} nexusLIMS.extractors.xml_serialization.prepare_metadata_for_xml
+```
+````
+
+````{py:function} get_qudt_uri(field_name: str, unit: str) -> str | None
+:canonical: nexusLIMS.extractors.xml_serialization.get_qudt_uri
+
+```{autodoc2-docstring} nexusLIMS.extractors.xml_serialization.get_qudt_uri
+```
+````
+
+````{py:function} get_emg_id(field_name: str) -> str | None
+:canonical: nexusLIMS.extractors.xml_serialization.get_emg_id
+
+```{autodoc2-docstring} nexusLIMS.extractors.xml_serialization.get_emg_id
+```
+````

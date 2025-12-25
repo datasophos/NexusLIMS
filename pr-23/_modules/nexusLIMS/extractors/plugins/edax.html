@@ -424,7 +424,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 24, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 25, 2025"/>
   </head>
   
   
@@ -821,6 +821,7 @@ window.addEventListener("load", load);
   <h1>Source code for nexusLIMS.extractors.plugins.edax</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;EDAX EDS spectrum (.spc/.msa) extractor plugin.&quot;&quot;&quot;</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">contextlib</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">ClassVar</span>
 
@@ -829,6 +830,7 @@ window.addEventListener("load", load);
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.extractors.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExtractionContext</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.extractors.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">_set_instr_name_and_time</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.instruments</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_instr_from_filepath</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas.units</span><span class="w"> </span><span class="kn">import</span> <span class="n">ureg</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">try_getting_dict_value</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
@@ -906,22 +908,28 @@ window.addEventListener("load", load);
         <span class="c1"># so this will just bump that all up to the root level for ease of use.</span>
         <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;original_metadata&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">original_metadata</span><span class="p">[</span><span class="s2">&quot;spc_header&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">as_dictionary</span><span class="p">()</span>
 
+        <span class="c1"># Map input field names to (output_name, unit) tuples</span>
+        <span class="c1"># If unit is None, value is stored as-is; otherwise, create Pint Quantity</span>
         <span class="n">term_mapping</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;azimuth&quot;</span><span class="p">:</span> <span class="s2">&quot;Azimuthal Angle (deg)&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;liveTime&quot;</span><span class="p">:</span> <span class="s2">&quot;Live Time (s)&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;detReso&quot;</span><span class="p">:</span> <span class="s2">&quot;Detector Energy Resolution (eV)&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;elevation&quot;</span><span class="p">:</span> <span class="s2">&quot;Elevation Angle (deg)&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;evPerChan&quot;</span><span class="p">:</span> <span class="s2">&quot;Channel Size (eV)&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;kV&quot;</span><span class="p">:</span> <span class="s2">&quot;Accelerating Voltage (kV)&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;numPts&quot;</span><span class="p">:</span> <span class="s2">&quot;Number of Spectrum Channels&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;startEnergy&quot;</span><span class="p">:</span> <span class="s2">&quot;Starting Energy (keV)&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;endEnergy&quot;</span><span class="p">:</span> <span class="s2">&quot;Ending Energy (keV)&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;tilt&quot;</span><span class="p">:</span> <span class="s2">&quot;Stage Tilt (deg)&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;azimuth&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Azimuthal Angle&quot;</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;liveTime&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Live Time&quot;</span><span class="p">,</span> <span class="s2">&quot;second&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;detReso&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Detector Energy Resolution&quot;</span><span class="p">,</span> <span class="s2">&quot;electron_volt&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;elevation&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Elevation Angle&quot;</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;evPerChan&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Channel Size&quot;</span><span class="p">,</span> <span class="s2">&quot;electron_volt&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;kV&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Accelerating Voltage&quot;</span><span class="p">,</span> <span class="s2">&quot;kilovolt&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;numPts&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Number of Spectrum Channels&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+            <span class="s2">&quot;startEnergy&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Starting Energy&quot;</span><span class="p">,</span> <span class="s2">&quot;kiloelectron_volt&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;endEnergy&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Ending Energy&quot;</span><span class="p">,</span> <span class="s2">&quot;kiloelectron_volt&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;tilt&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Stage Tilt&quot;</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">),</span>
         <span class="p">}</span>
 
-        <span class="k">for</span> <span class="n">in_term</span><span class="p">,</span> <span class="n">out_term</span> <span class="ow">in</span> <span class="n">term_mapping</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;original_metadata&quot;</span><span class="p">],</span> <span class="n">in_term</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="n">out_term</span><span class="p">]</span> <span class="o">=</span> <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;original_metadata&quot;</span><span class="p">][</span><span class="n">in_term</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">in_term</span><span class="p">,</span> <span class="p">(</span><span class="n">out_name</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span> <span class="ow">in</span> <span class="n">term_mapping</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;original_metadata&quot;</span><span class="p">],</span> <span class="n">in_term</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">unit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+                        <span class="n">val</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
+                <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="n">out_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
 
         <span class="c1"># add any elements present:</span>
         <span class="k">if</span> <span class="s2">&quot;Sample&quot;</span> <span class="ow">in</span> <span class="n">s</span><span class="o">.</span><span class="n">metadata</span> <span class="ow">and</span> <span class="s2">&quot;elements&quot;</span> <span class="ow">in</span> <span class="n">s</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">Sample</span><span class="p">:</span>
@@ -1004,46 +1012,52 @@ window.addEventListener("load", load);
 
         <span class="n">_set_instr_name_and_time</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
 
+        <span class="c1"># Map input field names to (output_name, unit) tuples</span>
+        <span class="c1"># If unit is None, value is stored as-is; otherwise, create Pint Quantity</span>
         <span class="n">term_mapping</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;AZIMANGLE-dg&quot;</span><span class="p">:</span> <span class="s2">&quot;Azimuthal Angle (deg)&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;AmpTime (usec)&quot;</span><span class="p">:</span> <span class="s2">&quot;Amplifier Time (μs)&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;Analyzer Type&quot;</span><span class="p">:</span> <span class="s2">&quot;Analyzer Type&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;BEAMKV   -kV&quot;</span><span class="p">:</span> <span class="s2">&quot;Beam Energy (keV)&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;CHOFFSET&quot;</span><span class="p">:</span> <span class="s2">&quot;Channel Offset&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;COMMENT&quot;</span><span class="p">:</span> <span class="s2">&quot;EDAX Comment&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;DATATYPE&quot;</span><span class="p">:</span> <span class="s2">&quot;Data Format&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;DATE&quot;</span><span class="p">:</span> <span class="s2">&quot;EDAX Date&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;ELEVANGLE-dg&quot;</span><span class="p">:</span> <span class="s2">&quot;Elevation Angle (deg)&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;Elements&quot;</span><span class="p">:</span> <span class="s2">&quot;User-Selected Elements&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;FILENAME&quot;</span><span class="p">:</span> <span class="s2">&quot;Originating File of MSA Export&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;FORMAT&quot;</span><span class="p">:</span> <span class="s2">&quot;File Format&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;FPGA Version&quot;</span><span class="p">:</span> <span class="s2">&quot;FPGA Version&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;LIVETIME  -s&quot;</span><span class="p">:</span> <span class="s2">&quot;Live Time (s)&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;NCOLUMNS&quot;</span><span class="p">:</span> <span class="s2">&quot;Number of Data Columns&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;NPOINTS&quot;</span><span class="p">:</span> <span class="s2">&quot;Number of Data Points&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;OFFSET&quot;</span><span class="p">:</span> <span class="s2">&quot;Offset&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;OWNER&quot;</span><span class="p">:</span> <span class="s2">&quot;EDAX Owner&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;REALTIME  -s&quot;</span><span class="p">:</span> <span class="s2">&quot;Real Time (s)&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;RESO (MnKa)&quot;</span><span class="p">:</span> <span class="s2">&quot;Energy Resolution (eV)&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;SIGNALTYPE&quot;</span><span class="p">:</span> <span class="s2">&quot;Signal Type&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;TACTYLR  -cm&quot;</span><span class="p">:</span> <span class="s2">&quot;Active Layer Thickness (cm)&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;TBEWIND  -cm&quot;</span><span class="p">:</span> <span class="s2">&quot;Be Window Thickness (cm)&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;TDEADLYR -cm&quot;</span><span class="p">:</span> <span class="s2">&quot;Dead Layer Thickness (cm)&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;TIME&quot;</span><span class="p">:</span> <span class="s2">&quot;EDAX Time&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;TITLE&quot;</span><span class="p">:</span> <span class="s2">&quot;EDAX Title&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;TakeOff Angle&quot;</span><span class="p">:</span> <span class="s2">&quot;TakeOff Angle (deg)&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;Tilt Angle&quot;</span><span class="p">:</span> <span class="s2">&quot;Stage Tilt (deg)&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;VERSION&quot;</span><span class="p">:</span> <span class="s2">&quot;MSA Format Version&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;XLABEL&quot;</span><span class="p">:</span> <span class="s2">&quot;X Column Label&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;XPERCHAN&quot;</span><span class="p">:</span> <span class="s2">&quot;X Units Per Channel&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;XUNITS&quot;</span><span class="p">:</span> <span class="s2">&quot;X Column Units&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;YLABEL&quot;</span><span class="p">:</span> <span class="s2">&quot;Y Column Label&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;YUNITS&quot;</span><span class="p">:</span> <span class="s2">&quot;Y Column Units&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;AZIMANGLE-dg&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Azimuthal Angle&quot;</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;AmpTime (usec)&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Amplifier Time&quot;</span><span class="p">,</span> <span class="s2">&quot;microsecond&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;Analyzer Type&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Analyzer Type&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+            <span class="s2">&quot;BEAMKV   -kV&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Beam Energy&quot;</span><span class="p">,</span> <span class="s2">&quot;kiloelectron_volt&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;CHOFFSET&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Channel Offset&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+            <span class="s2">&quot;COMMENT&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;EDAX Comment&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+            <span class="s2">&quot;DATATYPE&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Data Format&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+            <span class="s2">&quot;DATE&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;EDAX Date&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+            <span class="s2">&quot;ELEVANGLE-dg&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Elevation Angle&quot;</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;Elements&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;User-Selected Elements&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+            <span class="s2">&quot;FILENAME&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Originating File of MSA Export&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+            <span class="s2">&quot;FORMAT&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;File Format&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+            <span class="s2">&quot;FPGA Version&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;FPGA Version&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+            <span class="s2">&quot;LIVETIME  -s&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Live Time&quot;</span><span class="p">,</span> <span class="s2">&quot;second&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;NCOLUMNS&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Number of Data Columns&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+            <span class="s2">&quot;NPOINTS&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Number of Data Points&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+            <span class="s2">&quot;OFFSET&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Offset&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+            <span class="s2">&quot;OWNER&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;EDAX Owner&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+            <span class="s2">&quot;REALTIME  -s&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Real Time&quot;</span><span class="p">,</span> <span class="s2">&quot;second&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;RESO (MnKa)&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Energy Resolution&quot;</span><span class="p">,</span> <span class="s2">&quot;electron_volt&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;SIGNALTYPE&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Signal Type&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+            <span class="s2">&quot;TACTYLR  -cm&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Active Layer Thickness&quot;</span><span class="p">,</span> <span class="s2">&quot;centimeter&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;TBEWIND  -cm&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Be Window Thickness&quot;</span><span class="p">,</span> <span class="s2">&quot;centimeter&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;TDEADLYR -cm&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Dead Layer Thickness&quot;</span><span class="p">,</span> <span class="s2">&quot;centimeter&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;TIME&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;EDAX Time&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+            <span class="s2">&quot;TITLE&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;EDAX Title&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+            <span class="s2">&quot;TakeOff Angle&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;TakeOff Angle&quot;</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;Tilt Angle&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Stage Tilt&quot;</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;VERSION&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;MSA Format Version&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+            <span class="s2">&quot;XLABEL&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;X Column Label&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+            <span class="s2">&quot;XPERCHAN&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;X Units Per Channel&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+            <span class="s2">&quot;XUNITS&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;X Column Units&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+            <span class="s2">&quot;YLABEL&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Y Column Label&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+            <span class="s2">&quot;YUNITS&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Y Column Units&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
         <span class="p">}</span>
 
-        <span class="k">for</span> <span class="n">in_term</span><span class="p">,</span> <span class="n">out_term</span> <span class="ow">in</span> <span class="n">term_mapping</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;original_metadata&quot;</span><span class="p">],</span> <span class="n">in_term</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="n">out_term</span><span class="p">]</span> <span class="o">=</span> <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;original_metadata&quot;</span><span class="p">][</span><span class="n">in_term</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">in_term</span><span class="p">,</span> <span class="p">(</span><span class="n">out_name</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span> <span class="ow">in</span> <span class="n">term_mapping</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;original_metadata&quot;</span><span class="p">],</span> <span class="n">in_term</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">unit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+                        <span class="n">val</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
+                <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="n">out_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
 
         <span class="k">return</span> <span class="p">[</span><span class="n">mdict</span><span class="p">]</span></div>
 </div>

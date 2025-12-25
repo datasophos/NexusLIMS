@@ -1,0 +1,223 @@
+# {py:mod}`nexusLIMS.schemas.em_glossary`
+
+```{py:module} nexusLIMS.schemas.em_glossary
+```
+
+```{autodoc2-docstring} nexusLIMS.schemas.em_glossary
+:allowtitles:
+```
+
+## Module Contents
+
+### Functions
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`get_emg_label <nexusLIMS.schemas.em_glossary.get_emg_label>`
+  - ```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.get_emg_label
+    :summary:
+    ```
+* - {py:obj}`get_emg_definition <nexusLIMS.schemas.em_glossary.get_emg_definition>`
+  - ```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.get_emg_definition
+    :summary:
+    ```
+* - {py:obj}`get_emg_id <nexusLIMS.schemas.em_glossary.get_emg_id>`
+  - ```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.get_emg_id
+    :summary:
+    ```
+* - {py:obj}`get_display_name <nexusLIMS.schemas.em_glossary.get_display_name>`
+  - ```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.get_display_name
+    :summary:
+    ```
+* - {py:obj}`get_description <nexusLIMS.schemas.em_glossary.get_description>`
+  - ```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.get_description
+    :summary:
+    ```
+* - {py:obj}`has_emg_id <nexusLIMS.schemas.em_glossary.has_emg_id>`
+  - ```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.has_emg_id
+    :summary:
+    ```
+* - {py:obj}`get_emg_uri <nexusLIMS.schemas.em_glossary.get_emg_uri>`
+  - ```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.get_emg_uri
+    :summary:
+    ```
+* - {py:obj}`get_all_mapped_fields <nexusLIMS.schemas.em_glossary.get_all_mapped_fields>`
+  - ```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.get_all_mapped_fields
+    :summary:
+    ```
+* - {py:obj}`get_fields_with_emg_ids <nexusLIMS.schemas.em_glossary.get_fields_with_emg_ids>`
+  - ```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.get_fields_with_emg_ids
+    :summary:
+    ```
+* - {py:obj}`get_all_emg_terms <nexusLIMS.schemas.em_glossary.get_all_emg_terms>`
+  - ```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.get_all_emg_terms
+    :summary:
+    ```
+````
+
+### Data
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`logger <nexusLIMS.schemas.em_glossary.logger>`
+  - ```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.logger
+    :summary:
+    ```
+* - {py:obj}`EMG_OWL_PATH <nexusLIMS.schemas.em_glossary.EMG_OWL_PATH>`
+  - ```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.EMG_OWL_PATH
+    :summary:
+    ```
+* - {py:obj}`EMG_VERSION <nexusLIMS.schemas.em_glossary.EMG_VERSION>`
+  - ```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.EMG_VERSION
+    :summary:
+    ```
+* - {py:obj}`EMG <nexusLIMS.schemas.em_glossary.EMG>`
+  - ```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.EMG
+    :summary:
+    ```
+* - {py:obj}`OBO <nexusLIMS.schemas.em_glossary.OBO>`
+  - ```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.OBO
+    :summary:
+    ```
+* - {py:obj}`NEXUSLIMS_TO_EMG_MAPPINGS <nexusLIMS.schemas.em_glossary.NEXUSLIMS_TO_EMG_MAPPINGS>`
+  - ```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.NEXUSLIMS_TO_EMG_MAPPINGS
+    :summary:
+    ```
+````
+
+### API
+
+````{py:data} logger
+:canonical: nexusLIMS.schemas.em_glossary.logger
+:value: >
+   'getLogger(...)'
+
+```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.logger
+```
+
+````
+
+````{py:data} EMG_OWL_PATH
+:canonical: nexusLIMS.schemas.em_glossary.EMG_OWL_PATH
+:value: >
+   None
+
+```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.EMG_OWL_PATH
+```
+
+````
+
+````{py:data} EMG_VERSION
+:canonical: nexusLIMS.schemas.em_glossary.EMG_VERSION
+:value: >
+   'v2.0.0'
+
+```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.EMG_VERSION
+```
+
+````
+
+````{py:data} EMG
+:canonical: nexusLIMS.schemas.em_glossary.EMG
+:value: >
+   'Namespace(...)'
+
+```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.EMG
+```
+
+````
+
+````{py:data} OBO
+:canonical: nexusLIMS.schemas.em_glossary.OBO
+:value: >
+   'Namespace(...)'
+
+```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.OBO
+```
+
+````
+
+````{py:data} NEXUSLIMS_TO_EMG_MAPPINGS
+:canonical: nexusLIMS.schemas.em_glossary.NEXUSLIMS_TO_EMG_MAPPINGS
+:type: typing.Dict[str, tuple[str, str | None, str]]
+:value: >
+   None
+
+```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.NEXUSLIMS_TO_EMG_MAPPINGS
+```
+
+````
+
+````{py:function} get_emg_label(emg_id: str) -> str | None
+:canonical: nexusLIMS.schemas.em_glossary.get_emg_label
+
+```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.get_emg_label
+```
+````
+
+````{py:function} get_emg_definition(emg_id: str) -> str | None
+:canonical: nexusLIMS.schemas.em_glossary.get_emg_definition
+
+```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.get_emg_definition
+```
+````
+
+````{py:function} get_emg_id(field_name: str) -> str | None
+:canonical: nexusLIMS.schemas.em_glossary.get_emg_id
+
+```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.get_emg_id
+```
+````
+
+````{py:function} get_display_name(field_name: str) -> str
+:canonical: nexusLIMS.schemas.em_glossary.get_display_name
+
+```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.get_display_name
+```
+````
+
+````{py:function} get_description(field_name: str) -> str | None
+:canonical: nexusLIMS.schemas.em_glossary.get_description
+
+```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.get_description
+```
+````
+
+````{py:function} has_emg_id(field_name: str) -> bool
+:canonical: nexusLIMS.schemas.em_glossary.has_emg_id
+
+```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.has_emg_id
+```
+````
+
+````{py:function} get_emg_uri(field_name: str) -> str | None
+:canonical: nexusLIMS.schemas.em_glossary.get_emg_uri
+
+```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.get_emg_uri
+```
+````
+
+````{py:function} get_all_mapped_fields() -> list[str]
+:canonical: nexusLIMS.schemas.em_glossary.get_all_mapped_fields
+
+```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.get_all_mapped_fields
+```
+````
+
+````{py:function} get_fields_with_emg_ids() -> list[str]
+:canonical: nexusLIMS.schemas.em_glossary.get_fields_with_emg_ids
+
+```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.get_fields_with_emg_ids
+```
+````
+
+````{py:function} get_all_emg_terms() -> typing.Dict[str, typing.Dict[str, str]]
+:canonical: nexusLIMS.schemas.em_glossary.get_all_emg_terms
+
+```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.get_all_emg_terms
+```
+````

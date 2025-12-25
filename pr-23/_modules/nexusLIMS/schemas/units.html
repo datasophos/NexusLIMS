@@ -1,0 +1,1397 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>nexusLIMS.schemas.units &#8212; NexusLIMS 2.1.2.dev0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=af02a5b6" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../../_static/documentation_options.js?v=bcebe078"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";
+
+const defaultStyle = document.createElement('style');
+defaultStyle.textContent = `pre.mermaid {
+    /* Same as .mermaid-container > pre */
+    display: block;
+    width: 100%;
+}
+
+pre.mermaid > svg {
+    /* Same as .mermaid-container > pre > svg */
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+`;
+document.head.appendChild(defaultStyle);
+
+const fullscreenStyle = document.createElement('style');
+fullscreenStyle.textContent = `.mermaid-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.mermaid-container > pre {
+    display: block;
+    width: 100%;
+}
+
+.mermaid-container > pre > svg {
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+
+.mermaid-fullscreen-btn {
+    width: 28px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    font-size: 14px;
+    line-height: 1;
+    padding: 0;
+    color: #333;
+}
+
+.mermaid-fullscreen-btn:hover {
+    opacity: 100% !important;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-btn.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-btn.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 3px 10px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal {
+    display: none;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 95vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.98);
+    z-index: 9999;
+    padding: 20px;
+    overflow: auto;
+}
+
+.mermaid-fullscreen-modal.dark-theme {
+    background: rgba(0, 0, 0, 0.98);
+}
+
+.mermaid-fullscreen-modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen {
+    position: relative;
+    width: 95vw;
+    height: 90vh;
+    max-width: 95vw;
+    max-height: 90vh;
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    overflow: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen.dark-theme {
+    background: #1a1a1a;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+}
+
+.mermaid-container-fullscreen pre.mermaid {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen .mermaid svg {
+    height: 100% !important;
+    width: 100% !important;
+    cursor: grab;
+}
+
+.mermaid-fullscreen-close {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s;
+    font-size: 24px;
+    line-height: 1;
+    color: #333;
+}
+
+.mermaid-fullscreen-close:hover {
+    background: white;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-close.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-close.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal .mermaid-fullscreen-btn {
+    display: none !important;
+}`;
+document.head.appendChild(fullscreenStyle);
+
+// Detect if page has dark background
+const isDarkTheme = () => {
+    const bgColor = window.getComputedStyle(document.body).backgroundColor;
+    const match = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)/);
+    if (match) {
+        const r = parseInt(match[1]);
+        const g = parseInt(match[2]);
+        const b = parseInt(match[3]);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        return brightness < 128;
+    }
+    return false;
+};
+
+const load = async () => {
+    await mermaid.run();
+
+    const all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+
+    if ("True" === "True") {
+        const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+        if(mermaids_to_add_zoom > 0) {
+            var svgs = d3.selectAll(".mermaid svg");
+            if(all_mermaids.length !== mermaids_processed.length) {
+                setTimeout(load, 200);
+                return;
+            } else if(svgs.size() !== mermaids_to_add_zoom) {
+                setTimeout(load, 200);
+                return;
+            } else {
+                svgs.each(function() {
+                    var svg = d3.select(this);
+                    svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                    var inner = svg.select("g");
+                    var zoom = d3.zoom().on("zoom", function(event) {
+                        inner.attr("transform", event.transform);
+                    });
+                    svg.call(zoom);
+                });
+            }
+        }
+    } else if(all_mermaids.length !== mermaids_processed.length) {
+        // Wait for mermaid to process all diagrams
+        setTimeout(load, 200);
+        return;
+    }
+
+    const darkTheme = isDarkTheme();
+
+    // Stop here if not adding fullscreen capability
+    if ("True" !== "True") return;
+
+    const modal = document.createElement('div');
+    modal.className = 'mermaid-fullscreen-modal' + (darkTheme ? ' dark-theme' : '');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Fullscreen diagram viewer');
+    modal.innerHTML = `
+        <button class="mermaid-fullscreen-close${darkTheme ? ' dark-theme' : ''}" aria-label="Close fullscreen">✕</button>
+        <div class="mermaid-container-fullscreen${darkTheme ? ' dark-theme' : ''}"></div>
+    `;
+    document.body.appendChild(modal);
+
+    const modalContent = modal.querySelector('.mermaid-container-fullscreen');
+    const closeBtn = modal.querySelector('.mermaid-fullscreen-close');
+
+    let previousScrollOffset = [window.scrollX, window.scrollY];
+
+    const closeModal = () => {
+        modal.classList.remove('active');
+        modalContent.innerHTML = '';
+        document.body.style.overflow = ''
+        window.scrollTo({left: previousScrollOffset[0], top: previousScrollOffset[1], behavior: 'instant'});
+    };
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeModal();
+        }
+    });
+
+    const allButtons = [];
+
+    document.querySelectorAll('.mermaid').forEach((mermaidDiv) => {
+        if (mermaidDiv.parentNode.classList.contains('mermaid-container') ||
+            mermaidDiv.closest('.mermaid-fullscreen-modal')) {
+            return;
+        }
+
+        const container = document.createElement('div');
+        container.className = 'mermaid-container';
+        mermaidDiv.parentNode.insertBefore(container, mermaidDiv);
+        container.appendChild(mermaidDiv);
+
+        const fullscreenBtn = document.createElement('button');
+        fullscreenBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+        fullscreenBtn.setAttribute('aria-label', 'View diagram in fullscreen');
+        fullscreenBtn.textContent = '⛶';
+        fullscreenBtn.style.opacity = '50%';
+
+        // Calculate dynamic position based on diagram's margin and padding
+        const diagramStyle = window.getComputedStyle(mermaidDiv);
+        const marginTop = parseFloat(diagramStyle.marginTop) || 0;
+        const marginRight = parseFloat(diagramStyle.marginRight) || 0;
+        const paddingTop = parseFloat(diagramStyle.paddingTop) || 0;
+        const paddingRight = parseFloat(diagramStyle.paddingRight) || 0;
+        fullscreenBtn.style.top = `${marginTop + paddingTop + 4}px`;
+        fullscreenBtn.style.right = `${marginRight + paddingRight + 4}px`;
+
+        fullscreenBtn.addEventListener('click', () => {
+            previousScrollOffset = [window.scroll, window.scrollY];
+            const clone = mermaidDiv.cloneNode(true);
+            modalContent.innerHTML = '';
+            modalContent.appendChild(clone);
+
+            const svg = clone.querySelector('svg');
+            if (svg) {
+                svg.removeAttribute('width');
+                svg.removeAttribute('height');
+                svg.style.width = '100%';
+                svg.style.height = 'auto';
+                svg.style.maxWidth = '100%';
+                svg.style.sdisplay = 'block';
+
+                if ("True" === "True") {
+                    setTimeout(() => {
+                        const g = svg.querySelector('g');
+                        if (g) {
+                            var svgD3 = d3.select(svg);
+                            svgD3.html("<g class='wrapper'>" + svgD3.html() + "</g>");
+                            var inner = svgD3.select("g");
+                            var zoom = d3.zoom().on("zoom", function(event) {
+                                inner.attr("transform", event.transform);
+                            });
+                            svgD3.call(zoom);
+                        }
+                    }, 100);
+                }
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        container.appendChild(fullscreenBtn);
+        allButtons.push(fullscreenBtn);
+    });
+
+    // Update theme classes when theme changes
+    const updateTheme = () => {
+        const dark = isDarkTheme();
+        allButtons.forEach(btn => {
+            if (dark) {
+                btn.classList.add('dark-theme');
+            } else {
+                btn.classList.remove('dark-theme');
+            }
+        });
+        if (dark) {
+            modal.classList.add('dark-theme');
+            modalContent.classList.add('dark-theme');
+            closeBtn.classList.add('dark-theme');
+        } else {
+            modal.classList.remove('dark-theme');
+            modalContent.classList.remove('dark-theme');
+            closeBtn.classList.remove('dark-theme');
+        }
+    };
+
+    // Watch for theme changes
+    const observer = new MutationObserver(updateTheme);
+    observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+    observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class', 'style']
+    });
+};
+
+window.addEventListener("load", load);
+</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/nexusLIMS/schemas/units';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'pr-23';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/pr-23/_modules/nexusLIMS/schemas/units.html" />
+    <link rel="icon" href="../../../_static/nexusLIMS_bare_logo.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="2.1.2.dev0" />
+    <meta name="docbuild:last-update" content="Dec, 25, 2025"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.1.2.dev0 documentation - Home"/>
+    <img src="../../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.1.2.dev0 documentation - Home"/>
+  
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../getting_started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../migration.html">
+    Migration Guide: v1 to v2
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../dev_guide.html">
+    Developer Guide
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../reference.html">
+    Reference
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datasophos/NexusLIMS" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://datasophos.co" title="Datasophos" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-globe fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Datasophos</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../getting_started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../migration.html">
+    Migration Guide: v1 to v2
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../dev_guide.html">
+    Developer Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../reference.html">
+    Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datasophos/NexusLIMS" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://datasophos.co" title="Datasophos" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-globe fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Datasophos</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">nexusLIMS.schemas.units</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for nexusLIMS.schemas.units</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Pint unit registry and utilities for NexusLIMS metadata.</span>
+
+<span class="sd">This module provides a centralized Pint unit registry for handling physical quantities</span>
+<span class="sd">with units in NexusLIMS metadata. It defines preferred units for different measurement</span>
+<span class="sd">types and provides utilities for normalizing quantities to these preferred units.</span>
+
+<span class="sd">The module supports three-tiered unit serialization:</span>
+<span class="sd">- **Tier 1 (Internal)**: Pint Quantity objects with QUDT/EMG mappings</span>
+<span class="sd">- **Tier 2 (XML)**: Clean name/value/unit separation using XSD unit attribute</span>
+<span class="sd">- **Tier 3 (Future)**: Optional QUDT/EMG URIs for semantic web integration</span>
+
+<span class="sd">Examples</span>
+<span class="sd">--------</span>
+<span class="sd">Create and normalize quantities:</span>
+
+<span class="sd">&gt;&gt;&gt; from nexusLIMS.schemas.units import ureg, normalize_quantity</span>
+<span class="sd">&gt;&gt;&gt; voltage = ureg.Quantity(10000, &quot;volt&quot;)</span>
+<span class="sd">&gt;&gt;&gt; normalized = normalize_quantity(&quot;acceleration_voltage&quot;, voltage)</span>
+<span class="sd">&gt;&gt;&gt; print(normalized)</span>
+<span class="sd">10.0 kilovolt</span>
+
+<span class="sd">Parse from strings:</span>
+
+<span class="sd">&gt;&gt;&gt; from nexusLIMS.schemas.units import parse_quantity</span>
+<span class="sd">&gt;&gt;&gt; voltage = parse_quantity(&quot;acceleration_voltage&quot;, &quot;10 kV&quot;)</span>
+<span class="sd">&gt;&gt;&gt; print(voltage)</span>
+<span class="sd">10.0 kilovolt</span>
+
+<span class="sd">Serialize for XML:</span>
+
+<span class="sd">&gt;&gt;&gt; from nexusLIMS.schemas.units import quantity_to_xml_parts</span>
+<span class="sd">&gt;&gt;&gt; name, value, unit = quantity_to_xml_parts(&quot;acceleration_voltage&quot;, voltage)</span>
+<span class="sd">&gt;&gt;&gt; print(f&quot;&lt;meta name=&#39;{name}&#39; unit=&#39;{unit}&#39;&gt;{value}&lt;/meta&gt;&quot;)</span>
+<span class="sd">&lt;meta name=&#39;Voltage&#39; unit=&#39;kV&#39;&gt;10.0&lt;/meta&gt;</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">lru_cache</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">pint</span><span class="w"> </span><span class="kn">import</span> <span class="n">UnitRegistry</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">rdflib</span><span class="w"> </span><span class="kn">import</span> <span class="n">RDFS</span><span class="p">,</span> <span class="n">Graph</span><span class="p">,</span> <span class="n">Namespace</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="c1"># Singleton Pint unit registry for the entire application</span>
+<span class="c1"># Using this ensures consistent unit definitions across all modules</span>
+<span class="n">ureg</span> <span class="o">=</span> <span class="n">UnitRegistry</span><span class="p">()</span>
+
+<span class="c1"># Path to QUDT unit vocabulary file</span>
+<span class="n">QUDT_UNIT_TTL_PATH</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;references&quot;</span> <span class="o">/</span> <span class="s2">&quot;qudt_unit.ttl&quot;</span>
+<span class="n">QUDT_VERSION</span> <span class="o">=</span> <span class="s2">&quot;3.1.9&quot;</span>
+
+<span class="c1"># RDF namespace for QUDT</span>
+<span class="n">QUDT_UNIT</span> <span class="o">=</span> <span class="n">Namespace</span><span class="p">(</span><span class="s2">&quot;http://qudt.org/vocab/unit/&quot;</span><span class="p">)</span>
+
+<span class="c1"># Define common abbreviations and aliases</span>
+<span class="n">ureg</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="s2">&quot;ppm = 1e-6 = ppm&quot;</span><span class="p">)</span>  <span class="c1"># Ensure ppm is defined</span>
+<span class="n">ureg</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="s2">&quot;percent = 0.01 = pct = %&quot;</span><span class="p">)</span>  <span class="c1"># Define percent</span>
+
+<span class="c1"># Define custom microscopy units</span>
+<span class="n">ureg</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="s2">&quot;kiloX = 1000 = kX&quot;</span><span class="p">)</span>  <span class="c1"># Magnification in thousands (e.g., 160 kX = 160000x)</span>
+
+<span class="c1"># Magic values for scientific notation formatting</span>
+<span class="n">_MIN_MAGNITUDE_FOR_NORMAL_NOTATION</span> <span class="o">=</span> <span class="mf">1e-3</span>
+<span class="n">_MAX_MAGNITUDE_FOR_NORMAL_NOTATION</span> <span class="o">=</span> <span class="mf">1e6</span>
+
+<span class="c1"># Preferred units for each field type</span>
+<span class="c1"># These define the canonical units that quantities should be normalized to</span>
+<span class="c1"># before serialization to XML or storage</span>
+<span class="n">PREFERRED_UNITS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="c1"># Image acquisition parameters</span>
+    <span class="s2">&quot;acceleration_voltage&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">kilovolt</span><span class="p">,</span>
+    <span class="s2">&quot;working_distance&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">millimeter</span><span class="p">,</span>
+    <span class="s2">&quot;beam_current&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">picoampere</span><span class="p">,</span>
+    <span class="s2">&quot;emission_current&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">microampere</span><span class="p">,</span>
+    <span class="s2">&quot;dwell_time&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">microsecond</span><span class="p">,</span>
+    <span class="s2">&quot;magnification&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">dimensionless</span><span class="p">,</span>  <span class="c1"># Magnification has no units</span>
+    <span class="s2">&quot;field_of_view&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">micrometer</span><span class="p">,</span>
+    <span class="s2">&quot;pixel_width&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">nanometer</span><span class="p">,</span>
+    <span class="s2">&quot;pixel_height&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">nanometer</span><span class="p">,</span>
+    <span class="s2">&quot;scan_rotation&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">degree</span><span class="p">,</span>
+    <span class="c1"># Stage position components</span>
+    <span class="s2">&quot;stage_x&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">micrometer</span><span class="p">,</span>
+    <span class="s2">&quot;stage_y&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">micrometer</span><span class="p">,</span>
+    <span class="s2">&quot;stage_z&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">millimeter</span><span class="p">,</span>
+    <span class="s2">&quot;stage_tilt&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">degree</span><span class="p">,</span>
+    <span class="s2">&quot;stage_rotation&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">degree</span><span class="p">,</span>
+    <span class="s2">&quot;stage_alpha&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">degree</span><span class="p">,</span>
+    <span class="s2">&quot;stage_beta&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">degree</span><span class="p">,</span>
+    <span class="c1"># Spectrum acquisition parameters</span>
+    <span class="s2">&quot;acquisition_time&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">second</span><span class="p">,</span>
+    <span class="s2">&quot;live_time&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">second</span><span class="p">,</span>
+    <span class="s2">&quot;detector_energy_resolution&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">eV</span><span class="p">,</span>
+    <span class="s2">&quot;channel_size&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">eV</span><span class="p">,</span>
+    <span class="s2">&quot;starting_energy&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">keV</span><span class="p">,</span>
+    <span class="s2">&quot;azimuthal_angle&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">degree</span><span class="p">,</span>
+    <span class="s2">&quot;elevation_angle&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">degree</span><span class="p">,</span>
+    <span class="s2">&quot;takeoff_angle&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">degree</span><span class="p">,</span>
+    <span class="c1"># Diffraction parameters</span>
+    <span class="s2">&quot;camera_length&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">millimeter</span><span class="p">,</span>
+    <span class="s2">&quot;convergence_angle&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">milliradian</span><span class="p">,</span>
+    <span class="c1"># Environmental parameters</span>
+    <span class="s2">&quot;temperature&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">kelvin</span><span class="p">,</span>
+    <span class="s2">&quot;pressure&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">pascal</span><span class="p">,</span>
+    <span class="s2">&quot;chamber_pressure&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">pascal</span><span class="p">,</span>
+<span class="p">}</span>
+
+
+<span class="nd">@lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_load_qudt_units</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Load QUDT unit URIs from the Turtle file.</span>
+
+<span class="sd">    Parses the QUDT unit vocabulary to extract unit labels and their URIs.</span>
+<span class="sd">    This provides a mapping from Pint unit names to QUDT ontology URIs.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict[str, str]</span>
+<span class="sd">        Mapping from unit_name -&gt; QUDT URI</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; units = _load_qudt_units()</span>
+<span class="sd">    &gt;&gt;&gt; units.get(&quot;kilovolt&quot;)</span>
+<span class="sd">    &#39;http://qudt.org/vocab/unit/KiloV&#39;</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Results are cached for performance. The mapping uses rdfs:label to match</span>
+<span class="sd">    Pint unit names (e.g., &quot;kilovolt&quot;) to QUDT URIs.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">QUDT_UNIT_TTL_PATH</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;QUDT unit file not found at </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">QUDT_UNIT_TTL_PATH</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{}</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">()</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">QUDT_UNIT_TTL_PATH</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;turtle&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Loaded QUDT unit vocabulary from </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">QUDT_UNIT_TTL_PATH</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Failed to parse QUDT unit file.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{}</span>
+
+    <span class="c1"># Build mapping from label -&gt; URI</span>
+    <span class="n">unit_map</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c1"># Iterate over all QUDT unit instances</span>
+    <span class="k">for</span> <span class="n">unit_uri</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">subjects</span><span class="p">(</span><span class="n">predicate</span><span class="o">=</span><span class="n">RDFS</span><span class="o">.</span><span class="n">label</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">str</span><span class="p">(</span><span class="n">unit_uri</span><span class="p">)</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">QUDT_UNIT</span><span class="p">)):</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># Get the label(s) for this unit</span>
+        <span class="k">for</span> <span class="n">label_obj</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">unit_uri</span><span class="p">,</span> <span class="n">RDFS</span><span class="o">.</span><span class="n">label</span><span class="p">):</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">label_obj</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Map label to URI</span>
+            <span class="n">unit_map</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">unit_uri</span><span class="p">)</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Loaded </span><span class="si">%s</span><span class="s2"> QUDT unit mappings&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">unit_map</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">unit_map</span>
+
+
+<span class="c1"># Lazy-loaded QUDT unit URI mappings via lru_cache</span>
+<span class="nd">@lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_qudt_uri_mapping</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the QUDT unit URI mapping, loading if necessary.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_load_qudt_units</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="normalize_quantity">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.schemas.units.html#nexusLIMS.schemas.units.normalize_quantity">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">normalize_quantity</span><span class="p">(</span><span class="n">field_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">quantity</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Normalize a quantity to its preferred unit for the given field.</span>
+
+<span class="sd">    Takes a Pint Quantity and converts it to the canonical unit defined</span>
+<span class="sd">    in PREFERRED_UNITS for that field. If no preferred unit is defined,</span>
+<span class="sd">    returns the quantity unchanged. Non-Quantity values are passed through.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    field_name : str</span>
+<span class="sd">        The metadata field name (e.g., &quot;acceleration_voltage&quot;, &quot;working_distance&quot;)</span>
+<span class="sd">    quantity : Any</span>
+<span class="sd">        The quantity to normalize. Can be:</span>
+<span class="sd">        - Pint Quantity object (will be converted)</span>
+<span class="sd">        - String (returned unchanged - use parse_quantity first)</span>
+<span class="sd">        - Numeric value (returned unchanged)</span>
+<span class="sd">        - None (returned unchanged)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Any</span>
+<span class="sd">        The normalized quantity in preferred units, or the original value</span>
+<span class="sd">        if not a Quantity or no preferred unit is defined</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; voltage = ureg.Quantity(10000, &quot;volt&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; normalized = normalize_quantity(&quot;acceleration_voltage&quot;, voltage)</span>
+<span class="sd">    &gt;&gt;&gt; print(normalized)</span>
+<span class="sd">    10.0 kilovolt</span>
+
+<span class="sd">    &gt;&gt;&gt; current = ureg.Quantity(0.1, &quot;nanoampere&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; normalized = normalize_quantity(&quot;beam_current&quot;, current)</span>
+<span class="sd">    &gt;&gt;&gt; print(normalized)</span>
+<span class="sd">    100.0 picoampere</span>
+
+<span class="sd">    &gt;&gt;&gt; # Non-Quantity values pass through</span>
+<span class="sd">    &gt;&gt;&gt; normalize_quantity(&quot;unknown_field&quot;, &quot;some string&quot;)</span>
+<span class="sd">    &#39;some string&#39;</span>
+
+<span class="sd">    &gt;&gt;&gt; # Fields without preferred units return unchanged</span>
+<span class="sd">    &gt;&gt;&gt; qty = ureg.Quantity(5.0, &quot;furlong&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; normalize_quantity(&quot;custom_field&quot;, qty) == qty</span>
+<span class="sd">    True</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Only process Pint Quantity objects</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">quantity</span><span class="p">,</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">quantity</span>
+
+    <span class="c1"># Get preferred unit for this field</span>
+    <span class="n">preferred_unit</span> <span class="o">=</span> <span class="n">PREFERRED_UNITS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">field_name</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">preferred_unit</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># No preferred unit defined, return as-is</span>
+        <span class="k">return</span> <span class="n">quantity</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Convert to preferred unit</span>
+        <span class="k">return</span> <span class="n">quantity</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">preferred_unit</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="c1"># Log conversion error but don&#39;t fail - return original</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+            <span class="s2">&quot;Could not convert </span><span class="si">%s</span><span class="s2"> from </span><span class="si">%s</span><span class="s2"> to </span><span class="si">%s</span><span class="s2">: </span><span class="si">%s</span><span class="s2">. Returning original value.&quot;</span><span class="p">,</span>
+            <span class="n">field_name</span><span class="p">,</span>
+            <span class="n">quantity</span><span class="o">.</span><span class="n">units</span><span class="p">,</span>
+            <span class="n">preferred_unit</span><span class="p">,</span>
+            <span class="n">e</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">quantity</span></div>
+
+
+
+<div class="viewcode-block" id="parse_quantity">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.schemas.units.html#nexusLIMS.schemas.units.parse_quantity">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_quantity</span><span class="p">(</span><span class="n">field_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parse a value into a Pint Quantity and normalize to preferred units.</span>
+
+<span class="sd">    Accepts multiple input types:</span>
+<span class="sd">    - Pint Quantity: Normalized to preferred units</span>
+<span class="sd">    - String: Parsed as quantity (e.g., &quot;10 kV&quot;, &quot;5.2 mm&quot;)</span>
+<span class="sd">    - Numeric: Assumed to be in preferred units for field</span>
+<span class="sd">    - None: Passed through unchanged</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    field_name : str</span>
+<span class="sd">        The metadata field name (e.g., &quot;acceleration_voltage&quot;)</span>
+<span class="sd">    value : Any</span>
+<span class="sd">        The value to parse. Can be Quantity, string, numeric, or None</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Any</span>
+<span class="sd">        Pint Quantity in preferred units, or original value if unparseable</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; qty = parse_quantity(&quot;acceleration_voltage&quot;, &quot;10 kV&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; print(qty)</span>
+<span class="sd">    10.0 kilovolt</span>
+
+<span class="sd">    &gt;&gt;&gt; qty = parse_quantity(&quot;working_distance&quot;, 5.2)  # Assumes mm</span>
+<span class="sd">    &gt;&gt;&gt; print(qty)</span>
+<span class="sd">    5.2 millimeter</span>
+
+<span class="sd">    &gt;&gt;&gt; qty = parse_quantity(&quot;beam_current&quot;, ureg.Quantity(0.1, &quot;nA&quot;))</span>
+<span class="sd">    &gt;&gt;&gt; print(qty)</span>
+<span class="sd">    100.0 picoampere</span>
+
+<span class="sd">    &gt;&gt;&gt; parse_quantity(&quot;operator&quot;, None) is None</span>
+<span class="sd">    True</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Pass through None</span>
+    <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="c1"># If already a Quantity, normalize it</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">normalize_quantity</span><span class="p">(</span><span class="n">field_name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="c1"># Try parsing string as quantity</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">qty</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">normalize_quantity</span><span class="p">(</span><span class="n">field_name</span><span class="p">,</span> <span class="n">qty</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="s2">&quot;Could not parse &#39;</span><span class="si">%s</span><span class="s2">&#39; as quantity for </span><span class="si">%s</span><span class="s2">: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">e</span>
+            <span class="p">)</span>
+
+    <span class="c1"># For numeric values, assume they&#39;re in the preferred unit</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+        <span class="n">preferred_unit</span> <span class="o">=</span> <span class="n">PREFERRED_UNITS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">field_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">preferred_unit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">preferred_unit</span><span class="p">)</span>
+
+    <span class="c1"># All other cases (unparseable strings, unknown types, or no preferred unit)</span>
+    <span class="k">return</span> <span class="n">value</span></div>
+
+
+
+<div class="viewcode-block" id="quantity_to_xml_parts">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.schemas.units.html#nexusLIMS.schemas.units.quantity_to_xml_parts">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">quantity_to_xml_parts</span><span class="p">(</span>
+    <span class="n">field_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">quantity</span><span class="p">:</span> <span class="n">Any</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert a field name and quantity to XML serialization parts.</span>
+
+<span class="sd">    Extracts the display name, numeric value, and unit string for XML</span>
+<span class="sd">    serialization. This enables clean XML output like:</span>
+<span class="sd">    ``&lt;meta name=&quot;Voltage&quot; unit=&quot;kV&quot;&gt;10.0&lt;/meta&gt;``</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    field_name : str</span>
+<span class="sd">        The internal field name (e.g., &quot;acceleration_voltage&quot;)</span>
+<span class="sd">    quantity : Any</span>
+<span class="sd">        The quantity value (Pint Quantity, string, or numeric)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tuple[str, str, str | None]</span>
+<span class="sd">        A 3-tuple of (display_name, value_string, unit_string)</span>
+<span class="sd">        - display_name: Human-readable field name for XML</span>
+<span class="sd">        - value_string: Numeric value as string</span>
+<span class="sd">        - unit_string: Unit abbreviation, or None if dimensionless/non-quantity</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; qty = ureg.Quantity(10.0, &quot;kilovolt&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; name, value, unit = quantity_to_xml_parts(&quot;acceleration_voltage&quot;, qty)</span>
+<span class="sd">    &gt;&gt;&gt; print(f&quot;&lt;meta name=&#39;{name}&#39; unit=&#39;{unit}&#39;&gt;{value}&lt;/meta&gt;&quot;)</span>
+<span class="sd">    &lt;meta name=&#39;Voltage&#39; unit=&#39;kV&#39;&gt;10.0&lt;/meta&gt;</span>
+
+<span class="sd">    &gt;&gt;&gt; qty = ureg.Quantity(5000, &quot;dimensionless&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; name, value, unit = quantity_to_xml_parts(&quot;magnification&quot;, qty)</span>
+<span class="sd">    &gt;&gt;&gt; print(f&quot;&lt;meta name=&#39;{name}&#39;&gt;{value}&lt;/meta&gt;&quot;)  # No unit attr</span>
+<span class="sd">    &lt;meta name=&#39;Magnification&#39;&gt;5000&lt;/meta&gt;</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    For non-Quantity values, the value is converted to string and unit is None.</span>
+<span class="sd">    Display name mapping is handled by separate EM Glossary utilities.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas.em_glossary</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>  <span class="c1"># noqa: PLC0415</span>
+        <span class="n">get_display_name</span><span class="p">,</span>
+    <span class="p">)</span>  <span class="c1"># Import here to avoid circular imports</span>
+
+    <span class="n">display_name</span> <span class="o">=</span> <span class="n">get_display_name</span><span class="p">(</span><span class="n">field_name</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">quantity</span><span class="p">,</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">):</span>
+        <span class="c1"># Format magnitude (use scientific notation for very small/large)</span>
+        <span class="n">magnitude</span> <span class="o">=</span> <span class="n">quantity</span><span class="o">.</span><span class="n">magnitude</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="nb">abs</span><span class="p">(</span><span class="n">magnitude</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">_MIN_MAGNITUDE_FOR_NORMAL_NOTATION</span>
+            <span class="ow">or</span> <span class="nb">abs</span><span class="p">(</span><span class="n">magnitude</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">_MAX_MAGNITUDE_FOR_NORMAL_NOTATION</span>
+        <span class="p">):</span>
+            <span class="n">value_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">magnitude</span><span class="si">:</span><span class="s2">.6e</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">value_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">magnitude</span><span class="si">:</span><span class="s2">.6g</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="c1"># Get unit string (use compact format)</span>
+        <span class="n">unit_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">quantity</span><span class="o">.</span><span class="n">units</span><span class="si">:</span><span class="s2">~</span><span class="si">}</span><span class="s2">&quot;</span>  <span class="c1"># Compact format (kV instead of kilovolt)</span>
+
+        <span class="c1"># Handle dimensionless</span>
+        <span class="k">if</span> <span class="n">quantity</span><span class="o">.</span><span class="n">dimensionless</span><span class="p">:</span>
+            <span class="n">unit_str</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">return</span> <span class="n">display_name</span><span class="p">,</span> <span class="n">value_str</span><span class="p">,</span> <span class="n">unit_str</span>
+
+    <span class="c1"># Non-Quantity value</span>
+    <span class="k">return</span> <span class="n">display_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">quantity</span><span class="p">),</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="get_qudt_uri">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.schemas.units.html#nexusLIMS.schemas.units.get_qudt_uri">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_qudt_uri</span><span class="p">(</span><span class="n">quantity</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the QUDT URI for a Pint Quantity&#39;s unit.</span>
+
+<span class="sd">    Returns the QUDT (Quantities, Units, Dimensions and Data Types) ontology</span>
+<span class="sd">    URI for the quantity&#39;s unit. This enables Tier 3 semantic web integration.</span>
+
+<span class="sd">    The mapping is loaded dynamically from the QUDT unit vocabulary file</span>
+<span class="sd">    (qudt_unit.ttl) using RDFLib.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    quantity : Any</span>
+<span class="sd">        A Pint Quantity object</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    str or None</span>
+<span class="sd">        QUDT URI string, or None if not a Quantity or URI not found</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; qty = ureg.Quantity(10, &quot;kilovolt&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; get_qudt_uri(qty)</span>
+<span class="sd">    &#39;http://qudt.org/vocab/unit/KiloV&#39;</span>
+
+<span class="sd">    &gt;&gt;&gt; qty = ureg.Quantity(5.2, &quot;millimeter&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; get_qudt_uri(qty)</span>
+<span class="sd">    &#39;http://qudt.org/vocab/unit/MilliM&#39;</span>
+
+<span class="sd">    &gt;&gt;&gt; get_qudt_uri(&quot;not a quantity&quot;)</span>
+<span class="sd">    # Returns None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">quantity</span><span class="p">,</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="c1"># Get unit string (full name, lowercase, no spaces for matching)</span>
+    <span class="n">unit_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">quantity</span><span class="o">.</span><span class="n">units</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Look up in QUDT mapping (loaded from TTL file)</span>
+    <span class="n">qudt_map</span> <span class="o">=</span> <span class="n">_get_qudt_uri_mapping</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">qudt_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">unit_str</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="serialize_quantity">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.schemas.units.html#nexusLIMS.schemas.units.serialize_quantity">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">serialize_quantity</span><span class="p">(</span><span class="n">quantity</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Serialize a Pint Quantity to a JSON-compatible dictionary.</span>
+
+<span class="sd">    Converts a Quantity to a dict with &#39;value&#39; and &#39;units&#39; keys.</span>
+<span class="sd">    Used for internal storage or JSON export. For XML serialization,</span>
+<span class="sd">    use :func:`quantity_to_xml_parts` instead.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    quantity : Any</span>
+<span class="sd">        A Pint Quantity object, or other value to serialize</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict[str, Any]</span>
+<span class="sd">        Dictionary with &#39;value&#39; and &#39;units&#39; keys if Quantity,</span>
+<span class="sd">        or {&#39;value&#39;: quantity} for non-Quantity values</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; qty = ureg.Quantity(10, &quot;kilovolt&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; serialize_quantity(qty)</span>
+<span class="sd">    {&#39;value&#39;: 10.0, &#39;units&#39;: &#39;kilovolt&#39;}</span>
+
+<span class="sd">    &gt;&gt;&gt; serialize_quantity(&quot;some string&quot;)</span>
+<span class="sd">    {&#39;value&#39;: &#39;some string&#39;}</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">quantity</span><span class="p">,</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">quantity</span><span class="o">.</span><span class="n">magnitude</span><span class="p">,</span>
+            <span class="s2">&quot;units&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">quantity</span><span class="o">.</span><span class="n">units</span><span class="p">),</span>
+        <span class="p">}</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">quantity</span><span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="deserialize_quantity">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.schemas.units.html#nexusLIMS.schemas.units.deserialize_quantity">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">deserialize_quantity</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Deserialize a dictionary back to a Pint Quantity.</span>
+
+<span class="sd">    Reverses the operation of :func:`serialize_quantity`. Takes a dict</span>
+<span class="sd">    with &#39;value&#39; and &#39;units&#39; keys and reconstructs the Quantity.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data : dict[str, Any]</span>
+<span class="sd">        Dictionary with &#39;value&#39; and &#39;units&#39; keys, or just &#39;value&#39; key</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Any</span>
+<span class="sd">        Pint Quantity if dict has value/units, otherwise the &#39;value&#39; field</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; data = {&#39;value&#39;: 10.0, &#39;units&#39;: &#39;kilovolt&#39;}</span>
+<span class="sd">    &gt;&gt;&gt; qty = deserialize_quantity(data)</span>
+<span class="sd">    &gt;&gt;&gt; print(qty)</span>
+<span class="sd">    10.0 kilovolt</span>
+
+<span class="sd">    &gt;&gt;&gt; data = {&#39;value&#39;: &#39;some string&#39;}</span>
+<span class="sd">    &gt;&gt;&gt; deserialize_quantity(data)</span>
+<span class="sd">    &#39;some string&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="s2">&quot;units&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;value&quot;</span><span class="p">)</span></div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2025, datasophos, LLC.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

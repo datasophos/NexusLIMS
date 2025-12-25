@@ -424,7 +424,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 24, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 25, 2025"/>
   </head>
   
   
@@ -879,6 +879,11 @@ window.addEventListener("load", load);
 <span class="sd">    suppress_zero : bool, default=False</span>
 <span class="sd">        If True, skip field if the numeric value equals zero.</span>
 <span class="sd">        Only applies when is_string=False.</span>
+<span class="sd">    unit : str | None, default=None</span>
+<span class="sd">        Pint unit string for the output value (e.g., &quot;kilovolt&quot;, &quot;millimeter&quot;).</span>
+<span class="sd">        If provided, the value will be converted to a Pint Quantity with this unit.</span>
+<span class="sd">        The factor is still applied before creating the Quantity.</span>
+<span class="sd">        If None, numeric values remain as floats (legacy behavior).</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -894,6 +899,9 @@ window.addEventListener("load", load);
 <span class="sd">    &gt;&gt;&gt; # Suppress zero values</span>
 <span class="sd">    &gt;&gt;&gt; FieldDefinition(&quot;Beam&quot;, &quot;BeamShiftX&quot;, &quot;Beam Shift X&quot;,</span>
 <span class="sd">    &gt;&gt;&gt;                 1.0, False, suppress_zero=True)</span>
+
+<span class="sd">    &gt;&gt;&gt; # Pint Quantity output (new approach)</span>
+<span class="sd">    &gt;&gt;&gt; FieldDefinition(&quot;Beam&quot;, &quot;HV&quot;, &quot;Voltage&quot;, 1.0, False, unit=&quot;kilovolt&quot;)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">section</span><span class="p">:</span> <span class="nb">str</span>
@@ -901,7 +909,8 @@ window.addEventListener("load", load);
     <span class="n">output_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
     <span class="n">factor</span><span class="p">:</span> <span class="nb">float</span>
     <span class="n">is_string</span><span class="p">:</span> <span class="nb">bool</span>
-    <span class="n">suppress_zero</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></div>
+    <span class="n">suppress_zero</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Pint unit string (e.g., &quot;kilovolt&quot;, &quot;millimeter&quot;)</span></div>
 
 
 
@@ -1292,9 +1301,10 @@ window.addEventListener("load", load);
 <span class="sd">    extractor_overrides</span>
 <span class="sd">        Force specific extractors for certain extensions.</span>
 <span class="sd">        Keys are file extensions, values are extractor names.</span>
-<span class="sd">    static_metadata</span>
-<span class="sd">        Metadata to inject for all files from this instrument.</span>
-<span class="sd">        Keys are metadata paths, values are static values.</span>
+<span class="sd">    extension_fields</span>
+<span class="sd">        Metadata to inject into the extensions section for all files.</span>
+<span class="sd">        Keys are field names, values are static values.</span>
+<span class="sd">        These populate the nx_meta.extensions dict.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -1309,9 +1319,9 @@ window.addEventListener("load", load);
 <span class="sd">    ...     parsers={</span>
 <span class="sd">    ...         &quot;microscope_info&quot;: parse_643_titan_microscope,</span>
 <span class="sd">    ...     },</span>
-<span class="sd">    ...     static_metadata={</span>
-<span class="sd">    ...         &quot;nx_meta.Facility&quot;: &quot;Nexus Facility&quot;,</span>
-<span class="sd">    ...         &quot;nx_meta.Building&quot;: &quot;Bldg. 1&quot;,</span>
+<span class="sd">    ...     extension_fields={</span>
+<span class="sd">    ...         &quot;facility&quot;: &quot;Nexus Facility&quot;,</span>
+<span class="sd">    ...         &quot;building&quot;: &quot;Bldg. 1&quot;,</span>
 <span class="sd">    ...     }</span>
 <span class="sd">    ... )</span>
 
@@ -1329,7 +1339,7 @@ window.addEventListener("load", load);
     <span class="n">parsers</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
     <span class="n">transformations</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
     <span class="n">extractor_overrides</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
-    <span class="n">static_metadata</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span></div>
+    <span class="n">extension_fields</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span></div>
 
 </pre></div>
 

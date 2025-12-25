@@ -57,12 +57,12 @@
     <link rel="icon" href="../../_static/nexusLIMS_bare_logo.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="nexusLIMS.schemas.activity" href="nexusLIMS.schemas.activity.html" />
+    <link rel="next" title="nexusLIMS.schemas.pint_types" href="nexusLIMS.schemas.pint_types.html" />
     <link rel="prev" title="nexusLIMS.harvesters.reservation_event" href="nexusLIMS.harvesters.reservation_event.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 24, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 25, 2025"/>
   </head>
   
   
@@ -414,7 +414,11 @@
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.cli.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.harvesters.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.harvesters</span></code></a></li>
 <li class="toctree-l3 current active has-children"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.schemas</span></code></a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="nexusLIMS.schemas.pint_types.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.schemas.pint_types</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nexusLIMS.schemas.metadata.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.schemas.metadata</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nexusLIMS.schemas.units.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.schemas.units</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="nexusLIMS.schemas.activity.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.schemas.activity</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nexusLIMS.schemas.em_glossary.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.schemas.em_glossary</span></code></a></li>
 </ul>
 </details></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.instruments.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.instruments</span></code></a></li>
@@ -495,11 +499,22 @@
   <section id="module-nexusLIMS.schemas">
 <span id="nexuslims-schemas"></span><h1><a class="reference internal" href="#module-nexusLIMS.schemas" title="nexusLIMS.schemas"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.schemas</span></code></a><a class="headerlink" href="#module-nexusLIMS.schemas" title="Link to this heading">#</a></h1>
 <p>Schema tools for NexusLIMS.</p>
+<p>This module provides:</p>
+<ul class="simple">
+<li><p>Type-specific metadata schemas (Image, Spectrum, SpectrumImage, Diffraction)</p></li>
+<li><p>Pint Quantity integration for physical units</p></li>
+<li><p>EM Glossary field name mappings</p></li>
+<li><p>Stage position modeling</p></li>
+</ul>
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">#</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="nexusLIMS.schemas.pint_types.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.schemas.pint_types</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="nexusLIMS.schemas.metadata.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.schemas.metadata</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="nexusLIMS.schemas.units.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.schemas.units</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="nexusLIMS.schemas.activity.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.schemas.activity</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="nexusLIMS.schemas.em_glossary.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.schemas.em_glossary</span></code></a></li>
 </ul>
 </div>
 </section>
@@ -525,11 +540,11 @@
       </div>
     </a>
     <a class="right-next"
-       href="nexusLIMS.schemas.activity.html"
+       href="nexusLIMS.schemas.pint_types.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.schemas.activity</span></code></p>
+        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.schemas.pint_types</span></code></p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
