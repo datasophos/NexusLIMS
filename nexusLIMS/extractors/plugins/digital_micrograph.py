@@ -1,5 +1,6 @@
 """Digital Micrograph (.dm3/.dm4) extractor plugin."""
 
+import contextlib
 import logging
 from datetime import UTC
 from datetime import datetime as dt
@@ -38,6 +39,7 @@ from nexusLIMS.extractors.utils import (
     _try_decimal,
 )
 from nexusLIMS.instruments import get_instr_from_filepath
+from nexusLIMS.schemas.units import ureg
 from nexusLIMS.utils import (
     current_system_tz,
     remove_dict_nones,
@@ -452,6 +454,25 @@ def parse_dm3_microscope_info(mdict):  # noqa: PLR0912
         # only add the value to this list if we found it, and it's not one of
         # the "facility-wide" set values that do not have any meaning:
         if val is not None and val not in ["DO NOT EDIT", "DO NOT ENTER"] and val != []:
+            # Store original field name for unit mapping
+            field_name = meta_key[-1] if isinstance(meta_key, list) else meta_key
+
+            # Convert to Pint Quantity if the field has units
+            unit_map = {
+                "Cs(mm)": "millimeter",
+                "STEM Camera Length": "millimeter",
+                "Voltage": "volt",  # Will auto-convert to kilovolt
+                "Field of View (\u00b5m)": "micrometer",
+            }
+            if field_name in unit_map:
+                with contextlib.suppress(ValueError, TypeError):
+                    val = ureg.Quantity(val, unit_map[field_name])
+                    # Remove unit suffix from field name
+                    if field_name == "Cs(mm)":
+                        meta_key = ["Cs"]  # noqa: PLW2901
+                    elif field_name == "Field of View (\u00b5m)":
+                        meta_key = ["Field of View"]  # noqa: PLW2901
+
             # change output of "Stage Position" to unicode characters
             if "Stage Position" in meta_key:
                 meta_key[-1] = (
@@ -521,9 +542,11 @@ def parse_dm3_microscope_info(mdict):  # noqa: PLR0912
     # DigiScan Sample Time (dwell time per pixel in microseconds):
     sample_time = try_getting_dict_value(mdict, [*pre_path, "DigiScan", "Sample Time"])
     if sample_time is not None:
+        with contextlib.suppress(ValueError, TypeError):
+            sample_time = ureg.Quantity(sample_time, "microsecond")
         set_nested_dict_value(
             mdict,
-            ["nx_meta", "Sample Time (\u00b5s)"],
+            ["nx_meta", "Sample Time"],
             sample_time,
         )
 
@@ -771,8 +794,17 @@ def parse_dm3_spectrum_image_info(mdict):
         # only add the value to this list if we found it, and it's not
         # one of the "facility-wide" set values that do not have any meaning:
         if val is not None:
-            # add last value of each parameter to the "EDS" sub-tree of nx_meta
-            set_nested_dict_value(mdict, ["nx_meta", "Spectrum Imaging", *m_out], val)
+            # Convert to Pint Quantity if the field has units
+            output_key = m_out[0] if len(m_out) == 1 else m_out
+            if output_key == "Pixel time (s)":
+                with contextlib.suppress(ValueError, TypeError):
+                    val = ureg.Quantity(val, "second")
+                    output_key = ["Pixel time"]
+            # add last value of each parameter to the "Spectrum Imaging" sub-tree
+            key_list = [output_key] if isinstance(output_key, str) else output_key
+            set_nested_dict_value(
+                mdict, ["nx_meta", "Spectrum Imaging", *key_list], val
+            )
 
     # Check spatial drift correction separately:
     drift_per_val = try_getting_dict_value(
@@ -805,9 +837,11 @@ def parse_dm3_spectrum_image_info(mdict):
         start_dt = dt.strptime(start_val, "%I:%M:%S %p").replace(tzinfo=UTC)
         end_dt = dt.strptime(end_val, "%I:%M:%S %p").replace(tzinfo=UTC)
         duration = (end_dt - start_dt).seconds  # Calculate acquisition duration
+        with contextlib.suppress(ValueError, TypeError):
+            duration = ureg.Quantity(duration, "second")
         set_nested_dict_value(
             mdict,
-            ["nx_meta", "Spectrum Imaging", "Acquisition Duration (s)"],
+            ["nx_meta", "Spectrum Imaging", "Acquisition Duration"],
             duration,
         )
 

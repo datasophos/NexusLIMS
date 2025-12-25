@@ -449,7 +449,8 @@ class AcquisitionActivity:
                             vts,
                         )  # pragma: no cover
                         values_to_search.remove(vts)  # pragma: no cover
-                    # Check if the parameter is missing in this file OR has a different value
+                    # Check if the parameter is missing in this file OR
+                    # has a different value
                     if vts not in meta or setup_params[vts] != meta[vts]:
                         # Parameter is either missing or has different value,
                         # so this must be individual dataset metadata.
@@ -460,7 +461,12 @@ class AcquisitionActivity:
                             "removing %s from setup_params and values to search",
                             i,
                             vts,
-                            "not in meta" if vts not in meta else f"meta[vts]={meta[vts]} != setup_params[vts]={setup_params[vts]}",
+                            "not in meta"
+                            if vts not in meta
+                            else (
+                                f"meta[vts]={meta[vts]} != "
+                                f"setup_params[vts]={setup_params[vts]}"
+                            ),
                             vts,
                         )
                         del setup_params[vts]

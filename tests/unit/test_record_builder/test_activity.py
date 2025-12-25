@@ -216,7 +216,7 @@ class TestActivity:
         assert mag_el.get("warning") == "true"
         assert mag_el.get("unit") == ""  # dimensionless has empty unit string
 
-    def test_end_to_end_with_profile_and_quantities(self):
+    def test_end_to_end_with_profile_and_quantities(self):  # noqa: PLR0915
         """End-to-end test: extractor → profile extension_fields → XML with Quantities.
 
         This test verifies the complete integration flow:
@@ -236,7 +236,8 @@ class TestActivity:
 
         # Setup: Create a mock instrument with a profile that adds extension_fields
         registry = get_profile_registry()
-        original_profiles = registry._profiles.copy()  # Save original state
+        # Save original state
+        original_profiles = registry._profiles.copy()  # noqa: SLF001
 
         try:
             # Create an instrument profile with extension fields (including Quantities)
@@ -318,13 +319,15 @@ class TestActivity:
             assert elevation_elements[0].text == "100.5"
             assert elevation_elements[0].get("unit") == "m"
 
-            calibration_elements = root.xpath(".//setup/param[@name='calibration_date']")
+            calibration_elements = root.xpath(
+                ".//setup/param[@name='calibration_date']"
+            )
             assert len(calibration_elements) == 1
             assert calibration_elements[0].text == "2025-12-01"
             assert calibration_elements[0].get("unit") is None  # No unit for strings
 
             # Verify extractor-provided Quantities in unique metadata
-            # Beam Energy and Working Distance vary between files, so should be in unique metadata
+            # Beam Energy and Working Distance vary, so should be in unique metadata
             beam_energy_elements = root.xpath(".//dataset/meta[@name='Beam Energy']")
             assert len(beam_energy_elements) == 2  # Two different files
             assert beam_energy_elements[0].text == "5.0"
@@ -339,13 +342,13 @@ class TestActivity:
             assert wd_elements[1].text == "10.0"
             assert wd_elements[1].get("unit") == "mm"
 
-            # Pixel Size only appears in first file, so should be in unique metadata for that file
+            # Pixel Size only appears in first file, so should be in unique metadata
             pixel_size_elements = root.xpath(".//dataset/meta[@name='Pixel Size']")
             assert len(pixel_size_elements) == 1  # Only in first file
             assert pixel_size_elements[0].text == "2.5"
             assert pixel_size_elements[0].get("unit") == "nm"
 
-            # Magnification only appears in second file, so should be in unique metadata for that file
+            # Magnification only appears in second file, so should be in unique metadata
             mag_elements = root.xpath(".//dataset/meta[@name='Magnification']")
             assert len(mag_elements) == 1  # Only in second file
             assert mag_elements[0].text == "25000.0"
@@ -353,7 +356,7 @@ class TestActivity:
 
         finally:
             # Restore original registry state
-            registry._profiles = original_profiles
+            registry._profiles = original_profiles  # noqa: SLF001
 
     def test_setup_params_missing_key_in_second_file(self):
         """Test that missing keys in subsequent files are not kept in setup_params.
@@ -394,7 +397,7 @@ class TestActivity:
         activity.store_unique_metadata()
 
         # Verify:
-        # - "DatasetType" should be in setup_params (present and identical in both files)
+        # - "DatasetType" should be in setup_params (present and same in both files)
         assert "DatasetType" in activity.setup_params
         assert activity.setup_params["DatasetType"] == "Image"
 

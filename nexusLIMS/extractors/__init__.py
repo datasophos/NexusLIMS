@@ -55,6 +55,7 @@ from nexusLIMS.extractors.base import ExtractionContext
 from nexusLIMS.extractors.registry import get_registry
 from nexusLIMS.extractors.schemas import NexusMetadata
 from nexusLIMS.instruments import get_instr_from_filepath
+from nexusLIMS.schemas.units import ureg
 from nexusLIMS.utils import current_system_tz, replace_instrument_data_path
 from nexusLIMS.version import __version__
 
@@ -592,7 +593,7 @@ class _CustomEncoder(json.JSONEncoder):
     not able to be by default (taken from https://stackoverflow.com/a/27050186).
     """
 
-    def default(self, o):
+    def default(self, o):  # noqa: PLR0911
         if isinstance(o, np.integer):
             return int(o)
         if isinstance(o, np.floating):
@@ -604,5 +605,8 @@ class _CustomEncoder(json.JSONEncoder):
         if isinstance(o, np.void):
             # np.void array may contain arbitary binary, so base64 encode it
             return base64.b64encode(o.tolist()).decode("utf-8")
+        # Handle Pint Quantity objects
+        if isinstance(o, ureg.Quantity):
+            return {"value": float(o.magnitude), "unit": str(o.units)}
 
         return super().default(o)

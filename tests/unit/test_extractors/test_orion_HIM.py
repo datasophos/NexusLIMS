@@ -15,6 +15,7 @@ from nexusLIMS.extractors.plugins.orion_HIM_tif import (
     OrionTiffExtractor,
 )
 from nexusLIMS.extractors.registry import get_registry
+from nexusLIMS.schemas.units import ureg
 
 
 @pytest.fixture
@@ -207,7 +208,7 @@ class TestOrionFibicsTiffExtractor:
         result = self.extractor._detect_variant(img)  # noqa: SLF001
         assert result is None
 
-    def test_extract_from_real_orion_zeiss_file(self, orion_zeiss_zeroed_file):
+    def test_extract_from_real_orion_zeiss_file(self, orion_zeiss_zeroed_file):  # noqa: PLR0915
         """Test extraction from real Zeiss Orion TIFF file."""
         if orion_zeiss_zeroed_file is None:
             pytest.skip("Real test file not available")
@@ -223,38 +224,60 @@ class TestOrionFibicsTiffExtractor:
 
         # Random sampling of extracted values from real file
         meta = result[0]["nx_meta"]
-        # Beam section
-        assert meta["Beam"]["Voltage (kV)"] == 29.997
-        assert meta["Beam"]["Spot Number"] == 6.0
-        assert meta["Beam"]["Pan X (μm)"] == 3.0
-        assert meta["Beam"]["Extraction Voltage (kV)"] == -36.769
+        # Beam section - now Pint Quantities
+        assert isinstance(meta["Beam"]["Voltage"], ureg.Quantity)
+        assert meta["Beam"]["Voltage"].magnitude == pytest.approx(29.997)
+        assert meta["Beam"]["Voltage"].units == ureg.kilovolt
+        assert meta["Beam"]["Spot Number"] == 6.0  # Dimensionless
+        assert isinstance(meta["Beam"]["Pan X"], ureg.Quantity)
+        assert meta["Beam"]["Pan X"].magnitude == pytest.approx(3.0)
+        assert meta["Beam"]["Pan X"].units == ureg.micrometer
+        assert isinstance(meta["Beam"]["Extraction Voltage"], ureg.Quantity)
+        assert meta["Beam"]["Extraction Voltage"].magnitude == pytest.approx(-36.769)
+        assert meta["Beam"]["Extraction Voltage"].units == ureg.kilovolt
         # GFIS section
-        assert meta["GFIS"]["Ion Gas"] == "Helium"
-        assert meta["GFIS"]["Beam Current (pA)"] == 0.938
-        assert meta["GFIS"]["Crossover Position (mm)"] == -246.999
+        assert meta["GFIS"]["Ion Gas"] == "Helium"  # String
+        assert isinstance(meta["GFIS"]["Beam Current"], ureg.Quantity)
+        assert meta["GFIS"]["Beam Current"].magnitude == pytest.approx(0.938)
+        assert meta["GFIS"]["Beam Current"].units == ureg.picoampere
+        assert isinstance(meta["GFIS"]["Crossover Position"], ureg.Quantity)
+        assert meta["GFIS"]["Crossover Position"].magnitude == pytest.approx(-246.999)
+        assert meta["GFIS"]["Crossover Position"].units == ureg.millimeter
         # Calibration
-        assert meta["Calibration"]["X Scale (m)"] == 9.765625e-10
+        assert isinstance(meta["Calibration"]["X Scale"], ureg.Quantity)
+        assert meta["Calibration"]["X Scale"].magnitude == pytest.approx(9.765625e-10)
+        assert meta["Calibration"]["X Scale"].units == ureg.meter
         # Detector
-        assert meta["Detector"]["ET Image Intensity"] == 23.3
-        assert meta["Detector"]["Name"] == "ETDetector"
+        assert meta["Detector"]["ET Image Intensity"] == 23.3  # Dimensionless
+        assert meta["Detector"]["Name"] == "ETDetector"  # String
         # Scan
-        assert meta["Scan"]["Averaging Mode"] == "Line"
-        assert meta["Scan"]["Number of Averages"] == 64.0
+        assert meta["Scan"]["Averaging Mode"] == "Line"  # String
+        assert meta["Scan"]["Number of Averages"] == 64.0  # Dimensionless
         # Stage Position
-        assert meta["Stage Position"]["X (μm)"] == 25157.23
-        assert meta["Stage Position"]["Tilt (degrees)"] == 0.16
+        assert isinstance(meta["Stage Position"]["X"], ureg.Quantity)
+        assert meta["Stage Position"]["X"].magnitude == pytest.approx(25157.23)
+        assert meta["Stage Position"]["X"].units == ureg.micrometer
+        assert isinstance(meta["Stage Position"]["Tilt"], ureg.Quantity)
+        assert meta["Stage Position"]["Tilt"].magnitude == pytest.approx(0.16)
+        assert meta["Stage Position"]["Tilt"].units == ureg.degree
         # System
-        assert meta["System"]["Column Type"] == "GFIS"
-        assert meta["System"]["Gun Temperature (K)"] == 75.5
+        assert meta["System"]["Column Type"] == "GFIS"  # String
+        assert isinstance(meta["System"]["Gun Temperature"], ureg.Quantity)
+        assert meta["System"]["Gun Temperature"].magnitude == pytest.approx(75.5)
+        assert meta["System"]["Gun Temperature"].units == ureg.kelvin
         # Optics
-        assert meta["Optics"]["sFIM Field of View (μm)"] == 0.04
-        assert meta["Optics"]["MC X Shift (μrad)"] == -0.0007959
+        assert isinstance(meta["Optics"]["sFIM Field of View"], ureg.Quantity)
+        assert meta["Optics"]["sFIM Field of View"].magnitude == pytest.approx(0.04)
+        assert meta["Optics"]["sFIM Field of View"].units == ureg.micrometer
+        assert isinstance(meta["Optics"]["MC X Shift"], ureg.Quantity)
+        assert meta["Optics"]["MC X Shift"].magnitude == pytest.approx(-0.0007959)
+        assert meta["Optics"]["MC X Shift"].units == ureg.microradian
         # Image dimensions
-        assert meta["Image"]["Height (pixels)"] == 1024.0
-        assert meta["Image"]["Width (pixels)"] == 1024.0
+        assert meta["Image"]["Height"] == 1024.0  # Dimensionless
+        assert meta["Image"]["Width"] == 1024.0  # Dimensionless
 
     def test_voltage_unit_conversions(self, orion_zeiss_zeroed_file):
-        """Test that voltage values are correctly converted from V to kV."""
+        """Test that voltages are correctly converted from V to kV Pint Quantities."""
         if orion_zeiss_zeroed_file is None:
             pytest.skip("Real test file not available")
 
@@ -264,25 +287,49 @@ class TestOrionFibicsTiffExtractor:
 
         # Test various voltage conversions (V to kV, multiply by 1000)
         # Beam section voltages
-        assert meta["Beam"]["Voltage (kV)"] == 29.997  # AccelerationVoltage: 29997 V
-        assert (
-            meta["Beam"]["Extraction Voltage (kV)"] == -36.769
+        assert isinstance(meta["Beam"]["Voltage"], ureg.Quantity)
+        assert meta["Beam"]["Voltage"].magnitude == pytest.approx(
+            29.997
+        )  # AccelerationVoltage: 29997 V
+        assert meta["Beam"]["Voltage"].units == ureg.kilovolt
+        assert isinstance(meta["Beam"]["Extraction Voltage"], ureg.Quantity)
+        assert meta["Beam"]["Extraction Voltage"].magnitude == pytest.approx(
+            -36.769
         )  # ExtractionVoltage: -36769 V
+        assert meta["Beam"]["Extraction Voltage"].units == ureg.kilovolt
 
         # GFIS section voltages (same values as non-GFIS versions)
-        assert meta["GFIS"]["Acceleration Voltage (kV)"] == 29.997
-        assert meta["GFIS"]["Extraction Voltage (kV)"] == -36.769
-        assert meta["GFIS"]["Condenser Voltage (kV)"] == 23.995  # Lens1Voltage: 23995 V
-        assert meta["GFIS"]["Objective Voltage (kV)"] == 18.535  # Lens2Voltage: 18535 V
+        assert isinstance(meta["GFIS"]["Acceleration Voltage"], ureg.Quantity)
+        assert meta["GFIS"]["Acceleration Voltage"].magnitude == pytest.approx(29.997)
+        assert meta["GFIS"]["Acceleration Voltage"].units == ureg.kilovolt
+        assert isinstance(meta["GFIS"]["Extraction Voltage"], ureg.Quantity)
+        assert meta["GFIS"]["Extraction Voltage"].magnitude == pytest.approx(-36.769)
+        assert meta["GFIS"]["Extraction Voltage"].units == ureg.kilovolt
+        assert isinstance(meta["GFIS"]["Condenser Voltage"], ureg.Quantity)
+        assert meta["GFIS"]["Condenser Voltage"].magnitude == pytest.approx(
+            23.995
+        )  # Lens1Voltage: 23995 V
+        assert meta["GFIS"]["Condenser Voltage"].units == ureg.kilovolt
+        assert isinstance(meta["GFIS"]["Objective Voltage"], ureg.Quantity)
+        assert meta["GFIS"]["Objective Voltage"].magnitude == pytest.approx(
+            18.535
+        )  # Lens2Voltage: 18535 V
+        assert meta["GFIS"]["Objective Voltage"].units == ureg.kilovolt
 
         # Optics section voltages (Lens voltages)
-        assert meta["Optics"]["Lens 1 Voltage (kV)"] == 23.995
-        assert meta["Optics"]["Lens 2 Voltage (kV)"] == 18.535
+        assert isinstance(meta["Optics"]["Lens 1 Voltage"], ureg.Quantity)
+        assert meta["Optics"]["Lens 1 Voltage"].magnitude == pytest.approx(23.995)
+        assert meta["Optics"]["Lens 1 Voltage"].units == ureg.kilovolt
+        assert isinstance(meta["Optics"]["Lens 2 Voltage"], ureg.Quantity)
+        assert meta["Optics"]["Lens 2 Voltage"].magnitude == pytest.approx(18.535)
+        assert meta["Optics"]["Lens 2 Voltage"].units == ureg.kilovolt
 
         # Detector scintillator voltage
-        assert (
-            meta["Detector"]["Scintillator (kV)"] == 10.000
+        assert isinstance(meta["Detector"]["Scintillator"], ureg.Quantity)
+        assert meta["Detector"]["Scintillator"].magnitude == pytest.approx(
+            10.000
         )  # Detector.Scintillator: 10000 V
+        assert meta["Detector"]["Scintillator"].units == ureg.kilovolt
 
     def test_extract_from_real_orion_fibics_file(self, orion_fibics_zeroed_file):  # noqa: PLR0915
         """Test extraction from real Fibics Orion TIFF file."""
@@ -301,18 +348,18 @@ class TestOrionFibicsTiffExtractor:
         # Comprehensive value checks from orion_fibics_tif_metadata.xml
         meta = result[0]["nx_meta"]
 
-        # Application section
+        # Application section (strings)
         assert meta["Application"]["Software Version"] == "NPVE v4.5"
         assert (
             meta["Application"]["Acquisition Date/Time"]
             == "2025-05-27T10:32:12.498-04:00"
         )
         assert meta["Application"]["Supports Transparency"] == "true"
-        assert meta["Application"]["Transparent Pixel Value"] == 0.0
+        assert meta["Application"]["Transparent Pixel Value"] == 0.0  # Dimensionless
 
-        # Image section
-        assert meta["Image"]["Width (pixels)"] == 2048.0
-        assert meta["Image"]["Height (pixels)"] == 2048.0
+        # Image section (dimensionless and strings)
+        assert meta["Image"]["Width"] == 2048.0
+        assert meta["Image"]["Height"] == 2048.0
         assert meta["Image"]["Bounding Box Left"] == 0.0
         assert meta["Image"]["Bounding Box Right"] == 2048.0
         assert meta["Image"]["Bounding Box Top"] == 0.0
@@ -321,44 +368,86 @@ class TestOrionFibicsTiffExtractor:
         assert meta["Image"]["Beam Type"] == "Orion"
         assert meta["Image"]["Aperture Description"] == "[1] Ne 10 µm (30.0kV|s=5.0)"
         assert meta["Detector"]["Name"] == "ET"
-        assert meta["Detector"]["Contrast"] == 32.466667175293
-        assert meta["Detector"]["Brightness"] == 55.0
+        assert meta["Detector"]["Contrast"] == 32.466667175293  # Dimensionless
+        assert meta["Detector"]["Brightness"] == 55.0  # Dimensionless
 
-        # Scan section
-        assert meta["Scan"]["Pixel Dwell Time (μs)"] == 10.0  # 10000 ns converted to μs
-        assert meta["Scan"]["Line Averaging"] == 1.0
-        assert meta["Scan"]["Field of View X (μm)"] == 2.5
-        assert meta["Scan"]["Field of View Y (μm)"] == 2.5
-        assert meta["Scan"]["Scan Rotation (degrees)"] == 1.23797181004193e-05
-        assert meta["Scan"]["Affine Ux"] == 0.001220703125
-        assert meta["Scan"]["Affine Uy"] == 0.0
-        assert meta["Scan"]["Affine Vx"] == 0.0
-        assert meta["Scan"]["Affine Vy"] == -0.001220703125
-        assert meta["Scan"]["Focus Value"] == 0.0118617592379451
-        assert meta["Scan"]["Stigmator X Value"] == -16.4666652679443
-        assert meta["Scan"]["Stigmator Y Value"] == 9.63332939147949
+        # Scan section - now with Pint Quantities where applicable
+        assert isinstance(meta["Scan"]["Pixel Dwell Time"], ureg.Quantity)
+        assert meta["Scan"]["Pixel Dwell Time"].magnitude == pytest.approx(
+            10.0
+        )  # 10000 ns converted to μs
+        assert meta["Scan"]["Pixel Dwell Time"].units == ureg.microsecond
+        assert meta["Scan"]["Line Averaging"] == 1.0  # Dimensionless
+        assert isinstance(meta["Scan"]["Field of View X"], ureg.Quantity)
+        assert meta["Scan"]["Field of View X"].magnitude == pytest.approx(2.5)
+        assert meta["Scan"]["Field of View X"].units == ureg.micrometer
+        assert isinstance(meta["Scan"]["Field of View Y"], ureg.Quantity)
+        assert meta["Scan"]["Field of View Y"].magnitude == pytest.approx(2.5)
+        assert meta["Scan"]["Field of View Y"].units == ureg.micrometer
+        assert isinstance(meta["Scan"]["Scan Rotation"], ureg.Quantity)
+        assert meta["Scan"]["Scan Rotation"].magnitude == pytest.approx(
+            1.23797181004193e-05
+        )
+        assert meta["Scan"]["Scan Rotation"].units == ureg.degree
+        assert meta["Scan"]["Affine Ux"] == 0.001220703125  # Dimensionless
+        assert meta["Scan"]["Affine Uy"] == 0.0  # Dimensionless
+        assert meta["Scan"]["Affine Vx"] == 0.0  # Dimensionless
+        assert meta["Scan"]["Affine Vy"] == -0.001220703125  # Dimensionless
+        assert meta["Scan"]["Focus Value"] == 0.0118617592379451  # Dimensionless
+        assert meta["Scan"]["Stigmator X Value"] == -16.4666652679443  # Dimensionless
+        assert meta["Scan"]["Stigmator Y Value"] == 9.63332939147949  # Dimensionless
 
-        # Stage section
-        assert meta["Stage Position"]["X (μm)"] == -21319.2368624182
-        assert meta["Stage Position"]["Y (μm)"] == -27311.808629448
-        assert meta["Stage Position"]["Z (μm)"] == 10.80012316379
-        assert meta["Stage Position"]["Tilt (degrees)"] == 0.191424190998077
-        assert meta["Stage Position"]["Rotation (degrees)"] == 46.2030220031738
-        assert meta["Stage Position"]["M (mm)"] == 0.0
+        # Stage section - now with Pint Quantities
+        assert isinstance(meta["Stage Position"]["X"], ureg.Quantity)
+        assert meta["Stage Position"]["X"].magnitude == pytest.approx(-21319.2368624182)
+        assert meta["Stage Position"]["X"].units == ureg.micrometer
+        assert isinstance(meta["Stage Position"]["Y"], ureg.Quantity)
+        assert meta["Stage Position"]["Y"].magnitude == pytest.approx(-27311.808629448)
+        assert meta["Stage Position"]["Y"].units == ureg.micrometer
+        assert isinstance(meta["Stage Position"]["Z"], ureg.Quantity)
+        assert meta["Stage Position"]["Z"].magnitude == pytest.approx(10.80012316379)
+        assert meta["Stage Position"]["Z"].units == ureg.micrometer
+        assert isinstance(meta["Stage Position"]["Tilt"], ureg.Quantity)
+        assert meta["Stage Position"]["Tilt"].magnitude == pytest.approx(
+            0.191424190998077
+        )
+        assert meta["Stage Position"]["Tilt"].units == ureg.degree
+        assert isinstance(meta["Stage Position"]["Rotation"], ureg.Quantity)
+        assert meta["Stage Position"]["Rotation"].magnitude == pytest.approx(
+            46.2030220031738
+        )
+        assert meta["Stage Position"]["Rotation"].units == ureg.degree
+        assert isinstance(meta["Stage Position"]["M"], ureg.Quantity)
+        assert meta["Stage Position"]["M"].magnitude == pytest.approx(0.0)
+        assert meta["Stage Position"]["M"].units == ureg.millimeter
 
-        # BeamInfo section (item-based)
-        assert meta["Beam"]["Beam Current (pA)"] == 1.3275146484375
-        assert (
-            meta["Beam"]["Acceleration Voltage (kV)"] == 30.0
+        # BeamInfo section (item-based) - now with Pint Quantities
+        assert isinstance(meta["Beam"]["Beam Current"], ureg.Quantity)
+        assert meta["Beam"]["Beam Current"].magnitude == pytest.approx(1.3275146484375)
+        assert meta["Beam"]["Beam Current"].units == ureg.picoampere
+        assert isinstance(meta["Beam"]["Acceleration Voltage"], ureg.Quantity)
+        assert meta["Beam"]["Acceleration Voltage"].magnitude == pytest.approx(
+            30.0
         )  # 30000 V converted to kV
-        assert meta["Beam"]["Aperture"] == 0.0
-        assert meta["Beam"]["GFIS Gas Type"] == "He"
-        assert meta["Beam"]["Gun Gas Pressure"] == 0.0
-        assert meta["Beam"]["Spot Control"] == 5.0
+        assert meta["Beam"]["Acceleration Voltage"].units == ureg.kilovolt
+        assert meta["Beam"]["Aperture"] == 0.0  # Dimensionless
+        assert meta["Beam"]["GFIS Gas Type"] == "He"  # String
+        assert (
+            meta["Beam"]["Gun Gas Pressure"] == 0.0
+        )  # Dimensionless (or unknown unit)
+        assert meta["Beam"]["Spot Control"] == 5.0  # Dimensionless
 
-        # DetectorInfo section (item-based with unit stripping)
-        assert meta["Detector"]["Collector Voltage (V)"] == 500.0  # "=500.0 V" stripped
-        assert meta["Detector"]["Stage Bias Voltage (V)"] == 0.0  # "=0.0 V" stripped
+        # DetectorInfo section (item-based with unit stripping) - with Pint Quantities
+        assert isinstance(meta["Detector"]["Collector Voltage"], ureg.Quantity)
+        assert meta["Detector"]["Collector Voltage"].magnitude == pytest.approx(
+            500.0
+        )  # "=500.0 V" stripped
+        assert meta["Detector"]["Collector Voltage"].units == ureg.volt
+        assert isinstance(meta["Detector"]["Stage Bias Voltage"], ureg.Quantity)
+        assert meta["Detector"]["Stage Bias Voltage"].magnitude == pytest.approx(
+            0.0
+        )  # "=0.0 V" stripped
+        assert meta["Detector"]["Stage Bias Voltage"].units == ureg.volt
 
     def test_extractor_priority_higher_than_quanta(self):
         """Test OrionFibicsTiffExtractor is higher priority than QuantaTiffExtractor."""
@@ -476,12 +565,14 @@ class TestOrionFibicsTiffExtractor:
         result = self.extractor.extract(context)
         meta = result[0]["nx_meta"]
 
-        # Verify dwell time conversion (ns to μs)
-        assert meta["Scan"]["Pixel Dwell Time (μs)"] == 10.0
+        # Verify dwell time conversion (ns to μs) as Pint Quantity
+        assert isinstance(meta["Scan"]["Pixel Dwell Time"], ureg.Quantity)
+        assert meta["Scan"]["Pixel Dwell Time"].magnitude == pytest.approx(10.0)
+        assert meta["Scan"]["Pixel Dwell Time"].units == ureg.microsecond
         # Verify item-based field extraction
-        assert "Beam Current (pA)" in meta.get("Beam", {})
+        assert "Beam Current" in meta.get("Beam", {})
         # Verify unit stripping works
-        assert "Collector Voltage (V)" in meta.get("Detector", {})
+        assert "Collector Voltage" in meta.get("Detector", {})
 
     def test_parse_zeiss_field_exception_handling(self):
         """Test that _parse_zeiss_field handles exceptions during parsing gracefully."""
@@ -541,6 +632,28 @@ class TestOrionFibicsTiffExtractor:
         )
         # Should return the text portion after stripping
         assert result == "invalid"
+
+    def test_parse_fibics_value_strip_units_numeric_without_unit(self):
+        """Test _parse_fibics_value with strip_units, numeric value, but no unit arg.
+
+        This tests line 968 in orion_HIM_tif.py where conversion_factor is
+        "strip_units", the value converts to float successfully, but unit=None
+        so it returns the raw numeric value instead of a Quantity.
+        """
+        import xml.etree.ElementTree as ET
+
+        section = ET.Element("TestSection")
+        field = ET.Element("NumericField")
+        field.text = "=42.5 V"  # Numeric value with unit suffix
+        section.append(field)
+
+        # Call with strip_units but no unit parameter (defaults to None)
+        result = self.extractor._parse_fibics_value(  # noqa: SLF001
+            section, "NumericField", "strip_units", unit=None
+        )
+        # Should return numeric value without creating a Quantity
+        assert result == 42.5
+        assert not isinstance(result, ureg.Quantity)
 
     def test_find_fibics_section_exception_handling(self):
         """Test that _find_fibics_section handles exceptions during iteration."""

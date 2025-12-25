@@ -1,5 +1,6 @@
 """Methods (primarily intended to be private) that are used by the other extractors."""
 
+import contextlib
 import logging
 import re
 import shutil
@@ -15,6 +16,7 @@ from rsciio.digitalmicrograph._api import (  # pylint: disable=import-error,no-n
 )
 
 from nexusLIMS.instruments import Instrument, get_instr_from_filepath
+from nexusLIMS.schemas.units import ureg
 from nexusLIMS.utils import set_nested_dict_value, try_getting_dict_value
 
 logger = logging.getLogger(__name__)
@@ -59,7 +61,10 @@ def _set_exposure_time(mdict: Dict, pre_path: List[str]):
     if val is None:
         val = try_getting_dict_value(mdict, [*pre_path, "DataBar", "Exposure Time (s)"])
     if val is not None:
-        set_nested_dict_value(mdict, ["nx_meta", "Exposure Time (s)"], val)
+        # Convert to Pint Quantity with seconds unit
+        with contextlib.suppress(ValueError, TypeError):
+            val = ureg.Quantity(val, "second")
+        set_nested_dict_value(mdict, ["nx_meta", "Exposure Time"], val)
 
 
 def _set_gms_version(mdict: Dict, pre_path: List[str]):
@@ -95,17 +100,43 @@ def _set_eels_meta(mdict, base, meta_key):
     # only add the value to this list if we found it, and it's not
     # one of the "facility-wide" set values that do not have any meaning:
     if val is not None:
+        field_name = meta_key[-1]
+        # Convert to Pint Quantity if the field has units
+        unit_map = {
+            "Exposure (s)": "second",
+            "Integration time (s)": "second",
+            "Collection semi-angle (mrad)": "milliradian",
+            "Convergence semi-angle (mrad)": "milliradian",
+        }
+        if field_name in unit_map:
+            with contextlib.suppress(ValueError, TypeError):
+                val = ureg.Quantity(val, unit_map[field_name])
+                # Remove unit suffix from field name
+                field_name = field_name.rsplit(" (", 1)[0]
         # add last value of each parameter to the "EELS" sub-tree of nx_meta
-        set_nested_dict_value(mdict, ["nx_meta", "EELS", meta_key[-1]], val)
+        set_nested_dict_value(mdict, ["nx_meta", "EELS", field_name], val)
 
 
 def _set_eels_spectrometer_meta(mdict, base, meta_key):
     val = try_getting_dict_value(mdict, base + meta_key)
     if val is not None:
+        field_name = meta_key[0]
+        # Convert to Pint Quantity if the field has units
+        unit_map = {
+            "Energy loss (eV)": "electron_volt",
+            "Drift tube voltage (V)": "volt",
+            "Slit width (eV)": "electron_volt",
+            "Prism offset (V)": "volt",
+        }
+        if field_name in unit_map:
+            with contextlib.suppress(ValueError, TypeError):
+                val = ureg.Quantity(val, unit_map[field_name])
+                # Remove unit suffix from field name
+                field_name = field_name.rsplit(" (", 1)[0]
         # add last value of each param to the "EELS" sub-tree of nx_meta
         set_nested_dict_value(
             mdict,
-            ["nx_meta", "EELS", "Spectrometer " + meta_key[0]],
+            ["nx_meta", "EELS", "Spectrometer " + field_name],
             val,
         )
 
@@ -195,10 +226,28 @@ def _set_eds_meta(mdict, base, meta_key):
     # only add the value to this list if we found it, and it's not
     # one of the "facility-wide" set values that do not have any meaning:
     if val is not None:
+        field_name = meta_key[-1] if len(meta_key) > 1 else meta_key[0]
+        # Convert to Pint Quantity if the field has units
+        unit_map = {
+            "Dispersion (eV)": "electron_volt",
+            "Energy Cutoff (V)": "volt",
+            "Exposure (s)": "second",
+            "Azimuthal angle": "degree",
+            "Elevation angle": "degree",
+            "Incidence angle": "degree",
+            "Stage tilt": "degree",
+            "Live time": "second",
+            "Real time": "second",
+        }
+        if field_name in unit_map:
+            with contextlib.suppress(ValueError, TypeError):
+                val = ureg.Quantity(val, unit_map[field_name])
+                # Remove unit suffix from field name if present
+                field_name = field_name.rsplit(" (", 1)[0]
         # add last value of each parameter to the "EDS" sub-tree of nx_meta
         set_nested_dict_value(
             mdict,
-            ["nx_meta", "EDS", meta_key[-1] if len(meta_key) > 1 else meta_key[0]],
+            ["nx_meta", "EDS", field_name],
             val,
         )
 
@@ -206,9 +255,21 @@ def _set_eds_meta(mdict, base, meta_key):
 def _set_si_meta(mdict, pre_path, meta_key):
     val = try_getting_dict_value(mdict, [*pre_path, "SI", *meta_key])
     if val is not None:
+        field_name = meta_key[-1]
+        # Convert to Pint Quantity if the field has units
+        unit_map = {
+            "Dispersion (eV)": "electron_volt",
+            "Energy Cutoff (V)": "volt",
+            "Exposure (s)": "second",
+        }
+        if field_name in unit_map:
+            with contextlib.suppress(ValueError, TypeError):
+                val = ureg.Quantity(val, unit_map[field_name])
+                # Remove unit suffix from field name
+                field_name = field_name.rsplit(" (", 1)[0]
         # add last value of each parameter to the "EDS" sub-tree of
         # nx_meta
-        set_nested_dict_value(mdict, ["nx_meta", "EDS", meta_key[-1]], val)
+        set_nested_dict_value(mdict, ["nx_meta", "EDS", field_name], val)
 
 
 def _try_decimal(val):

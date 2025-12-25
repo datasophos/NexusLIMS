@@ -12,6 +12,7 @@ from nexusLIMS.extractors.plugins.quanta_tif import (
     QuantaTiffExtractor,
     get_quanta_metadata,
 )
+from nexusLIMS.schemas.units import ureg
 from tests.unit.test_instrument_factory import make_test_tool
 
 
@@ -54,12 +55,18 @@ class TestQuantaExtractor:
 
         assert metadata[0]["nx_meta"]["Data Type"] == "SEM_Imaging"
         assert metadata[0]["nx_meta"]["DatasetType"] == "Image"
-        assert metadata[0]["nx_meta"]["Scan Rotation (°)"] == pytest.approx(179.9947)
+
+        # Scan Rotation should be a Quantity with degree unit
+        scan_rot = metadata[0]["nx_meta"]["Scan Rotation"]
+        assert isinstance(scan_rot, ureg.Quantity)
+        assert scan_rot.magnitude == pytest.approx(179.9947)
+        assert str(scan_rot.units) == "degree"
+
         assert metadata[0]["nx_meta"]["Tilt Correction Angle"] == pytest.approx(
             0.0121551
         )
-        # Invalid format should be stored as-is
-        assert metadata[0]["nx_meta"]["Chamber Pressure (mPa)"] == "79.8.38"
+        # Invalid format should be stored as-is (string, not Quantity)
+        assert metadata[0]["nx_meta"]["Chamber Pressure"] == "79.8.38"
 
     def test_no_beam_scan_or_system_metadata(
         self,
@@ -141,23 +148,38 @@ class TestQuantaExtractor:
         assert "Creation Time" in metadata[0]["nx_meta"]
         assert "Extractor Warnings" not in metadata[0]["nx_meta"]
 
-        # Verify extraction of standard Quanta metadata fields
-        assert "Horizontal Field Width (μm)" in metadata[0]["nx_meta"]
-        assert "Voltage (kV)" in metadata[0]["nx_meta"]
+        # Verify extraction of standard Quanta metadata fields (new names without units)
+        assert "Horizontal Field Width" in metadata[0]["nx_meta"]
+        assert "Voltage" in metadata[0]["nx_meta"]
         assert "Stage Position" in metadata[0]["nx_meta"]
 
         # Verify metadata values for fields that should be extracted
         assert isinstance(metadata[0]["nx_meta"]["User Text"], str)
         assert (
-            "Specimen Temperature (K)" not in metadata[0]["nx_meta"]
+            "Specimen Temperature" not in metadata[0]["nx_meta"]
         )  # Blank in test file
         assert isinstance(metadata[0]["nx_meta"]["Vacuum Mode"], str)
-        assert metadata[0]["nx_meta"]["Scan Rotation (°)"] == 0
-        assert (
-            "Specimen Humidity (%)" not in metadata[0]["nx_meta"]
-        )  # Blank in test file
-        assert metadata[0]["nx_meta"]["Total Frame Time (s)"] > 0
-        assert metadata[0]["nx_meta"]["Eucentric WD (mm)"] > 0  # EucWD extracted
+
+        # Scan Rotation should be a Quantity with degree unit
+        scan_rot = metadata[0]["nx_meta"]["Scan Rotation"]
+        assert isinstance(scan_rot, ureg.Quantity)
+        assert scan_rot.magnitude == 0
+        assert str(scan_rot.units) == "degree"
+
+        assert "Specimen Humidity" not in metadata[0]["nx_meta"]  # Blank in test file
+
+        # Total Frame Time should be a Quantity with second unit
+        frame_time = metadata[0]["nx_meta"]["Total Frame Time"]
+        assert isinstance(frame_time, ureg.Quantity)
+        assert frame_time.magnitude > 0
+        assert str(frame_time.units) == "second"
+
+        # Eucentric WD should be a Quantity with millimeter unit
+        euc_wd = metadata[0]["nx_meta"]["Eucentric WD"]
+        assert isinstance(euc_wd, ureg.Quantity)
+        assert euc_wd.magnitude > 0
+        assert str(euc_wd.units) == "millimeter"
+
         assert isinstance(
             metadata[0]["nx_meta"]["Image Mode"], str
         )  # ImageMode extracted
@@ -275,7 +297,12 @@ Contrast=60.0
 """
         img.save(tiff_numeric, tiffinfo={34682: metadata_numeric})
         metadata = get_quanta_metadata(tiff_numeric)
-        assert "Detector Grid Voltage (V)" in metadata[0]["nx_meta"]
+        # Field name updated to remove unit suffix
+        assert "Detector Grid Voltage" in metadata[0]["nx_meta"]
+        # Should be a Quantity with volt unit
+        grid_voltage = metadata[0]["nx_meta"]["Detector Grid Voltage"]
+        assert isinstance(grid_voltage, ureg.Quantity)
+        assert str(grid_voltage.units) == "volt"
         assert metadata[0]["nx_meta"]["Data Type"] == "SEM_Imaging"
 
         # Test non-numeric Setting
@@ -334,10 +361,12 @@ UserMode=Low vacuum
 """
         img.save(tiff_low_vac, tiffinfo={34682: metadata_low_vac})
         metadata = get_quanta_metadata(tiff_low_vac)
-        if "Chamber Pressure (Pa)" in metadata[0]["nx_meta"]:
-            assert isinstance(
-                metadata[0]["nx_meta"]["Chamber Pressure (Pa)"], (int, float)
-            )
+        # Field name updated, should be a Quantity with pascal unit
+        if "Chamber Pressure" in metadata[0]["nx_meta"]:
+            ch_pres = metadata[0]["nx_meta"]["Chamber Pressure"]
+            assert isinstance(ch_pres, ureg.Quantity)
+            assert ch_pres.magnitude == pytest.approx(50.5)
+            assert str(ch_pres.units) == "pascal"
 
         # Test non-numeric pressure (error handling)
         tiff_bad_pressure = tmp_path / "bad_pressure.tif"
@@ -358,7 +387,8 @@ Contrast=62.0
         img.save(tiff_bad_pressure, tiffinfo={34682: metadata_bad_pressure})
         metadata = get_quanta_metadata(tiff_bad_pressure)
         assert metadata[0]["nx_meta"]["Data Type"] == "SEM_Imaging"
-        assert metadata[0]["nx_meta"]["Chamber Pressure (Pa)"] == "NOT_A_NUMBER"
+        # Invalid value stored as string (field name updated)
+        assert metadata[0]["nx_meta"]["Chamber Pressure"] == "NOT_A_NUMBER"
 
     def test_suppression_features(self, quanta_test_file):
         """Test zero suppression and conditional extraction features."""
@@ -450,8 +480,17 @@ ResolutionY=768
         img.save(tiff_path, tiffinfo={34682: metadata_str})
         metadata = get_quanta_metadata(tiff_path)
 
-        # Verify special field parsing
-        assert "Scan Rotation (°)" in metadata[0]["nx_meta"]
+        # Verify special field parsing - field name updated
+        assert "Scan Rotation" in metadata[0]["nx_meta"]
+        # Scan Rotation should be a Quantity with degree unit
+        # Note: Input is in radians (3.14159), converted to degrees (~180)
+        scan_rot = metadata[0]["nx_meta"]["Scan Rotation"]
+        assert isinstance(scan_rot, ureg.Quantity)
+        assert scan_rot.magnitude == pytest.approx(
+            179.99985
+        )  # 3.14159 radians = ~180 degrees
+        assert str(scan_rot.units) == "degree"
+
         assert "Tilt Correction Angle" in metadata[0]["nx_meta"]
         assert metadata[0]["nx_meta"]["Drift Correction Applied"] is True
         assert metadata[0]["nx_meta"]["Frames Integrated"] == 4

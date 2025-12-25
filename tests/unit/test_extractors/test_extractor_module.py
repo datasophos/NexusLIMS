@@ -51,7 +51,12 @@ class TestExtractorModule:
         meta = meta_list[0]
         assert meta["nx_meta"]["Acquisition Device"] == "BM-UltraScan"
         assert meta["nx_meta"]["Actual Magnification"] == pytest.approx(17677.0)
-        assert meta["nx_meta"]["Cs(mm)"] == pytest.approx(1.2)
+        # Cs is now a Pint Quantity
+        from nexusLIMS.schemas.units import ureg
+
+        assert isinstance(meta["nx_meta"]["Cs"], ureg.Quantity)
+        assert meta["nx_meta"]["Cs"].magnitude == pytest.approx(1.2)
+        assert meta["nx_meta"]["Cs"].units == ureg.millimeter
         assert meta["nx_meta"]["Data Dimensions"] == "(2048, 2048)"
         assert meta["nx_meta"]["Data Type"] == "TEM_Imaging"
         assert meta["nx_meta"]["DatasetType"] == "Image"
@@ -108,8 +113,17 @@ class TestExtractorModule:
         # Check first signal metadata
         first_signal = meta_list[0]
         assert first_signal["nx_meta"]["Acquisition Device"] == "DigiScan"
-        assert first_signal["nx_meta"]["STEM Camera Length"] == pytest.approx(77.0)
-        assert first_signal["nx_meta"]["Cs(mm)"] == pytest.approx(1.0)
+        # STEM Camera Length and Cs are now Pint Quantities
+        from nexusLIMS.schemas.units import ureg
+
+        assert isinstance(first_signal["nx_meta"]["STEM Camera Length"], ureg.Quantity)
+        assert first_signal["nx_meta"]["STEM Camera Length"].magnitude == pytest.approx(
+            77.0
+        )
+        assert first_signal["nx_meta"]["STEM Camera Length"].units == ureg.millimeter
+        assert isinstance(first_signal["nx_meta"]["Cs"], ureg.Quantity)
+        assert first_signal["nx_meta"]["Cs"].magnitude == pytest.approx(1.0)
+        assert first_signal["nx_meta"]["Cs"].units == ureg.millimeter
         assert first_signal["nx_meta"]["Data Dimensions"] == "(512, 512)"
         assert first_signal["nx_meta"]["Data Type"] == "STEM_Imaging"
         assert first_signal["nx_meta"]["DatasetType"] == "Image"

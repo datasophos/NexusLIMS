@@ -1,5 +1,6 @@
 """EDAX EDS spectrum (.spc/.msa) extractor plugin."""
 
+import contextlib
 import logging
 from typing import Any, ClassVar
 
@@ -8,6 +9,7 @@ from hyperspy.io import load
 from nexusLIMS.extractors.base import ExtractionContext
 from nexusLIMS.extractors.utils import _set_instr_name_and_time
 from nexusLIMS.instruments import get_instr_from_filepath
+from nexusLIMS.schemas.units import ureg
 from nexusLIMS.utils import try_getting_dict_value
 
 logger = logging.getLogger(__name__)
@@ -78,22 +80,28 @@ class SpcExtractor:
         # so this will just bump that all up to the root level for ease of use.
         mdict["original_metadata"] = s.original_metadata["spc_header"].as_dictionary()
 
+        # Map input field names to (output_name, unit) tuples
+        # If unit is None, value is stored as-is; otherwise, create Pint Quantity
         term_mapping = {
-            "azimuth": "Azimuthal Angle (deg)",
-            "liveTime": "Live Time (s)",
-            "detReso": "Detector Energy Resolution (eV)",
-            "elevation": "Elevation Angle (deg)",
-            "evPerChan": "Channel Size (eV)",
-            "kV": "Accelerating Voltage (kV)",
-            "numPts": "Number of Spectrum Channels",
-            "startEnergy": "Starting Energy (keV)",
-            "endEnergy": "Ending Energy (keV)",
-            "tilt": "Stage Tilt (deg)",
+            "azimuth": ("Azimuthal Angle", "degree"),
+            "liveTime": ("Live Time", "second"),
+            "detReso": ("Detector Energy Resolution", "electron_volt"),
+            "elevation": ("Elevation Angle", "degree"),
+            "evPerChan": ("Channel Size", "electron_volt"),
+            "kV": ("Accelerating Voltage", "kilovolt"),
+            "numPts": ("Number of Spectrum Channels", None),
+            "startEnergy": ("Starting Energy", "kiloelectron_volt"),
+            "endEnergy": ("Ending Energy", "kiloelectron_volt"),
+            "tilt": ("Stage Tilt", "degree"),
         }
 
-        for in_term, out_term in term_mapping.items():
-            if try_getting_dict_value(mdict["original_metadata"], in_term) is not None:
-                mdict["nx_meta"][out_term] = mdict["original_metadata"][in_term]
+        for in_term, (out_name, unit) in term_mapping.items():
+            val = try_getting_dict_value(mdict["original_metadata"], in_term)
+            if val is not None:
+                if unit is not None:
+                    with contextlib.suppress(ValueError, TypeError):
+                        val = ureg.Quantity(val, unit)
+                mdict["nx_meta"][out_name] = val
 
         # add any elements present:
         if "Sample" in s.metadata and "elements" in s.metadata.Sample:
@@ -167,46 +175,52 @@ class MsaExtractor:
 
         _set_instr_name_and_time(mdict, filename)
 
+        # Map input field names to (output_name, unit) tuples
+        # If unit is None, value is stored as-is; otherwise, create Pint Quantity
         term_mapping = {
-            "AZIMANGLE-dg": "Azimuthal Angle (deg)",
-            "AmpTime (usec)": "Amplifier Time (μs)",
-            "Analyzer Type": "Analyzer Type",
-            "BEAMKV   -kV": "Beam Energy (keV)",
-            "CHOFFSET": "Channel Offset",
-            "COMMENT": "EDAX Comment",
-            "DATATYPE": "Data Format",
-            "DATE": "EDAX Date",
-            "ELEVANGLE-dg": "Elevation Angle (deg)",
-            "Elements": "User-Selected Elements",
-            "FILENAME": "Originating File of MSA Export",
-            "FORMAT": "File Format",
-            "FPGA Version": "FPGA Version",
-            "LIVETIME  -s": "Live Time (s)",
-            "NCOLUMNS": "Number of Data Columns",
-            "NPOINTS": "Number of Data Points",
-            "OFFSET": "Offset",
-            "OWNER": "EDAX Owner",
-            "REALTIME  -s": "Real Time (s)",
-            "RESO (MnKa)": "Energy Resolution (eV)",
-            "SIGNALTYPE": "Signal Type",
-            "TACTYLR  -cm": "Active Layer Thickness (cm)",
-            "TBEWIND  -cm": "Be Window Thickness (cm)",
-            "TDEADLYR -cm": "Dead Layer Thickness (cm)",
-            "TIME": "EDAX Time",
-            "TITLE": "EDAX Title",
-            "TakeOff Angle": "TakeOff Angle (deg)",
-            "Tilt Angle": "Stage Tilt (deg)",
-            "VERSION": "MSA Format Version",
-            "XLABEL": "X Column Label",
-            "XPERCHAN": "X Units Per Channel",
-            "XUNITS": "X Column Units",
-            "YLABEL": "Y Column Label",
-            "YUNITS": "Y Column Units",
+            "AZIMANGLE-dg": ("Azimuthal Angle", "degree"),
+            "AmpTime (usec)": ("Amplifier Time", "microsecond"),
+            "Analyzer Type": ("Analyzer Type", None),
+            "BEAMKV   -kV": ("Beam Energy", "kiloelectron_volt"),
+            "CHOFFSET": ("Channel Offset", None),
+            "COMMENT": ("EDAX Comment", None),
+            "DATATYPE": ("Data Format", None),
+            "DATE": ("EDAX Date", None),
+            "ELEVANGLE-dg": ("Elevation Angle", "degree"),
+            "Elements": ("User-Selected Elements", None),
+            "FILENAME": ("Originating File of MSA Export", None),
+            "FORMAT": ("File Format", None),
+            "FPGA Version": ("FPGA Version", None),
+            "LIVETIME  -s": ("Live Time", "second"),
+            "NCOLUMNS": ("Number of Data Columns", None),
+            "NPOINTS": ("Number of Data Points", None),
+            "OFFSET": ("Offset", None),
+            "OWNER": ("EDAX Owner", None),
+            "REALTIME  -s": ("Real Time", "second"),
+            "RESO (MnKa)": ("Energy Resolution", "electron_volt"),
+            "SIGNALTYPE": ("Signal Type", None),
+            "TACTYLR  -cm": ("Active Layer Thickness", "centimeter"),
+            "TBEWIND  -cm": ("Be Window Thickness", "centimeter"),
+            "TDEADLYR -cm": ("Dead Layer Thickness", "centimeter"),
+            "TIME": ("EDAX Time", None),
+            "TITLE": ("EDAX Title", None),
+            "TakeOff Angle": ("TakeOff Angle", "degree"),
+            "Tilt Angle": ("Stage Tilt", "degree"),
+            "VERSION": ("MSA Format Version", None),
+            "XLABEL": ("X Column Label", None),
+            "XPERCHAN": ("X Units Per Channel", None),
+            "XUNITS": ("X Column Units", None),
+            "YLABEL": ("Y Column Label", None),
+            "YUNITS": ("Y Column Units", None),
         }
 
-        for in_term, out_term in term_mapping.items():
-            if try_getting_dict_value(mdict["original_metadata"], in_term) is not None:
-                mdict["nx_meta"][out_term] = mdict["original_metadata"][in_term]
+        for in_term, (out_name, unit) in term_mapping.items():
+            val = try_getting_dict_value(mdict["original_metadata"], in_term)
+            if val is not None:
+                if unit is not None:
+                    with contextlib.suppress(ValueError, TypeError):
+                        val = ureg.Quantity(val, unit)
+                mdict["nx_meta"][out_name] = val
 
         return [mdict]
 

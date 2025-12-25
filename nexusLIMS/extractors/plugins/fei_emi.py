@@ -1,5 +1,6 @@
 """FEI TIA (.ser/.emi) extractor plugin."""
 
+import contextlib
 import logging
 from datetime import datetime as dt
 from pathlib import Path
@@ -11,6 +12,7 @@ from hyperspy.signal import BaseSignal
 
 from nexusLIMS.extractors.base import ExtractionContext
 from nexusLIMS.instruments import Instrument, get_instr_from_filepath
+from nexusLIMS.schemas.units import ureg
 from nexusLIMS.utils import (
     current_system_tz,
     set_nested_dict_value,
@@ -314,28 +316,24 @@ def parse_experimental_conditions(metadata):
         The same metadata dictionary with some values added under the
         root-level ``nx_meta`` key
     """
+    # Map input field names to (output_name, unit) tuples
+    # If unit is None, value is stored as-is; otherwise, create Pint Quantity
     term_mapping = {
-        ("DwellTimePath",): "Dwell Time Path (s)",
-        ("FrameTime",): "Frame Time (s)",
-        ("CameraNamePath",): "Camera Name Path",
-        ("Binning",): "Binning",
-        ("BeamPosition",): "Beam Position (μm)",
-        ("EnergyResolution",): "Energy Resolution (eV)",
-        ("IntegrationTime",): "Integration Time (s)",
-        ("NumberSpectra",): "Number of Spectra",
-        ("ShapingTime",): "Shaping Time (s)",
-        ("ScanArea",): "Scan Area",
+        ("DwellTimePath",): ("Dwell Time Path", "second"),
+        ("FrameTime",): ("Frame Time", "second"),
+        ("CameraNamePath",): ("Camera Name Path", None),
+        ("Binning",): ("Binning", None),
+        ("BeamPosition",): ("Beam Position", "micrometer"),
+        ("EnergyResolution",): ("Energy Resolution", "electron_volt"),
+        ("IntegrationTime",): ("Integration Time", "second"),
+        ("NumberSpectra",): ("Number of Spectra", None),
+        ("ShapingTime",): ("Shaping Time", "second"),
+        ("ScanArea",): ("Scan Area", None),
     }
     base = ["ObjectInfo", "AcquireInfo"]
 
     if try_getting_dict_value(metadata, base) is not None:
-        metadata = map_keys(term_mapping, base, metadata)
-
-    # remove units from beam position (if present)
-    if "Beam Position (μm)" in metadata["nx_meta"]:
-        metadata["nx_meta"]["Beam Position (μm)"] = metadata["nx_meta"][
-            "Beam Position (μm)"
-        ].replace(" um", "")
+        metadata = map_keys_with_units(term_mapping, base, metadata)
 
     return metadata
 
@@ -360,15 +358,16 @@ def parse_acquire_info(metadata):
         The same metadata dictionary with some values added under the
         root-level ``nx_meta`` key
     """
+    # Map input field names to (output_name, unit) tuples
     term_mapping = {
-        ("AcceleratingVoltage",): "Microscope Accelerating Voltage (V)",
-        ("Tilt1",): "Microscope Tilt 1",
-        ("Tilt2",): "Microscope Tilt 2",
+        ("AcceleratingVoltage",): ("Microscope Accelerating Voltage", "volt"),
+        ("Tilt1",): ("Microscope Tilt 1", None),
+        ("Tilt2",): ("Microscope Tilt 2", None),
     }
     base = ["ObjectInfo", "ExperimentalConditions", "MicroscopeConditions"]
 
     if try_getting_dict_value(metadata, base) is not None:
-        metadata = map_keys(term_mapping, base, metadata)
+        metadata = map_keys_with_units(term_mapping, base, metadata)
 
     return metadata
 
@@ -409,26 +408,24 @@ def parse_experimental_description(metadata):
     ):
         term_mapping = {}
         for k in metadata["ObjectInfo"]["ExperimentalDescription"]:
-            term, unit = split_fei_metadata_units(k)
-            if unit:
-                unit = unit.replace("uA", "μA").replace("um", "μm").replace("deg", "°")
-            term_mapping[(k,)] = f"{term}" + (f" ({unit})" if unit else "")
-            # Make stage position a nested list
-            if "Stage" in term:
-                term = term.replace("Stage ", "")
-                term_mapping[(k,)] = [
-                    "Stage Position",
-                    f"{term}" + (f" ({unit})" if unit else ""),
-                ]
-            # Make filter settings a nested list
-            if "Filter " in term:
-                term = term.replace("Filter ", "")
-                term_mapping[(k,)] = [
-                    "Tecnai Filter",
-                    f"{term.title()}" + (f" ({unit})" if unit else ""),
-                ]
+            term, fei_unit = split_fei_metadata_units(k)
+            pint_unit = fei_unit_to_pint(fei_unit)
 
-        metadata = map_keys(term_mapping, base, metadata)
+            # Determine output field name(s)
+            if "Stage" in term:
+                # Make stage position a nested list
+                term = term.replace("Stage ", "")
+                out_name = ["Stage Position", term]
+            elif "Filter " in term:
+                # Make filter settings a nested list
+                term = term.replace("Filter ", "")
+                out_name = ["Tecnai Filter", term.title()]
+            else:
+                out_name = term
+
+            term_mapping[(k,)] = (out_name, pint_unit)
+
+        metadata = map_keys_with_units(term_mapping, base, metadata)
 
         # Microscope Mode often has excess spaces, so fix that if needed:
         if "Mode" in metadata["nx_meta"]:
@@ -474,6 +471,41 @@ def get_emi_from_ser(ser_fname: Path) -> Path:
     return emi_fname, index
 
 
+def fei_unit_to_pint(fei_unit):
+    """
+    Convert FEI unit string to Pint unit name.
+
+    Parameters
+    ----------
+    fei_unit : str or None
+        The unit string from FEI metadata (e.g., "kV", "uA", "um", "deg")
+
+    Returns
+    -------
+    str or None
+        The corresponding Pint unit name, or None if no unit or not recognized
+    """
+    if fei_unit is None:
+        return None
+
+    # Map FEI units to Pint unit names
+    unit_map = {
+        "kV": "kilovolt",
+        "V": "volt",
+        "uA": "microampere",
+        "um": "micrometer",
+        "deg": "degree",
+        "s": "second",
+        "eV": "electron_volt",
+        "keV": "kiloelectron_volt",
+        "mm": "millimeter",
+        "nm": "nanometer",
+        "mrad": "milliradian",
+    }
+
+    return unit_map.get(fei_unit)
+
+
 def split_fei_metadata_units(metadata_term):
     """
     Split metadata into value and units.
@@ -509,66 +541,58 @@ def split_fei_metadata_units(metadata_term):
     return (mdata_term, mdata_and_unit[1])
 
 
-def map_keys(term_mapping, base, metadata):
+def map_keys_with_units(term_mapping, base, metadata):
     """
-    Map keys into NexusLIMS metadata structure.
+    Map keys into NexusLIMS metadata structure with unit support.
 
-    Given a term mapping dictionary and a metadata dictionary, translate
-    the input keys within the "raw" metadata into a parsed value in the
-    "nx_meta" metadata structure.
+    Maps input metadata terms to NexusLIMS metadata structure, with support
+    for (output_name, unit) tuples in the term_mapping values to create Pint
+    Quantities.
 
     Parameters
     ----------
     term_mapping : dict
         Dictionary where keys are tuples of strings (the input terms),
-        and values are either a single string or a list of strings (the
-        output terms).
+        and values are tuples of (output_name, unit) where output_name
+        is either a string or list of strings, and unit is either a string
+        (Pint unit name) or None
     base : list
-        The 'root' path within the metadata dictionary of where to start
-        applying the input terms
+        The 'root' path within the metadata dictionary
     metadata : dict
-        A metadata dictionary as returned by :py:meth:`get_ser_metadata`
+        A metadata dictionary
 
     Returns
     -------
     metadata : dict
-        The same metadata dictionary with some values added under the
-        root-level ``nx_meta`` key, as specified by ``term_mapping``
-
-    Notes
-    -----
-    The ``term_mapping`` parameter should be a dictionary of the form:
-
-    ```python
-    {
-        ('val1_1', 'val1_2') : 'output_val_1',
-        ('val1_1', 'val2_2') : 'output_val_2',
-        etc.
-    }
-    ```
-
-    Assuming ``base`` is ``['ObjectInfo', 'AcquireInfo']``, this would map
-    the term present at ``ObjectInfo.AcquireInfo.val1_1.val1_2`` into
-    ``nx_meta.output_val_1``, and ``ObjectInfo.AcquireInfo.val1_1.val2_2`` into
-    ``nx_meta.output_val_2``, and so on. If one of the output terms is a list,
-    the resulting metadata will be nested. `e.g.` ``['output_val_1',
-    'output_val_2']`` would get mapped to ``nx_meta.output_val_1.output_val_2``.
+        The same metadata dictionary with values added to nx_meta
     """
     for in_term in term_mapping:
-        out_term = term_mapping[in_term]
+        out_spec, unit = term_mapping[in_term]
         if isinstance(in_term, tuple):
             in_term = list(in_term)  # noqa: PLW2901
-        if isinstance(out_term, str):
-            out_term = [out_term]
+        if isinstance(out_spec, str):
+            out_spec = [out_spec]
+
         val = try_getting_dict_value(metadata, base + in_term)
         # only add the value to this list if we found it
         if val is not None:
+            # Clean up string values (remove " um" etc.)
+            if isinstance(val, str):
+                val = val.replace(" um", "").strip()
+
+            # Convert to numeric first (handles string numbers)
+            val = _convert_to_numeric(val)
+
+            # Create Quantity if unit specified and value is numeric
+            if unit is not None and isinstance(val, (int, float)):
+                with contextlib.suppress(ValueError, TypeError):
+                    val = ureg.Quantity(val, unit)
+
             set_nested_dict_value(
                 metadata,
-                ["nx_meta", *out_term],
-                _convert_to_numeric(val),
+                ["nx_meta", *out_spec],
+                val,
             )
-
     return metadata
 
 

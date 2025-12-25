@@ -14,6 +14,7 @@ from nexusLIMS.extractors.plugins.tescan_tif import (
     TescanTiffExtractor,
 )
 from nexusLIMS.instruments import get_instr_from_filepath
+from nexusLIMS.schemas.units import ureg
 
 
 @pytest.fixture
@@ -80,7 +81,7 @@ def _assert_tescan_raw_sections(metadata):
     assert metadata[0]["SEM"]["StageTilt"] == "0.0"
 
 
-def _assert_tescan_nx_meta(metadata):
+def _assert_tescan_nx_meta(metadata):  # noqa: PLR0915
     """Assert parsed nx_meta metadata values.
 
     Parameters
@@ -100,48 +101,98 @@ def _assert_tescan_nx_meta(metadata):
     assert metadata[0]["nx_meta"]["warnings"] == [["Operator"]]
     assert metadata[0]["nx_meta"]["Acquisition Date"] == "2025-12-03"
     assert metadata[0]["nx_meta"]["Acquisition Time"] == "17:19:26"
-    assert metadata[0]["nx_meta"]["Magnification (kX)"] == pytest.approx(160.0)
+    # Magnification is a Quantity
+    magnification_qty = metadata[0]["nx_meta"]["Magnification"]
+    assert isinstance(magnification_qty, ureg.Quantity)
+    assert magnification_qty.magnitude == pytest.approx(160.0)
+    assert str(magnification_qty.units) == "kiloX"
     assert (
         metadata[0]["nx_meta"]["Software Version"]
         == "TESCAN Essence Version 1.3.7.1, build 8915"
     )
 
     # Test pixel size parsing (converted from m to nm)
-    assert metadata[0]["nx_meta"]["Pixel Width (nm)"] == pytest.approx(1.5625)
-    assert metadata[0]["nx_meta"]["Pixel Height (nm)"] == pytest.approx(1.5625)
+    # Pixel Width is a Quantity
+    pixel_width_qty = metadata[0]["nx_meta"]["Pixel Width"]
+    assert isinstance(pixel_width_qty, ureg.Quantity)
+    assert pixel_width_qty.magnitude == pytest.approx(1.5625)
+    assert str(pixel_width_qty.units) == "nanometer"
+    # Pixel Height is a Quantity
+    pixel_height_qty = metadata[0]["nx_meta"]["Pixel Height"]
+    assert isinstance(pixel_height_qty, ureg.Quantity)
+    assert pixel_height_qty.magnitude == pytest.approx(1.5625)
+    assert str(pixel_height_qty.units) == "nanometer"
 
     # Test parsed nx_meta values from [SEM]
-    assert metadata[0]["nx_meta"]["HV Voltage (kV)"] == pytest.approx(15.0)
-    assert metadata[0]["nx_meta"]["Working Distance (mm)"] == pytest.approx(5.947501)
-    assert metadata[0]["nx_meta"]["Spot Size (nm)"] == pytest.approx(3.0)
+    # Hv Voltage is a Quantity
+    hv_voltage_qty = metadata[0]["nx_meta"]["HV Voltage"]
+    assert isinstance(hv_voltage_qty, ureg.Quantity)
+    assert hv_voltage_qty.magnitude == pytest.approx(15.0)
+    assert str(hv_voltage_qty.units) == "kilovolt"
+    # Working Distance is a Quantity
+    working_distance_qty = metadata[0]["nx_meta"]["Working Distance"]
+    assert isinstance(working_distance_qty, ureg.Quantity)
+    assert working_distance_qty.magnitude == pytest.approx(5.947501)
+    assert str(working_distance_qty.units) == "millimeter"
+    # Spot Size is a Quantity
+    spot_size_qty = metadata[0]["nx_meta"]["Spot Size"]
+    assert isinstance(spot_size_qty, ureg.Quantity)
+    assert spot_size_qty.magnitude == pytest.approx(3.0)
+    assert str(spot_size_qty.units) == "nanometer"
     assert metadata[0]["nx_meta"]["Detector Name"] == "E-T"
     assert metadata[0]["nx_meta"]["Scan Mode"] == "UH-RESOLUTION"
-    assert metadata[0]["nx_meta"]["Chamber Pressure (mPa)"] == pytest.approx(0.61496)
+    # Chamber Pressure is a Quantity
+    chamber_pressure_qty = metadata[0]["nx_meta"]["Chamber Pressure"]
+    assert isinstance(chamber_pressure_qty, ureg.Quantity)
+    assert chamber_pressure_qty.magnitude == pytest.approx(0.61496)
+    assert str(chamber_pressure_qty.units) == "millipascal"
 
     # Test stage position parsing
-    assert metadata[0]["nx_meta"]["Stage Position"]["X"] == pytest.approx(0.00407293)
-    assert metadata[0]["nx_meta"]["Stage Position"]["Y"] == pytest.approx(0.016073298)
-    assert metadata[0]["nx_meta"]["Stage Position"]["Z"] == pytest.approx(0.006311907)
-    assert metadata[0]["nx_meta"]["Stage Position"][
-        "Rotation (degrees)"
-    ] == pytest.approx(30.0)
-    assert metadata[0]["nx_meta"]["Stage Position"]["Tilt (degrees)"] == pytest.approx(
-        0.0
-    )
+    # X is a Quantity
+    x_qty = metadata[0]["nx_meta"]["Stage Position"]["X"]
+    assert isinstance(x_qty, ureg.Quantity)
+    assert x_qty.magnitude == pytest.approx(0.00407293)
+    assert str(x_qty.units) == "meter"
+    # Y is a Quantity
+    y_qty = metadata[0]["nx_meta"]["Stage Position"]["Y"]
+    assert isinstance(y_qty, ureg.Quantity)
+    assert y_qty.magnitude == pytest.approx(0.016073298)
+    assert str(y_qty.units) == "meter"
+    # Z is a Quantity
+    z_qty = metadata[0]["nx_meta"]["Stage Position"]["Z"]
+    assert isinstance(z_qty, ureg.Quantity)
+    assert z_qty.magnitude == pytest.approx(0.006311907)
+    assert str(z_qty.units) == "meter"
+    assert metadata[0]["nx_meta"]["Stage Position"]["Rotation"] == pytest.approx(30.0)
+    # Tilt is a Quantity
+    tilt_qty = metadata[0]["nx_meta"]["Stage Position"]["Tilt"]
+    assert isinstance(tilt_qty, ureg.Quantity)
+    assert tilt_qty.magnitude == pytest.approx(0.0)
+    assert str(tilt_qty.units) == "degree"
 
     # Test detector settings
     assert metadata[0]["nx_meta"]["Detector 0 Gain"] == pytest.approx(46.562)
     assert metadata[0]["nx_meta"]["Detector 0 Offset"] == pytest.approx(73.76)
 
     # Test scan parameters
-    assert metadata[0]["nx_meta"]["Pixel Dwell Time (μs)"] == pytest.approx(10.0)
+    # Pixel Dwell Time is a Quantity
+    pixel_dwell_time_qty = metadata[0]["nx_meta"]["Pixel Dwell Time"]
+    assert isinstance(pixel_dwell_time_qty, ureg.Quantity)
+    assert pixel_dwell_time_qty.magnitude == pytest.approx(10.0)
+    assert str(pixel_dwell_time_qty.units) == "microsecond"
     # Scan rotation
-    assert metadata[0]["nx_meta"]["Scan Rotation (degrees)"] == pytest.approx(0.0)
+    # Scan Rotation is a Quantity
+    scan_rotation_qty = metadata[0]["nx_meta"]["Scan Rotation"]
+    assert isinstance(scan_rotation_qty, ureg.Quantity)
+    assert scan_rotation_qty.magnitude == pytest.approx(0.0)
+    assert str(scan_rotation_qty.units) == "degree"
 
     # Test emission current (converted from A to μA)
-    assert metadata[0]["nx_meta"]["Emission Current (μA)"] == pytest.approx(
-        217.642, rel=1e-3
-    )
+    # Emission Current is a Quantity
+    emission_current_qty = metadata[0]["nx_meta"]["Emission Current"]
+    assert isinstance(emission_current_qty, ureg.Quantity)
+    assert emission_current_qty.magnitude == pytest.approx(217.642, rel=1e-3)
+    assert str(emission_current_qty.units) == "microampere"
 
     # Test stigmator values
     assert metadata[0]["nx_meta"]["Stigmator X Value"] == pytest.approx(6.02430344)
@@ -412,7 +463,7 @@ class TestTescanPfibTiffExtractor:
         extractor._extract_from_tiff_tags(fake_tif, mdict)
         assert "Extractor Warnings" in mdict["nx_meta"]
 
-    def test_tescan_parse_nx_meta_edge_cases(self):
+    def test_tescan_parse_nx_meta_edge_cases(self):  # noqa: PLR0915
         """Test _parse_nx_meta() handles various edge cases gracefully."""
         extractor = TescanTiffExtractor()
 
@@ -422,15 +473,23 @@ class TestTescanPfibTiffExtractor:
         assert "nx_meta" in result
         assert "warnings" in result["nx_meta"]
 
-        # Test valid numeric values
+        # Test valid numeric values - now returns Quantities
         mdict = {
             "nx_meta": {},
             "MAIN": {"Magnification": "1000.0"},
             "SEM": {"HV": "15000.0"},
         }
         result = extractor._parse_nx_meta(mdict)
-        assert result["nx_meta"]["Magnification (kX)"] == 1.0
-        assert result["nx_meta"]["HV Voltage (kV)"] == 15.0
+        # Magnification is a Quantity
+        mag = result["nx_meta"]["Magnification"]
+        assert isinstance(mag, ureg.Quantity)
+        assert mag.magnitude == 1.0
+        assert str(mag.units) == "kiloX"
+        # HV Voltage is a Quantity
+        hv = result["nx_meta"]["HV Voltage"]
+        assert isinstance(hv, ureg.Quantity)
+        assert hv.magnitude == 15.0
+        assert str(hv.units) == "kilovolt"
 
         # Test zero values (should be included for fields with suppress_zero=False)
         mdict = {
@@ -439,8 +498,16 @@ class TestTescanPfibTiffExtractor:
             "SEM": {"StageX": "0.0"},
         }
         result = extractor._parse_nx_meta(mdict)
-        assert result["nx_meta"]["Magnification (kX)"] == 0.0
-        assert result["nx_meta"]["Stage Position"]["X"] == 0.0
+        # Magnification zero is a Quantity
+        mag_zero = result["nx_meta"]["Magnification"]
+        assert isinstance(mag_zero, ureg.Quantity)
+        assert mag_zero.magnitude == 0.0
+        assert str(mag_zero.units) == "kiloX"
+        # Stage Position X is also a Quantity
+        stage_x = result["nx_meta"]["Stage Position"]["X"]
+        assert isinstance(stage_x, ureg.Quantity)
+        assert stage_x.magnitude == 0.0
+        assert str(stage_x.units) == "meter"
 
         # Test fallback keys
         mdict = {
@@ -453,7 +520,11 @@ class TestTescanPfibTiffExtractor:
             },
         }
         result = extractor._parse_nx_meta(mdict)
-        assert result["nx_meta"]["HV Voltage (kV)"] == pytest.approx(15.0)
+        # HV Voltage from AcceleratorVoltage fallback is a Quantity
+        hv_fallback = result["nx_meta"]["HV Voltage"]
+        assert isinstance(hv_fallback, ureg.Quantity)
+        assert hv_fallback.magnitude == pytest.approx(15.0)
+        assert str(hv_fallback.units) == "kilovolt"
         assert result["nx_meta"]["Detector 0 Gain"] == pytest.approx(46.562)
 
         # Test user info preference
@@ -479,9 +550,16 @@ class TestTescanPfibTiffExtractor:
         }
         result = extractor._parse_nx_meta(mdict)
         stage_pos = result["nx_meta"]["Stage Position"]
-        assert stage_pos["X"] == pytest.approx(0.00407293)
-        assert stage_pos["Y"] == pytest.approx(0.016073298)
-        assert stage_pos["Z"] == pytest.approx(0.006311907)
+        # Stage Position fields are Quantities
+        assert isinstance(stage_pos["X"], ureg.Quantity)
+        assert stage_pos["X"].magnitude == pytest.approx(0.00407293)
+        assert str(stage_pos["X"].units) == "meter"
+        assert isinstance(stage_pos["Y"], ureg.Quantity)
+        assert stage_pos["Y"].magnitude == pytest.approx(0.016073298)
+        assert str(stage_pos["Y"].units) == "meter"
+        assert isinstance(stage_pos["Z"], ureg.Quantity)
+        assert stage_pos["Z"].magnitude == pytest.approx(0.006311907)
+        assert str(stage_pos["Z"].units) == "meter"
 
         # Test nested dictionary paths for string fields
         # This test directly tests the set_nested_dict_value function call
@@ -1033,3 +1111,24 @@ WD=0.005
         # Verify that the warning was added
         assert "warnings" in metadata[0]["nx_meta"]
         assert ["Operator"] in metadata[0]["nx_meta"]["warnings"]
+
+    def test_get_source_unit_unknown_unit(self):
+        """Test _get_source_unit with unknown unit (default fallback case).
+
+        This tests line 76 in tescan_tif.py where an unknown unit that doesn't
+        match any known category is returned as-is by the default fallback.
+        """
+        from nexusLIMS.extractors.plugins.tescan_tif import _get_source_unit
+
+        # Test with a custom/unknown unit that doesn't match any known category
+        result = _get_source_unit("custom_unit")
+        # Should return the unit itself
+        assert result == "custom_unit"
+
+        # Test with another unknown unit
+        result = _get_source_unit("exotic_unit")
+        assert result == "exotic_unit"
+
+        # Test with an empty string (edge case)
+        result = _get_source_unit("")
+        assert result == ""

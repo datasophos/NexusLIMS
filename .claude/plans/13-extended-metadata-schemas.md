@@ -121,8 +121,186 @@ Completed:
 - All instrument profile tests passing (33 tests)
 - Complete end-to-end validation of Pint Quantities through entire system
 
-Next Up:
-- Move to Phase 3: Extractor migration
+**Phase 3: Extractor Migration (In Progress)** 🔄
+
+**Completed:**
+- ✅ **First extractor migration: `quanta_tif.py` - COMPLETE**
+  - Updated `FieldDefinition` in [base.py](nexusLIMS/extractors/base.py#L59-L82) to support optional `unit` parameter
+  - Modified [quanta_tif.py](nexusLIMS/extractors/plugins/quanta_tif.py) to create Pint Quantities for 20 fields with units
+  - Removed unit suffixes from field names (e.g., "Voltage (kV)" → "Voltage")
+  - Updated all field definitions to specify target units
+  - Updated special case parsers (`_parse_scan_rotation`, `_parse_chamber_pressure`)
+
+- ✅ **Test Updates for quanta_tif.py**
+  - Updated [test_quanta_tif.py](tests/unit/test_extractors/test_quanta_tif.py) - all 16 tests passing
+  - Updated 5 tests to validate Pint Quantity objects (magnitude + units)
+  - Established testing pattern for future extractor migrations
+
+- ✅ **JSON Serialization Support - CRITICAL FIX**
+  - Added Pint Quantity encoder to `_CustomEncoder` in [nexusLIMS/extractors/__init__.py](nexusLIMS/extractors/__init__.py#L607-L611)
+  - Serializes Quantities as: `{"value": <float>, "unit": "<unit_string>"}`
+  - Uses `"value"` key (not `"magnitude"`) per design decision for external interoperability
+  - Fixed 4 previously failing tests in test_extractor_module.py
+  - JSON metadata files now correctly serialize Pint Quantities
+
+- ✅ **Second extractor migration: `digital_micrograph.py` - COMPLETE**
+  - **Strategy:** Hybrid approach - modified existing helper functions instead of converting to FieldDefinition pattern
+  - **Rationale:** DM3 files have complex nested metadata structure; existing `_set_*` helpers encapsulate important domain logic
+  - Modified helper functions in [utils.py](nexusLIMS/extractors/utils.py):
+    - `_set_exposure_time()` - Creates Quantity(second), removed "(s)" suffix
+    - `_set_eels_meta()` - Creates Quantities for EELS fields with units
+    - `_set_eels_spectrometer_meta()` - Creates Quantities for spectrometer fields
+    - `_set_eds_meta()` - Creates Quantities for EDS fields with units
+    - `_set_si_meta()` - Creates Quantities for spectrum imaging fields
+  - Updated direct field assignments in [digital_micrograph.py](nexusLIMS/extractors/plugins/digital_micrograph.py):
+    - `parse_dm3_microscope_info()` - Voltage, Cs, STEM Camera Length, Field of View, Sample Time
+    - `parse_dm3_spectrum_image_info()` - Pixel time, Acquisition Duration
+  - **Bug fix:** Changed `"electronvolt"` → `"electron_volt"` (correct Pint unit name with underscore)
+  - **Fields converted to Quantities:**
+    - General: Voltage, Cs, STEM Camera Length, Field of View, Sample Time, Exposure Time
+    - EELS: Exposure, Integration time, Collection semi-angle, Convergence semi-angle, Energy loss, Drift tube voltage, Slit width, Prism offset
+    - EDS: Dispersion, Energy Cutoff, Exposure, Azimuthal angle, Elevation angle, Incidence angle, Stage tilt, Live time, Real time
+    - Spectrum Imaging: Pixel time, Acquisition Duration
+
+- ✅ **Test Updates for digital_micrograph.py**
+  - Updated [test_digital_micrograph.py](tests/unit/test_extractors/test_digital_micrograph.py) - all 20 tests passing
+  - Updated tests to validate Pint Quantity objects for all fields with units
+  - Removed unit suffixes from field names in test assertions
+
+- ✅ **Third extractor migration: `edax.py` - COMPLETE**
+  - **Strategy:** Modified term mapping dictionaries to create Quantities
+  - **Both SpcExtractor and MsaExtractor updated:**
+    - Changed term mappings from `{input: output_name}` to `{input: (output_name, unit)}`
+    - Created Quantities for all fields with units during mapping
+    - Removed unit suffixes from output field names
+  - **Fields converted to Quantities:**
+    - **SPC files:** Azimuthal Angle, Live Time, Detector Energy Resolution, Elevation Angle, Channel Size, Accelerating Voltage, Starting Energy, Ending Energy, Stage Tilt
+    - **MSA files:** All above plus Amplifier Time, Beam Energy, Real Time, Energy Resolution, Active Layer Thickness, Be Window Thickness, Dead Layer Thickness, TakeOff Angle
+  - **Unit types used:** degree, second, electron_volt, kiloelectron_volt, kilovolt, microsecond, centimeter
+
+- ✅ **Test Updates for edax.py**
+  - Updated [test_edax.py](tests/unit/test_extractors/test_edax.py) - all 2 tests passing
+  - Updated both test_leo_edax_spc and test_leo_edax_msa
+  - All fields with units now validated as Quantity objects with proper magnitude and unit checks
+
+- ✅ **Fourth extractor migration: `fei_emi.py` - COMPLETE**
+  - **Strategy:** Leveraged existing dynamic field processing infrastructure
+  - **Status:** Extractor was already mostly migrated - infrastructure was in place
+  - **How it works:**
+    - FEI .emi metadata encodes units in field names with underscores (e.g., `"High_tension_kV"`)
+    - `split_fei_metadata_units()` parses field names and extracts unit suffixes
+    - `fei_unit_to_pint()` maps FEI unit strings to Pint unit names
+    - `map_keys_with_units()` creates Quantities from term mappings
+    - `parse_experimental_description()` dynamically processes all fields
+  - **Fields converted to Quantities:**
+    - **Acquisition settings:** Dwell Time Path, Frame Time, Integration Time, Shaping Time
+    - **Microscope settings:** Microscope Accelerating Voltage, Camera Length, Defocus
+    - **Apertures:** C1/C2/C3 Aperture (all in micrometers)
+    - **Stage Position:** X, Y, Z (micrometer), A, B (degree)
+    - **Beam settings:** Emission (microampere), Extraction Voltage (volt), High Tension (kilovolt)
+    - **Angles:** STEM Rotation, STEM Rotation Correction (degree)
+    - **Image shift:** Image Shift X/Y (micrometer)
+    - **Energy:** Energy Resolution (electron_volt)
+    - Plus many more processed dynamically based on unit suffix in .emi file
+  - **Unit mappings:** kV→kilovolt, V→volt, uA→microampere, um→micrometer, deg→degree, s→second, eV→electron_volt, keV→kiloelectron_volt, mm→millimeter, nm→nanometer, mrad→milliradian
+
+- ✅ **Test Updates for fei_emi.py**
+  - Updated [test_fei_emi.py](tests/unit/test_extractors/test_fei_emi.py) - all 24 tests passing
+  - Removed unit suffixes from field name assertions (e.g., `"C2 Lens (%)"` → `"C2 Lens"`)
+  - Tests already validated Quantity objects where appropriate
+  - `check_stage_position()` helper validates nested Stage Position Quantities
+
+- ✅ **Fifth extractor migration: `tescan_tif.py` - COMPLETE**
+  - **Strategy:** Updated FieldDefinition declarations to include `unit` parameter
+  - **Custom unit added:** `kiloX` for magnification (160 kX = 160000x) in [units.py](nexusLIMS/schemas/units.py#L64)
+  - **Critical fix:** Used keyword arguments (`unit=`) to avoid positional parameter confusion with NamedTuple defaults
+  - **How it works:**
+    - Tescan stores metadata in SI base units (meters, volts, amperes, seconds, pascals, degrees)
+    - `_get_source_unit()` helper maps target units to SI base units
+    - Field extraction loop creates Pint Quantities when `field.unit` is specified
+    - Source data in SI units → converted to target units (e.g., 15000 V → 15 kV)
+  - **Fields converted to Quantities:**
+    - **Magnification** → kiloX (custom unit - 160000 → 160.0 kX)
+    - **Dimensions:** Pixel Width/Height → nanometer, Working Distance → millimeter, Spot Size → nanometer
+    - **Voltages:** HV Voltage, Accelerator Voltage, Tube Voltage, Symmetrization Voltage → kilovolt; Sample Voltage → volt
+    - **Apertures/Shifts:** Aperture Diameter, Cross Section Shift X/Y, Depth of Focus → micrometer
+    - **Stage Position:** X, Y, Z → meter; Rotation, Tilt → degree
+    - **Image Position:** Image Shift X/Y → meter
+    - **Currents:** Emission Current → microampere; Predicted Beam Current, Specimen Current → picoampere
+    - **Time:** Pixel Dwell Time → microsecond
+    - **Pressure:** Chamber Pressure → millipascal
+    - **Angles:** Scan Rotation → degree
+    - **Other voltages:** MTD Grid, MTD Scintillator → kilovolt
+    - **Virtual Observer Distance** → millimeter
+  - **Fields without units** (remain as floats): Detector gains, offsets, stigmator values, centering values, LUT parameters, dimensionless ratios
+
+- ✅ **Test Updates for tescan_tif.py**
+  - Updated [test_tescan_tif.py](tests/unit/test_extractors/test_tescan_tif.py) - all 37 tests passing
+  - Removed unit suffixes from field name assertions (e.g., `"HV Voltage (kV)"` → `"HV Voltage"`)
+  - Added isinstance() checks to verify values are Pint Quantities
+  - Validated magnitude and units separately
+  - Updated edge case tests for fallback keys, zero values, and nested Stage Position
+
+- ✅ **Sixth extractor migration: `orion_HIM_tif.py` - COMPLETE**
+  - **Strategy:** Updated FieldDefinition declarations to include `unit` parameter for both Zeiss and Fibics variants
+  - **Rationale:** Handles two TIFF variants (Zeiss Orion and Fibics) with embedded XML metadata
+  - Modified helper methods to create Pint Quantities when units are specified:
+    - `_parse_zeiss_field()` - Updated to accept optional `unit` parameter and create Quantities
+    - `_parse_fibics_value()` - Updated to accept optional `unit` parameter and create Quantities
+  - **Fields converted to Quantities:**
+    - **Zeiss variant:**
+      - Voltages: Acceleration, Extraction, Condenser, Objective, Lens 1/2, ET Grid, MCP Bias, Scintillator, Sample Bias → kilovolt/volt
+      - Currents: Beam Current, Blanker Current, Sample Current → picoampere
+      - Positions: Pan X/Y, Stage X/Y (micrometer), Stage Z (millimeter)
+      - Angles: Scan Rotation, Stage Tilt/Rotation → degree
+      - Distances: Working Distance, Crossover Position → millimeter; Field of View, Aperture Size → micrometer
+      - Optics: MC shifts/tilts → microradian
+      - Time: Frame/Line Retrace, Dwell Time → microsecond
+      - Temperature: Gun Temperature → kelvin
+      - Pressure: Gun/Column/Chamber/Helium Pressure → torr
+      - Calibration: X/Y Scale → meter
+      - Flood Gun Energy → electron_volt
+    - **Fibics variant:**
+      - Voltages: Acceleration Voltage → kilovolt; Collector Voltage, Stage Bias Voltage → volt
+      - Current: Beam Current → picoampere
+      - Positions: Stage X/Y/Z → micrometer; Stage M → millimeter
+      - Angles: Stage Tilt/Rotation, Scan Rotation → degree
+      - Field of View: FOV X/Y → micrometer
+      - Time: Pixel Dwell Time → microsecond (converted from nanoseconds with 1e-3 factor)
+  - **Fields without units:** Dimensionless values (stigmation, contrast, brightness, averaging, magnification, affine transforms), string values (names, modes, gas types)
+  - **Unit conversions:** Voltages from V to kV (1e-3 factor), dwell time from ns to μs (1e-3 factor)
+
+- ✅ **Test Updates for orion_HIM_tif.py**
+  - Updated [test_orion_HIM.py](tests/unit/test_extractors/test_orion_HIM.py) - all 30 tests passing
+  - Updated test assertions to validate Pint Quantity objects for all fields with units
+  - Tests verify both magnitude and units separately using pytest.approx() for floating-point comparisons
+  - Removed unit suffixes from field names in test assertions (e.g., `"Voltage (kV)"` → `"Voltage"`)
+  - Added `isinstance()` checks to verify values are Pint Quantities where expected
+  - Tests cover both Zeiss and Fibics variants with real test files
+
+- ✅ **Seventh extractor migration: `basic_metadata.py` - COMPLETE (NO CHANGES NEEDED)**
+  - **Strategy:** No migration required - this is a fallback extractor
+  - **Rationale:** This extractor only extracts basic file system metadata (modification time, file type) with no fields containing units
+  - **Fields extracted:**
+    - `DatasetType`: "Unknown" (string)
+    - `Data Type`: "Unknown" (string)
+    - `Creation Time`: ISO-8601 timestamp with timezone (string)
+  - **No Pint Quantities needed:** All fields are either strings or dimensionless values
+  - **Tests:** All 2 tests in test_basic_metadata.py passing unchanged
+
+**Test Results:**
+- ✅ 16/16 tests passing in test_quanta_tif.py
+- ✅ 20/20 tests passing in test_digital_micrograph.py
+- ✅ 2/2 tests passing in test_edax.py
+- ✅ 24/24 tests passing in test_fei_emi.py
+- ✅ 37/37 tests passing in test_tescan_tif.py
+- ✅ 30/30 tests passing in test_orion_HIM.py
+- ✅ 2/2 tests passing in test_basic_metadata.py
+- ✅ 4/4 JSON serialization tests in test_extractor_module.py passing
+- ✅ All integration tests passing
+- ✅ **Total: 135 extractor tests passing**
+
+**Phase 3 Complete:** All 7 extractors migrated! ✅
 
 ---
 

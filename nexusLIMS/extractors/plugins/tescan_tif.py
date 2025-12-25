@@ -5,7 +5,6 @@ import configparser
 import contextlib
 import io
 import logging
-from decimal import Decimal
 from pathlib import Path
 from typing import Any, ClassVar
 
@@ -14,6 +13,7 @@ from PIL import Image
 from nexusLIMS.extractors.base import ExtractionContext
 from nexusLIMS.extractors.base import FieldDefinition as FD
 from nexusLIMS.extractors.utils import _set_instr_name_and_time
+from nexusLIMS.schemas.units import ureg
 from nexusLIMS.utils import set_nested_dict_value, sort_dict
 
 TESCAN_TIFF_TAG = 50431
@@ -28,6 +28,52 @@ _MAX_ASCII_VALUE = 128
 
 _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.INFO)
+
+
+def _get_source_unit(target_unit: str) -> str:  # noqa: PLR0911
+    """
+    Determine the source unit (in SI base units) for a given target unit.
+
+    Tescan stores metadata in SI base units (meters, volts, amperes, seconds, etc.).
+    This function maps the target unit to the appropriate source unit.
+
+    Parameters
+    ----------
+    target_unit
+        The target Pint unit name (e.g., 'kilovolt', 'nanometer', 'microsecond')
+
+    Returns
+    -------
+    str
+        The source unit in SI base units
+    """
+    # Map unit dimensions to SI base units
+    # Voltage units
+    if target_unit in ("volt", "kilovolt", "millivolt"):
+        return "volt"
+    # Length units
+    if target_unit in ("meter", "millimeter", "micrometer", "nanometer"):
+        return "meter"
+    # Current units
+    if target_unit in ("ampere", "microampere", "milliampere", "picoampere"):
+        return "ampere"
+    # Time units
+    if target_unit in ("second", "millisecond", "microsecond", "nanosecond"):
+        return "second"
+    # Pressure units
+    if target_unit in ("pascal", "millipascal", "kilopascal", "megapascal"):
+        return "pascal"
+    # Angle units
+    if target_unit in ("degree", "radian"):
+        return "degree"  # Tescan uses degrees
+    # Magnification units
+    if target_unit == "kiloX":
+        return (
+            "dimensionless"  # Tescan stores magnification as raw count (e.g., 160000x)
+        )
+
+    # Default: return the target unit itself
+    return target_unit
 
 
 class TescanTiffExtractor:
@@ -542,6 +588,9 @@ class TescanTiffExtractor:
         sem_section = mdict.get("SEM", {})
 
         # Field definitions using FD NamedTuple
+        # Format:
+        #   FD(section, source_key, output_key, factor, is_string, unit)  # noqa: ERA001
+        # Note: factor is for legacy compatibility; unit should be the target unit name
         fields = [
             # [MAIN] section - in order as they appear in HDR file
             FD("MAIN", "AccFrames", "Accumulated Frames", 1, False),
@@ -553,11 +602,11 @@ class TescanTiffExtractor:
             FD("MAIN", "DeviceModel", "Device Model", 1, True),
             FD("MAIN", "FullUserName", "Full User Name", 1, True),
             FD("MAIN", "ImageStripSize", "Image Strip Size", 1, False),
-            FD("MAIN", "Magnification", "Magnification (kX)", 1e-3, False),
+            FD("MAIN", "Magnification", "Magnification", 1, False, unit="kiloX"),
             FD("MAIN", "MagnificationReference", "Magnification Reference", 1, False),
             FD("MAIN", "OrigFileName", "Original Filename", 1, True),
-            FD("MAIN", "PixelSizeX", "Pixel Width (nm)", 1e9, False),
-            FD("MAIN", "PixelSizeY", "Pixel Height (nm)", 1e9, False),
+            FD("MAIN", "PixelSizeX", "Pixel Width", 1, False, unit="nanometer"),
+            FD("MAIN", "PixelSizeY", "Pixel Height", 1, False, unit="nanometer"),
             FD("MAIN", "SerialNumber", "Serial Number", 1, True),
             FD("MAIN", "Sign", "Sign", 1, True),
             FD("MAIN", "SoftwareVersion", "Software Version", 1, True),
@@ -566,37 +615,79 @@ class TescanTiffExtractor:
             FD("MAIN", "ViewFieldsCountX", "View Fields Count X", 1, False),
             FD("MAIN", "ViewFieldsCountY", "View Fields Count Y", 1, False),
             # [SEM] section - in order as they appear in HDR file
-            FD("SEM", "AcceleratorVoltage", "Accelerator Voltage (kV)", 1e-3, False),
-            FD("SEM", "ApertureDiameter", "Aperture Diameter (μm)", 1e6, False),
+            FD(
+                "SEM",
+                "AcceleratorVoltage",
+                "Accelerator Voltage",
+                1,
+                False,
+                unit="kilovolt",
+            ),
+            FD(
+                "SEM",
+                "ApertureDiameter",
+                "Aperture Diameter",
+                1,
+                False,
+                unit="micrometer",
+            ),
             FD("SEM", "ApertureOptimization", "Aperture Optimization", 1, False),
-            FD("SEM", "ChamberPressure", "Chamber Pressure (mPa)", 1e3, False),
+            FD(
+                "SEM",
+                "ChamberPressure",
+                "Chamber Pressure",
+                1,
+                False,
+                unit="millipascal",
+            ),
             FD("SEM", "CrossFree", "Cross Free", 1, False),
-            FD("SEM", "CrossSectionShiftX", "Cross Section Shift X (μm)", 1e6, False),
-            FD("SEM", "CrossSectionShiftY", "Cross Section Shift Y (μm)", 1e6, False),
-            FD("SEM", "DepthOfFocus", "Depth of Focus (μm)", 1e6, False),
+            FD(
+                "SEM",
+                "CrossSectionShiftX",
+                "Cross Section Shift X",
+                1,
+                False,
+                unit="micrometer",
+            ),
+            FD(
+                "SEM",
+                "CrossSectionShiftY",
+                "Cross Section Shift Y",
+                1,
+                False,
+                unit="micrometer",
+            ),
+            FD("SEM", "DepthOfFocus", "Depth of Focus", 1, False, unit="micrometer"),
             FD("SEM", "Detector", "Detector Name", 1, True),
             FD("SEM", "Detector0", "Detector 0", 1, True),
             FD("SEM", "Detector0FlatField", "Detector 0 Flat Field", 1, False),
             FD("SEM", "Detector0Gain", "Detector 0 Gain", 1, False),
             FD("SEM", "Detector0Offset", "Detector 0 Offset", 1, False),
-            FD("SEM", "DwellTime", "Pixel Dwell Time (μs)", 1e6, False),
-            FD("SEM", "EmissionCurrent", "Emission Current (μA)", 1e6, False),
+            FD("SEM", "DwellTime", "Pixel Dwell Time", 1, False, unit="microsecond"),
+            FD(
+                "SEM",
+                "EmissionCurrent",
+                "Emission Current",
+                1,
+                False,
+                unit="microampere",
+            ),
             FD("SEM", "Gun", "Gun Type", 1, True),
             FD("SEM", "GunShiftX", "Gun Shift X", 1, False),
             FD("SEM", "GunShiftY", "Gun Shift Y", 1, False),
             FD("SEM", "GunTiltX", "Gun Tilt X", 1, False),
             FD("SEM", "GunTiltY", "Gun Tilt Y", 1, False),
-            FD("SEM", "HV", "HV Voltage (kV)", 1e-3, False),
+            FD("SEM", "HV", "HV Voltage", 1, False, unit="kilovolt"),
             FD("SEM", "IMLCenteringX", "IML Centering X", 1, False),
             FD("SEM", "IMLCenteringY", "IML Centering Y", 1, False),
-            FD("SEM", "ImageShiftX", "Image Shift X (m)", 1, False),
-            FD("SEM", "ImageShiftY", "Image Shift Y (m)", 1, False),
+            FD("SEM", "ImageShiftX", "Image Shift X", 1, False, unit="meter"),
+            FD("SEM", "ImageShiftY", "Image Shift Y", 1, False, unit="meter"),
             FD("SEM", "InjectedGas", "Injected Gas", 1, True),
             FD("SEM", "LUTGamma", "LUT Gamma", 1, False),
             FD("SEM", "LUTMaximum", "LUT Maximum", 1, False),
             FD("SEM", "LUTMinimum", "LUT Minimum", 1, False),
-            FD("SEM", "MTDGrid", "MTD Grid (kV)", 1e-3, False),
-            FD("SEM", "MTDScintillator", "MTD Scintillator (kV)", 1e-3, False),
+            FD("SEM", "MTDGrid", "MTD Grid", 1, False, unit="kilovolt"),
+            FD("SEM", "MTDScintillator", "MTD Scintillator", 1, False, unit="kilovolt"),
             FD("SEM", "OBJCenteringX", "OBJ Centering X", 1, False),
             FD("SEM", "OBJCenteringY", "OBJ Centering Y", 1, False),
             FD("SEM", "OBJPreCenteringX", "OBJ Pre-Centering X", 1, False),
@@ -605,51 +696,62 @@ class TescanTiffExtractor:
             FD(
                 "SEM",
                 "PredictedBeamCurrent",
-                "Predicted Beam Current (pA)",
-                1e12,
+                "Predicted Beam Current",
+                1,
                 False,
+                "picoampere",
             ),
             FD("SEM", "PrimaryDetectorGain", "Primary Detector Gain", 1, False),
             FD("SEM", "PrimaryDetectorOffset", "Primary Detector Offset", 1, False),
-            FD("SEM", "SampleVoltage", "Sample Voltage (V)", 1, False),
+            FD("SEM", "SampleVoltage", "Sample Voltage", 1, False, unit="volt"),
             FD("SEM", "ScanID", "Scan ID", 1, False),
             FD("SEM", "ScanMode", "Scan Mode", 1, True),
-            FD("SEM", "ScanRotation", "Scan Rotation (degrees)", 1, False),
+            FD("SEM", "ScanRotation", "Scan Rotation", 1, False, unit="degree"),
             FD("SEM", "ScanSpeed", "Scan Speed", 1, False),
             FD("SEM", "SessionID", "Session ID", 1, True),
-            FD("SEM", "SpecimenCurrent", "Specimen Current (pA)", 1e12, False),
-            FD("SEM", "SpotSize", "Spot Size (nm)", 1e9, False),
+            FD(
+                "SEM",
+                "SpecimenCurrent",
+                "Specimen Current",
+                1,
+                False,
+                unit="picoampere",
+            ),
+            FD("SEM", "SpotSize", "Spot Size", 1, False, unit="nanometer"),
             FD(
                 "SEM",
                 "StageRotation",
-                ["Stage Position", "Rotation (degrees)"],
+                ["Stage Position", "Rotation"],
                 1,
                 False,
+                "degree",
             ),
-            FD("SEM", "StageTilt", ["Stage Position", "Tilt (degrees)"], 1, False),
-            FD("SEM", "StageX", ["Stage Position", "X"], 1, False),
-            FD("SEM", "StageY", ["Stage Position", "Y"], 1, False),
-            FD("SEM", "StageZ", ["Stage Position", "Z"], 1, False),
+            FD("SEM", "StageTilt", ["Stage Position", "Tilt"], 1, False, unit="degree"),
+            FD("SEM", "StageX", ["Stage Position", "X"], 1, False, unit="meter"),
+            FD("SEM", "StageY", ["Stage Position", "Y"], 1, False, unit="meter"),
+            FD("SEM", "StageZ", ["Stage Position", "Z"], 1, False, unit="meter"),
             FD("SEM", "StigmatorX", "Stigmator X Value", 1, False),
             FD("SEM", "StigmatorY", "Stigmator Y Value", 1, False),
             FD(
                 "SEM",
                 "SymmetrizationVoltage",
-                "Symmetrization Voltage (kV)",
-                1e-3,
+                "Symmetrization Voltage",
+                1,
                 False,
+                "kilovolt",
             ),
             FD("SEM", "SyncMains", "Sync to Mains", 1, True),
             FD("SEM", "TiltCorrection", "Tilt Correction", 1, False),
-            FD("SEM", "TubeVoltage", "Tube Voltage (kV)", 1e-3, False),
+            FD("SEM", "TubeVoltage", "Tube Voltage", 1, False, unit="kilovolt"),
             FD(
                 "SEM",
                 "VirtualObserverDistance",
-                "Virtual Observer Distance (mm)",
-                1e3,
+                "Virtual Observer Distance",
+                1,
                 False,
+                "millimeter",
             ),
-            FD("SEM", "WD", "Working Distance (mm)", 1e3, False),
+            FD("SEM", "WD", "Working Distance", 1, False, unit="millimeter"),
         ]
 
         # Extract standard fields
@@ -678,17 +780,37 @@ class TescanTiffExtractor:
                         mdict["nx_meta"][field.output_key] = value
                 else:
                     with contextlib.suppress(ValueError):
-                        # Use Decimal for precise arithmetic to avoid floating-point
-                        # rounding errors during unit conversions
-                        float_val = float(Decimal(value) * Decimal(str(field.factor)))
+                        # Convert to float first
+                        float_val = float(value)
+
                         # Skip if suppress_zero is True and value is zero
-                        if not field.suppress_zero or float_val != 0.0:
+                        if field.suppress_zero and float_val == 0.0:
+                            continue
+
+                        # Create Pint Quantity if unit is specified
+                        if field.unit:
+                            # Source data is in base SI units (meters, volts, amperes,
+                            # seconds). Create Quantity from source value, then convert
+                            # to target unit. Determine source unit based on target unit
+                            # type
+                            source_unit = _get_source_unit(field.unit)
+                            quantity = ureg.Quantity(float_val, source_unit).to(
+                                field.unit
+                            )
+
                             if isinstance(field.output_key, list):
                                 set_nested_dict_value(
-                                    mdict, ["nx_meta", *field.output_key], float_val
+                                    mdict, ["nx_meta", *field.output_key], quantity
                                 )
                             else:
-                                mdict["nx_meta"][field.output_key] = float_val
+                                mdict["nx_meta"][field.output_key] = quantity
+                        # No unit specified, just store as float
+                        elif isinstance(field.output_key, list):
+                            set_nested_dict_value(
+                                mdict, ["nx_meta", *field.output_key], float_val
+                            )
+                        else:
+                            mdict["nx_meta"][field.output_key] = float_val
 
         # Handle user information (prefer FullUserName over UserName)
         full_username = main_section.get("FullUserName")
