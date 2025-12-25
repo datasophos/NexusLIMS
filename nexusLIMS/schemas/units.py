@@ -56,10 +56,6 @@ QUDT_VERSION = "3.1.9"
 # RDF namespace for QUDT
 QUDT_UNIT = Namespace("http://qudt.org/vocab/unit/")
 
-# Define common abbreviations and aliases
-ureg.define("ppm = 1e-6 = ppm")  # Ensure ppm is defined
-ureg.define("percent = 0.01 = pct = %")  # Define percent
-
 # Define custom microscopy units
 ureg.define("kiloX = 1000 = kX")  # Magnification in thousands (e.g., 160 kX = 160000x)
 

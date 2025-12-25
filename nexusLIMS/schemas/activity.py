@@ -338,7 +338,9 @@ class AcquisitionActivity:
                     self.files.append(
                         str(fname)
                     )  # Same file, repeated for multi-signal
-                    self.meta.append(flatten_dict(signal_meta["nx_meta"]))
+                    self.meta.append(
+                        flatten_dict(signal_meta["nx_meta"], separator=" – ")  # noqa: RUF001
+                    )
 
                     # Handle previews (always a list)
                     if preview_fnames and i < len(preview_fnames):

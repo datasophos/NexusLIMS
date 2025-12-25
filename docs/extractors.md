@@ -564,7 +564,7 @@ The `nx_meta` section is automatically validated against Pydantic schemas to ens
 When an extractor returns metadata, NexusLIMS automatically validates it:
 
 ```python
-from nexusLIMS.extractors.schemas import NexusMetadata
+from nexusLIMS.schemas.metadata import NexusMetadata
 
 # Valid metadata that passes validation
 nx_meta = {
@@ -574,7 +574,9 @@ nx_meta = {
     "Data Dimensions": "(1024, 1024)",  # Optional
     "Instrument ID": "FEI-Titan-TEM-635816",  # Optional
     "warnings": ["Operator", "Specimen"],  # Optional: field names flagged as unreliable
-    "Voltage": "200 kV",  # Extra field - allowed
+    "extensions": {  # Optional: instrument-specific fields
+        "voltage": "200 kV",
+    },
 }
 validated = NexusMetadata.model_validate(nx_meta)
 

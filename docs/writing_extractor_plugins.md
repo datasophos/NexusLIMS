@@ -186,31 +186,151 @@ def extract(self, context: ExtractionContext) -> list[dict[str, Any]]:
 
 The `nx_meta` section is automatically validated using Pydantic schemas. NexusLIMS provides built-in validation schemas:
 
-- **{py:class}`nexusLIMS.extractors.schemas.NexusMetadata`** - Base schema validating all extractors
+- **{py:class}`nexusLIMS.schemas.metadata.NexusMetadata`** - Base schema validating all extractors
   - Validates required fields and ISO-8601 timestamp format with timezone
   - Allows arbitrary additional fields for instrument-specific metadata
+  - Supports `extensions` section for instrument-specific or custom fields
 
-- **{py:class}`nexusLIMS.extractors.schemas.TEMImageMetadata`** and **{py:class}`nexusLIMS.extractors.schemas.SEMImageMetadata`** - Type-specific schemas (currently examples only)
-  - These schemas document common fields for TEM/STEM and SEM/FIB data
-  - **Note**: These are provided as reference examples and are **not currently used for automatic validation**
-  - Use the base `NexusMetadata` schema for actual validation
-  - If you need to validate instrument-specific fields, you can use these schemas in your extractor or profile code
+- **Type-specific schemas** - Dataset-type-specific validation:
+  - **{py:class}`nexusLIMS.schemas.metadata.ImageMetadata`** - For Image datasets
+  - **{py:class}`nexusLIMS.schemas.metadata.SpectrumMetadata`** - For Spectrum datasets
+  - **{py:class}`nexusLIMS.schemas.metadata.SpectrumImageMetadata`** - For SpectrumImage datasets
+  - **{py:class}`nexusLIMS.schemas.metadata.DiffractionMetadata`** - For Diffraction datasets
+  - These schemas use **EM Glossary** field names for standardization
+  - Support **Pint Quantity** objects for fields with units
 
-The base `NexusMetadata` schema validation is **automatically performed** during record building, ensuring metadata consistency across all extractors:
+The base `NexusMetadata` schema validation is **automatically performed** during record building, ensuring metadata consistency across all extractors.
+
+#### Using Pint Quantities for Physical Values
+
+**Since v2.2.0**, NexusLIMS uses **Pint Quantities** for all fields with physical units. This provides:
+- Type safety and automatic unit validation
+- Programmatic unit conversion
+- Machine-readable unit information
+- Standardized field names using EM Glossary terminology
+
+**Example with Pint Quantities:**
+```python
+from nexusLIMS.schemas.units import ureg
+
+# Create Pint Quantity objects for fields with units
+nx_meta = {
+    "DatasetType": "Image",
+    "Data Type": "SEM_Imaging",
+    "Creation Time": "2024-01-15T10:30:00-05:00",
+    
+    # Physical quantities with units (using Pint)
+    "acceleration_voltage": ureg.Quantity(15, "kilovolt"),  # or ureg("15 kV")
+    "working_distance": ureg.Quantity(5.2, "millimeter"),  # or ureg("5.2 mm")
+    "beam_current": ureg.Quantity(100, "picoampere"),  # or ureg("100 pA")
+    "dwell_time": ureg.Quantity(10, "microsecond"),  # or ureg("10 us")
+}
+```
+
+**Converting from raw values:**
+```python
+from nexusLIMS.schemas.units import ureg
+
+# If you have voltage in volts, create Quantity directly
+voltage_v = 15000  # Volts from file
+nx_meta["acceleration_voltage"] = ureg.Quantity(voltage_v, "volt")
+# Pint will automatically handle unit conversion when needed
+
+# Alternative: parse from string
+nx_meta["working_distance"] = ureg("5.2 mm")
+```
+
+**Using FieldDefinition for automatic Quantity creation:**
+
+For TIFF-based formats with key-value metadata, use the `FieldDefinition` pattern:
 
 ```python
-from nexusLIMS.extractors.schemas import NexusMetadata
+from nexusLIMS.extractors.base import FieldDefinition
 
-# This will be validated automatically when your extractor is used
+# Define fields with their target units
+FIELD_DEFINITIONS = [
+    FieldDefinition(
+        source_key="HV",  # Key in source metadata
+        target_key="acceleration_voltage",  # EM Glossary field name
+        conversion_factor=1e-3,  # Convert from V to kV
+        unit="kilovolt"  # Target unit as Pint unit string
+    ),
+    FieldDefinition(
+        source_key="WD", 
+        target_key="working_distance",
+        unit="millimeter"  # No conversion if already in target units
+    ),
+]
+
+# In your extract() method, iterate over field definitions:
+for field in FIELD_DEFINITIONS:
+    if field.source_key in source_metadata:
+        raw_value = source_metadata[field.source_key]
+        
+        # Apply conversion factor if specified
+        if field.conversion_factor:
+            value = float(raw_value) * field.conversion_factor
+        else:
+            value = float(raw_value)
+        
+        # Create Pint Quantity if unit is specified
+        if field.unit:
+            nx_meta[field.target_key] = ureg.Quantity(value, field.unit)
+        else:
+            nx_meta[field.target_key] = value
+```
+
+**Benefits of Pint Quantities:**
+1. **Type safety**: Invalid units are caught immediately
+2. **Automatic conversion**: Units are normalized during XML generation
+3. **Machine-readable**: Units are separate from values in XML output
+4. **EM Glossary alignment**: Field names match community standards
+
+**Important**: If a field has units, **always create a Pint Quantity**. If a field is dimensionless (like magnification, brightness, or gain), use a plain numeric value (int/float).
+
+**XML Output:**
+```xml
+<!-- Pint Quantities serialize to clean XML with unit attributes -->
+<meta name="Voltage" unit="kV">15</meta>
+<meta name="Working Distance" unit="mm">5.2</meta>
+<meta name="Beam Current" unit="pA">100</meta>
+```
+
+#### EM Glossary Field Names
+
+NexusLIMS uses standardized field names from the **Electron Microscopy Glossary (EM Glossary)** for core metadata fields. This improves interoperability and aligns with community standards.
+
+**Common EM Glossary Fields:**
+
+| Field Name | EM Glossary ID | Preferred Unit | Description |
+|------------|----------------|----------------|-------------|
+| `acceleration_voltage` | EMG_00000004 | kilovolt (kV) | Electron beam acceleration voltage |
+| `working_distance` | EMG_00000050 | millimeter (mm) | Distance from pole piece to sample |
+| `beam_current` | EMG_00000006 | picoampere (pA) | Electron beam current |
+| `dwell_time` | EMG_00000015 | microsecond (µs) | Pixel dwell time for scanning |
+| `camera_length` | EMG_00000008 | millimeter (mm) | Camera length for diffraction |
+| `acquisition_time` | EMG_00000055 | second (s) | Spectrum acquisition time |
+
+For a complete mapping of field names to EM Glossary IDs and preferred units, see the [EM Glossary Reference](em_glossary_reference.md).
+
+**When to use EM Glossary names:**
+- Use EM Glossary names for **core metadata fields** that have standardized meanings
+- For vendor-specific or instrument-specific fields without EM Glossary equivalents, use descriptive names and place them in the `extensions` section
+
+**Example with core fields and extensions:**
+```python
 nx_meta = {
-    "Creation Time": "2024-01-15T10:30:00-05:00",  # Required: ISO-8601 with timezone
-    "Data Type": "SEM_Imaging",  # Required: non-empty string
-    "DatasetType": "Image",  # Required: one of allowed values
-    "Voltage": "15 kV",  # Optional: extra fields are allowed
+    # Core fields (EM Glossary names)
+    "acceleration_voltage": ureg.Quantity(15, "kilovolt"),
+    "working_distance": ureg.Quantity(5.2, "millimeter"),
+    
+    # Vendor-specific fields go in extensions
+    "extensions": {
+        "detector_brightness": 50.0,  # No EM Glossary equivalent
+        "facility": "Nexus Facility",
+        "quanta_spot_size": 3.5,
+    }
 }
-
-# If you want to validate manually in your extractor:
-validated = NexusMetadata.model_validate(nx_meta)
 ```
 
 ## Advanced Patterns

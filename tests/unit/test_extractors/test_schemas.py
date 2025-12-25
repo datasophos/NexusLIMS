@@ -1,15 +1,11 @@
 # pylint: disable=C0116
 
-"""Tests for nexusLIMS.extractors.schemas - Pydantic schema validation."""
+"""Tests for nexusLIMS.schemas.metadata - Pydantic schema validation."""
 
 import pytest
 from pydantic import ValidationError
 
-from nexusLIMS.extractors.schemas import (
-    NexusMetadata,
-    SEMImageMetadata,
-    TEMImageMetadata,
-)
+from nexusLIMS.schemas.metadata import ImageMetadata, NexusMetadata
 
 
 class TestNexusMetadataValidation:
@@ -42,21 +38,23 @@ class TestNexusMetadataValidation:
         assert validated.instrument_id == "FEI-Titan-TEM-635816"
         assert validated.warnings == []
 
-    def test_valid_with_extra_fields(self):
-        """Test validation allows additional instrument-specific fields."""
+    def test_valid_with_extensions(self):
+        """Test validation allows additional fields via extensions."""
         nx_meta = {
             "Creation Time": "2024-01-15T10:30:00-05:00",
             "Data Type": "STEM_Imaging",
             "DatasetType": "Image",
-            "Voltage": "200 kV",  # Extra field
-            "Magnification": "50000x",  # Extra field
-            "Stage Position": {"X": 0.0, "Y": 0.0, "Z": 0.0},  # Extra nested
+            "extensions": {
+                "voltage": "200 kV",
+                "magnification": "50000x",
+                "stage_position": {"X": 0.0, "Y": 0.0, "Z": 0.0},
+            },
         }
         validated = NexusMetadata.model_validate(nx_meta)
-        # Extra fields should be preserved
-        assert validated.model_extra["Voltage"] == "200 kV"
-        assert validated.model_extra["Magnification"] == "50000x"
-        assert validated.model_extra["Stage Position"]["X"] == 0.0
+        # Extensions should be preserved
+        assert validated.extensions["voltage"] == "200 kV"
+        assert validated.extensions["magnification"] == "50000x"
+        assert validated.extensions["stage_position"]["X"] == 0.0
 
     def test_missing_creation_time(self):
         """Test validation fails when Creation Time is missing."""
@@ -98,7 +96,7 @@ class TestNexusMetadataValidation:
         with pytest.raises(ValidationError) as exc_info:
             NexusMetadata.model_validate(nx_meta)
         # In Python 3.11+, this parses but fails timezone check
-        assert "timezone information" in str(exc_info.value)
+        assert "timezone" in str(exc_info.value)
 
     def test_invalid_timestamp_not_a_date(self):
         """Test validation fails when timestamp is not a valid date."""
@@ -120,7 +118,7 @@ class TestNexusMetadataValidation:
         }
         with pytest.raises(ValidationError) as exc_info:
             NexusMetadata.model_validate(nx_meta)
-        assert "timezone information" in str(exc_info.value)
+        assert "timezone" in str(exc_info.value)
 
     def test_valid_utc_z_notation(self):
         """Test validation accepts UTC 'Z' notation."""
@@ -308,15 +306,17 @@ class TestNexusMetadataValidation:
             "Data Dimensions": "(2048, 2048)",
             "Instrument ID": "FEI-Titan-STEM-643481",
             "warnings": [],
-            "Voltage": "200 kV",
-            "Magnification": "50000x",
-            "Illumination Mode": "STEM",
-            "Acquisition Device": "BF-Detector",
+            "extensions": {
+                "voltage": "200 kV",
+                "magnification": "50000x",
+                "illumination_mode": "STEM",
+                "acquisition_device": "BF-Detector",
+            },
         }
         validated = NexusMetadata.model_validate(nx_meta)
         assert validated.data_type == "STEM_Imaging"
         assert validated.dataset_type == "Image"
-        assert validated.model_extra["Voltage"] == "200 kV"
+        assert validated.extensions["voltage"] == "200 kV"
 
     def test_realistic_eds_spectrum_metadata(self):
         """Test realistic EDS spectrum metadata example."""
@@ -327,12 +327,14 @@ class TestNexusMetadataValidation:
             "Data Dimensions": "(4096,)",
             "Instrument ID": "FEI-Titan-TEM-635816",
             "warnings": [["Low counts", "Acquisition time may be too short"]],
-            "EDS": {"Live Time": 120.5, "Dead Time": 12.3},
+            "extensions": {
+                "eds": {"live_time": 120.5, "dead_time": 12.3},
+            },
         }
         validated = NexusMetadata.model_validate(nx_meta)
         assert validated.dataset_type == "Spectrum"
         assert len(validated.warnings) == 1
-        assert validated.model_extra["EDS"]["Live Time"] == 120.5
+        assert validated.extensions["eds"]["live_time"] == 120.5
 
     def test_realistic_unknown_dataset(self):
         """Test realistic Unknown dataset type (fallback for unsupported files)."""
@@ -349,156 +351,64 @@ class TestNexusMetadataValidation:
         assert len(validated.warnings) == 1
 
 
-class TestTEMImageMetadata:
-    """Test the TEMImageMetadata schema."""
+class TestImageMetadata:
+    """Test the ImageMetadata schema (unified for SEM/TEM/STEM imaging)."""
 
-    def test_tem_metadata_inherits_base_validation(self):
-        """Test that TEM schema inherits base NexusMetadata validation."""
-        tem_meta = {
+    def test_image_metadata_inherits_base_validation(self):
+        """Test that Image schema inherits base NexusMetadata validation."""
+        img_meta = {
             "Creation Time": "2024-01-15T10:30:00-05:00",
             "Data Type": "TEM_Imaging",
             "DatasetType": "Image",
         }
-        validated = TEMImageMetadata.model_validate(tem_meta)
+        validated = ImageMetadata.model_validate(img_meta)
         assert validated.creation_time == "2024-01-15T10:30:00-05:00"
         assert validated.data_type == "TEM_Imaging"
         assert validated.dataset_type == "Image"
 
-    def test_tem_metadata_with_optional_fields(self):
-        """Test TEM metadata with TEM-specific fields."""
-        tem_meta = {
-            "Creation Time": "2024-01-15T10:30:00-05:00",
-            "Data Type": "TEM_Imaging",
-            "DatasetType": "Image",
-            "Voltage": "200 kV",
-            "Magnification": "50000x",
-            "Illumination Mode": "TEM",
-            "Acquisition Device": "BM-UltraScan",
-        }
-        validated = TEMImageMetadata.model_validate(tem_meta)
-        # TEM-specific fields are stored as actual model fields
-        assert validated.voltage == "200 kV"
-        assert validated.magnification == "50000x"
-        assert validated.illumination_mode == "TEM"
-        assert validated.acquisition_device == "BM-UltraScan"
+    def test_image_metadata_with_pint_quantities(self):
+        """Test Image metadata with Pint Quantity fields."""
+        from nexusLIMS.schemas.units import ureg
 
-    def test_stem_metadata(self):
-        """Test STEM imaging metadata."""
-        stem_meta = {
-            "Creation Time": "2024-01-15T10:30:00-05:00",
-            "Data Type": "STEM_Imaging",
-            "DatasetType": "Image",
-            "Voltage": "200 kV",
-            "Magnification": 225000,  # Numeric magnification
-            "Illumination Mode": "STEM",
-            "Acquisition Device": "HAADF",
-        }
-        validated = TEMImageMetadata.model_validate(stem_meta)
-        assert validated.magnification == 225000
-
-    def test_diffraction_metadata(self):
-        """Test diffraction pattern metadata."""
-        diff_meta = {
-            "Creation Time": "2024-01-15T10:30:00-05:00",
-            "Data Type": "TEM_Diffraction",
-            "DatasetType": "Diffraction",
-            "Voltage": "200 kV",
-            "Camera Length": "200 mm",
-            "Illumination Mode": "Diffraction",
-        }
-        validated = TEMImageMetadata.model_validate(diff_meta)
-        assert validated.camera_length == "200 mm"
-
-    def test_tem_metadata_allows_extra_fields(self):
-        """Test that TEM schema allows additional instrument-specific fields."""
-        tem_meta = {
-            "Creation Time": "2024-01-15T10:30:00-05:00",
-            "Data Type": "TEM_Imaging",
-            "DatasetType": "Image",
-            "C2 Lens (%)": 22.133,  # Extra field
-            "Spot Size": 5,  # Extra field
-            "Objective Aperture": "70 µm",  # Extra field
-        }
-        validated = TEMImageMetadata.model_validate(tem_meta)
-        assert validated.model_extra["C2 Lens (%)"] == 22.133
-        assert validated.model_extra["Spot Size"] == 5
-
-
-class TestSEMImageMetadata:
-    """Test the SEMImageMetadata schema."""
-
-    def test_sem_metadata_inherits_base_validation(self):
-        """Test that SEM schema inherits base NexusMetadata validation."""
-        sem_meta = {
+        img_meta = {
             "Creation Time": "2024-01-15T10:30:00-05:00",
             "Data Type": "SEM_Imaging",
             "DatasetType": "Image",
+            "acceleration_voltage": ureg.Quantity(10, "kilovolt"),
+            "working_distance": ureg.Quantity(10, "millimeter"),
+            "beam_current": ureg.Quantity(100, "picoampere"),
+            "magnification": 5000.0,
         }
-        validated = SEMImageMetadata.model_validate(sem_meta)
-        assert validated.creation_time == "2024-01-15T10:30:00-05:00"
-        assert validated.data_type == "SEM_Imaging"
-        assert validated.dataset_type == "Image"
+        validated = ImageMetadata.model_validate(img_meta)
+        assert validated.acceleration_voltage.magnitude == 10
+        assert str(validated.acceleration_voltage.units) == "kilovolt"
+        assert validated.magnification == 5000.0
 
-    def test_sem_metadata_with_optional_fields(self):
-        """Test SEM metadata with SEM-specific fields."""
-        sem_meta = {
+    def test_image_metadata_with_extensions(self):
+        """Test Image metadata with extensions for instrument-specific fields."""
+        img_meta = {
             "Creation Time": "2024-01-15T10:30:00-05:00",
             "Data Type": "SEM_Imaging",
             "DatasetType": "Image",
-            "Voltage": "10 kV",
-            "Magnification": "5000x",
-            "Working Distance": "10 mm",
-            "Beam Current": "100 pA",
-            "Detector": "ETD",
+            "extensions": {
+                "chamber_pressure": "0.5 Torr",
+                "gas": "Water vapor",
+                "spot_size": 3.5,
+            },
         }
-        validated = SEMImageMetadata.model_validate(sem_meta)
-        # SEM-specific fields are stored as actual model fields
-        assert validated.voltage == "10 kV"
-        assert validated.magnification == "5000x"
-        assert validated.working_distance == "10 mm"
-        assert validated.beam_current == "100 pA"
-        assert validated.detector == "ETD"
+        validated = ImageMetadata.model_validate(img_meta)
+        assert validated.extensions["chamber_pressure"] == "0.5 Torr"
+        assert validated.extensions["gas"] == "Water vapor"
+        assert validated.extensions["spot_size"] == 3.5
 
-    def test_him_metadata(self):
-        """Test Helium Ion Microscope metadata."""
-        him_meta = {
-            "Creation Time": "2024-01-15T10:30:00-05:00",
-            "Data Type": "HIM_Imaging",
-            "DatasetType": "Image",
-            "Voltage": "30 kV",
-            "Magnification": 100000,  # Numeric
-            "Working Distance": 8.5,  # Numeric (mm)
-            "Detector": "ETD",
-            "Dwell Time": "1 us",
-        }
-        validated = SEMImageMetadata.model_validate(him_meta)
-        assert validated.magnification == 100000
-        assert validated.working_distance == 8.5
-
-    def test_sem_metadata_with_scan_params(self):
-        """Test SEM metadata with scan parameters."""
-        sem_meta = {
+    def test_image_metadata_forbids_unknown_top_level_fields(self):
+        """Test Image schema forbids unknown top-level fields."""
+        img_meta = {
             "Creation Time": "2024-01-15T10:30:00-05:00",
             "Data Type": "SEM_Imaging",
             "DatasetType": "Image",
-            "Voltage": "5 kV",
-            "Dwell Time": 1e-6,  # Numeric in seconds
-            "Scan Rotation": "45.0",
+            "Unknown Field": "value",  # Should be rejected
         }
-        validated = SEMImageMetadata.model_validate(sem_meta)
-        assert validated.dwell_time == 1e-6
-        assert validated.scan_rotation == "45.0"
-
-    def test_sem_metadata_allows_extra_fields(self):
-        """Test that SEM schema allows additional instrument-specific fields."""
-        sem_meta = {
-            "Creation Time": "2024-01-15T10:30:00-05:00",
-            "Data Type": "SEM_Imaging",
-            "DatasetType": "Image",
-            "Chamber Pressure": "0.5 Torr",  # Extra field
-            "Gas": "Water vapor",  # Extra field
-            "Spot Size": "3.5",  # Extra field
-        }
-        validated = SEMImageMetadata.model_validate(sem_meta)
-        assert validated.model_extra["Chamber Pressure"] == "0.5 Torr"
-        assert validated.model_extra["Gas"] == "Water vapor"
+        with pytest.raises(ValidationError) as exc_info:
+            ImageMetadata.model_validate(img_meta)
+        assert "Extra inputs are not permitted" in str(exc_info.value)

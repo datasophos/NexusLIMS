@@ -326,3 +326,5 @@ See Also
 nexusLIMS.schemas.units : Pint unit registry and utilities
 nexusLIMS.schemas.metadata : Metadata schemas using PintQuantity fields
 """
+
+__all__ = ["PintQuantity"]

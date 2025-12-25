@@ -53,8 +53,8 @@ from pydantic import ValidationError
 
 from nexusLIMS.extractors.base import ExtractionContext
 from nexusLIMS.extractors.registry import get_registry
-from nexusLIMS.extractors.schemas import NexusMetadata
 from nexusLIMS.instruments import get_instr_from_filepath
+from nexusLIMS.schemas.metadata import NexusMetadata
 from nexusLIMS.schemas.units import ureg
 from nexusLIMS.utils import current_system_tz, replace_instrument_data_path
 from nexusLIMS.version import __version__

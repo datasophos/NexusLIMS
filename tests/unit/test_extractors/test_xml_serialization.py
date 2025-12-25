@@ -146,7 +146,7 @@ class TestPrepareMetadataForXML:
         metadata = {
             "acceleration_voltage": ureg.Quantity(10, "kilovolt"),
             "warnings": ["Operator", "Specimen"],
-            "schema_version": "1.2.2",
+            "schema_version": "2.2.0",
             "extensions": {"facility": "Test Lab"},
             "beam_current": None,  # None values also filtered
         }
