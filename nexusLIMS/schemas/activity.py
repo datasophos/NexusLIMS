@@ -338,8 +338,30 @@ class AcquisitionActivity:
                     self.files.append(
                         str(fname)
                     )  # Same file, repeated for multi-signal
+
+                    # Merge extensions into root level before flattening
+                    # This ensures vendor-specific fields appear at root in XML
+                    nx_meta = signal_meta["nx_meta"].copy()
+                    if "extensions" in nx_meta:
+                        extensions = nx_meta.pop("extensions")
+                        nx_meta.update(extensions)
+
+                    # Convert EM Glossary snake_case field names to display names for XML
+                    # Only convert fields that are in snake_case (contain underscores)
+                    from nexusLIMS.schemas import em_glossary
+
+                    nx_meta_for_xml = {}
+                    for field_name, value in nx_meta.items():
+                        # Only convert snake_case EM Glossary field names
+                        if "_" in field_name and field_name.islower():
+                            display_name = em_glossary.get_display_name(field_name)
+                            nx_meta_for_xml[display_name] = value
+                        else:
+                            # Keep original name (DatasetType, Data Type, etc.)
+                            nx_meta_for_xml[field_name] = value
+
                     self.meta.append(
-                        flatten_dict(signal_meta["nx_meta"], separator=" – ")  # noqa: RUF001
+                        flatten_dict(nx_meta_for_xml, separator=" – ")  # noqa: RUF001
                     )
 
                     # Handle previews (always a list)

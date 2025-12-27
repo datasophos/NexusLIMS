@@ -36,6 +36,7 @@ Serialize for XML:
 """
 
 import logging
+from decimal import Decimal
 from functools import lru_cache
 from pathlib import Path
 from typing import Any
@@ -47,7 +48,9 @@ logger = logging.getLogger(__name__)
 
 # Singleton Pint unit registry for the entire application
 # Using this ensures consistent unit definitions across all modules
-ureg = UnitRegistry()
+# Use Decimal for non-integer types to avoid floating-point precision issues
+# (e.g., 1.5625 instead of 1.5624999999999998 when converting units)
+ureg = UnitRegistry(non_int_type=Decimal)
 
 # Path to QUDT unit vocabulary file
 QUDT_UNIT_TTL_PATH = Path(__file__).parent / "references" / "qudt_unit.ttl"

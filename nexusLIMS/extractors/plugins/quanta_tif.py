@@ -163,6 +163,9 @@ class QuantaTiffExtractor:
             # Extract important fields to nx_meta
             mdict = self._parse_nx_meta(mdict)
 
+            # Migrate metadata to schema-compliant format
+            mdict = self._migrate_to_schema_compliant_metadata(mdict)
+
         except Exception as e:
             _logger.exception("Error extracting metadata from %s", filename)
             mdict["nx_meta"]["Data Type"] = "Unknown"
@@ -1056,6 +1059,144 @@ class QuantaTiffExtractor:
         self._process_standard_fields(mdict, fields, det_name)
         self._parse_special_cases(mdict, beam_name, det_name)
 
+        return mdict
+
+    def _migrate_to_schema_compliant_metadata(self, mdict: dict) -> dict:
+        """
+        Migrate metadata to schema-compliant format.
+
+        Reorganizes metadata to conform to type-specific Pydantic schemas:
+        - Extracts core EM Glossary fields to top level with standardized names
+        - Moves vendor-specific nested dictionaries to extensions section
+        - Preserves existing extensions from instrument profiles
+
+        Parameters
+        ----------
+        mdict
+            Metadata dictionary with nx_meta containing extracted fields
+
+        Returns
+        -------
+        dict
+            Metadata dictionary with schema-compliant nx_meta structure
+        """
+        nx_meta = mdict.get("nx_meta", {})
+        dataset_type = nx_meta.get("DatasetType", "Image")
+
+        # Preserve existing extensions from instrument profiles
+        extensions = (
+            nx_meta.get("extensions", {}).copy() if "extensions" in nx_meta else {}
+        )
+
+        # Field mappings from display names to EM Glossary names
+        field_mappings = {
+            "Voltage": "acceleration_voltage",
+            "Working Distance": "working_distance",
+            "Emission Current": "emission_current",
+            "Pixel Dwell Time": "dwell_time",
+            "Horizontal Field Width": "field_of_view",
+            "Pixel Width": "pixel_width",
+            "Pixel Height": "pixel_height",
+        }
+
+        # Fields that ALWAYS go to extensions (vendor-specific nested dicts)
+        extension_top_level_keys = {
+            "Beam",
+            "Scan",
+            "Detector",
+            "Stage Position",
+            "Image",
+            "Application",
+            "Vacuum",
+            "System",
+            "User",
+            "Detectors",
+            "GIS",
+            "Specimen",
+            "PrivateFei",
+            "FEI_XML_Metadata",
+            "Optics",
+        }
+
+        # Also move these individual vendor fields to extensions
+        extension_field_names = {
+            "Detector Brightness Setting",
+            "Detector Contrast Setting",
+            "Detector Enhanced Contrast Setting",
+            "Detector Signal",
+            "Detector Grid Voltage",
+            "Beam Tilt X",
+            "Beam Tilt Y",
+            "Stigmator X Value",
+            "Stigmator Y Value",
+            "Beam Shift X",
+            "Beam Shift Y",
+            "Beam Mode",
+            "Image Mode",
+            "Pre-Tilt",
+            "Eucentric WD",
+            "Vertical Field Width",
+            "Total Frame Time",
+            "Line Time",
+            "Line Integration",
+            "Scan Interlacing",
+            "Extractor Warnings",
+        }
+
+        # Build new nx_meta with proper field organization
+        new_nx_meta = {}
+
+        # Copy required fields
+        for field in ["DatasetType", "Data Type", "Creation Time"]:
+            if field in nx_meta:
+                new_nx_meta[field] = nx_meta[field]
+
+        # Copy instrument identification
+        if "Instrument ID" in nx_meta:
+            new_nx_meta["Instrument ID"] = nx_meta["Instrument ID"]
+
+        # Process all fields and categorize
+        for old_name, value in nx_meta.items():
+            # Skip fields we've already handled
+            if old_name in [
+                "DatasetType",
+                "Data Type",
+                "Creation Time",
+                "Instrument ID",
+                "warnings",
+                "extensions",
+            ]:
+                continue
+
+            # Top-level vendor sections go to extensions
+            if old_name in extension_top_level_keys:
+                extensions[old_name] = value
+                continue
+
+            # Check if this is a core field that needs renaming
+            if old_name in field_mappings:
+                emg_name = field_mappings[old_name]
+                new_nx_meta[emg_name] = value
+                continue
+
+            # Vendor-specific individual fields go to extensions
+            if old_name in extension_field_names:
+                extensions[old_name] = value
+                continue
+
+            # Everything else goes to extensions (vendor-specific by default)
+            # This is safer than putting at top level where schema validation will reject
+            extensions[old_name] = value
+
+        # Copy warnings if present
+        if "warnings" in nx_meta:
+            new_nx_meta["warnings"] = nx_meta["warnings"]
+
+        # Add extensions section if we have any
+        if extensions:
+            new_nx_meta["extensions"] = extensions
+
+        mdict["nx_meta"] = new_nx_meta
         return mdict
 
 

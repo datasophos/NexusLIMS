@@ -107,7 +107,71 @@ class SpcExtractor:
         if "Sample" in s.metadata and "elements" in s.metadata.Sample:
             mdict["nx_meta"]["Elements"] = s.metadata.Sample.elements
 
+        # Move vendor-specific fields to extensions
+        mdict = self._migrate_to_schema_compliant_metadata(mdict)
+
         return [mdict]
+
+    def _migrate_to_schema_compliant_metadata(self, mdict: dict) -> dict:
+        """
+        Migrate metadata to schema-compliant format.
+
+        Moves EDAX-specific fields to extensions section.
+
+        Parameters
+        ----------
+        mdict
+            Metadata dictionary with nx_meta containing extracted fields
+
+        Returns
+        -------
+        dict
+            Metadata dictionary with schema-compliant nx_meta structure
+        """
+        nx_meta = mdict.get("nx_meta", {})
+        extensions = {}
+
+        # These EDAX-specific fields go to extensions
+        vendor_fields = {
+            "Azimuthal Angle",
+            "Live Time",
+            "Detector Energy Resolution",
+            "Elevation Angle",
+            "Channel Size",
+            "Accelerating Voltage",
+            "Number of Spectrum Channels",
+            "Starting Energy",
+            "Ending Energy",
+            "Stage Tilt",
+            "Elements",
+        }
+
+        # Build new nx_meta with core fields only
+        new_nx_meta = {}
+        for field in [
+            "DatasetType",
+            "Data Type",
+            "Creation Time",
+            "Instrument ID",
+            "warnings",
+        ]:
+            if field in nx_meta:
+                new_nx_meta[field] = nx_meta[field]
+
+        # Move vendor fields to extensions
+        for field_name, value in nx_meta.items():
+            if field_name in vendor_fields:
+                extensions[field_name] = value
+            elif field_name not in new_nx_meta:
+                # Any other unknown fields also go to extensions
+                extensions[field_name] = value
+
+        # Add extensions if we have any
+        if extensions:
+            new_nx_meta["extensions"] = extensions
+
+        mdict["nx_meta"] = new_nx_meta
+        return mdict
 
 
 class MsaExtractor:
@@ -222,7 +286,71 @@ class MsaExtractor:
                         val = ureg.Quantity(val, unit)
                 mdict["nx_meta"][out_name] = val
 
+        # Move vendor-specific fields to extensions
+        mdict = self._migrate_to_schema_compliant_metadata(mdict)
+
         return [mdict]
+
+    def _migrate_to_schema_compliant_metadata(self, mdict: dict) -> dict:
+        """
+        Migrate metadata to schema-compliant format.
+
+        Moves EDAX/EMSA-specific fields to extensions section.
+
+        Parameters
+        ----------
+        mdict
+            Metadata dictionary with nx_meta containing extracted fields
+
+        Returns
+        -------
+        dict
+            Metadata dictionary with schema-compliant nx_meta structure
+        """
+        nx_meta = mdict.get("nx_meta", {})
+        extensions = {}
+
+        # These EDAX/EMSA-specific fields go to extensions
+        vendor_fields = {
+            "Azimuthal Angle",
+            "Live Time",
+            "Detector Energy Resolution",
+            "Elevation Angle",
+            "Channel Size",
+            "Accelerating Voltage",
+            "Number of Spectrum Channels",
+            "Starting Energy",
+            "Ending Energy",
+            "Stage Tilt",
+            "Elements",
+        }
+
+        # Build new nx_meta with core fields only
+        new_nx_meta = {}
+        for field in [
+            "DatasetType",
+            "Data Type",
+            "Creation Time",
+            "Instrument ID",
+            "warnings",
+        ]:
+            if field in nx_meta:
+                new_nx_meta[field] = nx_meta[field]
+
+        # Move vendor fields to extensions
+        for field_name, value in nx_meta.items():
+            if field_name in vendor_fields:
+                extensions[field_name] = value
+            elif field_name not in new_nx_meta:
+                # Any other unknown fields also go to extensions
+                extensions[field_name] = value
+
+        # Add extensions if we have any
+        if extensions:
+            new_nx_meta["extensions"] = extensions
+
+        mdict["nx_meta"] = new_nx_meta
+        return mdict
 
 
 # Backward compatibility functions for tests

@@ -196,7 +196,7 @@ NEXUSLIMS_TO_EMG_MAPPINGS: Dict[str, tuple[str, str | None, str]] = {
     ),
     # Image acquisition parameters (SEM/TEM/STEM)
     "acceleration_voltage": (
-        "Voltage",
+        "Acceleration Voltage",
         "Acceleration Voltage",  # EMG label
         "Accelerating voltage of the electron/ion beam",
     ),

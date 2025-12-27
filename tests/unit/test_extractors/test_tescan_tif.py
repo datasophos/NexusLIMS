@@ -4,6 +4,7 @@
 """Tests for nexusLIMS.extractors.plugins.tescan_pfib_tif."""
 
 import logging
+from decimal import Decimal
 from pathlib import Path
 
 import pytest
@@ -15,6 +16,7 @@ from nexusLIMS.extractors.plugins.tescan_tif import (
 )
 from nexusLIMS.instruments import get_instr_from_filepath
 from nexusLIMS.schemas.units import ureg
+from tests.unit.test_extractors.conftest import get_field
 
 
 @pytest.fixture
@@ -94,117 +96,120 @@ def _assert_tescan_nx_meta(metadata):  # noqa: PLR0915
     assert metadata[0]["nx_meta"]["DatasetType"] == "Image"
 
     # Test parsed nx_meta values from [MAIN]
-    assert metadata[0]["nx_meta"]["Device"] == "TESCAN AMBER X"
-    assert metadata[0]["nx_meta"]["Device Model"] == "S12345"
-    assert metadata[0]["nx_meta"]["Serial Number"] == "119-0053"
-    assert metadata[0]["nx_meta"]["Operator"] == "Nexus User"
+    # Fields may be in extensions after schema migration
+    assert get_field(metadata, "Device") == "TESCAN AMBER X"
+    assert get_field(metadata, "Device Model") == "S12345"
+    assert get_field(metadata, "Serial Number") == "119-0053"
+    assert get_field(metadata, "Operator") == "Nexus User"
     assert metadata[0]["nx_meta"]["warnings"] == [["Operator"]]
-    assert metadata[0]["nx_meta"]["Acquisition Date"] == "2025-12-03"
-    assert metadata[0]["nx_meta"]["Acquisition Time"] == "17:19:26"
+    assert get_field(metadata, "Acquisition Date") == "2025-12-03"
+    assert get_field(metadata, "Acquisition Time") == "17:19:26"
     # Magnification is a Quantity
-    magnification_qty = metadata[0]["nx_meta"]["Magnification"]
+    magnification_qty = get_field(metadata, "Magnification")
     assert isinstance(magnification_qty, ureg.Quantity)
-    assert magnification_qty.magnitude == pytest.approx(160.0)
+    assert magnification_qty.magnitude == Decimal("160")
     assert str(magnification_qty.units) == "kiloX"
     assert (
-        metadata[0]["nx_meta"]["Software Version"]
+        get_field(metadata, "Software Version")
         == "TESCAN Essence Version 1.3.7.1, build 8915"
     )
 
     # Test pixel size parsing (converted from m to nm)
-    # Pixel Width is a Quantity
-    pixel_width_qty = metadata[0]["nx_meta"]["Pixel Width"]
+    # Pixel Width is a Quantity - test exact Decimal value
+    pixel_width_qty = get_field(metadata, "Pixel Width")
     assert isinstance(pixel_width_qty, ureg.Quantity)
-    assert pixel_width_qty.magnitude == pytest.approx(1.5625)
+    assert pixel_width_qty.magnitude == Decimal("1.5625")
     assert str(pixel_width_qty.units) == "nanometer"
     # Pixel Height is a Quantity
-    pixel_height_qty = metadata[0]["nx_meta"]["Pixel Height"]
+    pixel_height_qty = get_field(metadata, "Pixel Height")
     assert isinstance(pixel_height_qty, ureg.Quantity)
-    assert pixel_height_qty.magnitude == pytest.approx(1.5625)
+    assert pixel_height_qty.magnitude == Decimal("1.5625")
     assert str(pixel_height_qty.units) == "nanometer"
 
     # Test parsed nx_meta values from [SEM]
     # Hv Voltage is a Quantity
-    hv_voltage_qty = metadata[0]["nx_meta"]["HV Voltage"]
+    hv_voltage_qty = get_field(metadata, "HV Voltage")
     assert isinstance(hv_voltage_qty, ureg.Quantity)
-    assert hv_voltage_qty.magnitude == pytest.approx(15.0)
+    assert hv_voltage_qty.magnitude == Decimal("15")
     assert str(hv_voltage_qty.units) == "kilovolt"
     # Working Distance is a Quantity
-    working_distance_qty = metadata[0]["nx_meta"]["Working Distance"]
+    working_distance_qty = get_field(metadata, "Working Distance")
     assert isinstance(working_distance_qty, ureg.Quantity)
-    assert working_distance_qty.magnitude == pytest.approx(5.947501)
+    assert working_distance_qty.magnitude == Decimal("5.947501")
     assert str(working_distance_qty.units) == "millimeter"
     # Spot Size is a Quantity
-    spot_size_qty = metadata[0]["nx_meta"]["Spot Size"]
+    spot_size_qty = get_field(metadata, "Spot Size")
     assert isinstance(spot_size_qty, ureg.Quantity)
-    assert spot_size_qty.magnitude == pytest.approx(3.0)
+    assert spot_size_qty.magnitude == Decimal("3")
     assert str(spot_size_qty.units) == "nanometer"
-    assert metadata[0]["nx_meta"]["Detector Name"] == "E-T"
-    assert metadata[0]["nx_meta"]["Scan Mode"] == "UH-RESOLUTION"
+    assert get_field(metadata, "Detector Name") == "E-T"
+    assert get_field(metadata, "Scan Mode") == "UH-RESOLUTION"
     # Chamber Pressure is a Quantity
-    chamber_pressure_qty = metadata[0]["nx_meta"]["Chamber Pressure"]
+    chamber_pressure_qty = get_field(metadata, "Chamber Pressure")
     assert isinstance(chamber_pressure_qty, ureg.Quantity)
-    assert chamber_pressure_qty.magnitude == pytest.approx(0.61496)
+    assert chamber_pressure_qty.magnitude == Decimal("0.61496")
     assert str(chamber_pressure_qty.units) == "millipascal"
 
     # Test stage position parsing
+    # Stage Position may be in extensions
+    stage_pos = get_field(metadata, "Stage Position")
     # X is a Quantity
-    x_qty = metadata[0]["nx_meta"]["Stage Position"]["X"]
+    x_qty = stage_pos["X"]
     assert isinstance(x_qty, ureg.Quantity)
-    assert x_qty.magnitude == pytest.approx(0.00407293)
+    assert x_qty.magnitude == Decimal("0.00407293")
     assert str(x_qty.units) == "meter"
     # Y is a Quantity
-    y_qty = metadata[0]["nx_meta"]["Stage Position"]["Y"]
+    y_qty = stage_pos["Y"]
     assert isinstance(y_qty, ureg.Quantity)
-    assert y_qty.magnitude == pytest.approx(0.016073298)
+    assert y_qty.magnitude == Decimal("0.016073298")
     assert str(y_qty.units) == "meter"
     # Z is a Quantity
-    z_qty = metadata[0]["nx_meta"]["Stage Position"]["Z"]
+    z_qty = stage_pos["Z"]
     assert isinstance(z_qty, ureg.Quantity)
-    assert z_qty.magnitude == pytest.approx(0.006311907)
+    assert z_qty.magnitude == Decimal("0.006311907")
     assert str(z_qty.units) == "meter"
-    assert metadata[0]["nx_meta"]["Stage Position"]["Rotation"] == pytest.approx(30.0)
+    assert stage_pos["Rotation"] == Decimal("30")
     # Tilt is a Quantity
-    tilt_qty = metadata[0]["nx_meta"]["Stage Position"]["Tilt"]
+    tilt_qty = stage_pos["Tilt"]
     assert isinstance(tilt_qty, ureg.Quantity)
-    assert tilt_qty.magnitude == pytest.approx(0.0)
+    assert tilt_qty.magnitude == Decimal("0")
     assert str(tilt_qty.units) == "degree"
 
     # Test detector settings
-    assert metadata[0]["nx_meta"]["Detector 0 Gain"] == pytest.approx(46.562)
-    assert metadata[0]["nx_meta"]["Detector 0 Offset"] == pytest.approx(73.76)
+    assert get_field(metadata, "Detector 0 Gain") == Decimal("46.562")
+    assert get_field(metadata, "Detector 0 Offset") == Decimal("73.76")
 
     # Test scan parameters
     # Pixel Dwell Time is a Quantity
-    pixel_dwell_time_qty = metadata[0]["nx_meta"]["Pixel Dwell Time"]
+    pixel_dwell_time_qty = get_field(metadata, "Pixel Dwell Time")
     assert isinstance(pixel_dwell_time_qty, ureg.Quantity)
-    assert pixel_dwell_time_qty.magnitude == pytest.approx(10.0)
+    assert pixel_dwell_time_qty.magnitude == Decimal("10")
     assert str(pixel_dwell_time_qty.units) == "microsecond"
     # Scan rotation
     # Scan Rotation is a Quantity
-    scan_rotation_qty = metadata[0]["nx_meta"]["Scan Rotation"]
+    scan_rotation_qty = get_field(metadata, "Scan Rotation")
     assert isinstance(scan_rotation_qty, ureg.Quantity)
-    assert scan_rotation_qty.magnitude == pytest.approx(0.0)
+    assert scan_rotation_qty.magnitude == Decimal("0")
     assert str(scan_rotation_qty.units) == "degree"
 
     # Test emission current (converted from A to μA)
-    # Emission Current is a Quantity
-    emission_current_qty = metadata[0]["nx_meta"]["Emission Current"]
+    # Emission Current is a Quantity - may be at top level after migration
+    emission_current_qty = metadata[0]["nx_meta"].get("emission_current") or get_field(
+        metadata, "Emission Current"
+    )
     assert isinstance(emission_current_qty, ureg.Quantity)
-    assert emission_current_qty.magnitude == pytest.approx(217.642, rel=1e-3)
+    assert emission_current_qty.magnitude == Decimal("217.642")
     assert str(emission_current_qty.units) == "microampere"
 
     # Test stigmator values
-    assert metadata[0]["nx_meta"]["Stigmator X Value"] == pytest.approx(6.02430344)
-    assert metadata[0]["nx_meta"]["Stigmator Y Value"] == pytest.approx(-2.90339509)
+    assert get_field(metadata, "Stigmator X Value") == Decimal("6.02430344")
+    assert get_field(metadata, "Stigmator Y Value") == Decimal("-2.90339509")
 
     # Test gun type
-    assert metadata[0]["nx_meta"]["Gun Type"] == "Schottky"
+    assert get_field(metadata, "Gun Type") == "Schottky"
 
     # Test session ID
-    assert (
-        metadata[0]["nx_meta"]["Session ID"] == "abcdefgh-ijkl-mnop-qrst-uvwxyz123456"
-    )
+    assert get_field(metadata, "Session ID") == "abcdefgh-ijkl-mnop-qrst-uvwxyz123456"
 
 
 def _assert_all_tescan_metadata(metadata):

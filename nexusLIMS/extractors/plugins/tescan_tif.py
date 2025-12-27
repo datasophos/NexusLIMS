@@ -207,6 +207,9 @@ class TescanTiffExtractor:
         # Strategy 3: Always extract basic TIFF tags (may supplement or override)
         self._extract_from_tiff_tags(filename, mdict)
 
+        # Migrate metadata to schema-compliant format
+        mdict = self._migrate_to_schema_compliant_metadata(mdict)
+
         # Sort the nx_meta dictionary (recursively) for nicer display
         mdict["nx_meta"] = sort_dict(mdict["nx_meta"])
 
@@ -780,11 +783,14 @@ class TescanTiffExtractor:
                         mdict["nx_meta"][field.output_key] = value
                 else:
                     with contextlib.suppress(ValueError):
-                        # Convert to float first
-                        float_val = float(value)
+                        # Convert to Decimal to preserve precision through unit conversions
+                        # The ureg uses non_int_type=Decimal to avoid floating-point errors
+                        from decimal import Decimal
+
+                        decimal_val = Decimal(value)
 
                         # Skip if suppress_zero is True and value is zero
-                        if field.suppress_zero and float_val == 0.0:
+                        if field.suppress_zero and decimal_val == 0:
                             continue
 
                         # Create Pint Quantity if unit is specified
@@ -794,7 +800,7 @@ class TescanTiffExtractor:
                             # to target unit. Determine source unit based on target unit
                             # type
                             source_unit = _get_source_unit(field.unit)
-                            quantity = ureg.Quantity(float_val, source_unit).to(
+                            quantity = ureg.Quantity(decimal_val, source_unit).to(
                                 field.unit
                             )
 
@@ -804,13 +810,13 @@ class TescanTiffExtractor:
                                 )
                             else:
                                 mdict["nx_meta"][field.output_key] = quantity
-                        # No unit specified, just store as float
+                        # No unit specified, convert Decimal to float for storage
                         elif isinstance(field.output_key, list):
                             set_nested_dict_value(
-                                mdict, ["nx_meta", *field.output_key], float_val
+                                mdict, ["nx_meta", *field.output_key], float(decimal_val)
                             )
                         else:
-                            mdict["nx_meta"][field.output_key] = float_val
+                            mdict["nx_meta"][field.output_key] = float(decimal_val)
 
         # Handle user information (prefer FullUserName over UserName)
         full_username = main_section.get("FullUserName")
@@ -819,4 +825,101 @@ class TescanTiffExtractor:
             mdict["nx_meta"]["Operator"] = full_username or username
             mdict["nx_meta"]["warnings"].append(["Operator"])
 
+        return mdict
+
+    def _migrate_to_schema_compliant_metadata(self, mdict: dict) -> dict:
+        """
+        Migrate metadata to schema-compliant format.
+
+        Reorganizes metadata to conform to type-specific Pydantic schemas:
+        - Extracts core EM Glossary fields to top level with standardized names
+        - Moves vendor-specific nested dictionaries and fields to extensions section
+        - Preserves existing extensions from instrument profiles
+
+        Parameters
+        ----------
+        mdict
+            Metadata dictionary with nx_meta containing extracted fields
+
+        Returns
+        -------
+        dict
+            Metadata dictionary with schema-compliant nx_meta structure
+        """
+        nx_meta = mdict.get("nx_meta", {})
+
+        # Preserve existing extensions from instrument profiles
+        extensions = (
+            nx_meta.get("extensions", {}).copy() if "extensions" in nx_meta else {}
+        )
+
+        # Field mappings from display names to EM Glossary names
+        field_mappings = {
+            "HV": "acceleration_voltage",
+            "WD": "working_distance",
+            "Beam Current": "beam_current",
+            "Emission Current": "emission_current",
+            "Pixel Dwell Time": "dwell_time",
+            "Horizontal Field Width": "field_of_view",
+            "PixelWidth": "pixel_width",
+            "PixelHeight": "pixel_height",
+        }
+
+        # Tescan-specific fields that go to extensions (ALL non-core fields)
+        # Since tescan extractor currently extracts many individual fields at top level,
+        # we move them all to extensions except the core EM Glossary ones
+        extension_field_names = {
+            "Operator",  # User info
+            # Any other Tescan-specific fields we discover
+        }
+
+        # Build new nx_meta with proper field organization
+        new_nx_meta = {}
+
+        # Copy required fields
+        for field in ["DatasetType", "Data Type", "Creation Time"]:
+            if field in nx_meta:
+                new_nx_meta[field] = nx_meta[field]
+
+        # Copy instrument identification
+        if "Instrument ID" in nx_meta:
+            new_nx_meta["Instrument ID"] = nx_meta["Instrument ID"]
+
+        # Process all fields and categorize
+        for old_name, value in nx_meta.items():
+            # Skip fields we've already handled
+            if old_name in [
+                "DatasetType",
+                "Data Type",
+                "Creation Time",
+                "Instrument ID",
+                "warnings",
+                "extensions",
+            ]:
+                continue
+
+            # Check if this is a core field that needs renaming
+            if old_name in field_mappings:
+                emg_name = field_mappings[old_name]
+                new_nx_meta[emg_name] = value
+                continue
+
+            # Fields explicitly marked as extensions
+            if old_name in extension_field_names:
+                extensions[old_name] = value
+                continue
+
+            # Everything else goes to extensions (Tescan-specific fields)
+            # This is the safest approach since most Tescan fields are vendor-specific
+            extensions[old_name] = value
+
+        # Copy warnings if present
+        if "warnings" in nx_meta:
+            new_nx_meta["warnings"] = nx_meta["warnings"]
+
+        # Add extensions section if we have any
+        if extensions:
+            new_nx_meta["extensions"] = extensions
+
+        mdict["nx_meta"] = new_nx_meta
         return mdict

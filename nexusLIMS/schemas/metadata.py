@@ -70,9 +70,156 @@ from typing import Any, Dict, Literal
 
 from pydantic import BaseModel, Field, field_validator, model_validator
 
+from nexusLIMS.schemas import em_glossary
 from nexusLIMS.schemas.pint_types import PintQuantity
 
 logger = logging.getLogger(__name__)
+
+
+def emg_field(
+    field_name: str,
+    default: Any = None,
+    *,
+    description: str | None = None,
+    **kwargs: Any,
+) -> Any:
+    """
+    Create a Pydantic Field with EM Glossary metadata.
+
+    This helper automatically adds EM Glossary semantic annotations to field
+    definitions, including EMG ID, URI, and label. It pulls metadata from the
+    em_glossary module to maintain a single source of truth.
+
+    Parameters
+    ----------
+    field_name : str
+        Internal field name (e.g., "acceleration_voltage"). Used to look up
+        EMG metadata from em_glossary module.
+
+    default : Any, optional
+        Default value for the field. Use `...` for required fields, `None`
+        for optional fields.
+
+    description : str, optional
+        Field description. If not provided, uses description from em_glossary
+        module.
+
+    **kwargs : Any
+        Additional keyword arguments passed to pydantic.Field(), such as:
+        - alias: Override display name (default from em_glossary)
+        - gt, ge, lt, le: Numeric constraints
+        - examples: Example values for documentation
+        - json_schema_extra: Additional JSON schema metadata (merged with EMG data)
+
+    Returns
+    -------
+    pydantic.Field
+        Configured Pydantic field with EMG metadata
+
+    Examples
+    --------
+    Create a field with automatic EMG metadata:
+
+    >>> from nexusLIMS.schemas.metadata import emg_field
+    >>> from nexusLIMS.schemas.pint_types import PintQuantity
+    >>>
+    >>> class MySchema(BaseModel):
+    ...     acceleration_voltage: PintQuantity | None = emg_field("acceleration_voltage")
+
+    The field automatically gets:
+    - alias: "Voltage" (display name)
+    - description: "Accelerating voltage of the electron/ion beam"
+    - json_schema_extra: {"emg_id": "EMG_00000004", "emg_uri": "...", ...}
+
+    Override description:
+
+    >>> acceleration_voltage: PintQuantity | None = emg_field(
+    ...     "acceleration_voltage",
+    ...     description="Custom description",
+    ... )
+
+    Add additional JSON schema metadata:
+
+    >>> beam_current: PintQuantity | None = emg_field(
+    ...     "beam_current",
+    ...     json_schema_extra={"units": "ampere", "typical_range": "1e-12 to 1e-6"},
+    ... )
+
+    Notes
+    -----
+    - Fields without EMG mappings still get display names and descriptions
+    - EMG metadata is only added if the field has a valid EMG ID
+    - The alias (display name) comes from em_glossary for consistency
+    - All EMG metadata is stored in json_schema_extra for JSON schema export
+    """
+    # Get EMG metadata
+    emg_id = em_glossary.get_emg_id(field_name)
+    emg_uri = em_glossary.get_emg_uri(field_name)
+    display_name = kwargs.pop("alias", None) or em_glossary.get_display_name(field_name)
+    field_description = description or em_glossary.get_description(field_name)
+
+    # Build json_schema_extra with EMG metadata
+    extra = kwargs.pop("json_schema_extra", {})
+    if emg_id:
+        emg_label = em_glossary.get_emg_label(emg_id)
+        extra.update({
+            "emg_id": emg_id,
+            "emg_uri": emg_uri,
+            "emg_label": emg_label,
+        })
+
+    return Field(
+        default,
+        alias=display_name,
+        description=field_description,
+        json_schema_extra=extra if extra else None,
+        **kwargs,
+    )
+
+
+class ExtractionDetails(BaseModel):
+    """
+    Metadata about the NexusLIMS extraction process.
+
+    Records when metadata was extracted, which extractor module was used,
+    and the NexusLIMS version.
+
+    Attributes
+    ----------
+    date : str
+        ISO-8601 formatted timestamp with timezone indicating when the
+        metadata extraction occurred.
+
+    module : str
+        Fully qualified Python module name of the extractor that processed
+        this file. Examples: "nexusLIMS.extractors.plugins.digital_micrograph",
+        "nexusLIMS.extractors.plugins.quanta_tif"
+
+    version : str
+        NexusLIMS version string used for extraction. Example: "1.2.3"
+    """
+
+    date: str = Field(
+        ...,
+        alias="Date",
+        description="ISO-8601 timestamp when extraction occurred",
+    )
+
+    module: str = Field(
+        ...,
+        alias="Module",
+        description="Extractor module name",
+    )
+
+    version: str = Field(
+        ...,
+        alias="Version",
+        description="NexusLIMS version",
+    )
+
+    model_config = {
+        "populate_by_name": True,
+    }
 
 
 class StagePosition(BaseModel):
@@ -198,6 +345,10 @@ class NexusMetadata(BaseModel):
         Field names flagged as unreliable. These are marked with warning="true"
         in the XML output.
 
+    nexuslims_extraction : ExtractionDetails or None, optional
+        NexusLIMS extraction metadata containing date, module, and version
+        information about when and how the metadata was extracted.
+
     extensions : dict[str, Any], optional
         Flexible container for instrument-specific metadata that doesn't fit
         the core schema. Use this for vendor-specific fields, facility metadata,
@@ -257,6 +408,12 @@ class NexusMetadata(BaseModel):
     warnings: list[str | list[str]] = Field(
         default_factory=list,
         description="Field names flagged as unreliable",
+    )
+
+    nexuslims_extraction: ExtractionDetails | None = Field(
+        None,
+        alias="NexusLIMS Extraction",
+        description="NexusLIMS extraction metadata (date, module, version)",
     )
 
     extensions: Dict[str, Any] = Field(
@@ -389,65 +546,29 @@ class ImageMetadata(NexusMetadata):
     )
 
     # Image-specific fields (using EM Glossary names)
-    acceleration_voltage: PintQuantity | None = Field(
-        None,
-        description="Accelerating voltage (EMG_00000004)",
-    )
+    acceleration_voltage: PintQuantity | None = emg_field("acceleration_voltage")
 
-    working_distance: PintQuantity | None = Field(
-        None,
-        description="Working distance (EMG_00000050)",
-    )
+    working_distance: PintQuantity | None = emg_field("working_distance")
 
-    beam_current: PintQuantity | None = Field(
-        None,
-        description="Beam current (EMG_00000006)",
-    )
+    beam_current: PintQuantity | None = emg_field("beam_current")
 
-    emission_current: PintQuantity | None = Field(
-        None,
-        description="Emission current (EMG_00000025)",
-    )
+    emission_current: PintQuantity | None = emg_field("emission_current")
 
-    dwell_time: PintQuantity | None = Field(
-        None,
-        description="Pixel dwell time (EMG_00000015)",
-    )
+    dwell_time: PintQuantity | None = emg_field("dwell_time")
 
-    magnification: float | None = Field(
-        None,
-        description="Nominal magnification (dimensionless)",
-    )
+    magnification: float | None = emg_field("magnification")
 
-    field_of_view: PintQuantity | None = Field(
-        None,
-        description="Field of view width",
-    )
+    field_of_view: PintQuantity | None = emg_field("field_of_view")
 
-    pixel_width: PintQuantity | None = Field(
-        None,
-        description="Physical pixel width",
-    )
+    pixel_width: PintQuantity | None = emg_field("pixel_width")
 
-    pixel_height: PintQuantity | None = Field(
-        None,
-        description="Physical pixel height",
-    )
+    pixel_height: PintQuantity | None = emg_field("pixel_height")
 
-    scan_rotation: PintQuantity | None = Field(
-        None,
-        description="Scan rotation angle",
-    )
+    scan_rotation: PintQuantity | None = emg_field("scan_rotation")
 
-    detector_type: str | None = Field(
-        None,
-        description="Detector type or name",
-    )
+    detector_type: str | None = emg_field("detector_type")
 
-    acquisition_device: str | None = Field(
-        None,
-        description="Acquisition device or camera name",
-    )
+    acquisition_device: str | None = emg_field("acquisition_device")
 
     stage_position: StagePosition | None = Field(
         None,
@@ -521,45 +642,23 @@ class SpectrumMetadata(NexusMetadata):
     )
 
     # Spectrum-specific fields
-    acquisition_time: PintQuantity | None = Field(
-        None,
-        description="Total acquisition time (EMG_00000055)",
+    acquisition_time: PintQuantity | None = emg_field("acquisition_time")
+
+    live_time: PintQuantity | None = emg_field("live_time")
+
+    detector_energy_resolution: PintQuantity | None = emg_field(
+        "detector_energy_resolution"
     )
 
-    live_time: PintQuantity | None = Field(
-        None,
-        description="Live time (excludes dead time)",
-    )
+    channel_size: PintQuantity | None = emg_field("channel_size")
 
-    detector_energy_resolution: PintQuantity | None = Field(
-        None,
-        description="Detector energy resolution",
-    )
+    starting_energy: PintQuantity | None = emg_field("starting_energy")
 
-    channel_size: PintQuantity | None = Field(
-        None,
-        description="Energy width per channel",
-    )
+    azimuthal_angle: PintQuantity | None = emg_field("azimuthal_angle")
 
-    starting_energy: PintQuantity | None = Field(
-        None,
-        description="Spectrum starting energy",
-    )
+    elevation_angle: PintQuantity | None = emg_field("elevation_angle")
 
-    azimuthal_angle: PintQuantity | None = Field(
-        None,
-        description="Detector azimuthal angle",
-    )
-
-    elevation_angle: PintQuantity | None = Field(
-        None,
-        description="Detector elevation angle",
-    )
-
-    takeoff_angle: PintQuantity | None = Field(
-        None,
-        description="X-ray takeoff angle",
-    )
+    takeoff_angle: PintQuantity | None = emg_field("takeoff_angle")
 
     elements: list[str] | None = Field(
         None,
@@ -673,22 +772,10 @@ class DiffractionMetadata(NexusMetadata):
     )
 
     # Diffraction-specific fields
-    camera_length: PintQuantity | None = Field(
-        None,
-        description="Camera length (EMG_00000008)",
-    )
+    camera_length: PintQuantity | None = emg_field("camera_length")
 
-    convergence_angle: PintQuantity | None = Field(
-        None,
-        description="Convergence angle (EMG_00000010)",
-    )
+    convergence_angle: PintQuantity | None = emg_field("convergence_angle")
 
-    acceleration_voltage: PintQuantity | None = Field(
-        None,
-        description="Accelerating voltage (EMG_00000004)",
-    )
+    acceleration_voltage: PintQuantity | None = emg_field("acceleration_voltage")
 
-    acquisition_device: str | None = Field(
-        None,
-        description="Detector or camera name",
-    )
+    acquisition_device: str | None = emg_field("acquisition_device")

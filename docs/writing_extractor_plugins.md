@@ -184,22 +184,36 @@ def extract(self, context: ExtractionContext) -> list[dict[str, Any]]:
 
 #### Metadata Validation
 
-The `nx_meta` section is automatically validated using Pydantic schemas. NexusLIMS provides built-in validation schemas:
+The `nx_meta` section is automatically validated using **type-specific** Pydantic schemas based on the `DatasetType` field. NexusLIMS provides schema classes for each dataset type:
 
-- **{py:class}`nexusLIMS.schemas.metadata.NexusMetadata`** - Base schema validating all extractors
-  - Validates required fields and ISO-8601 timestamp format with timezone
-  - Allows arbitrary additional fields for instrument-specific metadata
-  - Supports `extensions` section for instrument-specific or custom fields
+- **{py:class}`nexusLIMS.schemas.metadata.ImageMetadata`** - For Image datasets
+  - Validates imaging-specific fields (acceleration_voltage, working_distance, beam_current, etc.)
+  - Used when `DatasetType == "Image"`
 
-- **Type-specific schemas** - Dataset-type-specific validation:
-  - **{py:class}`nexusLIMS.schemas.metadata.ImageMetadata`** - For Image datasets
-  - **{py:class}`nexusLIMS.schemas.metadata.SpectrumMetadata`** - For Spectrum datasets
-  - **{py:class}`nexusLIMS.schemas.metadata.SpectrumImageMetadata`** - For SpectrumImage datasets
-  - **{py:class}`nexusLIMS.schemas.metadata.DiffractionMetadata`** - For Diffraction datasets
-  - These schemas use **EM Glossary** field names for standardization
-  - Support **Pint Quantity** objects for fields with units
+- **{py:class}`nexusLIMS.schemas.metadata.SpectrumMetadata`** - For Spectrum datasets
+  - Validates spectrum-specific fields (acquisition_time, live_time, channel_size, etc.)
+  - Used when `DatasetType == "Spectrum"`
 
-The base `NexusMetadata` schema validation is **automatically performed** during record building, ensuring metadata consistency across all extractors.
+- **{py:class}`nexusLIMS.schemas.metadata.SpectrumImageMetadata`** - For SpectrumImage datasets
+  - Combines both Image and Spectrum field validation
+  - Used when `DatasetType == "SpectrumImage"`
+
+- **{py:class}`nexusLIMS.schemas.metadata.DiffractionMetadata`** - For Diffraction datasets
+  - Validates diffraction-specific fields (camera_length, convergence_angle, etc.)
+  - Used when `DatasetType == "Diffraction"`
+
+- **{py:class}`nexusLIMS.schemas.metadata.NexusMetadata`** - Base schema
+  - Used for `DatasetType == "Misc"` or `"Unknown"`
+  - Validates only common required fields
+
+**Validation Process:**
+1. Extractor sets `DatasetType` field in `nx_meta`
+2. `validate_nx_meta()` selects appropriate schema based on `DatasetType`
+3. Schema validates both required fields and type-specific optional fields
+4. Validation errors include detailed field-level diagnostics
+5. **Strict validation** - invalid metadata causes extraction to fail
+
+All schemas support the `extensions` section for instrument-specific metadata that doesn't fit the core schema (see "Core Fields vs. Extensions" below).
 
 #### Using Pint Quantities for Physical Values
 

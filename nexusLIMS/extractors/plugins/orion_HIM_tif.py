@@ -130,6 +130,9 @@ class OrionTiffExtractor:
             mdict["nx_meta"]["Data Type"] = "Unknown"
             mdict["nx_meta"]["Extractor Warnings"] = f"Extraction failed: {e}"
 
+        # Migrate metadata to schema-compliant format
+        mdict = self._migrate_to_schema_compliant_metadata(mdict)
+
         # Sort the nx_meta dictionary for nicer display
         mdict["nx_meta"] = sort_dict(mdict["nx_meta"])
 
@@ -979,3 +982,112 @@ class OrionTiffExtractor:
         except Exception:
             return None
         return None
+
+    def _migrate_to_schema_compliant_metadata(self, mdict: dict) -> dict:
+        """
+        Migrate metadata to schema-compliant format.
+
+        Reorganizes metadata to conform to type-specific Pydantic schemas:
+        - Extracts core EM Glossary fields to top level with standardized names
+        - Moves vendor-specific nested dictionaries to extensions section
+        - Preserves existing extensions from instrument profiles
+
+        Parameters
+        ----------
+        mdict
+            Metadata dictionary with nx_meta containing extracted fields
+
+        Returns
+        -------
+        dict
+            Metadata dictionary with schema-compliant nx_meta structure
+        """
+        nx_meta = mdict.get("nx_meta", {})
+
+        # Preserve existing extensions from instrument profiles
+        extensions = (
+            nx_meta.get("extensions", {}).copy() if "extensions" in nx_meta else {}
+        )
+
+        # Field mappings from display names to EM Glossary names
+        field_mappings = {
+            "Acceleration Voltage": "acceleration_voltage",
+            "Working Distance": "working_distance",
+            "Beam Current": "beam_current",
+            "Emission Current": "emission_current",
+            "Dwell Time": "dwell_time",
+            "Field of View": "field_of_view",
+            "Pixel Width": "pixel_width",
+            "Pixel Height": "pixel_height",
+        }
+
+        # Zeiss/Fibics-specific vendor sections that ALWAYS go to extensions
+        extension_top_level_keys = {
+            "Beam",
+            "GFIS",
+            "Detector",
+            "Stage Position",
+            "Image",
+            "Display",
+            "Flood Gun",
+            "Calibration",
+            "System",
+            "Application",
+            "Sample",
+            "Scan",
+            "ScanSettings",
+            "Optics",
+            "Zeiss",
+            "Fibics",
+        }
+
+        # Build new nx_meta with proper field organization
+        new_nx_meta = {}
+
+        # Copy required fields
+        for field in ["DatasetType", "Data Type", "Creation Time"]:
+            if field in nx_meta:
+                new_nx_meta[field] = nx_meta[field]
+
+        # Copy instrument identification
+        if "Instrument ID" in nx_meta:
+            new_nx_meta["Instrument ID"] = nx_meta["Instrument ID"]
+
+        # Process all fields and categorize
+        for old_name, value in nx_meta.items():
+            # Skip fields we've already handled
+            if old_name in [
+                "DatasetType",
+                "Data Type",
+                "Creation Time",
+                "Instrument ID",
+                "warnings",
+                "extensions",
+            ]:
+                continue
+
+            # Top-level vendor sections go to extensions
+            if old_name in extension_top_level_keys:
+                extensions[old_name] = value
+                continue
+
+            # Check if this is a core field that needs renaming
+            if old_name in field_mappings:
+                emg_name = field_mappings[old_name]
+                new_nx_meta[emg_name] = value
+                continue
+
+            # Everything else goes to extensions (vendor-specific by default)
+            # This is safer than putting at top level where schema validation will reject
+            extensions[old_name] = value
+
+        # Copy warnings if present
+        if "warnings" in nx_meta:
+            new_nx_meta["warnings"] = nx_meta["warnings"]
+
+        # Add extensions section if we have any
+        if extensions:
+            new_nx_meta["extensions"] = extensions
+
+        mdict["nx_meta"] = new_nx_meta
+        return mdict

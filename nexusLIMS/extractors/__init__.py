@@ -157,17 +157,79 @@ def _add_extraction_details(
     return nx_meta
 
 
+def get_schema_for_dataset_type(dataset_type: str) -> type[NexusMetadata]:
+    """
+    Select the appropriate schema class based on DatasetType.
+
+    This function maps dataset types to their corresponding type-specific
+    metadata schemas. Type-specific schemas (ImageMetadata, SpectrumMetadata, etc.)
+    provide stricter validation of fields appropriate for each data type.
+
+    Parameters
+    ----------
+    dataset_type : str
+        The value of the 'DatasetType' field. Must be one of: 'Image', 'Spectrum',
+        'SpectrumImage', 'Diffraction', 'Misc', or 'Unknown'.
+
+    Returns
+    -------
+    type[NexusMetadata]
+        The schema class to use for validation. Returns a type-specific schema
+        (ImageMetadata, SpectrumMetadata, etc.) for known dataset types, or the
+        base NexusMetadata schema for 'Misc' and 'Unknown' types.
+
+    Notes
+    -----
+    Schema mapping:
+    - 'Image' → ImageMetadata (SEM/TEM/STEM images)
+    - 'Spectrum' → SpectrumMetadata (EDS/EELS spectra)
+    - 'SpectrumImage' → SpectrumImageMetadata (hyperspectral data)
+    - 'Diffraction' → DiffractionMetadata (diffraction patterns)
+    - 'Misc' → NexusMetadata (base schema)
+    - 'Unknown' → NexusMetadata (base schema)
+    - Other values → NexusMetadata (fallback)
+
+    Examples
+    --------
+    >>> schema = get_schema_for_dataset_type("Image")
+    >>> schema.__name__
+    'ImageMetadata'
+
+    >>> schema = get_schema_for_dataset_type("Unknown")
+    >>> schema.__name__
+    'NexusMetadata'
+    """
+    from nexusLIMS.schemas.metadata import (
+        DiffractionMetadata,
+        ImageMetadata,
+        SpectrumImageMetadata,
+        SpectrumMetadata,
+    )
+
+    schema_mapping = {
+        "Image": ImageMetadata,
+        "Spectrum": SpectrumMetadata,
+        "SpectrumImage": SpectrumImageMetadata,
+        "Diffraction": DiffractionMetadata,
+        "Misc": NexusMetadata,
+        "Unknown": NexusMetadata,
+    }
+
+    return schema_mapping.get(dataset_type, NexusMetadata)
+
+
 def validate_nx_meta(
     metadata_dict: dict[str, Any], *, filename: Path | None = None
 ) -> dict[str, Any]:
     """
-    Validate the nx_meta structure against the NexusMetadata schema.
+    Validate the nx_meta structure against type-specific metadata schemas.
 
     This function ensures that metadata returned by extractor plugins conforms
-    to the required structure defined in
-    :class:`~nexusLIMS.extractors.schemas.NexusMetadata`. Validation is
-    performed strictly - any schema violations will raise a ValidationError
-    with detailed information about the failure.
+    to the required structure defined in the type-specific metadata schemas
+    (ImageMetadata, SpectrumMetadata, etc.). The appropriate schema is selected
+    based on the 'DatasetType' field. Validation is performed strictly - any
+    schema violations will raise a ValidationError with detailed information
+    about the failure.
 
     Parameters
     ----------
@@ -197,9 +259,20 @@ def validate_nx_meta(
     - **Required fields**: 'Creation Time', 'Data Type', 'DatasetType' must be present
     - **ISO-8601 timestamps**: 'Creation Time' must be valid ISO-8601 with timezone
     - **Controlled vocabularies**: 'DatasetType' must be one of the allowed values
+    - **Type-specific fields**: Fields appropriate for the dataset type (e.g.,
+      'acceleration_voltage' for Image, 'acquisition_time' for Spectrum)
     - **Type constraints**: All fields must match their expected types
+    - **Pint Quantities**: Physical measurements must use Pint Quantity objects
 
-    Additional fields beyond the schema are allowed (for instrument-specific metadata).
+    The validation system uses type-specific schemas:
+    - Image → ImageMetadata (SEM/TEM/STEM imaging)
+    - Spectrum → SpectrumMetadata (EDS/EELS spectra)
+    - SpectrumImage → SpectrumImageMetadata (hyperspectral)
+    - Diffraction → DiffractionMetadata (TEM diffraction)
+    - Misc/Unknown → NexusMetadata (base schema)
+
+    All schemas support the 'extensions' section for instrument-specific
+    metadata that doesn't fit the core schema.
 
     Examples
     --------
@@ -232,17 +305,26 @@ def validate_nx_meta(
 
     See Also
     --------
-    NexusMetadata : The Pydantic schema model for nx_meta validation
+    NexusMetadata : The base Pydantic schema model for nx_meta validation
+    ImageMetadata : Schema for Image dataset types
+    SpectrumMetadata : Schema for Spectrum dataset types
+    get_schema_for_dataset_type : Helper function that selects the appropriate schema
     parse_metadata : Main extraction function that uses this validator
     """
+    nx_meta = metadata_dict["nx_meta"]
+
+    # Get dataset type and select appropriate schema
+    dataset_type = nx_meta.get("DatasetType", "Misc")
+    schema_class = get_schema_for_dataset_type(dataset_type)
+
     try:
-        NexusMetadata.model_validate(metadata_dict["nx_meta"])
+        schema_class.model_validate(nx_meta)
     except ValidationError as e:
-        # Enhance error message with file context if available
+        # Enhance error message with file and dataset type context
         if filename:
-            msg = f"Validation failed for {filename}: {e}"
+            msg = f"Validation failed for {filename} ({dataset_type}): {e}"
         else:
-            msg = f"Validation failed: {e}"
+            msg = f"Validation failed ({dataset_type}): {e}"
         logger.exception(msg)
         raise
 

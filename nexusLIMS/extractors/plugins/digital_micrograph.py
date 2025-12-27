@@ -275,6 +275,9 @@ def get_dm3_metadata(filename: Path, instrument=None):
         # we don't need to save the filename, it's just for internal processing
         del m_list[i]["nx_meta"]["fname"]
 
+        # Migrate metadata to schema-compliant format
+        m_list[i] = _migrate_to_schema_compliant_metadata(m_list[i])
+
         # sort the nx_meta dictionary (recursively) for nicer display
         m_list[i]["nx_meta"] = sort_dict(m_list[i]["nx_meta"])
 
@@ -395,6 +398,161 @@ def get_pre_path(mdict: Dict) -> List[str]:
         pre_path = ["ImageList", "TagGroup0", "ImageTags"]
 
     return pre_path
+
+
+def _migrate_to_schema_compliant_metadata(mdict: dict) -> dict:
+    """
+    Migrate metadata to schema-compliant format.
+
+    This function reorganizes metadata extracted from DM3/DM4 files to conform
+    to the type-specific metadata schemas. It:
+    1. Maps display names to EM Glossary field names for core fields
+    2. Moves vendor-specific fields to the extensions section
+    3. Converts Stage Position dict to proper StagePosition structure
+
+    Parameters
+    ----------
+    mdict : dict
+        Metadata dictionary with 'nx_meta' key
+
+    Returns
+    -------
+    dict
+        Metadata dictionary with schema-compliant nx_meta
+    """
+    nx_meta = mdict.get("nx_meta", {})
+    dataset_type = nx_meta.get("DatasetType", "Image")
+
+    # Field mappings from display names to EM Glossary names
+    # These are core schema fields that just need renaming
+    # Note: dataset_type-specific fields are handled conditionally below
+    field_mappings = {
+        # Common mappings for all types
+        "Voltage": "acceleration_voltage",
+        "Field of View": "field_of_view",
+        "Acquisition Device": "acquisition_device",
+        "Sample Time": "dwell_time",
+
+        # Image-specific
+        "Indicated Magnification": "magnification",
+    }
+
+    # Conditional mappings based on dataset type
+    if dataset_type == "Diffraction":
+        field_mappings["STEM Camera Length"] = "camera_length"
+
+    # Fields that should ALWAYS go to extensions (vendor/instrument-specific)
+    extension_fields = {
+        # Gatan-specific
+        "GMS Version",
+        "Microscope",
+        "Operator",
+        "Specimen",
+
+        # Operation modes
+        "Illumination Mode",
+        "Imaging Mode",
+        "Operation Mode",
+
+        # Apertures
+        "Condenser Aperture",
+        "Objective Aperture",
+        "Selected Area Aperture",
+
+        # Vendor-specific settings
+        "Cs",  # Spherical aberration
+
+        # Signal/Analytic metadata
+        "Signal Name",
+        "Analytic Format",
+        "Analytic Label",
+        "Analytic Signal",
+
+        # Nested vendor metadata (will be moved as-is)
+        "EELS",
+        "EDS",
+
+        # STEM-specific fields that should be extensions for non-Diffraction types
+        "STEM Camera Length",  # Only core for Diffraction
+    }
+
+    # NOTE: "NexusLIMS Extraction" is added AFTER this migration function runs
+    # by add_extraction_details in __init__.py, so we don't need to handle it here
+
+    # Create new nx_meta dict with schema-compliant structure
+    new_nx_meta = {}
+    # Preserve any existing extensions (e.g., from instrument profiles)
+    extensions = nx_meta.get("extensions", {}).copy() if "extensions" in nx_meta else {}
+
+    # Copy required fields as-is
+    required_fields = {"Creation Time", "Data Type", "DatasetType"}
+    for field in required_fields:
+        if field in nx_meta:
+            new_nx_meta[field] = nx_meta[field]
+
+    # Copy common optional fields
+    common_fields = {"Data Dimensions", "Instrument ID", "warnings"}
+    for field in common_fields:
+        if field in nx_meta:
+            new_nx_meta[field] = nx_meta[field]
+
+    # Process all other fields
+    for key, value in nx_meta.items():
+        # Skip if already processed
+        if key in required_fields or key in common_fields:
+            continue
+
+        # Check if it's a core field that needs renaming
+        if key in field_mappings:
+            new_key = field_mappings[key]
+            new_nx_meta[new_key] = value
+        # Check if it should go to extensions
+        elif key in extension_fields:
+            extensions[key] = value
+        # Handle Stage Position specially
+        elif key == "Stage Position":
+            # DM3 files have Stage Position as a dict with keys like 'X', 'Y', 'α', etc.
+            # Convert to snake_case keys for StagePosition schema
+            if isinstance(value, dict):
+                stage_pos = {}
+                key_map = {
+                    "X": "x",
+                    "Y": "y",
+                    "Z": "z",
+                    "α": "tilt_alpha",
+                    "β": "tilt_beta",
+                }
+                for old_key, new_key in key_map.items():
+                    if old_key in value:
+                        # Convert to Pint Quantity if needed
+                        val = value[old_key]
+                        if new_key in ("x", "y"):
+                            # X/Y in micrometers
+                            if not isinstance(val, ureg.Quantity):
+                                val = ureg.Quantity(val, "micrometer")
+                        elif new_key == "z":
+                            # Z in millimeters
+                            if not isinstance(val, ureg.Quantity):
+                                val = ureg.Quantity(val, "millimeter")
+                        elif new_key in ("tilt_alpha", "tilt_beta"):
+                            # Tilts in degrees
+                            if not isinstance(val, ureg.Quantity):
+                                val = ureg.Quantity(val, "degree")
+                        stage_pos[new_key] = val
+                new_nx_meta["stage_position"] = stage_pos
+            else:
+                # If it's not a dict, move to extensions
+                extensions["Stage Position"] = value
+        # Everything else goes to extensions
+        else:
+            extensions[key] = value
+
+    # Add extensions if any
+    if extensions:
+        new_nx_meta["extensions"] = extensions
+
+    mdict["nx_meta"] = new_nx_meta
+    return mdict
 
 
 def parse_dm3_microscope_info(mdict):  # noqa: PLR0912

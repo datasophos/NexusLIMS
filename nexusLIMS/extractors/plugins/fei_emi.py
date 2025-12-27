@@ -177,7 +177,10 @@ class SerEmiExtractor:
 
         # we could not read the signal, so add some basic metadata and return
         if ser_error:
-            return _handle_ser_error(metadata)
+            metadata = _handle_ser_error_metadata(metadata)
+            # Migrate metadata to schema-compliant format (move vendor fields to extensions)
+            metadata = self._migrate_to_schema_compliant_metadata(metadata)
+            return [metadata]
 
         metadata = parse_basic_info(metadata, s.data.shape, instr)
         metadata = parse_acquire_info(metadata)
@@ -192,20 +195,132 @@ class SerEmiExtractor:
         # we don't need to save the filename, it's just for internal processing
         del metadata["nx_meta"]["fname"]
 
+        # Migrate metadata to schema-compliant format
+        metadata = self._migrate_to_schema_compliant_metadata(metadata)
+
         # sort the nx_meta dictionary (recursively) for nicer display
         metadata["nx_meta"] = sort_dict(metadata["nx_meta"])
 
         return [metadata]
 
+    def _migrate_to_schema_compliant_metadata(self, mdict: dict) -> dict:
+        """
+        Migrate metadata to schema-compliant format.
 
-def _handle_ser_error(metadata):
+        Reorganizes metadata to conform to type-specific Pydantic schemas:
+        - Extracts core EM Glossary fields to top level with standardized names
+        - Moves vendor-specific nested dictionaries to extensions section
+        - Preserves existing extensions from instrument profiles
+
+        Parameters
+        ----------
+        mdict
+            Metadata dictionary with nx_meta containing extracted fields
+
+        Returns
+        -------
+        dict
+            Metadata dictionary with schema-compliant nx_meta structure
+        """
+        nx_meta = mdict.get("nx_meta", {})
+        dataset_type = nx_meta.get("DatasetType", "Image")
+
+        # Preserve existing extensions from instrument profiles
+        extensions = (
+            nx_meta.get("extensions", {}).copy() if "extensions" in nx_meta else {}
+        )
+
+        # Field mappings from display names to EM Glossary names
+        field_mappings = {
+            "AccelerationVoltage": "acceleration_voltage",
+            "Convergence Angle": "convergence_angle",
+            "Acquisition Device": "acquisition_device",
+        }
+
+        # Camera Length is only core for Diffraction datasets
+        if dataset_type == "Diffraction":
+            field_mappings["Camera Length"] = "camera_length"
+
+        # FEI TIA-specific top-level sections that go to extensions
+        extension_top_level_keys = {
+            "ObjectInfo",  # Main FEI metadata section
+            "ser_header_parameters",  # SER file header
+        }
+
+        # Individual vendor-specific fields to move to extensions
+        extension_field_names = {
+            "emi Filename",
+            "Extractor Warning",
+            # Any other FEI-specific fields
+        }
+
+        # Build new nx_meta with proper field organization
+        new_nx_meta = {}
+
+        # Copy required fields
+        for field in ["DatasetType", "Data Type", "Creation Time", "Data Dimensions"]:
+            if field in nx_meta:
+                new_nx_meta[field] = nx_meta[field]
+
+        # Copy instrument identification
+        if "Instrument ID" in nx_meta:
+            new_nx_meta["Instrument ID"] = nx_meta["Instrument ID"]
+
+        # Process all fields and categorize
+        for old_name, value in nx_meta.items():
+            # Skip fields we've already handled
+            if old_name in [
+                "DatasetType",
+                "Data Type",
+                "Creation Time",
+                "Data Dimensions",
+                "Instrument ID",
+                "warnings",
+                "extensions",
+            ]:
+                continue
+
+            # Top-level vendor sections go to extensions
+            if old_name in extension_top_level_keys:
+                extensions[old_name] = value
+                continue
+
+            # Check if this is a core field that needs renaming
+            if old_name in field_mappings:
+                emg_name = field_mappings[old_name]
+                new_nx_meta[emg_name] = value
+                continue
+
+            # Vendor-specific individual fields go to extensions
+            if old_name in extension_field_names:
+                extensions[old_name] = value
+                continue
+
+            # Everything else goes to extensions (FEI-specific fields)
+            # This is safer since most FEI fields are vendor-specific
+            extensions[old_name] = value
+
+        # Copy warnings if present
+        if "warnings" in nx_meta:
+            new_nx_meta["warnings"] = nx_meta["warnings"]
+
+        # Add extensions section if we have any
+        if extensions:
+            new_nx_meta["extensions"] = extensions
+
+        mdict["nx_meta"] = new_nx_meta
+        return mdict
+
+
+def _handle_ser_error_metadata(metadata):
+    """Handle metadata when .ser file cannot be read."""
     metadata["nx_meta"]["DatasetType"] = "Misc"
     metadata["nx_meta"]["Data Type"] = "Unknown"
     metadata["nx_meta"]["warnings"] = []
     # sort the nx_meta dictionary (recursively) for nicer display
     metadata["nx_meta"] = sort_dict(metadata["nx_meta"])
     del metadata["nx_meta"]["fname"]
-    return [metadata]
+    return metadata
 
 
 def _load_ser(emi_filename: Path, ser_index: int):
