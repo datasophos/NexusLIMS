@@ -5,6 +5,43 @@ import pytest
 from nexusLIMS import instruments
 
 
+def get_field(metadata, field_name, index=0):
+    """Get a field from nx_meta, checking extensions if not at top level.
+
+    This utility helps with tests after the schema migration, where vendor-specific
+    fields may be in either the top-level nx_meta or in the extensions dict.
+
+    Parameters
+    ----------
+    metadata
+        Extracted metadata dictionary or list of metadata dictionaries
+    field_name
+        Field name to retrieve
+    index
+        If metadata is a list, which element to check (default: 0)
+
+    Returns
+    -------
+    The field value from either top level or extensions
+
+    Raises
+    ------
+    KeyError
+        If the field is not found in nx_meta or extensions
+    """
+    # Handle both list and dict inputs
+    if isinstance(metadata, list):
+        nx_meta = metadata[index]["nx_meta"]
+    else:
+        nx_meta = metadata["nx_meta"]
+
+    if field_name in nx_meta:
+        return nx_meta[field_name]
+    if "extensions" in nx_meta and field_name in nx_meta["extensions"]:
+        return nx_meta["extensions"][field_name]
+    raise KeyError(f"Field '{field_name}' not found in nx_meta or extensions")
+
+
 @pytest.fixture(name="_test_tool_db")
 def _fixture_test_tool_db(monkeypatch):
     """Monkeypatch so DM extractor thinks this file came from testtool-TEST-A1234567."""

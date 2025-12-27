@@ -141,8 +141,21 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Generate root index.html redirect
-        # Create root index.html that redirects to latest stable version
-        run: python scripts/generate_index_redirect.py
+        # Create root index.html that redirects to stable directory
+        run: |
+          cat > index.html << 'EOF'
+          <!doctype html>
+          <html>
+              <head>
+                  <meta http-equiv="refresh" content="0; url=stable/" />
+                  <link rel="canonical" href="stable/" />
+                  <title>Redirecting to NexusLIMS documentation</title>
+              </head>
+              <body>
+                  <p>Redirecting to <a href="stable/">NexusLIMS stable documentation</a>...</p>
+              </body>
+          </html>
+          EOF
 
       - name: Deploy versioned docs to gh-pages
         run: |
@@ -168,16 +181,23 @@ jobs:
           # Copy built docs to version directory
           rsync -avr _build/ "$VERSION_DIR/"
 
-          # Update root index.html redirect to latest stable version
+          # Copy to stable directory (latest stable release)
+          echo "Copying documentation to stable/ directory..."
+          rm -rf stable
+          mkdir -p stable
+          rsync -avr _build/ stable/
+
+          # Update root index.html redirect to stable
           cp /tmp/index.html index.html
 
-          git add "$VERSION_DIR" index.html
+          git add "$VERSION_DIR" stable index.html
           git commit -m "Deploy docs for version ${{ steps.version.outputs.version }}" || echo "No changes to commit"
           git push origin gh-pages
 
           echo "✅ Documentation deployed!"
           echo "🔗 Version docs: https://datasophos.github.io/NexusLIMS/$VERSION_DIR/"
-          echo "🔗 Root redirect: https://datasophos.github.io/NexusLIMS/ → $VERSION_DIR/"
+          echo "🔗 Stable docs: https://datasophos.github.io/NexusLIMS/stable/"
+          echo "🔗 Root redirect: https://datasophos.github.io/NexusLIMS/ → stable/"
 
       - name: Regenerate and deploy switcher.json to all versions
         run: |

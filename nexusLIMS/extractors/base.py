@@ -56,6 +56,11 @@ class FieldDefinition(NamedTuple):
     suppress_zero : bool, default=False
         If True, skip field if the numeric value equals zero.
         Only applies when is_string=False.
+    unit : str | None, default=None
+        Pint unit string for the output value (e.g., "kilovolt", "millimeter").
+        If provided, the value will be converted to a Pint Quantity with this unit.
+        The factor is still applied before creating the Quantity.
+        If None, numeric values remain as floats (legacy behavior).
 
     Examples
     --------
@@ -71,6 +76,9 @@ class FieldDefinition(NamedTuple):
     >>> # Suppress zero values
     >>> FieldDefinition("Beam", "BeamShiftX", "Beam Shift X",
     >>>                 1.0, False, suppress_zero=True)
+
+    >>> # Pint Quantity output (new approach)
+    >>> FieldDefinition("Beam", "HV", "Voltage", 1.0, False, unit="kilovolt")
     """
 
     section: str
@@ -79,6 +87,7 @@ class FieldDefinition(NamedTuple):
     factor: float
     is_string: bool
     suppress_zero: bool = False
+    unit: str | None = None  # Pint unit string (e.g., "kilovolt", "millimeter")
 
 
 @dataclass
@@ -241,13 +250,23 @@ class BaseExtractor(Protocol):
         a list with one element per signal. This consistent list-based approach allows
         the Activity layer to expand multi-signal files into multiple datasets.
 
-        Each 'nx_meta' dict should contain:
-        - 'Creation Time': ISO format datetime string
-        - 'Data Type': Human-readable data type (e.g., "STEM_Imaging")
-        - 'DatasetType': Dataset type per schema (e.g., "Image", "Spectrum")
+        Each 'nx_meta' dict MUST contain these required fields (validated against
+        :class:`~nexusLIMS.extractors.schemas.NexusMetadata`):
+
+        - 'Creation Time': ISO-8601 timestamp string **with timezone** (REQUIRED)
+          Examples: "2024-01-15T10:30:00-05:00" or "2024-01-15T15:30:00Z"
+        - 'Data Type': Human-readable data type (e.g., "STEM_Imaging") (REQUIRED)
+        - 'DatasetType': Must be one of: "Image", "Spectrum", "SpectrumImage",
+          "Diffraction", "Misc", or "Unknown" (REQUIRED)
+
+        Optional standard fields:
         - 'Data Dimensions': String like "(1024, 1024)" or "(12, 1024, 1024)"
         - 'Instrument ID': Instrument PID from database
-        - 'warnings': List of warning messages (optional)
+        - 'warnings': List of warning messages (string or [message, context] pairs)
+
+        Additional instrument-specific fields beyond these are allowed.
+        The nx_meta structure is strictly validated after extraction - validation
+        failures will raise pydantic.ValidationError with detailed field errors.
 
         Parameters
         ----------
@@ -435,9 +454,10 @@ class InstrumentProfile:
     extractor_overrides
         Force specific extractors for certain extensions.
         Keys are file extensions, values are extractor names.
-    static_metadata
-        Metadata to inject for all files from this instrument.
-        Keys are metadata paths, values are static values.
+    extension_fields
+        Metadata to inject into the extensions section for all files.
+        Keys are field names, values are static values.
+        These populate the nx_meta.extensions dict.
 
     Examples
     --------
@@ -452,9 +472,9 @@ class InstrumentProfile:
     ...     parsers={
     ...         "microscope_info": parse_643_titan_microscope,
     ...     },
-    ...     static_metadata={
-    ...         "nx_meta.Facility": "Nexus Facility",
-    ...         "nx_meta.Building": "Bldg. 1",
+    ...     extension_fields={
+    ...         "facility": "Nexus Facility",
+    ...         "building": "Bldg. 1",
     ...     }
     ... )
 
@@ -472,4 +492,4 @@ class InstrumentProfile:
     parsers: dict[str, Callable] = field(default_factory=dict)
     transformations: dict[str, Callable] = field(default_factory=dict)
     extractor_overrides: dict[str, str] = field(default_factory=dict)
-    static_metadata: dict[str, Any] = field(default_factory=dict)
+    extension_fields: dict[str, Any] = field(default_factory=dict)

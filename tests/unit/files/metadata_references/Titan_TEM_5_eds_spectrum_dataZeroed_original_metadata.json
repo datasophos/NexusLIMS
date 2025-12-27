@@ -1,0 +1,87 @@
+{
+  "ObjectInfo": {
+    "AcquireDate": "Wed Dec 11 16:02:38 2019",
+    "AcquireInfo": {
+      "EnergyResolution": "10.0000",
+      "IntegrationTime": "25.0000",
+      "NumberSpectra": "0",
+      "ShapingTime": "51.2000"
+    },
+    "DetectorRange": {
+      "End": "3993.00",
+      "Start": "0.000000"
+    },
+    "ExperimentalConditions": {
+      "MicroscopeConditions": {
+        "AcceleratingVoltage": "300000",
+        "Tilt1": "0.000060",
+        "Tilt2": "0.001920"
+      }
+    },
+    "ExperimentalDescription": {
+      "C1 Aperture_um": 2000.0,
+      "C2 Aperture_um": 150.0,
+      "C2 lens_%": 42.147,
+      "C3 lens_%": 63.02,
+      "Defocus_um": -0.283,
+      "Diffraction lens_%": 60.839,
+      "Emission_uA": 145.0,
+      "Extraction voltage_V": 4400.0,
+      "Filter drift tube_eV": 0.0,
+      "Filter mode": "Spectroscopy",
+      "Filter prism shift_eV": -0.0,
+      "Filter selected aperture": "3mm",
+      "Filter selected dispersion_eV/Channel": 0.1,
+      "Filter total energy loss_eV": 0.0,
+      "Gun lens": "3",
+      "Gun type": "FEG",
+      "High tension_kV": 300.0,
+      "Image shift X_um": 0.0,
+      "Image shift Y_um": 0.0,
+      "Magnification_x": 185000.0,
+      "Microscope": "Microscope Titan 300 kV ABCD1 SuperTwin",
+      "Mode": " TEM uP SA Zoom Image",
+      "OBJ Aperture": "retracted",
+      "Objective lens_%": 87.737,
+      "SA Aperture": "retracted",
+      "Spot size": "2",
+      "Stage A_deg": 0.0,
+      "Stage B_deg": 0.11,
+      "Stage X_um": -259.807,
+      "Stage Y_um": 18.101,
+      "Stage Z_um": 7.06,
+      "User": "USER"
+    },
+    "Manufacturer": "EDAX",
+    "TrueImageHeaderInfo": {},
+    "Uuid": "c1f7e661-6ecd-4a9a-bf66-c981998b77bc"
+  },
+  "ser_header_parameters": {
+    "ArrayLength": "3993",
+    "ByteOrder": "18761",
+    "CalibrationDelta": 9.975283269992229,
+    "CalibrationElement": "0",
+    "CalibrationOffset": 11.981245606192715,
+    "DataType": "3",
+    "DataTypeID": "16672",
+    "Dim-1_CalibrationDelta": 1.0,
+    "Dim-1_CalibrationElement": "0",
+    "Dim-1_CalibrationOffset": 0.0,
+    "Dim-1_Description": "b'Number'",
+    "Dim-1_DescriptionLength": "6",
+    "Dim-1_DimensionSize": "10",
+    "Dim-1_Units": "b''",
+    "Dim-1_UnitsLength": "0",
+    "NumberDimensions": "1",
+    "OffsetArrayOffset": "68",
+    "PositionX": 0.0,
+    "PositionY": 0.0,
+    "SeriesID": "407",
+    "SeriesVersion": "528",
+    "TagTypeID": "0",
+    "Time": "0",
+    "TotalNumberElements": "10",
+    "Unknown": "0",
+    "ValidNumberElements": "1"
+  }
+}

@@ -56,7 +56,7 @@ def sample_profile():
     return InstrumentProfile(
         instrument_id="FEI-Titan-STEM",
         parsers={"microscope": sample_parser},
-        static_metadata={"nx_meta.Facility": "Nexus Facility"},
+        extension_fields={"facility": "Nexus Facility"},
     )
 
 
@@ -137,7 +137,7 @@ class TestProfileRegistration:
             caplog.clear()
             duplicate_profile = InstrumentProfile(
                 instrument_id="FEI-Titan-STEM",
-                static_metadata={"different": "data"},
+                extension_fields={"different": "data"},
             )
             registry.register(duplicate_profile)
 
@@ -277,20 +277,20 @@ class TestInstrumentProfile:
         assert profile.extractor_overrides["tif"] == "zeiss_tif_extractor"
         assert profile.extractor_overrides["dm3"] == "custom_dm3_extractor"
 
-    def test_profile_with_static_metadata(self):
-        """Profile with static metadata injection."""
+    def test_profile_with_extension_fields(self):
+        """Profile with extension fields injection."""
         profile = InstrumentProfile(
             instrument_id="test-inst",
-            static_metadata={
-                "nx_meta.Facility": "Nexus Facility",
-                "nx_meta.Building": "Bldg 1",
-                "nx_meta.Room": "Room A",
+            extension_fields={
+                "facility": "Nexus Facility",
+                "building": "Bldg 1",
+                "room": "Room A",
             },
         )
 
-        assert len(profile.static_metadata) == 3
-        assert profile.static_metadata["nx_meta.Facility"] == "Nexus Facility"
-        assert profile.static_metadata["nx_meta.Building"] == "Bldg 1"
+        assert len(profile.extension_fields) == 3
+        assert profile.extension_fields["facility"] == "Nexus Facility"
+        assert profile.extension_fields["building"] == "Bldg 1"
 
     def test_profile_all_fields(self):
         """Profile using all fields together."""
@@ -306,14 +306,14 @@ class TestInstrumentProfile:
             parsers={"main": parser_func},
             transformations={"main": transform_func},
             extractor_overrides={"tif": "custom_tif"},
-            static_metadata={"facility": "TEST"},
+            extension_fields={"facility": "TEST"},
         )
 
         assert profile.instrument_id == "comprehensive-inst"
         assert len(profile.parsers) == 1
         assert len(profile.transformations) == 1
         assert len(profile.extractor_overrides) == 1
-        assert len(profile.static_metadata) == 1
+        assert len(profile.extension_fields) == 1
 
     def test_profile_default_empty_dicts(self):
         """Profile with only instrument_id uses empty dicts for other fields."""
@@ -323,7 +323,7 @@ class TestInstrumentProfile:
         assert profile.parsers == {}
         assert profile.transformations == {}
         assert profile.extractor_overrides == {}
-        assert profile.static_metadata == {}
+        assert profile.extension_fields == {}
 
 
 class TestProfileLogging:
@@ -474,7 +474,7 @@ from nexusLIMS.extractors.profiles import get_profile_registry
 
 test_profile = InstrumentProfile(
     instrument_id="Test-Local-Instrument",
-    static_metadata={"test": "local"}
+    extension_fields={"test": "local"}
 )
 
 get_profile_registry().register(test_profile)
@@ -489,7 +489,8 @@ get_profile_registry().register(test_profile)
             all_profiles = registry.get_all_profiles()
             assert "Test-Local-Instrument" in all_profiles
             assert (
-                all_profiles["Test-Local-Instrument"].static_metadata["test"] == "local"
+                all_profiles["Test-Local-Instrument"].extension_fields["test"]
+                == "local"
             )
         finally:
             registry.clear()
@@ -558,7 +559,7 @@ from nexusLIMS.extractors.profiles import get_profile_registry
 
 profile = InstrumentProfile(
     instrument_id="Custom-Instrument-12345",
-    static_metadata={"site": "My Lab"}
+    extension_fields={"site": "My Lab"}
 )
 
 get_profile_registry().register(profile)

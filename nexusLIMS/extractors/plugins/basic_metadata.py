@@ -6,6 +6,7 @@ from typing import Any, ClassVar
 
 from nexusLIMS.extractors.base import ExtractionContext
 from nexusLIMS.instruments import get_instr_from_filepath
+from nexusLIMS.utils import current_system_tz
 
 logger = logging.getLogger(__name__)
 
@@ -69,10 +70,9 @@ class BasicFileInfoExtractor:
 
         # get the modification time (as ISO format):
         mtime = context.file_path.stat().st_mtime
-        mtime_iso = dt.fromtimestamp(
-            mtime,
-            tz=context.instrument.timezone if context.instrument else None,
-        ).isoformat()
+        # Use instrument timezone if available, otherwise fall back to system timezone
+        tz = context.instrument.timezone if context.instrument else current_system_tz()
+        mtime_iso = dt.fromtimestamp(mtime, tz=tz).isoformat()
         mdict["nx_meta"]["Creation Time"] = mtime_iso
 
         return [mdict]

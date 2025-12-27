@@ -18,12 +18,14 @@ from xml.sax.saxutils import escape
 
 import numpy as np
 from lxml import etree
+from pint import Quantity
 from scipy.signal import argrelextrema
 from sklearn.model_selection import GridSearchCV, LeaveOneOut
 from sklearn.neighbors import KernelDensity
 
 from nexusLIMS.config import settings
 from nexusLIMS.extractors import flatten_dict, parse_metadata
+from nexusLIMS.extractors.xml_serialization import serialize_quantity_to_xml
 from nexusLIMS.utils import current_system_tz
 
 logger = logging.getLogger(__name__)
@@ -207,12 +209,20 @@ def _add_dataset_element(  # noqa: PLR0913
 
     for meta_k, meta_v in sorted(unique_meta.items(), key=lambda i: i[0].lower()):
         if meta_k not in ["warnings", "DatasetType"]:
-            meta_v = _escape(meta_v)  # noqa: PLW2901
             meta_el = etree.SubElement(dset_el, "meta")
             meta_el.set("name", str(meta_k))
             if meta_k in warning:
                 meta_el.set("warning", "true")
-            meta_el.text = str(meta_v)
+
+            # Handle Pint Quantity objects with unit attribute
+            if isinstance(meta_v, Quantity):
+                magnitude, unit = serialize_quantity_to_xml(meta_v)
+                meta_el.text = str(magnitude)
+                meta_el.set("unit", unit)
+            else:
+                # Handle regular values (strings, numbers, etc.)
+                meta_v = _escape(meta_v)  # noqa: PLW2901
+                meta_el.text = str(meta_v)
 
     return aq_ac_xml_el
 
@@ -328,7 +338,31 @@ class AcquisitionActivity:
                     self.files.append(
                         str(fname)
                     )  # Same file, repeated for multi-signal
-                    self.meta.append(flatten_dict(signal_meta["nx_meta"]))
+
+                    # Merge extensions into root level before flattening
+                    # This ensures vendor-specific fields appear at root in XML
+                    nx_meta = signal_meta["nx_meta"].copy()
+                    if "extensions" in nx_meta:
+                        extensions = nx_meta.pop("extensions")
+                        nx_meta.update(extensions)
+
+                    # Convert EM Glossary snake_case field names to display names for XML
+                    # Only convert fields that are in snake_case (contain underscores)
+                    from nexusLIMS.schemas import em_glossary
+
+                    nx_meta_for_xml = {}
+                    for field_name, value in nx_meta.items():
+                        # Only convert snake_case EM Glossary field names
+                        if "_" in field_name and field_name.islower():
+                            display_name = em_glossary.get_display_name(field_name)
+                            nx_meta_for_xml[display_name] = value
+                        else:
+                            # Keep original name (DatasetType, Data Type, etc.)
+                            nx_meta_for_xml[field_name] = value
+
+                    self.meta.append(
+                        flatten_dict(nx_meta_for_xml, separator=" – ")  # noqa: RUF001
+                    )
 
                     # Handle previews (always a list)
                     if preview_fnames and i < len(preview_fnames):
@@ -439,18 +473,24 @@ class AcquisitionActivity:
                             vts,
                         )  # pragma: no cover
                         values_to_search.remove(vts)  # pragma: no cover
-                    if vts in meta and setup_params[vts] != meta[vts]:
-                        # value does not match, so this must be a
-                        # individual dataset metadata, so remove it from
-                        # setup_params, and remove it from values_to_search
+                    # Check if the parameter is missing in this file OR
+                    # has a different value
+                    if vts not in meta or setup_params[vts] != meta[vts]:
+                        # Parameter is either missing or has different value,
+                        # so this must be individual dataset metadata.
+                        # Remove it from setup_params and values_to_search
                         logger.debug(
                             "iter: %i; vts=%s - "
-                            "meta[vts]=%s != setup_params[vts]=%s; "
+                            "%s; "
                             "removing %s from setup_params and values to search",
                             i,
                             vts,
-                            meta[vts],
-                            setup_params[vts],
+                            "not in meta"
+                            if vts not in meta
+                            else (
+                                f"meta[vts]={meta[vts]} != "
+                                f"setup_params[vts]={setup_params[vts]}"
+                            ),
                             vts,
                         )
                         del setup_params[vts]
@@ -528,7 +568,6 @@ class AcquisitionActivity:
         ):
             # metadata values to skip in XML output
             if param_k not in ["warnings", "DatasetType"]:
-                param_v = _escape(param_v)  # noqa: PLW2901
                 # for setup parameters, a key in the first dataset's warning
                 # list is the same as in all of them
                 pk_warning = param_k in self.warnings[0]
@@ -536,7 +575,15 @@ class AcquisitionActivity:
                 param_el.set("name", str(param_k))
                 if pk_warning:
                     param_el.set("warning", "true")
-                param_el.text = str(param_v)
+
+                # Handle Pint Quantity objects with unit attribute
+                if isinstance(param_v, Quantity):
+                    magnitude, unit = serialize_quantity_to_xml(param_v)
+                    param_el.text = str(magnitude)
+                    param_el.set("unit", unit)
+                else:
+                    param_v = _escape(param_v)  # noqa: PLW2901
+                    param_el.text = str(param_v)
 
         # Count how many times each file appears (for multi-signal files)
         file_signal_counts = {}

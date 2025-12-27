@@ -1,5 +1,6 @@
 """Digital Micrograph (.dm3/.dm4) extractor plugin."""
 
+import contextlib
 import logging
 from datetime import UTC
 from datetime import datetime as dt
@@ -38,7 +39,9 @@ from nexusLIMS.extractors.utils import (
     _try_decimal,
 )
 from nexusLIMS.instruments import get_instr_from_filepath
+from nexusLIMS.schemas.units import ureg
 from nexusLIMS.utils import (
+    current_system_tz,
     remove_dict_nones,
     remove_dtb_element,
     set_nested_dict_value,
@@ -246,10 +249,9 @@ def get_dm3_metadata(filename: Path, instrument=None):
         )
         # get the modification time (as ISO format):
         mtime = filename.stat().st_mtime
-        mtime_iso = dt.fromtimestamp(
-            mtime,
-            tz=instr.timezone if instr else None,
-        ).isoformat()
+        # Use instrument timezone if available, otherwise fall back to system timezone
+        tz = instr.timezone if instr else current_system_tz()
+        mtime_iso = dt.fromtimestamp(mtime, tz=tz).isoformat()
         # if we found the instrument, then store the name as string, else None
         instr_name = instr.name if instr is not None else None
         m_list[i]["nx_meta"] = {}
@@ -272,6 +274,9 @@ def get_dm3_metadata(filename: Path, instrument=None):
 
         # we don't need to save the filename, it's just for internal processing
         del m_list[i]["nx_meta"]["fname"]
+
+        # Migrate metadata to schema-compliant format
+        m_list[i] = _migrate_to_schema_compliant_metadata(m_list[i])
 
         # sort the nx_meta dictionary (recursively) for nicer display
         m_list[i]["nx_meta"] = sort_dict(m_list[i]["nx_meta"])
@@ -337,17 +342,19 @@ def _apply_profile_to_metadata(metadata: dict, instrument, file_path: Path) -> d
                 e,
             )
 
-    # Inject static metadata
-    for key, value in profile.static_metadata.items():
-        try:
-            keys = key.split(".")
-            set_nested_dict_value(metadata, keys, value)
-        except Exception as e:
-            logger.warning(
-                "Profile static metadata injection '%s' failed: %s",
-                key,
-                e,
-            )
+    # Inject extension fields
+    if profile.extension_fields:
+        if "extensions" not in metadata["nx_meta"]:
+            metadata["nx_meta"]["extensions"] = {}
+        for key, value in profile.extension_fields.items():
+            try:
+                metadata["nx_meta"]["extensions"][key] = value
+            except Exception as e:
+                logger.warning(
+                    "Profile extension field injection '%s' failed: %s",
+                    key,
+                    e,
+                )
 
     return metadata
 
@@ -391,6 +398,161 @@ def get_pre_path(mdict: Dict) -> List[str]:
         pre_path = ["ImageList", "TagGroup0", "ImageTags"]
 
     return pre_path
+
+
+def _migrate_to_schema_compliant_metadata(mdict: dict) -> dict:
+    """
+    Migrate metadata to schema-compliant format.
+
+    This function reorganizes metadata extracted from DM3/DM4 files to conform
+    to the type-specific metadata schemas. It:
+    1. Maps display names to EM Glossary field names for core fields
+    2. Moves vendor-specific fields to the extensions section
+    3. Converts Stage Position dict to proper StagePosition structure
+
+    Parameters
+    ----------
+    mdict : dict
+        Metadata dictionary with 'nx_meta' key
+
+    Returns
+    -------
+    dict
+        Metadata dictionary with schema-compliant nx_meta
+    """
+    nx_meta = mdict.get("nx_meta", {})
+    dataset_type = nx_meta.get("DatasetType", "Image")
+
+    # Field mappings from display names to EM Glossary names
+    # These are core schema fields that just need renaming
+    # Note: dataset_type-specific fields are handled conditionally below
+    field_mappings = {
+        # Common mappings for all types
+        "Voltage": "acceleration_voltage",
+        "Field of View": "field_of_view",
+        "Acquisition Device": "acquisition_device",
+        "Sample Time": "dwell_time",
+
+        # Image-specific
+        "Indicated Magnification": "magnification",
+    }
+
+    # Conditional mappings based on dataset type
+    if dataset_type == "Diffraction":
+        field_mappings["STEM Camera Length"] = "camera_length"
+
+    # Fields that should ALWAYS go to extensions (vendor/instrument-specific)
+    extension_fields = {
+        # Gatan-specific
+        "GMS Version",
+        "Microscope",
+        "Operator",
+        "Specimen",
+
+        # Operation modes
+        "Illumination Mode",
+        "Imaging Mode",
+        "Operation Mode",
+
+        # Apertures
+        "Condenser Aperture",
+        "Objective Aperture",
+        "Selected Area Aperture",
+
+        # Vendor-specific settings
+        "Cs",  # Spherical aberration
+
+        # Signal/Analytic metadata
+        "Signal Name",
+        "Analytic Format",
+        "Analytic Label",
+        "Analytic Signal",
+
+        # Nested vendor metadata (will be moved as-is)
+        "EELS",
+        "EDS",
+
+        # STEM-specific fields that should be extensions for non-Diffraction types
+        "STEM Camera Length",  # Only core for Diffraction
+    }
+
+    # NOTE: "NexusLIMS Extraction" is added AFTER this migration function runs
+    # by add_extraction_details in __init__.py, so we don't need to handle it here
+
+    # Create new nx_meta dict with schema-compliant structure
+    new_nx_meta = {}
+    # Preserve any existing extensions (e.g., from instrument profiles)
+    extensions = nx_meta.get("extensions", {}).copy() if "extensions" in nx_meta else {}
+
+    # Copy required fields as-is
+    required_fields = {"Creation Time", "Data Type", "DatasetType"}
+    for field in required_fields:
+        if field in nx_meta:
+            new_nx_meta[field] = nx_meta[field]
+
+    # Copy common optional fields
+    common_fields = {"Data Dimensions", "Instrument ID", "warnings"}
+    for field in common_fields:
+        if field in nx_meta:
+            new_nx_meta[field] = nx_meta[field]
+
+    # Process all other fields
+    for key, value in nx_meta.items():
+        # Skip if already processed
+        if key in required_fields or key in common_fields:
+            continue
+
+        # Check if it's a core field that needs renaming
+        if key in field_mappings:
+            new_key = field_mappings[key]
+            new_nx_meta[new_key] = value
+        # Check if it should go to extensions
+        elif key in extension_fields:
+            extensions[key] = value
+        # Handle Stage Position specially
+        elif key == "Stage Position":
+            # DM3 files have Stage Position as a dict with keys like 'X', 'Y', 'α', etc.
+            # Convert to snake_case keys for StagePosition schema
+            if isinstance(value, dict):
+                stage_pos = {}
+                key_map = {
+                    "X": "x",
+                    "Y": "y",
+                    "Z": "z",
+                    "α": "tilt_alpha",
+                    "β": "tilt_beta",
+                }
+                for old_key, new_key in key_map.items():
+                    if old_key in value:
+                        # Convert to Pint Quantity if needed
+                        val = value[old_key]
+                        if new_key in ("x", "y"):
+                            # X/Y in micrometers
+                            if not isinstance(val, ureg.Quantity):
+                                val = ureg.Quantity(val, "micrometer")
+                        elif new_key == "z":
+                            # Z in millimeters
+                            if not isinstance(val, ureg.Quantity):
+                                val = ureg.Quantity(val, "millimeter")
+                        elif new_key in ("tilt_alpha", "tilt_beta"):
+                            # Tilts in degrees
+                            if not isinstance(val, ureg.Quantity):
+                                val = ureg.Quantity(val, "degree")
+                        stage_pos[new_key] = val
+                new_nx_meta["stage_position"] = stage_pos
+            else:
+                # If it's not a dict, move to extensions
+                extensions["Stage Position"] = value
+        # Everything else goes to extensions
+        else:
+            extensions[key] = value
+
+    # Add extensions if any
+    if extensions:
+        new_nx_meta["extensions"] = extensions
+
+    mdict["nx_meta"] = new_nx_meta
+    return mdict
 
 
 def parse_dm3_microscope_info(mdict):  # noqa: PLR0912
@@ -450,6 +612,25 @@ def parse_dm3_microscope_info(mdict):  # noqa: PLR0912
         # only add the value to this list if we found it, and it's not one of
         # the "facility-wide" set values that do not have any meaning:
         if val is not None and val not in ["DO NOT EDIT", "DO NOT ENTER"] and val != []:
+            # Store original field name for unit mapping
+            field_name = meta_key[-1] if isinstance(meta_key, list) else meta_key
+
+            # Convert to Pint Quantity if the field has units
+            unit_map = {
+                "Cs(mm)": "millimeter",
+                "STEM Camera Length": "millimeter",
+                "Voltage": "volt",  # Will auto-convert to kilovolt
+                "Field of View (\u00b5m)": "micrometer",
+            }
+            if field_name in unit_map:
+                with contextlib.suppress(ValueError, TypeError):
+                    val = ureg.Quantity(val, unit_map[field_name])
+                    # Remove unit suffix from field name
+                    if field_name == "Cs(mm)":
+                        meta_key = ["Cs"]  # noqa: PLW2901
+                    elif field_name == "Field of View (\u00b5m)":
+                        meta_key = ["Field of View"]  # noqa: PLW2901
+
             # change output of "Stage Position" to unicode characters
             if "Stage Position" in meta_key:
                 meta_key[-1] = (
@@ -519,9 +700,11 @@ def parse_dm3_microscope_info(mdict):  # noqa: PLR0912
     # DigiScan Sample Time (dwell time per pixel in microseconds):
     sample_time = try_getting_dict_value(mdict, [*pre_path, "DigiScan", "Sample Time"])
     if sample_time is not None:
+        with contextlib.suppress(ValueError, TypeError):
+            sample_time = ureg.Quantity(sample_time, "microsecond")
         set_nested_dict_value(
             mdict,
-            ["nx_meta", "Sample Time (\u00b5s)"],
+            ["nx_meta", "Sample Time"],
             sample_time,
         )
 
@@ -769,8 +952,17 @@ def parse_dm3_spectrum_image_info(mdict):
         # only add the value to this list if we found it, and it's not
         # one of the "facility-wide" set values that do not have any meaning:
         if val is not None:
-            # add last value of each parameter to the "EDS" sub-tree of nx_meta
-            set_nested_dict_value(mdict, ["nx_meta", "Spectrum Imaging", *m_out], val)
+            # Convert to Pint Quantity if the field has units
+            output_key = m_out[0] if len(m_out) == 1 else m_out
+            if output_key == "Pixel time (s)":
+                with contextlib.suppress(ValueError, TypeError):
+                    val = ureg.Quantity(val, "second")
+                    output_key = ["Pixel time"]
+            # add last value of each parameter to the "Spectrum Imaging" sub-tree
+            key_list = [output_key] if isinstance(output_key, str) else output_key
+            set_nested_dict_value(
+                mdict, ["nx_meta", "Spectrum Imaging", *key_list], val
+            )
 
     # Check spatial drift correction separately:
     drift_per_val = try_getting_dict_value(
@@ -803,9 +995,11 @@ def parse_dm3_spectrum_image_info(mdict):
         start_dt = dt.strptime(start_val, "%I:%M:%S %p").replace(tzinfo=UTC)
         end_dt = dt.strptime(end_val, "%I:%M:%S %p").replace(tzinfo=UTC)
         duration = (end_dt - start_dt).seconds  # Calculate acquisition duration
+        with contextlib.suppress(ValueError, TypeError):
+            duration = ureg.Quantity(duration, "second")
         set_nested_dict_value(
             mdict,
-            ["nx_meta", "Spectrum Imaging", "Acquisition Duration (s)"],
+            ["nx_meta", "Spectrum Imaging", "Acquisition Duration"],
             duration,
         )
 

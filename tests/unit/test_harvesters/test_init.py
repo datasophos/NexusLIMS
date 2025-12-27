@@ -6,8 +6,8 @@ class TestCABundleHandling:
     """Test CA bundle configuration handling."""
 
     def test_ca_bundle_content_line_processing(self):
-        """Test the list comprehension that processes CA_BUNDLE_CONTENT (line 22)."""
-        # This test directly exercises the logic from line 22:
+        """Test the list comprehension that processes CA_BUNDLE_CONTENT."""
+        # This test directly exercises the logic:
         # CA_BUNDLE_CONTENT = [
         #   (i + "\n").encode() for i in CA_BUNDLE_CONTENT.split(r"\n")
         # ]
@@ -19,7 +19,7 @@ class TestCABundleHandling:
             "-----END CERTIFICATE-----"
         )
 
-        # Apply the same transformation that line 22 does
+        # Apply the transformation
         result = [(i + "\n").encode() for i in mock_cert_string.split(r"\n")]
 
         # Verify the result matches expected format
@@ -44,6 +44,6 @@ class TestCABundleHandling:
         assert CA_BUNDLE_CONTENT is not None
         assert isinstance(CA_BUNDLE_CONTENT, list)
 
-        # Verify it contains bytes (the result of line 22's encoding)
+        # Verify it contains bytes
         if len(CA_BUNDLE_CONTENT) > 0:
             assert all(isinstance(line, bytes) for line in CA_BUNDLE_CONTENT)

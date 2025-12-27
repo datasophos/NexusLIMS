@@ -1,0 +1,90 @@
+{
+  "ObjectInfo": {
+    "AcquireDate": "Fri Nov 01 15:42:16 2019",
+    "AcquireInfo": {
+      "DwellTimePath": "0.000006",
+      "FrameTime": "1.88744",
+      "Magnification": "80000 X"
+    },
+    "DetectorRange": {
+      "EndX": "10.0000",
+      "EndY": "10.0000",
+      "StartX": "-10.0000",
+      "StartY": "-10.0000"
+    },
+    "ExperimentalConditions": {
+      "MicroscopeConditions": {
+        "AcceleratingVoltage": "300000",
+        "Tilt1": "0.127775",
+        "Tilt2": "-0.062396"
+      }
+    },
+    "ExperimentalDescription": {
+      "C1 Aperture_um": 2000.0,
+      "C2 Aperture_um": 50.0,
+      "C2 lens_%": 22.133,
+      "C3 lens_%": 12.501,
+      "Camera length_m": 0.195,
+      "Defocus_um": -1.12,
+      "Diffraction lens_%": 34.891,
+      "Emission_uA": 149.0,
+      "Extraction voltage_V": 4400.0,
+      "Filter drift tube_eV": 0.0,
+      "Filter mode": "Spectroscopy",
+      "Filter prism shift_eV": -0.0,
+      "Filter selected aperture": "3mm",
+      "Filter selected dispersion_eV/Channel": 0.1,
+      "Filter total energy loss_eV": 0.0,
+      "Gun lens": "6",
+      "Gun type": "FEG",
+      "High tension_kV": 300.0,
+      "Magnification_x": 80000.0,
+      "Microscope": "Microscope Titan 300 kV ABCD1 SuperTwin",
+      "Mode": " STEM nP SA Zoom Diffraction",
+      "OBJ Aperture": "retracted",
+      "Objective lens_%": 88.235,
+      "SA Aperture": "retracted",
+      "Spot size": "7",
+      "Stage A_deg": 7.32,
+      "Stage B_deg": -3.57,
+      "Stage X_um": 20.528,
+      "Stage Y_um": 243.295,
+      "Stage Z_um": 45.491,
+      "Stem rotation correction_deg": -12.3,
+      "Stem rotation_deg": 87.0,
+      "User": "USER"
+    },
+    "Manufacturer": "FEI (ISAS)",
+    "OriginalImageUuid": "f83aad87-ff10-46d9-ac3b-1de760e2e471",
+    "TrueImageHeaderInfo": {},
+    "Uuid": "c4c7f61f-718f-4e4b-adf0-a83b15fb699a"
+  },
+  "ser_header_parameters": {
+    "ArrayLength": "[3993    0    0    0    0    0    0    0    0    0    0    0    0    0\n    0    0    0    0    0    0    0    0    0    0    0    0    0    0\n    0    0    0    0    0    0    0    0    0    0    0    0    0    0\n    0    0    0    0    0    0    0    0    0    0    0    0    0    0\n    0    0    0    0    0    0    0    0    0    0    0    0    0    0\n    0    0    0    0    0    0    0    0    0    0    0    0    0    0\n    0    0    0    0    0    0    0    0    0    0    0    0    0    0\n    0    0]",
+    "ByteOrder": "18761",
+    "CalibrationDelta": "[9.97528327 0.         0.         0.         0.         0.\n 0.         0.         0.         0.         0.         0.\n 0.         0.         0.         0.         0.         0.\n 0.         0.         0.         0.         0.         0.\n 0.         0.         0.         0.         0.         0.\n 0.         0.         0.         0.         0.         0.\n 0.         0.         0.         0.         0.         0.\n 0.         0.         0.         0.         0.         0.\n 0.         0.         0.         0.         0.         0.\n 0.         0.         0.         0.         0.         0.\n 0.         0.         0.         0.         0.         0.\n 0.         0.         0.         0.         0.         0.\n 0.         0.         0.         0.         0.         0.\n 0.         0.         0.         0.         0.         0.\n 0.         0.         0.         0.         0.         0.\n 0.         0.         0.         0.         0.         0.\n 0.         0.         0.         0.        ]",
+    "CalibrationElement": "[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]",
+    "CalibrationOffset": "[11.98124561  0.          0.          0.          0.          0.\n  0.          0.          0.          0.          0.          0.\n  0.          0.          0.          0.          0.          0.\n  0.          0.          0.          0.          0.          0.\n  0.          0.          0.          0.          0.          0.\n  0.          0.          0.          0.          0.          0.\n  0.          0.          0.          0.          0.          0.\n  0.          0.          0.          0.          0.          0.\n  0.          0.          0.          0.          0.          0.\n  0.          0.          0.          0.          0.          0.\n  0.          0.          0.          0.          0.          0.\n  0.          0.          0.          0.          0.          0.\n  0.          0.          0.          0.          0.          0.\n  0.          0.          0.          0.          0.          0.\n  0.          0.          0.          0.          0.          0.\n  0.          0.          0.          0.          0.          0.\n  0.          0.          0.          0.        ]",
+    "DataType": "[2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]",
+    "DataTypeID": "16672",
+    "Dim-1_CalibrationDelta": 6.097342468837302e-09,
+    "Dim-1_CalibrationElement": "0",
+    "Dim-1_CalibrationOffset": 0.0,
+    "Dim-1_Description": "b'Position'",
+    "Dim-1_DescriptionLength": "8",
+    "Dim-1_DimensionSize": "100",
+    "Dim-1_Units": "b'meters'",
+    "Dim-1_UnitsLength": "6",
+    "NumberDimensions": "1",
+    "OffsetArrayOffset": "76",
+    "PositionX": "[0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.\n 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.\n 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.\n 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.\n 0. 0. 0. 0.]",
+    "PositionY": "[0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.\n 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.\n 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.\n 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.\n 0. 0. 0. 0.]",
+    "SeriesID": "407",
+    "SeriesVersion": "528",
+    "TagTypeID": "[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]",
+    "Time": "[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]",
+    "TotalNumberElements": "100",
+    "Unknown": "[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]",
+    "ValidNumberElements": "100"
+  }
+}

@@ -6,12 +6,14 @@ import subprocess
 import tempfile
 import time
 import warnings
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 from pathlib import Path
 from shutil import copyfile
 from typing import Any, Dict, List, Tuple, Union
 
 import certifi
+import pytz
+import tzlocal
 from benedict import benedict
 from requests import Session
 from requests.adapters import HTTPAdapter
@@ -887,13 +889,47 @@ def has_delay_passed(date: datetime) -> bool:
     return delta > delay
 
 
-def current_system_tz():
-    """Get the current system timezone information."""
-    return (
-        timezone(timedelta(seconds=-time.altzone), time.tzname[1])
-        if time.daylight
-        else timezone(timedelta(seconds=-time.timezone), time.tzname[0])
-    )
+def current_system_tz_name() -> str:
+    """
+    Get the system's timezone name.
+
+    Returns the IANA timezone database name for the system's current timezone
+    (e.g., 'America/New_York'), never a simple UTC offset.
+
+    Returns
+    -------
+    str
+        The IANA timezone name (e.g., 'America/New_York', 'Europe/London')
+
+    Examples
+    --------
+    >>> current_system_tz_name()
+    'America/New_York'
+    """
+    # Get the system's local timezone using tzlocal
+    return tzlocal.get_localzone_name()
+
+
+def current_system_tz() -> pytz.tzinfo.DstTzInfo:
+    """
+    Get the system's timezone as a pytz timezone object.
+
+    Returns the system's current timezone as a pytz timezone object with a
+    named timezone (e.g., 'America/New_York'), never a simple UTC offset.
+
+    Returns
+    -------
+    pytz.tzinfo.DstTzInfo
+        A pytz timezone object representing the system's timezone
+
+    Examples
+    --------
+    >>> tz = get_system_tz()
+    >>> tz.zone
+    'America/New_York'
+    """
+    # Return the corresponding pytz timezone object
+    return pytz.timezone(current_system_tz_name())
 
 
 def replace_instrument_data_path(path: Path, suffix: str) -> Path:

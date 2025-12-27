@@ -155,3 +155,263 @@ class TestActivity:
         assert len(test_activity.meta) == 2
         assert "Data Type" in test_activity.meta[0]
         assert "Data Type" in test_activity.meta[1]
+
+    def test_as_xml_with_quantity_metadata(self, gnu_find_activities):
+        """Test Pint Quantity objects serialize to XML with unit attributes."""
+        from nexusLIMS.schemas.units import ureg
+
+        activity_1 = gnu_find_activities["activities_list"][0]
+
+        # Add Pint Quantity objects to unique_meta for the first file
+        activity_1.unique_meta[0]["Beam Energy"] = ureg.Quantity(200.0, "kilovolt")
+        activity_1.unique_meta[0]["Working Distance"] = ureg.Quantity(
+            10.5, "millimeter"
+        )
+        activity_1.unique_meta[0]["Beam Current"] = ureg.Quantity(100, "picoampere")
+
+        # Generate XML
+        root = activity_1.as_xml(seqno=0, sample_id="sample_id")
+
+        # Check that Quantity objects are serialized with magnitude and unit attribute
+        beam_energy_elements = root.xpath(".//dataset/meta[@name='Beam Energy']")
+        assert len(beam_energy_elements) >= 1
+        beam_energy_el = beam_energy_elements[0]
+        assert beam_energy_el.text == "200.0"
+        assert beam_energy_el.get("unit") == "kV"
+
+        working_distance_elements = root.xpath(
+            ".//dataset/meta[@name='Working Distance']",
+        )
+        assert len(working_distance_elements) >= 1
+        wd_el = working_distance_elements[0]
+        assert wd_el.text == "10.5"
+        assert wd_el.get("unit") == "mm"
+
+        beam_current_elements = root.xpath(".//dataset/meta[@name='Beam Current']")
+        assert len(beam_current_elements) >= 1
+        bc_el = beam_current_elements[0]
+        assert bc_el.text == "100.0"
+        assert bc_el.get("unit") == "pA"
+
+    def test_as_xml_with_quantity_and_warning(self, gnu_find_activities):
+        """Test Quantity objects with warnings get unit and warning attributes."""
+        from nexusLIMS.schemas.units import ureg
+
+        activity_1 = gnu_find_activities["activities_list"][0]
+
+        # Add a Quantity object with a warning
+        activity_1.unique_meta[0]["Magnification"] = ureg.Quantity(
+            50000, "dimensionless"
+        )
+        activity_1.warnings[0].append("Magnification")
+
+        # Generate XML
+        root = activity_1.as_xml(seqno=0, sample_id="sample_id")
+
+        # Check that the element has both warning and unit attributes
+        mag_elements = root.xpath(".//dataset/meta[@name='Magnification']")
+        assert len(mag_elements) >= 1
+        mag_el = mag_elements[0]
+        assert mag_el.text == "50000.0"
+        assert mag_el.get("warning") == "true"
+        assert mag_el.get("unit") == ""  # dimensionless has empty unit string
+
+    def test_end_to_end_with_profile_and_quantities(self):  # noqa: PLR0915
+        """End-to-end test: extractor → profile extension_fields → XML with Quantities.
+
+        This test verifies the complete integration flow:
+        1. Extractor produces metadata with Pint Quantities
+        2. Instrument profile adds extension_fields (including Quantities)
+        3. Activity collects metadata from multiple files
+        4. XML generation properly serializes all Quantities with unit attributes
+        5. Extension fields appear in the correct XML structure
+        """
+        from unittest.mock import MagicMock
+
+        from nexusLIMS.db.session_handler import Session
+        from nexusLIMS.extractors.base import InstrumentProfile
+        from nexusLIMS.extractors.profiles import get_profile_registry
+        from nexusLIMS.schemas.activity import AcquisitionActivity
+        from nexusLIMS.schemas.units import ureg
+
+        # Setup: Create a mock instrument with a profile that adds extension_fields
+        registry = get_profile_registry()
+        # Save original state
+        original_profiles = registry._profiles.copy()  # noqa: SLF001
+
+        try:
+            # Create an instrument profile with extension fields (including Quantities)
+            profile = InstrumentProfile(
+                instrument_id="test-instrument-integration",
+                extension_fields={
+                    "facility": "Test Electron Microscopy Facility",
+                    "building": ureg.Quantity(220, "dimensionless"),  # Building number
+                    "elevation": ureg.Quantity(100.5, "meter"),  # Building elevation
+                    "calibration_date": "2025-12-01",
+                },
+            )
+            registry.register(profile)
+
+            # Create a mock instrument
+            mock_instrument = MagicMock(spec=Session)
+            mock_instrument.instrument_id = "test-instrument-integration"
+
+            # Create an activity and add mock metadata simulating extractor output
+            activity = AcquisitionActivity()
+
+            # Simulate first file with Quantities from extractor
+            # Note: metadata is stored flattened (not wrapped in nx_meta)
+            meta1 = {
+                "DatasetType": "Image",
+                "Data Type": "SEM_Imaging",
+                "Creation Time": "2025-12-16T10:00:00+00:00",
+                "Beam Energy": ureg.Quantity(5.0, "kilovolt"),
+                "Working Distance": ureg.Quantity(8.5, "millimeter"),
+                "Pixel Size": ureg.Quantity(2.5, "nanometer"),
+            }
+            # Inject extension fields (simulating what happens in parse_metadata)
+            meta1.update(profile.extension_fields)
+
+            activity.files.append("file1.tif")
+            activity.previews.append(None)
+            activity.meta.append(meta1)
+            activity.warnings.append([])
+
+            # Simulate second file with different parameters
+            meta2 = {
+                "DatasetType": "Image",
+                "Data Type": "SEM_Imaging",
+                "Creation Time": "2025-12-16T10:05:00+00:00",
+                "Beam Energy": ureg.Quantity(10.0, "kilovolt"),
+                "Working Distance": ureg.Quantity(10.0, "millimeter"),
+                "Magnification": ureg.Quantity(25000, "dimensionless"),
+            }
+            # Inject extension fields (simulating what happens in parse_metadata)
+            meta2.update(profile.extension_fields)
+
+            activity.files.append("file2.tif")
+            activity.previews.append(None)
+            activity.meta.append(meta2)
+            activity.warnings.append([])
+
+            # Set instrument for activity
+            activity.instrument = mock_instrument
+
+            # Store setup and unique params
+            activity.store_setup_params()
+            activity.store_unique_metadata()
+
+            # Generate XML
+            root = activity.as_xml(seqno=0, sample_id="test_sample")
+
+            # Verify extension fields are present in XML
+            facility_elements = root.xpath(".//setup/param[@name='facility']")
+            assert len(facility_elements) == 1
+            assert facility_elements[0].text == "Test Electron Microscopy Facility"
+
+            building_elements = root.xpath(".//setup/param[@name='building']")
+            assert len(building_elements) == 1
+            assert building_elements[0].text == "220.0"
+            assert building_elements[0].get("unit") == ""  # dimensionless
+
+            elevation_elements = root.xpath(".//setup/param[@name='elevation']")
+            assert len(elevation_elements) == 1
+            assert elevation_elements[0].text == "100.5"
+            assert elevation_elements[0].get("unit") == "m"
+
+            calibration_elements = root.xpath(
+                ".//setup/param[@name='calibration_date']"
+            )
+            assert len(calibration_elements) == 1
+            assert calibration_elements[0].text == "2025-12-01"
+            assert calibration_elements[0].get("unit") is None  # No unit for strings
+
+            # Verify extractor-provided Quantities in unique metadata
+            # Beam Energy and Working Distance vary, so should be in unique metadata
+            beam_energy_elements = root.xpath(".//dataset/meta[@name='Beam Energy']")
+            assert len(beam_energy_elements) == 2  # Two different files
+            assert beam_energy_elements[0].text == "5.0"
+            assert beam_energy_elements[0].get("unit") == "kV"
+            assert beam_energy_elements[1].text == "10.0"
+            assert beam_energy_elements[1].get("unit") == "kV"
+
+            wd_elements = root.xpath(".//dataset/meta[@name='Working Distance']")
+            assert len(wd_elements) == 2  # Two different files
+            assert wd_elements[0].text == "8.5"
+            assert wd_elements[0].get("unit") == "mm"
+            assert wd_elements[1].text == "10.0"
+            assert wd_elements[1].get("unit") == "mm"
+
+            # Pixel Size only appears in first file, so should be in unique metadata
+            pixel_size_elements = root.xpath(".//dataset/meta[@name='Pixel Size']")
+            assert len(pixel_size_elements) == 1  # Only in first file
+            assert pixel_size_elements[0].text == "2.5"
+            assert pixel_size_elements[0].get("unit") == "nm"
+
+            # Magnification only appears in second file, so should be in unique metadata
+            mag_elements = root.xpath(".//dataset/meta[@name='Magnification']")
+            assert len(mag_elements) == 1  # Only in second file
+            assert mag_elements[0].text == "25000.0"
+            assert mag_elements[0].get("unit") == ""  # dimensionless
+
+        finally:
+            # Restore original registry state
+            registry._profiles = original_profiles  # noqa: SLF001
+
+    def test_setup_params_missing_key_in_second_file(self):
+        """Test that missing keys in subsequent files are not kept in setup_params.
+
+        This is a regression test for a bug where if a parameter appeared in file1
+        but was missing from file2, it would incorrectly remain in setup_params
+        instead of being moved to unique_meta for file1.
+        """
+        from nexusLIMS.schemas.activity import AcquisitionActivity
+        from nexusLIMS.schemas.units import ureg
+
+        activity = AcquisitionActivity()
+
+        # File 1 has "Pixel Size"
+        meta1 = {
+            "DatasetType": "Image",
+            "Beam Energy": ureg.Quantity(5.0, "kilovolt"),
+            "Pixel Size": ureg.Quantity(2.5, "nanometer"),
+        }
+        activity.files.append("file1.tif")
+        activity.previews.append(None)
+        activity.meta.append(meta1)
+        activity.warnings.append([])
+
+        # File 2 does NOT have "Pixel Size" - it's missing
+        meta2 = {
+            "DatasetType": "Image",
+            "Beam Energy": ureg.Quantity(10.0, "kilovolt"),
+            # Note: No "Pixel Size" key here
+        }
+        activity.files.append("file2.tif")
+        activity.previews.append(None)
+        activity.meta.append(meta2)
+        activity.warnings.append([])
+
+        # Store setup and unique params
+        activity.store_setup_params()
+        activity.store_unique_metadata()
+
+        # Verify:
+        # - "DatasetType" should be in setup_params (present and same in both files)
+        assert "DatasetType" in activity.setup_params
+        assert activity.setup_params["DatasetType"] == "Image"
+
+        # - "Beam Energy" should NOT be in setup_params (different values)
+        assert "Beam Energy" not in activity.setup_params
+
+        # - "Pixel Size" should NOT be in setup_params (missing in file2)
+        assert "Pixel Size" not in activity.setup_params
+
+        # - "Pixel Size" should be in unique_meta for file1 only
+        assert "Pixel Size" in activity.unique_meta[0]
+        assert activity.unique_meta[0]["Pixel Size"] == ureg.Quantity(2.5, "nanometer")
+        assert "Pixel Size" not in activity.unique_meta[1]
+
+        # - "Beam Energy" should be in unique_meta for both files (different values)
+        assert "Beam Energy" in activity.unique_meta[0]
+        assert "Beam Energy" in activity.unique_meta[1]

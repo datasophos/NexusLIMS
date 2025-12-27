@@ -129,7 +129,7 @@ if (Are there new sessions?) then (True)
         |#eeffee|Metadata extractors|
         repeat :""extractors.parse_metadata(filename)"";
           :Extract all known metadata
-          from the the raw data file;
+          from the raw data file;
           :Determine "dataset type"
           (<i>i.e.</i> "TEM Imaging",
           "STEM EELS", "SEM EDS", etc.);

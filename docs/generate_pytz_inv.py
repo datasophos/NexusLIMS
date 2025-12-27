@@ -31,6 +31,15 @@ o = soi.DataObjStr(
     dispname="-",
 )
 inv.objects.append(o)
+o = soi.DataObjStr(
+    name="pytz.tzinfo.DstTzInfo",
+    domain="py",
+    role="class",
+    priority="1",
+    uri="#tzinfo-api",
+    dispname="-",
+)
+inv.objects.append(o)
 
 # Define the output path for the custom objects.inv
 # Assuming it will be placed in the docs/ directory alongside conf.py

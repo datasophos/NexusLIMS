@@ -340,6 +340,10 @@ nitpick_ignore = [
     ("py:class", "pydantic_settings.sources.PathType"),
     # lxml types not in custom objects.inv
     ("py:class", "lxml.etree.ElementBase"),
+    # NexusLIMS type aliases (Annotated types can't be cross-referenced as classes)
+    ("py:class", "nexusLIMS.schemas.pint_types.PintQuantity"),
+    # Pint library types (no intersphinx inventory available)
+    ("py:class", "pint.Quantity"),
 ]
 
 

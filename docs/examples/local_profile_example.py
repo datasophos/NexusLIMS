@@ -35,8 +35,8 @@ def add_facility_metadata(
     """
     Add facility-specific metadata to all files from this instrument.
 
-    This example shows how to inject consistent metadata values for all
-    files acquired on a specific instrument.
+    This example shows how to inject consistent metadata values into the
+    extensions section for all files acquired on a specific instrument.
 
     Parameters
     ----------
@@ -50,11 +50,14 @@ def add_facility_metadata(
     dict
         Modified metadata dictionary
     """
-    # Add your facility's information
-    metadata["nx_meta"]["Facility"] = "My Lab Facility"
-    metadata["nx_meta"]["Building"] = "Building 123"
-    metadata["nx_meta"]["Room"] = "Lab 456"
-    metadata["nx_meta"]["Contact"] = "lab-contact@example.com"
+    # Add your facility's information to extensions section
+    if "extensions" not in metadata["nx_meta"]:
+        metadata["nx_meta"]["extensions"] = {}
+
+    metadata["nx_meta"]["extensions"]["facility"] = "My Lab Facility"
+    metadata["nx_meta"]["extensions"]["building"] = "Building 123"
+    metadata["nx_meta"]["extensions"]["room"] = "Lab 456"
+    metadata["nx_meta"]["extensions"]["contact"] = "lab-contact@example.com"
 
     logger.debug("Added facility metadata for %s", context.instrument.name)
     return metadata
@@ -157,11 +160,11 @@ my_instrument_profile = InstrumentProfile(
         "warnings": add_instrument_warnings,
         "acquisition_mode": detect_special_acquisition_mode,
     },
-    static_metadata={
-        # Static metadata is injected after all parsers run
-        # Use dot notation for nested keys
-        "nx_meta.Instrument_Owner": "My Research Group",
-        "nx_meta.Funding_Agency": "NSF Grant #12345",
+    extension_fields={
+        # Extension fields are injected after all parsers run
+        # These populate the nx_meta.extensions section
+        "instrument_owner": "My Research Group",
+        "funding_agency": "NSF Grant #12345",
     },
     # Optional: override which extractor to use for specific file types
     # extractor_overrides={

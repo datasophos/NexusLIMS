@@ -668,7 +668,7 @@ class NemoConnector:
             if len(res[1]) > 0:
                 # there was already a start log, so warn and don't do anything:
                 logger.warning(
-                    "A 'START' log with session id \"%s\" was found in the the DB, "
+                    "A 'START' log with session id \"%s\" was found in the DB, "
                     "so a new one will not be inserted for this event",
                     session_id,
                 )
@@ -693,7 +693,7 @@ class NemoConnector:
             if len(res[1]) > 0:
                 # there was already an end log, so warn and don't do anything:
                 logger.warning(
-                    "An 'END' log with session id \"%s\" was found in the the DB, "
+                    "An 'END' log with session id \"%s\" was found in the DB, "
                     "so a new one will not be inserted for this event",
                     session_id,
                 )

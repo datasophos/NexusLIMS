@@ -379,7 +379,7 @@ if __name__ == "__main__":  # pragma: no cover
     )
     parser.add_argument(
         "--upload-records",
-        help="Upload .xml records to the the Nexus CDCS",
+        help="Upload .xml records to the Nexus CDCS",
         action="store_true",
     )
     parser.add_argument(

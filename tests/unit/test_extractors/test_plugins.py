@@ -241,8 +241,15 @@ class TestSpcExtractor:
         # All extractors now return a list
         assert isinstance(metadata, list)
         assert len(metadata) == 1
-        assert metadata[0]["nx_meta"]["Azimuthal Angle (deg)"] == pytest.approx(0.0)
-        assert metadata[0]["nx_meta"]["Live Time (s)"] == pytest.approx(30.000002)
+        # Azimuthal Angle and Live Time are now Pint Quantities
+        from nexusLIMS.schemas.units import ureg
+
+        assert isinstance(metadata[0]["nx_meta"]["Azimuthal Angle"], ureg.Quantity)
+        assert metadata[0]["nx_meta"]["Azimuthal Angle"].magnitude == pytest.approx(0.0)
+        assert metadata[0]["nx_meta"]["Azimuthal Angle"].units == ureg.degree
+        assert isinstance(metadata[0]["nx_meta"]["Live Time"], ureg.Quantity)
+        assert metadata[0]["nx_meta"]["Live Time"].magnitude == pytest.approx(30.000002)
+        assert metadata[0]["nx_meta"]["Live Time"].units == ureg.second
 
     def test_has_required_attributes(self):
         """SpcExtractor should have required plugin attributes."""
@@ -287,8 +294,15 @@ class TestMsaExtractor:
         # All extractors now return a list
         assert isinstance(metadata, list)
         assert len(metadata) == 1
-        assert metadata[0]["nx_meta"]["Azimuthal Angle (deg)"] == pytest.approx(0.0)
-        assert metadata[0]["nx_meta"]["Beam Energy (keV)"] == pytest.approx(10.0)
+        # Azimuthal Angle and Beam Energy are now Pint Quantities
+        from nexusLIMS.schemas.units import ureg
+
+        assert isinstance(metadata[0]["nx_meta"]["Azimuthal Angle"], ureg.Quantity)
+        assert metadata[0]["nx_meta"]["Azimuthal Angle"].magnitude == pytest.approx(0.0)
+        assert metadata[0]["nx_meta"]["Azimuthal Angle"].units == ureg.degree
+        assert isinstance(metadata[0]["nx_meta"]["Beam Energy"], ureg.Quantity)
+        assert metadata[0]["nx_meta"]["Beam Energy"].magnitude == pytest.approx(10.0)
+        assert metadata[0]["nx_meta"]["Beam Energy"].units == ureg.kiloelectron_volt
 
     def test_has_required_attributes(self):
         """MsaExtractor should have required plugin attributes."""
