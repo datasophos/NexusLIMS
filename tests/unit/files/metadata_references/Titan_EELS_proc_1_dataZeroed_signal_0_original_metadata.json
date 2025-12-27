@@ -1,0 +1,2370 @@
+{
+  "ApplicationBounds": [
+    0,
+    0,
+    1084,
+    1599
+  ],
+  "DocumentObjectList": {
+    "TagGroup0": {
+      "AnnotationGroupList": {},
+      "AnnotationType": 20,
+      "BackgroundColor": [
+        -1,
+        -1,
+        -1
+      ],
+      "BackgroundMode": 2,
+      "FillMode": 2,
+      "ForegroundColor": [
+        -1,
+        0,
+        0
+      ],
+      "HasBackground": 0,
+      "ImageDisplayInfo": {
+        "BackgroundOn": 1,
+        "CalibrationSliceId": {
+          "Data0": 0
+        },
+        "CaptionOn": 1,
+        "CaptionSize": 12,
+        "CursorOn": 0,
+        "CursorPosition": 0.0,
+        "DimensionLabels": {
+          "Data0": [],
+          "Data1": "Energy Loss"
+        },
+        "FrameOn": 1,
+        "GridOn": 1,
+        "GroupId": 0,
+        "GroupList": {
+          "TagGroup0": {
+            "DoAutoSurveyHigh": 0,
+            "DoAutoSurveyLow": 0,
+            "GroupToDisplay": {
+              "Offset": [
+                -0.0,
+                -0.0
+              ],
+              "Scale": [
+                0.0007462686626240611,
+                0.10981297492980957
+              ]
+            },
+            "TrackStyleX": 0,
+            "TrackStyleY": 0
+          }
+        },
+        "LegendOn": 1,
+        "MainSliceId": {
+          "Data0": 0
+        },
+        "NumHorizontalTicks": 1,
+        "NumVerticalTicks": 1,
+        "ROIList": {
+          "TagGroup0": {
+            "BoldLabel": 0,
+            "Color": [
+              0,
+              0,
+              -1
+            ],
+            "DrawSolid": 0,
+            "End": 363.0,
+            "HeightValue": 1.0,
+            "IsDeletable": 1,
+            "IsMoveable": 0,
+            "IsResizable": 0,
+            "IsVolatile": 0,
+            "Label": "Li K",
+            "MovableLabel": 0,
+            "Name": "edge",
+            "PartialHeightMarker": 0,
+            "Ref": 0,
+            "Selected": 0,
+            "SliceId": {
+              "Data0": 0
+            },
+            "Start": 363.0
+          },
+          "TagGroup1": {
+            "BoldLabel": 0,
+            "Color": [
+              0,
+              0,
+              -1
+            ],
+            "DrawSolid": 0,
+            "End": 583.0,
+            "HeightValue": 1.0,
+            "IsDeletable": 1,
+            "IsMoveable": 0,
+            "IsResizable": 0,
+            "IsVolatile": 0,
+            "Label": "Si L",
+            "MovableLabel": 0,
+            "Name": "edge",
+            "PartialHeightMarker": 0,
+            "Ref": 1,
+            "Selected": 0,
+            "SliceId": {
+              "Data0": 0
+            },
+            "Start": 583.0
+          }
+        },
+        "SliceList": {
+          "TagGroup0": {
+            "BaseIntensity": 0.0,
+            "ComplexMode": 4,
+            "DrawFill": 1,
+            "DrawLine": 0,
+            "FillColor": [
+              23644,
+              -16449,
+              -16449
+            ],
+            "Horz Pos Fixed": 1,
+            "Horz Scale Fixed": 1,
+            "ImageToGroup": {
+              "Offset": [
+                0.0,
+                0.0
+              ],
+              "Scale": [
+                1.0,
+                1.0
+              ]
+            },
+            "IsVisible": 1,
+            "LineColor": [
+              0,
+              -32640,
+              -16449
+            ],
+            "LineThickness": 1,
+            "SliceGroup": 0,
+            "SliceId": {
+              "Data0": 0
+            },
+            "Vert Pos Fixed": 1,
+            "Vert Scale Fixed": 1
+          },
+          "TagGroup1": {
+            "BaseIntensity": 0.0,
+            "ComplexMode": 4,
+            "DrawFill": 0,
+            "DrawLine": 1,
+            "FillColor": [
+              -1,
+              26214,
+              26214
+            ],
+            "Horz Pos Fixed": 1,
+            "Horz Scale Fixed": 1,
+            "ImageToGroup": {
+              "Offset": [
+                1.4210854715202004e-14,
+                0.0
+              ],
+              "Scale": [
+                1.0,
+                1.0
+              ]
+            },
+            "IsVisible": 1,
+            "LineColor": [
+              -13108,
+              0,
+              0
+            ],
+            "LineThickness": 1,
+            "SliceGroup": 0,
+            "SliceId": {
+              "Data0": 5
+            },
+            "Vert Pos Fixed": 1,
+            "Vert Scale Fixed": 1
+          },
+          "TagGroup2": {
+            "BaseIntensity": 0.0,
+            "ComplexMode": 4,
+            "DrawFill": 0,
+            "DrawLine": 1,
+            "FillColor": [
+              3341,
+              -1,
+              3341
+            ],
+            "Horz Pos Fixed": 1,
+            "Horz Scale Fixed": 1,
+            "ImageToGroup": {
+              "Offset": [
+                1.4210854715202004e-14,
+                0.0
+              ],
+              "Scale": [
+                1.0,
+                1.0
+              ]
+            },
+            "IsVisible": 1,
+            "LineColor": [
+              0,
+              -26215,
+              0
+            ],
+            "LineThickness": 1,
+            "SliceGroup": 0,
+            "SliceId": {
+              "Data0": 6
+            },
+            "Vert Pos Fixed": 1,
+            "Vert Scale Fixed": 1
+          },
+          "TagGroup3": {
+            "BaseIntensity": 0.0,
+            "ComplexMode": 4,
+            "DrawFill": 0,
+            "DrawLine": 1,
+            "FillColor": [
+              -16449,
+              -16449,
+              -1
+            ],
+            "Horz Pos Fixed": 1,
+            "Horz Scale Fixed": 1,
+            "ImageToGroup": {
+              "Offset": [
+                1.4210854715202004e-14,
+                0.0
+              ],
+              "Scale": [
+                1.0,
+                1.0
+              ]
+            },
+            "IsVisible": 1,
+            "LineColor": [
+              0,
+              0,
+              -1
+            ],
+            "LineThickness": 1,
+            "SliceGroup": 0,
+            "SliceId": {
+              "Data0": 7
+            },
+            "Vert Pos Fixed": 1,
+            "Vert Scale Fixed": 1
+          }
+        }
+      },
+      "ImageDisplayType": 3,
+      "ImageSource": 0,
+      "IsMoveable": 1,
+      "IsResizable": 1,
+      "IsSelectable": 1,
+      "IsTranslatable": 1,
+      "IsVisible": 1,
+      "ObjectTags": {
+        "__is_not_copy": 1,
+        "__was_selected": 0
+      },
+      "Rectangle": [
+        0.0,
+        0.0,
+        902.0,
+        1157.0
+      ],
+      "UniqueID": 8
+    }
+  },
+  "DocumentTags": {},
+  "HasWindowPosition": 1,
+  "Image Behavior": {
+    "DoIntegralZoom": 0,
+    "ImageDisplayBounds": [
+      0.0,
+      0.0,
+      902.0,
+      1157.0
+    ],
+    "IsZoomedToWindow": 1,
+    "UnscaledTransform": {
+      "Offset": [
+        0.0,
+        0.0
+      ],
+      "Scale": [
+        1.0,
+        1.0
+      ]
+    },
+    "ViewDisplayID": 8,
+    "WindowRect": [
+      0.0,
+      0.0,
+      902.0,
+      1157.0
+    ],
+    "ZoomAndMoveTransform": {
+      "Offset": [
+        0.0,
+        0.0
+      ],
+      "Scale": [
+        1.0,
+        1.0
+      ]
+    }
+  },
+  "ImageList": {
+    "TagGroup0": {
+      "ImageData": {
+        "Calibrations": {
+          "Brightness": {
+            "Origin": 0.0,
+            "Scale": 0.013531041331589222,
+            "Units": "e-"
+          },
+          "Dimension": {
+            "TagGroup0": {
+              "Origin": 88.0,
+              "Scale": 0.20000000298023224,
+              "Units": "eV"
+            }
+          },
+          "DisplayCalibratedUnits": 1
+        },
+        "Data": {
+          "endian": "little",
+          "offset": 466058,
+          "size": 1340,
+          "size_bytes": 5360
+        },
+        "DataType": 2,
+        "Dimensions": {
+          "Data0": 1340
+        },
+        "PixelDepth": 4
+      },
+      "ImageTags": {
+        "Acquisition": {
+          "Device": {
+            "Active Size (pixels)": [
+              1340,
+              100
+            ],
+            "CCD": {
+              "Pixel Size (um)": [
+                20.0,
+                20.0
+              ]
+            },
+            "Camera Number": 0,
+            "Configuration": {
+              "Transpose": {
+                "Diagonal Flip": 0,
+                "Horizontal Flip": 1,
+                "Vertical Flip": 0
+              }
+            },
+            "Name": "ENFINA",
+            "Source": "ENFINA"
+          },
+          "Frame": {
+            "Area": {
+              "Transform": {
+                "Class Name": "cm_acquisitiontransform_list",
+                "Transform List": {
+                  "TagGroup0": {
+                    "Binning": [
+                      1,
+                      1
+                    ],
+                    "Class Name": "cm_acquisitiontransform",
+                    "Sub Area Adjust": [
+                      0,
+                      0,
+                      0,
+                      0
+                    ],
+                    "Transpose": {
+                      "Diagonal Flip": 0,
+                      "Horizontal Flip": 1,
+                      "Vertical Flip": 0
+                    }
+                  }
+                }
+              }
+            },
+            "CCD": {
+              "Pixel Size (um)": [
+                20.0,
+                20.0
+              ]
+            },
+            "Intensity": {
+              "Transform": {
+                "Class Name": "cm_valuetransform_list",
+                "Transform List": {
+                  "TagGroup0": {
+                    "Class Name": "cm_valuetransform_affine",
+                    "Offset": 200.0,
+                    "Scale": 1.0
+                  },
+                  "TagGroup1": {
+                    "Class Name": "cm_valuetransform_affine",
+                    "Offset": 0.0,
+                    "Scale": 8.0
+                  },
+                  "TagGroup2": {
+                    "ADC Max": 65535.0,
+                    "ADC Min": 0.0,
+                    "Class Name": "cm_valuetransform_adc"
+                  }
+                }
+              }
+            }
+          },
+          "Parameters": {
+            "Acquisition Write Flags": 4294967295,
+            "Base Detector": {
+              "Class Name": "cm_namedcameradetectorparameterset",
+              "Name": "default"
+            },
+            "Detector": {
+              "CCD Read Area": [
+                0,
+                0,
+                100,
+                1340
+              ],
+              "Controller Start Delay (s)": 0.0,
+              "PICM Parameters": {
+                "000220": {
+                  "Index": 220,
+                  "Type": 0,
+                  "Value": 3
+                },
+                "000247": {
+                  "Index": 247,
+                  "Type": 0,
+                  "Value": 1
+                },
+                "Auto Stop": 0,
+                "Collection Mode": 3,
+                "Exposure (s)": 0.8999999761581421,
+                "Shutter Mode": 1,
+                "Shutter Type": 1,
+                "Vertical Skips": {
+                  "Minimum Block Size": 2,
+                  "Number of Blocks": 5
+                },
+                "X End": 1548,
+                "X Group": 1,
+                "X Start": 1,
+                "Y End": 100,
+                "Y Group": 1,
+                "Y Start": 1
+              },
+              "Trigger Compensation (s)": 0.0
+            },
+            "Environment": {
+              "Mode Name": "Spectroscopy"
+            },
+            "High Level": {
+              "Antiblooming": 0,
+              "Binning": [
+                1,
+                1
+              ],
+              "CCD Read Area": [
+                0,
+                0,
+                100,
+                1340
+              ],
+              "CCD Read Ports": 1,
+              "Choose Number Of Frame Shutters Automatically": 1,
+              "Class Name": "cm_camera_picm_highlevelparameters",
+              "Continuous Readout": 1,
+              "Corrections": 785,
+              "Corrections Mask": 817,
+              "Exposure (s)": 0.8999999761581421,
+              "External Shutter Compensation (s)": 0.0,
+              "Number Of Frame Shutters": 1,
+              "Processing": "Gain Normalized",
+              "Quality Level": 0,
+              "Read Frame Style": 0,
+              "Read Mode": 0,
+              "Secondary Shutter Post Exposure Compensation (s)": 0.0,
+              "Secondary Shutter Pre Exposure Compensation (s)": 0.0,
+              "Shutter": {
+                "Primary Shutter States": 0,
+                "Primary Shutter States Mask": 0,
+                "Secondary Shutter States": 0,
+                "Secondary Shutter States Mask": 0,
+                "Shutter Exposure": 0,
+                "Shutter Index": 0
+              },
+              "Shutter Post Exposure Compensation (s)": 0.0,
+              "Shutter Pre Exposure Compensation (s)": 0.0,
+              "Transform": {
+                "Diagonal Flip": 0,
+                "Horizontal Flip": 0,
+                "Vertical Flip": 0
+              }
+            },
+            "Objects": {
+              "TagGroup0": {
+                "Choose Best Gain": 1,
+                "Class Name": "cm_gainlevelselectionadjustment",
+                "Gain Level": 5
+              },
+              "TagGroup1": {
+                "Class Name": "cm_minreadshutteringexposureadjustment",
+                "Minimum Read Shuttering Exposure (s)": 0.05
+              },
+              "TagGroup2": {
+                "Class Name": "cm_imgproc_finalcombine",
+                "Frame Combine Style": "Copy",
+                "Parameter 1": 1.0
+              }
+            },
+            "Parameter Set Name": "Acquire",
+            "Parameter Set Tag Path": "Spectroscopy:Acquire:Acquire",
+            "Version": 33816576
+          }
+        },
+        "EELS": {
+          "Acquisition": {
+            "Exposure (s)": 0.8999999761581421,
+            "Number of frames": 575,
+            "Saturation fraction": 0.9548338651657104,
+            "Spectrometer": {
+              "Aperture index": 1,
+              "Aperture label": "2mm",
+              "Dispersion (eV/ch)": 0.20000000298023224,
+              "Dispersion index": 4,
+              "Drift tube enabled": 1,
+              "Drift tube voltage (V)": 0.0,
+              "Energy loss (eV)": 0.0,
+              "HT offset (V)": 0.0,
+              "HT offset enabled": 0.0,
+              "Instrument ID": 1400,
+              "Instrument name": "Enfina",
+              "Mode": 0,
+              "Prism offset (V)": 0.0,
+              "Prism offset enabled ": 1
+            }
+          },
+          "Composition": {
+            "Results": {
+              "TagGroup0": {
+                "Areal Density": {
+                  "Sigma": 1.6521856482180296e+18,
+                  "Value": 1.6521834701140785e+19
+                },
+                "BackgroundFitResults": {
+                  "Fit Parameters": {
+                    "Model equation": "y = a0*x^(-a1)",
+                    "a0": {
+                      "sigma": 0.0,
+                      "value": 0.0
+                    },
+                    "a1": {
+                      "sigma": 0.0,
+                      "value": 0.0
+                    },
+                    "meanEnergy": 0.0,
+                    "reducedChi2": 0.0
+                  },
+                  "Fitting Region(s)": {
+                    "TagGroup0": {
+                      "end channel": 359,
+                      "start channel": 282
+                    }
+                  },
+                  "Model": "Power Law"
+                },
+                "CrossSectionCalculation": {
+                  "CrossSection": {
+                    "Sigma": 1.904938385676019e-21,
+                    "Value": 1.9049383048966624e-20
+                  },
+                  "warnings": {}
+                },
+                "Edge Type": "K",
+                "Fractional Composition": {
+                  "Sigma": 0.03133255232914172,
+                  "Value": 0.24544560946802024
+                },
+                "Is Absolute": 1,
+                "Ratio to Reference": {
+                  "Sigma": 0.046002374775420574,
+                  "Value": 0.3252855096303594
+                },
+                "Signal Counts": {
+                  "Sigma": 1509.128089101913,
+                  "Value": 31982364.21875
+                },
+                "Spectrum Integral": {
+                  "Sigma": 15508.590616207619,
+                  "Value": 101618171.77572447
+                },
+                "Vacuum mask": {
+                  "Sigma": 0.0,
+                  "Value": 0.0
+                }
+              },
+              "TagGroup1": {
+                "Areal Density": {
+                  "Sigma": 5.079185287623313e+18,
+                  "Value": 5.0791794322210955e+19
+                },
+                "BackgroundFitResults": {
+                  "Fit Parameters": {
+                    "Model equation": "y = a0*x^(-a1)",
+                    "a0": {
+                      "sigma": 0.0,
+                      "value": 0.0
+                    },
+                    "a1": {
+                      "sigma": 0.0,
+                      "value": 0.0
+                    },
+                    "meanEnergy": 0.0,
+                    "reducedChi2": 0.0
+                  },
+                  "Fitting Region(s)": {
+                    "TagGroup0": {
+                      "end channel": 571,
+                      "start channel": 504
+                    }
+                  },
+                  "Model": "Power Law"
+                },
+                "CrossSectionCalculation": {
+                  "CrossSection": {
+                    "Sigma": 1.7645941488902918e-21,
+                    "Value": 1.76459418927997e-20
+                  },
+                  "warnings": {}
+                },
+                "Edge Type": "L",
+                "Fractional Composition": {
+                  "Sigma": 0.09632322442756733,
+                  "Value": 0.7545543905319797
+                },
+                "Is Absolute": 1,
+                "Is Reference": 1,
+                "Ratio to Reference": {
+                  "Sigma": 0.0,
+                  "Value": 1.0
+                },
+                "Signal Counts": {
+                  "Sigma": 1358.6760961854895,
+                  "Value": 91077222.40625
+                },
+                "Spectrum Integral": {
+                  "Sigma": 15508.590616207619,
+                  "Value": 101618171.77572447
+                },
+                "Vacuum mask": {
+                  "Sigma": 0.0,
+                  "Value": 0.0
+                }
+              }
+            },
+            "Setup": {
+              "TagGroup0": {
+                "Edges": {
+                  "TagGroup0": {
+                    "Energy": 55.0,
+                    "Shell": "K",
+                    "SubShell": "1"
+                  }
+                },
+                "Info": {
+                  "BindingEnergy": 55.0,
+                  "ChemicalShift": 0.0,
+                  "ChemicalShiftEnabled": 0.0,
+                  "Fit-Model": "Power Law",
+                  "Shell": "K",
+                  "SubShell": [],
+                  "Z": 3.0,
+                  "bkgd": {
+                    "TagGroup0": {
+                      "end": 54.20000068843365,
+                      "start": 39.000000461936
+                    }
+                  },
+                  "signal": {
+                    "end": 95.00000129640102,
+                    "start": 55.000000700354576
+                  },
+                  "xsection": "Hartree-Slater"
+                }
+              },
+              "TagGroup1": {
+                "Edges": {
+                  "TagGroup0": {
+                    "Energy": 99.0,
+                    "Shell": "L",
+                    "SubShell": "23"
+                  },
+                  "TagGroup1": {
+                    "Energy": 149.0,
+                    "Shell": "L",
+                    "SubShell": "1"
+                  }
+                },
+                "Info": {
+                  "BindingEnergy": 99.0,
+                  "ChemicalShift": 0.0,
+                  "ChemicalShiftEnabled": 0.0,
+                  "Fit-Model": "Power Law",
+                  "Shell": "L",
+                  "SubShell": [],
+                  "Z": 14.0,
+                  "bkgd": {
+                    "TagGroup0": {
+                      "end": 96.80000132322311,
+                      "start": 83.20000112056732
+                    }
+                  },
+                  "signal": {
+                    "end": 139.00000195205212,
+                    "start": 99.00000135600567
+                  },
+                  "xsection": "Hartree-Slater"
+                }
+              }
+            }
+          },
+          "Experimental Conditions": {
+            "Collection semi-angle (mrad)": 6.5,
+            "Convergence semi-angle (mrad)": 10.0
+          },
+          "Private": {
+            "Children": {
+              "Background": {
+                "Data0": 5
+              },
+              "Signal": {
+                "Data0": 6
+              },
+              "X-section": {
+                "Data0": 7
+              }
+            }
+          },
+          "State": {
+            "Current Edge": {
+              "Edges": {},
+              "Info": {
+                "BindingEnergy": 0.0,
+                "ChemicalShift": 0.0,
+                "ChemicalShiftEnabled": 0.0,
+                "Fit-Model": "Power Law",
+                "Shell": [],
+                "SubShell": [],
+                "Z": 0.0,
+                "bkgd": {},
+                "xsection": []
+              }
+            },
+            "Quantification List": {
+              "TagGroup0": {
+                "Edges": {
+                  "TagGroup0": {
+                    "Energy": 55.0,
+                    "Shell": "K",
+                    "SubShell": "1"
+                  }
+                },
+                "Info": {
+                  "BindingEnergy": 55.0,
+                  "ChemicalShift": 0.0,
+                  "ChemicalShiftEnabled": 0.0,
+                  "Fit-Model": "Power Law",
+                  "Shell": "K",
+                  "SubShell": [],
+                  "Z": 3.0,
+                  "bkgd": {
+                    "TagGroup0": {
+                      "end": 54.20000068843365,
+                      "start": 39.000000461936
+                    }
+                  },
+                  "signal": {
+                    "end": 95.00000129640102,
+                    "start": 55.000000700354576
+                  },
+                  "xsection": "Hartree-Slater"
+                }
+              },
+              "TagGroup1": {
+                "Edges": {
+                  "TagGroup0": {
+                    "Energy": 99.0,
+                    "Shell": "L",
+                    "SubShell": "23"
+                  },
+                  "TagGroup1": {
+                    "Energy": 149.0,
+                    "Shell": "L",
+                    "SubShell": "1"
+                  }
+                },
+                "Info": {
+                  "BindingEnergy": 99.0,
+                  "ChemicalShift": 0.0,
+                  "ChemicalShiftEnabled": 0.0,
+                  "Fit-Model": "Power Law",
+                  "Shell": "L",
+                  "SubShell": [],
+                  "Z": 14.0,
+                  "bkgd": {
+                    "TagGroup0": {
+                      "end": 96.80000132322311,
+                      "start": 83.20000112056732
+                    }
+                  },
+                  "signal": {
+                    "end": 139.00000195205212,
+                    "start": 99.00000135600567
+                  },
+                  "xsection": "Hartree-Slater"
+                }
+              }
+            }
+          }
+        },
+        "Meta Data": {
+          "Acquisition Mode": "Parallel dispersive",
+          "Format": "Spectrum",
+          "Signal": "EELS"
+        },
+        "Microscope Info": {
+          "Cs(mm)": 1.2,
+          "Emission Current (\u00b5A)": 0.0,
+          "Field of View (\u00b5m)": 5.698878551136364,
+          "Illumination Mode": "STEM",
+          "Imaging Mode": "DIFFRACTION",
+          "Indicated Magnification": 20000.0,
+          "Items": {
+            "TagGroup0": {
+              "Data Type": 20,
+              "Label": "Specimen",
+              "Tag path": "Microscope Info:Specimen",
+              "Value": "DO NOT EDIT"
+            },
+            "TagGroup1": {
+              "Data Type": 20,
+              "Label": "Operator",
+              "Tag path": "Microscope Info:Operator",
+              "Value": "DO NOT EDIT"
+            },
+            "TagGroup2": {
+              "Data Type": 20,
+              "Label": "Microscope",
+              "Tag path": "Microscope Info:Microscope",
+              "Value": "TEST Titan"
+            }
+          },
+          "Magnification Interpolated": 0,
+          "Microscope": "TEST Titan",
+          "Name": "FEI Tecnai",
+          "Operation Mode": "STEM",
+          "Operator": "DO NOT EDIT",
+          "Probe Current (nA)": 0.0,
+          "Probe Size (nm)": 0.0,
+          "STEM Camera Length": 77.0,
+          "Specimen": "DO NOT EDIT",
+          "Voltage": 300000.0
+        },
+        "Parent": {
+          "Name": "------------------------------------------------------------------------------------------------------------",
+          "UID": {
+            "0": 2036805539,
+            "1": 952455825,
+            "2": 1399221599,
+            "3": 517541522
+          }
+        },
+        "Processing": {
+          "TagGroup0": {
+            "Operation": "AlignSIByPeak",
+            "Parameters": {
+              "Fit region": {
+                "end channel": 119,
+                "start channel": 55
+              }
+            },
+            "Parent": {
+              "Name": "------------------------------------------------------------------------------------------------------------",
+              "UID": {
+                "0": 1185490065,
+                "1": 73212359,
+                "2": 2129756102,
+                "3": 425423592
+              }
+            },
+            "Time": "12/3/2018, 5:25:30 PM"
+          },
+          "TagGroup1": {
+            "Operation": "DataPicker",
+            "Parameters": {
+              "End X": 25,
+              "End Y": 23,
+              "Start X": 0,
+              "Start Y": 0
+            },
+            "Parent": {
+              "Name": "------------------------------------------------------------------------------------------------------------c",
+              "UID": {
+                "0": 2036805539,
+                "1": 952455825,
+                "2": 1399221599,
+                "3": 517541522
+              }
+            },
+            "Time": "12/3/2018, 5:26:41 PM"
+          }
+        }
+      },
+      "Name": "TEST Extracted Spectrum total",
+      "UniqueID": {
+        "Data0": 1084836472,
+        "Data1": 1966751676,
+        "Data2": 912550068,
+        "Data3": 1031098547
+      }
+    }
+  },
+  "ImageSourceList": {
+    "TagGroup0": {
+      "ClassName": "ImageSource:Group",
+      "Extra Slice Info": {
+        "TagGroup0": {
+          "Id": {
+            "Data0": 0
+          },
+          "Label": "Spectrum"
+        },
+        "TagGroup1": {
+          "Id": {
+            "Data0": 1
+          },
+          "Label": "X-section"
+        },
+        "TagGroup2": {
+          "Id": {
+            "Data0": 2
+          },
+          "Label": "Bkgd"
+        },
+        "TagGroup3": {
+          "Id": {
+            "Data0": 3
+          },
+          "Label": "Edge"
+        },
+        "TagGroup4": {
+          "Id": {
+            "Data0": 4
+          },
+          "Label": "X-section"
+        },
+        "TagGroup5": {
+          "Id": {
+            "Data0": 5
+          },
+          "Label": "Background"
+        },
+        "TagGroup6": {
+          "Id": {
+            "Data0": 6
+          },
+          "Label": "Signal"
+        },
+        "TagGroup7": {
+          "Id": {
+            "Data0": 7
+          },
+          "Label": "X-section"
+        }
+      },
+      "ImageList": {
+        "TagGroup0": {
+          "Id": 0,
+          "ImageRef": 1
+        },
+        "TagGroup1": {
+          "Id": 5,
+          "ImageRef": 2
+        },
+        "TagGroup2": {
+          "Id": 6,
+          "ImageRef": 3
+        },
+        "TagGroup3": {
+          "Id": 7,
+          "ImageRef": 4
+        }
+      },
+      "NextId": 8
+    }
+  },
+  "InImageMode": 1,
+  "MinVersionList": {
+    "TagGroup0": {
+      "RequiredVersion": 50659328
+    }
+  },
+  "NextDocumentObjectID": 9,
+  "Page Behavior": {
+    "DoIntegralZoom": 0,
+    "IsZoomedToWindow": 0,
+    "LayedOut": 0,
+    "PageTransform": {
+      "Offset": [
+        0.0,
+        0.0
+      ],
+      "Scale": [
+        1.0,
+        1.0
+      ]
+    },
+    "RestoreImageDisplayBounds": [
+      0.0,
+      0.0,
+      347.0,
+      686.5
+    ],
+    "RestoreImageDisplayID": 8,
+    "TargetDisplayID": 4294967295
+  },
+  "PageSetup": {
+    "General": [
+      1,
+      1000,
+      8500,
+      11000,
+      1000,
+      1000,
+      -1000,
+      -1000
+    ],
+    "Win32": [
+      4,
+      0,
+      0,
+      0,
+      52,
+      33,
+      0,
+      0,
+      -8,
+      42,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      -24,
+      3,
+      0,
+      0,
+      -24,
+      3,
+      0,
+      0,
+      -24,
+      3,
+      0,
+      0,
+      -24,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      79,
+      0
+    ],
+    "Win32_DevModeW": [
+      77,
+      0,
+      105,
+      0,
+      99,
+      0,
+      114,
+      0,
+      111,
+      0,
+      115,
+      0,
+      111,
+      0,
+      102,
+      0,
+      116,
+      0,
+      32,
+      0,
+      88,
+      0,
+      80,
+      0,
+      83,
+      0,
+      32,
+      0,
+      68,
+      0,
+      111,
+      0,
+      99,
+      0,
+      117,
+      0,
+      109,
+      0,
+      101,
+      0,
+      110,
+      0,
+      116,
+      0,
+      32,
+      0,
+      87,
+      0,
+      114,
+      0,
+      105,
+      0,
+      116,
+      0,
+      101,
+      0,
+      114,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      4,
+      0,
+      6,
+      -36,
+      0,
+      88,
+      3,
+      3,
+      -1,
+      0,
+      0,
+      1,
+      0,
+      1,
+      0,
+      -22,
+      10,
+      111,
+      8,
+      100,
+      0,
+      1,
+      0,
+      15,
+      0,
+      88,
+      2,
+      2,
+      0,
+      1,
+      0,
+      88,
+      2,
+      2,
+      0,
+      0,
+      0,
+      76,
+      0,
+      101,
+      0,
+      116,
+      0,
+      116,
+      0,
+      101,
+      0,
+      114,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      -1,
+      -1,
+      -1,
+      -1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      68,
+      73,
+      78,
+      85,
+      34,
+      0,
+      16,
+      1,
+      76,
+      3,
+      12,
+      0,
+      -54,
+      -46,
+      -10,
+      114,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      9,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      16,
+      1,
+      0,
+      0,
+      83,
+      77,
+      84,
+      74,
+      0,
+      0,
+      0,
+      0,
+      16,
+      0,
+      0,
+      1,
+      77,
+      0,
+      105,
+      0,
+      99,
+      0,
+      114,
+      0,
+      111,
+      0,
+      115,
+      0,
+      111,
+      0,
+      102,
+      0,
+      116,
+      0,
+      32,
+      0,
+      88,
+      0,
+      80,
+      0,
+      83,
+      0,
+      32,
+      0,
+      68,
+      0,
+      111,
+      0,
+      99,
+      0,
+      117,
+      0,
+      109,
+      0,
+      101,
+      0,
+      110,
+      0,
+      116,
+      0,
+      32,
+      0,
+      87,
+      0,
+      114,
+      0,
+      105,
+      0,
+      116,
+      0,
+      101,
+      0,
+      114,
+      0,
+      0,
+      0,
+      73,
+      110,
+      112,
+      117,
+      116,
+      66,
+      105,
+      110,
+      0,
+      70,
+      79,
+      82,
+      77,
+      83,
+      79,
+      85,
+      82,
+      67,
+      69,
+      0,
+      82,
+      69,
+      83,
+      68,
+      76,
+      76,
+      0,
+      85,
+      110,
+      105,
+      114,
+      101,
+      115,
+      68,
+      76,
+      76,
+      0,
+      73,
+      110,
+      116,
+      101,
+      114,
+      108,
+      101,
+      97,
+      118,
+      105,
+      110,
+      103,
+      0,
+      79,
+      70,
+      70,
+      0,
+      73,
+      109,
+      97,
+      103,
+      101,
+      84,
+      121,
+      112,
+      101,
+      0,
+      74,
+      80,
+      69,
+      71,
+      77,
+      101,
+      100,
+      0,
+      79,
+      114,
+      105,
+      101,
+      110,
+      116,
+      97,
+      116,
+      105,
+      111,
+      110,
+      0,
+      80,
+      79,
+      82,
+      84,
+      82,
+      65,
+      73,
+      84,
+      0,
+      67,
+      111,
+      108,
+      108,
+      97,
+      116,
+      101,
+      0,
+      79,
+      70,
+      70,
+      0,
+      82,
+      101,
+      115,
+      111,
+      108,
+      117,
+      116,
+      105,
+      111,
+      110,
+      0,
+      79,
+      112,
+      116,
+      105,
+      111,
+      110,
+      49,
+      0,
+      80,
+      97,
+      112,
+      101,
+      114,
+      83,
+      105,
+      122,
+      101,
+      0,
+      76,
+      69,
+      84,
+      84,
+      69,
+      82,
+      0,
+      67,
+      111,
+      108,
+      111,
+      114,
+      77,
+      111,
+      100,
+      101,
+      0,
+      50,
+      52,
+      98,
+      112,
+      112,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      12,
+      0,
+      0,
+      0,
+      77,
+      88,
+      68,
+      87,
+      1,
+      1,
+      0,
+      0
+    ],
+    "Win32_DevNamesW": [
+      4,
+      0,
+      34,
+      0,
+      64,
+      0,
+      0,
+      0,
+      77,
+      0,
+      105,
+      0,
+      99,
+      0,
+      114,
+      0,
+      111,
+      0,
+      115,
+      0,
+      111,
+      0,
+      102,
+      0,
+      116,
+      0,
+      32,
+      0,
+      88,
+      0,
+      80,
+      0,
+      83,
+      0,
+      32,
+      0,
+      68,
+      0,
+      111,
+      0,
+      99,
+      0,
+      117,
+      0,
+      109,
+      0,
+      101,
+      0,
+      110,
+      0,
+      116,
+      0,
+      32,
+      0,
+      87,
+      0,
+      114,
+      0,
+      105,
+      0,
+      116,
+      0,
+      101,
+      0,
+      114,
+      0,
+      0,
+      0,
+      77,
+      0,
+      105,
+      0,
+      99,
+      0,
+      114,
+      0,
+      111,
+      0,
+      115,
+      0,
+      111,
+      0,
+      102,
+      0,
+      116,
+      0,
+      32,
+      0,
+      88,
+      0,
+      80,
+      0,
+      83,
+      0,
+      32,
+      0,
+      68,
+      0,
+      111,
+      0,
+      99,
+      0,
+      117,
+      0,
+      109,
+      0,
+      101,
+      0,
+      110,
+      0,
+      116,
+      0,
+      32,
+      0,
+      87,
+      0,
+      114,
+      0,
+      105,
+      0,
+      116,
+      0,
+      101,
+      0,
+      114,
+      0,
+      0,
+      0,
+      88,
+      0,
+      80,
+      0,
+      83,
+      0,
+      80,
+      0,
+      111,
+      0,
+      114,
+      0,
+      116,
+      0,
+      58,
+      0,
+      0,
+      0
+    ]
+  },
+  "SentinelList": {},
+  "Thumbnails": {
+    "TagGroup0": {
+      "ImageIndex": 0,
+      "SourceSize_Pixels": [
+        1157,
+        902
+      ]
+    }
+  },
+  "WindowPosition": [
+    43,
+    179,
+    945,
+    1336
+  ],
+  "root": {}
+}

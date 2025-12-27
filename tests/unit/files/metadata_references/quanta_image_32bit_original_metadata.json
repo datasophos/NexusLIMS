@@ -1,0 +1,16 @@
+{
+  "BitsPerSample": 32,
+  "Compression": 1,
+  "ImageLength": 50,
+  "ImageWidth": 200,
+  "PhotometricInterpretation": 1,
+  "PlanarConfiguration": 1,
+  "RowsPerStrip": 50,
+  "SampleFormat": 2,
+  "StripByteCounts": [
+    40000
+  ],
+  "StripOffsets": [
+    134
+  ]
+}
