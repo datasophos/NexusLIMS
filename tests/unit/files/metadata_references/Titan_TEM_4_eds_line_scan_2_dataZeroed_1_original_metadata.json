@@ -1,0 +1,30 @@
+{
+  "ser_header_parameters": {
+    "ArrayLength": "[3993    0    0    0    0    0]",
+    "ByteOrder": "18761",
+    "CalibrationDelta": "[9.97528327 0.         0.         0.         0.         0.        ]",
+    "CalibrationElement": "[0 0 0 0 0 0]",
+    "CalibrationOffset": "[11.98124561  0.          0.          0.          0.          0.        ]",
+    "DataType": "[2 0 0 0 0 0]",
+    "DataTypeID": "16672",
+    "Dim-1_CalibrationDelta": 1.0,
+    "Dim-1_CalibrationElement": "0",
+    "Dim-1_CalibrationOffset": 0.0,
+    "Dim-1_Description": "b'Position'",
+    "Dim-1_DescriptionLength": "8",
+    "Dim-1_DimensionSize": "6",
+    "Dim-1_Units": "b'meters'",
+    "Dim-1_UnitsLength": "6",
+    "NumberDimensions": "1",
+    "OffsetArrayOffset": "76",
+    "PositionX": "[0. 0. 0. 0. 0. 0.]",
+    "PositionY": "[0. 0. 0. 0. 0. 0.]",
+    "SeriesID": "407",
+    "SeriesVersion": "528",
+    "TagTypeID": "[0 0 0 0 0 0]",
+    "Time": "[0 0 0 0 0 0]",
+    "TotalNumberElements": "6",
+    "Unknown": "[0 0 0 0 0 0]",
+    "ValidNumberElements": "6"
+  }
+}

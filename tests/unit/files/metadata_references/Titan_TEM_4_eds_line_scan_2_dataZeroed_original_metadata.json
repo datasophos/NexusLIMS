@@ -1,0 +1,90 @@
+{
+  "ObjectInfo": {
+    "AcquireDate": "Wed Jul 17 15:43:21 2019",
+    "AcquireInfo": {
+      "DwellTimePath": "0.000006",
+      "FrameTime": "1.88744",
+      "Magnification": "28500 X"
+    },
+    "DetectorRange": {
+      "EndX": "10.0000",
+      "EndY": "10.0000",
+      "StartX": "-10.0000",
+      "StartY": "-10.0000"
+    },
+    "ExperimentalConditions": {
+      "MicroscopeConditions": {
+        "AcceleratingVoltage": "300000",
+        "Tilt1": "0.167022",
+        "Tilt2": "0.000000"
+      }
+    },
+    "ExperimentalDescription": {
+      "C1 Aperture_um": 2000.0,
+      "C2 Aperture_um": 50.0,
+      "C2 lens_%": 22.783,
+      "C3 lens_%": 11.651,
+      "Camera length_m": 0.195,
+      "Defocus_um": -0.145,
+      "Diffraction lens_%": 34.922,
+      "Emission_uA": 145.0,
+      "Extraction voltage_V": 4400.0,
+      "Filter drift tube_eV": 0.0,
+      "Filter mode": "Spectroscopy",
+      "Filter prism shift_eV": -0.0,
+      "Filter selected aperture": "3mm",
+      "Filter selected dispersion_eV/Channel": 0.1,
+      "Filter total energy loss_eV": 0.0,
+      "Gun lens": "6",
+      "Gun type": "FEG",
+      "High tension_kV": 300.0,
+      "Magnification_x": 28500.0,
+      "Microscope": "Microscope Titan 300 kV ABCD1 SuperTwin",
+      "Mode": " STEM nP SA Zoom Diffraction",
+      "OBJ Aperture": "retracted",
+      "Objective lens_%": 87.987,
+      "SA Aperture": "retracted",
+      "Spot size": "6",
+      "Stage A_deg": 9.57,
+      "Stage B_deg": 0.0,
+      "Stage X_um": -565.778,
+      "Stage Y_um": -321.364,
+      "Stage Z_um": 17.126,
+      "Stem rotation correction_deg": -12.3,
+      "Stem rotation_deg": 0.0,
+      "User": "USER"
+    },
+    "Manufacturer": "FEI (ISAS)",
+    "OriginalImageUuid": "c0247e7c-07a6-4318-8ef9-ad4fe8e2b535",
+    "TrueImageHeaderInfo": {},
+    "Uuid": "eb1bb4c0-684c-4e72-b53f-48748e42b68e"
+  },
+  "ser_header_parameters": {
+    "ArrayLength": "[3993    0    0    0    0    0]",
+    "ByteOrder": "18761",
+    "CalibrationDelta": "[9.97528327 0.         0.         0.         0.         0.        ]",
+    "CalibrationElement": "[0 0 0 0 0 0]",
+    "CalibrationOffset": "[11.98124561  0.          0.          0.          0.          0.        ]",
+    "DataType": "[2 0 0 0 0 0]",
+    "DataTypeID": "16672",
+    "Dim-1_CalibrationDelta": 1.0,
+    "Dim-1_CalibrationElement": "0",
+    "Dim-1_CalibrationOffset": 0.0,
+    "Dim-1_Description": "b'Position'",
+    "Dim-1_DescriptionLength": "8",
+    "Dim-1_DimensionSize": "6",
+    "Dim-1_Units": "b'meters'",
+    "Dim-1_UnitsLength": "6",
+    "NumberDimensions": "1",
+    "OffsetArrayOffset": "76",
+    "PositionX": "[0. 0. 0. 0. 0. 0.]",
+    "PositionY": "[0. 0. 0. 0. 0. 0.]",
+    "SeriesID": "407",
+    "SeriesVersion": "528",
+    "TagTypeID": "[0 0 0 0 0 0]",
+    "Time": "[0 0 0 0 0 0]",
+    "TotalNumberElements": "6",
+    "Unknown": "[0 0 0 0 0 0]",
+    "ValidNumberElements": "6"
+  }
+}

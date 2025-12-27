@@ -1,0 +1,33 @@
+{
+  "ObjectInfo": {
+    "Uuid": "5bb5972e-276a-40c3-87c5-eb9ef3f4cb12"
+  },
+  "ser_header_parameters": {
+    "ArrayLength": "3993",
+    "ByteOrder": "18761",
+    "CalibrationDelta": 9.975283269992229,
+    "CalibrationElement": "0",
+    "CalibrationOffset": 11.981245606192715,
+    "DataType": "3",
+    "DataTypeID": "16672",
+    "Dim-1_CalibrationDelta": 1.0,
+    "Dim-1_CalibrationElement": "0",
+    "Dim-1_CalibrationOffset": 0.0,
+    "Dim-1_Description": "b'Number'",
+    "Dim-1_DescriptionLength": "6",
+    "Dim-1_DimensionSize": "10",
+    "Dim-1_Units": "b''",
+    "Dim-1_UnitsLength": "0",
+    "NumberDimensions": "1",
+    "OffsetArrayOffset": "68",
+    "PositionX": 0.0,
+    "PositionY": 0.0,
+    "SeriesID": "407",
+    "SeriesVersion": "528",
+    "TagTypeID": "0",
+    "Time": "0",
+    "TotalNumberElements": "10",
+    "Unknown": "0",
+    "ValidNumberElements": "1"
+  }
+}

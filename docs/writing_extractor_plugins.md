@@ -629,6 +629,111 @@ Ensure your extractor:
 3. Handles missing/corrupted files gracefully
 4. Uses appropriate timezone for timestamps
 
+## Metadata Reference Files
+
+When developing extractor plugins, it's helpful to see examples of real metadata structures from different file formats. NexusLIMS maintains a collection of reference metadata files extracted from test data.
+
+### Location
+
+Reference metadata is stored in `tests/unit/files/metadata_references/` and includes:
+- **127 JSON files** containing `original_metadata` from HyperSpy-readable test files
+- **2 XML files** with raw TIFF metadata from Orion HIM instruments
+- **README.md** documenting the reference files
+- **extract_original_metadata.py** script to regenerate the references
+
+### Contents
+
+Each JSON file contains the complete `original_metadata` dictionary extracted from a test file using HyperSpy's `signal.original_metadata.as_dictionary()`. The files are named after their source files:
+
+- Single-signal files: `{filename}_original_metadata.json`
+- Multi-signal files: `{filename}_signal_{index}_original_metadata.json`
+
+Format examples covered:
+- Digital Micrograph (.dm3, .dm4) - Various TEM/STEM imaging and spectroscopy modes
+- FEI TIA (.emi/.ser) - TEM/STEM images, spectra, and spectrum images
+- FEI/Thermo Quanta (.tif) - SEM imaging with embedded metadata
+- Zeiss Orion (.tif) - HIM imaging with Fibics or Zeiss metadata
+- Tescan (.tif) - SEM/FIB imaging
+- HyperSpy (.hspy) - 4D-STEM data
+
+### Usage for Extractor Development
+
+**1. Understanding metadata structure**
+
+Before writing an extractor, examine the reference metadata to understand:
+- What fields are available in the source format
+- How the data is structured (nested dictionaries, lists, etc.)
+- Which fields map to NexusLIMS required fields
+- What vendor-specific fields exist
+
+Example workflow:
+```bash
+# View metadata structure for a Quanta TIFF file
+cat tests/unit/files/metadata_references/quanta_image_original_metadata.json | less
+
+# Search for specific fields
+grep -r "acceleration" tests/unit/files/metadata_references/
+```
+
+**2. Mapping source fields to nx_meta**
+
+Use the reference files to identify which source metadata keys should map to NexusLIMS fields:
+
+```python
+# Example: Mapping Quanta TIFF metadata to nx_meta
+# Based on quanta_image_original_metadata.json:
+# {
+#   "User": {"HV": "15000.0", "WD": "5.2", ...},
+#   "EScan": {"DwellTime": "1e-05", ...}
+# }
+
+nx_meta["acceleration_voltage"] = ureg.Quantity(
+    float(metadata["User"]["HV"]) * 1e-3,  # Convert V to kV
+    "kilovolt"
+)
+nx_meta["working_distance"] = ureg.Quantity(
+    float(metadata["User"]["WD"]),
+    "millimeter"
+)
+nx_meta["dwell_time"] = ureg.Quantity(
+    float(metadata["EScan"]["DwellTime"]) * 1e6,  # Convert s to µs
+    "microsecond"
+)
+```
+
+**3. Testing against real metadata**
+
+When writing tests, compare your extractor's output against the reference metadata to ensure you're handling all available fields correctly.
+
+### Regenerating Reference Files
+
+If test files are added or modified, regenerate the reference metadata:
+
+```bash
+cd tests/unit/files/metadata_references
+uv run python extract_original_metadata.py
+```
+
+The script:
+1. Extracts all files from test archives (`tests/unit/files/*.tar.gz`)
+2. Loads each file with HyperSpy
+3. Exports `original_metadata` as formatted JSON
+4. Handles both single and multi-signal files automatically
+
+This is particularly useful after:
+- Adding new test files for a format
+- Updating data-zeroing procedures
+- Verifying metadata preservation after file modifications
+
+### Benefits
+
+Using metadata reference files helps you:
+- **Write better extractors** - See real-world metadata structure before coding
+- **Improve field coverage** - Identify fields you might have missed
+- **Debug extraction issues** - Compare expected vs. actual metadata
+- **Document metadata evolution** - Track changes in file format metadata over time
+- **Onboard new developers** - Provide concrete examples of metadata structure
+
 ## Further Reading
 
 - [Extractor Overview](extractors.md)
