@@ -22,7 +22,7 @@ def check_stage_position(stage_pos, expected_values):
     """Check Stage Position Quantities."""
     for axis, expected_value in expected_values.items():
         assert isinstance(stage_pos[axis], ureg.Quantity)
-        assert stage_pos[axis].magnitude == pytest.approx(expected_value)
+        assert float(stage_pos[axis].magnitude) == expected_value
         if axis in ("A", "B"):
             assert str(stage_pos[axis].units) == "degree"
         else:
@@ -66,7 +66,7 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         # Defocus is a Quantity
         defocus = get_field(meta, "Defocus")
         assert isinstance(defocus, ureg.Quantity)
-        assert defocus.magnitude == pytest.approx(0)
+        assert float(defocus.magnitude) == 0
         assert str(defocus.units) == "micrometer"
 
         assert meta[0]["nx_meta"]["Data Dimensions"] == "(1024, 1024)"
@@ -76,7 +76,7 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         # C2 Aperture is a Quantity
         c2_aperture = get_field(meta, "C2 Aperture")
         assert isinstance(c2_aperture, ureg.Quantity)
-        assert c2_aperture.magnitude == pytest.approx(50.0)
+        assert float(c2_aperture.magnitude) == 50.0
         assert str(c2_aperture.units) == "micrometer"
 
         assert meta[0]["nx_meta"]["DatasetType"] == "Image"
@@ -99,7 +99,7 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         # C1 Aperture is a Quantity
         c1_aperture = get_field(meta, "C1 Aperture")
         assert isinstance(c1_aperture, ureg.Quantity)
-        assert c1_aperture.magnitude == pytest.approx(2000)
+        assert float(c1_aperture.magnitude) == 2000
         assert str(c1_aperture.units) == "micrometer"
 
         assert get_field(meta, "Mode") == "STEM nP SA Zoom Image"
@@ -128,13 +128,13 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         # Microscope Accelerating Voltage is a Quantity
         voltage = get_field(meta, "Microscope Accelerating Voltage")
         assert isinstance(voltage, ureg.Quantity)
-        assert voltage.magnitude == pytest.approx(300000)
+        assert float(voltage.magnitude) == 300000
         assert str(voltage.units) == "volt"
 
         # Camera Length - check if it's a Quantity or plain value
         camera_length = get_field(meta, "Camera Length")
         if isinstance(camera_length, ureg.Quantity):
-            assert camera_length.magnitude == pytest.approx(0.195)
+            assert float(camera_length.magnitude) == 0.195
             assert str(camera_length.units) == "meter"
         else:
             # FEI metadata doesn't always include units for Camera Length
@@ -164,13 +164,13 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         # Dwell Time Path is a Quantity
         dwell_time = get_field(meta, "Dwell Time Path")
         assert isinstance(dwell_time, ureg.Quantity)
-        assert dwell_time.magnitude == pytest.approx(6e-6)
+        assert float(dwell_time.magnitude) == 6e-6
         assert str(dwell_time.units) == "second"
 
         # Defocus is a Quantity
         defocus = get_field(meta, "Defocus")
         assert isinstance(defocus, ureg.Quantity)
-        assert defocus.magnitude == pytest.approx(-1.12)
+        assert float(defocus.magnitude) == -1.12
         assert str(defocus.units) == "micrometer"
 
         # Stage Position fields are Quantities
@@ -182,13 +182,13 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         # STEM Rotation Correction is a Quantity
         rotation = get_field(meta, "STEM Rotation Correction")
         assert isinstance(rotation, ureg.Quantity)
-        assert rotation.magnitude == pytest.approx(-12.3)
+        assert float(rotation.magnitude) == -12.3
         assert str(rotation.units) == "degree"
 
         # Frame Time is a Quantity
         frame_time = get_field(meta, "Frame Time")
         assert isinstance(frame_time, ureg.Quantity)
-        assert frame_time.magnitude == pytest.approx(1.88744)
+        assert float(frame_time.magnitude) == 1.88744
         assert str(frame_time.units) == "second"
 
     def test_titan_tem_eds_line_scan_2(self, fei_ser_files):
@@ -207,7 +207,7 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         # Defocus is a Quantity
         defocus = get_field(meta, "Defocus")
         assert isinstance(defocus, ureg.Quantity)
-        assert defocus.magnitude == pytest.approx(-0.145)
+        assert float(defocus.magnitude) == -0.145
         assert str(defocus.units) == "micrometer"
 
         # Stage Position fields are Quantities
@@ -236,13 +236,13 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         # Energy Resolution is a Quantity
         energy_res = get_field(meta, "Energy Resolution")
         assert isinstance(energy_res, ureg.Quantity)
-        assert energy_res.magnitude == pytest.approx(10)
+        assert float(energy_res.magnitude) == 10
         assert str(energy_res.units) == "electron_volt"
 
         # Integration Time is a Quantity
         integration_time = get_field(meta, "Integration Time")
         assert isinstance(integration_time, ureg.Quantity)
-        assert integration_time.magnitude == pytest.approx(25)
+        assert float(integration_time.magnitude) == 25
         assert str(integration_time.units) == "second"
 
         # Stage Position fields are Quantities
@@ -256,7 +256,7 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         # Emission is a Quantity
         emission = get_field(meta, "Emission")
         assert isinstance(emission, ureg.Quantity)
-        assert emission.magnitude == pytest.approx(145.0)
+        assert float(emission.magnitude) == 145.0
         assert str(emission.units) == "microampere"
 
     def test_titan_tem_diffraction(self, fei_ser_files):
@@ -276,7 +276,7 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         # Check if it's a Quantity or plain value (FEI doesn't always provide units)
         camera_length = meta[0]["nx_meta"]["camera_length"]
         if isinstance(camera_length, ureg.Quantity):
-            assert camera_length.magnitude == pytest.approx(0.3)
+            assert float(camera_length.magnitude) == 0.3
             assert str(camera_length.units) == "meter"
         else:
             # Plain numeric value without units
@@ -293,7 +293,7 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         # Extraction Voltage is a Quantity
         extraction_voltage = get_field(meta, "Extraction Voltage")
         assert isinstance(extraction_voltage, ureg.Quantity)
-        assert extraction_voltage.magnitude == pytest.approx(4400)
+        assert float(extraction_voltage.magnitude) == 4400
         assert str(extraction_voltage.units) == "volt"
 
     def test_titan_tem_image_stack_1(self, fei_ser_files):
@@ -311,13 +311,13 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         # Dwell Time Path is a Quantity
         dwell_time = get_field(meta, "Dwell Time Path")
         assert isinstance(dwell_time, ureg.Quantity)
-        assert dwell_time.magnitude == pytest.approx(0.000002)
+        assert float(dwell_time.magnitude) == 0.000002
         assert str(dwell_time.units) == "second"
 
         # C2 Aperture is a Quantity
         c2_aperture = get_field(meta, "C2 Aperture")
         assert isinstance(c2_aperture, ureg.Quantity)
-        assert c2_aperture.magnitude == pytest.approx(50.0)
+        assert float(c2_aperture.magnitude) == 50.0
         assert str(c2_aperture.units) == "micrometer"
 
         # Stage Position fields are Quantities
@@ -344,13 +344,13 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         # Frame Time is a Quantity
         frame_time = get_field(meta, "Frame Time")
         assert isinstance(frame_time, ureg.Quantity)
-        assert frame_time.magnitude == pytest.approx(10)
+        assert float(frame_time.magnitude) == 10
         assert str(frame_time.units) == "second"
 
         # C1 Aperture is a Quantity
         c1_aperture = get_field(meta, "C1 Aperture")
         assert isinstance(c1_aperture, ureg.Quantity)
-        assert c1_aperture.magnitude == pytest.approx(2000)
+        assert float(c1_aperture.magnitude) == 2000
         assert str(c1_aperture.units) == "micrometer"
 
         # Stage Position fields are Quantities
@@ -378,7 +378,7 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         # C2 Aperture is a Quantity
         c2_aperture = get_field(meta, "C2 Aperture")
         assert isinstance(c2_aperture, ureg.Quantity)
-        assert c2_aperture.magnitude == pytest.approx(100)
+        assert float(c2_aperture.magnitude) == 100
         assert str(c2_aperture.units) == "micrometer"
 
         # Stage Position fields are Quantities
@@ -409,7 +409,7 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         # High Tension is a Quantity
         high_tension = get_field(meta_1, "High Tension")
         assert isinstance(high_tension, ureg.Quantity)
-        assert high_tension.magnitude == pytest.approx(300)
+        assert float(high_tension.magnitude) == 300
         assert str(high_tension.units) == "kilovolt"
 
         assert get_field(meta_1, "Gun Lens") == 6
@@ -516,7 +516,7 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         # Image Shift X is a Quantity
         image_shift_x = get_field(meta_1, "Image Shift X")
         assert isinstance(image_shift_x, ureg.Quantity)
-        assert image_shift_x.magnitude == pytest.approx(0.003)
+        assert float(image_shift_x.magnitude) == 0.003
         assert str(image_shift_x.units) == "micrometer"
 
         assert get_field(meta_1, "Mode") == "TEM uP SA Zoom Diffraction"
@@ -536,13 +536,13 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         # Dwell Time Path is a Quantity
         dwell_time = get_field(meta_2, "Dwell Time Path")
         assert isinstance(dwell_time, ureg.Quantity)
-        assert dwell_time.magnitude == pytest.approx(0.8)
+        assert float(dwell_time.magnitude) == 0.8
         assert str(dwell_time.units) == "second"
 
         # Emission is a Quantity
         emission = get_field(meta_2, "Emission")
         assert isinstance(emission, ureg.Quantity)
-        assert emission.magnitude == pytest.approx(135.0)
+        assert float(emission.magnitude) == 135.0
         assert str(emission.units) == "microampere"
 
         assert get_field(meta_2, "Magnification") == 10000
@@ -550,7 +550,7 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         # Image Shift X is a Quantity
         image_shift_x_2 = get_field(meta_2, "Image Shift X")
         assert isinstance(image_shift_x_2, ureg.Quantity)
-        assert image_shift_x_2.magnitude == pytest.approx(0.003)
+        assert float(image_shift_x_2.magnitude) == 0.003
         assert str(image_shift_x_2.units) == "micrometer"
 
         assert get_field(meta_2, "Mode") == "TEM uP SA Zoom Image"
@@ -593,7 +593,7 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
             # Frame Time is a Quantity
             frame_time = get_field(meta, "Frame Time")
             assert isinstance(frame_time, ureg.Quantity)
-            assert frame_time.magnitude == pytest.approx(30.199)
+            assert float(frame_time.magnitude) == 30.199
             assert str(frame_time.units) == "second"
 
             # Selected Dispersion has unit suffix removed
@@ -629,7 +629,7 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         # C2 Aperture is a Quantity
         c2_aperture = get_field(meta, "C2 Aperture")
         assert isinstance(c2_aperture, ureg.Quantity)
-        assert c2_aperture.magnitude == pytest.approx(40)
+        assert float(c2_aperture.magnitude) == 40
         assert str(c2_aperture.units) == "micrometer"
 
         # Stage Position fields are Quantities
@@ -641,7 +641,7 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         # STEM Rotation Correction is a Quantity
         rotation = get_field(meta, "STEM Rotation Correction")
         assert isinstance(rotation, ureg.Quantity)
-        assert rotation.magnitude == pytest.approx(12.4)
+        assert float(rotation.magnitude) == 12.4
         assert str(rotation.units) == "degree"
 
         assert get_field(meta, "User") == "OPERATOR__"
@@ -670,13 +670,13 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         # Frame Time is a Quantity
         frame_time = get_field(meta_1, "Frame Time")
         assert isinstance(frame_time, ureg.Quantity)
-        assert frame_time.magnitude == pytest.approx(10)
+        assert float(frame_time.magnitude) == 10
         assert str(frame_time.units) == "second"
 
         # Emission is a Quantity
         emission = get_field(meta_1, "Emission")
         assert isinstance(emission, ureg.Quantity)
-        assert emission.magnitude == pytest.approx(237.3)
+        assert float(emission.magnitude) == 237.3
         assert str(emission.units) == "microampere"
 
         assert get_field(meta_1, "Tecnai Filter")["Selected Aperture"] == "2.5 mm"
@@ -691,25 +691,25 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         # Energy Resolution is a Quantity
         energy_res = get_field(meta_2, "Energy Resolution")
         assert isinstance(energy_res, ureg.Quantity)
-        assert energy_res.magnitude == pytest.approx(10)
+        assert float(energy_res.magnitude) == 10
         assert str(energy_res.units) == "electron_volt"
 
         # Integration Time is a Quantity
         integration_time = get_field(meta_2, "Integration Time")
         assert isinstance(integration_time, ureg.Quantity)
-        assert integration_time.magnitude == pytest.approx(0.5)
+        assert float(integration_time.magnitude) == 0.5
         assert str(integration_time.units) == "second"
 
         # Extraction Voltage is a Quantity
         extraction_voltage = get_field(meta_2, "Extraction Voltage")
         assert isinstance(extraction_voltage, ureg.Quantity)
-        assert extraction_voltage.magnitude == pytest.approx(4500)
+        assert float(extraction_voltage.magnitude) == 4500
         assert str(extraction_voltage.units) == "volt"
 
         # Camera Length - check if it's a Quantity or plain value
         camera_length = get_field(meta_2, "Camera Length")
         if isinstance(camera_length, ureg.Quantity):
-            assert camera_length.magnitude == pytest.approx(0.06)
+            assert float(camera_length.magnitude) == 0.06
             assert str(camera_length.units) == "meter"
         else:
             # FEI metadata doesn't always include units for Camera Length
@@ -720,7 +720,7 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         # C3 Aperture is a Quantity
         c3_aperture = get_field(meta_2, "C3 Aperture")
         assert isinstance(c3_aperture, ureg.Quantity)
-        assert c3_aperture.magnitude == pytest.approx(1000)
+        assert float(c3_aperture.magnitude) == 1000
         assert str(c3_aperture.units) == "micrometer"
 
     def test_643_image_stack(self, fei_ser_files):
@@ -738,13 +738,13 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         # Frame Time is a Quantity
         frame_time = get_field(meta, "Frame Time")
         assert isinstance(frame_time, ureg.Quantity)
-        assert frame_time.magnitude == pytest.approx(2.0)
+        assert float(frame_time.magnitude) == 2.0
         assert str(frame_time.units) == "second"
 
         # C1 Aperture is a Quantity
         c1_aperture = get_field(meta, "C1 Aperture")
         assert isinstance(c1_aperture, ureg.Quantity)
-        assert c1_aperture.magnitude == pytest.approx(2000)
+        assert float(c1_aperture.magnitude) == 2000
         assert str(c1_aperture.units) == "micrometer"
 
         assert get_field(meta, "C2 Lens") == pytest.approx(14.99)
@@ -752,7 +752,7 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         # Defocus is a Quantity
         defocus = get_field(meta, "Defocus")
         assert isinstance(defocus, ureg.Quantity)
-        assert defocus.magnitude == pytest.approx(-2.593)
+        assert float(defocus.magnitude) == -2.593
         assert str(defocus.units) == "micrometer"
 
         assert (
@@ -776,19 +776,19 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         # Frame Time is a Quantity
         frame_time = get_field(meta, "Frame Time")
         assert isinstance(frame_time, ureg.Quantity)
-        assert frame_time.magnitude == pytest.approx(6.34179)
+        assert float(frame_time.magnitude) == 6.34179
         assert str(frame_time.units) == "second"
 
         # Dwell Time Path is a Quantity
         dwell_time = get_field(meta, "Dwell Time Path")
         assert isinstance(dwell_time, ureg.Quantity)
-        assert dwell_time.magnitude == pytest.approx(0.000001)
+        assert float(dwell_time.magnitude) == 0.000001
         assert str(dwell_time.units) == "second"
 
         # C2 Aperture is a Quantity
         c2_aperture = get_field(meta, "C2 Aperture")
         assert isinstance(c2_aperture, ureg.Quantity)
-        assert c2_aperture.magnitude == pytest.approx(10)
+        assert float(c2_aperture.magnitude) == 10
         assert str(c2_aperture.units) == "micrometer"
 
         assert get_field(meta, "C3 Lens") == -37.122
@@ -796,7 +796,7 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         # Defocus is a Quantity
         defocus = get_field(meta, "Defocus")
         assert isinstance(defocus, ureg.Quantity)
-        assert defocus.magnitude == pytest.approx(-0.889)
+        assert float(defocus.magnitude) == -0.889
         assert str(defocus.units) == "micrometer"
 
         assert (
@@ -808,7 +808,7 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         # STEM Rotation is a Quantity
         stem_rotation = get_field(meta, "STEM Rotation")
         assert isinstance(stem_rotation, ureg.Quantity)
-        assert stem_rotation.magnitude == pytest.approx(-90.0)
+        assert float(stem_rotation.magnitude) == -90.0
         assert str(stem_rotation.units) == "degree"
 
     def test_no_emi_error(self, caplog, fei_ser_files):

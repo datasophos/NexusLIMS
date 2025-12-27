@@ -105,7 +105,7 @@ class TestParseQuantity:
         """Test parsing string and normalizing to preferred unit."""
         qty = parse_quantity("beam_current", "0.1 nA")
 
-        assert qty.magnitude == pytest.approx(100.0)
+        assert float(qty.magnitude) == 100.0
         assert qty.units == ureg.picoampere
 
     def test_parse_existing_quantity(self):
@@ -150,7 +150,7 @@ class TestQuantityToXmlParts:
         qty = ureg.Quantity(10.0, "kilovolt")
         name, value, unit = quantity_to_xml_parts("acceleration_voltage", qty)
 
-        assert name == "Voltage"  # Display name from EM Glossary
+        assert name == "Acceleration Voltage"  # Display name from EM Glossary
         assert float(value) == pytest.approx(10.0)
         assert unit == "kV"
 

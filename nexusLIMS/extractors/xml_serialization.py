@@ -47,7 +47,7 @@ EM_GLOSSARY_TO_XML_DISPLAY_NAMES = {
     "emission_current": "Emission Current",
     "magnification": "Magnification",
     "dwell_time": "Pixel Dwell Time",
-    "field_of_view": "Field of View",
+    "horizontal_field_width": "Horizontal Field Width",
     "pixel_width": "Pixel Width",
     "scan_rotation": "Scan Rotation",
     "detector_type": "Detector",

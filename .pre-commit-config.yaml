@@ -17,6 +17,6 @@ repos:
         name: Check version not previously released
         entry: python .githooks/check-version.py
         language: python
-        stages: [commit]
+        stages: [pre-commit]
         pass_filenames: false
         always_run: true

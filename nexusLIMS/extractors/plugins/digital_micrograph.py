@@ -400,7 +400,7 @@ def get_pre_path(mdict: Dict) -> List[str]:
     return pre_path
 
 
-def _migrate_to_schema_compliant_metadata(mdict: dict) -> dict:
+def _migrate_to_schema_compliant_metadata(mdict: dict) -> dict:  # noqa: PLR0912
     """
     Migrate metadata to schema-compliant format.
 
@@ -429,10 +429,10 @@ def _migrate_to_schema_compliant_metadata(mdict: dict) -> dict:
     field_mappings = {
         # Common mappings for all types
         "Voltage": "acceleration_voltage",
-        "Field of View": "field_of_view",
+        "Horizontal Field Width": "horizontal_field_width",
+        "Vertical Field Width": "vertical_field_width",
         "Acquisition Device": "acquisition_device",
         "Sample Time": "dwell_time",
-
         # Image-specific
         "Indicated Magnification": "magnification",
     }
@@ -448,30 +448,24 @@ def _migrate_to_schema_compliant_metadata(mdict: dict) -> dict:
         "Microscope",
         "Operator",
         "Specimen",
-
         # Operation modes
         "Illumination Mode",
         "Imaging Mode",
         "Operation Mode",
-
         # Apertures
         "Condenser Aperture",
         "Objective Aperture",
         "Selected Area Aperture",
-
         # Vendor-specific settings
         "Cs",  # Spherical aberration
-
         # Signal/Analytic metadata
         "Signal Name",
         "Analytic Format",
         "Analytic Label",
         "Analytic Signal",
-
         # Nested vendor metadata (will be moved as-is)
         "EELS",
         "EDS",
-
         # STEM-specific fields that should be extensions for non-Diffraction types
         "STEM Camera Length",  # Only core for Diffraction
     }
@@ -491,7 +485,12 @@ def _migrate_to_schema_compliant_metadata(mdict: dict) -> dict:
             new_nx_meta[field] = nx_meta[field]
 
     # Copy common optional fields
-    common_fields = {"Data Dimensions", "Instrument ID", "warnings"}
+    common_fields = {
+        "Data Dimensions",
+        "Instrument ID",
+        "warnings",
+        "Extractor Warnings",
+    }
     for field in common_fields:
         if field in nx_meta:
             new_nx_meta[field] = nx_meta[field]
@@ -511,7 +510,8 @@ def _migrate_to_schema_compliant_metadata(mdict: dict) -> dict:
             extensions[key] = value
         # Handle Stage Position specially
         elif key == "Stage Position":
-            # DM3 files have Stage Position as a dict with keys like 'X', 'Y', 'α', etc.
+            # DM3 files have Stage Position as a dict with keys
+            # like 'X', 'Y', 'α', etc.  # noqa: RUF003
             # Convert to snake_case keys for StagePosition schema
             if isinstance(value, dict):
                 stage_pos = {}
@@ -519,25 +519,25 @@ def _migrate_to_schema_compliant_metadata(mdict: dict) -> dict:
                     "X": "x",
                     "Y": "y",
                     "Z": "z",
-                    "α": "tilt_alpha",
+                    "α": "tilt_alpha",  # noqa: RUF001
                     "β": "tilt_beta",
                 }
                 for old_key, new_key in key_map.items():
                     if old_key in value:
                         # Convert to Pint Quantity if needed
                         val = value[old_key]
-                        if new_key in ("x", "y"):
+                        if new_key in ("x", "y") and not isinstance(val, ureg.Quantity):
                             # X/Y in micrometers
-                            if not isinstance(val, ureg.Quantity):
-                                val = ureg.Quantity(val, "micrometer")
-                        elif new_key == "z":
+                            val = ureg.Quantity(val, "micrometer")
+                        elif new_key == "z" and not isinstance(val, ureg.Quantity):
                             # Z in millimeters
-                            if not isinstance(val, ureg.Quantity):
-                                val = ureg.Quantity(val, "millimeter")
-                        elif new_key in ("tilt_alpha", "tilt_beta"):
+                            val = ureg.Quantity(val, "millimeter")
+                        elif new_key in (
+                            "tilt_alpha",
+                            "tilt_beta",
+                        ) and not isinstance(val, ureg.Quantity):
                             # Tilts in degrees
-                            if not isinstance(val, ureg.Quantity):
-                                val = ureg.Quantity(val, "degree")
+                            val = ureg.Quantity(val, "degree")
                         stage_pos[new_key] = val
                 new_nx_meta["stage_position"] = stage_pos
             else:
@@ -629,7 +629,7 @@ def parse_dm3_microscope_info(mdict):  # noqa: PLR0912
                     if field_name == "Cs(mm)":
                         meta_key = ["Cs"]  # noqa: PLW2901
                     elif field_name == "Field of View (\u00b5m)":
-                        meta_key = ["Field of View"]  # noqa: PLW2901
+                        meta_key = ["Horizontal Field Width"]  # noqa: PLW2901
 
             # change output of "Stage Position" to unicode characters
             if "Stage Position" in meta_key:

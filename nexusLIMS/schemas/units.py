@@ -41,6 +41,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
+import numpy as np
 from pint import UnitRegistry
 from rdflib import RDFS, Graph, Namespace
 
@@ -51,6 +52,32 @@ logger = logging.getLogger(__name__)
 # Use Decimal for non-integer types to avoid floating-point precision issues
 # (e.g., 1.5625 instead of 1.5624999999999998 when converting units)
 ureg = UnitRegistry(non_int_type=Decimal)
+
+# Save reference to the original Quantity class for isinstance checks
+_OriginalQuantity = ureg.Quantity
+
+
+# Monkey-patch the __new__ method to auto-convert floats to Decimals
+# This prevents type errors when comparing Quantities with different magnitude types
+_original_new = _OriginalQuantity.__new__
+
+
+def _quantity_new_with_decimal_conversion(cls, value, units=None):
+    """
+    Auto-convert float magnitudes to Decimal when creating Quantity instances.
+
+    This ensures consistency with the ureg's non_int_type=Decimal setting.
+    Without this conversion, Pint doesn't automatically convert input floats,
+    leading to mixed float/Decimal types that fail during unit conversions.
+    """
+    if isinstance(value, (float, np.floating)):
+        value = Decimal(str(value))
+    # Call original __new__ with potentially modified value
+    return _original_new(cls, value, units)
+
+
+# Replace the __new__ method while keeping the class intact for isinstance()
+_OriginalQuantity.__new__ = staticmethod(_quantity_new_with_decimal_conversion)
 
 # Path to QUDT unit vocabulary file
 QUDT_UNIT_TTL_PATH = Path(__file__).parent / "references" / "qudt_unit.ttl"
@@ -77,7 +104,7 @@ PREFERRED_UNITS = {
     "emission_current": ureg.microampere,
     "dwell_time": ureg.microsecond,
     "magnification": ureg.dimensionless,  # Magnification has no units
-    "field_of_view": ureg.micrometer,
+    "horizontal_field_width": ureg.micrometer,
     "pixel_width": ureg.nanometer,
     "pixel_height": ureg.nanometer,
     "scan_rotation": ureg.degree,

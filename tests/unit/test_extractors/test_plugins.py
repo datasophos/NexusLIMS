@@ -18,6 +18,8 @@ from nexusLIMS.extractors.plugins.edax import MsaExtractor, SpcExtractor
 from nexusLIMS.extractors.plugins.fei_emi import SerEmiExtractor
 from nexusLIMS.extractors.plugins.quanta_tif import QuantaTiffExtractor
 
+from .conftest import get_field
+
 
 class TestDM3Extractor:
     """Test DM3Extractor plugin."""
@@ -65,7 +67,7 @@ class TestDM3Extractor:
 
         # Check first signal
         assert metadata[0]["nx_meta"]["Data Type"] == "STEM_Imaging"
-        assert metadata[0]["nx_meta"]["Microscope"] == "TEST Titan_______"
+        assert get_field(metadata, "Microscope") == "TEST Titan_______"
 
     def test_has_required_attributes(self):
         """DM3Extractor should have required plugin attributes."""
@@ -244,12 +246,14 @@ class TestSpcExtractor:
         # Azimuthal Angle and Live Time are now Pint Quantities
         from nexusLIMS.schemas.units import ureg
 
-        assert isinstance(metadata[0]["nx_meta"]["Azimuthal Angle"], ureg.Quantity)
-        assert metadata[0]["nx_meta"]["Azimuthal Angle"].magnitude == pytest.approx(0.0)
-        assert metadata[0]["nx_meta"]["Azimuthal Angle"].units == ureg.degree
-        assert isinstance(metadata[0]["nx_meta"]["Live Time"], ureg.Quantity)
-        assert metadata[0]["nx_meta"]["Live Time"].magnitude == pytest.approx(30.000002)
-        assert metadata[0]["nx_meta"]["Live Time"].units == ureg.second
+        azimuthal = get_field(metadata, "Azimuthal Angle")
+        assert isinstance(azimuthal, ureg.Quantity)
+        assert float(azimuthal.magnitude) == pytest.approx(0.0)
+        assert azimuthal.units == ureg.degree
+        live_time = get_field(metadata, "Live Time")
+        assert isinstance(live_time, ureg.Quantity)
+        assert float(live_time.magnitude) == pytest.approx(30.000002)
+        assert live_time.units == ureg.second
 
     def test_has_required_attributes(self):
         """SpcExtractor should have required plugin attributes."""
@@ -297,12 +301,14 @@ class TestMsaExtractor:
         # Azimuthal Angle and Beam Energy are now Pint Quantities
         from nexusLIMS.schemas.units import ureg
 
-        assert isinstance(metadata[0]["nx_meta"]["Azimuthal Angle"], ureg.Quantity)
-        assert metadata[0]["nx_meta"]["Azimuthal Angle"].magnitude == pytest.approx(0.0)
-        assert metadata[0]["nx_meta"]["Azimuthal Angle"].units == ureg.degree
-        assert isinstance(metadata[0]["nx_meta"]["Beam Energy"], ureg.Quantity)
-        assert metadata[0]["nx_meta"]["Beam Energy"].magnitude == pytest.approx(10.0)
-        assert metadata[0]["nx_meta"]["Beam Energy"].units == ureg.kiloelectron_volt
+        azimuthal = get_field(metadata, "Azimuthal Angle")
+        assert isinstance(azimuthal, ureg.Quantity)
+        assert float(azimuthal.magnitude) == pytest.approx(0.0)
+        assert azimuthal.units == ureg.degree
+        beam_energy = get_field(metadata, "Beam Energy")
+        assert isinstance(beam_energy, ureg.Quantity)
+        assert float(beam_energy.magnitude) == pytest.approx(10.0)
+        assert beam_energy.units == ureg.kiloelectron_volt
 
     def test_has_required_attributes(self):
         """MsaExtractor should have required plugin attributes."""

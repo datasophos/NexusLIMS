@@ -56,7 +56,7 @@ class FieldDefinition(NamedTuple):
     suppress_zero : bool, default=False
         If True, skip field if the numeric value equals zero.
         Only applies when is_string=False.
-    unit : str | None, default=None
+    target_unit : str | None, default=None
         Pint unit string for the output value (e.g., "kilovolt", "millimeter").
         If provided, the value will be converted to a Pint Quantity with this unit.
         The factor is still applied before creating the Quantity.
@@ -87,7 +87,7 @@ class FieldDefinition(NamedTuple):
     factor: float
     is_string: bool
     suppress_zero: bool = False
-    unit: str | None = None  # Pint unit string (e.g., "kilovolt", "millimeter")
+    target_unit: str | None = None  # Pint unit string (e.g., "kilovolt", "millimeter")
 
 
 @dataclass

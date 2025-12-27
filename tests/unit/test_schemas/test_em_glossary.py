@@ -453,7 +453,7 @@ class TestGetDisplayName:
         """Test getting display name for acceleration voltage."""
         name = get_display_name("acceleration_voltage")
 
-        assert name == "Voltage"
+        assert name == "Acceleration Voltage"
 
     def test_get_display_name_working_distance(self):
         """Test getting display name for working distance."""

@@ -39,7 +39,8 @@ def get_field(metadata, field_name, index=0):
         return nx_meta[field_name]
     if "extensions" in nx_meta and field_name in nx_meta["extensions"]:
         return nx_meta["extensions"][field_name]
-    raise KeyError(f"Field '{field_name}' not found in nx_meta or extensions")
+    msg = f"Field '{field_name}' not found in nx_meta or extensions"
+    raise KeyError(msg)
 
 
 @pytest.fixture(name="_test_tool_db")

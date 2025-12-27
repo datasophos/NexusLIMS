@@ -613,7 +613,7 @@ class TestMetadataValidationIntegration:
         # Schema uses aliases in JSON schema
         assert "Creation Time" in props or "creation_time" in props
         assert "DatasetType" in props or "dataset_type" in props
-        assert "acceleration_voltage" in props
+        assert "Acceleration Voltage" in props or "acceleration_voltage" in props
 
     def test_model_serialization(self):
         """Test that models can be serialized to JSON."""

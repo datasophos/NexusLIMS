@@ -225,10 +225,15 @@ NEXUSLIMS_TO_EMG_MAPPINGS: Dict[str, tuple[str, str | None, str]] = {
         None,  # EMG has Magnification but it's complex
         "Nominal magnification",
     ),
-    "field_of_view": (
-        "Field of View",
+    "horizontal_field_width": (
+        "Horizontal Field Width",
         None,  # Not in EMG v2.0.0
         "Width of the scanned area",
+    ),
+    "vertical_field_width": (
+        "Vertical Field Width",
+        None,  # Not in EMG v2.0.0
+        "Height of the scanned area",
     ),
     "pixel_width": (
         "Pixel Width",

@@ -43,6 +43,7 @@ import json
 import logging
 import shutil
 from datetime import datetime as dt
+from decimal import Decimal
 from pathlib import Path
 from typing import Any, Callable, Dict, Tuple
 
@@ -54,7 +55,13 @@ from pydantic import ValidationError
 from nexusLIMS.extractors.base import ExtractionContext
 from nexusLIMS.extractors.registry import get_registry
 from nexusLIMS.instruments import get_instr_from_filepath
-from nexusLIMS.schemas.metadata import NexusMetadata
+from nexusLIMS.schemas.metadata import (
+    DiffractionMetadata,
+    ImageMetadata,
+    NexusMetadata,
+    SpectrumImageMetadata,
+    SpectrumMetadata,
+)
 from nexusLIMS.schemas.units import ureg
 from nexusLIMS.utils import current_system_tz, replace_instrument_data_path
 from nexusLIMS.version import __version__
@@ -148,11 +155,28 @@ def _add_extraction_details(
             module.__name__ if module is not None else "unknown"
         )
 
-    nx_meta["nx_meta"]["NexusLIMS Extraction"] = {
+    # Build NexusLIMS Extraction details
+    extraction_details = {
         "Date": dt.now(tz=current_system_tz()).isoformat(),
         "Module": module_name,
         "Version": __version__,
     }
+
+    # Move "Extractor Warnings" from nx_meta to extraction details if present
+    # Check both nx_meta and extensions (some extractors migrate it to extensions)
+    if "Extractor Warnings" in nx_meta["nx_meta"]:
+        extraction_details["Extractor Warnings"] = nx_meta["nx_meta"].pop(
+            "Extractor Warnings"
+        )
+    elif (
+        "extensions" in nx_meta["nx_meta"]
+        and "Extractor Warnings" in nx_meta["nx_meta"]["extensions"]
+    ):
+        extraction_details["Extractor Warnings"] = nx_meta["nx_meta"]["extensions"].pop(
+            "Extractor Warnings"
+        )
+
+    nx_meta["nx_meta"]["NexusLIMS Extraction"] = extraction_details
 
     return nx_meta
 
@@ -199,13 +223,6 @@ def get_schema_for_dataset_type(dataset_type: str) -> type[NexusMetadata]:
     >>> schema.__name__
     'NexusMetadata'
     """
-    from nexusLIMS.schemas.metadata import (
-        DiffractionMetadata,
-        ImageMetadata,
-        SpectrumImageMetadata,
-        SpectrumMetadata,
-    )
-
     schema_mapping = {
         "Image": ImageMetadata,
         "Spectrum": SpectrumMetadata,
@@ -690,5 +707,8 @@ class _CustomEncoder(json.JSONEncoder):
         # Handle Pint Quantity objects
         if isinstance(o, ureg.Quantity):
             return {"value": float(o.magnitude), "unit": str(o.units)}
+        # Handle Decimal objects (convert to float for JSON serialization)
+        if isinstance(o, Decimal):
+            return float(o)
 
         return super().default(o)

@@ -178,7 +178,7 @@ class SerEmiExtractor:
         # we could not read the signal, so add some basic metadata and return
         if ser_error:
             metadata = _handle_ser_error_metadata(metadata)
-            # Migrate metadata to schema-compliant format (move vendor fields to extensions)
+            # Migrate to schema-compliant format (move vendor meta to extensions)
             metadata = self._migrate_to_schema_compliant_metadata(metadata)
             return [metadata]
 
@@ -275,6 +275,7 @@ class SerEmiExtractor:
                 "Creation Time",
                 "Data Dimensions",
                 "Instrument ID",
+                "Extractor Warnings",
                 "warnings",
                 "extensions",
             ]:

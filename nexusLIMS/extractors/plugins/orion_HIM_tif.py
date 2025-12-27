@@ -3,6 +3,7 @@
 
 import logging
 import xml.etree.ElementTree as ET
+from decimal import Decimal
 from pathlib import Path
 from typing import Any, ClassVar
 
@@ -11,6 +12,7 @@ from PIL import Image
 from nexusLIMS.extractors.base import ExtractionContext
 from nexusLIMS.extractors.base import FieldDefinition as FD
 from nexusLIMS.extractors.utils import _set_instr_name_and_time
+from nexusLIMS.schemas import em_glossary
 from nexusLIMS.schemas.units import ureg
 from nexusLIMS.utils import set_nested_dict_value, sort_dict
 
@@ -217,7 +219,7 @@ class OrionTiffExtractor:
                 ["GFIS", "Acceleration Voltage"],
                 1e-3,
                 False,
-                unit="kilovolt",
+                target_unit="kilovolt",
             ),
             FD(
                 "",
@@ -225,7 +227,7 @@ class OrionTiffExtractor:
                 ["GFIS", "Extraction Voltage"],
                 1e-3,
                 False,
-                unit="kilovolt",
+                target_unit="kilovolt",
             ),
             FD(
                 "",
@@ -233,7 +235,7 @@ class OrionTiffExtractor:
                 ["GFIS", "Condenser Voltage"],
                 1e-3,
                 False,
-                unit="kilovolt",
+                target_unit="kilovolt",
             ),
             FD(
                 "",
@@ -241,7 +243,7 @@ class OrionTiffExtractor:
                 ["GFIS", "Objective Voltage"],
                 1e-3,
                 False,
-                unit="kilovolt",
+                target_unit="kilovolt",
             ),
             FD(
                 "",
@@ -249,17 +251,17 @@ class OrionTiffExtractor:
                 ["GFIS", "Beam Current"],
                 1,
                 False,
-                unit="picoampere",
+                target_unit="picoampere",
             ),
-            FD("", "GFIS.PanX", ["GFIS", "Pan X"], 1, False, unit="micrometer"),
-            FD("", "GFIS.PanY", ["GFIS", "Pan Y"], 1, False, unit="micrometer"),
+            FD("", "GFIS.PanX", ["GFIS", "Pan X"], 1, False, target_unit="micrometer"),
+            FD("", "GFIS.PanY", ["GFIS", "Pan Y"], 1, False, target_unit="micrometer"),
             FD(
                 "",
                 "GFIS.FieldOfView",
-                ["GFIS", "Field of View"],
+                ["GFIS", "Horizontal Field Width"],
                 1,
                 False,
-                unit="micrometer",
+                target_unit="micrometer",
             ),
             FD(
                 "",
@@ -267,7 +269,7 @@ class OrionTiffExtractor:
                 ["GFIS", "Scan Rotation"],
                 1,
                 False,
-                unit="degree",
+                target_unit="degree",
             ),
             FD(
                 "", "GFIS.StigmationX", ["GFIS", "Stigmation X"], 1, False
@@ -281,7 +283,7 @@ class OrionTiffExtractor:
                 ["GFIS", "Aperture Size"],
                 1,
                 False,
-                unit="micrometer",
+                target_unit="micrometer",
             ),
             FD(
                 "", "GFIS.ApertureIndex", ["GFIS", "Aperture Index"], 1, False
@@ -293,7 +295,7 @@ class OrionTiffExtractor:
                 ["GFIS", "Crossover Position"],
                 1,
                 False,
-                unit="millimeter",
+                target_unit="millimeter",
             ),
             FD(
                 "",
@@ -301,16 +303,16 @@ class OrionTiffExtractor:
                 ["GFIS", "Working Distance"],
                 1,
                 False,
-                unit="millimeter",
+                target_unit="millimeter",
             ),
             # Beam
             FD(
                 "",
                 "AccelerationVoltage",
-                ["Beam", "Voltage"],
+                ["acceleration_voltage"],
                 1e-3,
                 False,
-                unit="kilovolt",
+                target_unit="kilovolt",
             ),
             FD(
                 "",
@@ -318,7 +320,7 @@ class OrionTiffExtractor:
                 ["Beam", "Extraction Voltage"],
                 1e-3,
                 False,
-                unit="kilovolt",
+                target_unit="kilovolt",
             ),
             FD(
                 "",
@@ -326,7 +328,7 @@ class OrionTiffExtractor:
                 ["Beam", "Blanker Current"],
                 1,
                 False,
-                unit="picoampere",
+                target_unit="picoampere",
             ),
             FD(
                 "",
@@ -334,7 +336,7 @@ class OrionTiffExtractor:
                 ["Beam", "Sample Current"],
                 1,
                 False,
-                unit="picoampere",
+                target_unit="picoampere",
             ),
             FD("", "SpotNumber", ["Beam", "Spot Number"], 1, False),  # Dimensionless
             FD(
@@ -343,11 +345,18 @@ class OrionTiffExtractor:
                 ["Beam", "Working Distance"],
                 1,
                 False,
-                unit="millimeter",
+                target_unit="millimeter",
             ),
-            FD("", "Fov", ["Beam", "Field of View"], 1, False, unit="micrometer"),
-            FD("", "PanX", ["Beam", "Pan X"], 1, False, unit="micrometer"),
-            FD("", "PanY", ["Beam", "Pan Y"], 1, False, unit="micrometer"),
+            FD(
+                "",
+                "Fov",
+                ["horizontal_field_width"],
+                1,
+                False,
+                target_unit="micrometer",
+            ),
+            FD("", "PanX", ["Beam", "Pan X"], 1, False, target_unit="micrometer"),
+            FD("", "PanY", ["Beam", "Pan Y"], 1, False, target_unit="micrometer"),
             FD(
                 "", "StigmationX", ["Beam", "Stigmator X Value"], 1, False
             ),  # Dimensionless
@@ -363,7 +372,7 @@ class OrionTiffExtractor:
                 ["Beam", "Crossover Position"],
                 1,
                 False,
-                unit="millimeter",
+                target_unit="millimeter",
             ),
             # Scan
             FD(
@@ -372,7 +381,7 @@ class OrionTiffExtractor:
                 ["Scan", "Frame Retrace"],
                 1,
                 False,
-                unit="microsecond",
+                target_unit="microsecond",
             ),
             FD(
                 "",
@@ -380,27 +389,62 @@ class OrionTiffExtractor:
                 ["Scan", "Line Retrace"],
                 1,
                 False,
-                unit="microsecond",
+                target_unit="microsecond",
             ),
             FD("", "AveragingMode", ["Scan", "Averaging Mode"], 1, False),  # String
             FD(
                 "", "NumAverages", ["Scan", "Number of Averages"], 1, False
             ),  # Dimensionless
-            FD("", "ScanRotate", ["Scan", "Rotation"], 1, False, unit="degree"),
-            FD("", "DwellTime", ["Scan", "Dwell Time"], 1, False, unit="microsecond"),
+            FD("", "ScanRotate", ["scan_rotation"], 1, False, target_unit="degree"),
+            FD(
+                "",
+                "DwellTime",
+                ["Scan", "Dwell Time"],
+                1,
+                False,
+                target_unit="microsecond",
+            ),
             FD("", "SAS.ScanSize", ["Scan", "Scan Size"], 1, False),  # Dimensionless
             # Stage
-            FD("", "StageX", ["Stage Position", "X"], 1, False, unit="micrometer"),
-            FD("", "StageY", ["Stage Position", "Y"], 1, False, unit="micrometer"),
-            FD("", "StageZ", ["Stage Position", "Z"], 1, False, unit="millimeter"),
-            FD("", "StageTilt", ["Stage Position", "Tilt"], 1, False, unit="degree"),
+            FD(
+                "",
+                "StageX",
+                ["Stage Position", "X"],
+                1,
+                False,
+                target_unit="micrometer",
+            ),
+            FD(
+                "",
+                "StageY",
+                ["Stage Position", "Y"],
+                1,
+                False,
+                target_unit="micrometer",
+            ),
+            FD(
+                "",
+                "StageZ",
+                ["Stage Position", "Z"],
+                1,
+                False,
+                target_unit="millimeter",
+            ),
+            FD(
+                "",
+                "StageTilt",
+                ["Stage Position", "Tilt"],
+                1,
+                False,
+                target_unit="degree",
+            ),
             FD(
                 "",
                 "StageRotate",
                 ["Stage Position", "Rotation"],
                 1,
                 False,
-                unit="degree",
+                target_unit="degree",
             ),
             FD(
                 "",
@@ -408,7 +452,7 @@ class OrionTiffExtractor:
                 ["Stage Position", "X Location"],
                 1,
                 False,
-                unit="micrometer",
+                target_unit="micrometer",
             ),
             FD(
                 "",
@@ -416,7 +460,7 @@ class OrionTiffExtractor:
                 ["Stage Position", "Y Location"],
                 1,
                 False,
-                unit="micrometer",
+                target_unit="micrometer",
             ),
             # Optics
             FD(
@@ -425,12 +469,40 @@ class OrionTiffExtractor:
                 ["Optics", "sFIM Field of View"],
                 1,
                 False,
-                unit="micrometer",
+                target_unit="micrometer",
             ),
-            FD("", "McXShift", ["Optics", "MC X Shift"], 1, False, unit="microradian"),
-            FD("", "McXTilt", ["Optics", "MC X Tilt"], 1, False, unit="microradian"),
-            FD("", "McYShift", ["Optics", "MC Y Shift"], 1, False, unit="microradian"),
-            FD("", "McYTilt", ["Optics", "MC Y Tilt"], 1, False, unit="microradian"),
+            FD(
+                "",
+                "McXShift",
+                ["Optics", "MC X Shift"],
+                1,
+                False,
+                target_unit="microradian",
+            ),
+            FD(
+                "",
+                "McXTilt",
+                ["Optics", "MC X Tilt"],
+                1,
+                False,
+                target_unit="microradian",
+            ),
+            FD(
+                "",
+                "McYShift",
+                ["Optics", "MC Y Shift"],
+                1,
+                False,
+                target_unit="microradian",
+            ),
+            FD(
+                "",
+                "McYTilt",
+                ["Optics", "MC Y Tilt"],
+                1,
+                False,
+                target_unit="microradian",
+            ),
             FD(
                 "", "ColumnMag", ["Optics", "Column Magnification"], 1, False
             ),  # Dimensionless
@@ -441,7 +513,7 @@ class OrionTiffExtractor:
                 ["Optics", "Lens 1 Voltage"],
                 1e-3,
                 False,
-                unit="kilovolt",
+                target_unit="kilovolt",
             ),
             FD(
                 "",
@@ -449,7 +521,7 @@ class OrionTiffExtractor:
                 ["Optics", "Lens 2 Voltage"],
                 1e-3,
                 False,
-                unit="kilovolt",
+                target_unit="kilovolt",
             ),
             # Detector
             FD("", "DetectorName", ["Detector", "Name"], 1, False),  # String
@@ -459,7 +531,7 @@ class OrionTiffExtractor:
                 ["Detector", "ET Grid Voltage"],
                 1,
                 False,
-                unit="volt",
+                target_unit="volt",
             ),
             FD(
                 "", "ETContrast", ["Detector", "ET Contrast"], 1, False
@@ -476,7 +548,7 @@ class OrionTiffExtractor:
             FD(
                 "", "MCPBrightness", ["Detector", "MCP Brightness"], 1, False
             ),  # Dimensionless
-            FD("", "MCPBias", ["Detector", "MCP Bias"], 1, False, unit="volt"),
+            FD("", "MCPBias", ["Detector", "MCP Bias"], 1, False, target_unit="volt"),
             FD(
                 "", "MCPImageIntensity", ["Detector", "MCP Image Intensity"], 1, False
             ),  # Dimensionless
@@ -486,7 +558,7 @@ class OrionTiffExtractor:
                 ["Detector", "Scintillator"],
                 1e-3,
                 False,
-                unit="kilovolt",
+                target_unit="kilovolt",
             ),
             FD(
                 "",
@@ -494,17 +566,24 @@ class OrionTiffExtractor:
                 ["Detector", "Sample Bias"],
                 1,
                 False,
-                unit="volt",
+                target_unit="volt",
             ),
             # System
-            FD("", "GunPressure", ["System", "Gun Pressure"], 1, False, unit="torr"),
+            FD(
+                "",
+                "GunPressure",
+                ["System", "Gun Pressure"],
+                1,
+                False,
+                target_unit="torr",
+            ),
             FD(
                 "",
                 "ColumnPressure",
                 ["System", "Column Pressure"],
                 1,
                 False,
-                unit="torr",
+                target_unit="torr",
             ),
             FD(
                 "",
@@ -512,16 +591,23 @@ class OrionTiffExtractor:
                 ["System", "Chamber Pressure"],
                 1,
                 False,
-                unit="torr",
+                target_unit="torr",
             ),
-            FD("", "GunTemp", ["System", "Gun Temperature"], 1, False, unit="kelvin"),
+            FD(
+                "",
+                "GunTemp",
+                ["System", "Gun Temperature"],
+                1,
+                False,
+                target_unit="kelvin",
+            ),
             FD(
                 "",
                 "HeliumPressure",
                 ["System", "Helium Pressure"],
                 1,
                 False,
-                unit="torr",
+                target_unit="torr",
             ),
             FD(
                 "", "Magnification4x5", ["Optics", "Magnification 4x5"], 1, False
@@ -547,9 +633,16 @@ class OrionTiffExtractor:
                 ["Flood Gun", "Energy"],
                 1,
                 False,
-                unit="electron_volt",
+                target_unit="electron_volt",
             ),
-            FD("", "FloodGunTime", ["Flood Gun", "Time"], 1, False, unit="microsecond"),
+            FD(
+                "",
+                "FloodGunTime",
+                ["Flood Gun", "Time"],
+                1,
+                False,
+                target_unit="microsecond",
+            ),
             FD(
                 "", "FloodGun.DeflectionX", ["Flood Gun", "Deflection X"], 1, False
             ),  # Dimensionless
@@ -557,8 +650,22 @@ class OrionTiffExtractor:
                 "", "FloodGun.DeflectionY", ["Flood Gun", "Deflection Y"], 1, False
             ),  # Dimensionless
             # Misc
-            FD("", "ScalingX", ["Calibration", "X Scale"], 1, False, unit="meter"),
-            FD("", "ScalingY", ["Calibration", "Y Scale"], 1, False, unit="meter"),
+            FD(
+                "",
+                "ScalingX",
+                ["Calibration", "X Scale"],
+                1,
+                False,
+                target_unit="meter",
+            ),
+            FD(
+                "",
+                "ScalingY",
+                ["Calibration", "Y Scale"],
+                1,
+                False,
+                target_unit="meter",
+            ),
             FD(
                 "", "ImageWidth", ["Image", "Width"], 1, False
             ),  # Dimensionless (pixels)
@@ -582,7 +689,7 @@ class OrionTiffExtractor:
                 field.output_key,
                 mdict,
                 field.factor,
-                field.unit,
+                field.target_unit,
             )
 
         return mdict
@@ -686,10 +793,10 @@ class OrionTiffExtractor:
             FD(
                 "Scan",
                 "Dwell",
-                ["Scan", "Pixel Dwell Time"],
+                ["dwell_time"],
                 1e-3,
                 False,
-                unit="microsecond",
+                target_unit="microsecond",
             ),  # Convert ns to μs
             FD(
                 "Scan", "LineAvg", ["Scan", "Line Averaging"], 1, False
@@ -697,20 +804,27 @@ class OrionTiffExtractor:
             FD(
                 "Scan",
                 "FOV_X",
-                ["Scan", "Field of View X"],
+                ["horizontal_field_width"],
                 1,
                 False,
-                unit="micrometer",
+                target_unit="micrometer",
             ),
             FD(
                 "Scan",
                 "FOV_Y",
-                ["Scan", "Field of View Y"],
+                ["vertical_field_width"],
                 1,
                 False,
-                unit="micrometer",
+                target_unit="micrometer",
             ),
-            FD("Scan", "ScanRot", ["Scan", "Scan Rotation"], 1, False, unit="degree"),
+            FD(
+                "Scan",
+                "ScanRot",
+                ["scan_rotation"],
+                1,
+                False,
+                target_unit="degree",
+            ),
             FD("Scan", "Ux", ["Scan", "Affine Ux"], 1, False),  # Dimensionless
             FD("Scan", "Uy", ["Scan", "Affine Uy"], 1, False),  # Dimensionless
             FD("Scan", "Vx", ["Scan", "Affine Vx"], 1, False),  # Dimensionless
@@ -723,28 +837,70 @@ class OrionTiffExtractor:
                 "Scan", "StigY", ["Scan", "Stigmator Y Value"], 1, False
             ),  # Dimensionless
             # Stage section
-            FD("Stage", "X", ["Stage Position", "X"], 1, False, unit="micrometer"),
-            FD("Stage", "Y", ["Stage Position", "Y"], 1, False, unit="micrometer"),
-            FD("Stage", "Z", ["Stage Position", "Z"], 1, False, unit="micrometer"),
-            FD("Stage", "Tilt", ["Stage Position", "Tilt"], 1, False, unit="degree"),
-            FD("Stage", "Rot", ["Stage Position", "Rotation"], 1, False, unit="degree"),
-            FD("Stage", "M", ["Stage Position", "M"], 1, False, unit="millimeter"),
+            FD(
+                "Stage",
+                "X",
+                ["Stage Position", "X"],
+                1,
+                False,
+                target_unit="micrometer",
+            ),
+            FD(
+                "Stage",
+                "Y",
+                ["Stage Position", "Y"],
+                1,
+                False,
+                target_unit="micrometer",
+            ),
+            FD(
+                "Stage",
+                "Z",
+                ["Stage Position", "Z"],
+                1,
+                False,
+                target_unit="micrometer",
+            ),
+            FD(
+                "Stage",
+                "Tilt",
+                ["Stage Position", "Tilt"],
+                1,
+                False,
+                target_unit="degree",
+            ),
+            FD(
+                "Stage",
+                "Rot",
+                ["Stage Position", "Rotation"],
+                1,
+                False,
+                target_unit="degree",
+            ),
+            FD(
+                "Stage",
+                "M",
+                ["Stage Position", "M"],
+                1,
+                False,
+                target_unit="millimeter",
+            ),
             # BeamInfo section
             FD(
                 "BeamInfo",
                 "BeamI",
-                ["Beam", "Beam Current"],
+                ["beam_current"],
                 1,
                 False,
-                unit="picoampere",
+                target_unit="picoampere",
             ),
             FD(
                 "BeamInfo",
                 "AccV",
-                ["Beam", "Acceleration Voltage"],
+                ["acceleration_voltage"],
                 1e-3,
                 False,
-                unit="kilovolt",
+                target_unit="kilovolt",
             ),
             FD("BeamInfo", "Aperture", ["Beam", "Aperture"], 1, False),  # Dimensionless
             FD("BeamInfo", "GFISGas", ["Beam", "GFIS Gas Type"], 1, False),  # String
@@ -761,7 +917,7 @@ class OrionTiffExtractor:
                 ["Detector", "Collector Voltage"],
                 -1,
                 False,
-                unit="volt",
+                target_unit="volt",
             ),
             FD(
                 "DetectorInfo",
@@ -769,7 +925,7 @@ class OrionTiffExtractor:
                 ["Detector", "Stage Bias Voltage"],
                 -1,
                 False,
-                unit="volt",
+                target_unit="volt",
             ),
         ]
 
@@ -782,7 +938,7 @@ class OrionTiffExtractor:
                     "strip_units" if field.factor == -1 else field.factor
                 )
                 value = self._parse_fibics_value(
-                    section, field.source_key, conversion_factor, field.unit
+                    section, field.source_key, conversion_factor, field.target_unit
                 )
                 if value is not None:
                     set_nested_dict_value(
@@ -851,13 +1007,15 @@ class OrionTiffExtractor:
 
             if value is not None and value.text:
                 try:
-                    numeric_value = float(value.text) * conversion_factor
+                    numeric_value = Decimal(value.text) * Decimal(
+                        str(conversion_factor)
+                    )
 
                     # Create Pint Quantity if unit is specified
                     if unit is not None:
                         final_value = ureg.Quantity(numeric_value, unit)
                     else:
-                        final_value = numeric_value
+                        final_value = float(numeric_value)
 
                     set_nested_dict_value(
                         mdict,
@@ -866,7 +1024,7 @@ class OrionTiffExtractor:
                         else ["nx_meta", *output_key],
                         final_value,
                     )
-                except (ValueError, TypeError):
+                except (ValueError, TypeError, Exception):
                     # If conversion fails, store as string
                     set_nested_dict_value(
                         mdict,
@@ -907,7 +1065,7 @@ class OrionTiffExtractor:
             return None
         return None
 
-    def _parse_fibics_value(  # noqa: PLR0911, PLR0912
+    def _parse_fibics_value(  # noqa: PLR0911
         self,
         section: ET.Element,
         field_name: str,
@@ -961,24 +1119,24 @@ class OrionTiffExtractor:
                     if parts:
                         text = parts[0]
                     try:
-                        numeric_value = float(text)
+                        numeric_value = Decimal(text)
                         # Create Pint Quantity if unit is specified
                         if unit is not None:
                             return ureg.Quantity(numeric_value, unit)
-                    except ValueError:
+                        return float(numeric_value)
+                    except (ValueError, Exception):
+                        # If conversion fails, return the raw string value
                         return text
-                    else:
-                        return numeric_value
 
                 try:
-                    numeric_value = float(text) * conversion_factor  # type: ignore[operator]
+                    numeric_value = Decimal(text) * Decimal(str(conversion_factor))  # type: ignore[operator]
                     # Create Pint Quantity if unit is specified
                     if unit is not None:
                         return ureg.Quantity(numeric_value, unit)
-                except ValueError:
+                    return float(numeric_value)
+                except (ValueError, Exception):
+                    # If conversion fails, return the raw string value
                     return text
-                else:
-                    return numeric_value
         except Exception:
             return None
         return None
@@ -1016,10 +1174,14 @@ class OrionTiffExtractor:
             "Beam Current": "beam_current",
             "Emission Current": "emission_current",
             "Dwell Time": "dwell_time",
-            "Field of View": "field_of_view",
+            "Field of View": "horizontal_field_width",
             "Pixel Width": "pixel_width",
             "Pixel Height": "pixel_height",
         }
+
+        # Get all EM Glossary field names from the metadata schema
+        # These should remain at top level (not moved to extensions)
+        emg_field_names = set(em_glossary.get_all_mapped_fields())
 
         # Zeiss/Fibics-specific vendor sections that ALWAYS go to extensions
         extension_top_level_keys = {
@@ -1061,6 +1223,7 @@ class OrionTiffExtractor:
                 "Data Type",
                 "Creation Time",
                 "Instrument ID",
+                "Extractor Warnings",
                 "warnings",
                 "extensions",
             ]:
@@ -1077,13 +1240,23 @@ class OrionTiffExtractor:
                 new_nx_meta[emg_name] = value
                 continue
 
+            # Keep EM Glossary fields at top level (already using correct names)
+            if old_name in emg_field_names:
+                new_nx_meta[old_name] = value
+                continue
+
             # Everything else goes to extensions (vendor-specific by default)
-            # This is safer than putting at top level where schema validation will reject
+            # This is safer than the top level where schema validation will reject
             extensions[old_name] = value
 
         # Copy warnings if present
         if "warnings" in nx_meta:
             new_nx_meta["warnings"] = nx_meta["warnings"]
+
+        # Copy Extractor Warnings if present
+        # (will be moved to NexusLIMS Extraction by add_extraction_details)
+        if "Extractor Warnings" in nx_meta:
+            new_nx_meta["Extractor Warnings"] = nx_meta["Extractor Warnings"]
 
         # Add extensions section if we have any
         if extensions:

@@ -16,6 +16,13 @@ from rsciio.digitalmicrograph._api import (  # pylint: disable=import-error,no-n
 )
 
 from nexusLIMS.instruments import Instrument, get_instr_from_filepath
+from nexusLIMS.schemas.metadata import (
+    DiffractionMetadata,
+    ImageMetadata,
+    NexusMetadata,
+    SpectrumImageMetadata,
+    SpectrumMetadata,
+)
 from nexusLIMS.schemas.units import ureg
 from nexusLIMS.utils import set_nested_dict_value, try_getting_dict_value
 
@@ -414,115 +421,7 @@ def _find_val(s_to_find, list_to_search):
 # Field categorization helpers for schema-based metadata extraction
 
 
-def classify_field(
-    field_name: str,
-    dataset_type: str,
-) -> tuple[bool, str | None]:
-    """
-    Determine if a field belongs to the core schema or extensions.
-
-    This function helps extractor plugins categorize metadata fields by checking
-    if they are defined in the type-specific schema for a given dataset type.
-    Fields not in the core schema should be placed in the 'extensions' section.
-
-    Parameters
-    ----------
-    field_name : str
-        The field name to classify. Should use EM Glossary naming conventions
-        (snake_case) for core fields (e.g., 'acceleration_voltage',
-        'working_distance').
-    dataset_type : str
-        The dataset type this field belongs to. Should be one of: 'Image',
-        'Spectrum', 'SpectrumImage', 'Diffraction', 'Misc', or 'Unknown'.
-
-    Returns
-    -------
-    is_core : bool
-        True if the field is defined in the core schema for this dataset type,
-        False if it should be placed in the extensions section.
-    em_glossary_id : str or None
-        The EM Glossary ID for the field if it's a standardized term
-        (e.g., "EMG_00000004" for acceleration_voltage), or None if the field
-        is not in the EM Glossary or is not a core field.
-
-    Examples
-    --------
-    Check if a field is core or extension for an Image dataset:
-
-    >>> classify_field("acceleration_voltage", "Image")
-    (True, 'EMG_00000004')
-
-    >>> classify_field("spot_size", "Image")
-    (False, None)
-
-    Check spectrum-specific fields:
-
-    >>> classify_field("acquisition_time", "Spectrum")
-    (True, 'EMG_00000055')
-
-    >>> classify_field("detector_model", "Spectrum")
-    (False, None)
-
-    Notes
-    -----
-    This function uses the Pydantic model_fields attribute to determine if a
-    field is part of the schema. For fields not in the core schema, extractors
-    should use the extensions section:
-
-    .. code-block:: python
-
-        is_core, em_glossary_id = classify_field("custom_param", "Image")
-        if is_core:
-            nx_meta[field_name] = value
-        else:
-            add_to_extensions(nx_meta, field_name, value)
-
-    See Also
-    --------
-    add_to_extensions : Helper to add fields to the extensions section
-    get_schema_fields : Get all valid field names for a dataset type
-    """
-    from nexusLIMS.schemas import em_glossary
-    from nexusLIMS.schemas.metadata import (
-        DiffractionMetadata,
-        ImageMetadata,
-        NexusMetadata,
-        SpectrumImageMetadata,
-        SpectrumMetadata,
-    )
-
-    # Map dataset types to their schema classes
-    schema_map: dict[str, type[Any]] = {
-        "Image": ImageMetadata,
-        "Spectrum": SpectrumMetadata,
-        "SpectrumImage": SpectrumImageMetadata,
-        "Diffraction": DiffractionMetadata,
-        "Misc": NexusMetadata,
-        "Unknown": NexusMetadata,
-    }
-
-    schema_class = schema_map.get(dataset_type)
-    if schema_class is None:
-        # Unknown dataset type - treat as extension
-        return (False, None)
-
-    # Check if field is in the schema using model_fields
-    is_core = field_name in schema_class.model_fields
-
-    # Try to get EM Glossary ID for core fields
-    em_glossary_id = None
-    if is_core:
-        try:
-            # Look up the EM Glossary ID using the em_glossary module
-            em_glossary_id = em_glossary.FIELD_ID_MAP.get(field_name)
-        except (AttributeError, KeyError):
-            # Field doesn't have an EM Glossary ID, which is fine
-            pass
-
-    return (is_core, em_glossary_id)
-
-
-def add_to_extensions(nx_meta: dict, field_name: str, value: Any) -> None:  # noqa: ANN401
+def add_to_extensions(nx_meta: dict, field_name: str, value: Any) -> None:
     """
     Add a field to the extensions section of nx_meta.
 
@@ -566,10 +465,6 @@ def add_to_extensions(nx_meta: dict, field_name: str, value: Any) -> None:  # no
     The extensions section preserves all metadata that doesn't fit the core
     schema, ensuring no data loss during extraction. Extensions are included
     in the XML output and preserved through the record building process.
-
-    See Also
-    --------
-    classify_field : Determine if a field should be core or extension
     """
     # Ensure extensions dict exists
     if "extensions" not in nx_meta:
@@ -632,19 +527,7 @@ def get_schema_fields(dataset_type: str) -> set[str]:
     This function is particularly useful when migrating extractors to use the
     extensions system, or when building extractors that process many fields
     from vendor metadata dictionaries.
-
-    See Also
-    --------
-    classify_field : Check if individual fields are core or extension
     """
-    from nexusLIMS.schemas.metadata import (
-        DiffractionMetadata,
-        ImageMetadata,
-        NexusMetadata,
-        SpectrumImageMetadata,
-        SpectrumMetadata,
-    )
-
     schema_map: dict[str, type[Any]] = {
         "Image": ImageMetadata,
         "Spectrum": SpectrumMetadata,

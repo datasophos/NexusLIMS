@@ -60,7 +60,7 @@ class TestExtractorModule:
         # Cs is now a Pint Quantity and in extensions (vendor-specific)
         cs = get_field(meta_list, "Cs")
         assert isinstance(cs, ureg.Quantity)
-        assert cs.magnitude == pytest.approx(1.2)
+        assert float(cs.magnitude) == 1.2
         assert cs.units == ureg.millimeter
         assert meta_list[0]["nx_meta"]["Data Dimensions"] == "(2048, 2048)"
         assert meta_list[0]["nx_meta"]["Data Type"] == "TEM_Imaging"
@@ -111,19 +111,19 @@ class TestExtractorModule:
         assert len(thumb_fnames) == 2
 
         # Check first signal metadata
-        # EM Glossary uses snake_case for core fields, but vendor fields remain Title Case
+        # EM Glossary uses snake_case for core fields, but vendor fields are Title Case
         from nexusLIMS.schemas.units import ureg
 
         assert get_field(meta_list, "acquisition_device", index=0) == "DigiScan"
         # STEM Camera Length is a vendor-specific field in extensions (Title Case)
         camera_length = get_field(meta_list, "STEM Camera Length", index=0)
         assert isinstance(camera_length, ureg.Quantity)
-        assert camera_length.magnitude == pytest.approx(77.0)
+        assert float(camera_length.magnitude) == 77.0
         assert camera_length.units == ureg.millimeter
         # Cs is a vendor-specific field in extensions
         cs = get_field(meta_list, "Cs", index=0)
         assert isinstance(cs, ureg.Quantity)
-        assert cs.magnitude == pytest.approx(1.0)
+        assert float(cs.magnitude) == 1.0
         assert cs.units == ureg.millimeter
         assert meta_list[0]["nx_meta"]["Data Dimensions"] == "(512, 512)"
         assert meta_list[0]["nx_meta"]["Data Type"] == "STEM_Imaging"
@@ -309,7 +309,7 @@ class TestExtractorModule:
                         "nx_meta": {
                             "Creation Time": datetime.now(tz=UTC).isoformat(),
                             "extensions": {
-                                "key": "val",  # Custom field for testing (in extensions)
+                                "k": "val",  # Custom field for testing (in extensions)
                             },
                         }
                     }
@@ -327,7 +327,7 @@ class TestExtractorModule:
 
             assert meta_list[0]["nx_meta"]["DatasetType"] == "Misc"
             assert meta_list[0]["nx_meta"]["Data Type"] == "Miscellaneous"
-            assert get_field(meta_list, "key") == "val"
+            assert get_field(meta_list, "k") == "val"
             extraction_info = get_field(meta_list, "NexusLIMS Extraction")
             assert extraction_info["Version"] == __version__
 
@@ -1330,7 +1330,6 @@ class TestValidateNxMeta:
             validate_nx_meta(metadata_dict)
 
         # Assert caplog contains error message without filename
-        # The message format is "Validation failed (DatasetType):" not "Validation failed for filename"
         assert "Validation failed" in caplog.text
         # Ensure it's not the filename version
         assert "Validation failed for" not in caplog.text

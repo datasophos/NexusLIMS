@@ -101,7 +101,7 @@ class TestDigitalMicrographExtractor:
         # acceleration_voltage should be a Quantity (EM Glossary name)
         voltage = metadata["nx_meta"]["acceleration_voltage"]
         assert isinstance(voltage, ureg.Quantity)
-        assert voltage.magnitude == pytest.approx(300000.0)
+        assert float(voltage.magnitude) == 300000.0
         assert str(voltage.units) in [
             "volt",
             "kilovolt",
@@ -128,7 +128,7 @@ class TestDigitalMicrographExtractor:
         # acceleration_voltage (EM Glossary name)
         voltage = meta["nx_meta"]["acceleration_voltage"]
         assert isinstance(voltage, ureg.Quantity)
-        assert voltage.magnitude == pytest.approx(300000.0)
+        assert float(voltage.magnitude) == 300000.0
         assert str(voltage.units) in ["volt", "kilovolt"]  # Could auto-convert
 
         meta_list = digital_micrograph.get_dm3_metadata(opmode_diff[0])
@@ -142,7 +142,7 @@ class TestDigitalMicrographExtractor:
         # acceleration_voltage (EM Glossary name)
         voltage = meta["nx_meta"]["acceleration_voltage"]
         assert isinstance(voltage, ureg.Quantity)
-        assert voltage.magnitude == pytest.approx(300000.0)
+        assert float(voltage.magnitude) == 300000.0
         assert str(voltage.units) in ["volt", "kilovolt"]  # Could auto-convert
 
     def test_titan_dm3_eels(
@@ -167,14 +167,17 @@ class TestDigitalMicrographExtractor:
         # acceleration_voltage (EM Glossary name)
         voltage = meta["nx_meta"]["acceleration_voltage"]
         assert isinstance(voltage, ureg.Quantity)
-        assert voltage.magnitude == pytest.approx(300000.0)
+        assert float(voltage.magnitude) == 300000.0
         assert str(voltage.units) in ["volt", "kilovolt"]  # Could auto-convert
         # EELS metadata in extensions
         assert (
             meta["nx_meta"]["extensions"]["EELS"]["Processing Steps"]
             == "Aligned parent SI By Peak, Extracted from SI"
         )
-        assert meta["nx_meta"]["extensions"]["EELS"]["Spectrometer Aperture label"] == "2mm"
+        assert (
+            meta["nx_meta"]["extensions"]["EELS"]["Spectrometer Aperture label"]
+            == "2mm"
+        )
 
         meta_list = digital_micrograph.get_dm3_metadata(eels_si_drift[0])
         assert meta_list is not None
@@ -187,14 +190,19 @@ class TestDigitalMicrographExtractor:
         # acceleration_voltage (EM Glossary name)
         voltage = meta["nx_meta"]["acceleration_voltage"]
         assert isinstance(voltage, ureg.Quantity)
-        assert voltage.magnitude == pytest.approx(300000.0)
+        assert float(voltage.magnitude) == 300000.0
         assert str(voltage.units) in ["volt", "kilovolt"]  # Could auto-convert
         # Convergence semi-angle should be a Quantity in milliradians (in extensions)
-        convergence_angle = meta["nx_meta"]["extensions"]["EELS"]["Convergence semi-angle"]
+        convergence_angle = meta["nx_meta"]["extensions"]["EELS"][
+            "Convergence semi-angle"
+        ]
         assert isinstance(convergence_angle, ureg.Quantity)
-        assert convergence_angle.magnitude == pytest.approx(10.0)
+        assert float(convergence_angle.magnitude) == 10.0
         assert str(convergence_angle.units) == "milliradian"
-        assert meta["nx_meta"]["extensions"]["EELS"]["Spectrometer Aperture label"] == "2mm"
+        assert (
+            meta["nx_meta"]["extensions"]["EELS"]["Spectrometer Aperture label"]
+            == "2mm"
+        )
         # Spectrum Imaging metadata in extensions
         assert (
             meta["nx_meta"]["extensions"]["Spectrum Imaging"]["Artefact Correction"]
@@ -203,7 +211,7 @@ class TestDigitalMicrographExtractor:
         # Pixel time should be a Quantity in seconds
         pixel_time = meta["nx_meta"]["extensions"]["Spectrum Imaging"]["Pixel time"]
         assert isinstance(pixel_time, ureg.Quantity)
-        assert pixel_time.magnitude == pytest.approx(0.05)
+        assert float(pixel_time.magnitude) == 0.05
         assert str(pixel_time.units) == "second"
 
         meta_list = digital_micrograph.get_dm3_metadata(tecnai_mag[0])
@@ -243,10 +251,13 @@ class TestDigitalMicrographExtractor:
         # camera_length is core field for Diffraction (EM Glossary name)
         camera_length = meta["nx_meta"]["camera_length"]
         assert isinstance(camera_length, ureg.Quantity)
-        assert camera_length.magnitude == pytest.approx(5.0)
+        assert float(camera_length.magnitude) == 5.0
         assert str(camera_length.units) == "millimeter"
         # EELS metadata in extensions
-        assert meta["nx_meta"]["extensions"]["EELS"]["Spectrometer Aperture label"] == "5 mm"
+        assert (
+            meta["nx_meta"]["extensions"]["EELS"]["Spectrometer Aperture label"]
+            == "5 mm"
+        )
 
         meta_list = digital_micrograph.get_dm3_metadata(eds_si_titan[0])
         assert meta_list is not None
@@ -260,25 +271,34 @@ class TestDigitalMicrographExtractor:
         # STEM Camera Length is in extensions for non-Diffraction types
         camera_length = meta["nx_meta"]["extensions"]["STEM Camera Length"]
         assert isinstance(camera_length, ureg.Quantity)
-        assert camera_length.magnitude == pytest.approx(77.0)
+        assert float(camera_length.magnitude) == 77.0
         assert str(camera_length.units) == "millimeter"
         # EDS metadata in extensions
-        assert meta["nx_meta"]["extensions"]["EDS"]["Real time (SI Average)"] == pytest.approx(
+        assert meta["nx_meta"]["extensions"]["EDS"][
+            "Real time (SI Average)"
+        ] == pytest.approx(
             0.9696700292825698,
             0.1,
         )
-        assert meta["nx_meta"]["extensions"]["EDS"]["Live time (SI Average)"] == pytest.approx(
+        assert meta["nx_meta"]["extensions"]["EDS"][
+            "Live time (SI Average)"
+        ] == pytest.approx(
             0.9696700292825698,
             0.1,
         )
         # Spectrum Imaging metadata in extensions - Pixel time should be a Quantity
         pixel_time = meta["nx_meta"]["extensions"]["Spectrum Imaging"]["Pixel time"]
         assert isinstance(pixel_time, ureg.Quantity)
-        assert pixel_time.magnitude == pytest.approx(1.0)
+        assert float(pixel_time.magnitude) == 1.0
         assert str(pixel_time.units) == "second"
-        assert meta["nx_meta"]["extensions"]["Spectrum Imaging"]["Scan Mode"] == "LineScan"
         assert (
-            meta["nx_meta"]["extensions"]["Spectrum Imaging"]["Spatial Sampling (Horizontal)"] == 100
+            meta["nx_meta"]["extensions"]["Spectrum Imaging"]["Scan Mode"] == "LineScan"
+        )
+        assert (
+            meta["nx_meta"]["extensions"]["Spectrum Imaging"][
+                "Spatial Sampling (Horizontal)"
+            ]
+            == 100
         )
 
         meta_list = digital_micrograph.get_dm3_metadata(stem_stack_titan[0])
@@ -292,7 +312,7 @@ class TestDigitalMicrographExtractor:
         # Cs is vendor-specific, in extensions
         cs = meta["nx_meta"]["extensions"]["Cs"]
         assert isinstance(cs, ureg.Quantity)
-        assert cs.magnitude == pytest.approx(1.0)
+        assert float(cs.magnitude) == 1.0
         assert str(cs.units) == "millimeter"
         assert meta["nx_meta"]["Data Dimensions"] == "(12, 1024, 1024)"
         # magnification is core field (EM Glossary name)
@@ -300,7 +320,7 @@ class TestDigitalMicrographExtractor:
         # STEM Camera Length is in extensions for Image type
         camera_length = meta["nx_meta"]["extensions"]["STEM Camera Length"]
         assert isinstance(camera_length, ureg.Quantity)
-        assert camera_length.magnitude == pytest.approx(100.0)
+        assert float(camera_length.magnitude) == 100.0
         assert str(camera_length.units) == "millimeter"
 
     def test_titan_stem_dm3_eels(  # noqa: PLR0915
@@ -327,28 +347,32 @@ class TestDigitalMicrographExtractor:
         # STEM Camera Length in extensions for non-Diffraction
         camera_length = meta["nx_meta"]["extensions"]["STEM Camera Length"]
         assert isinstance(camera_length, ureg.Quantity)
-        assert camera_length.magnitude == pytest.approx(60.0)
+        assert float(camera_length.magnitude) == 60.0
         assert str(camera_length.units) == "millimeter"
         # EELS metadata in extensions
-        convergence_angle = meta["nx_meta"]["extensions"]["EELS"]["Convergence semi-angle"]
+        convergence_angle = meta["nx_meta"]["extensions"]["EELS"][
+            "Convergence semi-angle"
+        ]
         assert isinstance(convergence_angle, ureg.Quantity)
-        assert convergence_angle.magnitude == pytest.approx(13.0)
+        assert float(convergence_angle.magnitude) == 13.0
         assert str(convergence_angle.units) == "milliradian"
         exposure = meta["nx_meta"]["extensions"]["EELS"]["Exposure"]
         assert isinstance(exposure, ureg.Quantity)
-        assert exposure.magnitude == pytest.approx(0.5)
+        assert float(exposure.magnitude) == 0.5
         assert str(exposure.units) == "second"
         # Spectrum Imaging metadata in extensions
         pixel_time = meta["nx_meta"]["extensions"]["Spectrum Imaging"]["Pixel time"]
         assert isinstance(pixel_time, ureg.Quantity)
-        assert pixel_time.magnitude == pytest.approx(0.5)
+        assert float(pixel_time.magnitude) == 0.5
         assert str(pixel_time.units) == "second"
-        assert meta["nx_meta"]["extensions"]["Spectrum Imaging"]["Scan Mode"] == "LineScan"
+        assert (
+            meta["nx_meta"]["extensions"]["Spectrum Imaging"]["Scan Mode"] == "LineScan"
+        )
         acquisition_duration = meta["nx_meta"]["extensions"]["Spectrum Imaging"][
             "Acquisition Duration"
         ]
         assert isinstance(acquisition_duration, ureg.Quantity)
-        assert acquisition_duration.magnitude == pytest.approx(605)
+        assert float(acquisition_duration.magnitude) == 605
         assert str(acquisition_duration.units) == "second"
 
         meta_list = digital_micrograph.get_dm3_metadata(eels_proc_int_bg_titan[0])
@@ -363,10 +387,13 @@ class TestDigitalMicrographExtractor:
         # STEM Camera Length in extensions for Spectrum
         camera_length = meta["nx_meta"]["extensions"]["STEM Camera Length"]
         assert isinstance(camera_length, ureg.Quantity)
-        assert camera_length.magnitude == pytest.approx(48.0)
+        assert float(camera_length.magnitude) == 48.0
         assert str(camera_length.units) == "millimeter"
         # EELS metadata in extensions
-        assert meta["nx_meta"]["extensions"]["EELS"]["Background Removal Model"] == "Power Law"
+        assert (
+            meta["nx_meta"]["extensions"]["EELS"]["Background Removal Model"]
+            == "Power Law"
+        )
         assert (
             meta["nx_meta"]["extensions"]["EELS"]["Processing Steps"]
             == "Background Removal, Signal Integration"
@@ -384,22 +411,24 @@ class TestDigitalMicrographExtractor:
         # STEM Camera Length in extensions for Spectrum
         camera_length = meta["nx_meta"]["extensions"]["STEM Camera Length"]
         assert isinstance(camera_length, ureg.Quantity)
-        assert camera_length.magnitude == pytest.approx(60.0)
+        assert float(camera_length.magnitude) == 60.0
         assert str(camera_length.units) == "millimeter"
         # EELS metadata in extensions
         exposure = meta["nx_meta"]["extensions"]["EELS"]["Exposure"]
         assert isinstance(exposure, ureg.Quantity)
-        assert exposure.magnitude == pytest.approx(0.05)
+        assert float(exposure.magnitude) == 0.05
         assert str(exposure.units) == "second"
         integration_time = meta["nx_meta"]["extensions"]["EELS"]["Integration time"]
         assert isinstance(integration_time, ureg.Quantity)
-        assert integration_time.magnitude == pytest.approx(0.25)
+        assert float(integration_time.magnitude) == 0.25
         assert str(integration_time.units) == "second"
         assert (
             meta["nx_meta"]["extensions"]["EELS"]["Processing Steps"]
             == "Calibrated Post-acquisition, Compute Thickness"
         )
-        assert meta["nx_meta"]["extensions"]["EELS"]["Thickness (absolute) [nm]"] == pytest.approx(
+        assert meta["nx_meta"]["extensions"]["EELS"][
+            "Thickness (absolute) [nm]"
+        ] == pytest.approx(
             85.29884338378906,
             0.1,
         )
@@ -413,16 +442,19 @@ class TestDigitalMicrographExtractor:
         # Analytic metadata in extensions
         assert meta["nx_meta"]["extensions"]["Analytic Signal"] == "EELS"
         assert meta["nx_meta"]["extensions"]["Analytic Format"] == "Spectrum image"
-        assert meta["nx_meta"]["extensions"]["Analytic Acquisition Mode"] == "Parallel dispersive"
+        assert (
+            meta["nx_meta"]["extensions"]["Analytic Acquisition Mode"]
+            == "Parallel dispersive"
+        )
         # STEM Camera Length in extensions for SpectrumImage
         camera_length = meta["nx_meta"]["extensions"]["STEM Camera Length"]
         assert isinstance(camera_length, ureg.Quantity)
-        assert camera_length.magnitude == pytest.approx(100.0)
+        assert float(camera_length.magnitude) == 100.0
         assert str(camera_length.units) == "millimeter"
         # EELS metadata in extensions
         exposure = meta["nx_meta"]["extensions"]["EELS"]["Exposure"]
         assert isinstance(exposure, ureg.Quantity)
-        assert exposure.magnitude == pytest.approx(0.5)
+        assert float(exposure.magnitude) == 0.5
         assert str(exposure.units) == "second"
         assert meta["nx_meta"]["extensions"]["EELS"]["Number of frames"] == 1
         # Spectrum Imaging metadata in extensions
@@ -430,13 +462,15 @@ class TestDigitalMicrographExtractor:
             "Acquisition Duration"
         ]
         assert isinstance(acquisition_duration, ureg.Quantity)
-        assert acquisition_duration.magnitude == pytest.approx(2173)
+        assert float(acquisition_duration.magnitude) == 2173
         assert str(acquisition_duration.units) == "second"
         assert (
             meta["nx_meta"]["extensions"]["Spectrum Imaging"]["Artefact Correction"]
             == "Spatial drift correction every 1 row"
         )
-        assert meta["nx_meta"]["extensions"]["Spectrum Imaging"]["Scan Mode"] == "2D Array"
+        assert (
+            meta["nx_meta"]["extensions"]["Spectrum Imaging"]["Scan Mode"] == "2D Array"
+        )
 
     def test_jeol3010_dm3(self, jeol3010_diff, mock_instrument_from_filepath):
         """Test DM3 metadata extraction from JEOL 3010 TEM file."""
@@ -456,7 +490,10 @@ class TestDigitalMicrographExtractor:
         assert meta["nx_meta"]["extensions"]["Microscope"] == "JEM3010 UHR"
         assert meta["nx_meta"]["Data Dimensions"] == "(2672, 4008)"
         assert meta["nx_meta"]["extensions"]["Facility"] == "MicroLabFacility"
-        assert meta["nx_meta"]["extensions"]["Camera/Detector Processing"] == "Gain Normalized"
+        assert (
+            meta["nx_meta"]["extensions"]["Camera/Detector Processing"]
+            == "Gain Normalized"
+        )
 
     def test_try_decimal(self):
         # this function should just return the input if it cannot be
@@ -631,7 +668,10 @@ class TestDigitalMicrographExtractor:
         assert isinstance(result_list, list)
         result = result_list[0]
         assert "extensions" in result["nx_meta"]
-        assert result["nx_meta"]["extensions"]["TransformedField"] == "TRANSFORMATION_APPLIED"
+        assert (
+            result["nx_meta"]["extensions"]["TransformedField"]
+            == "TRANSFORMATION_APPLIED"
+        )
 
     def test_apply_profile_transformation_failure(
         self,
@@ -751,7 +791,7 @@ class TestDigitalMicrographExtractor:
         result = result_list[0]
         assert "nx_meta" in result
         # Extensions section will exist due to vendor-specific fields from extraction
-        # (e.g., NexusLIMS Extraction, vendor metadata) but won't have the profile fields
+        # (e.g., NexusLIMS Extraction, vendor metadata) but won't have profile fields
         assert "extensions" in result["nx_meta"]
         # Verify the profile's extension fields were not added
         assert "facility" not in result["nx_meta"]["extensions"]
@@ -792,7 +832,7 @@ class TestDigitalMicrographExtractor:
         # This was "Sample Time" but is now "dwell_time" in schema
         dwell_time = meta["nx_meta"]["dwell_time"]
         assert isinstance(dwell_time, ureg.Quantity)
-        assert dwell_time.magnitude == pytest.approx(16.0)
+        assert float(dwell_time.magnitude) == 16.0
         assert str(dwell_time.units) == "microsecond"
 
     def test_dm4_multi_signal_extraction(
@@ -992,7 +1032,7 @@ class TestDigitalMicrographSchemaValidation:
         jeol3010_diff,
         mock_instrument_from_filepath,
     ):
-        """Test that Diffraction datasets validate against DiffractionMetadata schema."""
+        """Test that Diffraction datasets validate w/ DiffractionMetadata schema."""
         from nexusLIMS.extractors import parse_metadata
 
         # Set up JEOL instrument for diffraction file
@@ -1034,7 +1074,8 @@ class TestDigitalMicrographSchemaValidation:
         expected_core_fields = [
             "acceleration_voltage",  # Not "Voltage"
             "acquisition_device",  # Not "Acquisition Device"
-            "field_of_view",  # Not "Field of View"
+            "horizontal_field_width",  # Not "Field of View"
+            "vertical_field_width",
         ]
 
         for field in expected_core_fields:
@@ -1131,7 +1172,7 @@ class TestDigitalMicrographSchemaValidation:
         mock_instrument_from_filepath,
         profile_registry_manager,
     ):
-        """Test that extensions from instrument profiles are preserved during migration."""
+        """Test extensions from instrument profiles are preserved during migration."""
         from nexusLIMS.extractors import parse_metadata
         from nexusLIMS.extractors.base import InstrumentProfile
 
@@ -1169,7 +1210,7 @@ class TestDigitalMicrographSchemaValidation:
                 "Data Type": "TEM_Imaging",
                 # Display names that should be mapped to EM Glossary
                 "Voltage": ureg.Quantity(200, "kilovolt"),
-                "Field of View": ureg.Quantity(10, "micrometer"),
+                "Horizontal Field Width": ureg.Quantity(10, "micrometer"),
                 # Vendor field that should go to extensions
                 "Microscope": "TEST Titan",
                 "GMS Version": "3.60",
@@ -1185,11 +1226,12 @@ class TestDigitalMicrographSchemaValidation:
         # Check EM Glossary names at top level
         assert "acceleration_voltage" in nx_meta
         assert nx_meta["acceleration_voltage"] == ureg.Quantity(200, "kilovolt")
-        assert "field_of_view" in nx_meta
+        assert "horizontal_field_width" in nx_meta
 
         # Display names should not be at top level
         assert "Voltage" not in nx_meta
-        assert "Field of View" not in nx_meta
+        assert "Horizonal Field Width" not in nx_meta
+        assert "Vertical Field Width" not in nx_meta
 
         # Vendor fields should be in extensions
         assert "extensions" in nx_meta
@@ -1226,7 +1268,9 @@ class TestDigitalMicrographSchemaValidation:
         # New vendor field should be added
         assert "Microscope" in migrated["nx_meta"]["extensions"]
 
-    def test_validation_enforces_type_specific_schema(self, mock_instrument_from_filepath):
+    def test_validation_enforces_type_specific_schema(
+        self, mock_instrument_from_filepath
+    ):
         """Test that validation uses type-specific schemas based on DatasetType."""
         from pydantic import ValidationError
 

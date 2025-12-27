@@ -124,17 +124,17 @@ def emg_field(
     >>> from nexusLIMS.schemas.pint_types import PintQuantity
     >>>
     >>> class MySchema(BaseModel):
-    ...     acceleration_voltage: PintQuantity | None = emg_field("acceleration_voltage")
+    ...     dwell_time: PintQuantity | None = emg_field("dwell_time")
 
     The field automatically gets:
-    - alias: "Voltage" (display name)
-    - description: "Accelerating voltage of the electron/ion beam"
-    - json_schema_extra: {"emg_id": "EMG_00000004", "emg_uri": "...", ...}
+    - alias: "Dwell Time" (display name)
+    - description: "Time period during which the beam remains at one position."
+    - json_schema_extra: {"emg_id": "EMG_00000015", "emg_uri": "...", ...}
 
     Override description:
 
     >>> acceleration_voltage: PintQuantity | None = emg_field(
-    ...     "acceleration_voltage",
+    ...     "dwell_time",
     ...     description="Custom description",
     ... )
 
@@ -142,7 +142,7 @@ def emg_field(
 
     >>> beam_current: PintQuantity | None = emg_field(
     ...     "beam_current",
-    ...     json_schema_extra={"units": "ampere", "typical_range": "1e-12 to 1e-6"},
+    ...     json_schema_extra={"units": "second", "typical_range": "1e-3 to 1"},
     ... )
 
     Notes
@@ -162,11 +162,13 @@ def emg_field(
     extra = kwargs.pop("json_schema_extra", {})
     if emg_id:
         emg_label = em_glossary.get_emg_label(emg_id)
-        extra.update({
-            "emg_id": emg_id,
-            "emg_uri": emg_uri,
-            "emg_label": emg_label,
-        })
+        extra.update(
+            {
+                "emg_id": emg_id,
+                "emg_uri": emg_uri,
+                "emg_label": emg_label,
+            }
+        )
 
     return Field(
         default,
@@ -215,6 +217,12 @@ class ExtractionDetails(BaseModel):
         ...,
         alias="Version",
         description="NexusLIMS version",
+    )
+
+    extractor_warnings: str | None = Field(
+        None,
+        alias="Extractor Warnings",
+        description="Warning or error messages from the extraction process",
     )
 
     model_config = {
@@ -413,7 +421,7 @@ class NexusMetadata(BaseModel):
     nexuslims_extraction: ExtractionDetails | None = Field(
         None,
         alias="NexusLIMS Extraction",
-        description="NexusLIMS extraction metadata (date, module, version)",
+        description="NexusLIMS extraction metadata (date, module, version, warnings)",
     )
 
     extensions: Dict[str, Any] = Field(
@@ -495,8 +503,12 @@ class ImageMetadata(NexusMetadata):
     magnification : float or None, optional
         Nominal magnification (dimensionless).
 
-    field_of_view : PintQuantity or None, optional
+    horizontal_field_width : PintQuantity or None, optional
         Width of the scanned area.
+        Preferred unit: micrometer (µm)
+
+    vertical_field_width : PintQuantity or None, optional
+        Height of the scanned area.
         Preferred unit: micrometer (µm)
 
     pixel_width : PintQuantity or None, optional
@@ -558,7 +570,9 @@ class ImageMetadata(NexusMetadata):
 
     magnification: float | None = emg_field("magnification")
 
-    field_of_view: PintQuantity | None = emg_field("field_of_view")
+    horizontal_field_width: PintQuantity | None = emg_field("horizontal_field_width")
+
+    vertical_field_width: PintQuantity | None = emg_field("vertical_field_width")
 
     pixel_width: PintQuantity | None = emg_field("pixel_width")
 

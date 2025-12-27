@@ -480,7 +480,7 @@ class QuantaTiffExtractor:
                         "Emission Current",
                         1.0,
                         False,
-                        unit="microampere",
+                        target_unit="ampere",
                     ),
                     FD(
                         beam_name,
@@ -488,9 +488,9 @@ class QuantaTiffExtractor:
                         "Horizontal Field Width",
                         1.0,
                         False,
-                        unit="micrometer",
+                        target_unit="meter",
                     ),
-                    FD(beam_name, "HV", "Voltage", 1.0, False, unit="kilovolt"),
+                    FD(beam_name, "HV", "Voltage", 1.0, False, target_unit="volt"),
                     FD(beam_name, "SourceTiltX", "Beam Tilt X", 1.0, False),
                     FD(beam_name, "SourceTiltY", "Beam Tilt Y", 1.0, False),
                     FD(beam_name, "StageR", ["Stage Position", "R"], 1.0, False),
@@ -514,7 +514,7 @@ class QuantaTiffExtractor:
                         "Vertical Field Width",
                         1.0,
                         False,
-                        unit="micrometer",
+                        target_unit="meter",
                     ),
                     FD(
                         beam_name,
@@ -522,7 +522,7 @@ class QuantaTiffExtractor:
                         "Working Distance",
                         1.0,
                         False,
-                        unit="millimeter",
+                        target_unit="meter",
                     ),
                     FD(
                         beam_name,
@@ -530,7 +530,7 @@ class QuantaTiffExtractor:
                         "Eucentric WD",
                         1.0,
                         False,
-                        unit="millimeter",
+                        target_unit="meter",
                     ),
                     FD(beam_name, "ImageMode", "Image Mode", 1.0, True),
                     FD(
@@ -562,7 +562,7 @@ class QuantaTiffExtractor:
                         "Pixel Dwell Time",
                         1.0,
                         False,
-                        unit="microsecond",
+                        target_unit="second",
                     ),
                     FD(
                         scan_name,
@@ -570,7 +570,7 @@ class QuantaTiffExtractor:
                         "Total Frame Time",
                         1.0,
                         False,
-                        unit="second",
+                        target_unit="second",
                     ),
                     FD(
                         scan_name,
@@ -578,7 +578,7 @@ class QuantaTiffExtractor:
                         "Horizontal Field Width",
                         1.0,
                         False,
-                        unit="micrometer",
+                        target_unit="meter",
                     ),
                     FD(
                         scan_name,
@@ -586,7 +586,7 @@ class QuantaTiffExtractor:
                         "Vertical Field Width",
                         1.0,
                         False,
-                        unit="micrometer",
+                        target_unit="meter",
                     ),
                     FD(
                         scan_name,
@@ -594,7 +594,7 @@ class QuantaTiffExtractor:
                         "Pixel Width",
                         1.0,
                         False,
-                        unit="nanometer",
+                        target_unit="meter",
                     ),
                     FD(
                         scan_name,
@@ -602,9 +602,16 @@ class QuantaTiffExtractor:
                         "Pixel Height",
                         1.0,
                         False,
-                        unit="nanometer",
+                        target_unit="meter",
                     ),
-                    FD(scan_name, "LineTime", "Line Time", 1.0, False, unit="second"),
+                    FD(
+                        scan_name,
+                        "LineTime",
+                        "Line Time",
+                        1.0,
+                        False,
+                        target_unit="second",
+                    ),
                     FD(
                         scan_name,
                         "LineIntegration",
@@ -648,7 +655,7 @@ class QuantaTiffExtractor:
                         "Detector Grid Voltage",
                         1.0,
                         False,
-                        unit="volt",
+                        target_unit="volt",
                     ),
                     FD(
                         det_name, "BrightnessDB", "Detector Brightness (DB)", 1.0, False
@@ -667,7 +674,7 @@ class QuantaTiffExtractor:
                         "Minimum Dwell Time",
                         1.0,
                         False,
-                        unit="microsecond",
+                        target_unit="second",
                     ),
                 ]
             )
@@ -697,7 +704,7 @@ class QuantaTiffExtractor:
                     "Specimen Temperature",
                     1.0,
                     False,
-                    unit="kelvin",
+                    target_unit="kelvin",
                 ),
                 FD(
                     "Specimen",
@@ -705,7 +712,7 @@ class QuantaTiffExtractor:
                     "Specimen Humidity",
                     1.0,
                     False,
-                    unit="percent",
+                    target_unit="percent",
                 ),
                 FD("User", "UserText", "User Text", 1.0, True),
                 FD("User", "Date", "Acquisition Date", 1.0, True),
@@ -800,7 +807,7 @@ class QuantaTiffExtractor:
                         value,
                         field.factor,
                         field.suppress_zero,
-                        field.unit,
+                        field.target_unit,
                     )
 
     def _set_field_value(self, mdict: dict, output_key: str | list, value: str) -> None:
@@ -838,14 +845,14 @@ class QuantaTiffExtractor:
         """
         try:
             decimal_val = Decimal(value) * Decimal(str(factor))
-            float_val = float(decimal_val)
-            if not suppress_zero or float_val != 0.0:
+            if not suppress_zero or decimal_val != 0:
                 # Create Pint Quantity if unit is specified
                 if unit is not None:
-                    quantity_val = ureg.Quantity(float_val, unit)
+                    quantity_val = ureg.Quantity(decimal_val, unit)
                     self._set_field_value(mdict, output_key, quantity_val)
                 else:
-                    self._set_field_value(mdict, output_key, float_val)
+                    # Convert to float for non-quantity values
+                    self._set_field_value(mdict, output_key, float(decimal_val))
         except (ValueError, InvalidOperation, TypeError):
             # TypeError can occur if value is None
             if value is not None:
@@ -971,11 +978,11 @@ class QuantaTiffExtractor:
 
                 if is_high_vacuum:
                     # Value is in Pa, multiply by 1000 to get mPa
-                    ch_pres_float = float(ch_pres_decimal * 10**3)
-                    ch_pres_quantity = ureg.Quantity(ch_pres_float, "millipascal")
+                    ch_pres_decimal_mpa = ch_pres_decimal * 10**3
+                    ch_pres_quantity = ureg.Quantity(ch_pres_decimal_mpa, "millipascal")
                 else:
                     # Value is already in Pa
-                    ch_pres_quantity = ureg.Quantity(float(ch_pres_decimal), "pascal")
+                    ch_pres_quantity = ureg.Quantity(ch_pres_decimal, "pascal")
 
                 set_nested_dict_value(
                     mdict,
@@ -1081,7 +1088,6 @@ class QuantaTiffExtractor:
             Metadata dictionary with schema-compliant nx_meta structure
         """
         nx_meta = mdict.get("nx_meta", {})
-        dataset_type = nx_meta.get("DatasetType", "Image")
 
         # Preserve existing extensions from instrument profiles
         extensions = (
@@ -1094,7 +1100,8 @@ class QuantaTiffExtractor:
             "Working Distance": "working_distance",
             "Emission Current": "emission_current",
             "Pixel Dwell Time": "dwell_time",
-            "Horizontal Field Width": "field_of_view",
+            "Horizontal Field Width": "horizontal_field_width",
+            "Vertical Field Width": "vertical_field_width",
             "Pixel Width": "pixel_width",
             "Pixel Height": "pixel_height",
         }
@@ -1135,12 +1142,10 @@ class QuantaTiffExtractor:
             "Image Mode",
             "Pre-Tilt",
             "Eucentric WD",
-            "Vertical Field Width",
             "Total Frame Time",
             "Line Time",
             "Line Integration",
             "Scan Interlacing",
-            "Extractor Warnings",
         }
 
         # Build new nx_meta with proper field organization
@@ -1163,6 +1168,7 @@ class QuantaTiffExtractor:
                 "Data Type",
                 "Creation Time",
                 "Instrument ID",
+                "Extractor Warnings",
                 "warnings",
                 "extensions",
             ]:
@@ -1185,7 +1191,7 @@ class QuantaTiffExtractor:
                 continue
 
             # Everything else goes to extensions (vendor-specific by default)
-            # This is safer than putting at top level where schema validation will reject
+            # This is safer than at top level where schema validation will reject
             extensions[old_name] = value
 
         # Copy warnings if present

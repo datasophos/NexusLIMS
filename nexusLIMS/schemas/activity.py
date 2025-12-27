@@ -26,6 +26,7 @@ from sklearn.neighbors import KernelDensity
 from nexusLIMS.config import settings
 from nexusLIMS.extractors import flatten_dict, parse_metadata
 from nexusLIMS.extractors.xml_serialization import serialize_quantity_to_xml
+from nexusLIMS.schemas import em_glossary
 from nexusLIMS.utils import current_system_tz
 
 logger = logging.getLogger(__name__)
@@ -346,9 +347,8 @@ class AcquisitionActivity:
                         extensions = nx_meta.pop("extensions")
                         nx_meta.update(extensions)
 
-                    # Convert EM Glossary snake_case field names to display names for XML
+                    # Convert EM Glossary snake_case fields to display names for XML
                     # Only convert fields that are in snake_case (contain underscores)
-                    from nexusLIMS.schemas import em_glossary
 
                     nx_meta_for_xml = {}
                     for field_name, value in nx_meta.items():
