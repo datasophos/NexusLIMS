@@ -220,3 +220,42 @@ class TestEDAXSPCExtractor:
 
         # Y Column Units (no units)
         assert get_field(meta, "Y Column Units") == "Intensity"
+
+    def test_migrate_to_schema_compliant_metadata_with_unknown_field(self):
+        """Test unknown fields go to extensions.
+
+        This covers line 167 in edax.py where unknown fields move to extensions.
+        """
+        from nexusLIMS.extractors.plugins.edax import SpcExtractor
+
+        extractor = SpcExtractor()
+
+        # Create metadata dict with a custom unknown field
+        mdict = {
+            "nx_meta": {
+                "DatasetType": "Spectrum",
+                "Data Type": "EDS_Spectrum",
+                "Creation Time": "2024-01-15T10:30:00-05:00",
+                # Add a field that's not in vendor_fields and not in core fields
+                "Custom Unknown Field": "test_value",
+                # Also add a vendor field for comparison
+                "Azimuthal Angle": "0.0",
+            }
+        }
+
+        # Call the migration method
+        result = extractor._migrate_to_schema_compliant_metadata(mdict)  # noqa: SLF001
+
+        # Verify the unknown field went to extensions
+        assert "extensions" in result["nx_meta"]
+        assert "Custom Unknown Field" in result["nx_meta"]["extensions"]
+        assert result["nx_meta"]["extensions"]["Custom Unknown Field"] == "test_value"
+
+        # Verify vendor field also went to extensions
+        assert "Azimuthal Angle" in result["nx_meta"]["extensions"]
+        assert result["nx_meta"]["extensions"]["Azimuthal Angle"] == "0.0"
+
+        # Verify core fields stayed at top level
+        assert result["nx_meta"]["DatasetType"] == "Spectrum"
+        assert result["nx_meta"]["Data Type"] == "EDS_Spectrum"
+        assert result["nx_meta"]["Creation Time"] == "2024-01-15T10:30:00-05:00"

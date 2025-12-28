@@ -16,13 +16,6 @@ from rsciio.digitalmicrograph._api import (  # pylint: disable=import-error,no-n
 )
 
 from nexusLIMS.instruments import Instrument, get_instr_from_filepath
-from nexusLIMS.schemas.metadata import (
-    DiffractionMetadata,
-    ImageMetadata,
-    NexusMetadata,
-    SpectrumImageMetadata,
-    SpectrumMetadata,
-)
 from nexusLIMS.schemas.units import ureg
 from nexusLIMS.utils import set_nested_dict_value, try_getting_dict_value
 
@@ -472,73 +465,3 @@ def add_to_extensions(nx_meta: dict, field_name: str, value: Any) -> None:
 
     # Add the field
     nx_meta["extensions"][field_name] = value
-
-
-def get_schema_fields(dataset_type: str) -> set[str]:
-    """
-    Get all valid field names for a dataset type's schema.
-
-    This function returns the complete set of field names defined in the
-    type-specific schema, useful for bulk field categorization or validation.
-
-    Parameters
-    ----------
-    dataset_type : str
-        The dataset type ("Image", "Spectrum", "SpectrumImage", "Diffraction",
-        "Misc", or "Unknown"). For "Misc" and "Unknown", returns the base
-        NexusMetadata schema fields.
-
-    Returns
-    -------
-    set of str
-        Set of all valid field names in the schema. This includes both required
-        and optional fields defined in the type-specific schema.
-
-    Examples
-    --------
-    Get all valid fields for an Image dataset:
-
-    >>> fields = get_schema_fields("Image")
-    >>> "acceleration_voltage" in fields
-    True
-    >>> "working_distance" in fields
-    True
-
-    Get fields for a Spectrum dataset:
-
-    >>> fields = get_schema_fields("Spectrum")
-    >>> "acquisition_time" in fields
-    True
-    >>> "live_time" in fields
-    True
-
-    Use for bulk field processing:
-
-    >>> dataset_type = "Image"
-    >>> schema_fields = get_schema_fields(dataset_type)
-    >>> for field_name, value in extracted_data.items():
-    ...     if field_name in schema_fields:
-    ...         nx_meta[field_name] = value
-    ...     else:
-    ...         add_to_extensions(nx_meta, field_name, value)
-
-    Notes
-    -----
-    This function is particularly useful when migrating extractors to use the
-    extensions system, or when building extractors that process many fields
-    from vendor metadata dictionaries.
-    """
-    schema_map: dict[str, type[Any]] = {
-        "Image": ImageMetadata,
-        "Spectrum": SpectrumMetadata,
-        "SpectrumImage": SpectrumImageMetadata,
-        "Diffraction": DiffractionMetadata,
-        "Misc": NexusMetadata,
-        "Unknown": NexusMetadata,
-    }
-
-    # Get the schema class, defaulting to base NexusMetadata
-    schema_class = schema_map.get(dataset_type, NexusMetadata)
-
-    # Return the set of all field names in the schema
-    return set(schema_class.model_fields.keys())

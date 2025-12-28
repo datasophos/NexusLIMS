@@ -47,6 +47,34 @@ def tescan_tif_without_hdr(tescan_tif_file):
             hdr_backup.rename(hdr_file)
 
 
+def _create_test_tif_with_metadata(tmp_path, metadata_content, filename="test.tif"):
+    r"""Create a test TIFF file with custom Tescan metadata.
+
+    Parameters
+    ----------
+    tmp_path : Path
+        Temporary directory path from pytest fixture
+    metadata_content : bytes
+        Content to embed in TESCAN_TIFF_TAG (e.g., b"[SEM]\nKey=Value\n")
+    filename : str, default="test.tif"
+        Name of the test file to create
+
+    Returns
+    -------
+    Path
+        Path to the created test TIFF file
+    """
+    from PIL import Image
+    from PIL.TiffImagePlugin import ImageFileDirectory_v2
+
+    test_tif = tmp_path / filename
+    img = Image.new("I", (10, 10))
+    ifd = ImageFileDirectory_v2()
+    ifd[TESCAN_TIFF_TAG] = metadata_content
+    img.save(test_tif, tiffinfo=ifd)
+    return test_tif
+
+
 def _assert_tescan_raw_sections(metadata):
     """Assert raw [MAIN] and [SEM] section parsing.
 
@@ -1122,3 +1150,81 @@ WD=0.005
         # Verify that the warning was added
         assert "warnings" in metadata[0]["nx_meta"]
         assert ["Operator"] in metadata[0]["nx_meta"]["warnings"]
+
+    def test_software_version_from_tiff_tag(self, tescan_tif_file, monkeypatch):
+        """Test Software Version from TIFF tag 305 when not in metadata (line 499)."""
+        extractor = TescanTiffExtractor()
+
+        # Mock _parse_nx_meta to not add Software Version
+        def mock_parse(root, mdict):
+            pass  # Don't add any fields
+
+        monkeypatch.setattr(extractor, "_parse_nx_meta", mock_parse)
+        context = ExtractionContext(tescan_tif_file, instrument=None)
+        result = extractor.extract(context)
+
+        # Line 499 should add Software Version from TIFF tag
+        ext = result[0]["nx_meta"]["extensions"]
+        assert "Software Version" in ext
+
+    def test_suppress_zero_skips_value(self, tmp_path, monkeypatch):
+        """Test suppress_zero=True skips zero values."""
+        from nexusLIMS.extractors.base import FieldDefinition
+
+        test_tif = _create_test_tif_with_metadata(tmp_path, b"[SEM]\nZero=0\n")
+
+        extractor = TescanTiffExtractor()
+        original_get_fields = extractor._get_field_definitions
+
+        def patched_get_fields():
+            return [
+                *original_get_fields(),
+                FieldDefinition(
+                    "SEM",
+                    "Zero",
+                    "zero_field",
+                    1.0,
+                    is_string=False,
+                    suppress_zero=True,
+                ),
+            ]
+
+        monkeypatch.setattr(extractor, "_get_field_definitions", patched_get_fields)
+        result = extractor.extract(ExtractionContext(test_tif, None))
+
+        # Lines 814-815 skip zero value
+        assert "zero_field" not in result[0]["nx_meta"]
+
+    def test_nested_value_without_unit(self, tmp_path, monkeypatch):
+        """Test nested output_key without unit (lines 837-838)."""
+        from decimal import Decimal
+
+        from nexusLIMS.extractors.base import FieldDefinition
+
+        test_tif = _create_test_tif_with_metadata(tmp_path, b"[SEM]\nTestValue=42.5\n")
+
+        extractor = TescanTiffExtractor()
+        original_get_fields = extractor._get_field_definitions
+
+        def patched_get_fields():
+            return [
+                *original_get_fields(),
+                FieldDefinition(
+                    "SEM",
+                    "TestValue",
+                    ["nested", "test_value"],
+                    1.0,
+                    is_string=False,
+                    target_unit=None,  # No unit specified
+                ),
+            ]
+
+        monkeypatch.setattr(extractor, "_get_field_definitions", patched_get_fields)
+        result = extractor.extract(ExtractionContext(test_tif, None))
+
+        # Nested path without unit stores as Decimal
+        assert "nested" in result[0]["nx_meta"]["extensions"]
+        nested = result[0]["nx_meta"]["extensions"]["nested"]
+        assert "test_value" in nested
+        assert nested["test_value"] == 42.5
+        assert isinstance(nested["test_value"], Decimal)

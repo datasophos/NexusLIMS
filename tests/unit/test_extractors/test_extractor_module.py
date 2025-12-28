@@ -560,6 +560,67 @@ class TestExtractorModule:
         assert "Date" in result["nx_meta"]["NexusLIMS Extraction"]
         assert result["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
 
+    def test_add_extraction_details_with_extractor_warnings_in_nx_meta(self):
+        """Test _add_extraction_details moves warnings to extraction details."""
+        from nexusLIMS.extractors import _add_extraction_details
+
+        # Create a mock extractor with __module__
+        class MockExtractor:
+            __module__ = "test_module"
+
+        mock_extractor = MockExtractor()
+
+        # Create nx_meta with Extractor Warnings at top level
+        nx_meta: dict = {
+            "nx_meta": {
+                "DatasetType": "Image",
+                "Extractor Warnings": "Test warning message",
+            }
+        }
+
+        result = _add_extraction_details(nx_meta, mock_extractor)
+
+        # Verify Extractor Warnings was moved to extraction details
+        assert "Extractor Warnings" not in result["nx_meta"]
+        assert (
+            result["nx_meta"]["NexusLIMS Extraction"]["Extractor Warnings"]
+            == "Test warning message"
+        )
+        assert result["nx_meta"]["NexusLIMS Extraction"]["Module"] == "test_module"
+
+    def test_add_extraction_details_with_extractor_warnings_in_extensions(self):
+        """Test _add_extraction_details moves warnings from extensions."""
+        from nexusLIMS.extractors import _add_extraction_details
+
+        # Create a mock extractor with __module__
+        class MockExtractor:
+            __module__ = "test_module_ext"
+
+        mock_extractor = MockExtractor()
+
+        # Create nx_meta with Extractor Warnings in extensions
+        nx_meta: dict = {
+            "nx_meta": {
+                "DatasetType": "Image",
+                "extensions": {
+                    "Extractor Warnings": "Warning in extensions",
+                    "other_field": "value",
+                },
+            }
+        }
+
+        result = _add_extraction_details(nx_meta, mock_extractor)
+
+        # Verify Extractor Warnings was moved from extensions to extraction details
+        assert "Extractor Warnings" not in result["nx_meta"]["extensions"]
+        assert (
+            result["nx_meta"]["NexusLIMS Extraction"]["Extractor Warnings"]
+            == "Warning in extensions"
+        )
+        # Verify other extension fields remain
+        assert result["nx_meta"]["extensions"]["other_field"] == "value"
+        assert result["nx_meta"]["NexusLIMS Extraction"]["Module"] == "test_module_ext"
+
     def test_extractor_method_callable(self, parse_meta_titan):
         """Test that ExtractorMethod.__call__ is callable."""
         from pathlib import Path

@@ -37,6 +37,7 @@ from nexusLIMS.extractors.utils import (
     _set_image_processing,
     _set_si_meta,
     _try_decimal,
+    add_to_extensions,
 )
 from nexusLIMS.instruments import get_instr_from_filepath
 from nexusLIMS.schemas.units import ureg
@@ -344,11 +345,9 @@ def _apply_profile_to_metadata(metadata: dict, instrument, file_path: Path) -> d
 
     # Inject extension fields
     if profile.extension_fields:
-        if "extensions" not in metadata["nx_meta"]:
-            metadata["nx_meta"]["extensions"] = {}
         for key, value in profile.extension_fields.items():
             try:
-                metadata["nx_meta"]["extensions"][key] = value
+                add_to_extensions(metadata["nx_meta"], key, value)
             except Exception as e:
                 logger.warning(
                     "Profile extension field injection '%s' failed: %s",
@@ -541,15 +540,15 @@ def _migrate_to_schema_compliant_metadata(mdict: dict) -> dict:  # noqa: PLR0912
                         stage_pos[new_key] = val
                 new_nx_meta["stage_position"] = stage_pos
             else:
-                # If it's not a dict, move to extensions
-                extensions["Stage Position"] = value
+                # If it's not a dict, move to extensions (this is not expected)
+                extensions["Stage Position"] = value  # pragma: no cover
         # Everything else goes to extensions
         else:
             extensions[key] = value
 
     # Add extensions if any
-    if extensions:
-        new_nx_meta["extensions"] = extensions
+    for key, value in extensions.items():
+        add_to_extensions(new_nx_meta, key, value)
 
     mdict["nx_meta"] = new_nx_meta
     return mdict

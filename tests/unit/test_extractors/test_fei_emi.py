@@ -912,3 +912,74 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         )
         meta = TestSerEmiExtractor._helper_test(caplog, fei_ser_files)
         assert meta[0]["nx_meta"]["Data Type"] == "STEM_Imaging"
+
+    def test_migrate_to_schema_compliant_metadata_with_top_level_vendor_sections(
+        self,
+    ):
+        """Test top-level vendor sections go to extensions.
+
+        Covers lines 284-287 in fei_emi.py where vendor sections move to extensions.
+        """
+        from nexusLIMS.extractors.plugins.fei_emi import SerEmiExtractor
+
+        extractor = SerEmiExtractor()
+
+        # Create metadata dict with top-level vendor sections
+        mdict = {
+            "nx_meta": {
+                "DatasetType": "Image",
+                "Data Type": "STEM_Imaging",
+                "Creation Time": "2024-01-15T10:30:00-05:00",
+                "Data Dimensions": "(1024, 1024)",
+                # Add top-level vendor sections that should go to extensions
+                "ObjectInfo": {
+                    "some_vendor_field": "value1",
+                    "another_field": 123,
+                },
+                "ser_header_parameters": {
+                    "header_field": "value2",
+                },
+                # Also add a regular vendor field for comparison
+                "Magnification": 100000,
+            }
+        }
+
+        # Call the migration method
+        result = extractor._migrate_to_schema_compliant_metadata(mdict)  # noqa: SLF001
+
+        # Verify top-level vendor sections went to extensions
+        assert "extensions" in result["nx_meta"]
+        assert "ObjectInfo" in result["nx_meta"]["extensions"]
+        assert (
+            result["nx_meta"]["extensions"]["ObjectInfo"]["some_vendor_field"]
+            == "value1"
+        )
+        assert result["nx_meta"]["extensions"]["ObjectInfo"]["another_field"] == 123
+
+        assert "ser_header_parameters" in result["nx_meta"]["extensions"]
+        assert (
+            result["nx_meta"]["extensions"]["ser_header_parameters"]["header_field"]
+            == "value2"
+        )
+
+        # Verify other vendor fields also went to extensions
+        assert "Magnification" in result["nx_meta"]["extensions"]
+        assert result["nx_meta"]["extensions"]["Magnification"] == 100000
+
+        # Verify core fields stayed at top level
+        assert result["nx_meta"]["DatasetType"] == "Image"
+        assert result["nx_meta"]["Data Type"] == "STEM_Imaging"
+        assert result["nx_meta"]["Creation Time"] == "2024-01-15T10:30:00-05:00"
+        assert result["nx_meta"]["Data Dimensions"] == "(1024, 1024)"
+
+        # Verify top-level vendor sections are NOT at top level of nx_meta
+        assert (
+            "ObjectInfo" not in result["nx_meta"]
+            or result["nx_meta"].get("ObjectInfo") is None
+            or "ObjectInfo" in result["nx_meta"]["extensions"]
+        )
+        assert (
+            "ser_header_parameters" not in result["nx_meta"]
+            or result["nx_meta"].get("ser_header_parameters") is None
+            or "ser_header_parameters" in result["nx_meta"]["extensions"]
+        )

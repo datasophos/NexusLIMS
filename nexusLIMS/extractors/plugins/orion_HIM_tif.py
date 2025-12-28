@@ -11,7 +11,7 @@ from PIL import Image
 
 from nexusLIMS.extractors.base import ExtractionContext
 from nexusLIMS.extractors.base import FieldDefinition as FD
-from nexusLIMS.extractors.utils import _set_instr_name_and_time
+from nexusLIMS.extractors.utils import _set_instr_name_and_time, add_to_extensions
 from nexusLIMS.schemas import em_glossary
 from nexusLIMS.schemas.units import ureg
 from nexusLIMS.utils import set_nested_dict_value, sort_dict
@@ -1259,8 +1259,8 @@ class OrionTiffExtractor:
             new_nx_meta["Extractor Warnings"] = nx_meta["Extractor Warnings"]
 
         # Add extensions section if we have any
-        if extensions:
-            new_nx_meta["extensions"] = extensions
+        for key, value in extensions.items():
+            add_to_extensions(new_nx_meta, key, value)
 
         mdict["nx_meta"] = new_nx_meta
         return mdict

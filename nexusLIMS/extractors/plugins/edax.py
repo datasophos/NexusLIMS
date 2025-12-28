@@ -7,7 +7,7 @@ from typing import Any, ClassVar
 from hyperspy.io import load
 
 from nexusLIMS.extractors.base import ExtractionContext
-from nexusLIMS.extractors.utils import _set_instr_name_and_time
+from nexusLIMS.extractors.utils import _set_instr_name_and_time, add_to_extensions
 from nexusLIMS.instruments import get_instr_from_filepath
 from nexusLIMS.schemas.units import ureg
 from nexusLIMS.utils import try_getting_dict_value
@@ -167,8 +167,8 @@ class SpcExtractor:
                 extensions[field_name] = value
 
         # Add extensions if we have any
-        if extensions:
-            new_nx_meta["extensions"] = extensions
+        for key, value in extensions.items():
+            add_to_extensions(new_nx_meta, key, value)
 
         mdict["nx_meta"] = new_nx_meta
         return mdict
@@ -346,8 +346,8 @@ class MsaExtractor:
                 extensions[field_name] = value
 
         # Add extensions if we have any
-        if extensions:
-            new_nx_meta["extensions"] = extensions
+        for key, value in extensions.items():
+            add_to_extensions(new_nx_meta, key, value)
 
         mdict["nx_meta"] = new_nx_meta
         return mdict

@@ -11,6 +11,7 @@ from hyperspy.io import load as hs_load
 from hyperspy.signal import BaseSignal
 
 from nexusLIMS.extractors.base import ExtractionContext
+from nexusLIMS.extractors.utils import add_to_extensions
 from nexusLIMS.instruments import Instrument, get_instr_from_filepath
 from nexusLIMS.schemas.units import ureg
 from nexusLIMS.utils import (
@@ -306,8 +307,8 @@ class SerEmiExtractor:
             new_nx_meta["warnings"] = nx_meta["warnings"]
 
         # Add extensions section if we have any
-        if extensions:
-            new_nx_meta["extensions"] = extensions
+        for key, value in extensions.items():
+            add_to_extensions(new_nx_meta, key, value)
 
         mdict["nx_meta"] = new_nx_meta
         return mdict

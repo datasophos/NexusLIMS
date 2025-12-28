@@ -13,7 +13,7 @@ from PIL import Image
 
 from nexusLIMS.extractors.base import ExtractionContext
 from nexusLIMS.extractors.base import FieldDefinition as FD
-from nexusLIMS.extractors.utils import _set_instr_name_and_time
+from nexusLIMS.extractors.utils import _set_instr_name_and_time, add_to_extensions
 from nexusLIMS.schemas.units import ureg
 from nexusLIMS.utils import set_nested_dict_value, sort_dict
 
@@ -520,36 +520,16 @@ class TescanTiffExtractor:
             _logger.warning("Failed to extract TIFF tags from %s: %s", filename, e)
             mdict["nx_meta"]["Extractor Warnings"] = f"Failed to extract TIFF tags: {e}"
 
-    def _parse_nx_meta(self, mdict: dict) -> dict:  # noqa: PLR0912
+    def _get_field_definitions(self) -> list:
         """
-        Parse metadata into NexusLIMS format.
-
-        Extracts important metadata from the [MAIN] and [SEM] sections
-        of the HDR file and places them in standardized locations under
-        the nx_meta key.
-
-        Parameters
-        ----------
-        mdict
-            Metadata dictionary with [MAIN] and [SEM] sections
+        Get field definitions for metadata extraction.
 
         Returns
         -------
-        dict
-            Updated metadata dictionary with parsed nx_meta fields
+        list
+            List of FieldDefinition tuples
         """
-        # Initialize warnings list
-        if "warnings" not in mdict["nx_meta"]:
-            mdict["nx_meta"]["warnings"] = []
-
-        main_section = mdict.get("MAIN", {})
-        sem_section = mdict.get("SEM", {})
-
-        # Field definitions using FD NamedTuple
-        # Format:
-        #   FD(section, source_key, output_key, factor, is_string, unit)  # noqa: ERA001
-        # Note: factor is for legacy compatibility; unit should be the target unit name
-        fields = [
+        return [
             # [MAIN] section - in order as they appear in HDR file
             FD("MAIN", "AccFrames", "Accumulated Frames", 1, False),
             FD("MAIN", "AccType", "Accumulation Type", 1, True),
@@ -777,6 +757,34 @@ class TescanTiffExtractor:
             FD("SEM", "WD", "Working Distance", 1e3, False, target_unit="millimeter"),
         ]
 
+    def _parse_nx_meta(self, mdict: dict) -> dict:  # noqa: PLR0912
+        """
+        Parse metadata into NexusLIMS format.
+
+        Extracts important metadata from the [MAIN] and [SEM] sections
+        of the HDR file and places them in standardized locations under
+        the nx_meta key.
+
+        Parameters
+        ----------
+        mdict
+            Metadata dictionary with [MAIN] and [SEM] sections
+
+        Returns
+        -------
+        dict
+            Updated metadata dictionary with parsed nx_meta fields
+        """
+        # Initialize warnings list
+        if "warnings" not in mdict["nx_meta"]:
+            mdict["nx_meta"]["warnings"] = []
+
+        main_section = mdict.get("MAIN", {})
+        sem_section = mdict.get("SEM", {})
+
+        # Get field definitions
+        fields = self._get_field_definitions()
+
         # Extract standard fields
         for field in fields:
             section = main_section if field.section == "MAIN" else sem_section
@@ -934,8 +942,8 @@ class TescanTiffExtractor:
             new_nx_meta["warnings"] = nx_meta["warnings"]
 
         # Add extensions section if we have any
-        if extensions:
-            new_nx_meta["extensions"] = extensions
+        for key, value in extensions.items():
+            add_to_extensions(new_nx_meta, key, value)
 
         mdict["nx_meta"] = new_nx_meta
         return mdict

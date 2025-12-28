@@ -700,3 +700,84 @@ class TestOrionFibicsTiffExtractor:
         result = self.extractor._find_fibics_section(root, "NonExistent")  # noqa: SLF001
         # Should return None when section not found
         assert result is None
+
+    def test_migrate_to_schema_compliant_metadata_with_field_renaming(self):
+        """Test that display names are renamed to EM Glossary names.
+
+        This test covers orion_HIM_tif.py where fields with
+        display names (like "Acceleration Voltage") are renamed to EM Glossary
+        names (like "acceleration_voltage") and kept at the top level.
+        """
+        # Create metadata dict with fields using display names
+        mdict = {
+            "nx_meta": {
+                "DatasetType": "Image",
+                "Data Type": "HIM_Imaging",
+                "Creation Time": "2024-01-15T10:30:00-05:00",
+                # Add fields with display names that need renaming
+                "Acceleration Voltage": ureg.Quantity(30.0, "kilovolt"),
+                "Working Distance": ureg.Quantity(5.0, "millimeter"),
+                "Beam Current": ureg.Quantity(1.5, "picoampere"),
+                "Emission Current": ureg.Quantity(100.0, "microampere"),
+                "Dwell Time": ureg.Quantity(10.0, "microsecond"),
+                "Field of View": ureg.Quantity(50.0, "micrometer"),
+                "Pixel Width": ureg.Quantity(0.1, "micrometer"),
+                "Pixel Height": ureg.Quantity(0.1, "micrometer"),
+                # Add a vendor-specific section that should go to extensions
+                "Beam": {"some_field": "value"},
+            }
+        }
+
+        # Call the migration method
+        result = self.extractor._migrate_to_schema_compliant_metadata(mdict)  # noqa: SLF001
+
+        # Verify display names were renamed to EM Glossary names and stayed at top level
+        assert "acceleration_voltage" in result["nx_meta"]
+        assert result["nx_meta"]["acceleration_voltage"] == ureg.Quantity(
+            30.0, "kilovolt"
+        )
+
+        assert "working_distance" in result["nx_meta"]
+        assert result["nx_meta"]["working_distance"] == ureg.Quantity(5.0, "millimeter")
+
+        assert "beam_current" in result["nx_meta"]
+        assert result["nx_meta"]["beam_current"] == ureg.Quantity(1.5, "picoampere")
+
+        assert "emission_current" in result["nx_meta"]
+        assert result["nx_meta"]["emission_current"] == ureg.Quantity(
+            100.0, "microampere"
+        )
+
+        assert "dwell_time" in result["nx_meta"]
+        assert result["nx_meta"]["dwell_time"] == ureg.Quantity(10.0, "microsecond")
+
+        assert "horizontal_field_width" in result["nx_meta"]
+        assert result["nx_meta"]["horizontal_field_width"] == ureg.Quantity(
+            50.0, "micrometer"
+        )
+
+        assert "pixel_width" in result["nx_meta"]
+        assert result["nx_meta"]["pixel_width"] == ureg.Quantity(0.1, "micrometer")
+
+        assert "pixel_height" in result["nx_meta"]
+        assert result["nx_meta"]["pixel_height"] == ureg.Quantity(0.1, "micrometer")
+
+        # Verify original display names are NOT at top level
+        assert "Acceleration Voltage" not in result["nx_meta"]
+        assert "Working Distance" not in result["nx_meta"]
+        assert "Beam Current" not in result["nx_meta"]
+        assert "Emission Current" not in result["nx_meta"]
+        assert "Dwell Time" not in result["nx_meta"]
+        assert "Field of View" not in result["nx_meta"]
+        assert "Pixel Width" not in result["nx_meta"]
+        assert "Pixel Height" not in result["nx_meta"]
+
+        # Verify vendor sections went to extensions
+        assert "extensions" in result["nx_meta"]
+        assert "Beam" in result["nx_meta"]["extensions"]
+        assert result["nx_meta"]["extensions"]["Beam"]["some_field"] == "value"
+
+        # Verify core fields stayed at top level
+        assert result["nx_meta"]["DatasetType"] == "Image"
+        assert result["nx_meta"]["Data Type"] == "HIM_Imaging"
+        assert result["nx_meta"]["Creation Time"] == "2024-01-15T10:30:00-05:00"
