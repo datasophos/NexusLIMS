@@ -135,13 +135,13 @@ Bases: {py:obj}`typing.NamedTuple`
 
 ````
 
-````{py:attribute} unit
-:canonical: nexusLIMS.extractors.base.FieldDefinition.unit
+````{py:attribute} target_unit
+:canonical: nexusLIMS.extractors.base.FieldDefinition.target_unit
 :type: str | None
 :value: >
    None
 
-```{autodoc2-docstring} nexusLIMS.extractors.base.FieldDefinition.unit
+```{autodoc2-docstring} nexusLIMS.extractors.base.FieldDefinition.target_unit
 ```
 
 ````

@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Changelog &#8212; NexusLIMS 2.1.2.dev0 documentation</title>
+    <title>Changelog &#8212; NexusLIMS 2.2.0.dev0 documentation</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="_static/documentation_options.js?v=bcebe078"></script>
+    <script src="_static/documentation_options.js?v=dc4a309c"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/design-tabs.js?v=f930bc37"></script>
@@ -60,8 +60,8 @@
     <link rel="prev" title="nexusLIMS.config" href="api/nexusLIMS/nexusLIMS.config.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 25, 2025"/>
+  <meta name="docsearch:version" content="2.2.0.dev0" />
+    <meta name="docbuild:last-update" content="Dec, 28, 2025"/>
   </head>
   
   
@@ -127,8 +127,8 @@
       
     
     
-    <img src="_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.1.2.dev0 documentation - Home"/>
-    <img src="_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.1.2.dev0 documentation - Home"/>
+    <img src="_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.2.0.dev0 documentation - Home"/>
+    <img src="_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.2.0.dev0 documentation - Home"/>
   
   
 </a></div>
@@ -474,11 +474,12 @@
 <p>This changelog documents development history including the original NIST project
 up to version 1.4.3. The datasophos fork begins at version 2.0.</p>
 </div>
-<section id="unreleased-2025-12-25">
-<h2>[Unreleased] (2025-12-25)<a class="headerlink" href="#unreleased-2025-12-25" title="Link to this heading">#</a></h2>
+<section id="unreleased-2025-12-28">
+<h2>[Unreleased] (2025-12-28)<a class="headerlink" href="#unreleased-2025-12-28" title="Link to this heading">#</a></h2>
 <section id="new-features">
 <h3>New features<a class="headerlink" href="#new-features" title="Link to this heading">#</a></h3>
 <ul>
+<li><p>Updated metadata schema system with <a class="reference external" href="https://pint.readthedocs.io/en/stable/">Pint Quantities</a> for internal representation of physical units and <a class="reference external" href="https://emglossary.helmholtz-metadaten.de/">EM Glossary v2.0.0</a> standardized field names. All extractor plugins now create Pint Quantity objects for fields with units, providing type safety and machine-readable XML with separate value/unit attributes (e.g., <code class="docutils literal notranslate"><span class="pre">&lt;meta</span> <span class="pre">name=&quot;Voltage&quot;</span> <span class="pre">unit=&quot;kV&quot;&gt;15&lt;/meta&gt;</span></code>). Added type-specific validation schemas (<a class="reference internal" href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.ImageMetadata" title="nexusLIMS.schemas.metadata.ImageMetadata"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImageMetadata</span></code></a>, <a class="reference internal" href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.SpectrumMetadata" title="nexusLIMS.schemas.metadata.SpectrumMetadata"><code class="xref py py-class docutils literal notranslate"><span class="pre">SpectrumMetadata</span></code></a>, <a class="reference internal" href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.SpectrumImageMetadata" title="nexusLIMS.schemas.metadata.SpectrumImageMetadata"><code class="xref py py-class docutils literal notranslate"><span class="pre">SpectrumImageMetadata</span></code></a>, <a class="reference internal" href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.DiffractionMetadata" title="nexusLIMS.schemas.metadata.DiffractionMetadata"><code class="xref py py-class docutils literal notranslate"><span class="pre">DiffractionMetadata</span></code></a>) and infrastructure modules for unit handling, EM Glossary integration via <a class="reference external" href="https://rdflib.readthedocs.io/en/stable/index.html">RDFLib</a>, and XML serialization. Instrument profiles migrated from <code class="docutils literal notranslate"><span class="pre">static_metadata</span></code> to <code class="docutils literal notranslate"><span class="pre">extension_fields</span></code> pattern - see <code class="docutils literal notranslate"><span class="pre">docs/schema_changes.md</span></code> for migration guide. <strong>Note:</strong> Correct display of units in CDCS requires updated stylesheet (NexusLIMS-CDCS commit <a class="reference external" href="https://github.com/datasophos/NexusLIMS-CDCS/commit/30faa97aa380fecc6eb94e6a6abf1631c71a4a5a">30faa97</a>). (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/13">#13</a>)</p></li>
 <li><p>Added Pydantic-based schema validation for the <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code> data structure returned by extractor plugins. This provides early error detection with clear error messages when plugins return malformed/unexpected metadata. The base <code class="docutils literal notranslate"><span class="pre">NexusMetadata</span></code> schema validates required fields (<code class="docutils literal notranslate"><span class="pre">Creation</span> <span class="pre">Time</span></code> with timezone, <code class="docutils literal notranslate"><span class="pre">Data</span> <span class="pre">Type</span></code>, <code class="docutils literal notranslate"><span class="pre">DatasetType</span></code>) and common optional fields. TEM and SEM-specific schemas (<code class="docutils literal notranslate"><span class="pre">TEMImageMetadata</span></code> and <code class="docutils literal notranslate"><span class="pre">SEMImageMetadata</span></code>) extend the base schema with instrument-specific metadata fields for future extensibility. This is not a user-facing feature, but should provide a base from which to extend more formalized metadata schema verification. (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/13">#13</a>)</p></li>
 <li><p>Added multi-signal file support to automatically expand files containing multiple signals or datasets (such as DM3/DM4 files with multiple images or spectra) into separate dataset entries in experimental records. Each signal receives its own metadata extraction, preview image, and XML dataset element with signal indices in the name (e.g., “filename.dm3 (1 of 4)”).</p>
 <p><strong>Note:</strong> Proper display and download of multi-signal records in the CDCS frontend requires an updated XSLT stylesheet, available in <a class="reference external" href="https://github.com/datasophos/NexusLIMS-CDCS/commit/240a7f9a87c799950b5bbf94ca30eedaef7a1adc">NexusLIMS-CDCS commit 240a7f9</a>. (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/14">#14</a>)</p>
@@ -1137,7 +1138,7 @@ delineate functionality of the various parts of NexusLIMS</p></li>
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#unreleased-2025-12-25">[Unreleased] (2025-12-25)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#unreleased-2025-12-28">[Unreleased] (2025-12-28)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">2.1.1 (2025-12-16)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">2.1.0 (2025-12-16)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">2.0.0 (2025-12-06)</a></li>

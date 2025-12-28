@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>nexusLIMS.extractors.plugins.digital_micrograph &#8212; NexusLIMS 2.1.2.dev0 documentation</title>
+    <title>nexusLIMS.extractors.plugins.digital_micrograph &#8212; NexusLIMS 2.2.0.dev0 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../../../_static/documentation_options.js?v=bcebe078"></script>
+    <script src="../../../../_static/documentation_options.js?v=dc4a309c"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -423,8 +423,8 @@ window.addEventListener("load", load);
     <link rel="search" title="Search" href="../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 25, 2025"/>
+  <meta name="docsearch:version" content="2.2.0.dev0" />
+    <meta name="docbuild:last-update" content="Dec, 28, 2025"/>
   </head>
   
   
@@ -490,8 +490,8 @@ window.addEventListener("load", load);
       
     
     
-    <img src="../../../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.1.2.dev0 documentation - Home"/>
-    <img src="../../../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.1.2.dev0 documentation - Home"/>
+    <img src="../../../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.2.0.dev0 documentation - Home"/>
+    <img src="../../../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.2.0.dev0 documentation - Home"/>
   
   
 </a></div>
@@ -858,6 +858,7 @@ window.addEventListener("load", load);
     <span class="n">_set_image_processing</span><span class="p">,</span>
     <span class="n">_set_si_meta</span><span class="p">,</span>
     <span class="n">_try_decimal</span><span class="p">,</span>
+    <span class="n">add_to_extensions</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.instruments</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_instr_from_filepath</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas.units</span><span class="w"> </span><span class="kn">import</span> <span class="n">ureg</span>
@@ -1107,6 +1108,9 @@ window.addEventListener("load", load);
         <span class="c1"># we don&#39;t need to save the filename, it&#39;s just for internal processing</span>
         <span class="k">del</span> <span class="n">m_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;fname&quot;</span><span class="p">]</span>
 
+        <span class="c1"># Migrate metadata to schema-compliant format</span>
+        <span class="n">m_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">_migrate_to_schema_compliant_metadata</span><span class="p">(</span><span class="n">m_list</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
         <span class="c1"># sort the nx_meta dictionary (recursively) for nicer display</span>
         <span class="n">m_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sort_dict</span><span class="p">(</span><span class="n">m_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">])</span>
 
@@ -1174,11 +1178,9 @@ window.addEventListener("load", load);
 
     <span class="c1"># Inject extension fields</span>
     <span class="k">if</span> <span class="n">profile</span><span class="o">.</span><span class="n">extension_fields</span><span class="p">:</span>
-        <span class="k">if</span> <span class="s2">&quot;extensions&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">]:</span>
-            <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;extensions&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">profile</span><span class="o">.</span><span class="n">extension_fields</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;extensions&quot;</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+                <span class="n">add_to_extensions</span><span class="p">(</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">],</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
                     <span class="s2">&quot;Profile extension field injection &#39;</span><span class="si">%s</span><span class="s2">&#39; failed: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
@@ -1231,6 +1233,161 @@ window.addEventListener("load", load);
 
     <span class="k">return</span> <span class="n">pre_path</span></div>
 
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_migrate_to_schema_compliant_metadata</span><span class="p">(</span><span class="n">mdict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>  <span class="c1"># noqa: PLR0912</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Migrate metadata to schema-compliant format.</span>
+
+<span class="sd">    This function reorganizes metadata extracted from DM3/DM4 files to conform</span>
+<span class="sd">    to the type-specific metadata schemas. It:</span>
+<span class="sd">    1. Maps display names to EM Glossary field names for core fields</span>
+<span class="sd">    2. Moves vendor-specific fields to the extensions section</span>
+<span class="sd">    3. Converts Stage Position dict to proper StagePosition structure</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mdict : dict</span>
+<span class="sd">        Metadata dictionary with &#39;nx_meta&#39; key</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict</span>
+<span class="sd">        Metadata dictionary with schema-compliant nx_meta</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">nx_meta</span> <span class="o">=</span> <span class="n">mdict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="p">{})</span>
+    <span class="n">dataset_type</span> <span class="o">=</span> <span class="n">nx_meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;DatasetType&quot;</span><span class="p">,</span> <span class="s2">&quot;Image&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Field mappings from display names to EM Glossary names</span>
+    <span class="c1"># These are core schema fields that just need renaming</span>
+    <span class="c1"># Note: dataset_type-specific fields are handled conditionally below</span>
+    <span class="n">field_mappings</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="c1"># Common mappings for all types</span>
+        <span class="s2">&quot;Voltage&quot;</span><span class="p">:</span> <span class="s2">&quot;acceleration_voltage&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Horizontal Field Width&quot;</span><span class="p">:</span> <span class="s2">&quot;horizontal_field_width&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Vertical Field Width&quot;</span><span class="p">:</span> <span class="s2">&quot;vertical_field_width&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Acquisition Device&quot;</span><span class="p">:</span> <span class="s2">&quot;acquisition_device&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Sample Time&quot;</span><span class="p">:</span> <span class="s2">&quot;dwell_time&quot;</span><span class="p">,</span>
+        <span class="c1"># Image-specific</span>
+        <span class="s2">&quot;Indicated Magnification&quot;</span><span class="p">:</span> <span class="s2">&quot;magnification&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="c1"># Conditional mappings based on dataset type</span>
+    <span class="k">if</span> <span class="n">dataset_type</span> <span class="o">==</span> <span class="s2">&quot;Diffraction&quot;</span><span class="p">:</span>
+        <span class="n">field_mappings</span><span class="p">[</span><span class="s2">&quot;STEM Camera Length&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;camera_length&quot;</span>
+
+    <span class="c1"># Fields that should ALWAYS go to extensions (vendor/instrument-specific)</span>
+    <span class="n">extension_fields</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="c1"># Gatan-specific</span>
+        <span class="s2">&quot;GMS Version&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Microscope&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Operator&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Specimen&quot;</span><span class="p">,</span>
+        <span class="c1"># Operation modes</span>
+        <span class="s2">&quot;Illumination Mode&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Imaging Mode&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Operation Mode&quot;</span><span class="p">,</span>
+        <span class="c1"># Apertures</span>
+        <span class="s2">&quot;Condenser Aperture&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Objective Aperture&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Selected Area Aperture&quot;</span><span class="p">,</span>
+        <span class="c1"># Vendor-specific settings</span>
+        <span class="s2">&quot;Cs&quot;</span><span class="p">,</span>  <span class="c1"># Spherical aberration</span>
+        <span class="c1"># Signal/Analytic metadata</span>
+        <span class="s2">&quot;Signal Name&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Analytic Format&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Analytic Label&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Analytic Signal&quot;</span><span class="p">,</span>
+        <span class="c1"># Nested vendor metadata (will be moved as-is)</span>
+        <span class="s2">&quot;EELS&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;EDS&quot;</span><span class="p">,</span>
+        <span class="c1"># STEM-specific fields that should be extensions for non-Diffraction types</span>
+        <span class="s2">&quot;STEM Camera Length&quot;</span><span class="p">,</span>  <span class="c1"># Only core for Diffraction</span>
+    <span class="p">}</span>
+
+    <span class="c1"># NOTE: &quot;NexusLIMS Extraction&quot; is added AFTER this migration function runs</span>
+    <span class="c1"># by add_extraction_details in __init__.py, so we don&#39;t need to handle it here</span>
+
+    <span class="c1"># Create new nx_meta dict with schema-compliant structure</span>
+    <span class="n">new_nx_meta</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="c1"># Preserve any existing extensions (e.g., from instrument profiles)</span>
+    <span class="n">extensions</span> <span class="o">=</span> <span class="n">nx_meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;extensions&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">if</span> <span class="s2">&quot;extensions&quot;</span> <span class="ow">in</span> <span class="n">nx_meta</span> <span class="k">else</span> <span class="p">{}</span>
+
+    <span class="c1"># Copy required fields as-is</span>
+    <span class="n">required_fields</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Creation Time&quot;</span><span class="p">,</span> <span class="s2">&quot;Data Type&quot;</span><span class="p">,</span> <span class="s2">&quot;DatasetType&quot;</span><span class="p">}</span>
+    <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">required_fields</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">nx_meta</span><span class="p">:</span>
+            <span class="n">new_nx_meta</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="n">nx_meta</span><span class="p">[</span><span class="n">field</span><span class="p">]</span>
+
+    <span class="c1"># Copy common optional fields</span>
+    <span class="n">common_fields</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;Data Dimensions&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Instrument ID&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;warnings&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Extractor Warnings&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">common_fields</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">nx_meta</span><span class="p">:</span>
+            <span class="n">new_nx_meta</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="n">nx_meta</span><span class="p">[</span><span class="n">field</span><span class="p">]</span>
+
+    <span class="c1"># Process all other fields</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">nx_meta</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="c1"># Skip if already processed</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">required_fields</span> <span class="ow">or</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">common_fields</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># Check if it&#39;s a core field that needs renaming</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">field_mappings</span><span class="p">:</span>
+            <span class="n">new_key</span> <span class="o">=</span> <span class="n">field_mappings</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="n">new_nx_meta</span><span class="p">[</span><span class="n">new_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="c1"># Check if it should go to extensions</span>
+        <span class="k">elif</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">extension_fields</span><span class="p">:</span>
+            <span class="n">extensions</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="c1"># Handle Stage Position specially</span>
+        <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;Stage Position&quot;</span><span class="p">:</span>
+            <span class="c1"># DM3 files have Stage Position as a dict with keys</span>
+            <span class="c1"># like &#39;X&#39;, &#39;Y&#39;, &#39;α&#39;, etc.  # noqa: RUF003</span>
+            <span class="c1"># Convert to snake_case keys for StagePosition schema</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="n">stage_pos</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="n">key_map</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s2">&quot;X&quot;</span><span class="p">:</span> <span class="s2">&quot;x&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Y&quot;</span><span class="p">:</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Z&quot;</span><span class="p">:</span> <span class="s2">&quot;z&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;α&quot;</span><span class="p">:</span> <span class="s2">&quot;tilt_alpha&quot;</span><span class="p">,</span>  <span class="c1"># noqa: RUF001</span>
+                    <span class="s2">&quot;β&quot;</span><span class="p">:</span> <span class="s2">&quot;tilt_beta&quot;</span><span class="p">,</span>
+                <span class="p">}</span>
+                <span class="k">for</span> <span class="n">old_key</span><span class="p">,</span> <span class="n">new_key</span> <span class="ow">in</span> <span class="n">key_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="n">old_key</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
+                        <span class="c1"># Convert to Pint Quantity if needed</span>
+                        <span class="n">val</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="n">old_key</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="n">new_key</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">):</span>
+                            <span class="c1"># X/Y in micrometers</span>
+                            <span class="n">val</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="s2">&quot;micrometer&quot;</span><span class="p">)</span>
+                        <span class="k">elif</span> <span class="n">new_key</span> <span class="o">==</span> <span class="s2">&quot;z&quot;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">):</span>
+                            <span class="c1"># Z in millimeters</span>
+                            <span class="n">val</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="s2">&quot;millimeter&quot;</span><span class="p">)</span>
+                        <span class="k">elif</span> <span class="n">new_key</span> <span class="ow">in</span> <span class="p">(</span>
+                            <span class="s2">&quot;tilt_alpha&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;tilt_beta&quot;</span><span class="p">,</span>
+                        <span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">):</span>
+                            <span class="c1"># Tilts in degrees</span>
+                            <span class="n">val</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+                        <span class="n">stage_pos</span><span class="p">[</span><span class="n">new_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+                <span class="n">new_nx_meta</span><span class="p">[</span><span class="s2">&quot;stage_position&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">stage_pos</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># If it&#39;s not a dict, move to extensions (this is not expected)</span>
+                <span class="n">extensions</span><span class="p">[</span><span class="s2">&quot;Stage Position&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>  <span class="c1"># pragma: no cover</span>
+        <span class="c1"># Everything else goes to extensions</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">extensions</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="c1"># Add extensions if any</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">extensions</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">add_to_extensions</span><span class="p">(</span><span class="n">new_nx_meta</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_nx_meta</span>
+    <span class="k">return</span> <span class="n">mdict</span>
 
 
 <div class="viewcode-block" id="parse_dm3_microscope_info">
@@ -1309,7 +1466,7 @@ window.addEventListener("load", load);
                     <span class="k">if</span> <span class="n">field_name</span> <span class="o">==</span> <span class="s2">&quot;Cs(mm)&quot;</span><span class="p">:</span>
                         <span class="n">meta_key</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Cs&quot;</span><span class="p">]</span>  <span class="c1"># noqa: PLW2901</span>
                     <span class="k">elif</span> <span class="n">field_name</span> <span class="o">==</span> <span class="s2">&quot;Field of View (</span><span class="se">\u00b5</span><span class="s2">m)&quot;</span><span class="p">:</span>
-                        <span class="n">meta_key</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Field of View&quot;</span><span class="p">]</span>  <span class="c1"># noqa: PLW2901</span>
+                        <span class="n">meta_key</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Horizontal Field Width&quot;</span><span class="p">]</span>  <span class="c1"># noqa: PLW2901</span>
 
             <span class="c1"># change output of &quot;Stage Position&quot; to unicode characters</span>
             <span class="k">if</span> <span class="s2">&quot;Stage Position&quot;</span> <span class="ow">in</span> <span class="n">meta_key</span><span class="p">:</span>

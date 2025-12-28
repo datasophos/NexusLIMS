@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>nexusLIMS.schemas.metadata &#8212; NexusLIMS 2.1.2.dev0 documentation</title>
+    <title>nexusLIMS.schemas.metadata &#8212; NexusLIMS 2.2.0.dev0 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../../_static/documentation_options.js?v=bcebe078"></script>
+    <script src="../../../_static/documentation_options.js?v=dc4a309c"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -423,8 +423,8 @@ window.addEventListener("load", load);
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 25, 2025"/>
+  <meta name="docsearch:version" content="2.2.0.dev0" />
+    <meta name="docbuild:last-update" content="Dec, 28, 2025"/>
   </head>
   
   
@@ -490,8 +490,8 @@ window.addEventListener("load", load);
       
     
     
-    <img src="../../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.1.2.dev0 documentation - Home"/>
-    <img src="../../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.1.2.dev0 documentation - Home"/>
+    <img src="../../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.2.0.dev0 documentation - Home"/>
+    <img src="../../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.2.0.dev0 documentation - Home"/>
   
   
 </a></div>
@@ -888,9 +888,170 @@ window.addEventListener("load", load);
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">Field</span><span class="p">,</span> <span class="n">field_validator</span><span class="p">,</span> <span class="n">model_validator</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas</span><span class="w"> </span><span class="kn">import</span> <span class="n">em_glossary</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas.pint_types</span><span class="w"> </span><span class="kn">import</span> <span class="n">PintQuantity</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="emg_field">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.emg_field">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">emg_field</span><span class="p">(</span>
+    <span class="n">field_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">default</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a Pydantic Field with EM Glossary metadata.</span>
+
+<span class="sd">    This helper automatically adds EM Glossary semantic annotations to field</span>
+<span class="sd">    definitions, including EMG ID, URI, and label. It pulls metadata from the</span>
+<span class="sd">    em_glossary module to maintain a single source of truth.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    field_name : str</span>
+<span class="sd">        Internal field name (e.g., &quot;acceleration_voltage&quot;). Used to look up</span>
+<span class="sd">        EMG metadata from em_glossary module.</span>
+
+<span class="sd">    default : Any, optional</span>
+<span class="sd">        Default value for the field. Use `...` for required fields, `None`</span>
+<span class="sd">        for optional fields.</span>
+
+<span class="sd">    description : str, optional</span>
+<span class="sd">        Field description. If not provided, uses description from em_glossary</span>
+<span class="sd">        module.</span>
+
+<span class="sd">    **kwargs : Any</span>
+<span class="sd">        Additional keyword arguments passed to pydantic.Field(), such as:</span>
+<span class="sd">        - alias: Override display name (default from em_glossary)</span>
+<span class="sd">        - gt, ge, lt, le: Numeric constraints</span>
+<span class="sd">        - examples: Example values for documentation</span>
+<span class="sd">        - json_schema_extra: Additional JSON schema metadata (merged with EMG data)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pydantic.Field</span>
+<span class="sd">        Configured Pydantic field with EMG metadata</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Create a field with automatic EMG metadata:</span>
+
+<span class="sd">    &gt;&gt;&gt; from nexusLIMS.schemas.metadata import emg_field</span>
+<span class="sd">    &gt;&gt;&gt; from nexusLIMS.schemas.pint_types import PintQuantity</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; class MySchema(BaseModel):</span>
+<span class="sd">    ...     dwell_time: PintQuantity | None = emg_field(&quot;dwell_time&quot;)</span>
+
+<span class="sd">    The field automatically gets:</span>
+<span class="sd">    - alias: &quot;Dwell Time&quot; (display name)</span>
+<span class="sd">    - description: &quot;Time period during which the beam remains at one position.&quot;</span>
+<span class="sd">    - json_schema_extra: {&quot;emg_id&quot;: &quot;EMG_00000015&quot;, &quot;emg_uri&quot;: &quot;...&quot;, ...}</span>
+
+<span class="sd">    Override description:</span>
+
+<span class="sd">    &gt;&gt;&gt; acceleration_voltage: PintQuantity | None = emg_field(</span>
+<span class="sd">    ...     &quot;dwell_time&quot;,</span>
+<span class="sd">    ...     description=&quot;Custom description&quot;,</span>
+<span class="sd">    ... )</span>
+
+<span class="sd">    Add additional JSON schema metadata:</span>
+
+<span class="sd">    &gt;&gt;&gt; beam_current: PintQuantity | None = emg_field(</span>
+<span class="sd">    ...     &quot;beam_current&quot;,</span>
+<span class="sd">    ...     json_schema_extra={&quot;units&quot;: &quot;second&quot;, &quot;typical_range&quot;: &quot;1e-3 to 1&quot;},</span>
+<span class="sd">    ... )</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Fields without EMG mappings still get display names and descriptions</span>
+<span class="sd">    - EMG metadata is only added if the field has a valid EMG ID</span>
+<span class="sd">    - The alias (display name) comes from em_glossary for consistency</span>
+<span class="sd">    - All EMG metadata is stored in json_schema_extra for JSON schema export</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Get EMG metadata</span>
+    <span class="n">emg_id</span> <span class="o">=</span> <span class="n">em_glossary</span><span class="o">.</span><span class="n">get_emg_id</span><span class="p">(</span><span class="n">field_name</span><span class="p">)</span>
+    <span class="n">emg_uri</span> <span class="o">=</span> <span class="n">em_glossary</span><span class="o">.</span><span class="n">get_emg_uri</span><span class="p">(</span><span class="n">field_name</span><span class="p">)</span>
+    <span class="n">display_name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;alias&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="n">em_glossary</span><span class="o">.</span><span class="n">get_display_name</span><span class="p">(</span><span class="n">field_name</span><span class="p">)</span>
+    <span class="n">field_description</span> <span class="o">=</span> <span class="n">description</span> <span class="ow">or</span> <span class="n">em_glossary</span><span class="o">.</span><span class="n">get_description</span><span class="p">(</span><span class="n">field_name</span><span class="p">)</span>
+
+    <span class="c1"># Build json_schema_extra with EMG metadata</span>
+    <span class="n">extra</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;json_schema_extra&quot;</span><span class="p">,</span> <span class="p">{})</span>
+    <span class="k">if</span> <span class="n">emg_id</span><span class="p">:</span>
+        <span class="n">emg_label</span> <span class="o">=</span> <span class="n">em_glossary</span><span class="o">.</span><span class="n">get_emg_label</span><span class="p">(</span><span class="n">emg_id</span><span class="p">)</span>
+        <span class="n">extra</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;emg_id&quot;</span><span class="p">:</span> <span class="n">emg_id</span><span class="p">,</span>
+                <span class="s2">&quot;emg_uri&quot;</span><span class="p">:</span> <span class="n">emg_uri</span><span class="p">,</span>
+                <span class="s2">&quot;emg_label&quot;</span><span class="p">:</span> <span class="n">emg_label</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="p">,</span>
+        <span class="n">alias</span><span class="o">=</span><span class="n">display_name</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="n">field_description</span><span class="p">,</span>
+        <span class="n">json_schema_extra</span><span class="o">=</span><span class="n">extra</span> <span class="k">if</span> <span class="n">extra</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="ExtractionDetails">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.ExtractionDetails">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ExtractionDetails</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Metadata about the NexusLIMS extraction process.</span>
+
+<span class="sd">    Records when metadata was extracted, which extractor module was used,</span>
+<span class="sd">    and the NexusLIMS version.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    date : str</span>
+<span class="sd">        ISO-8601 formatted timestamp with timezone indicating when the</span>
+<span class="sd">        metadata extraction occurred.</span>
+
+<span class="sd">    module : str</span>
+<span class="sd">        Fully qualified Python module name of the extractor that processed</span>
+<span class="sd">        this file. Examples: &quot;nexusLIMS.extractors.plugins.digital_micrograph&quot;,</span>
+<span class="sd">        &quot;nexusLIMS.extractors.plugins.quanta_tif&quot;</span>
+
+<span class="sd">    version : str</span>
+<span class="sd">        NexusLIMS version string used for extraction. Example: &quot;1.2.3&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="o">...</span><span class="p">,</span>
+        <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;Date&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;ISO-8601 timestamp when extraction occurred&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">module</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="o">...</span><span class="p">,</span>
+        <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;Module&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Extractor module name&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">version</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="o">...</span><span class="p">,</span>
+        <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;Version&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;NexusLIMS version&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">extractor_warnings</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;Extractor Warnings&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Warning or error messages from the extraction process&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">model_config</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;populate_by_name&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">}</span></div>
+
 
 
 <div class="viewcode-block" id="StagePosition">
@@ -1021,6 +1182,10 @@ window.addEventListener("load", load);
 <span class="sd">        Field names flagged as unreliable. These are marked with warning=&quot;true&quot;</span>
 <span class="sd">        in the XML output.</span>
 
+<span class="sd">    nexuslims_extraction : ExtractionDetails or None, optional</span>
+<span class="sd">        NexusLIMS extraction metadata containing date, module, and version</span>
+<span class="sd">        information about when and how the metadata was extracted.</span>
+
 <span class="sd">    extensions : dict[str, Any], optional</span>
 <span class="sd">        Flexible container for instrument-specific metadata that doesn&#39;t fit</span>
 <span class="sd">        the core schema. Use this for vendor-specific fields, facility metadata,</span>
@@ -1080,6 +1245,12 @@ window.addEventListener("load", load);
     <span class="n">warnings</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Field names flagged as unreliable&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">nexuslims_extraction</span><span class="p">:</span> <span class="n">ExtractionDetails</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;NexusLIMS Extraction&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;NexusLIMS extraction metadata (date, module, version, warnings)&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="n">extensions</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
@@ -1170,8 +1341,12 @@ window.addEventListener("load", load);
 <span class="sd">    magnification : float or None, optional</span>
 <span class="sd">        Nominal magnification (dimensionless).</span>
 
-<span class="sd">    field_of_view : PintQuantity or None, optional</span>
+<span class="sd">    horizontal_field_width : PintQuantity or None, optional</span>
 <span class="sd">        Width of the scanned area.</span>
+<span class="sd">        Preferred unit: micrometer (µm)</span>
+
+<span class="sd">    vertical_field_width : PintQuantity or None, optional</span>
+<span class="sd">        Height of the scanned area.</span>
 <span class="sd">        Preferred unit: micrometer (µm)</span>
 
 <span class="sd">    pixel_width : PintQuantity or None, optional</span>
@@ -1221,65 +1396,31 @@ window.addEventListener("load", load);
     <span class="p">)</span>
 
     <span class="c1"># Image-specific fields (using EM Glossary names)</span>
-    <span class="n">acceleration_voltage</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Accelerating voltage (EMG_00000004)&quot;</span><span class="p">,</span>
-    <span class="p">)</span>
+    <span class="n">acceleration_voltage</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;acceleration_voltage&quot;</span><span class="p">)</span>
 
-    <span class="n">working_distance</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Working distance (EMG_00000050)&quot;</span><span class="p">,</span>
-    <span class="p">)</span>
+    <span class="n">working_distance</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;working_distance&quot;</span><span class="p">)</span>
 
-    <span class="n">beam_current</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Beam current (EMG_00000006)&quot;</span><span class="p">,</span>
-    <span class="p">)</span>
+    <span class="n">beam_current</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;beam_current&quot;</span><span class="p">)</span>
 
-    <span class="n">emission_current</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Emission current (EMG_00000025)&quot;</span><span class="p">,</span>
-    <span class="p">)</span>
+    <span class="n">emission_current</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;emission_current&quot;</span><span class="p">)</span>
 
-    <span class="n">dwell_time</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Pixel dwell time (EMG_00000015)&quot;</span><span class="p">,</span>
-    <span class="p">)</span>
+    <span class="n">dwell_time</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;dwell_time&quot;</span><span class="p">)</span>
 
-    <span class="n">magnification</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Nominal magnification (dimensionless)&quot;</span><span class="p">,</span>
-    <span class="p">)</span>
+    <span class="n">magnification</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;magnification&quot;</span><span class="p">)</span>
 
-    <span class="n">field_of_view</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Field of view width&quot;</span><span class="p">,</span>
-    <span class="p">)</span>
+    <span class="n">horizontal_field_width</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;horizontal_field_width&quot;</span><span class="p">)</span>
 
-    <span class="n">pixel_width</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Physical pixel width&quot;</span><span class="p">,</span>
-    <span class="p">)</span>
+    <span class="n">vertical_field_width</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;vertical_field_width&quot;</span><span class="p">)</span>
 
-    <span class="n">pixel_height</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Physical pixel height&quot;</span><span class="p">,</span>
-    <span class="p">)</span>
+    <span class="n">pixel_width</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;pixel_width&quot;</span><span class="p">)</span>
 
-    <span class="n">scan_rotation</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Scan rotation angle&quot;</span><span class="p">,</span>
-    <span class="p">)</span>
+    <span class="n">pixel_height</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;pixel_height&quot;</span><span class="p">)</span>
 
-    <span class="n">detector_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Detector type or name&quot;</span><span class="p">,</span>
-    <span class="p">)</span>
+    <span class="n">scan_rotation</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;scan_rotation&quot;</span><span class="p">)</span>
 
-    <span class="n">acquisition_device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Acquisition device or camera name&quot;</span><span class="p">,</span>
-    <span class="p">)</span>
+    <span class="n">detector_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;detector_type&quot;</span><span class="p">)</span>
+
+    <span class="n">acquisition_device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;acquisition_device&quot;</span><span class="p">)</span>
 
     <span class="n">stage_position</span><span class="p">:</span> <span class="n">StagePosition</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
@@ -1356,45 +1497,23 @@ window.addEventListener("load", load);
     <span class="p">)</span>
 
     <span class="c1"># Spectrum-specific fields</span>
-    <span class="n">acquisition_time</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Total acquisition time (EMG_00000055)&quot;</span><span class="p">,</span>
+    <span class="n">acquisition_time</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;acquisition_time&quot;</span><span class="p">)</span>
+
+    <span class="n">live_time</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;live_time&quot;</span><span class="p">)</span>
+
+    <span class="n">detector_energy_resolution</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span>
+        <span class="s2">&quot;detector_energy_resolution&quot;</span>
     <span class="p">)</span>
 
-    <span class="n">live_time</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Live time (excludes dead time)&quot;</span><span class="p">,</span>
-    <span class="p">)</span>
+    <span class="n">channel_size</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;channel_size&quot;</span><span class="p">)</span>
 
-    <span class="n">detector_energy_resolution</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Detector energy resolution&quot;</span><span class="p">,</span>
-    <span class="p">)</span>
+    <span class="n">starting_energy</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;starting_energy&quot;</span><span class="p">)</span>
 
-    <span class="n">channel_size</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Energy width per channel&quot;</span><span class="p">,</span>
-    <span class="p">)</span>
+    <span class="n">azimuthal_angle</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;azimuthal_angle&quot;</span><span class="p">)</span>
 
-    <span class="n">starting_energy</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Spectrum starting energy&quot;</span><span class="p">,</span>
-    <span class="p">)</span>
+    <span class="n">elevation_angle</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;elevation_angle&quot;</span><span class="p">)</span>
 
-    <span class="n">azimuthal_angle</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Detector azimuthal angle&quot;</span><span class="p">,</span>
-    <span class="p">)</span>
-
-    <span class="n">elevation_angle</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Detector elevation angle&quot;</span><span class="p">,</span>
-    <span class="p">)</span>
-
-    <span class="n">takeoff_angle</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;X-ray takeoff angle&quot;</span><span class="p">,</span>
-    <span class="p">)</span>
+    <span class="n">takeoff_angle</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;takeoff_angle&quot;</span><span class="p">)</span>
 
     <span class="n">elements</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
@@ -1517,25 +1636,13 @@ window.addEventListener("load", load);
     <span class="p">)</span>
 
     <span class="c1"># Diffraction-specific fields</span>
-    <span class="n">camera_length</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Camera length (EMG_00000008)&quot;</span><span class="p">,</span>
-    <span class="p">)</span>
+    <span class="n">camera_length</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;camera_length&quot;</span><span class="p">)</span>
 
-    <span class="n">convergence_angle</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Convergence angle (EMG_00000010)&quot;</span><span class="p">,</span>
-    <span class="p">)</span>
+    <span class="n">convergence_angle</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;convergence_angle&quot;</span><span class="p">)</span>
 
-    <span class="n">acceleration_voltage</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Accelerating voltage (EMG_00000004)&quot;</span><span class="p">,</span>
-    <span class="p">)</span>
+    <span class="n">acceleration_voltage</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;acceleration_voltage&quot;</span><span class="p">)</span>
 
-    <span class="n">acquisition_device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Detector or camera name&quot;</span><span class="p">,</span>
-    <span class="p">)</span></div>
+    <span class="n">acquisition_device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;acquisition_device&quot;</span><span class="p">)</span></div>
 
 </pre></div>
 

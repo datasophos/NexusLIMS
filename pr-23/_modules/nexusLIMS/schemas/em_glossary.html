@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>nexusLIMS.schemas.em_glossary &#8212; NexusLIMS 2.1.2.dev0 documentation</title>
+    <title>nexusLIMS.schemas.em_glossary &#8212; NexusLIMS 2.2.0.dev0 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../../_static/documentation_options.js?v=bcebe078"></script>
+    <script src="../../../_static/documentation_options.js?v=dc4a309c"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -423,8 +423,8 @@ window.addEventListener("load", load);
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 25, 2025"/>
+  <meta name="docsearch:version" content="2.2.0.dev0" />
+    <meta name="docbuild:last-update" content="Dec, 28, 2025"/>
   </head>
   
   
@@ -490,8 +490,8 @@ window.addEventListener("load", load);
       
     
     
-    <img src="../../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.1.2.dev0 documentation - Home"/>
-    <img src="../../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.1.2.dev0 documentation - Home"/>
+    <img src="../../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.2.0.dev0 documentation - Home"/>
+    <img src="../../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.2.0.dev0 documentation - Home"/>
   
   
 </a></div>
@@ -1014,7 +1014,7 @@ window.addEventListener("load", load);
     <span class="p">),</span>
     <span class="c1"># Image acquisition parameters (SEM/TEM/STEM)</span>
     <span class="s2">&quot;acceleration_voltage&quot;</span><span class="p">:</span> <span class="p">(</span>
-        <span class="s2">&quot;Voltage&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Acceleration Voltage&quot;</span><span class="p">,</span>
         <span class="s2">&quot;Acceleration Voltage&quot;</span><span class="p">,</span>  <span class="c1"># EMG label</span>
         <span class="s2">&quot;Accelerating voltage of the electron/ion beam&quot;</span><span class="p">,</span>
     <span class="p">),</span>
@@ -1043,10 +1043,15 @@ window.addEventListener("load", load);
         <span class="kc">None</span><span class="p">,</span>  <span class="c1"># EMG has Magnification but it&#39;s complex</span>
         <span class="s2">&quot;Nominal magnification&quot;</span><span class="p">,</span>
     <span class="p">),</span>
-    <span class="s2">&quot;field_of_view&quot;</span><span class="p">:</span> <span class="p">(</span>
-        <span class="s2">&quot;Field of View&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;horizontal_field_width&quot;</span><span class="p">:</span> <span class="p">(</span>
+        <span class="s2">&quot;Horizontal Field Width&quot;</span><span class="p">,</span>
         <span class="kc">None</span><span class="p">,</span>  <span class="c1"># Not in EMG v2.0.0</span>
         <span class="s2">&quot;Width of the scanned area&quot;</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="s2">&quot;vertical_field_width&quot;</span><span class="p">:</span> <span class="p">(</span>
+        <span class="s2">&quot;Vertical Field Width&quot;</span><span class="p">,</span>
+        <span class="kc">None</span><span class="p">,</span>  <span class="c1"># Not in EMG v2.0.0</span>
+        <span class="s2">&quot;Height of the scanned area&quot;</span><span class="p">,</span>
     <span class="p">),</span>
     <span class="s2">&quot;pixel_width&quot;</span><span class="p">:</span> <span class="p">(</span>
         <span class="s2">&quot;Pixel Width&quot;</span><span class="p">,</span>

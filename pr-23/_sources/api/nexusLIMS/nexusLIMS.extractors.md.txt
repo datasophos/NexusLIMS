@@ -24,7 +24,6 @@ nexusLIMS.extractors.plugins
 
 nexusLIMS.extractors.profiles
 nexusLIMS.extractors.utils
-nexusLIMS.extractors.schemas
 nexusLIMS.extractors.xml_serialization
 nexusLIMS.extractors.registry
 nexusLIMS.extractors.base
@@ -38,6 +37,10 @@ nexusLIMS.extractors.base
 :class: autosummary longtable
 :align: left
 
+* - {py:obj}`get_schema_for_dataset_type <nexusLIMS.extractors.get_schema_for_dataset_type>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.get_schema_for_dataset_type
+    :summary:
+    ```
 * - {py:obj}`validate_nx_meta <nexusLIMS.extractors.validate_nx_meta>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.validate_nx_meta
     :summary:
@@ -106,6 +109,13 @@ nexusLIMS.extractors.base
 ```{autodoc2-docstring} nexusLIMS.extractors.unextracted_preview_map
 ```
 
+````
+
+````{py:function} get_schema_for_dataset_type(dataset_type: str) -> type[nexusLIMS.schemas.metadata.NexusMetadata]
+:canonical: nexusLIMS.extractors.get_schema_for_dataset_type
+
+```{autodoc2-docstring} nexusLIMS.extractors.get_schema_for_dataset_type
+```
 ````
 
 ````{py:function} validate_nx_meta(metadata_dict: dict[str, typing.Any], *, filename: pathlib.Path | None = None) -> dict[str, typing.Any]

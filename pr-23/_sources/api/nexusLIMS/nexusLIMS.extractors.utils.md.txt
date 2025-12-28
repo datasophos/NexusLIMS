@@ -9,6 +9,18 @@
 
 ## Module Contents
 
+### Functions
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`add_to_extensions <nexusLIMS.extractors.utils.add_to_extensions>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.utils.add_to_extensions
+    :summary:
+    ```
+````
+
 ### Data
 
 ````{list-table}
@@ -31,4 +43,11 @@
 ```{autodoc2-docstring} nexusLIMS.extractors.utils.logger
 ```
 
+````
+
+````{py:function} add_to_extensions(nx_meta: dict, field_name: str, value: typing.Any) -> None
+:canonical: nexusLIMS.extractors.utils.add_to_extensions
+
+```{autodoc2-docstring} nexusLIMS.extractors.utils.add_to_extensions
+```
 ````

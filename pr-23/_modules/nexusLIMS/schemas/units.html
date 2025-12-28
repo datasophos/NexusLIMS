@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>nexusLIMS.schemas.units &#8212; NexusLIMS 2.1.2.dev0 documentation</title>
+    <title>nexusLIMS.schemas.units &#8212; NexusLIMS 2.2.0.dev0 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../../_static/documentation_options.js?v=bcebe078"></script>
+    <script src="../../../_static/documentation_options.js?v=dc4a309c"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -423,8 +423,8 @@ window.addEventListener("load", load);
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 25, 2025"/>
+  <meta name="docsearch:version" content="2.2.0.dev0" />
+    <meta name="docbuild:last-update" content="Dec, 28, 2025"/>
   </head>
   
   
@@ -490,8 +490,8 @@ window.addEventListener("load", load);
       
     
     
-    <img src="../../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.1.2.dev0 documentation - Home"/>
-    <img src="../../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.1.2.dev0 documentation - Home"/>
+    <img src="../../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.2.0.dev0 documentation - Home"/>
+    <img src="../../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.2.0.dev0 documentation - Home"/>
   
   
 </a></div>
@@ -854,10 +854,12 @@ window.addEventListener("load", load);
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">decimal</span><span class="w"> </span><span class="kn">import</span> <span class="n">Decimal</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">lru_cache</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pint</span><span class="w"> </span><span class="kn">import</span> <span class="n">UnitRegistry</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">rdflib</span><span class="w"> </span><span class="kn">import</span> <span class="n">RDFS</span><span class="p">,</span> <span class="n">Graph</span><span class="p">,</span> <span class="n">Namespace</span>
 
@@ -865,7 +867,35 @@ window.addEventListener("load", load);
 
 <span class="c1"># Singleton Pint unit registry for the entire application</span>
 <span class="c1"># Using this ensures consistent unit definitions across all modules</span>
-<span class="n">ureg</span> <span class="o">=</span> <span class="n">UnitRegistry</span><span class="p">()</span>
+<span class="c1"># Use Decimal for non-integer types to avoid floating-point precision issues</span>
+<span class="c1"># (e.g., 1.5625 instead of 1.5624999999999998 when converting units)</span>
+<span class="n">ureg</span> <span class="o">=</span> <span class="n">UnitRegistry</span><span class="p">(</span><span class="n">non_int_type</span><span class="o">=</span><span class="n">Decimal</span><span class="p">)</span>
+
+<span class="c1"># Save reference to the original Quantity class for isinstance checks</span>
+<span class="n">_OriginalQuantity</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span>
+
+
+<span class="c1"># Monkey-patch the __new__ method to auto-convert floats to Decimals</span>
+<span class="c1"># This prevents type errors when comparing Quantities with different magnitude types</span>
+<span class="n">_original_new</span> <span class="o">=</span> <span class="n">_OriginalQuantity</span><span class="o">.</span><span class="fm">__new__</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_quantity_new_with_decimal_conversion</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Auto-convert float magnitudes to Decimal when creating Quantity instances.</span>
+
+<span class="sd">    This ensures consistency with the ureg&#39;s non_int_type=Decimal setting.</span>
+<span class="sd">    Without this conversion, Pint doesn&#39;t automatically convert input floats,</span>
+<span class="sd">    leading to mixed float/Decimal types that fail during unit conversions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">)):</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">Decimal</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+    <span class="c1"># Call original __new__ with potentially modified value</span>
+    <span class="k">return</span> <span class="n">_original_new</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">units</span><span class="p">)</span>
+
+
+<span class="c1"># Replace the __new__ method while keeping the class intact for isinstance()</span>
+<span class="n">_OriginalQuantity</span><span class="o">.</span><span class="fm">__new__</span> <span class="o">=</span> <span class="nb">staticmethod</span><span class="p">(</span><span class="n">_quantity_new_with_decimal_conversion</span><span class="p">)</span>
 
 <span class="c1"># Path to QUDT unit vocabulary file</span>
 <span class="n">QUDT_UNIT_TTL_PATH</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;references&quot;</span> <span class="o">/</span> <span class="s2">&quot;qudt_unit.ttl&quot;</span>
@@ -873,10 +903,6 @@ window.addEventListener("load", load);
 
 <span class="c1"># RDF namespace for QUDT</span>
 <span class="n">QUDT_UNIT</span> <span class="o">=</span> <span class="n">Namespace</span><span class="p">(</span><span class="s2">&quot;http://qudt.org/vocab/unit/&quot;</span><span class="p">)</span>
-
-<span class="c1"># Define common abbreviations and aliases</span>
-<span class="n">ureg</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="s2">&quot;ppm = 1e-6 = ppm&quot;</span><span class="p">)</span>  <span class="c1"># Ensure ppm is defined</span>
-<span class="n">ureg</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="s2">&quot;percent = 0.01 = pct = %&quot;</span><span class="p">)</span>  <span class="c1"># Define percent</span>
 
 <span class="c1"># Define custom microscopy units</span>
 <span class="n">ureg</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="s2">&quot;kiloX = 1000 = kX&quot;</span><span class="p">)</span>  <span class="c1"># Magnification in thousands (e.g., 160 kX = 160000x)</span>
@@ -896,7 +922,7 @@ window.addEventListener("load", load);
     <span class="s2">&quot;emission_current&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">microampere</span><span class="p">,</span>
     <span class="s2">&quot;dwell_time&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">microsecond</span><span class="p">,</span>
     <span class="s2">&quot;magnification&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">dimensionless</span><span class="p">,</span>  <span class="c1"># Magnification has no units</span>
-    <span class="s2">&quot;field_of_view&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">micrometer</span><span class="p">,</span>
+    <span class="s2">&quot;horizontal_field_width&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">micrometer</span><span class="p">,</span>
     <span class="s2">&quot;pixel_width&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">nanometer</span><span class="p">,</span>
     <span class="s2">&quot;pixel_height&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">nanometer</span><span class="p">,</span>
     <span class="s2">&quot;scan_rotation&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">degree</span><span class="p">,</span>

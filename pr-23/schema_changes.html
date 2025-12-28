@@ -1,0 +1,1065 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Metadata Schema System (v2.2.0) &#8212; NexusLIMS 2.2.0.dev0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=af02a5b6" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="_static/documentation_options.js?v=dc4a309c"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'schema_changes';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'pr-23';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/pr-23/schema_changes.html" />
+    <link rel="icon" href="_static/nexusLIMS_bare_logo.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="EM Glossary Field Reference" href="em_glossary_reference.html" />
+    <link rel="prev" title="Instrument Profiles" href="instrument_profiles.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="2.2.0.dev0" />
+    <meta name="docbuild:last-update" content="Dec, 28, 2025"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.2.0.dev0 documentation - Home"/>
+    <img src="_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.2.0.dev0 documentation - Home"/>
+  
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="getting_started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="migration.html">
+    Migration Guide: v1 to v2
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="dev_guide.html">
+    Developer Guide
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="reference.html">
+    Reference
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datasophos/NexusLIMS" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://datasophos.co" title="Datasophos" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-globe fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Datasophos</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="getting_started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="migration.html">
+    Migration Guide: v1 to v2
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="dev_guide.html">
+    Developer Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="reference.html">
+    Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datasophos/NexusLIMS" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://datasophos.co" title="Datasophos" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-globe fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Datasophos</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="development.html">Developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="writing_extractor_plugins.html">Writing Extractor Plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="instrument_profiles.html">Instrument Profiles</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Metadata Schema System (v2.2.0)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="em_glossary_reference.html">EM Glossary Field Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="uv_migration.html">Migration from Poetry to uv</a></li>
+<li class="toctree-l1"><a class="reference internal" href="database.html">NexusLIMS database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="schema_documentation.html">XML Schema Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing/integration-tests.html">Integration Testing Guide</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="dev_guide.html" class="nav-link">Developer Guide</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Metadata Schema System (v2.2.0)</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="metadata-schema-system-v2-2-0">
+<h1>Metadata Schema System (v2.2.0)<a class="headerlink" href="#metadata-schema-system-v2-2-0" title="Link to this heading">#</a></h1>
+<p>This document describes the metadata schema system introduced in NexusLIMS v2.2.0, which replaces the v1 schema with a system featuring type safety, physical units, and standardized terminology.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
+<p>The v2.2.0 schema system provides:</p>
+<ol class="arabic simple">
+<li><p><strong>Type-specific validation</strong> - Different schemas for Image, Spectrum, SpectrumImage, and Diffraction datasets</p></li>
+<li><p><strong>Physical units with Pint</strong> - Machine-actionable quantities with automatic unit conversion</p></li>
+<li><p><strong>EM Glossary alignment</strong> - Standardized field names from the Electron Microscopy community</p></li>
+<li><p><strong>Clean XML serialization</strong> - Separate value and unit attributes in XML output</p></li>
+<li><p><strong>Flexible extensions</strong> - Support for instrument-specific metadata without polluting core fields</p></li>
+</ol>
+</section>
+<section id="key-changes-from-v1-schema">
+<h2>Key Changes from v1 Schema<a class="headerlink" href="#key-changes-from-v1-schema" title="Link to this heading">#</a></h2>
+<section id="pint-quantities-for-physical-values">
+<h3>1. Pint Quantities for Physical Values<a class="headerlink" href="#pint-quantities-for-physical-values" title="Link to this heading">#</a></h3>
+<p><strong>Before (v1):</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">nx_meta</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;Voltage (kV)&quot;</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span>  <span class="c1"># Unit embedded in field name</span>
+    <span class="s2">&quot;Working Distance (mm)&quot;</span><span class="p">:</span> <span class="mf">5.2</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>After (v2.2.0):</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas.units</span><span class="w"> </span><span class="kn">import</span> <span class="n">ureg</span>
+
+<span class="n">nx_meta</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;acceleration_voltage&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="s2">&quot;kilovolt&quot;</span><span class="p">),</span>  <span class="c1"># Pint Quantity</span>
+    <span class="s2">&quot;working_distance&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mf">5.2</span><span class="p">,</span> <span class="s2">&quot;millimeter&quot;</span><span class="p">),</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Benefits:</strong></p>
+<ul class="simple">
+<li><p>Type safety: Invalid units caught at creation time</p></li>
+<li><p>Automatic conversion: Units normalized during serialization</p></li>
+<li><p>Machine-readable: Units separated from values in XML</p></li>
+<li><p>Programmatic: Can convert between units in code</p></li>
+</ul>
+</section>
+<section id="em-glossary-field-names">
+<h3>2. EM Glossary Field Names<a class="headerlink" href="#em-glossary-field-names" title="Link to this heading">#</a></h3>
+<p>Field names now follow the <strong>Electron Microscopy Glossary</strong> (EM Glossary) for standardization:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Old Field Name (v1)</p></th>
+<th class="head"><p>New Field Name (v2.2.0)</p></th>
+<th class="head"><p>EM Glossary ID</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Voltage</span> <span class="pre">(kV)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">acceleration_voltage</span></code></p></td>
+<td><p>EMG_00000004</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Working</span> <span class="pre">Distance</span> <span class="pre">(mm)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">working_distance</span></code></p></td>
+<td><p>EMG_00000050</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Beam</span> <span class="pre">Current</span> <span class="pre">(pA)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">beam_current</span></code></p></td>
+<td><p>EMG_00000006</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Pixel</span> <span class="pre">Dwell</span> <span class="pre">Time</span> <span class="pre">(µs)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dwell_time</span></code></p></td>
+<td><p>EMG_00000015</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Camera</span> <span class="pre">Length</span> <span class="pre">(mm)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">camera_length</span></code></p></td>
+<td><p>EMG_00000008</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>See <a class="reference internal" href="em_glossary_reference.html"><span class="std std-doc">EM Glossary Reference</span></a> for complete mappings.</p>
+</section>
+<section id="type-specific-schemas">
+<h3>3. Type-Specific Schemas<a class="headerlink" href="#type-specific-schemas" title="Link to this heading">#</a></h3>
+<p>Metadata is validated against dataset-type-specific schemas:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ImageMetadata</span></code> - For SEM/TEM/STEM images</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SpectrumMetadata</span></code> - For EDS/EELS/CL spectra</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SpectrumImageMetadata</span></code> - For spectrum imaging (STEM-EDS, STEM-EELS)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">DiffractionMetadata</span></code> - For electron diffraction patterns</p></li>
+</ul>
+<p>Each schema enforces appropriate fields for its dataset type while allowing additional fields via the <code class="docutils literal notranslate"><span class="pre">extensions</span></code> section.</p>
+</section>
+<section id="extensions-section">
+<h3>4. Extensions Section<a class="headerlink" href="#extensions-section" title="Link to this heading">#</a></h3>
+<p>Instrument-specific or vendor-specific metadata goes in the <code class="docutils literal notranslate"><span class="pre">extensions</span></code> section:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">nx_meta</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="c1"># Core fields (EM Glossary names, type-validated)</span>
+    <span class="s2">&quot;acceleration_voltage&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="s2">&quot;kilovolt&quot;</span><span class="p">),</span>
+    <span class="s2">&quot;working_distance&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mf">5.2</span><span class="p">,</span> <span class="s2">&quot;millimeter&quot;</span><span class="p">),</span>
+    
+    <span class="c1"># Extensions (flexible, instrument-specific)</span>
+    <span class="s2">&quot;extensions&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;facility&quot;</span><span class="p">:</span> <span class="s2">&quot;Nexus Microscopy Lab&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;detector_brightness&quot;</span><span class="p">:</span> <span class="mf">50.0</span><span class="p">,</span>
+        <span class="s2">&quot;quanta_spot_size&quot;</span><span class="p">:</span> <span class="mf">3.5</span><span class="p">,</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>This keeps core metadata clean and standardized while allowing flexibility for unique instrument features.</p>
+</section>
+<section id="improved-xml-serialization">
+<h3>5. Improved XML Serialization<a class="headerlink" href="#improved-xml-serialization" title="Link to this heading">#</a></h3>
+<p><strong>Before (v1):</strong></p>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;meta</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;Voltage (kV)&quot;</span><span class="nt">&gt;</span>15<span class="nt">&lt;/meta&gt;</span>
+</pre></div>
+</div>
+<p><strong>After (v2.2.0):</strong></p>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;meta</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;Voltage&quot;</span><span class="w"> </span><span class="na">unit=</span><span class="s">&quot;kV&quot;</span><span class="nt">&gt;</span>15<span class="nt">&lt;/meta&gt;</span>
+</pre></div>
+</div>
+<p>The new format:</p>
+<ul class="simple">
+<li><p>Separates value from unit using existing XSD <code class="docutils literal notranslate"><span class="pre">unit</span></code> attribute</p></li>
+<li><p>Uses cleaner field names (no units in names)</p></li>
+<li><p>Is more machine-readable (structured attributes vs. text parsing)</p></li>
+<li><p>Leverages existing XSD infrastructure (no schema changes required)</p></li>
+</ul>
+</section>
+</section>
+<section id="migration-guide">
+<h2>Migration Guide<a class="headerlink" href="#migration-guide" title="Link to this heading">#</a></h2>
+<section id="for-extractor-plugin-developers">
+<h3>For Extractor Plugin Developers<a class="headerlink" href="#for-extractor-plugin-developers" title="Link to this heading">#</a></h3>
+<p>If you maintain a custom extractor plugin, update it to use Pint Quantities:</p>
+<p><strong>Step 1: Import the unit registry</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas.units</span><span class="w"> </span><span class="kn">import</span> <span class="n">ureg</span>
+</pre></div>
+</div>
+<p><strong>Step 2: Create Quantities for fields with units</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Old approach (v1)</span>
+<span class="n">nx_meta</span><span class="p">[</span><span class="s2">&quot;Voltage (kV)&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">voltage_v</span><span class="p">)</span> <span class="o">/</span> <span class="mi">1000</span>
+
+<span class="c1"># New approach (v2.2.0)</span>
+<span class="n">nx_meta</span><span class="p">[</span><span class="s2">&quot;acceleration_voltage&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">voltage_v</span><span class="p">,</span> <span class="s2">&quot;volt&quot;</span><span class="p">)</span>
+<span class="c1"># Pint handles the conversion automatically</span>
+</pre></div>
+</div>
+<p><strong>Step 3: Use EM Glossary field names</strong></p>
+<p>Replace vendor-specific field names with EM Glossary equivalents where available:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">HV</span></code> or <code class="docutils literal notranslate"><span class="pre">Voltage</span></code> → <code class="docutils literal notranslate"><span class="pre">acceleration_voltage</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">WD</span></code> → <code class="docutils literal notranslate"><span class="pre">working_distance</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Beam</span> <span class="pre">Current</span></code> → <code class="docutils literal notranslate"><span class="pre">beam_current</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Pixel</span> <span class="pre">Dwell</span> <span class="pre">Time</span></code> → <code class="docutils literal notranslate"><span class="pre">dwell_time</span></code></p></li>
+</ul>
+<p><strong>Step 4: Put vendor-specific fields in extensions</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">nx_meta</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;acceleration_voltage&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="s2">&quot;kilovolt&quot;</span><span class="p">),</span>
+    <span class="s2">&quot;extensions&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;vendor_specific_field&quot;</span><span class="p">:</span> <span class="n">value</span><span class="p">,</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>See <a class="reference internal" href="writing_extractor_plugins.html"><span class="std std-doc">Writing Extractor Plugins</span></a> for detailed guidance.</p>
+</section>
+<section id="for-instrument-profile-developers">
+<h3>For Instrument Profile Developers<a class="headerlink" href="#for-instrument-profile-developers" title="Link to this heading">#</a></h3>
+<p>Instrument profiles now use <code class="docutils literal notranslate"><span class="pre">extension_fields</span></code> instead of <code class="docutils literal notranslate"><span class="pre">static_metadata</span></code>:</p>
+<p><strong>Before (v1):</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.extractors.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">InstrumentProfile</span>
+
+<span class="n">profile</span> <span class="o">=</span> <span class="n">InstrumentProfile</span><span class="p">(</span>
+    <span class="n">instrument_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;FEI Titan&quot;</span><span class="p">],</span>
+    <span class="n">static_metadata</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;Facility&quot;</span><span class="p">:</span> <span class="s2">&quot;Nexus Lab&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>After (v2.2.0):</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.extractors.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">InstrumentProfile</span>
+
+<span class="n">profile</span> <span class="o">=</span> <span class="n">InstrumentProfile</span><span class="p">(</span>
+    <span class="n">instrument_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;FEI Titan&quot;</span><span class="p">],</span>
+    <span class="n">extension_fields</span><span class="o">=</span><span class="p">{</span>  <span class="c1"># Changed from static_metadata</span>
+        <span class="s2">&quot;facility&quot;</span><span class="p">:</span> <span class="s2">&quot;Nexus Lab&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Extension fields are automatically injected into <code class="docutils literal notranslate"><span class="pre">nx_meta[&quot;extensions&quot;]</span></code> during extraction.</p>
+</section>
+</section>
+<section id="schema-structure">
+<h2>Schema Structure<a class="headerlink" href="#schema-structure" title="Link to this heading">#</a></h2>
+<section id="base-schema-nexusmetadata">
+<h3>Base Schema (NexusMetadata)<a class="headerlink" href="#base-schema-nexusmetadata" title="Link to this heading">#</a></h3>
+<p>All datasets must include these core fields:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;DatasetType&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>  <span class="c1"># &quot;Image&quot; | &quot;Spectrum&quot; | &quot;SpectrumImage&quot; | &quot;Diffraction&quot; | &quot;Misc&quot;</span>
+    <span class="s2">&quot;Data Type&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>  <span class="c1"># Descriptive string (e.g., &quot;SEM_Imaging&quot;, &quot;TEM_EDS&quot;)</span>
+    <span class="s2">&quot;Creation Time&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>  <span class="c1"># ISO-8601 with timezone</span>
+    <span class="s2">&quot;extensions&quot;</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>  <span class="c1"># Optional: instrument-specific fields</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="id1">
+<h3>Type-Specific Schemas<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
+<section id="imagemetadata">
+<h4>ImageMetadata<a class="headerlink" href="#imagemetadata" title="Link to this heading">#</a></h4>
+<p>Typical fields (all optional unless specified):</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">acceleration_voltage</span></code> - Quantity (kilovolt)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">working_distance</span></code> - Quantity (millimeter)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">beam_current</span></code> - Quantity (picoampere)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">emission_current</span></code> - Quantity (microampere)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">magnification</span></code> - float (dimensionless)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dwell_time</span></code> - Quantity (microsecond)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">field_of_view</span></code> - Quantity (micrometer)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">scan_rotation</span></code> - Quantity (degree)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">stage_position</span></code> - StagePosition object with X, Y, Z, tilt, rotation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">detector_type</span></code> - str</p></li>
+</ul>
+</section>
+<section id="spectrummetadata">
+<h4>SpectrumMetadata<a class="headerlink" href="#spectrummetadata" title="Link to this heading">#</a></h4>
+<p>Typical fields:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">acquisition_time</span></code> - Quantity (second)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">live_time</span></code> - Quantity (second)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">detector_energy_resolution</span></code> - Quantity (electronvolt)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">channel_size</span></code> - Quantity (electronvolt)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">starting_energy</span></code> - Quantity (kiloelectronvolt)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">azimuthal_angle</span></code> - Quantity (degree)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">elevation_angle</span></code> - Quantity (degree)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">elements</span></code> - list[str]</p></li>
+</ul>
+</section>
+<section id="spectrumimagemetadata">
+<h4>SpectrumImageMetadata<a class="headerlink" href="#spectrumimagemetadata" title="Link to this heading">#</a></h4>
+<p>Combines fields from both Image and Spectrum, plus:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pixel_time</span></code> - Quantity (microsecond)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">scan_mode</span></code> - str</p></li>
+</ul>
+</section>
+<section id="diffractionmetadata">
+<h4>DiffractionMetadata<a class="headerlink" href="#diffractionmetadata" title="Link to this heading">#</a></h4>
+<p>Typical fields:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">camera_length</span></code> - Quantity (millimeter)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">convergence_angle</span></code> - Quantity (milliradian)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">diffraction_mode</span></code> - str</p></li>
+</ul>
+<p>See API documentation for complete field lists.</p>
+</section>
+</section>
+</section>
+<section id="preferred-units">
+<h2>Preferred Units<a class="headerlink" href="#preferred-units" title="Link to this heading">#</a></h2>
+<p>NexusLIMS defines preferred units for each field to ensure consistency:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Field</p></th>
+<th class="head"><p>Preferred Unit</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">acceleration_voltage</span></code></p></td>
+<td><p>kilovolt (kV)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">working_distance</span></code></p></td>
+<td><p>millimeter (mm)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">beam_current</span></code></p></td>
+<td><p>picoampere (pA)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">emission_current</span></code></p></td>
+<td><p>microampere (µA)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dwell_time</span></code></p></td>
+<td><p>microsecond (µs)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">field_of_view</span></code></p></td>
+<td><p>micrometer (µm)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">camera_length</span></code></p></td>
+<td><p>millimeter (mm)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">acquisition_time</span></code></p></td>
+<td><p>second (s)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">detector_energy_resolution</span></code></p></td>
+<td><p>electronvolt (eV)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>When you create a Quantity in any unit, it will be automatically converted to the preferred unit during XML serialization.</p>
+</section>
+<section id="validation-behavior">
+<h2>Validation Behavior<a class="headerlink" href="#validation-behavior" title="Link to this heading">#</a></h2>
+<section id="automatic-validation">
+<h3>Automatic Validation<a class="headerlink" href="#automatic-validation" title="Link to this heading">#</a></h3>
+<p>Metadata is validated automatically during record building:</p>
+<ol class="arabic simple">
+<li><p>Extractor returns <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code> dict</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">validate_nx_meta()</span></code> checks against appropriate schema based on <code class="docutils literal notranslate"><span class="pre">DatasetType</span></code></p></li>
+<li><p>Validation errors are logged with filename context</p></li>
+<li><p>Invalid metadata prevents record generation</p></li>
+</ol>
+</section>
+<section id="manual-validation">
+<h3>Manual Validation<a class="headerlink" href="#manual-validation" title="Link to this heading">#</a></h3>
+<p>You can validate metadata manually in your extractor:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas.metadata</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImageMetadata</span>
+
+<span class="c1"># Validate manually</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">validated</span> <span class="o">=</span> <span class="n">ImageMetadata</span><span class="o">.</span><span class="n">model_validate</span><span class="p">(</span><span class="n">nx_meta</span><span class="p">)</span>
+<span class="k">except</span> <span class="n">ValidationError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Validation failed: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="backward-compatibility">
+<h2>Backward Compatibility<a class="headerlink" href="#backward-compatibility" title="Link to this heading">#</a></h2>
+<p><strong>Important:</strong> The v2.2.0 schema is <strong>not backward compatible</strong> with the experimental v1 schema. This is intentional:</p>
+<ul class="simple">
+<li><p>v1 was experimental and not used in production</p></li>
+<li><p>Clean break enables better design</p></li>
+<li><p>No legacy compatibility burden</p></li>
+<li><p>All built-in extractors updated together</p></li>
+</ul>
+<p>If you have custom extractors or local instrument profiles, you must update them to use the new schema system.</p>
+</section>
+<section id="faq">
+<h2>FAQ<a class="headerlink" href="#faq" title="Link to this heading">#</a></h2>
+<section id="q-do-i-need-to-update-existing-xml-records">
+<h3>Q: Do I need to update existing XML records?<a class="headerlink" href="#q-do-i-need-to-update-existing-xml-records" title="Link to this heading">#</a></h3>
+<p>No. Existing records in CDCS are not affected. The schema changes only apply to newly generated records.</p>
+</section>
+<section id="q-can-i-still-use-plain-numeric-values">
+<h3>Q: Can I still use plain numeric values?<a class="headerlink" href="#q-can-i-still-use-plain-numeric-values" title="Link to this heading">#</a></h3>
+<p>Yes, for dimensionless quantities (magnification, brightness, gain, etc.). Only use Pint Quantities for fields with physical units.</p>
+</section>
+<section id="q-what-if-my-field-doesn-t-have-an-em-glossary-equivalent">
+<h3>Q: What if my field doesn’t have an EM Glossary equivalent?<a class="headerlink" href="#q-what-if-my-field-doesn-t-have-an-em-glossary-equivalent" title="Link to this heading">#</a></h3>
+<p>Use a descriptive name and place it in the <code class="docutils literal notranslate"><span class="pre">extensions</span></code> section. We encourage contributing new terms to the EM Glossary project.</p>
+</section>
+<section id="q-how-do-i-know-what-units-to-use">
+<h3>Q: How do I know what units to use?<a class="headerlink" href="#q-how-do-i-know-what-units-to-use" title="Link to this heading">#</a></h3>
+<p>Use the preferred units defined in <code class="docutils literal notranslate"><span class="pre">nexusLIMS.schemas.units.PREFERRED_UNITS</span></code>. Pint will automatically convert to the preferred unit during XML serialization.</p>
+</section>
+<section id="q-can-i-validate-against-the-old-schema">
+<h3>Q: Can I validate against the old schema?<a class="headerlink" href="#q-can-i-validate-against-the-old-schema" title="Link to this heading">#</a></h3>
+<p>No. The old schema system has been removed in v2.2.0.</p>
+</section>
+<section id="q-will-this-break-my-existing-code">
+<h3>Q: Will this break my existing code?<a class="headerlink" href="#q-will-this-break-my-existing-code" title="Link to this heading">#</a></h3>
+<p>Only if you have custom extractors or instrument profiles. Built-in extractors have been updated. Update your custom code following the migration guide above.</p>
+</section>
+</section>
+<section id="implementation-details">
+<h2>Implementation Details<a class="headerlink" href="#implementation-details" title="Link to this heading">#</a></h2>
+<section id="three-tier-architecture">
+<h3>Three-Tier Architecture<a class="headerlink" href="#three-tier-architecture" title="Link to this heading">#</a></h3>
+<p>NexusLIMS uses a three-tier approach to metadata serialization:</p>
+<p><strong>Tier 1: Internal (Pint + QUDT/EMG mappings)</strong></p>
+<ul class="simple">
+<li><p>Pint Quantity objects with full unit information</p></li>
+<li><p>Internal QUDT URI and EM Glossary ID mappings</p></li>
+<li><p>Type safety and validation</p></li>
+</ul>
+<p><strong>Tier 2: XML with <code class="docutils literal notranslate"><span class="pre">unit</span></code> attribute (current)</strong></p>
+<ul class="simple">
+<li><p>Clean separation: <code class="docutils literal notranslate"><span class="pre">&lt;meta</span> <span class="pre">name=&quot;Voltage&quot;</span> <span class="pre">unit=&quot;kV&quot;&gt;15&lt;/meta&gt;</span></code></p></li>
+<li><p>Uses existing XSD attribute (no schema changes)</p></li>
+<li><p>Machine-readable structure</p></li>
+</ul>
+<p><strong>Tier 3: Semantic Web integration (future)</strong></p>
+<ul class="simple">
+<li><p>Optional QUDT and EM Glossary URI attributes</p></li>
+<li><p>Full semantic web compatibility</p></li>
+<li><p>Requires XSD update (planned for future release)</p></li>
+</ul>
+</section>
+<section id="qudt-unit-ontology">
+<h3>QUDT Unit Ontology<a class="headerlink" href="#qudt-unit-ontology" title="Link to this heading">#</a></h3>
+<p>NexusLIMS internally maps Pint units to QUDT (Quantities, Units, Dimensions and Types) URIs:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Internal mapping (not visible in current XML output):
+&quot;kilovolt&quot; -&gt; &quot;http://qudt.org/vocab/unit/KiloV&quot;
+&quot;millimeter&quot; -&gt; &quot;http://qudt.org/vocab/unit/MilliM&quot;
+</pre></div>
+</div>
+<p>This enables future Tier 3 implementation with full semantic web support.</p>
+</section>
+<section id="em-glossary-integration">
+<h3>EM Glossary Integration<a class="headerlink" href="#em-glossary-integration" title="Link to this heading">#</a></h3>
+<p>The EM Glossary is parsed directly from the OWL ontology file using RDFLib:</p>
+<ul class="simple">
+<li><p>Single source of truth (OWL file)</p></li>
+<li><p>Auto-updates when EM Glossary is updated</p></li>
+<li><p>Provides access to labels, definitions, and semantic structure</p></li>
+</ul>
+</section>
+</section>
+<section id="resources">
+<h2>Resources<a class="headerlink" href="#resources" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="em_glossary_reference.html"><span class="std std-doc">EM Glossary Reference</span></a> - Complete field mapping table</p></li>
+<li><p><a class="reference internal" href="writing_extractor_plugins.html"><span class="std std-doc">Writing Extractor Plugins</span></a> - Developer guide with examples</p></li>
+<li><p><a class="reference external" href="https://owl.emglossary.helmholtz-metadaten.de/">EM Glossary Project</a> - Community ontology</p></li>
+<li><p><a class="reference external" href="http://www.qudt.org/">QUDT Ontology</a> - Units and quantities standard</p></li>
+<li><p><a class="reference external" href="https://pint.readthedocs.io/">Pint Documentation</a> - Python units library</p></li>
+</ul>
+</section>
+<section id="support">
+<h2>Support<a class="headerlink" href="#support" title="Link to this heading">#</a></h2>
+<p>For questions or issues:</p>
+<ul class="simple">
+<li><p>Check the <a class="reference external" href="https://requests.readthedocs.io/en/latest/community/faq/#faq" title="Requests 2.32.5"><span class="xref myst">FAQ</span></a> above</p></li>
+<li><p>Review <a class="reference internal" href="writing_extractor_plugins.html"><span class="std std-doc">Writing Extractor Plugins</span></a></p></li>
+<li><p>Report issues at <a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues">GitHub Issues</a></p></li>
+</ul>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="instrument_profiles.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Instrument Profiles</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="em_glossary_reference.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">EM Glossary Field Reference</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">Overview</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#key-changes-from-v1-schema">Key Changes from v1 Schema</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pint-quantities-for-physical-values">1. Pint Quantities for Physical Values</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#em-glossary-field-names">2. EM Glossary Field Names</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#type-specific-schemas">3. Type-Specific Schemas</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#extensions-section">4. Extensions Section</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#improved-xml-serialization">5. Improved XML Serialization</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#migration-guide">Migration Guide</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#for-extractor-plugin-developers">For Extractor Plugin Developers</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#for-instrument-profile-developers">For Instrument Profile Developers</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#schema-structure">Schema Structure</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#base-schema-nexusmetadata">Base Schema (NexusMetadata)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Type-Specific Schemas</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#imagemetadata">ImageMetadata</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spectrummetadata">SpectrumMetadata</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spectrumimagemetadata">SpectrumImageMetadata</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#diffractionmetadata">DiffractionMetadata</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#preferred-units">Preferred Units</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#validation-behavior">Validation Behavior</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#automatic-validation">Automatic Validation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#manual-validation">Manual Validation</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#backward-compatibility">Backward Compatibility</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#faq">FAQ</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q-do-i-need-to-update-existing-xml-records">Q: Do I need to update existing XML records?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q-can-i-still-use-plain-numeric-values">Q: Can I still use plain numeric values?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q-what-if-my-field-doesn-t-have-an-em-glossary-equivalent">Q: What if my field doesn’t have an EM Glossary equivalent?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q-how-do-i-know-what-units-to-use">Q: How do I know what units to use?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q-can-i-validate-against-the-old-schema">Q: Can I validate against the old schema?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q-will-this-break-my-existing-code">Q: Will this break my existing code?</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#implementation-details">Implementation Details</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#three-tier-architecture">Three-Tier Architecture</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qudt-unit-ontology">QUDT Unit Ontology</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#em-glossary-integration">EM Glossary Integration</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resources">Resources</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#support">Support</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/schema_changes.md.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2025, datasophos, LLC.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

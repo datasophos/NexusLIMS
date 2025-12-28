@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Extractors &#8212; NexusLIMS 2.1.2.dev0 documentation</title>
+    <title>Extractors &#8212; NexusLIMS 2.2.0.dev0 documentation</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="_static/documentation_options.js?v=bcebe078"></script>
+    <script src="_static/documentation_options.js?v=dc4a309c"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/design-tabs.js?v=f930bc37"></script>
@@ -61,8 +61,8 @@
     <link rel="prev" title="Record building workflow" href="record_building.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 25, 2025"/>
+  <meta name="docsearch:version" content="2.2.0.dev0" />
+    <meta name="docbuild:last-update" content="Dec, 28, 2025"/>
   </head>
   
   
@@ -128,8 +128,8 @@
       
     
     
-    <img src="_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.1.2.dev0 documentation - Home"/>
-    <img src="_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.1.2.dev0 documentation - Home"/>
+    <img src="_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.2.0.dev0 documentation - Home"/>
+    <img src="_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.2.0.dev0 documentation - Home"/>
   
   
 </a></div>
@@ -1055,7 +1055,7 @@ each format.</p>
 <p><strong>Validation Using Pydantic Models:</strong></p>
 <p>The <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code> section is automatically validated against Pydantic schemas to ensure data consistency and quality. NexusLIMS provides the following built-in schemas:</p>
 <ul class="simple">
-<li><p><strong><a class="reference internal" href="api/nexusLIMS/nexusLIMS.extractors.schemas.html#nexusLIMS.extractors.schemas.NexusMetadata" title="nexusLIMS.extractors.schemas.NexusMetadata"><code class="xref py py-class docutils literal notranslate"><span class="pre">nexusLIMS.extractors.schemas.NexusMetadata</span></code></a></strong> (base schema): Used for validating all extractors</p>
+<li><p><strong><code class="xref py py-class docutils literal notranslate"><span class="pre">nexusLIMS.extractors.schemas.NexusMetadata</span></code></strong> (base schema): Used for validating all extractors</p>
 <ul>
 <li><p><strong>Required fields</strong>: <code class="docutils literal notranslate"><span class="pre">Creation</span> <span class="pre">Time</span></code>, <code class="docutils literal notranslate"><span class="pre">Data</span> <span class="pre">Type</span></code>, <code class="docutils literal notranslate"><span class="pre">DatasetType</span></code></p></li>
 <li><p><strong>Validation</strong>: Creation Time must be ISO-8601 with timezone (e.g., <code class="docutils literal notranslate"><span class="pre">&quot;2024-01-15T10:30:00-05:00&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;2024-01-15T10:30:00Z&quot;</span></code>)</p></li>
@@ -1063,7 +1063,7 @@ each format.</p>
 <li><p><strong>Extra fields</strong>: Allows arbitrary instrument-specific metadata without breaking validation</p></li>
 </ul>
 </li>
-<li><p><strong><a class="reference internal" href="api/nexusLIMS/nexusLIMS.extractors.schemas.html#nexusLIMS.extractors.schemas.TEMImageMetadata" title="nexusLIMS.extractors.schemas.TEMImageMetadata"><code class="xref py py-class docutils literal notranslate"><span class="pre">nexusLIMS.extractors.schemas.TEMImageMetadata</span></code></a></strong> and <strong><a class="reference internal" href="api/nexusLIMS/nexusLIMS.extractors.schemas.html#nexusLIMS.extractors.schemas.SEMImageMetadata" title="nexusLIMS.extractors.schemas.SEMImageMetadata"><code class="xref py py-class docutils literal notranslate"><span class="pre">nexusLIMS.extractors.schemas.SEMImageMetadata</span></code></a></strong> (reference schemas)</p>
+<li><p><strong><code class="xref py py-class docutils literal notranslate"><span class="pre">nexusLIMS.extractors.schemas.TEMImageMetadata</span></code></strong> and <strong><code class="xref py py-class docutils literal notranslate"><span class="pre">nexusLIMS.extractors.schemas.SEMImageMetadata</span></code></strong> (reference schemas)</p>
 <ul>
 <li><p><strong>Status</strong>: Currently provided as reference examples documenting common fields for TEM/STEM and SEM/FIB data</p></li>
 <li><p><strong>Not used for automatic validation</strong> - only the base <code class="docutils literal notranslate"><span class="pre">NexusMetadata</span></code> schema is used during validation</p></li>
@@ -1075,7 +1075,7 @@ each format.</p>
 </ul>
 <p><strong>Validation Example:</strong></p>
 <p>When an extractor returns metadata, NexusLIMS automatically validates it:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.extractors.schemas</span><span class="w"> </span><span class="kn">import</span> <span class="n">NexusMetadata</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas.metadata</span><span class="w"> </span><span class="kn">import</span> <span class="n">NexusMetadata</span>
 
 <span class="c1"># Valid metadata that passes validation</span>
 <span class="n">nx_meta</span> <span class="o">=</span> <span class="p">{</span>
@@ -1085,7 +1085,9 @@ each format.</p>
     <span class="s2">&quot;Data Dimensions&quot;</span><span class="p">:</span> <span class="s2">&quot;(1024, 1024)&quot;</span><span class="p">,</span>  <span class="c1"># Optional</span>
     <span class="s2">&quot;Instrument ID&quot;</span><span class="p">:</span> <span class="s2">&quot;FEI-Titan-TEM-635816&quot;</span><span class="p">,</span>  <span class="c1"># Optional</span>
     <span class="s2">&quot;warnings&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Operator&quot;</span><span class="p">,</span> <span class="s2">&quot;Specimen&quot;</span><span class="p">],</span>  <span class="c1"># Optional: field names flagged as unreliable</span>
-    <span class="s2">&quot;Voltage&quot;</span><span class="p">:</span> <span class="s2">&quot;200 kV&quot;</span><span class="p">,</span>  <span class="c1"># Extra field - allowed</span>
+    <span class="s2">&quot;extensions&quot;</span><span class="p">:</span> <span class="p">{</span>  <span class="c1"># Optional: instrument-specific fields</span>
+        <span class="s2">&quot;voltage&quot;</span><span class="p">:</span> <span class="s2">&quot;200 kV&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
 <span class="p">}</span>
 <span class="n">validated</span> <span class="o">=</span> <span class="n">NexusMetadata</span><span class="o">.</span><span class="n">model_validate</span><span class="p">(</span><span class="n">nx_meta</span><span class="p">)</span>
 

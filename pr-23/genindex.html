@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Index &#8212; NexusLIMS 2.1.2.dev0 documentation</title>
+    <title>Index &#8212; NexusLIMS 2.2.0.dev0 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="_static/documentation_options.js?v=bcebe078"></script>
+    <script src="_static/documentation_options.js?v=dc4a309c"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/design-tabs.js?v=f930bc37"></script>
@@ -423,8 +423,8 @@ window.addEventListener("load", load);
     <link rel="search" title="Search" href="search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 25, 2025"/>
+  <meta name="docsearch:version" content="2.2.0.dev0" />
+    <meta name="docbuild:last-update" content="Dec, 28, 2025"/>
   </head>
   
   
@@ -490,8 +490,8 @@ window.addEventListener("load", load);
       
     
     
-    <img src="_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.1.2.dev0 documentation - Home"/>
-    <img src="_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.1.2.dev0 documentation - Home"/>
+    <img src="_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.2.0.dev0 documentation - Home"/>
+    <img src="_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.2.0.dev0 documentation - Home"/>
   
   
 </a></div>
@@ -828,11 +828,9 @@ window.addEventListener("load", load);
         <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.ImageMetadata.acceleration_voltage">(nexusLIMS.schemas.metadata.ImageMetadata attribute)</a>
 </li>
       </ul></li>
-      <li><a href="api/nexusLIMS/nexusLIMS.extractors.schemas.html#nexusLIMS.extractors.schemas.TEMImageMetadata.acquisition_device">acquisition_device (nexusLIMS.extractors.schemas.TEMImageMetadata attribute)</a>
+      <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.DiffractionMetadata.acquisition_device">acquisition_device (nexusLIMS.schemas.metadata.DiffractionMetadata attribute)</a>
 
       <ul>
-        <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.DiffractionMetadata.acquisition_device">(nexusLIMS.schemas.metadata.DiffractionMetadata attribute)</a>
-</li>
         <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.ImageMetadata.acquisition_device">(nexusLIMS.schemas.metadata.ImageMetadata attribute)</a>
 </li>
       </ul></li>
@@ -842,13 +840,15 @@ window.addEventListener("load", load);
 </li>
       <li><a href="api/nexusLIMS/nexusLIMS.harvesters.nemo.utils.html#nexusLIMS.harvesters.nemo.utils.add_all_usage_events_to_db">add_all_usage_events_to_db() (in module nexusLIMS.harvesters.nemo.utils)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/nexusLIMS/nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.html#nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.add_annotation_markers">add_annotation_markers() (in module nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/nexusLIMS/nexusLIMS.schemas.activity.html#nexusLIMS.schemas.activity.AcquisitionActivity.add_file">add_file() (nexusLIMS.schemas.activity.AcquisitionActivity method)</a>
 </li>
       <li><a href="api/nexusLIMS/nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643.html#nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643.add_metadata_warnings">add_metadata_warnings() (in module nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643)</a>
+</li>
+      <li><a href="api/nexusLIMS/nexusLIMS.extractors.utils.html#nexusLIMS.extractors.utils.add_to_extensions">add_to_extensions() (in module nexusLIMS.extractors.utils)</a>
 </li>
       <li><a href="api/nexusLIMS/nexusLIMS.config.html#nexusLIMS.config.NemoHarvesterConfig.address">address (nexusLIMS.config.NemoHarvesterConfig attribute)</a>
 </li>
@@ -874,12 +874,8 @@ window.addEventListener("load", load);
 </li>
       <li><a href="api/nexusLIMS/nexusLIMS.extractors.plugins.basic_metadata.html#nexusLIMS.extractors.plugins.basic_metadata.BasicFileInfoExtractor">BasicFileInfoExtractor (class in nexusLIMS.extractors.plugins.basic_metadata)</a>
 </li>
-      <li><a href="api/nexusLIMS/nexusLIMS.extractors.schemas.html#nexusLIMS.extractors.schemas.SEMImageMetadata.beam_current">beam_current (nexusLIMS.extractors.schemas.SEMImageMetadata attribute)</a>
-
-      <ul>
-        <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.ImageMetadata.beam_current">(nexusLIMS.schemas.metadata.ImageMetadata attribute)</a>
+      <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.ImageMetadata.beam_current">beam_current (nexusLIMS.schemas.metadata.ImageMetadata attribute)</a>
 </li>
-      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/nexusLIMS/nexusLIMS.builder.record_builder.html#nexusLIMS.builder.record_builder.build_acq_activities">build_acq_activities() (in module nexusLIMS.builder.record_builder)</a>
@@ -902,12 +898,8 @@ window.addEventListener("load", load);
 </li>
       <li><a href="api/nexusLIMS/nexusLIMS.instruments.html#nexusLIMS.instruments.Instrument.calendar_url">calendar_url (nexusLIMS.instruments.Instrument attribute)</a>
 </li>
-      <li><a href="api/nexusLIMS/nexusLIMS.extractors.schemas.html#nexusLIMS.extractors.schemas.TEMImageMetadata.camera_length">camera_length (nexusLIMS.extractors.schemas.TEMImageMetadata attribute)</a>
-
-      <ul>
-        <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.DiffractionMetadata.camera_length">(nexusLIMS.schemas.metadata.DiffractionMetadata attribute)</a>
+      <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.DiffractionMetadata.camera_length">camera_length (nexusLIMS.schemas.metadata.DiffractionMetadata attribute)</a>
 </li>
-      </ul></li>
       <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.SpectrumMetadata.channel_size">channel_size (nexusLIMS.schemas.metadata.SpectrumMetadata attribute)</a>
 </li>
       <li><a href="api/nexusLIMS/nexusLIMS.cli.process_records.html#nexusLIMS.cli.process_records.check_log_for_errors">check_log_for_errors() (in module nexusLIMS.cli.process_records)</a>
@@ -940,12 +932,8 @@ window.addEventListener("load", load);
 </li>
       <li><a href="api/nexusLIMS/nexusLIMS.harvesters.reservation_event.html#nexusLIMS.harvesters.reservation_event.ReservationEvent.created_by_full_name">created_by_full_name (nexusLIMS.harvesters.reservation_event.ReservationEvent attribute)</a>
 </li>
-      <li><a href="api/nexusLIMS/nexusLIMS.extractors.schemas.html#nexusLIMS.extractors.schemas.NexusMetadata.creation_time">creation_time (nexusLIMS.extractors.schemas.NexusMetadata attribute)</a>
-
-      <ul>
-        <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.NexusMetadata.creation_time">(nexusLIMS.schemas.metadata.NexusMetadata attribute)</a>
+      <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.NexusMetadata.creation_time">creation_time (nexusLIMS.schemas.metadata.NexusMetadata attribute)</a>
 </li>
-      </ul></li>
       <li><a href="api/nexusLIMS/nexusLIMS.utils.html#nexusLIMS.utils.current_system_tz">current_system_tz() (in module nexusLIMS.utils)</a>
 </li>
       <li><a href="api/nexusLIMS/nexusLIMS.utils.html#nexusLIMS.utils.current_system_tz_name">current_system_tz_name() (in module nexusLIMS.utils)</a>
@@ -956,23 +944,13 @@ window.addEventListener("load", load);
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/nexusLIMS/nexusLIMS.extractors.schemas.html#nexusLIMS.extractors.schemas.NexusMetadata.data_dimensions">data_dimensions (nexusLIMS.extractors.schemas.NexusMetadata attribute)</a>
+      <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.NexusMetadata.data_dimensions">data_dimensions (nexusLIMS.schemas.metadata.NexusMetadata attribute)</a>
+</li>
+      <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.NexusMetadata.data_type">data_type (nexusLIMS.schemas.metadata.NexusMetadata attribute)</a>
+</li>
+      <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.DiffractionMetadata.dataset_type">dataset_type (nexusLIMS.schemas.metadata.DiffractionMetadata attribute)</a>
 
       <ul>
-        <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.NexusMetadata.data_dimensions">(nexusLIMS.schemas.metadata.NexusMetadata attribute)</a>
-</li>
-      </ul></li>
-      <li><a href="api/nexusLIMS/nexusLIMS.extractors.schemas.html#nexusLIMS.extractors.schemas.NexusMetadata.data_type">data_type (nexusLIMS.extractors.schemas.NexusMetadata attribute)</a>
-
-      <ul>
-        <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.NexusMetadata.data_type">(nexusLIMS.schemas.metadata.NexusMetadata attribute)</a>
-</li>
-      </ul></li>
-      <li><a href="api/nexusLIMS/nexusLIMS.extractors.schemas.html#nexusLIMS.extractors.schemas.NexusMetadata.dataset_type">dataset_type (nexusLIMS.extractors.schemas.NexusMetadata attribute)</a>
-
-      <ul>
-        <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.DiffractionMetadata.dataset_type">(nexusLIMS.schemas.metadata.DiffractionMetadata attribute)</a>
-</li>
         <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.ImageMetadata.dataset_type">(nexusLIMS.schemas.metadata.ImageMetadata attribute)</a>
 </li>
         <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.NexusMetadata.dataset_type">(nexusLIMS.schemas.metadata.NexusMetadata attribute)</a>
@@ -982,6 +960,8 @@ window.addEventListener("load", load);
         <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.SpectrumMetadata.dataset_type">(nexusLIMS.schemas.metadata.SpectrumMetadata attribute)</a>
 </li>
       </ul></li>
+      <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.ExtractionDetails.date">date (nexusLIMS.schemas.metadata.ExtractionDetails attribute)</a>
+</li>
       <li><a href="api/nexusLIMS/nexusLIMS.db.session_handler.html#nexusLIMS.db.session_handler.db_query">db_query() (in module nexusLIMS.db.session_handler)</a>
 </li>
       <li><a href="api/nexusLIMS/nexusLIMS.cdcs.html#nexusLIMS.cdcs.delete_record">delete_record() (in module nexusLIMS.cdcs)</a>
@@ -995,8 +975,6 @@ window.addEventListener("load", load);
       <li><a href="api/nexusLIMS/nexusLIMS.extractors.plugins.profiles.fei_titan_tem_642.html#nexusLIMS.extractors.plugins.profiles.fei_titan_tem_642.detect_diffraction_mode">detect_diffraction_mode() (in module nexusLIMS.extractors.plugins.profiles.fei_titan_tem_642)</a>
 </li>
       <li><a href="api/nexusLIMS/nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643.html#nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643.detect_eftem_diffraction">detect_eftem_diffraction() (in module nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643)</a>
-</li>
-      <li><a href="api/nexusLIMS/nexusLIMS.extractors.schemas.html#nexusLIMS.extractors.schemas.SEMImageMetadata.detector">detector (nexusLIMS.extractors.schemas.SEMImageMetadata attribute)</a>
 </li>
       <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.SpectrumMetadata.detector_energy_resolution">detector_energy_resolution (nexusLIMS.schemas.metadata.SpectrumMetadata attribute)</a>
 </li>
@@ -1018,12 +996,8 @@ window.addEventListener("load", load);
 </li>
       <li><a href="api/nexusLIMS/nexusLIMS.builder.record_builder.html#nexusLIMS.builder.record_builder.dump_record">dump_record() (in module nexusLIMS.builder.record_builder)</a>
 </li>
-      <li><a href="api/nexusLIMS/nexusLIMS.extractors.schemas.html#nexusLIMS.extractors.schemas.SEMImageMetadata.dwell_time">dwell_time (nexusLIMS.extractors.schemas.SEMImageMetadata attribute)</a>
-
-      <ul>
-        <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.ImageMetadata.dwell_time">(nexusLIMS.schemas.metadata.ImageMetadata attribute)</a>
+      <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.ImageMetadata.dwell_time">dwell_time (nexusLIMS.schemas.metadata.ImageMetadata attribute)</a>
 </li>
-      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -1041,6 +1015,8 @@ window.addEventListener("load", load);
       <li><a href="api/nexusLIMS/nexusLIMS.config.html#nexusLIMS.config.EmailConfig">EmailConfig (class in nexusLIMS.config)</a>
 </li>
       <li><a href="api/nexusLIMS/nexusLIMS.schemas.em_glossary.html#nexusLIMS.schemas.em_glossary.EMG">EMG (in module nexusLIMS.schemas.em_glossary)</a>
+</li>
+      <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.emg_field">emg_field() (in module nexusLIMS.schemas.metadata)</a>
 </li>
       <li><a href="api/nexusLIMS/nexusLIMS.schemas.em_glossary.html#nexusLIMS.schemas.em_glossary.EMG_OWL_PATH">EMG_OWL_PATH (in module nexusLIMS.schemas.em_glossary)</a>
 </li>
@@ -1090,9 +1066,13 @@ window.addEventListener("load", load);
       </ul></li>
       <li><a href="api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.base.ExtractionContext">ExtractionContext (class in nexusLIMS.extractors.base)</a>
 </li>
+      <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.ExtractionDetails">ExtractionDetails (class in nexusLIMS.schemas.metadata)</a>
+</li>
       <li><a href="api/nexusLIMS/nexusLIMS.extractors.registry.html#nexusLIMS.extractors.registry.ExtractorRegistry.extractor_names">extractor_names (nexusLIMS.extractors.registry.ExtractorRegistry property)</a>
 </li>
       <li><a href="api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.base.InstrumentProfile.extractor_overrides">extractor_overrides (nexusLIMS.extractors.base.InstrumentProfile attribute)</a>
+</li>
+      <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.ExtractionDetails.extractor_warnings">extractor_warnings (nexusLIMS.schemas.metadata.ExtractionDetails attribute)</a>
 </li>
       <li><a href="api/nexusLIMS/nexusLIMS.extractors.registry.html#nexusLIMS.extractors.registry.ExtractorRegistry">ExtractorRegistry (class in nexusLIMS.extractors.registry)</a>
 </li>
@@ -1120,8 +1100,6 @@ window.addEventListener("load", load);
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.ImageMetadata.field_of_view">field_of_view (nexusLIMS.schemas.metadata.ImageMetadata attribute)</a>
-</li>
       <li><a href="api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.base.FieldDefinition">FieldDefinition (class in nexusLIMS.extractors.base)</a>
 </li>
       <li><a href="api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.base.ExtractionContext.file_path">file_path (nexusLIMS.extractors.base.ExtractionContext attribute)</a>
@@ -1238,6 +1216,8 @@ window.addEventListener("load", load);
 </li>
       <li><a href="api/nexusLIMS/nexusLIMS.harvesters.nemo.connector.html#nexusLIMS.harvesters.nemo.connector.NemoConnector.get_reservations">get_reservations() (nexusLIMS.harvesters.nemo.connector.NemoConnector method)</a>
 </li>
+      <li><a href="api/nexusLIMS/nexusLIMS.extractors.html#nexusLIMS.extractors.get_schema_for_dataset_type">get_schema_for_dataset_type() (in module nexusLIMS.extractors)</a>
+</li>
       <li><a href="api/nexusLIMS/nexusLIMS.extractors.plugins.fei_emi.html#nexusLIMS.extractors.plugins.fei_emi.get_ser_metadata">get_ser_metadata() (in module nexusLIMS.extractors.plugins.fei_emi)</a>
 </li>
       <li><a href="api/nexusLIMS/nexusLIMS.harvesters.nemo.connector.html#nexusLIMS.harvesters.nemo.connector.NemoConnector.get_session_from_usage_event">get_session_from_usage_event() (nexusLIMS.harvesters.nemo.connector.NemoConnector method)</a>
@@ -1284,6 +1264,8 @@ window.addEventListener("load", load);
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/nexusLIMS/nexusLIMS.schemas.em_glossary.html#nexusLIMS.schemas.em_glossary.has_emg_id">has_emg_id() (in module nexusLIMS.schemas.em_glossary)</a>
 </li>
+      <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.ImageMetadata.horizontal_field_width">horizontal_field_width (nexusLIMS.schemas.metadata.ImageMetadata attribute)</a>
+</li>
       <li><a href="api/nexusLIMS/nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.html#nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.HyperSpyPreviewGenerator">HyperSpyPreviewGenerator (class in nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview)</a>
 </li>
   </ul></td>
@@ -1293,8 +1275,6 @@ window.addEventListener("load", load);
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/nexusLIMS/nexusLIMS.harvesters.nemo.utils.html#nexusLIMS.harvesters.nemo.utils.id_from_url">id_from_url() (in module nexusLIMS.harvesters.nemo.utils)</a>
-</li>
-      <li><a href="api/nexusLIMS/nexusLIMS.extractors.schemas.html#nexusLIMS.extractors.schemas.TEMImageMetadata.illumination_mode">illumination_mode (nexusLIMS.extractors.schemas.TEMImageMetadata attribute)</a>
 </li>
       <li><a href="api/nexusLIMS/nexusLIMS.extractors.plugins.preview_generators.image_preview.html#nexusLIMS.extractors.plugins.preview_generators.image_preview.image_to_square_thumbnail">image_to_square_thumbnail() (in module nexusLIMS.extractors.plugins.preview_generators.image_preview)</a>
 </li>
@@ -1323,8 +1303,6 @@ window.addEventListener("load", load);
       <li><a href="api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.base.InstrumentProfile.instrument_id">instrument_id (nexusLIMS.extractors.base.InstrumentProfile attribute)</a>
 
       <ul>
-        <li><a href="api/nexusLIMS/nexusLIMS.extractors.schemas.html#nexusLIMS.extractors.schemas.NexusMetadata.instrument_id">(nexusLIMS.extractors.schemas.NexusMetadata attribute)</a>
-</li>
         <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.NexusMetadata.instrument_id">(nexusLIMS.schemas.metadata.NexusMetadata attribute)</a>
 </li>
       </ul></li>
@@ -1407,8 +1385,6 @@ window.addEventListener("load", load);
 </li>
         <li><a href="api/nexusLIMS/nexusLIMS.extractors.registry.html#nexusLIMS.extractors.registry.logger">(in module nexusLIMS.extractors.registry)</a>
 </li>
-        <li><a href="api/nexusLIMS/nexusLIMS.extractors.schemas.html#nexusLIMS.extractors.schemas.logger">(in module nexusLIMS.extractors.schemas)</a>
-</li>
         <li><a href="api/nexusLIMS/nexusLIMS.extractors.utils.html#nexusLIMS.extractors.utils.logger">(in module nexusLIMS.extractors.utils)</a>
 </li>
         <li><a href="api/nexusLIMS/nexusLIMS.harvesters.nemo.html#nexusLIMS.harvesters.nemo.logger">(in module nexusLIMS.harvesters.nemo)</a>
@@ -1438,14 +1414,8 @@ window.addEventListener("load", load);
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/nexusLIMS/nexusLIMS.extractors.schemas.html#nexusLIMS.extractors.schemas.SEMImageMetadata.magnification">magnification (nexusLIMS.extractors.schemas.SEMImageMetadata attribute)</a>
-
-      <ul>
-        <li><a href="api/nexusLIMS/nexusLIMS.extractors.schemas.html#nexusLIMS.extractors.schemas.TEMImageMetadata.magnification">(nexusLIMS.extractors.schemas.TEMImageMetadata attribute)</a>
+      <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.ImageMetadata.magnification">magnification (nexusLIMS.schemas.metadata.ImageMetadata attribute)</a>
 </li>
-        <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.ImageMetadata.magnification">(nexusLIMS.schemas.metadata.ImageMetadata attribute)</a>
-</li>
-      </ul></li>
       <li><a href="api/nexusLIMS/nexusLIMS.cli.process_records.html#nexusLIMS.cli.process_records.main">main() (in module nexusLIMS.cli.process_records)</a>
 </li>
       <li><a href="api/nexusLIMS/nexusLIMS.db.html#nexusLIMS.db.make_db_query">make_db_query() (in module nexusLIMS.db)</a>
@@ -1459,7 +1429,7 @@ window.addEventListener("load", load);
       <li><a href="api/nexusLIMS/nexusLIMS.config.html#nexusLIMS.config.Settings.model_config">model_config (nexusLIMS.config.Settings attribute)</a>
 
       <ul>
-        <li><a href="api/nexusLIMS/nexusLIMS.extractors.schemas.html#nexusLIMS.extractors.schemas.NexusMetadata.model_config">(nexusLIMS.extractors.schemas.NexusMetadata attribute)</a>
+        <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.ExtractionDetails.model_config">(nexusLIMS.schemas.metadata.ExtractionDetails attribute)</a>
 </li>
         <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.NexusMetadata.model_config">(nexusLIMS.schemas.metadata.NexusMetadata attribute)</a>
 </li>
@@ -1530,8 +1500,6 @@ window.addEventListener("load", load);
 </li>
         <li><a href="api/nexusLIMS/nexusLIMS.extractors.registry.html#module-nexusLIMS.extractors.registry">nexusLIMS.extractors.registry</a>
 </li>
-        <li><a href="api/nexusLIMS/nexusLIMS.extractors.schemas.html#module-nexusLIMS.extractors.schemas">nexusLIMS.extractors.schemas</a>
-</li>
         <li><a href="api/nexusLIMS/nexusLIMS.extractors.utils.html#module-nexusLIMS.extractors.utils">nexusLIMS.extractors.utils</a>
 </li>
         <li><a href="api/nexusLIMS/nexusLIMS.extractors.xml_serialization.html#module-nexusLIMS.extractors.xml_serialization">nexusLIMS.extractors.xml_serialization</a>
@@ -1567,6 +1535,8 @@ window.addEventListener("load", load);
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.ExtractionDetails.module">module (nexusLIMS.schemas.metadata.ExtractionDetails attribute)</a>
+</li>
       <li><a href="api/nexusLIMS/nexusLIMS.extractors.plugins.edax.html#nexusLIMS.extractors.plugins.edax.MsaExtractor">MsaExtractor (class in nexusLIMS.extractors.plugins.edax)</a>
 </li>
   </ul></td>
@@ -1781,6 +1751,8 @@ window.addEventListener("load", load);
         <li><a href="api/nexusLIMS/nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643.html#module-nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     nexusLIMS.extractors.plugins.profiles.fei_titan_tem_642
 
@@ -1788,8 +1760,6 @@ window.addEventListener("load", load);
         <li><a href="api/nexusLIMS/nexusLIMS.extractors.plugins.profiles.fei_titan_tem_642.html#module-nexusLIMS.extractors.plugins.profiles.fei_titan_tem_642">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     nexusLIMS.extractors.plugins.profiles.jeol_jem_642
 
@@ -1823,13 +1793,6 @@ window.addEventListener("load", load);
 
       <ul>
         <li><a href="api/nexusLIMS/nexusLIMS.extractors.registry.html#module-nexusLIMS.extractors.registry">module</a>
-</li>
-      </ul></li>
-      <li>
-    nexusLIMS.extractors.schemas
-
-      <ul>
-        <li><a href="api/nexusLIMS/nexusLIMS.extractors.schemas.html#module-nexusLIMS.extractors.schemas">module</a>
 </li>
       </ul></li>
       <li>
@@ -1944,16 +1907,14 @@ window.addEventListener("load", load);
         <li><a href="api/nexusLIMS/nexusLIMS.utils.html#module-nexusLIMS.utils">module</a>
 </li>
       </ul></li>
+      <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.NexusMetadata.nexuslims_extraction">nexuslims_extraction (nexusLIMS.schemas.metadata.NexusMetadata attribute)</a>
+</li>
       <li><a href="api/nexusLIMS/nexusLIMS.config.html#nexusLIMS.config.Settings.nexuslims_instrument_data_path">nexuslims_instrument_data_path (nexusLIMS.config.Settings property)</a>
 </li>
       <li><a href="api/nexusLIMS/nexusLIMS.schemas.em_glossary.html#nexusLIMS.schemas.em_glossary.NEXUSLIMS_TO_EMG_MAPPINGS">NEXUSLIMS_TO_EMG_MAPPINGS (in module nexusLIMS.schemas.em_glossary)</a>
 </li>
-      <li><a href="api/nexusLIMS/nexusLIMS.extractors.schemas.html#nexusLIMS.extractors.schemas.NexusMetadata">NexusMetadata (class in nexusLIMS.extractors.schemas)</a>
-
-      <ul>
-        <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.NexusMetadata">(class in nexusLIMS.schemas.metadata)</a>
+      <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.NexusMetadata">NexusMetadata (class in nexusLIMS.schemas.metadata)</a>
 </li>
-      </ul></li>
       <li><a href="api/nexusLIMS/nexusLIMS.harvesters.nemo.exceptions.html#nexusLIMS.harvesters.nemo.exceptions.NoDataConsentError">NoDataConsentError</a>
 </li>
       <li><a href="api/nexusLIMS/nexusLIMS.harvesters.nemo.exceptions.html#nexusLIMS.harvesters.nemo.exceptions.NoMatchingReservationError">NoMatchingReservationError</a>
@@ -2172,19 +2133,13 @@ window.addEventListener("load", load);
 </li>
       <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.SpectrumImageMetadata.scan_mode">scan_mode (nexusLIMS.schemas.metadata.SpectrumImageMetadata attribute)</a>
 </li>
-      <li><a href="api/nexusLIMS/nexusLIMS.extractors.schemas.html#nexusLIMS.extractors.schemas.SEMImageMetadata.scan_rotation">scan_rotation (nexusLIMS.extractors.schemas.SEMImageMetadata attribute)</a>
-
-      <ul>
-        <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.ImageMetadata.scan_rotation">(nexusLIMS.schemas.metadata.ImageMetadata attribute)</a>
+      <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.ImageMetadata.scan_rotation">scan_rotation (nexusLIMS.schemas.metadata.ImageMetadata attribute)</a>
 </li>
-      </ul></li>
       <li><a href="api/nexusLIMS/nexusLIMS.instruments.html#nexusLIMS.instruments.Instrument.schema_name">schema_name (nexusLIMS.instruments.Instrument attribute)</a>
 </li>
       <li><a href="api/nexusLIMS/nexusLIMS.cdcs.html#nexusLIMS.cdcs.search_records">search_records() (in module nexusLIMS.cdcs)</a>
 </li>
       <li><a href="api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.base.FieldDefinition.section">section (nexusLIMS.extractors.base.FieldDefinition attribute)</a>
-</li>
-      <li><a href="api/nexusLIMS/nexusLIMS.extractors.schemas.html#nexusLIMS.extractors.schemas.SEMImageMetadata">SEMImageMetadata (class in nexusLIMS.extractors.schemas)</a>
 </li>
       <li><a href="api/nexusLIMS/nexusLIMS.cli.process_records.html#nexusLIMS.cli.process_records.send_error_notification">send_error_notification() (in module nexusLIMS.cli.process_records)</a>
 </li>
@@ -2240,10 +2195,10 @@ window.addEventListener("load", load);
 </li>
       <li><a href="api/nexusLIMS/nexusLIMS.extractors.plugins.fei_emi.html#nexusLIMS.extractors.plugins.fei_emi.split_fei_metadata_units">split_fei_metadata_units() (in module nexusLIMS.extractors.plugins.fei_emi)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.ImageMetadata.stage_position">stage_position (nexusLIMS.schemas.metadata.ImageMetadata attribute)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.StagePosition">StagePosition (class in nexusLIMS.schemas.metadata)</a>
 </li>
       <li><a href="api/nexusLIMS/nexusLIMS.schemas.activity.html#nexusLIMS.schemas.activity.AcquisitionActivity.start">start (nexusLIMS.schemas.activity.AcquisitionActivity attribute)</a>
@@ -2332,7 +2287,7 @@ window.addEventListener("load", load);
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.SpectrumMetadata.takeoff_angle">takeoff_angle (nexusLIMS.schemas.metadata.SpectrumMetadata attribute)</a>
 </li>
-      <li><a href="api/nexusLIMS/nexusLIMS.extractors.schemas.html#nexusLIMS.extractors.schemas.TEMImageMetadata">TEMImageMetadata (class in nexusLIMS.extractors.schemas)</a>
+      <li><a href="api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.base.FieldDefinition.target_unit">target_unit (nexusLIMS.extractors.base.FieldDefinition attribute)</a>
 </li>
       <li><a href="api/nexusLIMS/nexusLIMS.extractors.plugins.tescan_tif.html#nexusLIMS.extractors.plugins.tescan_tif.TESCAN_TIFF_TAG">TESCAN_TIFF_TAG (in module nexusLIMS.extractors.plugins.tescan_tif)</a>
 </li>
@@ -2380,18 +2335,16 @@ window.addEventListener("load", load);
 </li>
       <li><a href="api/nexusLIMS/nexusLIMS.schemas.activity.html#nexusLIMS.schemas.activity.AcquisitionActivity.unique_params">unique_params (nexusLIMS.schemas.activity.AcquisitionActivity attribute)</a>
 </li>
-      <li><a href="api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.base.FieldDefinition.unit">unit (nexusLIMS.extractors.base.FieldDefinition attribute)</a>
-</li>
       <li><a href="api/nexusLIMS/nexusLIMS.db.session_handler.html#nexusLIMS.db.session_handler.Session.update_session_status">update_session_status() (nexusLIMS.db.session_handler.Session method)</a>
 </li>
       <li><a href="api/nexusLIMS/nexusLIMS.cdcs.html#nexusLIMS.cdcs.upload_record_content">upload_record_content() (in module nexusLIMS.cdcs)</a>
 </li>
       <li><a href="api/nexusLIMS/nexusLIMS.cdcs.html#nexusLIMS.cdcs.upload_record_files">upload_record_files() (in module nexusLIMS.cdcs)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/nexusLIMS/nexusLIMS.schemas.units.html#nexusLIMS.schemas.units.ureg">ureg (in module nexusLIMS.schemas.units)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/nexusLIMS/nexusLIMS.harvesters.reservation_event.html#nexusLIMS.harvesters.reservation_event.ReservationEvent.url">url (nexusLIMS.harvesters.reservation_event.ReservationEvent attribute)</a>
 </li>
       <li><a href="api/nexusLIMS/nexusLIMS.config.html#nexusLIMS.config.EmailConfig.use_tls">use_tls (nexusLIMS.config.EmailConfig attribute)</a>
@@ -2412,56 +2365,40 @@ window.addEventListener("load", load);
 <h2 id="V">V</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/nexusLIMS/nexusLIMS.extractors.schemas.html#nexusLIMS.extractors.schemas.NexusMetadata.validate_data_type_not_empty">validate_data_type_not_empty() (nexusLIMS.extractors.schemas.NexusMetadata class method)</a>
-
-      <ul>
-        <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.NexusMetadata.validate_data_type_not_empty">(nexusLIMS.schemas.metadata.NexusMetadata class method)</a>
+      <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.NexusMetadata.validate_data_type_not_empty">validate_data_type_not_empty() (nexusLIMS.schemas.metadata.NexusMetadata class method)</a>
 </li>
-      </ul></li>
-      <li><a href="api/nexusLIMS/nexusLIMS.extractors.schemas.html#nexusLIMS.extractors.schemas.NexusMetadata.validate_iso_timestamp">validate_iso_timestamp() (nexusLIMS.extractors.schemas.NexusMetadata class method)</a>
-
-      <ul>
-        <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.NexusMetadata.validate_iso_timestamp">(nexusLIMS.schemas.metadata.NexusMetadata class method)</a>
+      <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.NexusMetadata.validate_iso_timestamp">validate_iso_timestamp() (nexusLIMS.schemas.metadata.NexusMetadata class method)</a>
 </li>
-      </ul></li>
       <li><a href="api/nexusLIMS/nexusLIMS.extractors.html#nexusLIMS.extractors.validate_nx_meta">validate_nx_meta() (in module nexusLIMS.extractors)</a>
+</li>
+      <li><a href="api/nexusLIMS/nexusLIMS.builder.record_builder.html#nexusLIMS.builder.record_builder.validate_record">validate_record() (in module nexusLIMS.builder.record_builder)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/nexusLIMS/nexusLIMS.builder.record_builder.html#nexusLIMS.builder.record_builder.validate_record">validate_record() (in module nexusLIMS.builder.record_builder)</a>
-</li>
       <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.SpectrumImageMetadata.validate_spectrum_image_fields">validate_spectrum_image_fields() (nexusLIMS.schemas.metadata.SpectrumImageMetadata method)</a>
 </li>
       <li><a href="api/nexusLIMS/nexusLIMS.config.html#nexusLIMS.config.NemoHarvesterConfig.validate_trailing_slash">validate_trailing_slash() (nexusLIMS.config.NemoHarvesterConfig class method)</a>
 </li>
-      <li><a href="api/nexusLIMS/nexusLIMS.extractors.schemas.html#nexusLIMS.extractors.schemas.SEMImageMetadata.voltage">voltage (nexusLIMS.extractors.schemas.SEMImageMetadata attribute)</a>
-
-      <ul>
-        <li><a href="api/nexusLIMS/nexusLIMS.extractors.schemas.html#nexusLIMS.extractors.schemas.TEMImageMetadata.voltage">(nexusLIMS.extractors.schemas.TEMImageMetadata attribute)</a>
+      <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.ExtractionDetails.version">version (nexusLIMS.schemas.metadata.ExtractionDetails attribute)</a>
 </li>
-      </ul></li>
+      <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.ImageMetadata.vertical_field_width">vertical_field_width (nexusLIMS.schemas.metadata.ImageMetadata attribute)</a>
+</li>
   </ul></td>
 </tr></table>
 
 <h2 id="W">W</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/nexusLIMS/nexusLIMS.extractors.schemas.html#nexusLIMS.extractors.schemas.NexusMetadata.warnings">warnings (nexusLIMS.extractors.schemas.NexusMetadata attribute)</a>
+      <li><a href="api/nexusLIMS/nexusLIMS.schemas.activity.html#nexusLIMS.schemas.activity.AcquisitionActivity.warnings">warnings (nexusLIMS.schemas.activity.AcquisitionActivity attribute)</a>
 
       <ul>
-        <li><a href="api/nexusLIMS/nexusLIMS.schemas.activity.html#nexusLIMS.schemas.activity.AcquisitionActivity.warnings">(nexusLIMS.schemas.activity.AcquisitionActivity attribute)</a>
-</li>
         <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.NexusMetadata.warnings">(nexusLIMS.schemas.metadata.NexusMetadata attribute)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/nexusLIMS/nexusLIMS.extractors.schemas.html#nexusLIMS.extractors.schemas.SEMImageMetadata.working_distance">working_distance (nexusLIMS.extractors.schemas.SEMImageMetadata attribute)</a>
-
-      <ul>
-        <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.ImageMetadata.working_distance">(nexusLIMS.schemas.metadata.ImageMetadata attribute)</a>
+      <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.ImageMetadata.working_distance">working_distance (nexusLIMS.schemas.metadata.ImageMetadata attribute)</a>
 </li>
-      </ul></li>
       <li><a href="api/nexusLIMS/nexusLIMS.harvesters.nemo.connector.html#nexusLIMS.harvesters.nemo.connector.NemoConnector.write_usage_event_to_session_log">write_usage_event_to_session_log() (nexusLIMS.harvesters.nemo.connector.NemoConnector method)</a>
 </li>
   </ul></td>

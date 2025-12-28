@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Writing Extractor Plugins &#8212; NexusLIMS 2.1.2.dev0 documentation</title>
+    <title>Writing Extractor Plugins &#8212; NexusLIMS 2.2.0.dev0 documentation</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="_static/documentation_options.js?v=bcebe078"></script>
+    <script src="_static/documentation_options.js?v=dc4a309c"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/design-tabs.js?v=f930bc37"></script>
@@ -61,8 +61,8 @@
     <link rel="prev" title="Developer documentation" href="development.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 25, 2025"/>
+  <meta name="docsearch:version" content="2.2.0.dev0" />
+    <meta name="docbuild:last-update" content="Dec, 28, 2025"/>
   </head>
   
   
@@ -128,8 +128,8 @@
       
     
     
-    <img src="_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.1.2.dev0 documentation - Home"/>
-    <img src="_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.1.2.dev0 documentation - Home"/>
+    <img src="_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.2.0.dev0 documentation - Home"/>
+    <img src="_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.2.0.dev0 documentation - Home"/>
   
   
 </a></div>
@@ -409,6 +409,8 @@
 <li class="toctree-l1"><a class="reference internal" href="development.html">Developer documentation</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Writing Extractor Plugins</a></li>
 <li class="toctree-l1"><a class="reference internal" href="instrument_profiles.html">Instrument Profiles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="schema_changes.html">Metadata Schema System (v2.2.0)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="em_glossary_reference.html">EM Glossary Field Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="uv_migration.html">Migration from Poetry to uv</a></li>
 <li class="toctree-l1"><a class="reference internal" href="database.html">NexusLIMS database</a></li>
@@ -665,36 +667,205 @@
 </section>
 <section id="metadata-validation">
 <h4>Metadata Validation<a class="headerlink" href="#metadata-validation" title="Link to this heading">#</a></h4>
-<p>The <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code> section is automatically validated using Pydantic schemas. NexusLIMS provides built-in validation schemas:</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code> section is automatically validated using <strong>type-specific</strong> Pydantic schemas based on the <code class="docutils literal notranslate"><span class="pre">DatasetType</span></code> field. NexusLIMS provides schema classes for each dataset type:</p>
 <ul class="simple">
-<li><p><strong><a class="reference internal" href="api/nexusLIMS/nexusLIMS.extractors.schemas.html#nexusLIMS.extractors.schemas.NexusMetadata" title="nexusLIMS.extractors.schemas.NexusMetadata"><code class="xref py py-class docutils literal notranslate"><span class="pre">nexusLIMS.extractors.schemas.NexusMetadata</span></code></a></strong> - Base schema validating all extractors</p>
+<li><p><strong><a class="reference internal" href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.ImageMetadata" title="nexusLIMS.schemas.metadata.ImageMetadata"><code class="xref py py-class docutils literal notranslate"><span class="pre">nexusLIMS.schemas.metadata.ImageMetadata</span></code></a></strong> - For Image datasets</p>
 <ul>
-<li><p>Validates required fields and ISO-8601 timestamp format with timezone</p></li>
-<li><p>Allows arbitrary additional fields for instrument-specific metadata</p></li>
+<li><p>Validates imaging-specific fields (acceleration_voltage, working_distance, beam_current, etc.)</p></li>
+<li><p>Used when <code class="docutils literal notranslate"><span class="pre">DatasetType</span> <span class="pre">==</span> <span class="pre">&quot;Image&quot;</span></code></p></li>
 </ul>
 </li>
-<li><p><strong><a class="reference internal" href="api/nexusLIMS/nexusLIMS.extractors.schemas.html#nexusLIMS.extractors.schemas.TEMImageMetadata" title="nexusLIMS.extractors.schemas.TEMImageMetadata"><code class="xref py py-class docutils literal notranslate"><span class="pre">nexusLIMS.extractors.schemas.TEMImageMetadata</span></code></a></strong> and <strong><a class="reference internal" href="api/nexusLIMS/nexusLIMS.extractors.schemas.html#nexusLIMS.extractors.schemas.SEMImageMetadata" title="nexusLIMS.extractors.schemas.SEMImageMetadata"><code class="xref py py-class docutils literal notranslate"><span class="pre">nexusLIMS.extractors.schemas.SEMImageMetadata</span></code></a></strong> - Type-specific schemas (currently examples only)</p>
+<li><p><strong><a class="reference internal" href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.SpectrumMetadata" title="nexusLIMS.schemas.metadata.SpectrumMetadata"><code class="xref py py-class docutils literal notranslate"><span class="pre">nexusLIMS.schemas.metadata.SpectrumMetadata</span></code></a></strong> - For Spectrum datasets</p>
 <ul>
-<li><p>These schemas document common fields for TEM/STEM and SEM/FIB data</p></li>
-<li><p><strong>Note</strong>: These are provided as reference examples and are <strong>not currently used for automatic validation</strong></p></li>
-<li><p>Use the base <code class="docutils literal notranslate"><span class="pre">NexusMetadata</span></code> schema for actual validation</p></li>
-<li><p>If you need to validate instrument-specific fields, you can use these schemas in your extractor or profile code</p></li>
+<li><p>Validates spectrum-specific fields (acquisition_time, live_time, channel_size, etc.)</p></li>
+<li><p>Used when <code class="docutils literal notranslate"><span class="pre">DatasetType</span> <span class="pre">==</span> <span class="pre">&quot;Spectrum&quot;</span></code></p></li>
+</ul>
+</li>
+<li><p><strong><a class="reference internal" href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.SpectrumImageMetadata" title="nexusLIMS.schemas.metadata.SpectrumImageMetadata"><code class="xref py py-class docutils literal notranslate"><span class="pre">nexusLIMS.schemas.metadata.SpectrumImageMetadata</span></code></a></strong> - For SpectrumImage datasets</p>
+<ul>
+<li><p>Combines both Image and Spectrum field validation</p></li>
+<li><p>Used when <code class="docutils literal notranslate"><span class="pre">DatasetType</span> <span class="pre">==</span> <span class="pre">&quot;SpectrumImage&quot;</span></code></p></li>
+</ul>
+</li>
+<li><p><strong><a class="reference internal" href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.DiffractionMetadata" title="nexusLIMS.schemas.metadata.DiffractionMetadata"><code class="xref py py-class docutils literal notranslate"><span class="pre">nexusLIMS.schemas.metadata.DiffractionMetadata</span></code></a></strong> - For Diffraction datasets</p>
+<ul>
+<li><p>Validates diffraction-specific fields (camera_length, convergence_angle, etc.)</p></li>
+<li><p>Used when <code class="docutils literal notranslate"><span class="pre">DatasetType</span> <span class="pre">==</span> <span class="pre">&quot;Diffraction&quot;</span></code></p></li>
+</ul>
+</li>
+<li><p><strong><a class="reference internal" href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.NexusMetadata" title="nexusLIMS.schemas.metadata.NexusMetadata"><code class="xref py py-class docutils literal notranslate"><span class="pre">nexusLIMS.schemas.metadata.NexusMetadata</span></code></a></strong> - Base schema</p>
+<ul>
+<li><p>Used for <code class="docutils literal notranslate"><span class="pre">DatasetType</span> <span class="pre">==</span> <span class="pre">&quot;Misc&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;Unknown&quot;</span></code></p></li>
+<li><p>Validates only common required fields</p></li>
 </ul>
 </li>
 </ul>
-<p>The base <code class="docutils literal notranslate"><span class="pre">NexusMetadata</span></code> schema validation is <strong>automatically performed</strong> during record building, ensuring metadata consistency across all extractors:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.extractors.schemas</span><span class="w"> </span><span class="kn">import</span> <span class="n">NexusMetadata</span>
+<p><strong>Validation Process:</strong></p>
+<ol class="arabic simple">
+<li><p>Extractor sets <code class="docutils literal notranslate"><span class="pre">DatasetType</span></code> field in <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">validate_nx_meta()</span></code> selects appropriate schema based on <code class="docutils literal notranslate"><span class="pre">DatasetType</span></code></p></li>
+<li><p>Schema validates both required fields and type-specific optional fields</p></li>
+<li><p>Validation errors include detailed field-level diagnostics</p></li>
+<li><p><strong>Strict validation</strong> - invalid metadata causes extraction to fail</p></li>
+</ol>
+<p>All schemas support the <code class="docutils literal notranslate"><span class="pre">extensions</span></code> section for instrument-specific metadata that doesn’t fit the core schema (see “Core Fields vs. Extensions” below).</p>
+</section>
+<section id="using-pint-quantities-for-physical-values">
+<h4>Using Pint Quantities for Physical Values<a class="headerlink" href="#using-pint-quantities-for-physical-values" title="Link to this heading">#</a></h4>
+<p><strong>Since v2.2.0</strong>, NexusLIMS uses <strong>Pint Quantities</strong> for all fields with physical units. This provides:</p>
+<ul class="simple">
+<li><p>Type safety and automatic unit validation</p></li>
+<li><p>Programmatic unit conversion</p></li>
+<li><p>Machine-readable unit information</p></li>
+<li><p>Standardized field names using EM Glossary terminology</p></li>
+</ul>
+<p><strong>Example with Pint Quantities:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas.units</span><span class="w"> </span><span class="kn">import</span> <span class="n">ureg</span>
 
-<span class="c1"># This will be validated automatically when your extractor is used</span>
+<span class="c1"># Create Pint Quantity objects for fields with units</span>
 <span class="n">nx_meta</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;Creation Time&quot;</span><span class="p">:</span> <span class="s2">&quot;2024-01-15T10:30:00-05:00&quot;</span><span class="p">,</span>  <span class="c1"># Required: ISO-8601 with timezone</span>
-    <span class="s2">&quot;Data Type&quot;</span><span class="p">:</span> <span class="s2">&quot;SEM_Imaging&quot;</span><span class="p">,</span>  <span class="c1"># Required: non-empty string</span>
-    <span class="s2">&quot;DatasetType&quot;</span><span class="p">:</span> <span class="s2">&quot;Image&quot;</span><span class="p">,</span>  <span class="c1"># Required: one of allowed values</span>
-    <span class="s2">&quot;Voltage&quot;</span><span class="p">:</span> <span class="s2">&quot;15 kV&quot;</span><span class="p">,</span>  <span class="c1"># Optional: extra fields are allowed</span>
+    <span class="s2">&quot;DatasetType&quot;</span><span class="p">:</span> <span class="s2">&quot;Image&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Data Type&quot;</span><span class="p">:</span> <span class="s2">&quot;SEM_Imaging&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Creation Time&quot;</span><span class="p">:</span> <span class="s2">&quot;2024-01-15T10:30:00-05:00&quot;</span><span class="p">,</span>
+    
+    <span class="c1"># Physical quantities with units (using Pint)</span>
+    <span class="s2">&quot;acceleration_voltage&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="s2">&quot;kilovolt&quot;</span><span class="p">),</span>  <span class="c1"># or ureg(&quot;15 kV&quot;)</span>
+    <span class="s2">&quot;working_distance&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mf">5.2</span><span class="p">,</span> <span class="s2">&quot;millimeter&quot;</span><span class="p">),</span>  <span class="c1"># or ureg(&quot;5.2 mm&quot;)</span>
+    <span class="s2">&quot;beam_current&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="s2">&quot;picoampere&quot;</span><span class="p">),</span>  <span class="c1"># or ureg(&quot;100 pA&quot;)</span>
+    <span class="s2">&quot;dwell_time&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;microsecond&quot;</span><span class="p">),</span>  <span class="c1"># or ureg(&quot;10 us&quot;)</span>
 <span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Converting from raw values:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas.units</span><span class="w"> </span><span class="kn">import</span> <span class="n">ureg</span>
 
-<span class="c1"># If you want to validate manually in your extractor:</span>
-<span class="n">validated</span> <span class="o">=</span> <span class="n">NexusMetadata</span><span class="o">.</span><span class="n">model_validate</span><span class="p">(</span><span class="n">nx_meta</span><span class="p">)</span>
+<span class="c1"># If you have voltage in volts, create Quantity directly</span>
+<span class="n">voltage_v</span> <span class="o">=</span> <span class="mi">15000</span>  <span class="c1"># Volts from file</span>
+<span class="n">nx_meta</span><span class="p">[</span><span class="s2">&quot;acceleration_voltage&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">voltage_v</span><span class="p">,</span> <span class="s2">&quot;volt&quot;</span><span class="p">)</span>
+<span class="c1"># Pint will automatically handle unit conversion when needed</span>
+
+<span class="c1"># Alternative: parse from string</span>
+<span class="n">nx_meta</span><span class="p">[</span><span class="s2">&quot;working_distance&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ureg</span><span class="p">(</span><span class="s2">&quot;5.2 mm&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Using FieldDefinition for automatic Quantity creation:</strong></p>
+<p>For TIFF-based formats with key-value metadata, use the <code class="docutils literal notranslate"><span class="pre">FieldDefinition</span></code> pattern:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.extractors.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">FieldDefinition</span>
+
+<span class="c1"># Define fields with their target units</span>
+<span class="n">FIELD_DEFINITIONS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">FieldDefinition</span><span class="p">(</span>
+        <span class="n">source_key</span><span class="o">=</span><span class="s2">&quot;HV&quot;</span><span class="p">,</span>  <span class="c1"># Key in source metadata</span>
+        <span class="n">target_key</span><span class="o">=</span><span class="s2">&quot;acceleration_voltage&quot;</span><span class="p">,</span>  <span class="c1"># EM Glossary field name</span>
+        <span class="n">conversion_factor</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span>  <span class="c1"># Convert from V to kV</span>
+        <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;kilovolt&quot;</span>  <span class="c1"># Target unit as Pint unit string</span>
+    <span class="p">),</span>
+    <span class="n">FieldDefinition</span><span class="p">(</span>
+        <span class="n">source_key</span><span class="o">=</span><span class="s2">&quot;WD&quot;</span><span class="p">,</span> 
+        <span class="n">target_key</span><span class="o">=</span><span class="s2">&quot;working_distance&quot;</span><span class="p">,</span>
+        <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;millimeter&quot;</span>  <span class="c1"># No conversion if already in target units</span>
+    <span class="p">),</span>
+<span class="p">]</span>
+
+<span class="c1"># In your extract() method, iterate over field definitions:</span>
+<span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">FIELD_DEFINITIONS</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">source_key</span> <span class="ow">in</span> <span class="n">source_metadata</span><span class="p">:</span>
+        <span class="n">raw_value</span> <span class="o">=</span> <span class="n">source_metadata</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">source_key</span><span class="p">]</span>
+        
+        <span class="c1"># Apply conversion factor if specified</span>
+        <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">conversion_factor</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">raw_value</span><span class="p">)</span> <span class="o">*</span> <span class="n">field</span><span class="o">.</span><span class="n">conversion_factor</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">raw_value</span><span class="p">)</span>
+        
+        <span class="c1"># Create Pint Quantity if unit is specified</span>
+        <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">unit</span><span class="p">:</span>
+            <span class="n">nx_meta</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">target_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">nx_meta</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">target_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+</pre></div>
+</div>
+<p><strong>Benefits of Pint Quantities:</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Type safety</strong>: Invalid units are caught immediately</p></li>
+<li><p><strong>Automatic conversion</strong>: Units are normalized during XML generation</p></li>
+<li><p><strong>Machine-readable</strong>: Units are separate from values in XML output</p></li>
+<li><p><strong>EM Glossary alignment</strong>: Field names match community standards</p></li>
+</ol>
+<p><strong>Important</strong>: If a field has units, <strong>always create a Pint Quantity</strong>. If a field is dimensionless (like magnification, brightness, or gain), use a plain numeric value (int/float).</p>
+<p><strong>XML Output:</strong></p>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="cm">&lt;!-- Pint Quantities serialize to clean XML with unit attributes --&gt;</span>
+<span class="nt">&lt;meta</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;Voltage&quot;</span><span class="w"> </span><span class="na">unit=</span><span class="s">&quot;kV&quot;</span><span class="nt">&gt;</span>15<span class="nt">&lt;/meta&gt;</span>
+<span class="nt">&lt;meta</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;Working Distance&quot;</span><span class="w"> </span><span class="na">unit=</span><span class="s">&quot;mm&quot;</span><span class="nt">&gt;</span>5.2<span class="nt">&lt;/meta&gt;</span>
+<span class="nt">&lt;meta</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;Beam Current&quot;</span><span class="w"> </span><span class="na">unit=</span><span class="s">&quot;pA&quot;</span><span class="nt">&gt;</span>100<span class="nt">&lt;/meta&gt;</span>
+</pre></div>
+</div>
+</section>
+<section id="em-glossary-field-names">
+<h4>EM Glossary Field Names<a class="headerlink" href="#em-glossary-field-names" title="Link to this heading">#</a></h4>
+<p>NexusLIMS uses standardized field names from the <strong>Electron Microscopy Glossary (EM Glossary)</strong> for core metadata fields. This improves interoperability and aligns with community standards.</p>
+<p><strong>Common EM Glossary Fields:</strong></p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Field Name</p></th>
+<th class="head"><p>EM Glossary ID</p></th>
+<th class="head"><p>Preferred Unit</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">acceleration_voltage</span></code></p></td>
+<td><p>EMG_00000004</p></td>
+<td><p>kilovolt (kV)</p></td>
+<td><p>Electron beam acceleration voltage</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">working_distance</span></code></p></td>
+<td><p>EMG_00000050</p></td>
+<td><p>millimeter (mm)</p></td>
+<td><p>Distance from pole piece to sample</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">beam_current</span></code></p></td>
+<td><p>EMG_00000006</p></td>
+<td><p>picoampere (pA)</p></td>
+<td><p>Electron beam current</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dwell_time</span></code></p></td>
+<td><p>EMG_00000015</p></td>
+<td><p>microsecond (µs)</p></td>
+<td><p>Pixel dwell time for scanning</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">camera_length</span></code></p></td>
+<td><p>EMG_00000008</p></td>
+<td><p>millimeter (mm)</p></td>
+<td><p>Camera length for diffraction</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">acquisition_time</span></code></p></td>
+<td><p>EMG_00000055</p></td>
+<td><p>second (s)</p></td>
+<td><p>Spectrum acquisition time</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>For a complete mapping of field names to EM Glossary IDs and preferred units, see the <a class="reference internal" href="em_glossary_reference.html"><span class="std std-doc">EM Glossary Reference</span></a>.</p>
+<p><strong>When to use EM Glossary names:</strong></p>
+<ul class="simple">
+<li><p>Use EM Glossary names for <strong>core metadata fields</strong> that have standardized meanings</p></li>
+<li><p>For vendor-specific or instrument-specific fields without EM Glossary equivalents, use descriptive names and place them in the <code class="docutils literal notranslate"><span class="pre">extensions</span></code> section</p></li>
+</ul>
+<p><strong>Example with core fields and extensions:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">nx_meta</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="c1"># Core fields (EM Glossary names)</span>
+    <span class="s2">&quot;acceleration_voltage&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="s2">&quot;kilovolt&quot;</span><span class="p">),</span>
+    <span class="s2">&quot;working_distance&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mf">5.2</span><span class="p">,</span> <span class="s2">&quot;millimeter&quot;</span><span class="p">),</span>
+    
+    <span class="c1"># Vendor-specific fields go in extensions</span>
+    <span class="s2">&quot;extensions&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;detector_brightness&quot;</span><span class="p">:</span> <span class="mf">50.0</span><span class="p">,</span>  <span class="c1"># No EM Glossary equivalent</span>
+        <span class="s2">&quot;facility&quot;</span><span class="p">:</span> <span class="s2">&quot;Nexus Facility&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;quanta_spot_size&quot;</span><span class="p">:</span> <span class="mf">3.5</span><span class="p">,</span>
+    <span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </section>
@@ -980,6 +1151,113 @@
 </ol>
 </section>
 </section>
+<section id="metadata-reference-files">
+<h2>Metadata Reference Files<a class="headerlink" href="#metadata-reference-files" title="Link to this heading">#</a></h2>
+<p>When developing extractor plugins, it’s helpful to see examples of real metadata structures from different file formats. NexusLIMS maintains a collection of reference metadata files extracted from test data.</p>
+<section id="location">
+<h3>Location<a class="headerlink" href="#location" title="Link to this heading">#</a></h3>
+<p>Reference metadata is stored in <code class="docutils literal notranslate"><span class="pre">tests/unit/files/metadata_references/</span></code> and includes:</p>
+<ul class="simple">
+<li><p><strong>127 JSON files</strong> containing <code class="docutils literal notranslate"><span class="pre">original_metadata</span></code> from HyperSpy-readable test files</p></li>
+<li><p><strong>2 XML files</strong> with raw TIFF metadata from Orion HIM instruments</p></li>
+<li><p><strong>README.md</strong> documenting the reference files</p></li>
+<li><p><strong>extract_original_metadata.py</strong> script to regenerate the references</p></li>
+</ul>
+</section>
+<section id="contents">
+<h3>Contents<a class="headerlink" href="#contents" title="Link to this heading">#</a></h3>
+<p>Each JSON file contains the complete <code class="docutils literal notranslate"><span class="pre">original_metadata</span></code> dictionary extracted from a test file using HyperSpy’s <code class="docutils literal notranslate"><span class="pre">signal.original_metadata.as_dictionary()</span></code>. The files are named after their source files:</p>
+<ul class="simple">
+<li><p>Single-signal files: <code class="docutils literal notranslate"><span class="pre">{filename}_original_metadata.json</span></code></p></li>
+<li><p>Multi-signal files: <code class="docutils literal notranslate"><span class="pre">{filename}_signal_{index}_original_metadata.json</span></code></p></li>
+</ul>
+<p>Format examples covered:</p>
+<ul class="simple">
+<li><p>Digital Micrograph (.dm3, .dm4) - Various TEM/STEM imaging and spectroscopy modes</p></li>
+<li><p>FEI TIA (.emi/.ser) - TEM/STEM images, spectra, and spectrum images</p></li>
+<li><p>FEI/Thermo Quanta (.tif) - SEM imaging with embedded metadata</p></li>
+<li><p>Zeiss Orion (.tif) - HIM imaging with Fibics or Zeiss metadata</p></li>
+<li><p>Tescan (.tif) - SEM/FIB imaging</p></li>
+<li><p>HyperSpy (.hspy) - 4D-STEM data</p></li>
+</ul>
+</section>
+<section id="usage-for-extractor-development">
+<h3>Usage for Extractor Development<a class="headerlink" href="#usage-for-extractor-development" title="Link to this heading">#</a></h3>
+<p><strong>1. Understanding metadata structure</strong></p>
+<p>Before writing an extractor, examine the reference metadata to understand:</p>
+<ul class="simple">
+<li><p>What fields are available in the source format</p></li>
+<li><p>How the data is structured (nested dictionaries, lists, etc.)</p></li>
+<li><p>Which fields map to NexusLIMS required fields</p></li>
+<li><p>What vendor-specific fields exist</p></li>
+</ul>
+<p>Example workflow:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># View metadata structure for a Quanta TIFF file</span>
+cat<span class="w"> </span>tests/unit/files/metadata_references/quanta_image_original_metadata.json<span class="w"> </span><span class="p">|</span><span class="w"> </span>less
+
+<span class="c1"># Search for specific fields</span>
+grep<span class="w"> </span>-r<span class="w"> </span><span class="s2">&quot;acceleration&quot;</span><span class="w"> </span>tests/unit/files/metadata_references/
+</pre></div>
+</div>
+<p><strong>2. Mapping source fields to nx_meta</strong></p>
+<p>Use the reference files to identify which source metadata keys should map to NexusLIMS fields:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example: Mapping Quanta TIFF metadata to nx_meta</span>
+<span class="c1"># Based on quanta_image_original_metadata.json:</span>
+<span class="c1"># {</span>
+<span class="c1">#   &quot;User&quot;: {&quot;HV&quot;: &quot;15000.0&quot;, &quot;WD&quot;: &quot;5.2&quot;, ...},</span>
+<span class="c1">#   &quot;EScan&quot;: {&quot;DwellTime&quot;: &quot;1e-05&quot;, ...}</span>
+<span class="c1"># }</span>
+
+<span class="n">nx_meta</span><span class="p">[</span><span class="s2">&quot;acceleration_voltage&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span>
+    <span class="nb">float</span><span class="p">(</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;User&quot;</span><span class="p">][</span><span class="s2">&quot;HV&quot;</span><span class="p">])</span> <span class="o">*</span> <span class="mf">1e-3</span><span class="p">,</span>  <span class="c1"># Convert V to kV</span>
+    <span class="s2">&quot;kilovolt&quot;</span>
+<span class="p">)</span>
+<span class="n">nx_meta</span><span class="p">[</span><span class="s2">&quot;working_distance&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span>
+    <span class="nb">float</span><span class="p">(</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;User&quot;</span><span class="p">][</span><span class="s2">&quot;WD&quot;</span><span class="p">]),</span>
+    <span class="s2">&quot;millimeter&quot;</span>
+<span class="p">)</span>
+<span class="n">nx_meta</span><span class="p">[</span><span class="s2">&quot;dwell_time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span>
+    <span class="nb">float</span><span class="p">(</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;EScan&quot;</span><span class="p">][</span><span class="s2">&quot;DwellTime&quot;</span><span class="p">])</span> <span class="o">*</span> <span class="mf">1e6</span><span class="p">,</span>  <span class="c1"># Convert s to µs</span>
+    <span class="s2">&quot;microsecond&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>3. Testing against real metadata</strong></p>
+<p>When writing tests, compare your extractor’s output against the reference metadata to ensure you’re handling all available fields correctly.</p>
+</section>
+<section id="regenerating-reference-files">
+<h3>Regenerating Reference Files<a class="headerlink" href="#regenerating-reference-files" title="Link to this heading">#</a></h3>
+<p>If test files are added or modified, regenerate the reference metadata:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>tests/unit/files/metadata_references
+uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>extract_original_metadata.py
+</pre></div>
+</div>
+<p>The script:</p>
+<ol class="arabic simple">
+<li><p>Extracts all files from test archives (<code class="docutils literal notranslate"><span class="pre">tests/unit/files/*.tar.gz</span></code>)</p></li>
+<li><p>Loads each file with HyperSpy</p></li>
+<li><p>Exports <code class="docutils literal notranslate"><span class="pre">original_metadata</span></code> as formatted JSON</p></li>
+<li><p>Handles both single and multi-signal files automatically</p></li>
+</ol>
+<p>This is particularly useful after:</p>
+<ul class="simple">
+<li><p>Adding new test files for a format</p></li>
+<li><p>Updating data-zeroing procedures</p></li>
+<li><p>Verifying metadata preservation after file modifications</p></li>
+</ul>
+</section>
+<section id="benefits">
+<h3>Benefits<a class="headerlink" href="#benefits" title="Link to this heading">#</a></h3>
+<p>Using metadata reference files helps you:</p>
+<ul class="simple">
+<li><p><strong>Write better extractors</strong> - See real-world metadata structure before coding</p></li>
+<li><p><strong>Improve field coverage</strong> - Identify fields you might have missed</p></li>
+<li><p><strong>Debug extraction issues</strong> - Compare expected vs. actual metadata</p></li>
+<li><p><strong>Document metadata evolution</strong> - Track changes in file format metadata over time</p></li>
+<li><p><strong>Onboard new developers</strong> - Provide concrete examples of metadata structure</p></li>
+</ul>
+</section>
+</section>
 <section id="further-reading">
 <h2>Further Reading<a class="headerlink" href="#further-reading" title="Link to this heading">#</a></h2>
 <ul class="simple">
@@ -1051,6 +1329,8 @@
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#supports-context-extractioncontext-bool"><code class="docutils literal notranslate"><span class="pre">supports(context:</span> <span class="pre">ExtractionContext)</span> <span class="pre">-&gt;</span> <span class="pre">bool</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#extract-context-extractioncontext-list-dict-str-any"><code class="docutils literal notranslate"><span class="pre">extract(context:</span> <span class="pre">ExtractionContext)</span> <span class="pre">-&gt;</span> <span class="pre">list[dict[str,</span> <span class="pre">Any]]</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#metadata-validation">Metadata Validation</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#using-pint-quantities-for-physical-values">Using Pint Quantities for Physical Values</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#em-glossary-field-names">EM Glossary Field Names</a></li>
 </ul>
 </li>
 </ul>
@@ -1076,6 +1356,14 @@
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#my-extractor-isn-t-being-discovered">My extractor isn’t being discovered</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#my-extractor-isn-t-being-selected">My extractor isn’t being selected</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tests-are-failing">Tests are failing</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#metadata-reference-files">Metadata Reference Files</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#location">Location</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#contents">Contents</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#usage-for-extractor-development">Usage for Extractor Development</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#regenerating-reference-files">Regenerating Reference Files</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#benefits">Benefits</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#further-reading">Further Reading</a></li>

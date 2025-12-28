@@ -184,33 +184,167 @@ def extract(self, context: ExtractionContext) -> list[dict[str, Any]]:
 
 #### Metadata Validation
 
-The `nx_meta` section is automatically validated using Pydantic schemas. NexusLIMS provides built-in validation schemas:
+The `nx_meta` section is automatically validated using **type-specific** Pydantic schemas based on the `DatasetType` field. NexusLIMS provides schema classes for each dataset type:
 
-- **{py:class}`nexusLIMS.extractors.schemas.NexusMetadata`** - Base schema validating all extractors
-  - Validates required fields and ISO-8601 timestamp format with timezone
-  - Allows arbitrary additional fields for instrument-specific metadata
+- **{py:class}`nexusLIMS.schemas.metadata.ImageMetadata`** - For Image datasets
+  - Validates imaging-specific fields (acceleration_voltage, working_distance, beam_current, etc.)
+  - Used when `DatasetType == "Image"`
 
-- **{py:class}`nexusLIMS.extractors.schemas.TEMImageMetadata`** and **{py:class}`nexusLIMS.extractors.schemas.SEMImageMetadata`** - Type-specific schemas (currently examples only)
-  - These schemas document common fields for TEM/STEM and SEM/FIB data
-  - **Note**: These are provided as reference examples and are **not currently used for automatic validation**
-  - Use the base `NexusMetadata` schema for actual validation
-  - If you need to validate instrument-specific fields, you can use these schemas in your extractor or profile code
+- **{py:class}`nexusLIMS.schemas.metadata.SpectrumMetadata`** - For Spectrum datasets
+  - Validates spectrum-specific fields (acquisition_time, live_time, channel_size, etc.)
+  - Used when `DatasetType == "Spectrum"`
 
-The base `NexusMetadata` schema validation is **automatically performed** during record building, ensuring metadata consistency across all extractors:
+- **{py:class}`nexusLIMS.schemas.metadata.SpectrumImageMetadata`** - For SpectrumImage datasets
+  - Combines both Image and Spectrum field validation
+  - Used when `DatasetType == "SpectrumImage"`
+
+- **{py:class}`nexusLIMS.schemas.metadata.DiffractionMetadata`** - For Diffraction datasets
+  - Validates diffraction-specific fields (camera_length, convergence_angle, etc.)
+  - Used when `DatasetType == "Diffraction"`
+
+- **{py:class}`nexusLIMS.schemas.metadata.NexusMetadata`** - Base schema
+  - Used for `DatasetType == "Misc"` or `"Unknown"`
+  - Validates only common required fields
+
+**Validation Process:**
+1. Extractor sets `DatasetType` field in `nx_meta`
+2. `validate_nx_meta()` selects appropriate schema based on `DatasetType`
+3. Schema validates both required fields and type-specific optional fields
+4. Validation errors include detailed field-level diagnostics
+5. **Strict validation** - invalid metadata causes extraction to fail
+
+All schemas support the `extensions` section for instrument-specific metadata that doesn't fit the core schema (see "Core Fields vs. Extensions" below).
+
+#### Using Pint Quantities for Physical Values
+
+**Since v2.2.0**, NexusLIMS uses **Pint Quantities** for all fields with physical units. This provides:
+- Type safety and automatic unit validation
+- Programmatic unit conversion
+- Machine-readable unit information
+- Standardized field names using EM Glossary terminology
+
+**Example with Pint Quantities:**
+```python
+from nexusLIMS.schemas.units import ureg
+
+# Create Pint Quantity objects for fields with units
+nx_meta = {
+    "DatasetType": "Image",
+    "Data Type": "SEM_Imaging",
+    "Creation Time": "2024-01-15T10:30:00-05:00",
+    
+    # Physical quantities with units (using Pint)
+    "acceleration_voltage": ureg.Quantity(15, "kilovolt"),  # or ureg("15 kV")
+    "working_distance": ureg.Quantity(5.2, "millimeter"),  # or ureg("5.2 mm")
+    "beam_current": ureg.Quantity(100, "picoampere"),  # or ureg("100 pA")
+    "dwell_time": ureg.Quantity(10, "microsecond"),  # or ureg("10 us")
+}
+```
+
+**Converting from raw values:**
+```python
+from nexusLIMS.schemas.units import ureg
+
+# If you have voltage in volts, create Quantity directly
+voltage_v = 15000  # Volts from file
+nx_meta["acceleration_voltage"] = ureg.Quantity(voltage_v, "volt")
+# Pint will automatically handle unit conversion when needed
+
+# Alternative: parse from string
+nx_meta["working_distance"] = ureg("5.2 mm")
+```
+
+**Using FieldDefinition for automatic Quantity creation:**
+
+For TIFF-based formats with key-value metadata, use the `FieldDefinition` pattern:
 
 ```python
-from nexusLIMS.extractors.schemas import NexusMetadata
+from nexusLIMS.extractors.base import FieldDefinition
 
-# This will be validated automatically when your extractor is used
+# Define fields with their target units
+FIELD_DEFINITIONS = [
+    FieldDefinition(
+        source_key="HV",  # Key in source metadata
+        target_key="acceleration_voltage",  # EM Glossary field name
+        conversion_factor=1e-3,  # Convert from V to kV
+        unit="kilovolt"  # Target unit as Pint unit string
+    ),
+    FieldDefinition(
+        source_key="WD", 
+        target_key="working_distance",
+        unit="millimeter"  # No conversion if already in target units
+    ),
+]
+
+# In your extract() method, iterate over field definitions:
+for field in FIELD_DEFINITIONS:
+    if field.source_key in source_metadata:
+        raw_value = source_metadata[field.source_key]
+        
+        # Apply conversion factor if specified
+        if field.conversion_factor:
+            value = float(raw_value) * field.conversion_factor
+        else:
+            value = float(raw_value)
+        
+        # Create Pint Quantity if unit is specified
+        if field.unit:
+            nx_meta[field.target_key] = ureg.Quantity(value, field.unit)
+        else:
+            nx_meta[field.target_key] = value
+```
+
+**Benefits of Pint Quantities:**
+1. **Type safety**: Invalid units are caught immediately
+2. **Automatic conversion**: Units are normalized during XML generation
+3. **Machine-readable**: Units are separate from values in XML output
+4. **EM Glossary alignment**: Field names match community standards
+
+**Important**: If a field has units, **always create a Pint Quantity**. If a field is dimensionless (like magnification, brightness, or gain), use a plain numeric value (int/float).
+
+**XML Output:**
+```xml
+<!-- Pint Quantities serialize to clean XML with unit attributes -->
+<meta name="Voltage" unit="kV">15</meta>
+<meta name="Working Distance" unit="mm">5.2</meta>
+<meta name="Beam Current" unit="pA">100</meta>
+```
+
+#### EM Glossary Field Names
+
+NexusLIMS uses standardized field names from the **Electron Microscopy Glossary (EM Glossary)** for core metadata fields. This improves interoperability and aligns with community standards.
+
+**Common EM Glossary Fields:**
+
+| Field Name | EM Glossary ID | Preferred Unit | Description |
+|------------|----------------|----------------|-------------|
+| `acceleration_voltage` | EMG_00000004 | kilovolt (kV) | Electron beam acceleration voltage |
+| `working_distance` | EMG_00000050 | millimeter (mm) | Distance from pole piece to sample |
+| `beam_current` | EMG_00000006 | picoampere (pA) | Electron beam current |
+| `dwell_time` | EMG_00000015 | microsecond (µs) | Pixel dwell time for scanning |
+| `camera_length` | EMG_00000008 | millimeter (mm) | Camera length for diffraction |
+| `acquisition_time` | EMG_00000055 | second (s) | Spectrum acquisition time |
+
+For a complete mapping of field names to EM Glossary IDs and preferred units, see the [EM Glossary Reference](em_glossary_reference.md).
+
+**When to use EM Glossary names:**
+- Use EM Glossary names for **core metadata fields** that have standardized meanings
+- For vendor-specific or instrument-specific fields without EM Glossary equivalents, use descriptive names and place them in the `extensions` section
+
+**Example with core fields and extensions:**
+```python
 nx_meta = {
-    "Creation Time": "2024-01-15T10:30:00-05:00",  # Required: ISO-8601 with timezone
-    "Data Type": "SEM_Imaging",  # Required: non-empty string
-    "DatasetType": "Image",  # Required: one of allowed values
-    "Voltage": "15 kV",  # Optional: extra fields are allowed
+    # Core fields (EM Glossary names)
+    "acceleration_voltage": ureg.Quantity(15, "kilovolt"),
+    "working_distance": ureg.Quantity(5.2, "millimeter"),
+    
+    # Vendor-specific fields go in extensions
+    "extensions": {
+        "detector_brightness": 50.0,  # No EM Glossary equivalent
+        "facility": "Nexus Facility",
+        "quanta_spot_size": 3.5,
+    }
 }
-
-# If you want to validate manually in your extractor:
-validated = NexusMetadata.model_validate(nx_meta)
 ```
 
 ## Advanced Patterns
@@ -494,6 +628,111 @@ Ensure your extractor:
 2. Includes required fields in `nx_meta`
 3. Handles missing/corrupted files gracefully
 4. Uses appropriate timezone for timestamps
+
+## Metadata Reference Files
+
+When developing extractor plugins, it's helpful to see examples of real metadata structures from different file formats. NexusLIMS maintains a collection of reference metadata files extracted from test data.
+
+### Location
+
+Reference metadata is stored in `tests/unit/files/metadata_references/` and includes:
+- **127 JSON files** containing `original_metadata` from HyperSpy-readable test files
+- **2 XML files** with raw TIFF metadata from Orion HIM instruments
+- **README.md** documenting the reference files
+- **extract_original_metadata.py** script to regenerate the references
+
+### Contents
+
+Each JSON file contains the complete `original_metadata` dictionary extracted from a test file using HyperSpy's `signal.original_metadata.as_dictionary()`. The files are named after their source files:
+
+- Single-signal files: `{filename}_original_metadata.json`
+- Multi-signal files: `{filename}_signal_{index}_original_metadata.json`
+
+Format examples covered:
+- Digital Micrograph (.dm3, .dm4) - Various TEM/STEM imaging and spectroscopy modes
+- FEI TIA (.emi/.ser) - TEM/STEM images, spectra, and spectrum images
+- FEI/Thermo Quanta (.tif) - SEM imaging with embedded metadata
+- Zeiss Orion (.tif) - HIM imaging with Fibics or Zeiss metadata
+- Tescan (.tif) - SEM/FIB imaging
+- HyperSpy (.hspy) - 4D-STEM data
+
+### Usage for Extractor Development
+
+**1. Understanding metadata structure**
+
+Before writing an extractor, examine the reference metadata to understand:
+- What fields are available in the source format
+- How the data is structured (nested dictionaries, lists, etc.)
+- Which fields map to NexusLIMS required fields
+- What vendor-specific fields exist
+
+Example workflow:
+```bash
+# View metadata structure for a Quanta TIFF file
+cat tests/unit/files/metadata_references/quanta_image_original_metadata.json | less
+
+# Search for specific fields
+grep -r "acceleration" tests/unit/files/metadata_references/
+```
+
+**2. Mapping source fields to nx_meta**
+
+Use the reference files to identify which source metadata keys should map to NexusLIMS fields:
+
+```python
+# Example: Mapping Quanta TIFF metadata to nx_meta
+# Based on quanta_image_original_metadata.json:
+# {
+#   "User": {"HV": "15000.0", "WD": "5.2", ...},
+#   "EScan": {"DwellTime": "1e-05", ...}
+# }
+
+nx_meta["acceleration_voltage"] = ureg.Quantity(
+    float(metadata["User"]["HV"]) * 1e-3,  # Convert V to kV
+    "kilovolt"
+)
+nx_meta["working_distance"] = ureg.Quantity(
+    float(metadata["User"]["WD"]),
+    "millimeter"
+)
+nx_meta["dwell_time"] = ureg.Quantity(
+    float(metadata["EScan"]["DwellTime"]) * 1e6,  # Convert s to µs
+    "microsecond"
+)
+```
+
+**3. Testing against real metadata**
+
+When writing tests, compare your extractor's output against the reference metadata to ensure you're handling all available fields correctly.
+
+### Regenerating Reference Files
+
+If test files are added or modified, regenerate the reference metadata:
+
+```bash
+cd tests/unit/files/metadata_references
+uv run python extract_original_metadata.py
+```
+
+The script:
+1. Extracts all files from test archives (`tests/unit/files/*.tar.gz`)
+2. Loads each file with HyperSpy
+3. Exports `original_metadata` as formatted JSON
+4. Handles both single and multi-signal files automatically
+
+This is particularly useful after:
+- Adding new test files for a format
+- Updating data-zeroing procedures
+- Verifying metadata preservation after file modifications
+
+### Benefits
+
+Using metadata reference files helps you:
+- **Write better extractors** - See real-world metadata structure before coding
+- **Improve field coverage** - Identify fields you might have missed
+- **Debug extraction issues** - Compare expected vs. actual metadata
+- **Document metadata evolution** - Track changes in file format metadata over time
+- **Onboard new developers** - Provide concrete examples of metadata structure
 
 ## Further Reading
 

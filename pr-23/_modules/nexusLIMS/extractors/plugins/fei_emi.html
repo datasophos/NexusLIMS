@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>nexusLIMS.extractors.plugins.fei_emi &#8212; NexusLIMS 2.1.2.dev0 documentation</title>
+    <title>nexusLIMS.extractors.plugins.fei_emi &#8212; NexusLIMS 2.2.0.dev0 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../../../_static/documentation_options.js?v=bcebe078"></script>
+    <script src="../../../../_static/documentation_options.js?v=dc4a309c"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -423,8 +423,8 @@ window.addEventListener("load", load);
     <link rel="search" title="Search" href="../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 25, 2025"/>
+  <meta name="docsearch:version" content="2.2.0.dev0" />
+    <meta name="docbuild:last-update" content="Dec, 28, 2025"/>
   </head>
   
   
@@ -490,8 +490,8 @@ window.addEventListener("load", load);
       
     
     
-    <img src="../../../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.1.2.dev0 documentation - Home"/>
-    <img src="../../../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.1.2.dev0 documentation - Home"/>
+    <img src="../../../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.2.0.dev0 documentation - Home"/>
+    <img src="../../../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.2.0.dev0 documentation - Home"/>
   
   
 </a></div>
@@ -832,6 +832,7 @@ window.addEventListener("load", load);
 <span class="kn">from</span><span class="w"> </span><span class="nn">hyperspy.signal</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseSignal</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.extractors.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExtractionContext</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.extractors.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">add_to_extensions</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.instruments</span><span class="w"> </span><span class="kn">import</span> <span class="n">Instrument</span><span class="p">,</span> <span class="n">get_instr_from_filepath</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas.units</span><span class="w"> </span><span class="kn">import</span> <span class="n">ureg</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.utils</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
@@ -1005,7 +1006,10 @@ window.addEventListener("load", load);
 
         <span class="c1"># we could not read the signal, so add some basic metadata and return</span>
         <span class="k">if</span> <span class="n">ser_error</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">_handle_ser_error</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span>
+            <span class="n">metadata</span> <span class="o">=</span> <span class="n">_handle_ser_error_metadata</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span>
+            <span class="c1"># Migrate to schema-compliant format (move vendor meta to extensions)</span>
+            <span class="n">metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_migrate_to_schema_compliant_metadata</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">metadata</span><span class="p">]</span>
 
         <span class="n">metadata</span> <span class="o">=</span> <span class="n">parse_basic_info</span><span class="p">(</span><span class="n">metadata</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">instr</span><span class="p">)</span>
         <span class="n">metadata</span> <span class="o">=</span> <span class="n">parse_acquire_info</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span>
@@ -1020,22 +1024,135 @@ window.addEventListener("load", load);
         <span class="c1"># we don&#39;t need to save the filename, it&#39;s just for internal processing</span>
         <span class="k">del</span> <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;fname&quot;</span><span class="p">]</span>
 
+        <span class="c1"># Migrate metadata to schema-compliant format</span>
+        <span class="n">metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_migrate_to_schema_compliant_metadata</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span>
+
         <span class="c1"># sort the nx_meta dictionary (recursively) for nicer display</span>
         <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sort_dict</span><span class="p">(</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">])</span>
 
         <span class="k">return</span> <span class="p">[</span><span class="n">metadata</span><span class="p">]</span></div>
-</div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_migrate_to_schema_compliant_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mdict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Migrate metadata to schema-compliant format.</span>
+
+<span class="sd">        Reorganizes metadata to conform to type-specific Pydantic schemas:</span>
+<span class="sd">        - Extracts core EM Glossary fields to top level with standardized names</span>
+<span class="sd">        - Moves vendor-specific nested dictionaries to extensions section</span>
+<span class="sd">        - Preserves existing extensions from instrument profiles</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        mdict</span>
+<span class="sd">            Metadata dictionary with nx_meta containing extracted fields</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict</span>
+<span class="sd">            Metadata dictionary with schema-compliant nx_meta structure</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">nx_meta</span> <span class="o">=</span> <span class="n">mdict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">dataset_type</span> <span class="o">=</span> <span class="n">nx_meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;DatasetType&quot;</span><span class="p">,</span> <span class="s2">&quot;Image&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Preserve existing extensions from instrument profiles</span>
+        <span class="n">extensions</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">nx_meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;extensions&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">if</span> <span class="s2">&quot;extensions&quot;</span> <span class="ow">in</span> <span class="n">nx_meta</span> <span class="k">else</span> <span class="p">{}</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Field mappings from display names to EM Glossary names</span>
+        <span class="n">field_mappings</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;AccelerationVoltage&quot;</span><span class="p">:</span> <span class="s2">&quot;acceleration_voltage&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Convergence Angle&quot;</span><span class="p">:</span> <span class="s2">&quot;convergence_angle&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Acquisition Device&quot;</span><span class="p">:</span> <span class="s2">&quot;acquisition_device&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="c1"># Camera Length is only core for Diffraction datasets</span>
+        <span class="k">if</span> <span class="n">dataset_type</span> <span class="o">==</span> <span class="s2">&quot;Diffraction&quot;</span><span class="p">:</span>
+            <span class="n">field_mappings</span><span class="p">[</span><span class="s2">&quot;Camera Length&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;camera_length&quot;</span>
+
+        <span class="c1"># FEI TIA-specific top-level sections that go to extensions</span>
+        <span class="n">extension_top_level_keys</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;ObjectInfo&quot;</span><span class="p">,</span>  <span class="c1"># Main FEI metadata section</span>
+            <span class="s2">&quot;ser_header_parameters&quot;</span><span class="p">,</span>  <span class="c1"># SER file header</span>
+        <span class="p">}</span>
+
+        <span class="c1"># Individual vendor-specific fields to move to extensions</span>
+        <span class="n">extension_field_names</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;emi Filename&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Extractor Warning&quot;</span><span class="p">,</span>
+            <span class="c1"># Any other FEI-specific fields</span>
+        <span class="p">}</span>
+
+        <span class="c1"># Build new nx_meta with proper field organization</span>
+        <span class="n">new_nx_meta</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># Copy required fields</span>
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;DatasetType&quot;</span><span class="p">,</span> <span class="s2">&quot;Data Type&quot;</span><span class="p">,</span> <span class="s2">&quot;Creation Time&quot;</span><span class="p">,</span> <span class="s2">&quot;Data Dimensions&quot;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">nx_meta</span><span class="p">:</span>
+                <span class="n">new_nx_meta</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="n">nx_meta</span><span class="p">[</span><span class="n">field</span><span class="p">]</span>
+
+        <span class="c1"># Copy instrument identification</span>
+        <span class="k">if</span> <span class="s2">&quot;Instrument ID&quot;</span> <span class="ow">in</span> <span class="n">nx_meta</span><span class="p">:</span>
+            <span class="n">new_nx_meta</span><span class="p">[</span><span class="s2">&quot;Instrument ID&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nx_meta</span><span class="p">[</span><span class="s2">&quot;Instrument ID&quot;</span><span class="p">]</span>
+
+        <span class="c1"># Process all fields and categorize</span>
+        <span class="k">for</span> <span class="n">old_name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">nx_meta</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="c1"># Skip fields we&#39;ve already handled</span>
+            <span class="k">if</span> <span class="n">old_name</span> <span class="ow">in</span> <span class="p">[</span>
+                <span class="s2">&quot;DatasetType&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Data Type&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Creation Time&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Data Dimensions&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Instrument ID&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Extractor Warnings&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;warnings&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;extensions&quot;</span><span class="p">,</span>
+            <span class="p">]:</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Top-level vendor sections go to extensions</span>
+            <span class="k">if</span> <span class="n">old_name</span> <span class="ow">in</span> <span class="n">extension_top_level_keys</span><span class="p">:</span>
+                <span class="n">extensions</span><span class="p">[</span><span class="n">old_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Check if this is a core field that needs renaming</span>
+            <span class="k">if</span> <span class="n">old_name</span> <span class="ow">in</span> <span class="n">field_mappings</span><span class="p">:</span>
+                <span class="n">emg_name</span> <span class="o">=</span> <span class="n">field_mappings</span><span class="p">[</span><span class="n">old_name</span><span class="p">]</span>
+                <span class="n">new_nx_meta</span><span class="p">[</span><span class="n">emg_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Vendor-specific individual fields go to extensions</span>
+            <span class="k">if</span> <span class="n">old_name</span> <span class="ow">in</span> <span class="n">extension_field_names</span><span class="p">:</span>
+                <span class="n">extensions</span><span class="p">[</span><span class="n">old_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Everything else goes to extensions (FEI-specific fields)</span>
+            <span class="c1"># This is safer since most FEI fields are vendor-specific</span>
+            <span class="n">extensions</span><span class="p">[</span><span class="n">old_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+        <span class="c1"># Copy warnings if present</span>
+        <span class="k">if</span> <span class="s2">&quot;warnings&quot;</span> <span class="ow">in</span> <span class="n">nx_meta</span><span class="p">:</span>
+            <span class="n">new_nx_meta</span><span class="p">[</span><span class="s2">&quot;warnings&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nx_meta</span><span class="p">[</span><span class="s2">&quot;warnings&quot;</span><span class="p">]</span>
+
+        <span class="c1"># Add extensions section if we have any</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">extensions</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">add_to_extensions</span><span class="p">(</span><span class="n">new_nx_meta</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+        <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_nx_meta</span>
+        <span class="k">return</span> <span class="n">mdict</span></div>
 
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_handle_ser_error</span><span class="p">(</span><span class="n">metadata</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_handle_ser_error_metadata</span><span class="p">(</span><span class="n">metadata</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Handle metadata when .ser file cannot be read.&quot;&quot;&quot;</span>
     <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;DatasetType&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Misc&quot;</span>
     <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;Data Type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Unknown&quot;</span>
     <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;warnings&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="c1"># sort the nx_meta dictionary (recursively) for nicer display</span>
     <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sort_dict</span><span class="p">(</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">])</span>
     <span class="k">del</span> <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;fname&quot;</span><span class="p">]</span>
-    <span class="k">return</span> <span class="p">[</span><span class="n">metadata</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">metadata</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_load_ser</span><span class="p">(</span><span class="n">emi_filename</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">ser_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
