@@ -542,64 +542,183 @@ All extractors return a **list of metadata dictionaries**, with one entry per si
 - **Single-signal files**: Return a list with one element `[{...}]`
 - **Multi-signal files**: Return a list with multiple elements, one per signal `[{...}, {...}]`
 
-**Validation Using Pydantic Models:**
+**Validation Using Pydantic Models (New in v2.2.0 - Work in Progress):**
 
-The `nx_meta` section is automatically validated against Pydantic schemas to ensure data consistency and quality. NexusLIMS provides the following built-in schemas:
+The `nx_meta` section is validated against Pydantic schemas to improve data consistency and quality. Starting with v2.2.0, NexusLIMS provides basic metadata validation with EM Glossary integration and unit standardization. This validation system is still evolving as standardization efforts progress.
 
-- **{py:class}`nexusLIMS.extractors.schemas.NexusMetadata`** (base schema): Used for validating all extractors
-  - **Required fields**: `Creation Time`, `Data Type`, `DatasetType`
-  - **Validation**: Creation Time must be ISO-8601 with timezone (e.g., `"2024-01-15T10:30:00-05:00"` or `"2024-01-15T10:30:00Z"`)
-  - **Optional fields**: `Data Dimensions`, `Instrument ID`, `warnings`
-  - **Extra fields**: Allows arbitrary instrument-specific metadata without breaking validation
+**Schema Selection by DatasetType:**
 
-- **{py:class}`nexusLIMS.extractors.schemas.TEMImageMetadata`** and **{py:class}`nexusLIMS.extractors.schemas.SEMImageMetadata`** (reference schemas)
-  - **Status**: Currently provided as reference examples documenting common fields for TEM/STEM and SEM/FIB data
-  - **Not used for automatic validation** - only the base `NexusMetadata` schema is used during validation
-  - Can optionally be used in extractor or instrument profile code for manual validation of instrument-specific fields
-  - **TEMImageMetadata fields**: `Voltage`, `Magnification`, `Illumination Mode`, `Camera Length`, `Acquisition Device`
-  - **SEMImageMetadata fields**: `Voltage`, `Magnification`, `Working Distance`, `Beam Current`, `Detector`, `Dwell Time`, `Scan Rotation`
+The validation schema is chosen automatically based on the `DatasetType` field:
+
+| **DatasetType** | **Schema** | **Purpose** | **Type-Specific Fields** |
+|-----------------|------------|-------------|--------------------------|
+| `Image` | {py:class}`~nexusLIMS.schemas.metadata.ImageMetadata` | TEM/SEM/STEM images | `magnification`, `pixel_size`, `working_distance` |
+| `Spectrum` | {py:class}`~nexusLIMS.schemas.metadata.SpectrumMetadata` | EELS/EDS spectra | `channel_size`, `starting_energy`, `live_time` |
+| `SpectrumImage` | {py:class}`~nexusLIMS.schemas.metadata.SpectrumImageMetadata` | Spectrum imaging | `pixel_time`, `magnification`, `channel_size` |
+| `Diffraction` | {py:class}`~nexusLIMS.schemas.metadata.DiffractionMetadata` | Diffraction patterns | `camera_length`, `exposure_time`, `convergence_angle` |
+| `Misc` or `Unknown` | {py:class}`~nexusLIMS.schemas.metadata.NexusMetadata` | Other data | Base fields only |
+
+**Common Core Fields (All Schemas):**
+
+All schemas inherit these required fields from {py:class}`nexusLIMS.schemas.metadata.NexusMetadata`:
+
+- **`creation_time`** (datetime with timezone): When the data was acquired
+- **`data_type`** (str): Classification string (e.g., `"STEM_Imaging"`, `"TEM_EDS"`)
+- **`dataset_type`** (DatasetType enum): One of `Image`, `Spectrum`, `SpectrumImage`, `Diffraction`, `Misc`, `Unknown`
+
+**Optional Core Fields:**
+
+- **`data_dimensions`** (str): Shape of the data (e.g., `"(1024, 1024)"`)
+- **`instrument_id`** (str): Identifier of the instrument used
+- **`warnings`** (list[str]): Field names flagged as potentially unreliable
+- **`extensions`** (dict): Additional vendor/instrument-specific metadata
+
+**EM Glossary Standardized Fields:**
+
+Type-specific schemas include fields standardized against the Electron Microscopy Glossary v2.0 where available. Note that the EM Glossary vocabulary is also still developing, so not all fields have complete standardized definitions yet:
+
+- **Beam parameters**: `acceleration_voltage`, `beam_current`, `emission_current`, `convergence_angle`
+- **Stage/Sample**: `stage_x`, `stage_y`, `stage_z`, `tilt_alpha`, `tilt_beta`
+- **Detector**: `detector_type`, `detector_angle`, `detector_distance`, `detector_binning`
+- **Acquisition**: `dwell_time`, `acquisition_time`, `live_time`, `pixel_time`
+- **Optical**: `magnification`, `working_distance`, `camera_length`, `pixel_size_x`, `pixel_size_y`
+- **Spectrum**: `channel_size`, `starting_energy`, `takeoff_angle`
+
+These fields are defined using the `emg_field()` helper function, which automatically injects EM Glossary metadata (display names, definitions, URIs) for standardization and interoperability where EMG terms are available.
+
+See {doc}`../dev_guide/em_glossary_reference` for the complete field mapping and {doc}`../dev_guide/nexuslims_internal_schema` for details on the schema system.
 
 **Validation Example:**
 
 When an extractor returns metadata, NexusLIMS automatically validates it:
 
 ```python
-from nexusLIMS.schemas.metadata import NexusMetadata
+from datetime import datetime, timezone
+from nexusLIMS.schemas.metadata import ImageMetadata
+from pint import Quantity
 
-# Valid metadata that passes validation
+# Valid ImageMetadata that passes validation
 nx_meta = {
-    "Creation Time": "2024-01-15T10:30:00-05:00",  # Required: ISO-8601 with TZ
-    "Data Type": "STEM_Imaging",  # Required: non-empty string
-    "DatasetType": "Image",  # Required: one of Image|Spectrum|SpectrumImage|Diffraction|Misc|Unknown
-    "Data Dimensions": "(1024, 1024)",  # Optional
-    "Instrument ID": "FEI-Titan-TEM-635816",  # Optional
-    "warnings": ["Operator", "Specimen"],  # Optional: field names flagged as unreliable
-    "extensions": {  # Optional: instrument-specific fields
-        "voltage": "200 kV",
+    "creation_time": datetime(2024, 1, 15, 10, 30, 0, tzinfo=timezone.utc),
+    "data_type": "STEM_Imaging",
+    "dataset_type": "Image",
+    "data_dimensions": "(1024, 1024)",
+    "instrument_id": "FEI-Titan-TEM-635816",
+    "warnings": ["Operator"],  # Flag unreliable fields
+    # EM Glossary standardized fields with Pint Quantities
+    "acceleration_voltage": Quantity(200, "kV"),
+    "magnification": Quantity(50000, "dimensionless"),
+    "pixel_size_x": Quantity(2.5, "nm"),
+    "working_distance": Quantity(5.2, "mm"),
+    # Extensions for vendor-specific or non-standardized data
+    "extensions": {
+        "detector_brightness": 50.0,
+        "scan_rotation": Quantity(45, "degree"),
     },
 }
-validated = NexusMetadata.model_validate(nx_meta)
+validated = ImageMetadata.model_validate(nx_meta)
 
 # Invalid metadata raises ValidationError with details
 bad_meta = {
-    "Creation Time": "2024-01-15 10:30:00",  # ❌ Missing timezone!
-    "Data Type": "STEM_Imaging",
-    "DatasetType": "InvalidType",  # ❌ Not in allowed values!
+    "creation_time": datetime(2024, 1, 15, 10, 30, 0),  # ❌ Missing timezone!
+    "data_type": "STEM_Imaging",
+    "dataset_type": "InvalidType",  # ❌ Not in allowed values!
 }
-NexusMetadata.model_validate(bad_meta)  # Raises pydantic.ValidationError
+ImageMetadata.model_validate(bad_meta)  # Raises pydantic.ValidationError
 ```
 
-**Backward Compatibility:**
+**Unit Handling:**
 
-The schema uses `populate_by_name=True` to accept both Python-style field names (`creation_time`) and original dictionary keys (`Creation Time`), ensuring compatibility with existing code.
+NexusLIMS automatically normalizes physical quantities to preferred units:
+
+- Voltages → kilovolts (kV)
+- Distances → nanometers (nm) or millimeters (mm) depending on scale
+- Times → seconds (s)
+- Energies → electron volts (eV)
+
+You can provide quantities in any compatible unit, and validation will convert them automatically:
+
+```python
+# These are all equivalent after validation:
+{"acceleration_voltage": Quantity(200, "kV")}
+{"acceleration_voltage": Quantity(200000, "V")}
+{"acceleration_voltage": Quantity(0.2, "MV")}
+```
+
+See {doc}`../dev_guide/nexuslims_internal_schema` for complete unit handling details.
 
 The `nx_meta` section in each element contains standardized, human-readable metadata that is displayed in the experimental record. The additional sections contain the complete "raw" metadata tree for reference.
 
 This consistent list-based approach combined with Pydantic validation ensures the Activity layer can automatically and safely expand multi-signal files into multiple datasets in the experimental record.
 
+### Extension Fields in Practice
+
+The `extensions` dictionary provides a flexible way to include vendor-specific or non-standardized metadata that doesn't fit into the core schema fields. Here are real-world examples from NexusLIMS extractors:
+
+**FEI/Thermo Quanta TIF Extractor** ([nexusLIMS/extractors/plugins/quanta_tif.py:428](../../nexusLIMS/extractors/plugins/quanta_tif.py#L428-L447)):
+
+```python
+# Vendor-specific vacuum and detector settings
+extensions = {
+    "chamber_type": "LargeChamber",
+    "column_type": "HighResolution",
+    "vacuum_mode": "HighVacuum",
+    "chamber_pressure": Quantity(5.2e-5, "Pa"),
+    "detector_signal": "ETD",
+    "detector_grid_voltage": Quantity(300, "V"),
+    "drift_correction_enabled": True,
+    "frame_integration": 4,
+}
+```
+
+**Digital Micrograph DM3/DM4 Extractor** ([nexusLIMS/extractors/plugins/digital_micrograph.py:337](../../nexusLIMS/extractors/plugins/digital_micrograph.py#L337-L349)):
+
+```python
+# EELS-specific detector and acquisition settings
+extensions = {
+    "eels_dispersion": Quantity(0.5, "eV/channel"),
+    "eels_energy_loss": Quantity(150, "eV"),
+    "eels_slit_width": Quantity(2.5, "eV"),
+    "eels_collection_angle": Quantity(15, "mrad"),
+    "spectrometer_name": "GIF Quantum 965",
+    "drift_correction_enabled": True,
+}
+```
+
+**Tescan TIF Extractor** ([nexusLIMS/extractors/plugins/tescan_tif.py:285](../../nexusLIMS/extractors/plugins/tescan_tif.py#L285-L295)):
+
+```python
+# Instrument-specific settings not covered by EM Glossary
+extensions = {
+    "stigmator_x": Quantity(12.5, "percent"),
+    "stigmator_y": Quantity(-8.3, "percent"),
+    "gun_type": "Schottky",
+    "scan_mode": "FrameIntegration",
+    "session_id": "abc123xyz789",
+}
+```
+
+**When to Use Extensions:**
+
+Use the `extensions` dictionary when:
+
+- **Vendor-specific features**: Settings unique to one manufacturer (e.g., FEI MultiGIS, Gatan GIF)
+- **Non-standardized parameters**: Values not yet in EM Glossary (e.g., drift correction flags)
+- **Instrument-specific calibrations**: Stigmator values, lens strengths, custom aperture settings
+- **Session tracking**: Unique IDs or timestamps for instrument logging
+- **Software-specific metadata**: Settings from acquisition software that don't map to standard fields
+
+**Do NOT use extensions for:**
+
+- Standard EM parameters covered by EM Glossary (voltage, magnification, stage position, etc.)
+- Required fields (creation_time, data_type, dataset_type)
+- Data that should be validated (use core fields for type safety)
+
+See {ref}`Helper Functions <metadata-helper-functions>` for the `add_to_extensions()` helper function and {doc}`../dev_guide/writing_extractor_plugins` for complete guidance on using extensions in your own extractors.
+
 ## Adding Support for New Formats
 
-See {doc}`writing_extractor_plugins` for instructions on how to write a new extractor.
+See {doc}`../dev_guide/writing_extractor_plugins` for instructions on how to write a new extractor.
 
 ## API Reference
 

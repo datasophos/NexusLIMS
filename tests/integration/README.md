@@ -429,18 +429,7 @@ pytest tests/integration/ -m integration
 
 ## Environment Variables
 
-Integration tests use environment variables defined in `env/.env.integration`:
-
-- `NX_NEMO_ADDRESS_1`: NEMO API URL
-- `NX_NEMO_TOKEN_1`: NEMO API token
-- `NX_CDCS_URL`: CDCS URL
-- `NX_CDCS_USER`: CDCS username
-- `NX_CDCS_PASS`: CDCS password
-- `NX_INSTRUMENT_DATA_PATH`: Instrument data directory
-- `NX_DATA_PATH`: NexusLIMS data directory
-- `NX_DB_PATH`: Database path
-
-**Note:** Fixtures automatically patch these variables through `nexusLIMS.config`, so you typically don't need to set them manually.
+Fixtures automatically patch configuration variables through `nexusLIMS.config`, so there's no envrionment configuration necessary.
 
 ## Debugging Tools
 

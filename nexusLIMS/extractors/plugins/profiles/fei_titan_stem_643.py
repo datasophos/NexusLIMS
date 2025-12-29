@@ -92,7 +92,6 @@ fei_titan_stem_643_profile = InstrumentProfile(
         "eftem_diffraction": detect_eftem_diffraction,
     },
     transformations={},
-    extractor_overrides={},
     extension_fields={},
 )
 

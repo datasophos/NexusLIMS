@@ -1,4 +1,4 @@
-# ruff: noqa: INP001, ERA001
+# ruff: noqa: INP001
 """Example local instrument profile for a custom microscope.
 
 This file demonstrates how to create a local instrument profile that can be
@@ -166,10 +166,6 @@ my_instrument_profile = InstrumentProfile(
         "instrument_owner": "My Research Group",
         "funding_agency": "NSF Grant #12345",
     },
-    # Optional: override which extractor to use for specific file types
-    # extractor_overrides={
-    #     "tif": "custom_tif_extractor",  # Use custom TIF extractor
-    # },
 )
 
 # Register the profile with the global registry

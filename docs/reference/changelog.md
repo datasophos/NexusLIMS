@@ -63,7 +63,7 @@ up to version 1.4.3. The datasophos fork begins at version 2.0.
 
 - Add a comprehensive documentation page for the extractors within NexusLIMS.
 - Added a migration guide to support users migrating from v1 to v2
-- Added improved auto-generated documentation for XML schema with interactive visualization ({std:doc}`schema_documentation`).
+- Added improved auto-generated documentation for XML schema with interactive visualization ({std:doc}`../dev_guide/schema_documentation`).
 - Migrated documentation to the modern PyData Sphinx Theme, offering a refreshed look, improved mobile responsiveness, and dark mode support. This overhaul includes a complete restructuring into hierarchical sections, a comprehensive "Getting Started" guide, new logo branding, and streamlined configuration.
 
 ### Miscellaneous/Development changes
@@ -277,7 +277,7 @@ is copied from the original NIST [NexusLIMS project](https://github.com/usnistgo
   harvester for the [NEMO](https://github.com/usnistgov/NEMO) facility management
   system. All planned future feature development will focus on this harvester, and the
   SharePoint calendar harvester will be deprecated in a future release. See the
-  {std:doc}`record_building` docs and the {std:doc}`api/nexusLIMS/nexusLIMS.harvesters.nemo` docs
+  {std:doc}`../user_guide/record_building` docs and the {std:doc}`../api/nexusLIMS/nexusLIMS.harvesters.nemo` docs
   for more details.
 
 ### Enhancements
@@ -361,13 +361,13 @@ is copied from the original NIST [NexusLIMS project](https://github.com/usnistgo
 ### Documentation improvements
 
 - Added "taxonomy" of terms used in the NexusLIMS project to the documentation (see
-  {std:doc}`taxonomy` for details).
+  {std:doc}`../user_guide/taxonomy` for details).
 - Added XML Schema documentation for the Nexus `Experiment` schema to the documentation
-  (see {std:doc}`schema_documentation` for details).
+  (see {std:doc}`../dev_guide/schema_documentation` for details).
 - Added links to NexusLIMS documentation in the front-end NexusLIMS CDCS application.
 - Added many documentation pages to more thoroughly explain how NexusLIMS works,
   including improvements to the project README, as well as the following pages:
-  {std:doc}`database`, session_logger_app, {std:doc}`development`,
+  {std:doc}`../dev_guide/database`, session_logger_app, {std:doc}`../dev_guide/development`,
   and pages about data security.
 
 ### Miscellaneous/Development changes
@@ -410,7 +410,7 @@ is copied from the original NIST [NexusLIMS project](https://github.com/usnistgo
 
 ### Documentation improvements
 
-- Added record building documentation: {std:doc}`record_building`.
+- Added record building documentation: {std:doc}`../user_guide/record_building`.
 
 ### Miscellaneous/Development changes
 

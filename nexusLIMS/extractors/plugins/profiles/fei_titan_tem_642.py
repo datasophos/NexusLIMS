@@ -185,7 +185,6 @@ fei_titan_tem_642_profile = InstrumentProfile(
         "diffraction_detection": detect_diffraction_mode,
     },
     transformations={},
-    extractor_overrides={},
     extension_fields={},
 )
 

@@ -156,9 +156,9 @@ NX_FILE_STRATEGY=inclusive
 #### `NX_IGNORE_PATTERNS`
 
 **Type:** JSON array of glob patterns\
-**Default:** `["*.mib", "*.db", "*.emi"]`
+**Default:** `["*.mib", "*.db", "*.emi", "*.hdr"]`
 
-Glob patterns to exclude when searching for experiment files. Useful for filtering out temporary files, databases, or proprietary formats.
+Glob patterns to exclude when searching for experiment files. Useful for filtering out temporary files, databases, or dedicated metadata files that do not contain data, and are read as-needed by extractors (such as `.hdr` and `.emi`).
 
 **Example:**
 ```bash
@@ -171,7 +171,7 @@ NX_IGNORE_PATTERNS=["*.mib", "*.db", "*.emi", "*.tmp", "*~"]
 **Type:** Float (must be > 0)\
 **Default:** `2.0`
 
-Maximum delay (in days) between session end and when files are expected to be present. The record builder will continue searching for files until this delay expires. Fractional days are supported.
+Maximum delay (in days) between session end and when files are expected to be present. The record builder will continue searching for files until this delay expires. Fractional days are supported. This is useful if your file management system takes time to synchronize data files from the instrument to centralized storage.
 
 **Example:** If set to `2.0` and a session ends Monday at 5 PM, the builder will retry until Wednesday at 5 PM.
 
@@ -394,21 +394,6 @@ List of recipient email addresses for error notifications.
 NX_EMAIL_RECIPIENTS=admin@example.com,team@example.com
 ```
 
-### Development Settings
-
-(config-test-cdcs-url)=
-#### `NX_TEST_CDCS_URL`
-
-**Type:** URL\
-**Default:** None
-
-Root URL of a test CDCS instance for integration testing. If defined, integration tests will use this URL instead of `NX_CDCS_URL`. If not defined, integration tests are skipped.
-
-**Example:**
-```bash
-NX_TEST_CDCS_URL=https://test-nexuslims.example.com
-```
-
 ## Configuration in Code
 
 ### Accessing Configuration
@@ -544,7 +529,6 @@ NX_DB_PATH=/tmp/test_data/nexuslims.db
 
 # CDCS (test instance)
 NX_CDCS_URL=https://nexuslims-test.example.com
-NX_TEST_CDCS_URL=https://nexuslims-test.example.com
 NX_CDCS_USER=test_user
 NX_CDCS_PASS=test_password
 
@@ -594,6 +578,15 @@ If email notifications aren't sending:
 2. **Verify SMTP credentials**: Test SMTP access independently
 3. **Check firewall**: Ensure SMTP port (usually 587) isn't blocked
 4. **Use app passwords**: Some providers (Gmail) require app-specific passwords
+
+### Instrument Profile Issues
+
+If instrument profiles aren't loading or working:
+
+1. **Verify `NX_LOCAL_PROFILES_PATH`**: Ensure the environment variable points to a valid directory
+2. **Check profile structure**: Profiles must create an `InstrumentProfile` instance and register it via `get_profile_registry().register()`
+3. **Match `instrument_id` to database**: The `instrument_id` parameter in `InstrumentProfile()` must match the instrument's `name` field in the database (filename doesn't matter)
+4. **Import errors**: Check that all dependencies are available in the environment
 
 ## See Also
 

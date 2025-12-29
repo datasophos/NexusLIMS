@@ -3,9 +3,8 @@
 :hidden:
 
 Home <self>
-getting_started
-migration
 user_guide
+migration
 dev_guide
 reference
 ```
@@ -21,11 +20,28 @@ This fork is **not affiliated with NIST**. For the official NIST version,
 please visit the [original repository](https://github.com/usnistgov/NexusLIMS).
 ```
 
+## Key Features
+
+- **Automated Record Building** - Automatically build metadata records for electron microscopy experiments, with metadata
+extraction from proprietary formats, preview image generation,
+and more!
+- **Facility Management Integration** - NexusLIMS integrates
+with the
+[NEMO lab management](https://www.atlantislabs.io/nemo/)
+system for harvesting of experimental sessions and
+instrument information.
+- **Comprehensive support for common Electron Microscopy file formats** - NexusLIMS extracts detailed metadata from DigitalMicrograph DM3/DM4 files, FEI/Thermo TIF images, Tescan TIF images, Zeiss TIF images, FEI TIA (.ser/.emi), EDAX (.spc/.msa) EDS spectra, and more
+- **Temporal File Clustering** - Intelligent grouping of files into Acquisition Activities based on temporal analysis
+- **Extensible Architecture** - Plugin-based extractor system and instrument profiles for easy customization
+- **Structured XML Records** - Standards-compliant records with comprehensive session and technical metadata
+- **Metadata Standardization** - Emerging standardization using [EM Glossary](https://emglossary.helmholtz-metadaten.de/) terms and Pydantic validation (work in progress)
+- **Physical Unit Management** - Automatic normalization of physical quantities (voltages, distances, times) to preferred units via Pint
+
 ````{grid} 2
 :gutter: 3
 
 ```{grid-item-card} 🚀 Getting Started
-:link: getting_started
+:link: user_guide/getting_started
 :link-type: doc
 
 New to NexusLIMS? Start here for installation, configuration, and quick start guide.
@@ -46,7 +62,7 @@ Learn about the record building workflow and data taxonomy.
 ```
 
 ```{grid-item-card} 🛠️ Supported File Formats
-:link: extractors
+:link: user_guide/extractors
 :link-type: doc
 
 Explore the comprehensive list of supported microscopy file formats and NexusLIMS's metadata extraction capabilities.
@@ -105,7 +121,7 @@ Contact Datasophos
 
 ---
 
-```{admonition} Build Metadata
+```{admonition} Documentation Metadata
 :class: note
 
 **Package version:** {sub-ref}`version`\

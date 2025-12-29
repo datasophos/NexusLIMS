@@ -18,7 +18,7 @@ Integration tests provide:
 
 | Aspect | Unit Tests | Integration Tests |
 |--------|-----------|-------------------|
-| **Speed** | Very fast (seconds) | Slower (minutes) |
+| **Speed** | Very fast (seconds) | Slower (potentially minutes) |
 | **Isolation** | Mocked dependencies | Real services |
 | **Coverage** | Internal logic | External interactions |
 | **Frequency** | Run on every commit | Run nightly or before merge |
@@ -134,37 +134,24 @@ graph TD
 
 4. **Verify service connectivity:**
    ```bash
-   # NEMO
-   curl http://localhost:8000/  # Should return HTML
+   # NEMO (via Caddy reverse proxy)
+   curl http://nemo.localhost/  # Should return HTML
 
-   # CDCS
-   curl http://localhost:8080/  # Should return HTML
+   # CDCS (via Caddy reverse proxy)
+   curl http://cdcs.localhost/  # Should return HTML
 
-   # Fileserver
-   curl http://localhost:8081/  # Should return directory listing
+   # Mailpit (via Caddy reverse proxy)
+   curl http://mailpit.localhost/  # Should return directory listing
+
+   # Fileserver (via Caddy reverse proxy)
+   # the fileserver only runs while the tests are actually running,
+   # so the URL below will not be available unless tests are running
+   curl http://fileserver.localhost/
    ```
 
 ### Environment Configuration
 
-Integration tests automatically configure environment variables via the `env/.env.integration` file:
-
-```bash
-# NEMO Configuration
-NX_NEMO_ADDRESS_1=http://nemo.localhost/api/
-NX_NEMO_TOKEN_1=test_token_12345
-
-# CDCS Configuration
-NX_CDCS_URL=http://cdcs.localhost/
-NX_CDCS_USER=admin
-NX_CDCS_PASS=admin
-
-# Test Data Paths
-NX_INSTRUMENT_DATA_PATH=/tmp/nexuslims-test-instrument-data
-NX_DATA_PATH=/tmp/nexuslims-test-data
-NX_DB_PATH=/tmp/nexuslims-test.db
-```
-
-**Note:** Fixtures automatically patch these through the `nexusLIMS.config` module, so manual configuration is rarely needed.
+Fixtures automatically patch configuration variables through `nexusLIMS.config`, so there's no envrionment configuration necessary.
 
 ## Running Integration Tests
 
@@ -190,7 +177,7 @@ For development and debugging, you can keep Docker services running between test
 export NX_TESTS_KEEP_DOCKER_RUNNING=1
 
 # Run tests - services will stay running after completion
-uv run pytest tests/integration/ -v -m integration
+uv run pytest tests/integration/ -v
 
 # Services now available for manual testing/inspection
 docker compose -f tests/integration/docker/docker-compose.yml ps
@@ -207,26 +194,29 @@ docker compose -f tests/integration/docker/docker-compose.yml down -v
 
 ### Configure via .env.test (Optional)
 
-You can optionally configure integration test behavior via a `.env.test` file in the repository root. See `.env.test.example` for available configuration options.
+You can optionally configure integration test behavior via a
+`.env.test` file in the repository root. See `.env.test.example`
+for available configuration options. Currently the only option
+is the `NX_TESTS_KEEP_DOCKER_RUNNING` setting.
 
 ### Quick Start
 
 ```bash
 # From repository root
-uv run pytest tests/integration/ -v -m integration
+uv run pytest tests/integration/ -v
 ```
 
 ### Common Commands
 
 ```bash
 # Run all integration tests with coverage
-uv run pytest tests/integration/ -v -m integration --cov=nexusLIMS
+uv run pytest tests/integration/ -v --cov=nexusLIMS
 
 # Run specific test file
 uv run pytest tests/integration/test_nemo_integration.py -v
 
 # Run with print statements visible
-uv run pytest tests/integration/ -v -m integration -s
+uv run pytest tests/integration/ -v -s
 ```
 
 ### Running Without Docker
@@ -235,9 +225,6 @@ If you only want to run unit tests (which don't require Docker):
 
 ```bash
 # Unit tests only (default)
-uv run pytest
-
-# Or explicitly
 uv run pytest tests/unit/ -v
 ```
 
@@ -256,24 +243,14 @@ uv run pytest tests/unit/ -v
 | `test_fixtures_smoke.py` | Fixture validation | 20+ |
 | `test_fileserver.py` | File serving | 2+ |
 
-### Test Markers
-
-```python
-@pytest.mark.integration          # All integration tests (required)
-```
-
-**Usage:**
-```bash
-# Only integration tests
-uv run pytest -m "integration" tests/integration/
-
-# Exclude slow tests
-uv run pytest -m "integration" tests/integration/
-```
-
 ## Key Integration Test Patterns
 
 ### 1. NEMO Integration Tests
+
+The `nemo_client` fixture provides connection information for the NEMO Docker instance:
+- `nemo_client["url"]`: NEMO API base URL (e.g., `http://nemo.localhost/api/`)
+- `nemo_client["token"]`: Authentication token for API requests
+- `nemo_client["timezone"]`: Timezone string for datetime handling (e.g., `"America/New_York"`)
 
 ```python
 @pytest.mark.integration
@@ -286,7 +263,7 @@ def test_nemo_connector_fetches_users(nemo_client):
         token=nemo_client["token"],
         timezone=nemo_client["timezone"]
     )
-    
+
     users = connector.get_all_users()
     assert len(users) > 0
     assert any(u["username"] == "captain" for u in users)
@@ -294,22 +271,44 @@ def test_nemo_connector_fetches_users(nemo_client):
 
 ### 2. CDCS Integration Tests
 
+The `cdcs_client` fixture provides connection information and utilities for the CDCS Docker instance:
+- `cdcs_client["url"]`: CDCS base URL (e.g., `http://cdcs.localhost/`)
+- `cdcs_client["username"]`: Authentication username for CDCS API
+- `cdcs_client["password"]`: Authentication password for CDCS API
+- `cdcs_client["register_record"](record_id)`: Register a record ID for automatic cleanup after test
+- `cdcs_client["created_records"]`: List of all registered record IDs
+
 ```python
 @pytest.mark.integration
 def test_cdcs_record_upload(cdcs_client):
     """Test uploading and retrieving records from CDCS."""
     import nexusLIMS.cdcs as cdcs
-    
+
     xml_content = '''<?xml version="1.0" encoding="UTF-8"?>
     <Experiment>...</Experiment>'''
-    
+
     record_id = cdcs.upload_record_content(xml_content, "Test Record")
-    cdcs_client["register_record"](record_id)
-    
+    cdcs_client["register_record"](record_id)  # Auto-cleanup after test
+
     assert record_id is not None
 ```
 
 ### 3. End-to-End Workflow Tests
+
+The `test_environment_setup` fixture configures a complete end-to-end test environment with all services and test data:
+- `test_environment_setup["instrument_pid"]`: Test instrument ID (e.g., `"FEI-Titan-TEM"`)
+- `test_environment_setup["dt_from"]`: Expected session start datetime
+- `test_environment_setup["dt_to"]`: Expected session end datetime
+- `test_environment_setup["user"]`: Expected username for test session
+- `test_environment_setup["instrument_db"]`: Configured test instrument database
+- `test_environment_setup["cdcs_client"]`: CDCS client configuration
+
+This fixture automatically:
+- Starts all Docker services (NEMO, CDCS, MailPit, fileserver)
+- Configures NEMO harvester with test data
+- Sets up test database with instruments
+- Extracts test microscopy files
+- Configures CDCS client for uploads
 
 ```python
 @pytest.mark.integration
@@ -317,31 +316,35 @@ def test_complete_record_building(test_environment_setup):
     """Test complete NEMO → Record Builder → CDCS workflow."""
     from nexusLIMS.harvesters.nemo.utils import add_all_usage_events_to_db
     from nexusLIMS.builder.record_builder import process_new_records
-    
+
     # Harvest from NEMO
     add_all_usage_events_to_db()
-    
+
     # Build and upload records
     process_new_records()
-    
+
     # Verify records in CDCS
     # ... verification ...
 ```
 
 ### 4. Error Handling Tests
 
+The `nemo_connector` fixture provides a pre-configured `NemoConnector` instance for testing. It differs from `nemo_client` in that:
+- **`nemo_client`**: Returns a dict with connection information (URL, token, timezone) - use when you need to manually create a connector or test connection parameters
+- **`nemo_connector`**: Returns a ready-to-use `NemoConnector` instance configured with test database and NEMO client settings - use when you just need a working connector
+
 ```python
 @pytest.mark.integration
 def test_nemo_connection_failure(nemo_connector, monkeypatch):
     """Test graceful handling of NEMO connection failures."""
     from nexusLIMS.harvesters.nemo.utils import add_all_usage_events_to_db
-    
+
     # Simulate network error
     monkeypatch.setattr(
         "requests.get",
         side_effect=requests.ConnectionError("Network error")
     )
-    
+
     # Should handle gracefully
     with pytest.raises(requests.ConnectionError):
         add_all_usage_events_to_db()
@@ -371,10 +374,10 @@ docker compose logs --tail=100
 
 ### Access Service Web UIs
 
-- **NEMO**: http://nemo.localhost (or http://localhost:8000)
-- **CDCS**: http://cdcs.localhost (or http://localhost:8080)
-- **MailPit**: http://mailpit.localhost (or http://localhost:8025)
-- **Fileserver**: http://fileserver.localhost/data (or http://localhost:8081/data)
+- **NEMO**: [http://nemo.localhost](http://nemo.localhost) (or [http://localhost:8000](http://localhost:8000))
+- **CDCS**: [http://cdcs.localhost](http://cdcs.localhost) (or [http://localhost:8080](http://localhost:8080)) -- this can be useful to inspect records during/after tests
+- **MailPit**: [http://mailpit.localhost](http://mailpit.localhost) (or [http://localhost:8025](http://localhost:8025))
+- **Fileserver**: [http://fileserver.localhost/data](http://fileserver.localhost/data) (or [http://localhost:8081/data](http://localhost:8081/data))
 
 ### Use Standalone Fileserver
 
@@ -447,8 +450,8 @@ docker compose up -d
 
 **Check credentials:**
 ```bash
-# Should return 200
-curl -u admin:admin http://localhost:8080/api/v2/templates/
+# Should return 200 status with some workspace data
+curl -u admin:admin http://cdcs.localhost/rest/workspace/
 ```
 
 **Check XML validity:**
@@ -637,9 +640,9 @@ class Test[FeatureName]:
 
 ## Further Reading
 
-- **Tests Integration README**: Quick reference guide (see `tests/integration/README.md`)
-- **Docker Services Documentation**: Service details (see `tests/integration/docker/README.md`)
-- **Shared Test Fixtures**: Available fixtures (see `tests/fixtures/shared_data.py`)
+- **Tests Integration README**: Quick reference guide in `tests/integration/README.md`
+- **Docker Services Documentation**: Service details in `tests/integration/docker/README.md`
+- **Shared Test Fixtures**: Available fixtures (see [`tests/fixtures/shared_data.py`](../../../tests/fixtures/shared_data.py))
 
 ## Support
 

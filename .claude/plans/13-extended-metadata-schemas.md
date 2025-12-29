@@ -314,7 +314,7 @@ Completed:
   - Included benefits, best practices, and XML output examples
   - Updated metadata validation section to reference new schema system
 
-- ✅ **Created `docs/schema_changes.md`**
+- ✅ **Created `docs/nexuslims_internal_schema.md`**
   - Complete overview of v2.2.0 metadata schema system
   - Detailed comparison of v1 vs v2.2.0 approaches
   - Migration guide for extractor and instrument profile developers
@@ -353,7 +353,7 @@ Completed:
 - ✅ **Total: 600 tests passing**
 
 **Documentation Complete:**
-- User-facing migration guide (schema_changes.md)
+- User-facing migration guide (nexuslims_internal_schema.md)
 - Developer guide for extractors (writing_extractor_plugins.md)
 - Reference documentation (em_glossary_reference.md)
 - Changelog fragment for release notes (13.feature.2.md)
@@ -628,7 +628,7 @@ NexusMetadata (base)
    - Extension section usage
    - Migration guide from v1
 
-2. **Create `docs/schema_changes.md`:** (NEW)
+2. **Create `docs/nexuslims_internal_schema.md`:** (NEW)
    - Overview of new schema system
    - Benefits (type safety, units, standardization)
    - Breaking changes from experimental V1
@@ -786,7 +786,7 @@ EMG_IDS["acceleration_voltage"] = "EMG_00000004"
 
 **Documentation files:**
 1. `docs/em_glossary_mapping.md` - Field mapping reference
-2. `docs/schema_changes.md` - Schema system overview
+2. `docs/nexuslims_internal_schema.md` - Schema system overview
 3. `docs/writing_extractor_plugins.md` - Updated for new system
 4. `docs/em_glossary_reference.md` - EM Glossary usage
 5. `CHANGELOG.md` - Release notes

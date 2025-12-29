@@ -182,7 +182,9 @@ source_suffix = {
     ".md": "markdown",
 }
 highlight_language = "python"
-today = ""
+# Set today to current timestamp in local timezone
+today = datetime.now().strftime("%B %d, %Y at %I:%M %p %Z")
+# Format: e.g., "December 28, 2025 at 02:30 PM PST"
 pygments_style = "sphinx"
 add_function_parentheses = True
 # master_doc = 'index'

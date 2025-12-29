@@ -30,6 +30,8 @@ from pydantic import (
 )
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+from nexusLIMS.version import __version__
+
 logger = logging.getLogger(__name__)
 
 
@@ -186,15 +188,6 @@ class Settings(BaseSettings):
         description=(
             "The root URL of the NexusLIMS CDCS front-end. This will be the target for "
             "record uploads that are authenticated using the CDCS credentials."
-        ),
-    )
-    NX_TEST_CDCS_URL: AnyHttpUrl | None = Field(
-        None,
-        description=(
-            "(development setting) The root URL of a NexusLIMS CDCS instance to use "
-            "for integration testing. If defined, this URL will be used for the CDCS "
-            'tests rather than the "actual" URL defined in NX_CDCS_URL. If not '
-            "defined, no integration tests will be run."
         ),
     )
     NX_CERT_BUNDLE_FILE: FilePath | None = Field(
@@ -474,8 +467,19 @@ class _SettingsManager:
         """Create a new Settings instance."""
         try:
             return Settings()
-        except ValidationError:
-            logger.exception("Configuration validation error")
+        except ValidationError as e:
+            # Add help message to exception using add_note (Python 3.11+)
+            # This appears after the exception traceback
+            # Strip .dev* suffix from version for documentation link
+            doc_version = re.sub(r"\.dev.*$", "", __version__)
+            help_msg = (
+                "\n" + "=" * 80 + "\n"
+                "NexusLIMS configuration validation failed.\n"
+                f"See https://datasophos.github.io/NexusLIMS/v{doc_version}/configuration.html\n"
+                "for complete environment variable reference.\n" + "=" * 80
+            )
+            if hasattr(e, "add_note"):
+                e.add_note(help_msg)
             raise
 
     def refresh(self) -> Settings:

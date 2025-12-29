@@ -14,7 +14,7 @@ An instrument profile is a collection of:
 - **Parser functions**: Custom logic to process metadata for a specific instrument
 - **Transformations**: Functions to modify extracted metadata values
 - **Extractor overrides**: Force specific extractors for certain file types
-- **Static metadata**: Pre-defined values to inject for all files from this instrument
+- **Extension fields**: Pre-defined values to inject into the extensions section for all files from this instrument
 
 Profiles are automatically discovered and registered when NexusLIMS starts, making it easy to add instrument-specific customizations without touching the core codebase.
 
@@ -117,9 +117,9 @@ my_instrument_profile = InstrumentProfile(
     parsers={
         "custom_processing": my_custom_parser,
     },
-    static_metadata={
-        "nx_meta.Building": "Building 123",
-        "nx_meta.Room": "Room 456",
+    extension_fields={
+        "Building": "Building 123",
+        "Room": "Room 456",
     },
 )
 
@@ -191,55 +191,110 @@ def add_warnings(metadata: dict[str, Any], context: ExtractionContext) -> dict[s
 
 ### Transformations
 
-Transformations modify specific metadata values:
+Transformations modify top-level metadata keys returned by extractors. They're applied to `metadata[key]` where `metadata` is the dict returned by an extractor (typically containing `"nx_meta"`, `"hyperspy_metadata"`, etc.).
+
+**Example: Converting stage positions**
 
 ```python
-def convert_to_meters(value: float) -> float:
-    """Convert millimeters to meters."""
-    return value / 1000.0
+from typing import Any
+
+def fix_stage_positions(nx_meta: dict[str, Any]) -> dict[str, Any]:
+    """
+    Convert stage positions from micrometers to millimeters.
+
+    Some instruments report stage position in µm but should be in mm.
+    """
+    if "stage_x" in nx_meta:
+        # Extract magnitude and convert
+        old_x = nx_meta["stage_x"]
+        if hasattr(old_x, "magnitude"):
+            # It's a Pint Quantity
+            from nexusLIMS.schemas.units import ureg
+            from decimal import Decimal
+            nx_meta["stage_x"] = ureg.Quantity(
+                old_x.to("micrometer").magnitude / Decimal("1000"),
+                "millimeter"
+            )
+
+    if "stage_y" in nx_meta:
+        old_y = nx_meta["stage_y"]
+        if hasattr(old_y, "magnitude"):
+            from nexusLIMS.schemas.units import ureg
+            from decimal import Decimal
+            nx_meta["stage_y"] = ureg.Quantity(
+                old_y.to("micrometer").magnitude / Decimal("1000"),
+                "millimeter"
+            )
+
+    return nx_meta
 
 profile = InstrumentProfile(
     instrument_id="My-Microscope-ID",
     transformations={
-        "nx_meta.Stage_X": convert_to_meters,
-        "nx_meta.Stage_Y": convert_to_meters,
+        "nx_meta": fix_stage_positions,  # Transforms the nx_meta dict
     },
 )
 ```
 
-The transformation is applied if the key exists in metadata.
+**How transformations work:**
+1. Extractor returns `{"nx_meta": {...}, "hyperspy_metadata": {...}, ...}`
+2. For each `(key, func)` in `profile.transformations`:
+   - If `key` exists in the metadata dict: `metadata[key] = func(metadata[key])`
+3. The transformation function receives the **value** of that key and returns the modified value
 
-### Static Metadata
+**Common use cases:**
+- Correcting unit conversions
+- Fixing known instrument calibration issues
+- Normalizing values from different file format versions
+- Post-processing metadata that extractors can't handle generically
 
-Inject fixed values for all files from this instrument:
+**Note:** Transformations are applied **after** parsers, so parsers can add fields that transformations then modify.
+
+### Extension Fields
+
+Inject fixed values into the `extensions` section for all files from this instrument:
 
 ```python
 profile = InstrumentProfile(
     instrument_id="My-Microscope-ID",
-    static_metadata={
-        "nx_meta.Facility": "My Lab",
-        "nx_meta.Building": "Building A",
-        "nx_meta.Department": "Materials Science",
+    extension_fields={
+        "Facility": "My Lab",
+        "Building": "Building A",
+        "Department": "Materials Science",
     },
 )
 ```
 
-Use dot notation for nested keys. The values are injected after extraction completes.
+**How it works:**
+- Extension fields populate `nx_meta["extensions"]` automatically
+- Use simple field names (not dot notation) - they're automatically placed in the extensions dict
+- Values can be strings, numbers, or Pint Quantities
+- These fields are added **after** extraction completes, so they override any conflicting extractor-provided extensions
 
-### Extractor Overrides
+**When to use extension fields:**
+- Adding site-specific metadata (facility, building, room)
+- Instrument calibration constants
+- Fixed instrument configuration (detector type, camera model)
+- Defaults that can be overridden by extractor logic
 
-Force specific extractors for certain file extensions:
-
+**Example with Pint Quantities:**
 ```python
+from nexusLIMS.schemas.units import ureg
+
 profile = InstrumentProfile(
-    instrument_id="My-Zeiss-SEM",
-    extractor_overrides={
-        "tif": "zeiss_tif_extractor",  # Use Zeiss-specific TIF extractor
+    instrument_id="My-SEM",
+    extension_fields={
+        "Facility": "NIST Center for Nanoscale Science",
+        "Building": "Bldg 217",
+        "Room": "A206",
+        # Physical quantities also supported
+        "detector_solid_angle": ureg.Quantity(Decimal("0.2"), "steradian"),
+        "nominal_detector_distance": ureg.Quantity(Decimal("50"), "millimeter"),
     },
 )
 ```
 
-This is useful when multiple extractors support the same extension but one works better for your instrument.
+For complex metadata injection logic or conditional behavior, use parser functions instead of extension_fields.
 
 ## Examples
 
@@ -249,6 +304,12 @@ This is useful when multiple extractors support the same extension but one works
 - Warning generation for unreliable fields
 - Filename-based acquisition mode detection
 - Best practices and common patterns
+
+**🧪 Working Test Examples:** For additional examples showing profiles in action during extraction, see the test suite at `tests/unit/test_extractors/test_profiles.py::TestProfileApplicationDuringExtraction`. These tests demonstrate:
+- How parsers are applied during metadata extraction
+- How transformations modify extracted metadata
+- How extension fields are injected
+- Error handling when parsers/transformations fail
 
 The examples below show specific use cases in isolation.
 
@@ -307,7 +368,7 @@ def detect_diffraction_from_filename(metadata, context):
 
 
 jeol_profile = InstrumentProfile(
-    instrument_id="JEOL-JEM-TEM-565989",
+    instrument_id="JEOL-JEM-TEM",
     parsers={"diffraction_detection": detect_diffraction_from_filename},
 )
 
@@ -374,9 +435,10 @@ get_profile_registry().register(titan_profile)
 
 ## Built-in Profiles
 
-NexusLIMS includes profiles for common instruments:
+NexusLIMS includes reference profiles developed for instruments
+in the Nexus Electron Microscopy facility at NIST:
 
-### FEI Titan STEM (643)
+### FEI Titan STEM
 
 **Module:** `nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643`
 
@@ -384,7 +446,7 @@ NexusLIMS includes profiles for common instruments:
 - Adds warnings for unreliable Detector, Operator, and Specimen fields
 - Detects EFTEM diffraction patterns from "Imaging Mode" metadata
 
-### FEI Titan TEM (642)
+### FEI Titan TEM
 
 **Module:** `nexusLIMS.extractors.plugins.profiles.fei_titan_tem_642`
 
@@ -393,7 +455,7 @@ NexusLIMS includes profiles for common instruments:
 - Detects diffraction mode from Tecnai Mode or Operation Mode
 - Handles stage position, aperture settings, and filter parameters
 
-### JEOL JEM TEM (642 Stroboscope)
+### JEOL JEM TEM (Stroboscope)
 
 **Module:** `nexusLIMS.extractors.plugins.profiles.jeol_jem_642`
 
@@ -454,6 +516,54 @@ For **built-in profiles**:
    result = my_parser(metadata, mock_context)
    assert result["nx_meta"]["new_field"] == "expected_value"
    ```
+
+## Schema Validation in Profiles
+
+```{versionadded} 2.2.0
+All metadata is validated using Pydantic schemas before being included in records. This applies to metadata extracted by plugins and modified by instrument profiles.
+```
+
+### Key Concepts
+
+When your profile modifies metadata:
+
+1. **Core fields** (EM Glossary names like `acceleration_voltage`, `working_distance`) are validated by type-specific schemas
+2. **Extension fields** (added via `extension_fields` or `add_to_extensions()`) are not validated
+3. Validation happens **after** all profile processing (parsers → transformations → extensions)
+
+### Quick Reference
+
+**Adding validated core fields in parsers:**
+```python
+from nexusLIMS.schemas.units import ureg
+
+def add_calibrated_voltage(metadata, context):
+    # Core field - will be validated
+    metadata["nx_meta"]["acceleration_voltage"] = ureg.Quantity(200, "kilovolt")
+    return metadata
+```
+
+**Adding unvalidated extension fields:**
+```python
+from nexusLIMS.schemas.utils import add_to_extensions
+
+def add_facility_metadata(metadata, context):
+    # Extensions - not validated
+    add_to_extensions(metadata, "facility", "NIST CNST")
+    add_to_extensions(metadata, "room", "A206")
+    return metadata
+```
+
+### For More Details
+
+For comprehensive information on working with metadata in profiles, see:
+
+- **Using Pint Quantities with units**: {ref}`Using Pint Quantities for Physical Values <using-pint-quantities>`
+- **EM Glossary field names**: [EM Glossary Reference](em_glossary_reference.md)
+- **Core vs. Extensions decision guide**: {ref}`Core Fields vs. Extensions <core-fields-vs-extensions>`
+- **Schema validation details**: {ref}`Metadata Validation <metadata-validation>`
+- **Common validation issues**: {ref}`Best Practices <best-practices>`
+- **Metadata helper functions**: {ref}`Helper Functions <metadata-helper-functions>`
 
 ## Best Practices
 
@@ -576,6 +686,8 @@ profile = InstrumentProfile(
 ## See Also
 
 - [Writing Extractor Plugins](writing_extractor_plugins.md) - Learn to write new extractors
-- [Extractors Overview](extractors.md) - Understanding the extraction system
+- [Extractors Overview](../user_guide/extractors.md) - Understanding the extraction system
+- [NexusLIMS Internal Schema](nexuslims_internal_schema.md) - Understanding Pydantic schemas
+- {ref}`Helper Functions <metadata-helper-functions>` - Using `add_to_extensions()` and `emg_field()`
 - API Reference: {class}`nexusLIMS.extractors.base.InstrumentProfile`
 - API Reference: {class}`nexusLIMS.extractors.profiles.InstrumentProfileRegistry`

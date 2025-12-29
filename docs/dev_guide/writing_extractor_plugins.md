@@ -41,19 +41,29 @@ class XYZExtractor:
     def supports(self, context: ExtractionContext) -> bool:
         """
         Check if this extractor supports the given file.
-        
+
+        Can check file extension and/or file contents (content-sniffing).
+
         Parameters
         ----------
         context : ExtractionContext
             Contains file_path and instrument information
-            
+
         Returns
         -------
         bool
             True if this extractor can handle the file
         """
         extension = context.file_path.suffix.lower().lstrip(".")
-        return extension == "xyz"
+        if extension != "xyz":
+            return False
+
+        # Optional: Check file contents for format signature
+        # with open(context.file_path, "rb") as f:
+        #     header = f.read(8)
+        #     return header.startswith(b"XYZDATA")
+
+        return True
     
     def extract(self, context: ExtractionContext) -> list[dict[str, Any]]:
         """
@@ -145,6 +155,10 @@ Determine if this extractor can handle a given file.
 
 **Returns:** `True` if this extractor supports the file
 
+```{note}
+**Content Sniffing**: While extension checks are fast, you can also inspect file contents to verify the format. This is useful when multiple formats share the same extension or when you need to distinguish file variants. See [Content-Based Detection](#content-based-detection) for advanced examples.
+```
+
 **Example:**
 ```python
 def supports(self, context: ExtractionContext) -> bool:
@@ -182,6 +196,7 @@ def extract(self, context: ExtractionContext) -> list[dict[str, Any]]:
     return [metadata]
 ```
 
+(metadata-validation)=
 #### Metadata Validation
 
 The `nx_meta` section is automatically validated using **type-specific** Pydantic schemas based on the `DatasetType` field. NexusLIMS provides schema classes for each dataset type:
@@ -215,6 +230,62 @@ The `nx_meta` section is automatically validated using **type-specific** Pydanti
 
 All schemas support the `extensions` section for instrument-specific metadata that doesn't fit the core schema (see "Core Fields vs. Extensions" below).
 
+(schema-selection-logic)=
+**Schema Selection Logic**
+
+When writing an extractor, choose the appropriate `DatasetType` based on the data content:
+
+| DatasetType | When to Use | Example Data | Schema Used |
+|-------------|-------------|--------------|-------------|
+| `"Image"` | 2D imaging data (SEM, TEM, STEM images) | Micrographs, detector images | `ImageMetadata` |
+| `"Spectrum"` | 1D spectral data (EDS, EELS point spectra) | Single-point spectrum | `SpectrumMetadata` |
+| `"SpectrumImage"` | 2D image with spectrum at each pixel | EDS maps, EELS spectrum images | `SpectrumImageMetadata` |
+| `"Diffraction"` | Diffraction patterns (SAED, CBED, 4D-STEM) | Diffraction patterns, 4D datasets | `DiffractionMetadata` |
+| `"Misc"` | Other data types | Proprietary formats, unusual data | `NexusMetadata` (base) |
+| `"Unknown"` | Unable to determine type | Unreadable files, fallback | `NexusMetadata` (base) |
+
+**Common extraction patterns:**
+
+```python
+# SEM image
+nx_meta = {
+    "DatasetType": "Image",  # → validates with ImageMetadata
+    "Data Type": "SEM_Imaging",
+    "acceleration_voltage": ureg.Quantity(15, "kilovolt"),
+    "working_distance": ureg.Quantity(5.2, "millimeter"),
+    # ... imaging-specific fields
+}
+
+# EDS spectrum
+nx_meta = {
+    "DatasetType": "Spectrum",  # → validates with SpectrumMetadata
+    "Data Type": "SEM_EDS",
+    "acquisition_time": ureg.Quantity(60, "second"),
+    "live_time": ureg.Quantity(58.5, "second"),
+    "channel_size": ureg.Quantity(10, "electronvolt"),
+    # ... spectrum-specific fields
+}
+
+# EDS map (spectrum at each pixel)
+nx_meta = {
+    "DatasetType": "SpectrumImage",  # → validates with SpectrumImageMetadata
+    "Data Type": "STEM_EDS",
+    # Validates BOTH imaging and spectrum fields
+    "acceleration_voltage": ureg.Quantity(200, "kilovolt"),
+    "acquisition_time": ureg.Quantity(300, "second"),
+    # ... combined fields
+}
+```
+
+**Tip:** If unsure about `DatasetType`, examine the data shape:
+- Single 2D array → likely `"Image"`
+- Single 1D array with energy axis → likely `"Spectrum"`
+- 3D array (x, y, spectrum) → likely `"SpectrumImage"`
+- 2D array with reciprocal space metadata → likely `"Diffraction"`
+
+For more details on validation and schema structure, see [NexusLIMS Internal Schema](nexuslims_internal_schema.md).
+
+(using-pint-quantities)=
 #### Using Pint Quantities for Physical Values
 
 **Since v2.2.0**, NexusLIMS uses **Pint Quantities** for all fields with physical units. This provides:
@@ -225,6 +296,7 @@ All schemas support the `extensions` section for instrument-specific metadata th
 
 **Example with Pint Quantities:**
 ```python
+# Import the NexusLIMS unit registry
 from nexusLIMS.schemas.units import ureg
 
 # Create Pint Quantity objects for fields with units
@@ -232,7 +304,7 @@ nx_meta = {
     "DatasetType": "Image",
     "Data Type": "SEM_Imaging",
     "Creation Time": "2024-01-15T10:30:00-05:00",
-    
+
     # Physical quantities with units (using Pint)
     "acceleration_voltage": ureg.Quantity(15, "kilovolt"),  # or ureg("15 kV")
     "working_distance": ureg.Quantity(5.2, "millimeter"),  # or ureg("5.2 mm")
@@ -240,6 +312,8 @@ nx_meta = {
     "dwell_time": ureg.Quantity(10, "microsecond"),  # or ureg("10 us")
 }
 ```
+
+**Tip:** For a complete reference of standardized field names and their preferred units, see {ref}`EM Glossary Quick Reference <field-mapping-quick-reference>`. When defining Pydantic schemas (not extractors), you can use {ref}`emg_field() <metadata-helper-functions>` to automatically populate field metadata from EM Glossary.
 
 **Converting from raw values:**
 ```python
@@ -254,9 +328,9 @@ nx_meta["acceleration_voltage"] = ureg.Quantity(voltage_v, "volt")
 nx_meta["working_distance"] = ureg("5.2 mm")
 ```
 
-**Using FieldDefinition for automatic Quantity creation:**
+**Using FieldDefinition for bulk metadata extraction:**
 
-For TIFF-based formats with key-value metadata, use the `FieldDefinition` pattern:
+The `FieldDefinition` pattern provides a declarative way to extract many metadata fields with minimal code repetition. This works for any file format with key-value metadata (TIFF tags, HDF5 attributes, JSON/XML metadata, etc.):
 
 ```python
 from nexusLIMS.extractors.base import FieldDefinition
@@ -267,32 +341,40 @@ FIELD_DEFINITIONS = [
         source_key="HV",  # Key in source metadata
         target_key="acceleration_voltage",  # EM Glossary field name
         conversion_factor=1e-3,  # Convert from V to kV
-        unit="kilovolt"  # Target unit as Pint unit string
+        target_unit="kilovolt"  # Target unit as Pint unit string
     ),
     FieldDefinition(
-        source_key="WD", 
+        source_key="WD",
         target_key="working_distance",
-        unit="millimeter"  # No conversion if already in target units
+        target_unit="millimeter"  # No conversion if already in target units
     ),
 ]
 
 # In your extract() method, iterate over field definitions:
+from decimal import Decimal
+
 for field in FIELD_DEFINITIONS:
     if field.source_key in source_metadata:
         raw_value = source_metadata[field.source_key]
-        
+
         # Apply conversion factor if specified
         if field.conversion_factor:
-            value = float(raw_value) * field.conversion_factor
+            value = Decimal(str(raw_value)) * Decimal(str(field.conversion_factor))
         else:
-            value = float(raw_value)
-        
-        # Create Pint Quantity if unit is specified
-        if field.unit:
-            nx_meta[field.target_key] = ureg.Quantity(value, field.unit)
+            value = Decimal(str(raw_value))
+
+        # IMPORTANT: Quantities MUST use Decimal, not float
+        # This ensures precision for unit conversions
+        if field.target_unit:
+            nx_meta[field.target_key] = ureg.Quantity(value, field.target_unit)
         else:
             nx_meta[field.target_key] = value
 ```
+
+**Real-world examples:**
+- [Quanta TIF extractor](../../nexusLIMS/extractors/plugins/quanta_tif.py) - Uses `FieldDefinition` for extracting TIFF metadata tags
+- [Tescan TIF extractor](../../nexusLIMS/extractors/plugins/tescan_tif.py) - Uses `FieldDefinition` for SEM metadata extraction
+- [Orion TIF extractor](../../nexusLIMS/extractors/plugins/orion_HIM_tif.py) - Uses `FieldDefinition` for HIM metadata extraction
 
 **Benefits of Pint Quantities:**
 1. **Type safety**: Invalid units are caught immediately
@@ -314,41 +396,64 @@ for field in FIELD_DEFINITIONS:
 
 NexusLIMS uses standardized field names from the **Electron Microscopy Glossary (EM Glossary)** for core metadata fields. This improves interoperability and aligns with community standards.
 
-**Common EM Glossary Fields:**
-
-| Field Name | EM Glossary ID | Preferred Unit | Description |
-|------------|----------------|----------------|-------------|
-| `acceleration_voltage` | EMG_00000004 | kilovolt (kV) | Electron beam acceleration voltage |
-| `working_distance` | EMG_00000050 | millimeter (mm) | Distance from pole piece to sample |
-| `beam_current` | EMG_00000006 | picoampere (pA) | Electron beam current |
-| `dwell_time` | EMG_00000015 | microsecond (µs) | Pixel dwell time for scanning |
-| `camera_length` | EMG_00000008 | millimeter (mm) | Camera length for diffraction |
-| `acquisition_time` | EMG_00000055 | second (s) | Spectrum acquisition time |
-
-For a complete mapping of field names to EM Glossary IDs and preferred units, see the [EM Glossary Reference](em_glossary_reference.md).
+For the complete field mapping (50+ fields), see the [EM Glossary Reference](em_glossary_reference.md).
 
 **When to use EM Glossary names:**
 - Use EM Glossary names for **core metadata fields** that have standardized meanings
-- For vendor-specific or instrument-specific fields without EM Glossary equivalents, use descriptive names and place them in the `extensions` section
+- For vendor-specific or instrument-specific fields, use EM Glossary names where possible, or for fields without EM Glossary equivalents, use descriptive names.
+
+(core-fields-vs-extensions)=
+#### Core Fields vs. Extensions
+
+NexusLIMS metadata follows a two-tier structure:
+
+1. **Core fields** - Standardized EM Glossary fields validated by Pydantic schemas
+2. **Extensions** - Vendor/instrument-specific fields not in the core schema
+
+**Decision guide:**
+
+| Use Core Field When... | Use Extension When... |
+|------------------------|----------------------|
+| Field has EM Glossary equivalent | Field is vendor-specific (e.g., "fei_detector_mode") |
+| Field is validated by schema | Field doesn't fit any schema |
+| Field is common across instruments | Field is instrument-specific metadata |
+| Field should be searchable/standardized | Field is informational only |
 
 **Example with core fields and extensions:**
 ```python
+from nexusLIMS.schemas.utils import add_to_extensions
+
 nx_meta = {
-    # Core fields (EM Glossary names)
+    # Core fields (EM Glossary names) - validated by schema
     "acceleration_voltage": ureg.Quantity(15, "kilovolt"),
     "working_distance": ureg.Quantity(5.2, "millimeter"),
-    
-    # Vendor-specific fields go in extensions
-    "extensions": {
-        "detector_brightness": 50.0,  # No EM Glossary equivalent
-        "facility": "Nexus Facility",
-        "quanta_spot_size": 3.5,
-    }
+    "beam_current": ureg.Quantity(100, "picoampere"),
 }
+
+# Add vendor-specific fields to extensions using helper
+add_to_extensions(nx_meta, "detector_brightness", 50.0)
+add_to_extensions(nx_meta, "facility", "Nexus Facility")
+add_to_extensions(nx_meta, "quanta_spot_size", 3.5)
+
+# Result:
+# nx_meta["extensions"] = {
+#     "detector_brightness": 50.0,
+#     "facility": "Nexus Facility",
+#     "quanta_spot_size": 3.5,
+# }
 ```
+
+For detailed documentation, see {ref}`Helper Functions <metadata-helper-functions>`.
+
+**Naming conventions for extensions:**
+- Use `snake_case` for consistency with core fields
+- Add vendor prefix for vendor-specific fields (e.g., `fei_`, `zeiss_`, `quanta_`)
+- Use descriptive names (avoid abbreviations)
+- Document units in comments if applicable
 
 ## Advanced Patterns
 
+(content-based-detection)=
 ### Content-Based Detection
 
 For formats where extension alone isn't sufficient:
@@ -400,28 +505,6 @@ class QuantaTifExtractor:
         return "Quanta" in context.instrument.name
 ```
 
-### Using Existing Extraction Functions
-
-If you have existing extraction code, wrap it in a plugin:
-
-```python
-from nexusLIMS.extractors.my_format import get_my_format_metadata
-from nexusLIMS.extractors.base import ExtractionContext
-
-class MyFormatExtractor:
-    name = "my_format_extractor"
-    priority = 100
-    supported_extensions = {"myformat"}
-    
-    def supports(self, context: ExtractionContext) -> bool:
-        ext = context.file_path.suffix.lower().lstrip(".")
-        return ext == "myformat"
-    
-    def extract(self, context: ExtractionContext) -> dict[str, Any]:
-        # Delegate to existing function
-        return get_my_format_metadata(context.file_path)
-```
-
 ### Priority Guidelines
 
 Set appropriate priorities for your extractor:
@@ -442,7 +525,29 @@ class FallbackExtractor:
 
 ## Testing Your Extractor
 
-Create a test file in `tests/test_extractors/`:
+### Test Fixtures for Real File Formats
+
+For testing with actual file formats (especially binary formats like microscopy data), NexusLIMS uses compressed tar archives to store sanitized test files efficiently.
+
+**Setting up test fixtures:**
+
+1. **Create sanitized test data** - Start with a real microscopy file from your target format, then remove/zero sensitive image data while preserving metadata structure. See {ref}`creating-sanitized-test-files` in the Developer Guide for detailed instructions.
+
+2. **Add to test archive registry** in `tests/unit/utils.py`:
+   ```python
+   tars = {
+       # ... existing entries ...
+       "XYZ_FORMAT": "xyz_format_test_dataZeroed.tar.gz",
+   }
+   ```
+
+3. **Place archive** in `tests/unit/files/`
+
+The fixture system extracts files from `*.tar.gz` archives to a temporary test directory, makes them available during test execution, and automatically cleans up after tests complete. This keeps the repository small (compressed archives) while enabling tests with realistic file structures and metadata.
+
+### Example Test File
+
+Create a test file in `tests/unit/test_extractors/`:
 
 ```python
 """Tests for XYZ extractor."""
@@ -451,46 +556,122 @@ import pytest
 from pathlib import Path
 from nexusLIMS.extractors.plugins.xyz import XYZExtractor
 from nexusLIMS.extractors.base import ExtractionContext
+from tests.unit.utils import extract_files, delete_files
+
+
+@pytest.fixture(scope="module")
+def xyz_test_file():
+    """Extract test XYZ file from archive."""
+    files = extract_files("XYZ_FORMAT")
+    yield files[0]  # Yield the extracted test file
+    delete_files("XYZ_FORMAT")  # Clean up after tests
 
 
 class TestXYZExtractor:
     """Test cases for XYZ format extractor."""
-    
+
     def test_supports_xyz_files(self):
         """Test that extractor supports .xyz files."""
         extractor = XYZExtractor()
         context = ExtractionContext(Path("test.xyz"), instrument=None)
         assert extractor.supports(context) is True
-    
+
     def test_rejects_other_files(self):
         """Test that extractor rejects non-.xyz files."""
         extractor = XYZExtractor()
         context = ExtractionContext(Path("test.dm3"), instrument=None)
         assert extractor.supports(context) is False
-    
-    def test_extraction(self, tmp_path):
-        """Test metadata extraction from XYZ file."""
-        # Create test file
-        test_file = tmp_path / "test.xyz"
-        test_file.write_text("XYZ test data")
 
-        extractor = XYZExtractor()
-        context = ExtractionContext(test_file, instrument=None)
-        metadata_list = extractor.extract(context)
+    def test_extraction_real_file(self, xyz_test_file):
+        """
+        Test metadata extraction from real XYZ file.
+        
+        Uses the "xyz_test_file" fixture to automatically extract,
+        read, and then delete the real test file from the compressed
+        archive.
+        """
+        from nexusLIMS.extractors import get_full_meta
 
-        # Extract returns a list, get the first element
-        assert isinstance(metadata_list, list)
-        assert len(metadata_list) == 1
-        metadata = metadata_list[0]
+        metadata = get_full_meta(xyz_test_file, instrument=None)
 
-        # Verify required fields
-        assert "nx_meta" in metadata
-        assert "DatasetType" in metadata["nx_meta"]
-        assert "Data Type" in metadata["nx_meta"]
-        assert "Creation Time" in metadata["nx_meta"]
+        # Verify extracted metadata
+        assert metadata["nx_meta"]["DatasetType"] == "Image"
+        assert metadata["nx_meta"]["acceleration_voltage"].magnitude == 15.0
+        # ... additional assertions
 ```
 
+(best-practices)=
 ## Best Practices
+
+### v2.2.0 Schema Patterns
+
+**Use Pint Quantities consistently:**
+```python
+from decimal import Decimal
+from nexusLIMS.schemas.units import ureg
+
+# ✅ GOOD - Create Quantity for fields with units
+nx_meta["acceleration_voltage"] = ureg.Quantity(15000, "volt")  # Auto-converts to kV
+# For calculations/conversions, use Decimal explicitly:
+nx_meta["acceleration_voltage"] = ureg.Quantity(Decimal("15000"), "volt")
+
+# ❌ BAD - Don't use raw numbers for fields with units
+nx_meta["acceleration_voltage"] = 15  # Missing unit information
+
+# ✅ GOOD - Dimensionless values as plain numbers
+nx_meta["magnification"] = 50000
+
+# ❌ BAD - Don't create Quantities for dimensionless values
+nx_meta["magnification"] = ureg.Quantity(50000, "dimensionless")
+```
+
+**Note on Decimal values:** The unit registry auto-converts numeric values to `Decimal` to avoid floating-point precision issues. While `ureg.Quantity(15, "kilovolt")` works, using `Decimal` explicitly is recommended when performing calculations or conversions (e.g., `Decimal(metadata["HV"]) * Decimal("1e-3")`) for clarity and to ensure precision.
+
+**Use `add_to_extensions()` for vendor fields:**
+```python
+from nexusLIMS.schemas.utils import add_to_extensions
+
+# ✅ GOOD - Use helper function
+add_to_extensions(nx_meta, "fei_detector_mode", "CBS")
+add_to_extensions(nx_meta, "facility", "Nexus Lab")
+
+# ❌ BAD - Manual dict manipulation (doesn't keep implementation isolated)
+if "extensions" not in nx_meta:
+    nx_meta["extensions"] = {}
+nx_meta["extensions"]["fei_detector_mode"] = "CBS"
+```
+
+**Set DatasetType early:**
+```python
+# ✅ GOOD - Set DatasetType first, then add type-specific fields
+nx_meta = {
+    "DatasetType": "Image",  # Schema selection happens based on this
+    "Data Type": "SEM_Imaging",
+    "Creation Time": creation_time_iso,
+}
+# Now add imaging-specific fields
+nx_meta["acceleration_voltage"] = ureg.Quantity(15, "kilovolt")
+
+# ❌ BAD - Adding fields before DatasetType
+nx_meta = {}
+nx_meta["acceleration_voltage"] = ureg.Quantity(15, "kilovolt")  # What schema validates this?
+nx_meta["DatasetType"] = "Image"  # Too late
+```
+
+**Handle timezone in Creation Time:**
+```python
+from datetime import datetime as dt
+from nexusLIMS.instruments import get_instr_from_filepath
+
+# ✅ GOOD - Include timezone
+instr = get_instr_from_filepath(context.file_path)
+creation_time = dt.fromtimestamp(mtime, tz=instr.timezone if instr else None)
+nx_meta["Creation Time"] = creation_time.isoformat()  # "2024-01-15T10:30:00-05:00"
+
+# ❌ BAD - Naive datetime (no timezone)
+creation_time = dt.fromtimestamp(mtime)
+nx_meta["Creation Time"] = creation_time.isoformat()  # "2024-01-15T10:30:00" - FAILS validation
+```
 
 ### Error Handling
 
@@ -533,11 +714,14 @@ def extract(self, context: ExtractionContext) -> dict[str, Any]:
     """Extract metadata with lazy loading."""
     # Only load what's needed
     metadata = self._extract_header_metadata(context)
-    
+
+    # If using hyperspy, load the signal lazily:
+    metadata = hs.load(context.filename, lazy=True).original_metadata
+
     # Don't load full data unless necessary
     if self._needs_full_data(metadata):
         metadata.update(self._extract_full_data(context))
-    
+
     return metadata
 ```
 
@@ -590,10 +774,11 @@ You don't need to manually register your plugin - just create the file and it wi
 
 See the built-in extractors for real-world examples:
 
-- `nexusLIMS/extractors/plugins/digital_micrograph.py` - Simple extension-based matching
-- `nexusLIMS/extractors/plugins/quanta_tif.py` - TIFF format for specific instruments
-- `nexusLIMS/extractors/plugins/basic_metadata.py` - Fallback extractor with priority 0
-- `nexusLIMS/extractors/plugins/edax.py` - Multiple extractors in one file
+- {py:mod}`nexusLIMS.extractors.plugins.digital_micrograph` - Simple extension-based matching
+- {py:mod}`nexusLIMS.extractors.plugins.quanta_tif` - TIFF format for specific instruments
+- {py:mod}`nexusLIMS.extractors.plugins.tescan_tif` - TIFF format with metadata content sniffing and parsing sidecar header file
+- {py:mod}`nexusLIMS.extractors.plugins.basic_metadata` - Fallback extractor with priority 0
+- {py:mod}`nexusLIMS.extractors.plugins.edax` - Multiple extractors in one file
 
 ## Troubleshooting
 
@@ -669,7 +854,7 @@ Before writing an extractor, examine the reference metadata to understand:
 Example workflow:
 ```bash
 # View metadata structure for a Quanta TIFF file
-cat tests/unit/files/metadata_references/quanta_image_original_metadata.json | less
+less tests/unit/files/metadata_references/quanta_image_original_metadata.json
 
 # Search for specific fields
 grep -r "acceleration" tests/unit/files/metadata_references/
@@ -687,16 +872,20 @@ Use the reference files to identify which source metadata keys should map to Nex
 #   "EScan": {"DwellTime": "1e-05", ...}
 # }
 
+# The NexusLIMS ureg requires the use of Decimal to ensure the source
+# precision is retained when converting units
+from decimal import Decimal
+
 nx_meta["acceleration_voltage"] = ureg.Quantity(
-    float(metadata["User"]["HV"]) * 1e-3,  # Convert V to kV
+    Decimal(metadata["User"]["HV"]) * Decimal("1e-3"),  # Convert V to kV
     "kilovolt"
 )
 nx_meta["working_distance"] = ureg.Quantity(
-    float(metadata["User"]["WD"]),
+    Decimal(metadata["User"]["WD"]),
     "millimeter"
 )
 nx_meta["dwell_time"] = ureg.Quantity(
-    float(metadata["EScan"]["DwellTime"]) * 1e6,  # Convert s to µs
+    Decimal(metadata["EScan"]["DwellTime"]) * Decimal("1e6"),  # Convert s to µs
     "microsecond"
 )
 ```
@@ -736,6 +925,6 @@ Using metadata reference files helps you:
 
 ## Further Reading
 
-- [Extractor Overview](extractors.md)
+- [Extractor Overview](../user_guide/extractors.md)
 - [Instrument Profiles](instrument_profiles.md)
-- [API Documentation](api/nexusLIMS/nexusLIMS.extractors.md)
+- [API Documentation](../api/nexusLIMS/nexusLIMS.extractors.md)

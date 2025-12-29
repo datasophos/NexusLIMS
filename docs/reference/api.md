@@ -27,5 +27,5 @@ in the top header bar to browse through the documentation.
 :maxdepth: -1
 :glob:
 
-api/nexusLIMS/nexusLIMS
+../api/nexusLIMS/nexusLIMS
 ```

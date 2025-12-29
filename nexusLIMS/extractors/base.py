@@ -451,9 +451,6 @@ class InstrumentProfile:
     transformations
         Metadata transformation functions applied after extraction.
         Keys are transform names, values are callables.
-    extractor_overrides
-        Force specific extractors for certain extensions.
-        Keys are file extensions, values are extractor names.
     extension_fields
         Metadata to inject into the extensions section for all files.
         Keys are field names, values are static values.
@@ -477,19 +474,9 @@ class InstrumentProfile:
     ...         "building": "Bldg. 1",
     ...     }
     ... )
-
-    Using extractor overrides:
-
-    >>> zeiss_profile = InstrumentProfile(
-    ...     instrument_id="Zeiss-Merlin-12345",
-    ...     extractor_overrides={
-    ...         "tif": "zeiss_tif_extractor",  # Use Zeiss-specific TIF extractor
-    ...     }
-    ... )
     """
 
     instrument_id: str
     parsers: dict[str, Callable] = field(default_factory=dict)
     transformations: dict[str, Callable] = field(default_factory=dict)
-    extractor_overrides: dict[str, str] = field(default_factory=dict)
     extension_fields: dict[str, Any] = field(default_factory=dict)

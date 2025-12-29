@@ -1,42 +1,31 @@
 (uv_migration)=
 # Migration from Poetry to uv
 
+```{versionadded} 2.0.0
 This document describes the migration of the NexusLIMS project from Poetry
 to uv for dependency management and package installation. This information
 is primarily relevant for developers who were familiar with the previous
 Poetry-based workflow.
+```
 
 ## Why the Change?
 
-NexusLIMS migrated from Poetry to [uv](https://docs.astral.sh/uv/) to
-leverage several key advantages:
+NexusLIMS migrated from [Poetry](https://python-poetry.org/) to [uv](https://docs.astral.sh/uv/) to leverage several key advantages:
 
-**Performance**
-:   uv is significantly faster than Poetry for dependency resolution and installation (often 10-100x faster)
-
-**Standard Compliance**
-:   Uses standard Python packaging formats (PEP 621) rather than Poetry-specific formats
-
-**Caching**
-:   More efficient caching mechanisms reduce redundant downloads and installations
-
-**Python Version Management**
-:   Built-in support for managing Python versions eliminates the need for separate tools like pyenv
-
-**Tool Management**
-:   Can manage Python-based tools globally or per-project
-
-**Active Development**
-:   Rapidly evolving project with frequent improvements and bug fixes
-
-**Simplified CI/CD**
-:   Faster CI/CD pipelines with better caching and simpler configuration
+- **Performance** - uv is significantly faster than Poetry for dependency resolution and installation (often 10-100x faster)
+- **Standard Compliance** - Uses standard Python packaging formats (PEP 621) rather than Poetry-specific formats
+- **Caching** - More efficient caching mechanisms reduce redundant downloads and installations
+- **Python Version Management** - Built-in support for managing Python versions eliminates the need for separate tools like [pyenv](https://github.com/pyenv/pyenv)
+- **Tool Management** - Can manage Python-based tools globally or per-project
+- **Active Development** - Rapidly evolving project with frequent improvements and bug fixes
+- **Simplified CI/CD** - Faster CI/CD pipelines with better caching and simpler configuration
 
 ## What Changed
 
 ### Files Removed
 
 - `poetry.lock` - Poetry lock file (replaced by `uv.lock`)
+- `tox.ini` - Tox configuration (simplified development experience by using uv directly)
 - Poetry-specific configuration sections in `pyproject.toml`
 
 ### Files Added
@@ -161,17 +150,23 @@ uv sync
 ### Running Tests
 
 ```bash
-# Run all tests
-uv run pytest
+# Run all tests with coverage and matplotlib comparison (recommended)
+./scripts/run_tests.sh
 
-# Run with coverage
-uv run pytest --cov=nexusLIMS --cov-report=html
+# Run all unit tests with mpl comparison
+uv run pytest --mpl --mpl-baseline-path=tests/unit/files/figs tests/unit
 
-# Run specific test file
-uv run pytest tests/test_extractors.py
+# Run all integration tests (uses Docker to mock external services)
+uv run pytest tests/integration
+
+# Run specific test file with mpl comparison
+uv run pytest --mpl --mpl-baseline-path=tests/unit/files/figs tests/unit/test_extractors/test_quanta_tif.py
 
 # Run specific test
-uv run pytest tests/test_extractors.py::TestClassName::test_method
+uv run pytest tests/unit/test_extractors/test_quanta_tif.py::TestQuantaTifExtractor::test_extraction
+
+# Run with HTML coverage report
+uv run pytest --cov=nexusLIMS --cov-report=html tests/unit
 ```
 
 ### Running Linting and Formatting
@@ -195,6 +190,10 @@ uv run ruff format nexusLIMS tests
 ```bash
 # Build documentation
 ./scripts/build_docs.sh
+
+# Watch changes to documentation files and rebuild automatically
+# (this is useful when working interactively on the docs)
+./scripts/build_docs.sh --watch
 
 # Or run Sphinx directly
 uv run sphinx-build -b html docs _build
@@ -229,9 +228,6 @@ uv add "requests>=2.28.0,<3.0.0"
 
 # Add a development dependency
 uv add --dev pytest-mock
-
-# Add from a specific index
-uv add --index https://pypi.org/simple package-name
 ```
 
 ### Removing Dependencies
@@ -288,7 +284,6 @@ uv venv
 
 # Activate the virtual environment manually (if needed)
 source .venv/bin/activate  # Unix/macOS
-.venv\Scripts\activate     # Windows
 
 # Deactivate
 deactivate
@@ -311,26 +306,21 @@ The project's CI/CD configuration has been updated to use uv:
 ### GitHub Actions Example
 
 ```yaml
-- name: Install uv
-  run: curl -LsSf https://astral.sh/uv/install.sh | sh
+- name: Set up uv
+  uses: astral-sh/setup-uv@v4
+  with:
+    enable-cache: true
 
 - name: Install dependencies
   run: uv sync
 
-- name: Run tests
-  run: uv run pytest
-```
-
-### GitLab CI Example
-
-```yaml
-before_script:
-  - curl -LsSf https://astral.sh/uv/install.sh | sh
-  - uv sync
-
-test:
-  script:
-    - uv run pytest
+- name: Run unit tests
+  run: |
+    uv run pytest tests/unit/ --cov=nexusLIMS \
+      --cov-report html:tests/coverage \
+      --cov-report term-missing \
+      --cov-report=xml \
+      --mpl --mpl-baseline-path=tests/unit/files/figs
 ```
 
 Benefits in CI/CD:

@@ -14,6 +14,19 @@ Welcome to NexusLIMS! This guide will help you get up and running quickly.
 **Upgrading from v1.x?** See the {ref}`migration` guide for step-by-step instructions on migrating from NexusLIMS v1.4.3 to v2.0+.
 ```
 
+```{important}
+**🆕 What's New in v2.0+?**
+
+Users will not notice significant changes, but the infrastructure powering NexusLIMS has received major upgrades, including:
+
+- **Pydantic Metadata Schemas**: All metadata is validated internally using type-specific schemas
+- **EM Glossary v2.0**: NexusLIMS uses standardized field names from the emerging [community ontology](https://emglossary.helmholtz-metadaten.de/)
+- **Pint Unit Integration**: Type-safe quantity handling with automatic unit conversion (with future connection to the [QUDT unit ontology](https://qudt.org/) planned)
+- **Better Validation**: Strict schema validation catches errors before record building
+
+See [NexusLIMS Internal Schema](../dev_guide/nexuslims_internal_schema.md) for more details on how NexusLIMS handles data internally.
+```
+
 ## What is NexusLIMS?
 
 NexusLIMS is an electron microscopy Laboratory Information Management System (LIMS) that automatically generates experimental records by:
@@ -29,9 +42,12 @@ Originally developed at NIST, NexusLIMS is now maintained by [datasophos](https:
 
 - **Automatic Record Generation**: Creates comprehensive experimental records without manual data entry
 - **Multiple File Format Support**: Reads metadata from `.dm3/.dm4`, `.tif`, `.ser/.emi`, `.spc/.msa` files
+- **Standardized Metadata** *(New in v2.2.0)*: Uses EM Glossary ontology for field names and units
+- **Schema Validation** *(New in v2.2.0)*: Pydantic schemas ensure metadata quality before record building
 - **Calendar Integration**: Connects with NEMO lab management systems
-- **Temporal File Clustering**: Intelligently groups files into acquisition activities
+- **Temporal File Clustering**: Intelligently groups files into acquisition activities using KDE
 - **CDCS Integration**: Publishes records to web-accessible data repositories
+- **Extensible Architecture**: Plugin-based extractors and instrument profiles for customization
 
 ## Installation
 
@@ -158,36 +174,35 @@ nexuslims-process-records -vv
 NexusLIMS follows this process:
 
 1. **Harvest**: NEMO harvester polls API for new/ended reservations
-2. **Track**: Creates session_log entries with START/END events
+2. **Track**: Creates `session_log` entries with START/END events
 3. **Find Files**: Locates files modified during session window
 4. **Cluster**: Groups files into Acquisition Activities by temporal analysis
-5. **Extract**: Reads metadata from each file
-6. **Build**: Generates XML record conforming to Nexus Experiment schema
-7. **Upload**: Publishes record to CDCS
+5. **Extract**: Reads metadata from each file using format-specific extractors
+6. **Validate** *(New in v2.2.0)*: Validates metadata using Pydantic schemas ({py:obj}`~nexusLIMS.schemas.metadata.ImageMetadata`, {py:obj}`~nexusLIMS.schemas.metadata.SpectrumMetadata`, etc.)
+7. **Build**: Generates XML record conforming to Nexus Experiment schema
+8. **Upload**: Publishes record to CDCS
+
+The validation step (6) ensures all metadata meets quality standards before record generation. Invalid metadata causes extraction to fail with detailed error messages, preventing bad data from entering the system.
 
 ### Session States
 
-Sessions progress through states:
+NexusLIMS tracks your sessions through several states:
 
-- **WAITING_FOR_END**: Session started but not ended
-- **TO_BE_BUILT**: Session ended, needs record generation
-- **NO_FILES_FOUND**: No files found (will retry if within delay window)
-- **COMPLETED**: Record successfully built and uploaded
-- **ERROR**: Record building failed
-
-## Next Steps
-
-Now that you're set up, explore the documentation:
-
-- {ref}`user_guide` - Learn about record building and the taxonomy
-- {ref}`dev_guide` - Understand the architecture and extend NexusLIMS
-- {ref}`reference` - Dive into the API documentation
+| Status | Meaning | Action Required |
+|--------|---------|-----------------|
+| `WAITING_FOR_END` | Session in progress | Continue using instrument normally |
+| `TO_BE_BUILT` | Session ended, record pending | Wait for automated processing |
+| `COMPLETED` | Record successfully created | View record in CDCS |
+| `NO_FILES_FOUND` | No data files detected | Check if files were saved to correct location |
+| `ERROR` | Record generation failed | Contact facility administrator |
+| `NO_CONSENT` | A user did not consent to have their data harvested for the session | Ensure that you click "Agree" in the NEMO reservation under data consent |
+| `NO_RESERVATION` | There was no matching reservation found for this session | Make sure you made a reservation for your usage event |
 
 ## Getting Help
 
 - **Documentation**: You're reading it! Browse the sections above
-- **Issues**: Report bugs at https://github.com/datasophos/NexusLIMS/issues
-- **Source Code**: https://github.com/datasophos/NexusLIMS
-- **Original NIST Docs**: https://pages.nist.gov/NexusLIMS (may be outdated)
+- **Issues**: Report bugs at [https://github.com/datasophos/NexusLIMS/issues](https://github.com/datasophos/NexusLIMS/issues)
+- **Source Code**: [https://github.com/datasophos/NexusLIMS](https://github.com/datasophos/NexusLIMS)
+- **Original NIST Docs**: [https://pages.nist.gov/NexusLIMS](https://pages.nist.gov/NexusLIMS) (may be outdated)
 
 **Note**: This is a fork maintained by [datasophos](https://datasophos.co), not affiliated with NIST.

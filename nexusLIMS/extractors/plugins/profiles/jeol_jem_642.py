@@ -71,7 +71,6 @@ jeol_jem_642_profile = InstrumentProfile(
         "diffraction_detection": detect_diffraction_from_filename,
     },
     transformations={},
-    extractor_overrides={},
     extension_fields={},
 )
 
