@@ -32,8 +32,9 @@
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=af02a5b6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=8633d6cc" />
   
   <!-- So that users can add custom icons -->
   <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -44,6 +45,8 @@
     <script src="../../_static/documentation_options.js?v=dc4a309c"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=30646c52"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'api/nexusLIMS/nexusLIMS.extractors';</script>
     <script>
@@ -53,6 +56,7 @@
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
+    <script src="../../_static/custom.js?v=ba087cdf"></script>
     <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/pr-23/api/nexusLIMS/nexusLIMS.extractors.html" />
     <link rel="icon" href="../../_static/nexusLIMS_bare_logo.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -62,7 +66,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.2.0.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 28, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 29, 2025"/>
   </head>
   
   
@@ -172,20 +176,6 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../getting_started.html">
-    Getting Started
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../migration.html">
-    Migration Guide: v1 to v2
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../user_guide.html">
     User Guide
   </a>
@@ -193,28 +183,25 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../dev_guide.html">
-    Developer Guide
+  <a class="nav-link nav-internal" href="../../migration.html">
+    Migration Guide: v1.4.3 to v2.2.0
   </a>
 </li>
 
-            <li class="nav-item dropdown">
-                <button class="btn dropdown-toggle nav-item" type="button"
-                data-bs-toggle="dropdown" aria-expanded="false"
-                aria-controls="pst-nav-more-links">
-                    More
-                </button>
-                <ul id="pst-nav-more-links" class="dropdown-menu">
-                    
-<li class=" current active">
-  <a class="nav-link dropdown-item nav-internal" href="../../reference.html">
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../dev_guide.html">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../reference.html">
     Reference
   </a>
 </li>
 
-                </ul>
-            </li>
-            
   </ul>
 </nav></div>
       
@@ -311,20 +298,6 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../getting_started.html">
-    Getting Started
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../migration.html">
-    Migration Guide: v1 to v2
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../user_guide.html">
     User Guide
   </a>
@@ -332,8 +305,15 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../migration.html">
+    Migration Guide: v1.4.3 to v2.2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../dev_guide.html">
-    Developer Guide
+    Dev Guide
   </a>
 </li>
 
@@ -406,7 +386,7 @@
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../api.html">API documentation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../reference/api.html">API documentation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="nexusLIMS.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS</span></code></a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.db.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.db</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.builder.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.builder</span></code></a></li>
@@ -430,7 +410,7 @@
 </details></li>
 </ul>
 </details></li>
-<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/changelog.html">Changelog</a></li>
 </ul>
 </div>
 </nav></div>
@@ -475,7 +455,7 @@
     <li class="breadcrumb-item"><a href="../../reference.html" class="nav-link">Reference</a></li>
     
     
-    <li class="breadcrumb-item"><a href="../../api.html" class="nav-link">API documentation</a></li>
+    <li class="breadcrumb-item"><a href="../../reference/api.html" class="nav-link">API documentation</a></li>
     
     
     <li class="breadcrumb-item"><a href="nexusLIMS.html" class="nav-link"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS</span></code></a></li>
@@ -499,6 +479,11 @@
                   
   <section id="module-nexusLIMS.extractors">
 <span id="nexuslims-extractors"></span><h1><a class="reference internal" href="#module-nexusLIMS.extractors" title="nexusLIMS.extractors"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors</span></code></a><a class="headerlink" href="#module-nexusLIMS.extractors" title="Link to this heading">#</a></h1>
+<p>Extract metadata from various electron microscopy file types.</p>
+<p>Extractors should return a list of dictionaries, where each dictionary contains
+the extracted metadata under the key <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code>. The <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code> structure is
+validated against the <a class="reference internal" href="nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.NexusMetadata" title="nexusLIMS.schemas.metadata.NexusMetadata"><code class="xref py py-class docutils literal notranslate"><span class="pre">NexusMetadata</span></code></a> Pydantic
+schema to ensure consistency across all extractors.</p>
 <section id="required-fields">
 <h2>Required Fields<a class="headerlink" href="#required-fields" title="Link to this heading">#</a></h2>
 <p>All extractors must include these fields in <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code>:</p>
@@ -527,13 +512,8 @@
 after default values are set (e.g., missing <code class="docutils literal notranslate"><span class="pre">DatasetType</span></code> defaults to <code class="docutils literal notranslate"><span class="pre">&quot;Misc&quot;</span></code>).
 If validation fails, a <code class="docutils literal notranslate"><span class="pre">pydantic.ValidationError</span></code> is raised with detailed information
 about which fields are invalid.</p>
-<p>For complete schema details, see :class:<code class="docutils literal notranslate"><span class="pre">~nexusLIMS.extractors.schemas.NexusMetadata</span></code>.</p>
+<p>For complete schema details, see <a class="reference internal" href="nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.NexusMetadata" title="nexusLIMS.schemas.metadata.NexusMetadata"><code class="xref py py-class docutils literal notranslate"><span class="pre">NexusMetadata</span></code></a>.</p>
 </section>
-<p>Extract metadata from various electron microscopy file types.</p>
-<p>Extractors should return a list of dictionaries, where each dictionary contains
-the extracted metadata under the key <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code>. The <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code> structure is
-validated against the :class:<code class="docutils literal notranslate"><span class="pre">~nexusLIMS.extractors.schemas.NexusMetadata</span></code> Pydantic
-schema to ensure consistency across all extractors.</p>
 <section id="subpackages">
 <h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading">#</a></h2>
 <div class="toctree-wrapper compound">
@@ -604,14 +584,12 @@ schema to ensure consistency across all extractors.</p>
 <h3>Data<a class="headerlink" href="#data" title="Link to this heading">#</a></h3>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table table-left">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.extractors.logger" title="nexusLIMS.extractors.logger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">logger</span></code></a></p></td>
-<td></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.extractors.PLACEHOLDER_PREVIEW" title="nexusLIMS.extractors.PLACEHOLDER_PREVIEW"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PLACEHOLDER_PREVIEW</span></code></a></p></td>
+<td><p>Path to placeholder preview image used when preview generation fails.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.extractors.PLACEHOLDER_PREVIEW" title="nexusLIMS.extractors.PLACEHOLDER_PREVIEW"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PLACEHOLDER_PREVIEW</span></code></a></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.extractors.unextracted_preview_map" title="nexusLIMS.extractors.unextracted_preview_map"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unextracted_preview_map</span></code></a></p></td>
-<td></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.extractors.unextracted_preview_map" title="nexusLIMS.extractors.unextracted_preview_map"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unextracted_preview_map</span></code></a></p></td>
+<td><p>Filetypes that will only have basic metadata extracted but will nonetheless
+have a custom preview image generated</p></td>
 </tr>
 </tbody>
 </table>
@@ -620,21 +598,16 @@ schema to ensure consistency across all extractors.</p>
 <section id="api">
 <h3>API<a class="headerlink" href="#api" title="Link to this heading">#</a></h3>
 <dl class="py data">
-<dt class="sig sig-object py" id="nexusLIMS.extractors.logger">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.</span></span><span class="sig-name descname"><span class="pre">logger</span></span><a class="headerlink" href="#nexusLIMS.extractors.logger" title="Link to this definition">#</a></dt>
-<dd><p>‘getLogger(…)’</p>
-</dd></dl>
-
-<dl class="py data">
 <dt class="sig sig-object py" id="nexusLIMS.extractors.PLACEHOLDER_PREVIEW">
 <span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.</span></span><span class="sig-name descname"><span class="pre">PLACEHOLDER_PREVIEW</span></span><a class="headerlink" href="#nexusLIMS.extractors.PLACEHOLDER_PREVIEW" title="Link to this definition">#</a></dt>
-<dd><p>None</p>
+<dd><p>Path to placeholder preview image used when preview generation fails.</p>
 </dd></dl>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="nexusLIMS.extractors.unextracted_preview_map">
 <span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.</span></span><span class="sig-name descname"><span class="pre">unextracted_preview_map</span></span><a class="headerlink" href="#nexusLIMS.extractors.unextracted_preview_map" title="Link to this definition">#</a></dt>
-<dd><p>None</p>
+<dd><p>Filetypes that will only have basic metadata extracted but will nonetheless
+have a custom preview image generated</p>
 </dd></dl>
 
 <dl class="py function">
@@ -644,16 +617,21 @@ schema to ensure consistency across all extractors.</p>
 <p>This function maps dataset types to their corresponding type-specific
 metadata schemas. Type-specific schemas (ImageMetadata, SpectrumMetadata, etc.)
 provide stricter validation of fields appropriate for each data type.</p>
-<p class="rubric" id="id11">Parameters</p>
-<p>dataset_type : str
-The value of the ‘DatasetType’ field. Must be one of: ‘Image’, ‘Spectrum’,
+<dl class="myst field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dataset_type</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – The value of the ‘DatasetType’ field. Must be one of: ‘Image’, ‘Spectrum’,
 ‘SpectrumImage’, ‘Diffraction’, ‘Misc’, or ‘Unknown’.</p>
-<p class="rubric" id="id12">Returns</p>
-<p>type[NexusMetadata]
-The schema class to use for validation. Returns a type-specific schema
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The schema class to use for validation. Returns a type-specific schema
 (ImageMetadata, SpectrumMetadata, etc.) for known dataset types, or the
 base NexusMetadata schema for ‘Misc’ and ‘Unknown’ types.</p>
-<p class="rubric" id="id13">Notes</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#type" title="(in Python v3.11)"><em>type</em></a>[<a class="reference internal" href="nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.NexusMetadata" title="nexusLIMS.schemas.metadata.NexusMetadata"><em>NexusMetadata</em></a>]</p>
+</dd>
+</dl>
+<p><strong>Notes:</strong></p>
 <p>Schema mapping:</p>
 <ul class="simple">
 <li><p>‘Image’ → ImageMetadata (SEM/TEM/STEM images)</p></li>
@@ -664,25 +642,17 @@ base NexusMetadata schema for ‘Misc’ and ‘Unknown’ types.</p>
 <li><p>‘Unknown’ → NexusMetadata (base schema)</p></li>
 <li><p>Other values → NexusMetadata (fallback)</p></li>
 </ul>
-<p class="rubric" id="id14">Examples</p>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>schema = get_schema_for_dataset_type(“Image”)
-schema.<strong>name</strong>
-‘ImageMetadata’</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>schema = get_schema_for_dataset_type(“Unknown”)
-schema.<strong>name</strong>
-‘NexusMetadata’</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
+<p><strong>Examples:</strong></p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">schema</span> <span class="o">=</span> <span class="n">get_schema_for_dataset_type</span><span class="p">(</span><span class="s2">&quot;Image&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">schema</span><span class="o">.</span><span class="vm">__name__</span>
+<span class="go">&#39;ImageMetadata&#39;</span>
+</pre></div>
+</div>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">schema</span> <span class="o">=</span> <span class="n">get_schema_for_dataset_type</span><span class="p">(</span><span class="s2">&quot;Unknown&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">schema</span><span class="o">.</span><span class="vm">__name__</span>
+<span class="go">&#39;NexusMetadata&#39;</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -695,22 +665,28 @@ to the required structure defined in the type-specific metadata schemas
 based on the ‘DatasetType’ field. Validation is performed strictly - any
 schema violations will raise a ValidationError with detailed information
 about the failure.</p>
-<p class="rubric" id="id15">Parameters</p>
-<p>metadata_dict : dict[str, Any]
-Dictionary containing an ‘nx_meta’ key with the metadata to validate.
-This is the format returned by all extractor plugins.
-filename : Path or None, optional
-The file path being processed. Used only for error message context.
-If None, error messages will not include file path information.</p>
-<p class="rubric" id="id16">Returns</p>
-<p>dict[str, Any]
-The original metadata_dict, unchanged. Validation does not modify data,
+<dl class="myst field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>metadata_dict</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>Any</em><em>]</em>) – Dictionary containing an ‘nx_meta’ key with the metadata to validate.
+This is the format returned by all extractor plugins.</p></li>
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a> or None, optional) – The file path being processed. Used only for error message context.
+If None, error messages will not include file path information.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The original metadata_dict, unchanged. Validation does not modify data,
 it only checks conformance to the schema.</p>
-<p class="rubric" id="id17">Raises</p>
-<p>ValidationError
-If the nx_meta structure fails validation. The error message will include
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>[<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>, <em>Any</em>]</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>pydantic.ValidationError</strong> – If the nx_meta structure fails validation. The error message will include
 detailed information about which fields are invalid and why.</p>
-<p class="rubric" id="id18">Notes</p>
+</dd>
+</dl>
+<p><strong>Notes:</strong></p>
 <p>This function validates:</p>
 <ul class="simple">
 <li><p><strong>Required fields</strong>: ‘Creation Time’, ‘Data Type’, ‘DatasetType’ must be present</p></li>
@@ -731,48 +707,45 @@ detailed information about which fields are invalid and why.</p>
 </ul>
 <p>All schemas support the ‘extensions’ section for instrument-specific
 metadata that doesn’t fit the core schema.</p>
-<p class="rubric" id="id19">Examples</p>
+<p><strong>Examples:</strong></p>
 <p>Valid metadata passes without modification:</p>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>metadata = {
-…     “nx_meta”: {
-…         “Creation Time”: “2024-01-15T10:30:00-05:00”,
-…         “Data Type”: “STEM_Imaging”,
-…         “DatasetType”: “Image”,
-…     }
-… }
-result = validate_nx_meta(metadata)
-result == metadata
-True</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">metadata</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>    <span class="s2">&quot;nx_meta&quot;</span><span class="p">:</span> <span class="p">{</span>
+<span class="gp">... </span>        <span class="s2">&quot;Creation Time&quot;</span><span class="p">:</span> <span class="s2">&quot;2024-01-15T10:30:00-05:00&quot;</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="s2">&quot;Data Type&quot;</span><span class="p">:</span> <span class="s2">&quot;STEM_Imaging&quot;</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="s2">&quot;DatasetType&quot;</span><span class="p">:</span> <span class="s2">&quot;Image&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="p">}</span>
+<span class="gp">... </span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">validate_nx_meta</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">==</span> <span class="n">metadata</span>
+<span class="go">True</span>
+</pre></div>
+</div>
 <p>Invalid metadata raises ValidationError:</p>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>bad_metadata = {
-…     “nx_meta”: {
-…         “Creation Time”: “invalid-timestamp”,
-…         “Data Type”: “STEM_Imaging”,
-…         “DatasetType”: “Image”,
-…     }
-… }
-validate_nx_meta(bad_metadata)  # doctest: +SKIP
-Traceback (most recent call last):
-…
-pydantic.ValidationError: …</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-<p class="rubric" id="id20">See Also</p>
-<p>NexusMetadata : The base Pydantic schema model for nx_meta validation
-ImageMetadata : Schema for Image dataset types
-SpectrumMetadata : Schema for Spectrum dataset types
-get_schema_for_dataset_type : Helper function that selects the appropriate schema
-parse_metadata : Main extraction function that uses this validator</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bad_metadata</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>    <span class="s2">&quot;nx_meta&quot;</span><span class="p">:</span> <span class="p">{</span>
+<span class="gp">... </span>        <span class="s2">&quot;Creation Time&quot;</span><span class="p">:</span> <span class="s2">&quot;invalid-timestamp&quot;</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="s2">&quot;Data Type&quot;</span><span class="p">:</span> <span class="s2">&quot;STEM_Imaging&quot;</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="s2">&quot;DatasetType&quot;</span><span class="p">:</span> <span class="s2">&quot;Image&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="p">}</span>
+<span class="gp">... </span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">validate_nx_meta</span><span class="p">(</span><span class="n">bad_metadata</span><span class="p">)</span>
+<span class="gt">Traceback (most recent call last):</span>
+<span class="w">    </span><span class="o">...</span>
+<span class="gr">pydantic.ValidationError</span>: <span class="n">...</span>
+</pre></div>
+</div>
+<p><strong>See Also:</strong>
+<a class="reference internal" href="nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.NexusMetadata" title="nexusLIMS.schemas.metadata.NexusMetadata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nexusLIMS.schemas.metadata.NexusMetadata</span></code></a>
+The base Pydantic schema model for nx_meta validation</p>
+<p><a class="reference internal" href="nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.ImageMetadata" title="nexusLIMS.schemas.metadata.ImageMetadata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nexusLIMS.schemas.metadata.ImageMetadata</span></code></a>
+Schema for Image dataset types</p>
+<p><a class="reference internal" href="nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.SpectrumMetadata" title="nexusLIMS.schemas.metadata.SpectrumMetadata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nexusLIMS.schemas.metadata.SpectrumMetadata</span></code></a>
+Schema for Spectrum dataset types</p>
+<p><a class="reference internal" href="#nexusLIMS.extractors.get_schema_for_dataset_type" title="nexusLIMS.extractors.get_schema_for_dataset_type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_schema_for_dataset_type</span></code></a>
+Helper function that selects the appropriate schema</p>
+<p><a class="reference internal" href="#nexusLIMS.extractors.parse_metadata" title="nexusLIMS.extractors.parse_metadata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_metadata</span></code></a>
+Main extraction function that uses this validator</p>
 </dd></dl>
 
 <dl class="py function">
@@ -786,28 +759,31 @@ NexusLIMS directory as JSON by default). Also calls the preview
 generation method, if desired.</p>
 <p>For files containing multiple signals (e.g., multi-signal DM3/DM4 files),
 generates one preview per signal and returns a list of preview paths.</p>
-<p class="rubric" id="id21">Parameters</p>
-<p>fname
-The filename from which to read data
-write_output
-Whether to write the metadata dictionary as a json file in the NexusLIMS
-folder structure
-generate_preview
-Whether to generate the thumbnail preview of this dataset (that
+<dl class="myst field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fname</strong> – The filename from which to read data</p></li>
+<li><p><strong>write_output</strong> – Whether to write the metadata dictionary as a json file in the NexusLIMS
+folder structure</p></li>
+<li><p><strong>generate_preview</strong> – Whether to generate the thumbnail preview of this dataset (that
 operation is not done in this method, it is just called from here so
-it can be done at the same time)
-overwrite
-Whether to overwrite the .json metadata file and thumbnail
-image if either exists</p>
-<p class="rubric" id="id22">Returns</p>
-<p>nx_meta : list[dict] or None
-A list of metadata dicts, one per signal in the file. If None,
+it can be done at the same time)</p></li>
+<li><p><strong>overwrite</strong> – Whether to overwrite the .json metadata file and thumbnail
+image if either exists</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>nx_meta</strong> (<em>list[dict] or None</em>) – A list of metadata dicts, one per signal in the file. If None,
 the file could not be opened. Single-signal files return a list
-with one dict, multi-signal files return a list with multiple dicts.
-preview_fname : list[Path] or None
-A list of file paths for the generated preview images, one per signal.
+with one dict, multi-signal files return a list with multiple dicts.</p></li>
+<li><p><strong>preview_fname</strong> (<em>list[Path] or None</em>) – A list of file paths for the generated preview images, one per signal.
 For single-signal files, returns a list with one path. Returns <code class="docutils literal notranslate"><span class="pre">None</span></code>
-if preview generation was not requested.</p>
+if preview generation was not requested.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -817,20 +793,25 @@ if preview generation was not requested.</p>
 <p>This method uses the preview generator plugin system to create thumbnail
 previews. It first tries to find a suitable preview generator plugin, and
 falls back to legacy methods if no plugin is found.</p>
-<p class="rubric" id="id23">Parameters</p>
-<p>fname
-The filename from which to read data
-overwrite
-Whether to overwrite the .json metadata file and thumbnail
-image if either exists
-signal_index
-For files with multiple signals, the index of the signal to preview.
+<dl class="myst field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fname</strong> – The filename from which to read data</p></li>
+<li><p><strong>overwrite</strong> – Whether to overwrite the .json metadata file and thumbnail
+image if either exists</p></li>
+<li><p><strong>signal_index</strong> – For files with multiple signals, the index of the signal to preview.
 If None, generates a single preview (legacy behavior). If an int,
-generates preview with _signalN suffix in filename.</p>
-<p class="rubric" id="id24">Returns</p>
-<p>preview_fname : Optional[pathlib.Path]
-The filename of the generated preview image; if None, a preview could not be
+generates preview with _signalN suffix in filename.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>preview_fname</strong> – The filename of the generated preview image; if None, a preview could not be
 successfully generated.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>Optional</em>[<a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><em>Path</em></a>]</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -841,18 +822,23 @@ successfully generated.</p>
 single level, separating the levels by a string as specified by
 <code class="docutils literal notranslate"><span class="pre">separator</span></code>.</p>
 <p>Uses python-benedict for robust nested dictionary operations.</p>
-<p class="rubric" id="id25">Parameters</p>
-<p>_dict : dict
-The dictionary to flatten
-parent_key : str
-The “root” key to add to the existing keys (unused in current implementation)
-separator : str
-The string to use to separate values in the flattened keys (i.e.
-{‘a’: {‘b’: ‘c’}} would become {‘a’ + sep + ‘b’: ‘c’})</p>
-<p class="rubric" id="id26">Returns</p>
-<p>flattened_dict : str
-The dictionary with depth one, with nested dictionaries flattened
+<dl class="myst field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>_dict</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>) – The dictionary to flatten</p></li>
+<li><p><strong>parent_key</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – The “root” key to add to the existing keys (unused in current implementation)</p></li>
+<li><p><strong>separator</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – The string to use to separate values in the flattened keys (i.e.
+{‘a’: {‘b’: ‘c’}} would become {‘a’ + sep + ‘b’: ‘c’})</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>flattened_dict</strong> – The dictionary with depth one, with nested dictionaries flattened
 into root-level keys</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
@@ -915,7 +901,6 @@ into root-level keys</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data">Data</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#api">API</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.logger"><code class="docutils literal notranslate"><span class="pre">logger</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.PLACEHOLDER_PREVIEW"><code class="docutils literal notranslate"><span class="pre">PLACEHOLDER_PREVIEW</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.unextracted_preview_map"><code class="docutils literal notranslate"><span class="pre">unextracted_preview_map</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.get_schema_for_dataset_type"><code class="docutils literal notranslate"><span class="pre">get_schema_for_dataset_type()</span></code></a></li>

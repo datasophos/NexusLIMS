@@ -31,8 +31,9 @@
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=af02a5b6" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=8633d6cc" />
   
   <!-- So that users can add custom icons -->
   <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -43,6 +44,8 @@
     <script src="_static/documentation_options.js?v=dc4a309c"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=30646c52"></script>
     <script src="_static/design-tabs.js?v=f930bc37"></script>
     <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs"></script>
     <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs"></script>
@@ -417,6 +420,7 @@ window.addEventListener("load", load);
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
+    <script src="_static/custom.js?v=ba087cdf"></script>
     <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/pr-23/genindex.html" />
     <link rel="icon" href="_static/nexusLIMS_bare_logo.ico"/>
     <link rel="index" title="Index" href="#" />
@@ -424,7 +428,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.2.0.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 28, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 29, 2025"/>
   </head>
   
   
@@ -534,20 +538,6 @@ window.addEventListener("load", load);
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="getting_started.html">
-    Getting Started
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="migration.html">
-    Migration Guide: v1 to v2
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="user_guide.html">
     User Guide
   </a>
@@ -555,28 +545,25 @@ window.addEventListener("load", load);
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="dev_guide.html">
-    Developer Guide
+  <a class="nav-link nav-internal" href="migration.html">
+    Migration Guide: v1.4.3 to v2.2.0
   </a>
 </li>
 
-            <li class="nav-item dropdown">
-                <button class="btn dropdown-toggle nav-item" type="button"
-                data-bs-toggle="dropdown" aria-expanded="false"
-                aria-controls="pst-nav-more-links">
-                    More
-                </button>
-                <ul id="pst-nav-more-links" class="dropdown-menu">
-                    
-<li class=" ">
-  <a class="nav-link dropdown-item nav-internal" href="reference.html">
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="dev_guide.html">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="reference.html">
     Reference
   </a>
 </li>
 
-                </ul>
-            </li>
-            
   </ul>
 </nav></div>
       
@@ -671,20 +658,6 @@ window.addEventListener("load", load);
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="getting_started.html">
-    Getting Started
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="migration.html">
-    Migration Guide: v1 to v2
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="user_guide.html">
     User Guide
   </a>
@@ -692,8 +665,15 @@ window.addEventListener("load", load);
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="migration.html">
+    Migration Guide: v1.4.3 to v2.2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="dev_guide.html">
-    Developer Guide
+    Dev Guide
   </a>
 </li>
 
@@ -1070,8 +1050,6 @@ window.addEventListener("load", load);
 </li>
       <li><a href="api/nexusLIMS/nexusLIMS.extractors.registry.html#nexusLIMS.extractors.registry.ExtractorRegistry.extractor_names">extractor_names (nexusLIMS.extractors.registry.ExtractorRegistry property)</a>
 </li>
-      <li><a href="api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.base.InstrumentProfile.extractor_overrides">extractor_overrides (nexusLIMS.extractors.base.InstrumentProfile attribute)</a>
-</li>
       <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.ExtractionDetails.extractor_warnings">extractor_warnings (nexusLIMS.schemas.metadata.ExtractionDetails attribute)</a>
 </li>
       <li><a href="api/nexusLIMS/nexusLIMS.extractors.registry.html#nexusLIMS.extractors.registry.ExtractorRegistry">ExtractorRegistry (class in nexusLIMS.extractors.registry)</a>
@@ -1338,74 +1316,18 @@ window.addEventListener("load", load);
 </li>
       <li><a href="api/nexusLIMS/nexusLIMS.instruments.html#nexusLIMS.instruments.Instrument.localize_datetime_str">localize_datetime_str() (nexusLIMS.instruments.Instrument method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/nexusLIMS/nexusLIMS.instruments.html#nexusLIMS.instruments.Instrument.location">location (nexusLIMS.instruments.Instrument attribute)</a>
 </li>
       <li><a href="api/nexusLIMS/nexusLIMS.config.html#nexusLIMS.config.Settings.lock_file_path">lock_file_path (nexusLIMS.config.Settings property)</a>
 </li>
       <li><a href="api/nexusLIMS/nexusLIMS.config.html#nexusLIMS.config.Settings.log_dir_path">log_dir_path (nexusLIMS.config.Settings property)</a>
 </li>
-      <li><a href="api/nexusLIMS/nexusLIMS.builder.record_builder.html#nexusLIMS.builder.record_builder.logger">logger (in module nexusLIMS.builder.record_builder)</a>
+      <li><a href="api/nexusLIMS/nexusLIMS.cli.process_records.html#nexusLIMS.cli.process_records.logger">logger (in module nexusLIMS.cli.process_records)</a>
 
       <ul>
-        <li><a href="api/nexusLIMS/nexusLIMS.cdcs.html#nexusLIMS.cdcs.logger">(in module nexusLIMS.cdcs)</a>
-</li>
-        <li><a href="api/nexusLIMS/nexusLIMS.cli.process_records.html#nexusLIMS.cli.process_records.logger">(in module nexusLIMS.cli.process_records)</a>
-</li>
-        <li><a href="api/nexusLIMS/nexusLIMS.config.html#nexusLIMS.config.logger">(in module nexusLIMS.config)</a>
-</li>
-        <li><a href="api/nexusLIMS/nexusLIMS.db.session_handler.html#nexusLIMS.db.session_handler.logger">(in module nexusLIMS.db.session_handler)</a>
-</li>
-        <li><a href="api/nexusLIMS/nexusLIMS.extractors.html#nexusLIMS.extractors.logger">(in module nexusLIMS.extractors)</a>
-</li>
-        <li><a href="api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.base.logger">(in module nexusLIMS.extractors.base)</a>
-</li>
-        <li><a href="api/nexusLIMS/nexusLIMS.extractors.plugins.basic_metadata.html#nexusLIMS.extractors.plugins.basic_metadata.logger">(in module nexusLIMS.extractors.plugins.basic_metadata)</a>
-</li>
-        <li><a href="api/nexusLIMS/nexusLIMS.extractors.plugins.digital_micrograph.html#nexusLIMS.extractors.plugins.digital_micrograph.logger">(in module nexusLIMS.extractors.plugins.digital_micrograph)</a>
-</li>
-        <li><a href="api/nexusLIMS/nexusLIMS.extractors.plugins.edax.html#nexusLIMS.extractors.plugins.edax.logger">(in module nexusLIMS.extractors.plugins.edax)</a>
-</li>
-        <li><a href="api/nexusLIMS/nexusLIMS.extractors.plugins.fei_emi.html#nexusLIMS.extractors.plugins.fei_emi.logger">(in module nexusLIMS.extractors.plugins.fei_emi)</a>
-</li>
-        <li><a href="api/nexusLIMS/nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.html#nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.logger">(in module nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview)</a>
-</li>
-        <li><a href="api/nexusLIMS/nexusLIMS.extractors.plugins.preview_generators.image_preview.html#nexusLIMS.extractors.plugins.preview_generators.image_preview.logger">(in module nexusLIMS.extractors.plugins.preview_generators.image_preview)</a>
-</li>
-        <li><a href="api/nexusLIMS/nexusLIMS.extractors.plugins.preview_generators.text_preview.html#nexusLIMS.extractors.plugins.preview_generators.text_preview.logger">(in module nexusLIMS.extractors.plugins.preview_generators.text_preview)</a>
-</li>
-        <li><a href="api/nexusLIMS/nexusLIMS.extractors.plugins.profiles.html#nexusLIMS.extractors.plugins.profiles.logger">(in module nexusLIMS.extractors.plugins.profiles)</a>
-</li>
-        <li><a href="api/nexusLIMS/nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643.html#nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643.logger">(in module nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643)</a>
-</li>
-        <li><a href="api/nexusLIMS/nexusLIMS.extractors.plugins.profiles.fei_titan_tem_642.html#nexusLIMS.extractors.plugins.profiles.fei_titan_tem_642.logger">(in module nexusLIMS.extractors.plugins.profiles.fei_titan_tem_642)</a>
-</li>
-        <li><a href="api/nexusLIMS/nexusLIMS.extractors.plugins.profiles.jeol_jem_642.html#nexusLIMS.extractors.plugins.profiles.jeol_jem_642.logger">(in module nexusLIMS.extractors.plugins.profiles.jeol_jem_642)</a>
-</li>
-        <li><a href="api/nexusLIMS/nexusLIMS.extractors.profiles.html#nexusLIMS.extractors.profiles.logger">(in module nexusLIMS.extractors.profiles)</a>
-</li>
-        <li><a href="api/nexusLIMS/nexusLIMS.extractors.registry.html#nexusLIMS.extractors.registry.logger">(in module nexusLIMS.extractors.registry)</a>
-</li>
-        <li><a href="api/nexusLIMS/nexusLIMS.extractors.utils.html#nexusLIMS.extractors.utils.logger">(in module nexusLIMS.extractors.utils)</a>
-</li>
-        <li><a href="api/nexusLIMS/nexusLIMS.harvesters.nemo.html#nexusLIMS.harvesters.nemo.logger">(in module nexusLIMS.harvesters.nemo)</a>
-</li>
-        <li><a href="api/nexusLIMS/nexusLIMS.harvesters.nemo.connector.html#nexusLIMS.harvesters.nemo.connector.logger">(in module nexusLIMS.harvesters.nemo.connector)</a>
-</li>
-        <li><a href="api/nexusLIMS/nexusLIMS.harvesters.nemo.utils.html#nexusLIMS.harvesters.nemo.utils.logger">(in module nexusLIMS.harvesters.nemo.utils)</a>
-</li>
-        <li><a href="api/nexusLIMS/nexusLIMS.instruments.html#nexusLIMS.instruments.logger">(in module nexusLIMS.instruments)</a>
-</li>
-        <li><a href="api/nexusLIMS/nexusLIMS.schemas.activity.html#nexusLIMS.schemas.activity.logger">(in module nexusLIMS.schemas.activity)</a>
-</li>
-        <li><a href="api/nexusLIMS/nexusLIMS.schemas.em_glossary.html#nexusLIMS.schemas.em_glossary.logger">(in module nexusLIMS.schemas.em_glossary)</a>
-</li>
-        <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.logger">(in module nexusLIMS.schemas.metadata)</a>
-</li>
-        <li><a href="api/nexusLIMS/nexusLIMS.schemas.pint_types.html#nexusLIMS.schemas.pint_types.logger">(in module nexusLIMS.schemas.pint_types)</a>
-</li>
         <li><a href="api/nexusLIMS/nexusLIMS.schemas.units.html#nexusLIMS.schemas.units.logger">(in module nexusLIMS.schemas.units)</a>
-</li>
-        <li><a href="api/nexusLIMS/nexusLIMS.utils.html#nexusLIMS.utils.logger">(in module nexusLIMS.utils)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -1417,8 +1339,6 @@ window.addEventListener("load", load);
       <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.ImageMetadata.magnification">magnification (nexusLIMS.schemas.metadata.ImageMetadata attribute)</a>
 </li>
       <li><a href="api/nexusLIMS/nexusLIMS.cli.process_records.html#nexusLIMS.cli.process_records.main">main() (in module nexusLIMS.cli.process_records)</a>
-</li>
-      <li><a href="api/nexusLIMS/nexusLIMS.db.html#nexusLIMS.db.make_db_query">make_db_query() (in module nexusLIMS.db)</a>
 </li>
       <li><a href="api/nexusLIMS/nexusLIMS.extractors.plugins.fei_emi.html#nexusLIMS.extractors.plugins.fei_emi.map_keys_with_units">map_keys_with_units() (in module nexusLIMS.extractors.plugins.fei_emi)</a>
 </li>
@@ -1949,8 +1869,6 @@ window.addEventListener("load", load);
 </li>
       <li><a href="api/nexusLIMS/nexusLIMS.config.html#nexusLIMS.config.Settings.NX_RECORDS_PATH">NX_RECORDS_PATH (nexusLIMS.config.Settings attribute)</a>
 </li>
-      <li><a href="api/nexusLIMS/nexusLIMS.config.html#nexusLIMS.config.Settings.NX_TEST_CDCS_URL">NX_TEST_CDCS_URL (nexusLIMS.config.Settings attribute)</a>
-</li>
   </ul></td>
 </tr></table>
 
@@ -2301,10 +2219,10 @@ window.addEventListener("load", load);
 </li>
       <li><a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.StagePosition.tilt_beta">tilt_beta (nexusLIMS.schemas.metadata.StagePosition attribute)</a>
 </li>
-      <li><a href="api/nexusLIMS/nexusLIMS.db.session_handler.html#nexusLIMS.db.session_handler.SessionLog.timestamp">timestamp (nexusLIMS.db.session_handler.SessionLog attribute)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/nexusLIMS/nexusLIMS.db.session_handler.html#nexusLIMS.db.session_handler.SessionLog.timestamp">timestamp (nexusLIMS.db.session_handler.SessionLog attribute)</a>
+</li>
       <li><a href="api/nexusLIMS/nexusLIMS.instruments.html#nexusLIMS.instruments.Instrument.timezone">timezone (nexusLIMS.instruments.Instrument attribute)</a>
 </li>
       <li><a href="api/nexusLIMS/nexusLIMS.instruments.html#nexusLIMS.instruments.Instrument.to_dict">to_dict() (nexusLIMS.instruments.Instrument method)</a>
@@ -2320,8 +2238,6 @@ window.addEventListener("load", load);
       <li><a href="api/nexusLIMS/nexusLIMS.utils.html#nexusLIMS.utils.try_getting_dict_value">try_getting_dict_value() (in module nexusLIMS.utils)</a>
 </li>
       <li><a href="api/nexusLIMS/nexusLIMS.config.html#nexusLIMS.config.NemoHarvesterConfig.tz">tz (nexusLIMS.config.NemoHarvesterConfig attribute)</a>
-</li>
-      <li><a href="api/nexusLIMS/nexusLIMS.utils.html#nexusLIMS.utils.tz_offset">tz_offset (in module nexusLIMS.utils)</a>
 </li>
   </ul></td>
 </tr></table>

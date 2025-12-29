@@ -4,6 +4,7 @@
 ```
 
 ```{autodoc2-docstring} nexusLIMS.db
+:parser: autodoc2_docstrings_parser
 :allowtitles:
 ```
 
@@ -15,26 +16,3 @@
 
 nexusLIMS.db.session_handler
 ```
-
-## Package Contents
-
-### Functions
-
-````{list-table}
-:class: autosummary longtable
-:align: left
-
-* - {py:obj}`make_db_query <nexusLIMS.db.make_db_query>`
-  - ```{autodoc2-docstring} nexusLIMS.db.make_db_query
-    :summary:
-    ```
-````
-
-### API
-
-````{py:function} make_db_query(query)
-:canonical: nexusLIMS.db.make_db_query
-
-```{autodoc2-docstring} nexusLIMS.db.make_db_query
-```
-````

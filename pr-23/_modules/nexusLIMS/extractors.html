@@ -31,8 +31,9 @@
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=af02a5b6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=8633d6cc" />
   
   <!-- So that users can add custom icons -->
   <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -43,6 +44,8 @@
     <script src="../../_static/documentation_options.js?v=dc4a309c"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=30646c52"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
     <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs"></script>
     <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs"></script>
@@ -417,6 +420,7 @@ window.addEventListener("load", load);
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
+    <script src="../../_static/custom.js?v=ba087cdf"></script>
     <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/pr-23/_modules/nexusLIMS/extractors.html" />
     <link rel="icon" href="../../_static/nexusLIMS_bare_logo.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -424,7 +428,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.2.0.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 28, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 29, 2025"/>
   </head>
   
   
@@ -534,20 +538,6 @@ window.addEventListener("load", load);
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../getting_started.html">
-    Getting Started
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../migration.html">
-    Migration Guide: v1 to v2
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../user_guide.html">
     User Guide
   </a>
@@ -555,28 +545,25 @@ window.addEventListener("load", load);
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../dev_guide.html">
-    Developer Guide
+  <a class="nav-link nav-internal" href="../../migration.html">
+    Migration Guide: v1.4.3 to v2.2.0
   </a>
 </li>
 
-            <li class="nav-item dropdown">
-                <button class="btn dropdown-toggle nav-item" type="button"
-                data-bs-toggle="dropdown" aria-expanded="false"
-                aria-controls="pst-nav-more-links">
-                    More
-                </button>
-                <ul id="pst-nav-more-links" class="dropdown-menu">
-                    
-<li class=" ">
-  <a class="nav-link dropdown-item nav-internal" href="../../reference.html">
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../dev_guide.html">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../reference.html">
     Reference
   </a>
 </li>
 
-                </ul>
-            </li>
-            
   </ul>
 </nav></div>
       
@@ -671,20 +658,6 @@ window.addEventListener("load", load);
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../getting_started.html">
-    Getting Started
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../migration.html">
-    Migration Guide: v1 to v2
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../user_guide.html">
     User Guide
   </a>
@@ -692,8 +665,15 @@ window.addEventListener("load", load);
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../migration.html">
+    Migration Guide: v1.4.3 to v2.2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../dev_guide.html">
-    Developer Guide
+    Dev Guide
   </a>
 </li>
 
@@ -821,7 +801,7 @@ window.addEventListener("load", load);
 
 <span class="sd">Extractors should return a list of dictionaries, where each dictionary contains</span>
 <span class="sd">the extracted metadata under the key ``nx_meta``. The ``nx_meta`` structure is</span>
-<span class="sd">validated against the :class:`~nexusLIMS.extractors.schemas.NexusMetadata` Pydantic</span>
+<span class="sd">validated against the :class:`~nexusLIMS.schemas.metadata.NexusMetadata` Pydantic</span>
 <span class="sd">schema to ensure consistency across all extractors.</span>
 
 <span class="sd">Required Fields</span>
@@ -852,7 +832,7 @@ window.addEventListener("load", load);
 <span class="sd">If validation fails, a ``pydantic.ValidationError`` is raised with detailed information</span>
 <span class="sd">about which fields are invalid.</span>
 
-<span class="sd">For complete schema details, see :class:`~nexusLIMS.extractors.schemas.NexusMetadata`.</span>
+<span class="sd">For complete schema details, see :class:`~nexusLIMS.schemas.metadata.NexusMetadata`.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">base64</span>
@@ -892,18 +872,20 @@ window.addEventListener("load", load);
 <span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.plugins.preview_generators.text_preview</span><span class="w"> </span><span class="kn">import</span> <span class="n">text_to_thumbnail</span>
 
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
 <span class="n">PLACEHOLDER_PREVIEW</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;assets&quot;</span> <span class="o">/</span> <span class="s2">&quot;extractor_error.png&quot;</span>
+<span class="sd">&quot;&quot;&quot;Path to placeholder preview image used when preview generation fails.&quot;&quot;&quot;</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s2">&quot;PLACEHOLDER_PREVIEW&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;_logger&quot;</span><span class="p">,</span>
     <span class="s2">&quot;create_preview&quot;</span><span class="p">,</span>
     <span class="s2">&quot;down_sample_image&quot;</span><span class="p">,</span>
     <span class="s2">&quot;flatten_dict&quot;</span><span class="p">,</span>
     <span class="s2">&quot;get_instr_from_filepath&quot;</span><span class="p">,</span>
     <span class="s2">&quot;get_registry&quot;</span><span class="p">,</span>
     <span class="s2">&quot;image_to_square_thumbnail&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;logger&quot;</span><span class="p">,</span>
     <span class="s2">&quot;parse_metadata&quot;</span><span class="p">,</span>
     <span class="s2">&quot;sig_to_thumbnail&quot;</span><span class="p">,</span>
     <span class="s2">&quot;text_to_thumbnail&quot;</span><span class="p">,</span>
@@ -912,8 +894,6 @@ window.addEventListener("load", load);
     <span class="s2">&quot;validate_nx_meta&quot;</span><span class="p">,</span>
 <span class="p">]</span>
 
-<span class="c1"># filetypes that will only have basic metadata extracted but will nonetheless</span>
-<span class="c1"># have a custom preview image generated</span>
 <span class="n">unextracted_preview_map</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">&quot;txt&quot;</span><span class="p">:</span> <span class="n">text_to_thumbnail</span><span class="p">,</span>
     <span class="s2">&quot;png&quot;</span><span class="p">:</span> <span class="n">image_to_square_thumbnail</span><span class="p">,</span>
@@ -923,6 +903,8 @@ window.addEventListener("load", load);
     <span class="s2">&quot;jpg&quot;</span><span class="p">:</span> <span class="n">image_to_square_thumbnail</span><span class="p">,</span>
     <span class="s2">&quot;jpeg&quot;</span><span class="p">:</span> <span class="n">image_to_square_thumbnail</span><span class="p">,</span>
 <span class="p">}</span>
+<span class="sd">&quot;&quot;&quot;Filetypes that will only have basic metadata extracted but will nonetheless</span>
+<span class="sd">have a custom preview image generated&quot;&quot;&quot;</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_add_extraction_details</span><span class="p">(</span>
@@ -1076,7 +1058,7 @@ window.addEventListener("load", load);
 <span class="sd">    metadata_dict : dict[str, Any]</span>
 <span class="sd">        Dictionary containing an &#39;nx_meta&#39; key with the metadata to validate.</span>
 <span class="sd">        This is the format returned by all extractor plugins.</span>
-<span class="sd">    filename : Path or None, optional</span>
+<span class="sd">    filename : :class:`~pathlib.Path` or None, optional</span>
 <span class="sd">        The file path being processed. Used only for error message context.</span>
 <span class="sd">        If None, error messages will not include file path information.</span>
 
@@ -1088,7 +1070,7 @@ window.addEventListener("load", load);
 
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
-<span class="sd">    ValidationError</span>
+<span class="sd">    pydantic.ValidationError</span>
 <span class="sd">        If the nx_meta structure fails validation. The error message will include</span>
 <span class="sd">        detailed information about which fields are invalid and why.</span>
 
@@ -1145,11 +1127,16 @@ window.addEventListener("load", load);
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
-<span class="sd">    NexusMetadata : The base Pydantic schema model for nx_meta validation</span>
-<span class="sd">    ImageMetadata : Schema for Image dataset types</span>
-<span class="sd">    SpectrumMetadata : Schema for Spectrum dataset types</span>
-<span class="sd">    get_schema_for_dataset_type : Helper function that selects the appropriate schema</span>
-<span class="sd">    parse_metadata : Main extraction function that uses this validator</span>
+<span class="sd">    nexusLIMS.schemas.metadata.NexusMetadata</span>
+<span class="sd">        The base Pydantic schema model for nx_meta validation</span>
+<span class="sd">    nexusLIMS.schemas.metadata.ImageMetadata</span>
+<span class="sd">        Schema for Image dataset types</span>
+<span class="sd">    nexusLIMS.schemas.metadata.SpectrumMetadata</span>
+<span class="sd">        Schema for Spectrum dataset types</span>
+<span class="sd">    get_schema_for_dataset_type</span>
+<span class="sd">        Helper function that selects the appropriate schema</span>
+<span class="sd">    parse_metadata</span>
+<span class="sd">        Main extraction function that uses this validator</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">nx_meta</span> <span class="o">=</span> <span class="n">metadata_dict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">]</span>
 
@@ -1165,7 +1152,7 @@ window.addEventListener("load", load);
             <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Validation failed for </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">dataset_type</span><span class="si">}</span><span class="s2">): </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Validation failed (</span><span class="si">{</span><span class="n">dataset_type</span><span class="si">}</span><span class="s2">): </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
         <span class="k">raise</span>
 
     <span class="k">return</span> <span class="n">metadata_dict</span></div>
@@ -1257,13 +1244,13 @@ window.addEventListener("load", load);
     <span class="k">if</span> <span class="n">extractor</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;basic_file_info_extractor&quot;</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">extension</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">unextracted_preview_map</span><span class="p">:</span>
             <span class="n">generate_preview</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
                 <span class="s2">&quot;No specialized extractor found for file extension; &quot;</span>
                 <span class="s2">&quot;setting generate_preview to False&quot;</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">generate_preview</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
                 <span class="s2">&quot;No specialized extractor found for file extension; &quot;</span>
                 <span class="s2">&quot;but file extension was in unextracted_preview_map; &quot;</span>
                 <span class="s2">&quot;setting generate_preview to True&quot;</span><span class="p">,</span>
@@ -1308,7 +1295,7 @@ window.addEventListener("load", load);
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">out_dict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
                 <span class="k">with</span> <span class="n">out_fname</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Dumping metadata to </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">out_fname</span><span class="p">)</span>
+                    <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Dumping metadata to </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">out_fname</span><span class="p">)</span>
                     <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span>
                         <span class="n">out_dict</span><span class="p">,</span>
                         <span class="n">f</span><span class="p">,</span>
@@ -1375,7 +1362,7 @@ window.addEventListener("load", load);
 
     <span class="c1"># Skip if preview exists and overwrite is False</span>
     <span class="k">if</span> <span class="n">preview_fname</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Preview already exists: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">preview_fname</span><span class="p">)</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Preview already exists: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">preview_fname</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">preview_fname</span>
 
     <span class="c1"># Create context for preview generation</span>
@@ -1390,7 +1377,7 @@ window.addEventListener("load", load);
 
     <span class="k">if</span> <span class="n">generator</span><span class="p">:</span>
         <span class="c1"># Use plugin-based preview generation</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Generating preview using </span><span class="si">%s</span><span class="s2">: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">generator</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">preview_fname</span><span class="p">)</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Generating preview using </span><span class="si">%s</span><span class="s2">: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">generator</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">preview_fname</span><span class="p">)</span>
         <span class="c1"># Create the directory for the thumbnail, if needed</span>
         <span class="n">preview_fname</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
@@ -1398,7 +1385,7 @@ window.addEventListener("load", load);
         <span class="k">if</span> <span class="n">success</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">preview_fname</span>
 
-        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
             <span class="s2">&quot;Preview generator </span><span class="si">%s</span><span class="s2"> failed for </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
             <span class="n">generator</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
             <span class="n">fname</span><span class="p">,</span>
@@ -1408,7 +1395,7 @@ window.addEventListener("load", load);
     <span class="c1"># Legacy fallback for .tif files (special case with downsampling)</span>
     <span class="n">extension</span> <span class="o">=</span> <span class="n">fname</span><span class="o">.</span><span class="n">suffix</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
     <span class="k">if</span> <span class="n">extension</span> <span class="o">==</span> <span class="s2">&quot;tif&quot;</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Using legacy downsampling for .tif: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">preview_fname</span><span class="p">)</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Using legacy downsampling for .tif: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">preview_fname</span><span class="p">)</span>
         <span class="n">preview_fname</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">factor</span> <span class="o">=</span> <span class="mi">2</span>
         <span class="n">down_sample_image</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">out_path</span><span class="o">=</span><span class="n">preview_fname</span><span class="p">,</span> <span class="n">factor</span><span class="o">=</span><span class="n">factor</span><span class="p">)</span>
@@ -1416,7 +1403,7 @@ window.addEventListener("load", load);
 
     <span class="c1"># Legacy fallback for files in unextracted_preview_map</span>
     <span class="k">if</span> <span class="n">extension</span> <span class="ow">in</span> <span class="n">unextracted_preview_map</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Using legacy preview map for </span><span class="si">%s</span><span class="s2">: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">extension</span><span class="p">,</span> <span class="n">preview_fname</span><span class="p">)</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Using legacy preview map for </span><span class="si">%s</span><span class="s2">: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">extension</span><span class="p">,</span> <span class="n">preview_fname</span><span class="p">)</span>
         <span class="n">preview_fname</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">preview_return</span> <span class="o">=</span> <span class="n">unextracted_preview_map</span><span class="p">[</span><span class="n">extension</span><span class="p">](</span>
             <span class="n">f</span><span class="o">=</span><span class="n">fname</span><span class="p">,</span>
@@ -1431,7 +1418,7 @@ window.addEventListener("load", load);
         <span class="k">return</span> <span class="n">preview_fname</span>
 
     <span class="c1"># Legacy fallback for HyperSpy-loadable files</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Trying legacy HyperSpy preview generation: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">preview_fname</span><span class="p">)</span>
+    <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Trying legacy HyperSpy preview generation: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">preview_fname</span><span class="p">)</span>
     <span class="n">load_options</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;lazy&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
     <span class="k">if</span> <span class="n">extension</span> <span class="o">==</span> <span class="s2">&quot;ser&quot;</span><span class="p">:</span>
         <span class="n">load_options</span><span class="p">[</span><span class="s2">&quot;only_valid_data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
@@ -1440,7 +1427,7 @@ window.addEventListener("load", load);
     <span class="k">try</span><span class="p">:</span>
         <span class="n">s</span> <span class="o">=</span> <span class="n">hs</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="o">**</span><span class="n">load_options</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>  <span class="c1"># pylint: disable=broad-exception-caught</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
             <span class="s2">&quot;Signal could not be loaded by HyperSpy. &quot;</span>
             <span class="s2">&quot;Using placeholder image for preview.&quot;</span><span class="p">,</span>
         <span class="p">)</span>
@@ -1474,7 +1461,7 @@ window.addEventListener("load", load);
         <span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
 
     <span class="c1"># Generate the preview</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Generating HyperSpy preview: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">preview_fname</span><span class="p">)</span>
+    <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Generating HyperSpy preview: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">preview_fname</span><span class="p">)</span>
     <span class="n">preview_fname</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">s</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">show_progressbar</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">sig_to_thumbnail</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">out_path</span><span class="o">=</span><span class="n">preview_fname</span><span class="p">)</span>

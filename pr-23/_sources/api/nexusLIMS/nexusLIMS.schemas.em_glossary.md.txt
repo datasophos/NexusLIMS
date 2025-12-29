@@ -4,6 +4,7 @@
 ```
 
 ```{autodoc2-docstring} nexusLIMS.schemas.em_glossary
+:parser: autodoc2_docstrings_parser
 :allowtitles:
 ```
 
@@ -17,42 +18,52 @@
 
 * - {py:obj}`get_emg_label <nexusLIMS.schemas.em_glossary.get_emg_label>`
   - ```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.get_emg_label
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`get_emg_definition <nexusLIMS.schemas.em_glossary.get_emg_definition>`
   - ```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.get_emg_definition
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`get_emg_id <nexusLIMS.schemas.em_glossary.get_emg_id>`
   - ```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.get_emg_id
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`get_display_name <nexusLIMS.schemas.em_glossary.get_display_name>`
   - ```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.get_display_name
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`get_description <nexusLIMS.schemas.em_glossary.get_description>`
   - ```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.get_description
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`has_emg_id <nexusLIMS.schemas.em_glossary.has_emg_id>`
   - ```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.has_emg_id
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`get_emg_uri <nexusLIMS.schemas.em_glossary.get_emg_uri>`
   - ```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.get_emg_uri
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`get_all_mapped_fields <nexusLIMS.schemas.em_glossary.get_all_mapped_fields>`
   - ```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.get_all_mapped_fields
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`get_fields_with_emg_ids <nexusLIMS.schemas.em_glossary.get_fields_with_emg_ids>`
   - ```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.get_fields_with_emg_ids
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`get_all_emg_terms <nexusLIMS.schemas.em_glossary.get_all_emg_terms>`
   - ```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.get_all_emg_terms
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 ````
@@ -63,50 +74,40 @@
 :class: autosummary longtable
 :align: left
 
-* - {py:obj}`logger <nexusLIMS.schemas.em_glossary.logger>`
-  - ```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.logger
-    :summary:
-    ```
 * - {py:obj}`EMG_OWL_PATH <nexusLIMS.schemas.em_glossary.EMG_OWL_PATH>`
   - ```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.EMG_OWL_PATH
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`EMG_VERSION <nexusLIMS.schemas.em_glossary.EMG_VERSION>`
   - ```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.EMG_VERSION
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`EMG <nexusLIMS.schemas.em_glossary.EMG>`
   - ```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.EMG
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`OBO <nexusLIMS.schemas.em_glossary.OBO>`
   - ```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.OBO
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`NEXUSLIMS_TO_EMG_MAPPINGS <nexusLIMS.schemas.em_glossary.NEXUSLIMS_TO_EMG_MAPPINGS>`
   - ```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.NEXUSLIMS_TO_EMG_MAPPINGS
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 ````
 
 ### API
 
-````{py:data} logger
-:canonical: nexusLIMS.schemas.em_glossary.logger
-:value: >
-   'getLogger(...)'
-
-```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.logger
-```
-
-````
-
 ````{py:data} EMG_OWL_PATH
 :canonical: nexusLIMS.schemas.em_glossary.EMG_OWL_PATH
-:value: >
-   None
 
 ```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.EMG_OWL_PATH
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -117,6 +118,7 @@
    'v2.0.0'
 
 ```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.EMG_VERSION
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -127,6 +129,7 @@
    'Namespace(...)'
 
 ```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.EMG
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -137,17 +140,18 @@
    'Namespace(...)'
 
 ```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.OBO
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:data} NEXUSLIMS_TO_EMG_MAPPINGS
 :canonical: nexusLIMS.schemas.em_glossary.NEXUSLIMS_TO_EMG_MAPPINGS
-:type: typing.Dict[str, tuple[str, str | None, str]]
-:value: >
-   None
+
+**Type:** typing.Dict[str, tuple[str, str | None, str]]
 
 ```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.NEXUSLIMS_TO_EMG_MAPPINGS
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -156,6 +160,7 @@
 :canonical: nexusLIMS.schemas.em_glossary.get_emg_label
 
 ```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.get_emg_label
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -163,6 +168,7 @@
 :canonical: nexusLIMS.schemas.em_glossary.get_emg_definition
 
 ```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.get_emg_definition
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -170,6 +176,7 @@
 :canonical: nexusLIMS.schemas.em_glossary.get_emg_id
 
 ```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.get_emg_id
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -177,6 +184,7 @@
 :canonical: nexusLIMS.schemas.em_glossary.get_display_name
 
 ```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.get_display_name
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -184,6 +192,7 @@
 :canonical: nexusLIMS.schemas.em_glossary.get_description
 
 ```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.get_description
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -191,6 +200,7 @@
 :canonical: nexusLIMS.schemas.em_glossary.has_emg_id
 
 ```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.has_emg_id
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -198,6 +208,7 @@
 :canonical: nexusLIMS.schemas.em_glossary.get_emg_uri
 
 ```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.get_emg_uri
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -205,6 +216,7 @@
 :canonical: nexusLIMS.schemas.em_glossary.get_all_mapped_fields
 
 ```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.get_all_mapped_fields
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -212,6 +224,7 @@
 :canonical: nexusLIMS.schemas.em_glossary.get_fields_with_emg_ids
 
 ```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.get_fields_with_emg_ids
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -219,5 +232,6 @@
 :canonical: nexusLIMS.schemas.em_glossary.get_all_emg_terms
 
 ```{autodoc2-docstring} nexusLIMS.schemas.em_glossary.get_all_emg_terms
+:parser: autodoc2_docstrings_parser
 ```
 ````

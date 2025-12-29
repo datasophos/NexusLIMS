@@ -31,8 +31,9 @@
 
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=af02a5b6" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=8633d6cc" />
   
   <!-- So that users can add custom icons -->
   <script src="../../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -43,6 +44,8 @@
     <script src="../../../../_static/documentation_options.js?v=dc4a309c"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../../_static/copybutton.js?v=30646c52"></script>
     <script src="../../../../_static/design-tabs.js?v=f930bc37"></script>
     <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs"></script>
     <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs"></script>
@@ -417,6 +420,7 @@ window.addEventListener("load", load);
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
+    <script src="../../../../_static/custom.js?v=ba087cdf"></script>
     <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/pr-23/_modules/nexusLIMS/harvesters/nemo/connector.html" />
     <link rel="icon" href="../../../../_static/nexusLIMS_bare_logo.ico"/>
     <link rel="index" title="Index" href="../../../../genindex.html" />
@@ -424,7 +428,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.2.0.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 28, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 29, 2025"/>
   </head>
   
   
@@ -534,20 +538,6 @@ window.addEventListener("load", load);
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../../getting_started.html">
-    Getting Started
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../../migration.html">
-    Migration Guide: v1 to v2
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../../user_guide.html">
     User Guide
   </a>
@@ -555,28 +545,25 @@ window.addEventListener("load", load);
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../../dev_guide.html">
-    Developer Guide
+  <a class="nav-link nav-internal" href="../../../../migration.html">
+    Migration Guide: v1.4.3 to v2.2.0
   </a>
 </li>
 
-            <li class="nav-item dropdown">
-                <button class="btn dropdown-toggle nav-item" type="button"
-                data-bs-toggle="dropdown" aria-expanded="false"
-                aria-controls="pst-nav-more-links">
-                    More
-                </button>
-                <ul id="pst-nav-more-links" class="dropdown-menu">
-                    
-<li class=" ">
-  <a class="nav-link dropdown-item nav-internal" href="../../../../reference.html">
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../dev_guide.html">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../reference.html">
     Reference
   </a>
 </li>
 
-                </ul>
-            </li>
-            
   </ul>
 </nav></div>
       
@@ -671,20 +658,6 @@ window.addEventListener("load", load);
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../../getting_started.html">
-    Getting Started
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../../migration.html">
-    Migration Guide: v1 to v2
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../../user_guide.html">
     User Guide
   </a>
@@ -692,8 +665,15 @@ window.addEventListener("load", load);
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../migration.html">
+    Migration Guide: v1.4.3 to v2.2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../../dev_guide.html">
-    Developer Guide
+    Dev Guide
   </a>
 </li>
 
@@ -823,7 +803,7 @@ window.addEventListener("load", load);
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">urllib.parse</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_qs</span><span class="p">,</span> <span class="n">urljoin</span><span class="p">,</span> <span class="n">urlparse</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">pytz</span><span class="w"> </span><span class="kn">import</span> <span class="n">timezone</span> <span class="k">as</span> <span class="n">pytz_timezone</span>
@@ -832,7 +812,7 @@ window.addEventListener("load", load);
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.instruments</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_instr_from_api_url</span><span class="p">,</span> <span class="n">instrument_db</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">nexus_req</span>
 
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="NemoConnector">
@@ -872,10 +852,10 @@ window.addEventListener("load", load);
 <span class="sd">        actually failing.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">tools</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]</span>
-    <span class="n">users</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]</span>
-    <span class="n">users_by_username</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]</span>
-    <span class="n">projects</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]</span>
+    <span class="n">tools</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]</span>
+    <span class="n">users</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]</span>
+    <span class="n">users_by_username</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]</span>
+    <span class="n">projects</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>  <span class="c1"># pylint: disable=too-many-arguments,too-many-positional-arguments  # noqa: PLR0913</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -1023,7 +1003,7 @@ window.addEventListener("load", load);
 
 <div class="viewcode-block" id="NemoConnector.get_tools">
 <a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.harvesters.nemo.connector.html#nexusLIMS.harvesters.nemo.connector.NemoConnector.get_tools">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_tools</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tool_id</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_tools</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tool_id</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get a list of one or more tools from the NEMO API in a dictionary.</span>
 
@@ -1037,7 +1017,7 @@ window.addEventListener("load", load);
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        tools : List[Dict]</span>
+<span class="sd">        tools : List[dict]</span>
 <span class="sd">            A list (could be empty) of tools that match the id (or ids) given</span>
 <span class="sd">            in ``tool_id``</span>
 
@@ -1051,7 +1031,7 @@ window.addEventListener("load", load);
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tool_id</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="k">elif</span> <span class="nb">all</span><span class="p">(</span><span class="n">t_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tools</span> <span class="k">for</span> <span class="n">t_id</span> <span class="ow">in</span> <span class="n">tool_id</span><span class="p">):</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
                     <span class="s2">&quot;Using cached tool info for tools </span><span class="si">%s</span><span class="s2">: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
                     <span class="n">tool_id</span><span class="p">,</span>
                     <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">tools</span><span class="p">[</span><span class="n">t</span><span class="p">][</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tool_id</span><span class="p">],</span>
@@ -1061,7 +1041,7 @@ window.addEventListener("load", load);
                 <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;id__in&quot;</span><span class="p">:</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tool_id</span><span class="p">])}</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">tool_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tools</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
                     <span class="s1">&#39;Using cached tool info for tool </span><span class="si">%s</span><span class="s1">: &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span><span class="p">,</span>
                     <span class="n">tool_id</span><span class="p">,</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">tools</span><span class="p">[</span><span class="n">tool_id</span><span class="p">][</span><span class="s2">&quot;name&quot;</span><span class="p">],</span>
@@ -1080,7 +1060,7 @@ window.addEventListener("load", load);
 
 <div class="viewcode-block" id="NemoConnector.get_users">
 <a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.harvesters.nemo.connector.html#nexusLIMS.harvesters.nemo.connector.NemoConnector.get_users">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_users</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_id</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_users</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_id</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get a list of one or more users from the NEMO API in a dictionary.</span>
 
@@ -1097,7 +1077,7 @@ window.addEventListener("load", load);
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        users : List[Dict]</span>
+<span class="sd">        users : List[dict]</span>
 <span class="sd">            A list (could be empty) of users that match the ids and/or</span>
 <span class="sd">            usernames given</span>
 
@@ -1116,7 +1096,7 @@ window.addEventListener("load", load);
 
             <span class="n">params</span><span class="p">[</span><span class="s2">&quot;id__in&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">user_id</span><span class="p">])</span>
             <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">u_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">users</span> <span class="k">for</span> <span class="n">u_id</span> <span class="ow">in</span> <span class="n">user_id</span><span class="p">):</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
                     <span class="s2">&quot;Using cached user info for users with id in </span><span class="si">%s</span><span class="s2">: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
                     <span class="n">user_id</span><span class="p">,</span>
                     <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">users</span><span class="p">[</span><span class="n">u</span><span class="p">][</span><span class="s2">&quot;username&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">user_id</span><span class="p">],</span>
@@ -1126,7 +1106,7 @@ window.addEventListener("load", load);
         <span class="k">else</span><span class="p">:</span>
             <span class="n">params</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">user_id</span>
             <span class="k">if</span> <span class="n">user_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">users</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
                     <span class="s1">&#39;Using cached user info for user id </span><span class="si">%s</span><span class="s1">: &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span><span class="p">,</span>
                     <span class="n">user_id</span><span class="p">,</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">users</span><span class="p">[</span><span class="n">user_id</span><span class="p">][</span><span class="s2">&quot;username&quot;</span><span class="p">],</span>
@@ -1167,12 +1147,12 @@ window.addEventListener("load", load);
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">params</span><span class="p">[</span><span class="s2">&quot;username__iexact&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">username</span>
             <span class="k">if</span> <span class="n">username</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">users_by_username</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Using cached user info for username &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span><span class="p">,</span> <span class="n">username</span><span class="p">)</span>
+                <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Using cached user info for username &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span><span class="p">,</span> <span class="n">username</span><span class="p">)</span>
                 <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">users_by_username</span><span class="p">[</span><span class="n">username</span><span class="p">]]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">params</span><span class="p">[</span><span class="s2">&quot;username__in&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">uname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">users_by_username</span> <span class="k">for</span> <span class="n">uname</span> <span class="ow">in</span> <span class="n">username</span><span class="p">):</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Using cached user info for users with id in </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">username</span><span class="p">)</span>
+                <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Using cache user info for users with id in </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">username</span><span class="p">)</span>
                 <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">users_by_username</span><span class="p">[</span><span class="n">uname</span><span class="p">]</span> <span class="k">for</span> <span class="n">uname</span> <span class="ow">in</span> <span class="n">username</span><span class="p">]</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_users_helper</span><span class="p">(</span><span class="n">params</span><span class="p">)</span></div>
@@ -1180,7 +1160,7 @@ window.addEventListener("load", load);
 
 <div class="viewcode-block" id="NemoConnector.get_projects">
 <a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.harvesters.nemo.connector.html#nexusLIMS.harvesters.nemo.connector.NemoConnector.get_projects">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_projects</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proj_id</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_projects</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proj_id</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get a list of one or more projects from the NEMO API in a dictionary.</span>
 
@@ -1197,7 +1177,7 @@ window.addEventListener("load", load);
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        projects : List[Dict]</span>
+<span class="sd">        projects : List[dict]</span>
 <span class="sd">            A list (could be empty) of projects that match the id (or ids) given</span>
 <span class="sd">            in ``proj_id``</span>
 
@@ -1211,7 +1191,7 @@ window.addEventListener("load", load);
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">proj_id</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="k">elif</span> <span class="nb">all</span><span class="p">(</span><span class="n">p_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">projects</span> <span class="k">for</span> <span class="n">p_id</span> <span class="ow">in</span> <span class="n">proj_id</span><span class="p">):</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
                     <span class="s2">&quot;Using cached project info for projects </span><span class="si">%s</span><span class="s2">: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
                     <span class="n">proj_id</span><span class="p">,</span>
                     <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">projects</span><span class="p">[</span><span class="n">p</span><span class="p">][</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">proj_id</span><span class="p">],</span>
@@ -1221,7 +1201,7 @@ window.addEventListener("load", load);
                 <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;id__in&quot;</span><span class="p">:</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">proj_id</span><span class="p">])}</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">proj_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">projects</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
                     <span class="s1">&#39;Using cached project info for project </span><span class="si">%s</span><span class="s1">: &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span><span class="p">,</span>
                     <span class="n">proj_id</span><span class="p">,</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">projects</span><span class="p">[</span><span class="n">proj_id</span><span class="p">][</span><span class="s2">&quot;name&quot;</span><span class="p">],</span>
@@ -1255,7 +1235,7 @@ window.addEventListener("load", load);
         <span class="n">tool_id</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">cancelled</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get reservations from the NEMO API filtered in various ways.</span>
 
@@ -1286,7 +1266,7 @@ window.addEventListener("load", load);
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        reservations : List[Dict]</span>
+<span class="sd">        reservations : List[dict]</span>
 <span class="sd">            A list (could be empty) of reservations that match the date range</span>
 <span class="sd">            supplied</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1435,8 +1415,8 @@ window.addEventListener("load", load);
     <span class="k">def</span><span class="w"> </span><span class="nf">_parse_dt_range</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">dt_range</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">params</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+        <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">dt_range</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">dt_from</span><span class="p">,</span> <span class="n">dt_to</span> <span class="o">=</span> <span class="n">dt_range</span>
             <span class="k">if</span> <span class="n">dt_from</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -1492,7 +1472,7 @@ window.addEventListener("load", load);
                 <span class="c1"># this shouldn&#39;t happen since we limit our usage event API call</span>
                 <span class="c1"># only to instruments contained in our DB, but we can still</span>
                 <span class="c1"># defend against it regardless</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
                     <span class="s2">&quot;Usage event </span><span class="si">%s</span><span class="s2"> was for an instrument (</span><span class="si">%s</span><span class="s2">) not known &quot;</span>
                     <span class="s2">&quot;to NexusLIMS, so no records will be added to DB.&quot;</span><span class="p">,</span>
                     <span class="n">event_id</span><span class="p">,</span>
@@ -1500,7 +1480,7 @@ window.addEventListener("load", load);
                 <span class="p">)</span>
                 <span class="k">return</span>
             <span class="k">if</span> <span class="n">event</span><span class="p">[</span><span class="s2">&quot;end&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
                     <span class="s2">&quot;Usage event </span><span class="si">%s</span><span class="s2"> has not yet ended, so no records &quot;</span>
                     <span class="s2">&quot;will be added to DB.&quot;</span><span class="p">,</span>
                     <span class="n">event_id</span><span class="p">,</span>
@@ -1516,7 +1496,7 @@ window.addEventListener("load", load);
             <span class="p">)</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="c1"># there was already a start log, so warn and don&#39;t do anything:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
                     <span class="s2">&quot;A &#39;START&#39; log with session id </span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2"> was found in the DB, &quot;</span>
                     <span class="s2">&quot;so a new one will not be inserted for this event&quot;</span><span class="p">,</span>
                     <span class="n">session_id</span><span class="p">,</span>
@@ -1541,7 +1521,7 @@ window.addEventListener("load", load);
             <span class="p">)</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="c1"># there was already an end log, so warn and don&#39;t do anything:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
                     <span class="s2">&quot;An &#39;END&#39; log with session id </span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2"> was found in the DB, &quot;</span>
                     <span class="s2">&quot;so a new one will not be inserted for this event&quot;</span><span class="p">,</span>
                     <span class="n">session_id</span><span class="p">,</span>
@@ -1558,7 +1538,7 @@ window.addEventListener("load", load);
                 <span class="p">)</span>
                 <span class="n">end_log</span><span class="o">.</span><span class="n">insert_log</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
                 <span class="s2">&quot;No usage event with id = </span><span class="si">%s</span><span class="s2"> was found for </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
                 <span class="n">event_id</span><span class="p">,</span>
                 <span class="bp">self</span><span class="p">,</span>
@@ -1591,7 +1571,7 @@ window.addEventListener("load", load);
             <span class="n">event</span> <span class="o">=</span> <span class="n">event</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="c1"># we cannot reliably test an unended event, so exlcude from coverage</span>
             <span class="k">if</span> <span class="n">event</span><span class="p">[</span><span class="s2">&quot;start&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">event</span><span class="p">[</span><span class="s2">&quot;end&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
                     <span class="s2">&quot;Usage event with id = </span><span class="si">%s</span><span class="s2"> has not yet ended for &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span>
                     <span class="n">event_id</span><span class="p">,</span>
                     <span class="bp">self</span><span class="p">,</span>
@@ -1608,7 +1588,7 @@ window.addEventListener("load", load);
                 <span class="n">user</span><span class="o">=</span><span class="n">event</span><span class="p">[</span><span class="s2">&quot;user&quot;</span><span class="p">][</span><span class="s2">&quot;username&quot;</span><span class="p">],</span>
             <span class="p">)</span>
 
-        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;No usage event with id = </span><span class="si">%s</span><span class="s2"> was found for &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">event_id</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;No usage event with id = </span><span class="si">%s</span><span class="s2"> found for &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">event_id</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">None</span></div>
 
 
@@ -1640,7 +1620,7 @@ window.addEventListener("load", load);
         <span class="k">return</span> <span class="n">tool_ids</span></div>
 
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_get_users_helper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_users_helper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Call the users API with certain parameters.</span>
 
@@ -1667,8 +1647,8 @@ window.addEventListener("load", load);
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">verb</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">endpoint</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">params</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+        <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Make a call to the NEMO API.</span>
 
@@ -1697,7 +1677,7 @@ window.addEventListener("load", load);
 <span class="sd">            The API response, formatted as a list of dict objects</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">url</span> <span class="o">=</span> <span class="n">urljoin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;base_url&quot;</span><span class="p">],</span> <span class="n">endpoint</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;getting data from </span><span class="si">%s</span><span class="s2"> with parameters </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;getting data from </span><span class="si">%s</span><span class="s2"> with parameters </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
         <span class="n">response</span> <span class="o">=</span> <span class="n">nexus_req</span><span class="p">(</span>
             <span class="n">url</span><span class="p">,</span>
             <span class="n">verb</span><span class="p">,</span>

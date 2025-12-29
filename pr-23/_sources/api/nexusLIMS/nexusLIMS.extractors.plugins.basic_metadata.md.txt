@@ -4,6 +4,7 @@
 ```
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.basic_metadata
+:parser: autodoc2_docstrings_parser
 :allowtitles:
 ```
 
@@ -17,6 +18,7 @@
 
 * - {py:obj}`BasicFileInfoExtractor <nexusLIMS.extractors.plugins.basic_metadata.BasicFileInfoExtractor>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.basic_metadata.BasicFileInfoExtractor
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 ````
@@ -29,38 +31,18 @@
 
 * - {py:obj}`get_basic_metadata <nexusLIMS.extractors.plugins.basic_metadata.get_basic_metadata>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.basic_metadata.get_basic_metadata
-    :summary:
-    ```
-````
-
-### Data
-
-````{list-table}
-:class: autosummary longtable
-:align: left
-
-* - {py:obj}`logger <nexusLIMS.extractors.plugins.basic_metadata.logger>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.basic_metadata.logger
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 ````
 
 ### API
 
-````{py:data} logger
-:canonical: nexusLIMS.extractors.plugins.basic_metadata.logger
-:value: >
-   'getLogger(...)'
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.basic_metadata.logger
-```
-
-````
-
 `````{py:class} BasicFileInfoExtractor
 :canonical: nexusLIMS.extractors.plugins.basic_metadata.BasicFileInfoExtractor
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.basic_metadata.BasicFileInfoExtractor
+:parser: autodoc2_docstrings_parser
 ```
 
 ````{py:attribute} name
@@ -69,6 +51,7 @@
    'basic_file_info_extractor'
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.basic_metadata.BasicFileInfoExtractor.name
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -79,17 +62,18 @@
    0
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.basic_metadata.BasicFileInfoExtractor.priority
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} supported_extensions
 :canonical: nexusLIMS.extractors.plugins.basic_metadata.BasicFileInfoExtractor.supported_extensions
-:type: typing.ClassVar
-:value: >
-   None
+
+**Type:** typing.ClassVar
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.basic_metadata.BasicFileInfoExtractor.supported_extensions
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -98,6 +82,7 @@
 :canonical: nexusLIMS.extractors.plugins.basic_metadata.BasicFileInfoExtractor.supports
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.basic_metadata.BasicFileInfoExtractor.supports
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -106,6 +91,7 @@
 :canonical: nexusLIMS.extractors.plugins.basic_metadata.BasicFileInfoExtractor.extract
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.basic_metadata.BasicFileInfoExtractor.extract
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -116,5 +102,6 @@
 :canonical: nexusLIMS.extractors.plugins.basic_metadata.get_basic_metadata
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.basic_metadata.get_basic_metadata
+:parser: autodoc2_docstrings_parser
 ```
 ````

@@ -4,6 +4,7 @@
 ```
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.orion_HIM_tif
+:parser: autodoc2_docstrings_parser
 :allowtitles:
 ```
 
@@ -17,6 +18,7 @@
 
 * - {py:obj}`OrionTiffExtractor <nexusLIMS.extractors.plugins.orion_HIM_tif.OrionTiffExtractor>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.orion_HIM_tif.OrionTiffExtractor
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 ````
@@ -29,10 +31,12 @@
 
 * - {py:obj}`ZEISS_TIFF_TAG <nexusLIMS.extractors.plugins.orion_HIM_tif.ZEISS_TIFF_TAG>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.orion_HIM_tif.ZEISS_TIFF_TAG
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`FIBICS_TIFF_TAG <nexusLIMS.extractors.plugins.orion_HIM_tif.FIBICS_TIFF_TAG>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.orion_HIM_tif.FIBICS_TIFF_TAG
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 ````
@@ -45,6 +49,7 @@
    65000
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.orion_HIM_tif.ZEISS_TIFF_TAG
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -55,6 +60,7 @@
    51023
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.orion_HIM_tif.FIBICS_TIFF_TAG
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -63,6 +69,7 @@
 :canonical: nexusLIMS.extractors.plugins.orion_HIM_tif.OrionTiffExtractor
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.orion_HIM_tif.OrionTiffExtractor
+:parser: autodoc2_docstrings_parser
 ```
 
 ````{py:attribute} name
@@ -71,6 +78,7 @@
    'orion_HIM_tif_extractor'
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.orion_HIM_tif.OrionTiffExtractor.name
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -81,17 +89,18 @@
    150
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.orion_HIM_tif.OrionTiffExtractor.priority
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} supported_extensions
 :canonical: nexusLIMS.extractors.plugins.orion_HIM_tif.OrionTiffExtractor.supported_extensions
-:type: typing.ClassVar
-:value: >
-   None
+
+**Type:** typing.ClassVar
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.orion_HIM_tif.OrionTiffExtractor.supported_extensions
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -100,6 +109,7 @@
 :canonical: nexusLIMS.extractors.plugins.orion_HIM_tif.OrionTiffExtractor.supports
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.orion_HIM_tif.OrionTiffExtractor.supports
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -108,6 +118,7 @@
 :canonical: nexusLIMS.extractors.plugins.orion_HIM_tif.OrionTiffExtractor.extract
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.orion_HIM_tif.OrionTiffExtractor.extract
+:parser: autodoc2_docstrings_parser
 ```
 
 ````

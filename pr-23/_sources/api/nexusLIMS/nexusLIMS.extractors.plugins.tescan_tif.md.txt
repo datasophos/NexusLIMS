@@ -4,6 +4,7 @@
 ```
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.tescan_tif
+:parser: autodoc2_docstrings_parser
 :allowtitles:
 ```
 
@@ -17,6 +18,7 @@
 
 * - {py:obj}`TescanTiffExtractor <nexusLIMS.extractors.plugins.tescan_tif.TescanTiffExtractor>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.tescan_tif.TescanTiffExtractor
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 ````
@@ -29,6 +31,7 @@
 
 * - {py:obj}`TESCAN_TIFF_TAG <nexusLIMS.extractors.plugins.tescan_tif.TESCAN_TIFF_TAG>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.tescan_tif.TESCAN_TIFF_TAG
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 ````
@@ -41,6 +44,7 @@
    50431
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.tescan_tif.TESCAN_TIFF_TAG
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -49,6 +53,7 @@
 :canonical: nexusLIMS.extractors.plugins.tescan_tif.TescanTiffExtractor
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.tescan_tif.TescanTiffExtractor
+:parser: autodoc2_docstrings_parser
 ```
 
 ````{py:attribute} name
@@ -57,6 +62,7 @@
    'tescan_tif_extractor'
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.tescan_tif.TescanTiffExtractor.name
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -67,17 +73,18 @@
    150
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.tescan_tif.TescanTiffExtractor.priority
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} supported_extensions
 :canonical: nexusLIMS.extractors.plugins.tescan_tif.TescanTiffExtractor.supported_extensions
-:type: typing.ClassVar
-:value: >
-   None
+
+**Type:** typing.ClassVar
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.tescan_tif.TescanTiffExtractor.supported_extensions
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -86,6 +93,7 @@
 :canonical: nexusLIMS.extractors.plugins.tescan_tif.TescanTiffExtractor.supports
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.tescan_tif.TescanTiffExtractor.supports
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -94,6 +102,7 @@
 :canonical: nexusLIMS.extractors.plugins.tescan_tif.TescanTiffExtractor.extract
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.tescan_tif.TescanTiffExtractor.extract
+:parser: autodoc2_docstrings_parser
 ```
 
 ````

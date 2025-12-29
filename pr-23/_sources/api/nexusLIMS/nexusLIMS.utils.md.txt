@@ -4,6 +4,7 @@
 ```
 
 ```{autodoc2-docstring} nexusLIMS.utils
+:parser: autodoc2_docstrings_parser
 :allowtitles:
 ```
 
@@ -17,120 +18,103 @@
 
 * - {py:obj}`setup_loggers <nexusLIMS.utils.setup_loggers>`
   - ```{autodoc2-docstring} nexusLIMS.utils.setup_loggers
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`nexus_req <nexusLIMS.utils.nexus_req>`
   - ```{autodoc2-docstring} nexusLIMS.utils.nexus_req
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`is_subpath <nexusLIMS.utils.is_subpath>`
   - ```{autodoc2-docstring} nexusLIMS.utils.is_subpath
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`get_nested_dict_value_by_path <nexusLIMS.utils.get_nested_dict_value_by_path>`
   - ```{autodoc2-docstring} nexusLIMS.utils.get_nested_dict_value_by_path
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`set_nested_dict_value <nexusLIMS.utils.set_nested_dict_value>`
   - ```{autodoc2-docstring} nexusLIMS.utils.set_nested_dict_value
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`try_getting_dict_value <nexusLIMS.utils.try_getting_dict_value>`
   - ```{autodoc2-docstring} nexusLIMS.utils.try_getting_dict_value
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`find_dirs_by_mtime <nexusLIMS.utils.find_dirs_by_mtime>`
   - ```{autodoc2-docstring} nexusLIMS.utils.find_dirs_by_mtime
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`find_files_by_mtime <nexusLIMS.utils.find_files_by_mtime>`
   - ```{autodoc2-docstring} nexusLIMS.utils.find_files_by_mtime
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`gnu_find_files_by_mtime <nexusLIMS.utils.gnu_find_files_by_mtime>`
   - ```{autodoc2-docstring} nexusLIMS.utils.gnu_find_files_by_mtime
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`sort_dict <nexusLIMS.utils.sort_dict>`
   - ```{autodoc2-docstring} nexusLIMS.utils.sort_dict
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`remove_dtb_element <nexusLIMS.utils.remove_dtb_element>`
   - ```{autodoc2-docstring} nexusLIMS.utils.remove_dtb_element
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`remove_dict_nones <nexusLIMS.utils.remove_dict_nones>`
   - ```{autodoc2-docstring} nexusLIMS.utils.remove_dict_nones
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`get_timespan_overlap <nexusLIMS.utils.get_timespan_overlap>`
   - ```{autodoc2-docstring} nexusLIMS.utils.get_timespan_overlap
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`get_auth <nexusLIMS.utils.get_auth>`
   - ```{autodoc2-docstring} nexusLIMS.utils.get_auth
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`has_delay_passed <nexusLIMS.utils.has_delay_passed>`
   - ```{autodoc2-docstring} nexusLIMS.utils.has_delay_passed
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`current_system_tz_name <nexusLIMS.utils.current_system_tz_name>`
   - ```{autodoc2-docstring} nexusLIMS.utils.current_system_tz_name
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`current_system_tz <nexusLIMS.utils.current_system_tz>`
   - ```{autodoc2-docstring} nexusLIMS.utils.current_system_tz
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`replace_instrument_data_path <nexusLIMS.utils.replace_instrument_data_path>`
   - ```{autodoc2-docstring} nexusLIMS.utils.replace_instrument_data_path
-    :summary:
-    ```
-````
-
-### Data
-
-````{list-table}
-:class: autosummary longtable
-:align: left
-
-* - {py:obj}`logger <nexusLIMS.utils.logger>`
-  - ```{autodoc2-docstring} nexusLIMS.utils.logger
-    :summary:
-    ```
-* - {py:obj}`tz_offset <nexusLIMS.utils.tz_offset>`
-  - ```{autodoc2-docstring} nexusLIMS.utils.tz_offset
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 ````
 
 ### API
 
-````{py:data} logger
-:canonical: nexusLIMS.utils.logger
-:value: >
-   'getLogger(...)'
-
-```{autodoc2-docstring} nexusLIMS.utils.logger
-```
-
-````
-
-````{py:data} tz_offset
-:canonical: nexusLIMS.utils.tz_offset
-:value: >
-   'timedelta(...)'
-
-```{autodoc2-docstring} nexusLIMS.utils.tz_offset
-```
-
-````
-
 ````{py:function} setup_loggers(log_level)
 :canonical: nexusLIMS.utils.setup_loggers
 
 ```{autodoc2-docstring} nexusLIMS.utils.setup_loggers
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -138,6 +122,7 @@
 :canonical: nexusLIMS.utils.nexus_req
 
 ```{autodoc2-docstring} nexusLIMS.utils.nexus_req
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -145,6 +130,7 @@
 :canonical: nexusLIMS.utils.is_subpath
 
 ```{autodoc2-docstring} nexusLIMS.utils.is_subpath
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -152,6 +138,7 @@
 :canonical: nexusLIMS.utils.get_nested_dict_value_by_path
 
 ```{autodoc2-docstring} nexusLIMS.utils.get_nested_dict_value_by_path
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -159,6 +146,7 @@
 :canonical: nexusLIMS.utils.set_nested_dict_value
 
 ```{autodoc2-docstring} nexusLIMS.utils.set_nested_dict_value
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -166,6 +154,7 @@
 :canonical: nexusLIMS.utils.try_getting_dict_value
 
 ```{autodoc2-docstring} nexusLIMS.utils.try_getting_dict_value
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -173,6 +162,7 @@
 :canonical: nexusLIMS.utils.find_dirs_by_mtime
 
 ```{autodoc2-docstring} nexusLIMS.utils.find_dirs_by_mtime
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -180,6 +170,7 @@
 :canonical: nexusLIMS.utils.find_files_by_mtime
 
 ```{autodoc2-docstring} nexusLIMS.utils.find_files_by_mtime
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -187,6 +178,7 @@
 :canonical: nexusLIMS.utils.gnu_find_files_by_mtime
 
 ```{autodoc2-docstring} nexusLIMS.utils.gnu_find_files_by_mtime
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -194,6 +186,7 @@
 :canonical: nexusLIMS.utils.sort_dict
 
 ```{autodoc2-docstring} nexusLIMS.utils.sort_dict
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -201,6 +194,7 @@
 :canonical: nexusLIMS.utils.remove_dtb_element
 
 ```{autodoc2-docstring} nexusLIMS.utils.remove_dtb_element
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -208,6 +202,7 @@
 :canonical: nexusLIMS.utils.remove_dict_nones
 
 ```{autodoc2-docstring} nexusLIMS.utils.remove_dict_nones
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -215,6 +210,7 @@
 :canonical: nexusLIMS.utils.get_timespan_overlap
 
 ```{autodoc2-docstring} nexusLIMS.utils.get_timespan_overlap
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -222,6 +218,7 @@
 :canonical: nexusLIMS.utils.get_auth
 
 ```{autodoc2-docstring} nexusLIMS.utils.get_auth
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -229,6 +226,7 @@
 :canonical: nexusLIMS.utils.has_delay_passed
 
 ```{autodoc2-docstring} nexusLIMS.utils.has_delay_passed
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -236,6 +234,7 @@
 :canonical: nexusLIMS.utils.current_system_tz_name
 
 ```{autodoc2-docstring} nexusLIMS.utils.current_system_tz_name
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -243,6 +242,7 @@
 :canonical: nexusLIMS.utils.current_system_tz
 
 ```{autodoc2-docstring} nexusLIMS.utils.current_system_tz
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -250,6 +250,7 @@
 :canonical: nexusLIMS.utils.replace_instrument_data_path
 
 ```{autodoc2-docstring} nexusLIMS.utils.replace_instrument_data_path
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -259,12 +260,7 @@
 Bases: {py:obj}`Exception`
 
 ```{autodoc2-docstring} nexusLIMS.utils.AuthenticationError
-```
-
-```{rubric} Initialization
-```
-
-```{autodoc2-docstring} nexusLIMS.utils.AuthenticationError.__init__
+:parser: autodoc2_docstrings_parser
 ```
 
 ````

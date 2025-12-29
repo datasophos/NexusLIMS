@@ -4,6 +4,7 @@
 ```
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata
+:parser: autodoc2_docstrings_parser
 :allowtitles:
 ```
 
@@ -17,30 +18,37 @@
 
 * - {py:obj}`ExtractionDetails <nexusLIMS.schemas.metadata.ExtractionDetails>`
   - ```{autodoc2-docstring} nexusLIMS.schemas.metadata.ExtractionDetails
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`StagePosition <nexusLIMS.schemas.metadata.StagePosition>`
   - ```{autodoc2-docstring} nexusLIMS.schemas.metadata.StagePosition
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`NexusMetadata <nexusLIMS.schemas.metadata.NexusMetadata>`
   - ```{autodoc2-docstring} nexusLIMS.schemas.metadata.NexusMetadata
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`ImageMetadata <nexusLIMS.schemas.metadata.ImageMetadata>`
   - ```{autodoc2-docstring} nexusLIMS.schemas.metadata.ImageMetadata
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`SpectrumMetadata <nexusLIMS.schemas.metadata.SpectrumMetadata>`
   - ```{autodoc2-docstring} nexusLIMS.schemas.metadata.SpectrumMetadata
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`SpectrumImageMetadata <nexusLIMS.schemas.metadata.SpectrumImageMetadata>`
   - ```{autodoc2-docstring} nexusLIMS.schemas.metadata.SpectrumImageMetadata
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`DiffractionMetadata <nexusLIMS.schemas.metadata.DiffractionMetadata>`
   - ```{autodoc2-docstring} nexusLIMS.schemas.metadata.DiffractionMetadata
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 ````
@@ -53,38 +61,18 @@
 
 * - {py:obj}`emg_field <nexusLIMS.schemas.metadata.emg_field>`
   - ```{autodoc2-docstring} nexusLIMS.schemas.metadata.emg_field
-    :summary:
-    ```
-````
-
-### Data
-
-````{list-table}
-:class: autosummary longtable
-:align: left
-
-* - {py:obj}`logger <nexusLIMS.schemas.metadata.logger>`
-  - ```{autodoc2-docstring} nexusLIMS.schemas.metadata.logger
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 ````
 
 ### API
 
-````{py:data} logger
-:canonical: nexusLIMS.schemas.metadata.logger
-:value: >
-   'getLogger(...)'
-
-```{autodoc2-docstring} nexusLIMS.schemas.metadata.logger
-```
-
-````
-
 ````{py:function} emg_field(field_name: str, default: typing.Any = None, *, description: str | None = None, **kwargs: typing.Any) -> typing.Any
 :canonical: nexusLIMS.schemas.metadata.emg_field
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.emg_field
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -94,64 +82,60 @@
 Bases: {py:obj}`pydantic.BaseModel`
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.ExtractionDetails
-```
-
-```{rubric} Initialization
-```
-
-```{autodoc2-docstring} nexusLIMS.schemas.metadata.ExtractionDetails.__init__
+:parser: autodoc2_docstrings_parser
 ```
 
 ````{py:attribute} date
 :canonical: nexusLIMS.schemas.metadata.ExtractionDetails.date
-:type: str
-:value: >
-   'Field(...)'
+
+**Type:** str
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.ExtractionDetails.date
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} module
 :canonical: nexusLIMS.schemas.metadata.ExtractionDetails.module
-:type: str
-:value: >
-   'Field(...)'
+
+**Type:** str
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.ExtractionDetails.module
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} version
 :canonical: nexusLIMS.schemas.metadata.ExtractionDetails.version
-:type: str
-:value: >
-   'Field(...)'
+
+**Type:** str
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.ExtractionDetails.version
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} extractor_warnings
 :canonical: nexusLIMS.schemas.metadata.ExtractionDetails.extractor_warnings
-:type: str | None
-:value: >
-   'Field(...)'
+
+**Type:** str | None
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.ExtractionDetails.extractor_warnings
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} model_config
 :canonical: nexusLIMS.schemas.metadata.ExtractionDetails.model_config
-:value: >
-   None
+
+**Type:** dict
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.ExtractionDetails.model_config
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -164,86 +148,80 @@ Bases: {py:obj}`pydantic.BaseModel`
 Bases: {py:obj}`pydantic.BaseModel`
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.StagePosition
-```
-
-```{rubric} Initialization
-```
-
-```{autodoc2-docstring} nexusLIMS.schemas.metadata.StagePosition.__init__
+:parser: autodoc2_docstrings_parser
 ```
 
 ````{py:attribute} x
 :canonical: nexusLIMS.schemas.metadata.StagePosition.x
-:type: nexusLIMS.schemas.pint_types.PintQuantity | None
-:value: >
-   'Field(...)'
+
+**Type:** {py:data}`PintQuantity <nexusLIMS.schemas.pint_types.PintQuantity>` | None
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.StagePosition.x
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} y
 :canonical: nexusLIMS.schemas.metadata.StagePosition.y
-:type: nexusLIMS.schemas.pint_types.PintQuantity | None
-:value: >
-   'Field(...)'
+
+**Type:** {py:data}`PintQuantity <nexusLIMS.schemas.pint_types.PintQuantity>` | None
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.StagePosition.y
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} z
 :canonical: nexusLIMS.schemas.metadata.StagePosition.z
-:type: nexusLIMS.schemas.pint_types.PintQuantity | None
-:value: >
-   'Field(...)'
+
+**Type:** {py:data}`PintQuantity <nexusLIMS.schemas.pint_types.PintQuantity>` | None
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.StagePosition.z
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} rotation
 :canonical: nexusLIMS.schemas.metadata.StagePosition.rotation
-:type: nexusLIMS.schemas.pint_types.PintQuantity | None
-:value: >
-   'Field(...)'
+
+**Type:** {py:data}`PintQuantity <nexusLIMS.schemas.pint_types.PintQuantity>` | None
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.StagePosition.rotation
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} tilt_alpha
 :canonical: nexusLIMS.schemas.metadata.StagePosition.tilt_alpha
-:type: nexusLIMS.schemas.pint_types.PintQuantity | None
-:value: >
-   'Field(...)'
+
+**Type:** {py:data}`PintQuantity <nexusLIMS.schemas.pint_types.PintQuantity>` | None
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.StagePosition.tilt_alpha
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} tilt_beta
 :canonical: nexusLIMS.schemas.metadata.StagePosition.tilt_beta
-:type: nexusLIMS.schemas.pint_types.PintQuantity | None
-:value: >
-   'Field(...)'
+
+**Type:** {py:data}`PintQuantity <nexusLIMS.schemas.pint_types.PintQuantity>` | None
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.StagePosition.tilt_beta
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} model_config
 :canonical: nexusLIMS.schemas.metadata.StagePosition.model_config
-:value: >
-   None
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.StagePosition.model_config
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -256,108 +234,102 @@ Bases: {py:obj}`pydantic.BaseModel`
 Bases: {py:obj}`pydantic.BaseModel`
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.NexusMetadata
-```
-
-```{rubric} Initialization
-```
-
-```{autodoc2-docstring} nexusLIMS.schemas.metadata.NexusMetadata.__init__
+:parser: autodoc2_docstrings_parser
 ```
 
 ````{py:attribute} creation_time
 :canonical: nexusLIMS.schemas.metadata.NexusMetadata.creation_time
-:type: str
-:value: >
-   'Field(...)'
+
+**Type:** str
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.NexusMetadata.creation_time
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} data_type
 :canonical: nexusLIMS.schemas.metadata.NexusMetadata.data_type
-:type: str
-:value: >
-   'Field(...)'
+
+**Type:** str
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.NexusMetadata.data_type
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} dataset_type
 :canonical: nexusLIMS.schemas.metadata.NexusMetadata.dataset_type
-:type: typing.Literal[Image, Spectrum, SpectrumImage, Diffraction, Misc, Unknown]
-:value: >
-   'Field(...)'
+
+**Type:** typing.Literal[Image, Spectrum, SpectrumImage, Diffraction, Misc, Unknown]
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.NexusMetadata.dataset_type
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} data_dimensions
 :canonical: nexusLIMS.schemas.metadata.NexusMetadata.data_dimensions
-:type: str | None
-:value: >
-   'Field(...)'
+
+**Type:** str | None
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.NexusMetadata.data_dimensions
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} instrument_id
 :canonical: nexusLIMS.schemas.metadata.NexusMetadata.instrument_id
-:type: str | None
-:value: >
-   'Field(...)'
+
+**Type:** str | None
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.NexusMetadata.instrument_id
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} warnings
 :canonical: nexusLIMS.schemas.metadata.NexusMetadata.warnings
-:type: list[str | list[str]]
-:value: >
-   'Field(...)'
+
+**Type:** list[str | list[str]]
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.NexusMetadata.warnings
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} nexuslims_extraction
 :canonical: nexusLIMS.schemas.metadata.NexusMetadata.nexuslims_extraction
-:type: nexusLIMS.schemas.metadata.ExtractionDetails | None
-:value: >
-   'Field(...)'
+
+**Type:** nexusLIMS.schemas.metadata.ExtractionDetails | None
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.NexusMetadata.nexuslims_extraction
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} extensions
 :canonical: nexusLIMS.schemas.metadata.NexusMetadata.extensions
-:type: typing.Dict[str, typing.Any]
-:value: >
-   'Field(...)'
+
+**Type:** typing.Dict[str, typing.Any]
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.NexusMetadata.extensions
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} model_config
 :canonical: nexusLIMS.schemas.metadata.NexusMetadata.model_config
-:value: >
-   None
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.NexusMetadata.model_config
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -367,6 +339,7 @@ Bases: {py:obj}`pydantic.BaseModel`
 :classmethod:
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.NexusMetadata.validate_iso_timestamp
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -376,6 +349,7 @@ Bases: {py:obj}`pydantic.BaseModel`
 :classmethod:
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.NexusMetadata.validate_data_type_not_empty
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -388,175 +362,170 @@ Bases: {py:obj}`pydantic.BaseModel`
 Bases: {py:obj}`nexusLIMS.schemas.metadata.NexusMetadata`
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.ImageMetadata
-```
-
-```{rubric} Initialization
-```
-
-```{autodoc2-docstring} nexusLIMS.schemas.metadata.ImageMetadata.__init__
+:parser: autodoc2_docstrings_parser
 ```
 
 ````{py:attribute} dataset_type
 :canonical: nexusLIMS.schemas.metadata.ImageMetadata.dataset_type
-:type: typing.Literal[Image]
-:value: >
-   'Field(...)'
+
+**Type:** typing.Literal[Image]
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.ImageMetadata.dataset_type
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} acceleration_voltage
 :canonical: nexusLIMS.schemas.metadata.ImageMetadata.acceleration_voltage
-:type: nexusLIMS.schemas.pint_types.PintQuantity | None
-:value: >
-   'emg_field(...)'
+
+**Type:** {py:data}`PintQuantity <nexusLIMS.schemas.pint_types.PintQuantity>` | None
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.ImageMetadata.acceleration_voltage
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} working_distance
 :canonical: nexusLIMS.schemas.metadata.ImageMetadata.working_distance
-:type: nexusLIMS.schemas.pint_types.PintQuantity | None
-:value: >
-   'emg_field(...)'
+
+**Type:** {py:data}`PintQuantity <nexusLIMS.schemas.pint_types.PintQuantity>` | None
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.ImageMetadata.working_distance
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} beam_current
 :canonical: nexusLIMS.schemas.metadata.ImageMetadata.beam_current
-:type: nexusLIMS.schemas.pint_types.PintQuantity | None
-:value: >
-   'emg_field(...)'
+
+**Type:** {py:data}`PintQuantity <nexusLIMS.schemas.pint_types.PintQuantity>` | None
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.ImageMetadata.beam_current
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} emission_current
 :canonical: nexusLIMS.schemas.metadata.ImageMetadata.emission_current
-:type: nexusLIMS.schemas.pint_types.PintQuantity | None
-:value: >
-   'emg_field(...)'
+
+**Type:** {py:data}`PintQuantity <nexusLIMS.schemas.pint_types.PintQuantity>` | None
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.ImageMetadata.emission_current
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} dwell_time
 :canonical: nexusLIMS.schemas.metadata.ImageMetadata.dwell_time
-:type: nexusLIMS.schemas.pint_types.PintQuantity | None
-:value: >
-   'emg_field(...)'
+
+**Type:** {py:data}`PintQuantity <nexusLIMS.schemas.pint_types.PintQuantity>` | None
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.ImageMetadata.dwell_time
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} magnification
 :canonical: nexusLIMS.schemas.metadata.ImageMetadata.magnification
-:type: float | None
-:value: >
-   'emg_field(...)'
+
+**Type:** float | None
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.ImageMetadata.magnification
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} horizontal_field_width
 :canonical: nexusLIMS.schemas.metadata.ImageMetadata.horizontal_field_width
-:type: nexusLIMS.schemas.pint_types.PintQuantity | None
-:value: >
-   'emg_field(...)'
+
+**Type:** {py:data}`PintQuantity <nexusLIMS.schemas.pint_types.PintQuantity>` | None
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.ImageMetadata.horizontal_field_width
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} vertical_field_width
 :canonical: nexusLIMS.schemas.metadata.ImageMetadata.vertical_field_width
-:type: nexusLIMS.schemas.pint_types.PintQuantity | None
-:value: >
-   'emg_field(...)'
+
+**Type:** {py:data}`PintQuantity <nexusLIMS.schemas.pint_types.PintQuantity>` | None
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.ImageMetadata.vertical_field_width
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} pixel_width
 :canonical: nexusLIMS.schemas.metadata.ImageMetadata.pixel_width
-:type: nexusLIMS.schemas.pint_types.PintQuantity | None
-:value: >
-   'emg_field(...)'
+
+**Type:** {py:data}`PintQuantity <nexusLIMS.schemas.pint_types.PintQuantity>` | None
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.ImageMetadata.pixel_width
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} pixel_height
 :canonical: nexusLIMS.schemas.metadata.ImageMetadata.pixel_height
-:type: nexusLIMS.schemas.pint_types.PintQuantity | None
-:value: >
-   'emg_field(...)'
+
+**Type:** {py:data}`PintQuantity <nexusLIMS.schemas.pint_types.PintQuantity>` | None
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.ImageMetadata.pixel_height
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} scan_rotation
 :canonical: nexusLIMS.schemas.metadata.ImageMetadata.scan_rotation
-:type: nexusLIMS.schemas.pint_types.PintQuantity | None
-:value: >
-   'emg_field(...)'
+
+**Type:** {py:data}`PintQuantity <nexusLIMS.schemas.pint_types.PintQuantity>` | None
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.ImageMetadata.scan_rotation
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} detector_type
 :canonical: nexusLIMS.schemas.metadata.ImageMetadata.detector_type
-:type: str | None
-:value: >
-   'emg_field(...)'
+
+**Type:** str | None
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.ImageMetadata.detector_type
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} acquisition_device
 :canonical: nexusLIMS.schemas.metadata.ImageMetadata.acquisition_device
-:type: str | None
-:value: >
-   'emg_field(...)'
+
+**Type:** str | None
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.ImageMetadata.acquisition_device
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} stage_position
 :canonical: nexusLIMS.schemas.metadata.ImageMetadata.stage_position
-:type: nexusLIMS.schemas.metadata.StagePosition | None
-:value: >
-   'Field(...)'
+
+**Type:** nexusLIMS.schemas.metadata.StagePosition | None
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.ImageMetadata.stage_position
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -569,120 +538,115 @@ Bases: {py:obj}`nexusLIMS.schemas.metadata.NexusMetadata`
 Bases: {py:obj}`nexusLIMS.schemas.metadata.NexusMetadata`
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.SpectrumMetadata
-```
-
-```{rubric} Initialization
-```
-
-```{autodoc2-docstring} nexusLIMS.schemas.metadata.SpectrumMetadata.__init__
+:parser: autodoc2_docstrings_parser
 ```
 
 ````{py:attribute} dataset_type
 :canonical: nexusLIMS.schemas.metadata.SpectrumMetadata.dataset_type
-:type: typing.Literal[Spectrum]
-:value: >
-   'Field(...)'
+
+**Type:** typing.Literal[Spectrum]
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.SpectrumMetadata.dataset_type
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} acquisition_time
 :canonical: nexusLIMS.schemas.metadata.SpectrumMetadata.acquisition_time
-:type: nexusLIMS.schemas.pint_types.PintQuantity | None
-:value: >
-   'emg_field(...)'
+
+**Type:** {py:data}`PintQuantity <nexusLIMS.schemas.pint_types.PintQuantity>` | None
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.SpectrumMetadata.acquisition_time
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} live_time
 :canonical: nexusLIMS.schemas.metadata.SpectrumMetadata.live_time
-:type: nexusLIMS.schemas.pint_types.PintQuantity | None
-:value: >
-   'emg_field(...)'
+
+**Type:** {py:data}`PintQuantity <nexusLIMS.schemas.pint_types.PintQuantity>` | None
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.SpectrumMetadata.live_time
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} detector_energy_resolution
 :canonical: nexusLIMS.schemas.metadata.SpectrumMetadata.detector_energy_resolution
-:type: nexusLIMS.schemas.pint_types.PintQuantity | None
-:value: >
-   'emg_field(...)'
+
+**Type:** {py:data}`PintQuantity <nexusLIMS.schemas.pint_types.PintQuantity>` | None
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.SpectrumMetadata.detector_energy_resolution
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} channel_size
 :canonical: nexusLIMS.schemas.metadata.SpectrumMetadata.channel_size
-:type: nexusLIMS.schemas.pint_types.PintQuantity | None
-:value: >
-   'emg_field(...)'
+
+**Type:** {py:data}`PintQuantity <nexusLIMS.schemas.pint_types.PintQuantity>` | None
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.SpectrumMetadata.channel_size
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} starting_energy
 :canonical: nexusLIMS.schemas.metadata.SpectrumMetadata.starting_energy
-:type: nexusLIMS.schemas.pint_types.PintQuantity | None
-:value: >
-   'emg_field(...)'
+
+**Type:** {py:data}`PintQuantity <nexusLIMS.schemas.pint_types.PintQuantity>` | None
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.SpectrumMetadata.starting_energy
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} azimuthal_angle
 :canonical: nexusLIMS.schemas.metadata.SpectrumMetadata.azimuthal_angle
-:type: nexusLIMS.schemas.pint_types.PintQuantity | None
-:value: >
-   'emg_field(...)'
+
+**Type:** {py:data}`PintQuantity <nexusLIMS.schemas.pint_types.PintQuantity>` | None
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.SpectrumMetadata.azimuthal_angle
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} elevation_angle
 :canonical: nexusLIMS.schemas.metadata.SpectrumMetadata.elevation_angle
-:type: nexusLIMS.schemas.pint_types.PintQuantity | None
-:value: >
-   'emg_field(...)'
+
+**Type:** {py:data}`PintQuantity <nexusLIMS.schemas.pint_types.PintQuantity>` | None
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.SpectrumMetadata.elevation_angle
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} takeoff_angle
 :canonical: nexusLIMS.schemas.metadata.SpectrumMetadata.takeoff_angle
-:type: nexusLIMS.schemas.pint_types.PintQuantity | None
-:value: >
-   'emg_field(...)'
+
+**Type:** {py:data}`PintQuantity <nexusLIMS.schemas.pint_types.PintQuantity>` | None
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.SpectrumMetadata.takeoff_angle
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} elements
 :canonical: nexusLIMS.schemas.metadata.SpectrumMetadata.elements
-:type: list[str] | None
-:value: >
-   'Field(...)'
+
+**Type:** list[str] | None
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.SpectrumMetadata.elements
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -695,43 +659,38 @@ Bases: {py:obj}`nexusLIMS.schemas.metadata.NexusMetadata`
 Bases: {py:obj}`nexusLIMS.schemas.metadata.ImageMetadata`, {py:obj}`nexusLIMS.schemas.metadata.SpectrumMetadata`
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.SpectrumImageMetadata
-```
-
-```{rubric} Initialization
-```
-
-```{autodoc2-docstring} nexusLIMS.schemas.metadata.SpectrumImageMetadata.__init__
+:parser: autodoc2_docstrings_parser
 ```
 
 ````{py:attribute} dataset_type
 :canonical: nexusLIMS.schemas.metadata.SpectrumImageMetadata.dataset_type
-:type: typing.Literal[SpectrumImage]
-:value: >
-   'Field(...)'
+
+**Type:** typing.Literal[SpectrumImage]
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.SpectrumImageMetadata.dataset_type
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} pixel_time
 :canonical: nexusLIMS.schemas.metadata.SpectrumImageMetadata.pixel_time
-:type: nexusLIMS.schemas.pint_types.PintQuantity | None
-:value: >
-   'Field(...)'
+
+**Type:** {py:data}`PintQuantity <nexusLIMS.schemas.pint_types.PintQuantity>` | None
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.SpectrumImageMetadata.pixel_time
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} scan_mode
 :canonical: nexusLIMS.schemas.metadata.SpectrumImageMetadata.scan_mode
-:type: str | None
-:value: >
-   'Field(...)'
+
+**Type:** str | None
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.SpectrumImageMetadata.scan_mode
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -740,6 +699,7 @@ Bases: {py:obj}`nexusLIMS.schemas.metadata.ImageMetadata`, {py:obj}`nexusLIMS.sc
 :canonical: nexusLIMS.schemas.metadata.SpectrumImageMetadata.validate_spectrum_image_fields
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.SpectrumImageMetadata.validate_spectrum_image_fields
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -752,65 +712,60 @@ Bases: {py:obj}`nexusLIMS.schemas.metadata.ImageMetadata`, {py:obj}`nexusLIMS.sc
 Bases: {py:obj}`nexusLIMS.schemas.metadata.NexusMetadata`
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.DiffractionMetadata
-```
-
-```{rubric} Initialization
-```
-
-```{autodoc2-docstring} nexusLIMS.schemas.metadata.DiffractionMetadata.__init__
+:parser: autodoc2_docstrings_parser
 ```
 
 ````{py:attribute} dataset_type
 :canonical: nexusLIMS.schemas.metadata.DiffractionMetadata.dataset_type
-:type: typing.Literal[Diffraction]
-:value: >
-   'Field(...)'
+
+**Type:** typing.Literal[Diffraction]
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.DiffractionMetadata.dataset_type
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} camera_length
 :canonical: nexusLIMS.schemas.metadata.DiffractionMetadata.camera_length
-:type: nexusLIMS.schemas.pint_types.PintQuantity | None
-:value: >
-   'emg_field(...)'
+
+**Type:** {py:data}`PintQuantity <nexusLIMS.schemas.pint_types.PintQuantity>` | None
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.DiffractionMetadata.camera_length
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} convergence_angle
 :canonical: nexusLIMS.schemas.metadata.DiffractionMetadata.convergence_angle
-:type: nexusLIMS.schemas.pint_types.PintQuantity | None
-:value: >
-   'emg_field(...)'
+
+**Type:** {py:data}`PintQuantity <nexusLIMS.schemas.pint_types.PintQuantity>` | None
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.DiffractionMetadata.convergence_angle
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} acceleration_voltage
 :canonical: nexusLIMS.schemas.metadata.DiffractionMetadata.acceleration_voltage
-:type: nexusLIMS.schemas.pint_types.PintQuantity | None
-:value: >
-   'emg_field(...)'
+
+**Type:** {py:data}`PintQuantity <nexusLIMS.schemas.pint_types.PintQuantity>` | None
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.DiffractionMetadata.acceleration_voltage
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} acquisition_device
 :canonical: nexusLIMS.schemas.metadata.DiffractionMetadata.acquisition_device
-:type: str | None
-:value: >
-   'emg_field(...)'
+
+**Type:** str | None
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.DiffractionMetadata.acquisition_device
+:parser: autodoc2_docstrings_parser
 ```
 
 ````

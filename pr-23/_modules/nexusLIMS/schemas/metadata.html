@@ -31,8 +31,9 @@
 
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=af02a5b6" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=8633d6cc" />
   
   <!-- So that users can add custom icons -->
   <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -43,6 +44,8 @@
     <script src="../../../_static/documentation_options.js?v=dc4a309c"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=30646c52"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
     <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs"></script>
     <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs"></script>
@@ -417,6 +420,7 @@ window.addEventListener("load", load);
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
+    <script src="../../../_static/custom.js?v=ba087cdf"></script>
     <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/pr-23/_modules/nexusLIMS/schemas/metadata.html" />
     <link rel="icon" href="../../../_static/nexusLIMS_bare_logo.ico"/>
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -424,7 +428,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.2.0.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 28, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 29, 2025"/>
   </head>
   
   
@@ -534,20 +538,6 @@ window.addEventListener("load", load);
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../getting_started.html">
-    Getting Started
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../migration.html">
-    Migration Guide: v1 to v2
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../user_guide.html">
     User Guide
   </a>
@@ -555,28 +545,25 @@ window.addEventListener("load", load);
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../dev_guide.html">
-    Developer Guide
+  <a class="nav-link nav-internal" href="../../../migration.html">
+    Migration Guide: v1.4.3 to v2.2.0
   </a>
 </li>
 
-            <li class="nav-item dropdown">
-                <button class="btn dropdown-toggle nav-item" type="button"
-                data-bs-toggle="dropdown" aria-expanded="false"
-                aria-controls="pst-nav-more-links">
-                    More
-                </button>
-                <ul id="pst-nav-more-links" class="dropdown-menu">
-                    
-<li class=" ">
-  <a class="nav-link dropdown-item nav-internal" href="../../../reference.html">
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../dev_guide.html">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../reference.html">
     Reference
   </a>
 </li>
 
-                </ul>
-            </li>
-            
   </ul>
 </nav></div>
       
@@ -671,20 +658,6 @@ window.addEventListener("load", load);
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../getting_started.html">
-    Getting Started
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../migration.html">
-    Migration Guide: v1 to v2
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../user_guide.html">
     User Guide
   </a>
@@ -692,8 +665,15 @@ window.addEventListener("load", load);
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../migration.html">
+    Migration Guide: v1.4.3 to v2.2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../dev_guide.html">
-    Developer Guide
+    Dev Guide
   </a>
 </li>
 
@@ -833,7 +813,7 @@ window.addEventListener("load", load);
 
 <span class="sd">**Key Features:**</span>
 <span class="sd">- Pint Quantity fields for machine-actionable units</span>
-<span class="sd">- EM Glossary v2.0.0 terminology</span>
+<span class="sd">- EM Glossary v2.0.0 terminology (see :doc:`/dev_guide/em_glossary_reference`)</span>
 <span class="sd">- Automatic unit normalization to preferred units</span>
 <span class="sd">- Flexible extensions section for instrument-specific metadata</span>
 <span class="sd">- Strict validation of core fields</span>
@@ -880,6 +860,13 @@ window.addEventListener("load", load);
 <span class="sd">...         &quot;scan_speed&quot;: 6,</span>
 <span class="sd">...     }</span>
 <span class="sd">... )</span>
+
+<span class="sd">For detailed documentation on the metadata schema system, see:</span>
+
+<span class="sd">- :doc:`/dev_guide/nexuslims_internal_schema` - Schema architecture,</span>
+<span class="sd">  migration guide, and usage examples</span>
+<span class="sd">- :doc:`/dev_guide/em_glossary_reference` - Complete EM Glossary field</span>
+<span class="sd">  reference and mapping tables</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
@@ -891,7 +878,7 @@ window.addEventListener("load", load);
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas</span><span class="w"> </span><span class="kn">import</span> <span class="n">em_glossary</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas.pint_types</span><span class="w"> </span><span class="kn">import</span> <span class="n">PintQuantity</span>
 
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="emg_field">
@@ -908,32 +895,33 @@ window.addEventListener("load", load);
 
 <span class="sd">    This helper automatically adds EM Glossary semantic annotations to field</span>
 <span class="sd">    definitions, including EMG ID, URI, and label. It pulls metadata from the</span>
-<span class="sd">    em_glossary module to maintain a single source of truth.</span>
+<span class="sd">    :mod:`~nexusLIMS.schemas.em_glossary` module to maintain a single source</span>
+<span class="sd">    of truth.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    field_name : str</span>
 <span class="sd">        Internal field name (e.g., &quot;acceleration_voltage&quot;). Used to look up</span>
-<span class="sd">        EMG metadata from em_glossary module.</span>
+<span class="sd">        EMG metadata from :mod:`~nexusLIMS.schemas.em_glossary` module.</span>
 
 <span class="sd">    default : Any, optional</span>
 <span class="sd">        Default value for the field. Use `...` for required fields, `None`</span>
 <span class="sd">        for optional fields.</span>
 
 <span class="sd">    description : str, optional</span>
-<span class="sd">        Field description. If not provided, uses description from em_glossary</span>
-<span class="sd">        module.</span>
+<span class="sd">        Field description. If not provided, uses description from</span>
+<span class="sd">        :mod:`~nexusLIMS.schemas.em_glossary` module.</span>
 
 <span class="sd">    **kwargs : Any</span>
-<span class="sd">        Additional keyword arguments passed to pydantic.Field(), such as:</span>
-<span class="sd">        - alias: Override display name (default from em_glossary)</span>
-<span class="sd">        - gt, ge, lt, le: Numeric constraints</span>
-<span class="sd">        - examples: Example values for documentation</span>
-<span class="sd">        - json_schema_extra: Additional JSON schema metadata (merged with EMG data)</span>
+<span class="sd">        Additional keyword arguments passed to :func:`pydantic.fields.Field`, such as:</span>
+<span class="sd">        - `alias`: Override display name (default from em_glossary)</span>
+<span class="sd">        - `gt`, `ge`, `lt`, `le`: Numeric constraints</span>
+<span class="sd">        - `examples`: Example values for documentation</span>
+<span class="sd">        - `json_schema_extra`: Additional JSON schema metadata (merged with EMG data)</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    pydantic.Field</span>
+<span class="sd">    :class:`pydantic.fields.FieldInfo`</span>
 <span class="sd">        Configured Pydantic field with EMG metadata</span>
 
 <span class="sd">    Examples</span>
@@ -947,9 +935,9 @@ window.addEventListener("load", load);
 <span class="sd">    ...     dwell_time: PintQuantity | None = emg_field(&quot;dwell_time&quot;)</span>
 
 <span class="sd">    The field automatically gets:</span>
-<span class="sd">    - alias: &quot;Dwell Time&quot; (display name)</span>
-<span class="sd">    - description: &quot;Time period during which the beam remains at one position.&quot;</span>
-<span class="sd">    - json_schema_extra: {&quot;emg_id&quot;: &quot;EMG_00000015&quot;, &quot;emg_uri&quot;: &quot;...&quot;, ...}</span>
+<span class="sd">    - `alias`: &quot;Dwell Time&quot; (display name)</span>
+<span class="sd">    - `description`: &quot;Time period during which the beam remains at one position.&quot;</span>
+<span class="sd">    - `json_schema_extra`: `{&quot;emg_id&quot;: &quot;EMG_00000015&quot;, &quot;emg_uri&quot;: &quot;...&quot;, ...}`</span>
 
 <span class="sd">    Override description:</span>
 
@@ -1008,20 +996,6 @@ window.addEventListener("load", load);
 
 <span class="sd">    Records when metadata was extracted, which extractor module was used,</span>
 <span class="sd">    and the NexusLIMS version.</span>
-
-<span class="sd">    Attributes</span>
-<span class="sd">    ----------</span>
-<span class="sd">    date : str</span>
-<span class="sd">        ISO-8601 formatted timestamp with timezone indicating when the</span>
-<span class="sd">        metadata extraction occurred.</span>
-
-<span class="sd">    module : str</span>
-<span class="sd">        Fully qualified Python module name of the extractor that processed</span>
-<span class="sd">        this file. Examples: &quot;nexusLIMS.extractors.plugins.digital_micrograph&quot;,</span>
-<span class="sd">        &quot;nexusLIMS.extractors.plugins.quanta_tif&quot;</span>
-
-<span class="sd">    version : str</span>
-<span class="sd">        NexusLIMS version string used for extraction. Example: &quot;1.2.3&quot;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
@@ -1029,28 +1003,40 @@ window.addEventListener("load", load);
         <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;Date&quot;</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;ISO-8601 timestamp when extraction occurred&quot;</span><span class="p">,</span>
     <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;ISO-8601 formatted timestamp with timezone indicating when the</span>
+<span class="sd">       metadata extraction occurred.&quot;&quot;&quot;</span>
 
     <span class="n">module</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="o">...</span><span class="p">,</span>
         <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;Module&quot;</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Extractor module name&quot;</span><span class="p">,</span>
     <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Fully qualified Python module name of the extractor that processed</span>
+<span class="sd">    this file. Examples: `&#39;nexusLIMS.extractors.plugins.digital_micrograph&#39;`,</span>
+<span class="sd">    `&#39;nexusLIMS.extractors.plugins.quanta_tif&#39;`&quot;&quot;&quot;</span>
 
     <span class="n">version</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="o">...</span><span class="p">,</span>
         <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;Version&quot;</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;NexusLIMS version&quot;</span><span class="p">,</span>
     <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;NexusLIMS version string used for extraction. Example: `&#39;1.2.3&#39;`&quot;&quot;&quot;</span>
 
     <span class="n">extractor_warnings</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;Extractor Warnings&quot;</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Warning or error messages from the extraction process&quot;</span><span class="p">,</span>
     <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Warning or error messages from the extraction process&quot;&quot;&quot;</span>
 
-    <span class="n">model_config</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">model_config</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;populate_by_name&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="p">}</span></div>
+    <span class="p">}</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pydantic model configuration:</span>
+
+<span class="sd">    - ``populate_by_name: True`` -- Accept both Python field names and JSON aliases</span>
+<span class="sd">    &quot;&quot;&quot;</span></div>
 
 
 
@@ -1061,29 +1047,8 @@ window.addEventListener("load", load);
 <span class="sd">    Stage position with coordinates and tilt angles.</span>
 
 <span class="sd">    Represents the physical position and orientation of the microscope stage.</span>
-<span class="sd">    All fields use Pint Quantity objects with appropriate units.</span>
-
-<span class="sd">    Attributes</span>
-<span class="sd">    ----------</span>
-<span class="sd">    x : PintQuantity or None, optional</span>
-<span class="sd">        Stage X coordinate. Preferred unit: micrometer (µm)</span>
-
-<span class="sd">    y : PintQuantity or None, optional</span>
-<span class="sd">        Stage Y coordinate. Preferred unit: micrometer (µm)</span>
-
-<span class="sd">    z : PintQuantity or None, optional</span>
-<span class="sd">        Stage Z coordinate (height). Preferred unit: millimeter (mm)</span>
-
-<span class="sd">    rotation : PintQuantity or None, optional</span>
-<span class="sd">        Stage rotation angle around Z axis. Preferred unit: degree (°)</span>
-
-<span class="sd">    tilt_alpha : PintQuantity or None, optional</span>
-<span class="sd">        Tilt angle along the stage&#39;s primary tilt axis (alpha).</span>
-<span class="sd">        Preferred unit: degree (°)</span>
-
-<span class="sd">    tilt_beta : PintQuantity or None, optional</span>
-<span class="sd">        Tilt angle along the stage&#39;s secondary tilt axis (beta), if the stage</span>
-<span class="sd">        is capable of dual-axis tilting. Preferred unit: degree (°)</span>
+<span class="sd">    All fields use Pint Quantity objects with appropriate units and are optional</span>
+<span class="sd">    to accommodate different stage configurations.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -1101,7 +1066,6 @@ window.addEventListener("load", load);
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
-<span class="sd">    All fields are optional to accommodate different stage configurations.</span>
 <span class="sd">    Some microscopes may not have all degrees of freedom. Single-tilt stages</span>
 <span class="sd">    will only have tilt_alpha, while dual-tilt stages (e.g., tomography holders)</span>
 <span class="sd">    will have both tilt_alpha and tilt_beta.</span>
@@ -1111,35 +1075,52 @@ window.addEventListener("load", load);
         <span class="kc">None</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Stage X coordinate&quot;</span><span class="p">,</span>
     <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Stage X coordinate. Preferred unit: micrometer (µm)&quot;&quot;&quot;</span>
 
     <span class="n">y</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Stage Y coordinate&quot;</span><span class="p">,</span>
     <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Stage Y coordinate. Preferred unit: micrometer (µm)&quot;&quot;&quot;</span>
 
     <span class="n">z</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Stage Z coordinate (height)&quot;</span><span class="p">,</span>
     <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Stage Z coordinate (height). Preferred unit: millimeter (mm)&quot;&quot;&quot;</span>
 
     <span class="n">rotation</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Stage rotation angle around Z axis&quot;</span><span class="p">,</span>
     <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Stage rotation angle around Z axis. Preferred unit: degree (°)&quot;&quot;&quot;</span>
 
     <span class="n">tilt_alpha</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Tilt angle along primary tilt axis (alpha)&quot;</span><span class="p">,</span>
     <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Tilt angle along the stage&#39;s primary tilt axis (alpha).</span>
+<span class="sd">    Preferred unit: degree (°)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">tilt_beta</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Tilt angle along secondary tilt axis (beta), if capable&quot;</span><span class="p">,</span>
     <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Tilt angle along the stage&#39;s secondary tilt axis (beta), if the stage</span>
+<span class="sd">    is capable of dual-axis tilting. Preferred unit: degree (°)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">model_config</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;extra&quot;</span><span class="p">:</span> <span class="s2">&quot;allow&quot;</span><span class="p">,</span>  <span class="c1"># Allow additional vendor-specific coordinates</span>
-    <span class="p">}</span></div>
+    <span class="p">}</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pydantic model configuration:</span>
+
+<span class="sd">    - ``extra: &quot;allow&quot;`` -- Allow additional vendor-specific stage positions</span>
+<span class="sd">    &quot;&quot;&quot;</span></div>
 
 
 
@@ -1153,48 +1134,11 @@ window.addEventListener("load", load);
 <span class="sd">    It defines the required fields common to all dataset types and provides</span>
 <span class="sd">    the extension mechanism for instrument-specific metadata.</span>
 
-<span class="sd">    Attributes</span>
-<span class="sd">    ----------</span>
-<span class="sd">    creation_time : str</span>
-<span class="sd">        ISO-8601 formatted timestamp with timezone indicating when the data</span>
-<span class="sd">        was acquired. Must include timezone offset (+00:00, -05:00) or &#39;Z&#39;.</span>
-
-<span class="sd">        Examples: &quot;2024-01-15T10:30:00-05:00&quot;, &quot;2024-01-15T15:30:00Z&quot;</span>
-
-<span class="sd">    data_type : str</span>
-<span class="sd">        Human-readable description of the data type using underscore-separated</span>
-<span class="sd">        components. Examples: &quot;STEM_Imaging&quot;, &quot;TEM_EDS&quot;, &quot;SEM_Imaging&quot;</span>
-
-<span class="sd">    dataset_type : Literal[&quot;Image&quot;, &quot;Spectrum&quot;, &quot;SpectrumImage&quot;, &quot;Diffraction&quot;,</span>
-<span class="sd">                           &quot;Misc&quot;, &quot;Unknown&quot;]</span>
-<span class="sd">        Schema-defined category matching the Nexus Experiment XML schema type</span>
-<span class="sd">        attribute.</span>
-
-<span class="sd">    data_dimensions : str or None, optional</span>
-<span class="sd">        String representation of data shape as a tuple.</span>
-<span class="sd">        Examples: &quot;(1024, 1024)&quot;, &quot;(2048,)&quot;, &quot;(12, 1024, 1024)&quot;</span>
-
-<span class="sd">    instrument_id : str or None, optional</span>
-<span class="sd">        NexusLIMS persistent identifier for the instrument.</span>
-<span class="sd">        Examples: &quot;FEI-Titan-TEM-635816&quot;, &quot;Quanta-FEG-650-SEM-555555&quot;</span>
-
-<span class="sd">    warnings : list[str | list[str]], optional</span>
-<span class="sd">        Field names flagged as unreliable. These are marked with warning=&quot;true&quot;</span>
-<span class="sd">        in the XML output.</span>
-
-<span class="sd">    nexuslims_extraction : ExtractionDetails or None, optional</span>
-<span class="sd">        NexusLIMS extraction metadata containing date, module, and version</span>
-<span class="sd">        information about when and how the metadata was extracted.</span>
-
-<span class="sd">    extensions : dict[str, Any], optional</span>
-<span class="sd">        Flexible container for instrument-specific metadata that doesn&#39;t fit</span>
-<span class="sd">        the core schema. Use this for vendor-specific fields, facility metadata,</span>
-<span class="sd">        or experimental parameters not covered by EM Glossary.</span>
-
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
 <span class="sd">    The extensions section allows arbitrary metadata while maintaining strict</span>
 <span class="sd">    validation on core fields. This hybrid approach ensures:</span>
+
 <span class="sd">    - Core fields are consistent and validated</span>
 <span class="sd">    - Instrument-specific metadata is preserved</span>
 <span class="sd">    - No data loss during extraction</span>
@@ -1209,12 +1153,21 @@ window.addEventListener("load", load);
         <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;Creation Time&quot;</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;ISO-8601 timestamp with timezone&quot;</span><span class="p">,</span>
     <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ISO-8601 formatted timestamp with timezone indicating when the data</span>
+<span class="sd">    was acquired. Must include timezone offset (+00:00, -05:00) or &#39;Z&#39;.</span>
+<span class="sd">    Examples: &quot;2024-01-15T10:30:00-05:00&quot;, &quot;2024-01-15T15:30:00Z&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">data_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="o">...</span><span class="p">,</span>
         <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;Data Type&quot;</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Human-readable data type description&quot;</span><span class="p">,</span>
     <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Human-readable description of the data type using underscore-separated</span>
+<span class="sd">    components. Examples: &quot;STEM_Imaging&quot;, &quot;TEM_EDS&quot;, &quot;SEM_Imaging&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">dataset_type</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span>
         <span class="s2">&quot;Image&quot;</span><span class="p">,</span>
@@ -1228,6 +1181,10 @@ window.addEventListener("load", load);
         <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;DatasetType&quot;</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Schema-defined dataset category&quot;</span><span class="p">,</span>
     <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Schema-defined category matching the Nexus Experiment XML schema type</span>
+<span class="sd">    attribute.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># Common optional fields</span>
     <span class="n">data_dimensions</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
@@ -1235,34 +1192,62 @@ window.addEventListener("load", load);
         <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;Data Dimensions&quot;</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;String representation of data shape&quot;</span><span class="p">,</span>
     <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    String representation of data shape as a tuple.</span>
+<span class="sd">    Examples: &quot;(1024, 1024)&quot;, &quot;(2048,)&quot;, &quot;(12, 1024, 1024)&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">instrument_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;Instrument ID&quot;</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;NexusLIMS persistent instrument identifier&quot;</span><span class="p">,</span>
     <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    NexusLIMS persistent identifier for the instrument.</span>
+<span class="sd">    Examples: &quot;FEI-Titan-TEM-635816&quot;, &quot;Quanta-FEG-650-SEM-555555&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">warnings</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Field names flagged as unreliable&quot;</span><span class="p">,</span>
     <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Field names flagged as unreliable. These are marked with warning=&quot;true&quot;</span>
+<span class="sd">    in the XML output.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">nexuslims_extraction</span><span class="p">:</span> <span class="n">ExtractionDetails</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;NexusLIMS Extraction&quot;</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;NexusLIMS extraction metadata (date, module, version, warnings)&quot;</span><span class="p">,</span>
     <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    NexusLIMS extraction metadata containing date, module, and version</span>
+<span class="sd">    information about when and how the metadata was extracted.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">extensions</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Instrument-specific metadata extensions&quot;</span><span class="p">,</span>
     <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Flexible container for instrument-specific metadata that doesn&#39;t fit</span>
+<span class="sd">    the core schema. Use this for vendor-specific fields, facility metadata,</span>
+<span class="sd">    or experimental parameters not covered by EM Glossary.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># Configuration</span>
     <span class="n">model_config</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;populate_by_name&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># Accept both Python names and aliases</span>
         <span class="s2">&quot;extra&quot;</span><span class="p">:</span> <span class="s2">&quot;forbid&quot;</span><span class="p">,</span>  <span class="c1"># Force use of extensions for extra fields</span>
     <span class="p">}</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pydantic model configuration:</span>
+
+<span class="sd">    - ``populate_by_name: True`` -- Accept both Python field names and JSON aliases</span>
+<span class="sd">    - ``extra: &quot;forbid&quot;`` -- Forbid extra fields (forces use of extensions dict</span>
+<span class="sd">      for additional data)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="NexusMetadata.validate_iso_timestamp">
 <a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.NexusMetadata.validate_iso_timestamp">[docs]</a>
@@ -1293,7 +1278,7 @@ window.addEventListener("load", load);
     <span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;data_type&quot;</span><span class="p">)</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">validate_data_type_not_empty</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate data_type is not empty.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate ``data_type`` is not empty.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">v</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">v</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Data Type cannot be empty&quot;</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
@@ -1310,68 +1295,6 @@ window.addEventListener("load", load);
 
 <span class="sd">    Extends :class:`NexusMetadata` with fields specific to 2D image acquisition.</span>
 <span class="sd">    Uses Pint Quantity objects for all physical measurements.</span>
-
-<span class="sd">    Attributes</span>
-<span class="sd">    ----------</span>
-<span class="sd">    acceleration_voltage : PintQuantity or None, optional</span>
-<span class="sd">        Accelerating voltage of the electron/ion beam.</span>
-<span class="sd">        Preferred unit: kilovolt (kV)</span>
-<span class="sd">        EM Glossary: EMG_00000004</span>
-
-<span class="sd">    working_distance : PintQuantity or None, optional</span>
-<span class="sd">        Distance between final lens and sample surface.</span>
-<span class="sd">        Preferred unit: millimeter (mm)</span>
-<span class="sd">        EM Glossary: EMG_00000050</span>
-
-<span class="sd">    beam_current : PintQuantity or None, optional</span>
-<span class="sd">        Electron beam current.</span>
-<span class="sd">        Preferred unit: picoampere (pA)</span>
-<span class="sd">        EM Glossary: EMG_00000006</span>
-
-<span class="sd">    emission_current : PintQuantity or None, optional</span>
-<span class="sd">        Emission current from electron source.</span>
-<span class="sd">        Preferred unit: microampere (µA)</span>
-<span class="sd">        EM Glossary: EMG_00000025</span>
-
-<span class="sd">    dwell_time : PintQuantity or None, optional</span>
-<span class="sd">        Time the beam dwells on each pixel during scanning.</span>
-<span class="sd">        Preferred unit: microsecond (µs)</span>
-<span class="sd">        EM Glossary: EMG_00000015</span>
-
-<span class="sd">    magnification : float or None, optional</span>
-<span class="sd">        Nominal magnification (dimensionless).</span>
-
-<span class="sd">    horizontal_field_width : PintQuantity or None, optional</span>
-<span class="sd">        Width of the scanned area.</span>
-<span class="sd">        Preferred unit: micrometer (µm)</span>
-
-<span class="sd">    vertical_field_width : PintQuantity or None, optional</span>
-<span class="sd">        Height of the scanned area.</span>
-<span class="sd">        Preferred unit: micrometer (µm)</span>
-
-<span class="sd">    pixel_width : PintQuantity or None, optional</span>
-<span class="sd">        Physical width of a single pixel.</span>
-<span class="sd">        Preferred unit: nanometer (nm)</span>
-
-<span class="sd">    pixel_height : PintQuantity or None, optional</span>
-<span class="sd">        Physical height of a single pixel.</span>
-<span class="sd">        Preferred unit: nanometer (nm)</span>
-
-<span class="sd">    scan_rotation : PintQuantity or None, optional</span>
-<span class="sd">        Rotation angle of the scan frame.</span>
-<span class="sd">        Preferred unit: degree (°)</span>
-
-<span class="sd">    detector_type : str or None, optional</span>
-<span class="sd">        Type or name of detector used.</span>
-<span class="sd">        Examples: &quot;ETD&quot;, &quot;InLens&quot;, &quot;HAADF&quot;, &quot;BF&quot;</span>
-
-<span class="sd">    acquisition_device : str or None, optional</span>
-<span class="sd">        Name of the acquisition device or camera.</span>
-<span class="sd">        Examples: &quot;BM-UltraScan&quot;, &quot;K2 Summit&quot;</span>
-
-<span class="sd">    stage_position : StagePosition or None, optional</span>
-<span class="sd">        Stage coordinates and tilt angles. See :class:`StagePosition` for details.</span>
-<span class="sd">        Preferred units: x/y in µm, z in mm, angles in degrees</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -1397,35 +1320,70 @@ window.addEventListener("load", load);
 
     <span class="c1"># Image-specific fields (using EM Glossary names)</span>
     <span class="n">acceleration_voltage</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;acceleration_voltage&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Accelerating voltage of the electron/ion beam.</span>
+<span class="sd">    Preferred unit: kilovolt (kV). EM Glossary: EMG_00000004</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">working_distance</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;working_distance&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Distance between final lens and sample surface.</span>
+<span class="sd">    Preferred unit: millimeter (mm). EM Glossary: EMG_00000050</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">beam_current</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;beam_current&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Electron beam current.</span>
+<span class="sd">    Preferred unit: picoampere (pA). EM Glossary: EMG_00000006</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">emission_current</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;emission_current&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Emission current from electron source.</span>
+<span class="sd">    Preferred unit: microampere (µA). EM Glossary: EMG_00000025</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">dwell_time</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;dwell_time&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Time the beam dwells on each pixel during scanning.</span>
+<span class="sd">    Preferred unit: microsecond (µs). EM Glossary: EMG_00000015</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">magnification</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;magnification&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Nominal magnification (dimensionless).&quot;&quot;&quot;</span>
 
     <span class="n">horizontal_field_width</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;horizontal_field_width&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Width of the scanned area. Preferred unit: micrometer (µm)&quot;&quot;&quot;</span>
 
     <span class="n">vertical_field_width</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;vertical_field_width&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Height of the scanned area. Preferred unit: micrometer (µm)&quot;&quot;&quot;</span>
 
     <span class="n">pixel_width</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;pixel_width&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Physical width of a single pixel. Preferred unit: nanometer (nm)&quot;&quot;&quot;</span>
 
     <span class="n">pixel_height</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;pixel_height&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Physical height of a single pixel. Preferred unit: nanometer (nm)&quot;&quot;&quot;</span>
 
     <span class="n">scan_rotation</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;scan_rotation&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Rotation angle of the scan frame. Preferred unit: degree (°)&quot;&quot;&quot;</span>
 
     <span class="n">detector_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;detector_type&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Type or name of detector used. Examples: &quot;ETD&quot;, &quot;InLens&quot;, &quot;HAADF&quot;, &quot;BF&quot; &quot;&quot;&quot;</span>
 
     <span class="n">acquisition_device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;acquisition_device&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Name of the acquisition device or camera.</span>
+<span class="sd">    Examples: &quot;BM-UltraScan&quot;, &quot;K2 Summit&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">stage_position</span><span class="p">:</span> <span class="n">StagePosition</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Stage coordinates and tilt angles&quot;</span><span class="p">,</span>
-    <span class="p">)</span></div>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Stage coordinates and tilt angles. See :class:`StagePosition` for details.</span>
+<span class="sd">    Preferred units: x/y in µm, z in mm, angles in degrees</span>
+<span class="sd">    &quot;&quot;&quot;</span></div>
 
 
 
@@ -1436,44 +1394,6 @@ window.addEventListener("load", load);
 <span class="sd">    Schema for spectrum dataset metadata (EDS, EELS, etc.).</span>
 
 <span class="sd">    Extends :class:`NexusMetadata` with fields specific to spectral data acquisition.</span>
-
-<span class="sd">    Attributes</span>
-<span class="sd">    ----------</span>
-<span class="sd">    acquisition_time : PintQuantity or None, optional</span>
-<span class="sd">        Total time for spectrum acquisition.</span>
-<span class="sd">        Preferred unit: second (s)</span>
-<span class="sd">        EM Glossary: EMG_00000055</span>
-
-<span class="sd">    live_time : PintQuantity or None, optional</span>
-<span class="sd">        Live time excluding dead time.</span>
-<span class="sd">        Preferred unit: second (s)</span>
-
-<span class="sd">    detector_energy_resolution : PintQuantity or None, optional</span>
-<span class="sd">        Energy resolution of the detector.</span>
-<span class="sd">        Preferred unit: electronvolt (eV)</span>
-
-<span class="sd">    channel_size : PintQuantity or None, optional</span>
-<span class="sd">        Energy width of each channel.</span>
-<span class="sd">        Preferred unit: electronvolt (eV)</span>
-
-<span class="sd">    starting_energy : PintQuantity or None, optional</span>
-<span class="sd">        Starting energy of the spectrum.</span>
-<span class="sd">        Preferred unit: kiloelectronvolt (keV)</span>
-
-<span class="sd">    azimuthal_angle : PintQuantity or None, optional</span>
-<span class="sd">        Azimuthal angle of the detector.</span>
-<span class="sd">        Preferred unit: degree (°)</span>
-
-<span class="sd">    elevation_angle : PintQuantity or None, optional</span>
-<span class="sd">        Elevation angle of the detector.</span>
-<span class="sd">        Preferred unit: degree (°)</span>
-
-<span class="sd">    takeoff_angle : PintQuantity or None, optional</span>
-<span class="sd">        X-ray takeoff angle.</span>
-<span class="sd">        Preferred unit: degree (°)</span>
-
-<span class="sd">    elements : list[str] or None, optional</span>
-<span class="sd">        Detected elements (e.g., [&quot;Fe&quot;, &quot;Cr&quot;, &quot;Ni&quot;])</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -1498,27 +1418,39 @@ window.addEventListener("load", load);
 
     <span class="c1"># Spectrum-specific fields</span>
     <span class="n">acquisition_time</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;acquisition_time&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Total time for spectrum acquisition.</span>
+<span class="sd">    Preferred unit: second (s). EM Glossary: EMG_00000055</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">live_time</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;live_time&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Live time excluding dead time. Preferred unit: second (s)&quot;&quot;&quot;</span>
 
     <span class="n">detector_energy_resolution</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span>
         <span class="s2">&quot;detector_energy_resolution&quot;</span>
     <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Energy resolution of the detector. Preferred unit: electronvolt (eV)&quot;&quot;&quot;</span>
 
     <span class="n">channel_size</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;channel_size&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Energy width of each channel. Preferred unit: electronvolt (eV)&quot;&quot;&quot;</span>
 
     <span class="n">starting_energy</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;starting_energy&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Starting energy of the spectrum. Preferred unit: kiloelectronvolt (keV)&quot;&quot;&quot;</span>
 
     <span class="n">azimuthal_angle</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;azimuthal_angle&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Azimuthal angle of the detector. Preferred unit: degree (°)&quot;&quot;&quot;</span>
 
     <span class="n">elevation_angle</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;elevation_angle&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Elevation angle of the detector. Preferred unit: degree (°)&quot;&quot;&quot;</span>
 
     <span class="n">takeoff_angle</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;takeoff_angle&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;X-ray takeoff angle. Preferred unit: degree (°)&quot;&quot;&quot;</span>
 
     <span class="n">elements</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Detected elements&quot;</span><span class="p">,</span>
-    <span class="p">)</span></div>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Detected elements (e.g., [&quot;Fe&quot;, &quot;Cr&quot;, &quot;Ni&quot;])&quot;&quot;&quot;</span></div>
 
 
 
@@ -1529,19 +1461,8 @@ window.addEventListener("load", load);
 <span class="sd">    Schema for spectrum image (hyperspectral) dataset metadata.</span>
 
 <span class="sd">    Combines fields from both :class:`ImageMetadata` and :class:`SpectrumMetadata`</span>
-<span class="sd">    since spectrum images have both spatial and spectral dimensions.</span>
-
-<span class="sd">    Attributes</span>
-<span class="sd">    ----------</span>
-<span class="sd">    Inherits all fields from ImageMetadata and SpectrumMetadata, plus:</span>
-
-<span class="sd">    pixel_time : PintQuantity or None, optional</span>
-<span class="sd">        Time spent acquiring spectrum at each pixel.</span>
-<span class="sd">        Preferred unit: second (s)</span>
-
-<span class="sd">    scan_mode : str or None, optional</span>
-<span class="sd">        Scanning mode used for acquisition.</span>
-<span class="sd">        Examples: &quot;raster&quot;, &quot;serpentine&quot;, &quot;fly-back&quot;</span>
+<span class="sd">    since spectrum images have both spatial and spectral dimensions. Inherits all</span>
+<span class="sd">    fields from both parent classes.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -1569,11 +1490,16 @@ window.addEventListener("load", load);
         <span class="kc">None</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Time per pixel for spectrum acquisition&quot;</span><span class="p">,</span>
     <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Time spent acquiring spectrum at each pixel. Preferred unit: second (s)&quot;&quot;&quot;</span>
 
     <span class="n">scan_mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Scanning mode (raster, serpentine, etc.)&quot;</span><span class="p">,</span>
     <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Scanning mode used for acquisition.</span>
+<span class="sd">    Examples: &quot;raster&quot;, &quot;serpentine&quot;, &quot;fly-back&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="SpectrumImageMetadata.validate_spectrum_image_fields">
 <a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.SpectrumImageMetadata.validate_spectrum_image_fields">[docs]</a>
@@ -1593,26 +1519,6 @@ window.addEventListener("load", load);
 <span class="sd">    Schema for diffraction pattern dataset metadata (TEM, EBSD, etc.).</span>
 
 <span class="sd">    Extends :class:`NexusMetadata` with fields specific to diffraction data.</span>
-
-<span class="sd">    Attributes</span>
-<span class="sd">    ----------</span>
-<span class="sd">    camera_length : PintQuantity or None, optional</span>
-<span class="sd">        Camera length for diffraction pattern.</span>
-<span class="sd">        Preferred unit: millimeter (mm)</span>
-<span class="sd">        EM Glossary: EMG_00000008</span>
-
-<span class="sd">    convergence_angle : PintQuantity or None, optional</span>
-<span class="sd">        Convergence angle of the electron beam.</span>
-<span class="sd">        Preferred unit: milliradian (mrad)</span>
-<span class="sd">        EM Glossary: EMG_00000010</span>
-
-<span class="sd">    acceleration_voltage : PintQuantity or None, optional</span>
-<span class="sd">        Accelerating voltage (also relevant for diffraction).</span>
-<span class="sd">        Preferred unit: kilovolt (kV)</span>
-<span class="sd">        EM Glossary: EMG_00000004</span>
-
-<span class="sd">    acquisition_device : str or None, optional</span>
-<span class="sd">        Name of the detector/camera used.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -1637,12 +1543,25 @@ window.addEventListener("load", load);
 
     <span class="c1"># Diffraction-specific fields</span>
     <span class="n">camera_length</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;camera_length&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Camera length for diffraction pattern.</span>
+<span class="sd">    Preferred unit: millimeter (mm). EM Glossary: EMG_00000008</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">convergence_angle</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;convergence_angle&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convergence angle of the electron beam.</span>
+<span class="sd">    Preferred unit: milliradian (mrad). EM Glossary: EMG_00000010</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">acceleration_voltage</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;acceleration_voltage&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Accelerating voltage (also relevant for diffraction).</span>
+<span class="sd">    Preferred unit: kilovolt (kV). EM Glossary: EMG_00000004</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">acquisition_device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;acquisition_device&quot;</span><span class="p">)</span></div>
+    <span class="n">acquisition_device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;acquisition_device&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Name of the detector/camera used.&quot;&quot;&quot;</span></div>
 
 </pre></div>
 

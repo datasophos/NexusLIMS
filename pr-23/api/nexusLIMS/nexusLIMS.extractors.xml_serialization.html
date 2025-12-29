@@ -32,8 +32,9 @@
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=af02a5b6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=8633d6cc" />
   
   <!-- So that users can add custom icons -->
   <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -44,6 +45,8 @@
     <script src="../../_static/documentation_options.js?v=dc4a309c"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=30646c52"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'api/nexusLIMS/nexusLIMS.extractors.xml_serialization';</script>
     <script>
@@ -53,6 +56,7 @@
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
+    <script src="../../_static/custom.js?v=ba087cdf"></script>
     <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/pr-23/api/nexusLIMS/nexusLIMS.extractors.xml_serialization.html" />
     <link rel="icon" href="../../_static/nexusLIMS_bare_logo.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -62,7 +66,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.2.0.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 28, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 29, 2025"/>
   </head>
   
   
@@ -172,20 +176,6 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../getting_started.html">
-    Getting Started
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../migration.html">
-    Migration Guide: v1 to v2
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../user_guide.html">
     User Guide
   </a>
@@ -193,28 +183,25 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../dev_guide.html">
-    Developer Guide
+  <a class="nav-link nav-internal" href="../../migration.html">
+    Migration Guide: v1.4.3 to v2.2.0
   </a>
 </li>
 
-            <li class="nav-item dropdown">
-                <button class="btn dropdown-toggle nav-item" type="button"
-                data-bs-toggle="dropdown" aria-expanded="false"
-                aria-controls="pst-nav-more-links">
-                    More
-                </button>
-                <ul id="pst-nav-more-links" class="dropdown-menu">
-                    
-<li class=" current active">
-  <a class="nav-link dropdown-item nav-internal" href="../../reference.html">
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../dev_guide.html">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../reference.html">
     Reference
   </a>
 </li>
 
-                </ul>
-            </li>
-            
   </ul>
 </nav></div>
       
@@ -311,20 +298,6 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../getting_started.html">
-    Getting Started
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../migration.html">
-    Migration Guide: v1 to v2
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../user_guide.html">
     User Guide
   </a>
@@ -332,8 +305,15 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../migration.html">
+    Migration Guide: v1.4.3 to v2.2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../dev_guide.html">
-    Developer Guide
+    Dev Guide
   </a>
 </li>
 
@@ -406,7 +386,7 @@
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../api.html">API documentation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../reference/api.html">API documentation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="nexusLIMS.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS</span></code></a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.db.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.db</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.builder.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.builder</span></code></a></li>
@@ -430,7 +410,7 @@
 </details></li>
 </ul>
 </details></li>
-<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/changelog.html">Changelog</a></li>
 </ul>
 </div>
 </nav></div>
@@ -475,7 +455,7 @@
     <li class="breadcrumb-item"><a href="../../reference.html" class="nav-link">Reference</a></li>
     
     
-    <li class="breadcrumb-item"><a href="../../api.html" class="nav-link">API documentation</a></li>
+    <li class="breadcrumb-item"><a href="../../reference/api.html" class="nav-link">API documentation</a></li>
     
     
     <li class="breadcrumb-item"><a href="nexusLIMS.html" class="nav-link"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS</span></code></a></li>
@@ -502,44 +482,34 @@
                   
   <section id="module-nexusLIMS.extractors.xml_serialization">
 <span id="nexuslims-extractors-xml-serialization"></span><h1><a class="reference internal" href="#module-nexusLIMS.extractors.xml_serialization" title="nexusLIMS.extractors.xml_serialization"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.xml_serialization</span></code></a><a class="headerlink" href="#module-nexusLIMS.extractors.xml_serialization" title="Link to this heading">#</a></h1>
-<section id="key-functions">
-<h2>Key Functions<a class="headerlink" href="#key-functions" title="Link to this heading">#</a></h2>
-<ul class="simple">
-<li><p>serialize_quantity_to_xml: Convert Pint Quantities to value/unit pairs for XML</p></li>
-<li><p>get_xml_field_name: Map EM Glossary field names to human-readable display names</p></li>
-<li><p>prepare_metadata_for_xml: Convert rich metadata to XML-compatible flat dict</p></li>
-</ul>
-</section>
-<section id="examples">
-<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading">#</a></h2>
-<p>Convert a Pint Quantity to XML:</p>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>from nexusLIMS.schemas.units import ureg
-qty = ureg.Quantity(10, “kilovolt”)
-value, unit = serialize_quantity_to_xml(qty)
-value, unit
-(10.0, ‘kV’)</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-<p>Get human-readable field name for XML:</p>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>get_xml_field_name(“acceleration_voltage”)
-‘Voltage’
-get_xml_field_name(“working_distance”)
-‘Working Distance’</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-</section>
 <p>XML serialization utilities for NexusLIMS metadata schemas.</p>
 <p>This module provides utilities for converting type-specific metadata schemas
 (using Pint Quantities and EM Glossary terminology) into XML format compatible
 with the Nexus Experiment schema.</p>
+<section id="key-functions">
+<h2>Key Functions<a class="headerlink" href="#key-functions" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="#nexusLIMS.extractors.xml_serialization.serialize_quantity_to_xml" title="nexusLIMS.extractors.xml_serialization.serialize_quantity_to_xml"><code class="xref py py-func docutils literal notranslate"><span class="pre">serialize_quantity_to_xml()</span></code></a>: Convert Pint Quantities to value/unit pairs for XML</p></li>
+<li><p><a class="reference internal" href="#nexusLIMS.extractors.xml_serialization.get_xml_field_name" title="nexusLIMS.extractors.xml_serialization.get_xml_field_name"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_xml_field_name()</span></code></a>: Map EM Glossary field name to human-friendly display name</p></li>
+<li><p><a class="reference internal" href="#nexusLIMS.extractors.xml_serialization.prepare_metadata_for_xml" title="nexusLIMS.extractors.xml_serialization.prepare_metadata_for_xml"><code class="xref py py-func docutils literal notranslate"><span class="pre">prepare_metadata_for_xml()</span></code></a>: Convert rich metadata to XML-compatible flat dict</p></li>
+</ul>
+<p><strong>Examples:</strong></p>
+<p>Convert a Pint Quantity to XML:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas.units</span><span class="w"> </span><span class="kn">import</span> <span class="n">ureg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">qty</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;kilovolt&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">value</span><span class="p">,</span> <span class="n">unit</span> <span class="o">=</span> <span class="n">serialize_quantity_to_xml</span><span class="p">(</span><span class="n">qty</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">value</span><span class="p">,</span> <span class="n">unit</span>
+<span class="go">(10.0, &#39;kV&#39;)</span>
+</pre></div>
+</div>
+<p>Get human-readable field name for XML:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">get_xml_field_name</span><span class="p">(</span><span class="s2">&quot;acceleration_voltage&quot;</span><span class="p">)</span>
+<span class="go">&#39;Voltage&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">get_xml_field_name</span><span class="p">(</span><span class="s2">&quot;working_distance&quot;</span><span class="p">)</span>
+<span class="go">&#39;Working Distance&#39;</span>
+</pre></div>
+</div>
+</section>
 <section id="module-contents">
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
 <section id="functions">
@@ -570,7 +540,8 @@ with the Nexus Experiment schema.</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table table-left">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.extractors.xml_serialization.EM_GLOSSARY_TO_XML_DISPLAY_NAMES" title="nexusLIMS.extractors.xml_serialization.EM_GLOSSARY_TO_XML_DISPLAY_NAMES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EM_GLOSSARY_TO_XML_DISPLAY_NAMES</span></code></a></p></td>
-<td></td>
+<td><p>Mapping from EM Glossary field names to human-readable XML display names.
+This maintains backward compatibility with existing XML field names.</p></td>
 </tr>
 </tbody>
 </table>
@@ -581,7 +552,8 @@ with the Nexus Experiment schema.</p>
 <dl class="py data">
 <dt class="sig sig-object py" id="nexusLIMS.extractors.xml_serialization.EM_GLOSSARY_TO_XML_DISPLAY_NAMES">
 <span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.xml_serialization.</span></span><span class="sig-name descname"><span class="pre">EM_GLOSSARY_TO_XML_DISPLAY_NAMES</span></span><a class="headerlink" href="#nexusLIMS.extractors.xml_serialization.EM_GLOSSARY_TO_XML_DISPLAY_NAMES" title="Link to this definition">#</a></dt>
-<dd><p>None</p>
+<dd><p>Mapping from EM Glossary field names to human-readable XML display names.
+This maintains backward compatibility with existing XML field names.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -590,41 +562,37 @@ with the Nexus Experiment schema.</p>
 <dd><p>Convert a Pint Quantity to value and unit strings for XML serialization.</p>
 <p>This function extracts the magnitude and unit from a Pint Quantity object
 and formats them for use in XML meta elements with the <code class="docutils literal notranslate"><span class="pre">unit</span></code> attribute.</p>
-<p class="rubric" id="id18">Parameters</p>
-<p>qty : Quantity
-The Pint Quantity object to serialize</p>
-<p class="rubric" id="id19">Returns</p>
-<p>value : float
-The numeric magnitude of the quantity
-unit : str
-The unit symbol in compact form (e.g., “kV”, “mm”, “pA”)</p>
-<p class="rubric" id="id20">Examples</p>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>from nexusLIMS.schemas.units import ureg
-qty = ureg.Quantity(10, “kilovolt”)
-value, unit = serialize_quantity_to_xml(qty)
-value
-10.0
-unit
-‘kV’</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>qty = ureg.Quantity(5.2, “millimeter”)
-value, unit = serialize_quantity_to_xml(qty)
-value
-5.2
-unit
-‘mm’</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-<p class="rubric" id="id21">Notes</p>
+<dl class="myst field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>qty</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">pint.Quantity</span></code>) – The Pint Quantity object to serialize</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>value</strong> (<em>float</em>) – The numeric magnitude of the quantity</p></li>
+<li><p><strong>unit</strong> (<em>str</em>) – The unit symbol in compact form (e.g., “kV”, “mm”, “pA”)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+<p><strong>Examples:</strong></p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas.units</span><span class="w"> </span><span class="kn">import</span> <span class="n">ureg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">qty</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;kilovolt&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">value</span><span class="p">,</span> <span class="n">unit</span> <span class="o">=</span> <span class="n">serialize_quantity_to_xml</span><span class="p">(</span><span class="n">qty</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">value</span>
+<span class="go">10.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">unit</span>
+<span class="go">&#39;kV&#39;</span>
+</pre></div>
+</div>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">qty</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mf">5.2</span><span class="p">,</span> <span class="s2">&quot;millimeter&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">value</span><span class="p">,</span> <span class="n">unit</span> <span class="o">=</span> <span class="n">serialize_quantity_to_xml</span><span class="p">(</span><span class="n">qty</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">value</span>
+<span class="go">5.2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">unit</span>
+<span class="go">&#39;mm&#39;</span>
+</pre></div>
+</div>
+<p><strong>Notes:</strong></p>
 <p>The unit is formatted using Pint’s compact format (~) which produces
 short unit symbols suitable for display in XML attributes.</p>
 </dd></dl>
@@ -637,36 +605,33 @@ short unit symbols suitable for display in XML attributes.</p>
 (used internally in metadata schemas) and the human-readable field names
 used in XML output. It maintains backward compatibility with existing XML
 field names.</p>
-<p class="rubric" id="id22">Parameters</p>
-<p>field_name : str
-The internal EM Glossary field name (e.g., “acceleration_voltage”)</p>
-<p class="rubric" id="id23">Returns</p>
-<p>display_name : str
-The human-readable display name for XML (e.g., “Voltage”)</p>
-<p class="rubric" id="id24">Examples</p>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>get_xml_field_name(“acceleration_voltage”)
-‘Voltage’
-get_xml_field_name(“working_distance”)
-‘Working Distance’
-get_xml_field_name(“detector_type”)
-‘Detector’</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
+<dl class="myst field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>field_name</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – The internal EM Glossary field name (e.g., “acceleration_voltage”)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>display_name</strong> – The human-readable display name for XML (e.g., “Voltage”)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a></p>
+</dd>
+</dl>
+<p><strong>Examples:</strong></p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">get_xml_field_name</span><span class="p">(</span><span class="s2">&quot;acceleration_voltage&quot;</span><span class="p">)</span>
+<span class="go">&#39;Voltage&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">get_xml_field_name</span><span class="p">(</span><span class="s2">&quot;working_distance&quot;</span><span class="p">)</span>
+<span class="go">&#39;Working Distance&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">get_xml_field_name</span><span class="p">(</span><span class="s2">&quot;detector_type&quot;</span><span class="p">)</span>
+<span class="go">&#39;Detector&#39;</span>
+</pre></div>
+</div>
 <p>For unknown fields, returns the field name with underscores replaced by spaces
 and title-cased:</p>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>get_xml_field_name(“some_custom_field”)
-‘Some Custom Field’</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-<p class="rubric" id="id25">Notes</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">get_xml_field_name</span><span class="p">(</span><span class="s2">&quot;some_custom_field&quot;</span><span class="p">)</span>
+<span class="go">&#39;Some Custom Field&#39;</span>
+</pre></div>
+</div>
+<p><strong>Notes:</strong></p>
 <p>This function prioritizes backward compatibility with existing XML field names.
 New fields should be added to EM_GLOSSARY_TO_XML_DISPLAY_NAMES to control
 their XML representation.</p>
@@ -685,39 +650,43 @@ This includes:</p>
 <li><p>Mapping EM Glossary field names to XML display names</p></li>
 <li><p>Preserving non-Quantity values as-is</p></li>
 </ol>
-<p class="rubric" id="id26">Parameters</p>
-<p>metadata : dict[str, Any]
-Metadata dictionary from type-specific schema (ImageMetadata, etc.)
+<dl class="myst field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>metadata</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>Any</em><em>]</em>) – Metadata dictionary from type-specific schema (ImageMetadata, etc.)
 May contain Pint Quantities, nested dicts, or simple values</p>
-<p class="rubric" id="id27">Returns</p>
-<p>xml_metadata : dict[str, str | float]
-Flat dictionary with XML-compatible field names and values.
-For Quantity fields, creates two entries:
-- “&lt;field_name&gt;”: numeric value
-- “&lt;field_name&gt;_unit”: unit string</p>
-<p class="rubric" id="id28">Examples</p>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>from nexusLIMS.schemas.units import ureg
-metadata = {
-…     “acceleration_voltage”: ureg.Quantity(10, “kilovolt”),
-…     “magnification”: 50000,
-…     “detector_type”: “ETD”,
-… }
-xml_dict = prepare_metadata_for_xml(metadata)
-xml_dict[“Voltage”]
-10.0
-xml_dict[“Voltage_unit”]
-‘kV’
-xml_dict[“Magnification”]
-50000
-xml_dict[“Detector”]
-‘ETD’</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-<p class="rubric" id="id29">Notes</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p><strong>xml_metadata</strong> – Flat dictionary with XML-compatible field names and values.
+For Quantity fields, creates two entries:</p>
+<ul class="simple">
+<li><p>”&lt;field_name&gt;”: numeric value</p></li>
+<li><p>”&lt;field_name&gt;_unit”: unit string</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>[<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>, <a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a> | <a class="reference external" href="https://docs.python.org/3.11/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>]</p>
+</dd>
+</dl>
+<p><strong>Examples:</strong></p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas.units</span><span class="w"> </span><span class="kn">import</span> <span class="n">ureg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metadata</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>    <span class="s2">&quot;acceleration_voltage&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;kilovolt&quot;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="s2">&quot;magnification&quot;</span><span class="p">:</span> <span class="mi">50000</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="s2">&quot;detector_type&quot;</span><span class="p">:</span> <span class="s2">&quot;ETD&quot;</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">xml_dict</span> <span class="o">=</span> <span class="n">prepare_metadata_for_xml</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">xml_dict</span><span class="p">[</span><span class="s2">&quot;Voltage&quot;</span><span class="p">]</span>
+<span class="go">10.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">xml_dict</span><span class="p">[</span><span class="s2">&quot;Voltage_unit&quot;</span><span class="p">]</span>
+<span class="go">&#39;kV&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">xml_dict</span><span class="p">[</span><span class="s2">&quot;Magnification&quot;</span><span class="p">]</span>
+<span class="go">50000</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">xml_dict</span><span class="p">[</span><span class="s2">&quot;Detector&quot;</span><span class="p">]</span>
+<span class="go">&#39;ETD&#39;</span>
+</pre></div>
+</div>
+<p><strong>Notes:</strong></p>
 <p>This function is designed to work with both the new schema format and
 legacy metadata dicts for backward compatibility during migration.</p>
 </dd></dl>
@@ -729,26 +698,28 @@ legacy metadata dicts for backward compatibility during migration.</p>
 <p>This function looks up the QUDT (Quantities, Units, Dimensions and Types)
 ontology URI for a given unit string. Used for Tier 3 semantic web
 integration (future enhancement).</p>
-<p class="rubric" id="id30">Parameters</p>
-<p>field_name : str
-The field name (currently unused, reserved for future context-aware lookups)
-unit : str
-The unit string in compact form (e.g., “kV”, “mm”, “pA”)</p>
-<p class="rubric" id="id31">Returns</p>
-<p>qudt_uri : str or None
-The QUDT URI for this unit, or None if no mapping exists</p>
-<p class="rubric" id="id32">Examples</p>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>get_qudt_uri(“acceleration_voltage”, “kV”)  # doctest: +SKIP
-‘http://qudt.org/vocab/unit/KiloV’
-get_qudt_uri(“working_distance”, “mm”)  # doctest: +SKIP
-‘http://qudt.org/vocab/unit/MilliM’</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-<p class="rubric" id="id33">Notes</p>
+<dl class="myst field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>field_name</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – The field name (currently unused, reserved for future context-aware lookups)</p></li>
+<li><p><strong>unit</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – The unit string in compact form (e.g., “kV”, “mm”, “pA”)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>qudt_uri</strong> – The QUDT URI for this unit, or None if no mapping exists</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a> or <em>None</em></p>
+</dd>
+</dl>
+<p><strong>Examples:</strong></p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">get_qudt_uri</span><span class="p">(</span><span class="s2">&quot;acceleration_voltage&quot;</span><span class="p">,</span> <span class="s2">&quot;kV&quot;</span><span class="p">)</span>
+<span class="go">&#39;http://qudt.org/vocab/unit/KiloV&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">get_qudt_uri</span><span class="p">(</span><span class="s2">&quot;working_distance&quot;</span><span class="p">,</span> <span class="s2">&quot;mm&quot;</span><span class="p">)</span>
+<span class="go">&#39;http://qudt.org/vocab/unit/MilliM&#39;</span>
+</pre></div>
+</div>
+<p><strong>Notes:</strong></p>
 <p>This function is currently a placeholder for Tier 3 implementation.
 It will use the QUDT mapping system from <code class="docutils literal notranslate"><span class="pre">nexusLIMS.schemas.units</span></code>
 when Tier 3 semantic attributes are added to the XML schema.</p>
@@ -760,25 +731,26 @@ when Tier 3 semantic attributes are added to the XML schema.</p>
 <dd><p>Get the EM Glossary ID for a given field name.</p>
 <p>This function looks up the EM Glossary term ID for a field name,
 if one exists. Used for Tier 3 semantic web integration (future enhancement).</p>
-<p class="rubric" id="id34">Parameters</p>
-<p>field_name : str
-The internal field name (e.g., “acceleration_voltage”)</p>
-<p class="rubric" id="id35">Returns</p>
-<p>emg_id : str or None
-The EM Glossary ID (e.g., “EMG_00000004”), or None if no mapping exists</p>
-<p class="rubric" id="id36">Examples</p>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>get_emg_id(“acceleration_voltage”)
-‘EMG_00000004’
-get_emg_id(“working_distance”)
-‘EMG_00000050’
-get_emg_id(“some_custom_field”)</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-<p class="rubric" id="id37">Notes</p>
+<dl class="myst field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>field_name</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – The internal field name (e.g., “acceleration_voltage”)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>emg_id</strong> – The EM Glossary ID (e.g., “EMG_00000004”), or None if no mapping exists</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a> or <em>None</em></p>
+</dd>
+</dl>
+<p><strong>Examples:</strong></p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">get_emg_id</span><span class="p">(</span><span class="s2">&quot;acceleration_voltage&quot;</span><span class="p">)</span>
+<span class="go">&#39;EMG_00000004&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">get_emg_id</span><span class="p">(</span><span class="s2">&quot;working_distance&quot;</span><span class="p">)</span>
+<span class="go">&#39;EMG_00000050&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">get_emg_id</span><span class="p">(</span><span class="s2">&quot;some_custom_field&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Notes:</strong></p>
 <p>This function is used for Tier 3 implementation where EM Glossary IDs
 are added as XML attributes for semantic traceability.</p>
 </dd></dl>
@@ -835,7 +807,6 @@ are added as XML attributes for semantic traceability.</p>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#key-functions">Key Functions</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#examples">Examples</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data">Data</a></li>

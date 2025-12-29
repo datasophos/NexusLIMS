@@ -4,6 +4,7 @@
 ```
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.profiles
+:parser: autodoc2_docstrings_parser
 :allowtitles:
 ```
 
@@ -28,37 +29,17 @@ nexusLIMS.extractors.plugins.profiles.fei_titan_tem_642
 
 * - {py:obj}`register_all_profiles <nexusLIMS.extractors.plugins.profiles.register_all_profiles>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.profiles.register_all_profiles
-    :summary:
-    ```
-````
-
-### Data
-
-````{list-table}
-:class: autosummary longtable
-:align: left
-
-* - {py:obj}`logger <nexusLIMS.extractors.plugins.profiles.logger>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.profiles.logger
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 ````
 
 ### API
 
-````{py:data} logger
-:canonical: nexusLIMS.extractors.plugins.profiles.logger
-:value: >
-   'getLogger(...)'
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.profiles.logger
-```
-
-````
-
 ````{py:function} register_all_profiles() -> None
 :canonical: nexusLIMS.extractors.plugins.profiles.register_all_profiles
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.profiles.register_all_profiles
+:parser: autodoc2_docstrings_parser
 ```
 ````

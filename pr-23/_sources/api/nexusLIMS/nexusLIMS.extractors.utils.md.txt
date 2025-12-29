@@ -4,6 +4,7 @@
 ```
 
 ```{autodoc2-docstring} nexusLIMS.extractors.utils
+:parser: autodoc2_docstrings_parser
 :allowtitles:
 ```
 
@@ -17,37 +18,17 @@
 
 * - {py:obj}`add_to_extensions <nexusLIMS.extractors.utils.add_to_extensions>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.utils.add_to_extensions
-    :summary:
-    ```
-````
-
-### Data
-
-````{list-table}
-:class: autosummary longtable
-:align: left
-
-* - {py:obj}`logger <nexusLIMS.extractors.utils.logger>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.utils.logger
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 ````
 
 ### API
 
-````{py:data} logger
-:canonical: nexusLIMS.extractors.utils.logger
-:value: >
-   'getLogger(...)'
-
-```{autodoc2-docstring} nexusLIMS.extractors.utils.logger
-```
-
-````
-
 ````{py:function} add_to_extensions(nx_meta: dict, field_name: str, value: typing.Any) -> None
 :canonical: nexusLIMS.extractors.utils.add_to_extensions
 
 ```{autodoc2-docstring} nexusLIMS.extractors.utils.add_to_extensions
+:parser: autodoc2_docstrings_parser
 ```
 ````

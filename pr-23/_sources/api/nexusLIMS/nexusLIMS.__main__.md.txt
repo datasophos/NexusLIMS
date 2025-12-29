@@ -8,5 +8,6 @@ orphan: true
 ```
 
 ```{autodoc2-docstring} nexusLIMS.__main__
+:parser: autodoc2_docstrings_parser
 :allowtitles:
 ```

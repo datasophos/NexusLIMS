@@ -65,7 +65,7 @@
             <a id="nextFileLink" class="nav" href="z_608a0ddf03aefd43_xml_serialization_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.11.3">coverage.py v7.11.3</a>,
-            created at 2025-12-28 00:42 +0000
+            created at 2025-12-29 16:02 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"></button>
@@ -101,7 +101,7 @@
     <p class="run"><span class="n"><a id="t19" href="#t19">19</a></span><span class="t"><span class="key">from</span> <span class="nam">nexusLIMS</span><span class="op">.</span><span class="nam">schemas</span><span class="op">.</span><span class="nam">units</span> <span class="key">import</span> <span class="nam">ureg</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t20" href="#t20">20</a></span><span class="t"><span class="key">from</span> <span class="nam">nexusLIMS</span><span class="op">.</span><span class="nam">utils</span> <span class="key">import</span> <span class="nam">set_nested_dict_value</span><span class="op">,</span> <span class="nam">try_getting_dict_value</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t21" href="#t21">21</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t22" href="#t22">22</a></span><span class="t"><span class="nam">logger</span> <span class="op">=</span> <span class="nam">logging</span><span class="op">.</span><span class="nam">getLogger</span><span class="op">(</span><span class="nam">__name__</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t22" href="#t22">22</a></span><span class="t"><span class="nam">_logger</span> <span class="op">=</span> <span class="nam">logging</span><span class="op">.</span><span class="nam">getLogger</span><span class="op">(</span><span class="nam">__name__</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t23" href="#t23">23</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t24" href="#t24">24</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t25" href="#t25">25</a></span><span class="t"><span class="key">def</span> <span class="nam">_coerce_to_list</span><span class="op">(</span><span class="nam">meta_key</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
@@ -401,7 +401,7 @@
     <p class="run"><span class="n"><a id="t319" href="#t319">319</a></span><span class="t">            <span class="nam">tmp</span> <span class="op">=</span> <span class="nam">re</span><span class="op">.</span><span class="nam">sub</span><span class="op">(</span><span class="str">r"\[eV\]"</span><span class="op">,</span> <span class="str">""</span><span class="op">,</span> <span class="nam">tmp</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t320" href="#t320">320</a></span><span class="t">            <span class="nam">info_dict</span><span class="op">[</span><span class="str">"Filter_Settings"</span><span class="op">]</span><span class="op">[</span><span class="str">"Total_Energy_Loss"</span><span class="op">]</span> <span class="op">=</span> <span class="nam">_try_decimal</span><span class="op">(</span><span class="nam">tmp</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t321" href="#t321">321</a></span><span class="t">    <span class="key">except</span> <span class="nam">ValueError</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t322" href="#t322">322</a></span><span class="t">        <span class="nam">logger</span><span class="op">.</span><span class="nam">info</span><span class="op">(</span><span class="str">"Filter settings not found in Tecnai microscope info"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t322" href="#t322">322</a></span><span class="t">        <span class="nam">_logger</span><span class="op">.</span><span class="nam">info</span><span class="op">(</span><span class="str">"Filter settings not found in Tecnai microscope info"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t323" href="#t323">323</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t324" href="#t324">324</a></span><span class="t">    <span class="key">return</span> <span class="nam">info_dict</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t325" href="#t325">325</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
@@ -556,7 +556,7 @@
             <a class="nav" href="z_608a0ddf03aefd43_xml_serialization_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.11.3">coverage.py v7.11.3</a>,
-            created at 2025-12-28 00:42 +0000
+            created at 2025-12-29 16:02 +0000
         </p>
     </div>
 </footer>

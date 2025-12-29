@@ -32,8 +32,9 @@
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=af02a5b6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=8633d6cc" />
   
   <!-- So that users can add custom icons -->
   <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -44,6 +45,8 @@
     <script src="../../_static/documentation_options.js?v=dc4a309c"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=30646c52"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'api/nexusLIMS/nexusLIMS.schemas.pint_types';</script>
     <script>
@@ -53,6 +56,7 @@
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
+    <script src="../../_static/custom.js?v=ba087cdf"></script>
     <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/pr-23/api/nexusLIMS/nexusLIMS.schemas.pint_types.html" />
     <link rel="icon" href="../../_static/nexusLIMS_bare_logo.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -62,7 +66,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.2.0.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 28, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 29, 2025"/>
   </head>
   
   
@@ -172,20 +176,6 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../getting_started.html">
-    Getting Started
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../migration.html">
-    Migration Guide: v1 to v2
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../user_guide.html">
     User Guide
   </a>
@@ -193,28 +183,25 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../dev_guide.html">
-    Developer Guide
+  <a class="nav-link nav-internal" href="../../migration.html">
+    Migration Guide: v1.4.3 to v2.2.0
   </a>
 </li>
 
-            <li class="nav-item dropdown">
-                <button class="btn dropdown-toggle nav-item" type="button"
-                data-bs-toggle="dropdown" aria-expanded="false"
-                aria-controls="pst-nav-more-links">
-                    More
-                </button>
-                <ul id="pst-nav-more-links" class="dropdown-menu">
-                    
-<li class=" current active">
-  <a class="nav-link dropdown-item nav-internal" href="../../reference.html">
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../dev_guide.html">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../reference.html">
     Reference
   </a>
 </li>
 
-                </ul>
-            </li>
-            
   </ul>
 </nav></div>
       
@@ -311,20 +298,6 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../getting_started.html">
-    Getting Started
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../migration.html">
-    Migration Guide: v1 to v2
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../user_guide.html">
     User Guide
   </a>
@@ -332,8 +305,15 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../migration.html">
+    Migration Guide: v1.4.3 to v2.2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../dev_guide.html">
-    Developer Guide
+    Dev Guide
   </a>
 </li>
 
@@ -406,7 +386,7 @@
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../api.html">API documentation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../reference/api.html">API documentation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="nexusLIMS.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS</span></code></a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.db.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.db</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.builder.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.builder</span></code></a></li>
@@ -429,7 +409,7 @@
 </details></li>
 </ul>
 </details></li>
-<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/changelog.html">Changelog</a></li>
 </ul>
 </div>
 </nav></div>
@@ -474,7 +454,7 @@
     <li class="breadcrumb-item"><a href="../../reference.html" class="nav-link">Reference</a></li>
     
     
-    <li class="breadcrumb-item"><a href="../../api.html" class="nav-link">API documentation</a></li>
+    <li class="breadcrumb-item"><a href="../../reference/api.html" class="nav-link">API documentation</a></li>
     
     
     <li class="breadcrumb-item"><a href="nexusLIMS.html" class="nav-link"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS</span></code></a></li>
@@ -501,33 +481,6 @@
                   
   <section id="module-nexusLIMS.schemas.pint_types">
 <span id="nexuslims-schemas-pint-types"></span><h1><a class="reference internal" href="#module-nexusLIMS.schemas.pint_types" title="nexusLIMS.schemas.pint_types"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.schemas.pint_types</span></code></a><a class="headerlink" href="#module-nexusLIMS.schemas.pint_types" title="Link to this heading">#</a></h1>
-<section id="examples">
-<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading">#</a></h2>
-<p>Use in a Pydantic model:</p>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>from pydantic import BaseModel
-from nexusLIMS.schemas.pint_types import PintQuantity
-from nexusLIMS.schemas.units import ureg</p>
-<p>class MyMetadata(BaseModel):
-…     voltage: PintQuantity
-…     current: PintQuantity | None = None</p>
-<p class="rubric" id="create-from-quantity">Create from Quantity</p>
-<p>meta = MyMetadata(voltage=ureg.Quantity(10, “kV”))
-print(meta.voltage)
-10 kilovolt</p>
-<p class="rubric" id="create-from-string">Create from string</p>
-<p>meta = MyMetadata(voltage=”10 kV”)
-print(meta.voltage)
-10 kilovolt</p>
-<p class="rubric" id="serialize-to-json">Serialize to JSON</p>
-<p>meta.model_dump()
-{‘voltage’: {‘value’: 10.0, ‘units’: ‘kilovolt’}, ‘current’: None}</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-</section>
 <p>Pydantic integration for Pint Quantity objects.</p>
 <p>This module provides custom Pydantic types and validators for handling Pint Quantity
 objects in Pydantic models. It enables seamless validation and serialization of
@@ -539,16 +492,38 @@ physical quantities with units in NexusLIMS metadata schemas.</p>
 <li><p>JSON serialization for API/storage</p></li>
 <li><p>Type hints for IDE support</p></li>
 </ul>
+<p><strong>Examples:</strong></p>
+<p>Use in a Pydantic model:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas.pint_types</span><span class="w"> </span><span class="kn">import</span> <span class="n">PintQuantity</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas.units</span><span class="w"> </span><span class="kn">import</span> <span class="n">ureg</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span><span class="w"> </span><span class="nc">MyMetadata</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">voltage</span><span class="p">:</span> <span class="n">PintQuantity</span>
+<span class="gp">... </span>    <span class="n">current</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create from Quantity</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span> <span class="o">=</span> <span class="n">MyMetadata</span><span class="p">(</span><span class="n">voltage</span><span class="o">=</span><span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;kV&quot;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">meta</span><span class="o">.</span><span class="n">voltage</span><span class="p">)</span>
+<span class="go">10 kilovolt</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create from string</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span> <span class="o">=</span> <span class="n">MyMetadata</span><span class="p">(</span><span class="n">voltage</span><span class="o">=</span><span class="s2">&quot;10 kV&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">meta</span><span class="o">.</span><span class="n">voltage</span><span class="p">)</span>
+<span class="go">10 kilovolt</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Serialize to JSON</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span><span class="o">.</span><span class="n">model_dump</span><span class="p">()</span>
+<span class="go">{&#39;voltage&#39;: {&#39;value&#39;: 10.0, &#39;units&#39;: &#39;kilovolt&#39;}, &#39;current&#39;: None}</span>
+</pre></div>
+</div>
 <section id="module-contents">
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
 <section id="data">
 <h3>Data<a class="headerlink" href="#data" title="Link to this heading">#</a></h3>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table table-left">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.schemas.pint_types.logger" title="nexusLIMS.schemas.pint_types.logger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">logger</span></code></a></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.schemas.pint_types.PintQuantity" title="nexusLIMS.schemas.pint_types.PintQuantity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PintQuantity</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.schemas.pint_types.PintQuantity" title="nexusLIMS.schemas.pint_types.PintQuantity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PintQuantity</span></code></a></p></td>
 <td><p>Type alias for Pint Quantity fields in Pydantic models.</p></td>
 </tr>
 </tbody>
@@ -558,16 +533,9 @@ physical quantities with units in NexusLIMS metadata schemas.</p>
 <section id="api">
 <h3>API<a class="headerlink" href="#api" title="Link to this heading">#</a></h3>
 <dl class="py data">
-<dt class="sig sig-object py" id="nexusLIMS.schemas.pint_types.logger">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.schemas.pint_types.</span></span><span class="sig-name descname"><span class="pre">logger</span></span><a class="headerlink" href="#nexusLIMS.schemas.pint_types.logger" title="Link to this definition">#</a></dt>
-<dd><p>‘getLogger(…)’</p>
-</dd></dl>
-
-<dl class="py data">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.pint_types.PintQuantity">
 <span class="sig-prename descclassname"><span class="pre">nexusLIMS.schemas.pint_types.</span></span><span class="sig-name descname"><span class="pre">PintQuantity</span></span><a class="headerlink" href="#nexusLIMS.schemas.pint_types.PintQuantity" title="Link to this definition">#</a></dt>
-<dd><p>None</p>
-<p>Type alias for Pint Quantity fields in Pydantic models.</p>
+<dd><p>Type alias for Pint Quantity fields in Pydantic models.</p>
 <p>Use this type hint for fields that should accept and validate physical
 quantities with units. The field will accept:</p>
 <ul class="simple">
@@ -578,54 +546,56 @@ quantities with units. The field will accept:</p>
 <li><p>None (if field is optional)</p></li>
 </ul>
 <p>The field will serialize to JSON as a dict with ‘value’ and ‘units’ keys.</p>
-<p class="rubric" id="id3">Examples</p>
+<p><strong>Examples:</strong></p>
 <p>Define a model with Quantity fields:</p>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>from pydantic import BaseModel
-from nexusLIMS.schemas.pint_types import PintQuantity
-from nexusLIMS.schemas.units import ureg</p>
-<p>class ImageMetadata(BaseModel):
-…     voltage: PintQuantity
-…     working_distance: PintQuantity | None = None
-…</p>
-<p class="rubric" id="id4">Create from Quantity objects</p>
-<p>meta = ImageMetadata(
-…     voltage=ureg.Quantity(10, “kilovolt”),
-…     working_distance=ureg.Quantity(5.2, “millimeter”),
-… )</p>
-<p class="rubric" id="id5">Create from strings</p>
-<p>meta = ImageMetadata(voltage=”10 kV”, working_distance=”5.2 mm”)</p>
-<p class="rubric" id="id6">Serialize to JSON</p>
-<p>import json
-print(json.dumps(meta.model_dump(), indent=2))
-{
-“voltage”: {
-“value”: 10.0,
-“units”: “kilovolt”
-},
-“working_distance”: {
-“value”: 5.2,
-“units”: “millimeter”
-}
-}</p>
-<p class="rubric" id="id7">Deserialize from JSON</p>
-<p>json_data = ‘’’
-… {
-…   “voltage”: {“value”: 15.0, “units”: “kilovolt”},
-…   “working_distance”: {“value”: 10.0, “units”: “millimeter”}
-… }
-… ‘’’
-meta = ImageMetadata.model_validate_json(json_data)
-print(meta.voltage)
-15.0 kilovolt</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-<p class="rubric" id="id8">See Also</p>
-<p>nexusLIMS.schemas.units : Pint unit registry and utilities
-nexusLIMS.schemas.metadata : Metadata schemas using PintQuantity fields</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas.pint_types</span><span class="w"> </span><span class="kn">import</span> <span class="n">PintQuantity</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas.units</span><span class="w"> </span><span class="kn">import</span> <span class="n">ureg</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span><span class="w"> </span><span class="nc">ImageMetadata</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">voltage</span><span class="p">:</span> <span class="n">PintQuantity</span>
+<span class="gp">... </span>    <span class="n">working_distance</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create from Quantity objects</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span> <span class="o">=</span> <span class="n">ImageMetadata</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">voltage</span><span class="o">=</span><span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;kilovolt&quot;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">working_distance</span><span class="o">=</span><span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mf">5.2</span><span class="p">,</span> <span class="s2">&quot;millimeter&quot;</span><span class="p">),</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create from strings</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span> <span class="o">=</span> <span class="n">ImageMetadata</span><span class="p">(</span><span class="n">voltage</span><span class="o">=</span><span class="s2">&quot;10 kV&quot;</span><span class="p">,</span> <span class="n">working_distance</span><span class="o">=</span><span class="s2">&quot;5.2 mm&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Serialize to JSON</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">meta</span><span class="o">.</span><span class="n">model_dump</span><span class="p">(),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+<span class="go">{</span>
+<span class="go">  &quot;voltage&quot;: {</span>
+<span class="go">    &quot;value&quot;: 10.0,</span>
+<span class="go">    &quot;units&quot;: &quot;kilovolt&quot;</span>
+<span class="go">  },</span>
+<span class="go">  &quot;working_distance&quot;: {</span>
+<span class="go">    &quot;value&quot;: 5.2,</span>
+<span class="go">    &quot;units&quot;: &quot;millimeter&quot;</span>
+<span class="go">  }</span>
+<span class="go">}</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Deserialize from JSON</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">json_data</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span>
+<span class="gp">... </span><span class="s1">{</span>
+<span class="gp">... </span><span class="s1">  &quot;voltage&quot;: {&quot;value&quot;: 15.0, &quot;units&quot;: &quot;kilovolt&quot;},</span>
+<span class="gp">... </span><span class="s1">  &quot;working_distance&quot;: {&quot;value&quot;: 10.0, &quot;units&quot;: &quot;millimeter&quot;}</span>
+<span class="gp">... </span><span class="s1">}</span>
+<span class="gp">... </span><span class="s1">&#39;&#39;&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span> <span class="o">=</span> <span class="n">ImageMetadata</span><span class="o">.</span><span class="n">model_validate_json</span><span class="p">(</span><span class="n">json_data</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">meta</span><span class="o">.</span><span class="n">voltage</span><span class="p">)</span>
+<span class="go">15.0 kilovolt</span>
+</pre></div>
+</div>
+<p><strong>See Also:</strong>
+<a class="reference internal" href="nexusLIMS.schemas.units.html#module-nexusLIMS.schemas.units" title="nexusLIMS.schemas.units"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nexusLIMS.schemas.units</span></code></a>
+Pint unit registry and utilities</p>
+<p><a class="reference internal" href="nexusLIMS.schemas.metadata.html#module-nexusLIMS.schemas.metadata" title="nexusLIMS.schemas.metadata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nexusLIMS.schemas.metadata</span></code></a>
+Metadata schemas using PintQuantity fields</p>
 </dd></dl>
 
 </section>
@@ -679,11 +649,9 @@ nexusLIMS.schemas.metadata : Metadata schemas using PintQuantity fields</p>
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#examples">Examples</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data">Data</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#api">API</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.schemas.pint_types.logger"><code class="docutils literal notranslate"><span class="pre">logger</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.schemas.pint_types.PintQuantity"><code class="docutils literal notranslate"><span class="pre">PintQuantity</span></code></a></li>
 </ul>
 </li>

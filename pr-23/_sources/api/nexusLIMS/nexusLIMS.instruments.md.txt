@@ -4,6 +4,7 @@
 ```
 
 ```{autodoc2-docstring} nexusLIMS.instruments
+:parser: autodoc2_docstrings_parser
 :allowtitles:
 ```
 
@@ -17,6 +18,7 @@
 
 * - {py:obj}`Instrument <nexusLIMS.instruments.Instrument>`
   - ```{autodoc2-docstring} nexusLIMS.instruments.Instrument
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 ````
@@ -29,14 +31,17 @@
 
 * - {py:obj}`get_instr_from_filepath <nexusLIMS.instruments.get_instr_from_filepath>`
   - ```{autodoc2-docstring} nexusLIMS.instruments.get_instr_from_filepath
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`get_instr_from_calendar_name <nexusLIMS.instruments.get_instr_from_calendar_name>`
   - ```{autodoc2-docstring} nexusLIMS.instruments.get_instr_from_calendar_name
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`get_instr_from_api_url <nexusLIMS.instruments.get_instr_from_api_url>`
   - ```{autodoc2-docstring} nexusLIMS.instruments.get_instr_from_api_url
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 ````
@@ -47,173 +52,161 @@
 :class: autosummary longtable
 :align: left
 
-* - {py:obj}`logger <nexusLIMS.instruments.logger>`
-  - ```{autodoc2-docstring} nexusLIMS.instruments.logger
-    :summary:
-    ```
 * - {py:obj}`instrument_db <nexusLIMS.instruments.instrument_db>`
   - ```{autodoc2-docstring} nexusLIMS.instruments.instrument_db
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 ````
 
 ### API
 
-````{py:data} logger
-:canonical: nexusLIMS.instruments.logger
-:value: >
-   'getLogger(...)'
-
-```{autodoc2-docstring} nexusLIMS.instruments.logger
-```
-
-````
-
 `````{py:class} Instrument
 :canonical: nexusLIMS.instruments.Instrument
 
 ```{autodoc2-docstring} nexusLIMS.instruments.Instrument
+:parser: autodoc2_docstrings_parser
 ```
 
 ````{py:attribute} api_url
 :canonical: nexusLIMS.instruments.Instrument.api_url
-:type: str | None
-:value: >
-   None
+
+**Type:** str | None
 
 ```{autodoc2-docstring} nexusLIMS.instruments.Instrument.api_url
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} calendar_name
 :canonical: nexusLIMS.instruments.Instrument.calendar_name
-:type: str | None
-:value: >
-   None
+
+**Type:** str | None
 
 ```{autodoc2-docstring} nexusLIMS.instruments.Instrument.calendar_name
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} calendar_url
 :canonical: nexusLIMS.instruments.Instrument.calendar_url
-:type: str | None
-:value: >
-   None
+
+**Type:** str | None
 
 ```{autodoc2-docstring} nexusLIMS.instruments.Instrument.calendar_url
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} location
 :canonical: nexusLIMS.instruments.Instrument.location
-:type: str | None
-:value: >
-   None
+
+**Type:** str | None
 
 ```{autodoc2-docstring} nexusLIMS.instruments.Instrument.location
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} name
 :canonical: nexusLIMS.instruments.Instrument.name
-:type: str | None
-:value: >
-   None
+
+**Type:** str | None
 
 ```{autodoc2-docstring} nexusLIMS.instruments.Instrument.name
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} schema_name
 :canonical: nexusLIMS.instruments.Instrument.schema_name
-:type: str | None
-:value: >
-   None
+
+**Type:** str | None
 
 ```{autodoc2-docstring} nexusLIMS.instruments.Instrument.schema_name
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} property_tag
 :canonical: nexusLIMS.instruments.Instrument.property_tag
-:type: str | None
-:value: >
-   None
+
+**Type:** str | None
 
 ```{autodoc2-docstring} nexusLIMS.instruments.Instrument.property_tag
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} filestore_path
 :canonical: nexusLIMS.instruments.Instrument.filestore_path
-:type: str | None
-:value: >
-   None
+
+**Type:** str | None
 
 ```{autodoc2-docstring} nexusLIMS.instruments.Instrument.filestore_path
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} computer_ip
 :canonical: nexusLIMS.instruments.Instrument.computer_ip
-:type: str | None
-:value: >
-   None
+
+**Type:** str | None
 
 ```{autodoc2-docstring} nexusLIMS.instruments.Instrument.computer_ip
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} computer_name
 :canonical: nexusLIMS.instruments.Instrument.computer_name
-:type: str | None
-:value: >
-   None
+
+**Type:** str | None
 
 ```{autodoc2-docstring} nexusLIMS.instruments.Instrument.computer_name
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} computer_mount
 :canonical: nexusLIMS.instruments.Instrument.computer_mount
-:type: str | None
-:value: >
-   None
+
+**Type:** str | None
 
 ```{autodoc2-docstring} nexusLIMS.instruments.Instrument.computer_mount
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} harvester
 :canonical: nexusLIMS.instruments.Instrument.harvester
-:type: str | None
-:value: >
-   None
+
+**Type:** str | None
 
 ```{autodoc2-docstring} nexusLIMS.instruments.Instrument.harvester
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} timezone
 :canonical: nexusLIMS.instruments.Instrument.timezone
-:type: pytz.tzinfo.BaseTzInfo | None
-:value: >
-   None
+
+**Type:** pytz.tzinfo.BaseTzInfo | None
 
 ```{autodoc2-docstring} nexusLIMS.instruments.Instrument.timezone
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -222,6 +215,7 @@
 :canonical: nexusLIMS.instruments.Instrument.localize_datetime
 
 ```{autodoc2-docstring} nexusLIMS.instruments.Instrument.localize_datetime
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -230,6 +224,7 @@
 :canonical: nexusLIMS.instruments.Instrument.localize_datetime_str
 
 ```{autodoc2-docstring} nexusLIMS.instruments.Instrument.localize_datetime_str
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -238,6 +233,7 @@
 :canonical: nexusLIMS.instruments.Instrument.to_dict
 
 ```{autodoc2-docstring} nexusLIMS.instruments.Instrument.to_dict
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -246,6 +242,7 @@
 :canonical: nexusLIMS.instruments.Instrument.to_json
 
 ```{autodoc2-docstring} nexusLIMS.instruments.Instrument.to_json
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -258,6 +255,7 @@
    '_get_instrument_db(...)'
 
 ```{autodoc2-docstring} nexusLIMS.instruments.instrument_db
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -266,6 +264,7 @@
 :canonical: nexusLIMS.instruments.get_instr_from_filepath
 
 ```{autodoc2-docstring} nexusLIMS.instruments.get_instr_from_filepath
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -273,6 +272,7 @@
 :canonical: nexusLIMS.instruments.get_instr_from_calendar_name
 
 ```{autodoc2-docstring} nexusLIMS.instruments.get_instr_from_calendar_name
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -280,5 +280,6 @@
 :canonical: nexusLIMS.instruments.get_instr_from_api_url
 
 ```{autodoc2-docstring} nexusLIMS.instruments.get_instr_from_api_url
+:parser: autodoc2_docstrings_parser
 ```
 ````

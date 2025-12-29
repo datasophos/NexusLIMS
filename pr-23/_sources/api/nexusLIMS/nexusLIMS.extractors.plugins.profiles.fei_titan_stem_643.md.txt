@@ -4,6 +4,7 @@
 ```
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643
+:parser: autodoc2_docstrings_parser
 :allowtitles:
 ```
 
@@ -17,10 +18,12 @@
 
 * - {py:obj}`add_metadata_warnings <nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643.add_metadata_warnings>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643.add_metadata_warnings
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`detect_eftem_diffraction <nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643.detect_eftem_diffraction>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643.detect_eftem_diffraction
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 ````
@@ -31,32 +34,20 @@
 :class: autosummary longtable
 :align: left
 
-* - {py:obj}`logger <nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643.logger>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643.logger
-    :summary:
-    ```
 * - {py:obj}`fei_titan_stem_643_profile <nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643.fei_titan_stem_643_profile>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643.fei_titan_stem_643_profile
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 ````
 
 ### API
 
-````{py:data} logger
-:canonical: nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643.logger
-:value: >
-   'getLogger(...)'
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643.logger
-```
-
-````
-
 ````{py:function} add_metadata_warnings(metadata: dict[str, typing.Any], context: nexusLIMS.extractors.base.ExtractionContext) -> dict[str, typing.Any]
 :canonical: nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643.add_metadata_warnings
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643.add_metadata_warnings
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -64,6 +55,7 @@
 :canonical: nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643.detect_eftem_diffraction
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643.detect_eftem_diffraction
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -73,6 +65,7 @@
    'InstrumentProfile(...)'
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643.fei_titan_stem_643_profile
+:parser: autodoc2_docstrings_parser
 ```
 
 ````

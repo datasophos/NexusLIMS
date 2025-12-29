@@ -32,8 +32,9 @@
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=af02a5b6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=8633d6cc" />
   
   <!-- So that users can add custom icons -->
   <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -44,6 +45,8 @@
     <script src="../../_static/documentation_options.js?v=dc4a309c"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=30646c52"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'api/nexusLIMS/nexusLIMS.schemas.metadata';</script>
     <script>
@@ -53,6 +56,7 @@
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
+    <script src="../../_static/custom.js?v=ba087cdf"></script>
     <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/pr-23/api/nexusLIMS/nexusLIMS.schemas.metadata.html" />
     <link rel="icon" href="../../_static/nexusLIMS_bare_logo.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -62,7 +66,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.2.0.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 28, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 29, 2025"/>
   </head>
   
   
@@ -172,20 +176,6 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../getting_started.html">
-    Getting Started
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../migration.html">
-    Migration Guide: v1 to v2
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../user_guide.html">
     User Guide
   </a>
@@ -193,28 +183,25 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../dev_guide.html">
-    Developer Guide
+  <a class="nav-link nav-internal" href="../../migration.html">
+    Migration Guide: v1.4.3 to v2.2.0
   </a>
 </li>
 
-            <li class="nav-item dropdown">
-                <button class="btn dropdown-toggle nav-item" type="button"
-                data-bs-toggle="dropdown" aria-expanded="false"
-                aria-controls="pst-nav-more-links">
-                    More
-                </button>
-                <ul id="pst-nav-more-links" class="dropdown-menu">
-                    
-<li class=" current active">
-  <a class="nav-link dropdown-item nav-internal" href="../../reference.html">
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../dev_guide.html">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../reference.html">
     Reference
   </a>
 </li>
 
-                </ul>
-            </li>
-            
   </ul>
 </nav></div>
       
@@ -311,20 +298,6 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../getting_started.html">
-    Getting Started
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../migration.html">
-    Migration Guide: v1 to v2
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../user_guide.html">
     User Guide
   </a>
@@ -332,8 +305,15 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../migration.html">
+    Migration Guide: v1.4.3 to v2.2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../dev_guide.html">
-    Developer Guide
+    Dev Guide
   </a>
 </li>
 
@@ -406,7 +386,7 @@
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../api.html">API documentation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../reference/api.html">API documentation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="nexusLIMS.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS</span></code></a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.db.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.db</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.builder.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.builder</span></code></a></li>
@@ -429,7 +409,7 @@
 </details></li>
 </ul>
 </details></li>
-<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/changelog.html">Changelog</a></li>
 </ul>
 </div>
 </nav></div>
@@ -474,7 +454,7 @@
     <li class="breadcrumb-item"><a href="../../reference.html" class="nav-link">Reference</a></li>
     
     
-    <li class="breadcrumb-item"><a href="../../api.html" class="nav-link">API documentation</a></li>
+    <li class="breadcrumb-item"><a href="../../reference/api.html" class="nav-link">API documentation</a></li>
     
     
     <li class="breadcrumb-item"><a href="nexusLIMS.html" class="nav-link"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS</span></code></a></li>
@@ -501,60 +481,6 @@
                   
   <section id="module-nexusLIMS.schemas.metadata">
 <span id="nexuslims-schemas-metadata"></span><h1><a class="reference internal" href="#module-nexusLIMS.schemas.metadata" title="nexusLIMS.schemas.metadata"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.schemas.metadata</span></code></a><a class="headerlink" href="#module-nexusLIMS.schemas.metadata" title="Link to this heading">#</a></h1>
-<section id="examples">
-<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading">#</a></h2>
-<p>Validate SEM image metadata:</p>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>from nexusLIMS.schemas.metadata import ImageMetadata
-from nexusLIMS.schemas.units import ureg</p>
-<p>meta = ImageMetadata(
-…     creation_time=”2024-01-15T10:30:00-05:00”,
-…     data_type=”SEM_Imaging”,
-…     dataset_type=”Image”,
-…     acceleration_voltage=ureg.Quantity(10, “kilovolt”),
-…     working_distance=ureg.Quantity(10, “millimeter”),
-…     beam_current=ureg.Quantity(100, “picoampere”),
-… )
-print(meta.acceleration_voltage)
-10.0 kilovolt</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-<p>Validate spectrum metadata:</p>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>from nexusLIMS.schemas.metadata import SpectrumMetadata</p>
-<p>spec_meta = SpectrumMetadata(
-…     creation_time=”2024-01-15T10:30:00-05:00”,
-…     data_type=”EDS_Spectrum”,
-…     dataset_type=”Spectrum”,
-…     acquisition_time=ureg.Quantity(30, “second”),
-…     live_time=ureg.Quantity(28.5, “second”),
-… )</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-<p>Use extensions for instrument-specific fields:</p>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>meta_with_ext = ImageMetadata(
-…     creation_time=”2024-01-15T10:30:00-05:00”,
-…     data_type=”SEM_Imaging”,
-…     dataset_type=”Image”,
-…     extensions={
-…         “facility”: “Nexus Microscopy Center”,
-…         “detector_brightness”: 50.0,
-…         “scan_speed”: 6,
-…     }
-… )</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-</section>
 <p>Type-specific metadata schemas for NexusLIMS extractor plugins.</p>
 <p>This module defines Pydantic models for validating metadata extracted from different
 types of microscopy data (Image, Spectrum, SpectrumImage, Diffraction). Each schema
@@ -562,19 +488,68 @@ uses Pint Quantity objects for physical measurements, EM Glossary field names, a
 supports flexible extension fields.</p>
 <p>The schemas follow a hierarchical structure:</p>
 <ul class="simple">
-<li><p>:class:<code class="docutils literal notranslate"><span class="pre">NexusMetadata</span></code> - Base schema with common fields</p></li>
-<li><p>:class:<code class="docutils literal notranslate"><span class="pre">ImageMetadata</span></code> - SEM/TEM/STEM image data</p></li>
-<li><p>:class:<code class="docutils literal notranslate"><span class="pre">SpectrumMetadata</span></code> - EDS/EELS spectral data</p></li>
-<li><p>:class:<code class="docutils literal notranslate"><span class="pre">SpectrumImageMetadata</span></code> - Hyperspectral data (inherits from both)</p></li>
-<li><p>:class:<code class="docutils literal notranslate"><span class="pre">DiffractionMetadata</span></code> - Diffraction pattern data</p></li>
+<li><p><a class="reference internal" href="#nexusLIMS.schemas.metadata.NexusMetadata" title="nexusLIMS.schemas.metadata.NexusMetadata"><code class="xref py py-class docutils literal notranslate"><span class="pre">NexusMetadata</span></code></a> - Base schema with common fields</p></li>
+<li><p><a class="reference internal" href="#nexusLIMS.schemas.metadata.ImageMetadata" title="nexusLIMS.schemas.metadata.ImageMetadata"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImageMetadata</span></code></a> - SEM/TEM/STEM image data</p></li>
+<li><p><a class="reference internal" href="#nexusLIMS.schemas.metadata.SpectrumMetadata" title="nexusLIMS.schemas.metadata.SpectrumMetadata"><code class="xref py py-class docutils literal notranslate"><span class="pre">SpectrumMetadata</span></code></a> - EDS/EELS spectral data</p></li>
+<li><p><a class="reference internal" href="#nexusLIMS.schemas.metadata.SpectrumImageMetadata" title="nexusLIMS.schemas.metadata.SpectrumImageMetadata"><code class="xref py py-class docutils literal notranslate"><span class="pre">SpectrumImageMetadata</span></code></a> - Hyperspectral data (inherits from both)</p></li>
+<li><p><a class="reference internal" href="#nexusLIMS.schemas.metadata.DiffractionMetadata" title="nexusLIMS.schemas.metadata.DiffractionMetadata"><code class="xref py py-class docutils literal notranslate"><span class="pre">DiffractionMetadata</span></code></a> - Diffraction pattern data</p></li>
 </ul>
 <p><strong>Key Features:</strong></p>
 <ul class="simple">
 <li><p>Pint Quantity fields for machine-actionable units</p></li>
-<li><p>EM Glossary v2.0.0 terminology</p></li>
+<li><p>EM Glossary v2.0.0 terminology (see <a class="reference internal" href="../../dev_guide/em_glossary_reference.html"><span class="doc">EM Glossary Field Reference</span></a>)</p></li>
 <li><p>Automatic unit normalization to preferred units</p></li>
 <li><p>Flexible extensions section for instrument-specific metadata</p></li>
 <li><p>Strict validation of core fields</p></li>
+</ul>
+<p><strong>Examples:</strong></p>
+<p>Validate SEM image metadata:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas.metadata</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImageMetadata</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas.units</span><span class="w"> </span><span class="kn">import</span> <span class="n">ureg</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span> <span class="o">=</span> <span class="n">ImageMetadata</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">creation_time</span><span class="o">=</span><span class="s2">&quot;2024-01-15T10:30:00-05:00&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">data_type</span><span class="o">=</span><span class="s2">&quot;SEM_Imaging&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">dataset_type</span><span class="o">=</span><span class="s2">&quot;Image&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">acceleration_voltage</span><span class="o">=</span><span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;kilovolt&quot;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">working_distance</span><span class="o">=</span><span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;millimeter&quot;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">beam_current</span><span class="o">=</span><span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="s2">&quot;picoampere&quot;</span><span class="p">),</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">meta</span><span class="o">.</span><span class="n">acceleration_voltage</span><span class="p">)</span>
+<span class="go">10.0 kilovolt</span>
+</pre></div>
+</div>
+<p>Validate spectrum metadata:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas.metadata</span><span class="w"> </span><span class="kn">import</span> <span class="n">SpectrumMetadata</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">spec_meta</span> <span class="o">=</span> <span class="n">SpectrumMetadata</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">creation_time</span><span class="o">=</span><span class="s2">&quot;2024-01-15T10:30:00-05:00&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">data_type</span><span class="o">=</span><span class="s2">&quot;EDS_Spectrum&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">dataset_type</span><span class="o">=</span><span class="s2">&quot;Spectrum&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">acquisition_time</span><span class="o">=</span><span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="s2">&quot;second&quot;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">live_time</span><span class="o">=</span><span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mf">28.5</span><span class="p">,</span> <span class="s2">&quot;second&quot;</span><span class="p">),</span>
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Use extensions for instrument-specific fields:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">meta_with_ext</span> <span class="o">=</span> <span class="n">ImageMetadata</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">creation_time</span><span class="o">=</span><span class="s2">&quot;2024-01-15T10:30:00-05:00&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">data_type</span><span class="o">=</span><span class="s2">&quot;SEM_Imaging&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">dataset_type</span><span class="o">=</span><span class="s2">&quot;Image&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">extensions</span><span class="o">=</span><span class="p">{</span>
+<span class="gp">... </span>        <span class="s2">&quot;facility&quot;</span><span class="p">:</span> <span class="s2">&quot;Nexus Microscopy Center&quot;</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="s2">&quot;detector_brightness&quot;</span><span class="p">:</span> <span class="mf">50.0</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="s2">&quot;scan_speed&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="p">}</span>
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For detailed documentation on the metadata schema system, see:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../../dev_guide/nexuslims_internal_schema.html"><span class="doc">Internal Metadata Schema System</span></a> - Schema architecture,
+migration guide, and usage examples</p></li>
+<li><p><a class="reference internal" href="../../dev_guide/em_glossary_reference.html"><span class="doc">EM Glossary Field Reference</span></a> - Complete EM Glossary field
+reference and mapping tables</p></li>
 </ul>
 <section id="module-contents">
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
@@ -618,92 +593,72 @@ supports flexible extension fields.</p>
 </table>
 </div>
 </section>
-<section id="data">
-<h3>Data<a class="headerlink" href="#data" title="Link to this heading">#</a></h3>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table table-left">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.schemas.metadata.logger" title="nexusLIMS.schemas.metadata.logger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">logger</span></code></a></p></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-</div>
-</section>
 <section id="api">
 <h3>API<a class="headerlink" href="#api" title="Link to this heading">#</a></h3>
-<dl class="py data">
-<dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.logger">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.schemas.metadata.</span></span><span class="sig-name descname"><span class="pre">logger</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.logger" title="Link to this definition">#</a></dt>
-<dd><p>‘getLogger(…)’</p>
-</dd></dl>
-
 <dl class="py function">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.emg_field">
 <span class="sig-prename descclassname"><span class="pre">nexusLIMS.schemas.metadata.</span></span><span class="sig-name descname"><span class="pre">emg_field</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/schemas/metadata.html#emg_field"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.schemas.metadata.emg_field" title="Link to this definition">#</a></dt>
 <dd><p>Create a Pydantic Field with EM Glossary metadata.</p>
 <p>This helper automatically adds EM Glossary semantic annotations to field
 definitions, including EMG ID, URI, and label. It pulls metadata from the
-em_glossary module to maintain a single source of truth.</p>
-<p class="rubric" id="id15">Parameters</p>
-<p>field_name : str
-Internal field name (e.g., “acceleration_voltage”). Used to look up
-EMG metadata from em_glossary module.</p>
-<p>default : Any, optional
-Default value for the field. Use <code class="docutils literal notranslate"><span class="pre">...</span></code> for required fields, <code class="docutils literal notranslate"><span class="pre">None</span></code>
-for optional fields.</p>
-<p>description : str, optional
-Field description. If not provided, uses description from em_glossary
-module.</p>
-<p>**kwargs : Any
-Additional keyword arguments passed to pydantic.Field(), such as:
-- alias: Override display name (default from em_glossary)
-- gt, ge, lt, le: Numeric constraints
-- examples: Example values for documentation
-- json_schema_extra: Additional JSON schema metadata (merged with EMG data)</p>
-<p class="rubric" id="id16">Returns</p>
-<p>pydantic.Field
-Configured Pydantic field with EMG metadata</p>
-<p class="rubric" id="id17">Examples</p>
+<a class="reference internal" href="nexusLIMS.schemas.em_glossary.html#module-nexusLIMS.schemas.em_glossary" title="nexusLIMS.schemas.em_glossary"><code class="xref py py-mod docutils literal notranslate"><span class="pre">em_glossary</span></code></a> module to maintain a single source
+of truth.</p>
+<dl class="myst field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>field_name</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Internal field name (e.g., “acceleration_voltage”). Used to look up
+EMG metadata from <a class="reference internal" href="nexusLIMS.schemas.em_glossary.html#module-nexusLIMS.schemas.em_glossary" title="nexusLIMS.schemas.em_glossary"><code class="xref py py-mod docutils literal notranslate"><span class="pre">em_glossary</span></code></a> module.</p></li>
+<li><p><strong>default</strong> (<em>Any</em><em>, </em><em>optional</em>) – Default value for the field. Use <code class="docutils literal notranslate"><span class="pre">...</span></code> for required fields, <code class="docutils literal notranslate"><span class="pre">None</span></code>
+for optional fields.</p></li>
+<li><p><strong>description</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – Field description. If not provided, uses description from
+<a class="reference internal" href="nexusLIMS.schemas.em_glossary.html#module-nexusLIMS.schemas.em_glossary" title="nexusLIMS.schemas.em_glossary"><code class="xref py py-mod docutils literal notranslate"><span class="pre">em_glossary</span></code></a> module.</p></li>
+<li><p><strong>**kwargs</strong> (<em>Any</em>) – <p>Additional keyword arguments passed to <a class="reference external" href="https://docs.pydantic.dev/latest/api/fields/#pydantic.fields.Field" title="(in Pydantic Validation v0.0.0)"><code class="xref py py-func docutils literal notranslate"><span class="pre">pydantic.fields.Field()</span></code></a>, such as:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">alias</span></code>: Override display name (default from em_glossary)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gt</span></code>, <code class="docutils literal notranslate"><span class="pre">ge</span></code>, <code class="docutils literal notranslate"><span class="pre">lt</span></code>, <code class="docutils literal notranslate"><span class="pre">le</span></code>: Numeric constraints</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">examples</span></code>: Example values for documentation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">json_schema_extra</span></code>: Additional JSON schema metadata (merged with EMG data)</p></li>
+</ul>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Configured Pydantic field with EMG metadata</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.pydantic.dev/latest/api/fields/#pydantic.fields.FieldInfo" title="(in Pydantic Validation v0.0.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.fields.FieldInfo</span></code></a></p>
+</dd>
+</dl>
+<p><strong>Examples:</strong></p>
 <p>Create a field with automatic EMG metadata:</p>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>from nexusLIMS.schemas.metadata import emg_field
-from nexusLIMS.schemas.pint_types import PintQuantity</p>
-<p>class MySchema(BaseModel):
-…     dwell_time: PintQuantity | None = emg_field(“dwell_time”)</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas.metadata</span><span class="w"> </span><span class="kn">import</span> <span class="n">emg_field</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas.pint_types</span><span class="w"> </span><span class="kn">import</span> <span class="n">PintQuantity</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span><span class="w"> </span><span class="nc">MySchema</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">dwell_time</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;dwell_time&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
 <p>The field automatically gets:</p>
 <ul class="simple">
-<li><p>alias: “Dwell Time” (display name)</p></li>
-<li><p>description: “Time period during which the beam remains at one position.”</p></li>
-<li><p>json_schema_extra: {“emg_id”: “EMG_00000015”, “emg_uri”: “…”, …}</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">alias</span></code>: “Dwell Time” (display name)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">description</span></code>: “Time period during which the beam remains at one position.”</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">json_schema_extra</span></code>: <code class="docutils literal notranslate"><span class="pre">{&quot;emg_id&quot;:</span> <span class="pre">&quot;EMG_00000015&quot;,</span> <span class="pre">&quot;emg_uri&quot;:</span> <span class="pre">&quot;...&quot;,</span> <span class="pre">...}</span></code></p></li>
 </ul>
 <p>Override description:</p>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>acceleration_voltage: PintQuantity | None = emg_field(
-…     “dwell_time”,
-…     description=”Custom description”,
-… )</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">acceleration_voltage</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="s2">&quot;dwell_time&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Custom description&quot;</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
 <p>Add additional JSON schema metadata:</p>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>beam_current: PintQuantity | None = emg_field(
-…     “beam_current”,
-…     json_schema_extra={“units”: “second”, “typical_range”: “1e-3 to 1”},
-… )</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-<p class="rubric" id="id18">Notes</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">beam_current</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="s2">&quot;beam_current&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">json_schema_extra</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;units&quot;</span><span class="p">:</span> <span class="s2">&quot;second&quot;</span><span class="p">,</span> <span class="s2">&quot;typical_range&quot;</span><span class="p">:</span> <span class="s2">&quot;1e-3 to 1&quot;</span><span class="p">},</span>
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Notes:</strong></p>
 <ul class="simple">
 <li><p>Fields without EMG mappings still get display names and descriptions</p></li>
 <li><p>EMG metadata is only added if the field has a valid EMG ID</p></li>
@@ -719,49 +674,45 @@ from nexusLIMS.schemas.pint_types import PintQuantity</p>
 <p>Metadata about the NexusLIMS extraction process.</p>
 <p>Records when metadata was extracted, which extractor module was used,
 and the NexusLIMS version.</p>
-<p class="rubric" id="id19">Attributes</p>
-<p>date : str
-ISO-8601 formatted timestamp with timezone indicating when the
-metadata extraction occurred.</p>
-<p>module : str
-Fully qualified Python module name of the extractor that processed
-this file. Examples: “nexusLIMS.extractors.plugins.digital_micrograph”,
-“nexusLIMS.extractors.plugins.quanta_tif”</p>
-<p>version : str
-NexusLIMS version string used for extraction. Example: “1.2.3”</p>
-<p class="rubric">Initialization</p>
-<p>Create a new model by parsing and validating input data from keyword arguments.</p>
-<p>Raises [<code class="docutils literal notranslate"><span class="pre">ValidationError</span></code>][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.</p>
-<p><code class="docutils literal notranslate"><span class="pre">self</span></code> is explicitly positional-only to allow <code class="docutils literal notranslate"><span class="pre">self</span></code> as a field name.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.ExtractionDetails.date">
-<span class="sig-name descname"><span class="pre">date</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></em><a class="headerlink" href="#nexusLIMS.schemas.metadata.ExtractionDetails.date" title="Link to this definition">#</a></dt>
-<dd><p>‘Field(…)’</p>
+<span class="sig-name descname"><span class="pre">date</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.ExtractionDetails.date" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> str</p>
+<p>ISO-8601 formatted timestamp with timezone indicating when the
+metadata extraction occurred.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.ExtractionDetails.module">
-<span class="sig-name descname"><span class="pre">module</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></em><a class="headerlink" href="#nexusLIMS.schemas.metadata.ExtractionDetails.module" title="Link to this definition">#</a></dt>
-<dd><p>‘Field(…)’</p>
+<span class="sig-name descname"><span class="pre">module</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.ExtractionDetails.module" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> str</p>
+<p>Fully qualified Python module name of the extractor that processed
+this file. Examples: <code class="docutils literal notranslate"><span class="pre">'nexusLIMS.extractors.plugins.digital_micrograph'</span></code>,
+<code class="docutils literal notranslate"><span class="pre">'nexusLIMS.extractors.plugins.quanta_tif'</span></code></p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.ExtractionDetails.version">
-<span class="sig-name descname"><span class="pre">version</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></em><a class="headerlink" href="#nexusLIMS.schemas.metadata.ExtractionDetails.version" title="Link to this definition">#</a></dt>
-<dd><p>‘Field(…)’</p>
+<span class="sig-name descname"><span class="pre">version</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.ExtractionDetails.version" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> str</p>
+<p>NexusLIMS version string used for extraction. Example: <code class="docutils literal notranslate"><span class="pre">'1.2.3'</span></code></p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.ExtractionDetails.extractor_warnings">
-<span class="sig-name descname"><span class="pre">extractor_warnings</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.schemas.metadata.ExtractionDetails.extractor_warnings" title="Link to this definition">#</a></dt>
-<dd><p>‘Field(…)’</p>
+<span class="sig-name descname"><span class="pre">extractor_warnings</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.ExtractionDetails.extractor_warnings" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> str | None</p>
+<p>Warning or error messages from the extraction process</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.ExtractionDetails.model_config">
 <span class="sig-name descname"><span class="pre">model_config</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.ExtractionDetails.model_config" title="Link to this definition">#</a></dt>
-<dd><p>None</p>
+<dd><p><strong>Type:</strong> dict</p>
+<p>Pydantic model configuration:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">populate_by_name:</span> <span class="pre">True</span></code> – Accept both Python field names and JSON aliases</p></li>
+</ul>
 </dd></dl>
 
 </dd></dl>
@@ -772,89 +723,77 @@ validated to form a valid model.</p>
 <dd><p>Bases: <a class="reference external" href="https://docs.pydantic.dev/latest/api/base_model/#pydantic.BaseModel" title="(in Pydantic Validation v0.0.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pydantic.BaseModel</span></code></a></p>
 <p>Stage position with coordinates and tilt angles.</p>
 <p>Represents the physical position and orientation of the microscope stage.
-All fields use Pint Quantity objects with appropriate units.</p>
-<p class="rubric" id="id20">Attributes</p>
-<p>x : PintQuantity or None, optional
-Stage X coordinate. Preferred unit: micrometer (µm)</p>
-<p>y : PintQuantity or None, optional
-Stage Y coordinate. Preferred unit: micrometer (µm)</p>
-<p>z : PintQuantity or None, optional
-Stage Z coordinate (height). Preferred unit: millimeter (mm)</p>
-<p>rotation : PintQuantity or None, optional
-Stage rotation angle around Z axis. Preferred unit: degree (°)</p>
-<p>tilt_alpha : PintQuantity or None, optional
-Tilt angle along the stage’s primary tilt axis (alpha).
-Preferred unit: degree (°)</p>
-<p>tilt_beta : PintQuantity or None, optional
-Tilt angle along the stage’s secondary tilt axis (beta), if the stage
-is capable of dual-axis tilting. Preferred unit: degree (°)</p>
-<p class="rubric" id="id21">Examples</p>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>from nexusLIMS.schemas.metadata import StagePosition
-from nexusLIMS.schemas.units import ureg</p>
-<p>pos = StagePosition(
-…     x=ureg.Quantity(100, “um”),
-…     y=ureg.Quantity(200, “um”),
-…     z=ureg.Quantity(5, “mm”),
-…     tilt_alpha=ureg.Quantity(10, “degree”),
-… )
-print(pos.x)
-100 micrometer</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-<p class="rubric" id="id22">Notes</p>
-<p>All fields are optional to accommodate different stage configurations.
-Some microscopes may not have all degrees of freedom. Single-tilt stages
+All fields use Pint Quantity objects with appropriate units and are optional
+to accommodate different stage configurations.</p>
+<p><strong>Examples:</strong></p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas.metadata</span><span class="w"> </span><span class="kn">import</span> <span class="n">StagePosition</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas.units</span><span class="w"> </span><span class="kn">import</span> <span class="n">ureg</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pos</span> <span class="o">=</span> <span class="n">StagePosition</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">x</span><span class="o">=</span><span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="s2">&quot;um&quot;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">y</span><span class="o">=</span><span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="s2">&quot;um&quot;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">z</span><span class="o">=</span><span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;mm&quot;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">tilt_alpha</span><span class="o">=</span><span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">),</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">pos</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+<span class="go">100 micrometer</span>
+</pre></div>
+</div>
+<p><strong>Notes:</strong></p>
+<p>Some microscopes may not have all degrees of freedom. Single-tilt stages
 will only have tilt_alpha, while dual-tilt stages (e.g., tomography holders)
 will have both tilt_alpha and tilt_beta.</p>
-<p class="rubric">Initialization</p>
-<p>Create a new model by parsing and validating input data from keyword arguments.</p>
-<p>Raises [<code class="docutils literal notranslate"><span class="pre">ValidationError</span></code>][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.</p>
-<p><code class="docutils literal notranslate"><span class="pre">self</span></code> is explicitly positional-only to allow <code class="docutils literal notranslate"><span class="pre">self</span></code> as a field name.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.StagePosition.x">
-<span class="sig-name descname"><span class="pre">x</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">nexusLIMS.schemas.pint_types.PintQuantity</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.schemas.metadata.StagePosition.x" title="Link to this definition">#</a></dt>
-<dd><p>‘Field(…)’</p>
+<span class="sig-name descname"><span class="pre">x</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.StagePosition.x" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> <a class="reference internal" href="nexusLIMS.schemas.pint_types.html#nexusLIMS.schemas.pint_types.PintQuantity" title="nexusLIMS.schemas.pint_types.PintQuantity"><code class="xref py py-data docutils literal notranslate"><span class="pre">PintQuantity</span></code></a> | None</p>
+<p>Stage X coordinate. Preferred unit: micrometer (µm)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.StagePosition.y">
-<span class="sig-name descname"><span class="pre">y</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">nexusLIMS.schemas.pint_types.PintQuantity</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.schemas.metadata.StagePosition.y" title="Link to this definition">#</a></dt>
-<dd><p>‘Field(…)’</p>
+<span class="sig-name descname"><span class="pre">y</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.StagePosition.y" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> <a class="reference internal" href="nexusLIMS.schemas.pint_types.html#nexusLIMS.schemas.pint_types.PintQuantity" title="nexusLIMS.schemas.pint_types.PintQuantity"><code class="xref py py-data docutils literal notranslate"><span class="pre">PintQuantity</span></code></a> | None</p>
+<p>Stage Y coordinate. Preferred unit: micrometer (µm)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.StagePosition.z">
-<span class="sig-name descname"><span class="pre">z</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">nexusLIMS.schemas.pint_types.PintQuantity</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.schemas.metadata.StagePosition.z" title="Link to this definition">#</a></dt>
-<dd><p>‘Field(…)’</p>
+<span class="sig-name descname"><span class="pre">z</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.StagePosition.z" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> <a class="reference internal" href="nexusLIMS.schemas.pint_types.html#nexusLIMS.schemas.pint_types.PintQuantity" title="nexusLIMS.schemas.pint_types.PintQuantity"><code class="xref py py-data docutils literal notranslate"><span class="pre">PintQuantity</span></code></a> | None</p>
+<p>Stage Z coordinate (height). Preferred unit: millimeter (mm)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.StagePosition.rotation">
-<span class="sig-name descname"><span class="pre">rotation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">nexusLIMS.schemas.pint_types.PintQuantity</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.schemas.metadata.StagePosition.rotation" title="Link to this definition">#</a></dt>
-<dd><p>‘Field(…)’</p>
+<span class="sig-name descname"><span class="pre">rotation</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.StagePosition.rotation" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> <a class="reference internal" href="nexusLIMS.schemas.pint_types.html#nexusLIMS.schemas.pint_types.PintQuantity" title="nexusLIMS.schemas.pint_types.PintQuantity"><code class="xref py py-data docutils literal notranslate"><span class="pre">PintQuantity</span></code></a> | None</p>
+<p>Stage rotation angle around Z axis. Preferred unit: degree (°)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.StagePosition.tilt_alpha">
-<span class="sig-name descname"><span class="pre">tilt_alpha</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">nexusLIMS.schemas.pint_types.PintQuantity</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.schemas.metadata.StagePosition.tilt_alpha" title="Link to this definition">#</a></dt>
-<dd><p>‘Field(…)’</p>
+<span class="sig-name descname"><span class="pre">tilt_alpha</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.StagePosition.tilt_alpha" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> <a class="reference internal" href="nexusLIMS.schemas.pint_types.html#nexusLIMS.schemas.pint_types.PintQuantity" title="nexusLIMS.schemas.pint_types.PintQuantity"><code class="xref py py-data docutils literal notranslate"><span class="pre">PintQuantity</span></code></a> | None</p>
+<p>Tilt angle along the stage’s primary tilt axis (alpha).
+Preferred unit: degree (°)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.StagePosition.tilt_beta">
-<span class="sig-name descname"><span class="pre">tilt_beta</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">nexusLIMS.schemas.pint_types.PintQuantity</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.schemas.metadata.StagePosition.tilt_beta" title="Link to this definition">#</a></dt>
-<dd><p>‘Field(…)’</p>
+<span class="sig-name descname"><span class="pre">tilt_beta</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.StagePosition.tilt_beta" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> <a class="reference internal" href="nexusLIMS.schemas.pint_types.html#nexusLIMS.schemas.pint_types.PintQuantity" title="nexusLIMS.schemas.pint_types.PintQuantity"><code class="xref py py-data docutils literal notranslate"><span class="pre">PintQuantity</span></code></a> | None</p>
+<p>Tilt angle along the stage’s secondary tilt axis (beta), if the stage
+is capable of dual-axis tilting. Preferred unit: degree (°)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.StagePosition.model_config">
 <span class="sig-name descname"><span class="pre">model_config</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.StagePosition.model_config" title="Link to this definition">#</a></dt>
-<dd><p>None</p>
+<dd><p>Pydantic model configuration:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">extra:</span> <span class="pre">&quot;allow&quot;</span></code> – Allow additional vendor-specific stage positions</p></li>
+</ul>
 </dd></dl>
 
 </dd></dl>
@@ -867,37 +806,7 @@ validated to form a valid model.</p>
 <p>This is the foundation schema that all type-specific schemas inherit from.
 It defines the required fields common to all dataset types and provides
 the extension mechanism for instrument-specific metadata.</p>
-<p class="rubric" id="id23">Attributes</p>
-<p>creation_time : str
-ISO-8601 formatted timestamp with timezone indicating when the data
-was acquired. Must include timezone offset (+00:00, -05:00) or ‘Z’.</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Examples: &quot;2024-01-15T10:30:00-05:00&quot;, &quot;2024-01-15T15:30:00Z&quot;
-</pre></div>
-</div>
-<p>data_type : str
-Human-readable description of the data type using underscore-separated
-components. Examples: “STEM_Imaging”, “TEM_EDS”, “SEM_Imaging”</p>
-<p>dataset_type : Literal[“Image”, “Spectrum”, “SpectrumImage”, “Diffraction”,
-“Misc”, “Unknown”]
-Schema-defined category matching the Nexus Experiment XML schema type
-attribute.</p>
-<p>data_dimensions : str or None, optional
-String representation of data shape as a tuple.
-Examples: “(1024, 1024)”, “(2048,)”, “(12, 1024, 1024)”</p>
-<p>instrument_id : str or None, optional
-NexusLIMS persistent identifier for the instrument.
-Examples: “FEI-Titan-TEM-635816”, “Quanta-FEG-650-SEM-555555”</p>
-<p>warnings : list[str | list[str]], optional
-Field names flagged as unreliable. These are marked with warning=”true”
-in the XML output.</p>
-<p>nexuslims_extraction : ExtractionDetails or None, optional
-NexusLIMS extraction metadata containing date, module, and version
-information about when and how the metadata was extracted.</p>
-<p>extensions : dict[str, Any], optional
-Flexible container for instrument-specific metadata that doesn’t fit
-the core schema. Use this for vendor-specific fields, facility metadata,
-or experimental parameters not covered by EM Glossary.</p>
-<p class="rubric" id="id24">Notes</p>
+<p><strong>Notes:</strong></p>
 <p>The extensions section allows arbitrary metadata while maintaining strict
 validation on core fields. This hybrid approach ensures:</p>
 <ul class="simple">
@@ -907,63 +816,81 @@ validation on core fields. This hybrid approach ensures:</p>
 </ul>
 <p>Extensions should use descriptive key names and avoid conflicts with core
 field names.</p>
-<p class="rubric">Initialization</p>
-<p>Create a new model by parsing and validating input data from keyword arguments.</p>
-<p>Raises [<code class="docutils literal notranslate"><span class="pre">ValidationError</span></code>][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.</p>
-<p><code class="docutils literal notranslate"><span class="pre">self</span></code> is explicitly positional-only to allow <code class="docutils literal notranslate"><span class="pre">self</span></code> as a field name.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.NexusMetadata.creation_time">
-<span class="sig-name descname"><span class="pre">creation_time</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></em><a class="headerlink" href="#nexusLIMS.schemas.metadata.NexusMetadata.creation_time" title="Link to this definition">#</a></dt>
-<dd><p>‘Field(…)’</p>
+<span class="sig-name descname"><span class="pre">creation_time</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.NexusMetadata.creation_time" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> str</p>
+<p>ISO-8601 formatted timestamp with timezone indicating when the data
+was acquired. Must include timezone offset (+00:00, -05:00) or ‘Z’.
+Examples: “2024-01-15T10:30:00-05:00”, “2024-01-15T15:30:00Z”</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.NexusMetadata.data_type">
-<span class="sig-name descname"><span class="pre">data_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></em><a class="headerlink" href="#nexusLIMS.schemas.metadata.NexusMetadata.data_type" title="Link to this definition">#</a></dt>
-<dd><p>‘Field(…)’</p>
+<span class="sig-name descname"><span class="pre">data_type</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.NexusMetadata.data_type" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> str</p>
+<p>Human-readable description of the data type using underscore-separated
+components. Examples: “STEM_Imaging”, “TEM_EDS”, “SEM_Imaging”</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.NexusMetadata.dataset_type">
-<span class="sig-name descname"><span class="pre">dataset_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Literal" title="(in Python v3.11)"><span class="pre">Literal</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Image</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Spectrum</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">SpectrumImage</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Diffraction</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Misc</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Unknown</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#nexusLIMS.schemas.metadata.NexusMetadata.dataset_type" title="Link to this definition">#</a></dt>
-<dd><p>‘Field(…)’</p>
+<span class="sig-name descname"><span class="pre">dataset_type</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.NexusMetadata.dataset_type" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> typing.Literal[Image, Spectrum, SpectrumImage, Diffraction, Misc, Unknown]</p>
+<p>Schema-defined category matching the Nexus Experiment XML schema type
+attribute.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.NexusMetadata.data_dimensions">
-<span class="sig-name descname"><span class="pre">data_dimensions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.schemas.metadata.NexusMetadata.data_dimensions" title="Link to this definition">#</a></dt>
-<dd><p>‘Field(…)’</p>
+<span class="sig-name descname"><span class="pre">data_dimensions</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.NexusMetadata.data_dimensions" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> str | None</p>
+<p>String representation of data shape as a tuple.
+Examples: “(1024, 1024)”, “(2048,)”, “(12, 1024, 1024)”</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.NexusMetadata.instrument_id">
-<span class="sig-name descname"><span class="pre">instrument_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.schemas.metadata.NexusMetadata.instrument_id" title="Link to this definition">#</a></dt>
-<dd><p>‘Field(…)’</p>
+<span class="sig-name descname"><span class="pre">instrument_id</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.NexusMetadata.instrument_id" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> str | None</p>
+<p>NexusLIMS persistent identifier for the instrument.
+Examples: “FEI-Titan-TEM-635816”, “Quanta-FEG-650-SEM-555555”</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.NexusMetadata.warnings">
-<span class="sig-name descname"><span class="pre">warnings</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#list" title="(in Python v3.11)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#list" title="(in Python v3.11)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#nexusLIMS.schemas.metadata.NexusMetadata.warnings" title="Link to this definition">#</a></dt>
-<dd><p>‘Field(…)’</p>
+<span class="sig-name descname"><span class="pre">warnings</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.NexusMetadata.warnings" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> list[str | list[str]]</p>
+<p>Field names flagged as unreliable. These are marked with warning=”true”
+in the XML output.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.NexusMetadata.nexuslims_extraction">
-<span class="sig-name descname"><span class="pre">nexuslims_extraction</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#nexusLIMS.schemas.metadata.ExtractionDetails" title="nexusLIMS.schemas.metadata.ExtractionDetails"><span class="pre">ExtractionDetails</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.schemas.metadata.NexusMetadata.nexuslims_extraction" title="Link to this definition">#</a></dt>
-<dd><p>‘Field(…)’</p>
+<span class="sig-name descname"><span class="pre">nexuslims_extraction</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.NexusMetadata.nexuslims_extraction" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> nexusLIMS.schemas.metadata.ExtractionDetails | None</p>
+<p>NexusLIMS extraction metadata containing date, module, and version
+information about when and how the metadata was extracted.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.NexusMetadata.extensions">
-<span class="sig-name descname"><span class="pre">extensions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#nexusLIMS.schemas.metadata.NexusMetadata.extensions" title="Link to this definition">#</a></dt>
-<dd><p>‘Field(…)’</p>
+<span class="sig-name descname"><span class="pre">extensions</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.NexusMetadata.extensions" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> typing.Dict[str, typing.Any]</p>
+<p>Flexible container for instrument-specific metadata that doesn’t fit
+the core schema. Use this for vendor-specific fields, facility metadata,
+or experimental parameters not covered by EM Glossary.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.NexusMetadata.model_config">
 <span class="sig-name descname"><span class="pre">model_config</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.NexusMetadata.model_config" title="Link to this definition">#</a></dt>
-<dd><p>None</p>
+<dd><p>Pydantic model configuration:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">populate_by_name:</span> <span class="pre">True</span></code> – Accept both Python field names and JSON aliases</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">extra:</span> <span class="pre">&quot;forbid&quot;</span></code> – Forbid extra fields (forces use of extensions dict
+for additional data)</p></li>
+</ul>
 </dd></dl>
 
 <dl class="py method">
@@ -975,7 +902,7 @@ validated to form a valid model.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.NexusMetadata.validate_data_type_not_empty">
 <em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">validate_data_type_not_empty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/schemas/metadata.html#NexusMetadata.validate_data_type_not_empty"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.schemas.metadata.NexusMetadata.validate_data_type_not_empty" title="Link to this definition">#</a></dt>
-<dd><p>Validate data_type is not empty.</p>
+<dd><p>Validate <code class="docutils literal notranslate"><span class="pre">data_type</span></code> is not empty.</p>
 </dd></dl>
 
 </dd></dl>
@@ -985,166 +912,132 @@ validated to form a valid model.</p>
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nexusLIMS.schemas.metadata.</span></span><span class="sig-name descname"><span class="pre">ImageMetadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**data:</span> <span class="pre">typing.Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/schemas/metadata.html#ImageMetadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.schemas.metadata.ImageMetadata" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#nexusLIMS.schemas.metadata.NexusMetadata" title="nexusLIMS.schemas.metadata.NexusMetadata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nexusLIMS.schemas.metadata.NexusMetadata</span></code></a></p>
 <p>Schema for image dataset metadata (SEM, TEM, STEM, FIB, HIM).</p>
-<p>Extends :class:<code class="docutils literal notranslate"><span class="pre">NexusMetadata</span></code> with fields specific to 2D image acquisition.
+<p>Extends <a class="reference internal" href="#nexusLIMS.schemas.metadata.NexusMetadata" title="nexusLIMS.schemas.metadata.NexusMetadata"><code class="xref py py-class docutils literal notranslate"><span class="pre">NexusMetadata</span></code></a> with fields specific to 2D image acquisition.
 Uses Pint Quantity objects for all physical measurements.</p>
-<p class="rubric" id="id25">Attributes</p>
-<p>acceleration_voltage : PintQuantity or None, optional
-Accelerating voltage of the electron/ion beam.
-Preferred unit: kilovolt (kV)
-EM Glossary: EMG_00000004</p>
-<p>working_distance : PintQuantity or None, optional
-Distance between final lens and sample surface.
-Preferred unit: millimeter (mm)
-EM Glossary: EMG_00000050</p>
-<p>beam_current : PintQuantity or None, optional
-Electron beam current.
-Preferred unit: picoampere (pA)
-EM Glossary: EMG_00000006</p>
-<p>emission_current : PintQuantity or None, optional
-Emission current from electron source.
-Preferred unit: microampere (µA)
-EM Glossary: EMG_00000025</p>
-<p>dwell_time : PintQuantity or None, optional
-Time the beam dwells on each pixel during scanning.
-Preferred unit: microsecond (µs)
-EM Glossary: EMG_00000015</p>
-<p>magnification : float or None, optional
-Nominal magnification (dimensionless).</p>
-<p>horizontal_field_width : PintQuantity or None, optional
-Width of the scanned area.
-Preferred unit: micrometer (µm)</p>
-<p>vertical_field_width : PintQuantity or None, optional
-Height of the scanned area.
-Preferred unit: micrometer (µm)</p>
-<p>pixel_width : PintQuantity or None, optional
-Physical width of a single pixel.
-Preferred unit: nanometer (nm)</p>
-<p>pixel_height : PintQuantity or None, optional
-Physical height of a single pixel.
-Preferred unit: nanometer (nm)</p>
-<p>scan_rotation : PintQuantity or None, optional
-Rotation angle of the scan frame.
-Preferred unit: degree (°)</p>
-<p>detector_type : str or None, optional
-Type or name of detector used.
-Examples: “ETD”, “InLens”, “HAADF”, “BF”</p>
-<p>acquisition_device : str or None, optional
-Name of the acquisition device or camera.
-Examples: “BM-UltraScan”, “K2 Summit”</p>
-<p>stage_position : StagePosition or None, optional
-Stage coordinates and tilt angles. See :class:<code class="docutils literal notranslate"><span class="pre">StagePosition</span></code> for details.
-Preferred units: x/y in µm, z in mm, angles in degrees</p>
-<p class="rubric" id="id26">Examples</p>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>from nexusLIMS.schemas.metadata import ImageMetadata
-from nexusLIMS.schemas.units import ureg</p>
-<p>meta = ImageMetadata(
-…     creation_time=”2024-01-15T10:30:00-05:00”,
-…     data_type=”SEM_Imaging”,
-…     dataset_type=”Image”,
-…     acceleration_voltage=ureg.Quantity(15, “kV”),
-…     working_distance=ureg.Quantity(10.5, “mm”),
-…     beam_current=ureg.Quantity(50, “pA”),
-…     magnification=5000.0,
-… )</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-<p class="rubric">Initialization</p>
-<p>Create a new model by parsing and validating input data from keyword arguments.</p>
-<p>Raises [<code class="docutils literal notranslate"><span class="pre">ValidationError</span></code>][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.</p>
-<p><code class="docutils literal notranslate"><span class="pre">self</span></code> is explicitly positional-only to allow <code class="docutils literal notranslate"><span class="pre">self</span></code> as a field name.</p>
+<p><strong>Examples:</strong></p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas.metadata</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImageMetadata</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas.units</span><span class="w"> </span><span class="kn">import</span> <span class="n">ureg</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span> <span class="o">=</span> <span class="n">ImageMetadata</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">creation_time</span><span class="o">=</span><span class="s2">&quot;2024-01-15T10:30:00-05:00&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">data_type</span><span class="o">=</span><span class="s2">&quot;SEM_Imaging&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">dataset_type</span><span class="o">=</span><span class="s2">&quot;Image&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">acceleration_voltage</span><span class="o">=</span><span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="s2">&quot;kV&quot;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">working_distance</span><span class="o">=</span><span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mf">10.5</span><span class="p">,</span> <span class="s2">&quot;mm&quot;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">beam_current</span><span class="o">=</span><span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="s2">&quot;pA&quot;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">magnification</span><span class="o">=</span><span class="mf">5000.0</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.ImageMetadata.dataset_type">
-<span class="sig-name descname"><span class="pre">dataset_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Literal" title="(in Python v3.11)"><span class="pre">Literal</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Image</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#nexusLIMS.schemas.metadata.ImageMetadata.dataset_type" title="Link to this definition">#</a></dt>
-<dd><p>‘Field(…)’</p>
+<span class="sig-name descname"><span class="pre">dataset_type</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.ImageMetadata.dataset_type" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> typing.Literal[Image]</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.ImageMetadata.acceleration_voltage">
-<span class="sig-name descname"><span class="pre">acceleration_voltage</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">nexusLIMS.schemas.pint_types.PintQuantity</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.schemas.metadata.ImageMetadata.acceleration_voltage" title="Link to this definition">#</a></dt>
-<dd><p>‘emg_field(…)’</p>
+<span class="sig-name descname"><span class="pre">acceleration_voltage</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.ImageMetadata.acceleration_voltage" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> <a class="reference internal" href="nexusLIMS.schemas.pint_types.html#nexusLIMS.schemas.pint_types.PintQuantity" title="nexusLIMS.schemas.pint_types.PintQuantity"><code class="xref py py-data docutils literal notranslate"><span class="pre">PintQuantity</span></code></a> | None</p>
+<p>Accelerating voltage of the electron/ion beam.
+Preferred unit: kilovolt (kV). EM Glossary: EMG_00000004</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.ImageMetadata.working_distance">
-<span class="sig-name descname"><span class="pre">working_distance</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">nexusLIMS.schemas.pint_types.PintQuantity</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.schemas.metadata.ImageMetadata.working_distance" title="Link to this definition">#</a></dt>
-<dd><p>‘emg_field(…)’</p>
+<span class="sig-name descname"><span class="pre">working_distance</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.ImageMetadata.working_distance" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> <a class="reference internal" href="nexusLIMS.schemas.pint_types.html#nexusLIMS.schemas.pint_types.PintQuantity" title="nexusLIMS.schemas.pint_types.PintQuantity"><code class="xref py py-data docutils literal notranslate"><span class="pre">PintQuantity</span></code></a> | None</p>
+<p>Distance between final lens and sample surface.
+Preferred unit: millimeter (mm). EM Glossary: EMG_00000050</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.ImageMetadata.beam_current">
-<span class="sig-name descname"><span class="pre">beam_current</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">nexusLIMS.schemas.pint_types.PintQuantity</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.schemas.metadata.ImageMetadata.beam_current" title="Link to this definition">#</a></dt>
-<dd><p>‘emg_field(…)’</p>
+<span class="sig-name descname"><span class="pre">beam_current</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.ImageMetadata.beam_current" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> <a class="reference internal" href="nexusLIMS.schemas.pint_types.html#nexusLIMS.schemas.pint_types.PintQuantity" title="nexusLIMS.schemas.pint_types.PintQuantity"><code class="xref py py-data docutils literal notranslate"><span class="pre">PintQuantity</span></code></a> | None</p>
+<p>Electron beam current.
+Preferred unit: picoampere (pA). EM Glossary: EMG_00000006</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.ImageMetadata.emission_current">
-<span class="sig-name descname"><span class="pre">emission_current</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">nexusLIMS.schemas.pint_types.PintQuantity</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.schemas.metadata.ImageMetadata.emission_current" title="Link to this definition">#</a></dt>
-<dd><p>‘emg_field(…)’</p>
+<span class="sig-name descname"><span class="pre">emission_current</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.ImageMetadata.emission_current" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> <a class="reference internal" href="nexusLIMS.schemas.pint_types.html#nexusLIMS.schemas.pint_types.PintQuantity" title="nexusLIMS.schemas.pint_types.PintQuantity"><code class="xref py py-data docutils literal notranslate"><span class="pre">PintQuantity</span></code></a> | None</p>
+<p>Emission current from electron source.
+Preferred unit: microampere (µA). EM Glossary: EMG_00000025</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.ImageMetadata.dwell_time">
-<span class="sig-name descname"><span class="pre">dwell_time</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">nexusLIMS.schemas.pint_types.PintQuantity</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.schemas.metadata.ImageMetadata.dwell_time" title="Link to this definition">#</a></dt>
-<dd><p>‘emg_field(…)’</p>
+<span class="sig-name descname"><span class="pre">dwell_time</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.ImageMetadata.dwell_time" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> <a class="reference internal" href="nexusLIMS.schemas.pint_types.html#nexusLIMS.schemas.pint_types.PintQuantity" title="nexusLIMS.schemas.pint_types.PintQuantity"><code class="xref py py-data docutils literal notranslate"><span class="pre">PintQuantity</span></code></a> | None</p>
+<p>Time the beam dwells on each pixel during scanning.
+Preferred unit: microsecond (µs). EM Glossary: EMG_00000015</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.ImageMetadata.magnification">
-<span class="sig-name descname"><span class="pre">magnification</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.schemas.metadata.ImageMetadata.magnification" title="Link to this definition">#</a></dt>
-<dd><p>‘emg_field(…)’</p>
+<span class="sig-name descname"><span class="pre">magnification</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.ImageMetadata.magnification" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> float | None</p>
+<p>Nominal magnification (dimensionless).</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.ImageMetadata.horizontal_field_width">
-<span class="sig-name descname"><span class="pre">horizontal_field_width</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">nexusLIMS.schemas.pint_types.PintQuantity</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.schemas.metadata.ImageMetadata.horizontal_field_width" title="Link to this definition">#</a></dt>
-<dd><p>‘emg_field(…)’</p>
+<span class="sig-name descname"><span class="pre">horizontal_field_width</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.ImageMetadata.horizontal_field_width" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> <a class="reference internal" href="nexusLIMS.schemas.pint_types.html#nexusLIMS.schemas.pint_types.PintQuantity" title="nexusLIMS.schemas.pint_types.PintQuantity"><code class="xref py py-data docutils literal notranslate"><span class="pre">PintQuantity</span></code></a> | None</p>
+<p>Width of the scanned area. Preferred unit: micrometer (µm)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.ImageMetadata.vertical_field_width">
-<span class="sig-name descname"><span class="pre">vertical_field_width</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">nexusLIMS.schemas.pint_types.PintQuantity</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.schemas.metadata.ImageMetadata.vertical_field_width" title="Link to this definition">#</a></dt>
-<dd><p>‘emg_field(…)’</p>
+<span class="sig-name descname"><span class="pre">vertical_field_width</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.ImageMetadata.vertical_field_width" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> <a class="reference internal" href="nexusLIMS.schemas.pint_types.html#nexusLIMS.schemas.pint_types.PintQuantity" title="nexusLIMS.schemas.pint_types.PintQuantity"><code class="xref py py-data docutils literal notranslate"><span class="pre">PintQuantity</span></code></a> | None</p>
+<p>Height of the scanned area. Preferred unit: micrometer (µm)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.ImageMetadata.pixel_width">
-<span class="sig-name descname"><span class="pre">pixel_width</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">nexusLIMS.schemas.pint_types.PintQuantity</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.schemas.metadata.ImageMetadata.pixel_width" title="Link to this definition">#</a></dt>
-<dd><p>‘emg_field(…)’</p>
+<span class="sig-name descname"><span class="pre">pixel_width</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.ImageMetadata.pixel_width" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> <a class="reference internal" href="nexusLIMS.schemas.pint_types.html#nexusLIMS.schemas.pint_types.PintQuantity" title="nexusLIMS.schemas.pint_types.PintQuantity"><code class="xref py py-data docutils literal notranslate"><span class="pre">PintQuantity</span></code></a> | None</p>
+<p>Physical width of a single pixel. Preferred unit: nanometer (nm)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.ImageMetadata.pixel_height">
-<span class="sig-name descname"><span class="pre">pixel_height</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">nexusLIMS.schemas.pint_types.PintQuantity</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.schemas.metadata.ImageMetadata.pixel_height" title="Link to this definition">#</a></dt>
-<dd><p>‘emg_field(…)’</p>
+<span class="sig-name descname"><span class="pre">pixel_height</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.ImageMetadata.pixel_height" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> <a class="reference internal" href="nexusLIMS.schemas.pint_types.html#nexusLIMS.schemas.pint_types.PintQuantity" title="nexusLIMS.schemas.pint_types.PintQuantity"><code class="xref py py-data docutils literal notranslate"><span class="pre">PintQuantity</span></code></a> | None</p>
+<p>Physical height of a single pixel. Preferred unit: nanometer (nm)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.ImageMetadata.scan_rotation">
-<span class="sig-name descname"><span class="pre">scan_rotation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">nexusLIMS.schemas.pint_types.PintQuantity</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.schemas.metadata.ImageMetadata.scan_rotation" title="Link to this definition">#</a></dt>
-<dd><p>‘emg_field(…)’</p>
+<span class="sig-name descname"><span class="pre">scan_rotation</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.ImageMetadata.scan_rotation" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> <a class="reference internal" href="nexusLIMS.schemas.pint_types.html#nexusLIMS.schemas.pint_types.PintQuantity" title="nexusLIMS.schemas.pint_types.PintQuantity"><code class="xref py py-data docutils literal notranslate"><span class="pre">PintQuantity</span></code></a> | None</p>
+<p>Rotation angle of the scan frame. Preferred unit: degree (°)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.ImageMetadata.detector_type">
-<span class="sig-name descname"><span class="pre">detector_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.schemas.metadata.ImageMetadata.detector_type" title="Link to this definition">#</a></dt>
-<dd><p>‘emg_field(…)’</p>
+<span class="sig-name descname"><span class="pre">detector_type</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.ImageMetadata.detector_type" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> str | None</p>
+<p>Type or name of detector used. Examples: “ETD”, “InLens”, “HAADF”, “BF”</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.ImageMetadata.acquisition_device">
-<span class="sig-name descname"><span class="pre">acquisition_device</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.schemas.metadata.ImageMetadata.acquisition_device" title="Link to this definition">#</a></dt>
-<dd><p>‘emg_field(…)’</p>
+<span class="sig-name descname"><span class="pre">acquisition_device</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.ImageMetadata.acquisition_device" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> str | None</p>
+<p>Name of the acquisition device or camera.
+Examples: “BM-UltraScan”, “K2 Summit”</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.ImageMetadata.stage_position">
-<span class="sig-name descname"><span class="pre">stage_position</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#nexusLIMS.schemas.metadata.StagePosition" title="nexusLIMS.schemas.metadata.StagePosition"><span class="pre">StagePosition</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.schemas.metadata.ImageMetadata.stage_position" title="Link to this definition">#</a></dt>
-<dd><p>‘Field(…)’</p>
+<span class="sig-name descname"><span class="pre">stage_position</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.ImageMetadata.stage_position" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> nexusLIMS.schemas.metadata.StagePosition | None</p>
+<p>Stage coordinates and tilt angles. See <a class="reference internal" href="#nexusLIMS.schemas.metadata.StagePosition" title="nexusLIMS.schemas.metadata.StagePosition"><code class="xref py py-class docutils literal notranslate"><span class="pre">StagePosition</span></code></a> for details.
+Preferred units: x/y in µm, z in mm, angles in degrees</p>
 </dd></dl>
 
 </dd></dl>
@@ -1154,115 +1047,89 @@ validated to form a valid model.</p>
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nexusLIMS.schemas.metadata.</span></span><span class="sig-name descname"><span class="pre">SpectrumMetadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**data:</span> <span class="pre">typing.Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/schemas/metadata.html#SpectrumMetadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.schemas.metadata.SpectrumMetadata" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#nexusLIMS.schemas.metadata.NexusMetadata" title="nexusLIMS.schemas.metadata.NexusMetadata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nexusLIMS.schemas.metadata.NexusMetadata</span></code></a></p>
 <p>Schema for spectrum dataset metadata (EDS, EELS, etc.).</p>
-<p>Extends :class:<code class="docutils literal notranslate"><span class="pre">NexusMetadata</span></code> with fields specific to spectral data acquisition.</p>
-<p class="rubric" id="id27">Attributes</p>
-<p>acquisition_time : PintQuantity or None, optional
-Total time for spectrum acquisition.
-Preferred unit: second (s)
-EM Glossary: EMG_00000055</p>
-<p>live_time : PintQuantity or None, optional
-Live time excluding dead time.
-Preferred unit: second (s)</p>
-<p>detector_energy_resolution : PintQuantity or None, optional
-Energy resolution of the detector.
-Preferred unit: electronvolt (eV)</p>
-<p>channel_size : PintQuantity or None, optional
-Energy width of each channel.
-Preferred unit: electronvolt (eV)</p>
-<p>starting_energy : PintQuantity or None, optional
-Starting energy of the spectrum.
-Preferred unit: kiloelectronvolt (keV)</p>
-<p>azimuthal_angle : PintQuantity or None, optional
-Azimuthal angle of the detector.
-Preferred unit: degree (°)</p>
-<p>elevation_angle : PintQuantity or None, optional
-Elevation angle of the detector.
-Preferred unit: degree (°)</p>
-<p>takeoff_angle : PintQuantity or None, optional
-X-ray takeoff angle.
-Preferred unit: degree (°)</p>
-<p>elements : list[str] or None, optional
-Detected elements (e.g., [“Fe”, “Cr”, “Ni”])</p>
-<p class="rubric" id="id28">Examples</p>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>from nexusLIMS.schemas.metadata import SpectrumMetadata
-from nexusLIMS.schemas.units import ureg</p>
-<p>meta = SpectrumMetadata(
-…     creation_time=”2024-01-15T10:30:00-05:00”,
-…     data_type=”EDS_Spectrum”,
-…     dataset_type=”Spectrum”,
-…     acquisition_time=ureg.Quantity(30, “s”),
-…     live_time=ureg.Quantity(28.5, “s”),
-…     channel_size=ureg.Quantity(10, “eV”),
-… )</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-<p class="rubric">Initialization</p>
-<p>Create a new model by parsing and validating input data from keyword arguments.</p>
-<p>Raises [<code class="docutils literal notranslate"><span class="pre">ValidationError</span></code>][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.</p>
-<p><code class="docutils literal notranslate"><span class="pre">self</span></code> is explicitly positional-only to allow <code class="docutils literal notranslate"><span class="pre">self</span></code> as a field name.</p>
+<p>Extends <a class="reference internal" href="#nexusLIMS.schemas.metadata.NexusMetadata" title="nexusLIMS.schemas.metadata.NexusMetadata"><code class="xref py py-class docutils literal notranslate"><span class="pre">NexusMetadata</span></code></a> with fields specific to spectral data acquisition.</p>
+<p><strong>Examples:</strong></p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas.metadata</span><span class="w"> </span><span class="kn">import</span> <span class="n">SpectrumMetadata</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas.units</span><span class="w"> </span><span class="kn">import</span> <span class="n">ureg</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span> <span class="o">=</span> <span class="n">SpectrumMetadata</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">creation_time</span><span class="o">=</span><span class="s2">&quot;2024-01-15T10:30:00-05:00&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">data_type</span><span class="o">=</span><span class="s2">&quot;EDS_Spectrum&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">dataset_type</span><span class="o">=</span><span class="s2">&quot;Spectrum&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">acquisition_time</span><span class="o">=</span><span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="s2">&quot;s&quot;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">live_time</span><span class="o">=</span><span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mf">28.5</span><span class="p">,</span> <span class="s2">&quot;s&quot;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">channel_size</span><span class="o">=</span><span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;eV&quot;</span><span class="p">),</span>
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.SpectrumMetadata.dataset_type">
-<span class="sig-name descname"><span class="pre">dataset_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Literal" title="(in Python v3.11)"><span class="pre">Literal</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Spectrum</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#nexusLIMS.schemas.metadata.SpectrumMetadata.dataset_type" title="Link to this definition">#</a></dt>
-<dd><p>‘Field(…)’</p>
+<span class="sig-name descname"><span class="pre">dataset_type</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.SpectrumMetadata.dataset_type" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> typing.Literal[Spectrum]</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.SpectrumMetadata.acquisition_time">
-<span class="sig-name descname"><span class="pre">acquisition_time</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">nexusLIMS.schemas.pint_types.PintQuantity</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.schemas.metadata.SpectrumMetadata.acquisition_time" title="Link to this definition">#</a></dt>
-<dd><p>‘emg_field(…)’</p>
+<span class="sig-name descname"><span class="pre">acquisition_time</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.SpectrumMetadata.acquisition_time" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> <a class="reference internal" href="nexusLIMS.schemas.pint_types.html#nexusLIMS.schemas.pint_types.PintQuantity" title="nexusLIMS.schemas.pint_types.PintQuantity"><code class="xref py py-data docutils literal notranslate"><span class="pre">PintQuantity</span></code></a> | None</p>
+<p>Total time for spectrum acquisition.
+Preferred unit: second (s). EM Glossary: EMG_00000055</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.SpectrumMetadata.live_time">
-<span class="sig-name descname"><span class="pre">live_time</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">nexusLIMS.schemas.pint_types.PintQuantity</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.schemas.metadata.SpectrumMetadata.live_time" title="Link to this definition">#</a></dt>
-<dd><p>‘emg_field(…)’</p>
+<span class="sig-name descname"><span class="pre">live_time</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.SpectrumMetadata.live_time" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> <a class="reference internal" href="nexusLIMS.schemas.pint_types.html#nexusLIMS.schemas.pint_types.PintQuantity" title="nexusLIMS.schemas.pint_types.PintQuantity"><code class="xref py py-data docutils literal notranslate"><span class="pre">PintQuantity</span></code></a> | None</p>
+<p>Live time excluding dead time. Preferred unit: second (s)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.SpectrumMetadata.detector_energy_resolution">
-<span class="sig-name descname"><span class="pre">detector_energy_resolution</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">nexusLIMS.schemas.pint_types.PintQuantity</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.schemas.metadata.SpectrumMetadata.detector_energy_resolution" title="Link to this definition">#</a></dt>
-<dd><p>‘emg_field(…)’</p>
+<span class="sig-name descname"><span class="pre">detector_energy_resolution</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.SpectrumMetadata.detector_energy_resolution" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> <a class="reference internal" href="nexusLIMS.schemas.pint_types.html#nexusLIMS.schemas.pint_types.PintQuantity" title="nexusLIMS.schemas.pint_types.PintQuantity"><code class="xref py py-data docutils literal notranslate"><span class="pre">PintQuantity</span></code></a> | None</p>
+<p>Energy resolution of the detector. Preferred unit: electronvolt (eV)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.SpectrumMetadata.channel_size">
-<span class="sig-name descname"><span class="pre">channel_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">nexusLIMS.schemas.pint_types.PintQuantity</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.schemas.metadata.SpectrumMetadata.channel_size" title="Link to this definition">#</a></dt>
-<dd><p>‘emg_field(…)’</p>
+<span class="sig-name descname"><span class="pre">channel_size</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.SpectrumMetadata.channel_size" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> <a class="reference internal" href="nexusLIMS.schemas.pint_types.html#nexusLIMS.schemas.pint_types.PintQuantity" title="nexusLIMS.schemas.pint_types.PintQuantity"><code class="xref py py-data docutils literal notranslate"><span class="pre">PintQuantity</span></code></a> | None</p>
+<p>Energy width of each channel. Preferred unit: electronvolt (eV)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.SpectrumMetadata.starting_energy">
-<span class="sig-name descname"><span class="pre">starting_energy</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">nexusLIMS.schemas.pint_types.PintQuantity</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.schemas.metadata.SpectrumMetadata.starting_energy" title="Link to this definition">#</a></dt>
-<dd><p>‘emg_field(…)’</p>
+<span class="sig-name descname"><span class="pre">starting_energy</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.SpectrumMetadata.starting_energy" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> <a class="reference internal" href="nexusLIMS.schemas.pint_types.html#nexusLIMS.schemas.pint_types.PintQuantity" title="nexusLIMS.schemas.pint_types.PintQuantity"><code class="xref py py-data docutils literal notranslate"><span class="pre">PintQuantity</span></code></a> | None</p>
+<p>Starting energy of the spectrum. Preferred unit: kiloelectronvolt (keV)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.SpectrumMetadata.azimuthal_angle">
-<span class="sig-name descname"><span class="pre">azimuthal_angle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">nexusLIMS.schemas.pint_types.PintQuantity</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.schemas.metadata.SpectrumMetadata.azimuthal_angle" title="Link to this definition">#</a></dt>
-<dd><p>‘emg_field(…)’</p>
+<span class="sig-name descname"><span class="pre">azimuthal_angle</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.SpectrumMetadata.azimuthal_angle" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> <a class="reference internal" href="nexusLIMS.schemas.pint_types.html#nexusLIMS.schemas.pint_types.PintQuantity" title="nexusLIMS.schemas.pint_types.PintQuantity"><code class="xref py py-data docutils literal notranslate"><span class="pre">PintQuantity</span></code></a> | None</p>
+<p>Azimuthal angle of the detector. Preferred unit: degree (°)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.SpectrumMetadata.elevation_angle">
-<span class="sig-name descname"><span class="pre">elevation_angle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">nexusLIMS.schemas.pint_types.PintQuantity</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.schemas.metadata.SpectrumMetadata.elevation_angle" title="Link to this definition">#</a></dt>
-<dd><p>‘emg_field(…)’</p>
+<span class="sig-name descname"><span class="pre">elevation_angle</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.SpectrumMetadata.elevation_angle" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> <a class="reference internal" href="nexusLIMS.schemas.pint_types.html#nexusLIMS.schemas.pint_types.PintQuantity" title="nexusLIMS.schemas.pint_types.PintQuantity"><code class="xref py py-data docutils literal notranslate"><span class="pre">PintQuantity</span></code></a> | None</p>
+<p>Elevation angle of the detector. Preferred unit: degree (°)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.SpectrumMetadata.takeoff_angle">
-<span class="sig-name descname"><span class="pre">takeoff_angle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">nexusLIMS.schemas.pint_types.PintQuantity</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.schemas.metadata.SpectrumMetadata.takeoff_angle" title="Link to this definition">#</a></dt>
-<dd><p>‘emg_field(…)’</p>
+<span class="sig-name descname"><span class="pre">takeoff_angle</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.SpectrumMetadata.takeoff_angle" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> <a class="reference internal" href="nexusLIMS.schemas.pint_types.html#nexusLIMS.schemas.pint_types.PintQuantity" title="nexusLIMS.schemas.pint_types.PintQuantity"><code class="xref py py-data docutils literal notranslate"><span class="pre">PintQuantity</span></code></a> | None</p>
+<p>X-ray takeoff angle. Preferred unit: degree (°)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.SpectrumMetadata.elements">
-<span class="sig-name descname"><span class="pre">elements</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#list" title="(in Python v3.11)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.schemas.metadata.SpectrumMetadata.elements" title="Link to this definition">#</a></dt>
-<dd><p>‘Field(…)’</p>
+<span class="sig-name descname"><span class="pre">elements</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.SpectrumMetadata.elements" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> list[str] | None</p>
+<p>Detected elements (e.g., [“Fe”, “Cr”, “Ni”])</p>
 </dd></dl>
 
 </dd></dl>
@@ -1272,54 +1139,42 @@ validated to form a valid model.</p>
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nexusLIMS.schemas.metadata.</span></span><span class="sig-name descname"><span class="pre">SpectrumImageMetadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**data:</span> <span class="pre">typing.Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/schemas/metadata.html#SpectrumImageMetadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.schemas.metadata.SpectrumImageMetadata" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#nexusLIMS.schemas.metadata.ImageMetadata" title="nexusLIMS.schemas.metadata.ImageMetadata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nexusLIMS.schemas.metadata.ImageMetadata</span></code></a>, <a class="reference internal" href="#nexusLIMS.schemas.metadata.SpectrumMetadata" title="nexusLIMS.schemas.metadata.SpectrumMetadata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nexusLIMS.schemas.metadata.SpectrumMetadata</span></code></a></p>
 <p>Schema for spectrum image (hyperspectral) dataset metadata.</p>
-<p>Combines fields from both :class:<code class="docutils literal notranslate"><span class="pre">ImageMetadata</span></code> and :class:<code class="docutils literal notranslate"><span class="pre">SpectrumMetadata</span></code>
-since spectrum images have both spatial and spectral dimensions.</p>
-<p class="rubric" id="id29">Attributes</p>
-<p>Inherits all fields from ImageMetadata and SpectrumMetadata, plus:</p>
-<p>pixel_time : PintQuantity or None, optional
-Time spent acquiring spectrum at each pixel.
-Preferred unit: second (s)</p>
-<p>scan_mode : str or None, optional
-Scanning mode used for acquisition.
-Examples: “raster”, “serpentine”, “fly-back”</p>
-<p class="rubric" id="id30">Examples</p>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>from nexusLIMS.schemas.metadata import SpectrumImageMetadata
-from nexusLIMS.schemas.units import ureg</p>
-<p>meta = SpectrumImageMetadata(
-…     creation_time=”2024-01-15T10:30:00-05:00”,
-…     data_type=”STEM_EDS_SpectrumImage”,
-…     dataset_type=”SpectrumImage”,
-…     acceleration_voltage=ureg.Quantity(200, “kV”),  # Image field
-…     acquisition_time=ureg.Quantity(1200, “s”),  # Spectrum field
-…     pixel_time=ureg.Quantity(0.5, “s”),  # SpectrumImage specific
-… )</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-<p class="rubric">Initialization</p>
-<p>Create a new model by parsing and validating input data from keyword arguments.</p>
-<p>Raises [<code class="docutils literal notranslate"><span class="pre">ValidationError</span></code>][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.</p>
-<p><code class="docutils literal notranslate"><span class="pre">self</span></code> is explicitly positional-only to allow <code class="docutils literal notranslate"><span class="pre">self</span></code> as a field name.</p>
+<p>Combines fields from both <a class="reference internal" href="#nexusLIMS.schemas.metadata.ImageMetadata" title="nexusLIMS.schemas.metadata.ImageMetadata"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImageMetadata</span></code></a> and <a class="reference internal" href="#nexusLIMS.schemas.metadata.SpectrumMetadata" title="nexusLIMS.schemas.metadata.SpectrumMetadata"><code class="xref py py-class docutils literal notranslate"><span class="pre">SpectrumMetadata</span></code></a>
+since spectrum images have both spatial and spectral dimensions. Inherits all
+fields from both parent classes.</p>
+<p><strong>Examples:</strong></p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas.metadata</span><span class="w"> </span><span class="kn">import</span> <span class="n">SpectrumImageMetadata</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas.units</span><span class="w"> </span><span class="kn">import</span> <span class="n">ureg</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span> <span class="o">=</span> <span class="n">SpectrumImageMetadata</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">creation_time</span><span class="o">=</span><span class="s2">&quot;2024-01-15T10:30:00-05:00&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">data_type</span><span class="o">=</span><span class="s2">&quot;STEM_EDS_SpectrumImage&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">dataset_type</span><span class="o">=</span><span class="s2">&quot;SpectrumImage&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">acceleration_voltage</span><span class="o">=</span><span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="s2">&quot;kV&quot;</span><span class="p">),</span>  <span class="c1"># Image field</span>
+<span class="gp">... </span>    <span class="n">acquisition_time</span><span class="o">=</span><span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mi">1200</span><span class="p">,</span> <span class="s2">&quot;s&quot;</span><span class="p">),</span>  <span class="c1"># Spectrum field</span>
+<span class="gp">... </span>    <span class="n">pixel_time</span><span class="o">=</span><span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="s2">&quot;s&quot;</span><span class="p">),</span>  <span class="c1"># SpectrumImage specific</span>
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.SpectrumImageMetadata.dataset_type">
-<span class="sig-name descname"><span class="pre">dataset_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Literal" title="(in Python v3.11)"><span class="pre">Literal</span></a><span class="p"><span class="pre">[</span></span><span class="pre">SpectrumImage</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#nexusLIMS.schemas.metadata.SpectrumImageMetadata.dataset_type" title="Link to this definition">#</a></dt>
-<dd><p>‘Field(…)’</p>
+<span class="sig-name descname"><span class="pre">dataset_type</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.SpectrumImageMetadata.dataset_type" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> typing.Literal[SpectrumImage]</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.SpectrumImageMetadata.pixel_time">
-<span class="sig-name descname"><span class="pre">pixel_time</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">nexusLIMS.schemas.pint_types.PintQuantity</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.schemas.metadata.SpectrumImageMetadata.pixel_time" title="Link to this definition">#</a></dt>
-<dd><p>‘Field(…)’</p>
+<span class="sig-name descname"><span class="pre">pixel_time</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.SpectrumImageMetadata.pixel_time" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> <a class="reference internal" href="nexusLIMS.schemas.pint_types.html#nexusLIMS.schemas.pint_types.PintQuantity" title="nexusLIMS.schemas.pint_types.PintQuantity"><code class="xref py py-data docutils literal notranslate"><span class="pre">PintQuantity</span></code></a> | None</p>
+<p>Time spent acquiring spectrum at each pixel. Preferred unit: second (s)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.SpectrumImageMetadata.scan_mode">
-<span class="sig-name descname"><span class="pre">scan_mode</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.schemas.metadata.SpectrumImageMetadata.scan_mode" title="Link to this definition">#</a></dt>
-<dd><p>‘Field(…)’</p>
+<span class="sig-name descname"><span class="pre">scan_mode</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.SpectrumImageMetadata.scan_mode" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> str | None</p>
+<p>Scanning mode used for acquisition.
+Examples: “raster”, “serpentine”, “fly-back”</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1335,72 +1190,56 @@ validated to form a valid model.</p>
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nexusLIMS.schemas.metadata.</span></span><span class="sig-name descname"><span class="pre">DiffractionMetadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**data:</span> <span class="pre">typing.Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/schemas/metadata.html#DiffractionMetadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.schemas.metadata.DiffractionMetadata" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#nexusLIMS.schemas.metadata.NexusMetadata" title="nexusLIMS.schemas.metadata.NexusMetadata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nexusLIMS.schemas.metadata.NexusMetadata</span></code></a></p>
 <p>Schema for diffraction pattern dataset metadata (TEM, EBSD, etc.).</p>
-<p>Extends :class:<code class="docutils literal notranslate"><span class="pre">NexusMetadata</span></code> with fields specific to diffraction data.</p>
-<p class="rubric" id="id31">Attributes</p>
-<p>camera_length : PintQuantity or None, optional
-Camera length for diffraction pattern.
-Preferred unit: millimeter (mm)
-EM Glossary: EMG_00000008</p>
-<p>convergence_angle : PintQuantity or None, optional
-Convergence angle of the electron beam.
-Preferred unit: milliradian (mrad)
-EM Glossary: EMG_00000010</p>
-<p>acceleration_voltage : PintQuantity or None, optional
-Accelerating voltage (also relevant for diffraction).
-Preferred unit: kilovolt (kV)
-EM Glossary: EMG_00000004</p>
-<p>acquisition_device : str or None, optional
-Name of the detector/camera used.</p>
-<p class="rubric" id="id32">Examples</p>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>from nexusLIMS.schemas.metadata import DiffractionMetadata
-from nexusLIMS.schemas.units import ureg</p>
-<p>meta = DiffractionMetadata(
-…     creation_time=”2024-01-15T10:30:00-05:00”,
-…     data_type=”TEM_Diffraction”,
-…     dataset_type=”Diffraction”,
-…     camera_length=ureg.Quantity(200, “mm”),
-…     convergence_angle=ureg.Quantity(0.5, “mrad”),
-…     acceleration_voltage=ureg.Quantity(200, “kV”),
-… )</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-<p class="rubric">Initialization</p>
-<p>Create a new model by parsing and validating input data from keyword arguments.</p>
-<p>Raises [<code class="docutils literal notranslate"><span class="pre">ValidationError</span></code>][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.</p>
-<p><code class="docutils literal notranslate"><span class="pre">self</span></code> is explicitly positional-only to allow <code class="docutils literal notranslate"><span class="pre">self</span></code> as a field name.</p>
+<p>Extends <a class="reference internal" href="#nexusLIMS.schemas.metadata.NexusMetadata" title="nexusLIMS.schemas.metadata.NexusMetadata"><code class="xref py py-class docutils literal notranslate"><span class="pre">NexusMetadata</span></code></a> with fields specific to diffraction data.</p>
+<p><strong>Examples:</strong></p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas.metadata</span><span class="w"> </span><span class="kn">import</span> <span class="n">DiffractionMetadata</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas.units</span><span class="w"> </span><span class="kn">import</span> <span class="n">ureg</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span> <span class="o">=</span> <span class="n">DiffractionMetadata</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">creation_time</span><span class="o">=</span><span class="s2">&quot;2024-01-15T10:30:00-05:00&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">data_type</span><span class="o">=</span><span class="s2">&quot;TEM_Diffraction&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">dataset_type</span><span class="o">=</span><span class="s2">&quot;Diffraction&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">camera_length</span><span class="o">=</span><span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="s2">&quot;mm&quot;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">convergence_angle</span><span class="o">=</span><span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="s2">&quot;mrad&quot;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">acceleration_voltage</span><span class="o">=</span><span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="s2">&quot;kV&quot;</span><span class="p">),</span>
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.DiffractionMetadata.dataset_type">
-<span class="sig-name descname"><span class="pre">dataset_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Literal" title="(in Python v3.11)"><span class="pre">Literal</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Diffraction</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#nexusLIMS.schemas.metadata.DiffractionMetadata.dataset_type" title="Link to this definition">#</a></dt>
-<dd><p>‘Field(…)’</p>
+<span class="sig-name descname"><span class="pre">dataset_type</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.DiffractionMetadata.dataset_type" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> typing.Literal[Diffraction]</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.DiffractionMetadata.camera_length">
-<span class="sig-name descname"><span class="pre">camera_length</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">nexusLIMS.schemas.pint_types.PintQuantity</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.schemas.metadata.DiffractionMetadata.camera_length" title="Link to this definition">#</a></dt>
-<dd><p>‘emg_field(…)’</p>
+<span class="sig-name descname"><span class="pre">camera_length</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.DiffractionMetadata.camera_length" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> <a class="reference internal" href="nexusLIMS.schemas.pint_types.html#nexusLIMS.schemas.pint_types.PintQuantity" title="nexusLIMS.schemas.pint_types.PintQuantity"><code class="xref py py-data docutils literal notranslate"><span class="pre">PintQuantity</span></code></a> | None</p>
+<p>Camera length for diffraction pattern.
+Preferred unit: millimeter (mm). EM Glossary: EMG_00000008</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.DiffractionMetadata.convergence_angle">
-<span class="sig-name descname"><span class="pre">convergence_angle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">nexusLIMS.schemas.pint_types.PintQuantity</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.schemas.metadata.DiffractionMetadata.convergence_angle" title="Link to this definition">#</a></dt>
-<dd><p>‘emg_field(…)’</p>
+<span class="sig-name descname"><span class="pre">convergence_angle</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.DiffractionMetadata.convergence_angle" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> <a class="reference internal" href="nexusLIMS.schemas.pint_types.html#nexusLIMS.schemas.pint_types.PintQuantity" title="nexusLIMS.schemas.pint_types.PintQuantity"><code class="xref py py-data docutils literal notranslate"><span class="pre">PintQuantity</span></code></a> | None</p>
+<p>Convergence angle of the electron beam.
+Preferred unit: milliradian (mrad). EM Glossary: EMG_00000010</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.DiffractionMetadata.acceleration_voltage">
-<span class="sig-name descname"><span class="pre">acceleration_voltage</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">nexusLIMS.schemas.pint_types.PintQuantity</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.schemas.metadata.DiffractionMetadata.acceleration_voltage" title="Link to this definition">#</a></dt>
-<dd><p>‘emg_field(…)’</p>
+<span class="sig-name descname"><span class="pre">acceleration_voltage</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.DiffractionMetadata.acceleration_voltage" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> <a class="reference internal" href="nexusLIMS.schemas.pint_types.html#nexusLIMS.schemas.pint_types.PintQuantity" title="nexusLIMS.schemas.pint_types.PintQuantity"><code class="xref py py-data docutils literal notranslate"><span class="pre">PintQuantity</span></code></a> | None</p>
+<p>Accelerating voltage (also relevant for diffraction).
+Preferred unit: kilovolt (kV). EM Glossary: EMG_00000004</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.DiffractionMetadata.acquisition_device">
-<span class="sig-name descname"><span class="pre">acquisition_device</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.schemas.metadata.DiffractionMetadata.acquisition_device" title="Link to this definition">#</a></dt>
-<dd><p>‘emg_field(…)’</p>
+<span class="sig-name descname"><span class="pre">acquisition_device</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.DiffractionMetadata.acquisition_device" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> str | None</p>
+<p>Name of the detector/camera used.</p>
 </dd></dl>
 
 </dd></dl>
@@ -1456,13 +1295,10 @@ validated to form a valid model.</p>
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#examples">Examples</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#classes">Classes</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data">Data</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#api">API</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.schemas.metadata.logger"><code class="docutils literal notranslate"><span class="pre">logger</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.schemas.metadata.emg_field"><code class="docutils literal notranslate"><span class="pre">emg_field()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.schemas.metadata.ExtractionDetails"><code class="docutils literal notranslate"><span class="pre">ExtractionDetails</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.schemas.metadata.ExtractionDetails.date"><code class="docutils literal notranslate"><span class="pre">ExtractionDetails.date</span></code></a></li>

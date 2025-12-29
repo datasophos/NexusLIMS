@@ -4,6 +4,7 @@
 ```
 
 ```{autodoc2-docstring} nexusLIMS.harvesters
+:parser: autodoc2_docstrings_parser
 :allowtitles:
 ```
 
@@ -35,10 +36,12 @@ nexusLIMS.harvesters.reservation_event
 
 * - {py:obj}`CA_BUNDLE_PATH <nexusLIMS.harvesters.CA_BUNDLE_PATH>`
   - ```{autodoc2-docstring} nexusLIMS.harvesters.CA_BUNDLE_PATH
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`CA_BUNDLE_CONTENT <nexusLIMS.harvesters.CA_BUNDLE_CONTENT>`
   - ```{autodoc2-docstring} nexusLIMS.harvesters.CA_BUNDLE_CONTENT
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 ````
@@ -47,20 +50,18 @@ nexusLIMS.harvesters.reservation_event
 
 ````{py:data} CA_BUNDLE_PATH
 :canonical: nexusLIMS.harvesters.CA_BUNDLE_PATH
-:value: >
-   None
 
 ```{autodoc2-docstring} nexusLIMS.harvesters.CA_BUNDLE_PATH
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:data} CA_BUNDLE_CONTENT
 :canonical: nexusLIMS.harvesters.CA_BUNDLE_CONTENT
-:value: >
-   None
 
 ```{autodoc2-docstring} nexusLIMS.harvesters.CA_BUNDLE_CONTENT
+:parser: autodoc2_docstrings_parser
 ```
 
 ````

@@ -32,8 +32,9 @@
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=af02a5b6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=8633d6cc" />
   
   <!-- So that users can add custom icons -->
   <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -44,6 +45,8 @@
     <script src="../../_static/documentation_options.js?v=dc4a309c"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=30646c52"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'api/nexusLIMS/nexusLIMS.schemas.em_glossary';</script>
     <script>
@@ -53,6 +56,7 @@
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
+    <script src="../../_static/custom.js?v=ba087cdf"></script>
     <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/pr-23/api/nexusLIMS/nexusLIMS.schemas.em_glossary.html" />
     <link rel="icon" href="../../_static/nexusLIMS_bare_logo.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -62,7 +66,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.2.0.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 28, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 29, 2025"/>
   </head>
   
   
@@ -172,20 +176,6 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../getting_started.html">
-    Getting Started
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../migration.html">
-    Migration Guide: v1 to v2
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../user_guide.html">
     User Guide
   </a>
@@ -193,28 +183,25 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../dev_guide.html">
-    Developer Guide
+  <a class="nav-link nav-internal" href="../../migration.html">
+    Migration Guide: v1.4.3 to v2.2.0
   </a>
 </li>
 
-            <li class="nav-item dropdown">
-                <button class="btn dropdown-toggle nav-item" type="button"
-                data-bs-toggle="dropdown" aria-expanded="false"
-                aria-controls="pst-nav-more-links">
-                    More
-                </button>
-                <ul id="pst-nav-more-links" class="dropdown-menu">
-                    
-<li class=" current active">
-  <a class="nav-link dropdown-item nav-internal" href="../../reference.html">
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../dev_guide.html">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../reference.html">
     Reference
   </a>
 </li>
 
-                </ul>
-            </li>
-            
   </ul>
 </nav></div>
       
@@ -311,20 +298,6 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../getting_started.html">
-    Getting Started
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../migration.html">
-    Migration Guide: v1 to v2
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../user_guide.html">
     User Guide
   </a>
@@ -332,8 +305,15 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../migration.html">
+    Migration Guide: v1.4.3 to v2.2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../dev_guide.html">
-    Developer Guide
+    Dev Guide
   </a>
 </li>
 
@@ -406,7 +386,7 @@
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../api.html">API documentation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../reference/api.html">API documentation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="nexusLIMS.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS</span></code></a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.db.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.db</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.builder.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.builder</span></code></a></li>
@@ -429,7 +409,7 @@
 </details></li>
 </ul>
 </details></li>
-<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/changelog.html">Changelog</a></li>
 </ul>
 </div>
 </nav></div>
@@ -474,7 +454,7 @@
     <li class="breadcrumb-item"><a href="../../reference.html" class="nav-link">Reference</a></li>
     
     
-    <li class="breadcrumb-item"><a href="../../api.html" class="nav-link">API documentation</a></li>
+    <li class="breadcrumb-item"><a href="../../reference/api.html" class="nav-link">API documentation</a></li>
     
     
     <li class="breadcrumb-item"><a href="nexusLIMS.html" class="nav-link"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS</span></code></a></li>
@@ -501,62 +481,6 @@
                   
   <section id="module-nexusLIMS.schemas.em_glossary">
 <span id="nexuslims-schemas-em-glossary"></span><h1><a class="reference internal" href="#module-nexusLIMS.schemas.em_glossary" title="nexusLIMS.schemas.em_glossary"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.schemas.em_glossary</span></code></a><a class="headerlink" href="#module-nexusLIMS.schemas.em_glossary" title="Link to this heading">#</a></h1>
-<section id="examples">
-<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading">#</a></h2>
-<p>Get EM Glossary ID for a field:</p>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>from nexusLIMS.schemas.em_glossary import get_emg_id
-get_emg_id(“acceleration_voltage”)
-‘EMG_00000004’</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-<p>Get display name for XML:</p>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>from nexusLIMS.schemas.em_glossary import get_display_name
-get_display_name(“acceleration_voltage”)
-‘Voltage’</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-<p>Get EMG label from ID:</p>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>from nexusLIMS.schemas.em_glossary import get_emg_label
-get_emg_label(“EMG_00000004”)
-‘Acceleration Voltage’</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-<p>Get EMG definition:</p>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>from nexusLIMS.schemas.em_glossary import get_emg_definition
-defn = get_emg_definition(“EMG_00000004”)
-print(defn)
-The potential difference between anode and cathode.</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-<p>Check if field has EMG mapping:</p>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>from nexusLIMS.schemas.em_glossary import has_emg_id
-has_emg_id(“acceleration_voltage”)
-True
-has_emg_id(“custom_vendor_field”)
-False</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-</section>
 <p>EM Glossary field name mappings for NexusLIMS metadata.</p>
 <p>This module provides mappings between NexusLIMS internal field names, display names,
 and EM Glossary (EMG) standardized terminology. The EM Glossary is a community-driven
@@ -567,18 +491,52 @@ to term labels, definitions, and the full semantic structure.</p>
 <p><strong>EM Glossary Version:</strong> v2.0.0</p>
 <p><strong>References:</strong></p>
 <ul class="simple">
-<li><p>EM Glossary v2.0.0: https://purls.helmholtz-metadaten.de/emg/v2.0.0/</p></li>
+<li><p>EM Glossary v2.0.0: <a class="reference external" href="https://purls.helmholtz-metadaten.de/emg/v2.0.0/">https://purls.helmholtz-metadaten.de/emg/v2.0.0/</a></p></li>
 <li><p>OWL Ontology: Shipped with NexusLIMS at
-nexusLIMS/schemas/references/em_glossary_2.0.owl</p></li>
-<li><p>License: CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/)</p></li>
+<code class="docutils literal notranslate"><span class="pre">nexusLIMS/schemas/references/em_glossary_2.0.owl</span></code></p></li>
+<li><p>License: CC BY 4.0 <a class="reference external" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></p></li>
 </ul>
 <p>The mappings in this module enable:</p>
 <ul class="simple">
 <li><p>Standardized field names across instruments and vendors</p></li>
 <li><p>Cross-reference to EM Glossary IDs for semantic interoperability</p></li>
 <li><p>Human-readable display names for XML output</p></li>
-<li><p>Dynamic loading from the OWL ontology using RDFLib</p></li>
+<li><p>Dynamic loading from the OWL ontology using <a class="reference external" href="https://rdflib.readthedocs.io/en/stable/index.html">RDFLib</a></p></li>
 </ul>
+<p><strong>Examples:</strong></p>
+<p>Get EM Glossary ID for a field:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas.em_glossary</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_emg_id</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">get_emg_id</span><span class="p">(</span><span class="s2">&quot;acceleration_voltage&quot;</span><span class="p">)</span>
+<span class="go">&#39;EMG_00000004&#39;</span>
+</pre></div>
+</div>
+<p>Get display name for XML:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas.em_glossary</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_display_name</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">get_display_name</span><span class="p">(</span><span class="s2">&quot;acceleration_voltage&quot;</span><span class="p">)</span>
+<span class="go">&#39;Voltage&#39;</span>
+</pre></div>
+</div>
+<p>Get EMG label from ID:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas.em_glossary</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_emg_label</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">get_emg_label</span><span class="p">(</span><span class="s2">&quot;EMG_00000004&quot;</span><span class="p">)</span>
+<span class="go">&#39;Acceleration Voltage&#39;</span>
+</pre></div>
+</div>
+<p>Get EMG definition:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas.em_glossary</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_emg_definition</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">defn</span> <span class="o">=</span> <span class="n">get_emg_definition</span><span class="p">(</span><span class="s2">&quot;EMG_00000004&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">defn</span><span class="p">)</span>
+<span class="go">The potential difference between anode and cathode.</span>
+</pre></div>
+</div>
+<p>Check if field has EMG mapping:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas.em_glossary</span><span class="w"> </span><span class="kn">import</span> <span class="n">has_emg_id</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">has_emg_id</span><span class="p">(</span><span class="s2">&quot;acceleration_voltage&quot;</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">has_emg_id</span><span class="p">(</span><span class="s2">&quot;custom_vendor_field&quot;</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
 <section id="module-contents">
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
 <section id="functions">
@@ -623,23 +581,22 @@ nexusLIMS/schemas/references/em_glossary_2.0.owl</p></li>
 <h3>Data<a class="headerlink" href="#data" title="Link to this heading">#</a></h3>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table table-left">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.schemas.em_glossary.logger" title="nexusLIMS.schemas.em_glossary.logger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">logger</span></code></a></p></td>
-<td></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.schemas.em_glossary.EMG_OWL_PATH" title="nexusLIMS.schemas.em_glossary.EMG_OWL_PATH"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EMG_OWL_PATH</span></code></a></p></td>
+<td><p>Path to the EM Glossary OWL file shipped with NexusLIMS</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.schemas.em_glossary.EMG_OWL_PATH" title="nexusLIMS.schemas.em_glossary.EMG_OWL_PATH"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EMG_OWL_PATH</span></code></a></p></td>
-<td></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.schemas.em_glossary.EMG_VERSION" title="nexusLIMS.schemas.em_glossary.EMG_VERSION"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EMG_VERSION</span></code></a></p></td>
+<td><p>Version of the packaged EM Glossary OWL file</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.schemas.em_glossary.EMG_VERSION" title="nexusLIMS.schemas.em_glossary.EMG_VERSION"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EMG_VERSION</span></code></a></p></td>
-<td></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.schemas.em_glossary.EMG" title="nexusLIMS.schemas.em_glossary.EMG"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EMG</span></code></a></p></td>
+<td><p>RDF Namespace for the EM Glossary</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.schemas.em_glossary.EMG" title="nexusLIMS.schemas.em_glossary.EMG"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EMG</span></code></a></p></td>
-<td></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.schemas.em_glossary.OBO" title="nexusLIMS.schemas.em_glossary.OBO"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OBO</span></code></a></p></td>
+<td><p>RDF Namespace for OBO</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.schemas.em_glossary.OBO" title="nexusLIMS.schemas.em_glossary.OBO"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OBO</span></code></a></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.schemas.em_glossary.NEXUSLIMS_TO_EMG_MAPPINGS" title="nexusLIMS.schemas.em_glossary.NEXUSLIMS_TO_EMG_MAPPINGS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NEXUSLIMS_TO_EMG_MAPPINGS</span></code></a></p></td>
-<td></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.schemas.em_glossary.NEXUSLIMS_TO_EMG_MAPPINGS" title="nexusLIMS.schemas.em_glossary.NEXUSLIMS_TO_EMG_MAPPINGS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NEXUSLIMS_TO_EMG_MAPPINGS</span></code></a></p></td>
+<td><p>Mapping from NexusLIMS internal field names to EM Glossary terms
+Format: <code class="docutils literal notranslate"><span class="pre">internal_field_name</span> <span class="pre">-&gt;</span> <span class="pre">(display_name,</span> <span class="pre">emg_label</span> <span class="pre">or</span> <span class="pre">None,</span> <span class="pre">description)</span></code>
+The emg_label is used to look up the EMG_ID from the OWL file</p></td>
 </tr>
 </tbody>
 </table>
@@ -648,39 +605,39 @@ nexusLIMS/schemas/references/em_glossary_2.0.owl</p></li>
 <section id="api">
 <h3>API<a class="headerlink" href="#api" title="Link to this heading">#</a></h3>
 <dl class="py data">
-<dt class="sig sig-object py" id="nexusLIMS.schemas.em_glossary.logger">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.schemas.em_glossary.</span></span><span class="sig-name descname"><span class="pre">logger</span></span><a class="headerlink" href="#nexusLIMS.schemas.em_glossary.logger" title="Link to this definition">#</a></dt>
-<dd><p>‘getLogger(…)’</p>
-</dd></dl>
-
-<dl class="py data">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.em_glossary.EMG_OWL_PATH">
 <span class="sig-prename descclassname"><span class="pre">nexusLIMS.schemas.em_glossary.</span></span><span class="sig-name descname"><span class="pre">EMG_OWL_PATH</span></span><a class="headerlink" href="#nexusLIMS.schemas.em_glossary.EMG_OWL_PATH" title="Link to this definition">#</a></dt>
-<dd><p>None</p>
+<dd><p>Path to the EM Glossary OWL file shipped with NexusLIMS</p>
 </dd></dl>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.em_glossary.EMG_VERSION">
 <span class="sig-prename descclassname"><span class="pre">nexusLIMS.schemas.em_glossary.</span></span><span class="sig-name descname"><span class="pre">EMG_VERSION</span></span><a class="headerlink" href="#nexusLIMS.schemas.em_glossary.EMG_VERSION" title="Link to this definition">#</a></dt>
 <dd><p>‘v2.0.0’</p>
+<p>Version of the packaged EM Glossary OWL file</p>
 </dd></dl>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.em_glossary.EMG">
 <span class="sig-prename descclassname"><span class="pre">nexusLIMS.schemas.em_glossary.</span></span><span class="sig-name descname"><span class="pre">EMG</span></span><a class="headerlink" href="#nexusLIMS.schemas.em_glossary.EMG" title="Link to this definition">#</a></dt>
 <dd><p>‘Namespace(…)’</p>
+<p>RDF Namespace for the EM Glossary</p>
 </dd></dl>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.em_glossary.OBO">
 <span class="sig-prename descclassname"><span class="pre">nexusLIMS.schemas.em_glossary.</span></span><span class="sig-name descname"><span class="pre">OBO</span></span><a class="headerlink" href="#nexusLIMS.schemas.em_glossary.OBO" title="Link to this definition">#</a></dt>
 <dd><p>‘Namespace(…)’</p>
+<p>RDF Namespace for OBO</p>
 </dd></dl>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.em_glossary.NEXUSLIMS_TO_EMG_MAPPINGS">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.schemas.em_glossary.</span></span><span class="sig-name descname"><span class="pre">NEXUSLIMS_TO_EMG_MAPPINGS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#tuple" title="(in Python v3.11)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#nexusLIMS.schemas.em_glossary.NEXUSLIMS_TO_EMG_MAPPINGS" title="Link to this definition">#</a></dt>
-<dd><p>None</p>
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.schemas.em_glossary.</span></span><span class="sig-name descname"><span class="pre">NEXUSLIMS_TO_EMG_MAPPINGS</span></span><a class="headerlink" href="#nexusLIMS.schemas.em_glossary.NEXUSLIMS_TO_EMG_MAPPINGS" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> typing.Dict[str, tuple[str, str | None, str]]</p>
+<p>Mapping from NexusLIMS internal field names to EM Glossary terms
+Format: <code class="docutils literal notranslate"><span class="pre">internal_field_name</span> <span class="pre">-&gt;</span> <span class="pre">(display_name,</span> <span class="pre">emg_label</span> <span class="pre">or</span> <span class="pre">None,</span> <span class="pre">description)</span></code>
+The emg_label is used to look up the EMG_ID from the OWL file</p>
 </dd></dl>
 
 <dl class="py function">
@@ -688,37 +645,30 @@ nexusLIMS/schemas/references/em_glossary_2.0.owl</p></li>
 <span class="sig-prename descclassname"><span class="pre">nexusLIMS.schemas.em_glossary.</span></span><span class="sig-name descname"><span class="pre">get_emg_label</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">emg_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/schemas/em_glossary.html#get_emg_label"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.schemas.em_glossary.get_emg_label" title="Link to this definition">#</a></dt>
 <dd><p>Get the EM Glossary label for an EMG ID.</p>
 <p>Looks up the human-readable label from the OWL ontology file.</p>
-<p class="rubric" id="id28">Parameters</p>
-<p>emg_id : str
-EM Glossary ID (e.g., “EMG_00000004”)</p>
-<p class="rubric" id="id29">Returns</p>
-<p>str or None
-EMG label, or None if ID not found</p>
-<p class="rubric" id="id30">Examples</p>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>get_emg_label(“EMG_00000004”)
-‘Acceleration Voltage’</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>get_emg_label(“EMG_00000050”)
-‘Working Distance’</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>get_emg_label(“EMG_99999999”) is None
-True</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
+<dl class="myst field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>emg_id</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – EM Glossary ID (e.g., “EMG_00000004”)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>EMG label, or None if ID not found</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a> or <em>None</em></p>
+</dd>
+</dl>
+<p><strong>Examples:</strong></p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">get_emg_label</span><span class="p">(</span><span class="s2">&quot;EMG_00000004&quot;</span><span class="p">)</span>
+<span class="go">&#39;Acceleration Voltage&#39;</span>
+</pre></div>
+</div>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">get_emg_label</span><span class="p">(</span><span class="s2">&quot;EMG_00000050&quot;</span><span class="p">)</span>
+<span class="go">&#39;Working Distance&#39;</span>
+</pre></div>
+</div>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">get_emg_label</span><span class="p">(</span><span class="s2">&quot;EMG_99999999&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span>
+<span class="go">True</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -726,30 +676,27 @@ True</p>
 <span class="sig-prename descclassname"><span class="pre">nexusLIMS.schemas.em_glossary.</span></span><span class="sig-name descname"><span class="pre">get_emg_definition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">emg_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/schemas/em_glossary.html#get_emg_definition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.schemas.em_glossary.get_emg_definition" title="Link to this definition">#</a></dt>
 <dd><p>Get the EM Glossary definition for an EMG ID.</p>
 <p>Looks up the formal definition from the OWL ontology file.</p>
-<p class="rubric" id="id31">Parameters</p>
-<p>emg_id : str
-EM Glossary ID (e.g., “EMG_00000004”)</p>
-<p class="rubric" id="id32">Returns</p>
-<p>str or None
-EMG definition, or None if ID not found or no definition available</p>
-<p class="rubric" id="id33">Examples</p>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>defn = get_emg_definition(“EMG_00000004”)
-print(defn)
-The potential difference between anode and cathode.</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>get_emg_definition(“EMG_99999999”) is None
-True</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
+<dl class="myst field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>emg_id</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – EM Glossary ID (e.g., “EMG_00000004”)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>EMG definition, or None if ID not found or no definition available</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a> or <em>None</em></p>
+</dd>
+</dl>
+<p><strong>Examples:</strong></p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">defn</span> <span class="o">=</span> <span class="n">get_emg_definition</span><span class="p">(</span><span class="s2">&quot;EMG_00000004&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">defn</span><span class="p">)</span>
+<span class="go">The potential difference between anode and cathode.</span>
+</pre></div>
+</div>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">get_emg_definition</span><span class="p">(</span><span class="s2">&quot;EMG_99999999&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span>
+<span class="go">True</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -758,38 +705,31 @@ True</p>
 <dd><p>Get the EM Glossary ID for a NexusLIMS field name.</p>
 <p>Looks up the field in NEXUSLIMS_TO_EMG_MAPPINGS, then resolves the
 EMG label to an ID from the OWL ontology.</p>
-<p class="rubric" id="id34">Parameters</p>
-<p>field_name : str
-Internal field name (e.g., “acceleration_voltage”)</p>
-<p class="rubric" id="id35">Returns</p>
-<p>str or None
-EM Glossary ID string (e.g., “EMG_00000004”), or None if not mapped</p>
-<p class="rubric" id="id36">Examples</p>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>get_emg_id(“acceleration_voltage”)
-‘EMG_00000004’</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>get_emg_id(“working_distance”)
-‘EMG_00000050’</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>get_emg_id(“custom_field”) is None
-True</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-<p class="rubric" id="id37">Notes</p>
+<dl class="myst field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>field_name</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Internal field name (e.g., “acceleration_voltage”)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>EM Glossary ID string (e.g., “EMG_00000004”), or None if not mapped</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a> or <em>None</em></p>
+</dd>
+</dl>
+<p><strong>Examples:</strong></p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">get_emg_id</span><span class="p">(</span><span class="s2">&quot;acceleration_voltage&quot;</span><span class="p">)</span>
+<span class="go">&#39;EMG_00000004&#39;</span>
+</pre></div>
+</div>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">get_emg_id</span><span class="p">(</span><span class="s2">&quot;working_distance&quot;</span><span class="p">)</span>
+<span class="go">&#39;EMG_00000050&#39;</span>
+</pre></div>
+</div>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">get_emg_id</span><span class="p">(</span><span class="s2">&quot;custom_field&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p><strong>Notes:</strong></p>
 <p>Not all NexusLIMS fields have EM Glossary equivalents. This is expected
 as EMG is a growing ontology and some fields are vendor-specific or
 outside the scope of EMG’s current coverage (v2.0.0).</p>
@@ -802,38 +742,31 @@ outside the scope of EMG’s current coverage (v2.0.0).</p>
 <p>Returns the display name used in XML output and user-facing documentation.
 If the field is not in the mapping, returns a title-cased version of the
 field name with underscores replaced by spaces.</p>
-<p class="rubric" id="id38">Parameters</p>
-<p>field_name : str
-Internal field name (e.g., “acceleration_voltage”)</p>
-<p class="rubric" id="id39">Returns</p>
-<p>str
-Display name for the field</p>
-<p class="rubric" id="id40">Examples</p>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>get_display_name(“acceleration_voltage”)
-‘Voltage’</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>get_display_name(“working_distance”)
-‘Working Distance’</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>get_display_name(“custom_field”)
-‘Custom Field’</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-<p class="rubric" id="id41">Notes</p>
+<dl class="myst field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>field_name</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Internal field name (e.g., “acceleration_voltage”)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Display name for the field</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a></p>
+</dd>
+</dl>
+<p><strong>Examples:</strong></p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">get_display_name</span><span class="p">(</span><span class="s2">&quot;acceleration_voltage&quot;</span><span class="p">)</span>
+<span class="go">&#39;Voltage&#39;</span>
+</pre></div>
+</div>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">get_display_name</span><span class="p">(</span><span class="s2">&quot;working_distance&quot;</span><span class="p">)</span>
+<span class="go">&#39;Working Distance&#39;</span>
+</pre></div>
+</div>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">get_display_name</span><span class="p">(</span><span class="s2">&quot;custom_field&quot;</span><span class="p">)</span>
+<span class="go">&#39;Custom Field&#39;</span>
+</pre></div>
+</div>
+<p><strong>Notes:</strong></p>
 <p>For unmapped fields, the function applies a simple transformation:
 replace underscores with spaces and title-case the result. This ensures
 all fields have reasonable display names even without explicit mappings.</p>
@@ -845,30 +778,27 @@ all fields have reasonable display names even without explicit mappings.</p>
 <dd><p>Get the NexusLIMS description for a field.</p>
 <p>Returns a brief description of what the field represents from the
 NexusLIMS mappings. For EMG formal definitions, use get_emg_definition().</p>
-<p class="rubric" id="id42">Parameters</p>
-<p>field_name : str
-Internal field name (e.g., “acceleration_voltage”)</p>
-<p class="rubric" id="id43">Returns</p>
-<p>str or None
-Field description, or None if not mapped</p>
-<p class="rubric" id="id44">Examples</p>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>desc = get_description(“acceleration_voltage”)
-print(desc)
-Accelerating voltage of the electron/ion beam</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>get_description(“unknown_field”) is None
-True</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
+<dl class="myst field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>field_name</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Internal field name (e.g., “acceleration_voltage”)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Field description, or None if not mapped</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a> or <em>None</em></p>
+</dd>
+</dl>
+<p><strong>Examples:</strong></p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">desc</span> <span class="o">=</span> <span class="n">get_description</span><span class="p">(</span><span class="s2">&quot;acceleration_voltage&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">desc</span><span class="p">)</span>
+<span class="go">Accelerating voltage of the electron/ion beam</span>
+</pre></div>
+</div>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">get_description</span><span class="p">(</span><span class="s2">&quot;unknown_field&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span>
+<span class="go">True</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -877,37 +807,30 @@ True</p>
 <dd><p>Check if a field has an EM Glossary ID mapping.</p>
 <p>Returns True if the field has a corresponding EMG ID in v2.0.0, False otherwise.
 This is useful for determining whether semantic annotations are available.</p>
-<p class="rubric" id="id45">Parameters</p>
-<p>field_name : str
-Internal field name (e.g., “acceleration_voltage”)</p>
-<p class="rubric" id="id46">Returns</p>
-<p>bool
-True if field has EMG ID, False otherwise</p>
-<p class="rubric" id="id47">Examples</p>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>has_emg_id(“acceleration_voltage”)
-True</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>has_emg_id(“magnification”)
-False</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>has_emg_id(“custom_field”)
-False</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
+<dl class="myst field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>field_name</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Internal field name (e.g., “acceleration_voltage”)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if field has EMG ID, False otherwise</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a></p>
+</dd>
+</dl>
+<p><strong>Examples:</strong></p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">has_emg_id</span><span class="p">(</span><span class="s2">&quot;acceleration_voltage&quot;</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">has_emg_id</span><span class="p">(</span><span class="s2">&quot;magnification&quot;</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">has_emg_id</span><span class="p">(</span><span class="s2">&quot;custom_field&quot;</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -917,38 +840,31 @@ False</p>
 <p>Returns the complete PURL (Persistent URL) for the field’s EM Glossary
 v2.0.0 entry. This enables Tier 3 semantic web integration and linkage to
 the full EMG ontology.</p>
-<p class="rubric" id="id48">Parameters</p>
-<p>field_name : str
-Internal field name (e.g., “acceleration_voltage”)</p>
-<p class="rubric" id="id49">Returns</p>
-<p>str or None
-Full EMG PURL, or None if field has no EMG ID</p>
-<p class="rubric" id="id50">Examples</p>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>get_emg_uri(“acceleration_voltage”)
-‘https://purls.helmholtz-metadaten.de/emg/v2.0.0/EMG_00000004’</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>get_emg_uri(“working_distance”)
-‘https://purls.helmholtz-metadaten.de/emg/v2.0.0/EMG_00000050’</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>get_emg_uri(“custom_field”) is None
-True</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-<p class="rubric" id="id51">Notes</p>
+<dl class="myst field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>field_name</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Internal field name (e.g., “acceleration_voltage”)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Full EMG PURL, or None if field has no EMG ID</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a> or <em>None</em></p>
+</dd>
+</dl>
+<p><strong>Examples:</strong></p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">get_emg_uri</span><span class="p">(</span><span class="s2">&quot;acceleration_voltage&quot;</span><span class="p">)</span>
+<span class="go">&#39;https://purls.helmholtz-metadaten.de/emg/v2.0.0/EMG_00000004&#39;</span>
+</pre></div>
+</div>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">get_emg_uri</span><span class="p">(</span><span class="s2">&quot;working_distance&quot;</span><span class="p">)</span>
+<span class="go">&#39;https://purls.helmholtz-metadaten.de/emg/v2.0.0/EMG_00000050&#39;</span>
+</pre></div>
+</div>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">get_emg_uri</span><span class="p">(</span><span class="s2">&quot;custom_field&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p><strong>Notes:</strong></p>
 <p>The returned URI is a PURL that redirects to the canonical EMG ontology
 entry. These URIs are suitable for use in RDF/OWL ontologies and
 semantic web applications.</p>
@@ -960,21 +876,22 @@ semantic web applications.</p>
 <dd><p>Get a list of all fields with NexusLIMS mappings.</p>
 <p>Returns a sorted list of all internal field names that have entries
 in the NEXUSLIMS_TO_EMG_MAPPINGS dictionary.</p>
-<p class="rubric" id="id52">Returns</p>
-<p>list[str]
-Sorted list of field names with mappings</p>
-<p class="rubric" id="id53">Examples</p>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>fields = get_all_mapped_fields()
-“acceleration_voltage” in fields
-True
-len(fields) &gt; 0
-True</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
+<dl class="myst field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Sorted list of field names with mappings</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a>[<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>]</p>
+</dd>
+</dl>
+<p><strong>Examples:</strong></p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fields</span> <span class="o">=</span> <span class="n">get_all_mapped_fields</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s2">&quot;acceleration_voltage&quot;</span> <span class="ow">in</span> <span class="n">fields</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+<span class="go">True</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -983,21 +900,22 @@ True</p>
 <dd><p>Get a list of fields that have EM Glossary ID mappings.</p>
 <p>Returns only fields with actual EMG IDs (non-None values), excluding
 fields that have display names but no EMG equivalents.</p>
-<p class="rubric" id="id54">Returns</p>
-<p>list[str]
-Sorted list of field names with EMG IDs</p>
-<p class="rubric" id="id55">Examples</p>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>fields = get_fields_with_emg_ids()
-“acceleration_voltage” in fields
-True
-“magnification” in fields  # Has display name but no EMG ID
-False</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
+<dl class="myst field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Sorted list of field names with EMG IDs</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a>[<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>]</p>
+</dd>
+</dl>
+<p><strong>Examples:</strong></p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fields</span> <span class="o">=</span> <span class="n">get_fields_with_emg_ids</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s2">&quot;acceleration_voltage&quot;</span> <span class="ow">in</span> <span class="n">fields</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s2">&quot;magnification&quot;</span> <span class="ow">in</span> <span class="n">fields</span>  <span class="c1"># Has display name but no EMG ID</span>
+<span class="go">False</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -1006,23 +924,24 @@ False</p>
 <dd><p>Get all EM Glossary terms from the OWL file.</p>
 <p>Returns the complete mapping of EMG IDs to labels and definitions
 loaded from the ontology. Useful for discovering available EMG terms.</p>
-<p class="rubric" id="id56">Returns</p>
-<p>dict[str, dict[str, str]]
-Mapping from EMG_ID -&gt; {‘label’: str, ‘definition’: str | None}</p>
-<p class="rubric" id="id57">Examples</p>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>terms = get_all_emg_terms()
-“EMG_00000004” in terms
-True
-terms[“EMG_00000004”][“label”]
-‘Acceleration Voltage’
-print(terms[“EMG_00000004”][“definition”])
-The potential difference between anode and cathode.</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
+<dl class="myst field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Mapping from EMG_ID -&gt; {‘label’: str, ‘definition’: str | None}</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>[<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>, <a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>[<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>, <a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>]]</p>
+</dd>
+</dl>
+<p><strong>Examples:</strong></p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">terms</span> <span class="o">=</span> <span class="n">get_all_emg_terms</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s2">&quot;EMG_00000004&quot;</span> <span class="ow">in</span> <span class="n">terms</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">terms</span><span class="p">[</span><span class="s2">&quot;EMG_00000004&quot;</span><span class="p">][</span><span class="s2">&quot;label&quot;</span><span class="p">]</span>
+<span class="go">&#39;Acceleration Voltage&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">terms</span><span class="p">[</span><span class="s2">&quot;EMG_00000004&quot;</span><span class="p">][</span><span class="s2">&quot;definition&quot;</span><span class="p">])</span>
+<span class="go">The potential difference between anode and cathode.</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </section>
@@ -1076,12 +995,10 @@ The potential difference between anode and cathode.</p>
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#examples">Examples</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data">Data</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#api">API</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.schemas.em_glossary.logger"><code class="docutils literal notranslate"><span class="pre">logger</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.schemas.em_glossary.EMG_OWL_PATH"><code class="docutils literal notranslate"><span class="pre">EMG_OWL_PATH</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.schemas.em_glossary.EMG_VERSION"><code class="docutils literal notranslate"><span class="pre">EMG_VERSION</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.schemas.em_glossary.EMG"><code class="docutils literal notranslate"><span class="pre">EMG</span></code></a></li>

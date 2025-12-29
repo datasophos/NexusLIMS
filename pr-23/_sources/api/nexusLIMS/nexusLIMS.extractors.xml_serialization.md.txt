@@ -4,6 +4,7 @@
 ```
 
 ```{autodoc2-docstring} nexusLIMS.extractors.xml_serialization
+:parser: autodoc2_docstrings_parser
 :allowtitles:
 ```
 
@@ -17,22 +18,27 @@
 
 * - {py:obj}`serialize_quantity_to_xml <nexusLIMS.extractors.xml_serialization.serialize_quantity_to_xml>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.xml_serialization.serialize_quantity_to_xml
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`get_xml_field_name <nexusLIMS.extractors.xml_serialization.get_xml_field_name>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.xml_serialization.get_xml_field_name
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`prepare_metadata_for_xml <nexusLIMS.extractors.xml_serialization.prepare_metadata_for_xml>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.xml_serialization.prepare_metadata_for_xml
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`get_qudt_uri <nexusLIMS.extractors.xml_serialization.get_qudt_uri>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.xml_serialization.get_qudt_uri
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`get_emg_id <nexusLIMS.extractors.xml_serialization.get_emg_id>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.xml_serialization.get_emg_id
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 ````
@@ -45,6 +51,7 @@
 
 * - {py:obj}`EM_GLOSSARY_TO_XML_DISPLAY_NAMES <nexusLIMS.extractors.xml_serialization.EM_GLOSSARY_TO_XML_DISPLAY_NAMES>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.xml_serialization.EM_GLOSSARY_TO_XML_DISPLAY_NAMES
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 ````
@@ -53,10 +60,9 @@
 
 ````{py:data} EM_GLOSSARY_TO_XML_DISPLAY_NAMES
 :canonical: nexusLIMS.extractors.xml_serialization.EM_GLOSSARY_TO_XML_DISPLAY_NAMES
-:value: >
-   None
 
 ```{autodoc2-docstring} nexusLIMS.extractors.xml_serialization.EM_GLOSSARY_TO_XML_DISPLAY_NAMES
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -65,6 +71,7 @@
 :canonical: nexusLIMS.extractors.xml_serialization.serialize_quantity_to_xml
 
 ```{autodoc2-docstring} nexusLIMS.extractors.xml_serialization.serialize_quantity_to_xml
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -72,6 +79,7 @@
 :canonical: nexusLIMS.extractors.xml_serialization.get_xml_field_name
 
 ```{autodoc2-docstring} nexusLIMS.extractors.xml_serialization.get_xml_field_name
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -79,6 +87,7 @@
 :canonical: nexusLIMS.extractors.xml_serialization.prepare_metadata_for_xml
 
 ```{autodoc2-docstring} nexusLIMS.extractors.xml_serialization.prepare_metadata_for_xml
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -86,6 +95,7 @@
 :canonical: nexusLIMS.extractors.xml_serialization.get_qudt_uri
 
 ```{autodoc2-docstring} nexusLIMS.extractors.xml_serialization.get_qudt_uri
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -93,5 +103,6 @@
 :canonical: nexusLIMS.extractors.xml_serialization.get_emg_id
 
 ```{autodoc2-docstring} nexusLIMS.extractors.xml_serialization.get_emg_id
+:parser: autodoc2_docstrings_parser
 ```
 ````

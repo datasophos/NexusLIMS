@@ -31,8 +31,9 @@
 
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=af02a5b6" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=8633d6cc" />
   
   <!-- So that users can add custom icons -->
   <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -43,6 +44,8 @@
     <script src="../../../_static/documentation_options.js?v=dc4a309c"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=30646c52"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
     <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs"></script>
     <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs"></script>
@@ -417,6 +420,7 @@ window.addEventListener("load", load);
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
+    <script src="../../../_static/custom.js?v=ba087cdf"></script>
     <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/pr-23/_modules/nexusLIMS/extractors/registry.html" />
     <link rel="icon" href="../../../_static/nexusLIMS_bare_logo.ico"/>
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -424,7 +428,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.2.0.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 28, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 29, 2025"/>
   </head>
   
   
@@ -534,20 +538,6 @@ window.addEventListener("load", load);
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../getting_started.html">
-    Getting Started
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../migration.html">
-    Migration Guide: v1 to v2
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../user_guide.html">
     User Guide
   </a>
@@ -555,28 +545,25 @@ window.addEventListener("load", load);
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../dev_guide.html">
-    Developer Guide
+  <a class="nav-link nav-internal" href="../../../migration.html">
+    Migration Guide: v1.4.3 to v2.2.0
   </a>
 </li>
 
-            <li class="nav-item dropdown">
-                <button class="btn dropdown-toggle nav-item" type="button"
-                data-bs-toggle="dropdown" aria-expanded="false"
-                aria-controls="pst-nav-more-links">
-                    More
-                </button>
-                <ul id="pst-nav-more-links" class="dropdown-menu">
-                    
-<li class=" ">
-  <a class="nav-link dropdown-item nav-internal" href="../../../reference.html">
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../dev_guide.html">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../reference.html">
     Reference
   </a>
 </li>
 
-                </ul>
-            </li>
-            
   </ul>
 </nav></div>
       
@@ -671,20 +658,6 @@ window.addEventListener("load", load);
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../getting_started.html">
-    Getting Started
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../migration.html">
-    Migration Guide: v1 to v2
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../user_guide.html">
     User Guide
   </a>
@@ -692,8 +665,15 @@ window.addEventListener("load", load);
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../migration.html">
+    Migration Guide: v1.4.3 to v2.2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../dev_guide.html">
-    Developer Guide
+    Dev Guide
   </a>
 </li>
 
@@ -846,7 +826,7 @@ window.addEventListener("load", load);
         <span class="n">PreviewGenerator</span><span class="p">,</span>
     <span class="p">)</span>
 
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s2">&quot;ExtractorRegistry&quot;</span><span class="p">,</span>
@@ -863,7 +843,7 @@ window.addEventListener("load", load);
 <span class="sd">    Manages auto-discovery, registration, and selection of metadata extractors.</span>
 <span class="sd">    Uses priority-based selection with content sniffing support.</span>
 
-<span class="sd">    This is a singleton - use get_registry() to access.</span>
+<span class="sd">    This is a singleton - use :func:`get_registry` to access.</span>
 
 <span class="sd">    Features</span>
 <span class="sd">    --------</span>
@@ -877,25 +857,25 @@ window.addEventListener("load", load);
 <span class="sd">    --------</span>
 <span class="sd">    Get an extractor for a file:</span>
 
-<span class="sd">        &gt;&gt;&gt; from nexusLIMS.extractors.registry import get_registry</span>
-<span class="sd">        &gt;&gt;&gt; from nexusLIMS.extractors.base import ExtractionContext</span>
-<span class="sd">        &gt;&gt;&gt; from pathlib import Path</span>
-<span class="sd">        &gt;&gt;&gt;</span>
-<span class="sd">        &gt;&gt;&gt; registry = get_registry()</span>
-<span class="sd">        &gt;&gt;&gt; context = ExtractionContext(Path(&quot;data.dm3&quot;), instrument=None)</span>
-<span class="sd">        &gt;&gt;&gt; extractor = registry.get_extractor(context)</span>
-<span class="sd">        &gt;&gt;&gt; metadata = extractor.extract(context)</span>
+<span class="sd">    &gt;&gt;&gt; from nexusLIMS.extractors.registry import get_registry</span>
+<span class="sd">    &gt;&gt;&gt; from nexusLIMS.extractors.base import ExtractionContext</span>
+<span class="sd">    &gt;&gt;&gt; from pathlib import Path</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; registry = get_registry()</span>
+<span class="sd">    &gt;&gt;&gt; context = ExtractionContext(Path(&quot;data.dm3&quot;), instrument=None)</span>
+<span class="sd">    &gt;&gt;&gt; extractor = registry.get_extractor(context)</span>
+<span class="sd">    &gt;&gt;&gt; metadata = extractor.extract(context)</span>
 
 <span class="sd">    Manual registration (for testing):</span>
 
-<span class="sd">        &gt;&gt;&gt; class MyExtractor:</span>
-<span class="sd">        ...     name = &quot;my_extractor&quot;</span>
-<span class="sd">        ...     priority = 100</span>
-<span class="sd">        ...     def supports(self, context): return True</span>
-<span class="sd">        ...     def extract(self, context): return {&quot;nx_meta&quot;: {}}</span>
-<span class="sd">        &gt;&gt;&gt;</span>
-<span class="sd">        &gt;&gt;&gt; registry = get_registry()</span>
-<span class="sd">        &gt;&gt;&gt; registry.register_extractor(MyExtractor)</span>
+<span class="sd">    &gt;&gt;&gt; class MyExtractor:</span>
+<span class="sd">    ...     name = &quot;my_extractor&quot;</span>
+<span class="sd">    ...     priority = 100</span>
+<span class="sd">    ...     def supports(self, context): return True</span>
+<span class="sd">    ...     def extract(self, context): return {&quot;nx_meta&quot;: {}}</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; registry = get_registry()</span>
+<span class="sd">    &gt;&gt;&gt; registry.register_extractor(MyExtractor)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -920,7 +900,7 @@ window.addEventListener("load", load);
         <span class="c1"># Discovery state</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_discovered</span> <span class="o">=</span> <span class="kc">False</span>
 
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Initialized ExtractorRegistry&quot;</span><span class="p">)</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Initialized ExtractorRegistry&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">extractors</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">type</span><span class="p">[</span><span class="n">BaseExtractor</span><span class="p">]]]:</span>
@@ -1003,10 +983,10 @@ window.addEventListener("load", load);
 <span class="sd">            &gt;&gt;&gt; print(f&quot;Found {len(extractors)} extractors for .dm3 files&quot;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_discovered</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Plugins already discovered, skipping&quot;</span><span class="p">)</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Plugins already discovered, skipping&quot;</span><span class="p">)</span>
             <span class="k">return</span>
 
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Discovering extractor plugins...&quot;</span><span class="p">)</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Discovering extractor plugins...&quot;</span><span class="p">)</span>
 
         <span class="c1"># Find the plugins directory</span>
         <span class="n">plugins_package</span> <span class="o">=</span> <span class="s2">&quot;nexusLIMS.extractors.plugins&quot;</span>
@@ -1016,7 +996,7 @@ window.addEventListener("load", load);
             <span class="n">plugins_module</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">plugins_package</span><span class="p">)</span>
             <span class="n">plugins_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">plugins_module</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">ImportError</span><span class="p">,</span> <span class="ne">AttributeError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
                 <span class="s2">&quot;Could not import plugins package &#39;</span><span class="si">%s</span><span class="s2">&#39;: </span><span class="si">%s</span><span class="s2">. Plugin discovery skipped.&quot;</span><span class="p">,</span>
                 <span class="n">plugins_package</span><span class="p">,</span>
                 <span class="n">e</span><span class="p">,</span>
@@ -1036,7 +1016,7 @@ window.addEventListener("load", load);
 
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">module</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Imported plugin module: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+                <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Imported plugin module: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
 
                 <span class="c1"># Look for classes implementing BaseExtractor/PreviewGenerator protocol</span>
                 <span class="k">for</span> <span class="n">_item_name</span><span class="p">,</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmembers</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">):</span>
@@ -1048,7 +1028,7 @@ window.addEventListener("load", load);
                     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_extractor</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">register_extractor</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
                         <span class="n">discovered_count</span> <span class="o">+=</span> <span class="mi">1</span>
-                        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                        <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
                             <span class="s2">&quot;Discovered extractor: </span><span class="si">%s</span><span class="s2"> (priority: </span><span class="si">%d</span><span class="s2">)&quot;</span><span class="p">,</span>
                             <span class="n">obj</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
                             <span class="n">obj</span><span class="o">.</span><span class="n">priority</span><span class="p">,</span>
@@ -1057,21 +1037,21 @@ window.addEventListener("load", load);
                     <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_preview_generator</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">register_preview_generator</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
                         <span class="n">discovered_count</span> <span class="o">+=</span> <span class="mi">1</span>
-                        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                        <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
                             <span class="s2">&quot;Discovered preview generator: </span><span class="si">%s</span><span class="s2"> (priority: </span><span class="si">%d</span><span class="s2">)&quot;</span><span class="p">,</span>
                             <span class="n">obj</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
                             <span class="n">obj</span><span class="o">.</span><span class="n">priority</span><span class="p">,</span>
                         <span class="p">)</span>
 
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
                     <span class="s2">&quot;Failed to import plugin module &#39;</span><span class="si">%s</span><span class="s2">&#39;: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
                     <span class="n">name</span><span class="p">,</span>
                     <span class="n">e</span><span class="p">,</span>
                     <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                 <span class="p">)</span>
 
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Discovered </span><span class="si">%d</span><span class="s2"> extractor plugins&quot;</span><span class="p">,</span> <span class="n">discovered_count</span><span class="p">)</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Discovered </span><span class="si">%d</span><span class="s2"> extractor plugins&quot;</span><span class="p">,</span> <span class="n">discovered_count</span><span class="p">)</span>
 
         <span class="c1"># Register instrument profiles</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_register_instrument_profiles</span><span class="p">()</span>
@@ -1089,12 +1069,12 @@ window.addEventListener("load", load);
         <span class="k">try</span><span class="p">:</span>
             <span class="n">register_all_profiles</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
                 <span class="s2">&quot;Could not import profiles package: </span><span class="si">%s</span><span class="s2">. No profiles will be loaded.&quot;</span><span class="p">,</span>
                 <span class="n">e</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
                 <span class="s2">&quot;Error registering instrument profiles: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
                 <span class="n">e</span><span class="p">,</span>
                 <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -1201,12 +1181,12 @@ window.addEventListener("load", load);
             <span class="c1"># This is a wildcard extractor (supports any extension)</span>
             <span class="k">if</span> <span class="n">extractor_class</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wildcard_extractors</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_wildcard_extractors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">extractor_class</span><span class="p">)</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
                     <span class="s2">&quot;Registered wildcard extractor: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
                     <span class="n">extractor_class</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
                 <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
                     <span class="s2">&quot;Extractor </span><span class="si">%s</span><span class="s2"> already registered (skipping duplicate)&quot;</span><span class="p">,</span>
                     <span class="n">extractor_class</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
                 <span class="p">)</span>
@@ -1215,13 +1195,13 @@ window.addEventListener("load", load);
             <span class="k">for</span> <span class="n">ext</span> <span class="ow">in</span> <span class="n">extensions</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">extractor_class</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extractors</span><span class="p">[</span><span class="n">ext</span><span class="p">]:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_extractors</span><span class="p">[</span><span class="n">ext</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">extractor_class</span><span class="p">)</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                    <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
                         <span class="s2">&quot;Registered </span><span class="si">%s</span><span class="s2"> for extension: .</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
                         <span class="n">extractor_class</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
                         <span class="n">ext</span><span class="p">,</span>
                     <span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                    <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
                         <span class="s2">&quot;Extractor </span><span class="si">%s</span><span class="s2"> already registered for .</span><span class="si">%s</span><span class="s2"> (skipping duplicate)&quot;</span><span class="p">,</span>
                         <span class="n">extractor_class</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
                         <span class="n">ext</span><span class="p">,</span>
@@ -1253,7 +1233,7 @@ window.addEventListener("load", load);
 <span class="sd">            this is a wildcard extractor</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">extractor_class</span><span class="p">,</span> <span class="s2">&quot;supported_extensions&quot;</span><span class="p">):</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
                 <span class="s2">&quot;Extractor </span><span class="si">%s</span><span class="s2"> does not have supported_extensions attribute&quot;</span><span class="p">,</span>
                 <span class="n">extractor_class</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">extractor_class</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="s2">&quot;unknown&quot;</span><span class="p">,</span>
             <span class="p">)</span>
@@ -1286,7 +1266,7 @@ window.addEventListener("load", load);
         <span class="n">name</span> <span class="o">=</span> <span class="n">extractor_class</span><span class="o">.</span><span class="n">name</span>
         <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instances</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_instances</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">extractor_class</span><span class="p">()</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Instantiated extractor: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Instantiated extractor: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instances</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
 
@@ -1338,14 +1318,14 @@ window.addEventListener("load", load);
                 <span class="n">instance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_instance</span><span class="p">(</span><span class="n">extractor_class</span><span class="p">)</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">instance</span><span class="o">.</span><span class="n">supports</span><span class="p">(</span><span class="n">context</span><span class="p">):</span>
-                        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                        <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
                             <span class="s2">&quot;Selected extractor </span><span class="si">%s</span><span class="s2"> for </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
                             <span class="n">instance</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
                             <span class="n">context</span><span class="o">.</span><span class="n">file_path</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
                         <span class="p">)</span>
                         <span class="k">return</span> <span class="n">instance</span>
                 <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
                         <span class="s2">&quot;Error in </span><span class="si">%s</span><span class="s2">.supports(): </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
                         <span class="n">instance</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
                         <span class="n">e</span><span class="p">,</span>
@@ -1357,14 +1337,14 @@ window.addEventListener("load", load);
             <span class="n">instance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_instance</span><span class="p">(</span><span class="n">extractor_class</span><span class="p">)</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">instance</span><span class="o">.</span><span class="n">supports</span><span class="p">(</span><span class="n">context</span><span class="p">):</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                    <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
                         <span class="s2">&quot;Selected wildcard extractor </span><span class="si">%s</span><span class="s2"> for </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
                         <span class="n">instance</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
                         <span class="n">context</span><span class="o">.</span><span class="n">file_path</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
                     <span class="p">)</span>
                     <span class="k">return</span> <span class="n">instance</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
                     <span class="s2">&quot;Error in wildcard </span><span class="si">%s</span><span class="s2">.supports(): </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
                     <span class="n">instance</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
                     <span class="n">e</span><span class="p">,</span>
@@ -1372,7 +1352,7 @@ window.addEventListener("load", load);
                 <span class="p">)</span>
 
         <span class="c1"># Fallback: use basic metadata extractor</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
             <span class="s2">&quot;No extractor found for </span><span class="si">%s</span><span class="s2">, using fallback&quot;</span><span class="p">,</span>
             <span class="n">context</span><span class="o">.</span><span class="n">file_path</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
         <span class="p">)</span>
@@ -1492,7 +1472,7 @@ window.addEventListener("load", load);
         <span class="bp">self</span><span class="o">.</span><span class="n">_preview_generators</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_preview_instances</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_discovered</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Cleared extractor registry&quot;</span><span class="p">)</span></div>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Cleared extractor registry&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ExtractorRegistry.register_preview_generator">
@@ -1530,7 +1510,7 @@ window.addEventListener("load", load);
             <span class="c1"># Register for specific extensions</span>
             <span class="k">for</span> <span class="n">ext</span> <span class="ow">in</span> <span class="n">extensions</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_preview_generators</span><span class="p">[</span><span class="n">ext</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">generator_class</span><span class="p">)</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
                     <span class="s2">&quot;Registered preview generator </span><span class="si">%s</span><span class="s2"> for extension: .</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
                     <span class="n">generator_class</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
                     <span class="n">ext</span><span class="p">,</span>
@@ -1564,7 +1544,7 @@ window.addEventListener("load", load);
 <span class="sd">            Set of supported extensions (without dots)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">generator_class</span><span class="p">,</span> <span class="s2">&quot;supported_extensions&quot;</span><span class="p">):</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
                 <span class="s2">&quot;Preview generator </span><span class="si">%s</span><span class="s2"> does not have supported_extensions attribute&quot;</span><span class="p">,</span>
                 <span class="n">generator_class</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">generator_class</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="s2">&quot;unknown&quot;</span><span class="p">,</span>
             <span class="p">)</span>
@@ -1600,7 +1580,7 @@ window.addEventListener("load", load);
         <span class="n">name</span> <span class="o">=</span> <span class="n">generator_class</span><span class="o">.</span><span class="n">name</span>
         <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_preview_instances</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_preview_instances</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">generator_class</span><span class="p">()</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Instantiated preview generator: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Instantiated preview generator: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_preview_instances</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
 
@@ -1653,14 +1633,14 @@ window.addEventListener("load", load);
                 <span class="n">instance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_preview_instance</span><span class="p">(</span><span class="n">generator_class</span><span class="p">)</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">instance</span><span class="o">.</span><span class="n">supports</span><span class="p">(</span><span class="n">context</span><span class="p">):</span>
-                        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                        <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
                             <span class="s2">&quot;Selected preview generator </span><span class="si">%s</span><span class="s2"> for </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
                             <span class="n">instance</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
                             <span class="n">context</span><span class="o">.</span><span class="n">file_path</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
                         <span class="p">)</span>
                         <span class="k">return</span> <span class="n">instance</span>
                 <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
                         <span class="s2">&quot;Error in </span><span class="si">%s</span><span class="s2">.supports(): </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
                         <span class="n">instance</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
                         <span class="n">e</span><span class="p">,</span>
@@ -1668,7 +1648,7 @@ window.addEventListener("load", load);
                     <span class="p">)</span>
 
         <span class="c1"># No generator found</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
             <span class="s2">&quot;No preview generator found for </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
             <span class="n">context</span><span class="o">.</span><span class="n">file_path</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
         <span class="p">)</span>

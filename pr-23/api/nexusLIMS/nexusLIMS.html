@@ -32,8 +32,9 @@
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=af02a5b6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=8633d6cc" />
   
   <!-- So that users can add custom icons -->
   <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -44,6 +45,8 @@
     <script src="../../_static/documentation_options.js?v=dc4a309c"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=30646c52"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'api/nexusLIMS/nexusLIMS';</script>
     <script>
@@ -53,16 +56,17 @@
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
+    <script src="../../_static/custom.js?v=ba087cdf"></script>
     <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/pr-23/api/nexusLIMS/nexusLIMS.html" />
     <link rel="icon" href="../../_static/nexusLIMS_bare_logo.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="nexusLIMS.db" href="nexusLIMS.db.html" />
-    <link rel="prev" title="API documentation" href="../../api.html" />
+    <link rel="prev" title="API documentation" href="../../reference/api.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.2.0.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 28, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 29, 2025"/>
   </head>
   
   
@@ -172,20 +176,6 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../getting_started.html">
-    Getting Started
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../migration.html">
-    Migration Guide: v1 to v2
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../user_guide.html">
     User Guide
   </a>
@@ -193,28 +183,25 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../dev_guide.html">
-    Developer Guide
+  <a class="nav-link nav-internal" href="../../migration.html">
+    Migration Guide: v1.4.3 to v2.2.0
   </a>
 </li>
 
-            <li class="nav-item dropdown">
-                <button class="btn dropdown-toggle nav-item" type="button"
-                data-bs-toggle="dropdown" aria-expanded="false"
-                aria-controls="pst-nav-more-links">
-                    More
-                </button>
-                <ul id="pst-nav-more-links" class="dropdown-menu">
-                    
-<li class=" current active">
-  <a class="nav-link dropdown-item nav-internal" href="../../reference.html">
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../dev_guide.html">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../reference.html">
     Reference
   </a>
 </li>
 
-                </ul>
-            </li>
-            
   </ul>
 </nav></div>
       
@@ -311,20 +298,6 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../getting_started.html">
-    Getting Started
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../migration.html">
-    Migration Guide: v1 to v2
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../user_guide.html">
     User Guide
   </a>
@@ -332,8 +305,15 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../migration.html">
+    Migration Guide: v1.4.3 to v2.2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../dev_guide.html">
-    Developer Guide
+    Dev Guide
   </a>
 </li>
 
@@ -406,7 +386,7 @@
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../api.html">API documentation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../reference/api.html">API documentation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2 current active has-children"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS</span></code></a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.db.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.db</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.builder.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.builder</span></code></a></li>
@@ -422,7 +402,7 @@
 </details></li>
 </ul>
 </details></li>
-<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/changelog.html">Changelog</a></li>
 </ul>
 </div>
 </nav></div>
@@ -467,7 +447,7 @@
     <li class="breadcrumb-item"><a href="../../reference.html" class="nav-link">Reference</a></li>
     
     
-    <li class="breadcrumb-item"><a href="../../api.html" class="nav-link">API documentation</a></li>
+    <li class="breadcrumb-item"><a href="../../reference/api.html" class="nav-link">API documentation</a></li>
     
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS</span></code></span></li>
   </ul>
@@ -488,15 +468,20 @@
                   
   <section id="module-nexusLIMS">
 <span id="nexuslims"></span><h1><a class="reference internal" href="#module-nexusLIMS" title="nexusLIMS"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS</span></code></a><a class="headerlink" href="#module-nexusLIMS" title="Link to this heading">#</a></h1>
-<section id="example">
-<h2>Example<a class="headerlink" href="#example" title="Link to this heading">#</a></h2>
+<p>The NexusLIMS back-end software.</p>
+<p>This module contains the software required to monitor a database for sessions
+logged by users on electron microscopy instruments. Based off this information,
+records representing individual experiments are automatically generated and
+uploaded to the front-end NexusLIMS CDCS instance for users to browse, query,
+and edit.</p>
+<p><strong>Example:</strong></p>
 <p>In most cases, the only code that needs to be run directly is initiating the
 record builder to look for new sessions, which can be done by running the
-:py:mod:<code class="docutils literal notranslate"><span class="pre">~nexusLIMS.builder.record_builder</span></code> module directly:</p>
+<a class="reference internal" href="nexusLIMS.builder.record_builder.html#module-nexusLIMS.builder.record_builder" title="nexusLIMS.builder.record_builder"><code class="xref py py-mod docutils literal notranslate"><span class="pre">record_builder</span></code></a> module directly:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>nexusLIMS.builder.record_builder
 </pre></div>
 </div>
-<p>Refer to :ref:<code class="docutils literal notranslate"><span class="pre">record-building</span></code> for more details.</p>
+<p>Refer to <a class="reference internal" href="../../user_guide/record_building.html#record-building"><span class="std std-ref">Record building workflow</span></a> for more details.</p>
 <p><strong>Configuration variables</strong></p>
 <p>The following variables should be defined as environment variables in your
 session, or in the <code class="docutils literal notranslate"><span class="pre">.env</span></code> file in the root of this package’s repository.
@@ -519,11 +504,6 @@ The password used to authenticate to CDCS API</p>
 <p id="nexuslims-cdcs-url"><code class="docutils literal notranslate"><span class="pre">NX_CDCS_URL</span></code>
 The root URL of the NexusLIMS CDCS front-end. This will be the target for
 record uploads that are authenticated using the CDCS credentials.</p>
-<p id="nexuslims-test-cdcs-url"><code class="docutils literal notranslate"><span class="pre">NX_TEST_CDCS_URL</span></code>
-(development setting) The root URL of a NexusLIMS CDCS instance to use
-for integration testing. If defined, this URL will be used for the CDCS
-tests rather than the “actual” URL defined in <code class="docutils literal notranslate"><span class="pre">NX_CDCS_URL</span></code>. If not
-defined, no integration tests will be run.</p>
 <p id="nexuslims-instrument-data-path"><code class="docutils literal notranslate"><span class="pre">NX_INSTRUMENT_DATA_PATH</span></code>
 The path (should be already mounted) to the root folder containing data
 from the Electron Microscopy Nexus. This folder is accessible read-only,
@@ -598,7 +578,7 @@ for datetime representation will be used (which should work with the
 default NEMO settings). These options are configurable to allow for
 support of non-default date format settings on a NEMO server. The formats
 should be provided using the standard datetime library syntax for
-encoding date and time information (see :ref:<code class="docutils literal notranslate"><span class="pre">strftime-strptime-behavior</span></code>
+encoding date and time information (see <a class="reference external" href="https://docs.python.org/3.11/library/datetime.html#strftime-strptime-behavior" title="(in Python v3.11)"><span>strftime() and strptime() Behavior</span></a>
 for details).</p>
 <p id="nemo-tz"><code class="docutils literal notranslate"><span class="pre">NX_NEMO_TZ_X</span></code>
 Also optional; If the “<code class="docutils literal notranslate"><span class="pre">tz</span></code>” option is provided, the datetime
@@ -627,13 +607,6 @@ Email address to send notifications from. Required for email notifications.</p>
 <p id="email-recipients"><code class="docutils literal notranslate"><span class="pre">NX_EMAIL_RECIPIENTS</span></code>
 Comma-separated list of recipient email addresses for error notifications
 (e.g., <code class="docutils literal notranslate"><span class="pre">admin&#64;example.com,team&#64;example.com</span></code>). Required for email notifications.</p>
-</section>
-<p>The NexusLIMS back-end software.</p>
-<p>This module contains the software required to monitor a database for sessions
-logged by users on electron microscopy instruments. Based off this information,
-records representing individual experiments are automatically generated and
-uploaded to the front-end NexusLIMS CDCS instance for users to browse, query,
-and edit.</p>
 <section id="subpackages">
 <h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading">#</a></h2>
 <div class="toctree-wrapper compound">
@@ -715,7 +688,7 @@ and edit.</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../../api.html"
+       href="../../reference/api.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
@@ -751,7 +724,6 @@ and edit.</p>
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example">Example</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#subpackages">Subpackages</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
 </ul>

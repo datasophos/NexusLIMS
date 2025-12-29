@@ -4,6 +4,7 @@
 ```
 
 ```{autodoc2-docstring} nexusLIMS.schemas.pint_types
+:parser: autodoc2_docstrings_parser
 :allowtitles:
 ```
 
@@ -15,34 +16,20 @@
 :class: autosummary longtable
 :align: left
 
-* - {py:obj}`logger <nexusLIMS.schemas.pint_types.logger>`
-  - ```{autodoc2-docstring} nexusLIMS.schemas.pint_types.logger
-    :summary:
-    ```
 * - {py:obj}`PintQuantity <nexusLIMS.schemas.pint_types.PintQuantity>`
   - ```{autodoc2-docstring} nexusLIMS.schemas.pint_types.PintQuantity
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 ````
 
 ### API
 
-````{py:data} logger
-:canonical: nexusLIMS.schemas.pint_types.logger
-:value: >
-   'getLogger(...)'
-
-```{autodoc2-docstring} nexusLIMS.schemas.pint_types.logger
-```
-
-````
-
 ````{py:data} PintQuantity
 :canonical: nexusLIMS.schemas.pint_types.PintQuantity
-:value: >
-   None
 
 ```{autodoc2-docstring} nexusLIMS.schemas.pint_types.PintQuantity
+:parser: autodoc2_docstrings_parser
 ```
 
 ````

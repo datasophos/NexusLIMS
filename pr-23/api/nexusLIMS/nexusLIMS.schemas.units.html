@@ -32,8 +32,9 @@
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=af02a5b6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=8633d6cc" />
   
   <!-- So that users can add custom icons -->
   <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -44,6 +45,8 @@
     <script src="../../_static/documentation_options.js?v=dc4a309c"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=30646c52"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'api/nexusLIMS/nexusLIMS.schemas.units';</script>
     <script>
@@ -53,6 +56,7 @@
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
+    <script src="../../_static/custom.js?v=ba087cdf"></script>
     <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/pr-23/api/nexusLIMS/nexusLIMS.schemas.units.html" />
     <link rel="icon" href="../../_static/nexusLIMS_bare_logo.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -62,7 +66,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.2.0.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 28, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 29, 2025"/>
   </head>
   
   
@@ -172,20 +176,6 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../getting_started.html">
-    Getting Started
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../migration.html">
-    Migration Guide: v1 to v2
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../user_guide.html">
     User Guide
   </a>
@@ -193,28 +183,25 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../dev_guide.html">
-    Developer Guide
+  <a class="nav-link nav-internal" href="../../migration.html">
+    Migration Guide: v1.4.3 to v2.2.0
   </a>
 </li>
 
-            <li class="nav-item dropdown">
-                <button class="btn dropdown-toggle nav-item" type="button"
-                data-bs-toggle="dropdown" aria-expanded="false"
-                aria-controls="pst-nav-more-links">
-                    More
-                </button>
-                <ul id="pst-nav-more-links" class="dropdown-menu">
-                    
-<li class=" current active">
-  <a class="nav-link dropdown-item nav-internal" href="../../reference.html">
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../dev_guide.html">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../reference.html">
     Reference
   </a>
 </li>
 
-                </ul>
-            </li>
-            
   </ul>
 </nav></div>
       
@@ -311,20 +298,6 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../getting_started.html">
-    Getting Started
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../migration.html">
-    Migration Guide: v1 to v2
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../user_guide.html">
     User Guide
   </a>
@@ -332,8 +305,15 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../migration.html">
+    Migration Guide: v1.4.3 to v2.2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../dev_guide.html">
-    Developer Guide
+    Dev Guide
   </a>
 </li>
 
@@ -406,7 +386,7 @@
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../api.html">API documentation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../reference/api.html">API documentation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="nexusLIMS.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS</span></code></a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.db.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.db</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.builder.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.builder</span></code></a></li>
@@ -429,7 +409,7 @@
 </details></li>
 </ul>
 </details></li>
-<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/changelog.html">Changelog</a></li>
 </ul>
 </div>
 </nav></div>
@@ -474,7 +454,7 @@
     <li class="breadcrumb-item"><a href="../../reference.html" class="nav-link">Reference</a></li>
     
     
-    <li class="breadcrumb-item"><a href="../../api.html" class="nav-link">API documentation</a></li>
+    <li class="breadcrumb-item"><a href="../../reference/api.html" class="nav-link">API documentation</a></li>
     
     
     <li class="breadcrumb-item"><a href="nexusLIMS.html" class="nav-link"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS</span></code></a></li>
@@ -501,43 +481,6 @@
                   
   <section id="module-nexusLIMS.schemas.units">
 <span id="nexuslims-schemas-units"></span><h1><a class="reference internal" href="#module-nexusLIMS.schemas.units" title="nexusLIMS.schemas.units"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.schemas.units</span></code></a><a class="headerlink" href="#module-nexusLIMS.schemas.units" title="Link to this heading">#</a></h1>
-<section id="examples">
-<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading">#</a></h2>
-<p>Create and normalize quantities:</p>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>from nexusLIMS.schemas.units import ureg, normalize_quantity
-voltage = ureg.Quantity(10000, “volt”)
-normalized = normalize_quantity(“acceleration_voltage”, voltage)
-print(normalized)
-10.0 kilovolt</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-<p>Parse from strings:</p>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>from nexusLIMS.schemas.units import parse_quantity
-voltage = parse_quantity(“acceleration_voltage”, “10 kV”)
-print(voltage)
-10.0 kilovolt</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-<p>Serialize for XML:</p>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>from nexusLIMS.schemas.units import quantity_to_xml_parts
-name, value, unit = quantity_to_xml_parts(“acceleration_voltage”, voltage)
-print(f”<meta name='{name}' unit='{unit}'>{value}</meta>”)
-<meta name='Voltage' unit='kV'>10.0</meta></p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-</section>
 <p>Pint unit registry and utilities for NexusLIMS metadata.</p>
 <p>This module provides a centralized Pint unit registry for handling physical quantities
 with units in NexusLIMS metadata. It defines preferred units for different measurement
@@ -548,6 +491,29 @@ types and provides utilities for normalizing quantities to these preferred units
 <li><p><strong>Tier 2 (XML)</strong>: Clean name/value/unit separation using XSD unit attribute</p></li>
 <li><p><strong>Tier 3 (Future)</strong>: Optional QUDT/EMG URIs for semantic web integration</p></li>
 </ul>
+<p><strong>Examples:</strong></p>
+<p>Create and normalize quantities:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas.units</span><span class="w"> </span><span class="kn">import</span> <span class="n">ureg</span><span class="p">,</span> <span class="n">normalize_quantity</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">voltage</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mi">10000</span><span class="p">,</span> <span class="s2">&quot;volt&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">normalized</span> <span class="o">=</span> <span class="n">normalize_quantity</span><span class="p">(</span><span class="s2">&quot;acceleration_voltage&quot;</span><span class="p">,</span> <span class="n">voltage</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">normalized</span><span class="p">)</span>
+<span class="go">10.0 kilovolt</span>
+</pre></div>
+</div>
+<p>Parse from strings:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas.units</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_quantity</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">voltage</span> <span class="o">=</span> <span class="n">parse_quantity</span><span class="p">(</span><span class="s2">&quot;acceleration_voltage&quot;</span><span class="p">,</span> <span class="s2">&quot;10 kV&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">voltage</span><span class="p">)</span>
+<span class="go">10.0 kilovolt</span>
+</pre></div>
+</div>
+<p>Serialize for XML:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas.units</span><span class="w"> </span><span class="kn">import</span> <span class="n">quantity_to_xml_parts</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">unit</span> <span class="o">=</span> <span class="n">quantity_to_xml_parts</span><span class="p">(</span><span class="s2">&quot;acceleration_voltage&quot;</span><span class="p">,</span> <span class="n">voltage</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&lt;meta name=&#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; unit=&#39;</span><span class="si">{</span><span class="n">unit</span><span class="si">}</span><span class="s2">&#39;&gt;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&lt;/meta&gt;&quot;</span><span class="p">)</span>
+<span class="go">&lt;meta name=&#39;Voltage&#39; unit=&#39;kV&#39;&gt;10.0&lt;/meta&gt;</span>
+</pre></div>
+</div>
 <section id="module-contents">
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
 <section id="functions">
@@ -619,8 +585,7 @@ types and provides utilities for normalizing quantities to these preferred units
 <dl class="py data">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.units.QUDT_UNIT_TTL_PATH">
 <span class="sig-prename descclassname"><span class="pre">nexusLIMS.schemas.units.</span></span><span class="sig-name descname"><span class="pre">QUDT_UNIT_TTL_PATH</span></span><a class="headerlink" href="#nexusLIMS.schemas.units.QUDT_UNIT_TTL_PATH" title="Link to this definition">#</a></dt>
-<dd><p>None</p>
-</dd></dl>
+<dd></dd></dl>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.units.QUDT_VERSION">
@@ -637,8 +602,7 @@ types and provides utilities for normalizing quantities to these preferred units
 <dl class="py data">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.units.PREFERRED_UNITS">
 <span class="sig-prename descclassname"><span class="pre">nexusLIMS.schemas.units.</span></span><span class="sig-name descname"><span class="pre">PREFERRED_UNITS</span></span><a class="headerlink" href="#nexusLIMS.schemas.units.PREFERRED_UNITS" title="Link to this definition">#</a></dt>
-<dd><p>None</p>
-</dd></dl>
+<dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.units.normalize_quantity">
@@ -647,59 +611,52 @@ types and provides utilities for normalizing quantities to these preferred units
 <p>Takes a Pint Quantity and converts it to the canonical unit defined
 in PREFERRED_UNITS for that field. If no preferred unit is defined,
 returns the quantity unchanged. Non-Quantity values are passed through.</p>
-<p class="rubric" id="id17">Parameters</p>
-<p>field_name : str
-The metadata field name (e.g., “acceleration_voltage”, “working_distance”)
-quantity : Any
-The quantity to normalize. Can be:
-- Pint Quantity object (will be converted)
-- String (returned unchanged - use parse_quantity first)
-- Numeric value (returned unchanged)
-- None (returned unchanged)</p>
-<p class="rubric" id="id18">Returns</p>
-<p>Any
-The normalized quantity in preferred units, or the original value
+<dl class="myst field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>field_name</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – The metadata field name (e.g., “acceleration_voltage”, “working_distance”)</p></li>
+<li><p><strong>quantity</strong> (<em>Any</em>) – <p>The quantity to normalize. Can be:</p>
+<ul>
+<li><p>Pint Quantity object (will be converted)</p></li>
+<li><p>String (returned unchanged - use parse_quantity first)</p></li>
+<li><p>Numeric value (returned unchanged)</p></li>
+<li><p>None (returned unchanged)</p></li>
+</ul>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The normalized quantity in preferred units, or the original value
 if not a Quantity or no preferred unit is defined</p>
-<p class="rubric" id="id19">Examples</p>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>voltage = ureg.Quantity(10000, “volt”)
-normalized = normalize_quantity(“acceleration_voltage”, voltage)
-print(normalized)
-10.0 kilovolt</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>current = ureg.Quantity(0.1, “nanoampere”)
-normalized = normalize_quantity(“beam_current”, current)
-print(normalized)
-100.0 picoampere</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p class="rubric" id="id20">Non-Quantity values pass through</p>
-<p>normalize_quantity(“unknown_field”, “some string”)
-‘some string’</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p class="rubric" id="id21">Fields without preferred units return unchanged</p>
-<p>qty = ureg.Quantity(5.0, “furlong”)
-normalize_quantity(“custom_field”, qty) == qty
-True</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>Any</em></p>
+</dd>
+</dl>
+<p><strong>Examples:</strong></p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">voltage</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mi">10000</span><span class="p">,</span> <span class="s2">&quot;volt&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">normalized</span> <span class="o">=</span> <span class="n">normalize_quantity</span><span class="p">(</span><span class="s2">&quot;acceleration_voltage&quot;</span><span class="p">,</span> <span class="n">voltage</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">normalized</span><span class="p">)</span>
+<span class="go">10.0 kilovolt</span>
+</pre></div>
+</div>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">current</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="s2">&quot;nanoampere&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">normalized</span> <span class="o">=</span> <span class="n">normalize_quantity</span><span class="p">(</span><span class="s2">&quot;beam_current&quot;</span><span class="p">,</span> <span class="n">current</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">normalized</span><span class="p">)</span>
+<span class="go">100.0 picoampere</span>
+</pre></div>
+</div>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Non-Quantity values pass through</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">normalize_quantity</span><span class="p">(</span><span class="s2">&quot;unknown_field&quot;</span><span class="p">,</span> <span class="s2">&quot;some string&quot;</span><span class="p">)</span>
+<span class="go">&#39;some string&#39;</span>
+</pre></div>
+</div>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Fields without preferred units return unchanged</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">qty</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mf">5.0</span><span class="p">,</span> <span class="s2">&quot;furlong&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">normalize_quantity</span><span class="p">(</span><span class="s2">&quot;custom_field&quot;</span><span class="p">,</span> <span class="n">qty</span><span class="p">)</span> <span class="o">==</span> <span class="n">qty</span>
+<span class="go">True</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -713,50 +670,40 @@ True</p>
 <li><p>Numeric: Assumed to be in preferred units for field</p></li>
 <li><p>None: Passed through unchanged</p></li>
 </ul>
-<p class="rubric" id="id22">Parameters</p>
-<p>field_name : str
-The metadata field name (e.g., “acceleration_voltage”)
-value : Any
-The value to parse. Can be Quantity, string, numeric, or None</p>
-<p class="rubric" id="id23">Returns</p>
-<p>Any
-Pint Quantity in preferred units, or original value if unparseable</p>
-<p class="rubric" id="id24">Examples</p>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>qty = parse_quantity(“acceleration_voltage”, “10 kV”)
-print(qty)
-10.0 kilovolt</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>qty = parse_quantity(“working_distance”, 5.2)  # Assumes mm
-print(qty)
-5.2 millimeter</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>qty = parse_quantity(“beam_current”, ureg.Quantity(0.1, “nA”))
-print(qty)
-100.0 picoampere</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>parse_quantity(“operator”, None) is None
-True</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
+<dl class="myst field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>field_name</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – The metadata field name (e.g., “acceleration_voltage”)</p></li>
+<li><p><strong>value</strong> (<em>Any</em>) – The value to parse. Can be Quantity, string, numeric, or None</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pint Quantity in preferred units, or original value if unparseable</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>Any</em></p>
+</dd>
+</dl>
+<p><strong>Examples:</strong></p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">qty</span> <span class="o">=</span> <span class="n">parse_quantity</span><span class="p">(</span><span class="s2">&quot;acceleration_voltage&quot;</span><span class="p">,</span> <span class="s2">&quot;10 kV&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">qty</span><span class="p">)</span>
+<span class="go">10.0 kilovolt</span>
+</pre></div>
+</div>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">qty</span> <span class="o">=</span> <span class="n">parse_quantity</span><span class="p">(</span><span class="s2">&quot;working_distance&quot;</span><span class="p">,</span> <span class="mf">5.2</span><span class="p">)</span>  <span class="c1"># Assumes mm</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">qty</span><span class="p">)</span>
+<span class="go">5.2 millimeter</span>
+</pre></div>
+</div>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">qty</span> <span class="o">=</span> <span class="n">parse_quantity</span><span class="p">(</span><span class="s2">&quot;beam_current&quot;</span><span class="p">,</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="s2">&quot;nA&quot;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">qty</span><span class="p">)</span>
+<span class="go">100.0 picoampere</span>
+</pre></div>
+</div>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">parse_quantity</span><span class="p">(</span><span class="s2">&quot;operator&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span>
+<span class="go">True</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -766,39 +713,40 @@ True</p>
 <p>Extracts the display name, numeric value, and unit string for XML
 serialization. This enables clean XML output like:
 <code class="docutils literal notranslate"><span class="pre">&lt;meta</span> <span class="pre">name=&quot;Voltage&quot;</span> <span class="pre">unit=&quot;kV&quot;&gt;10.0&lt;/meta&gt;</span></code></p>
-<p class="rubric" id="id25">Parameters</p>
-<p>field_name : str
-The internal field name (e.g., “acceleration_voltage”)
-quantity : Any
-The quantity value (Pint Quantity, string, or numeric)</p>
-<p class="rubric" id="id26">Returns</p>
-<p>tuple[str, str, str | None]
-A 3-tuple of (display_name, value_string, unit_string)
-- display_name: Human-readable field name for XML
-- value_string: Numeric value as string
-- unit_string: Unit abbreviation, or None if dimensionless/non-quantity</p>
-<p class="rubric" id="id27">Examples</p>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>qty = ureg.Quantity(10.0, “kilovolt”)
-name, value, unit = quantity_to_xml_parts(“acceleration_voltage”, qty)
-print(f”<meta name='{name}' unit='{unit}'>{value}</meta>”)
-<meta name='Voltage' unit='kV'>10.0</meta></p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>qty = ureg.Quantity(5000, “dimensionless”)
-name, value, unit = quantity_to_xml_parts(“magnification”, qty)
-print(f”<meta name='{name}'>{value}</meta>”)  # No unit attr
-<meta name='Magnification'>5000</meta></p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-<p class="rubric" id="id28">Notes</p>
+<dl class="myst field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>field_name</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – The internal field name (e.g., “acceleration_voltage”)</p></li>
+<li><p><strong>quantity</strong> (<em>Any</em>) – The quantity value (Pint Quantity, string, or numeric)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>A 3-tuple of (display_name, value_string, unit_string)</p>
+<ul class="simple">
+<li><p>display_name: Human-readable field name for XML</p></li>
+<li><p>value_string: Numeric value as string</p></li>
+<li><p>unit_string: Unit abbreviation, or None if dimensionless/non-quantity</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#tuple" title="(in Python v3.11)"><em>tuple</em></a>[<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>, <a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>, <a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a> | <em>None</em>]</p>
+</dd>
+</dl>
+<p><strong>Examples:</strong></p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">qty</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mf">10.0</span><span class="p">,</span> <span class="s2">&quot;kilovolt&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">unit</span> <span class="o">=</span> <span class="n">quantity_to_xml_parts</span><span class="p">(</span><span class="s2">&quot;acceleration_voltage&quot;</span><span class="p">,</span> <span class="n">qty</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&lt;meta name=&#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; unit=&#39;</span><span class="si">{</span><span class="n">unit</span><span class="si">}</span><span class="s2">&#39;&gt;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&lt;/meta&gt;&quot;</span><span class="p">)</span>
+<span class="go">&lt;meta name=&#39;Voltage&#39; unit=&#39;kV&#39;&gt;10.0&lt;/meta&gt;</span>
+</pre></div>
+</div>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">qty</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mi">5000</span><span class="p">,</span> <span class="s2">&quot;dimensionless&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">unit</span> <span class="o">=</span> <span class="n">quantity_to_xml_parts</span><span class="p">(</span><span class="s2">&quot;magnification&quot;</span><span class="p">,</span> <span class="n">qty</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&lt;meta name=&#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;&gt;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&lt;/meta&gt;&quot;</span><span class="p">)</span>  <span class="c1"># No unit attr</span>
+<span class="go">&lt;meta name=&#39;Magnification&#39;&gt;5000&lt;/meta&gt;</span>
+</pre></div>
+</div>
+<p><strong>Notes:</strong></p>
 <p>For non-Quantity values, the value is converted to string and unit is None.
 Display name mapping is handled by separate EM Glossary utilities.</p>
 </dd></dl>
@@ -811,39 +759,32 @@ Display name mapping is handled by separate EM Glossary utilities.</p>
 URI for the quantity’s unit. This enables Tier 3 semantic web integration.</p>
 <p>The mapping is loaded dynamically from the QUDT unit vocabulary file
 (qudt_unit.ttl) using RDFLib.</p>
-<p class="rubric" id="id29">Parameters</p>
-<p>quantity : Any
-A Pint Quantity object</p>
-<p class="rubric" id="id30">Returns</p>
-<p>str or None
-QUDT URI string, or None if not a Quantity or URI not found</p>
-<p class="rubric" id="id31">Examples</p>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>qty = ureg.Quantity(10, “kilovolt”)
-get_qudt_uri(qty)
-‘http://qudt.org/vocab/unit/KiloV’</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>qty = ureg.Quantity(5.2, “millimeter”)
-get_qudt_uri(qty)
-‘http://qudt.org/vocab/unit/MilliM’</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>get_qudt_uri(“not a quantity”)</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-<p class="rubric" id="id32">Returns None</p>
+<dl class="myst field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>quantity</strong> (<em>Any</em>) – A Pint Quantity object</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>QUDT URI string, or None if not a Quantity or URI not found</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a> or <em>None</em></p>
+</dd>
+</dl>
+<p><strong>Examples:</strong></p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">qty</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;kilovolt&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">get_qudt_uri</span><span class="p">(</span><span class="n">qty</span><span class="p">)</span>
+<span class="go">&#39;http://qudt.org/vocab/unit/KiloV&#39;</span>
+</pre></div>
+</div>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">qty</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mf">5.2</span><span class="p">,</span> <span class="s2">&quot;millimeter&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">get_qudt_uri</span><span class="p">(</span><span class="n">qty</span><span class="p">)</span>
+<span class="go">&#39;http://qudt.org/vocab/unit/MilliM&#39;</span>
+</pre></div>
+</div>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">get_qudt_uri</span><span class="p">(</span><span class="s2">&quot;not a quantity&quot;</span><span class="p">)</span>
+<span class="go"># Returns None</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -852,66 +793,60 @@ get_qudt_uri(qty)
 <dd><p>Serialize a Pint Quantity to a JSON-compatible dictionary.</p>
 <p>Converts a Quantity to a dict with ‘value’ and ‘units’ keys.
 Used for internal storage or JSON export. For XML serialization,
-use :func:<code class="docutils literal notranslate"><span class="pre">quantity_to_xml_parts</span></code> instead.</p>
-<p class="rubric" id="id33">Parameters</p>
-<p>quantity : Any
-A Pint Quantity object, or other value to serialize</p>
-<p class="rubric" id="id34">Returns</p>
-<p>dict[str, Any]
-Dictionary with ‘value’ and ‘units’ keys if Quantity,
+use <a class="reference internal" href="#nexusLIMS.schemas.units.quantity_to_xml_parts" title="nexusLIMS.schemas.units.quantity_to_xml_parts"><code class="xref py py-func docutils literal notranslate"><span class="pre">quantity_to_xml_parts()</span></code></a> instead.</p>
+<dl class="myst field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>quantity</strong> (<em>Any</em>) – A Pint Quantity object, or other value to serialize</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary with ‘value’ and ‘units’ keys if Quantity,
 or {‘value’: quantity} for non-Quantity values</p>
-<p class="rubric" id="id35">Examples</p>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>qty = ureg.Quantity(10, “kilovolt”)
-serialize_quantity(qty)
-{‘value’: 10.0, ‘units’: ‘kilovolt’}</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>serialize_quantity(“some string”)
-{‘value’: ‘some string’}</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>[<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>, <em>Any</em>]</p>
+</dd>
+</dl>
+<p><strong>Examples:</strong></p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">qty</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;kilovolt&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">serialize_quantity</span><span class="p">(</span><span class="n">qty</span><span class="p">)</span>
+<span class="go">{&#39;value&#39;: 10.0, &#39;units&#39;: &#39;kilovolt&#39;}</span>
+</pre></div>
+</div>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">serialize_quantity</span><span class="p">(</span><span class="s2">&quot;some string&quot;</span><span class="p">)</span>
+<span class="go">{&#39;value&#39;: &#39;some string&#39;}</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.units.deserialize_quantity">
 <span class="sig-prename descclassname"><span class="pre">nexusLIMS.schemas.units.</span></span><span class="sig-name descname"><span class="pre">deserialize_quantity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/schemas/units.html#deserialize_quantity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.schemas.units.deserialize_quantity" title="Link to this definition">#</a></dt>
 <dd><p>Deserialize a dictionary back to a Pint Quantity.</p>
-<p>Reverses the operation of :func:<code class="docutils literal notranslate"><span class="pre">serialize_quantity</span></code>. Takes a dict
+<p>Reverses the operation of <a class="reference internal" href="#nexusLIMS.schemas.units.serialize_quantity" title="nexusLIMS.schemas.units.serialize_quantity"><code class="xref py py-func docutils literal notranslate"><span class="pre">serialize_quantity()</span></code></a>. Takes a dict
 with ‘value’ and ‘units’ keys and reconstructs the Quantity.</p>
-<p class="rubric" id="id36">Parameters</p>
-<p>data : dict[str, Any]
-Dictionary with ‘value’ and ‘units’ keys, or just ‘value’ key</p>
-<p class="rubric" id="id37">Returns</p>
-<p>Any
-Pint Quantity if dict has value/units, otherwise the ‘value’ field</p>
-<p class="rubric" id="id38">Examples</p>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>data = {‘value’: 10.0, ‘units’: ‘kilovolt’}
-qty = deserialize_quantity(data)
-print(qty)
-10.0 kilovolt</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>data = {‘value’: ‘some string’}
-deserialize_quantity(data)
-‘some string’</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
+<dl class="myst field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>Any</em><em>]</em>) – Dictionary with ‘value’ and ‘units’ keys, or just ‘value’ key</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pint Quantity if dict has value/units, otherwise the ‘value’ field</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>Any</em></p>
+</dd>
+</dl>
+<p><strong>Examples:</strong></p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="mf">10.0</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;kilovolt&#39;</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">qty</span> <span class="o">=</span> <span class="n">deserialize_quantity</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">qty</span><span class="p">)</span>
+<span class="go">10.0 kilovolt</span>
+</pre></div>
+</div>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="s1">&#39;some string&#39;</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">deserialize_quantity</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="go">&#39;some string&#39;</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </section>
@@ -965,7 +900,6 @@ deserialize_quantity(data)
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#examples">Examples</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data">Data</a></li>

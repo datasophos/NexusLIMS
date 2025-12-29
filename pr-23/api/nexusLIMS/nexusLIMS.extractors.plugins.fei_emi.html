@@ -32,8 +32,9 @@
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=af02a5b6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=8633d6cc" />
   
   <!-- So that users can add custom icons -->
   <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -44,6 +45,8 @@
     <script src="../../_static/documentation_options.js?v=dc4a309c"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=30646c52"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'api/nexusLIMS/nexusLIMS.extractors.plugins.fei_emi';</script>
     <script>
@@ -53,6 +56,7 @@
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
+    <script src="../../_static/custom.js?v=ba087cdf"></script>
     <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/pr-23/api/nexusLIMS/nexusLIMS.extractors.plugins.fei_emi.html" />
     <link rel="icon" href="../../_static/nexusLIMS_bare_logo.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -62,7 +66,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.2.0.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 28, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 29, 2025"/>
   </head>
   
   
@@ -172,20 +176,6 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../getting_started.html">
-    Getting Started
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../migration.html">
-    Migration Guide: v1 to v2
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../user_guide.html">
     User Guide
   </a>
@@ -193,28 +183,25 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../dev_guide.html">
-    Developer Guide
+  <a class="nav-link nav-internal" href="../../migration.html">
+    Migration Guide: v1.4.3 to v2.2.0
   </a>
 </li>
 
-            <li class="nav-item dropdown">
-                <button class="btn dropdown-toggle nav-item" type="button"
-                data-bs-toggle="dropdown" aria-expanded="false"
-                aria-controls="pst-nav-more-links">
-                    More
-                </button>
-                <ul id="pst-nav-more-links" class="dropdown-menu">
-                    
-<li class=" current active">
-  <a class="nav-link dropdown-item nav-internal" href="../../reference.html">
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../dev_guide.html">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../reference.html">
     Reference
   </a>
 </li>
 
-                </ul>
-            </li>
-            
   </ul>
 </nav></div>
       
@@ -311,20 +298,6 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../getting_started.html">
-    Getting Started
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../migration.html">
-    Migration Guide: v1 to v2
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../user_guide.html">
     User Guide
   </a>
@@ -332,8 +305,15 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../migration.html">
+    Migration Guide: v1.4.3 to v2.2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../dev_guide.html">
-    Developer Guide
+    Dev Guide
   </a>
 </li>
 
@@ -406,7 +386,7 @@
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../api.html">API documentation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../reference/api.html">API documentation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="nexusLIMS.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS</span></code></a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.db.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.db</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.builder.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.builder</span></code></a></li>
@@ -430,7 +410,7 @@
 </details></li>
 </ul>
 </details></li>
-<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/changelog.html">Changelog</a></li>
 </ul>
 </div>
 </nav></div>
@@ -475,7 +455,7 @@
     <li class="breadcrumb-item"><a href="../../reference.html" class="nav-link">Reference</a></li>
     
     
-    <li class="breadcrumb-item"><a href="../../api.html" class="nav-link">API documentation</a></li>
+    <li class="breadcrumb-item"><a href="../../reference/api.html" class="nav-link">API documentation</a></li>
     
     
     <li class="breadcrumb-item"><a href="nexusLIMS.html" class="nav-link"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS</span></code></a></li>
@@ -557,25 +537,8 @@
 </table>
 </div>
 </section>
-<section id="data">
-<h3>Data<a class="headerlink" href="#data" title="Link to this heading">#</a></h3>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table table-left">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.extractors.plugins.fei_emi.logger" title="nexusLIMS.extractors.plugins.fei_emi.logger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">logger</span></code></a></p></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-</div>
-</section>
 <section id="api">
 <h3>API<a class="headerlink" href="#api" title="Link to this heading">#</a></h3>
-<dl class="py data">
-<dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.fei_emi.logger">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.plugins.fei_emi.</span></span><span class="sig-name descname"><span class="pre">logger</span></span><a class="headerlink" href="#nexusLIMS.extractors.plugins.fei_emi.logger" title="Link to this definition">#</a></dt>
-<dd><p>‘getLogger(…)’</p>
-</dd></dl>
-
 <dl class="py class">
 <dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.fei_emi.SerEmiExtractor">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.plugins.fei_emi.</span></span><span class="sig-name descname"><span class="pre">SerEmiExtractor</span></span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/plugins/fei_emi.html#SerEmiExtractor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.plugins.fei_emi.SerEmiExtractor" title="Link to this definition">#</a></dt>
@@ -597,20 +560,25 @@ The .ser files contain the actual data, while .emi files contain metadata.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.fei_emi.SerEmiExtractor.supported_extensions">
-<span class="sig-name descname"><span class="pre">supported_extensions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.ClassVar" title="(in Python v3.11)"><span class="pre">ClassVar</span></a></em><a class="headerlink" href="#nexusLIMS.extractors.plugins.fei_emi.SerEmiExtractor.supported_extensions" title="Link to this definition">#</a></dt>
-<dd><p>None</p>
+<span class="sig-name descname"><span class="pre">supported_extensions</span></span><a class="headerlink" href="#nexusLIMS.extractors.plugins.fei_emi.SerEmiExtractor.supported_extensions" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> typing.ClassVar</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.fei_emi.SerEmiExtractor.supports">
 <span class="sig-name descname"><span class="pre">supports</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="nexusLIMS.extractors.base.html#nexusLIMS.extractors.base.ExtractionContext" title="nexusLIMS.extractors.base.ExtractionContext"><span class="pre">ExtractionContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/plugins/fei_emi.html#SerEmiExtractor.supports"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.plugins.fei_emi.SerEmiExtractor.supports" title="Link to this definition">#</a></dt>
 <dd><p>Check if this extractor supports the given file.</p>
-<p class="rubric" id="id19">Parameters</p>
-<p>context
-The extraction context containing file information</p>
-<p class="rubric" id="id20">Returns</p>
-<p>bool
-True if file extension is .ser</p>
+<dl class="myst field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>context</strong> – The extraction context containing file information</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if file extension is .ser</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -619,14 +587,19 @@ True if file extension is .ser</p>
 <dd><p>Extract metadata from a .ser file and its accompanying .emi file.</p>
 <p>Returns metadata (as a list of dicts) from an FEI .ser file +
 its associated .emi files, with some non-relevant information stripped.</p>
-<p class="rubric" id="id21">Parameters</p>
-<p>context
-The extraction context containing file information</p>
-<p class="rubric" id="id22">Returns</p>
-<p>list[dict]
-List containing a single metadata dict with ‘nx_meta’ key.
+<dl class="myst field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>context</strong> – The extraction context containing file information</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List containing a single metadata dict with ‘nx_meta’ key.
 If files cannot be opened, at least basic metadata will be returned (
 creation time, etc.)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a>[<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>]</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -637,19 +610,24 @@ creation time, etc.)</p>
 <dd><p>Parse basic metadata from file.</p>
 <p>Parse the metadata that is saved at specific places within
 the .emi tag structure into a consistent place in the metadata dictionary
-returned by :py:meth:<code class="docutils literal notranslate"><span class="pre">get_ser_metadata</span></code>. Specifically, this method handles
+returned by <a class="reference internal" href="#nexusLIMS.extractors.plugins.fei_emi.get_ser_metadata" title="nexusLIMS.extractors.plugins.fei_emi.get_ser_metadata"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_ser_metadata()</span></code></a>. Specifically, this method handles
 the creation date, equipment manufacturer, and data shape/type.</p>
-<p class="rubric" id="id23">Parameters</p>
-<p>metadata : dict
-A metadata dictionary as returned by :py:meth:<code class="docutils literal notranslate"><span class="pre">get_ser_metadata</span></code>
-shape
-The shape of the dataset
-instrument : Instrument
-The instrument this file was collected on</p>
-<p class="rubric" id="id24">Returns</p>
-<p>metadata : dict
-The same metadata dictionary with some values added under the
+<dl class="myst field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>metadata</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>) – A metadata dictionary as returned by <a class="reference internal" href="#nexusLIMS.extractors.plugins.fei_emi.get_ser_metadata" title="nexusLIMS.extractors.plugins.fei_emi.get_ser_metadata"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_ser_metadata()</span></code></a></p></li>
+<li><p><strong>shape</strong> – The shape of the dataset</p></li>
+<li><p><strong>instrument</strong> (<a class="reference internal" href="nexusLIMS.instruments.html#nexusLIMS.instruments.Instrument" title="nexusLIMS.instruments.Instrument"><em>Instrument</em></a>) – The instrument this file was collected on</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>metadata</strong> – The same metadata dictionary with some values added under the
 root-level <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code> key</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -658,15 +636,20 @@ root-level <code class="docutils literal notranslate"><span class="pre">nx_meta<
 <dd><p>Parse experimental conditions.</p>
 <p>Parse the metadata that is saved at specific places within
 the .emi tag structure into a consistent place in the metadata dictionary
-returned by :py:meth:<code class="docutils literal notranslate"><span class="pre">get_ser_metadata</span></code>. Specifically looks at the
+returned by <a class="reference internal" href="#nexusLIMS.extractors.plugins.fei_emi.get_ser_metadata" title="nexusLIMS.extractors.plugins.fei_emi.get_ser_metadata"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_ser_metadata()</span></code></a>. Specifically looks at the
 “ExperimentalConditions” node of the metadata structure.</p>
-<p class="rubric" id="id25">Parameters</p>
-<p>metadata : dict
-A metadata dictionary as returned by :py:meth:<code class="docutils literal notranslate"><span class="pre">get_ser_metadata</span></code></p>
-<p class="rubric" id="id26">Returns</p>
-<p>metadata : dict
-The same metadata dictionary with some values added under the
+<dl class="myst field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>metadata</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>) – A metadata dictionary as returned by <a class="reference internal" href="#nexusLIMS.extractors.plugins.fei_emi.get_ser_metadata" title="nexusLIMS.extractors.plugins.fei_emi.get_ser_metadata"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_ser_metadata()</span></code></a></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>metadata</strong> – The same metadata dictionary with some values added under the
 root-level <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code> key</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -675,15 +658,20 @@ root-level <code class="docutils literal notranslate"><span class="pre">nx_meta<
 <dd><p>Parse acquisition conditions.</p>
 <p>Parse the metadata that is saved at specific places within
 the .emi tag structure into a consistent place in the metadata dictionary
-returned by :py:meth:<code class="docutils literal notranslate"><span class="pre">get_ser_metadata</span></code>. Specifically looks at the
+returned by <a class="reference internal" href="#nexusLIMS.extractors.plugins.fei_emi.get_ser_metadata" title="nexusLIMS.extractors.plugins.fei_emi.get_ser_metadata"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_ser_metadata()</span></code></a>. Specifically looks at the
 “AcquireInfo” node of the metadata structure.</p>
-<p class="rubric" id="id27">Parameters</p>
-<p>metadata : dict
-A metadata dictionary as returned by :py:meth:<code class="docutils literal notranslate"><span class="pre">get_ser_metadata</span></code></p>
-<p class="rubric" id="id28">Returns</p>
-<p>metadata : dict
-The same metadata dictionary with some values added under the
+<dl class="myst field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>metadata</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>) – A metadata dictionary as returned by <a class="reference internal" href="#nexusLIMS.extractors.plugins.fei_emi.get_ser_metadata" title="nexusLIMS.extractors.plugins.fei_emi.get_ser_metadata"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_ser_metadata()</span></code></a></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>metadata</strong> – The same metadata dictionary with some values added under the
 root-level <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code> key</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -692,16 +680,21 @@ root-level <code class="docutils literal notranslate"><span class="pre">nx_meta<
 <dd><p>Parse experimental description.</p>
 <p>Parse the metadata that is saved at specific places within
 the .emi tag structure into a consistent place in the metadata dictionary
-returned by :py:meth:<code class="docutils literal notranslate"><span class="pre">get_ser_metadata</span></code>. Specifically looks at the
+returned by <a class="reference internal" href="#nexusLIMS.extractors.plugins.fei_emi.get_ser_metadata" title="nexusLIMS.extractors.plugins.fei_emi.get_ser_metadata"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_ser_metadata()</span></code></a>. Specifically looks at the
 “ExperimentalDescription” node of the metadata structure.</p>
-<p class="rubric" id="id29">Parameters</p>
-<p>metadata : dict
-A metadata dictionary as returned by :py:meth:<code class="docutils literal notranslate"><span class="pre">get_ser_metadata</span></code></p>
-<p class="rubric" id="id30">Returns</p>
-<p>metadata : dict
-The same metadata dictionary with some values added under the
+<dl class="myst field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>metadata</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>) – A metadata dictionary as returned by <a class="reference internal" href="#nexusLIMS.extractors.plugins.fei_emi.get_ser_metadata" title="nexusLIMS.extractors.plugins.fei_emi.get_ser_metadata"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_ser_metadata()</span></code></a></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>metadata</strong> – The same metadata dictionary with some values added under the
 root-level <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code> key</p>
-<p class="rubric" id="id31">Notes</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a></p>
+</dd>
+</dl>
+<p><strong>Notes:</strong></p>
 <p>The terms to extract in this section were</p>
 </dd></dl>
 
@@ -712,29 +705,38 @@ root-level <code class="docutils literal notranslate"><span class="pre">nx_meta<
 <p>This method assumes that the <code class="docutils literal notranslate"><span class="pre">.ser</span></code> file will be the same name as the <code class="docutils literal notranslate"><span class="pre">.emi</span></code> file,
 but with an underscore and a digit appended. i.e. <code class="docutils literal notranslate"><span class="pre">file.emi</span></code> would
 result in <code class="docutils literal notranslate"><span class="pre">.ser</span></code> files named <code class="docutils literal notranslate"><span class="pre">file_1.ser</span></code>, <code class="docutils literal notranslate"><span class="pre">file_2.ser</span></code>, etc.</p>
-<p class="rubric" id="id32">Parameters</p>
-<p>ser_fname
-The absolute path of an FEI TIA <code class="docutils literal notranslate"><span class="pre">.ser</span></code> data file</p>
-<p class="rubric" id="id33">Returns</p>
-<p>emi_fname
-The absolute path of the accompanying <code class="docutils literal notranslate"><span class="pre">.emi</span></code> metadata file
-index : int
-The number of this .ser file (i.e. 1, 2, 3, etc.)</p>
-<p class="rubric" id="id34">Raises</p>
-<p>FileNotFoundError
-If the accompanying .emi file cannot be resolved to be a file</p>
+<dl class="myst field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ser_fname</strong> – The absolute path of an FEI TIA <code class="docutils literal notranslate"><span class="pre">.ser</span></code> data file</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>emi_fname</em> – The absolute path of the accompanying <code class="docutils literal notranslate"><span class="pre">.emi</span></code> metadata file</p></li>
+<li><p><strong>index</strong> (<em>int</em>) – The number of this .ser file (i.e. 1, 2, 3, etc.)</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/exceptions.html#FileNotFoundError" title="(in Python v3.11)"><strong>FileNotFoundError</strong></a> – If the accompanying .emi file cannot be resolved to be a file</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.fei_emi.fei_unit_to_pint">
 <span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.plugins.fei_emi.</span></span><span class="sig-name descname"><span class="pre">fei_unit_to_pint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fei_unit</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/plugins/fei_emi.html#fei_unit_to_pint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.plugins.fei_emi.fei_unit_to_pint" title="Link to this definition">#</a></dt>
 <dd><p>Convert FEI unit string to Pint unit name.</p>
-<p class="rubric" id="id35">Parameters</p>
-<p>fei_unit : str or None
-The unit string from FEI metadata (e.g., “kV”, “uA”, “um”, “deg”)</p>
-<p class="rubric" id="id36">Returns</p>
-<p>str or None
-The corresponding Pint unit name, or None if no unit or not recognized</p>
+<dl class="myst field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fei_unit</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><em>None</em>) – The unit string from FEI metadata (e.g., “kV”, “uA”, “um”, “deg”)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The corresponding Pint unit name, or None if no unit or not recognized</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a> or <em>None</em></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -745,13 +747,18 @@ The corresponding Pint unit name, or None if no unit or not recognized</p>
 In the FEI metadata structure, units are indicated separated by an
 underscore at the end of the term. i.e. <code class="docutils literal notranslate"><span class="pre">High</span> <span class="pre">tension_kV</span></code> indicates that
 the <code class="docutils literal notranslate"><span class="pre">High</span> <span class="pre">tension</span></code> metadata value has units of <code class="docutils literal notranslate"><span class="pre">kV</span></code>.</p>
-<p class="rubric" id="id37">Parameters</p>
-<p>metadata_term : str
-The metadata term read from the FEI tag structure</p>
-<p class="rubric" id="id38">Returns</p>
-<p>mdata_and_unit : :obj:<code class="docutils literal notranslate"><span class="pre">tuple</span></code> of :obj:<code class="docutils literal notranslate"><span class="pre">str</span></code>
-A length-2 tuple with the metadata value name as the first
+<dl class="myst field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>metadata_term</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – The metadata term read from the FEI tag structure</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>mdata_and_unit</strong> – A length-2 tuple with the metadata value name as the first
 item and the unit (if present) as the second item</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#tuple" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -761,19 +768,24 @@ item and the unit (if present) as the second item</p>
 <p>Maps input metadata terms to NexusLIMS metadata structure, with support
 for (output_name, unit) tuples in the term_mapping values to create Pint
 Quantities.</p>
-<p class="rubric" id="id39">Parameters</p>
-<p>term_mapping : dict
-Dictionary where keys are tuples of strings (the input terms),
+<dl class="myst field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>term_mapping</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>) – Dictionary where keys are tuples of strings (the input terms),
 and values are tuples of (output_name, unit) where output_name
 is either a string or list of strings, and unit is either a string
-(Pint unit name) or None
-base : list
-The ‘root’ path within the metadata dictionary
-metadata : dict
-A metadata dictionary</p>
-<p class="rubric" id="id40">Returns</p>
-<p>metadata : dict
-The same metadata dictionary with values added to nx_meta</p>
+(Pint unit name) or None</p></li>
+<li><p><strong>base</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a>) – The ‘root’ path within the metadata dictionary</p></li>
+<li><p><strong>metadata</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>) – A metadata dictionary</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>metadata</strong> – The same metadata dictionary with values added to nx_meta</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -788,30 +800,41 @@ Spectrum or Spectrum Image, etc.</p>
 a heuristic of axis limits and size is used to determine whether a
 spectrum’s data type is EELS or EDS. This may not be a perfect
 determination.</p>
-<p class="rubric" id="id41">Parameters</p>
-<p>s : :py:class:<code class="docutils literal notranslate"><span class="pre">hyperspy.signal.BaseSignal</span></code> (or subclass)
-The HyperSpy signal that contains the data of interest
-metadata : dict
-A metadata dictionary as returned by :py:meth:<code class="docutils literal notranslate"><span class="pre">get_ser_metadata</span></code></p>
-<p class="rubric" id="id42">Returns</p>
-<p>data_type : str
-The string that should be stored at metadata[‘nx_meta’][‘Data Type’]
-dataset_type : str
-The string that should be stored at metadata[‘nx_meta’][‘DatasetType’]</p>
+<dl class="myst field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>s</strong> (<a class="reference external" href="http://hyperspy.org/hyperspy-doc/current/reference/api.signals/BaseSignal.html#hyperspy.api.signals.BaseSignal" title="(in HyperSpy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">hyperspy.signal.BaseSignal</span></code></a> (or subclass)) – The HyperSpy signal that contains the data of interest</p></li>
+<li><p><strong>metadata</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>) – A metadata dictionary as returned by <a class="reference internal" href="#nexusLIMS.extractors.plugins.fei_emi.get_ser_metadata" title="nexusLIMS.extractors.plugins.fei_emi.get_ser_metadata"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_ser_metadata()</span></code></a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>data_type</strong> (<em>str</em>) – The string that should be stored at metadata[‘nx_meta’][‘Data Type’]</p></li>
+<li><p><strong>dataset_type</strong> (<em>str</em>) – The string that should be stored at metadata[‘nx_meta’][‘DatasetType’]</p></li>
+</ul>
+</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.fei_emi.get_ser_metadata">
 <span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.plugins.fei_emi.</span></span><span class="sig-name descname"><span class="pre">get_ser_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/plugins/fei_emi.html#get_ser_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.plugins.fei_emi.get_ser_metadata" title="Link to this definition">#</a></dt>
 <dd><p>Get metadata from a .ser file and its accompanying .emi file.</p>
-<p>.. deprecated::
-This function is deprecated. Use SerEmiExtractor class instead.</p>
-<p class="rubric" id="id43">Parameters</p>
-<p>filename : pathlib.Path
-path to a file saved in the harvested directory of the instrument</p>
-<p class="rubric" id="id44">Returns</p>
-<p>mdict : dict
-A description of the file’s metadata.</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version This: </span>function is deprecated. Use SerEmiExtractor class instead.</p>
+</div>
+<dl class="myst field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><em>Path</em></a>) – path to a file saved in the harvested directory of the instrument</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>mdict</strong> – A description of the file’s metadata.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
@@ -868,9 +891,7 @@ A description of the file’s metadata.</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#classes">Classes</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data">Data</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#api">API</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.fei_emi.logger"><code class="docutils literal notranslate"><span class="pre">logger</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.fei_emi.SerEmiExtractor"><code class="docutils literal notranslate"><span class="pre">SerEmiExtractor</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.fei_emi.SerEmiExtractor.name"><code class="docutils literal notranslate"><span class="pre">SerEmiExtractor.name</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.fei_emi.SerEmiExtractor.priority"><code class="docutils literal notranslate"><span class="pre">SerEmiExtractor.priority</span></code></a></li>

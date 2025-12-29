@@ -4,6 +4,7 @@
 ```
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview
+:parser: autodoc2_docstrings_parser
 :allowtitles:
 ```
 
@@ -17,6 +18,7 @@
 
 * - {py:obj}`HyperSpyPreviewGenerator <nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.HyperSpyPreviewGenerator>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.HyperSpyPreviewGenerator
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 ````
@@ -29,10 +31,12 @@
 
 * - {py:obj}`add_annotation_markers <nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.add_annotation_markers>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.add_annotation_markers
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`sig_to_thumbnail <nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.sig_to_thumbnail>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.sig_to_thumbnail
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 ````
@@ -43,34 +47,20 @@
 :class: autosummary longtable
 :align: left
 
-* - {py:obj}`logger <nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.logger>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.logger
-    :summary:
-    ```
 * - {py:obj}`SPECTRUM_IMAGE_LOGO <nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.SPECTRUM_IMAGE_LOGO>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.SPECTRUM_IMAGE_LOGO
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 ````
 
 ### API
 
-````{py:data} logger
-:canonical: nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.logger
-:value: >
-   'getLogger(...)'
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.logger
-```
-
-````
-
 ````{py:data} SPECTRUM_IMAGE_LOGO
 :canonical: nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.SPECTRUM_IMAGE_LOGO
-:value: >
-   None
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.SPECTRUM_IMAGE_LOGO
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -79,6 +69,7 @@
 :canonical: nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.add_annotation_markers
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.add_annotation_markers
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -86,6 +77,7 @@
 :canonical: nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.sig_to_thumbnail
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.sig_to_thumbnail
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -93,6 +85,7 @@
 :canonical: nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.HyperSpyPreviewGenerator
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.HyperSpyPreviewGenerator
+:parser: autodoc2_docstrings_parser
 ```
 
 ````{py:attribute} name
@@ -101,6 +94,7 @@
    'hyperspy_preview'
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.HyperSpyPreviewGenerator.name
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -111,17 +105,18 @@
    100
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.HyperSpyPreviewGenerator.priority
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} supported_extensions
 :canonical: nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.HyperSpyPreviewGenerator.supported_extensions
-:type: typing.ClassVar
-:value: >
-   None
+
+**Type:** typing.ClassVar
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.HyperSpyPreviewGenerator.supported_extensions
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -130,6 +125,7 @@
 :canonical: nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.HyperSpyPreviewGenerator.supports
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.HyperSpyPreviewGenerator.supports
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -138,6 +134,7 @@
 :canonical: nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.HyperSpyPreviewGenerator.generate
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.HyperSpyPreviewGenerator.generate
+:parser: autodoc2_docstrings_parser
 ```
 
 ````

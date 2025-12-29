@@ -4,6 +4,7 @@
 ```
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.profiles.fei_titan_tem_642
+:parser: autodoc2_docstrings_parser
 :allowtitles:
 ```
 
@@ -17,10 +18,12 @@
 
 * - {py:obj}`parse_tecnai_metadata <nexusLIMS.extractors.plugins.profiles.fei_titan_tem_642.parse_tecnai_metadata>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.profiles.fei_titan_tem_642.parse_tecnai_metadata
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`detect_diffraction_mode <nexusLIMS.extractors.plugins.profiles.fei_titan_tem_642.detect_diffraction_mode>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.profiles.fei_titan_tem_642.detect_diffraction_mode
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 ````
@@ -31,32 +34,20 @@
 :class: autosummary longtable
 :align: left
 
-* - {py:obj}`logger <nexusLIMS.extractors.plugins.profiles.fei_titan_tem_642.logger>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.profiles.fei_titan_tem_642.logger
-    :summary:
-    ```
 * - {py:obj}`fei_titan_tem_642_profile <nexusLIMS.extractors.plugins.profiles.fei_titan_tem_642.fei_titan_tem_642_profile>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.profiles.fei_titan_tem_642.fei_titan_tem_642_profile
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 ````
 
 ### API
 
-````{py:data} logger
-:canonical: nexusLIMS.extractors.plugins.profiles.fei_titan_tem_642.logger
-:value: >
-   'getLogger(...)'
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.profiles.fei_titan_tem_642.logger
-```
-
-````
-
 ````{py:function} parse_tecnai_metadata(metadata: dict[str, typing.Any], context: nexusLIMS.extractors.base.ExtractionContext) -> dict[str, typing.Any]
 :canonical: nexusLIMS.extractors.plugins.profiles.fei_titan_tem_642.parse_tecnai_metadata
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.profiles.fei_titan_tem_642.parse_tecnai_metadata
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -64,6 +55,7 @@
 :canonical: nexusLIMS.extractors.plugins.profiles.fei_titan_tem_642.detect_diffraction_mode
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.profiles.fei_titan_tem_642.detect_diffraction_mode
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -73,6 +65,7 @@
    'InstrumentProfile(...)'
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.profiles.fei_titan_tem_642.fei_titan_tem_642_profile
+:parser: autodoc2_docstrings_parser
 ```
 
 ````

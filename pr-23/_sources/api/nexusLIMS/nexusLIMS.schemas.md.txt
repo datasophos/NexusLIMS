@@ -4,6 +4,7 @@
 ```
 
 ```{autodoc2-docstring} nexusLIMS.schemas
+:parser: autodoc2_docstrings_parser
 :allowtitles:
 ```
 

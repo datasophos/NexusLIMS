@@ -4,6 +4,7 @@
 ```
 
 ```{autodoc2-docstring} nexusLIMS.schemas.units
+:parser: autodoc2_docstrings_parser
 :allowtitles:
 ```
 
@@ -17,26 +18,32 @@
 
 * - {py:obj}`normalize_quantity <nexusLIMS.schemas.units.normalize_quantity>`
   - ```{autodoc2-docstring} nexusLIMS.schemas.units.normalize_quantity
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`parse_quantity <nexusLIMS.schemas.units.parse_quantity>`
   - ```{autodoc2-docstring} nexusLIMS.schemas.units.parse_quantity
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`quantity_to_xml_parts <nexusLIMS.schemas.units.quantity_to_xml_parts>`
   - ```{autodoc2-docstring} nexusLIMS.schemas.units.quantity_to_xml_parts
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`get_qudt_uri <nexusLIMS.schemas.units.get_qudt_uri>`
   - ```{autodoc2-docstring} nexusLIMS.schemas.units.get_qudt_uri
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`serialize_quantity <nexusLIMS.schemas.units.serialize_quantity>`
   - ```{autodoc2-docstring} nexusLIMS.schemas.units.serialize_quantity
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`deserialize_quantity <nexusLIMS.schemas.units.deserialize_quantity>`
   - ```{autodoc2-docstring} nexusLIMS.schemas.units.deserialize_quantity
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 ````
@@ -49,26 +56,32 @@
 
 * - {py:obj}`logger <nexusLIMS.schemas.units.logger>`
   - ```{autodoc2-docstring} nexusLIMS.schemas.units.logger
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`ureg <nexusLIMS.schemas.units.ureg>`
   - ```{autodoc2-docstring} nexusLIMS.schemas.units.ureg
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`QUDT_UNIT_TTL_PATH <nexusLIMS.schemas.units.QUDT_UNIT_TTL_PATH>`
   - ```{autodoc2-docstring} nexusLIMS.schemas.units.QUDT_UNIT_TTL_PATH
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`QUDT_VERSION <nexusLIMS.schemas.units.QUDT_VERSION>`
   - ```{autodoc2-docstring} nexusLIMS.schemas.units.QUDT_VERSION
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`QUDT_UNIT <nexusLIMS.schemas.units.QUDT_UNIT>`
   - ```{autodoc2-docstring} nexusLIMS.schemas.units.QUDT_UNIT
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`PREFERRED_UNITS <nexusLIMS.schemas.units.PREFERRED_UNITS>`
   - ```{autodoc2-docstring} nexusLIMS.schemas.units.PREFERRED_UNITS
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 ````
@@ -81,6 +94,7 @@
    'getLogger(...)'
 
 ```{autodoc2-docstring} nexusLIMS.schemas.units.logger
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -91,16 +105,16 @@
    'UnitRegistry(...)'
 
 ```{autodoc2-docstring} nexusLIMS.schemas.units.ureg
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:data} QUDT_UNIT_TTL_PATH
 :canonical: nexusLIMS.schemas.units.QUDT_UNIT_TTL_PATH
-:value: >
-   None
 
 ```{autodoc2-docstring} nexusLIMS.schemas.units.QUDT_UNIT_TTL_PATH
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -111,6 +125,7 @@
    '3.1.9'
 
 ```{autodoc2-docstring} nexusLIMS.schemas.units.QUDT_VERSION
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -121,16 +136,16 @@
    'Namespace(...)'
 
 ```{autodoc2-docstring} nexusLIMS.schemas.units.QUDT_UNIT
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:data} PREFERRED_UNITS
 :canonical: nexusLIMS.schemas.units.PREFERRED_UNITS
-:value: >
-   None
 
 ```{autodoc2-docstring} nexusLIMS.schemas.units.PREFERRED_UNITS
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -139,6 +154,7 @@
 :canonical: nexusLIMS.schemas.units.normalize_quantity
 
 ```{autodoc2-docstring} nexusLIMS.schemas.units.normalize_quantity
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -146,6 +162,7 @@
 :canonical: nexusLIMS.schemas.units.parse_quantity
 
 ```{autodoc2-docstring} nexusLIMS.schemas.units.parse_quantity
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -153,6 +170,7 @@
 :canonical: nexusLIMS.schemas.units.quantity_to_xml_parts
 
 ```{autodoc2-docstring} nexusLIMS.schemas.units.quantity_to_xml_parts
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -160,6 +178,7 @@
 :canonical: nexusLIMS.schemas.units.get_qudt_uri
 
 ```{autodoc2-docstring} nexusLIMS.schemas.units.get_qudt_uri
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -167,6 +186,7 @@
 :canonical: nexusLIMS.schemas.units.serialize_quantity
 
 ```{autodoc2-docstring} nexusLIMS.schemas.units.serialize_quantity
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -174,5 +194,6 @@
 :canonical: nexusLIMS.schemas.units.deserialize_quantity
 
 ```{autodoc2-docstring} nexusLIMS.schemas.units.deserialize_quantity
+:parser: autodoc2_docstrings_parser
 ```
 ````

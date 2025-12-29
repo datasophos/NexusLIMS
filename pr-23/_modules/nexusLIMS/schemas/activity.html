@@ -31,8 +31,9 @@
 
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=af02a5b6" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=8633d6cc" />
   
   <!-- So that users can add custom icons -->
   <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -43,6 +44,8 @@
     <script src="../../../_static/documentation_options.js?v=dc4a309c"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=30646c52"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
     <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs"></script>
     <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs"></script>
@@ -417,6 +420,7 @@ window.addEventListener("load", load);
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
+    <script src="../../../_static/custom.js?v=ba087cdf"></script>
     <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/pr-23/_modules/nexusLIMS/schemas/activity.html" />
     <link rel="icon" href="../../../_static/nexusLIMS_bare_logo.ico"/>
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -424,7 +428,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.2.0.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 28, 2025"/>
+    <meta name="docbuild:last-update" content="Dec, 29, 2025"/>
   </head>
   
   
@@ -534,20 +538,6 @@ window.addEventListener("load", load);
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../getting_started.html">
-    Getting Started
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../migration.html">
-    Migration Guide: v1 to v2
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../user_guide.html">
     User Guide
   </a>
@@ -555,28 +545,25 @@ window.addEventListener("load", load);
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../dev_guide.html">
-    Developer Guide
+  <a class="nav-link nav-internal" href="../../../migration.html">
+    Migration Guide: v1.4.3 to v2.2.0
   </a>
 </li>
 
-            <li class="nav-item dropdown">
-                <button class="btn dropdown-toggle nav-item" type="button"
-                data-bs-toggle="dropdown" aria-expanded="false"
-                aria-controls="pst-nav-more-links">
-                    More
-                </button>
-                <ul id="pst-nav-more-links" class="dropdown-menu">
-                    
-<li class=" ">
-  <a class="nav-link dropdown-item nav-internal" href="../../../reference.html">
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../dev_guide.html">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../reference.html">
     Reference
   </a>
 </li>
 
-                </ul>
-            </li>
-            
   </ul>
 </nav></div>
       
@@ -671,20 +658,6 @@ window.addEventListener("load", load);
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../getting_started.html">
-    Getting Started
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../migration.html">
-    Migration Guide: v1 to v2
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../user_guide.html">
     User Guide
   </a>
@@ -692,8 +665,15 @@ window.addEventListener("load", load);
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../migration.html">
+    Migration Guide: v1.4.3 to v2.2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../dev_guide.html">
-    Developer Guide
+    Dev Guide
   </a>
 </li>
 
@@ -847,8 +827,8 @@ window.addEventListener("load", load);
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas</span><span class="w"> </span><span class="kn">import</span> <span class="n">em_glossary</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">current_system_tz</span>
 
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
-<span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+<span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<span class="n">_logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="cluster_filelist_mtimes">
@@ -867,19 +847,15 @@ window.addEventListener("load", load);
 <span class="sd">    a &quot;large gap&quot; will need to be correspondingly larger.</span>
 
 <span class="sd">    The approach this method uses is to detect minima in the</span>
-<span class="sd">    `Kernel Density Estimation`_ (KDE) of the file modification times. To</span>
-<span class="sd">    determine the optimal bandwidth parameter to use in KDE, a `grid search`_</span>
-<span class="sd">    over possible appropriate bandwidths is performed, using `Leave One Out`_</span>
+<span class="sd">    [Kernel Density Estimation](https://scikit-learn.org/stable/modules/density.html#kernel-density)</span>
+<span class="sd">    (KDE) of the file modification times. To determine the optimal bandwidth parameter</span>
+<span class="sd">    to use in KDE, a [grid search](https://scikit-learn.org/stable/modules/grid_search.html#grid-search)</span>
+<span class="sd">    over possible appropriate bandwidths is performed, using</span>
+<span class="sd">    [Leave One Out](https://scikit-learn.org/stable/modules/cross_validation.html#leave-one-out-loo)</span>
 <span class="sd">    cross-validation. This approach allows the method to determine the</span>
 <span class="sd">    important gaps in file acquisition times with sensitivity controlled by</span>
 <span class="sd">    the distribution of the data itself, rather than a pre-supposed optimum.</span>
-<span class="sd">    The KDE minima approach was suggested `here`_.</span>
-
-<span class="sd">    .. _Kernel Density Estimation: https://scikit-learn.org/stable/modules/density.html#kernel-density</span>
-<span class="sd">    .. _grid search: https://scikit-learn.org/stable/modules/grid_search.html#grid-search</span>
-<span class="sd">    .. _Leave One Out: https://scikit-learn.org/stable/modules/cross_validation.html#leave-one-out-loo</span>
-<span class="sd">    .. _here: https://stackoverflow.com/a/35151947/1435788</span>
-
+<span class="sd">    The KDE minima approach was suggested [here](https://stackoverflow.com/a/35151947/1435788).</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -894,7 +870,7 @@ window.addEventListener("load", load);
 <span class="sd">        A list of the `mtime` values that represent boundaries between</span>
 <span class="sd">        discrete Acquisition Activities</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting clustering of file mtimes&quot;</span><span class="p">)</span>
+    <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting clustering of file mtimes&quot;</span><span class="p">)</span>
     <span class="n">start_timer</span> <span class="o">=</span> <span class="n">default_timer</span><span class="p">()</span>
     <span class="n">mtimes</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">([</span><span class="n">f</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_mtime</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">filelist</span><span class="p">])</span>
 
@@ -922,7 +898,7 @@ window.addEventListener("load", load);
         <span class="mi">35</span><span class="p">,</span>
         <span class="n">base</span><span class="o">=</span><span class="n">math</span><span class="o">.</span><span class="n">e</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;KDE bandwidth grid search&quot;</span><span class="p">)</span>
+    <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;KDE bandwidth grid search&quot;</span><span class="p">)</span>
     <span class="n">grid</span> <span class="o">=</span> <span class="n">GridSearchCV</span><span class="p">(</span>
         <span class="n">KernelDensity</span><span class="p">(</span><span class="n">kernel</span><span class="o">=</span><span class="s2">&quot;gaussian&quot;</span><span class="p">),</span>
         <span class="p">{</span><span class="s2">&quot;bandwidth&quot;</span><span class="p">:</span> <span class="n">bandwidths</span><span class="p">},</span>
@@ -931,7 +907,7 @@ window.addEventListener("load", load);
     <span class="p">)</span>
     <span class="n">grid</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">m_array</span><span class="p">)</span>
     <span class="n">bandwidth</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">best_params_</span><span class="p">[</span><span class="s2">&quot;bandwidth&quot;</span><span class="p">]</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Using bandwidth of </span><span class="si">%.3f</span><span class="s2"> minutes for KDE&quot;</span><span class="p">,</span> <span class="n">bandwidth</span><span class="p">)</span>
+    <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Using bandwidth of </span><span class="si">%.3f</span><span class="s2"> minutes for KDE&quot;</span><span class="p">,</span> <span class="n">bandwidth</span><span class="p">)</span>
 
     <span class="c1"># Calculate AcquisitionActivity boundaries by &quot;clustering&quot; the timestamps</span>
     <span class="c1"># using KDE using KDTree nearest neighbor estimates, and the previously</span>
@@ -944,7 +920,7 @@ window.addEventListener("load", load);
     <span class="n">mins</span> <span class="o">=</span> <span class="n">argrelextrema</span><span class="p">(</span><span class="n">scores</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">less</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># the minima indices</span>
     <span class="n">aa_boundaries</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span><span class="p">[</span><span class="n">m</span><span class="p">]</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">mins</span><span class="p">]</span>  <span class="c1"># the minima mtime values</span>
     <span class="n">end_timer</span> <span class="o">=</span> <span class="n">default_timer</span><span class="p">()</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+    <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
         <span class="s2">&quot;Detected </span><span class="si">%i</span><span class="s2"> activities in </span><span class="si">%.2f</span><span class="s2"> seconds&quot;</span><span class="p">,</span>
         <span class="nb">len</span><span class="p">(</span><span class="n">aa_boundaries</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
         <span class="n">end_timer</span> <span class="o">-</span> <span class="n">start_timer</span><span class="p">,</span>
@@ -1057,7 +1033,7 @@ window.addEventListener("load", load);
 <span class="sd">    A collection of files/metadata attributed to a physical acquisition activity.</span>
 
 <span class="sd">    Instances of this class correspond to AcquisitionActivity nodes in the</span>
-<span class="sd">    `NexusLIMS schema &lt;https://data.nist.gov/od/dm/nexus/experiment/v1.0&gt;`_</span>
+<span class="sd">    [NexusLIMS schema](https://data.nist.gov/od/dm/nexus/experiment/v1.0).</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1152,7 +1128,7 @@ window.addEventListener("load", load);
 
             <span class="k">if</span> <span class="n">meta_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="c1"># Something bad happened, so we need to alert the user</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Could not parse metadata of </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span>
+                <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Could not parse metadata of </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span>
                 <span class="c1"># Still add the file to maintain original behavior</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">fname</span><span class="p">))</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">previews</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
@@ -1203,8 +1179,8 @@ window.addEventListener("load", load);
         <span class="k">else</span><span class="p">:</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s2"> was not found&quot;</span>
             <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;appended </span><span class="si">%s</span><span class="s2"> to files&quot;</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;self.files is now </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">)</span></div>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;appended </span><span class="si">%s</span><span class="s2"> to files&quot;</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;self.files is now </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AcquisitionActivity.store_unique_params">
@@ -1245,11 +1221,11 @@ window.addEventListener("load", load);
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Make sure unique params are defined before proceeding:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_params</span> <span class="o">==</span> <span class="nb">set</span><span class="p">():</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Storing unique parameters for files in AcquisitionActivity&quot;</span><span class="p">)</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Storing unique parameters for files in AcquisitionActivity&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">store_unique_params</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
                 <span class="s2">&quot;Only one file found in this activity, so leaving &quot;</span>
                 <span class="s2">&quot;metadata associated with the file, rather than &quot;</span>
                 <span class="s2">&quot;activity&quot;</span><span class="p">,</span>
@@ -1277,7 +1253,7 @@ window.addEventListener("load", load);
                     <span class="k">if</span> <span class="n">vts</span> <span class="ow">in</span> <span class="n">meta</span><span class="p">:</span>
                         <span class="c1"># this value was found in meta, so store it</span>
                         <span class="n">setup_params</span><span class="p">[</span><span class="n">vts</span><span class="p">]</span> <span class="o">=</span> <span class="n">meta</span><span class="p">[</span><span class="n">vts</span><span class="p">]</span>
-                        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                        <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
                             <span class="s2">&quot;iter: </span><span class="si">%i</span><span class="s2">; adding </span><span class="si">%s</span><span class="s2"> = </span><span class="si">%s</span><span class="s2"> to setup_params&quot;</span><span class="p">,</span>
                             <span class="n">i</span><span class="p">,</span>
                             <span class="n">vts</span><span class="p">,</span>
@@ -1286,7 +1262,7 @@ window.addEventListener("load", load);
                     <span class="k">else</span><span class="p">:</span>
                         <span class="c1"># this value wasn&#39;t present in meta, so it can&#39;t be</span>
                         <span class="c1"># common to all, so remove it:</span>
-                        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;iter: </span><span class="si">%i</span><span class="s2">; removing </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">vts</span><span class="p">)</span>
+                        <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;iter: </span><span class="si">%i</span><span class="s2">; removing </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">vts</span><span class="p">)</span>
                         <span class="n">values_to_search</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">vts</span><span class="p">)</span>
                 <span class="c1"># On the subsequent iterations test if values are same/different</span>
                 <span class="c1"># If different, then remove the key from setup_params and</span>
@@ -1298,7 +1274,7 @@ window.addEventListener("load", load);
                         <span class="c1"># but if it is, it means this value, which should</span>
                         <span class="c1"># have already been added to setup_params is somehow</span>
                         <span class="c1"># new, so delete vts from values to search</span>
-                        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                        <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
                             <span class="s2">&quot;iter: </span><span class="si">%i</span><span class="s2">; removing </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
                             <span class="n">i</span><span class="p">,</span>
                             <span class="n">vts</span><span class="p">,</span>
@@ -1310,7 +1286,7 @@ window.addEventListener("load", load);
                         <span class="c1"># Parameter is either missing or has different value,</span>
                         <span class="c1"># so this must be individual dataset metadata.</span>
                         <span class="c1"># Remove it from setup_params and values_to_search</span>
-                        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                        <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
                             <span class="s2">&quot;iter: </span><span class="si">%i</span><span class="s2">; vts=</span><span class="si">%s</span><span class="s2"> - &quot;</span>
                             <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">; &quot;</span>
                             <span class="s2">&quot;removing </span><span class="si">%s</span><span class="s2"> from setup_params and values to search&quot;</span><span class="p">,</span>
@@ -1341,7 +1317,7 @@ window.addEventListener("load", load);
 <span class="sd">        are kept in ``self.setup_params``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">setup_params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
                 <span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> -- setup_params has not been defined; call store_setup_params() &quot;</span>
                 <span class="s2">&quot;prior to using this method. Nothing was done.&quot;</span><span class="p">,</span>
                 <span class="bp">self</span><span class="p">,</span>
