@@ -770,10 +770,16 @@ class TestNemoUtilityFunctions:
         from nexusLIMS.instruments import Instrument
 
         mock_instrument = Instrument(
-            name="UNKNOWN-INSTRUMENT",
+            instrument_pid="UNKNOWN-INSTRUMENT",
             schema_name="Unknown Instrument",
             harvester="test",
             api_url="https://unknown.example.com/api/tools/?id=999",
+            calendar_name="Unknown Instrument",
+            calendar_url="https://unknown.example.com/calendar/",
+            location="Unknown",
+            property_tag="UNKNOWN",
+            filestore_path="./unknown",
+            timezone_str="America/New_York",
         )
 
         # Create a session with this unknown instrument

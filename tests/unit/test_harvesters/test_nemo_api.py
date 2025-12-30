@@ -10,11 +10,19 @@ and reservation questions.
 from datetime import datetime as dt
 
 import pytest
+from sqlmodel import Session as DBSession
+from sqlmodel import select
 
-from nexusLIMS.db.session_handler import Session, db_query
+from nexusLIMS.db.engine import get_engine
+from nexusLIMS.db.enums import EventType, RecordStatus
+from nexusLIMS.db.models import SessionLog
+from nexusLIMS.db.session_handler import Session
 from nexusLIMS.harvesters import nemo
 from nexusLIMS.harvesters.nemo import utils as nemo_utils
-from nexusLIMS.instruments import Instrument, instrument_db
+from nexusLIMS.instruments import Instrument
+
+# Apply needs_db marker to specific test classes that use database
+# Most tests don't need it - only those using instrument_db or SessionLog
 
 
 class TestNemoConnectorUsers:
@@ -93,6 +101,16 @@ class TestNemoConnectorUsers:
             assert {u["username"] for u in users} == set(expected)
 
 
+@pytest.mark.needs_db(
+    instruments=[
+        "FEI-Titan-STEM",
+        "FEI-Titan-TEM",
+        "FEI-Quanta-ESEM",
+        "JEOL-JEM-TEM",
+        "testtool-TEST-A1234567",
+        "test-tool-10",
+    ]
+)
 class TestNemoConnectorTools:
     """Testing getting tool information from NEMO."""
 
@@ -188,6 +206,7 @@ class TestNemoConnectorProjects:
             assert {p["name"] for p in projects} == set(expected)
 
 
+@pytest.mark.needs_db(instruments=["test-tool-10", "FEI-Titan-TEM"], sessions=True)
 class TestNemoConnectorEvents:
     """Testing getting usage event and reservation information from NEMO."""
 
@@ -320,32 +339,46 @@ class TestNemoConnectorEvents:
             lambda: [nemo_connector],
         )
 
-        _, _ = db_query("SELECT * FROM session_log;")
         # currently, this only adds instruments from the test tool on
         # nemo.example.com
         nemo_utils.add_all_usage_events_to_db(tool_id=10)
-        _, _ = db_query("SELECT * FROM session_log;")
+
+        # Verify logs were added to session_log
+        with DBSession(get_engine()) as db_session:
+            logs = db_session.exec(select(SessionLog)).all()
+            assert len(logs) > 0
 
     @pytest.mark.usefixtures("_cleanup_session_log")
     def test_usage_event_to_session_log(self, nemo_connector):
-        _, results_before = db_query("SELECT * FROM session_log;")
+        # Count session logs before
+        with DBSession(get_engine()) as db_session:
+            results_before = db_session.exec(select(SessionLog)).all()
+
         nemo_connector.write_usage_event_to_session_log(30)
-        _, results_after = db_query("SELECT * FROM session_log;")
+
+        # Count session logs after
+        with DBSession(get_engine()) as db_session:
+            results_after = db_session.exec(select(SessionLog)).all()
+
         num_added = 2
         assert len(results_after) - len(results_before) == num_added
 
-        _, results = db_query(
-            "SELECT * FROM session_log ORDER BY id_session_log DESC LIMIT 2;",
-        )
+        # Get the two most recent logs
+        with DBSession(get_engine()) as db_session:
+            statement = (
+                select(SessionLog).order_by(SessionLog.id_session_log.desc()).limit(2)
+            )
+            results = db_session.exec(statement).all()
+
         # session ids are same:
-        assert results[0][1] == results[1][1]
-        assert results[0][1].endswith("/api/usage_events/?id=30")
+        assert results[0].session_identifier == results[1].session_identifier
+        assert results[0].session_identifier.endswith("/api/usage_events/?id=30")
         # record status
-        assert results[0][5] == "TO_BE_BUILT"
-        assert results[1][5] == "TO_BE_BUILT"
+        assert results[0].record_status == RecordStatus.TO_BE_BUILT
+        assert results[1].record_status == RecordStatus.TO_BE_BUILT
         # event type
-        assert results[0][4] == "END"
-        assert results[1][4] == "START"
+        assert results[0].event_type == EventType.END
+        assert results[1].event_type == EventType.START
 
     @pytest.mark.usefixtures("_cleanup_session_log")
     def test_usage_event_to_session_log_duplicate_start_and_end(
@@ -355,9 +388,13 @@ class TestNemoConnectorEvents:
     ):
         """Test that duplicate START and END logs are detected and not inserted."""
         # First, write the event normally to create the initial logs
-        _, results_before = db_query("SELECT * FROM session_log;")
+        with DBSession(get_engine()) as db_session:
+            results_before = db_session.exec(select(SessionLog)).all()
+
         nemo_connector.write_usage_event_to_session_log(30)
-        _, results_after_first = db_query("SELECT * FROM session_log;")
+
+        with DBSession(get_engine()) as db_session:
+            results_after_first = db_session.exec(select(SessionLog)).all()
 
         # Verify initial insertion worked (2 logs added: START and END)
         assert len(results_after_first) - len(results_before) == 2
@@ -366,17 +403,17 @@ class TestNemoConnectorEvents:
         with caplog.at_level("WARNING"):
             nemo_connector.write_usage_event_to_session_log(30)
 
-            # Verify warning was logged for duplicate START log
-            assert "A 'START' log with session id" in caplog.text
-            assert "so a new one will not be inserted for this event" in caplog.text
-
-            # Verify warning was logged for duplicate END log
-            assert "An 'END' log with session id" in caplog.text
-            # Both warnings should mention the DB check
-            assert caplog.text.count("was found in the DB") == 2
+            # Verify warning was logged for duplicate logs (new message format)
+            assert "SessionLog already exists" in caplog.text
+            # Should have warnings for both START and END
+            assert caplog.text.count("SessionLog already exists") == 2
+            assert "event_type=<EventType.START" in caplog.text
+            assert "event_type=<EventType.END" in caplog.text
 
         # Verify no new logs were added (count should be same as after first insert)
-        _, results_after_second = db_query("SELECT * FROM session_log;")
+        with DBSession(get_engine()) as db_session:
+            results_after_second = db_session.exec(select(SessionLog)).all()
+
         assert len(results_after_second) == len(results_after_first)
 
     def test_usage_event_to_session_log_non_existent_event(
@@ -384,14 +421,21 @@ class TestNemoConnectorEvents:
         caplog,
         nemo_connector,
     ):
-        _, results_before = db_query("SELECT * FROM session_log;")
+        with DBSession(get_engine()) as db_session:
+            results_before = db_session.exec(select(SessionLog)).all()
+
         nemo_connector.write_usage_event_to_session_log(0)
-        _, results_after = db_query("SELECT * FROM session_log;")
+
+        with DBSession(get_engine()) as db_session:
+            results_after = db_session.exec(select(SessionLog)).all()
+
         assert "No usage event with id = 0 was found" in caplog.text
         assert "WARNING" in caplog.text
         assert len(results_after) == len(results_before)
 
     def test_usage_event_to_session(self, nemo_connector):
+        from nexusLIMS.instruments import instrument_db
+
         session = nemo_connector.get_session_from_usage_event(30)
         # Event 30 is for tool 10 in the mock data
         test_tool = instrument_db["test-tool-10"]
@@ -411,6 +455,8 @@ class TestNemoConnectorEvents:
         assert session is None
 
     def test_res_event_from_session(self, nemo_connector, monkeypatch):
+        from nexusLIMS.instruments import instrument_db
+
         # Mock get_connector_for_session to return our mocked connector
         monkeypatch.setattr(
             "nexusLIMS.harvesters.nemo.get_connector_for_session",
@@ -441,6 +487,8 @@ class TestNemoConnectorEvents:
         )
 
     def test_res_event_from_session_with_elements(self, nemo_connector, monkeypatch):
+        from nexusLIMS.instruments import instrument_db
+
         # Mock get_connector_for_session to return our mocked connector
         monkeypatch.setattr(
             "nexusLIMS.harvesters.nemo.get_connector_for_session",
@@ -479,6 +527,8 @@ class TestNemoConnectorEvents:
         nemo_connector,
         monkeypatch,
     ):
+        from nexusLIMS.instruments import instrument_db
+
         # Mock get_connector_for_session to return our mocked connector
         monkeypatch.setattr(
             "nexusLIMS.harvesters.nemo.get_connector_for_session",
@@ -502,6 +552,8 @@ class TestNemoConnectorEvents:
         nemo_connector,
         monkeypatch,
     ):
+        from nexusLIMS.instruments import instrument_db
+
         # Mock get_connector_for_session to return our mocked connector
         monkeypatch.setattr(
             "nexusLIMS.harvesters.nemo.get_connector_for_session",
@@ -521,9 +573,22 @@ class TestNemoConnectorEvents:
             nemo.res_event_from_session(s)
 
     def test_no_connector_for_session(self):
+        # Create a minimal dummy instrument that doesn't match any NEMO harvester
+        dummy_instrument = Instrument(
+            instrument_pid="Dummy instrument",
+            schema_name="Dummy",
+            api_url="https://dummy.example.com/api/",
+            calendar_name="Dummy Tool",
+            calendar_url="https://dummy.example.com/calendar/",
+            location="Dummy Location",
+            property_tag="00000",
+            filestore_path="/dummy/path",
+            harvester="nemo",
+            timezone_str="America/New_York",
+        )
         s = Session(
             "test_no_reservations",
-            Instrument(name="Dummy instrument"),
+            dummy_instrument,
             (
                 dt.fromisoformat("2021-08-05T15:00:00-06:00"),
                 dt.fromisoformat("2021-08-05T16:00:00-06:00"),
@@ -559,9 +624,13 @@ class TestNemoConnectorEvents:
             lambda event_id: [our_dict],
         )
 
-        _, results_before = db_query("SELECT * FROM session_log;")
+        with DBSession(get_engine()) as db_session:
+            results_before = db_session.exec(select(SessionLog)).all()
+
         nemo_connector.write_usage_event_to_session_log(event_id=0)
-        _, results_after = db_query("SELECT * FROM session_log;")
+
+        with DBSession(get_engine()) as db_session:
+            results_after = db_session.exec(select(SessionLog)).all()
 
         # make sure warning was logged
         assert "Usage event 0 has not yet ended" in caplog.text
@@ -570,6 +639,7 @@ class TestNemoConnectorEvents:
         assert len(results_before) == len(results_after)
 
 
+@pytest.mark.needs_db(instruments=["test-tool-10"])
 class TestNemoConnectorReservationQuestions:
     """Testing getting reservation question details from NEMO."""
 
@@ -864,6 +934,8 @@ class TestNemoConnectorReservationQuestions:
         ]
 
     def test_no_consent_no_questions(self, nemo_connector, monkeypatch):
+        from nexusLIMS.instruments import instrument_db
+
         # Mock get_connector_for_session to return our mocked connector
         monkeypatch.setattr(
             "nexusLIMS.harvesters.nemo.get_connector_for_session",
@@ -888,6 +960,8 @@ class TestNemoConnectorReservationQuestions:
         )
 
     def test_no_consent_user_disagree(self, nemo_connector, monkeypatch):
+        from nexusLIMS.instruments import instrument_db
+
         # Mock get_connector_for_session to return our mocked connector
         monkeypatch.setattr(
             "nexusLIMS.harvesters.nemo.get_connector_for_session",

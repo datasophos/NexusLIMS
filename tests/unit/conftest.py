@@ -1,7 +1,7 @@
 """Set up pytest configuration."""
 
 # pylint: disable=unused-argument
-# ruff: noqa: ARG001, SLF001
+# ruff: noqa: ARG001
 
 import os
 import shutil
@@ -60,10 +60,10 @@ if not _test_db_path.exists():
             instrument TEXT NOT NULL,
             timestamp TEXT NOT NULL,
             event_type TEXT NOT NULL,
-            record_status TEXT DEFAULT 'TO_BE_BUILT',
+            record_status TEXT DEFAULT 'TO_BE_BUILT' CHECK(record_status IN ('COMPLETED', 'WAITING_FOR_END', 'TO_BE_BUILT', 'ERROR', 'NO_FILES_FOUND', 'NO_CONSENT', 'NO_RESERVATION')),
             user TEXT
         )
-    """,
+    """,  # noqa: E501
     )
     conn.commit()
     conn.close()
@@ -102,6 +102,14 @@ from _pytest.monkeypatch import MonkeyPatch  # noqa: E402
 from nexusLIMS.config import settings  # noqa: E402
 from nexusLIMS.utils import current_system_tz  # noqa: E402
 
+# Import context fixtures for marker-based resource allocation
+# These must be imported directly (not via pytest_plugins) to avoid conflicts
+# when running integration tests alongside unit tests
+from .fixtures.contexts import (  # noqa: E402, F401
+    db_context,
+    file_context,
+    settings_context,
+)
 from .utils import delete_files, extract_files  # noqa: E402
 
 
@@ -152,6 +160,22 @@ def pytest_configure(config):
         "markers",
         "harvester: Tests for harvester modules (NEMO, SharePoint)",
     )
+    # Phase 1: New marker-based resource allocation markers
+    config.addinivalue_line(
+        "markers",
+        "needs_db: Opt-in to database setup (use: @pytest.mark.needs_db or"
+        "@pytest.mark.needs_db(instruments=['FEI-Titan-TEM']))",
+    )
+    config.addinivalue_line(
+        "markers",
+        "needs_files: Opt-in to file extraction (use:"
+        "@pytest.mark.needs_files('QUANTA_TIF', 'FEI_SER'))",
+    )
+    config.addinivalue_line(
+        "markers",
+        "needs_settings: Opt-in to custom settings (use:"
+        "@pytest.mark.needs_settings(NX_FILE_STRATEGY='inclusive'))",
+    )
     config.addinivalue_line(
         "markers",
         "extractor: Tests for metadata extractor modules",
@@ -160,6 +184,42 @@ def pytest_configure(config):
         "markers",
         "record_builder: Tests for record builder functionality",
     )
+
+
+def pytest_collection_modifyitems(config, items):
+    """
+    Modify test items after collection.
+
+    This hook automatically injects fixture dependencies based on markers.
+    Tests marked with @pytest.mark.needs_db will automatically get db_context,
+    tests with @pytest.mark.needs_files will get file_context, etc.
+
+    This enables the new marker-based resource allocation system where tests
+    explicitly opt-in to resources they need, rather than auto-loading everything.
+
+    Phase 2 implementation detail: This hook bridges markers to fixtures.
+    """
+    for item in items:
+        # Auto-inject db_context for tests with needs_db marker
+        if (
+            item.get_closest_marker("needs_db")
+            and "db_context" not in item.fixturenames
+        ):
+            item.fixturenames.append("db_context")
+
+        # Auto-inject file_context for tests with needs_files marker
+        if (
+            item.get_closest_marker("needs_files")
+            and "file_context" not in item.fixturenames
+        ):
+            item.fixturenames.append("file_context")
+
+        # Auto-inject settings_context for tests with needs_settings marker
+        if (
+            item.get_closest_marker("needs_settings")
+            and "settings_context" not in item.fixturenames
+        ):
+            item.fixturenames.append("settings_context")
 
 
 def pytest_unconfigure(config):
@@ -248,7 +308,10 @@ def cleanup_session_log():
     """
     # pylint: disable=import-outside-toplevel
     yield None
-    from nexusLIMS.db.session_handler import db_query
+    from sqlmodel import Session, select
+
+    from nexusLIMS.db.engine import get_engine
+    from nexusLIMS.db.models import SessionLog
 
     to_remove = (
         "https://nemo.example.com/api/usage_events/?id=29",
@@ -256,11 +319,15 @@ def cleanup_session_log():
         "https://nemo.example.com/api/usage_events/?id=31",
         "test_session",
     )
-    db_query(
-        f"DELETE FROM session_log WHERE session_identifier IN "
-        f"({','.join('?' * len(to_remove))})",
-        to_remove,
-    )
+
+    with Session(get_engine()) as session:
+        statement = select(SessionLog).where(
+            SessionLog.session_identifier.in_(to_remove)
+        )
+        logs = session.exec(statement).all()
+        for log in logs:
+            session.delete(log)
+        session.commit()
 
 
 # test file fixtures
@@ -819,222 +886,6 @@ def test_record_files():
     delete_files("TEST_RECORD_FILES")
 
 
-@pytest.fixture(autouse=True)
-def fresh_test_db():
-    """
-    Populate test database with test instruments and sessions.
-
-    Populates the database with:
-    - Five test instruments: FEI-Titan-STEM, FEI-Titan-TEM, FEI-Quanta-ESEM,
-      JEOL-JEM-TEM, testtool-TEST-A1234567
-    - Test sessions for Titan_TEM, JEOL_TEM, and Nexus_Test_Instrument matching
-      test file dates
-
-    This replaces the static test_db.sqlite.tar.gz approach with
-    dynamic database construction for cleaner, more maintainable tests.
-
-    Function-scoped and autouse=True ensures each test gets a fresh database,
-    preventing test isolation issues.
-    """
-    # Connect to existing database (schema created during conftest initialization)
-    db_path = _test_db_path
-    conn = sqlite3.connect(db_path)
-    cursor = conn.cursor()
-
-    # Clear any existing data to ensure clean state for each test
-    cursor.execute("DELETE FROM session_log")
-    cursor.execute("DELETE FROM instruments")
-
-    # Insert test instruments
-    # Match the tool IDs from test_instrument_factory.py and mock NEMO responses
-    instruments = [
-        # FEI Titan STEM (id=1)
-        (
-            "FEI-Titan-STEM",
-            "https://nemo.example.com/api/tools/?id=1",
-            "FEI Titan TEM",
-            "https://nemo.example.com/calendar/titan-stem/",
-            "Test Building Room 300",
-            "Titan TEM",
-            "TEST-STEM-001",
-            "./Titan_STEM",
-            None,
-            None,
-            None,
-            "nemo",
-            "America/New_York",
-        ),
-        # FEI Titan TEM (id=2)
-        (
-            "FEI-Titan-TEM",
-            "https://nemo.example.com/api/tools/?id=2",
-            "FEI Titan TEM",
-            "https://nemo.example.com/calendar/titan/",
-            "Test Building Room 301",
-            "FEI Titan TEM",
-            "TEST-TEM-001",
-            "./Titan_TEM",
-            None,
-            None,
-            None,
-            "nemo",
-            "America/New_York",
-        ),
-        # FEI Quanta ESEM (id=3)
-        (
-            "FEI-Quanta-ESEM",
-            "https://nemo.example.com/api/tools/?id=3",
-            "FEI Quanta 200 ESEM",
-            "https://nemo.example.com/calendar/quanta/",
-            "Test Building Room 302",
-            "Quanta FEG 200",
-            "TEST-SEM-001",
-            "./Quanta",
-            None,
-            None,
-            None,
-            "nemo",
-            "America/New_York",
-        ),
-        # JEOL TEM (id=5)
-        (
-            "JEOL-JEM-TEM",
-            "https://nemo.example.com/api/tools/?id=5",
-            "JEOL 3010 TEM",
-            "https://nemo.example.com/calendar/jeol/",
-            "Test Building Room 303",
-            "JEOL JEM-3010",
-            "TEST-JEOL-001",
-            "./JEOL_TEM",
-            None,
-            None,
-            None,
-            "nemo",
-            "America/Chicago",
-        ),
-        # Generic test tool (id=6)
-        (
-            "testtool-TEST-A1234567",
-            "https://nemo.example.com/api/tools/?id=6",
-            "Test Tool",
-            "https://nemo.example.com/calendar/test-tool/",
-            "Test Building Room 400",
-            "Test Tool",
-            "TEST-TOOL-001",
-            "./Nexus_Test_Instrument",
-            None,
-            None,
-            None,
-            "nemo",
-            "America/Denver",
-        ),
-        # Test Tool for NEMO connector tests (id=10)
-        (
-            "test-tool-10",
-            "https://nemo.example.com/api/tools/?id=10",
-            "Test Tool",
-            "https://nemo.example.com/calendar/test-tool-10/",
-            "Test Building Room 100",
-            "Test Tool",
-            "TEST-TOOL-010",
-            "./Test_Tool_10",
-            None,
-            None,
-            None,
-            "nemo",
-            "America/Denver",
-        ),
-    ]
-
-    cursor.executemany(
-        """
-        INSERT INTO instruments VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """,
-        instruments,
-    )
-
-    # Insert test sessions matching the test data files
-    # Session identifiers use URL format with ID parameter for proper
-    # filename generation
-    sessions = [
-        # Titan TEM session (2018-11-13) - tool_id=2
-        (
-            "https://nemo.example.com/api/usage_events/?id=101",
-            "FEI-Titan-TEM",
-            "2018-11-13T13:00:00-05:00",
-            "START",
-            "TO_BE_BUILT",
-            "researcher_a",
-        ),
-        (
-            "https://nemo.example.com/api/usage_events/?id=101",
-            "FEI-Titan-TEM",
-            "2018-11-13T16:00:00-05:00",
-            "END",
-            "TO_BE_BUILT",
-            "researcher_a",
-        ),
-        # JEOL TEM session (2019-07-24) - tool_id=5
-        (
-            "https://nemo.example.com/api/usage_events/?id=202",
-            "JEOL-JEM-TEM",
-            "2019-07-24T11:00:00-04:00",
-            "START",
-            "TO_BE_BUILT",
-            "researcher_b",
-        ),
-        (
-            "https://nemo.example.com/api/usage_events/?id=202",
-            "JEOL-JEM-TEM",
-            "2019-07-24T16:00:00-04:00",
-            "END",
-            "TO_BE_BUILT",
-            "researcher_b",
-        ),
-        # Test Tool session (2021-08-02) - tool_id=6
-        (
-            "https://nemo.example.com/api/usage_events/?id=303",
-            "testtool-TEST-A1234567",
-            "2021-08-02T10:00:00-06:00",
-            "START",
-            "TO_BE_BUILT",
-            "test_user",
-        ),
-        (
-            "https://nemo.example.com/api/usage_events/?id=303",
-            "testtool-TEST-A1234567",
-            "2021-08-02T18:00:00-06:00",
-            "END",
-            "TO_BE_BUILT",
-            "test_user",
-        ),
-    ]
-
-    cursor.executemany(
-        """
-        INSERT INTO session_log
-        (session_identifier, instrument, timestamp, event_type, record_status, user)
-        VALUES (?, ?, ?, ?, ?, ?)
-        """,
-        sessions,
-    )
-
-    conn.commit()
-    conn.close()
-
-    # Reload the instrument_db to pick up the new instruments
-    # This is necessary because instrument_db is populated at module import time
-    # and needs to be refreshed with the newly populated test data
-    from nexusLIMS import instruments
-
-    instruments.instrument_db.clear()
-    instruments.instrument_db.update(instruments._get_instrument_db(db_path=db_path))
-
-    return db_path
-
-    # Cleanup is handled by pytest teardown
-
-
 # Instrument factory fixtures for reducing database dependencies
 
 
@@ -1102,3 +953,233 @@ def mock_instrument_from_filepath(monkeypatch):
         )
 
     return _mock
+
+
+# SQLModel test fixtures for database testing
+
+
+@pytest.fixture
+def test_db_engine():
+    """
+    Create in-memory SQLite engine for testing.
+
+    This fixture provides a clean SQLite database engine with all tables
+    created. Use this when you need a fresh database for isolated testing.
+
+    Yields
+    ------
+    sqlmodel.engine.Engine
+        SQLite engine with all tables created
+
+    Examples
+    --------
+    >>> def test_query(test_db_engine):
+    ...     with Session(test_db_engine) as session:
+    ...         instruments = session.exec(select(Instrument)).all()
+    ...         assert len(instruments) == 0
+    """
+    from sqlmodel import SQLModel, create_engine
+
+    engine = create_engine("sqlite:///:memory:")
+    SQLModel.metadata.create_all(engine)
+    yield engine
+    engine.dispose()
+
+
+@pytest.fixture
+def test_db_session(test_db_engine):
+    """
+    Provide database session with automatic rollback.
+
+    This fixture provides a SQLModel Session that automatically rolls back
+    all changes after the test completes. This ensures tests don't affect
+    each other even if they modify the database.
+
+    Parameters
+    ----------
+    test_db_engine : sqlmodel.engine.Engine
+        Test database engine from test_db_engine fixture
+
+    Yields
+    ------
+    sqlmodel.Session
+        Database session with automatic rollback
+
+    Examples
+    --------
+    >>> def test_insert(test_db_session):
+    ...     instrument = Instrument(instrument_pid="TEST", ...)
+    ...     test_db_session.add(instrument)
+    ...     test_db_session.commit()
+    ...     # Automatically rolled back after test
+    """
+    from sqlmodel import Session
+
+    with Session(test_db_engine) as session:
+        yield session
+        session.rollback()
+
+
+@pytest.fixture
+def sample_instrument(test_db_session):
+    """
+    Create a test instrument in the database.
+
+    This fixture creates and persists a test instrument that can be used
+    in tests requiring an existing instrument.
+
+    Parameters
+    ----------
+    test_db_session : sqlmodel.Session
+        Test database session from test_db_session fixture
+
+    Returns
+    -------
+    nexusLIMS.db.models.Instrument
+        Test instrument with id=1
+
+    Examples
+    --------
+    >>> def test_with_instrument(sample_instrument):
+    ...     assert sample_instrument.instrument_pid == "TEST-INSTRUMENT-001"
+    ...     assert sample_instrument.id is not None
+    """
+    from nexusLIMS.db.models import Instrument
+
+    instrument = Instrument(
+        instrument_pid="TEST-INSTRUMENT-001",
+        api_url="https://test.example.com/api",
+        calendar_name="Test Calendar",
+        calendar_url="https://test.example.com/calendar",
+        location="Test Lab",
+        schema_name="Test Instrument",
+        property_tag="TEST001",
+        filestore_path="./test_data",
+        timezone_str="America/New_York",
+        harvester="nemo",
+    )
+    test_db_session.add(instrument)
+    test_db_session.commit()
+    test_db_session.refresh(instrument)
+    return instrument
+
+
+@pytest.fixture
+def sample_session_log(test_db_session, sample_instrument):
+    """
+    Create a test session log entry in the database.
+
+    This fixture creates and persists a test session log that can be used
+    in tests requiring an existing session.
+
+    Parameters
+    ----------
+    test_db_session : sqlmodel.Session
+        Test database session from test_db_session fixture
+    sample_instrument : nexusLIMS.db.models.Instrument
+        Test instrument from sample_instrument fixture
+
+    Returns
+    -------
+    nexusLIMS.db.models.SessionLog
+        Test session log entry
+
+    Examples
+    --------
+    >>> def test_with_session(sample_session_log):
+    ...     assert sample_session_log.event_type == EventType.START
+    ...     assert sample_session_log.record_status == RecordStatus.TO_BE_BUILT
+    """
+    from nexusLIMS.db.enums import EventType, RecordStatus
+    from nexusLIMS.db.models import SessionLog
+
+    log = SessionLog(
+        session_identifier="test-session-001",
+        instrument=sample_instrument.instrument_pid,
+        timestamp=dt.now(tz=current_system_tz()),
+        event_type=EventType.START,
+        record_status=RecordStatus.TO_BE_BUILT,
+        user="test_user",
+    )
+    test_db_session.add(log)
+    test_db_session.commit()
+    test_db_session.refresh(log)
+    return log
+
+
+# ============================================================================
+# Phase 1: New Marker-Based Infrastructure (Opt-In Fixtures)
+# ============================================================================
+# These fixtures implement the new marker-based resource allocation system
+# that replaces autouse fixtures with explicit opt-in via pytest markers.
+# See: /Users/josh/.claude/plans/inherited-exploring-rose.md
+# ============================================================================
+
+
+@pytest.fixture(scope="session")
+def db_factory(tmp_path_factory):
+    """
+    Provide database factory for creating test databases on-demand.
+
+    This factory creates databases with only the instruments and sessions
+    that tests actually need, replacing the autouse fresh_test_db fixture.
+
+    Returns
+    -------
+    DatabaseFactory
+        Factory for creating test databases
+
+    Examples
+    --------
+    Used automatically by db_context fixture when tests use @pytest.mark.needs_db:
+
+    @pytest.mark.needs_db(instruments=["FEI-Titan-TEM"])
+    def test_something():
+        from nexusLIMS.instruments import instrument_db
+        assert "FEI-Titan-TEM" in instrument_db
+    """
+    from tests.unit.fixtures.database import DatabaseFactory
+
+    # Use session-scoped temp directory
+    temp_dir = tmp_path_factory.mktemp("test_databases")
+
+    # Path to production SQL schema (single source of truth)
+    schema_path = (
+        Path(__file__).parent.parent.parent
+        / "nexusLIMS"
+        / "db"
+        / "dev"
+        / "NexusLIMS_db_creation_script.sql"
+    )
+
+    return DatabaseFactory(temp_dir, schema_path)
+
+
+@pytest.fixture
+def file_factory(tmp_path):
+    """
+    Provide file factory for extracting test archives on-demand.
+
+    This factory extracts .tar.gz archives with only the files that
+    tests need, replacing 50+ module-scoped file extraction fixtures.
+
+    Returns
+    -------
+    FileFactory
+        Factory for extracting test file archives
+
+    Examples
+    --------
+    Used automatically by file_context fixture when tests use @pytest.mark.needs_files:
+
+    @pytest.mark.needs_files("QUANTA_TIF", "FEI_SER")
+    def test_something(file_context):
+        quanta_file = file_context.files["QUANTA_TIF"][0]
+        fei_file = file_context.files["FEI_SER"][0]
+    """
+    from tests.unit.fixtures.files import FileFactory
+
+    # Test files are in tests/unit/files/
+    test_files_dir = Path(__file__).parent / "files"
+
+    return FileFactory(test_files_dir, tmp_path)

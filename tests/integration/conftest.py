@@ -16,6 +16,10 @@ from typing import TYPE_CHECKING
 
 import pytest
 import requests
+from sqlmodel import Session as DBSession
+
+from nexusLIMS.db.enums import EventType, RecordStatus
+from nexusLIMS.db.models import SessionLog
 
 if TYPE_CHECKING:
     # Import statements or code that should only be evaluated during type checking
@@ -1224,6 +1228,34 @@ def cdcs_test_record(
 
 
 @pytest.fixture
+def clear_session_logs():
+    """
+    Clear all session_log entries from the database.
+
+    This fixture clears the session_log table before each test to ensure
+    a clean state. It uses the database configured in settings (typically
+    the session-scoped integration test database).
+
+    Returns
+    -------
+    None
+        Returns after clearing session logs
+    """
+    from sqlmodel import Session as DBSession
+    from sqlmodel import delete
+
+    from nexusLIMS.db.engine import get_engine
+    from nexusLIMS.db.models import SessionLog
+
+    # Clear session_log table before test
+    with DBSession(get_engine()) as db_session:
+        # Delete all session logs
+        statement = delete(SessionLog)
+        db_session.exec(statement)
+        db_session.commit()
+
+
+@pytest.fixture
 def test_database(tmp_path, monkeypatch):
     """
     Create fresh test database for integration tests.
@@ -1281,31 +1313,38 @@ def test_database(tmp_path, monkeypatch):
 
 
 @pytest.fixture
-def populated_test_database(test_database, mock_tools_data):
+def populated_test_database(docker_services, mock_tools_data):
     """
-    Create test database populated with sample instruments.
+    Populate the session-scoped test database with sample instruments.
 
-    This fixture extends test_database by adding sample instrument entries
-    that match the NEMO test tools from shared mock data.
+    This fixture adds sample instrument entries to the session-scoped database
+    that match the NEMO test tools from shared mock data. It uses the database
+    created by docker_services fixture to ensure consistency with the engine.
 
     Parameters
     ----------
-    test_database : Path
-        Test database from test_database fixture
+    docker_services : None
+        Ensures Docker services and database are initialized
     mock_tools_data : list[dict]
         Mock NEMO tools data from unit test fixtures
 
-    Yields
-    ------
+    Returns
+    -------
     Path
-        Path to the populated test database
+        Path to the populated test database (session-scoped)
 
     Notes
     -----
     Uses mock_tools_data from tests/unit/fixtures/nemo_mock_data.py to ensure
-    consistency between unit and integration tests.
+    consistency between unit and integration tests. This fixture populates the
+    session-scoped database, so instruments persist across tests unless cleared.
     """
     import sqlite3
+
+    from nexusLIMS.config import settings
+
+    # Use the session-scoped database
+    db_path = settings.NX_DB_PATH
 
     # Build instruments from mock tools data
     # Map tool IDs to instrument configurations
@@ -1348,9 +1387,12 @@ def populated_test_database(test_database, mock_tools_data):
                 }
             )
 
-    # Insert instruments into database
-    conn = sqlite3.connect(test_database)
+    # Insert instruments into database (or update if they exist)
+    conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
+
+    # Clear existing instruments first to ensure clean state
+    cursor.execute("DELETE FROM instruments")
 
     for inst in instruments:
         cursor.execute(
@@ -1378,7 +1420,34 @@ def populated_test_database(test_database, mock_tools_data):
     conn.commit()
     conn.close()
 
-    return test_database
+    # CRITICAL: Recreate the database engine to point to the integration test database
+    # The engine is created at module import time, so we need to replace it everywhere
+    from sqlmodel import create_engine
+
+    from nexusLIMS.db import engine as engine_module
+    from nexusLIMS.db import session_handler
+
+    new_engine = create_engine(
+        f"sqlite:///{db_path}",
+        connect_args={"check_same_thread": False},
+        echo=False,
+    )
+    # Update the engine in both modules (session_handler imports it directly)
+    engine_module.engine = new_engine
+    session_handler.engine = new_engine
+
+    # Reload the instrument_db cache to pick up the newly inserted instruments
+    # This is necessary because instrument_db is loaded at module import time
+    # IMPORTANT: Use clear() and update() to modify the dict in-place rather than
+    # assigning a new dict, which would break references in already-imported modules
+    from nexusLIMS import instruments as instruments_module
+
+    instruments_module.instrument_db.clear()
+    instruments_module.instrument_db.update(
+        instruments_module._get_instrument_db(db_path=db_path)  # noqa: SLF001
+    )
+
+    return Path(db_path)
 
 
 # Test Data Fixtures
@@ -1617,6 +1686,7 @@ def test_environment_setup(  # noqa: PLR0913
     populated_test_database,
     extracted_test_files,
     cdcs_client,
+    clear_session_logs,
     monkeypatch,
 ):
     """
@@ -1638,6 +1708,8 @@ def test_environment_setup(  # noqa: PLR0913
         Extracted test files information
     cdcs_client : dict
         CDCS client configuration for record uploads
+    clear_session_logs : None
+        Ensures session_log table is cleared before test
     monkeypatch : pytest.MonkeyPatch
         Pytest monkeypatch fixture
 
@@ -1956,6 +2028,7 @@ def multi_signal_integration_record(  # noqa: PLR0913, PLR0915
     populated_test_database,
     cdcs_client,
     multi_signal_test_files,
+    clear_session_logs,
     monkeypatch,
 ):
     """
@@ -1977,6 +2050,8 @@ def multi_signal_integration_record(  # noqa: PLR0913, PLR0915
         CDCS client configuration
     multi_signal_test_files : list[Path]
         Multi-signal test files from unit test fixtures
+    clear_session_logs : None
+        Ensures session_log table is cleared before test
     monkeypatch : pytest.MonkeyPatch
         Pytest monkeypatch fixture
 
@@ -1991,14 +2066,13 @@ def multi_signal_integration_record(  # noqa: PLR0913, PLR0915
         - 'session_identifier': Database session identifier
     """
     from datetime import datetime as dt
-    from datetime import timedelta
 
     from lxml import etree
 
     from nexusLIMS import instruments
     from nexusLIMS.builder import record_builder
     from nexusLIMS.config import refresh_settings
-    from nexusLIMS.db.session_handler import Session, db_query, get_sessions_to_build
+    from nexusLIMS.db.session_handler import Session, get_sessions_to_build
 
     # Explicitly set integration test directories in environment
     # (unit test fixtures may have overwritten them)
@@ -2030,43 +2104,56 @@ def multi_signal_integration_record(  # noqa: PLR0913, PLR0915
         user="captain",
     )
 
-    # Insert session into database
+    # Insert session into database using SQLModel
     print("\n[*] Creating database session...")
-    db_query(
-        "INSERT INTO session_log "
-        "(session_identifier, instrument, timestamp, event_type, record_status, user) "
-        "VALUES (?, ?, ?, ?, ?, ?)",
-        (
-            session.session_identifier,
-            session.instrument.name,
-            session.dt_from.isoformat(),
-            "START",
-            "TO_BE_BUILT",
-            session.user,
-        ),
+    start_log = SessionLog(
+        session_identifier=session.session_identifier,
+        instrument=session.instrument.name,
+        timestamp=session.dt_from,
+        event_type=EventType.START,
+        record_status=RecordStatus.TO_BE_BUILT,
+        user=session.user,
     )
-    db_query(
-        "INSERT INTO session_log "
-        "(session_identifier, instrument, timestamp, event_type, record_status, user) "
-        "VALUES (?, ?, ?, ?, ?, ?)",
-        (
-            session.session_identifier,
-            session.instrument.name,
-            session.dt_to.isoformat(),
-            "END",
-            "TO_BE_BUILT",
-            session.user,
-        ),
+    end_log = SessionLog(
+        session_identifier=session.session_identifier,
+        instrument=session.instrument.name,
+        timestamp=session.dt_to,
+        event_type=EventType.END,
+        record_status=RecordStatus.TO_BE_BUILT,
+        user=session.user,
     )
+
+    from nexusLIMS.db.engine import get_engine
+
+    with DBSession(get_engine()) as db_session:
+        db_session.add(start_log)
+        db_session.add(end_log)
+        db_session.commit()
+
     print(f"  Session created: {session.session_identifier}")
 
-    # Run record building
+    # Run record building (skip NEMO harvesting since we already created the sessions)
     print("\n[*] Running record builder...")
-    record_builder.process_new_records(
-        dt_from=session_start - timedelta(hours=1),
-        dt_to=session_end + timedelta(hours=1),
-        dry_run=False,
-    )
+    xml_files = record_builder.build_new_session_records(generate_previews=True)
+
+    # Upload the built records to CDCS and move to uploaded directory
+    if xml_files:
+        print(f"\n[*] Uploading {len(xml_files)} records to CDCS...")
+        import shutil
+
+        from nexusLIMS.cdcs import upload_record_files
+        from nexusLIMS.config import settings
+
+        files_uploaded, _ = upload_record_files(xml_files, progress=False)
+
+        # Move uploaded files to the "uploaded" subdirectory
+        # (matching process_new_records behavior)
+        uploaded_dir = settings.records_dir_path / "uploaded"
+        uploaded_dir.mkdir(parents=True, exist_ok=True)
+
+        for f in files_uploaded:
+            shutil.copy2(f, uploaded_dir)
+            Path(f).unlink()
 
     # Verify session was completed
     sessions_remaining = get_sessions_to_build()
@@ -2076,7 +2163,7 @@ def multi_signal_integration_record(  # noqa: PLR0913, PLR0915
             f"{len(sessions_remaining)} TO_BE_BUILT"
         )
 
-    # Get the uploaded record
+    # Get the uploaded record from the uploaded directory
     from nexusLIMS.config import settings
 
     uploaded_dir = settings.records_dir_path / "uploaded"
@@ -2104,7 +2191,7 @@ def multi_signal_integration_record(  # noqa: PLR0913, PLR0915
     if not is_valid:
         pytest.fail(f"XML validation failed: {schema.error_log}")
 
-    # Get record ID from CDCS (record should already be uploaded by process_new_records)
+    # Get record ID from CDCS (record should already be uploaded)
     import nexusLIMS.cdcs as cdcs_module
 
     record_title = record_path.stem

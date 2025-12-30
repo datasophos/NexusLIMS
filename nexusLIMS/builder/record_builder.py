@@ -23,11 +23,16 @@ from typing import List
 from uuid import uuid4
 
 from lxml import etree
+from sqlmodel import Session as DBSession
+from sqlmodel import select
 
 from nexusLIMS import version
 from nexusLIMS.cdcs import upload_record_files
 from nexusLIMS.config import settings
-from nexusLIMS.db.session_handler import Session, db_query, get_sessions_to_build
+from nexusLIMS.db.engine import get_engine
+from nexusLIMS.db.enums import RecordStatus
+from nexusLIMS.db.models import SessionLog
+from nexusLIMS.db.session_handler import Session, get_sessions_to_build
 from nexusLIMS.extractors import get_registry
 from nexusLIMS.harvesters import nemo
 from nexusLIMS.harvesters.nemo import utils as nemo_utils
@@ -464,7 +469,7 @@ def build_new_session_records(generate_previews: bool = True) -> List[Path]:  # 
                         'Marking %s as "NO_FILES_FOUND"',
                         s.session_identifier,
                     )
-                    s.update_session_status("NO_FILES_FOUND")
+                    s.update_session_status(RecordStatus.NO_FILES_FOUND)
                 else:
                     # if the delay hasn't passed, log and delete the record
                     # generation event we inserted previously
@@ -473,12 +478,15 @@ def build_new_session_records(generate_previews: bool = True) -> List[Path]:  # 
                         "Removing previously inserted RECORD_GENERATION row for %s",
                         s.session_identifier,
                     )
-                    db_query(
-                        "DELETE FROM session_log WHERE id_session_log = ?",
-                        (  # pylint: disable=used-before-assignment
-                            db_row["id_session_log"],
-                        ),
-                    )
+                    # Delete the RECORD_GENERATION log using SQLModel
+                    with DBSession(get_engine()) as db_session:
+                        statement = select(SessionLog).where(
+                            SessionLog.id_session_log == db_row["id_session_log"]
+                        )
+                        log = db_session.exec(statement).first()
+                        if log:
+                            db_session.delete(log)
+                            db_session.commit()
             elif isinstance(exception, nemo.exceptions.NoDataConsentError):
                 _logger.warning(
                     "User requested this session not be harvested, "
@@ -486,7 +494,7 @@ def build_new_session_records(generate_previews: bool = True) -> List[Path]:  # 
                     exception,
                 )
                 _logger.info('Marking %s as "NO_CONSENT"', s.session_identifier)
-                s.update_session_status("NO_CONSENT")
+                s.update_session_status(RecordStatus.NO_CONSENT)
             elif isinstance(exception, nemo.exceptions.NoMatchingReservationError):
                 _logger.warning(
                     "No matching reservation found for this session, "
@@ -494,11 +502,11 @@ def build_new_session_records(generate_previews: bool = True) -> List[Path]:  # 
                     exception,
                 )
                 _logger.info('Marking %s as "NO_RESERVATION"', s.session_identifier)
-                s.update_session_status("NO_RESERVATION")
+                s.update_session_status(RecordStatus.NO_RESERVATION)
             else:
                 _logger.exception("Could not generate record text")
                 _logger.exception('Marking %s as "ERROR"', s.session_identifier)
-                s.update_session_status("ERROR")
+                s.update_session_status(RecordStatus.ERROR)
         else:
             xml_files = _record_validation_flow(record_text, s, xml_files)
 
@@ -527,11 +535,11 @@ def _record_validation_flow(record_text, s, xml_files) -> List[Path]:
         xml_files.append(Path(filename))
         # Mark this session as completed in the database
         _logger.info('Marking %s as "COMPLETED"', s.session_identifier)
-        s.update_session_status("COMPLETED")
+        s.update_session_status(RecordStatus.COMPLETED)
     else:
         _logger.error('Marking %s as "ERROR"', s.session_identifier)
         _logger.error("Could not validate record, did not write to disk")
-        s.update_session_status("ERROR")
+        s.update_session_status(RecordStatus.ERROR)
     return xml_files
 
 

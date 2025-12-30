@@ -9,6 +9,142 @@ NexusLIMS uses a [SQLite](https://sqlite.org/index.html) database to track exper
 - Created from [SQL Schema Definition](https://github.com/datasophos/NexusLIMS/blob/main/nexusLIMS/db/dev/NexusLIMS_db_creation_script.sql)
 - Inspectable with database tools such as [DB Browser for SQLite](https://sqlitebrowser.org/)
 
+## SQLModel ORM Migration
+
+```{versionadded} 2.2.0
+NexusLIMS now uses [SQLModel](https://sqlmodel.tiangolo.com/) for database operations instead of raw SQL queries. This provides type safety, automatic datetime handling, and cleaner code.
+```
+
+### Notable Changes
+
+- The `db_query()` function for manual database queries has been completely removed from {py:mod}`nexusLIMS.db.session_handler`
+- `EventType` and `RecordStatus` are now enums ({py:class}`~nexusLIMS.db.enums.EventType`, {py:class}`~nexusLIMS.db.enums.RecordStatus`) instead of string literals
+- {py:class}`~nexusLIMS.db.models.SessionLog` and {py:class}`~nexusLIMS.db.models.Instrument` are now SQLModel classes with real object-relational mapping
+- The `Instrument` dataclass has been replaced with a SQLModel class - use `instrument_pid` field instead of `name`
+
+### Migration Examples
+
+**Creating session log entries:**
+
+```python
+# New approach: has not changed significantly other than using enums
+from nexusLIMS.db.models import SessionLog
+from nexusLIMS.db.enums import EventType, RecordStatus
+from datetime import datetime as dt
+
+log = SessionLog(
+    session_identifier="abc",
+    instrument="FEI-Titan-TEM",
+    timestamp=dt.fromisoformat("2025-01-15T10:00:00"),
+    event_type=EventType.START,
+    record_status=RecordStatus.TO_BE_BUILT,
+    user="alice"
+)
+log.insert_log()
+```
+
+**Querying the database:**
+
+```python
+# Old approach (deprecated)
+_, results = db_query("SELECT * FROM session_log WHERE record_status = ?", ("TO_BE_BUILT",))
+
+# New approach
+from sqlmodel import Session, select
+from nexusLIMS.db.engine import get_engine
+from nexusLIMS.db.models import SessionLog
+from nexusLIMS.db.enums import RecordStatus
+
+with Session(get_engine()) as session:
+    results = session.exec(
+        select(SessionLog).where(SessionLog.record_status == RecordStatus.TO_BE_BUILT)
+    ).all()
+```
+
+**Benefits of SQLModel:**
+- Type-safe database operations with IDE autocomplete and type checking
+- Automatic datetime serialization/deserialization
+- Relationship navigation (e.g., `session_log.instrument_obj`)
+- ~50% less boilerplate code
+- Foundation for Alembic migrations (database schema version control)
+
+## Database Migrations with Alembic
+
+```{versionadded} 2.2.0
+NexusLIMS now uses [Alembic](https://alembic.sqlalchemy.org/) for database schema version control and migrations.
+```
+
+Alembic provides a way to track and manage changes to the database schema over time, making it safe to upgrade existing installations and ensuring schema consistency across deployments.
+
+### For Existing Installations
+
+If you have an existing NexusLIMS database (created before version 2.2.0), you need to mark it as migrated to the baseline schema:
+
+```bash
+# Mark existing database as migrated to current schema
+uv run alembic stamp head
+```
+
+This tells Alembic that your database already has the current schema structure and doesn't need the baseline migration applied.
+
+### Common Alembic Commands
+
+```bash
+# Check current migration status
+uv run alembic current
+
+# View migration history
+uv run alembic history --verbose
+
+# Upgrade to latest schema version
+uv run alembic upgrade head
+
+# Downgrade one migration
+uv run alembic downgrade -1
+
+# Generate a new migration (after modifying SQLModel models)
+uv run alembic revision --autogenerate -m "Description of changes"
+```
+
+### Creating New Migrations
+
+When you modify the database schema (by changing {py:class}`~nexusLIMS.db.models.SessionLog` or {py:class}`~nexusLIMS.db.models.Instrument`), you should create a migration:
+
+1. **Modify the SQLModel classes** in `nexusLIMS/db/models.py`
+2. **Generate migration script**:
+   ```bash
+   uv run alembic revision --autogenerate -m "Add new field to SessionLog"
+   ```
+3. **Review the generated script** in `migrations/versions/`
+4. **Test the migration**:
+   ```bash
+   # Apply migration
+   uv run alembic upgrade head
+
+   # Test downgrade
+   uv run alembic downgrade -1
+
+   # Re-apply
+   uv run alembic upgrade head
+   ```
+5. **Commit the migration script** to version control
+
+### Migration Configuration
+
+Alembic configuration is stored in:
+- `pyproject.toml` under `[tool.alembic]` - Source code configuration (migration paths, etc.)
+- `migrations/env.py` - Migration environment setup (automatically reads {ref}`NX_DB_PATH <config-db-path>`)
+- `migrations/versions/` - Migration scripts directory
+
+The database URL is automatically set from the {ref}`NX_DB_PATH <config-db-path>` environment variable in `env.py`, so you don't need to configure it separately. All Alembic configuration lives in `pyproject.toml`, eliminating the need for a separate `alembic.ini` file.
+
+### Important Notes
+
+- **Always backup your database** before running migrations on production data
+- **Test migrations thoroughly** in a development environment first
+- **Never edit applied migrations** - create a new migration to fix issues
+- The initial migration (`57f0798d0c6d_initial_schema_baseline.py`) is a no-op baseline for existing installations
+
 ## Database Structure
 
 The database contains two primary tables:

@@ -12,14 +12,15 @@ from datetime import datetime as dt
 import pytest
 
 from nexusLIMS.harvesters.reservation_event import ReservationEvent
-from nexusLIMS.instruments import instrument_db
 
 
 class TestReservationEvent:
     """Test the ReservationEvent class."""
 
     @pytest.fixture
-    def res_event(self):
+    def res_event(self, db_context):  # noqa: ARG002
+        from nexusLIMS.instruments import instrument_db
+
         return ReservationEvent(
             experiment_title="A test title",
             instrument=instrument_db["FEI-Titan-TEM"],
@@ -43,13 +44,16 @@ class TestReservationEvent:
         )
 
     @pytest.fixture
-    def res_event_no_calendar_match(self):
+    def res_event_no_calendar_match(self, db_context):  # noqa: ARG002
+        from nexusLIMS.instruments import instrument_db
+
         return ReservationEvent(instrument=instrument_db["FEI-Titan-TEM"])
 
     @pytest.fixture
     def res_event_no_instr(self):
         return ReservationEvent()
 
+    @pytest.mark.needs_db(instruments=["FEI-Titan-TEM"])
     def test_full_reservation_constructor(self, res_event):
         xml = res_event.as_xml()
         assert xml.find("title").text == "A test title"
@@ -73,6 +77,7 @@ class TestReservationEvent:
         assert xml.find("project/project_id").text == "10.2.3.4.1.5"
         assert xml.find("project/ref").text == "https://www.example.org"
 
+    @pytest.mark.needs_db(instruments=["FEI-Titan-TEM"])
     def test_res_event_repr(
         self,
         res_event,
@@ -131,7 +136,10 @@ class TestReservationEvent:
         assert xml.find("project/project_id").text == "10.2.3.4.1.6"
         assert xml.find("project/ref").text == "https://www.example.org"
 
+    @pytest.mark.needs_db(instruments=["FEI-Titan-TEM"])
     def test_res_event_without_title(self):
+        from nexusLIMS.instruments import instrument_db
+
         res_event = ReservationEvent(
             experiment_title=None,
             instrument=instrument_db["FEI-Titan-TEM"],

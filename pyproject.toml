@@ -43,6 +43,8 @@ dependencies = [
     "tzlocal>=5.3.1",
     "pint>=0.24.0,<1.0.0",
     "rdflib>=7.0.0,<8.0.0",
+    "sqlmodel>=0.0.31",
+    "alembic>=1.17.2",
 ]
 
 [dependency-groups]
@@ -216,3 +218,13 @@ venv = ".venv"
 typeCheckingMode = "basic"
 reportMissingImports = true
 reportMissingTypeStubs = false
+
+[tool.alembic]
+# Path to migration scripts (relative to pyproject.toml)
+script_location = "migrations"
+
+# Prepend current directory to sys.path for imports
+prepend_sys_path = ["."]
+
+# Use os.pathsep for cross-platform compatibility
+path_separator = "os"

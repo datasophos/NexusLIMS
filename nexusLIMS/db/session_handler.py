@@ -1,133 +1,20 @@
 """Classes and methods to interact with sessions from the NexusLIMS database."""
 
-import contextlib
 import logging
-import sqlite3
-from dataclasses import dataclass
 from datetime import datetime as dt
-from typing import List, Tuple
+from typing import Tuple
 
-from nexusLIMS import instruments
+from sqlalchemy.orm import selectinload
+from sqlmodel import Session as DBSession
+from sqlmodel import select
+
 from nexusLIMS.config import settings
-from nexusLIMS.instruments import Instrument
+from nexusLIMS.db.engine import get_engine
+from nexusLIMS.db.enums import EventType, RecordStatus
+from nexusLIMS.db.models import Instrument, SessionLog
 from nexusLIMS.utils import current_system_tz
 
 _logger = logging.getLogger(__name__)
-
-
-def db_query(query, args=None):
-    """Make a query on the NexusLIMS database."""
-    if args is None:
-        args = ()
-    success = False
-    with (
-        contextlib.closing(
-            sqlite3.connect(str(settings.NX_DB_PATH)),
-        ) as conn,
-        conn,
-        contextlib.closing(conn.cursor()) as cursor,
-    ):  # auto-commits
-        results = cursor.execute(query, args).fetchall()
-        success = True
-    return success, results
-
-
-@dataclass
-class SessionLog:
-    """
-    A log of the start or end of a Session.
-
-    A simple mapping of one row in the ``session_log`` table of the NexusLIMS
-    database (all values are strings).
-
-    Parameters
-    ----------
-    session_identifier
-         A unique string that is consistent among a single
-         record's `"START"`, `"END"`, and `"RECORD_GENERATION"` events (often a
-         UUID, but is not required to be so)
-    instrument
-        The instrument associated with this session (foreign key reference to
-        the ``instruments`` table)
-    timestamp
-        The ISO format timestamp representing the date and time of the logged
-        event
-    event_type
-        The type of log for this session (either `"START"`, `"END"`,
-        or `"RECORD_GENERATION"`)
-    user
-        The username associated with this session (if known)
-    record_status
-        The status to use for this record (defaults to ``'TO_BE_BUILT'``)
-    """
-
-    session_identifier: str
-    instrument: str
-    timestamp: str
-    event_type: str
-    user: str
-    record_status: str = "TO_BE_BUILT"
-
-    def __repr__(self):
-        """Return custom representation of a SessionLog."""
-        return (
-            f"SessionLog (id={self.session_identifier}, "
-            f"instrument={self.instrument}, "
-            f"timestamp={self.timestamp}, "
-            f"event_type={self.event_type}, "
-            f"user={self.user}, "
-            f"record_status={self.record_status})"
-        )
-
-    def insert_log(self) -> bool:
-        """
-        Insert this log into the NexusLIMS database.
-
-        Inserts a log into the database with the information contained within
-        this SessionLog's attributes (used primarily for NEMO ``usage_event``
-        integration). It will check for the presence of a matching record first
-        and warn without inserting anything if it finds one.
-
-        Returns
-        -------
-        success : bool
-            Whether or not the session log row was inserted successfully
-        """
-        query = (
-            "SELECT * FROM session_log "
-            "WHERE session_identifier=? AND "
-            "instrument=? AND "
-            "timestamp=? AND "
-            "event_type=? AND "
-            "record_status=? AND "
-            "user=?"
-        )
-        args = (
-            self.session_identifier,
-            self.instrument,
-            self.timestamp,
-            self.event_type,
-            self.record_status,
-            self.user,
-        )
-
-        success, results = db_query(query, args)
-        if results:
-            # There was a matching record in the DB, so warn and return success
-            _logger.warning(
-                "SessionLog already existed in DB, so no row was added: %s",
-                self,
-            )
-            return success
-
-        query = (
-            "INSERT INTO session_log(session_identifier, instrument, "
-            "timestamp, event_type, record_status, user) VALUES "
-            "(?, ?, ?, ?, ?, ?)"
-        )
-        success, results = db_query(query, args)
-
-        return success
 
 
 class Session:
@@ -171,7 +58,7 @@ class Session:
             f"{self.instrument.name}"
         )
 
-    def update_session_status(self, status):
+    def update_session_status(self, status: RecordStatus):
         """
         Update the status of this Session in the NexusLIMS database.
 
@@ -180,30 +67,22 @@ class Session:
 
         Parameters
         ----------
-        status : str
-            One of ``"COMPLETED"``, ``"WAITING_FOR_END"``, ``"TO_BE_BUILT"``,
-            ``"ERROR"``, ``"NO_FILES_FOUND"``, ``"NO_CONSENT"``, or ``"NO_RESERVATION"``
-            (the allowed values in the NexusLIMS database). Status value will be
-            validated by a check constraint in the database
+        status : RecordStatus
+            The new status for this session (type-safe enum value)
 
         Returns
         -------
         success : bool
             Whether the update operation was successful
         """
-        update_query = (
-            "UPDATE session_log SET record_status = ? WHERE session_identifier = ?"
-        )
-
-        # use contextlib to auto-close the connection and database cursors
-        with (
-            contextlib.closing(
-                sqlite3.connect(str(settings.NX_DB_PATH)),
-            ) as conn,
-            conn,
-            contextlib.closing(conn.cursor()) as cursor,
-        ):  # auto-commits
-            _ = cursor.execute(update_query, (status, self.session_identifier))
+        with DBSession(get_engine()) as session:
+            statement = select(SessionLog).where(
+                SessionLog.session_identifier == self.session_identifier
+            )
+            logs = session.exec(statement).all()
+            for log in logs:
+                log.record_status = status
+            session.commit()
             return True
 
     def insert_record_generation_event(self) -> dict:
@@ -217,127 +96,93 @@ class Session:
         Returns
         -------
         res : dict
-            A dictionary containing the results from the query to check that
-            a RECORD_GENERATION event was added
+            A dictionary containing the inserted log information
         """
         _logger.debug("Logging RECORD_GENERATION for %s", self.session_identifier)
-        insert_query = (
-            "INSERT INTO session_log "
-            "(instrument, event_type, session_identifier, "
-            "user, timestamp) VALUES (?, ?, ?, ?, ?)"
+
+        log = SessionLog(
+            session_identifier=self.session_identifier,
+            instrument=self.instrument.instrument_pid,
+            timestamp=dt.now(tz=current_system_tz()),
+            event_type=EventType.RECORD_GENERATION,
+            user=settings.NX_CDCS_USER,
+            record_status=RecordStatus.WAITING_FOR_END,
         )
-        args = (
-            self.instrument.name,
-            "RECORD_GENERATION",
+
+        with DBSession(get_engine()) as session:
+            session.add(log)
+            session.commit()
+            session.refresh(log)
+
+        _logger.debug(
+            "Confirmed RECORD_GENERATION insertion for %s",
             self.session_identifier,
-            settings.NX_CDCS_USER,
-            dt.now(tz=current_system_tz()),
         )
 
-        # use contextlib to auto-close the connection and database cursors
-        with (
-            contextlib.closing(
-                sqlite3.connect(str(settings.NX_DB_PATH)),
-            ) as conn,
-            conn,
-            contextlib.closing(conn.cursor()) as cursor,
-        ):  # auto-commits
-            results = cursor.execute(insert_query, args)
-
-        check_query = (
-            "SELECT id_session_log, event_type, "
-            "session_identifier, timestamp FROM session_log "
-            "WHERE instrument = ?"
-            "AND event_type = ?"
-            "ORDER BY timestamp DESC LIMIT 1"
-        )
-        args = (self.instrument.name, "RECORD_GENERATION")
-
-        # use contextlib to auto-close the connection and database cursors
-        with (
-            contextlib.closing(
-                sqlite3.connect(str(settings.NX_DB_PATH)),
-            ) as conn,
-            conn,
-        ):  # auto-commits
-            conn.row_factory = sqlite3.Row
-            with contextlib.closing(conn.cursor()) as cursor:
-                results = cursor.execute(check_query, args)
-                res = results.fetchone()
-
-        event_match = res["event_type"] == "RECORD_GENERATION"
-        id_match = res["session_identifier"] == self.session_identifier
-        if event_match and id_match:
-            _logger.debug(
-                "Confirmed RECORD_GENERATION insertion for %s",
-                self.session_identifier,
-            )
-
-        return dict(res)
+        return {
+            "id_session_log": log.id_session_log,
+            "event_type": log.event_type.value,
+            "session_identifier": log.session_identifier,
+            "timestamp": log.timestamp,
+        }
 
 
-def get_sessions_to_build() -> List[Session]:
+def get_sessions_to_build() -> list[Session]:
     """
     Get list of sessions that need to be built from the NexusLIMS database.
 
     Query the NexusLIMS database for pairs of logs with status
-    ``'TO_BE_BUILT'`` and return the information needed to build a record for
+    ``TO_BE_BUILT`` and return the information needed to build a record for
     that session.
 
     Returns
     -------
-    sessions : List[Session]
+    sessions : list[Session]
         A list of :py:class:`~nexusLIMS.db.session_handler.Session` objects
-        containing the sessions that the need their record built. Will be an
+        containing the sessions that need their record built. Will be an
         empty list if there's nothing to do.
     """
     sessions = []
 
-    query_string = (
-        "SELECT session_identifier, instrument, timestamp, "
-        "event_type, user "
-        "FROM session_log WHERE record_status == 'TO_BE_BUILT'"
-    )
-
-    # use contextlib to auto-close the connection and database cursors
-    with (
-        contextlib.closing(
-            sqlite3.connect(str(settings.NX_DB_PATH)),
-        ) as conn,
-        conn,
-        contextlib.closing(conn.cursor()) as cursor,
-    ):  # auto-commits
-        results = cursor.execute(query_string).fetchall()
-
-    session_logs = [SessionLog(*i) for i in results]
-    start_logs = [sl for sl in session_logs if sl.event_type == "START"]
-    end_logs = [sl for sl in session_logs if sl.event_type == "END"]
-
-    for start_l in start_logs:
-        # for every log that has a 'START', there should be one corresponding
-        # log with 'END' that has the same session identifier. If not,
-        # the database is in an inconsistent state and we should know about it
-        el_list = [
-            el for el in end_logs if el.session_identifier == start_l.session_identifier
-        ]
-        if len(el_list) != 1:
-            msg = (
-                "There was not exactly one 'END' log for this 'START' log; "
-                f"len(el_list) was {len(el_list)}; sl was {start_l}; el_list "
-                f"was {el_list}"
-            )
-            raise ValueError(msg)
-
-        end_l = el_list[0]
-        dt_from = dt.fromisoformat(start_l.timestamp)
-        dt_to = dt.fromisoformat(end_l.timestamp)
-        session = Session(
-            session_identifier=start_l.session_identifier,
-            instrument=instruments.instrument_db[start_l.instrument],
-            dt_range=(dt_from, dt_to),
-            user=start_l.user,
+    with DBSession(get_engine()) as db_session:
+        # Query for all TO_BE_BUILT logs with eager loading of instrument relationship
+        statement = (
+            select(SessionLog)
+            .where(SessionLog.record_status == RecordStatus.TO_BE_BUILT)
+            .options(selectinload(SessionLog.instrument_obj))
         )
-        sessions.append(session)
+        session_logs = db_session.exec(statement).all()
+
+        # Separate START and END logs
+        start_logs = [sl for sl in session_logs if sl.event_type == EventType.START]
+        end_logs = [sl for sl in session_logs if sl.event_type == EventType.END]
+
+        for start_l in start_logs:
+            # for every log that has a 'START', there should be one corresponding
+            # log with 'END' that has the same session identifier. If not,
+            # the database is in an inconsistent state and we should know about it
+            el_list = [
+                el
+                for el in end_logs
+                if el.session_identifier == start_l.session_identifier
+            ]
+            if len(el_list) != 1:
+                msg = (
+                    "There was not exactly one 'END' log for this 'START' log; "
+                    f"len(el_list) was {len(el_list)}; sl was {start_l}; el_list "
+                    f"was {el_list}"
+                )
+                raise ValueError(msg)
+
+            end_l = el_list[0]
+            # Use relationship to get Instrument object (eagerly loaded above)
+            session = Session(
+                session_identifier=start_l.session_identifier,
+                instrument=start_l.instrument_obj,  # Relationship navigation!
+                dt_range=(start_l.timestamp, end_l.timestamp),  # No fromisoformat()!
+                user=start_l.user,
+            )
+            sessions.append(session)
 
     _logger.info("Found %i new sessions to build", len(sessions))
     return sessions
@@ -353,25 +198,10 @@ def get_all_session_logs() -> list[SessionLog]:
         A list of all SessionLog objects from the database, ordered by timestamp.
         Will be an empty list if there are no session logs.
     """
-    session_logs = []
-
-    query_string = (
-        "SELECT session_identifier, instrument, timestamp, "
-        "event_type, user, record_status "
-        "FROM session_log ORDER BY timestamp"
-    )
-
-    # use contextlib to auto-close the connection and database cursors
-    with (
-        contextlib.closing(
-            sqlite3.connect(str(settings.NX_DB_PATH)),
-        ) as conn,
-        conn,
-        contextlib.closing(conn.cursor()) as cursor,
-    ):  # auto-commits
-        results = cursor.execute(query_string).fetchall()
-
-    session_logs = [SessionLog(*i) for i in results]
+    with DBSession(get_engine()) as db_session:
+        # Query for all session logs, ordered by timestamp
+        statement = select(SessionLog).order_by(SessionLog.timestamp)
+        session_logs = list(db_session.exec(statement).all())
 
     _logger.info("Found %i session logs in database", len(session_logs))
     return session_logs

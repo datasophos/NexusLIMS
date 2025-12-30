@@ -97,7 +97,7 @@ def make_test_instrument(  # noqa: PLR0913
 
     # Build the parameters dict
     params = {
-        "name": instrument_pid,
+        "instrument_pid": instrument_pid,
         "api_url": api_url,
         "calendar_name": calendar_name,
         "calendar_url": calendar_url,
@@ -109,7 +109,7 @@ def make_test_instrument(  # noqa: PLR0913
         "computer_ip": computer_ip,
         "computer_mount": computer_mount,
         "harvester": harvester,
-        "timezone": timezone,
+        "timezone_str": timezone,
     }
 
     # Apply any additional overrides
