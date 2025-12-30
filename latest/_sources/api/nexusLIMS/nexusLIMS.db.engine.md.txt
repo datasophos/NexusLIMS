@@ -49,7 +49,7 @@
 
 ````
 
-````{py:function} get_engine()
+````{py:function} get_engine() -> sqlalchemy.engine.base.Engine
 :canonical: nexusLIMS.db.engine.get_engine
 
 ```{autodoc2-docstring} nexusLIMS.db.engine.get_engine

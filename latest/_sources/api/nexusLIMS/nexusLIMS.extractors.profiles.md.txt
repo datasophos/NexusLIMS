@@ -54,7 +54,7 @@
 
 ````
 
-````{py:method} get_profile(instrument: nexusLIMS.instruments.Instrument | None) -> nexusLIMS.extractors.base.InstrumentProfile | None
+````{py:method} get_profile(instrument: nexusLIMS.db.models.Instrument | None) -> nexusLIMS.extractors.base.InstrumentProfile | None
 :canonical: nexusLIMS.extractors.profiles.InstrumentProfileRegistry.get_profile
 
 ```{autodoc2-docstring} nexusLIMS.extractors.profiles.InstrumentProfileRegistry.get_profile

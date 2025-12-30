@@ -38,7 +38,7 @@
 `````{py:class} TZDateTime(*args: typing.Any, **kwargs: typing.Any)
 :canonical: nexusLIMS.db.models.TZDateTime
 
-Bases: {py:obj}`sqlalchemy.TypeDecorator`
+Bases: {py:obj}`sqlalchemy.types.TypeDecorator`
 
 ```{autodoc2-docstring} nexusLIMS.db.models.TZDateTime
 :parser: autodoc2_docstrings_parser

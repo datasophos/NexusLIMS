@@ -211,11 +211,11 @@ location, simplifying maintenance of the system.
 When the {py:mod}`nexusLIMS` module is imported, one of the "setup" tasks
 performed is to perform a basic object-relational mapping between rows of
 the `instruments` table from the database into
-{py:class}`~nexusLIMS.instruments.Instrument` objects. These objects are
+{py:class}`~nexusLIMS.db.models.Instrument` objects. These objects are
 stored in a dictionary attribute named {py:data}`nexusLIMS.instruments.instrument_db`.
 This is done by querying the database specified in the environment variable
 {ref}`NX_DB_PATH <config-db-path>` and creating a dictionary of
-{py:class}`~nexusLIMS.instruments.Instrument` objects that contain information
+{py:class}`~nexusLIMS.db.models.Instrument` objects that contain information
 about all of the instruments specified in the database. These objects are used
 widely throughout the code so that the database is only queried once at initial
 import, rather than every time information is needed.

@@ -143,7 +143,7 @@
 
 `````
 
-````{py:function} parse_basic_info(metadata, shape, instrument: nexusLIMS.instruments.Instrument)
+````{py:function} parse_basic_info(metadata, shape, instrument: nexusLIMS.db.models.Instrument)
 :canonical: nexusLIMS.extractors.plugins.fei_emi.parse_basic_info
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.parse_basic_info

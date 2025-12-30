@@ -711,11 +711,11 @@ location, simplifying maintenance of the system.</p>
 <p>When the <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.html#module-nexusLIMS" title="nexusLIMS"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS</span></code></a> module is imported, one of the “setup” tasks
 performed is to perform a basic object-relational mapping between rows of
 the <code class="docutils literal notranslate"><span class="pre">instruments</span></code> table from the database into
-<code class="xref py py-class docutils literal notranslate"><span class="pre">Instrument</span></code> objects. These objects are
+<a class="reference internal" href="../api/nexusLIMS/nexusLIMS.db.models.html#nexusLIMS.db.models.Instrument" title="nexusLIMS.db.models.Instrument"><code class="xref py py-class docutils literal notranslate"><span class="pre">Instrument</span></code></a> objects. These objects are
 stored in a dictionary attribute named <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.instruments.html#nexusLIMS.instruments.instrument_db" title="nexusLIMS.instruments.instrument_db"><code class="xref py py-data docutils literal notranslate"><span class="pre">nexusLIMS.instruments.instrument_db</span></code></a>.
 This is done by querying the database specified in the environment variable
 <a class="reference internal" href="../user_guide/configuration.html#config-db-path"><span class="std std-ref">NX_DB_PATH</span></a> and creating a dictionary of
-<code class="xref py py-class docutils literal notranslate"><span class="pre">Instrument</span></code> objects that contain information
+<a class="reference internal" href="../api/nexusLIMS/nexusLIMS.db.models.html#nexusLIMS.db.models.Instrument" title="nexusLIMS.db.models.Instrument"><code class="xref py py-class docutils literal notranslate"><span class="pre">Instrument</span></code></a> objects that contain information
 about all of the instruments specified in the database. These objects are used
 widely throughout the code so that the database is only queried once at initial
 import, rather than every time information is needed.</p>

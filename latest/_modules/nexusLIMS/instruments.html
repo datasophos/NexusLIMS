@@ -803,7 +803,7 @@ window.addEventListener("load", load);
 <span class="sd">Attributes</span>
 <span class="sd">----------</span>
 <span class="sd">instrument_db : dict</span>
-<span class="sd">    A dictionary of :py:class:`~nexusLIMS.instruments.Instrument` objects.</span>
+<span class="sd">    A dictionary of :py:class:`~nexusLIMS.db.models.Instrument` objects.</span>
 
 <span class="sd">    Each object in this dictionary represents an instrument detected in the</span>
 <span class="sd">    NexusLIMS remote database.</span>
@@ -867,7 +867,8 @@ window.addEventListener("load", load);
 <span class="n">instrument_db</span> <span class="o">=</span> <span class="n">_get_instrument_db</span><span class="p">()</span>
 <span class="sd">&quot;&quot;&quot;dict[str, Instrument]: Module-level cache of all instruments from the database.</span>
 
-<span class="sd">Keys are instrument PIDs (str), values are :class:`Instrument` instances.</span>
+<span class="sd">Keys are instrument PIDs (str), values are</span>
+<span class="sd">:class:`~nexusLIMS.db.models.Instrument` instances.</span>
 <span class="sd">Populated once at module import time from the NexusLIMS database.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
