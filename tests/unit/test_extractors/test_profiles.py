@@ -793,7 +793,7 @@ class TestProfileApplicationDuringExtraction:
         profile_registry_manager.register(profile)
 
         # Extract metadata - should apply profile
-        digital_micrograph.logger.setLevel(logging.DEBUG)
+        digital_micrograph._logger.setLevel(logging.DEBUG)
         result_list = digital_micrograph.get_dm3_metadata(
             list_signal[0], instrument=instrument
         )
@@ -839,7 +839,7 @@ class TestProfileApplicationDuringExtraction:
         profile_registry_manager.register(profile)
 
         # Extract metadata - should handle parser failure gracefully
-        digital_micrograph.logger.setLevel(logging.WARNING)
+        digital_micrograph._logger.setLevel(logging.WARNING)
 
         result_list = digital_micrograph.get_dm3_metadata(
             list_signal[0], instrument=instrument
@@ -932,7 +932,7 @@ class TestProfileApplicationDuringExtraction:
         profile_registry_manager.register(profile)
 
         # Extract metadata - should handle transformation failure gracefully
-        digital_micrograph.logger.setLevel(logging.WARNING)
+        digital_micrograph._logger.setLevel(logging.WARNING)
 
         result_list = digital_micrograph.get_dm3_metadata(
             list_signal[0], instrument=instrument

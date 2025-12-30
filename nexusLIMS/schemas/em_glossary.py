@@ -12,16 +12,16 @@ to term labels, definitions, and the full semantic structure.
 **EM Glossary Version:** v2.0.0
 
 **References:**
-- EM Glossary v2.0.0: https://purls.helmholtz-metadaten.de/emg/v2.0.0/
+- EM Glossary v2.0.0: [https://purls.helmholtz-metadaten.de/emg/v2.0.0/](https://purls.helmholtz-metadaten.de/emg/v2.0.0/)
 - OWL Ontology: Shipped with NexusLIMS at
-  nexusLIMS/schemas/references/em_glossary_2.0.owl
-- License: CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/)
+  `nexusLIMS/schemas/references/em_glossary_2.0.owl`
+- License: CC BY 4.0 [https://creativecommons.org/licenses/by/4.0/](https://creativecommons.org/licenses/by/4.0/)
 
 The mappings in this module enable:
 - Standardized field names across instruments and vendors
 - Cross-reference to EM Glossary IDs for semantic interoperability
 - Human-readable display names for XML output
-- Dynamic loading from the OWL ontology using RDFLib
+- Dynamic loading from the OWL ontology using [RDFLib](https://rdflib.readthedocs.io/en/stable/index.html)
 
 Examples
 --------
@@ -66,15 +66,19 @@ from typing import Dict
 
 from rdflib import RDF, RDFS, Graph, Namespace
 
-logger = logging.getLogger(__name__)
+_logger = logging.getLogger(__name__)
 
-# Path to the EM Glossary OWL file shipped with NexusLIMS
 EMG_OWL_PATH = Path(__file__).parent / "references" / "em_glossary_2.0.owl"
-EMG_VERSION = "v2.0.0"
+"""Path to the EM Glossary OWL file shipped with NexusLIMS"""
 
-# RDF namespaces
+EMG_VERSION = "v2.0.0"
+"""Version of the packaged EM Glossary OWL file"""
+
 EMG = Namespace("https://purls.helmholtz-metadaten.de/emg/")
+"""RDF Namespace for the EM Glossary"""
+
 OBO = Namespace("http://purl.obolibrary.org/obo/")
+"""RDF Namespace for OBO"""
 
 
 @lru_cache(maxsize=1)
@@ -104,8 +108,8 @@ def _load_emg_graph() -> Graph:
     try:
         g = Graph()
         g.parse(EMG_OWL_PATH, format="xml")
-        logger.debug("Loaded EM Glossary ontology from %s", EMG_OWL_PATH)
-        logger.debug("Graph contains %s triples", len(g))
+        _logger.debug("Loaded EM Glossary ontology from %s", EMG_OWL_PATH)
+        _logger.debug("Graph contains %s triples", len(g))
     except Exception as e:
         msg = f"Failed to parse EM Glossary OWL file: {e}"
         raise ValueError(msg) from e
@@ -170,7 +174,7 @@ def _load_emg_terms() -> Dict[str, Dict[str, str]]:
         msg = "No EMG terms found in OWL file. File may be corrupted."
         raise ValueError(msg)
 
-    logger.debug("Loaded %s EMG terms from ontology", len(emg_terms))
+    _logger.debug("Loaded %s EMG terms from ontology", len(emg_terms))
     return emg_terms
 
 
@@ -394,6 +398,9 @@ NEXUSLIMS_TO_EMG_MAPPINGS: Dict[str, tuple[str, str | None, str]] = {
         "NexusLIMS persistent instrument identifier",
     ),
 }
+"""Mapping from NexusLIMS internal field names to EM Glossary terms
+Format: `internal_field_name -> (display_name, emg_label or None, description)`
+The emg_label is used to look up the EMG_ID from the OWL file"""
 
 
 def get_emg_label(emg_id: str) -> str | None:
@@ -428,7 +435,7 @@ def get_emg_label(emg_id: str) -> str | None:
         term_info = emg_terms.get(emg_id)
         return term_info["label"] if term_info else None
     except Exception as e:
-        logger.warning("Failed to load EMG ontology: %s", e)
+        _logger.warning("Failed to load EMG ontology: %s", e)
         return None
 
 
@@ -462,7 +469,7 @@ def get_emg_definition(emg_id: str) -> str | None:
         term_info = emg_terms.get(emg_id)
         return term_info["definition"] if term_info else None
     except Exception as e:
-        logger.warning("Failed to load EMG ontology: %s", e)
+        _logger.warning("Failed to load EMG ontology: %s", e)
         return None
 
 
@@ -514,10 +521,10 @@ def get_emg_id(field_name: str) -> str | None:
             if term_info["label"] == emg_label:
                 return emg_id
     except Exception as e:
-        logger.warning("Failed to load EMG ontology: %s", e)
+        _logger.warning("Failed to load EMG ontology: %s", e)
         return None
 
-    logger.debug("EMG label '%s' not found in ontology", emg_label)
+    _logger.debug("EMG label '%s' not found in ontology", emg_label)
     return None
 
 
@@ -742,5 +749,5 @@ def get_all_emg_terms() -> Dict[str, Dict[str, str]]:
     try:
         return _load_emg_terms()
     except Exception:
-        logger.exception("Failed to load EMG ontology")
+        _logger.exception("Failed to load EMG ontology")
         return {}

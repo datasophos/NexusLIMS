@@ -22,7 +22,7 @@ from .utils import (
     process_res_question_samples,
 )
 
-logger = logging.getLogger(__name__)
+_logger = logging.getLogger(__name__)
 
 
 def res_event_from_session(
@@ -129,7 +129,7 @@ def res_event_from_session(
         dt_to=session.dt_to + timedelta(days=2),
     )
 
-    logger.info(
+    _logger.info(
         "Found %i reservations between %s and %s with ids: %s",
         len(reservations),
         session.dt_from - timedelta(days=2),
@@ -137,7 +137,7 @@ def res_event_from_session(
         [i["id"] for i in reservations],
     )
     for i, res in enumerate(reservations):
-        logger.debug(
+        _logger.debug(
             "Reservation %i: %sreservations/?id=%s from %s to %s",
             i + 1,
             nemo_connector.config["base_url"],
@@ -161,7 +161,7 @@ def res_event_from_session(
         # or none of the reservations overlapped with the usage event
         # so we'll use what limited information we have from the usage event
         # session
-        logger.warning(
+        _logger.warning(
             "No reservations found with overlap for this usage "
             "event, so raising NoDataConsentError",
         )
@@ -173,7 +173,7 @@ def res_event_from_session(
 
     # select the reservation with the most overlap
     res = reservations[overlaps.index(max(overlaps))]
-    logger.info(
+    _logger.info(
         "Using reservation %sreservations/?id=%s as match for "
         "usage event %s with overlap of %s",
         nemo_connector.config["base_url"],

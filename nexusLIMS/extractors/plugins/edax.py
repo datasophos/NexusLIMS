@@ -12,7 +12,7 @@ from nexusLIMS.instruments import get_instr_from_filepath
 from nexusLIMS.schemas.units import ureg
 from nexusLIMS.utils import try_getting_dict_value
 
-logger = logging.getLogger(__name__)
+_logger = logging.getLogger(__name__)
 
 
 class SpcExtractor:
@@ -64,7 +64,7 @@ class SpcExtractor:
             If None, the file could not be opened
         """
         filename = context.file_path
-        logger.debug("Extracting metadata from SPC file: %s", filename)
+        _logger.debug("Extracting metadata from SPC file: %s", filename)
 
         mdict = {"nx_meta": {}}
 
@@ -227,7 +227,7 @@ class MsaExtractor:
             If None, the file could not be opened
         """
         filename = context.file_path
-        logger.debug("Extracting metadata from MSA file: %s", filename)
+        _logger.debug("Extracting metadata from MSA file: %s", filename)
 
         s = load(filename, lazy=False)
         mdict = {"nx_meta": {}}
@@ -358,8 +358,8 @@ def get_spc_metadata(filename):
     """
     Get metadata from a .spc file.
 
-    .. deprecated::
-        This function is deprecated. Use SpcExtractor class instead.
+    .. deprecated:: 1.4.0
+        This function is deprecated. Use :class:`SpcExtractor` class instead.
 
     Parameters
     ----------
@@ -382,8 +382,8 @@ def get_msa_metadata(filename):
     """
     Get metadata from an .msa file.
 
-    .. deprecated::
-        This function is deprecated. Use MsaExtractor class instead.
+    .. deprecated:: 1.4.0
+        This function is deprecated. Use :class:`MsaExtractor` class instead.
 
     Parameters
     ----------

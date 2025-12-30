@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 
     from nexusLIMS.instruments import Instrument
 
-logger = logging.getLogger(__name__)
+_logger = logging.getLogger(__name__)
 
 __all__ = [
     "BaseExtractor",
@@ -53,14 +53,14 @@ class FieldDefinition(NamedTuple):
     is_string : bool
         If True, keep value as string. If False, attempt numeric conversion
         with Decimal for precision.
-    suppress_zero : bool, default=False
+    suppress_zero : bool
         If True, skip field if the numeric value equals zero.
-        Only applies when is_string=False.
-    target_unit : str | None, default=None
+        Only applies when is_string=False. Defaults to False.
+    target_unit : str or None
         Pint unit string for the output value (e.g., "kilovolt", "millimeter").
         If provided, the value will be converted to a Pint Quantity with this unit.
         The factor is still applied before creating the Quantity.
-        If None, numeric values remain as floats (legacy behavior).
+        If None, numeric values remain as floats (legacy behavior). Defaults to None.
 
     Examples
     --------
@@ -251,7 +251,7 @@ class BaseExtractor(Protocol):
         the Activity layer to expand multi-signal files into multiple datasets.
 
         Each 'nx_meta' dict MUST contain these required fields (validated against
-        :class:`~nexusLIMS.extractors.schemas.NexusMetadata`):
+        :class:`~nexusLIMS.schemas.metadata.NexusMetadata`):
 
         - 'Creation Time': ISO-8601 timestamp string **with timezone** (REQUIRED)
           Examples: "2024-01-15T10:30:00-05:00" or "2024-01-15T15:30:00Z"

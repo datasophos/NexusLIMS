@@ -15,7 +15,7 @@ from lxml import etree
 
 from nexusLIMS.builder import record_builder
 from nexusLIMS.builder.record_builder import build_record
-from nexusLIMS.db import make_db_query, session_handler
+from nexusLIMS.db import session_handler
 from nexusLIMS.db.session_handler import Session, SessionLog, db_query
 from nexusLIMS.harvesters.nemo.exceptions import NoMatchingReservationError
 from nexusLIMS.harvesters.reservation_event import ReservationEvent
@@ -481,40 +481,40 @@ class TestRecordBuilder:
         completed_count = 9  # All 9 logs marked as COMPLETED
         assert (
             len(
-                make_db_query("SELECT * FROM session_log"),
+                db_query("SELECT * FROM session_log")[1],
             )
             == total_session_log_count
         )
         assert (
             len(
-                make_db_query(
+                db_query(
                     "SELECT * FROM session_log WHERE "
                     '"event_type" = "RECORD_GENERATION"',
-                ),
+                )[1],
             )
             == record_generation_count
         )
         assert (
             len(
-                make_db_query(
+                db_query(
                     'SELECT * FROM session_log WHERE "record_status" = "TO_BE_BUILT"',
-                ),
+                )[1],
             )
             == to_be_built_count
         )
         assert (
             len(
-                make_db_query(
+                db_query(
                     'SELECT * FROM session_log WHERE"record_status" = "NO_FILES_FOUND"',
-                ),
+                )[1],
             )
             == no_files_found_count
         )
         assert (
             len(
-                make_db_query(
+                db_query(
                     'SELECT * FROM session_log WHERE "record_status" = "COMPLETED"',
-                ),
+                )[1],
             )
             == completed_count
         )

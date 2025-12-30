@@ -19,7 +19,7 @@ from nexusLIMS.instruments import Instrument, get_instr_from_filepath
 from nexusLIMS.schemas.units import ureg
 from nexusLIMS.utils import set_nested_dict_value, try_getting_dict_value
 
-logger = logging.getLogger(__name__)
+_logger = logging.getLogger(__name__)
 
 
 def _coerce_to_list(meta_key):
@@ -319,7 +319,7 @@ def _parse_filter_settings(info_dict, tecnai_info):
             tmp = re.sub(r"\[eV\]", "", tmp)
             info_dict["Filter_Settings"]["Total_Energy_Loss"] = _try_decimal(tmp)
     except ValueError:
-        logger.info("Filter settings not found in Tecnai microscope info")
+        _logger.info("Filter settings not found in Tecnai microscope info")
 
     return info_dict
 

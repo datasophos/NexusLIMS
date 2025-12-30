@@ -22,12 +22,12 @@ from requests_ntlm import HttpNtlmAuth
 from .config import settings
 from .harvesters import CA_BUNDLE_CONTENT
 
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
+_logger = logging.getLogger(__name__)
+_logger.setLevel(logging.INFO)
 
 # hours to add to datetime objects (hack for poole testing -- should be -2 if
 # running tests from Mountain Time on files in Eastern Time)
-tz_offset = timedelta(hours=0)
+_tz_offset = timedelta(hours=0)
 
 
 def setup_loggers(log_level):
@@ -152,7 +152,7 @@ def nexus_req(
 
             # If this is our last attempt, return the failed response
             if attempt == retries:
-                logger.warning(
+                _logger.warning(
                     "Request to %s failed with %s after %s attempts",
                     url,
                     response.status_code,
@@ -162,7 +162,7 @@ def nexus_req(
 
             # Calculate backoff delay: 1s, 2s, 4s, 8s, etc.
             delay = 2**attempt
-            logger.debug(
+            _logger.debug(
                 "Request to %s returned %s, retrying in %ss (attempt %s/%s)",
                 url,
                 response.status_code,
@@ -347,13 +347,13 @@ def find_dirs_by_mtime(
     # adjust the datetime objects with the tz_offset (usually should be 0) if
     # they are naive
     if dt_from.tzinfo is None:
-        dt_from += tz_offset  # pragma: no cover
+        dt_from += _tz_offset  # pragma: no cover
     if dt_to.tzinfo is None:
-        dt_to += tz_offset  # pragma: no cover
+        dt_to += _tz_offset  # pragma: no cover
 
     # use os.walk and only inspect the directories for mtime (much fewer
     # comparisons than looking at every file):
-    logger.info(
+    _logger.info(
         "Finding directories modified between %s and %s",
         dt_from.isoformat(),
         dt_to.isoformat(),
@@ -402,9 +402,9 @@ def find_files_by_mtime(path: Path, dt_from, dt_to) -> List[Path]:  # pragma: no
     # adjust the datetime objects with the tz_offset (usually should be 0) if
     # they are naive
     if dt_from.tzinfo is None:
-        dt_from += tz_offset
+        dt_from += _tz_offset
     if dt_to.tzinfo is None:
-        dt_to += tz_offset
+        dt_to += _tz_offset
 
     files = set()  # use a set here (faster and we won't have duplicates)
     # for each of those directories, walk the file tree and inspect the
@@ -475,7 +475,7 @@ def _get_find_command():
             # macOS
             if _which("gfind"):
                 find_command = "gfind"
-                logger.info("BSD find detected, using gfind (GNU find) instead")
+                _logger.info("BSD find detected, using gfind (GNU find) instead")
             else:
                 msg = (
                     "BSD find detected on macOS, but GNU find is required.\n"
@@ -488,7 +488,7 @@ def _get_find_command():
                 )
                 raise RuntimeError(msg)
         else:
-            logger.warning(
+            _logger.warning(
                 "Non-GNU find detected. If you encounter errors, "
                 "please install GNU findutils.",
             )
@@ -514,13 +514,13 @@ def _find_symlink_dirs(find_command, path):
     """
     find_path = Path(str(settings.NX_INSTRUMENT_DATA_PATH)) / path
     cmd = [find_command, str(find_path), "-type", "l", "-xtype", "d", "-print0"]
-    logger.info('Running followlinks find via subprocess.run: "%s"', cmd)
+    _logger.info('Running followlinks find via subprocess.run: "%s"', cmd)
     out = subprocess.run(cmd, capture_output=True, check=True)
     paths = [f.decode() for f in out.stdout.split(b"\x00") if len(f) > 0]
-    logger.info('Found the following symlinks: "%s"', paths)
+    _logger.info('Found the following symlinks: "%s"', paths)
 
     if paths:
-        logger.info("find_path is: '%s'", paths)
+        _logger.info("find_path is: '%s'", paths)
         return paths
     return [find_path]
 
@@ -610,7 +610,7 @@ def gnu_find_files_by_mtime(
     ----------
     path
         The root path from which to start the search, relative to
-        the :ref:`NX_INSTRUMENT_DATA_PATH <nexuslims-instrument-data-path>`
+        the :ref:`NX_INSTRUMENT_DATA_PATH <config-instrument-data-path>`
         environment setting.
     dt_from
         The "starting" point of the search timeframe
@@ -622,7 +622,7 @@ def gnu_find_files_by_mtime(
     followlinks
         Whether to follow symlinks using the ``find`` command via
         the ``-H`` command line flag. This is useful when the
-        :ref:`NX_INSTRUMENT_DATA_PATH <nexuslims-instrument-data-path>` is actually a
+        :ref:`NX_INSTRUMENT_DATA_PATH <config-instrument-data-path>` is actually a
         directory
         of symlinks. If this is the case and ``followlinks`` is
         ``False``, no files will ever be found because the ``find``
@@ -642,14 +642,14 @@ def gnu_find_files_by_mtime(
         If the find command cannot be found, or running it results in output
         to `stderr`
     """
-    logger.info("Using GNU `find` to search for files")
+    _logger.info("Using GNU `find` to search for files")
 
     # Get appropriate find command
     find_command = _get_find_command()
 
     # Adjust datetime objects with tz_offset if naive
-    dt_from += tz_offset if dt_from.tzinfo is None else timedelta(0)
-    dt_to += tz_offset if dt_to.tzinfo is None else timedelta(0)
+    dt_from += _tz_offset if dt_from.tzinfo is None else timedelta(0)
+    dt_to += _tz_offset if dt_to.tzinfo is None else timedelta(0)
 
     # Find symlink directories if following links
     if followlinks:
@@ -666,8 +666,8 @@ def gnu_find_files_by_mtime(
         extensions,
         followlinks,
     )
-    logger.info('Running via subprocess.run: "%s"', cmd)
-    logger.info('Running via subprocess.run (as string): "%s"', " ".join(cmd))
+    _logger.info('Running via subprocess.run: "%s"', cmd)
+    _logger.info('Running via subprocess.run (as string): "%s"', " ".join(cmd))
     out = subprocess.run(cmd, capture_output=True, check=True)
 
     # Process results
@@ -675,7 +675,7 @@ def gnu_find_files_by_mtime(
     files = [Path(f.decode()) for f in files if len(f) > 0]
     files = list(set(files))
     files.sort(key=lambda f: f.stat().st_mtime)
-    logger.info("Found %i files", len(files))
+    _logger.info("Found %i files", len(files))
 
     return files
 
@@ -835,7 +835,7 @@ def get_auth(*, basic: bool = False):
     try:
         username = settings.NX_CDCS_USER
         passwd = settings.NX_CDCS_PASS
-        logger.info("Authenticating using credentials from settings")
+        _logger.info("Authenticating using credentials from settings")
     except (KeyError, AttributeError) as exception:
         msg = (
             "No credentials were found in settings. "
@@ -957,7 +957,7 @@ def replace_instrument_data_path(path: Path, suffix: str) -> Path:
     nexuslims_path = Path(str(settings.NX_DATA_PATH))
 
     if instr_data_path not in path.parents:
-        logger.warning(
+        _logger.warning(
             "%s is not a sub-path of %s", path, str(settings.NX_INSTRUMENT_DATA_PATH)
         )
     return Path(str(path).replace(str(instr_data_path), str(nexuslims_path)) + suffix)

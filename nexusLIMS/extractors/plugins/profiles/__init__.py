@@ -8,7 +8,7 @@ Each profile module should:
 1. Import InstrumentProfile and get_profile_registry
 2. Define parser/transformation functions
 3. Create an InstrumentProfile instance
-4. Register it via get_profile_registry().register()
+4. Register it via `get_profile_registry().register()`
 
 Profile modules are loaded automatically - just add a new .py file to this
 directory and it will be discovered during plugin initialization.
@@ -41,7 +41,7 @@ from pathlib import Path
 
 from nexusLIMS import config
 
-logger = logging.getLogger(__name__)
+_logger = logging.getLogger(__name__)
 
 __all__ = [
     "register_all_profiles",
@@ -67,7 +67,7 @@ def register_all_profiles() -> None:
     >>> register_all_profiles()
     >>> # All built-in and local profiles are now registered
     """
-    logger.info("Discovering instrument profiles...")
+    _logger.info("Discovering instrument profiles...")
 
     # Load built-in profiles
     package_path = Path(__file__).parent
@@ -76,11 +76,11 @@ def register_all_profiles() -> None:
     # Load local profiles if configured
     if config.settings.NX_LOCAL_PROFILES_PATH:
         local_path_obj = config.settings.NX_LOCAL_PROFILES_PATH
-        logger.info("Loading local profiles from: %s", local_path_obj)
+        _logger.info("Loading local profiles from: %s", local_path_obj)
         local_count = _load_profiles_from_directory(local_path_obj, module_prefix=None)
         profile_count += local_count
 
-    logger.info("Loaded %d total instrument profile modules", profile_count)
+    _logger.info("Loaded %d total instrument profile modules", profile_count)
 
 
 def _load_profiles_from_directory(directory: Path, module_prefix: str | None) -> int:
@@ -123,7 +123,7 @@ def _load_profiles_from_directory(directory: Path, module_prefix: str | None) ->
                 # Load the profile file as a module
                 spec = importlib.util.spec_from_file_location(module_name, profile_file)
                 if spec is None or spec.loader is None:
-                    logger.warning(
+                    _logger.warning(
                         "Failed to create module spec for local profile: %s",
                         profile_file,
                     )
@@ -133,10 +133,10 @@ def _load_profiles_from_directory(directory: Path, module_prefix: str | None) ->
                 spec.loader.exec_module(module)
 
                 profile_count += 1
-                logger.debug("Loaded local profile: %s", profile_file.name)
+                _logger.debug("Loaded local profile: %s", profile_file.name)
 
             except Exception as e:
-                logger.warning(
+                _logger.warning(
                     "Failed to load local profile '%s': %s",
                     profile_file,
                     e,
@@ -156,10 +156,10 @@ def _load_profiles_from_directory(directory: Path, module_prefix: str | None) ->
                 # Import the module - this triggers profile registration
                 importlib.import_module(module_name)
                 profile_count += 1
-                logger.debug("Loaded built-in profile module: %s", module_name)
+                _logger.debug("Loaded built-in profile module: %s", module_name)
 
             except Exception as e:
-                logger.warning(
+                _logger.warning(
                     "Failed to load built-in profile module '%s': %s",
                     module_name,
                     e,

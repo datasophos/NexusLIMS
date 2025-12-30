@@ -2,7 +2,7 @@
 
 import logging
 from datetime import datetime
-from typing import Any, Dict, List, Tuple, Union
+from typing import Any, List, Tuple, Union
 from urllib.parse import parse_qs, urljoin, urlparse
 
 from pytz import timezone as pytz_timezone
@@ -11,7 +11,7 @@ from nexusLIMS.db.session_handler import Session, SessionLog, db_query
 from nexusLIMS.instruments import get_instr_from_api_url, instrument_db
 from nexusLIMS.utils import nexus_req
 
-logger = logging.getLogger(__name__)
+_logger = logging.getLogger(__name__)
 
 
 class NemoConnector:
@@ -49,10 +49,10 @@ class NemoConnector:
         actually failing.
     """
 
-    tools: Dict[int, Dict]
-    users: Dict[int, Dict]
-    users_by_username: Dict[str, Dict]
-    projects: Dict[int, Dict]
+    tools: dict[int, dict]
+    users: dict[int, dict]
+    users_by_username: dict[str, dict]
+    projects: dict[int, dict]
 
     def __init__(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # noqa: PLR0913
         self,
@@ -192,7 +192,7 @@ class NemoConnector:
 
         return date_dt
 
-    def get_tools(self, tool_id: Union[int, List[int]]) -> List[Dict]:
+    def get_tools(self, tool_id: Union[int, List[int]]) -> List[dict]:
         """
         Get a list of one or more tools from the NEMO API in a dictionary.
 
@@ -206,7 +206,7 @@ class NemoConnector:
 
         Returns
         -------
-        tools : List[Dict]
+        tools : List[dict]
             A list (could be empty) of tools that match the id (or ids) given
             in ``tool_id``
 
@@ -220,7 +220,7 @@ class NemoConnector:
             if len(tool_id) == 0:
                 params = {}
             elif all(t_id in self.tools for t_id in tool_id):
-                logger.debug(
+                _logger.debug(
                     "Using cached tool info for tools %s: %s",
                     tool_id,
                     [self.tools[t]["name"] for t in tool_id],
@@ -230,7 +230,7 @@ class NemoConnector:
                 params = {"id__in": ",".join([str(i) for i in tool_id])}
         else:
             if tool_id in self.tools:
-                logger.debug(
+                _logger.debug(
                     'Using cached tool info for tool %s: "%s"',
                     tool_id,
                     self.tools[tool_id]["name"],
@@ -246,7 +246,7 @@ class NemoConnector:
 
         return tools
 
-    def get_users(self, user_id: Union[int, List[int]] | None = None) -> List[Dict]:
+    def get_users(self, user_id: Union[int, List[int]] | None = None) -> List[dict]:
         """
         Get a list of one or more users from the NEMO API in a dictionary.
 
@@ -263,7 +263,7 @@ class NemoConnector:
 
         Returns
         -------
-        users : List[Dict]
+        users : List[dict]
             A list (could be empty) of users that match the ids and/or
             usernames given
 
@@ -282,7 +282,7 @@ class NemoConnector:
 
             params["id__in"] = ",".join([str(i) for i in user_id])
             if all(u_id in self.users for u_id in user_id):
-                logger.debug(
+                _logger.debug(
                     "Using cached user info for users with id in %s: %s",
                     user_id,
                     [self.users[u]["username"] for u in user_id],
@@ -292,7 +292,7 @@ class NemoConnector:
         else:
             params["id"] = user_id
             if user_id in self.users:
-                logger.debug(
+                _logger.debug(
                     'Using cached user info for user id %s: "%s"',
                     user_id,
                     self.users[user_id]["username"],
@@ -330,17 +330,17 @@ class NemoConnector:
         if isinstance(username, str):
             params["username__iexact"] = username
             if username in self.users_by_username:
-                logger.debug('Using cached user info for username "%s"', username)
+                _logger.debug('Using cached user info for username "%s"', username)
                 return [self.users_by_username[username]]
         else:
             params["username__in"] = ",".join(username)
             if all(uname in self.users_by_username for uname in username):
-                logger.debug("Using cached user info for users with id in %s", username)
+                _logger.debug("Using cache user info for users with id in %s", username)
                 return [self.users_by_username[uname] for uname in username]
 
         return self._get_users_helper(params)
 
-    def get_projects(self, proj_id: Union[int, List[int]]) -> List[Dict]:
+    def get_projects(self, proj_id: Union[int, List[int]]) -> List[dict]:
         """
         Get a list of one or more projects from the NEMO API in a dictionary.
 
@@ -357,7 +357,7 @@ class NemoConnector:
 
         Returns
         -------
-        projects : List[Dict]
+        projects : List[dict]
             A list (could be empty) of projects that match the id (or ids) given
             in ``proj_id``
 
@@ -371,7 +371,7 @@ class NemoConnector:
             if len(proj_id) == 0:
                 params = {}
             elif all(p_id in self.projects for p_id in proj_id):
-                logger.debug(
+                _logger.debug(
                     "Using cached project info for projects %s: %s",
                     proj_id,
                     [self.projects[p]["name"] for p in proj_id],
@@ -381,7 +381,7 @@ class NemoConnector:
                 params = {"id__in": ",".join([str(i) for i in proj_id])}
         else:
             if proj_id in self.projects:
-                logger.debug(
+                _logger.debug(
                     'Using cached project info for project %s: "%s"',
                     proj_id,
                     self.projects[proj_id]["name"],
@@ -412,7 +412,7 @@ class NemoConnector:
         tool_id: Union[int, List[int]] | None = None,
         *,
         cancelled: bool | None = False,
-    ) -> List[Dict]:
+    ) -> List[dict]:
         """
         Get reservations from the NEMO API filtered in various ways.
 
@@ -443,7 +443,7 @@ class NemoConnector:
 
         Returns
         -------
-        reservations : List[Dict]
+        reservations : List[dict]
             A list (could be empty) of reservations that match the date range
             supplied
         """
@@ -588,8 +588,8 @@ class NemoConnector:
     def _parse_dt_range(
         self,
         dt_range: Tuple[datetime | None, datetime | None] | None,
-        params: Dict,
-    ) -> Dict:
+        params: dict,
+    ) -> dict:
         if dt_range is not None:
             dt_from, dt_to = dt_range
             if dt_from is not None:
@@ -643,7 +643,7 @@ class NemoConnector:
                 # this shouldn't happen since we limit our usage event API call
                 # only to instruments contained in our DB, but we can still
                 # defend against it regardless
-                logger.warning(
+                _logger.warning(
                     "Usage event %s was for an instrument (%s) not known "
                     "to NexusLIMS, so no records will be added to DB.",
                     event_id,
@@ -651,7 +651,7 @@ class NemoConnector:
                 )
                 return
             if event["end"] is None:
-                logger.warning(
+                _logger.warning(
                     "Usage event %s has not yet ended, so no records "
                     "will be added to DB.",
                     event_id,
@@ -667,7 +667,7 @@ class NemoConnector:
             )
             if len(res[1]) > 0:
                 # there was already a start log, so warn and don't do anything:
-                logger.warning(
+                _logger.warning(
                     "A 'START' log with session id \"%s\" was found in the DB, "
                     "so a new one will not be inserted for this event",
                     session_id,
@@ -692,7 +692,7 @@ class NemoConnector:
             )
             if len(res[1]) > 0:
                 # there was already an end log, so warn and don't do anything:
-                logger.warning(
+                _logger.warning(
                     "An 'END' log with session id \"%s\" was found in the DB, "
                     "so a new one will not be inserted for this event",
                     session_id,
@@ -709,7 +709,7 @@ class NemoConnector:
                 )
                 end_log.insert_log()
         else:
-            logger.warning(
+            _logger.warning(
                 "No usage event with id = %s was found for %s",
                 event_id,
                 self,
@@ -739,7 +739,7 @@ class NemoConnector:
             event = event[0]
             # we cannot reliably test an unended event, so exlcude from coverage
             if event["start"] is not None and event["end"] is None:  # pragma: no cover
-                logger.warning(
+                _logger.warning(
                     "Usage event with id = %s has not yet ended for '%s'",
                     event_id,
                     self,
@@ -756,7 +756,7 @@ class NemoConnector:
                 user=event["user"]["username"],
             )
 
-        logger.warning("No usage event with id = %s was found for '%s'", event_id, self)
+        _logger.warning("No usage event with id = %s found for '%s'", event_id, self)
         return None
 
     def get_known_tool_ids(self) -> List[int]:
@@ -784,7 +784,7 @@ class NemoConnector:
 
         return tool_ids
 
-    def _get_users_helper(self, params: Dict[str, str]) -> list:
+    def _get_users_helper(self, params: dict[str, str]) -> list:
         """
         Call the users API with certain parameters.
 
@@ -811,8 +811,8 @@ class NemoConnector:
         self,
         verb: str,
         endpoint: str,
-        params: Dict[str, str],
-    ) -> List[Dict[str, Any]]:
+        params: dict[str, str],
+    ) -> List[dict[str, Any]]:
         """
         Make a call to the NEMO API.
 
@@ -841,7 +841,7 @@ class NemoConnector:
             The API response, formatted as a list of dict objects
         """
         url = urljoin(self.config["base_url"], endpoint)
-        logger.info("getting data from %s with parameters %s", url, params)
+        _logger.info("getting data from %s with parameters %s", url, params)
         response = nexus_req(
             url,
             verb,

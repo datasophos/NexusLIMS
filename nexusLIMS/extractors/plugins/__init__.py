@@ -21,19 +21,21 @@ Examples
 --------
 Creating a new extractor plugin::
 
-    # plugins/my_extractor.py
-    from nexusLIMS.extractors.base import ExtractionContext
+```python
+# plugins/my_extractor.py
+from nexusLIMS.extractors.base import ExtractionContext
 
-    class MyFormatExtractor:
-        name = "my_format_extractor"
-        priority = 100
+class MyFormatExtractor:
+    name = "my_format_extractor"
+    priority = 100
 
-        def supports(self, context: ExtractionContext) -> bool:
-            return context.file_path.suffix.lower() == '.myformat'
+    def supports(self, context: ExtractionContext) -> bool:
+        return context.file_path.suffix.lower() == '.myformat'
 
-        def extract(self, context: ExtractionContext) -> dict:
-            # Extract metadata
-            return {"nx_meta": {...}}
+    def extract(self, context: ExtractionContext) -> dict:
+        # Extract metadata
+        return {"nx_meta": {...}}
+```
 """
 
 __all__ = []

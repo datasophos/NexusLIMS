@@ -18,7 +18,7 @@ if TYPE_CHECKING:
     from nexusLIMS.extractors.base import InstrumentProfile
     from nexusLIMS.instruments import Instrument
 
-logger = logging.getLogger(__name__)
+_logger = logging.getLogger(__name__)
 
 __all__ = [
     "InstrumentProfileRegistry",
@@ -65,7 +65,7 @@ class InstrumentProfileRegistry:
     def __init__(self):
         """Initialize the profile registry."""
         self._profiles: dict[str, InstrumentProfile] = {}
-        logger.debug("Initialized InstrumentProfileRegistry")
+        _logger.debug("Initialized InstrumentProfileRegistry")
 
     def register(self, profile: InstrumentProfile) -> None:
         """
@@ -89,13 +89,13 @@ class InstrumentProfileRegistry:
         >>> registry.register(profile)
         """
         if profile.instrument_id in self._profiles:
-            logger.warning(
+            _logger.warning(
                 "Replacing existing profile for instrument: %s",
                 profile.instrument_id,
             )
 
         self._profiles[profile.instrument_id] = profile
-        logger.debug("Registered profile for: %s", profile.instrument_id)
+        _logger.debug("Registered profile for: %s", profile.instrument_id)
 
     def get_profile(self, instrument: Instrument | None) -> InstrumentProfile | None:
         """
@@ -160,7 +160,7 @@ class InstrumentProfileRegistry:
         >>> registry.clear()
         """
         self._profiles.clear()
-        logger.debug("Cleared all instrument profiles")
+        _logger.debug("Cleared all instrument profiles")
 
 
 # Singleton instance

@@ -7,9 +7,9 @@ with the Nexus Experiment schema.
 
 Key Functions
 -------------
-- serialize_quantity_to_xml: Convert Pint Quantities to value/unit pairs for XML
-- get_xml_field_name: Map EM Glossary field names to human-readable display names
-- prepare_metadata_for_xml: Convert rich metadata to XML-compatible flat dict
+- :func:`serialize_quantity_to_xml`: Convert Pint Quantities to value/unit pairs for XML
+- :func:`get_xml_field_name`: Map EM Glossary field name to human-friendly display name
+- :func:`prepare_metadata_for_xml`: Convert rich metadata to XML-compatible flat dict
 
 Examples
 --------
@@ -37,8 +37,6 @@ from nexusLIMS.schemas import em_glossary
 from nexusLIMS.schemas.units import get_qudt_uri as _get_qudt_uri
 from nexusLIMS.schemas.units import ureg
 
-# Mapping from EM Glossary field names to human-readable XML display names
-# This maintains backward compatibility with existing XML field names
 EM_GLOSSARY_TO_XML_DISPLAY_NAMES = {
     # Imaging fields (common)
     "acceleration_voltage": "Voltage",
@@ -91,6 +89,10 @@ EM_GLOSSARY_TO_XML_DISPLAY_NAMES = {
     "Data Dimensions": "Data Dimensions",
     "Instrument ID": "Instrument ID",
 }
+"""
+Mapping from EM Glossary field names to human-readable XML display names.
+This maintains backward compatibility with existing XML field names.
+"""
 
 
 def serialize_quantity_to_xml(qty: Quantity) -> tuple[float, str]:
@@ -102,7 +104,7 @@ def serialize_quantity_to_xml(qty: Quantity) -> tuple[float, str]:
 
     Parameters
     ----------
-    qty : Quantity
+    qty : :class:`pint.Quantity`
         The Pint Quantity object to serialize
 
     Returns

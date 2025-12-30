@@ -12,7 +12,7 @@ from nexusLIMS.extractors.profiles import get_profile_registry
 if TYPE_CHECKING:
     from nexusLIMS.extractors.base import ExtractionContext
 
-logger = logging.getLogger(__name__)
+_logger = logging.getLogger(__name__)
 
 
 def add_metadata_warnings(
@@ -74,7 +74,7 @@ def detect_eftem_diffraction(
     imaging_mode = metadata["nx_meta"].get("Imaging Mode", "")
 
     if "EFTEM DIFFRACTION" in imaging_mode.upper():
-        logger.info(
+        _logger.info(
             'Detected file as Diffraction type based on "Imaging Mode" == "%s"',
             imaging_mode,
         )
@@ -94,7 +94,8 @@ fei_titan_stem_643_profile = InstrumentProfile(
     transformations={},
     extension_fields={},
 )
+"""An instrument profile for the FEI Titan STEM"""
 
 get_profile_registry().register(fei_titan_stem_643_profile)
 
-logger.debug("Registered FEI Titan STEM (643) instrument profile")
+_logger.debug("Registered FEI Titan STEM (643) instrument profile")

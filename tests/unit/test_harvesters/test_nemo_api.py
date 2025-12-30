@@ -406,7 +406,7 @@ class TestNemoConnectorEvents:
         nemo_connector,
     ):
         session = nemo_connector.get_session_from_usage_event(0)
-        assert "No usage event with id = 0 was found" in caplog.text
+        assert "No usage event with id = 0 found" in caplog.text
         assert "WARNING" in caplog.text
         assert session is None
 

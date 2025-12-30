@@ -21,7 +21,7 @@ from nexusLIMS.utils import (
     try_getting_dict_value,
 )
 
-logger = logging.getLogger(__name__)
+_logger = logging.getLogger(__name__)
 
 
 class SerEmiExtractor:
@@ -74,7 +74,7 @@ class SerEmiExtractor:
             creation time, etc.)
         """
         filename = context.file_path
-        logger.debug("Extracting metadata from SER/EMI file: %s", filename)
+        _logger.debug("Extracting metadata from SER/EMI file: %s", filename)
 
         # ObjectInfo present in emi; ser_header_parameters present in .ser
         # ObjectInfo should contain all the interesting metadata,
@@ -94,7 +94,7 @@ class SerEmiExtractor:
                 "file for this .ser file. Metadata extraction will be "
                 "limited."
             )
-            logger.warning(warning)
+            _logger.warning(warning)
             emi_loaded = False
             emi_filename = None
 
@@ -106,7 +106,7 @@ class SerEmiExtractor:
                 ".ser file could not be opened by NexusLIMS. "
                 "Metadata extraction will be limited."
             )
-            logger.warning(warning)
+            _logger.warning(warning)
             emi_loaded = False
 
         if not emi_loaded:
@@ -121,7 +121,7 @@ class SerEmiExtractor:
                     "The .ser file could not be opened (perhaps file is "
                     "corrupted?); Metadata extraction is not possible."
                 )
-                logger.warning(warning)
+                _logger.warning(warning)
                 # set s to an empty signal just so we can process some basic
                 # metadata using same syntax as if we had read it correctly
                 s = BaseSignal(np.zeros(1))
@@ -143,7 +143,7 @@ class SerEmiExtractor:
                 "corresponding .emi file for this .ser. "
                 "Metadata extraction will be limited."
             )
-            logger.warning(warning)
+            _logger.warning(warning)
             metadata["nx_meta"]["Extractor Warning"] = warning
 
         # if we successfully found the .emi file, add it to the metadata

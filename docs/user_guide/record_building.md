@@ -119,7 +119,7 @@ The event is then serialized to schema-compliant XML.
 Record metadata is primarily extracted from session files. The
 {py:class}`~nexusLIMS.db.session_handler.Session` provides the instrument,
 timespan, and identifier. Instrument configuration (persistent ID, location,
-file storage path relative to [NX_INSTRUMENT_DATA_PATH](nexuslims-instrument-data-path))
+file storage path relative to {ref}`NX_INSTRUMENT_DATA_PATH <config-instrument-data-path>`)
 is read from the database `instruments` table, centralizing configuration management.
 
 **File search strategy:**
@@ -213,7 +213,7 @@ formats. Unsupported formats require manual binary decoding and custom extractor
 generator implementation.
 
 **Output artifacts:** {py:func}`~nexusLIMS.extractors.parse_metadata` generates (saved to
-[NX_DATA_PATH](nexuslims-data-path), mirroring [NX_INSTRUMENT_DATA_PATH](nexuslims-instrument-data-path) structure):
+{ref}`NX_DATA_PATH <config-data-path>`, mirroring {ref}`NX_INSTRUMENT_DATA_PATH <config-instrument-data-path>` structure):
 
 - **JSON metadata file**: Full metadata in text format (linked from XML record)
 - **PNG preview image**: Generated via {py:mod}`nexusLIMS.extractors.plugins.preview_generators`
@@ -252,8 +252,8 @@ validates the complete record against the NexusLIMS schema.
 
 **Validation failure:** Session marked `ERROR` in database for investigation.
 
-**Validation success:** Record written to [NX_RECORDS_PATH](nexuslims-records-path)
-(or [NX_DATA_PATH](nexuslims-data-path) subdirectory if unspecified) before CDCS upload.
+**Validation success:** Record written to {ref}`NX_RECORDS_PATH <config-records-path>`
+(or {ref}`NX_DATA_PATH <config-data-path>` subdirectory if unspecified) before CDCS upload.
 
 The builder then processes the next session, repeating until all are complete.
 

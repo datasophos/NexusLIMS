@@ -51,7 +51,7 @@ from nexusLIMS.schemas.units import (
     ureg,
 )
 
-logger = logging.getLogger(__name__)
+_logger = logging.getLogger(__name__)
 
 
 class _PintQuantityPydanticAnnotation:

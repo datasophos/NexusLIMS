@@ -2,7 +2,7 @@
 
 ## Overview
 
-NexusLIMS uses a [SQLite](https://sqlite.org/index.html) database to track experimental sessions and instrument configuration. The database file location is specified by {ref}`NX_DB_PATH <nexuslims-db-path>`.
+NexusLIMS uses a [SQLite](https://sqlite.org/index.html) database to track experimental sessions and instrument configuration. The database file location is specified by {ref}`NX_DB_PATH <config-db-path>`.
 
 **Key features:**
 - Single-file database for easy backup (just copy the file)
@@ -78,7 +78,7 @@ the `instruments` table from the database into
 {py:class}`~nexusLIMS.instruments.Instrument` objects. These objects are
 stored in a dictionary attribute named {py:data}`nexusLIMS.instruments.instrument_db`.
 This is done by querying the database specified in the environment variable
-{ref}`NX_DB_PATH <nexuslims-db-path>` and creating a dictionary of
+{ref}`NX_DB_PATH <config-db-path>` and creating a dictionary of
 {py:class}`~nexusLIMS.instruments.Instrument` objects that contain information
 about all of the instruments specified in the database. These objects are used
 widely throughout the code so that the database is only queried once at initial
@@ -93,7 +93,7 @@ import, rather than every time information is needed.
 | `location` | VARCHAR(100) | The physical location of this instrument |
 | `schema_name` | TEXT | The human-readable name of instrument as defined in the Nexus Microscopy schema and displayed in the records |
 | `property_tag` | VARCHAR(20) | A unique numeric identifier for this instrument (not used by NexusLIMS, but for reference and potential future use) |
-| `filestore_path` | TEXT | The path (relative to central storage location specified in {ref}`NX_INSTRUMENT_DATA_PATH <nexuslims-instrument-data-path>`) where this instrument stores its data (e.g. `./instrument_name`) |
+| `filestore_path` | TEXT | The path (relative to central storage location specified in {ref}`NX_INSTRUMENT_DATA_PATH <config-instrument-data-path>`) where this instrument stores its data (e.g. `./instrument_name`) |
 | `computer_name` | TEXT | The hostname of the `support PC` connected to this instrument (for reference purposes) |
 | `computer_ip` | VARCHAR(15) | The IP address of the `support PC` connected to this instrument (not currently utilized) |
 | `computer_mount` | TEXT | The full path where the central file storage is mounted and files are saved on the 'support PC' for the instrument (for reference purposes) |

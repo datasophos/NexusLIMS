@@ -8,7 +8,7 @@ from nexusLIMS.extractors.base import ExtractionContext
 from nexusLIMS.instruments import get_instr_from_filepath
 from nexusLIMS.utils import current_system_tz
 
-logger = logging.getLogger(__name__)
+_logger = logging.getLogger(__name__)
 
 
 class BasicFileInfoExtractor:
@@ -59,7 +59,7 @@ class BasicFileInfoExtractor:
         list[dict]
             List containing a single metadata dict with 'nx_meta' key
         """
-        logger.debug(
+        _logger.debug(
             "Extracting basic metadata from file (no specialized extractor): %s",
             context.file_path,
         )

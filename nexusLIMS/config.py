@@ -32,7 +32,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from nexusLIMS.version import __version__
 
-logger = logging.getLogger(__name__)
+_logger = logging.getLogger(__name__)
 
 
 class NemoHarvesterConfig(BaseModel):
@@ -336,7 +336,7 @@ class Settings(BaseSettings):
                 token = all_env.get(f"NX_NEMO_TOKEN_{harvester_num}")
 
                 if not address or not token:
-                    logger.warning(
+                    _logger.warning(
                         "Skipping NEMO harvester %d: "
                         "both NX_NEMO_ADDRESS_%d and "
                         "NX_NEMO_TOKEN_%d must be set",
@@ -365,7 +365,7 @@ class Settings(BaseSettings):
                 try:
                     harvesters[harvester_num] = NemoHarvesterConfig(**config_dict)
                 except ValidationError:
-                    logger.exception(
+                    _logger.exception(
                         "Invalid configuration for NEMO harvester %d",
                         harvester_num,
                     )
@@ -442,7 +442,7 @@ class Settings(BaseSettings):
         try:
             return EmailConfig(**config_dict)
         except ValidationError:
-            logger.exception("Invalid email configuration")
+            _logger.exception("Invalid email configuration")
             return None
 
 
@@ -600,5 +600,5 @@ def clear_settings() -> None:
     _manager.clear()
 
 
-# The settings "singleton" - accessed like a normal object throughout the application
 settings = _SettingsProxy()
+"""The settings "singleton" - accessed like a normal object in the application"""

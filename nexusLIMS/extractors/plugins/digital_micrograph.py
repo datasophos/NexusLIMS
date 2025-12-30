@@ -50,7 +50,7 @@ from nexusLIMS.utils import (
     try_getting_dict_value,
 )
 
-logger = logging.getLogger(__name__)
+_logger = logging.getLogger(__name__)
 
 
 class DM3Extractor:
@@ -102,13 +102,13 @@ class DM3Extractor:
             If the file cannot be opened, returns basic metadata as a single dict
             (following the standard extractor contract for error cases).
         """
-        logger.debug("Extracting metadata from DM3/DM4 file: %s", context.file_path)
+        _logger.debug("Extracting metadata from DM3/DM4 file: %s", context.file_path)
         # get_dm3_metadata() handles profile application internally
         metadata_list = get_dm3_metadata(context.file_path, context.instrument)
 
         # If extraction failed, return minimal metadata with a warning
         if metadata_list is None:
-            logger.warning(
+            _logger.warning(
                 "Failed to extract DM3/DM4 metadata from %s, "
                 "falling back to basic metadata",
                 context.file_path,
@@ -163,7 +163,7 @@ def get_dm3_metadata(filename: Path, instrument=None):
         DM3TagTypeError,
         error,
     ) as exc:
-        logger.warning(
+        _logger.warning(
             "File reader could not open %s, received exception: %s",
             filename,
             repr(exc),
@@ -315,7 +315,7 @@ def _apply_profile_to_metadata(metadata: dict, instrument, file_path: Path) -> d
     if profile is None:
         return metadata
 
-    logger.debug("Applying profile for instrument: %s", instrument.name)
+    _logger.debug("Applying profile for instrument: %s", instrument.name)
 
     # Create a mock context for profile application
     context = ExtractionContext(file_path=file_path, instrument=instrument)
@@ -325,7 +325,7 @@ def _apply_profile_to_metadata(metadata: dict, instrument, file_path: Path) -> d
         try:
             metadata = parser_func(metadata, context)
         except Exception as e:
-            logger.warning(
+            _logger.warning(
                 "Profile parser '%s' failed: %s",
                 parser_name,
                 e,
@@ -337,7 +337,7 @@ def _apply_profile_to_metadata(metadata: dict, instrument, file_path: Path) -> d
             if key in metadata:
                 metadata[key] = transform_func(metadata[key])
         except Exception as e:
-            logger.warning(
+            _logger.warning(
                 "Profile transformation '%s' failed: %s",
                 key,
                 e,
@@ -349,7 +349,7 @@ def _apply_profile_to_metadata(metadata: dict, instrument, file_path: Path) -> d
             try:
                 add_to_extensions(metadata["nx_meta"], key, value)
             except Exception as e:
-                logger.warning(
+                _logger.warning(
                     "Profile extension field injection '%s' failed: %s",
                     key,
                     e,
@@ -775,7 +775,7 @@ def parse_dm3_eels_info(mdict):
 
     # Set the dataset type to Spectrum if any EELS tags were added
     if "EELS" in mdict["nx_meta"]:
-        logger.info("Detected file as Spectrum type based on presence of EELS metadata")
+        _logger.info("Detected file as Spectrum type based on EELS metadata")
         mdict["nx_meta"]["DatasetType"] = "Spectrum"
         if "STEM" in mdict["nx_meta"]["Illumination Mode"]:
             mdict["nx_meta"]["Data Type"] = "STEM_EELS"
@@ -895,7 +895,7 @@ def parse_dm3_eds_info(mdict):
 
     # Set the dataset type to Spectrum if any EDS tags were added
     if "EDS" in mdict["nx_meta"]:
-        logger.info("Detected file as Spectrum type based on presence of EDS metadata")
+        _logger.info("Detected file as Spectrum type based on presence of EDS metadata")
         mdict["nx_meta"]["DatasetType"] = "Spectrum"
         if "STEM" in mdict["nx_meta"]["Illumination Mode"]:
             mdict["nx_meta"]["Data Type"] = "STEM_EDS"
@@ -1008,7 +1008,7 @@ def parse_dm3_spectrum_image_info(mdict):
         "Spectrum Imaging" in mdict["nx_meta"]
         and mdict["nx_meta"]["DatasetType"] == "Spectrum"
     ):
-        logger.info(
+        _logger.info(
             "Detected file as SpectrumImage type based on "
             "presence of spectral metadata and spectrum imaging "
             "info",

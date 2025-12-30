@@ -10,7 +10,7 @@ from nexusLIMS.db.session_handler import Session
 
 from .connector import NemoConnector
 
-logger = logging.getLogger(__name__)
+_logger = logging.getLogger(__name__)
 
 
 def get_harvesters_enabled() -> List[NemoConnector]:

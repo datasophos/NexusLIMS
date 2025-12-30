@@ -1,5 +1,5 @@
 # pylint: disable=C0116
-# ruff: noqa: D102, ARG002, ARG001
+# ruff: noqa: D102, ARG002, ARG001, SLF001
 
 """Tests for nexusLIMS.extractors top-level module functions."""
 
@@ -148,7 +148,7 @@ class TestExtractorModule:
             with thumb.open(mode="a", encoding="utf-8") as _:
                 pass
 
-        nexusLIMS.extractors.logger.setLevel(logging.INFO)
+        nexusLIMS.extractors._logger.setLevel(logging.INFO)
         _, returned_thumb_fnames = parse_metadata(fname=list_signal[0], overwrite=False)
         assert "Preview already exists" in caplog.text
         self.remove_thumb_and_json(returned_thumb_fnames)
@@ -767,7 +767,7 @@ class TestExtractorModule:
 
         import nexusLIMS.extractors
 
-        nexusLIMS.extractors.logger.setLevel(logging.INFO)
+        nexusLIMS.extractors._logger.setLevel(logging.INFO)
 
         result = create_preview(fname=test_tif, overwrite=True)
 
@@ -853,7 +853,7 @@ class TestExtractorModule:
 
         import nexusLIMS.extractors
 
-        nexusLIMS.extractors.logger.setLevel(logging.INFO)
+        nexusLIMS.extractors._logger.setLevel(logging.INFO)
 
         result = create_preview(fname=test_png, overwrite=True)
 

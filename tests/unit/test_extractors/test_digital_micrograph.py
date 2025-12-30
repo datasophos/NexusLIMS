@@ -1,5 +1,5 @@
 # pylint: disable=C0116
-# ruff: noqa: D102
+# ruff: noqa: D102, SLF001
 
 """Tests for nexusLIMS.extractors.digital_micrograph."""
 
@@ -659,7 +659,7 @@ class TestDigitalMicrographExtractor:
         profile_registry_manager.register(profile)
 
         # Set up logging to capture warnings
-        digital_micrograph.logger.setLevel(logging.WARNING)
+        digital_micrograph._logger.setLevel(logging.WARNING)
 
         # Create a nested dict structure where the extensions dict raises on assignment
         class FailingExtensionsDict(dict):
@@ -672,7 +672,7 @@ class TestDigitalMicrographExtractor:
         metadata = {"nx_meta": {"extensions": FailingExtensionsDict()}}
 
         # Call _apply_profile_to_metadata directly
-        result = digital_micrograph._apply_profile_to_metadata(  # noqa: SLF001
+        result = digital_micrograph._apply_profile_to_metadata(
             metadata, instrument, list_signal[0]
         )
 
@@ -957,9 +957,7 @@ class TestDigitalMicrographSchemaValidation:
             }
         }
 
-        migrated = digital_micrograph._migrate_to_schema_compliant_metadata(  # noqa: SLF001
-            test_meta
-        )
+        migrated = digital_micrograph._migrate_to_schema_compliant_metadata(test_meta)
 
         nx_meta = migrated["nx_meta"]
 
@@ -994,9 +992,7 @@ class TestDigitalMicrographSchemaValidation:
             }
         }
 
-        migrated = digital_micrograph._migrate_to_schema_compliant_metadata(  # noqa: SLF001
-            test_meta
-        )
+        migrated = digital_micrograph._migrate_to_schema_compliant_metadata(test_meta)
 
         # Pre-existing extension should be preserved
         assert "extensions" in migrated["nx_meta"]
