@@ -4,6 +4,7 @@
 ```
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi
+:parser: autodoc2_docstrings_parser
 :allowtitles:
 ```
 
@@ -17,6 +18,7 @@
 
 * - {py:obj}`SerEmiExtractor <nexusLIMS.extractors.plugins.fei_emi.SerEmiExtractor>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.SerEmiExtractor
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 ````
@@ -29,70 +31,63 @@
 
 * - {py:obj}`parse_basic_info <nexusLIMS.extractors.plugins.fei_emi.parse_basic_info>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.parse_basic_info
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`parse_experimental_conditions <nexusLIMS.extractors.plugins.fei_emi.parse_experimental_conditions>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.parse_experimental_conditions
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`parse_acquire_info <nexusLIMS.extractors.plugins.fei_emi.parse_acquire_info>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.parse_acquire_info
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`parse_experimental_description <nexusLIMS.extractors.plugins.fei_emi.parse_experimental_description>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.parse_experimental_description
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`get_emi_from_ser <nexusLIMS.extractors.plugins.fei_emi.get_emi_from_ser>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.get_emi_from_ser
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`fei_unit_to_pint <nexusLIMS.extractors.plugins.fei_emi.fei_unit_to_pint>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.fei_unit_to_pint
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`split_fei_metadata_units <nexusLIMS.extractors.plugins.fei_emi.split_fei_metadata_units>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.split_fei_metadata_units
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
-* - {py:obj}`map_keys <nexusLIMS.extractors.plugins.fei_emi.map_keys>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.map_keys
+* - {py:obj}`map_keys_with_units <nexusLIMS.extractors.plugins.fei_emi.map_keys_with_units>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.map_keys_with_units
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`parse_data_type <nexusLIMS.extractors.plugins.fei_emi.parse_data_type>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.parse_data_type
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`get_ser_metadata <nexusLIMS.extractors.plugins.fei_emi.get_ser_metadata>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.get_ser_metadata
-    :summary:
-    ```
-````
-
-### Data
-
-````{list-table}
-:class: autosummary longtable
-:align: left
-
-* - {py:obj}`logger <nexusLIMS.extractors.plugins.fei_emi.logger>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.logger
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 ````
 
 ### API
 
-````{py:data} logger
-:canonical: nexusLIMS.extractors.plugins.fei_emi.logger
-:value: >
-   'getLogger(...)'
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.logger
-```
-
-````
-
 `````{py:class} SerEmiExtractor
 :canonical: nexusLIMS.extractors.plugins.fei_emi.SerEmiExtractor
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.SerEmiExtractor
+:parser: autodoc2_docstrings_parser
 ```
 
 ````{py:attribute} name
@@ -101,6 +96,7 @@
    'ser_emi_extractor'
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.SerEmiExtractor.name
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -111,17 +107,18 @@
    100
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.SerEmiExtractor.priority
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} supported_extensions
 :canonical: nexusLIMS.extractors.plugins.fei_emi.SerEmiExtractor.supported_extensions
-:type: typing.ClassVar
-:value: >
-   None
+
+**Type:** typing.ClassVar
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.SerEmiExtractor.supported_extensions
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -130,6 +127,7 @@
 :canonical: nexusLIMS.extractors.plugins.fei_emi.SerEmiExtractor.supports
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.SerEmiExtractor.supports
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -138,16 +136,18 @@
 :canonical: nexusLIMS.extractors.plugins.fei_emi.SerEmiExtractor.extract
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.SerEmiExtractor.extract
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 `````
 
-````{py:function} parse_basic_info(metadata, shape, instrument)
+````{py:function} parse_basic_info(metadata, shape, instrument: nexusLIMS.instruments.Instrument)
 :canonical: nexusLIMS.extractors.plugins.fei_emi.parse_basic_info
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.parse_basic_info
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -155,6 +155,7 @@
 :canonical: nexusLIMS.extractors.plugins.fei_emi.parse_experimental_conditions
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.parse_experimental_conditions
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -162,6 +163,7 @@
 :canonical: nexusLIMS.extractors.plugins.fei_emi.parse_acquire_info
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.parse_acquire_info
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -169,6 +171,7 @@
 :canonical: nexusLIMS.extractors.plugins.fei_emi.parse_experimental_description
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.parse_experimental_description
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -176,6 +179,15 @@
 :canonical: nexusLIMS.extractors.plugins.fei_emi.get_emi_from_ser
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.get_emi_from_ser
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} fei_unit_to_pint(fei_unit)
+:canonical: nexusLIMS.extractors.plugins.fei_emi.fei_unit_to_pint
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.fei_unit_to_pint
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -183,13 +195,15 @@
 :canonical: nexusLIMS.extractors.plugins.fei_emi.split_fei_metadata_units
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.split_fei_metadata_units
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
-````{py:function} map_keys(term_mapping, base, metadata)
-:canonical: nexusLIMS.extractors.plugins.fei_emi.map_keys
+````{py:function} map_keys_with_units(term_mapping, base, metadata)
+:canonical: nexusLIMS.extractors.plugins.fei_emi.map_keys_with_units
 
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.map_keys
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.map_keys_with_units
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -197,6 +211,7 @@
 :canonical: nexusLIMS.extractors.plugins.fei_emi.parse_data_type
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.parse_data_type
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -204,5 +219,6 @@
 :canonical: nexusLIMS.extractors.plugins.fei_emi.get_ser_metadata
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.fei_emi.get_ser_metadata
+:parser: autodoc2_docstrings_parser
 ```
 ````

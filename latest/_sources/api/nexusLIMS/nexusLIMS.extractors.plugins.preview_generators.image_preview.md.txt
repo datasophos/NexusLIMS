@@ -4,6 +4,7 @@
 ```
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.image_preview
+:parser: autodoc2_docstrings_parser
 :allowtitles:
 ```
 
@@ -17,6 +18,7 @@
 
 * - {py:obj}`ImagePreviewGenerator <nexusLIMS.extractors.plugins.preview_generators.image_preview.ImagePreviewGenerator>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.image_preview.ImagePreviewGenerator
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 ````
@@ -29,42 +31,23 @@
 
 * - {py:obj}`image_to_square_thumbnail <nexusLIMS.extractors.plugins.preview_generators.image_preview.image_to_square_thumbnail>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.image_preview.image_to_square_thumbnail
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`down_sample_image <nexusLIMS.extractors.plugins.preview_generators.image_preview.down_sample_image>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.image_preview.down_sample_image
-    :summary:
-    ```
-````
-
-### Data
-
-````{list-table}
-:class: autosummary longtable
-:align: left
-
-* - {py:obj}`logger <nexusLIMS.extractors.plugins.preview_generators.image_preview.logger>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.image_preview.logger
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 ````
 
 ### API
 
-````{py:data} logger
-:canonical: nexusLIMS.extractors.plugins.preview_generators.image_preview.logger
-:value: >
-   'getLogger(...)'
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.image_preview.logger
-```
-
-````
-
 ````{py:function} image_to_square_thumbnail(f: pathlib.Path, out_path: pathlib.Path, output_size: int) -> bool
 :canonical: nexusLIMS.extractors.plugins.preview_generators.image_preview.image_to_square_thumbnail
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.image_preview.image_to_square_thumbnail
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -72,6 +55,7 @@
 :canonical: nexusLIMS.extractors.plugins.preview_generators.image_preview.down_sample_image
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.image_preview.down_sample_image
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -79,6 +63,7 @@
 :canonical: nexusLIMS.extractors.plugins.preview_generators.image_preview.ImagePreviewGenerator
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.image_preview.ImagePreviewGenerator
+:parser: autodoc2_docstrings_parser
 ```
 
 ````{py:attribute} name
@@ -87,6 +72,7 @@
    'image_preview'
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.image_preview.ImagePreviewGenerator.name
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -97,17 +83,18 @@
    100
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.image_preview.ImagePreviewGenerator.priority
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} supported_extensions
 :canonical: nexusLIMS.extractors.plugins.preview_generators.image_preview.ImagePreviewGenerator.supported_extensions
-:type: typing.ClassVar
-:value: >
-   None
+
+**Type:** typing.ClassVar
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.image_preview.ImagePreviewGenerator.supported_extensions
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -116,6 +103,7 @@
 :canonical: nexusLIMS.extractors.plugins.preview_generators.image_preview.ImagePreviewGenerator.supports
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.image_preview.ImagePreviewGenerator.supports
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -124,6 +112,7 @@
 :canonical: nexusLIMS.extractors.plugins.preview_generators.image_preview.ImagePreviewGenerator.generate
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.image_preview.ImagePreviewGenerator.generate
+:parser: autodoc2_docstrings_parser
 ```
 
 ````

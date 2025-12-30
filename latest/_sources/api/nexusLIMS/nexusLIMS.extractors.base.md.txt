@@ -4,6 +4,7 @@
 ```
 
 ```{autodoc2-docstring} nexusLIMS.extractors.base
+:parser: autodoc2_docstrings_parser
 :allowtitles:
 ```
 
@@ -17,49 +18,32 @@
 
 * - {py:obj}`FieldDefinition <nexusLIMS.extractors.base.FieldDefinition>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.base.FieldDefinition
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`ExtractionContext <nexusLIMS.extractors.base.ExtractionContext>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.base.ExtractionContext
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`BaseExtractor <nexusLIMS.extractors.base.BaseExtractor>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.base.BaseExtractor
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`PreviewGenerator <nexusLIMS.extractors.base.PreviewGenerator>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.base.PreviewGenerator
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`InstrumentProfile <nexusLIMS.extractors.base.InstrumentProfile>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.base.InstrumentProfile
-    :summary:
-    ```
-````
-
-### Data
-
-````{list-table}
-:class: autosummary longtable
-:align: left
-
-* - {py:obj}`logger <nexusLIMS.extractors.base.logger>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.base.logger
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 ````
 
 ### API
-
-````{py:data} logger
-:canonical: nexusLIMS.extractors.base.logger
-:value: >
-   'getLogger(...)'
-
-```{autodoc2-docstring} nexusLIMS.extractors.base.logger
-```
-
-````
 
 `````{py:class} FieldDefinition
 :canonical: nexusLIMS.extractors.base.FieldDefinition
@@ -67,70 +51,84 @@
 Bases: {py:obj}`typing.NamedTuple`
 
 ```{autodoc2-docstring} nexusLIMS.extractors.base.FieldDefinition
+:parser: autodoc2_docstrings_parser
 ```
 
 ````{py:attribute} section
 :canonical: nexusLIMS.extractors.base.FieldDefinition.section
-:type: str
-:value: >
-   None
+
+**Type:** str
 
 ```{autodoc2-docstring} nexusLIMS.extractors.base.FieldDefinition.section
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} source_key
 :canonical: nexusLIMS.extractors.base.FieldDefinition.source_key
-:type: str
-:value: >
-   None
+
+**Type:** str
 
 ```{autodoc2-docstring} nexusLIMS.extractors.base.FieldDefinition.source_key
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} output_key
 :canonical: nexusLIMS.extractors.base.FieldDefinition.output_key
-:type: str | list[str]
-:value: >
-   None
+
+**Type:** str | list[str]
 
 ```{autodoc2-docstring} nexusLIMS.extractors.base.FieldDefinition.output_key
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} factor
 :canonical: nexusLIMS.extractors.base.FieldDefinition.factor
-:type: float
-:value: >
-   None
+
+**Type:** float
 
 ```{autodoc2-docstring} nexusLIMS.extractors.base.FieldDefinition.factor
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} is_string
 :canonical: nexusLIMS.extractors.base.FieldDefinition.is_string
-:type: bool
-:value: >
-   None
+
+**Type:** bool
 
 ```{autodoc2-docstring} nexusLIMS.extractors.base.FieldDefinition.is_string
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} suppress_zero
 :canonical: nexusLIMS.extractors.base.FieldDefinition.suppress_zero
-:type: bool
 :value: >
    False
 
+**Type:** bool
+
 ```{autodoc2-docstring} nexusLIMS.extractors.base.FieldDefinition.suppress_zero
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} target_unit
+:canonical: nexusLIMS.extractors.base.FieldDefinition.target_unit
+
+**Type:** str | None
+
+```{autodoc2-docstring} nexusLIMS.extractors.base.FieldDefinition.target_unit
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -141,37 +139,38 @@ Bases: {py:obj}`typing.NamedTuple`
 :canonical: nexusLIMS.extractors.base.ExtractionContext
 
 ```{autodoc2-docstring} nexusLIMS.extractors.base.ExtractionContext
+:parser: autodoc2_docstrings_parser
 ```
 
 ````{py:attribute} file_path
 :canonical: nexusLIMS.extractors.base.ExtractionContext.file_path
-:type: pathlib.Path
-:value: >
-   None
+
+**Type:** pathlib.Path
 
 ```{autodoc2-docstring} nexusLIMS.extractors.base.ExtractionContext.file_path
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} instrument
 :canonical: nexusLIMS.extractors.base.ExtractionContext.instrument
-:type: nexusLIMS.instruments.Instrument | None
-:value: >
-   None
+
+**Type:** nexusLIMS.instruments.Instrument | None
 
 ```{autodoc2-docstring} nexusLIMS.extractors.base.ExtractionContext.instrument
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} signal_index
 :canonical: nexusLIMS.extractors.base.ExtractionContext.signal_index
-:type: int | None
-:value: >
-   None
+
+**Type:** int | None
 
 ```{autodoc2-docstring} nexusLIMS.extractors.base.ExtractionContext.signal_index
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -184,37 +183,38 @@ Bases: {py:obj}`typing.NamedTuple`
 Bases: {py:obj}`typing.Protocol`
 
 ```{autodoc2-docstring} nexusLIMS.extractors.base.BaseExtractor
+:parser: autodoc2_docstrings_parser
 ```
 
 ````{py:attribute} name
 :canonical: nexusLIMS.extractors.base.BaseExtractor.name
-:type: str
-:value: >
-   None
+
+**Type:** str
 
 ```{autodoc2-docstring} nexusLIMS.extractors.base.BaseExtractor.name
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} priority
 :canonical: nexusLIMS.extractors.base.BaseExtractor.priority
-:type: int
-:value: >
-   None
+
+**Type:** int
 
 ```{autodoc2-docstring} nexusLIMS.extractors.base.BaseExtractor.priority
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} supported_extensions
 :canonical: nexusLIMS.extractors.base.BaseExtractor.supported_extensions
-:type: set[str] | None
-:value: >
-   None
+
+**Type:** set[str] | None
 
 ```{autodoc2-docstring} nexusLIMS.extractors.base.BaseExtractor.supported_extensions
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -223,6 +223,7 @@ Bases: {py:obj}`typing.Protocol`
 :canonical: nexusLIMS.extractors.base.BaseExtractor.supports
 
 ```{autodoc2-docstring} nexusLIMS.extractors.base.BaseExtractor.supports
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -231,6 +232,7 @@ Bases: {py:obj}`typing.Protocol`
 :canonical: nexusLIMS.extractors.base.BaseExtractor.extract
 
 ```{autodoc2-docstring} nexusLIMS.extractors.base.BaseExtractor.extract
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -243,37 +245,38 @@ Bases: {py:obj}`typing.Protocol`
 Bases: {py:obj}`typing.Protocol`
 
 ```{autodoc2-docstring} nexusLIMS.extractors.base.PreviewGenerator
+:parser: autodoc2_docstrings_parser
 ```
 
 ````{py:attribute} name
 :canonical: nexusLIMS.extractors.base.PreviewGenerator.name
-:type: str
-:value: >
-   None
+
+**Type:** str
 
 ```{autodoc2-docstring} nexusLIMS.extractors.base.PreviewGenerator.name
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} priority
 :canonical: nexusLIMS.extractors.base.PreviewGenerator.priority
-:type: int
-:value: >
-   None
+
+**Type:** int
 
 ```{autodoc2-docstring} nexusLIMS.extractors.base.PreviewGenerator.priority
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} supported_extensions
 :canonical: nexusLIMS.extractors.base.PreviewGenerator.supported_extensions
-:type: set[str] | None
-:value: >
-   None
+
+**Type:** set[str] | None
 
 ```{autodoc2-docstring} nexusLIMS.extractors.base.PreviewGenerator.supported_extensions
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -282,6 +285,7 @@ Bases: {py:obj}`typing.Protocol`
 :canonical: nexusLIMS.extractors.base.PreviewGenerator.supports
 
 ```{autodoc2-docstring} nexusLIMS.extractors.base.PreviewGenerator.supports
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -290,6 +294,7 @@ Bases: {py:obj}`typing.Protocol`
 :canonical: nexusLIMS.extractors.base.PreviewGenerator.generate
 
 ```{autodoc2-docstring} nexusLIMS.extractors.base.PreviewGenerator.generate
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -300,59 +305,55 @@ Bases: {py:obj}`typing.Protocol`
 :canonical: nexusLIMS.extractors.base.InstrumentProfile
 
 ```{autodoc2-docstring} nexusLIMS.extractors.base.InstrumentProfile
+:parser: autodoc2_docstrings_parser
 ```
 
 ````{py:attribute} instrument_id
 :canonical: nexusLIMS.extractors.base.InstrumentProfile.instrument_id
-:type: str
-:value: >
-   None
+
+**Type:** str
 
 ```{autodoc2-docstring} nexusLIMS.extractors.base.InstrumentProfile.instrument_id
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} parsers
 :canonical: nexusLIMS.extractors.base.InstrumentProfile.parsers
-:type: dict[str, typing.Callable]
 :value: >
    'field(...)'
 
+**Type:** dict[str, typing.Callable]
+
 ```{autodoc2-docstring} nexusLIMS.extractors.base.InstrumentProfile.parsers
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} transformations
 :canonical: nexusLIMS.extractors.base.InstrumentProfile.transformations
-:type: dict[str, typing.Callable]
 :value: >
    'field(...)'
+
+**Type:** dict[str, typing.Callable]
 
 ```{autodoc2-docstring} nexusLIMS.extractors.base.InstrumentProfile.transformations
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
-````{py:attribute} extractor_overrides
-:canonical: nexusLIMS.extractors.base.InstrumentProfile.extractor_overrides
-:type: dict[str, str]
+````{py:attribute} extension_fields
+:canonical: nexusLIMS.extractors.base.InstrumentProfile.extension_fields
 :value: >
    'field(...)'
 
-```{autodoc2-docstring} nexusLIMS.extractors.base.InstrumentProfile.extractor_overrides
-```
+**Type:** dict[str, typing.Any]
 
-````
-
-````{py:attribute} static_metadata
-:canonical: nexusLIMS.extractors.base.InstrumentProfile.static_metadata
-:type: dict[str, typing.Any]
-:value: >
-   'field(...)'
-
-```{autodoc2-docstring} nexusLIMS.extractors.base.InstrumentProfile.static_metadata
+```{autodoc2-docstring} nexusLIMS.extractors.base.InstrumentProfile.extension_fields
+:parser: autodoc2_docstrings_parser
 ```
 
 ````

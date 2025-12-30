@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>nexusLIMS.extractors.plugins.preview_generators.image_preview &#8212; NexusLIMS 2.1.2.dev0 documentation</title>
+    <title>nexusLIMS.extractors.plugins.preview_generators.image_preview &#8212; NexusLIMS 2.2.0.dev0 documentation</title>
   
   
   
@@ -32,8 +32,9 @@
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=af02a5b6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=8633d6cc" />
   
   <!-- So that users can add custom icons -->
   <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -41,9 +42,11 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../_static/documentation_options.js?v=bcebe078"></script>
+    <script src="../../_static/documentation_options.js?v=dc4a309c"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=30646c52"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'api/nexusLIMS/nexusLIMS.extractors.plugins.preview_generators.image_preview';</script>
     <script>
@@ -53,6 +56,7 @@
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
+    <script src="../../_static/custom.js?v=ba087cdf"></script>
     <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/latest/api/nexusLIMS/nexusLIMS.extractors.plugins.preview_generators.image_preview.html" />
     <link rel="icon" href="../../_static/nexusLIMS_bare_logo.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -61,8 +65,8 @@
     <link rel="prev" title="nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview" href="nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 23, 2025"/>
+  <meta name="docsearch:version" content="2.2.0.dev0" />
+    <meta name="docbuild:last-update" content="Dec, 30, 2025"/>
   </head>
   
   
@@ -128,8 +132,8 @@
       
     
     
-    <img src="../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.1.2.dev0 documentation - Home"/>
-    <img src="../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.1.2.dev0 documentation - Home"/>
+    <img src="../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.2.0.dev0 documentation - Home"/>
+    <img src="../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.2.0.dev0 documentation - Home"/>
   
   
 </a></div>
@@ -172,20 +176,6 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../getting_started.html">
-    Getting Started
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../migration.html">
-    Migration Guide: v1 to v2
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../user_guide.html">
     User Guide
   </a>
@@ -193,28 +183,25 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../dev_guide.html">
-    Developer Guide
+  <a class="nav-link nav-internal" href="../../migration.html">
+    Migration Guide: v1.4.3 to v2.2.0
   </a>
 </li>
 
-            <li class="nav-item dropdown">
-                <button class="btn dropdown-toggle nav-item" type="button"
-                data-bs-toggle="dropdown" aria-expanded="false"
-                aria-controls="pst-nav-more-links">
-                    More
-                </button>
-                <ul id="pst-nav-more-links" class="dropdown-menu">
-                    
-<li class=" current active">
-  <a class="nav-link dropdown-item nav-internal" href="../../reference.html">
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../dev_guide.html">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../reference.html">
     Reference
   </a>
 </li>
 
-                </ul>
-            </li>
-            
   </ul>
 </nav></div>
       
@@ -311,20 +298,6 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../getting_started.html">
-    Getting Started
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../migration.html">
-    Migration Guide: v1 to v2
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../user_guide.html">
     User Guide
   </a>
@@ -332,8 +305,15 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../migration.html">
+    Migration Guide: v1.4.3 to v2.2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../dev_guide.html">
-    Developer Guide
+    Dev Guide
   </a>
 </li>
 
@@ -406,7 +386,7 @@
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../api.html">API documentation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../reference/api.html">API documentation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="nexusLIMS.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS</span></code></a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.db.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.db</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.builder.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.builder</span></code></a></li>
@@ -414,6 +394,7 @@
 <li class="toctree-l4 current active"><a class="reference internal" href="nexusLIMS.extractors.plugins.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="nexusLIMS.extractors.profiles.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.profiles</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="nexusLIMS.extractors.utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.utils</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nexusLIMS.extractors.xml_serialization.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.xml_serialization</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="nexusLIMS.extractors.registry.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.registry</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="nexusLIMS.extractors.base.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.base</span></code></a></li>
 </ul>
@@ -429,7 +410,7 @@
 </details></li>
 </ul>
 </details></li>
-<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/changelog.html">Changelog</a></li>
 </ul>
 </div>
 </nav></div>
@@ -474,7 +455,7 @@
     <li class="breadcrumb-item"><a href="../../reference.html" class="nav-link">Reference</a></li>
     
     
-    <li class="breadcrumb-item"><a href="../../api.html" class="nav-link">API documentation</a></li>
+    <li class="breadcrumb-item"><a href="../../reference/api.html" class="nav-link">API documentation</a></li>
     
     
     <li class="breadcrumb-item"><a href="nexusLIMS.html" class="nav-link"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS</span></code></a></li>
@@ -535,25 +516,8 @@
 </table>
 </div>
 </section>
-<section id="data">
-<h3>Data<a class="headerlink" href="#data" title="Link to this heading">#</a></h3>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table table-left">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.extractors.plugins.preview_generators.image_preview.logger" title="nexusLIMS.extractors.plugins.preview_generators.image_preview.logger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">logger</span></code></a></p></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-</div>
-</section>
 <section id="api">
 <h3>API<a class="headerlink" href="#api" title="Link to this heading">#</a></h3>
-<dl class="py data">
-<dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.preview_generators.image_preview.logger">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.plugins.preview_generators.image_preview.</span></span><span class="sig-name descname"><span class="pre">logger</span></span><a class="headerlink" href="#nexusLIMS.extractors.plugins.preview_generators.image_preview.logger" title="Link to this definition">#</a></dt>
-<dd><p>‘getLogger(…)’</p>
-</dd></dl>
-
 <dl class="py function">
 <dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.preview_generators.image_preview.image_to_square_thumbnail">
 <span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.plugins.preview_generators.image_preview.</span></span><span class="sig-name descname"><span class="pre">image_to_square_thumbnail</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/plugins/preview_generators/image_preview.html#image_to_square_thumbnail"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.plugins.preview_generators.image_preview.image_to_square_thumbnail" title="Link to this definition">#</a></dt>
@@ -561,18 +525,23 @@
 <p>Images of common filetypes will be transformed into 500 x 500 pixel images
 by first scaling the largest dimension to 500 pixels and then padding the
 resulting image to square.</p>
-<p class="rubric" id="id2">Parameters</p>
-<p>f
-The string of the path of an image file for which a thumbnail should be
-generated.
-out_path
-A path to the desired thumbnail filename. All formats supported by
-:py:meth:<code class="docutils literal notranslate"><span class="pre">~PIL.Image.Image.save</span></code> can be used.
-output_size
-The desired resulting size of the thumbnail image.</p>
-<p class="rubric" id="id3">Returns</p>
-<p>bool
-Whether a preview was generated</p>
+<dl class="myst field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>f</strong> – The string of the path of an image file for which a thumbnail should be
+generated.</p></li>
+<li><p><strong>out_path</strong> – A path to the desired thumbnail filename. All formats supported by
+<a class="reference external" href="https://pillow.readthedocs.io/en/stable/reference/Image.html#PIL.Image.Image.save" title="(in Pillow (PIL Fork) v12.0.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">save()</span></code></a> can be used.</p></li>
+<li><p><strong>output_size</strong> – The desired resulting size of the thumbnail image.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Whether a preview was generated</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -582,20 +551,21 @@ Whether a preview was generated</p>
 <p>Sometimes the data doesn’t need to be loaded as a HyperSpy signal,
 and it’s better just to down-sample existing image data (such as for .tif
 files created by the Quanta SEM).</p>
-<p class="rubric" id="id4">Parameters</p>
-<p>fname
-The filepath that will be resized. All formats supported by
-:py:func:<code class="docutils literal notranslate"><span class="pre">PIL.Image.open</span></code> can be used
-out_path
-A path to the desired thumbnail filename. All formats supported by
-:py:meth:<code class="docutils literal notranslate"><span class="pre">PIL.Image.Image.save</span></code> can be used.
-output_size
-A tuple of ints specifying the width and height of the output image.
-Either this argument or <code class="docutils literal notranslate"><span class="pre">factor</span></code> should be provided (not both).
-factor
-The multiple of the image size to reduce by (i.e. a value of 2
+<dl class="myst field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fname</strong> – The filepath that will be resized. All formats supported by
+<a class="reference external" href="https://pillow.readthedocs.io/en/stable/reference/Image.html#PIL.Image.open" title="(in Pillow (PIL Fork) v12.0.0)"><code class="xref py py-func docutils literal notranslate"><span class="pre">PIL.Image.open()</span></code></a> can be used</p></li>
+<li><p><strong>out_path</strong> – A path to the desired thumbnail filename. All formats supported by
+<a class="reference external" href="https://pillow.readthedocs.io/en/stable/reference/Image.html#PIL.Image.Image.save" title="(in Pillow (PIL Fork) v12.0.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">PIL.Image.Image.save()</span></code></a> can be used.</p></li>
+<li><p><strong>output_size</strong> – A tuple of ints specifying the width and height of the output image.
+Either this argument or <code class="docutils literal notranslate"><span class="pre">factor</span></code> should be provided (not both).</p></li>
+<li><p><strong>factor</strong> – The multiple of the image size to reduce by (i.e. a value of 2
 results in an image that is 50% of each original dimension). Either
-this argument or <code class="docutils literal notranslate"><span class="pre">output_size</span></code> should be provided (not both).</p>
+this argument or <code class="docutils literal notranslate"><span class="pre">output_size</span></code> should be provided (not both).</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py class">
@@ -618,34 +588,45 @@ this argument or <code class="docutils literal notranslate"><span class="pre">ou
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.preview_generators.image_preview.ImagePreviewGenerator.supported_extensions">
-<span class="sig-name descname"><span class="pre">supported_extensions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.ClassVar" title="(in Python v3.11)"><span class="pre">ClassVar</span></a></em><a class="headerlink" href="#nexusLIMS.extractors.plugins.preview_generators.image_preview.ImagePreviewGenerator.supported_extensions" title="Link to this definition">#</a></dt>
-<dd><p>None</p>
+<span class="sig-name descname"><span class="pre">supported_extensions</span></span><a class="headerlink" href="#nexusLIMS.extractors.plugins.preview_generators.image_preview.ImagePreviewGenerator.supported_extensions" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> typing.ClassVar</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.preview_generators.image_preview.ImagePreviewGenerator.supports">
 <span class="sig-name descname"><span class="pre">supports</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="nexusLIMS.extractors.base.html#nexusLIMS.extractors.base.ExtractionContext" title="nexusLIMS.extractors.base.ExtractionContext"><span class="pre">ExtractionContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/plugins/preview_generators/image_preview.html#ImagePreviewGenerator.supports"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.plugins.preview_generators.image_preview.ImagePreviewGenerator.supports" title="Link to this definition">#</a></dt>
 <dd><p>Check if this generator supports the given file.</p>
-<p class="rubric" id="id5">Parameters</p>
-<p>context
-The extraction context containing file information</p>
-<p class="rubric" id="id6">Returns</p>
-<p>bool
-True if file extension is a supported image format</p>
+<dl class="myst field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>context</strong> – The extraction context containing file information</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if file extension is a supported image format</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.preview_generators.image_preview.ImagePreviewGenerator.generate">
 <span class="sig-name descname"><span class="pre">generate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="nexusLIMS.extractors.base.html#nexusLIMS.extractors.base.ExtractionContext" title="nexusLIMS.extractors.base.ExtractionContext"><span class="pre">ExtractionContext</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/plugins/preview_generators/image_preview.html#ImagePreviewGenerator.generate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.plugins.preview_generators.image_preview.ImagePreviewGenerator.generate" title="Link to this definition">#</a></dt>
 <dd><p>Generate a square thumbnail preview from an image file.</p>
-<p class="rubric" id="id7">Parameters</p>
-<p>context
-The extraction context containing file information
-output_path
-Path where the preview image should be saved</p>
-<p class="rubric" id="id8">Returns</p>
-<p>bool
-True if preview was successfully generated, False otherwise</p>
+<dl class="myst field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>context</strong> – The extraction context containing file information</p></li>
+<li><p><strong>output_path</strong> – Path where the preview image should be saved</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if preview was successfully generated, False otherwise</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -704,9 +685,7 @@ True if preview was successfully generated, False otherwise</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#classes">Classes</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data">Data</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#api">API</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.preview_generators.image_preview.logger"><code class="docutils literal notranslate"><span class="pre">logger</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.preview_generators.image_preview.image_to_square_thumbnail"><code class="docutils literal notranslate"><span class="pre">image_to_square_thumbnail()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.preview_generators.image_preview.down_sample_image"><code class="docutils literal notranslate"><span class="pre">down_sample_image()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.preview_generators.image_preview.ImagePreviewGenerator"><code class="docutils literal notranslate"><span class="pre">ImagePreviewGenerator</span></code></a><ul class="nav section-nav flex-column">

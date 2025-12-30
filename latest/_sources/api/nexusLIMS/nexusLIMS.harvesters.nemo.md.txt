@@ -4,6 +4,7 @@
 ```
 
 ```{autodoc2-docstring} nexusLIMS.harvesters.nemo
+:parser: autodoc2_docstrings_parser
 :allowtitles:
 ```
 
@@ -28,37 +29,17 @@ nexusLIMS.harvesters.nemo.connector
 
 * - {py:obj}`res_event_from_session <nexusLIMS.harvesters.nemo.res_event_from_session>`
   - ```{autodoc2-docstring} nexusLIMS.harvesters.nemo.res_event_from_session
-    :summary:
-    ```
-````
-
-### Data
-
-````{list-table}
-:class: autosummary longtable
-:align: left
-
-* - {py:obj}`logger <nexusLIMS.harvesters.nemo.logger>`
-  - ```{autodoc2-docstring} nexusLIMS.harvesters.nemo.logger
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 ````
 
 ### API
 
-````{py:data} logger
-:canonical: nexusLIMS.harvesters.nemo.logger
-:value: >
-   'getLogger(...)'
-
-```{autodoc2-docstring} nexusLIMS.harvesters.nemo.logger
-```
-
-````
-
 ````{py:function} res_event_from_session(session: nexusLIMS.db.session_handler.Session, connector: nexusLIMS.harvesters.nemo.connector.NemoConnector | None = None) -> nexusLIMS.harvesters.reservation_event.ReservationEvent
 :canonical: nexusLIMS.harvesters.nemo.res_event_from_session
 
 ```{autodoc2-docstring} nexusLIMS.harvesters.nemo.res_event_from_session
+:parser: autodoc2_docstrings_parser
 ```
 ````

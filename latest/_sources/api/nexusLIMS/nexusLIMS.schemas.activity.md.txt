@@ -4,6 +4,7 @@
 ```
 
 ```{autodoc2-docstring} nexusLIMS.schemas.activity
+:parser: autodoc2_docstrings_parser
 :allowtitles:
 ```
 
@@ -17,6 +18,7 @@
 
 * - {py:obj}`AcquisitionActivity <nexusLIMS.schemas.activity.AcquisitionActivity>`
   - ```{autodoc2-docstring} nexusLIMS.schemas.activity.AcquisitionActivity
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 ````
@@ -29,38 +31,18 @@
 
 * - {py:obj}`cluster_filelist_mtimes <nexusLIMS.schemas.activity.cluster_filelist_mtimes>`
   - ```{autodoc2-docstring} nexusLIMS.schemas.activity.cluster_filelist_mtimes
-    :summary:
-    ```
-````
-
-### Data
-
-````{list-table}
-:class: autosummary longtable
-:align: left
-
-* - {py:obj}`logger <nexusLIMS.schemas.activity.logger>`
-  - ```{autodoc2-docstring} nexusLIMS.schemas.activity.logger
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 ````
 
 ### API
 
-````{py:data} logger
-:canonical: nexusLIMS.schemas.activity.logger
-:value: >
-   'getLogger(...)'
-
-```{autodoc2-docstring} nexusLIMS.schemas.activity.logger
-```
-
-````
-
 ````{py:function} cluster_filelist_mtimes(filelist: typing.List[str]) -> typing.List[float]
 :canonical: nexusLIMS.schemas.activity.cluster_filelist_mtimes
 
 ```{autodoc2-docstring} nexusLIMS.schemas.activity.cluster_filelist_mtimes
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -68,113 +50,124 @@
 :canonical: nexusLIMS.schemas.activity.AcquisitionActivity
 
 ```{autodoc2-docstring} nexusLIMS.schemas.activity.AcquisitionActivity
+:parser: autodoc2_docstrings_parser
 ```
 
 ````{py:attribute} start
 :canonical: nexusLIMS.schemas.activity.AcquisitionActivity.start
-:type: datetime.datetime | None
-:value: >
-   None
+
+**Type:** datetime.datetime | None
 
 ```{autodoc2-docstring} nexusLIMS.schemas.activity.AcquisitionActivity.start
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} end
 :canonical: nexusLIMS.schemas.activity.AcquisitionActivity.end
-:type: datetime.datetime | None
-:value: >
-   None
+
+**Type:** datetime.datetime | None
 
 ```{autodoc2-docstring} nexusLIMS.schemas.activity.AcquisitionActivity.end
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} mode
 :canonical: nexusLIMS.schemas.activity.AcquisitionActivity.mode
-:type: str
 :value: <Multiline-String>
 
+**Type:** str
+
 ```{autodoc2-docstring} nexusLIMS.schemas.activity.AcquisitionActivity.mode
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} unique_params
 :canonical: nexusLIMS.schemas.activity.AcquisitionActivity.unique_params
-:type: set | None
-:value: >
-   None
+
+**Type:** set | None
 
 ```{autodoc2-docstring} nexusLIMS.schemas.activity.AcquisitionActivity.unique_params
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} setup_params
 :canonical: nexusLIMS.schemas.activity.AcquisitionActivity.setup_params
-:type: dict | None
-:value: >
-   None
+
+**Type:** dict | None
 
 ```{autodoc2-docstring} nexusLIMS.schemas.activity.AcquisitionActivity.setup_params
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} unique_meta
 :canonical: nexusLIMS.schemas.activity.AcquisitionActivity.unique_meta
-:type: list | None
-:value: >
-   None
+
+**Type:** list | None
 
 ```{autodoc2-docstring} nexusLIMS.schemas.activity.AcquisitionActivity.unique_meta
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} files
 :canonical: nexusLIMS.schemas.activity.AcquisitionActivity.files
-:type: list
 :value: >
    'field(...)'
 
+**Type:** list
+
 ```{autodoc2-docstring} nexusLIMS.schemas.activity.AcquisitionActivity.files
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} previews
 :canonical: nexusLIMS.schemas.activity.AcquisitionActivity.previews
-:type: list
 :value: >
    'field(...)'
 
+**Type:** list
+
 ```{autodoc2-docstring} nexusLIMS.schemas.activity.AcquisitionActivity.previews
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} meta
 :canonical: nexusLIMS.schemas.activity.AcquisitionActivity.meta
-:type: list
 :value: >
    'field(...)'
 
+**Type:** list
+
 ```{autodoc2-docstring} nexusLIMS.schemas.activity.AcquisitionActivity.meta
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} warnings
 :canonical: nexusLIMS.schemas.activity.AcquisitionActivity.warnings
-:type: list
 :value: >
    'field(...)'
 
+**Type:** list
+
 ```{autodoc2-docstring} nexusLIMS.schemas.activity.AcquisitionActivity.warnings
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -183,6 +176,7 @@
 :canonical: nexusLIMS.schemas.activity.AcquisitionActivity.add_file
 
 ```{autodoc2-docstring} nexusLIMS.schemas.activity.AcquisitionActivity.add_file
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -191,6 +185,7 @@
 :canonical: nexusLIMS.schemas.activity.AcquisitionActivity.store_unique_params
 
 ```{autodoc2-docstring} nexusLIMS.schemas.activity.AcquisitionActivity.store_unique_params
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -199,6 +194,7 @@
 :canonical: nexusLIMS.schemas.activity.AcquisitionActivity.store_setup_params
 
 ```{autodoc2-docstring} nexusLIMS.schemas.activity.AcquisitionActivity.store_setup_params
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -207,6 +203,7 @@
 :canonical: nexusLIMS.schemas.activity.AcquisitionActivity.store_unique_metadata
 
 ```{autodoc2-docstring} nexusLIMS.schemas.activity.AcquisitionActivity.store_unique_metadata
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -215,6 +212,7 @@
 :canonical: nexusLIMS.schemas.activity.AcquisitionActivity.as_xml
 
 ```{autodoc2-docstring} nexusLIMS.schemas.activity.AcquisitionActivity.as_xml
+:parser: autodoc2_docstrings_parser
 ```
 
 ````

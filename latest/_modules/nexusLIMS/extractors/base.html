@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>nexusLIMS.extractors.base &#8212; NexusLIMS 2.1.2.dev0 documentation</title>
+    <title>nexusLIMS.extractors.base &#8212; NexusLIMS 2.2.0.dev0 documentation</title>
   
   
   
@@ -31,8 +31,9 @@
 
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=af02a5b6" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=8633d6cc" />
   
   <!-- So that users can add custom icons -->
   <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -40,9 +41,11 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../../_static/documentation_options.js?v=bcebe078"></script>
+    <script src="../../../_static/documentation_options.js?v=dc4a309c"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=30646c52"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
     <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs"></script>
     <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs"></script>
@@ -417,14 +420,15 @@ window.addEventListener("load", load);
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
+    <script src="../../../_static/custom.js?v=ba087cdf"></script>
     <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/latest/_modules/nexusLIMS/extractors/base.html" />
     <link rel="icon" href="../../../_static/nexusLIMS_bare_logo.ico"/>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 23, 2025"/>
+  <meta name="docsearch:version" content="2.2.0.dev0" />
+    <meta name="docbuild:last-update" content="Dec, 30, 2025"/>
   </head>
   
   
@@ -490,8 +494,8 @@ window.addEventListener("load", load);
       
     
     
-    <img src="../../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.1.2.dev0 documentation - Home"/>
-    <img src="../../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.1.2.dev0 documentation - Home"/>
+    <img src="../../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.2.0.dev0 documentation - Home"/>
+    <img src="../../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.2.0.dev0 documentation - Home"/>
   
   
 </a></div>
@@ -534,20 +538,6 @@ window.addEventListener("load", load);
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../getting_started.html">
-    Getting Started
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../migration.html">
-    Migration Guide: v1 to v2
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../user_guide.html">
     User Guide
   </a>
@@ -555,28 +545,25 @@ window.addEventListener("load", load);
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../dev_guide.html">
-    Developer Guide
+  <a class="nav-link nav-internal" href="../../../migration.html">
+    Migration Guide: v1.4.3 to v2.2.0
   </a>
 </li>
 
-            <li class="nav-item dropdown">
-                <button class="btn dropdown-toggle nav-item" type="button"
-                data-bs-toggle="dropdown" aria-expanded="false"
-                aria-controls="pst-nav-more-links">
-                    More
-                </button>
-                <ul id="pst-nav-more-links" class="dropdown-menu">
-                    
-<li class=" ">
-  <a class="nav-link dropdown-item nav-internal" href="../../../reference.html">
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../dev_guide.html">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../reference.html">
     Reference
   </a>
 </li>
 
-                </ul>
-            </li>
-            
   </ul>
 </nav></div>
       
@@ -671,20 +658,6 @@ window.addEventListener("load", load);
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../getting_started.html">
-    Getting Started
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../migration.html">
-    Migration Guide: v1 to v2
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../user_guide.html">
     User Guide
   </a>
@@ -692,8 +665,15 @@ window.addEventListener("load", load);
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../migration.html">
+    Migration Guide: v1.4.3 to v2.2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../dev_guide.html">
-    Developer Guide
+    Dev Guide
   </a>
 </li>
 
@@ -839,7 +819,7 @@ window.addEventListener("load", load);
 
     <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.instruments</span><span class="w"> </span><span class="kn">import</span> <span class="n">Instrument</span>
 
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s2">&quot;BaseExtractor&quot;</span><span class="p">,</span>
@@ -850,7 +830,7 @@ window.addEventListener("load", load);
 
 
 <div class="viewcode-block" id="FieldDefinition">
-<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643.FieldDefinition">[docs]</a>
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.base.FieldDefinition">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">FieldDefinition</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Configuration for extracting a single metadata field.</span>
@@ -876,9 +856,14 @@ window.addEventListener("load", load);
 <span class="sd">    is_string : bool</span>
 <span class="sd">        If True, keep value as string. If False, attempt numeric conversion</span>
 <span class="sd">        with Decimal for precision.</span>
-<span class="sd">    suppress_zero : bool, default=False</span>
+<span class="sd">    suppress_zero : bool</span>
 <span class="sd">        If True, skip field if the numeric value equals zero.</span>
-<span class="sd">        Only applies when is_string=False.</span>
+<span class="sd">        Only applies when is_string=False. Defaults to False.</span>
+<span class="sd">    target_unit : str or None</span>
+<span class="sd">        Pint unit string for the output value (e.g., &quot;kilovolt&quot;, &quot;millimeter&quot;).</span>
+<span class="sd">        If provided, the value will be converted to a Pint Quantity with this unit.</span>
+<span class="sd">        The factor is still applied before creating the Quantity.</span>
+<span class="sd">        If None, numeric values remain as floats (legacy behavior). Defaults to None.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -894,6 +879,9 @@ window.addEventListener("load", load);
 <span class="sd">    &gt;&gt;&gt; # Suppress zero values</span>
 <span class="sd">    &gt;&gt;&gt; FieldDefinition(&quot;Beam&quot;, &quot;BeamShiftX&quot;, &quot;Beam Shift X&quot;,</span>
 <span class="sd">    &gt;&gt;&gt;                 1.0, False, suppress_zero=True)</span>
+
+<span class="sd">    &gt;&gt;&gt; # Pint Quantity output (new approach)</span>
+<span class="sd">    &gt;&gt;&gt; FieldDefinition(&quot;Beam&quot;, &quot;HV&quot;, &quot;Voltage&quot;, 1.0, False, unit=&quot;kilovolt&quot;)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">section</span><span class="p">:</span> <span class="nb">str</span>
@@ -901,12 +889,13 @@ window.addEventListener("load", load);
     <span class="n">output_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
     <span class="n">factor</span><span class="p">:</span> <span class="nb">float</span>
     <span class="n">is_string</span><span class="p">:</span> <span class="nb">bool</span>
-    <span class="n">suppress_zero</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></div>
+    <span class="n">suppress_zero</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">target_unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Pint unit string (e.g., &quot;kilovolt&quot;, &quot;millimeter&quot;)</span></div>
 
 
 
 <div class="viewcode-block" id="ExtractionContext">
-<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643.ExtractionContext">[docs]</a>
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.base.ExtractionContext">[docs]</a>
 <span class="nd">@dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">ExtractionContext</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -943,7 +932,7 @@ window.addEventListener("load", load);
 
 
 <div class="viewcode-block" id="BaseExtractor">
-<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643.BaseExtractor">[docs]</a>
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.base.BaseExtractor">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">BaseExtractor</span><span class="p">(</span><span class="n">Protocol</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Protocol defining the interface for metadata extractors.</span>
@@ -1005,7 +994,7 @@ window.addEventListener("load", load);
     <span class="n">supported_extensions</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="BaseExtractor.supports">
-<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643.BaseExtractor.supports">[docs]</a>
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.base.BaseExtractor.supports">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">supports</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ExtractionContext</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Determine if this extractor can handle the given file.</span>
@@ -1056,7 +1045,7 @@ window.addEventListener("load", load);
 
 
 <div class="viewcode-block" id="BaseExtractor.extract">
-<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643.BaseExtractor.extract">[docs]</a>
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.base.BaseExtractor.extract">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">extract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ExtractionContext</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Extract metadata from the file.</span>
@@ -1075,13 +1064,23 @@ window.addEventListener("load", load);
 <span class="sd">        a list with one element per signal. This consistent list-based approach allows</span>
 <span class="sd">        the Activity layer to expand multi-signal files into multiple datasets.</span>
 
-<span class="sd">        Each &#39;nx_meta&#39; dict should contain:</span>
-<span class="sd">        - &#39;Creation Time&#39;: ISO format datetime string</span>
-<span class="sd">        - &#39;Data Type&#39;: Human-readable data type (e.g., &quot;STEM_Imaging&quot;)</span>
-<span class="sd">        - &#39;DatasetType&#39;: Dataset type per schema (e.g., &quot;Image&quot;, &quot;Spectrum&quot;)</span>
+<span class="sd">        Each &#39;nx_meta&#39; dict MUST contain these required fields (validated against</span>
+<span class="sd">        :class:`~nexusLIMS.schemas.metadata.NexusMetadata`):</span>
+
+<span class="sd">        - &#39;Creation Time&#39;: ISO-8601 timestamp string **with timezone** (REQUIRED)</span>
+<span class="sd">          Examples: &quot;2024-01-15T10:30:00-05:00&quot; or &quot;2024-01-15T15:30:00Z&quot;</span>
+<span class="sd">        - &#39;Data Type&#39;: Human-readable data type (e.g., &quot;STEM_Imaging&quot;) (REQUIRED)</span>
+<span class="sd">        - &#39;DatasetType&#39;: Must be one of: &quot;Image&quot;, &quot;Spectrum&quot;, &quot;SpectrumImage&quot;,</span>
+<span class="sd">          &quot;Diffraction&quot;, &quot;Misc&quot;, or &quot;Unknown&quot; (REQUIRED)</span>
+
+<span class="sd">        Optional standard fields:</span>
 <span class="sd">        - &#39;Data Dimensions&#39;: String like &quot;(1024, 1024)&quot; or &quot;(12, 1024, 1024)&quot;</span>
 <span class="sd">        - &#39;Instrument ID&#39;: Instrument PID from database</span>
-<span class="sd">        - &#39;warnings&#39;: List of warning messages (optional)</span>
+<span class="sd">        - &#39;warnings&#39;: List of warning messages (string or [message, context] pairs)</span>
+
+<span class="sd">        Additional instrument-specific fields beyond these are allowed.</span>
+<span class="sd">        The nx_meta structure is strictly validated after extraction - validation</span>
+<span class="sd">        failures will raise pydantic.ValidationError with detailed field errors.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1150,7 +1149,7 @@ window.addEventListener("load", load);
 
 
 <div class="viewcode-block" id="PreviewGenerator">
-<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643.PreviewGenerator">[docs]</a>
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.base.PreviewGenerator">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">PreviewGenerator</span><span class="p">(</span><span class="n">Protocol</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Protocol for thumbnail/preview image generation.</span>
@@ -1196,7 +1195,7 @@ window.addEventListener("load", load);
     <span class="n">supported_extensions</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="PreviewGenerator.supports">
-<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643.PreviewGenerator.supports">[docs]</a>
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.base.PreviewGenerator.supports">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">supports</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ExtractionContext</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Determine if this generator can create a preview for the given file.</span>
@@ -1215,7 +1214,7 @@ window.addEventListener("load", load);
 
 
 <div class="viewcode-block" id="PreviewGenerator.generate">
-<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643.PreviewGenerator.generate">[docs]</a>
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.base.PreviewGenerator.generate">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">generate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ExtractionContext</span><span class="p">,</span> <span class="n">output_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generate a thumbnail preview and save to output_path.</span>
@@ -1257,7 +1256,7 @@ window.addEventListener("load", load);
 
 
 <div class="viewcode-block" id="InstrumentProfile">
-<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643.InstrumentProfile">[docs]</a>
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.base.InstrumentProfile">[docs]</a>
 <span class="nd">@dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">InstrumentProfile</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1279,12 +1278,10 @@ window.addEventListener("load", load);
 <span class="sd">    transformations</span>
 <span class="sd">        Metadata transformation functions applied after extraction.</span>
 <span class="sd">        Keys are transform names, values are callables.</span>
-<span class="sd">    extractor_overrides</span>
-<span class="sd">        Force specific extractors for certain extensions.</span>
-<span class="sd">        Keys are file extensions, values are extractor names.</span>
-<span class="sd">    static_metadata</span>
-<span class="sd">        Metadata to inject for all files from this instrument.</span>
-<span class="sd">        Keys are metadata paths, values are static values.</span>
+<span class="sd">    extension_fields</span>
+<span class="sd">        Metadata to inject into the extensions section for all files.</span>
+<span class="sd">        Keys are field names, values are static values.</span>
+<span class="sd">        These populate the nx_meta.extensions dict.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -1299,18 +1296,9 @@ window.addEventListener("load", load);
 <span class="sd">    ...     parsers={</span>
 <span class="sd">    ...         &quot;microscope_info&quot;: parse_643_titan_microscope,</span>
 <span class="sd">    ...     },</span>
-<span class="sd">    ...     static_metadata={</span>
-<span class="sd">    ...         &quot;nx_meta.Facility&quot;: &quot;Nexus Facility&quot;,</span>
-<span class="sd">    ...         &quot;nx_meta.Building&quot;: &quot;Bldg. 1&quot;,</span>
-<span class="sd">    ...     }</span>
-<span class="sd">    ... )</span>
-
-<span class="sd">    Using extractor overrides:</span>
-
-<span class="sd">    &gt;&gt;&gt; zeiss_profile = InstrumentProfile(</span>
-<span class="sd">    ...     instrument_id=&quot;Zeiss-Merlin-12345&quot;,</span>
-<span class="sd">    ...     extractor_overrides={</span>
-<span class="sd">    ...         &quot;tif&quot;: &quot;zeiss_tif_extractor&quot;,  # Use Zeiss-specific TIF extractor</span>
+<span class="sd">    ...     extension_fields={</span>
+<span class="sd">    ...         &quot;facility&quot;: &quot;Nexus Facility&quot;,</span>
+<span class="sd">    ...         &quot;building&quot;: &quot;Bldg. 1&quot;,</span>
 <span class="sd">    ...     }</span>
 <span class="sd">    ... )</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1318,8 +1306,7 @@ window.addEventListener("load", load);
     <span class="n">instrument_id</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">parsers</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
     <span class="n">transformations</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
-    <span class="n">extractor_overrides</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
-    <span class="n">static_metadata</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span></div>
+    <span class="n">extension_fields</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span></div>
 
 </pre></div>
 

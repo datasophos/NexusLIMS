@@ -4,6 +4,7 @@
 ```
 
 ```{autodoc2-docstring} nexusLIMS.cli.process_records
+:parser: autodoc2_docstrings_parser
 :allowtitles:
 ```
 
@@ -17,18 +18,22 @@
 
 * - {py:obj}`setup_file_logging <nexusLIMS.cli.process_records.setup_file_logging>`
   - ```{autodoc2-docstring} nexusLIMS.cli.process_records.setup_file_logging
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`check_log_for_errors <nexusLIMS.cli.process_records.check_log_for_errors>`
   - ```{autodoc2-docstring} nexusLIMS.cli.process_records.check_log_for_errors
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`send_error_notification <nexusLIMS.cli.process_records.send_error_notification>`
   - ```{autodoc2-docstring} nexusLIMS.cli.process_records.send_error_notification
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`main <nexusLIMS.cli.process_records.main>`
   - ```{autodoc2-docstring} nexusLIMS.cli.process_records.main
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 ````
@@ -41,18 +46,22 @@
 
 * - {py:obj}`logger <nexusLIMS.cli.process_records.logger>`
   - ```{autodoc2-docstring} nexusLIMS.cli.process_records.logger
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`console <nexusLIMS.cli.process_records.console>`
   - ```{autodoc2-docstring} nexusLIMS.cli.process_records.console
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`ERROR_PATTERNS <nexusLIMS.cli.process_records.ERROR_PATTERNS>`
   - ```{autodoc2-docstring} nexusLIMS.cli.process_records.ERROR_PATTERNS
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`EXCLUDE_PATTERNS <nexusLIMS.cli.process_records.EXCLUDE_PATTERNS>`
   - ```{autodoc2-docstring} nexusLIMS.cli.process_records.EXCLUDE_PATTERNS
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 ````
@@ -65,6 +74,7 @@
    'getLogger(...)'
 
 ```{autodoc2-docstring} nexusLIMS.cli.process_records.logger
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -75,16 +85,16 @@
    'Console(...)'
 
 ```{autodoc2-docstring} nexusLIMS.cli.process_records.console
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:data} ERROR_PATTERNS
 :canonical: nexusLIMS.cli.process_records.ERROR_PATTERNS
-:value: >
-   None
 
 ```{autodoc2-docstring} nexusLIMS.cli.process_records.ERROR_PATTERNS
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -95,6 +105,7 @@
    ['Temporary failure in name resolution', 'NoDataConsentError', 'NoMatchingReservationError']
 
 ```{autodoc2-docstring} nexusLIMS.cli.process_records.EXCLUDE_PATTERNS
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -103,6 +114,7 @@
 :canonical: nexusLIMS.cli.process_records.setup_file_logging
 
 ```{autodoc2-docstring} nexusLIMS.cli.process_records.setup_file_logging
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -110,6 +122,7 @@
 :canonical: nexusLIMS.cli.process_records.check_log_for_errors
 
 ```{autodoc2-docstring} nexusLIMS.cli.process_records.check_log_for_errors
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -117,6 +130,7 @@
 :canonical: nexusLIMS.cli.process_records.send_error_notification
 
 ```{autodoc2-docstring} nexusLIMS.cli.process_records.send_error_notification
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -124,5 +138,6 @@
 :canonical: nexusLIMS.cli.process_records.main
 
 ```{autodoc2-docstring} nexusLIMS.cli.process_records.main
+:parser: autodoc2_docstrings_parser
 ```
 ````

@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>nexusLIMS.extractors.plugins.quanta_tif &#8212; NexusLIMS 2.1.2.dev0 documentation</title>
+    <title>nexusLIMS.extractors.plugins.quanta_tif &#8212; NexusLIMS 2.2.0.dev0 documentation</title>
   
   
   
@@ -31,8 +31,9 @@
 
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=af02a5b6" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=8633d6cc" />
   
   <!-- So that users can add custom icons -->
   <script src="../../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -40,9 +41,11 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../../../_static/documentation_options.js?v=bcebe078"></script>
+    <script src="../../../../_static/documentation_options.js?v=dc4a309c"></script>
     <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../../_static/copybutton.js?v=30646c52"></script>
     <script src="../../../../_static/design-tabs.js?v=f930bc37"></script>
     <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs"></script>
     <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs"></script>
@@ -417,14 +420,15 @@ window.addEventListener("load", load);
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
+    <script src="../../../../_static/custom.js?v=ba087cdf"></script>
     <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/latest/_modules/nexusLIMS/extractors/plugins/quanta_tif.html" />
     <link rel="icon" href="../../../../_static/nexusLIMS_bare_logo.ico"/>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 23, 2025"/>
+  <meta name="docsearch:version" content="2.2.0.dev0" />
+    <meta name="docbuild:last-update" content="Dec, 30, 2025"/>
   </head>
   
   
@@ -490,8 +494,8 @@ window.addEventListener("load", load);
       
     
     
-    <img src="../../../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.1.2.dev0 documentation - Home"/>
-    <img src="../../../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.1.2.dev0 documentation - Home"/>
+    <img src="../../../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.2.0.dev0 documentation - Home"/>
+    <img src="../../../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.2.0.dev0 documentation - Home"/>
   
   
 </a></div>
@@ -534,20 +538,6 @@ window.addEventListener("load", load);
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../../getting_started.html">
-    Getting Started
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../../migration.html">
-    Migration Guide: v1 to v2
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../../user_guide.html">
     User Guide
   </a>
@@ -555,28 +545,25 @@ window.addEventListener("load", load);
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../../dev_guide.html">
-    Developer Guide
+  <a class="nav-link nav-internal" href="../../../../migration.html">
+    Migration Guide: v1.4.3 to v2.2.0
   </a>
 </li>
 
-            <li class="nav-item dropdown">
-                <button class="btn dropdown-toggle nav-item" type="button"
-                data-bs-toggle="dropdown" aria-expanded="false"
-                aria-controls="pst-nav-more-links">
-                    More
-                </button>
-                <ul id="pst-nav-more-links" class="dropdown-menu">
-                    
-<li class=" ">
-  <a class="nav-link dropdown-item nav-internal" href="../../../../reference.html">
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../dev_guide.html">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../reference.html">
     Reference
   </a>
 </li>
 
-                </ul>
-            </li>
-            
   </ul>
 </nav></div>
       
@@ -671,20 +658,6 @@ window.addEventListener("load", load);
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../../getting_started.html">
-    Getting Started
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../../migration.html">
-    Migration Guide: v1 to v2
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../../user_guide.html">
     User Guide
   </a>
@@ -692,8 +665,15 @@ window.addEventListener("load", load);
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../migration.html">
+    Migration Guide: v1.4.3 to v2.2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../../dev_guide.html">
-    Developer Guide
+    Dev Guide
   </a>
 </li>
 
@@ -837,8 +817,9 @@ window.addEventListener("load", load);
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.extractors.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExtractionContext</span><span class="p">,</span> <span class="n">FieldDefinition</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.extractors.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">FieldDefinition</span> <span class="k">as</span> <span class="n">FD</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.extractors.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">_set_instr_name_and_time</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.extractors.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">_set_instr_name_and_time</span><span class="p">,</span> <span class="n">add_to_extensions</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.instruments</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_instr_from_filepath</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas.units</span><span class="w"> </span><span class="kn">import</span> <span class="n">ureg</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_nested_dict_value</span><span class="p">,</span> <span class="n">sort_dict</span><span class="p">,</span> <span class="n">try_getting_dict_value</span>
 
 <span class="n">FEI_TIFF_TAG</span> <span class="o">=</span> <span class="mi">34682</span>
@@ -989,6 +970,9 @@ window.addEventListener("load", load);
 
             <span class="c1"># Extract important fields to nx_meta</span>
             <span class="n">mdict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_nx_meta</span><span class="p">(</span><span class="n">mdict</span><span class="p">)</span>
+
+            <span class="c1"># Migrate metadata to schema-compliant format</span>
+            <span class="n">mdict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_migrate_to_schema_compliant_metadata</span><span class="p">(</span><span class="n">mdict</span><span class="p">)</span>
 
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="n">_logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Error extracting metadata from </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
@@ -1302,12 +1286,20 @@ window.addEventListener("load", load);
                     <span class="n">FD</span><span class="p">(</span>
                         <span class="n">beam_name</span><span class="p">,</span>
                         <span class="s2">&quot;EmissionCurrent&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;Emission Current (μA)&quot;</span><span class="p">,</span>
-                        <span class="mf">1e6</span><span class="p">,</span>
+                        <span class="s2">&quot;Emission Current&quot;</span><span class="p">,</span>
+                        <span class="mf">1.0</span><span class="p">,</span>
                         <span class="kc">False</span><span class="p">,</span>
+                        <span class="n">target_unit</span><span class="o">=</span><span class="s2">&quot;ampere&quot;</span><span class="p">,</span>
                     <span class="p">),</span>
-                    <span class="n">FD</span><span class="p">(</span><span class="n">beam_name</span><span class="p">,</span> <span class="s2">&quot;HFW&quot;</span><span class="p">,</span> <span class="s2">&quot;Horizontal Field Width (μm)&quot;</span><span class="p">,</span> <span class="mf">1e6</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
-                    <span class="n">FD</span><span class="p">(</span><span class="n">beam_name</span><span class="p">,</span> <span class="s2">&quot;HV&quot;</span><span class="p">,</span> <span class="s2">&quot;Voltage (kV)&quot;</span><span class="p">,</span> <span class="mf">1e-3</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+                    <span class="n">FD</span><span class="p">(</span>
+                        <span class="n">beam_name</span><span class="p">,</span>
+                        <span class="s2">&quot;HFW&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;Horizontal Field Width&quot;</span><span class="p">,</span>
+                        <span class="mf">1.0</span><span class="p">,</span>
+                        <span class="kc">False</span><span class="p">,</span>
+                        <span class="n">target_unit</span><span class="o">=</span><span class="s2">&quot;meter&quot;</span><span class="p">,</span>
+                    <span class="p">),</span>
+                    <span class="n">FD</span><span class="p">(</span><span class="n">beam_name</span><span class="p">,</span> <span class="s2">&quot;HV&quot;</span><span class="p">,</span> <span class="s2">&quot;Voltage&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">target_unit</span><span class="o">=</span><span class="s2">&quot;volt&quot;</span><span class="p">),</span>
                     <span class="n">FD</span><span class="p">(</span><span class="n">beam_name</span><span class="p">,</span> <span class="s2">&quot;SourceTiltX&quot;</span><span class="p">,</span> <span class="s2">&quot;Beam Tilt X&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
                     <span class="n">FD</span><span class="p">(</span><span class="n">beam_name</span><span class="p">,</span> <span class="s2">&quot;SourceTiltY&quot;</span><span class="p">,</span> <span class="s2">&quot;Beam Tilt Y&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
                     <span class="n">FD</span><span class="p">(</span><span class="n">beam_name</span><span class="p">,</span> <span class="s2">&quot;StageR&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Stage Position&quot;</span><span class="p">,</span> <span class="s2">&quot;R&quot;</span><span class="p">],</span> <span class="mf">1.0</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
@@ -1325,9 +1317,30 @@ window.addEventListener("load", load);
                     <span class="p">),</span>
                     <span class="n">FD</span><span class="p">(</span><span class="n">beam_name</span><span class="p">,</span> <span class="s2">&quot;StigmatorX&quot;</span><span class="p">,</span> <span class="s2">&quot;Stigmator X Value&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
                     <span class="n">FD</span><span class="p">(</span><span class="n">beam_name</span><span class="p">,</span> <span class="s2">&quot;StigmatorY&quot;</span><span class="p">,</span> <span class="s2">&quot;Stigmator Y Value&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
-                    <span class="n">FD</span><span class="p">(</span><span class="n">beam_name</span><span class="p">,</span> <span class="s2">&quot;VFW&quot;</span><span class="p">,</span> <span class="s2">&quot;Vertical Field Width (μm)&quot;</span><span class="p">,</span> <span class="mf">1e6</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
-                    <span class="n">FD</span><span class="p">(</span><span class="n">beam_name</span><span class="p">,</span> <span class="s2">&quot;WD&quot;</span><span class="p">,</span> <span class="s2">&quot;Working Distance (mm)&quot;</span><span class="p">,</span> <span class="mf">1e3</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
-                    <span class="n">FD</span><span class="p">(</span><span class="n">beam_name</span><span class="p">,</span> <span class="s2">&quot;EucWD&quot;</span><span class="p">,</span> <span class="s2">&quot;Eucentric WD (mm)&quot;</span><span class="p">,</span> <span class="mf">1e3</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+                    <span class="n">FD</span><span class="p">(</span>
+                        <span class="n">beam_name</span><span class="p">,</span>
+                        <span class="s2">&quot;VFW&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;Vertical Field Width&quot;</span><span class="p">,</span>
+                        <span class="mf">1.0</span><span class="p">,</span>
+                        <span class="kc">False</span><span class="p">,</span>
+                        <span class="n">target_unit</span><span class="o">=</span><span class="s2">&quot;meter&quot;</span><span class="p">,</span>
+                    <span class="p">),</span>
+                    <span class="n">FD</span><span class="p">(</span>
+                        <span class="n">beam_name</span><span class="p">,</span>
+                        <span class="s2">&quot;WD&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;Working Distance&quot;</span><span class="p">,</span>
+                        <span class="mf">1.0</span><span class="p">,</span>
+                        <span class="kc">False</span><span class="p">,</span>
+                        <span class="n">target_unit</span><span class="o">=</span><span class="s2">&quot;meter&quot;</span><span class="p">,</span>
+                    <span class="p">),</span>
+                    <span class="n">FD</span><span class="p">(</span>
+                        <span class="n">beam_name</span><span class="p">,</span>
+                        <span class="s2">&quot;EucWD&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;Eucentric WD&quot;</span><span class="p">,</span>
+                        <span class="mf">1.0</span><span class="p">,</span>
+                        <span class="kc">False</span><span class="p">,</span>
+                        <span class="n">target_unit</span><span class="o">=</span><span class="s2">&quot;meter&quot;</span><span class="p">,</span>
+                    <span class="p">),</span>
                     <span class="n">FD</span><span class="p">(</span><span class="n">beam_name</span><span class="p">,</span> <span class="s2">&quot;ImageMode&quot;</span><span class="p">,</span> <span class="s2">&quot;Image Mode&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
                     <span class="n">FD</span><span class="p">(</span>
                         <span class="n">beam_name</span><span class="p">,</span>
@@ -1352,25 +1365,62 @@ window.addEventListener("load", load);
         <span class="k">if</span> <span class="n">scan_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">fields</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
                 <span class="p">[</span>
-                    <span class="n">FD</span><span class="p">(</span><span class="n">scan_name</span><span class="p">,</span> <span class="s2">&quot;Dwell&quot;</span><span class="p">,</span> <span class="s2">&quot;Pixel Dwell Time (μs)&quot;</span><span class="p">,</span> <span class="mf">1e6</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
-                    <span class="n">FD</span><span class="p">(</span><span class="n">scan_name</span><span class="p">,</span> <span class="s2">&quot;FrameTime&quot;</span><span class="p">,</span> <span class="s2">&quot;Total Frame Time (s)&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+                    <span class="n">FD</span><span class="p">(</span>
+                        <span class="n">scan_name</span><span class="p">,</span>
+                        <span class="s2">&quot;Dwell&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;Pixel Dwell Time&quot;</span><span class="p">,</span>
+                        <span class="mf">1.0</span><span class="p">,</span>
+                        <span class="kc">False</span><span class="p">,</span>
+                        <span class="n">target_unit</span><span class="o">=</span><span class="s2">&quot;second&quot;</span><span class="p">,</span>
+                    <span class="p">),</span>
+                    <span class="n">FD</span><span class="p">(</span>
+                        <span class="n">scan_name</span><span class="p">,</span>
+                        <span class="s2">&quot;FrameTime&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;Total Frame Time&quot;</span><span class="p">,</span>
+                        <span class="mf">1.0</span><span class="p">,</span>
+                        <span class="kc">False</span><span class="p">,</span>
+                        <span class="n">target_unit</span><span class="o">=</span><span class="s2">&quot;second&quot;</span><span class="p">,</span>
+                    <span class="p">),</span>
                     <span class="n">FD</span><span class="p">(</span>
                         <span class="n">scan_name</span><span class="p">,</span>
                         <span class="s2">&quot;HorFieldsize&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;Horizontal Field Width (μm)&quot;</span><span class="p">,</span>
-                        <span class="mf">1e6</span><span class="p">,</span>
+                        <span class="s2">&quot;Horizontal Field Width&quot;</span><span class="p">,</span>
+                        <span class="mf">1.0</span><span class="p">,</span>
                         <span class="kc">False</span><span class="p">,</span>
+                        <span class="n">target_unit</span><span class="o">=</span><span class="s2">&quot;meter&quot;</span><span class="p">,</span>
                     <span class="p">),</span>
                     <span class="n">FD</span><span class="p">(</span>
                         <span class="n">scan_name</span><span class="p">,</span>
                         <span class="s2">&quot;VerFieldsize&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;Vertical Field Width (μm)&quot;</span><span class="p">,</span>
-                        <span class="mf">1e6</span><span class="p">,</span>
+                        <span class="s2">&quot;Vertical Field Width&quot;</span><span class="p">,</span>
+                        <span class="mf">1.0</span><span class="p">,</span>
                         <span class="kc">False</span><span class="p">,</span>
+                        <span class="n">target_unit</span><span class="o">=</span><span class="s2">&quot;meter&quot;</span><span class="p">,</span>
                     <span class="p">),</span>
-                    <span class="n">FD</span><span class="p">(</span><span class="n">scan_name</span><span class="p">,</span> <span class="s2">&quot;PixelHeight&quot;</span><span class="p">,</span> <span class="s2">&quot;Pixel Width (nm)&quot;</span><span class="p">,</span> <span class="mf">1e9</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
-                    <span class="n">FD</span><span class="p">(</span><span class="n">scan_name</span><span class="p">,</span> <span class="s2">&quot;PixelWidth&quot;</span><span class="p">,</span> <span class="s2">&quot;Pixel Height (nm)&quot;</span><span class="p">,</span> <span class="mf">1e9</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
-                    <span class="n">FD</span><span class="p">(</span><span class="n">scan_name</span><span class="p">,</span> <span class="s2">&quot;LineTime&quot;</span><span class="p">,</span> <span class="s2">&quot;Line Time (s)&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+                    <span class="n">FD</span><span class="p">(</span>
+                        <span class="n">scan_name</span><span class="p">,</span>
+                        <span class="s2">&quot;PixelHeight&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;Pixel Width&quot;</span><span class="p">,</span>
+                        <span class="mf">1.0</span><span class="p">,</span>
+                        <span class="kc">False</span><span class="p">,</span>
+                        <span class="n">target_unit</span><span class="o">=</span><span class="s2">&quot;meter&quot;</span><span class="p">,</span>
+                    <span class="p">),</span>
+                    <span class="n">FD</span><span class="p">(</span>
+                        <span class="n">scan_name</span><span class="p">,</span>
+                        <span class="s2">&quot;PixelWidth&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;Pixel Height&quot;</span><span class="p">,</span>
+                        <span class="mf">1.0</span><span class="p">,</span>
+                        <span class="kc">False</span><span class="p">,</span>
+                        <span class="n">target_unit</span><span class="o">=</span><span class="s2">&quot;meter&quot;</span><span class="p">,</span>
+                    <span class="p">),</span>
+                    <span class="n">FD</span><span class="p">(</span>
+                        <span class="n">scan_name</span><span class="p">,</span>
+                        <span class="s2">&quot;LineTime&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;Line Time&quot;</span><span class="p">,</span>
+                        <span class="mf">1.0</span><span class="p">,</span>
+                        <span class="kc">False</span><span class="p">,</span>
+                        <span class="n">target_unit</span><span class="o">=</span><span class="s2">&quot;second&quot;</span><span class="p">,</span>
+                    <span class="p">),</span>
                     <span class="n">FD</span><span class="p">(</span>
                         <span class="n">scan_name</span><span class="p">,</span>
                         <span class="s2">&quot;LineIntegration&quot;</span><span class="p">,</span>
@@ -1408,7 +1458,14 @@ window.addEventListener("load", load);
                         <span class="kc">False</span><span class="p">,</span>
                     <span class="p">),</span>
                     <span class="n">FD</span><span class="p">(</span><span class="n">det_name</span><span class="p">,</span> <span class="s2">&quot;Signal&quot;</span><span class="p">,</span> <span class="s2">&quot;Detector Signal&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
-                    <span class="n">FD</span><span class="p">(</span><span class="n">det_name</span><span class="p">,</span> <span class="s2">&quot;Grid&quot;</span><span class="p">,</span> <span class="s2">&quot;Detector Grid Voltage (V)&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+                    <span class="n">FD</span><span class="p">(</span>
+                        <span class="n">det_name</span><span class="p">,</span>
+                        <span class="s2">&quot;Grid&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;Detector Grid Voltage&quot;</span><span class="p">,</span>
+                        <span class="mf">1.0</span><span class="p">,</span>
+                        <span class="kc">False</span><span class="p">,</span>
+                        <span class="n">target_unit</span><span class="o">=</span><span class="s2">&quot;volt&quot;</span><span class="p">,</span>
+                    <span class="p">),</span>
                     <span class="n">FD</span><span class="p">(</span>
                         <span class="n">det_name</span><span class="p">,</span> <span class="s2">&quot;BrightnessDB&quot;</span><span class="p">,</span> <span class="s2">&quot;Detector Brightness (DB)&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="kc">False</span>
                     <span class="p">),</span>
@@ -1423,9 +1480,10 @@ window.addEventListener("load", load);
                     <span class="n">FD</span><span class="p">(</span>
                         <span class="n">det_name</span><span class="p">,</span>
                         <span class="s2">&quot;MinimumDwellTime&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;Minimum Dwell Time (μs)&quot;</span><span class="p">,</span>
-                        <span class="mf">1e6</span><span class="p">,</span>
+                        <span class="s2">&quot;Minimum Dwell Time&quot;</span><span class="p">,</span>
+                        <span class="mf">1.0</span><span class="p">,</span>
                         <span class="kc">False</span><span class="p">,</span>
+                        <span class="n">target_unit</span><span class="o">=</span><span class="s2">&quot;second&quot;</span><span class="p">,</span>
                     <span class="p">),</span>
                 <span class="p">]</span>
             <span class="p">)</span>
@@ -1449,8 +1507,22 @@ window.addEventListener("load", load);
         <span class="n">fields</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
             <span class="p">[</span>
                 <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;Beam&quot;</span><span class="p">,</span> <span class="s2">&quot;Spot&quot;</span><span class="p">,</span> <span class="s2">&quot;Spot Size&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
-                <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;Specimen&quot;</span><span class="p">,</span> <span class="s2">&quot;Temperature&quot;</span><span class="p">,</span> <span class="s2">&quot;Specimen Temperature (K)&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
-                <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;Specimen&quot;</span><span class="p">,</span> <span class="s2">&quot;Humidity&quot;</span><span class="p">,</span> <span class="s2">&quot;Specimen Humidity (%)&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+                <span class="n">FD</span><span class="p">(</span>
+                    <span class="s2">&quot;Specimen&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Temperature&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Specimen Temperature&quot;</span><span class="p">,</span>
+                    <span class="mf">1.0</span><span class="p">,</span>
+                    <span class="kc">False</span><span class="p">,</span>
+                    <span class="n">target_unit</span><span class="o">=</span><span class="s2">&quot;kelvin&quot;</span><span class="p">,</span>
+                <span class="p">),</span>
+                <span class="n">FD</span><span class="p">(</span>
+                    <span class="s2">&quot;Specimen&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Humidity&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Specimen Humidity&quot;</span><span class="p">,</span>
+                    <span class="mf">1.0</span><span class="p">,</span>
+                    <span class="kc">False</span><span class="p">,</span>
+                    <span class="n">target_unit</span><span class="o">=</span><span class="s2">&quot;percent&quot;</span><span class="p">,</span>
+                <span class="p">),</span>
                 <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;User&quot;</span><span class="p">,</span> <span class="s2">&quot;UserText&quot;</span><span class="p">,</span> <span class="s2">&quot;User Text&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
                 <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;User&quot;</span><span class="p">,</span> <span class="s2">&quot;Date&quot;</span><span class="p">,</span> <span class="s2">&quot;Acquisition Date&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
                 <span class="n">FD</span><span class="p">(</span><span class="s2">&quot;User&quot;</span><span class="p">,</span> <span class="s2">&quot;Time&quot;</span><span class="p">,</span> <span class="s2">&quot;Acquisition Time&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
@@ -1544,6 +1616,7 @@ window.addEventListener("load", load);
                         <span class="n">value</span><span class="p">,</span>
                         <span class="n">field</span><span class="o">.</span><span class="n">factor</span><span class="p">,</span>
                         <span class="n">field</span><span class="o">.</span><span class="n">suppress_zero</span><span class="p">,</span>
+                        <span class="n">field</span><span class="o">.</span><span class="n">target_unit</span><span class="p">,</span>
                     <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_set_field_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mdict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">output_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -1553,20 +1626,42 @@ window.addEventListener("load", load);
         <span class="k">else</span><span class="p">:</span>
             <span class="n">set_nested_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="n">output_key</span><span class="p">],</span> <span class="n">value</span><span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_set_numeric_field_value</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_set_numeric_field_value</span><span class="p">(</span>  <span class="c1"># noqa: PLR0913</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">mdict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
         <span class="n">output_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">,</span>
         <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">factor</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
         <span class="n">suppress_zero</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+        <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set a numeric field value with unit conversion.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set a numeric field value with unit conversion.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        mdict</span>
+<span class="sd">            Metadata dictionary</span>
+<span class="sd">        output_key</span>
+<span class="sd">            Output key or nested path</span>
+<span class="sd">        value</span>
+<span class="sd">            String value to convert</span>
+<span class="sd">        factor</span>
+<span class="sd">            Multiplicative conversion factor</span>
+<span class="sd">        suppress_zero</span>
+<span class="sd">            If True, skip if value equals zero</span>
+<span class="sd">        unit</span>
+<span class="sd">            Pint unit string (e.g., &quot;kilovolt&quot;). If provided, creates a Quantity.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">decimal_val</span> <span class="o">=</span> <span class="n">Decimal</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">*</span> <span class="n">Decimal</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">factor</span><span class="p">))</span>
-            <span class="n">float_val</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">decimal_val</span><span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">suppress_zero</span> <span class="ow">or</span> <span class="n">float_val</span> <span class="o">!=</span> <span class="mf">0.0</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_set_field_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="n">output_key</span><span class="p">,</span> <span class="n">float_val</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">suppress_zero</span> <span class="ow">or</span> <span class="n">decimal_val</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="c1"># Create Pint Quantity if unit is specified</span>
+                <span class="k">if</span> <span class="n">unit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">quantity_val</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">decimal_val</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_set_field_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="n">output_key</span><span class="p">,</span> <span class="n">quantity_val</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># Convert to float for non-quantity values</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_set_field_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="n">output_key</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">decimal_val</span><span class="p">))</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="n">InvalidOperation</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
             <span class="c1"># TypeError can occur if value is None</span>
             <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -1598,8 +1693,11 @@ window.addEventListener("load", load);
         <span class="k">if</span> <span class="n">scan_rot_val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">scan_rot_dec</span> <span class="o">=</span> <span class="n">Decimal</span><span class="p">(</span><span class="n">scan_rot_val</span><span class="p">)</span>
             <span class="n">digits</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">scan_rot_dec</span><span class="o">.</span><span class="n">as_tuple</span><span class="p">()</span><span class="o">.</span><span class="n">exponent</span><span class="p">)</span>
-            <span class="n">scan_rot_val</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">degrees</span><span class="p">(</span><span class="n">scan_rot_dec</span><span class="p">),</span> <span class="n">digits</span><span class="p">)</span>
-            <span class="n">set_nested_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="s2">&quot;Scan Rotation (°)&quot;</span><span class="p">],</span> <span class="n">scan_rot_val</span><span class="p">)</span>
+            <span class="n">scan_rot_degrees</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">degrees</span><span class="p">(</span><span class="n">scan_rot_dec</span><span class="p">),</span> <span class="n">digits</span><span class="p">)</span>
+            <span class="n">scan_rot_quantity</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">scan_rot_degrees</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+            <span class="n">set_nested_dict_value</span><span class="p">(</span>
+                <span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="s2">&quot;Scan Rotation&quot;</span><span class="p">],</span> <span class="n">scan_rot_quantity</span>
+            <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_parse_tilt_correction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mdict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">beam_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse tilt correction (conditional on TiltCorrectionIsOn).&quot;&quot;&quot;</span>
@@ -1682,28 +1780,29 @@ window.addEventListener("load", load);
         <span class="k">if</span> <span class="n">ch_pres_val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">ch_pres_val</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">ch_pres_decimal</span> <span class="o">=</span> <span class="n">Decimal</span><span class="p">(</span><span class="n">ch_pres_val</span><span class="p">)</span>
-                <span class="k">if</span> <span class="p">(</span>
+                <span class="n">is_high_vacuum</span> <span class="o">=</span> <span class="p">(</span>
                     <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="s2">&quot;Vacuum Mode&quot;</span><span class="p">])</span>
                     <span class="o">==</span> <span class="s2">&quot;High vacuum&quot;</span>
-                <span class="p">):</span>
-                    <span class="n">ch_pres_str</span> <span class="o">=</span> <span class="s2">&quot;Chamber Pressure (mPa)&quot;</span>
-                    <span class="n">ch_pres_decimal</span> <span class="o">=</span> <span class="n">ch_pres_decimal</span> <span class="o">*</span> <span class="mi">10</span><span class="o">**</span><span class="mi">3</span>
+                <span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">is_high_vacuum</span><span class="p">:</span>
+                    <span class="c1"># Value is in Pa, multiply by 1000 to get mPa</span>
+                    <span class="n">ch_pres_decimal_mpa</span> <span class="o">=</span> <span class="n">ch_pres_decimal</span> <span class="o">*</span> <span class="mi">10</span><span class="o">**</span><span class="mi">3</span>
+                    <span class="n">ch_pres_quantity</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">ch_pres_decimal_mpa</span><span class="p">,</span> <span class="s2">&quot;millipascal&quot;</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">ch_pres_str</span> <span class="o">=</span> <span class="s2">&quot;Chamber Pressure (Pa)&quot;</span>
+                    <span class="c1"># Value is already in Pa</span>
+                    <span class="n">ch_pres_quantity</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">ch_pres_decimal</span><span class="p">,</span> <span class="s2">&quot;pascal&quot;</span><span class="p">)</span>
+
                 <span class="n">set_nested_dict_value</span><span class="p">(</span>
                     <span class="n">mdict</span><span class="p">,</span>
-                    <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="n">ch_pres_str</span><span class="p">],</span>
-                    <span class="nb">float</span><span class="p">(</span><span class="n">ch_pres_decimal</span><span class="p">),</span>
+                    <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="s2">&quot;Chamber Pressure&quot;</span><span class="p">],</span>
+                    <span class="n">ch_pres_quantity</span><span class="p">,</span>
                 <span class="p">)</span>
             <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="n">InvalidOperation</span><span class="p">):</span>
-                <span class="k">if</span> <span class="p">(</span>
-                    <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="s2">&quot;Vacuum Mode&quot;</span><span class="p">])</span>
-                    <span class="o">==</span> <span class="s2">&quot;High vacuum&quot;</span>
-                <span class="p">):</span>
-                    <span class="n">ch_pres_str</span> <span class="o">=</span> <span class="s2">&quot;Chamber Pressure (mPa)&quot;</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">ch_pres_str</span> <span class="o">=</span> <span class="s2">&quot;Chamber Pressure (Pa)&quot;</span>
-                <span class="n">set_nested_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="n">ch_pres_str</span><span class="p">],</span> <span class="n">ch_pres_val</span><span class="p">)</span>
+                <span class="c1"># If conversion fails, store as string without unit</span>
+                <span class="n">set_nested_dict_value</span><span class="p">(</span>
+                    <span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="s2">&quot;Chamber Pressure&quot;</span><span class="p">],</span> <span class="n">ch_pres_val</span>
+                <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_parse_software_version</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mdict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse software version (aggregate Software + BuildNr).&quot;&quot;&quot;</span>
@@ -1776,6 +1875,143 @@ window.addEventListener("load", load);
         <span class="bp">self</span><span class="o">.</span><span class="n">_process_standard_fields</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="n">fields</span><span class="p">,</span> <span class="n">det_name</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_parse_special_cases</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="n">beam_name</span><span class="p">,</span> <span class="n">det_name</span><span class="p">)</span>
 
+        <span class="k">return</span> <span class="n">mdict</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_migrate_to_schema_compliant_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mdict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Migrate metadata to schema-compliant format.</span>
+
+<span class="sd">        Reorganizes metadata to conform to type-specific Pydantic schemas:</span>
+<span class="sd">        - Extracts core EM Glossary fields to top level with standardized names</span>
+<span class="sd">        - Moves vendor-specific nested dictionaries to extensions section</span>
+<span class="sd">        - Preserves existing extensions from instrument profiles</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        mdict</span>
+<span class="sd">            Metadata dictionary with nx_meta containing extracted fields</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict</span>
+<span class="sd">            Metadata dictionary with schema-compliant nx_meta structure</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">nx_meta</span> <span class="o">=</span> <span class="n">mdict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="p">{})</span>
+
+        <span class="c1"># Preserve existing extensions from instrument profiles</span>
+        <span class="n">extensions</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">nx_meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;extensions&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">if</span> <span class="s2">&quot;extensions&quot;</span> <span class="ow">in</span> <span class="n">nx_meta</span> <span class="k">else</span> <span class="p">{}</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Field mappings from display names to EM Glossary names</span>
+        <span class="n">field_mappings</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;Voltage&quot;</span><span class="p">:</span> <span class="s2">&quot;acceleration_voltage&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Working Distance&quot;</span><span class="p">:</span> <span class="s2">&quot;working_distance&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Emission Current&quot;</span><span class="p">:</span> <span class="s2">&quot;emission_current&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Pixel Dwell Time&quot;</span><span class="p">:</span> <span class="s2">&quot;dwell_time&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Horizontal Field Width&quot;</span><span class="p">:</span> <span class="s2">&quot;horizontal_field_width&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Vertical Field Width&quot;</span><span class="p">:</span> <span class="s2">&quot;vertical_field_width&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Pixel Width&quot;</span><span class="p">:</span> <span class="s2">&quot;pixel_width&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Pixel Height&quot;</span><span class="p">:</span> <span class="s2">&quot;pixel_height&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="c1"># Fields that ALWAYS go to extensions (vendor-specific nested dicts)</span>
+        <span class="n">extension_top_level_keys</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;Beam&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Scan&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Detector&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Stage Position&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Image&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Application&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Vacuum&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;System&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;User&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Detectors&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;GIS&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Specimen&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;PrivateFei&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;FEI_XML_Metadata&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Optics&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="c1"># Also move these individual vendor fields to extensions</span>
+        <span class="n">extension_field_names</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;Detector Brightness Setting&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Detector Contrast Setting&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Detector Enhanced Contrast Setting&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Detector Signal&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Detector Grid Voltage&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Beam Tilt X&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Beam Tilt Y&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Stigmator X Value&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Stigmator Y Value&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Beam Shift X&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Beam Shift Y&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Beam Mode&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Image Mode&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Pre-Tilt&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Eucentric WD&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Total Frame Time&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Line Time&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Line Integration&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Scan Interlacing&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="c1"># Build new nx_meta with proper field organization</span>
+        <span class="n">new_nx_meta</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># Copy required fields</span>
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;DatasetType&quot;</span><span class="p">,</span> <span class="s2">&quot;Data Type&quot;</span><span class="p">,</span> <span class="s2">&quot;Creation Time&quot;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">nx_meta</span><span class="p">:</span>
+                <span class="n">new_nx_meta</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="n">nx_meta</span><span class="p">[</span><span class="n">field</span><span class="p">]</span>
+
+        <span class="c1"># Copy instrument identification</span>
+        <span class="k">if</span> <span class="s2">&quot;Instrument ID&quot;</span> <span class="ow">in</span> <span class="n">nx_meta</span><span class="p">:</span>
+            <span class="n">new_nx_meta</span><span class="p">[</span><span class="s2">&quot;Instrument ID&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nx_meta</span><span class="p">[</span><span class="s2">&quot;Instrument ID&quot;</span><span class="p">]</span>
+
+        <span class="c1"># Process all fields and categorize</span>
+        <span class="k">for</span> <span class="n">old_name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">nx_meta</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="c1"># Skip fields we&#39;ve already handled</span>
+            <span class="k">if</span> <span class="n">old_name</span> <span class="ow">in</span> <span class="p">[</span>
+                <span class="s2">&quot;DatasetType&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Data Type&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Creation Time&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Instrument ID&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Extractor Warnings&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;warnings&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;extensions&quot;</span><span class="p">,</span>
+            <span class="p">]:</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Top-level vendor sections go to extensions</span>
+            <span class="k">if</span> <span class="n">old_name</span> <span class="ow">in</span> <span class="n">extension_top_level_keys</span><span class="p">:</span>
+                <span class="n">extensions</span><span class="p">[</span><span class="n">old_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Check if this is a core field that needs renaming</span>
+            <span class="k">if</span> <span class="n">old_name</span> <span class="ow">in</span> <span class="n">field_mappings</span><span class="p">:</span>
+                <span class="n">emg_name</span> <span class="o">=</span> <span class="n">field_mappings</span><span class="p">[</span><span class="n">old_name</span><span class="p">]</span>
+                <span class="n">new_nx_meta</span><span class="p">[</span><span class="n">emg_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Vendor-specific individual fields go to extensions</span>
+            <span class="k">if</span> <span class="n">old_name</span> <span class="ow">in</span> <span class="n">extension_field_names</span><span class="p">:</span>
+                <span class="n">extensions</span><span class="p">[</span><span class="n">old_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Everything else goes to extensions (vendor-specific by default)</span>
+            <span class="c1"># This is safer than at top level where schema validation will reject</span>
+            <span class="n">extensions</span><span class="p">[</span><span class="n">old_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+        <span class="c1"># Copy warnings if present</span>
+        <span class="k">if</span> <span class="s2">&quot;warnings&quot;</span> <span class="ow">in</span> <span class="n">nx_meta</span><span class="p">:</span>
+            <span class="n">new_nx_meta</span><span class="p">[</span><span class="s2">&quot;warnings&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nx_meta</span><span class="p">[</span><span class="s2">&quot;warnings&quot;</span><span class="p">]</span>
+
+        <span class="c1"># Add extensions section if we have any</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">extensions</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">add_to_extensions</span><span class="p">(</span><span class="n">new_nx_meta</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+        <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_nx_meta</span>
         <span class="k">return</span> <span class="n">mdict</span></div>
 
 

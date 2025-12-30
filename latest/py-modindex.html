@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Python Module Index &#8212; NexusLIMS 2.1.2.dev0 documentation</title>
+    <title>Python Module Index &#8212; NexusLIMS 2.2.0.dev0 documentation</title>
   
   
   
@@ -31,8 +31,9 @@
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=af02a5b6" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=8633d6cc" />
   
   <!-- So that users can add custom icons -->
   <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -40,9 +41,11 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="_static/documentation_options.js?v=bcebe078"></script>
+    <script src="_static/documentation_options.js?v=dc4a309c"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=30646c52"></script>
     <script src="_static/design-tabs.js?v=f930bc37"></script>
     <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs"></script>
     <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs"></script>
@@ -417,6 +420,7 @@ window.addEventListener("load", load);
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
+    <script src="_static/custom.js?v=ba087cdf"></script>
     <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/latest/py-modindex.html" />
     <link rel="icon" href="_static/nexusLIMS_bare_logo.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
@@ -424,8 +428,8 @@ window.addEventListener("load", load);
 
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 23, 2025"/>
+  <meta name="docsearch:version" content="2.2.0.dev0" />
+    <meta name="docbuild:last-update" content="Dec, 30, 2025"/>
 
 
   </head>
@@ -493,8 +497,8 @@ window.addEventListener("load", load);
       
     
     
-    <img src="_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.1.2.dev0 documentation - Home"/>
-    <img src="_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.1.2.dev0 documentation - Home"/>
+    <img src="_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.2.0.dev0 documentation - Home"/>
+    <img src="_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.2.0.dev0 documentation - Home"/>
   
   
 </a></div>
@@ -537,20 +541,6 @@ window.addEventListener("load", load);
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="getting_started.html">
-    Getting Started
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="migration.html">
-    Migration Guide: v1 to v2
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="user_guide.html">
     User Guide
   </a>
@@ -558,28 +548,25 @@ window.addEventListener("load", load);
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="dev_guide.html">
-    Developer Guide
+  <a class="nav-link nav-internal" href="migration.html">
+    Migration Guide: v1.4.3 to v2.2.0
   </a>
 </li>
 
-            <li class="nav-item dropdown">
-                <button class="btn dropdown-toggle nav-item" type="button"
-                data-bs-toggle="dropdown" aria-expanded="false"
-                aria-controls="pst-nav-more-links">
-                    More
-                </button>
-                <ul id="pst-nav-more-links" class="dropdown-menu">
-                    
-<li class=" ">
-  <a class="nav-link dropdown-item nav-internal" href="reference.html">
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="dev_guide.html">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="reference.html">
     Reference
   </a>
 </li>
 
-                </ul>
-            </li>
-            
   </ul>
 </nav></div>
       
@@ -674,20 +661,6 @@ window.addEventListener("load", load);
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="getting_started.html">
-    Getting Started
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="migration.html">
-    Migration Guide: v1 to v2
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="user_guide.html">
     User Guide
   </a>
@@ -695,8 +668,15 @@ window.addEventListener("load", load);
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="migration.html">
+    Migration Guide: v1.4.3 to v2.2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="dev_guide.html">
-    Developer Guide
+    Dev Guide
   </a>
 </li>
 
@@ -961,6 +941,11 @@ window.addEventListener("load", load);
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
+       <a href="api/nexusLIMS/nexusLIMS.extractors.xml_serialization.html#module-nexusLIMS.extractors.xml_serialization"><code class="xref">nexusLIMS.extractors.xml_serialization</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
        <a href="api/nexusLIMS/nexusLIMS.harvesters.html#module-nexusLIMS.harvesters"><code class="xref">nexusLIMS.harvesters</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
@@ -1002,6 +987,26 @@ window.addEventListener("load", load);
        <td></td>
        <td>&#160;&#160;&#160;
        <a href="api/nexusLIMS/nexusLIMS.schemas.activity.html#module-nexusLIMS.schemas.activity"><code class="xref">nexusLIMS.schemas.activity</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="api/nexusLIMS/nexusLIMS.schemas.em_glossary.html#module-nexusLIMS.schemas.em_glossary"><code class="xref">nexusLIMS.schemas.em_glossary</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="api/nexusLIMS/nexusLIMS.schemas.metadata.html#module-nexusLIMS.schemas.metadata"><code class="xref">nexusLIMS.schemas.metadata</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="api/nexusLIMS/nexusLIMS.schemas.pint_types.html#module-nexusLIMS.schemas.pint_types"><code class="xref">nexusLIMS.schemas.pint_types</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="api/nexusLIMS/nexusLIMS.schemas.units.html#module-nexusLIMS.schemas.units"><code class="xref">nexusLIMS.schemas.units</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>

@@ -4,6 +4,7 @@
 ```
 
 ```{autodoc2-docstring} nexusLIMS.harvesters.reservation_event
+:parser: autodoc2_docstrings_parser
 :allowtitles:
 ```
 
@@ -17,6 +18,7 @@
 
 * - {py:obj}`ReservationEvent <nexusLIMS.harvesters.reservation_event.ReservationEvent>`
   - ```{autodoc2-docstring} nexusLIMS.harvesters.reservation_event.ReservationEvent
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 ````
@@ -27,246 +29,247 @@
 :canonical: nexusLIMS.harvesters.reservation_event.ReservationEvent
 
 ```{autodoc2-docstring} nexusLIMS.harvesters.reservation_event.ReservationEvent
+:parser: autodoc2_docstrings_parser
 ```
 
 ````{py:attribute} experiment_title
 :canonical: nexusLIMS.harvesters.reservation_event.ReservationEvent.experiment_title
-:type: str | None
-:value: >
-   None
+
+**Type:** str | None
 
 ```{autodoc2-docstring} nexusLIMS.harvesters.reservation_event.ReservationEvent.experiment_title
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} instrument
 :canonical: nexusLIMS.harvesters.reservation_event.ReservationEvent.instrument
-:type: nexusLIMS.instruments.Instrument | None
-:value: >
-   None
+
+**Type:** nexusLIMS.instruments.Instrument | None
 
 ```{autodoc2-docstring} nexusLIMS.harvesters.reservation_event.ReservationEvent.instrument
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} last_updated
 :canonical: nexusLIMS.harvesters.reservation_event.ReservationEvent.last_updated
-:type: datetime.datetime | None
-:value: >
-   None
+
+**Type:** datetime.datetime | None
 
 ```{autodoc2-docstring} nexusLIMS.harvesters.reservation_event.ReservationEvent.last_updated
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} username
 :canonical: nexusLIMS.harvesters.reservation_event.ReservationEvent.username
-:type: str | None
-:value: >
-   None
+
+**Type:** str | None
 
 ```{autodoc2-docstring} nexusLIMS.harvesters.reservation_event.ReservationEvent.username
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} user_full_name
 :canonical: nexusLIMS.harvesters.reservation_event.ReservationEvent.user_full_name
-:type: str | None
-:value: >
-   None
+
+**Type:** str | None
 
 ```{autodoc2-docstring} nexusLIMS.harvesters.reservation_event.ReservationEvent.user_full_name
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} created_by
 :canonical: nexusLIMS.harvesters.reservation_event.ReservationEvent.created_by
-:type: str | None
-:value: >
-   None
+
+**Type:** str | None
 
 ```{autodoc2-docstring} nexusLIMS.harvesters.reservation_event.ReservationEvent.created_by
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} created_by_full_name
 :canonical: nexusLIMS.harvesters.reservation_event.ReservationEvent.created_by_full_name
-:type: str | None
-:value: >
-   None
+
+**Type:** str | None
 
 ```{autodoc2-docstring} nexusLIMS.harvesters.reservation_event.ReservationEvent.created_by_full_name
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} start_time
 :canonical: nexusLIMS.harvesters.reservation_event.ReservationEvent.start_time
-:type: datetime.datetime | None
-:value: >
-   None
+
+**Type:** datetime.datetime | None
 
 ```{autodoc2-docstring} nexusLIMS.harvesters.reservation_event.ReservationEvent.start_time
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} end_time
 :canonical: nexusLIMS.harvesters.reservation_event.ReservationEvent.end_time
-:type: datetime.datetime | None
-:value: >
-   None
+
+**Type:** datetime.datetime | None
 
 ```{autodoc2-docstring} nexusLIMS.harvesters.reservation_event.ReservationEvent.end_time
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} reservation_type
 :canonical: nexusLIMS.harvesters.reservation_event.ReservationEvent.reservation_type
-:type: str | None
-:value: >
-   None
+
+**Type:** str | None
 
 ```{autodoc2-docstring} nexusLIMS.harvesters.reservation_event.ReservationEvent.reservation_type
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} experiment_purpose
 :canonical: nexusLIMS.harvesters.reservation_event.ReservationEvent.experiment_purpose
-:type: str | None
-:value: >
-   None
+
+**Type:** str | None
 
 ```{autodoc2-docstring} nexusLIMS.harvesters.reservation_event.ReservationEvent.experiment_purpose
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} sample_details
 :canonical: nexusLIMS.harvesters.reservation_event.ReservationEvent.sample_details
-:type: typing.List[str | None] | None
-:value: >
-   None
+
+**Type:** typing.List[str | None] | None
 
 ```{autodoc2-docstring} nexusLIMS.harvesters.reservation_event.ReservationEvent.sample_details
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} sample_pid
 :canonical: nexusLIMS.harvesters.reservation_event.ReservationEvent.sample_pid
-:type: typing.List[str | None] | None
-:value: >
-   None
+
+**Type:** typing.List[str | None] | None
 
 ```{autodoc2-docstring} nexusLIMS.harvesters.reservation_event.ReservationEvent.sample_pid
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} sample_name
 :canonical: nexusLIMS.harvesters.reservation_event.ReservationEvent.sample_name
-:type: typing.List[str | None] | None
-:value: >
-   None
+
+**Type:** typing.List[str | None] | None
 
 ```{autodoc2-docstring} nexusLIMS.harvesters.reservation_event.ReservationEvent.sample_name
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} sample_elements
 :canonical: nexusLIMS.harvesters.reservation_event.ReservationEvent.sample_elements
-:type: typing.List[typing.List[str] | None] | None
-:value: >
-   None
+
+**Type:** typing.List[typing.List[str] | None] | None
 
 ```{autodoc2-docstring} nexusLIMS.harvesters.reservation_event.ReservationEvent.sample_elements
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} project_name
 :canonical: nexusLIMS.harvesters.reservation_event.ReservationEvent.project_name
-:type: typing.List[str | None] | None
-:value: >
-   None
+
+**Type:** typing.List[str | None] | None
 
 ```{autodoc2-docstring} nexusLIMS.harvesters.reservation_event.ReservationEvent.project_name
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} project_id
 :canonical: nexusLIMS.harvesters.reservation_event.ReservationEvent.project_id
-:type: typing.List[str | None] | None
-:value: >
-   None
+
+**Type:** typing.List[str | None] | None
 
 ```{autodoc2-docstring} nexusLIMS.harvesters.reservation_event.ReservationEvent.project_id
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} project_ref
 :canonical: nexusLIMS.harvesters.reservation_event.ReservationEvent.project_ref
-:type: typing.List[str | None] | None
-:value: >
-   None
+
+**Type:** typing.List[str | None] | None
 
 ```{autodoc2-docstring} nexusLIMS.harvesters.reservation_event.ReservationEvent.project_ref
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} internal_id
 :canonical: nexusLIMS.harvesters.reservation_event.ReservationEvent.internal_id
-:type: str | None
-:value: >
-   None
+
+**Type:** str | None
 
 ```{autodoc2-docstring} nexusLIMS.harvesters.reservation_event.ReservationEvent.internal_id
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} division
 :canonical: nexusLIMS.harvesters.reservation_event.ReservationEvent.division
-:type: str | None
-:value: >
-   None
+
+**Type:** str | None
 
 ```{autodoc2-docstring} nexusLIMS.harvesters.reservation_event.ReservationEvent.division
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} group
 :canonical: nexusLIMS.harvesters.reservation_event.ReservationEvent.group
-:type: str | None
-:value: >
-   None
+
+**Type:** str | None
 
 ```{autodoc2-docstring} nexusLIMS.harvesters.reservation_event.ReservationEvent.group
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} url
 :canonical: nexusLIMS.harvesters.reservation_event.ReservationEvent.url
-:type: str | None
-:value: >
-   None
+
+**Type:** str | None
 
 ```{autodoc2-docstring} nexusLIMS.harvesters.reservation_event.ReservationEvent.url
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -275,6 +278,7 @@
 :canonical: nexusLIMS.harvesters.reservation_event.ReservationEvent.as_xml
 
 ```{autodoc2-docstring} nexusLIMS.harvesters.reservation_event.ReservationEvent.as_xml
+:parser: autodoc2_docstrings_parser
 ```
 
 ````

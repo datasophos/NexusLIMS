@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>nexusLIMS.harvesters.reservation_event &#8212; NexusLIMS 2.1.2.dev0 documentation</title>
+    <title>nexusLIMS.harvesters.reservation_event &#8212; NexusLIMS 2.2.0.dev0 documentation</title>
   
   
   
@@ -32,8 +32,9 @@
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=af02a5b6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=8633d6cc" />
   
   <!-- So that users can add custom icons -->
   <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -41,9 +42,11 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../_static/documentation_options.js?v=bcebe078"></script>
+    <script src="../../_static/documentation_options.js?v=dc4a309c"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=30646c52"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'api/nexusLIMS/nexusLIMS.harvesters.reservation_event';</script>
     <script>
@@ -53,6 +56,7 @@
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
+    <script src="../../_static/custom.js?v=ba087cdf"></script>
     <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/latest/api/nexusLIMS/nexusLIMS.harvesters.reservation_event.html" />
     <link rel="icon" href="../../_static/nexusLIMS_bare_logo.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -61,8 +65,8 @@
     <link rel="prev" title="nexusLIMS.harvesters.nemo.connector" href="nexusLIMS.harvesters.nemo.connector.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 23, 2025"/>
+  <meta name="docsearch:version" content="2.2.0.dev0" />
+    <meta name="docbuild:last-update" content="Dec, 30, 2025"/>
   </head>
   
   
@@ -128,8 +132,8 @@
       
     
     
-    <img src="../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.1.2.dev0 documentation - Home"/>
-    <img src="../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.1.2.dev0 documentation - Home"/>
+    <img src="../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.2.0.dev0 documentation - Home"/>
+    <img src="../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.2.0.dev0 documentation - Home"/>
   
   
 </a></div>
@@ -172,20 +176,6 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../getting_started.html">
-    Getting Started
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../migration.html">
-    Migration Guide: v1 to v2
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../user_guide.html">
     User Guide
   </a>
@@ -193,28 +183,25 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../dev_guide.html">
-    Developer Guide
+  <a class="nav-link nav-internal" href="../../migration.html">
+    Migration Guide: v1.4.3 to v2.2.0
   </a>
 </li>
 
-            <li class="nav-item dropdown">
-                <button class="btn dropdown-toggle nav-item" type="button"
-                data-bs-toggle="dropdown" aria-expanded="false"
-                aria-controls="pst-nav-more-links">
-                    More
-                </button>
-                <ul id="pst-nav-more-links" class="dropdown-menu">
-                    
-<li class=" current active">
-  <a class="nav-link dropdown-item nav-internal" href="../../reference.html">
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../dev_guide.html">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../reference.html">
     Reference
   </a>
 </li>
 
-                </ul>
-            </li>
-            
   </ul>
 </nav></div>
       
@@ -311,20 +298,6 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../getting_started.html">
-    Getting Started
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../migration.html">
-    Migration Guide: v1 to v2
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../user_guide.html">
     User Guide
   </a>
@@ -332,8 +305,15 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../migration.html">
+    Migration Guide: v1.4.3 to v2.2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../dev_guide.html">
-    Developer Guide
+    Dev Guide
   </a>
 </li>
 
@@ -406,7 +386,7 @@
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../api.html">API documentation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../reference/api.html">API documentation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="nexusLIMS.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS</span></code></a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.db.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.db</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.builder.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.builder</span></code></a></li>
@@ -426,7 +406,7 @@
 </details></li>
 </ul>
 </details></li>
-<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/changelog.html">Changelog</a></li>
 </ul>
 </div>
 </nav></div>
@@ -471,7 +451,7 @@
     <li class="breadcrumb-item"><a href="../../reference.html" class="nav-link">Reference</a></li>
     
     
-    <li class="breadcrumb-item"><a href="../../api.html" class="nav-link">API documentation</a></li>
+    <li class="breadcrumb-item"><a href="../../reference/api.html" class="nav-link">API documentation</a></li>
     
     
     <li class="breadcrumb-item"><a href="nexusLIMS.html" class="nav-link"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS</span></code></a></li>
@@ -503,7 +483,7 @@
 associated metadata harvest metadata from various calendar sources.
 The expectation is that submodules of this module will have a method named
 <code class="docutils literal notranslate"><span class="pre">res_event_from_session</span></code> implemented to handle fetching a ReservationEvent
-object from a :py:class:<code class="docutils literal notranslate"><span class="pre">nexusLIMS.db.session_handler.Session</span></code> object.</p>
+object from a <a class="reference internal" href="nexusLIMS.db.session_handler.html#nexusLIMS.db.session_handler.Session" title="nexusLIMS.db.session_handler.Session"><code class="xref py py-class docutils literal notranslate"><span class="pre">nexusLIMS.db.session_handler.Session</span></code></a> object.</p>
 <section id="module-contents">
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
 <section id="classes">
@@ -527,207 +507,196 @@ object from a :py:class:<code class="docutils literal notranslate"><span class="
 made with. <code class="docutils literal notranslate"><span class="pre">ReservationEvent</span></code> is a common interface that is used by the record
 building code.</p>
 <p>Any attribute can be None to indicate it was not present or no value was
-provided. The :py:meth:<code class="docutils literal notranslate"><span class="pre">as_xml</span></code> method is used to serialize the information
+provided. The <a class="reference internal" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent.as_xml" title="nexusLIMS.harvesters.reservation_event.ReservationEvent.as_xml"><code class="xref py py-meth docutils literal notranslate"><span class="pre">as_xml()</span></code></a> method is used to serialize the information
 contained within a <code class="docutils literal notranslate"><span class="pre">ReservationEvent</span></code> into an XML representation that is
 compatible with the Nexus Facility <code class="docutils literal notranslate"><span class="pre">Experiment</span></code> schema.</p>
-<p class="rubric" id="id1">Parameters</p>
-<p>experiment_title
-The title of the event
-instrument
-The instrument associated with this reservation
-last_updated : datetime.datetime
-The time this event was last updated
-username
-The username of the user indicated in this event
-user_full_name
-The full name of the user for this event
-created_by
-The username of the user that created this event
-created_by_full_name
-The full name of the user that created this event
-start_time
-The time this event was scheduled to start
-end_time
-The time this event was scheduled to end
-reservation_type
-The “type” or category of this event (such as User session, service,
-etc.)
-experiment_purpose
-The user-entered purpose of this experiment
-sample_details
-A list of the user-entered sample details for this experiment. The
+<dl class="myst field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>experiment_title</strong> – The title of the event</p></li>
+<li><p><strong>instrument</strong> – The instrument associated with this reservation</p></li>
+<li><p><strong>last_updated</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><em>datetime</em></a>) – The time this event was last updated</p></li>
+<li><p><strong>username</strong> – The username of the user indicated in this event</p></li>
+<li><p><strong>user_full_name</strong> – The full name of the user for this event</p></li>
+<li><p><strong>created_by</strong> – The username of the user that created this event</p></li>
+<li><p><strong>created_by_full_name</strong> – The full name of the user that created this event</p></li>
+<li><p><strong>start_time</strong> – The time this event was scheduled to start</p></li>
+<li><p><strong>end_time</strong> – The time this event was scheduled to end</p></li>
+<li><p><strong>reservation_type</strong> – The “type” or category of this event (such as User session, service,
+etc.)</p></li>
+<li><p><strong>experiment_purpose</strong> – The user-entered purpose of this experiment</p></li>
+<li><p><strong>sample_details</strong> – A list of the user-entered sample details for this experiment. The
 length of the list must match that given in <code class="docutils literal notranslate"><span class="pre">sample_pid</span></code> and
-<code class="docutils literal notranslate"><span class="pre">sample_name</span></code>.
-sample_pid
-A list of sample PIDs provided by the user. The
+<code class="docutils literal notranslate"><span class="pre">sample_name</span></code>.</p></li>
+<li><p><strong>sample_pid</strong> – A list of sample PIDs provided by the user. The
 length of the list must match that given in <code class="docutils literal notranslate"><span class="pre">sample_details</span></code> and
-<code class="docutils literal notranslate"><span class="pre">sample_name</span></code>.
-sample_name
-A list of user-friendly sample names (not a PID). The
+<code class="docutils literal notranslate"><span class="pre">sample_name</span></code>.</p></li>
+<li><p><strong>sample_name</strong> – A list of user-friendly sample names (not a PID). The
 length of the list must match that given in <code class="docutils literal notranslate"><span class="pre">sample_details</span></code> and
-<code class="docutils literal notranslate"><span class="pre">sample_pid</span></code>.
-project_name
-A list of the user-entered project names for this experiment. The
+<code class="docutils literal notranslate"><span class="pre">sample_pid</span></code>.</p></li>
+<li><p><strong>project_name</strong> – A list of the user-entered project names for this experiment. The
 length of the list must match that given in <code class="docutils literal notranslate"><span class="pre">project_id</span></code> and
-<code class="docutils literal notranslate"><span class="pre">project_ref</span></code>.
-project_id
-A list of the specific project IDs within a research group/division. The
+<code class="docutils literal notranslate"><span class="pre">project_ref</span></code>.</p></li>
+<li><p><strong>project_id</strong> – A list of the specific project IDs within a research group/division. The
 length of the list must match that given in <code class="docutils literal notranslate"><span class="pre">project_name</span></code> and
-<code class="docutils literal notranslate"><span class="pre">project_ref</span></code>.
-project_ref
-A list of (optional) links to this project in another database. The
+<code class="docutils literal notranslate"><span class="pre">project_ref</span></code>.</p></li>
+<li><p><strong>project_ref</strong> – A list of (optional) links to this project in another database. The
 length of the list must match that given in <code class="docutils literal notranslate"><span class="pre">project_name</span></code> and
-<code class="docutils literal notranslate"><span class="pre">project_id</span></code>.
-internal_id
-The identifier assigned to this event (if any) by the calendaring system
-division
-An identifier of the division this experiment was performed for (i.e.
-the user’s division)
-group
-An identifier of the group this experiment was performed for (i.e.
-the user’s group)
-url
-A web-accessible link to a summary of this reservation</p>
+<code class="docutils literal notranslate"><span class="pre">project_id</span></code>.</p></li>
+<li><p><strong>internal_id</strong> – The identifier assigned to this event (if any) by the calendaring system</p></li>
+<li><p><strong>division</strong> – An identifier of the division this experiment was performed for (i.e.
+the user’s division)</p></li>
+<li><p><strong>group</strong> – An identifier of the group this experiment was performed for (i.e.
+the user’s group)</p></li>
+<li><p><strong>url</strong> – A web-accessible link to a summary of this reservation</p></li>
+</ul>
+</dd>
+</dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.harvesters.reservation_event.ReservationEvent.experiment_title">
-<span class="sig-name descname"><span class="pre">experiment_title</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent.experiment_title" title="Link to this definition">#</a></dt>
-<dd><p>None</p>
+<span class="sig-name descname"><span class="pre">experiment_title</span></span><a class="headerlink" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent.experiment_title" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> str | None</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.harvesters.reservation_event.ReservationEvent.instrument">
-<span class="sig-name descname"><span class="pre">instrument</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="nexusLIMS.instruments.html#nexusLIMS.instruments.Instrument" title="nexusLIMS.instruments.Instrument"><span class="pre">Instrument</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent.instrument" title="Link to this definition">#</a></dt>
-<dd><p>None</p>
+<span class="sig-name descname"><span class="pre">instrument</span></span><a class="headerlink" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent.instrument" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> nexusLIMS.instruments.Instrument | None</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.harvesters.reservation_event.ReservationEvent.last_updated">
-<span class="sig-name descname"><span class="pre">last_updated</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><span class="pre">datetime</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent.last_updated" title="Link to this definition">#</a></dt>
-<dd><p>None</p>
+<span class="sig-name descname"><span class="pre">last_updated</span></span><a class="headerlink" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent.last_updated" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> datetime.datetime | None</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.harvesters.reservation_event.ReservationEvent.username">
-<span class="sig-name descname"><span class="pre">username</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent.username" title="Link to this definition">#</a></dt>
-<dd><p>None</p>
+<span class="sig-name descname"><span class="pre">username</span></span><a class="headerlink" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent.username" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> str | None</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.harvesters.reservation_event.ReservationEvent.user_full_name">
-<span class="sig-name descname"><span class="pre">user_full_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent.user_full_name" title="Link to this definition">#</a></dt>
-<dd><p>None</p>
+<span class="sig-name descname"><span class="pre">user_full_name</span></span><a class="headerlink" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent.user_full_name" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> str | None</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.harvesters.reservation_event.ReservationEvent.created_by">
-<span class="sig-name descname"><span class="pre">created_by</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent.created_by" title="Link to this definition">#</a></dt>
-<dd><p>None</p>
+<span class="sig-name descname"><span class="pre">created_by</span></span><a class="headerlink" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent.created_by" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> str | None</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.harvesters.reservation_event.ReservationEvent.created_by_full_name">
-<span class="sig-name descname"><span class="pre">created_by_full_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent.created_by_full_name" title="Link to this definition">#</a></dt>
-<dd><p>None</p>
+<span class="sig-name descname"><span class="pre">created_by_full_name</span></span><a class="headerlink" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent.created_by_full_name" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> str | None</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.harvesters.reservation_event.ReservationEvent.start_time">
-<span class="sig-name descname"><span class="pre">start_time</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><span class="pre">datetime</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent.start_time" title="Link to this definition">#</a></dt>
-<dd><p>None</p>
+<span class="sig-name descname"><span class="pre">start_time</span></span><a class="headerlink" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent.start_time" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> datetime.datetime | None</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.harvesters.reservation_event.ReservationEvent.end_time">
-<span class="sig-name descname"><span class="pre">end_time</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><span class="pre">datetime</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent.end_time" title="Link to this definition">#</a></dt>
-<dd><p>None</p>
+<span class="sig-name descname"><span class="pre">end_time</span></span><a class="headerlink" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent.end_time" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> datetime.datetime | None</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.harvesters.reservation_event.ReservationEvent.reservation_type">
-<span class="sig-name descname"><span class="pre">reservation_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent.reservation_type" title="Link to this definition">#</a></dt>
-<dd><p>None</p>
+<span class="sig-name descname"><span class="pre">reservation_type</span></span><a class="headerlink" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent.reservation_type" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> str | None</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.harvesters.reservation_event.ReservationEvent.experiment_purpose">
-<span class="sig-name descname"><span class="pre">experiment_purpose</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent.experiment_purpose" title="Link to this definition">#</a></dt>
-<dd><p>None</p>
+<span class="sig-name descname"><span class="pre">experiment_purpose</span></span><a class="headerlink" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent.experiment_purpose" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> str | None</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.harvesters.reservation_event.ReservationEvent.sample_details">
-<span class="sig-name descname"><span class="pre">sample_details</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent.sample_details" title="Link to this definition">#</a></dt>
-<dd><p>None</p>
+<span class="sig-name descname"><span class="pre">sample_details</span></span><a class="headerlink" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent.sample_details" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> typing.List[str | None] | None</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.harvesters.reservation_event.ReservationEvent.sample_pid">
-<span class="sig-name descname"><span class="pre">sample_pid</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent.sample_pid" title="Link to this definition">#</a></dt>
-<dd><p>None</p>
+<span class="sig-name descname"><span class="pre">sample_pid</span></span><a class="headerlink" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent.sample_pid" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> typing.List[str | None] | None</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.harvesters.reservation_event.ReservationEvent.sample_name">
-<span class="sig-name descname"><span class="pre">sample_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent.sample_name" title="Link to this definition">#</a></dt>
-<dd><p>None</p>
+<span class="sig-name descname"><span class="pre">sample_name</span></span><a class="headerlink" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent.sample_name" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> typing.List[str | None] | None</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.harvesters.reservation_event.ReservationEvent.sample_elements">
-<span class="sig-name descname"><span class="pre">sample_elements</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent.sample_elements" title="Link to this definition">#</a></dt>
-<dd><p>None</p>
+<span class="sig-name descname"><span class="pre">sample_elements</span></span><a class="headerlink" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent.sample_elements" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> typing.List[typing.List[str] | None] | None</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.harvesters.reservation_event.ReservationEvent.project_name">
-<span class="sig-name descname"><span class="pre">project_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent.project_name" title="Link to this definition">#</a></dt>
-<dd><p>None</p>
+<span class="sig-name descname"><span class="pre">project_name</span></span><a class="headerlink" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent.project_name" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> typing.List[str | None] | None</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.harvesters.reservation_event.ReservationEvent.project_id">
-<span class="sig-name descname"><span class="pre">project_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent.project_id" title="Link to this definition">#</a></dt>
-<dd><p>None</p>
+<span class="sig-name descname"><span class="pre">project_id</span></span><a class="headerlink" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent.project_id" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> typing.List[str | None] | None</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.harvesters.reservation_event.ReservationEvent.project_ref">
-<span class="sig-name descname"><span class="pre">project_ref</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent.project_ref" title="Link to this definition">#</a></dt>
-<dd><p>None</p>
+<span class="sig-name descname"><span class="pre">project_ref</span></span><a class="headerlink" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent.project_ref" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> typing.List[str | None] | None</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.harvesters.reservation_event.ReservationEvent.internal_id">
-<span class="sig-name descname"><span class="pre">internal_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent.internal_id" title="Link to this definition">#</a></dt>
-<dd><p>None</p>
+<span class="sig-name descname"><span class="pre">internal_id</span></span><a class="headerlink" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent.internal_id" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> str | None</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.harvesters.reservation_event.ReservationEvent.division">
-<span class="sig-name descname"><span class="pre">division</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent.division" title="Link to this definition">#</a></dt>
-<dd><p>None</p>
+<span class="sig-name descname"><span class="pre">division</span></span><a class="headerlink" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent.division" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> str | None</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.harvesters.reservation_event.ReservationEvent.group">
-<span class="sig-name descname"><span class="pre">group</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent.group" title="Link to this definition">#</a></dt>
-<dd><p>None</p>
+<span class="sig-name descname"><span class="pre">group</span></span><a class="headerlink" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent.group" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> str | None</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.harvesters.reservation_event.ReservationEvent.url">
-<span class="sig-name descname"><span class="pre">url</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent.url" title="Link to this definition">#</a></dt>
-<dd><p>None</p>
+<span class="sig-name descname"><span class="pre">url</span></span><a class="headerlink" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent.url" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> str | None</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="nexusLIMS.harvesters.reservation_event.ReservationEvent.as_xml">
 <span class="sig-name descname"><span class="pre">as_xml</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://lxml.de/apidoc/lxml.etree.html#lxml.etree.Element" title="(in lxml v4.6.3)"><span class="pre">Element</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/harvesters/reservation_event.html#ReservationEvent.as_xml"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.harvesters.reservation_event.ReservationEvent.as_xml" title="Link to this definition">#</a></dt>
 <dd><p>Get an XML representation of this ReservationEvent.</p>
-<p class="rubric" id="returns">Returns</p>
-<p>root : lxml.etree.Element
-The reservation event serialized as XML that matches the
+<dl class="myst field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>root</strong> – The reservation event serialized as XML that matches the
 Nexus Experiment schema</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://lxml.de/apidoc/lxml.etree.html#lxml.etree.Element" title="(in lxml v4.6.3)"><em>Element</em></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>

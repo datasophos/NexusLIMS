@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>nexusLIMS.extractors.plugins.profiles &#8212; NexusLIMS 2.1.2.dev0 documentation</title>
+    <title>nexusLIMS.extractors.plugins.profiles &#8212; NexusLIMS 2.2.0.dev0 documentation</title>
   
   
   
@@ -32,8 +32,9 @@
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=af02a5b6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=8633d6cc" />
   
   <!-- So that users can add custom icons -->
   <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -41,9 +42,11 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../_static/documentation_options.js?v=bcebe078"></script>
+    <script src="../../_static/documentation_options.js?v=dc4a309c"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=30646c52"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'api/nexusLIMS/nexusLIMS.extractors.plugins.profiles';</script>
     <script>
@@ -53,6 +56,7 @@
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
+    <script src="../../_static/custom.js?v=ba087cdf"></script>
     <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/latest/api/nexusLIMS/nexusLIMS.extractors.plugins.profiles.html" />
     <link rel="icon" href="../../_static/nexusLIMS_bare_logo.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -61,8 +65,8 @@
     <link rel="prev" title="nexusLIMS.extractors.plugins.preview_generators.image_preview" href="nexusLIMS.extractors.plugins.preview_generators.image_preview.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 23, 2025"/>
+  <meta name="docsearch:version" content="2.2.0.dev0" />
+    <meta name="docbuild:last-update" content="Dec, 30, 2025"/>
   </head>
   
   
@@ -128,8 +132,8 @@
       
     
     
-    <img src="../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.1.2.dev0 documentation - Home"/>
-    <img src="../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.1.2.dev0 documentation - Home"/>
+    <img src="../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.2.0.dev0 documentation - Home"/>
+    <img src="../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.2.0.dev0 documentation - Home"/>
   
   
 </a></div>
@@ -172,20 +176,6 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../getting_started.html">
-    Getting Started
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../migration.html">
-    Migration Guide: v1 to v2
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../user_guide.html">
     User Guide
   </a>
@@ -193,28 +183,25 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../dev_guide.html">
-    Developer Guide
+  <a class="nav-link nav-internal" href="../../migration.html">
+    Migration Guide: v1.4.3 to v2.2.0
   </a>
 </li>
 
-            <li class="nav-item dropdown">
-                <button class="btn dropdown-toggle nav-item" type="button"
-                data-bs-toggle="dropdown" aria-expanded="false"
-                aria-controls="pst-nav-more-links">
-                    More
-                </button>
-                <ul id="pst-nav-more-links" class="dropdown-menu">
-                    
-<li class=" current active">
-  <a class="nav-link dropdown-item nav-internal" href="../../reference.html">
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../dev_guide.html">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../reference.html">
     Reference
   </a>
 </li>
 
-                </ul>
-            </li>
-            
   </ul>
 </nav></div>
       
@@ -311,20 +298,6 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../getting_started.html">
-    Getting Started
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../migration.html">
-    Migration Guide: v1 to v2
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../user_guide.html">
     User Guide
   </a>
@@ -332,8 +305,15 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../migration.html">
+    Migration Guide: v1.4.3 to v2.2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../dev_guide.html">
-    Developer Guide
+    Dev Guide
   </a>
 </li>
 
@@ -406,7 +386,7 @@
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../api.html">API documentation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../reference/api.html">API documentation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="nexusLIMS.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS</span></code></a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.db.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.db</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.builder.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.builder</span></code></a></li>
@@ -414,6 +394,7 @@
 <li class="toctree-l4 current active"><a class="reference internal" href="nexusLIMS.extractors.plugins.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="nexusLIMS.extractors.profiles.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.profiles</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="nexusLIMS.extractors.utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.utils</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nexusLIMS.extractors.xml_serialization.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.xml_serialization</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="nexusLIMS.extractors.registry.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.registry</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="nexusLIMS.extractors.base.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.base</span></code></a></li>
 </ul>
@@ -429,7 +410,7 @@
 </details></li>
 </ul>
 </details></li>
-<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/changelog.html">Changelog</a></li>
 </ul>
 </div>
 </nav></div>
@@ -474,7 +455,7 @@
     <li class="breadcrumb-item"><a href="../../reference.html" class="nav-link">Reference</a></li>
     
     
-    <li class="breadcrumb-item"><a href="../../api.html" class="nav-link">API documentation</a></li>
+    <li class="breadcrumb-item"><a href="../../reference/api.html" class="nav-link">API documentation</a></li>
     
     
     <li class="breadcrumb-item"><a href="nexusLIMS.html" class="nav-link"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS</span></code></a></li>
@@ -504,26 +485,6 @@
                   
   <section id="module-nexusLIMS.extractors.plugins.profiles">
 <span id="nexuslims-extractors-plugins-profiles"></span><h1><a class="reference internal" href="#module-nexusLIMS.extractors.plugins.profiles" title="nexusLIMS.extractors.plugins.profiles"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.profiles</span></code></a><a class="headerlink" href="#module-nexusLIMS.extractors.plugins.profiles" title="Link to this heading">#</a></h1>
-<section id="examples">
-<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading">#</a></h2>
-<p>Creating a new instrument profile (in profiles/my_instrument.py):</p>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>from nexusLIMS.extractors.base import InstrumentProfile
-from nexusLIMS.extractors.profiles import get_profile_registry</p>
-<p>def custom_parser(metadata: dict, context) -&gt; dict:
-…     # Custom parsing logic
-…     return metadata</p>
-<p>my_profile = InstrumentProfile(
-…     instrument_id=”My-Instrument-12345”,
-…     parsers={“custom”: custom_parser},
-… )
-get_profile_registry().register(my_profile)</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
-</section>
 <p>Instrument profile modules for customizing extraction behavior.</p>
 <p>This package contains instrument-specific profiles that customize metadata
 extraction without modifying core extractor code. Profiles are automatically
@@ -533,10 +494,26 @@ discovered and registered during plugin initialization.</p>
 <li><p>Import InstrumentProfile and get_profile_registry</p></li>
 <li><p>Define parser/transformation functions</p></li>
 <li><p>Create an InstrumentProfile instance</p></li>
-<li><p>Register it via get_profile_registry().register()</p></li>
+<li><p>Register it via <code class="docutils literal notranslate"><span class="pre">get_profile_registry().register()</span></code></p></li>
 </ol>
 <p>Profile modules are loaded automatically - just add a new .py file to this
 directory and it will be discovered during plugin initialization.</p>
+<p><strong>Examples:</strong></p>
+<p>Creating a new instrument profile (in profiles/my_instrument.py):</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.extractors.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">InstrumentProfile</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.extractors.profiles</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_profile_registry</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">custom_parser</span><span class="p">(</span><span class="n">metadata</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="c1"># Custom parsing logic</span>
+<span class="gp">... </span>    <span class="k">return</span> <span class="n">metadata</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">my_profile</span> <span class="o">=</span> <span class="n">InstrumentProfile</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">instrument_id</span><span class="o">=</span><span class="s2">&quot;My-Instrument-12345&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">parsers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;custom&quot;</span><span class="p">:</span> <span class="n">custom_parser</span><span class="p">},</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">get_profile_registry</span><span class="p">()</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">my_profile</span><span class="p">)</span>
+</pre></div>
+</div>
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">#</a></h2>
 <div class="toctree-wrapper compound">
@@ -560,25 +537,8 @@ directory and it will be discovered during plugin initialization.</p>
 </table>
 </div>
 </section>
-<section id="data">
-<h3>Data<a class="headerlink" href="#data" title="Link to this heading">#</a></h3>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table table-left">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.extractors.plugins.profiles.logger" title="nexusLIMS.extractors.plugins.profiles.logger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">logger</span></code></a></p></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-</div>
-</section>
 <section id="api">
 <h3>API<a class="headerlink" href="#api" title="Link to this heading">#</a></h3>
-<dl class="py data">
-<dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.profiles.logger">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.plugins.profiles.</span></span><span class="sig-name descname"><span class="pre">logger</span></span><a class="headerlink" href="#nexusLIMS.extractors.plugins.profiles.logger" title="Link to this definition">#</a></dt>
-<dd><p>‘getLogger(…)’</p>
-</dd></dl>
-
 <dl class="py function">
 <dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.profiles.register_all_profiles">
 <span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.plugins.profiles.</span></span><span class="sig-name descname"><span class="pre">register_all_profiles</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/plugins/profiles.html#register_all_profiles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.plugins.profiles.register_all_profiles" title="Link to this definition">#</a></dt>
@@ -591,16 +551,12 @@ directory and it will be discovered during plugin initialization.</p>
 <p>Each profile module should register itself by calling
 get_profile_registry().register() at module level.</p>
 <p>This function is called automatically during extractor plugin discovery.</p>
-<p class="rubric" id="id2">Examples</p>
-<blockquote>
-<div><blockquote>
-<div><blockquote>
-<div><p>from nexusLIMS.extractors.plugins.profiles import register_all_profiles
-register_all_profiles()</p>
-<p class="rubric" id="id3">All built-in and local profiles are now registered</p>
-</div></blockquote>
-</div></blockquote>
-</div></blockquote>
+<p><strong>Examples:</strong></p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.extractors.plugins.profiles</span><span class="w"> </span><span class="kn">import</span> <span class="n">register_all_profiles</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">register_all_profiles</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># All built-in and local profiles are now registered</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </section>
@@ -654,13 +610,10 @@ register_all_profiles()</p>
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#examples">Examples</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#package-contents">Package Contents</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data">Data</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#api">API</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.profiles.logger"><code class="docutils literal notranslate"><span class="pre">logger</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.profiles.register_all_profiles"><code class="docutils literal notranslate"><span class="pre">register_all_profiles()</span></code></a></li>
 </ul>
 </li>

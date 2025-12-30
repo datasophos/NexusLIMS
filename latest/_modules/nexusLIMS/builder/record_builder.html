@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>nexusLIMS.builder.record_builder &#8212; NexusLIMS 2.1.2.dev0 documentation</title>
+    <title>nexusLIMS.builder.record_builder &#8212; NexusLIMS 2.2.0.dev0 documentation</title>
   
   
   
@@ -31,8 +31,9 @@
 
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../../_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=af02a5b6" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=8633d6cc" />
   
   <!-- So that users can add custom icons -->
   <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -40,9 +41,11 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../../_static/documentation_options.js?v=bcebe078"></script>
+    <script src="../../../_static/documentation_options.js?v=dc4a309c"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=30646c52"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
     <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs"></script>
     <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs"></script>
@@ -417,14 +420,15 @@ window.addEventListener("load", load);
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
+    <script src="../../../_static/custom.js?v=ba087cdf"></script>
     <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/latest/_modules/nexusLIMS/builder/record_builder.html" />
     <link rel="icon" href="../../../_static/nexusLIMS_bare_logo.ico"/>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 23, 2025"/>
+  <meta name="docsearch:version" content="2.2.0.dev0" />
+    <meta name="docbuild:last-update" content="Dec, 30, 2025"/>
   </head>
   
   
@@ -490,8 +494,8 @@ window.addEventListener("load", load);
       
     
     
-    <img src="../../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.1.2.dev0 documentation - Home"/>
-    <img src="../../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.1.2.dev0 documentation - Home"/>
+    <img src="../../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.2.0.dev0 documentation - Home"/>
+    <img src="../../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.2.0.dev0 documentation - Home"/>
   
   
 </a></div>
@@ -534,20 +538,6 @@ window.addEventListener("load", load);
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../getting_started.html">
-    Getting Started
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../migration.html">
-    Migration Guide: v1 to v2
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../user_guide.html">
     User Guide
   </a>
@@ -555,28 +545,25 @@ window.addEventListener("load", load);
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../dev_guide.html">
-    Developer Guide
+  <a class="nav-link nav-internal" href="../../../migration.html">
+    Migration Guide: v1.4.3 to v2.2.0
   </a>
 </li>
 
-            <li class="nav-item dropdown">
-                <button class="btn dropdown-toggle nav-item" type="button"
-                data-bs-toggle="dropdown" aria-expanded="false"
-                aria-controls="pst-nav-more-links">
-                    More
-                </button>
-                <ul id="pst-nav-more-links" class="dropdown-menu">
-                    
-<li class=" ">
-  <a class="nav-link dropdown-item nav-internal" href="../../../reference.html">
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../dev_guide.html">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../reference.html">
     Reference
   </a>
 </li>
 
-                </ul>
-            </li>
-            
   </ul>
 </nav></div>
       
@@ -671,20 +658,6 @@ window.addEventListener("load", load);
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../getting_started.html">
-    Getting Started
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../migration.html">
-    Migration Guide: v1 to v2
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../user_guide.html">
     User Guide
   </a>
@@ -692,8 +665,15 @@ window.addEventListener("load", load);
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../migration.html">
+    Migration Guide: v1.4.3 to v2.2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../dev_guide.html">
-    Developer Guide
+    Dev Guide
   </a>
 </li>
 
@@ -859,7 +839,7 @@ window.addEventListener("load", load);
     <span class="n">has_delay_passed</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 <span class="n">XSD_PATH</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">activity</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;nexus-experiment.xsd&quot;</span>
 
 
@@ -908,7 +888,7 @@ window.addEventListener("load", load);
     <span class="n">ns_map</span> <span class="o">=</span> <span class="p">{</span><span class="kc">None</span><span class="p">:</span> <span class="n">nx_namespace</span><span class="p">,</span> <span class="s2">&quot;xsi&quot;</span><span class="p">:</span> <span class="n">xsi_namespace</span><span class="p">,</span> <span class="s2">&quot;nx&quot;</span><span class="p">:</span> <span class="n">nx_namespace</span><span class="p">}</span>
     <span class="n">xml</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s2">&quot;Experiment&quot;</span><span class="p">,</span> <span class="n">nsmap</span><span class="o">=</span><span class="n">ns_map</span><span class="p">)</span>
 
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+    <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
         <span class="s2">&quot;Getting calendar events with instrument: </span><span class="si">%s</span><span class="s2">, from </span><span class="si">%s</span><span class="s2"> to </span><span class="si">%s</span><span class="s2">, &quot;</span>
         <span class="s2">&quot;user: </span><span class="si">%s</span><span class="s2">; using harvester: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
         <span class="n">session</span><span class="o">.</span><span class="n">instrument</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
@@ -925,7 +905,7 @@ window.addEventListener("load", load);
     <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">output</span><span class="p">:</span>
         <span class="n">xml</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">child</span><span class="p">)</span>
 
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+    <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
         <span class="s2">&quot;Building acquisition activities for timespan from </span><span class="si">%s</span><span class="s2"> to </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
         <span class="n">session</span><span class="o">.</span><span class="n">dt_from</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
         <span class="n">session</span><span class="o">.</span><span class="n">dt_to</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
@@ -1047,7 +1027,7 @@ window.addEventListener("load", load);
     <span class="c1"># find the files to be included (list of Paths)</span>
     <span class="n">files</span> <span class="o">=</span> <span class="n">get_files</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">dt_from</span><span class="p">,</span> <span class="n">dt_to</span><span class="p">)</span>
 
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+    <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
         <span class="s2">&quot;Found </span><span class="si">%i</span><span class="s2"> files in </span><span class="si">%.2f</span><span class="s2"> seconds&quot;</span><span class="p">,</span>
         <span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">),</span>
         <span class="n">default_timer</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_timer</span><span class="p">,</span>
@@ -1084,7 +1064,7 @@ window.addEventListener("load", load);
                 <span class="p">)</span>
 
             <span class="c1"># add this file to the AA</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
                 <span class="s2">&quot;Adding file </span><span class="si">%i</span><span class="s2">/</span><span class="si">%i</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> to activity </span><span class="si">%i</span><span class="s2">&quot;</span><span class="p">,</span>
                 <span class="n">i</span><span class="p">,</span>
                 <span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">),</span>
@@ -1106,11 +1086,11 @@ window.addEventListener("load", load);
     <span class="c1"># Remove any &quot;None&quot; activities from list</span>
     <span class="n">activities</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">AcquisitionActivity</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">activities</span> <span class="k">if</span> <span class="n">a</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
 
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Finished detecting activities&quot;</span><span class="p">)</span>
+    <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Finished detecting activities&quot;</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">this_activity</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">activities</span><span class="p">):</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Activity </span><span class="si">%i</span><span class="s2">: storing setup parameters&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Activity </span><span class="si">%i</span><span class="s2">: storing setup parameters&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
         <span class="n">this_activity</span><span class="o">.</span><span class="n">store_setup_params</span><span class="p">()</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Activity </span><span class="si">%i</span><span class="s2">: storing unique metadata values&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Activity </span><span class="si">%i</span><span class="s2">: storing unique metadata values&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
         <span class="n">this_activity</span><span class="o">.</span><span class="n">store_unique_metadata</span><span class="p">()</span>
 
     <span class="k">return</span> <span class="n">activities</span></div>
@@ -1144,12 +1124,12 @@ window.addEventListener("load", load);
 <span class="sd">        A list of the files that have modification times within the</span>
 <span class="sd">        time range provided (sorted by modification time)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting new file-finding in </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+    <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting new file-finding in </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
 
     <span class="c1"># read file finding strategy from settings</span>
     <span class="n">strategy</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">NX_FILE_STRATEGY</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">strategy</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;inclusive&quot;</span><span class="p">,</span> <span class="s2">&quot;exclusive&quot;</span><span class="p">]:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
             <span class="s1">&#39;File finding strategy (setting &quot;NX_FILE_STRATEGY&quot;) had &#39;</span>
             <span class="s1">&#39;an unexpected value: &quot;</span><span class="si">%s</span><span class="s1">&quot;. Setting value to &quot;exclusive&quot;.&#39;</span><span class="p">,</span>
             <span class="n">strategy</span><span class="p">,</span>
@@ -1169,7 +1149,7 @@ window.addEventListener("load", load);
     <span class="c1"># exclude following from coverage because find_files_by_mtime is deprecated as of</span>
     <span class="c1"># 1.2.0 and does not support extensions at all (like the above method)</span>
     <span class="k">except</span> <span class="p">(</span><span class="ne">NotImplementedError</span><span class="p">,</span> <span class="ne">RuntimeError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exception</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
             <span class="s2">&quot;GNU find returned error: </span><span class="si">%s</span><span class="se">\n</span><span class="s2">Falling back to pure Python implementation&quot;</span><span class="p">,</span>
             <span class="n">exception</span><span class="p">,</span>
         <span class="p">)</span>
@@ -1290,7 +1270,7 @@ window.addEventListener("load", load);
                 <span class="n">path</span> <span class="o">=</span> <span class="p">(</span>
                     <span class="n">Path</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">NX_INSTRUMENT_DATA_PATH</span><span class="p">)</span> <span class="o">/</span> <span class="n">s</span><span class="o">.</span><span class="n">instrument</span><span class="o">.</span><span class="n">filestore_path</span>
                 <span class="p">)</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
                     <span class="s2">&quot;No files found in </span><span class="si">%s</span><span class="s2"> between </span><span class="si">%s</span><span class="s2"> and </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
                     <span class="n">path</span><span class="p">,</span>
                     <span class="n">s</span><span class="o">.</span><span class="n">dt_from</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
@@ -1298,7 +1278,7 @@ window.addEventListener("load", load);
                 <span class="p">)</span>
 
                 <span class="k">if</span> <span class="n">has_delay_passed</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">dt_to</span><span class="p">):</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
                         <span class="s1">&#39;Marking </span><span class="si">%s</span><span class="s1"> as &quot;NO_FILES_FOUND&quot;&#39;</span><span class="p">,</span>
                         <span class="n">s</span><span class="o">.</span><span class="n">session_identifier</span><span class="p">,</span>
                     <span class="p">)</span>
@@ -1306,7 +1286,7 @@ window.addEventListener("load", load);
                 <span class="k">else</span><span class="p">:</span>
                     <span class="c1"># if the delay hasn&#39;t passed, log and delete the record</span>
                     <span class="c1"># generation event we inserted previously</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
                         <span class="s2">&quot;Configured record building delay has not passed; &quot;</span>
                         <span class="s2">&quot;Removing previously inserted RECORD_GENERATION row for </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
                         <span class="n">s</span><span class="o">.</span><span class="n">session_identifier</span><span class="p">,</span>
@@ -1318,24 +1298,24 @@ window.addEventListener("load", load);
                         <span class="p">),</span>
                     <span class="p">)</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exception</span><span class="p">,</span> <span class="n">nemo</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">NoDataConsentError</span><span class="p">):</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
                     <span class="s2">&quot;User requested this session not be harvested, &quot;</span>
                     <span class="s2">&quot;so no record was built. </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
                     <span class="n">exception</span><span class="p">,</span>
                 <span class="p">)</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Marking </span><span class="si">%s</span><span class="s1"> as &quot;NO_CONSENT&quot;&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">session_identifier</span><span class="p">)</span>
+                <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Marking </span><span class="si">%s</span><span class="s1"> as &quot;NO_CONSENT&quot;&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">session_identifier</span><span class="p">)</span>
                 <span class="n">s</span><span class="o">.</span><span class="n">update_session_status</span><span class="p">(</span><span class="s2">&quot;NO_CONSENT&quot;</span><span class="p">)</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exception</span><span class="p">,</span> <span class="n">nemo</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">NoMatchingReservationError</span><span class="p">):</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
                     <span class="s2">&quot;No matching reservation found for this session, &quot;</span>
                     <span class="s2">&quot;so assuming no consent was given. </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
                     <span class="n">exception</span><span class="p">,</span>
                 <span class="p">)</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Marking </span><span class="si">%s</span><span class="s1"> as &quot;NO_RESERVATION&quot;&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">session_identifier</span><span class="p">)</span>
+                <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Marking </span><span class="si">%s</span><span class="s1"> as &quot;NO_RESERVATION&quot;&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">session_identifier</span><span class="p">)</span>
                 <span class="n">s</span><span class="o">.</span><span class="n">update_session_status</span><span class="p">(</span><span class="s2">&quot;NO_RESERVATION&quot;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Could not generate record text&quot;</span><span class="p">)</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;Marking </span><span class="si">%s</span><span class="s1"> as &quot;ERROR&quot;&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">session_identifier</span><span class="p">)</span>
+                <span class="n">_logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Could not generate record text&quot;</span><span class="p">)</span>
+                <span class="n">_logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;Marking </span><span class="si">%s</span><span class="s1"> as &quot;ERROR&quot;&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">session_identifier</span><span class="p">)</span>
                 <span class="n">s</span><span class="o">.</span><span class="n">update_session_status</span><span class="p">(</span><span class="s2">&quot;ERROR&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">xml_files</span> <span class="o">=</span> <span class="n">_record_validation_flow</span><span class="p">(</span><span class="n">record_text</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">xml_files</span><span class="p">)</span>
@@ -1346,7 +1326,7 @@ window.addEventListener("load", load);
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_record_validation_flow</span><span class="p">(</span><span class="n">record_text</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">xml_files</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]:</span>
     <span class="k">if</span> <span class="n">validate_record</span><span class="p">(</span><span class="n">BytesIO</span><span class="p">(</span><span class="nb">bytes</span><span class="p">(</span><span class="n">record_text</span><span class="p">,</span> <span class="s2">&quot;UTF-8&quot;</span><span class="p">))):</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Validated newly generated record&quot;</span><span class="p">)</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Validated newly generated record&quot;</span><span class="p">)</span>
         <span class="c1"># generate filename for saved record and make sure path exists</span>
         <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">instrument</span><span class="o">.</span><span class="n">harvester</span> <span class="o">==</span> <span class="s2">&quot;nemo&quot;</span><span class="p">:</span>
             <span class="c1"># for NEMO session_identifier is a URL of usage_event</span>
@@ -1362,14 +1342,14 @@ window.addEventListener("load", load);
         <span class="c1"># write the record to disk and append to list of files generated</span>
         <span class="k">with</span> <span class="n">filename</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">record_text</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Wrote record to </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Wrote record to </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
         <span class="n">xml_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
         <span class="c1"># Mark this session as completed in the database</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Marking </span><span class="si">%s</span><span class="s1"> as &quot;COMPLETED&quot;&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">session_identifier</span><span class="p">)</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Marking </span><span class="si">%s</span><span class="s1"> as &quot;COMPLETED&quot;&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">session_identifier</span><span class="p">)</span>
         <span class="n">s</span><span class="o">.</span><span class="n">update_session_status</span><span class="p">(</span><span class="s2">&quot;COMPLETED&quot;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Marking </span><span class="si">%s</span><span class="s1"> as &quot;ERROR&quot;&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">session_identifier</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Could not validate record, did not write to disk&quot;</span><span class="p">)</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Marking </span><span class="si">%s</span><span class="s1"> as &quot;ERROR&quot;&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">session_identifier</span><span class="p">)</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Could not validate record, did not write to disk&quot;</span><span class="p">)</span>
         <span class="n">s</span><span class="o">.</span><span class="n">update_session_status</span><span class="p">(</span><span class="s2">&quot;ERROR&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">xml_files</span>
 
@@ -1405,7 +1385,7 @@ window.addEventListener("load", load);
 <span class="sd">        has an effect for the NEMO harvester.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">dry_run</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;!!DRY RUN!! Only finding files, not building records&quot;</span><span class="p">)</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;!!DRY RUN!! Only finding files, not building records&quot;</span><span class="p">)</span>
         <span class="c1"># get &#39;TO_BE_BUILT&#39; sessions from the database</span>
         <span class="n">sessions</span> <span class="o">=</span> <span class="n">get_sessions_to_build</span><span class="p">()</span>
         <span class="c1"># get Session objects for NEMO usage events without adding to DB</span>
@@ -1415,19 +1395,19 @@ window.addEventListener("load", load);
             <span class="n">dt_to</span><span class="o">=</span><span class="n">dt_to</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">sessions</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;No &#39;TO_BE_BUILT&#39; sessions were found. Exiting.&quot;</span><span class="p">)</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;No &#39;TO_BE_BUILT&#39; sessions were found. Exiting.&quot;</span><span class="p">)</span>
             <span class="k">return</span>
         <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">sessions</span><span class="p">:</span>
             <span class="c1"># at this point, sessions can be from any type of harvester</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
             <span class="n">get_reservation_event</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
             <span class="n">dry_run_file_find</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">nemo_utils</span><span class="o">.</span><span class="n">add_all_usage_events_to_db</span><span class="p">(</span><span class="n">dt_from</span><span class="o">=</span><span class="n">dt_from</span><span class="p">,</span> <span class="n">dt_to</span><span class="o">=</span><span class="n">dt_to</span><span class="p">)</span>
         <span class="n">xml_files</span> <span class="o">=</span> <span class="n">build_new_session_records</span><span class="p">()</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">xml_files</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;No XML files built, so no files uploaded&quot;</span><span class="p">)</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;No XML files built, so no files uploaded&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">files_uploaded</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">upload_record_files</span><span class="p">(</span><span class="n">xml_files</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files_uploaded</span><span class="p">:</span>
@@ -1439,7 +1419,7 @@ window.addEventListener("load", load);
             <span class="n">files_not_uploaded</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">xml_files</span> <span class="k">if</span> <span class="n">f</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">files_uploaded</span><span class="p">]</span>
 
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">files_not_uploaded</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                <span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
                     <span class="s2">&quot;Some record files were not uploaded: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
                     <span class="n">files_not_uploaded</span><span class="p">,</span>
                 <span class="p">)</span>
@@ -1465,7 +1445,7 @@ window.addEventListener("load", load);
 <span class="sd">        record of this session (if it were not a dry run)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">NX_INSTRUMENT_DATA_PATH</span><span class="p">)</span> <span class="o">/</span> <span class="n">s</span><span class="o">.</span><span class="n">instrument</span><span class="o">.</span><span class="n">filestore_path</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+    <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
         <span class="s2">&quot;Searching for files for </span><span class="si">%s</span><span class="s2"> in </span><span class="si">%s</span><span class="s2"> between </span><span class="si">%s</span><span class="s2"> and </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
         <span class="n">s</span><span class="o">.</span><span class="n">instrument</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
         <span class="n">path</span><span class="p">,</span>
@@ -1474,17 +1454,17 @@ window.addEventListener("load", load);
     <span class="p">)</span>
     <span class="n">files</span> <span class="o">=</span> <span class="n">get_files</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">dt_from</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">dt_to</span><span class="p">)</span>
 
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Results for </span><span class="si">%s</span><span class="s2"> on </span><span class="si">%s</span><span class="s2">:&quot;</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">session_identifier</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">instrument</span><span class="p">)</span>
+    <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Results for </span><span class="si">%s</span><span class="s2"> on </span><span class="si">%s</span><span class="s2">:&quot;</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">session_identifier</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">instrument</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;No files found for this session&quot;</span><span class="p">)</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;No files found for this session&quot;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Found </span><span class="si">%i</span><span class="s2"> files for this session&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">))</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Found </span><span class="si">%i</span><span class="s2"> files for this session&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">))</span>
     <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
         <span class="n">mtime</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span>
             <span class="n">f</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_mtime</span><span class="p">,</span>
             <span class="n">tz</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">instrument</span><span class="o">.</span><span class="n">timezone</span><span class="p">,</span>
         <span class="p">)</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;*mtime* </span><span class="si">%s</span><span class="s2"> - </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">mtime</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;*mtime* </span><span class="si">%s</span><span class="s2"> - </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">mtime</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">files</span></div>
 
 
@@ -1528,13 +1508,13 @@ window.addEventListener("load", load);
     <span class="n">logging_levels</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">}</span>
 
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">dry_run</span> <span class="ow">and</span> <span class="n">args</span><span class="o">.</span><span class="n">verbose</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Increasing verbosity so output of &quot;dry-run&quot; will be shown&#39;</span><span class="p">)</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Increasing verbosity so output of &quot;dry-run&quot; will be shown&#39;</span><span class="p">)</span>
         <span class="n">args</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="mi">1</span>
 
     <span class="n">setup_loggers</span><span class="p">(</span><span class="n">logging_levels</span><span class="p">[</span><span class="n">args</span><span class="o">.</span><span class="n">verbose</span><span class="p">])</span>
     <span class="c1"># when running as script, __name__ is &quot;__main__&quot;, so we need to set level</span>
     <span class="c1"># explicitly since the setup_loggers function won&#39;t find it</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging_levels</span><span class="p">[</span><span class="n">args</span><span class="o">.</span><span class="n">verbose</span><span class="p">])</span>
+    <span class="n">_logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging_levels</span><span class="p">[</span><span class="n">args</span><span class="o">.</span><span class="n">verbose</span><span class="p">])</span>
 
     <span class="c1"># by default only fetch the last week&#39;s worth of data from the NEMO</span>
     <span class="c1"># harvesters to speed things up</span>

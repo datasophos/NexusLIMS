@@ -4,6 +4,7 @@
 ```
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.edax
+:parser: autodoc2_docstrings_parser
 :allowtitles:
 ```
 
@@ -17,10 +18,12 @@
 
 * - {py:obj}`SpcExtractor <nexusLIMS.extractors.plugins.edax.SpcExtractor>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.edax.SpcExtractor
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`MsaExtractor <nexusLIMS.extractors.plugins.edax.MsaExtractor>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.edax.MsaExtractor
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 ````
@@ -33,42 +36,23 @@
 
 * - {py:obj}`get_spc_metadata <nexusLIMS.extractors.plugins.edax.get_spc_metadata>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.edax.get_spc_metadata
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`get_msa_metadata <nexusLIMS.extractors.plugins.edax.get_msa_metadata>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.edax.get_msa_metadata
-    :summary:
-    ```
-````
-
-### Data
-
-````{list-table}
-:class: autosummary longtable
-:align: left
-
-* - {py:obj}`logger <nexusLIMS.extractors.plugins.edax.logger>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.edax.logger
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 ````
 
 ### API
 
-````{py:data} logger
-:canonical: nexusLIMS.extractors.plugins.edax.logger
-:value: >
-   'getLogger(...)'
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.edax.logger
-```
-
-````
-
 `````{py:class} SpcExtractor
 :canonical: nexusLIMS.extractors.plugins.edax.SpcExtractor
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.edax.SpcExtractor
+:parser: autodoc2_docstrings_parser
 ```
 
 ````{py:attribute} name
@@ -77,6 +61,7 @@
    'spc_extractor'
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.edax.SpcExtractor.name
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -87,17 +72,18 @@
    100
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.edax.SpcExtractor.priority
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} supported_extensions
 :canonical: nexusLIMS.extractors.plugins.edax.SpcExtractor.supported_extensions
-:type: typing.ClassVar
-:value: >
-   None
+
+**Type:** typing.ClassVar
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.edax.SpcExtractor.supported_extensions
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -106,6 +92,7 @@
 :canonical: nexusLIMS.extractors.plugins.edax.SpcExtractor.supports
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.edax.SpcExtractor.supports
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -114,6 +101,7 @@
 :canonical: nexusLIMS.extractors.plugins.edax.SpcExtractor.extract
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.edax.SpcExtractor.extract
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -124,6 +112,7 @@
 :canonical: nexusLIMS.extractors.plugins.edax.MsaExtractor
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.edax.MsaExtractor
+:parser: autodoc2_docstrings_parser
 ```
 
 ````{py:attribute} name
@@ -132,6 +121,7 @@
    'msa_extractor'
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.edax.MsaExtractor.name
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -142,17 +132,18 @@
    100
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.edax.MsaExtractor.priority
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} supported_extensions
 :canonical: nexusLIMS.extractors.plugins.edax.MsaExtractor.supported_extensions
-:type: typing.ClassVar
-:value: >
-   None
+
+**Type:** typing.ClassVar
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.edax.MsaExtractor.supported_extensions
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -161,6 +152,7 @@
 :canonical: nexusLIMS.extractors.plugins.edax.MsaExtractor.supports
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.edax.MsaExtractor.supports
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -169,6 +161,7 @@
 :canonical: nexusLIMS.extractors.plugins.edax.MsaExtractor.extract
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.edax.MsaExtractor.extract
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -179,6 +172,7 @@
 :canonical: nexusLIMS.extractors.plugins.edax.get_spc_metadata
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.edax.get_spc_metadata
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -186,5 +180,6 @@
 :canonical: nexusLIMS.extractors.plugins.edax.get_msa_metadata
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.edax.get_msa_metadata
+:parser: autodoc2_docstrings_parser
 ```
 ````

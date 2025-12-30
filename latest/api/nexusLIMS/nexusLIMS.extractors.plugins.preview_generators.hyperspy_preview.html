@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview &#8212; NexusLIMS 2.1.2.dev0 documentation</title>
+    <title>nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview &#8212; NexusLIMS 2.2.0.dev0 documentation</title>
   
   
   
@@ -32,8 +32,9 @@
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=af02a5b6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=8633d6cc" />
   
   <!-- So that users can add custom icons -->
   <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -41,9 +42,11 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../_static/documentation_options.js?v=bcebe078"></script>
+    <script src="../../_static/documentation_options.js?v=dc4a309c"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=30646c52"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'api/nexusLIMS/nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview';</script>
     <script>
@@ -53,6 +56,7 @@
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
+    <script src="../../_static/custom.js?v=ba087cdf"></script>
     <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/latest/api/nexusLIMS/nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.html" />
     <link rel="icon" href="../../_static/nexusLIMS_bare_logo.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -61,8 +65,8 @@
     <link rel="prev" title="nexusLIMS.extractors.plugins.preview_generators.text_preview" href="nexusLIMS.extractors.plugins.preview_generators.text_preview.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 23, 2025"/>
+  <meta name="docsearch:version" content="2.2.0.dev0" />
+    <meta name="docbuild:last-update" content="Dec, 30, 2025"/>
   </head>
   
   
@@ -128,8 +132,8 @@
       
     
     
-    <img src="../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.1.2.dev0 documentation - Home"/>
-    <img src="../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.1.2.dev0 documentation - Home"/>
+    <img src="../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.2.0.dev0 documentation - Home"/>
+    <img src="../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.2.0.dev0 documentation - Home"/>
   
   
 </a></div>
@@ -172,20 +176,6 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../getting_started.html">
-    Getting Started
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../migration.html">
-    Migration Guide: v1 to v2
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../user_guide.html">
     User Guide
   </a>
@@ -193,28 +183,25 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../dev_guide.html">
-    Developer Guide
+  <a class="nav-link nav-internal" href="../../migration.html">
+    Migration Guide: v1.4.3 to v2.2.0
   </a>
 </li>
 
-            <li class="nav-item dropdown">
-                <button class="btn dropdown-toggle nav-item" type="button"
-                data-bs-toggle="dropdown" aria-expanded="false"
-                aria-controls="pst-nav-more-links">
-                    More
-                </button>
-                <ul id="pst-nav-more-links" class="dropdown-menu">
-                    
-<li class=" current active">
-  <a class="nav-link dropdown-item nav-internal" href="../../reference.html">
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../dev_guide.html">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../reference.html">
     Reference
   </a>
 </li>
 
-                </ul>
-            </li>
-            
   </ul>
 </nav></div>
       
@@ -311,20 +298,6 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../getting_started.html">
-    Getting Started
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../migration.html">
-    Migration Guide: v1 to v2
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../user_guide.html">
     User Guide
   </a>
@@ -332,8 +305,15 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../migration.html">
+    Migration Guide: v1.4.3 to v2.2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../dev_guide.html">
-    Developer Guide
+    Dev Guide
   </a>
 </li>
 
@@ -406,7 +386,7 @@
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../api.html">API documentation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../reference/api.html">API documentation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="nexusLIMS.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS</span></code></a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.db.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.db</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.builder.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.builder</span></code></a></li>
@@ -414,6 +394,7 @@
 <li class="toctree-l4 current active"><a class="reference internal" href="nexusLIMS.extractors.plugins.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="nexusLIMS.extractors.profiles.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.profiles</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="nexusLIMS.extractors.utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.utils</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nexusLIMS.extractors.xml_serialization.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.xml_serialization</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="nexusLIMS.extractors.registry.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.registry</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="nexusLIMS.extractors.base.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.base</span></code></a></li>
 </ul>
@@ -429,7 +410,7 @@
 </details></li>
 </ul>
 </details></li>
-<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/changelog.html">Changelog</a></li>
 </ul>
 </div>
 </nav></div>
@@ -474,7 +455,7 @@
     <li class="breadcrumb-item"><a href="../../reference.html" class="nav-link">Reference</a></li>
     
     
-    <li class="breadcrumb-item"><a href="../../api.html" class="nav-link">API documentation</a></li>
+    <li class="breadcrumb-item"><a href="../../reference/api.html" class="nav-link">API documentation</a></li>
     
     
     <li class="breadcrumb-item"><a href="nexusLIMS.html" class="nav-link"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS</span></code></a></li>
@@ -539,11 +520,8 @@
 <h3>Data<a class="headerlink" href="#data" title="Link to this heading">#</a></h3>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table table-left">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.logger" title="nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.logger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">logger</span></code></a></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.SPECTRUM_IMAGE_LOGO" title="nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.SPECTRUM_IMAGE_LOGO"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SPECTRUM_IMAGE_LOGO</span></code></a></p></td>
-<td></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.SPECTRUM_IMAGE_LOGO" title="nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.SPECTRUM_IMAGE_LOGO"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SPECTRUM_IMAGE_LOGO</span></code></a></p></td>
+<td><p>Logo background to use for a spectrum image preview</p></td>
 </tr>
 </tbody>
 </table>
@@ -552,15 +530,9 @@
 <section id="api">
 <h3>API<a class="headerlink" href="#api" title="Link to this heading">#</a></h3>
 <dl class="py data">
-<dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.logger">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.</span></span><span class="sig-name descname"><span class="pre">logger</span></span><a class="headerlink" href="#nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.logger" title="Link to this definition">#</a></dt>
-<dd><p>‘getLogger(…)’</p>
-</dd></dl>
-
-<dl class="py data">
 <dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.SPECTRUM_IMAGE_LOGO">
 <span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.</span></span><span class="sig-name descname"><span class="pre">SPECTRUM_IMAGE_LOGO</span></span><a class="headerlink" href="#nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.SPECTRUM_IMAGE_LOGO" title="Link to this definition">#</a></dt>
-<dd><p>None</p>
+<dd><p>Logo background to use for a spectrum image preview</p>
 </dd></dl>
 
 <dl class="py function">
@@ -570,9 +542,11 @@
 <p>Read annotations from a signal originating from DigitalMicrograph and
 convert the ones (that we can) into HyperSpy 2.0+ markers for plotting.
 Uses the modern hs.plot.markers API instead of the deprecated dict2marker.</p>
-<p class="rubric" id="id2">Parameters</p>
-<p>s : :py:class:<code class="docutils literal notranslate"><span class="pre">hyperspy.signal.BaseSignal</span></code> (or subclass)
-The HyperSpy signal for which a thumbnail should be generated</p>
+<dl class="myst field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>s</strong> (<a class="reference external" href="http://hyperspy.org/hyperspy-doc/current/reference/api.signals/BaseSignal.html#hyperspy.api.signals.BaseSignal" title="(in HyperSpy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">hyperspy.signal.BaseSignal</span></code></a> (or subclass)) – The HyperSpy signal for which a thumbnail should be generated</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -589,18 +563,23 @@ number of navigation dimensions:</p>
 <li><p>2: Image of spectra sampled from navigation space</p></li>
 <li><p>2+: As for 2 dimensions</p></li>
 </ul>
-<p class="rubric" id="id3">Parameters</p>
-<p>s : :py:class:<code class="docutils literal notranslate"><span class="pre">hyperspy.signal.BaseSignal</span></code> (or subclass)
-The HyperSpy signal for which a thumbnail should be generated
-out_path
-A path to the desired thumbnail filename. All formats supported by
-:py:meth:<code class="docutils literal notranslate"><span class="pre">~matplotlib.figure.Figure.savefig</span></code> can be used.
-dpi : int
-The “dots per inch” resolution for the outputted figure</p>
-<p class="rubric" id="id4">Returns</p>
-<p>f : :py:class:<code class="docutils literal notranslate"><span class="pre">matplotlib.figure.Figure</span></code>
-Handle to a matplotlib Figure</p>
-<p class="rubric" id="id5">Notes</p>
+<dl class="myst field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>s</strong> (<a class="reference external" href="http://hyperspy.org/hyperspy-doc/current/reference/api.signals/BaseSignal.html#hyperspy.api.signals.BaseSignal" title="(in HyperSpy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">hyperspy.signal.BaseSignal</span></code></a> (or subclass)) – The HyperSpy signal for which a thumbnail should be generated</p></li>
+<li><p><strong>out_path</strong> – A path to the desired thumbnail filename. All formats supported by
+<a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.figure.Figure.savefig.html#matplotlib.figure.Figure.savefig" title="(in Matplotlib v3.10.8)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">savefig()</span></code></a> can be used.</p></li>
+<li><p><strong>dpi</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – The “dots per inch” resolution for the outputted figure</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>f</strong> – Handle to a matplotlib Figure</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure" title="(in Matplotlib v3.10.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.figure.Figure</span></code></a></p>
+</dd>
+</dl>
+<p><strong>Notes:</strong></p>
 <p>This method heavily utilizes HyperSpy’s existing plotting functions to
 figure out how to best display the image</p>
 </dd></dl>
@@ -626,34 +605,45 @@ It uses the sig_to_thumbnail function to create previews.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.HyperSpyPreviewGenerator.supported_extensions">
-<span class="sig-name descname"><span class="pre">supported_extensions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.ClassVar" title="(in Python v3.11)"><span class="pre">ClassVar</span></a></em><a class="headerlink" href="#nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.HyperSpyPreviewGenerator.supported_extensions" title="Link to this definition">#</a></dt>
-<dd><p>None</p>
+<span class="sig-name descname"><span class="pre">supported_extensions</span></span><a class="headerlink" href="#nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.HyperSpyPreviewGenerator.supported_extensions" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> typing.ClassVar</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.HyperSpyPreviewGenerator.supports">
 <span class="sig-name descname"><span class="pre">supports</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="nexusLIMS.extractors.base.html#nexusLIMS.extractors.base.ExtractionContext" title="nexusLIMS.extractors.base.ExtractionContext"><span class="pre">ExtractionContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/plugins/preview_generators/hyperspy_preview.html#HyperSpyPreviewGenerator.supports"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.HyperSpyPreviewGenerator.supports" title="Link to this definition">#</a></dt>
 <dd><p>Check if this generator supports the given file.</p>
-<p class="rubric" id="id6">Parameters</p>
-<p>context
-The extraction context containing file information</p>
-<p class="rubric" id="id7">Returns</p>
-<p>bool
-True if file extension is supported by HyperSpy</p>
+<dl class="myst field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>context</strong> – The extraction context containing file information</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if file extension is supported by HyperSpy</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.HyperSpyPreviewGenerator.generate">
 <span class="sig-name descname"><span class="pre">generate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="nexusLIMS.extractors.base.html#nexusLIMS.extractors.base.ExtractionContext" title="nexusLIMS.extractors.base.ExtractionContext"><span class="pre">ExtractionContext</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/plugins/preview_generators/hyperspy_preview.html#HyperSpyPreviewGenerator.generate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.HyperSpyPreviewGenerator.generate" title="Link to this definition">#</a></dt>
 <dd><p>Generate a thumbnail preview using HyperSpy.</p>
-<p class="rubric" id="id8">Parameters</p>
-<p>context
-The extraction context containing file information
-output_path
-Path where the preview image should be saved</p>
-<p class="rubric" id="id9">Returns</p>
-<p>bool
-True if preview was successfully generated, False otherwise</p>
+<dl class="myst field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>context</strong> – The extraction context containing file information</p></li>
+<li><p><strong>output_path</strong> – Path where the preview image should be saved</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if preview was successfully generated, False otherwise</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -714,7 +704,6 @@ True if preview was successfully generated, False otherwise</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data">Data</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#api">API</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.logger"><code class="docutils literal notranslate"><span class="pre">logger</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.SPECTRUM_IMAGE_LOGO"><code class="docutils literal notranslate"><span class="pre">SPECTRUM_IMAGE_LOGO</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.add_annotation_markers"><code class="docutils literal notranslate"><span class="pre">add_annotation_markers()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.sig_to_thumbnail"><code class="docutils literal notranslate"><span class="pre">sig_to_thumbnail()</span></code></a></li>

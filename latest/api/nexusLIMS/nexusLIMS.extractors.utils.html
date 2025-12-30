@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>nexusLIMS.extractors.utils &#8212; NexusLIMS 2.1.2.dev0 documentation</title>
+    <title>nexusLIMS.extractors.utils &#8212; NexusLIMS 2.2.0.dev0 documentation</title>
   
   
   
@@ -32,8 +32,9 @@
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=af02a5b6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=8633d6cc" />
   
   <!-- So that users can add custom icons -->
   <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -41,9 +42,11 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../_static/documentation_options.js?v=bcebe078"></script>
+    <script src="../../_static/documentation_options.js?v=dc4a309c"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=30646c52"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'api/nexusLIMS/nexusLIMS.extractors.utils';</script>
     <script>
@@ -53,16 +56,17 @@
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
+    <script src="../../_static/custom.js?v=ba087cdf"></script>
     <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/latest/api/nexusLIMS/nexusLIMS.extractors.utils.html" />
     <link rel="icon" href="../../_static/nexusLIMS_bare_logo.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="nexusLIMS.extractors.registry" href="nexusLIMS.extractors.registry.html" />
+    <link rel="next" title="nexusLIMS.extractors.xml_serialization" href="nexusLIMS.extractors.xml_serialization.html" />
     <link rel="prev" title="nexusLIMS.extractors.profiles" href="nexusLIMS.extractors.profiles.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 23, 2025"/>
+  <meta name="docsearch:version" content="2.2.0.dev0" />
+    <meta name="docbuild:last-update" content="Dec, 30, 2025"/>
   </head>
   
   
@@ -128,8 +132,8 @@
       
     
     
-    <img src="../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.1.2.dev0 documentation - Home"/>
-    <img src="../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.1.2.dev0 documentation - Home"/>
+    <img src="../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.2.0.dev0 documentation - Home"/>
+    <img src="../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.2.0.dev0 documentation - Home"/>
   
   
 </a></div>
@@ -172,20 +176,6 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../getting_started.html">
-    Getting Started
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../migration.html">
-    Migration Guide: v1 to v2
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../user_guide.html">
     User Guide
   </a>
@@ -193,28 +183,25 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../dev_guide.html">
-    Developer Guide
+  <a class="nav-link nav-internal" href="../../migration.html">
+    Migration Guide: v1.4.3 to v2.2.0
   </a>
 </li>
 
-            <li class="nav-item dropdown">
-                <button class="btn dropdown-toggle nav-item" type="button"
-                data-bs-toggle="dropdown" aria-expanded="false"
-                aria-controls="pst-nav-more-links">
-                    More
-                </button>
-                <ul id="pst-nav-more-links" class="dropdown-menu">
-                    
-<li class=" current active">
-  <a class="nav-link dropdown-item nav-internal" href="../../reference.html">
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../dev_guide.html">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../reference.html">
     Reference
   </a>
 </li>
 
-                </ul>
-            </li>
-            
   </ul>
 </nav></div>
       
@@ -311,20 +298,6 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../getting_started.html">
-    Getting Started
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../migration.html">
-    Migration Guide: v1 to v2
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../user_guide.html">
     User Guide
   </a>
@@ -332,8 +305,15 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../migration.html">
+    Migration Guide: v1.4.3 to v2.2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../dev_guide.html">
-    Developer Guide
+    Dev Guide
   </a>
 </li>
 
@@ -406,7 +386,7 @@
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../api.html">API documentation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../reference/api.html">API documentation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="nexusLIMS.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS</span></code></a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.db.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.db</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.builder.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.builder</span></code></a></li>
@@ -414,6 +394,7 @@
 <li class="toctree-l4"><a class="reference internal" href="nexusLIMS.extractors.plugins.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="nexusLIMS.extractors.profiles.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.profiles</span></code></a></li>
 <li class="toctree-l4 current active"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.utils</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nexusLIMS.extractors.xml_serialization.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.xml_serialization</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="nexusLIMS.extractors.registry.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.registry</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="nexusLIMS.extractors.base.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.base</span></code></a></li>
 </ul>
@@ -429,7 +410,7 @@
 </details></li>
 </ul>
 </details></li>
-<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/changelog.html">Changelog</a></li>
 </ul>
 </div>
 </nav></div>
@@ -474,7 +455,7 @@
     <li class="breadcrumb-item"><a href="../../reference.html" class="nav-link">Reference</a></li>
     
     
-    <li class="breadcrumb-item"><a href="../../api.html" class="nav-link">API documentation</a></li>
+    <li class="breadcrumb-item"><a href="../../reference/api.html" class="nav-link">API documentation</a></li>
     
     
     <li class="breadcrumb-item"><a href="nexusLIMS.html" class="nav-link"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS</span></code></a></li>
@@ -504,12 +485,12 @@
 <p>Methods (primarily intended to be private) that are used by the other extractors.</p>
 <section id="module-contents">
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
-<section id="data">
-<h3>Data<a class="headerlink" href="#data" title="Link to this heading">#</a></h3>
+<section id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h3>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table table-left">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.extractors.utils.logger" title="nexusLIMS.extractors.utils.logger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">logger</span></code></a></p></td>
-<td></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.extractors.utils.add_to_extensions" title="nexusLIMS.extractors.utils.add_to_extensions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_to_extensions</span></code></a></p></td>
+<td><p>Add a field to the extensions section of nx_meta.</p></td>
 </tr>
 </tbody>
 </table>
@@ -517,10 +498,47 @@
 </section>
 <section id="api">
 <h3>API<a class="headerlink" href="#api" title="Link to this heading">#</a></h3>
-<dl class="py data">
-<dt class="sig sig-object py" id="nexusLIMS.extractors.utils.logger">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.utils.</span></span><span class="sig-name descname"><span class="pre">logger</span></span><a class="headerlink" href="#nexusLIMS.extractors.utils.logger" title="Link to this definition">#</a></dt>
-<dd><p>‘getLogger(…)’</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.utils.add_to_extensions">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.utils.</span></span><span class="sig-name descname"><span class="pre">add_to_extensions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nx_meta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><span class="pre">dict</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/utils.html#add_to_extensions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.utils.add_to_extensions" title="Link to this definition">#</a></dt>
+<dd><p>Add a field to the extensions section of nx_meta.</p>
+<p>This is a convenience function that ensures the extensions dict exists
+before adding a field. Use this for vendor-specific, instrument-specific,
+or facility-specific metadata that doesn’t fit the core schema.</p>
+<dl class="myst field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nx_meta</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>) – The nx_meta dictionary being built by the extractor. Will be modified
+in place to add the field to the extensions section.</p></li>
+<li><p><strong>field_name</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Name of the field to add. Use descriptive names that clearly indicate
+the field’s meaning (e.g., ‘quanta_spot_size’, ‘detector_contrast’).</p></li>
+<li><p><strong>value</strong> (<em>Any</em>) – The value to store. Can be any JSON-serializable type, including
+Pint Quantity objects which will be automatically serialized.</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Examples:</strong></p>
+<p>Add vendor-specific fields during metadata extraction:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">nx_meta</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>    <span class="s2">&quot;DatasetType&quot;</span><span class="p">:</span> <span class="s2">&quot;Image&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="s2">&quot;Data Type&quot;</span><span class="p">:</span> <span class="s2">&quot;SEM_Imaging&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="s2">&quot;Creation Time&quot;</span><span class="p">:</span> <span class="s2">&quot;2024-01-15T10:30:00-05:00&quot;</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">add_to_extensions</span><span class="p">(</span><span class="n">nx_meta</span><span class="p">,</span> <span class="s2">&quot;spot_size&quot;</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">add_to_extensions</span><span class="p">(</span><span class="n">nx_meta</span><span class="p">,</span> <span class="s2">&quot;detector_contrast&quot;</span><span class="p">,</span> <span class="mf">50.0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">nx_meta</span><span class="p">[</span><span class="s2">&quot;extensions&quot;</span><span class="p">]</span>
+<span class="go">{&#39;spot_size&#39;: 3.5, &#39;detector_contrast&#39;: 50.0}</span>
+</pre></div>
+</div>
+<p>Works with Pint Quantities:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas.units</span><span class="w"> </span><span class="kn">import</span> <span class="n">ureg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">add_to_extensions</span><span class="p">(</span><span class="n">nx_meta</span><span class="p">,</span> <span class="s2">&quot;chamber_pressure&quot;</span><span class="p">,</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mf">79.8</span><span class="p">,</span> <span class="s2">&quot;pascal&quot;</span><span class="p">))</span>
+</pre></div>
+</div>
+<p><strong>Notes:</strong></p>
+<p>The extensions section preserves all metadata that doesn’t fit the core
+schema, ensuring no data loss during extraction. Extensions are included
+in the XML output and preserved through the record building process.</p>
 </dd></dl>
 
 </section>
@@ -547,11 +565,11 @@
       </div>
     </a>
     <a class="right-next"
-       href="nexusLIMS.extractors.registry.html"
+       href="nexusLIMS.extractors.xml_serialization.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.registry</span></code></p>
+        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.xml_serialization</span></code></p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -575,9 +593,9 @@
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data">Data</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#api">API</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.utils.logger"><code class="docutils literal notranslate"><span class="pre">logger</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.utils.add_to_extensions"><code class="docutils literal notranslate"><span class="pre">add_to_extensions()</span></code></a></li>
 </ul>
 </li>
 </ul>

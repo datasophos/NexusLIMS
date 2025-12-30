@@ -4,6 +4,7 @@
 ```
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph
+:parser: autodoc2_docstrings_parser
 :allowtitles:
 ```
 
@@ -17,6 +18,7 @@
 
 * - {py:obj}`DM3Extractor <nexusLIMS.extractors.plugins.digital_micrograph.DM3Extractor>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph.DM3Extractor
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 ````
@@ -29,62 +31,48 @@
 
 * - {py:obj}`get_dm3_metadata <nexusLIMS.extractors.plugins.digital_micrograph.get_dm3_metadata>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph.get_dm3_metadata
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`get_pre_path <nexusLIMS.extractors.plugins.digital_micrograph.get_pre_path>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph.get_pre_path
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`parse_dm3_microscope_info <nexusLIMS.extractors.plugins.digital_micrograph.parse_dm3_microscope_info>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph.parse_dm3_microscope_info
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`parse_dm3_eels_info <nexusLIMS.extractors.plugins.digital_micrograph.parse_dm3_eels_info>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph.parse_dm3_eels_info
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`parse_dm3_eds_info <nexusLIMS.extractors.plugins.digital_micrograph.parse_dm3_eds_info>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph.parse_dm3_eds_info
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`parse_dm3_spectrum_image_info <nexusLIMS.extractors.plugins.digital_micrograph.parse_dm3_spectrum_image_info>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph.parse_dm3_spectrum_image_info
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`process_tecnai_microscope_info <nexusLIMS.extractors.plugins.digital_micrograph.process_tecnai_microscope_info>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph.process_tecnai_microscope_info
-    :summary:
-    ```
-````
-
-### Data
-
-````{list-table}
-:class: autosummary longtable
-:align: left
-
-* - {py:obj}`logger <nexusLIMS.extractors.plugins.digital_micrograph.logger>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph.logger
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 ````
 
 ### API
 
-````{py:data} logger
-:canonical: nexusLIMS.extractors.plugins.digital_micrograph.logger
-:value: >
-   'getLogger(...)'
-
-```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph.logger
-```
-
-````
-
 `````{py:class} DM3Extractor
 :canonical: nexusLIMS.extractors.plugins.digital_micrograph.DM3Extractor
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph.DM3Extractor
+:parser: autodoc2_docstrings_parser
 ```
 
 ````{py:attribute} name
@@ -93,6 +81,7 @@
    'dm3_extractor'
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph.DM3Extractor.name
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -103,17 +92,18 @@
    100
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph.DM3Extractor.priority
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:attribute} supported_extensions
 :canonical: nexusLIMS.extractors.plugins.digital_micrograph.DM3Extractor.supported_extensions
-:type: typing.ClassVar
-:value: >
-   None
+
+**Type:** typing.ClassVar
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph.DM3Extractor.supported_extensions
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -122,6 +112,7 @@
 :canonical: nexusLIMS.extractors.plugins.digital_micrograph.DM3Extractor.supports
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph.DM3Extractor.supports
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -130,6 +121,7 @@
 :canonical: nexusLIMS.extractors.plugins.digital_micrograph.DM3Extractor.extract
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph.DM3Extractor.extract
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -140,6 +132,7 @@
 :canonical: nexusLIMS.extractors.plugins.digital_micrograph.get_dm3_metadata
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph.get_dm3_metadata
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -147,6 +140,7 @@
 :canonical: nexusLIMS.extractors.plugins.digital_micrograph.get_pre_path
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph.get_pre_path
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -154,6 +148,7 @@
 :canonical: nexusLIMS.extractors.plugins.digital_micrograph.parse_dm3_microscope_info
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph.parse_dm3_microscope_info
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -161,6 +156,7 @@
 :canonical: nexusLIMS.extractors.plugins.digital_micrograph.parse_dm3_eels_info
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph.parse_dm3_eels_info
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -168,6 +164,7 @@
 :canonical: nexusLIMS.extractors.plugins.digital_micrograph.parse_dm3_eds_info
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph.parse_dm3_eds_info
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -175,6 +172,7 @@
 :canonical: nexusLIMS.extractors.plugins.digital_micrograph.parse_dm3_spectrum_image_info
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph.parse_dm3_spectrum_image_info
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -182,5 +180,6 @@
 :canonical: nexusLIMS.extractors.plugins.digital_micrograph.process_tecnai_microscope_info
 
 ```{autodoc2-docstring} nexusLIMS.extractors.plugins.digital_micrograph.process_tecnai_microscope_info
+:parser: autodoc2_docstrings_parser
 ```
 ````

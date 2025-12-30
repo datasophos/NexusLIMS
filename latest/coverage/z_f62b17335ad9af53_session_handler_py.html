@@ -65,7 +65,7 @@
             <a id="nextFileLink" class="nav" href="z_608a0ddf03aefd43___init___py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.11.3">coverage.py v7.11.3</a>,
-            created at 2025-12-23 05:16 +0000
+            created at 2025-12-30 00:51 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"></button>
@@ -94,7 +94,7 @@
     <p class="run"><span class="n"><a id="t12" href="#t12">12</a></span><span class="t"><span class="key">from</span> <span class="nam">nexusLIMS</span><span class="op">.</span><span class="nam">instruments</span> <span class="key">import</span> <span class="nam">Instrument</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t13" href="#t13">13</a></span><span class="t"><span class="key">from</span> <span class="nam">nexusLIMS</span><span class="op">.</span><span class="nam">utils</span> <span class="key">import</span> <span class="nam">current_system_tz</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t14" href="#t14">14</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t15" href="#t15">15</a></span><span class="t"><span class="nam">logger</span> <span class="op">=</span> <span class="nam">logging</span><span class="op">.</span><span class="nam">getLogger</span><span class="op">(</span><span class="nam">__name__</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t15" href="#t15">15</a></span><span class="t"><span class="nam">_logger</span> <span class="op">=</span> <span class="nam">logging</span><span class="op">.</span><span class="nam">getLogger</span><span class="op">(</span><span class="nam">__name__</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t16" href="#t16">16</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t17" href="#t17">17</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t18" href="#t18">18</a></span><span class="t"><span class="key">def</span> <span class="nam">db_query</span><span class="op">(</span><span class="nam">query</span><span class="op">,</span> <span class="nam">args</span><span class="op">=</span><span class="key">None</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
@@ -196,7 +196,7 @@
     <p class="run"><span class="n"><a id="t114" href="#t114">114</a></span><span class="t">        <span class="nam">success</span><span class="op">,</span> <span class="nam">results</span> <span class="op">=</span> <span class="nam">db_query</span><span class="op">(</span><span class="nam">query</span><span class="op">,</span> <span class="nam">args</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t115" href="#t115">115</a></span><span class="t">        <span class="key">if</span> <span class="nam">results</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t116" href="#t116">116</a></span><span class="t">            <span class="com"># There was a matching record in the DB, so warn and return success</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t117" href="#t117">117</a></span><span class="t">            <span class="nam">logger</span><span class="op">.</span><span class="nam">warning</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t117" href="#t117">117</a></span><span class="t">            <span class="nam">_logger</span><span class="op">.</span><span class="nam">warning</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
     <p class="run run2"><span class="n"><a id="t118" href="#t118">118</a></span><span class="t">                <span class="str">"SessionLog already existed in DB, so no row was added: %s"</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
     <p class="run run2"><span class="n"><a id="t119" href="#t119">119</a></span><span class="t">                <span class="nam">self</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
     <p class="run run2"><span class="n"><a id="t120" href="#t120">120</a></span><span class="t">            <span class="op">)</span>&nbsp;</span><span class="r"></span></p>
@@ -302,7 +302,7 @@
     <p class="pln"><span class="n"><a id="t220" href="#t220">220</a></span><span class="t"><span class="str">            A dictionary containing the results from the query to check that</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t221" href="#t221">221</a></span><span class="t"><span class="str">            a RECORD_GENERATION event was added</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t222" href="#t222">222</a></span><span class="t"><span class="str">        """</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t223" href="#t223">223</a></span><span class="t">        <span class="nam">logger</span><span class="op">.</span><span class="nam">debug</span><span class="op">(</span><span class="str">"Logging RECORD_GENERATION for %s"</span><span class="op">,</span> <span class="nam">self</span><span class="op">.</span><span class="nam">session_identifier</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t223" href="#t223">223</a></span><span class="t">        <span class="nam">_logger</span><span class="op">.</span><span class="nam">debug</span><span class="op">(</span><span class="str">"Logging RECORD_GENERATION for %s"</span><span class="op">,</span> <span class="nam">self</span><span class="op">.</span><span class="nam">session_identifier</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t224" href="#t224">224</a></span><span class="t">        <span class="nam">insert_query</span> <span class="op">=</span> <span class="op">(</span>&nbsp;</span><span class="r"></span></p>
     <p class="run run2"><span class="n"><a id="t225" href="#t225">225</a></span><span class="t">            <span class="str">"INSERT INTO session_log "</span>&nbsp;</span><span class="r"></span></p>
     <p class="run run2"><span class="n"><a id="t226" href="#t226">226</a></span><span class="t">            <span class="str">"(instrument, event_type, session_identifier, "</span>&nbsp;</span><span class="r"></span></p>
@@ -350,7 +350,7 @@
     <p class="run"><span class="n"><a id="t268" href="#t268">268</a></span><span class="t">        <span class="nam">event_match</span> <span class="op">=</span> <span class="nam">res</span><span class="op">[</span><span class="str">"event_type"</span><span class="op">]</span> <span class="op">==</span> <span class="str">"RECORD_GENERATION"</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t269" href="#t269">269</a></span><span class="t">        <span class="nam">id_match</span> <span class="op">=</span> <span class="nam">res</span><span class="op">[</span><span class="str">"session_identifier"</span><span class="op">]</span> <span class="op">==</span> <span class="nam">self</span><span class="op">.</span><span class="nam">session_identifier</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t270" href="#t270">270</a></span><span class="t">        <span class="key">if</span> <span class="nam">event_match</span> <span class="key">and</span> <span class="nam">id_match</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t271" href="#t271">271</a></span><span class="t">            <span class="nam">logger</span><span class="op">.</span><span class="nam">debug</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t271" href="#t271">271</a></span><span class="t">            <span class="nam">_logger</span><span class="op">.</span><span class="nam">debug</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
     <p class="run run2"><span class="n"><a id="t272" href="#t272">272</a></span><span class="t">                <span class="str">"Confirmed RECORD_GENERATION insertion for %s"</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
     <p class="run run2"><span class="n"><a id="t273" href="#t273">273</a></span><span class="t">                <span class="nam">self</span><span class="op">.</span><span class="nam">session_identifier</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
     <p class="run run2"><span class="n"><a id="t274" href="#t274">274</a></span><span class="t">            <span class="op">)</span>&nbsp;</span><span class="r"></span></p>
@@ -421,7 +421,7 @@
     <p class="run run2"><span class="n"><a id="t339" href="#t339">339</a></span><span class="t">        <span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t340" href="#t340">340</a></span><span class="t">        <span class="nam">sessions</span><span class="op">.</span><span class="nam">append</span><span class="op">(</span><span class="nam">session</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t341" href="#t341">341</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t342" href="#t342">342</a></span><span class="t">    <span class="nam">logger</span><span class="op">.</span><span class="nam">info</span><span class="op">(</span><span class="str">"Found %i new sessions to build"</span><span class="op">,</span> <span class="nam">len</span><span class="op">(</span><span class="nam">sessions</span><span class="op">)</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t342" href="#t342">342</a></span><span class="t">    <span class="nam">_logger</span><span class="op">.</span><span class="nam">info</span><span class="op">(</span><span class="str">"Found %i new sessions to build"</span><span class="op">,</span> <span class="nam">len</span><span class="op">(</span><span class="nam">sessions</span><span class="op">)</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t343" href="#t343">343</a></span><span class="t">    <span class="key">return</span> <span class="nam">sessions</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t344" href="#t344">344</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t345" href="#t345">345</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
@@ -455,7 +455,7 @@
     <p class="pln"><span class="n"><a id="t373" href="#t373">373</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t374" href="#t374">374</a></span><span class="t">    <span class="nam">session_logs</span> <span class="op">=</span> <span class="op">[</span><span class="nam">SessionLog</span><span class="op">(</span><span class="op">*</span><span class="nam">i</span><span class="op">)</span> <span class="key">for</span> <span class="nam">i</span> <span class="key">in</span> <span class="nam">results</span><span class="op">]</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t375" href="#t375">375</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t376" href="#t376">376</a></span><span class="t">    <span class="nam">logger</span><span class="op">.</span><span class="nam">info</span><span class="op">(</span><span class="str">"Found %i session logs in database"</span><span class="op">,</span> <span class="nam">len</span><span class="op">(</span><span class="nam">session_logs</span><span class="op">)</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t376" href="#t376">376</a></span><span class="t">    <span class="nam">_logger</span><span class="op">.</span><span class="nam">info</span><span class="op">(</span><span class="str">"Found %i session logs in database"</span><span class="op">,</span> <span class="nam">len</span><span class="op">(</span><span class="nam">session_logs</span><span class="op">)</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t377" href="#t377">377</a></span><span class="t">    <span class="key">return</span> <span class="nam">session_logs</span>&nbsp;</span><span class="r"></span></p>
 </main>
 <footer>
@@ -466,7 +466,7 @@
             <a class="nav" href="z_608a0ddf03aefd43___init___py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.11.3">coverage.py v7.11.3</a>,
-            created at 2025-12-23 05:16 +0000
+            created at 2025-12-30 00:51 +0000
         </p>
     </div>
 </footer>

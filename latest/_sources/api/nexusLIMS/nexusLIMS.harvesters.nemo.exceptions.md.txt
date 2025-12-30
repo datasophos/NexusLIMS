@@ -4,6 +4,7 @@
 ```
 
 ```{autodoc2-docstring} nexusLIMS.harvesters.nemo.exceptions
+:parser: autodoc2_docstrings_parser
 :allowtitles:
 ```
 
@@ -17,12 +18,7 @@
 Bases: {py:obj}`Exception`
 
 ```{autodoc2-docstring} nexusLIMS.harvesters.nemo.exceptions.NoDataConsentError
-```
-
-```{rubric} Initialization
-```
-
-```{autodoc2-docstring} nexusLIMS.harvesters.nemo.exceptions.NoDataConsentError.__init__
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -33,12 +29,7 @@ Bases: {py:obj}`Exception`
 Bases: {py:obj}`Exception`
 
 ```{autodoc2-docstring} nexusLIMS.harvesters.nemo.exceptions.NoMatchingReservationError
-```
-
-```{rubric} Initialization
-```
-
-```{autodoc2-docstring} nexusLIMS.harvesters.nemo.exceptions.NoMatchingReservationError.__init__
+:parser: autodoc2_docstrings_parser
 ```
 
 ````

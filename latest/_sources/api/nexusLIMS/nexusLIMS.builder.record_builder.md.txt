@@ -4,6 +4,7 @@
 ```
 
 ```{autodoc2-docstring} nexusLIMS.builder.record_builder
+:parser: autodoc2_docstrings_parser
 :allowtitles:
 ```
 
@@ -17,38 +18,47 @@
 
 * - {py:obj}`build_record <nexusLIMS.builder.record_builder.build_record>`
   - ```{autodoc2-docstring} nexusLIMS.builder.record_builder.build_record
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`get_reservation_event <nexusLIMS.builder.record_builder.get_reservation_event>`
   - ```{autodoc2-docstring} nexusLIMS.builder.record_builder.get_reservation_event
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`build_acq_activities <nexusLIMS.builder.record_builder.build_acq_activities>`
   - ```{autodoc2-docstring} nexusLIMS.builder.record_builder.build_acq_activities
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`get_files <nexusLIMS.builder.record_builder.get_files>`
   - ```{autodoc2-docstring} nexusLIMS.builder.record_builder.get_files
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`dump_record <nexusLIMS.builder.record_builder.dump_record>`
   - ```{autodoc2-docstring} nexusLIMS.builder.record_builder.dump_record
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`validate_record <nexusLIMS.builder.record_builder.validate_record>`
   - ```{autodoc2-docstring} nexusLIMS.builder.record_builder.validate_record
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`build_new_session_records <nexusLIMS.builder.record_builder.build_new_session_records>`
   - ```{autodoc2-docstring} nexusLIMS.builder.record_builder.build_new_session_records
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`process_new_records <nexusLIMS.builder.record_builder.process_new_records>`
   - ```{autodoc2-docstring} nexusLIMS.builder.record_builder.process_new_records
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`dry_run_file_find <nexusLIMS.builder.record_builder.dry_run_file_find>`
   - ```{autodoc2-docstring} nexusLIMS.builder.record_builder.dry_run_file_find
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 ````
@@ -59,35 +69,22 @@
 :class: autosummary longtable
 :align: left
 
-* - {py:obj}`logger <nexusLIMS.builder.record_builder.logger>`
-  - ```{autodoc2-docstring} nexusLIMS.builder.record_builder.logger
-    :summary:
-    ```
 * - {py:obj}`XSD_PATH <nexusLIMS.builder.record_builder.XSD_PATH>`
   - ```{autodoc2-docstring} nexusLIMS.builder.record_builder.XSD_PATH
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 ````
 
 ### API
 
-````{py:data} logger
-:canonical: nexusLIMS.builder.record_builder.logger
-:value: >
-   'getLogger(...)'
-
-```{autodoc2-docstring} nexusLIMS.builder.record_builder.logger
-```
-
-````
-
 ````{py:data} XSD_PATH
 :canonical: nexusLIMS.builder.record_builder.XSD_PATH
-:type: pathlib.Path
-:value: >
-   None
+
+**Type:** pathlib.Path
 
 ```{autodoc2-docstring} nexusLIMS.builder.record_builder.XSD_PATH
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
@@ -96,6 +93,7 @@
 :canonical: nexusLIMS.builder.record_builder.build_record
 
 ```{autodoc2-docstring} nexusLIMS.builder.record_builder.build_record
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -103,6 +101,7 @@
 :canonical: nexusLIMS.builder.record_builder.get_reservation_event
 
 ```{autodoc2-docstring} nexusLIMS.builder.record_builder.get_reservation_event
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -110,6 +109,7 @@
 :canonical: nexusLIMS.builder.record_builder.build_acq_activities
 
 ```{autodoc2-docstring} nexusLIMS.builder.record_builder.build_acq_activities
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -117,6 +117,7 @@
 :canonical: nexusLIMS.builder.record_builder.get_files
 
 ```{autodoc2-docstring} nexusLIMS.builder.record_builder.get_files
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -124,6 +125,7 @@
 :canonical: nexusLIMS.builder.record_builder.dump_record
 
 ```{autodoc2-docstring} nexusLIMS.builder.record_builder.dump_record
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -131,6 +133,7 @@
 :canonical: nexusLIMS.builder.record_builder.validate_record
 
 ```{autodoc2-docstring} nexusLIMS.builder.record_builder.validate_record
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -138,6 +141,7 @@
 :canonical: nexusLIMS.builder.record_builder.build_new_session_records
 
 ```{autodoc2-docstring} nexusLIMS.builder.record_builder.build_new_session_records
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -145,6 +149,7 @@
 :canonical: nexusLIMS.builder.record_builder.process_new_records
 
 ```{autodoc2-docstring} nexusLIMS.builder.record_builder.process_new_records
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -152,5 +157,6 @@
 :canonical: nexusLIMS.builder.record_builder.dry_run_file_find
 
 ```{autodoc2-docstring} nexusLIMS.builder.record_builder.dry_run_file_find
+:parser: autodoc2_docstrings_parser
 ```
 ````

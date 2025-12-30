@@ -4,6 +4,7 @@
 ```
 
 ```{autodoc2-docstring} nexusLIMS.schemas
+:parser: autodoc2_docstrings_parser
 :allowtitles:
 ```
 
@@ -13,5 +14,9 @@
 :titlesonly:
 :maxdepth: 1
 
+nexusLIMS.schemas.pint_types
+nexusLIMS.schemas.metadata
+nexusLIMS.schemas.units
 nexusLIMS.schemas.activity
+nexusLIMS.schemas.em_glossary
 ```

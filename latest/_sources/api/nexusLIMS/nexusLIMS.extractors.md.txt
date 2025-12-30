@@ -4,6 +4,7 @@
 ```
 
 ```{autodoc2-docstring} nexusLIMS.extractors
+:parser: autodoc2_docstrings_parser
 :allowtitles:
 ```
 
@@ -24,6 +25,7 @@ nexusLIMS.extractors.plugins
 
 nexusLIMS.extractors.profiles
 nexusLIMS.extractors.utils
+nexusLIMS.extractors.xml_serialization
 nexusLIMS.extractors.registry
 nexusLIMS.extractors.base
 ```
@@ -36,16 +38,29 @@ nexusLIMS.extractors.base
 :class: autosummary longtable
 :align: left
 
+* - {py:obj}`get_schema_for_dataset_type <nexusLIMS.extractors.get_schema_for_dataset_type>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.get_schema_for_dataset_type
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`validate_nx_meta <nexusLIMS.extractors.validate_nx_meta>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.validate_nx_meta
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
 * - {py:obj}`parse_metadata <nexusLIMS.extractors.parse_metadata>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.parse_metadata
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`create_preview <nexusLIMS.extractors.create_preview>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.create_preview
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`flatten_dict <nexusLIMS.extractors.flatten_dict>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.flatten_dict
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 ````
@@ -56,56 +71,59 @@ nexusLIMS.extractors.base
 :class: autosummary longtable
 :align: left
 
-* - {py:obj}`logger <nexusLIMS.extractors.logger>`
-  - ```{autodoc2-docstring} nexusLIMS.extractors.logger
-    :summary:
-    ```
 * - {py:obj}`PLACEHOLDER_PREVIEW <nexusLIMS.extractors.PLACEHOLDER_PREVIEW>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.PLACEHOLDER_PREVIEW
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 * - {py:obj}`unextracted_preview_map <nexusLIMS.extractors.unextracted_preview_map>`
   - ```{autodoc2-docstring} nexusLIMS.extractors.unextracted_preview_map
+    :parser: autodoc2_docstrings_parser
     :summary:
     ```
 ````
 
 ### API
 
-````{py:data} logger
-:canonical: nexusLIMS.extractors.logger
-:value: >
-   'getLogger(...)'
-
-```{autodoc2-docstring} nexusLIMS.extractors.logger
-```
-
-````
-
 ````{py:data} PLACEHOLDER_PREVIEW
 :canonical: nexusLIMS.extractors.PLACEHOLDER_PREVIEW
-:value: >
-   None
 
 ```{autodoc2-docstring} nexusLIMS.extractors.PLACEHOLDER_PREVIEW
+:parser: autodoc2_docstrings_parser
 ```
 
 ````
 
 ````{py:data} unextracted_preview_map
 :canonical: nexusLIMS.extractors.unextracted_preview_map
-:value: >
-   None
 
 ```{autodoc2-docstring} nexusLIMS.extractors.unextracted_preview_map
+:parser: autodoc2_docstrings_parser
 ```
 
+````
+
+````{py:function} get_schema_for_dataset_type(dataset_type: str) -> type[nexusLIMS.schemas.metadata.NexusMetadata]
+:canonical: nexusLIMS.extractors.get_schema_for_dataset_type
+
+```{autodoc2-docstring} nexusLIMS.extractors.get_schema_for_dataset_type
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} validate_nx_meta(metadata_dict: dict[str, typing.Any], *, filename: pathlib.Path | None = None) -> dict[str, typing.Any]
+:canonical: nexusLIMS.extractors.validate_nx_meta
+
+```{autodoc2-docstring} nexusLIMS.extractors.validate_nx_meta
+:parser: autodoc2_docstrings_parser
+```
 ````
 
 ````{py:function} parse_metadata(fname: pathlib.Path, *, write_output: bool = True, generate_preview: bool = True, overwrite: bool = True) -> typing.Tuple[typing.Dict[str, typing.Any] | None, pathlib.Path | list[pathlib.Path] | None]
 :canonical: nexusLIMS.extractors.parse_metadata
 
 ```{autodoc2-docstring} nexusLIMS.extractors.parse_metadata
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -113,6 +131,7 @@ nexusLIMS.extractors.base
 :canonical: nexusLIMS.extractors.create_preview
 
 ```{autodoc2-docstring} nexusLIMS.extractors.create_preview
+:parser: autodoc2_docstrings_parser
 ```
 ````
 
@@ -120,5 +139,6 @@ nexusLIMS.extractors.base
 :canonical: nexusLIMS.extractors.flatten_dict
 
 ```{autodoc2-docstring} nexusLIMS.extractors.flatten_dict
+:parser: autodoc2_docstrings_parser
 ```
 ````

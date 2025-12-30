@@ -1,16 +1,16 @@
 (migration)=
-# Migration Guide: v1 to v2
+# Migration Guide: v1.4.3 to v2.2.0
 
-This document outlines the necessary steps and changes for users migrating their NexusLIMS environment from version 1.x (specifically v1.4.3) to version 2.0+. This update includes significant changes to dependency management and environment variable configuration to improve consistency and leverage modern tooling.
+This guide is for system administrators, and will help you migrate your NexusLIMS installation from v1.4.3 to v2.2.0.
 
-## Migration Overview
+## What Changed
 
-The major changes in v2.0 include:
+The major changes you need to know about:
 
-1. **Dependency Management**: Migration from Poetry to `uv` for faster, more reliable package management
-2. **Environment Variables**: Standardized naming with `NX_` prefix for consistency
-3. **Configuration System**: Centralized configuration via `nexusLIMS.config` module with validation
-4. **New Features**: Extensible extractor and instrument-specific parser pluging, email notifications, optional log/record paths, improved NEMO harvester support
+1. **Package Manager**: Poetry → `uv` (faster, simpler installation)
+2. **Environment Variables**: All variables now use `NX_` prefix
+3. **Metadata System**: New Pydantic schemas with EM Glossary integration and validation
+4. **Configuration**: Better validation with helpful error messages
 
 ## Transition to uv
 
@@ -35,32 +35,6 @@ powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
 
 For alternative installation methods, see the [uv documentation](https://docs.astral.sh/uv/).
 
-### Removing Poetry and pyenv
-
-After installing `uv`, you can remove Poetry and pyenv:
-
-1. **Remove pyenv configuration** from your shell startup files (`.bashrc`, `.zshrc`, `.profile`):
-
-   ```bash
-   # Remove or comment out lines like:
-   export PYENV_ROOT="$HOME/.pyenv"
-   export PATH="$PYENV_ROOT/bin:$PATH"
-   eval "$(pyenv init -)"
-   ```
-
-2. **Uninstall Poetry** (optional, if you're not using it for other projects):
-
-   ```bash
-   # Check how Poetry was installed
-   which poetry
-
-   # If installed via official installer:
-   curl -sSL https://install.python-poetry.org | python3 - --uninstall
-
-   # If installed via pip:
-   pip uninstall poetry
-   ```
-
 ## Environment Variable Changes
 
 Environment variable naming has been standardized for better consistency. **You must update your `.env` file** to use the new variable names.
@@ -71,30 +45,50 @@ The following variables have been renamed:
 
 | **Old Name (v1.x)** | **New Name (v2.0+)** | **Required** |
 |---------------------|----------------------|--------------|
-| `MMFNEXUS_PATH` | `NX_INSTRUMENT_DATA_PATH` | Yes |
-| `NEXUSLIMS_PATH` | `NX_DATA_PATH` | Yes |
-| `NEXUSLIMS_DB_PATH` | `NX_DB_PATH` | Yes |
+| `mmfnexus_path` | `NX_INSTRUMENT_DATA_PATH` | Yes |
+| `nexusLIMS_path` | `NX_DATA_PATH` | Yes |
+| `nexusLIMS_db_path` | `NX_DB_PATH` | Yes |
 | `nexusLIMS_user` | `NX_CDCS_USER` | Yes |
 | `nexusLIMS_pass` | `NX_CDCS_PASS` | Yes |
-| `nexusLIMS_url` | `NX_CDCS_URL` | Yes |
+| `cdcs_url` | `NX_CDCS_URL` | Yes |
+| `NexusLIMS_cert_bundle_file` | `NX_CERT_BUNDLE_FILE` | No |
+| `NexusLIMS_cert_bundle` | `NX_CERT_BUNDLE` | No |
+| `NexusLIMS_file_strategy` | `NX_FILE_STRATEGY` | No |
+| `NexusLIMS_ignore_patterns` | `NX_IGNORE_PATTERNS` | No |
+| `nexusLIMS_file_delay_days` | `NX_FILE_DELAY_DAYS` | No |
 | `NEMO_address_*` | `NX_NEMO_ADDRESS_*` | If using NEMO |
 | `NEMO_token_*` | `NX_NEMO_TOKEN_*` | If using NEMO |
+| `NEMO_strftime_fmt_*` | `NX_NEMO_STRFTIME_FMT_*` | No |
+| `NEMO_strptime_fmt_*` | `NX_NEMO_STRPTIME_FMT_*` | No |
+| `NEMO_tz_*` | `NX_NEMO_TZ_*` | No |
 
 ### New Variables
 
 The following variables are new in v2.0:
 
-| **Variable** | **Purpose** |
-|--------------|-------------|
-| `NX_FILE_STRATEGY` | Controls file inclusion strategy (`exclusive` or `inclusive`) |
-| `NX_IGNORE_PATTERNS` | JSON array of glob patterns to ignore when finding files |
-| `NX_FILE_DELAY_DAYS` | Maximum delay (in days) to wait for files after session ends |
-| `NX_LOG_PATH` | Optional custom directory for application logs |
-| `NX_RECORDS_PATH` | Optional custom directory for generated XML records |
-| `NX_TEST_CDCS_URL` | Optional CDCS URL for testing (development) |
-| `NX_CERT_BUNDLE_FILE` | Optional path to custom SSL certificate bundle |
-| `NX_CERT_BUNDLE` | Optional SSL certificate bundle as string (for CI/CD) |
-| `NX_EMAIL_*` | Email notification settings (see below) |
+| **Variable** | **Purpose** | **Required** |
+|--------------|-------------|--------------|
+| `NX_LOG_PATH` | Custom directory for application logs | No |
+| `NX_RECORDS_PATH` | Custom directory for generated XML records | No |
+| `NX_LOCAL_PROFILES_PATH` | Directory for site-specific instrument profiles | No |
+| `NX_EMAIL_SMTP_HOST` | SMTP server hostname | If using email |
+| `NX_EMAIL_SMTP_PORT` | SMTP server port (default: 587) | No |
+| `NX_EMAIL_SMTP_USERNAME` | SMTP username for authentication | No |
+| `NX_EMAIL_SMTP_PASSWORD` | SMTP password for authentication | No |
+| `NX_EMAIL_USE_TLS` | Use TLS encryption (default: true) | No |
+| `NX_EMAIL_SENDER` | Email address to send from | If using email |
+| `NX_EMAIL_RECIPIENTS` | Comma-separated recipient addresses | If using email |
+
+### Removed Variables
+
+The following variables from v1.x are no longer used:
+
+| **Variable** | **Reason for Removal** |
+|--------------|------------------------|
+| `test_cdcs_url` | Tests now run as independent unit tests and integration tests against a Docker-deployed instance created on demand |
+| `sharepoint_root_url` | SharePoint harvester has been removed |
+| `email_sender` | Replaced by enhanced email configuration (`NX_EMAIL_*`) |
+| `email_recipients` | Replaced by enhanced email configuration (`NX_EMAIL_*`) |
 
 ## Complete Environment Variable Reference
 
@@ -110,6 +104,7 @@ The following variables are new in v2.0:
 | `NX_FILE_DELAY_DAYS` | Maximum days to wait for files (can be fractional) | `2` |
 | `NX_LOG_PATH` | Optional: Directory for logs (defaults to `NX_DATA_PATH/logs/`) | `/var/log/nexuslims` |
 | `NX_RECORDS_PATH` | Optional: Directory for records (defaults to `NX_DATA_PATH/records/`) | `/var/nexuslims/records` |
+| `NX_LOCAL_PROFILES_PATH` | Optional: Directory for site-specific instrument profiles | `/var/nexuslims/profiles` |
 
 ### CDCS Authentication
 
@@ -118,7 +113,6 @@ The following variables are new in v2.0:
 | `NX_CDCS_USER` | Username for CDCS API | `nexuslims_service` |
 | `NX_CDCS_PASS` | Password for CDCS API | `your-secure-password` |
 | `NX_CDCS_URL` | Root URL of NexusLIMS CDCS instance (with trailing slash) | `https://nexuslims.example.com/` |
-| `NX_TEST_CDCS_URL` | Optional: CDCS URL for testing | `https://test.nexuslims.example.com/` |
 | `NX_CERT_BUNDLE_FILE` | Optional: Path to SSL certificate bundle | `/etc/ssl/certs/custom-ca.pem` |
 | `NX_CERT_BUNDLE` | Optional: SSL certificate bundle as string | `-----BEGIN CERTIFICATE-----\n...` |
 
@@ -152,12 +146,16 @@ Email notifications are sent by `nexuslims-process-records` when errors are dete
 
 To improve maintainability and type safety, all environment variable access is centralized in the `nexusLIMS.config` module using [pydantic-settings](https://docs.pydantic.dev/latest/concepts/pydantic_settings/).
 
+For complete configuration documentation, see {ref}`configuration`.
+
 ### What This Means for Users
 
-- **No changes required**: Continue defining variables in your `.env` file or system environment
+- **No file structure changes required**: Continue defining variables in your `.env` file or system environment
 - **Automatic validation**: The application validates configuration at startup and provides clear error messages
 - **Type safety**: Configuration values are automatically converted to appropriate Python types
 - **Default values**: Sensible defaults are provided where applicable
+- **Mocking for tests**: The design of the system allows for a fully mocked setup
+for use in the test suite, ensuring more reliable code quality testing.
 
 ### What This Means for Developers
 
@@ -166,7 +164,7 @@ Instead of accessing environment variables directly:
 ```python
 # Old approach (v1.x) - Don't use
 import os
-path = os.environ.get("NEXUSLIMS_PATH")
+path = os.environ.get("nexusLIMS_path")
 ```
 
 Use the centralized config module:
@@ -189,6 +187,10 @@ This provides:
 Follow these steps to migrate your NexusLIMS installation from v1.x to v2.0:
 
 ### 1. Backup Your Current Installation
+
+```{note}
+**Good news**: The database schema has **not changed** between v1.4.3 and v2.2.0. Your existing database will work without any migration or modifications. We still recommend backing up as a precaution.
+```
 
 ```bash
 # Backup your database
@@ -223,15 +225,21 @@ nano .env  # or your preferred editor
 
 **Key changes to make**:
 
-- Rename `MMFNEXUS_PATH` → `NX_INSTRUMENT_DATA_PATH`
-- Rename `NEXUSLIMS_PATH` → `NX_DATA_PATH`
-- Rename `NEXUSLIMS_DB_PATH` → `NX_DB_PATH`
+- Rename `mmfnexus_path` → `NX_INSTRUMENT_DATA_PATH`
+- Rename `nexusLIMS_path` → `NX_DATA_PATH`
+- Rename `nexusLIMS_db_path` → `NX_DB_PATH`
 - Rename `nexusLIMS_user` → `NX_CDCS_USER`
 - Rename `nexusLIMS_pass` → `NX_CDCS_PASS`
-- Rename `nexusLIMS_url` → `NX_CDCS_URL`
-- Rename `NEMO_address_*` → `NX_NEMO_ADDRESS_*`
-- Rename `NEMO_token_*` → `NX_NEMO_TOKEN_*`
-- Add new variables like `NX_FILE_STRATEGY`, `NX_IGNORE_PATTERNS`, etc.
+- Rename `cdcs_url` → `NX_CDCS_URL`
+- Rename `NexusLIMS_cert_bundle_file` → `NX_CERT_BUNDLE_FILE` (if used)
+- Rename `NexusLIMS_cert_bundle` → `NX_CERT_BUNDLE` (if used)
+- Rename `NexusLIMS_file_strategy` → `NX_FILE_STRATEGY` (if customized)
+- Rename `NexusLIMS_ignore_patterns` → `NX_IGNORE_PATTERNS` (if customized)
+- Rename `nexusLIMS_file_delay_days` → `NX_FILE_DELAY_DAYS` (if customized)
+- Rename `NEMO_address_*` → `NX_NEMO_ADDRESS_*` (if using NEMO)
+- Rename `NEMO_token_*` → `NX_NEMO_TOKEN_*` (if using NEMO)
+- Remove `test_cdcs_url`, `sharepoint_root_url`, `email_sender`, `email_recipients`
+- Add new email configuration variables (`NX_EMAIL_*`) if you want email notifications
 
 ### 4. Remove Old Virtual Environment
 
@@ -246,15 +254,7 @@ rm poetry.lock  # if it exists
 ### 5. Create New Environment with uv
 
 ```bash
-# Create virtual environment
-uv venv
-
-# Activate the environment
-source .venv/bin/activate  # Unix/macOS
-# or
-.venv\Scripts\activate     # Windows
-
-# Install NexusLIMS with dependencies
+# Install NexusLIMS with dependencies (this will create the virtualenvironment as necessary)
 uv sync
 ```
 
@@ -264,11 +264,11 @@ uv sync
 # Test configuration loading
 uv run python -c "from nexusLIMS.config import settings; print(settings.NX_DATA_PATH)"
 
-# Run tests (optional but recommended)
-uv run pytest tests/
+# Run unit tests (not necessary, but will provide confidence things are working)
+uv run pytest tests/unit
 
-# Check database connection
-uv run python -c "from nexusLIMS.instruments import get_instrument_list; print(len(get_instrument_list()))"
+# Check database connection and list instruments
+uv run python -c "from nexusLIMS.instruments import instrument_db; print(f'{len(instrument_db)} instruments found:'); [print(f'  - {pid}') for pid in instrument_db.keys()]"
 ```
 
 ### 7. Update Deployment Scripts
@@ -346,28 +346,27 @@ NX_NEMO_ADDRESS_1=https://nemo.example.com/api/
 NX_NEMO_TOKEN_1=your-token-here
 ```
 
-## Differences from v1.x
+## What's New in v2.2.0
+
+### Metadata Improvements
+
+- **Pydantic Schemas**: All metadata validated before record building
+- **EM Glossary Integration**: 50+ standardized field names
+- **Formal Unit Handling**: Type-safe quantity handling with automatic conversion
+- **Helper Functions**: `emg_field()` and `add_to_extensions()` for cleaner code
+
+### Other Improvements
+
+- **Email notifications**: Optional alerts for record building errors
+- **Custom paths**: Specify log/record directories with `NX_LOG_PATH` / `NX_RECORDS_PATH`
+- **Local profiles**: Load site-specific profiles from `NX_LOCAL_PROFILES_PATH`
+- **Better errors**: Pydantic provides detailed, actionable validation messages
+- **Faster installation**: `uv` is significantly faster than Poetry
 
 ### Removed Features
 
-- **pyenv support**: No longer needed; `uv` manages Python versions
-- **Poetry**: Replaced by `uv` for dependency management
-- **SharePoint harvester**: Deprecated (NEMO is the recommended harvester)
-
-### Changed Defaults
-
-- `NX_FILE_STRATEGY`: Now defaults to `exclusive` (was implicit `inclusive` behavior)
-- `NX_IGNORE_PATTERNS`: Now includes `.emi` files by default (metadata is in `.ser` files)
-- Log organization: Logs are now organized by date in `YYYY/MM/DD/` subdirectories
-
-### New Features in v2.0
-
-- **Email notifications**: Optional email alerts for record building errors
-- **Custom log paths**: Specify where logs are written with `NX_LOG_PATH`
-- **Custom record paths**: Specify where XML records are saved with `NX_RECORDS_PATH`
-- **Better error messages**: Pydantic validation provides clear, actionable error messages
-- **Type safety**: All configuration values are validated and typed
-- **Faster installation**: `uv` is significantly faster than Poetry
+- **SharePoint harvester**: Deprecated (use NEMO instead)
+- **Poetry**: Replaced by `uv`
 
 ## Getting Help
 
@@ -376,7 +375,7 @@ If you encounter issues during migration:
 1. **Review the error message carefully** - Pydantic provides detailed validation errors
 2. **Check the example file**: Compare your `.env` with `.env.example`
 3. **Consult the logs**: Check `NX_LOG_PATH` (or `NX_DATA_PATH/logs/`) for details
-4. **Open an issue**: https://github.com/datasophos/NexusLIMS/issues
+4. **Open an issue**: [https://github.com/datasophos/NexusLIMS/issues](https://github.com/datasophos/NexusLIMS/issues)
 
 For professional migration support, deployment assistance, or custom development:
 

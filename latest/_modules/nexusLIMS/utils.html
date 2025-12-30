@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>nexusLIMS.utils &#8212; NexusLIMS 2.1.2.dev0 documentation</title>
+    <title>nexusLIMS.utils &#8212; NexusLIMS 2.2.0.dev0 documentation</title>
   
   
   
@@ -31,8 +31,9 @@
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=af02a5b6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=8633d6cc" />
   
   <!-- So that users can add custom icons -->
   <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -40,9 +41,11 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../_static/documentation_options.js?v=bcebe078"></script>
+    <script src="../../_static/documentation_options.js?v=dc4a309c"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=30646c52"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
     <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs"></script>
     <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs"></script>
@@ -417,14 +420,15 @@ window.addEventListener("load", load);
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
+    <script src="../../_static/custom.js?v=ba087cdf"></script>
     <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/latest/_modules/nexusLIMS/utils.html" />
     <link rel="icon" href="../../_static/nexusLIMS_bare_logo.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.1.2.dev0" />
-    <meta name="docbuild:last-update" content="Dec, 23, 2025"/>
+  <meta name="docsearch:version" content="2.2.0.dev0" />
+    <meta name="docbuild:last-update" content="Dec, 30, 2025"/>
   </head>
   
   
@@ -490,8 +494,8 @@ window.addEventListener("load", load);
       
     
     
-    <img src="../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.1.2.dev0 documentation - Home"/>
-    <img src="../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.1.2.dev0 documentation - Home"/>
+    <img src="../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.2.0.dev0 documentation - Home"/>
+    <img src="../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.2.0.dev0 documentation - Home"/>
   
   
 </a></div>
@@ -534,20 +538,6 @@ window.addEventListener("load", load);
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../getting_started.html">
-    Getting Started
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../migration.html">
-    Migration Guide: v1 to v2
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../user_guide.html">
     User Guide
   </a>
@@ -555,28 +545,25 @@ window.addEventListener("load", load);
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../dev_guide.html">
-    Developer Guide
+  <a class="nav-link nav-internal" href="../../migration.html">
+    Migration Guide: v1.4.3 to v2.2.0
   </a>
 </li>
 
-            <li class="nav-item dropdown">
-                <button class="btn dropdown-toggle nav-item" type="button"
-                data-bs-toggle="dropdown" aria-expanded="false"
-                aria-controls="pst-nav-more-links">
-                    More
-                </button>
-                <ul id="pst-nav-more-links" class="dropdown-menu">
-                    
-<li class=" ">
-  <a class="nav-link dropdown-item nav-internal" href="../../reference.html">
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../dev_guide.html">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../reference.html">
     Reference
   </a>
 </li>
 
-                </ul>
-            </li>
-            
   </ul>
 </nav></div>
       
@@ -671,20 +658,6 @@ window.addEventListener("load", load);
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../getting_started.html">
-    Getting Started
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../migration.html">
-    Migration Guide: v1 to v2
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../user_guide.html">
     User Guide
   </a>
@@ -692,8 +665,15 @@ window.addEventListener("load", load);
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../migration.html">
+    Migration Guide: v1.4.3 to v2.2.0
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../dev_guide.html">
-    Developer Guide
+    Dev Guide
   </a>
 </li>
 
@@ -824,12 +804,14 @@ window.addEventListener("load", load);
 <span class="kn">import</span><span class="w"> </span><span class="nn">tempfile</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span><span class="p">,</span> <span class="n">timezone</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">shutil</span><span class="w"> </span><span class="kn">import</span> <span class="n">copyfile</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">certifi</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pytz</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tzlocal</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">benedict</span><span class="w"> </span><span class="kn">import</span> <span class="n">benedict</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">requests</span><span class="w"> </span><span class="kn">import</span> <span class="n">Session</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">requests.adapters</span><span class="w"> </span><span class="kn">import</span> <span class="n">HTTPAdapter</span>
@@ -838,12 +820,12 @@ window.addEventListener("load", load);
 <span class="kn">from</span><span class="w"> </span><span class="nn">.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">settings</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.harvesters</span><span class="w"> </span><span class="kn">import</span> <span class="n">CA_BUNDLE_CONTENT</span>
 
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
-<span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+<span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<span class="n">_logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
 
 <span class="c1"># hours to add to datetime objects (hack for poole testing -- should be -2 if</span>
 <span class="c1"># running tests from Mountain Time on files in Eastern Time)</span>
-<span class="n">tz_offset</span> <span class="o">=</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">_tz_offset</span> <span class="o">=</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="setup_loggers">
@@ -973,7 +955,7 @@ window.addEventListener("load", load);
 
             <span class="c1"># If this is our last attempt, return the failed response</span>
             <span class="k">if</span> <span class="n">attempt</span> <span class="o">==</span> <span class="n">retries</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
                     <span class="s2">&quot;Request to </span><span class="si">%s</span><span class="s2"> failed with </span><span class="si">%s</span><span class="s2"> after </span><span class="si">%s</span><span class="s2"> attempts&quot;</span><span class="p">,</span>
                     <span class="n">url</span><span class="p">,</span>
                     <span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span>
@@ -983,7 +965,7 @@ window.addEventListener("load", load);
 
             <span class="c1"># Calculate backoff delay: 1s, 2s, 4s, 8s, etc.</span>
             <span class="n">delay</span> <span class="o">=</span> <span class="mi">2</span><span class="o">**</span><span class="n">attempt</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
                 <span class="s2">&quot;Request to </span><span class="si">%s</span><span class="s2"> returned </span><span class="si">%s</span><span class="s2">, retrying in </span><span class="si">%s</span><span class="s2">s (attempt </span><span class="si">%s</span><span class="s2">/</span><span class="si">%s</span><span class="s2">)&quot;</span><span class="p">,</span>
                 <span class="n">url</span><span class="p">,</span>
                 <span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span>
@@ -1183,13 +1165,13 @@ window.addEventListener("load", load);
     <span class="c1"># adjust the datetime objects with the tz_offset (usually should be 0) if</span>
     <span class="c1"># they are naive</span>
     <span class="k">if</span> <span class="n">dt_from</span><span class="o">.</span><span class="n">tzinfo</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">dt_from</span> <span class="o">+=</span> <span class="n">tz_offset</span>  <span class="c1"># pragma: no cover</span>
+        <span class="n">dt_from</span> <span class="o">+=</span> <span class="n">_tz_offset</span>  <span class="c1"># pragma: no cover</span>
     <span class="k">if</span> <span class="n">dt_to</span><span class="o">.</span><span class="n">tzinfo</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">dt_to</span> <span class="o">+=</span> <span class="n">tz_offset</span>  <span class="c1"># pragma: no cover</span>
+        <span class="n">dt_to</span> <span class="o">+=</span> <span class="n">_tz_offset</span>  <span class="c1"># pragma: no cover</span>
 
     <span class="c1"># use os.walk and only inspect the directories for mtime (much fewer</span>
     <span class="c1"># comparisons than looking at every file):</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+    <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
         <span class="s2">&quot;Finding directories modified between </span><span class="si">%s</span><span class="s2"> and </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
         <span class="n">dt_from</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
         <span class="n">dt_to</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
@@ -1241,9 +1223,9 @@ window.addEventListener("load", load);
     <span class="c1"># adjust the datetime objects with the tz_offset (usually should be 0) if</span>
     <span class="c1"># they are naive</span>
     <span class="k">if</span> <span class="n">dt_from</span><span class="o">.</span><span class="n">tzinfo</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">dt_from</span> <span class="o">+=</span> <span class="n">tz_offset</span>
+        <span class="n">dt_from</span> <span class="o">+=</span> <span class="n">_tz_offset</span>
     <span class="k">if</span> <span class="n">dt_to</span><span class="o">.</span><span class="n">tzinfo</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">dt_to</span> <span class="o">+=</span> <span class="n">tz_offset</span>
+        <span class="n">dt_to</span> <span class="o">+=</span> <span class="n">_tz_offset</span>
 
     <span class="n">files</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>  <span class="c1"># use a set here (faster and we won&#39;t have duplicates)</span>
     <span class="c1"># for each of those directories, walk the file tree and inspect the</span>
@@ -1315,7 +1297,7 @@ window.addEventListener("load", load);
             <span class="c1"># macOS</span>
             <span class="k">if</span> <span class="n">_which</span><span class="p">(</span><span class="s2">&quot;gfind&quot;</span><span class="p">):</span>
                 <span class="n">find_command</span> <span class="o">=</span> <span class="s2">&quot;gfind&quot;</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;BSD find detected, using gfind (GNU find) instead&quot;</span><span class="p">)</span>
+                <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;BSD find detected, using gfind (GNU find) instead&quot;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
                     <span class="s2">&quot;BSD find detected on macOS, but GNU find is required.</span><span class="se">\n</span><span class="s2">&quot;</span>
@@ -1328,7 +1310,7 @@ window.addEventListener("load", load);
                 <span class="p">)</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
                 <span class="s2">&quot;Non-GNU find detected. If you encounter errors, &quot;</span>
                 <span class="s2">&quot;please install GNU findutils.&quot;</span><span class="p">,</span>
             <span class="p">)</span>
@@ -1354,13 +1336,13 @@ window.addEventListener("load", load);
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">find_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">NX_INSTRUMENT_DATA_PATH</span><span class="p">))</span> <span class="o">/</span> <span class="n">path</span>
     <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="n">find_command</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">find_path</span><span class="p">),</span> <span class="s2">&quot;-type&quot;</span><span class="p">,</span> <span class="s2">&quot;l&quot;</span><span class="p">,</span> <span class="s2">&quot;-xtype&quot;</span><span class="p">,</span> <span class="s2">&quot;d&quot;</span><span class="p">,</span> <span class="s2">&quot;-print0&quot;</span><span class="p">]</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Running followlinks find via subprocess.run: &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span><span class="p">,</span> <span class="n">cmd</span><span class="p">)</span>
+    <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Running followlinks find via subprocess.run: &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span><span class="p">,</span> <span class="n">cmd</span><span class="p">)</span>
     <span class="n">out</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">paths</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">out</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;</span><span class="se">\x00</span><span class="s2">&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Found the following symlinks: &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span><span class="p">,</span> <span class="n">paths</span><span class="p">)</span>
+    <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Found the following symlinks: &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span><span class="p">,</span> <span class="n">paths</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">paths</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;find_path is: &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">paths</span><span class="p">)</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;find_path is: &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">paths</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">paths</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">find_path</span><span class="p">]</span>
 
@@ -1452,7 +1434,7 @@ window.addEventListener("load", load);
 <span class="sd">    ----------</span>
 <span class="sd">    path</span>
 <span class="sd">        The root path from which to start the search, relative to</span>
-<span class="sd">        the :ref:`NX_INSTRUMENT_DATA_PATH &lt;nexuslims-instrument-data-path&gt;`</span>
+<span class="sd">        the :ref:`NX_INSTRUMENT_DATA_PATH &lt;config-instrument-data-path&gt;`</span>
 <span class="sd">        environment setting.</span>
 <span class="sd">    dt_from</span>
 <span class="sd">        The &quot;starting&quot; point of the search timeframe</span>
@@ -1464,7 +1446,7 @@ window.addEventListener("load", load);
 <span class="sd">    followlinks</span>
 <span class="sd">        Whether to follow symlinks using the ``find`` command via</span>
 <span class="sd">        the ``-H`` command line flag. This is useful when the</span>
-<span class="sd">        :ref:`NX_INSTRUMENT_DATA_PATH &lt;nexuslims-instrument-data-path&gt;` is actually a</span>
+<span class="sd">        :ref:`NX_INSTRUMENT_DATA_PATH &lt;config-instrument-data-path&gt;` is actually a</span>
 <span class="sd">        directory</span>
 <span class="sd">        of symlinks. If this is the case and ``followlinks`` is</span>
 <span class="sd">        ``False``, no files will ever be found because the ``find``</span>
@@ -1484,14 +1466,14 @@ window.addEventListener("load", load);
 <span class="sd">        If the find command cannot be found, or running it results in output</span>
 <span class="sd">        to `stderr`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Using GNU `find` to search for files&quot;</span><span class="p">)</span>
+    <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Using GNU `find` to search for files&quot;</span><span class="p">)</span>
 
     <span class="c1"># Get appropriate find command</span>
     <span class="n">find_command</span> <span class="o">=</span> <span class="n">_get_find_command</span><span class="p">()</span>
 
     <span class="c1"># Adjust datetime objects with tz_offset if naive</span>
-    <span class="n">dt_from</span> <span class="o">+=</span> <span class="n">tz_offset</span> <span class="k">if</span> <span class="n">dt_from</span><span class="o">.</span><span class="n">tzinfo</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">timedelta</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">dt_to</span> <span class="o">+=</span> <span class="n">tz_offset</span> <span class="k">if</span> <span class="n">dt_to</span><span class="o">.</span><span class="n">tzinfo</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">timedelta</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">dt_from</span> <span class="o">+=</span> <span class="n">_tz_offset</span> <span class="k">if</span> <span class="n">dt_from</span><span class="o">.</span><span class="n">tzinfo</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">timedelta</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">dt_to</span> <span class="o">+=</span> <span class="n">_tz_offset</span> <span class="k">if</span> <span class="n">dt_to</span><span class="o">.</span><span class="n">tzinfo</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">timedelta</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
     <span class="c1"># Find symlink directories if following links</span>
     <span class="k">if</span> <span class="n">followlinks</span><span class="p">:</span>
@@ -1508,8 +1490,8 @@ window.addEventListener("load", load);
         <span class="n">extensions</span><span class="p">,</span>
         <span class="n">followlinks</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Running via subprocess.run: &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span><span class="p">,</span> <span class="n">cmd</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Running via subprocess.run (as string): &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cmd</span><span class="p">))</span>
+    <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Running via subprocess.run: &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span><span class="p">,</span> <span class="n">cmd</span><span class="p">)</span>
+    <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Running via subprocess.run (as string): &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cmd</span><span class="p">))</span>
     <span class="n">out</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="c1"># Process results</span>
@@ -1517,7 +1499,7 @@ window.addEventListener("load", load);
     <span class="n">files</span> <span class="o">=</span> <span class="p">[</span><span class="n">Path</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
     <span class="n">files</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">files</span><span class="p">))</span>
     <span class="n">files</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="n">f</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_mtime</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Found </span><span class="si">%i</span><span class="s2"> files&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">))</span>
+    <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Found </span><span class="si">%i</span><span class="s2"> files&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">))</span>
 
     <span class="k">return</span> <span class="n">files</span></div>
 
@@ -1692,7 +1674,7 @@ window.addEventListener("load", load);
     <span class="k">try</span><span class="p">:</span>
         <span class="n">username</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">NX_CDCS_USER</span>
         <span class="n">passwd</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">NX_CDCS_PASS</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Authenticating using credentials from settings&quot;</span><span class="p">)</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Authenticating using credentials from settings&quot;</span><span class="p">)</span>
     <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">AttributeError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exception</span><span class="p">:</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
             <span class="s2">&quot;No credentials were found in settings. &quot;</span>
@@ -1750,15 +1732,52 @@ window.addEventListener("load", load);
 
 
 
+<div class="viewcode-block" id="current_system_tz_name">
+<a class="viewcode-back" href="../../api/nexusLIMS/nexusLIMS.utils.html#nexusLIMS.utils.current_system_tz_name">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">current_system_tz_name</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the system&#39;s timezone name.</span>
+
+<span class="sd">    Returns the IANA timezone database name for the system&#39;s current timezone</span>
+<span class="sd">    (e.g., &#39;America/New_York&#39;), never a simple UTC offset.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    str</span>
+<span class="sd">        The IANA timezone name (e.g., &#39;America/New_York&#39;, &#39;Europe/London&#39;)</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; current_system_tz_name()</span>
+<span class="sd">    &#39;America/New_York&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Get the system&#39;s local timezone using tzlocal</span>
+    <span class="k">return</span> <span class="n">tzlocal</span><span class="o">.</span><span class="n">get_localzone_name</span><span class="p">()</span></div>
+
+
+
 <div class="viewcode-block" id="current_system_tz">
 <a class="viewcode-back" href="../../api/nexusLIMS/nexusLIMS.utils.html#nexusLIMS.utils.current_system_tz">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">current_system_tz</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the current system timezone information.&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="p">(</span>
-        <span class="n">timezone</span><span class="p">(</span><span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=-</span><span class="n">time</span><span class="o">.</span><span class="n">altzone</span><span class="p">),</span> <span class="n">time</span><span class="o">.</span><span class="n">tzname</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-        <span class="k">if</span> <span class="n">time</span><span class="o">.</span><span class="n">daylight</span>
-        <span class="k">else</span> <span class="n">timezone</span><span class="p">(</span><span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=-</span><span class="n">time</span><span class="o">.</span><span class="n">timezone</span><span class="p">),</span> <span class="n">time</span><span class="o">.</span><span class="n">tzname</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-    <span class="p">)</span></div>
+<span class="k">def</span><span class="w"> </span><span class="nf">current_system_tz</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">pytz</span><span class="o">.</span><span class="n">tzinfo</span><span class="o">.</span><span class="n">DstTzInfo</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the system&#39;s timezone as a pytz timezone object.</span>
+
+<span class="sd">    Returns the system&#39;s current timezone as a pytz timezone object with a</span>
+<span class="sd">    named timezone (e.g., &#39;America/New_York&#39;), never a simple UTC offset.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pytz.tzinfo.DstTzInfo</span>
+<span class="sd">        A pytz timezone object representing the system&#39;s timezone</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; tz = get_system_tz()</span>
+<span class="sd">    &gt;&gt;&gt; tz.zone</span>
+<span class="sd">    &#39;America/New_York&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Return the corresponding pytz timezone object</span>
+    <span class="k">return</span> <span class="n">pytz</span><span class="o">.</span><span class="n">timezone</span><span class="p">(</span><span class="n">current_system_tz_name</span><span class="p">())</span></div>
 
 
 
@@ -1789,7 +1808,7 @@ window.addEventListener("load", load);
     <span class="n">nexuslims_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">NX_DATA_PATH</span><span class="p">))</span>
 
     <span class="k">if</span> <span class="n">instr_data_path</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">path</span><span class="o">.</span><span class="n">parents</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
             <span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> is not a sub-path of </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">NX_INSTRUMENT_DATA_PATH</span><span class="p">)</span>
         <span class="p">)</span>
     <span class="k">return</span> <span class="n">Path</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">instr_data_path</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">nexuslims_path</span><span class="p">))</span> <span class="o">+</span> <span class="n">suffix</span><span class="p">)</span></div>
