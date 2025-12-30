@@ -1,6 +1,6 @@
 [project]
 name = "nexusLIMS"
-version = "2.1.2.dev0"
+version = "2.2.0.dev0"
 description = "Electron Microscopy Nexus LIMS project (Datasophos fork)"
 authors = [
     {name = "Joshua Taillon", email = "josh@datasophos.co"}
@@ -40,6 +40,9 @@ dependencies = [
     "click>=8.1.8",
     "rich>=13.0.0",
     "filelock>=3.0.0",
+    "tzlocal>=5.3.1",
+    "pint>=0.24.0,<1.0.0",
+    "rdflib>=7.0.0,<8.0.0",
 ]
 
 [dependency-groups]
@@ -70,6 +73,8 @@ dev = [
     "sphinx-design>=0.6.1",
     "pre-commit>=4.5.0",
     "imagecodecs>=2025.11.11",
+    "sphinx-autobuild>=2025.8.25",
+    "sphinx-copybutton>=0.5.2",
 ]
 
 [project.urls]

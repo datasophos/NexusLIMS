@@ -20,7 +20,7 @@ from skimage.transform import resize  # pylint: disable=no-name-in-module
 import nexusLIMS.extractors
 from nexusLIMS.extractors.base import ExtractionContext
 
-logger = logging.getLogger(__name__)
+_logger = logging.getLogger(__name__)
 
 # Use modern HyperSpy 2.0+ API only
 # Marker functionality has changed significantly in HyperSpy 2.0+
@@ -33,6 +33,7 @@ SPECTRUM_IMAGE_LOGO = (
     / "assets"
     / "spectrum_image_logo.svg.png"
 )
+"""Logo background to use for a spectrum image preview"""
 
 
 def _full_extent(axis, items, pad=0.0):
@@ -327,7 +328,7 @@ def _get_marker_props(annotation):
             marker_type = "Point"
             marker_properties["size"] = _POINT_SIZE
         elif annotation_type in log_msg_map:
-            logger.debug(log_msg_map[annotation_type])
+            _logger.debug(log_msg_map[annotation_type])
 
     return marker_properties, marker_type, marker_text
 
@@ -384,7 +385,7 @@ def _get_markers_list(s, tags_dict):
                     )
                     markers_list.append(label_marker)
                 except Exception as err:
-                    logger.debug("Failed to create label marker: %s", err)
+                    _logger.debug("Failed to create label marker: %s", err)
 
             # Create the main marker based on type
             if position:
@@ -446,7 +447,7 @@ def _get_markers_list(s, tags_dict):
                         )
                         markers_list.append(marker)
                 except Exception as err:
-                    logger.debug("Failed to create %s marker: %s", marker_type, err)
+                    _logger.debug("Failed to create %s marker: %s", marker_type, err)
 
     return markers_list
 
@@ -471,7 +472,7 @@ def add_annotation_markers(s):
     try:
         markers_list = _get_markers_list(s, s.original_metadata.as_dictionary())
     except Exception as err:
-        logger.warning("Markers could not be loaded from the file due to: %s", err)
+        _logger.warning("Markers could not be loaded from the file due to: %s", err)
         markers_list = []
     if markers_list:
         # Add the HyperSpy 2.0+ Marker objects (in a list) to the signal
@@ -869,7 +870,7 @@ class HyperSpyPreviewGenerator:
         try:
             from hyperspy.io import load  # noqa: PLC0415
 
-            logger.debug("Generating HyperSpy preview for: %s", context.file_path)
+            _logger.debug("Generating HyperSpy preview for: %s", context.file_path)
 
             # Load the signal
             s = load(str(context.file_path), lazy=True)
@@ -888,7 +889,7 @@ class HyperSpyPreviewGenerator:
 
             return output_path.exists()
         except Exception as e:
-            logger.warning(
+            _logger.warning(
                 "Failed to generate HyperSpy preview for %s: %s",
                 context.file_path,
                 e,

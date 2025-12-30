@@ -57,14 +57,6 @@ See the ``.env.example`` file for more documentation and examples.
     The root URL of the NexusLIMS CDCS front-end. This will be the target for
     record uploads that are authenticated using the CDCS credentials.
 
-(nexuslims-test-cdcs-url)=
-
-`NX_TEST_CDCS_URL`
-    (development setting) The root URL of a NexusLIMS CDCS instance to use
-    for integration testing. If defined, this URL will be used for the CDCS
-    tests rather than the "actual" URL defined in ``NX_CDCS_URL``. If not
-    defined, no integration tests will be run.
-
 (nexuslims-instrument-data-path)=
 
 `NX_INSTRUMENT_DATA_PATH`

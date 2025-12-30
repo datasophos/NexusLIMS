@@ -1,5 +1,5 @@
 # pylint: disable=C0116
-# ruff: noqa: D102, ARG002, ARG001
+# ruff: noqa: D102, ARG002, ARG001, SLF001
 
 """Tests for nexusLIMS.extractors top-level module functions."""
 
@@ -8,15 +8,23 @@ import filecmp
 import json
 import logging
 import shutil
+from datetime import UTC
 from pathlib import Path
 from typing import ClassVar
 
 import numpy as np
 import pytest
+from pydantic import ValidationError
 
 import nexusLIMS
-from nexusLIMS.extractors import PLACEHOLDER_PREVIEW, flatten_dict, parse_metadata
+from nexusLIMS.extractors import (
+    PLACEHOLDER_PREVIEW,
+    flatten_dict,
+    parse_metadata,
+    validate_nx_meta,
+)
 from nexusLIMS.version import __version__
+from tests.unit.test_extractors.conftest import get_field
 from tests.unit.test_instrument_factory import make_quanta_sem
 
 
@@ -41,20 +49,27 @@ class TestExtractorModule:
         assert isinstance(meta_list, list)
         assert len(meta_list) == 1
 
-        meta = meta_list[0]
-        assert meta["nx_meta"]["Acquisition Device"] == "BM-UltraScan"
-        assert meta["nx_meta"]["Actual Magnification"] == pytest.approx(17677.0)
-        assert meta["nx_meta"]["Cs(mm)"] == pytest.approx(1.2)
-        assert meta["nx_meta"]["Data Dimensions"] == "(2048, 2048)"
-        assert meta["nx_meta"]["Data Type"] == "TEM_Imaging"
-        assert meta["nx_meta"]["DatasetType"] == "Image"
-        assert meta["nx_meta"]["Microscope"] == "TEST Titan"
-        assert len(meta["nx_meta"]["warnings"]) == 0
-        assert (
-            meta["nx_meta"]["NexusLIMS Extraction"]["Module"]
-            == "nexusLIMS.extractors.plugins.dm3_extractor"
-        )
-        assert meta["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
+        # After schema consolidation and EM Glossary migration,
+        # fields use snake_case EM Glossary names
+        from nexusLIMS.schemas.units import ureg
+
+        # EM Glossary field names (snake_case)
+        assert get_field(meta_list, "acquisition_device") == "BM-UltraScan"
+        # Vendor-specific fields in extensions
+        assert get_field(meta_list, "Actual Magnification") == pytest.approx(17677.0)
+        # Cs is now a Pint Quantity and in extensions (vendor-specific)
+        cs = get_field(meta_list, "Cs")
+        assert isinstance(cs, ureg.Quantity)
+        assert float(cs.magnitude) == 1.2
+        assert cs.units == ureg.millimeter
+        assert meta_list[0]["nx_meta"]["Data Dimensions"] == "(2048, 2048)"
+        assert meta_list[0]["nx_meta"]["Data Type"] == "TEM_Imaging"
+        assert meta_list[0]["nx_meta"]["DatasetType"] == "Image"
+        assert get_field(meta_list, "Microscope") == "TEST Titan"
+        assert len(meta_list[0]["nx_meta"]["warnings"]) == 0
+        extraction_info = get_field(meta_list, "NexusLIMS Extraction")
+        assert extraction_info["Module"] == "nexusLIMS.extractors.plugins.dm3_extractor"
+        assert extraction_info["Version"] == __version__
 
         self.remove_thumb_and_json(thumb_fnames)
 
@@ -79,13 +94,10 @@ class TestExtractorModule:
         assert len(meta_list) == 1
         assert thumb_fnames is not None
 
-        meta = meta_list[0]
-        assert meta["nx_meta"]["Actual Magnification"] == pytest.approx(17677.0)
-        assert (
-            meta["nx_meta"]["NexusLIMS Extraction"]["Module"]
-            == "nexusLIMS.extractors.plugins.dm3_extractor"
-        )
-        assert meta["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
+        assert get_field(meta_list, "Actual Magnification") == pytest.approx(17677.0)
+        extraction_info = get_field(meta_list, "NexusLIMS Extraction")
+        assert extraction_info["Module"] == "nexusLIMS.extractors.plugins.dm3_extractor"
+        assert extraction_info["Version"] == __version__
         self.remove_thumb_and_json(thumb_fnames)
 
     def test_parse_metadata_list_signal(self, list_signal):
@@ -99,14 +111,24 @@ class TestExtractorModule:
         assert len(thumb_fnames) == 2
 
         # Check first signal metadata
-        first_signal = meta_list[0]
-        assert first_signal["nx_meta"]["Acquisition Device"] == "DigiScan"
-        assert first_signal["nx_meta"]["STEM Camera Length"] == pytest.approx(77.0)
-        assert first_signal["nx_meta"]["Cs(mm)"] == pytest.approx(1.0)
-        assert first_signal["nx_meta"]["Data Dimensions"] == "(512, 512)"
-        assert first_signal["nx_meta"]["Data Type"] == "STEM_Imaging"
-        assert first_signal["nx_meta"]["DatasetType"] == "Image"
-        assert len(first_signal["nx_meta"]["warnings"]) == 0
+        # EM Glossary uses snake_case for core fields, but vendor fields are Title Case
+        from nexusLIMS.schemas.units import ureg
+
+        assert get_field(meta_list, "acquisition_device", index=0) == "DigiScan"
+        # STEM Camera Length is a vendor-specific field in extensions (Title Case)
+        camera_length = get_field(meta_list, "STEM Camera Length", index=0)
+        assert isinstance(camera_length, ureg.Quantity)
+        assert float(camera_length.magnitude) == 77.0
+        assert camera_length.units == ureg.millimeter
+        # Cs is a vendor-specific field in extensions
+        cs = get_field(meta_list, "Cs", index=0)
+        assert isinstance(cs, ureg.Quantity)
+        assert float(cs.magnitude) == 1.0
+        assert cs.units == ureg.millimeter
+        assert meta_list[0]["nx_meta"]["Data Dimensions"] == "(512, 512)"
+        assert meta_list[0]["nx_meta"]["Data Type"] == "STEM_Imaging"
+        assert meta_list[0]["nx_meta"]["DatasetType"] == "Image"
+        assert len(meta_list[0]["nx_meta"]["warnings"]) == 0
 
         self.remove_thumb_and_json(thumb_fnames)
 
@@ -126,7 +148,7 @@ class TestExtractorModule:
             with thumb.open(mode="a", encoding="utf-8") as _:
                 pass
 
-        nexusLIMS.extractors.logger.setLevel(logging.INFO)
+        nexusLIMS.extractors._logger.setLevel(logging.INFO)
         _, returned_thumb_fnames = parse_metadata(fname=list_signal[0], overwrite=False)
         assert "Preview already exists" in caplog.text
         self.remove_thumb_and_json(returned_thumb_fnames)
@@ -165,12 +187,12 @@ class TestExtractorModule:
         assert isinstance(meta_list, list)
         assert len(meta_list) == 1
 
-        meta = meta_list[0]
+        extraction_info = get_field(meta_list, "NexusLIMS Extraction")
         assert (
-            meta["nx_meta"]["NexusLIMS Extraction"]["Module"]
+            extraction_info["Module"]
             == "nexusLIMS.extractors.plugins.quanta_tif_extractor"
         )
-        assert meta["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
+        assert extraction_info["Version"] == __version__
         self.remove_thumb_and_json(thumb_fnames)
 
     def test_parse_metadata_tif_uppercase_extension(
@@ -205,12 +227,12 @@ class TestExtractorModule:
         assert len(meta_list) == 1
         assert thumb_fnames is not None
 
-        meta = meta_list[0]
+        extraction_info = get_field(meta_list, "NexusLIMS Extraction")
         assert (
-            meta["nx_meta"]["NexusLIMS Extraction"]["Module"]
+            extraction_info["Module"]
             == "nexusLIMS.extractors.plugins.quanta_tif_extractor"
         )
-        assert meta["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
+        assert extraction_info["Version"] == __version__
         self.remove_thumb_and_json(thumb_fnames)
 
     def test_parse_metadata_edax_spc(self):
@@ -253,12 +275,12 @@ class TestExtractorModule:
         assert isinstance(meta_list, list)
         assert len(meta_list) == 1
 
-        meta = meta_list[0]
+        extraction_info = get_field(meta_list, "NexusLIMS Extraction")
         assert (
-            meta["nx_meta"]["NexusLIMS Extraction"]["Module"]
+            extraction_info["Module"]
             == "nexusLIMS.extractors.plugins.ser_emi_extractor"
         )
-        assert meta["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
+        assert extraction_info["Version"] == __version__
         self.remove_thumb_and_json(thumb_fnames)
 
     def test_parse_metadata_no_dataset_type(self, monkeypatch, quanta_test_file):
@@ -278,7 +300,20 @@ class TestExtractorModule:
                 return context.file_path.suffix.lower() == ".tif"
 
             def extract(self, context: ExtractionContext) -> list[dict]:
-                return [{"nx_meta": {"key": "val"}}]
+                from datetime import datetime
+
+                # Return minimal valid metadata without DatasetType/Data Type
+                # to test that defaults are applied
+                return [
+                    {
+                        "nx_meta": {
+                            "Creation Time": datetime.now(tz=UTC).isoformat(),
+                            "extensions": {
+                                "k": "val",  # Custom field for testing (in extensions)
+                            },
+                        }
+                    }
+                ]
 
         # Register the test extractor
         registry = get_registry()
@@ -290,11 +325,11 @@ class TestExtractorModule:
             assert isinstance(meta_list, list)
             assert len(meta_list) == 1
 
-            meta = meta_list[0]
-            assert meta["nx_meta"]["DatasetType"] == "Misc"
-            assert meta["nx_meta"]["Data Type"] == "Miscellaneous"
-            assert meta["nx_meta"]["key"] == "val"
-            assert meta["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
+            assert meta_list[0]["nx_meta"]["DatasetType"] == "Misc"
+            assert meta_list[0]["nx_meta"]["Data Type"] == "Miscellaneous"
+            assert get_field(meta_list, "k") == "val"
+            extraction_info = get_field(meta_list, "NexusLIMS Extraction")
+            assert extraction_info["Version"] == __version__
 
             self.remove_thumb_and_json(thumb_fnames)
         finally:
@@ -314,19 +349,19 @@ class TestExtractorModule:
         assert len(meta_list) == 1
         assert thumb_fnames is not None
 
-        meta = meta_list[0]
         # assert that preview is same as our placeholder image (should be)
         assert filecmp.cmp(PLACEHOLDER_PREVIEW, thumb_fnames[0], shallow=False)
-        assert meta["nx_meta"]["Data Type"] == "Unknown"
-        assert meta["nx_meta"]["DatasetType"] == "Misc"
+        assert meta_list[0]["nx_meta"]["Data Type"] == "Unknown"
+        assert meta_list[0]["nx_meta"]["DatasetType"] == "Misc"
+        extraction_info = get_field(meta_list, "NexusLIMS Extraction")
         assert (
-            meta["nx_meta"]["NexusLIMS Extraction"]["Module"]
+            extraction_info["Module"]
             == "nexusLIMS.extractors.plugins.ser_emi_extractor"
         )
-        assert meta["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
-        assert "Titan_TEM_13_unreadable_ser.emi" in meta["nx_meta"]["emi Filename"]
-        assert (
-            "The .ser file could not be opened" in meta["nx_meta"]["Extractor Warning"]
+        assert extraction_info["Version"] == __version__
+        assert "Titan_TEM_13_unreadable_ser.emi" in get_field(meta_list, "emi Filename")
+        assert "The .ser file could not be opened" in get_field(
+            meta_list, "Extractor Warning"
         )
 
         self.remove_thumb_and_json(thumb_fnames)
@@ -340,14 +375,14 @@ class TestExtractorModule:
         assert isinstance(meta_list, list)
         assert len(meta_list) == 1
 
-        meta = meta_list[0]
-        assert meta["nx_meta"]["Data Type"] == "Unknown"
-        assert meta["nx_meta"]["DatasetType"] == "Unknown"
+        assert meta_list[0]["nx_meta"]["Data Type"] == "Unknown"
+        assert meta_list[0]["nx_meta"]["DatasetType"] == "Unknown"
+        extraction_info = get_field(meta_list, "NexusLIMS Extraction")
         assert (
-            meta["nx_meta"]["NexusLIMS Extraction"]["Module"]
+            extraction_info["Module"]
             == "nexusLIMS.extractors.plugins.basic_file_info_extractor"
         )
-        assert meta["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
+        assert extraction_info["Version"] == __version__
 
         # remove json file
         from nexusLIMS.config import settings
@@ -370,14 +405,14 @@ class TestExtractorModule:
         assert isinstance(meta_list, list)
         assert len(meta_list) == 1
 
-        meta = meta_list[0]
-        assert meta["nx_meta"]["Data Type"] == "Unknown"
-        assert meta["nx_meta"]["DatasetType"] == "Unknown"
+        assert meta_list[0]["nx_meta"]["Data Type"] == "Unknown"
+        assert meta_list[0]["nx_meta"]["DatasetType"] == "Unknown"
+        extraction_info = get_field(meta_list, "NexusLIMS Extraction")
         assert (
-            meta["nx_meta"]["NexusLIMS Extraction"]["Module"]
+            extraction_info["Module"]
             == "nexusLIMS.extractors.plugins.basic_file_info_extractor"
         )
-        assert meta["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
+        assert extraction_info["Version"] == __version__
 
         self.remove_thumb_and_json(thumb_fnames)
 
@@ -391,14 +426,14 @@ class TestExtractorModule:
         assert isinstance(meta_list, list)
         assert len(meta_list) == 1
 
-        meta = meta_list[0]
-        assert meta["nx_meta"]["Data Type"] == "Unknown"
-        assert meta["nx_meta"]["DatasetType"] == "Unknown"
+        assert meta_list[0]["nx_meta"]["Data Type"] == "Unknown"
+        assert meta_list[0]["nx_meta"]["DatasetType"] == "Unknown"
+        extraction_info = get_field(meta_list, "NexusLIMS Extraction")
         assert (
-            meta["nx_meta"]["NexusLIMS Extraction"]["Module"]
+            extraction_info["Module"]
             == "nexusLIMS.extractors.plugins.basic_file_info_extractor"
         )
-        assert meta["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
+        assert extraction_info["Version"] == __version__
 
         self.remove_thumb_and_json(thumb_fnames)
 
@@ -411,14 +446,14 @@ class TestExtractorModule:
         assert isinstance(meta_list, list)
         assert len(meta_list) == 1
 
-        meta = meta_list[0]
-        assert meta["nx_meta"]["Data Type"] == "Unknown"
-        assert meta["nx_meta"]["DatasetType"] == "Unknown"
+        assert meta_list[0]["nx_meta"]["Data Type"] == "Unknown"
+        assert meta_list[0]["nx_meta"]["DatasetType"] == "Unknown"
+        extraction_info = get_field(meta_list, "NexusLIMS Extraction")
         assert (
-            meta["nx_meta"]["NexusLIMS Extraction"]["Module"]
+            extraction_info["Module"]
             == "nexusLIMS.extractors.plugins.basic_file_info_extractor"
         )
-        assert meta["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
+        assert extraction_info["Version"] == __version__
 
         # Clean up JSON file (no thumbnail is generated for this file type)
         json_path = Path(str(unreadable_image_file) + ".json")
@@ -434,14 +469,14 @@ class TestExtractorModule:
         assert isinstance(meta_list, list)
         assert len(meta_list) == 1
 
-        meta = meta_list[0]
-        assert meta["nx_meta"]["Data Type"] == "Unknown"
-        assert meta["nx_meta"]["DatasetType"] == "Unknown"
+        assert meta_list[0]["nx_meta"]["Data Type"] == "Unknown"
+        assert meta_list[0]["nx_meta"]["DatasetType"] == "Unknown"
+        extraction_info = get_field(meta_list, "NexusLIMS Extraction")
         assert (
-            meta["nx_meta"]["NexusLIMS Extraction"]["Module"]
+            extraction_info["Module"]
             == "nexusLIMS.extractors.plugins.basic_file_info_extractor"
         )
-        assert meta["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
+        assert extraction_info["Version"] == __version__
 
         # Clean up JSON file (no thumbnail is generated for this file type)
         json_path = Path(str(binary_text_file) + ".json")
@@ -451,7 +486,7 @@ class TestExtractorModule:
     def test_create_preview_non_quanta_tif(
         self, monkeypatch, quanta_test_file, tmp_path
     ):
-        """Test create_preview for non-Quanta TIF files (else branch, lines 275-276)."""
+        """Test create_preview for non-Quanta TIF files (else branch)."""
         from unittest.mock import Mock
 
         from PIL import Image
@@ -477,7 +512,7 @@ class TestExtractorModule:
 
         # Mock down_sample_image to verify factor=2 is used and create output
         def mock_downsample(_fname, out_path=None, factor=None, output_size=None):
-            # This assertion verifies we hit lines 275-276 (else branch)
+            # This assertion verifies we hit else branch
             assert factor == 2, "Expected factor=2 for non-Quanta instruments"
             assert output_size is None, "Expected output_size=None for non-Quanta"
             # Create output
@@ -491,7 +526,7 @@ class TestExtractorModule:
             mock_downsample,
         )
 
-        # Execute the function - this should hit lines 275-276
+        # Execute the function
         _result = create_preview(fname=quanta_test_file[0], overwrite=False)
 
     def test_flatten_dict(self):
@@ -514,7 +549,7 @@ class TestExtractorModule:
         # Remove the __module__ attribute to force the fallback path
         delattr(mock_extractor, "__module__")
 
-        # Mock inspect.getmodule to return None (covers lines 151-156)
+        # Mock inspect.getmodule to return None
         monkeypatch.setattr("nexusLIMS.extractors.inspect.getmodule", lambda _: None)
 
         nx_meta: dict = {"nx_meta": {}}
@@ -525,11 +560,72 @@ class TestExtractorModule:
         assert "Date" in result["nx_meta"]["NexusLIMS Extraction"]
         assert result["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
 
+    def test_add_extraction_details_with_extractor_warnings_in_nx_meta(self):
+        """Test _add_extraction_details moves warnings to extraction details."""
+        from nexusLIMS.extractors import _add_extraction_details
+
+        # Create a mock extractor with __module__
+        class MockExtractor:
+            __module__ = "test_module"
+
+        mock_extractor = MockExtractor()
+
+        # Create nx_meta with Extractor Warnings at top level
+        nx_meta: dict = {
+            "nx_meta": {
+                "DatasetType": "Image",
+                "Extractor Warnings": "Test warning message",
+            }
+        }
+
+        result = _add_extraction_details(nx_meta, mock_extractor)
+
+        # Verify Extractor Warnings was moved to extraction details
+        assert "Extractor Warnings" not in result["nx_meta"]
+        assert (
+            result["nx_meta"]["NexusLIMS Extraction"]["Extractor Warnings"]
+            == "Test warning message"
+        )
+        assert result["nx_meta"]["NexusLIMS Extraction"]["Module"] == "test_module"
+
+    def test_add_extraction_details_with_extractor_warnings_in_extensions(self):
+        """Test _add_extraction_details moves warnings from extensions."""
+        from nexusLIMS.extractors import _add_extraction_details
+
+        # Create a mock extractor with __module__
+        class MockExtractor:
+            __module__ = "test_module_ext"
+
+        mock_extractor = MockExtractor()
+
+        # Create nx_meta with Extractor Warnings in extensions
+        nx_meta: dict = {
+            "nx_meta": {
+                "DatasetType": "Image",
+                "extensions": {
+                    "Extractor Warnings": "Warning in extensions",
+                    "other_field": "value",
+                },
+            }
+        }
+
+        result = _add_extraction_details(nx_meta, mock_extractor)
+
+        # Verify Extractor Warnings was moved from extensions to extraction details
+        assert "Extractor Warnings" not in result["nx_meta"]["extensions"]
+        assert (
+            result["nx_meta"]["NexusLIMS Extraction"]["Extractor Warnings"]
+            == "Warning in extensions"
+        )
+        # Verify other extension fields remain
+        assert result["nx_meta"]["extensions"]["other_field"] == "value"
+        assert result["nx_meta"]["NexusLIMS Extraction"]["Module"] == "test_module_ext"
+
     def test_extractor_method_callable(self, parse_meta_titan):
-        """Test that ExtractorMethod.__call__ is callable (covers line 245)."""
+        """Test that ExtractorMethod.__call__ is callable."""
         from pathlib import Path
 
-        # This test exercises the __call__ method on line 245
+        # This test exercises the __call__ method
         # We need to create the ExtractorMethod class and call it
         # The class is defined inside parse_metadata, so we replicate it here
         nx_meta_test = {"nx_meta": {"test": "value"}}
@@ -558,11 +654,11 @@ class TestExtractorModule:
     def test_preview_generation_pil_failure(
         self, monkeypatch, unreadable_image_file, caplog
     ):
-        """Test create_preview returns None when PIL can't open image (line 337)."""
+        """Test create_preview returns None when PIL can't open image."""
         from nexusLIMS.extractors import create_preview
 
         # The unreadable_image_file fixture should already cause PIL to fail
-        # but let's be explicit and mock to ensure line 337 is hit
+        # but let's be explicit and mock to ensure
         def mock_image_to_square_thumb_fail(*_args, **_kwargs):
             return False
 
@@ -572,11 +668,11 @@ class TestExtractorModule:
         )
 
         result = create_preview(fname=unreadable_image_file, overwrite=False)
-        # When PIL fails, should return None (line 337)
+        # When PIL fails, should return None
         assert result is None
 
     def test_hyperspy_signal_empty_title(self, tmp_path):
-        """Test that HyperSpy signals with empty titles are handled (line 367)."""
+        """Test that HyperSpy signals with empty titles are handled."""
         import hyperspy.api as hs
 
         from nexusLIMS.extractors import create_preview
@@ -590,7 +686,7 @@ class TestExtractorModule:
         test_file = tmp_path / "test_empty_title.hspy"
         signal.save(test_file, overwrite=True)
 
-        # This should handle the empty title (line 367) by using the filename
+        # This should handle the empty title by using the filename
         result = create_preview(fname=test_file, overwrite=True)
 
         # The preview should have been generated successfully
@@ -666,12 +762,12 @@ class TestExtractorModule:
             mock_downsample,
         )
 
-        # Execute create_preview - should hit lines 316-321
+        # Execute create_preview
         import logging
 
         import nexusLIMS.extractors
 
-        nexusLIMS.extractors.logger.setLevel(logging.INFO)
+        nexusLIMS.extractors._logger.setLevel(logging.INFO)
 
         result = create_preview(fname=test_tif, overwrite=True)
 
@@ -683,14 +779,14 @@ class TestExtractorModule:
         assert result == output_path, "Should return the output path"
         assert output_path.exists(), "Preview file should have been created"
 
-        # Verify the log message (line 317)
+        # Verify the log message
         assert "Using legacy downsampling for .tif" in caplog.text
 
     def test_legacy_preview_map_success(self, monkeypatch, tmp_path, caplog):
-        """Test legacy preview map fallback success path (line 337).
+        """Test legacy preview map fallback success path.
 
         This test ensures that when a file extension is in unextracted_preview_map
-        and the preview generation succeeds, the correct path is returned (line 337).
+        and the preview generation succeeds, the correct path is returned.
         """
         from unittest.mock import Mock
 
@@ -752,12 +848,12 @@ class TestExtractorModule:
             mock_image_to_square_thumbnail,
         )
 
-        # Execute create_preview - should hit lines 324-337
+        # Execute create_preview
         import logging
 
         import nexusLIMS.extractors
 
-        nexusLIMS.extractors.logger.setLevel(logging.INFO)
+        nexusLIMS.extractors._logger.setLevel(logging.INFO)
 
         result = create_preview(fname=test_png, overwrite=True)
 
@@ -765,10 +861,10 @@ class TestExtractorModule:
         assert thumbnail_called["called"], (
             "image_to_square_thumbnail should have been called"
         )
-        assert result == output_path, "Should return the output path (line 337)"
+        assert result == output_path, "Should return the output path"
         assert output_path.exists(), "Preview file should have been created"
 
-        # Verify the log message (line 325)
+        # Verify the log message
         assert "Using legacy preview map for png" in caplog.text
 
     def test_correct_extractor_dispatched_for_quanta_tif(self, quanta_test_file):
@@ -783,12 +879,12 @@ class TestExtractorModule:
         assert isinstance(meta_list, list)
         assert len(meta_list) == 1
 
-        meta = meta_list[0]
+        extraction_info = get_field(meta_list, "NexusLIMS Extraction")
         assert (
-            meta["nx_meta"]["NexusLIMS Extraction"]["Module"]
+            extraction_info["Module"]
             == "nexusLIMS.extractors.plugins.quanta_tif_extractor"
         )
-        assert meta["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
+        assert extraction_info["Version"] == __version__
         self.remove_thumb_and_json(thumb_fnames)
 
     def test_correct_extractor_dispatched_for_orion_fibics_tif(
@@ -805,12 +901,12 @@ class TestExtractorModule:
         assert isinstance(meta_list, list)
         assert len(meta_list) == 1
 
-        meta = meta_list[0]
+        extraction_info = get_field(meta_list, "NexusLIMS Extraction")
         assert (
-            meta["nx_meta"]["NexusLIMS Extraction"]["Module"]
+            extraction_info["Module"]
             == "nexusLIMS.extractors.plugins.orion_HIM_tif_extractor"
         )
-        assert meta["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
+        assert extraction_info["Version"] == __version__
         self.remove_thumb_and_json(thumb_fnames)
 
     def test_correct_extractor_dispatched_for_orion_zeiss_tif(
@@ -827,12 +923,12 @@ class TestExtractorModule:
         assert isinstance(meta_list, list)
         assert len(meta_list) == 1
 
-        meta = meta_list[0]
+        extraction_info = get_field(meta_list, "NexusLIMS Extraction")
         assert (
-            meta["nx_meta"]["NexusLIMS Extraction"]["Module"]
+            extraction_info["Module"]
             == "nexusLIMS.extractors.plugins.orion_HIM_tif_extractor"
         )
-        assert meta["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
+        assert extraction_info["Version"] == __version__
         self.remove_thumb_and_json(thumb_fnames)
 
     def test_correct_extractor_dispatched_for_tescan_pfib_tif(self, tescan_pfib_files):
@@ -852,12 +948,12 @@ class TestExtractorModule:
         assert isinstance(meta_list, list)
         assert len(meta_list) == 1
 
-        meta = meta_list[0]
+        extraction_info = get_field(meta_list, "NexusLIMS Extraction")
         assert (
-            meta["nx_meta"]["NexusLIMS Extraction"]["Module"]
+            extraction_info["Module"]
             == "nexusLIMS.extractors.plugins.tescan_tif_extractor"
         )
-        assert meta["nx_meta"]["NexusLIMS Extraction"]["Version"] == __version__
+        assert extraction_info["Version"] == __version__
         self.remove_thumb_and_json(thumb_fnames)
 
     def test_parse_metadata_multi_signal_no_preview(self, list_signal):
@@ -865,7 +961,7 @@ class TestExtractorModule:
 
         This test ensures that when generate_preview=False is passed for a
         multi-signal file, the function returns a list of None values for
-        preview_fnames (line 254: preview_fnames = [None] * signal_count).
+        preview_fnames.
         """
         meta, preview_fnames = parse_metadata(
             fname=list_signal[0],
@@ -876,7 +972,7 @@ class TestExtractorModule:
         assert isinstance(meta, list)
         assert len(meta) == 2
 
-        # Verify preview_fnames is a list of None values (line 254)
+        # Verify preview_fnames is a list of None values
         assert isinstance(preview_fnames, list)
         assert len(preview_fnames) == 2
         assert all(fname is None for fname in preview_fnames)
@@ -886,7 +982,7 @@ class TestExtractorModule:
         assert meta[1]["nx_meta"]["Data Type"] == "TEM_Imaging"
 
     def test_create_preview_multi_signal_list_with_index(self, tmp_path):
-        """Test HyperSpy list signal handling with signal_index (line 414-418).
+        """Test HyperSpy list signal handling with signal_index.
 
         When HyperSpy loads a file and returns a list of signals, and signal_index
         is not None, the specified signal should be selected and its title updated
@@ -964,7 +1060,7 @@ class TestExtractorModule:
                 signal_index=1,
             )
 
-            # Verify title was updated with signal index info (line 414-418)
+            # Verify title was updated with signal index info
             assert captured_signal["title"] is not None
             assert "signal 2 of 2" in captured_signal["title"].lower()
 
@@ -973,7 +1069,7 @@ class TestExtractorModule:
                 result.unlink()
 
     def test_create_preview_multi_signal_list_without_index(self, tmp_path):
-        """Test HyperSpy list signal handling without signal_index (line 420-424).
+        """Test HyperSpy list signal handling without signal_index.
 
         When HyperSpy loads a file and returns a list of signals, and signal_index
         is None (legacy mode), the first signal should be selected and its title
@@ -1047,7 +1143,7 @@ class TestExtractorModule:
             # Call create_preview without signal_index (legacy mode)
             result = create_preview(fname=tmp_path / "test.dm3", overwrite=True)
 
-            # Verify legacy format: "1 of Y total signals" (line 420-424)
+            # Verify legacy format: "1 of Y total signals"
             assert captured_signal["title"] is not None
             assert "1 of" in captured_signal["title"].lower()
             assert "total signals" in captured_signal["title"].lower()
@@ -1057,7 +1153,7 @@ class TestExtractorModule:
                 result.unlink()
 
     def test_create_preview_hyperspy_single_signal_empty_title(self, tmp_path):
-        """Test HyperSpy single signal with empty title gets filename (line 428-432).
+        """Test HyperSpy single signal with empty title gets filename.
 
         When a single signal has an empty title, it should be populated with the
         filename (without extension).
@@ -1125,7 +1221,7 @@ class TestExtractorModule:
             # Call create_preview with empty-title signal
             result = create_preview(fname=tmp_path / "test.dm3", overwrite=True)
 
-            # Verify title was populated from filename (line 428-432)
+            # Verify title was populated from filename
             assert captured_signal["title"] is not None
             assert "test" in captured_signal["title"]
 
@@ -1134,7 +1230,7 @@ class TestExtractorModule:
                 result.unlink()
 
     def test_parse_metadata_extractor_returns_none(self, monkeypatch, tmp_path):
-        """Test parse_metadata when extractor returns None (line 205-206).
+        """Test parse_metadata when extractor returns None.
 
         This tests the defensive early return when nx_meta_list is None.
         Although extractors are designed to always return at least one metadata
@@ -1172,7 +1268,7 @@ class TestExtractorModule:
             # Call parse_metadata - should handle None gracefully
             result = parse_metadata(fname=test_file, generate_preview=False)
 
-            # When nx_meta_list is None, should return None, None (line 282)
+            # When nx_meta_list is None, should return None, None
             assert result == (None, None)
 
     @pytest.mark.filterwarnings(
@@ -1208,3 +1304,115 @@ class TestExtractorModule:
 
         # Clean up generated files
         self.remove_thumb_and_json(thumb_fnames)
+
+
+class TestValidateNxMeta:
+    """Tests for the validate_nx_meta function in nexusLIMS.extractors.__init__."""
+
+    def test_validate_nx_meta_valid_metadata_returns_unchanged(self):
+        """Test that valid metadata passes validation and is returned unchanged."""
+        # Create valid metadata dict with all required fields
+        metadata_dict = {
+            "nx_meta": {
+                "Creation Time": "2024-01-15T10:30:00-05:00",
+                "Data Type": "STEM_Imaging",
+                "DatasetType": "Image",
+                "Data Dimensions": "(1024, 1024)",
+                "Instrument ID": "FEI-Titan-TEM-635816",
+            }
+        }
+
+        # Call validate_nx_meta
+        result = validate_nx_meta(metadata_dict)
+
+        # Assert returned dict is the same object
+        assert result is metadata_dict
+        # Assert no fields were modified
+        assert result["nx_meta"]["Creation Time"] == "2024-01-15T10:30:00-05:00"
+        assert result["nx_meta"]["Data Type"] == "STEM_Imaging"
+        assert result["nx_meta"]["DatasetType"] == "Image"
+
+    def test_validate_nx_meta_raises_validation_error_on_invalid_metadata(self):
+        """Test that ValidationError is raised for invalid metadata."""
+        # Create invalid metadata (missing required field 'Creation Time')
+        metadata_dict = {
+            "nx_meta": {
+                "Data Type": "STEM_Imaging",
+                "DatasetType": "Image",
+            }
+        }
+
+        # Verify ValidationError is raised
+        with pytest.raises(ValidationError) as exc_info:
+            validate_nx_meta(metadata_dict)
+
+        # Check error message contains field information
+        assert "Creation Time" in str(exc_info.value)
+
+    def test_validate_nx_meta_logs_error_with_filename_context(self, caplog):
+        """Test that error message includes filename when provided."""
+        import logging
+
+        # Create invalid metadata
+        metadata_dict = {
+            "nx_meta": {
+                "Data Type": "STEM_Imaging",
+                "DatasetType": "Image",
+            }
+        }
+
+        # Call validate_nx_meta with filename and catch ValidationError
+        with (
+            caplog.at_level(logging.ERROR, logger="nexusLIMS.extractors"),
+            pytest.raises(ValidationError),
+        ):
+            validate_nx_meta(metadata_dict, filename=Path("test_file.dm3"))
+
+        # Assert caplog contains error message with filename
+        assert "Validation failed for test_file.dm3" in caplog.text
+
+    def test_validate_nx_meta_logs_error_without_filename_context(self, caplog):
+        """Test that error message omits filename when not provided."""
+        import logging
+
+        # Create invalid metadata
+        metadata_dict = {
+            "nx_meta": {
+                "Data Type": "STEM_Imaging",
+                "DatasetType": "Image",
+            }
+        }
+
+        # Call validate_nx_meta without filename and catch ValidationError
+        with (
+            caplog.at_level(logging.ERROR, logger="nexusLIMS.extractors"),
+            pytest.raises(ValidationError),
+        ):
+            validate_nx_meta(metadata_dict)
+
+        # Assert caplog contains error message without filename
+        assert "Validation failed" in caplog.text
+        # Ensure it's not the filename version
+        assert "Validation failed for" not in caplog.text
+
+    def test_validate_nx_meta_multiple_validation_errors(self):
+        """Test behavior when multiple fields are invalid."""
+        # Create metadata with multiple invalid fields
+        metadata_dict = {
+            "nx_meta": {
+                # Missing 'Creation Time' (required)
+                "Data Type": "STEM_Imaging",
+                "DatasetType": "InvalidType",  # Invalid value (not in allowed list)
+            }
+        }
+
+        # Verify ValidationError is raised
+        with pytest.raises(ValidationError) as exc_info:
+            validate_nx_meta(metadata_dict)
+
+        # Check error message includes information about both invalid fields
+        error_str = str(exc_info.value)
+        # Should mention missing Creation Time
+        assert "Creation Time" in error_str
+        # Should mention invalid DatasetType
+        assert "DatasetType" in error_str or "InvalidType" in error_str

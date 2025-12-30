@@ -41,7 +41,7 @@ from nexusLIMS.utils import (
     has_delay_passed,
 )
 
-logger = logging.getLogger(__name__)
+_logger = logging.getLogger(__name__)
 XSD_PATH: Path = Path(activity.__file__).parent / "nexus-experiment.xsd"
 
 
@@ -88,7 +88,7 @@ def build_record(
     ns_map = {None: nx_namespace, "xsi": xsi_namespace, "nx": nx_namespace}
     xml = etree.Element("Experiment", nsmap=ns_map)
 
-    logger.info(
+    _logger.info(
         "Getting calendar events with instrument: %s, from %s to %s, "
         "user: %s; using harvester: %s",
         session.instrument.name,
@@ -105,7 +105,7 @@ def build_record(
     for child in output:
         xml.append(child)
 
-    logger.info(
+    _logger.info(
         "Building acquisition activities for timespan from %s to %s",
         session.dt_from.isoformat(),
         session.dt_to.isoformat(),
@@ -221,7 +221,7 @@ def build_acq_activities(instrument, dt_from, dt_to, generate_previews):
     # find the files to be included (list of Paths)
     files = get_files(path, dt_from, dt_to)
 
-    logger.info(
+    _logger.info(
         "Found %i files in %.2f seconds",
         len(files),
         default_timer() - start_timer,
@@ -258,7 +258,7 @@ def build_acq_activities(instrument, dt_from, dt_to, generate_previews):
                 )
 
             # add this file to the AA
-            logger.info(
+            _logger.info(
                 "Adding file %i/%i %s to activity %i",
                 i,
                 len(files),
@@ -280,11 +280,11 @@ def build_acq_activities(instrument, dt_from, dt_to, generate_previews):
     # Remove any "None" activities from list
     activities: List[AcquisitionActivity] = [a for a in activities if a is not None]
 
-    logger.info("Finished detecting activities")
+    _logger.info("Finished detecting activities")
     for i, this_activity in enumerate(activities):
-        logger.info("Activity %i: storing setup parameters", i)
+        _logger.info("Activity %i: storing setup parameters", i)
         this_activity.store_setup_params()
-        logger.info("Activity %i: storing unique metadata values", i)
+        _logger.info("Activity %i: storing unique metadata values", i)
         this_activity.store_unique_metadata()
 
     return activities
@@ -315,12 +315,12 @@ def get_files(
         A list of the files that have modification times within the
         time range provided (sorted by modification time)
     """
-    logger.info("Starting new file-finding in %s", path)
+    _logger.info("Starting new file-finding in %s", path)
 
     # read file finding strategy from settings
     strategy = settings.NX_FILE_STRATEGY.lower()
     if strategy not in ["inclusive", "exclusive"]:
-        logger.warning(
+        _logger.warning(
             'File finding strategy (setting "NX_FILE_STRATEGY") had '
             'an unexpected value: "%s". Setting value to "exclusive".',
             strategy,
@@ -340,7 +340,7 @@ def get_files(
     # exclude following from coverage because find_files_by_mtime is deprecated as of
     # 1.2.0 and does not support extensions at all (like the above method)
     except (NotImplementedError, RuntimeError) as exception:  # pragma: no cover
-        logger.warning(
+        _logger.warning(
             "GNU find returned error: %s\nFalling back to pure Python implementation",
             exception,
         )
@@ -452,7 +452,7 @@ def build_new_session_records(generate_previews: bool = True) -> List[Path]:  # 
                 path = (
                     Path(settings.NX_INSTRUMENT_DATA_PATH) / s.instrument.filestore_path
                 )
-                logger.warning(
+                _logger.warning(
                     "No files found in %s between %s and %s",
                     path,
                     s.dt_from.isoformat(),
@@ -460,7 +460,7 @@ def build_new_session_records(generate_previews: bool = True) -> List[Path]:  # 
                 )
 
                 if has_delay_passed(s.dt_to):
-                    logger.warning(
+                    _logger.warning(
                         'Marking %s as "NO_FILES_FOUND"',
                         s.session_identifier,
                     )
@@ -468,7 +468,7 @@ def build_new_session_records(generate_previews: bool = True) -> List[Path]:  # 
                 else:
                     # if the delay hasn't passed, log and delete the record
                     # generation event we inserted previously
-                    logger.warning(
+                    _logger.warning(
                         "Configured record building delay has not passed; "
                         "Removing previously inserted RECORD_GENERATION row for %s",
                         s.session_identifier,
@@ -480,24 +480,24 @@ def build_new_session_records(generate_previews: bool = True) -> List[Path]:  # 
                         ),
                     )
             elif isinstance(exception, nemo.exceptions.NoDataConsentError):
-                logger.warning(
+                _logger.warning(
                     "User requested this session not be harvested, "
                     "so no record was built. %s",
                     exception,
                 )
-                logger.info('Marking %s as "NO_CONSENT"', s.session_identifier)
+                _logger.info('Marking %s as "NO_CONSENT"', s.session_identifier)
                 s.update_session_status("NO_CONSENT")
             elif isinstance(exception, nemo.exceptions.NoMatchingReservationError):
-                logger.warning(
+                _logger.warning(
                     "No matching reservation found for this session, "
                     "so assuming no consent was given. %s",
                     exception,
                 )
-                logger.info('Marking %s as "NO_RESERVATION"', s.session_identifier)
+                _logger.info('Marking %s as "NO_RESERVATION"', s.session_identifier)
                 s.update_session_status("NO_RESERVATION")
             else:
-                logger.exception("Could not generate record text")
-                logger.exception('Marking %s as "ERROR"', s.session_identifier)
+                _logger.exception("Could not generate record text")
+                _logger.exception('Marking %s as "ERROR"', s.session_identifier)
                 s.update_session_status("ERROR")
         else:
             xml_files = _record_validation_flow(record_text, s, xml_files)
@@ -507,7 +507,7 @@ def build_new_session_records(generate_previews: bool = True) -> List[Path]:  # 
 
 def _record_validation_flow(record_text, s, xml_files) -> List[Path]:
     if validate_record(BytesIO(bytes(record_text, "UTF-8"))):
-        logger.info("Validated newly generated record")
+        _logger.info("Validated newly generated record")
         # generate filename for saved record and make sure path exists
         if s.instrument.harvester == "nemo":
             # for NEMO session_identifier is a URL of usage_event
@@ -523,14 +523,14 @@ def _record_validation_flow(record_text, s, xml_files) -> List[Path]:
         # write the record to disk and append to list of files generated
         with filename.open(mode="w", encoding="utf-8") as f:
             f.write(record_text)
-        logger.info("Wrote record to %s", filename)
+        _logger.info("Wrote record to %s", filename)
         xml_files.append(Path(filename))
         # Mark this session as completed in the database
-        logger.info('Marking %s as "COMPLETED"', s.session_identifier)
+        _logger.info('Marking %s as "COMPLETED"', s.session_identifier)
         s.update_session_status("COMPLETED")
     else:
-        logger.error('Marking %s as "ERROR"', s.session_identifier)
-        logger.error("Could not validate record, did not write to disk")
+        _logger.error('Marking %s as "ERROR"', s.session_identifier)
+        _logger.error("Could not validate record, did not write to disk")
         s.update_session_status("ERROR")
     return xml_files
 
@@ -564,7 +564,7 @@ def process_new_records(
         has an effect for the NEMO harvester.
     """
     if dry_run:
-        logger.info("!!DRY RUN!! Only finding files, not building records")
+        _logger.info("!!DRY RUN!! Only finding files, not building records")
         # get 'TO_BE_BUILT' sessions from the database
         sessions = get_sessions_to_build()
         # get Session objects for NEMO usage events without adding to DB
@@ -574,19 +574,19 @@ def process_new_records(
             dt_to=dt_to,
         )
         if not sessions:
-            logger.warning("No 'TO_BE_BUILT' sessions were found. Exiting.")
+            _logger.warning("No 'TO_BE_BUILT' sessions were found. Exiting.")
             return
         for s in sessions:
             # at this point, sessions can be from any type of harvester
-            logger.info("")
-            logger.info("")
+            _logger.info("")
+            _logger.info("")
             get_reservation_event(s)
             dry_run_file_find(s)
     else:
         nemo_utils.add_all_usage_events_to_db(dt_from=dt_from, dt_to=dt_to)
         xml_files = build_new_session_records()
         if len(xml_files) == 0:
-            logger.warning("No XML files built, so no files uploaded")
+            _logger.warning("No XML files built, so no files uploaded")
         else:
             files_uploaded, _ = upload_record_files(xml_files)
             for f in files_uploaded:
@@ -598,7 +598,7 @@ def process_new_records(
             files_not_uploaded = [f for f in xml_files if f not in files_uploaded]
 
             if len(files_not_uploaded) > 0:
-                logger.error(
+                _logger.error(
                     "Some record files were not uploaded: %s",
                     files_not_uploaded,
                 )
@@ -621,7 +621,7 @@ def dry_run_file_find(s: Session) -> List[Path]:
         record of this session (if it were not a dry run)
     """
     path = Path(settings.NX_INSTRUMENT_DATA_PATH) / s.instrument.filestore_path
-    logger.info(
+    _logger.info(
         "Searching for files for %s in %s between %s and %s",
         s.instrument.name,
         path,
@@ -630,17 +630,17 @@ def dry_run_file_find(s: Session) -> List[Path]:
     )
     files = get_files(path, s.dt_from, s.dt_to)
 
-    logger.info("Results for %s on %s:", s.session_identifier, s.instrument)
+    _logger.info("Results for %s on %s:", s.session_identifier, s.instrument)
     if len(files) == 0:
-        logger.warning("No files found for this session")
+        _logger.warning("No files found for this session")
     else:
-        logger.info("Found %i files for this session", len(files))
+        _logger.info("Found %i files for this session", len(files))
     for f in files:
         mtime = dt.fromtimestamp(
             f.stat().st_mtime,
             tz=s.instrument.timezone,
         ).isoformat()
-        logger.info("*mtime* %s - %s", mtime, f)
+        _logger.info("*mtime* %s - %s", mtime, f)
     return files
 
 
@@ -683,13 +683,13 @@ if __name__ == "__main__":  # pragma: no cover
     logging_levels = {0: logging.WARNING, 1: logging.INFO, 2: logging.DEBUG}
 
     if args.dry_run and args.verbose <= 0:
-        logger.warning('Increasing verbosity so output of "dry-run" will be shown')
+        _logger.warning('Increasing verbosity so output of "dry-run" will be shown')
         args.verbose = 1
 
     setup_loggers(logging_levels[args.verbose])
     # when running as script, __name__ is "__main__", so we need to set level
     # explicitly since the setup_loggers function won't find it
-    logger.setLevel(logging_levels[args.verbose])
+    _logger.setLevel(logging_levels[args.verbose])
 
     # by default only fetch the last week's worth of data from the NEMO
     # harvesters to speed things up

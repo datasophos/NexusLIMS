@@ -3,6 +3,7 @@
 
 import logging
 import xml.etree.ElementTree as ET
+from decimal import Decimal
 from pathlib import Path
 from typing import Any, ClassVar
 
@@ -10,7 +11,9 @@ from PIL import Image
 
 from nexusLIMS.extractors.base import ExtractionContext
 from nexusLIMS.extractors.base import FieldDefinition as FD
-from nexusLIMS.extractors.utils import _set_instr_name_and_time
+from nexusLIMS.extractors.utils import _set_instr_name_and_time, add_to_extensions
+from nexusLIMS.schemas import em_glossary
+from nexusLIMS.schemas.units import ureg
 from nexusLIMS.utils import set_nested_dict_value, sort_dict
 
 ZEISS_TIFF_TAG = 65000
@@ -129,6 +132,9 @@ class OrionTiffExtractor:
             mdict["nx_meta"]["Data Type"] = "Unknown"
             mdict["nx_meta"]["Extractor Warnings"] = f"Extraction failed: {e}"
 
+        # Migrate metadata to schema-compliant format
+        mdict = self._migrate_to_schema_compliant_metadata(mdict)
+
         # Sort the nx_meta dictionary for nicer display
         mdict["nx_meta"] = sort_dict(mdict["nx_meta"])
 
@@ -204,158 +210,486 @@ class OrionTiffExtractor:
         )
 
         # Define metadata fields using FieldDefinition
+        # Note: XML stores values in Volts, we convert to target units
         fields = [
             # GFIS
             FD(
                 "",
                 "GFIS.AccelerationVoltage",
-                ["GFIS", "Acceleration Voltage (kV)"],
+                ["GFIS", "Acceleration Voltage"],
                 1e-3,
                 False,
+                target_unit="kilovolt",
             ),
             FD(
                 "",
                 "GFIS.ExtractionVoltage",
-                ["GFIS", "Extraction Voltage (kV)"],
+                ["GFIS", "Extraction Voltage"],
                 1e-3,
                 False,
+                target_unit="kilovolt",
             ),
             FD(
                 "",
                 "GFIS.CondenserVoltage",
-                ["GFIS", "Condenser Voltage (kV)"],
+                ["GFIS", "Condenser Voltage"],
                 1e-3,
                 False,
+                target_unit="kilovolt",
             ),
             FD(
                 "",
                 "GFIS.ObjectiveVoltage",
-                ["GFIS", "Objective Voltage (kV)"],
+                ["GFIS", "Objective Voltage"],
                 1e-3,
                 False,
+                target_unit="kilovolt",
             ),
-            FD("", "GFIS.BeamCurrent", ["GFIS", "Beam Current (pA)"], 1, False),
-            FD("", "GFIS.PanX", ["GFIS", "Pan X (μm)"], 1, False),
-            FD("", "GFIS.PanY", ["GFIS", "Pan Y (μm)"], 1, False),
-            FD("", "GFIS.FieldOfView", ["GFIS", "Field of View (μm)"], 1, False),
-            FD("", "GFIS.ScanRotation", ["GFIS", "Scan Rotation (degrees)"], 1, False),
-            FD("", "GFIS.StigmationX", ["GFIS", "Stigmation X"], 1, False),
-            FD("", "GFIS.StigmationY", ["GFIS", "Stigmation Y"], 1, False),
-            FD("", "GFIS.ApertureSize", ["GFIS", "Aperture Size (μm)"], 1, False),
-            FD("", "GFIS.ApertureIndex", ["GFIS", "Aperture Index"], 1, False),
-            FD("", "GFIS.IonGas", ["GFIS", "Ion Gas"], 1, False),
+            FD(
+                "",
+                "GFIS.BeamCurrent",
+                ["GFIS", "Beam Current"],
+                1,
+                False,
+                target_unit="picoampere",
+            ),
+            FD("", "GFIS.PanX", ["GFIS", "Pan X"], 1, False, target_unit="micrometer"),
+            FD("", "GFIS.PanY", ["GFIS", "Pan Y"], 1, False, target_unit="micrometer"),
+            FD(
+                "",
+                "GFIS.FieldOfView",
+                ["GFIS", "Horizontal Field Width"],
+                1,
+                False,
+                target_unit="micrometer",
+            ),
+            FD(
+                "",
+                "GFIS.ScanRotation",
+                ["GFIS", "Scan Rotation"],
+                1,
+                False,
+                target_unit="degree",
+            ),
+            FD(
+                "", "GFIS.StigmationX", ["GFIS", "Stigmation X"], 1, False
+            ),  # Dimensionless
+            FD(
+                "", "GFIS.StigmationY", ["GFIS", "Stigmation Y"], 1, False
+            ),  # Dimensionless
+            FD(
+                "",
+                "GFIS.ApertureSize",
+                ["GFIS", "Aperture Size"],
+                1,
+                False,
+                target_unit="micrometer",
+            ),
+            FD(
+                "", "GFIS.ApertureIndex", ["GFIS", "Aperture Index"], 1, False
+            ),  # Dimensionless
+            FD("", "GFIS.IonGas", ["GFIS", "Ion Gas"], 1, False),  # String
             FD(
                 "",
                 "GFIS.CrossoverPosition",
-                ["GFIS", "Crossover Position (mm)"],
+                ["GFIS", "Crossover Position"],
                 1,
                 False,
+                target_unit="millimeter",
             ),
-            FD("", "GFIS.WorkingDistance", ["GFIS", "Working Distance (mm)"], 1, False),
+            FD(
+                "",
+                "GFIS.WorkingDistance",
+                ["GFIS", "Working Distance"],
+                1,
+                False,
+                target_unit="millimeter",
+            ),
             # Beam
-            FD("", "AccelerationVoltage", ["Beam", "Voltage (kV)"], 1e-3, False),
+            FD(
+                "",
+                "AccelerationVoltage",
+                ["acceleration_voltage"],
+                1e-3,
+                False,
+                target_unit="kilovolt",
+            ),
             FD(
                 "",
                 "ExtractionVoltage",
-                ["Beam", "Extraction Voltage (kV)"],
+                ["Beam", "Extraction Voltage"],
                 1e-3,
                 False,
+                target_unit="kilovolt",
             ),
-            FD("", "BlankerCurrent", ["Beam", "Blanker Current (pA)"], 1, False),
-            FD("", "SampleCurrent", ["Beam", "Sample Current (pA)"], 1, False),
-            FD("", "SpotNumber", ["Beam", "Spot Number"], 1, False),
-            FD("", "WorkingDistance", ["Beam", "Working Distance (mm)"], 1, False),
-            FD("", "Fov", ["Beam", "Field of View (μm)"], 1, False),
-            FD("", "PanX", ["Beam", "Pan X (μm)"], 1, False),
-            FD("", "PanY", ["Beam", "Pan Y (μm)"], 1, False),
-            FD("", "StigmationX", ["Beam", "Stigmator X Value"], 1, False),
-            FD("", "StigmationY", ["Beam", "Stigmator Y Value"], 1, False),
-            FD("", "ApertureSize", ["Beam", "Aperture Size"], 1, False),
-            FD("", "CrossOverPosition", ["Beam", "Crossover Position (mm)"], 1, False),
+            FD(
+                "",
+                "BlankerCurrent",
+                ["Beam", "Blanker Current"],
+                1,
+                False,
+                target_unit="picoampere",
+            ),
+            FD(
+                "",
+                "SampleCurrent",
+                ["Beam", "Sample Current"],
+                1,
+                False,
+                target_unit="picoampere",
+            ),
+            FD("", "SpotNumber", ["Beam", "Spot Number"], 1, False),  # Dimensionless
+            FD(
+                "",
+                "WorkingDistance",
+                ["Beam", "Working Distance"],
+                1,
+                False,
+                target_unit="millimeter",
+            ),
+            FD(
+                "",
+                "Fov",
+                ["horizontal_field_width"],
+                1,
+                False,
+                target_unit="micrometer",
+            ),
+            FD("", "PanX", ["Beam", "Pan X"], 1, False, target_unit="micrometer"),
+            FD("", "PanY", ["Beam", "Pan Y"], 1, False, target_unit="micrometer"),
+            FD(
+                "", "StigmationX", ["Beam", "Stigmator X Value"], 1, False
+            ),  # Dimensionless
+            FD(
+                "", "StigmationY", ["Beam", "Stigmator Y Value"], 1, False
+            ),  # Dimensionless
+            FD(
+                "", "ApertureSize", ["Beam", "Aperture Size"], 1, False
+            ),  # Dimensionless (or unknown unit)
+            FD(
+                "",
+                "CrossOverPosition",
+                ["Beam", "Crossover Position"],
+                1,
+                False,
+                target_unit="millimeter",
+            ),
             # Scan
-            FD("", "FrameRetrace", ["Scan", "Frame Retrace (μs)"], 1, False),
-            FD("", "LineRetrace", ["Scan", "Line Retrace (μs)"], 1, False),
-            FD("", "AveragingMode", ["Scan", "Averaging Mode"], 1, False),
-            FD("", "NumAverages", ["Scan", "Number of Averages"], 1, False),
-            FD("", "ScanRotate", ["Scan", "Rotation (degrees)"], 1, False),
-            FD("", "DwellTime", ["Scan", "Dwell Time (μs)"], 1, False),
-            FD("", "SAS.ScanSize", ["Scan", "Scan Size"], 1, False),
+            FD(
+                "",
+                "FrameRetrace",
+                ["Scan", "Frame Retrace"],
+                1,
+                False,
+                target_unit="microsecond",
+            ),
+            FD(
+                "",
+                "LineRetrace",
+                ["Scan", "Line Retrace"],
+                1,
+                False,
+                target_unit="microsecond",
+            ),
+            FD("", "AveragingMode", ["Scan", "Averaging Mode"], 1, False),  # String
+            FD(
+                "", "NumAverages", ["Scan", "Number of Averages"], 1, False
+            ),  # Dimensionless
+            FD("", "ScanRotate", ["scan_rotation"], 1, False, target_unit="degree"),
+            FD(
+                "",
+                "DwellTime",
+                ["Scan", "Dwell Time"],
+                1,
+                False,
+                target_unit="microsecond",
+            ),
+            FD("", "SAS.ScanSize", ["Scan", "Scan Size"], 1, False),  # Dimensionless
             # Stage
-            FD("", "StageX", ["Stage Position", "X (μm)"], 1, False),
-            FD("", "StageY", ["Stage Position", "Y (μm)"], 1, False),
-            FD("", "StageZ", ["Stage Position", "Z (mm)"], 1, False),
-            FD("", "StageTilt", ["Stage Position", "Tilt (degrees)"], 1, False),
-            FD("", "StageRotate", ["Stage Position", "Rotation (degrees)"], 1, False),
-            FD("", "Stage.XLocation", ["Stage Position", "X Location (μm)"], 1, False),
-            FD("", "Stage.YLocation", ["Stage Position", "Y Location (μm)"], 1, False),
+            FD(
+                "",
+                "StageX",
+                ["Stage Position", "X"],
+                1,
+                False,
+                target_unit="micrometer",
+            ),
+            FD(
+                "",
+                "StageY",
+                ["Stage Position", "Y"],
+                1,
+                False,
+                target_unit="micrometer",
+            ),
+            FD(
+                "",
+                "StageZ",
+                ["Stage Position", "Z"],
+                1,
+                False,
+                target_unit="millimeter",
+            ),
+            FD(
+                "",
+                "StageTilt",
+                ["Stage Position", "Tilt"],
+                1,
+                False,
+                target_unit="degree",
+            ),
+            FD(
+                "",
+                "StageRotate",
+                ["Stage Position", "Rotation"],
+                1,
+                False,
+                target_unit="degree",
+            ),
+            FD(
+                "",
+                "Stage.XLocation",
+                ["Stage Position", "X Location"],
+                1,
+                False,
+                target_unit="micrometer",
+            ),
+            FD(
+                "",
+                "Stage.YLocation",
+                ["Stage Position", "Y Location"],
+                1,
+                False,
+                target_unit="micrometer",
+            ),
             # Optics
-            FD("", "sFimFOV", ["Optics", "sFIM Field of View (μm)"], 1, False),
-            FD("", "McXShift", ["Optics", "MC X Shift (μrad)"], 1, False),
-            FD("", "McXTilt", ["Optics", "MC X Tilt (μrad)"], 1, False),
-            FD("", "McYShift", ["Optics", "MC Y Shift (μrad)"], 1, False),
-            FD("", "McYTilt", ["Optics", "MC Y Tilt (μrad)"], 1, False),
-            FD("", "ColumnMag", ["Optics", "Column Magnification"], 1, False),
-            FD("", "ColumnMode", ["Optics", "Column Mode"], 1, False),
-            FD("", "Lens1Voltage", ["Optics", "Lens 1 Voltage (kV)"], 1e-3, False),
-            FD("", "Lens2Voltage", ["Optics", "Lens 2 Voltage (kV)"], 1e-3, False),
+            FD(
+                "",
+                "sFimFOV",
+                ["Optics", "sFIM Field of View"],
+                1,
+                False,
+                target_unit="micrometer",
+            ),
+            FD(
+                "",
+                "McXShift",
+                ["Optics", "MC X Shift"],
+                1,
+                False,
+                target_unit="microradian",
+            ),
+            FD(
+                "",
+                "McXTilt",
+                ["Optics", "MC X Tilt"],
+                1,
+                False,
+                target_unit="microradian",
+            ),
+            FD(
+                "",
+                "McYShift",
+                ["Optics", "MC Y Shift"],
+                1,
+                False,
+                target_unit="microradian",
+            ),
+            FD(
+                "",
+                "McYTilt",
+                ["Optics", "MC Y Tilt"],
+                1,
+                False,
+                target_unit="microradian",
+            ),
+            FD(
+                "", "ColumnMag", ["Optics", "Column Magnification"], 1, False
+            ),  # Dimensionless
+            FD("", "ColumnMode", ["Optics", "Column Mode"], 1, False),  # String
+            FD(
+                "",
+                "Lens1Voltage",
+                ["Optics", "Lens 1 Voltage"],
+                1e-3,
+                False,
+                target_unit="kilovolt",
+            ),
+            FD(
+                "",
+                "Lens2Voltage",
+                ["Optics", "Lens 2 Voltage"],
+                1e-3,
+                False,
+                target_unit="kilovolt",
+            ),
             # Detector
-            FD("", "DetectorName", ["Detector", "Name"], 1, False),
-            FD("", "ETGridVoltage", ["Detector", "ET Grid Voltage (V)"], 1, False),
-            FD("", "ETContrast", ["Detector", "ET Contrast"], 1, False),
-            FD("", "ETBrightness", ["Detector", "ET Brightness"], 1, False),
-            FD("", "ETImageIntensity", ["Detector", "ET Image Intensity"], 1, False),
-            FD("", "MCPContrast", ["Detector", "MCP Contrast"], 1, False),
-            FD("", "MCPBrightness", ["Detector", "MCP Brightness"], 1, False),
-            FD("", "MCPBias", ["Detector", "MCP Bias (V)"], 1, False),
-            FD("", "MCPImageIntensity", ["Detector", "MCP Image Intensity"], 1, False),
+            FD("", "DetectorName", ["Detector", "Name"], 1, False),  # String
+            FD(
+                "",
+                "ETGridVoltage",
+                ["Detector", "ET Grid Voltage"],
+                1,
+                False,
+                target_unit="volt",
+            ),
+            FD(
+                "", "ETContrast", ["Detector", "ET Contrast"], 1, False
+            ),  # Dimensionless
+            FD(
+                "", "ETBrightness", ["Detector", "ET Brightness"], 1, False
+            ),  # Dimensionless
+            FD(
+                "", "ETImageIntensity", ["Detector", "ET Image Intensity"], 1, False
+            ),  # Dimensionless
+            FD(
+                "", "MCPContrast", ["Detector", "MCP Contrast"], 1, False
+            ),  # Dimensionless
+            FD(
+                "", "MCPBrightness", ["Detector", "MCP Brightness"], 1, False
+            ),  # Dimensionless
+            FD("", "MCPBias", ["Detector", "MCP Bias"], 1, False, target_unit="volt"),
+            FD(
+                "", "MCPImageIntensity", ["Detector", "MCP Image Intensity"], 1, False
+            ),  # Dimensionless
             FD(
                 "",
                 "Detector.Scintillator",
-                ["Detector", "Scintillator (kV)"],
+                ["Detector", "Scintillator"],
                 1e-3,
                 False,
+                target_unit="kilovolt",
             ),
-            FD("", "SampleBiasVoltage", ["Detector", "Sample Bias (V)"], 1, False),
+            FD(
+                "",
+                "SampleBiasVoltage",
+                ["Detector", "Sample Bias"],
+                1,
+                False,
+                target_unit="volt",
+            ),
             # System
-            FD("", "GunPressure", ["System", "Gun Pressure (Torr)"], 1, False),
-            FD("", "ColumnPressure", ["System", "Column Pressure (Torr)"], 1, False),
-            FD("", "ChamberPressure", ["System", "Chamber Pressure (Torr)"], 1, False),
-            FD("", "GunTemp", ["System", "Gun Temperature (K)"], 1, False),
-            FD("", "HeliumPressure", ["System", "Helium Pressure (Torr)"], 1, False),
-            FD("", "Magnification4x5", ["Optics", "Magnification 4x5"], 1, False),
+            FD(
+                "",
+                "GunPressure",
+                ["System", "Gun Pressure"],
+                1,
+                False,
+                target_unit="torr",
+            ),
+            FD(
+                "",
+                "ColumnPressure",
+                ["System", "Column Pressure"],
+                1,
+                False,
+                target_unit="torr",
+            ),
+            FD(
+                "",
+                "ChamberPressure",
+                ["System", "Chamber Pressure"],
+                1,
+                False,
+                target_unit="torr",
+            ),
+            FD(
+                "",
+                "GunTemp",
+                ["System", "Gun Temperature"],
+                1,
+                False,
+                target_unit="kelvin",
+            ),
+            FD(
+                "",
+                "HeliumPressure",
+                ["System", "Helium Pressure"],
+                1,
+                False,
+                target_unit="torr",
+            ),
+            FD(
+                "", "Magnification4x5", ["Optics", "Magnification 4x5"], 1, False
+            ),  # Dimensionless
             FD(
                 "",
                 "MagnificationDisplay",
-                ["Optics", "Magnification Display (x)"],
+                ["Optics", "Magnification Display"],
                 1,
                 False,
-            ),
-            FD("", "System.Model", ["System", "Model"], 1, False),
-            FD("", "System.Name", ["System", "Name"], 1, False),
-            FD("", "TimeStamp", ["System", "Acquisition Date/Time"], 1, False),
-            FD("", "ColumnType", ["System", "Column Type"], 1, False),
+            ),  # Dimensionless (x)
+            FD("", "System.Model", ["System", "Model"], 1, False),  # String
+            FD("", "System.Name", ["System", "Name"], 1, False),  # String
+            FD(
+                "", "TimeStamp", ["System", "Acquisition Date/Time"], 1, False
+            ),  # String
+            FD("", "ColumnType", ["System", "Column Type"], 1, False),  # String
             # Flood gun
-            FD("", "FloodGunMode", ["Flood Gun", "Mode"], 1, False),
-            FD("", "FloodGunEnergy", ["Flood Gun", "Energy (eV)"], 1, False),
-            FD("", "FloodGunTime", ["Flood Gun", "Time (μs)"], 1, False),
-            FD("", "FloodGun.DeflectionX", ["Flood Gun", "Deflection X"], 1, False),
-            FD("", "FloodGun.DeflectionY", ["Flood Gun", "Deflection Y"], 1, False),
+            FD("", "FloodGunMode", ["Flood Gun", "Mode"], 1, False),  # String
+            FD(
+                "",
+                "FloodGunEnergy",
+                ["Flood Gun", "Energy"],
+                1,
+                False,
+                target_unit="electron_volt",
+            ),
+            FD(
+                "",
+                "FloodGunTime",
+                ["Flood Gun", "Time"],
+                1,
+                False,
+                target_unit="microsecond",
+            ),
+            FD(
+                "", "FloodGun.DeflectionX", ["Flood Gun", "Deflection X"], 1, False
+            ),  # Dimensionless
+            FD(
+                "", "FloodGun.DeflectionY", ["Flood Gun", "Deflection Y"], 1, False
+            ),  # Dimensionless
             # Misc
-            FD("", "ScalingX", ["Calibration", "X Scale (m)"], 1, False),
-            FD("", "ScalingY", ["Calibration", "Y Scale (m)"], 1, False),
-            FD("", "ImageWidth", ["Image", "Width (pixels)"], 1, False),
-            FD("", "ImageHeight", ["Image", "Height (pixels)"], 1, False),
+            FD(
+                "",
+                "ScalingX",
+                ["Calibration", "X Scale"],
+                1,
+                False,
+                target_unit="meter",
+            ),
+            FD(
+                "",
+                "ScalingY",
+                ["Calibration", "Y Scale"],
+                1,
+                False,
+                target_unit="meter",
+            ),
+            FD(
+                "", "ImageWidth", ["Image", "Width"], 1, False
+            ),  # Dimensionless (pixels)
+            FD(
+                "", "ImageHeight", ["Image", "Height"], 1, False
+            ),  # Dimensionless (pixels)
             # Display
-            FD("", "LutMode", ["Display", "LUT Mode"], 1, False),
-            FD("", "LowGray", ["Display", "Low Gray Value"], 1, False),
-            FD("", "HighGray", ["Display", "High Gray Value"], 1, False),
-            FD("", "LUT.LUTGamma", ["Display", "LUT Gamma"], 1, False),
+            FD("", "LutMode", ["Display", "LUT Mode"], 1, False),  # String
+            FD("", "LowGray", ["Display", "Low Gray Value"], 1, False),  # Dimensionless
+            FD(
+                "", "HighGray", ["Display", "High Gray Value"], 1, False
+            ),  # Dimensionless
+            FD("", "LUT.LUTGamma", ["Display", "LUT Gamma"], 1, False),  # Dimensionless
         ]
 
         # Extract all fields
         for field in fields:
             self._parse_zeiss_field(
-                root, field.source_key, field.output_key, mdict, field.factor
+                root,
+                field.source_key,
+                field.output_key,
+                mdict,
+                field.factor,
+                field.target_unit,
             )
 
         return mdict
@@ -396,90 +730,202 @@ class OrionTiffExtractor:
         # Note: factor=-1 is a sentinel value for "strip_units" conversion
         fibics_fields = [
             # Application section
-            FD("Application", "Version", ["Application", "Software Version"], 1, False),
+            FD(
+                "Application", "Version", ["Application", "Software Version"], 1, False
+            ),  # String
             FD(
                 "Application",
                 "Date",
                 ["Application", "Acquisition Date/Time"],
                 1,
                 False,
-            ),
+            ),  # String
             FD(
                 "Application",
                 "SupportsTransparency",
                 ["Application", "Supports Transparency"],
                 1,
                 False,
-            ),
+            ),  # String
             FD(
                 "Application",
                 "TransparentPixelValue",
                 ["Application", "Transparent Pixel Value"],
                 1,
                 False,
-            ),
+            ),  # Dimensionless
             # Image section
-            FD("Image", "Width", ["Image", "Width (pixels)"], 1, False),
-            FD("Image", "Height", ["Image", "Height (pixels)"], 1, False),
-            FD("Image", "BoundingBox.Left", ["Image", "Bounding Box Left"], 1, False),
-            FD("Image", "BoundingBox.Right", ["Image", "Bounding Box Right"], 1, False),
-            FD("Image", "BoundingBox.Top", ["Image", "Bounding Box Top"], 1, False),
+            FD(
+                "Image", "Width", ["Image", "Width"], 1, False
+            ),  # Dimensionless (pixels)
+            FD(
+                "Image", "Height", ["Image", "Height"], 1, False
+            ),  # Dimensionless (pixels)
+            FD(
+                "Image", "BoundingBox.Left", ["Image", "Bounding Box Left"], 1, False
+            ),  # Dimensionless
+            FD(
+                "Image", "BoundingBox.Right", ["Image", "Bounding Box Right"], 1, False
+            ),  # Dimensionless
+            FD(
+                "Image", "BoundingBox.Top", ["Image", "Bounding Box Top"], 1, False
+            ),  # Dimensionless
             FD(
                 "Image",
                 "BoundingBox.Bottom",
                 ["Image", "Bounding Box Bottom"],
                 1,
                 False,
-            ),
-            FD("Image", "Machine", ["Image", "Machine Name"], 1, False),
-            FD("Image", "Beam", ["Image", "Beam Type"], 1, False),
-            FD("Image", "Aperture", ["Image", "Aperture Description"], 1, False),
-            FD("Image", "Detector", ["Detector", "Name"], 1, False),
-            FD("Image", "Contrast", ["Detector", "Contrast"], 1, False),
-            FD("Image", "Brightness", ["Detector", "Brightness"], 1, False),
+            ),  # Dimensionless
+            FD("Image", "Machine", ["Image", "Machine Name"], 1, False),  # String
+            FD("Image", "Beam", ["Image", "Beam Type"], 1, False),  # String
+            FD(
+                "Image", "Aperture", ["Image", "Aperture Description"], 1, False
+            ),  # String
+            FD("Image", "Detector", ["Detector", "Name"], 1, False),  # String
+            FD(
+                "Image", "Contrast", ["Detector", "Contrast"], 1, False
+            ),  # Dimensionless
+            FD(
+                "Image", "Brightness", ["Detector", "Brightness"], 1, False
+            ),  # Dimensionless
             # Scan section
             FD(
-                "Scan", "Dwell", ["Scan", "Pixel Dwell Time (μs)"], 1e-3, False
+                "Scan",
+                "Dwell",
+                ["dwell_time"],
+                1e-3,
+                False,
+                target_unit="microsecond",
             ),  # Convert ns to μs
-            FD("Scan", "LineAvg", ["Scan", "Line Averaging"], 1, False),
-            FD("Scan", "FOV_X", ["Scan", "Field of View X (μm)"], 1, False),
-            FD("Scan", "FOV_Y", ["Scan", "Field of View Y (μm)"], 1, False),
-            FD("Scan", "ScanRot", ["Scan", "Scan Rotation (degrees)"], 1, False),
-            FD("Scan", "Ux", ["Scan", "Affine Ux"], 1, False),
-            FD("Scan", "Uy", ["Scan", "Affine Uy"], 1, False),
-            FD("Scan", "Vx", ["Scan", "Affine Vx"], 1, False),
-            FD("Scan", "Vy", ["Scan", "Affine Vy"], 1, False),
-            FD("Scan", "Focus", ["Scan", "Focus Value"], 1, False),
-            FD("Scan", "StigX", ["Scan", "Stigmator X Value"], 1, False),
-            FD("Scan", "StigY", ["Scan", "Stigmator Y Value"], 1, False),
+            FD(
+                "Scan", "LineAvg", ["Scan", "Line Averaging"], 1, False
+            ),  # Dimensionless
+            FD(
+                "Scan",
+                "FOV_X",
+                ["horizontal_field_width"],
+                1,
+                False,
+                target_unit="micrometer",
+            ),
+            FD(
+                "Scan",
+                "FOV_Y",
+                ["vertical_field_width"],
+                1,
+                False,
+                target_unit="micrometer",
+            ),
+            FD(
+                "Scan",
+                "ScanRot",
+                ["scan_rotation"],
+                1,
+                False,
+                target_unit="degree",
+            ),
+            FD("Scan", "Ux", ["Scan", "Affine Ux"], 1, False),  # Dimensionless
+            FD("Scan", "Uy", ["Scan", "Affine Uy"], 1, False),  # Dimensionless
+            FD("Scan", "Vx", ["Scan", "Affine Vx"], 1, False),  # Dimensionless
+            FD("Scan", "Vy", ["Scan", "Affine Vy"], 1, False),  # Dimensionless
+            FD("Scan", "Focus", ["Scan", "Focus Value"], 1, False),  # Dimensionless
+            FD(
+                "Scan", "StigX", ["Scan", "Stigmator X Value"], 1, False
+            ),  # Dimensionless
+            FD(
+                "Scan", "StigY", ["Scan", "Stigmator Y Value"], 1, False
+            ),  # Dimensionless
             # Stage section
-            FD("Stage", "X", ["Stage Position", "X (μm)"], 1, False),
-            FD("Stage", "Y", ["Stage Position", "Y (μm)"], 1, False),
-            FD("Stage", "Z", ["Stage Position", "Z (μm)"], 1, False),
-            FD("Stage", "Tilt", ["Stage Position", "Tilt (degrees)"], 1, False),
-            FD("Stage", "Rot", ["Stage Position", "Rotation (degrees)"], 1, False),
-            FD("Stage", "M", ["Stage Position", "M (mm)"], 1, False),
+            FD(
+                "Stage",
+                "X",
+                ["Stage Position", "X"],
+                1,
+                False,
+                target_unit="micrometer",
+            ),
+            FD(
+                "Stage",
+                "Y",
+                ["Stage Position", "Y"],
+                1,
+                False,
+                target_unit="micrometer",
+            ),
+            FD(
+                "Stage",
+                "Z",
+                ["Stage Position", "Z"],
+                1,
+                False,
+                target_unit="micrometer",
+            ),
+            FD(
+                "Stage",
+                "Tilt",
+                ["Stage Position", "Tilt"],
+                1,
+                False,
+                target_unit="degree",
+            ),
+            FD(
+                "Stage",
+                "Rot",
+                ["Stage Position", "Rotation"],
+                1,
+                False,
+                target_unit="degree",
+            ),
+            FD(
+                "Stage",
+                "M",
+                ["Stage Position", "M"],
+                1,
+                False,
+                target_unit="millimeter",
+            ),
             # BeamInfo section
-            FD("BeamInfo", "BeamI", ["Beam", "Beam Current (pA)"], 1, False),
-            FD("BeamInfo", "AccV", ["Beam", "Acceleration Voltage (kV)"], 1e-3, False),
-            FD("BeamInfo", "Aperture", ["Beam", "Aperture"], 1, False),
-            FD("BeamInfo", "GFISGas", ["Beam", "GFIS Gas Type"], 1, False),
-            FD("BeamInfo", "GunGasPressure", ["Beam", "Gun Gas Pressure"], 1, False),
-            FD("BeamInfo", "SpotControl", ["Beam", "Spot Control"], 1, False),
+            FD(
+                "BeamInfo",
+                "BeamI",
+                ["beam_current"],
+                1,
+                False,
+                target_unit="picoampere",
+            ),
+            FD(
+                "BeamInfo",
+                "AccV",
+                ["acceleration_voltage"],
+                1e-3,
+                False,
+                target_unit="kilovolt",
+            ),
+            FD("BeamInfo", "Aperture", ["Beam", "Aperture"], 1, False),  # Dimensionless
+            FD("BeamInfo", "GFISGas", ["Beam", "GFIS Gas Type"], 1, False),  # String
+            FD(
+                "BeamInfo", "GunGasPressure", ["Beam", "Gun Gas Pressure"], 1, False
+            ),  # Dimensionless (or unknown unit)
+            FD(
+                "BeamInfo", "SpotControl", ["Beam", "Spot Control"], 1, False
+            ),  # Dimensionless
             # DetectorInfo section - using -1 as sentinel for "strip_units"
             FD(
                 "DetectorInfo",
                 "Collector",
-                ["Detector", "Collector Voltage (V)"],
+                ["Detector", "Collector Voltage"],
                 -1,
                 False,
+                target_unit="volt",
             ),
             FD(
                 "DetectorInfo",
                 "Stage Bias",
-                ["Detector", "Stage Bias Voltage (V)"],
+                ["Detector", "Stage Bias Voltage"],
                 -1,
                 False,
+                target_unit="volt",
             ),
         ]
 
@@ -492,7 +938,7 @@ class OrionTiffExtractor:
                     "strip_units" if field.factor == -1 else field.factor
                 )
                 value = self._parse_fibics_value(
-                    section, field.source_key, conversion_factor
+                    section, field.source_key, conversion_factor, field.target_unit
                 )
                 if value is not None:
                     set_nested_dict_value(
@@ -505,13 +951,14 @@ class OrionTiffExtractor:
 
         return mdict
 
-    def _parse_zeiss_field(
+    def _parse_zeiss_field(  # noqa: PLR0913
         self,
         root: ET.Element,
         field_path: str,
         output_key: str | list,
         mdict: dict,
         conversion_factor: float = 1.0,
+        unit: str | None = None,
     ) -> None:
         """
         Parse a field from Zeiss XML and set it in the metadata dictionary.
@@ -526,11 +973,13 @@ class OrionTiffExtractor:
             (e.g., "System.Name"). First tries to find as a direct tag name, then falls
             back to nested navigation.
         output_key
-            Key path in nx_meta (e.g., "Voltage (kV)" or ["Stage Position", "X"])
+            Key path in nx_meta (e.g., "Voltage" or ["Stage Position", "X"])
         mdict
             Metadata dictionary to update
         conversion_factor
             Factor to multiply the value by for unit conversion
+        unit
+            Unit name for Pint Quantity. If None, stores as numeric or string value.
         """
         try:
             # First try to find as a direct tag
@@ -558,15 +1007,24 @@ class OrionTiffExtractor:
 
             if value is not None and value.text:
                 try:
-                    numeric_value = float(value.text) * conversion_factor
+                    numeric_value = Decimal(value.text) * Decimal(
+                        str(conversion_factor)
+                    )
+
+                    # Create Pint Quantity if unit is specified
+                    if unit is not None:
+                        final_value = ureg.Quantity(numeric_value, unit)
+                    else:
+                        final_value = float(numeric_value)
+
                     set_nested_dict_value(
                         mdict,
                         ["nx_meta", output_key]
                         if isinstance(output_key, str)
                         else ["nx_meta", *output_key],
-                        numeric_value,
+                        final_value,
                     )
-                except (ValueError, TypeError):
+                except (ValueError, TypeError, Exception):
                     # If conversion fails, store as string
                     set_nested_dict_value(
                         mdict,
@@ -607,8 +1065,12 @@ class OrionTiffExtractor:
             return None
         return None
 
-    def _parse_fibics_value(
-        self, section: ET.Element, field_name: str, conversion_factor: float | str = 1.0
+    def _parse_fibics_value(  # noqa: PLR0911
+        self,
+        section: ET.Element,
+        field_name: str,
+        conversion_factor: float | str = 1.0,
+        unit: str | None = None,
     ) -> float | str | None:
         """
         Parse a value from a Fibics XML section.
@@ -624,11 +1086,14 @@ class OrionTiffExtractor:
         conversion_factor
             Factor to multiply the value by for unit conversion, or "strip_units" to
             remove unit suffixes (e.g., "=500.0 V" becomes 500.0)
+        unit
+            Unit name for Pint Quantity. If None, returns numeric or string value.
 
         Returns
         -------
-        float | str | None
-            Parsed value, or None if not found or parsing failed
+        Quantity | float | str | None
+            Parsed value (as Quantity if unit specified), or None if not found
+            or parsing failed
         """
         try:
             # First try to find field as direct element
@@ -654,14 +1119,148 @@ class OrionTiffExtractor:
                     if parts:
                         text = parts[0]
                     try:
-                        return float(text)
-                    except ValueError:
+                        numeric_value = Decimal(text)
+                        # Create Pint Quantity if unit is specified
+                        if unit is not None:
+                            return ureg.Quantity(numeric_value, unit)
+                        return float(numeric_value)
+                    except (ValueError, Exception):
+                        # If conversion fails, return the raw string value
                         return text
 
                 try:
-                    return float(text) * conversion_factor  # type: ignore[operator]
-                except ValueError:
+                    numeric_value = Decimal(text) * Decimal(str(conversion_factor))  # type: ignore[operator]
+                    # Create Pint Quantity if unit is specified
+                    if unit is not None:
+                        return ureg.Quantity(numeric_value, unit)
+                    return float(numeric_value)
+                except (ValueError, Exception):
+                    # If conversion fails, return the raw string value
                     return text
         except Exception:
             return None
         return None
+
+    def _migrate_to_schema_compliant_metadata(self, mdict: dict) -> dict:
+        """
+        Migrate metadata to schema-compliant format.
+
+        Reorganizes metadata to conform to type-specific Pydantic schemas:
+        - Extracts core EM Glossary fields to top level with standardized names
+        - Moves vendor-specific nested dictionaries to extensions section
+        - Preserves existing extensions from instrument profiles
+
+        Parameters
+        ----------
+        mdict
+            Metadata dictionary with nx_meta containing extracted fields
+
+        Returns
+        -------
+        dict
+            Metadata dictionary with schema-compliant nx_meta structure
+        """
+        nx_meta = mdict.get("nx_meta", {})
+
+        # Preserve existing extensions from instrument profiles
+        extensions = (
+            nx_meta.get("extensions", {}).copy() if "extensions" in nx_meta else {}
+        )
+
+        # Field mappings from display names to EM Glossary names
+        field_mappings = {
+            "Acceleration Voltage": "acceleration_voltage",
+            "Working Distance": "working_distance",
+            "Beam Current": "beam_current",
+            "Emission Current": "emission_current",
+            "Dwell Time": "dwell_time",
+            "Field of View": "horizontal_field_width",
+            "Pixel Width": "pixel_width",
+            "Pixel Height": "pixel_height",
+        }
+
+        # Get all EM Glossary field names from the metadata schema
+        # These should remain at top level (not moved to extensions)
+        emg_field_names = set(em_glossary.get_all_mapped_fields())
+
+        # Zeiss/Fibics-specific vendor sections that ALWAYS go to extensions
+        extension_top_level_keys = {
+            "Beam",
+            "GFIS",
+            "Detector",
+            "Stage Position",
+            "Image",
+            "Display",
+            "Flood Gun",
+            "Calibration",
+            "System",
+            "Application",
+            "Sample",
+            "Scan",
+            "ScanSettings",
+            "Optics",
+            "Zeiss",
+            "Fibics",
+        }
+
+        # Build new nx_meta with proper field organization
+        new_nx_meta = {}
+
+        # Copy required fields
+        for field in ["DatasetType", "Data Type", "Creation Time"]:
+            if field in nx_meta:
+                new_nx_meta[field] = nx_meta[field]
+
+        # Copy instrument identification
+        if "Instrument ID" in nx_meta:
+            new_nx_meta["Instrument ID"] = nx_meta["Instrument ID"]
+
+        # Process all fields and categorize
+        for old_name, value in nx_meta.items():
+            # Skip fields we've already handled
+            if old_name in [
+                "DatasetType",
+                "Data Type",
+                "Creation Time",
+                "Instrument ID",
+                "Extractor Warnings",
+                "warnings",
+                "extensions",
+            ]:
+                continue
+
+            # Top-level vendor sections go to extensions
+            if old_name in extension_top_level_keys:
+                extensions[old_name] = value
+                continue
+
+            # Check if this is a core field that needs renaming
+            if old_name in field_mappings:
+                emg_name = field_mappings[old_name]
+                new_nx_meta[emg_name] = value
+                continue
+
+            # Keep EM Glossary fields at top level (already using correct names)
+            if old_name in emg_field_names:
+                new_nx_meta[old_name] = value
+                continue
+
+            # Everything else goes to extensions (vendor-specific by default)
+            # This is safer than the top level where schema validation will reject
+            extensions[old_name] = value
+
+        # Copy warnings if present
+        if "warnings" in nx_meta:
+            new_nx_meta["warnings"] = nx_meta["warnings"]
+
+        # Copy Extractor Warnings if present
+        # (will be moved to NexusLIMS Extraction by add_extraction_details)
+        if "Extractor Warnings" in nx_meta:
+            new_nx_meta["Extractor Warnings"] = nx_meta["Extractor Warnings"]
+
+        # Add extensions section if we have any
+        for key, value in extensions.items():
+            add_to_extensions(new_nx_meta, key, value)
+
+        mdict["nx_meta"] = new_nx_meta
+        return mdict

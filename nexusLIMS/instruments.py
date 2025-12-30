@@ -26,8 +26,8 @@ from nexusLIMS.config import settings
 from nexusLIMS.utils import is_subpath
 
 logging.basicConfig()
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
+_logger = logging.getLogger(__name__)
+_logger.setLevel(logging.INFO)
 
 
 def _get_instrument_db(db_path: Path | str | None = None):
@@ -94,7 +94,7 @@ def _get_instrument_db(db_path: Path | str | None = None):
             instr_db[key] = Instrument(**this_dict)
 
     except (sqlite3.Error, KeyError) as e:
-        logger.warning(
+        _logger.warning(
             "Could not connect to database or retrieve instruments. "
             "Returning empty instrument dictionary.\n\n Details:\n %s",
             e,
@@ -135,7 +135,7 @@ class Instrument:
         but for reference and potential future use)
     filestore_path : str or None
         The path (relative to central storage location specified in
-        :ref:`NX_INSTRUMENT_DATA_PATH <nexuslims-instrument-data-path>`) where
+        :ref:`NX_INSTRUMENT_DATA_PATH <config-instrument-data-path>`) where
         this instrument stores its data (e.g. ``./Titan``)
     computer_name : str or None
         The hostname of the `support PC` connected to this instrument that runs
@@ -153,7 +153,7 @@ class Instrument:
         The specific submodule within :py:mod:`nexusLIMS.harvesters` that should be
         used to harvest reservation information for this instrument. At the time of
         writing, the only possible value is ``nemo``.
-    timezone : pytz.tzinfo.BaseTzInfo or str or None
+    timezone : pytz.tzinfo.BaseTzInfo or None
         The timezone in which this instrument is located, in the format of the IANA
         timezone database (e.g. ``America/New_York``). This is used to properly localize
         dates and times when communicating with the harvester APIs.
@@ -171,7 +171,7 @@ class Instrument:
     computer_name: str | None = None
     computer_mount: str | None = None
     harvester: str | None = None
-    timezone: BaseTzInfo | str | None = None
+    timezone: BaseTzInfo | None = None
 
     def __post_init__(self):
         """Post-initialization to convert timezone string to timezone object."""
@@ -222,7 +222,7 @@ class Instrument:
             A datetime object with the same timezone as the instrument
         """
         if self.timezone is None:
-            logger.warning(
+            _logger.warning(
                 "Tried to localize a datetime with instrument that does not have "
                 "timezone information (%s)",
                 self.name,
@@ -304,9 +304,14 @@ class Instrument:
 
 
 instrument_db = _get_instrument_db()
+"""dict[str, Instrument]: Module-level cache of all instruments from the database.
+
+Keys are instrument PIDs (str), values are :class:`Instrument` instances.
+Populated once at module import time from the NexusLIMS database.
+"""
 
 
-def get_instr_from_filepath(path: Path):
+def get_instr_from_filepath(path: Path) -> Instrument | None:
     """
     Get an instrument object by a given path Using the NexusLIMS database.
 

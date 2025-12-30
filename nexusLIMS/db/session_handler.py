@@ -12,7 +12,7 @@ from nexusLIMS.config import settings
 from nexusLIMS.instruments import Instrument
 from nexusLIMS.utils import current_system_tz
 
-logger = logging.getLogger(__name__)
+_logger = logging.getLogger(__name__)
 
 
 def db_query(query, args=None):
@@ -114,7 +114,7 @@ class SessionLog:
         success, results = db_query(query, args)
         if results:
             # There was a matching record in the DB, so warn and return success
-            logger.warning(
+            _logger.warning(
                 "SessionLog already existed in DB, so no row was added: %s",
                 self,
             )
@@ -220,7 +220,7 @@ class Session:
             A dictionary containing the results from the query to check that
             a RECORD_GENERATION event was added
         """
-        logger.debug("Logging RECORD_GENERATION for %s", self.session_identifier)
+        _logger.debug("Logging RECORD_GENERATION for %s", self.session_identifier)
         insert_query = (
             "INSERT INTO session_log "
             "(instrument, event_type, session_identifier, "
@@ -268,7 +268,7 @@ class Session:
         event_match = res["event_type"] == "RECORD_GENERATION"
         id_match = res["session_identifier"] == self.session_identifier
         if event_match and id_match:
-            logger.debug(
+            _logger.debug(
                 "Confirmed RECORD_GENERATION insertion for %s",
                 self.session_identifier,
             )
@@ -339,7 +339,7 @@ def get_sessions_to_build() -> List[Session]:
         )
         sessions.append(session)
 
-    logger.info("Found %i new sessions to build", len(sessions))
+    _logger.info("Found %i new sessions to build", len(sessions))
     return sessions
 
 
@@ -373,5 +373,5 @@ def get_all_session_logs() -> list[SessionLog]:
 
     session_logs = [SessionLog(*i) for i in results]
 
-    logger.info("Found %i session logs in database", len(session_logs))
+    _logger.info("Found %i session logs in database", len(session_logs))
     return session_logs

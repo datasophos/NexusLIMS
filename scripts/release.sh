@@ -123,8 +123,8 @@ fi
 CURRENT_BRANCH=$(git branch --show-current)
 info "Current branch: $CURRENT_BRANCH"
 
-# Check if there are any towncrier fragments
-FRAGMENT_COUNT=$(find docs/changes -name '*.rst' ! -name 'README.rst' 2>/dev/null | wc -l | tr -d ' ')
+# Check if there are any towncrier fragments (both .md and legacy .rst)
+FRAGMENT_COUNT=$(find docs/changes \( -name '*.md' -o -name '*.rst' \) ! -name 'README.rst' ! -name 'README.md' 2>/dev/null | wc -l | tr -d ' ')
 if [ "$FRAGMENT_COUNT" -eq 0 ]; then
     warning "No towncrier fragments found in docs/changes/"
     if [ "$SKIP_CONFIRM" = false ]; then

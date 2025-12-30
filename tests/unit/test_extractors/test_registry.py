@@ -1542,7 +1542,7 @@ class TestErrorHandling:
 
             # Should skip broken and use working
             assert extractor.name == "working"
-            # Verify warning was logged (covers lines 387-388 in registry.py)
+            # Verify warning was logged
             assert "Error in broken.supports()" in caplog.text
             assert "I'm broken!" in caplog.text
         finally:
@@ -2280,7 +2280,7 @@ class TestRegistryCoverageComplete:
     """Tests to achieve 100% coverage of registry.py."""
 
     def test_is_preview_generator_not_a_class(self):
-        """Test _is_preview_generator with non-class objects (line 266)."""
+        """Test _is_preview_generator with non-class objects."""
         from nexusLIMS.extractors.registry import ExtractorRegistry
 
         registry = ExtractorRegistry()
@@ -2291,7 +2291,7 @@ class TestRegistryCoverageComplete:
         assert registry._is_preview_generator(lambda x: x) is False
 
     def test_is_preview_generator_missing_name(self):
-        """Test _is_preview_generator missing name attribute (line 270)."""
+        """Test _is_preview_generator missing name attribute."""
         from nexusLIMS.extractors.registry import ExtractorRegistry
 
         registry = ExtractorRegistry()
@@ -2320,7 +2320,7 @@ class TestRegistryCoverageComplete:
         assert registry._is_preview_generator(WrongTypeName) is False
 
     def test_is_preview_generator_missing_priority(self):
-        """Test _is_preview_generator missing priority attribute (line 273)."""
+        """Test _is_preview_generator missing priority attribute."""
         from nexusLIMS.extractors.registry import ExtractorRegistry
 
         registry = ExtractorRegistry()
@@ -2349,7 +2349,7 @@ class TestRegistryCoverageComplete:
         assert registry._is_preview_generator(WrongTypePriority) is False
 
     def test_is_preview_generator_missing_supports(self):
-        """Test _is_preview_generator missing supports method (line 277)."""
+        """Test _is_preview_generator missing supports method."""
         from nexusLIMS.extractors.registry import ExtractorRegistry
 
         registry = ExtractorRegistry()
@@ -2374,7 +2374,7 @@ class TestRegistryCoverageComplete:
         assert registry._is_preview_generator(SupportsNotCallable) is False
 
     def test_is_preview_generator_missing_generate(self):
-        """Test _is_preview_generator missing generate method (line 280)."""
+        """Test _is_preview_generator missing generate method."""
         from nexusLIMS.extractors.registry import ExtractorRegistry
 
         registry = ExtractorRegistry()
@@ -2679,7 +2679,7 @@ class TestWildcardErrorHandling:
 
             # Should skip broken wildcard and use working one
             assert extractor.name == "working_wildcard"
-            # Should have logged the warning (lines 474-475)
+            # Should have logged the warning
             # The log format is "Error in wildcard <name>.supports(): <error>"
             assert "Error in wildcard broken_wildcard.supports()" in caplog.text
             assert "Wildcard support broken!" in caplog.text
@@ -2736,7 +2736,7 @@ class TestPreviewGeneratorRegistration:
 
             # Should return empty set
             assert result == set()
-            # Should have logged warning (lines 662-666)
+            # Should have logged warning
             assert "Preview generator missing_ext does not have" in caplog.text
             assert "supported_extensions attribute" in caplog.text
         finally:

@@ -276,7 +276,7 @@ def test_settings_proxy_repr():
     assert repr(settings) == str(settings)
 
 
-def test_settings_validation_error(monkeypatch, caplog):
+def test_settings_validation_error(monkeypatch):
     """Test that a validation error during settings creation is logged and raised."""
     from pydantic import ValidationError
 
@@ -290,12 +290,14 @@ def test_settings_validation_error(monkeypatch, caplog):
     # will have to create a new instance using the now-modified environment.
     clear_settings()
 
-    with caplog.at_level("ERROR"):
-        with pytest.raises(ValidationError):
-            # refresh_settings() will now fail because it creates a new Settings
-            # instance and NX_CDCS_USER is missing.
-            refresh_settings()
-        assert "Configuration validation error" in caplog.text
+    with pytest.raises(ValidationError) as exc_info:
+        # refresh_settings() will now fail because it creates a new Settings
+        # instance and NX_CDCS_USER is missing.
+        refresh_settings()
+
+    # Verify the exception has the help note added (Python 3.11+)
+    notes = "\n".join(exc_info.value.__notes__)
+    assert "NexusLIMS configuration validation failed" in notes
 
 
 def test_email_config_loads_from_dotenv_file(monkeypatch, mock_nemo_env):
@@ -343,7 +345,7 @@ def test_email_config_loads_from_dotenv_file(monkeypatch, mock_nemo_env):
 
     email = settings.email_config()
 
-    # Verify dotenv_values was called (exercises lines 375-376)
+    # Verify dotenv_values was called
     assert mock_dotenv_values.called
 
     # Verify email config was loaded from .env file
@@ -390,7 +392,7 @@ def test_nemo_harvesters_loads_from_dotenv_file(monkeypatch, mock_nemo_env):
 
     harvesters = settings.nemo_harvesters()
 
-    # Verify dotenv_values was called (exercises lines 291-292)
+    # Verify dotenv_values was called
     assert mock_dotenv_values.called
 
     # Verify harvester config was loaded from .env file

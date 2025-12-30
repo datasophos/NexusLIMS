@@ -11,7 +11,7 @@ from nexusLIMS.extractors.profiles import get_profile_registry
 if TYPE_CHECKING:
     from nexusLIMS.extractors.base import ExtractionContext
 
-logger = logging.getLogger(__name__)
+_logger = logging.getLogger(__name__)
 
 
 def detect_diffraction_from_filename(
@@ -47,7 +47,7 @@ def detect_diffraction_from_filename(
             or pattern.upper() in filename
             or pattern in filename
         ):
-            logger.info(
+            _logger.info(
                 'Detected file as Diffraction type based on "%s" in the filename',
                 pattern,
             )
@@ -71,10 +71,10 @@ jeol_jem_642_profile = InstrumentProfile(
         "diffraction_detection": detect_diffraction_from_filename,
     },
     transformations={},
-    extractor_overrides={},
-    static_metadata={},
+    extension_fields={},
 )
+"""An instrument profile for the JEOL Stroboscope"""
 
 get_profile_registry().register(jeol_jem_642_profile)
 
-logger.debug("Registered JEOL JEM TEM (642) instrument profile")
+_logger.debug("Registered JEOL JEM TEM (642) instrument profile")

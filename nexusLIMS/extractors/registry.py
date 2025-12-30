@@ -25,7 +25,7 @@ if TYPE_CHECKING:
         PreviewGenerator,
     )
 
-logger = logging.getLogger(__name__)
+_logger = logging.getLogger(__name__)
 
 __all__ = [
     "ExtractorRegistry",
@@ -40,7 +40,7 @@ class ExtractorRegistry:
     Manages auto-discovery, registration, and selection of metadata extractors.
     Uses priority-based selection with content sniffing support.
 
-    This is a singleton - use get_registry() to access.
+    This is a singleton - use :func:`get_registry` to access.
 
     Features
     --------
@@ -54,25 +54,25 @@ class ExtractorRegistry:
     --------
     Get an extractor for a file:
 
-        >>> from nexusLIMS.extractors.registry import get_registry
-        >>> from nexusLIMS.extractors.base import ExtractionContext
-        >>> from pathlib import Path
-        >>>
-        >>> registry = get_registry()
-        >>> context = ExtractionContext(Path("data.dm3"), instrument=None)
-        >>> extractor = registry.get_extractor(context)
-        >>> metadata = extractor.extract(context)
+    >>> from nexusLIMS.extractors.registry import get_registry
+    >>> from nexusLIMS.extractors.base import ExtractionContext
+    >>> from pathlib import Path
+    >>>
+    >>> registry = get_registry()
+    >>> context = ExtractionContext(Path("data.dm3"), instrument=None)
+    >>> extractor = registry.get_extractor(context)
+    >>> metadata = extractor.extract(context)
 
     Manual registration (for testing):
 
-        >>> class MyExtractor:
-        ...     name = "my_extractor"
-        ...     priority = 100
-        ...     def supports(self, context): return True
-        ...     def extract(self, context): return {"nx_meta": {}}
-        >>>
-        >>> registry = get_registry()
-        >>> registry.register_extractor(MyExtractor)
+    >>> class MyExtractor:
+    ...     name = "my_extractor"
+    ...     priority = 100
+    ...     def supports(self, context): return True
+    ...     def extract(self, context): return {"nx_meta": {}}
+    >>>
+    >>> registry = get_registry()
+    >>> registry.register_extractor(MyExtractor)
     """
 
     def __init__(self):
@@ -97,7 +97,7 @@ class ExtractorRegistry:
         # Discovery state
         self._discovered = False
 
-        logger.debug("Initialized ExtractorRegistry")
+        _logger.debug("Initialized ExtractorRegistry")
 
     @property
     def extractors(self) -> dict[str, list[type[BaseExtractor]]]:
@@ -178,10 +178,10 @@ class ExtractorRegistry:
             >>> print(f"Found {len(extractors)} extractors for .dm3 files")
         """
         if self._discovered:
-            logger.debug("Plugins already discovered, skipping")
+            _logger.debug("Plugins already discovered, skipping")
             return
 
-        logger.info("Discovering extractor plugins...")
+        _logger.info("Discovering extractor plugins...")
 
         # Find the plugins directory
         plugins_package = "nexusLIMS.extractors.plugins"
@@ -191,7 +191,7 @@ class ExtractorRegistry:
             plugins_module = importlib.import_module(plugins_package)
             plugins_path = Path(plugins_module.__file__).parent
         except (ImportError, AttributeError) as e:
-            logger.warning(
+            _logger.warning(
                 "Could not import plugins package '%s': %s. Plugin discovery skipped.",
                 plugins_package,
                 e,
@@ -211,7 +211,7 @@ class ExtractorRegistry:
 
             try:
                 module = importlib.import_module(name)
-                logger.debug("Imported plugin module: %s", name)
+                _logger.debug("Imported plugin module: %s", name)
 
                 # Look for classes implementing BaseExtractor/PreviewGenerator protocol
                 for _item_name, obj in inspect.getmembers(module, inspect.isclass):
@@ -223,7 +223,7 @@ class ExtractorRegistry:
                     if self._is_extractor(obj):
                         self.register_extractor(obj)
                         discovered_count += 1
-                        logger.debug(
+                        _logger.debug(
                             "Discovered extractor: %s (priority: %d)",
                             obj.name,
                             obj.priority,
@@ -232,21 +232,21 @@ class ExtractorRegistry:
                     elif self._is_preview_generator(obj):
                         self.register_preview_generator(obj)
                         discovered_count += 1
-                        logger.debug(
+                        _logger.debug(
                             "Discovered preview generator: %s (priority: %d)",
                             obj.name,
                             obj.priority,
                         )
 
             except Exception as e:
-                logger.warning(
+                _logger.warning(
                     "Failed to import plugin module '%s': %s",
                     name,
                     e,
                     exc_info=True,
                 )
 
-        logger.info("Discovered %d extractor plugins", discovered_count)
+        _logger.info("Discovered %d extractor plugins", discovered_count)
 
         # Register instrument profiles
         self._register_instrument_profiles()
@@ -263,12 +263,12 @@ class ExtractorRegistry:
         try:
             register_all_profiles()
         except ImportError as e:
-            logger.warning(
+            _logger.warning(
                 "Could not import profiles package: %s. No profiles will be loaded.",
                 e,
             )
         except Exception as e:
-            logger.warning(
+            _logger.warning(
                 "Error registering instrument profiles: %s",
                 e,
                 exc_info=True,
@@ -373,12 +373,12 @@ class ExtractorRegistry:
             # This is a wildcard extractor (supports any extension)
             if extractor_class not in self._wildcard_extractors:
                 self._wildcard_extractors.append(extractor_class)
-                logger.debug(
+                _logger.debug(
                     "Registered wildcard extractor: %s",
                     extractor_class.name,
                 )
             else:
-                logger.debug(
+                _logger.debug(
                     "Extractor %s already registered (skipping duplicate)",
                     extractor_class.name,
                 )
@@ -387,13 +387,13 @@ class ExtractorRegistry:
             for ext in extensions:
                 if extractor_class not in self._extractors[ext]:
                     self._extractors[ext].append(extractor_class)
-                    logger.debug(
+                    _logger.debug(
                         "Registered %s for extension: .%s",
                         extractor_class.name,
                         ext,
                     )
                 else:
-                    logger.debug(
+                    _logger.debug(
                         "Extractor %s already registered for .%s (skipping duplicate)",
                         extractor_class.name,
                         ext,
@@ -424,7 +424,7 @@ class ExtractorRegistry:
             this is a wildcard extractor
         """
         if not hasattr(extractor_class, "supported_extensions"):
-            logger.warning(
+            _logger.warning(
                 "Extractor %s does not have supported_extensions attribute",
                 extractor_class.name if hasattr(extractor_class, "name") else "unknown",
             )
@@ -457,7 +457,7 @@ class ExtractorRegistry:
         name = extractor_class.name
         if name not in self._instances:
             self._instances[name] = extractor_class()
-            logger.debug("Instantiated extractor: %s", name)
+            _logger.debug("Instantiated extractor: %s", name)
 
         return self._instances[name]
 
@@ -507,14 +507,14 @@ class ExtractorRegistry:
                 instance = self._get_instance(extractor_class)
                 try:
                     if instance.supports(context):
-                        logger.debug(
+                        _logger.debug(
                             "Selected extractor %s for %s",
                             instance.name,
                             context.file_path.name,
                         )
                         return instance
                 except Exception as e:
-                    logger.warning(
+                    _logger.warning(
                         "Error in %s.supports(): %s",
                         instance.name,
                         e,
@@ -526,14 +526,14 @@ class ExtractorRegistry:
             instance = self._get_instance(extractor_class)
             try:
                 if instance.supports(context):
-                    logger.debug(
+                    _logger.debug(
                         "Selected wildcard extractor %s for %s",
                         instance.name,
                         context.file_path.name,
                     )
                     return instance
             except Exception as e:
-                logger.warning(
+                _logger.warning(
                     "Error in wildcard %s.supports(): %s",
                     instance.name,
                     e,
@@ -541,7 +541,7 @@ class ExtractorRegistry:
                 )
 
         # Fallback: use basic metadata extractor
-        logger.debug(
+        _logger.debug(
             "No extractor found for %s, using fallback",
             context.file_path.name,
         )
@@ -652,7 +652,7 @@ class ExtractorRegistry:
         self._preview_generators.clear()
         self._preview_instances.clear()
         self._discovered = False
-        logger.debug("Cleared extractor registry")
+        _logger.debug("Cleared extractor registry")
 
     def register_preview_generator(
         self,
@@ -687,7 +687,7 @@ class ExtractorRegistry:
             # Register for specific extensions
             for ext in extensions:
                 self._preview_generators[ext].append(generator_class)
-                logger.debug(
+                _logger.debug(
                     "Registered preview generator %s for extension: .%s",
                     generator_class.name,
                     ext,
@@ -720,7 +720,7 @@ class ExtractorRegistry:
             Set of supported extensions (without dots)
         """
         if not hasattr(generator_class, "supported_extensions"):
-            logger.warning(
+            _logger.warning(
                 "Preview generator %s does not have supported_extensions attribute",
                 generator_class.name if hasattr(generator_class, "name") else "unknown",
             )
@@ -756,7 +756,7 @@ class ExtractorRegistry:
         name = generator_class.name
         if name not in self._preview_instances:
             self._preview_instances[name] = generator_class()
-            logger.debug("Instantiated preview generator: %s", name)
+            _logger.debug("Instantiated preview generator: %s", name)
 
         return self._preview_instances[name]
 
@@ -807,14 +807,14 @@ class ExtractorRegistry:
                 instance = self._get_preview_instance(generator_class)
                 try:
                     if instance.supports(context):
-                        logger.debug(
+                        _logger.debug(
                             "Selected preview generator %s for %s",
                             instance.name,
                             context.file_path.name,
                         )
                         return instance
                 except Exception as e:
-                    logger.warning(
+                    _logger.warning(
                         "Error in %s.supports(): %s",
                         instance.name,
                         e,
@@ -822,7 +822,7 @@ class ExtractorRegistry:
                     )
 
         # No generator found
-        logger.debug(
+        _logger.debug(
             "No preview generator found for %s",
             context.file_path.name,
         )

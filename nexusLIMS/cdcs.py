@@ -22,8 +22,8 @@ from nexusLIMS.config import settings
 from nexusLIMS.utils import AuthenticationError, nexus_req
 
 logging.basicConfig()
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
+_logger = logging.getLogger(__name__)
+_logger.setLevel(logging.INFO)
 
 
 def get_cdcs_url() -> str:
@@ -124,7 +124,7 @@ def upload_record_content(xml_content, title):
 
     if post_r.status_code != HTTPStatus.CREATED:
         # anything other than 201 status means something went wrong
-        logger.error("Got error while uploading %s:\n%s", title, post_r.text)
+        _logger.error("Got error while uploading %s:\n%s", title, post_r.text)
         return post_r, None
 
     # assign this record to the public workspace
@@ -137,7 +137,7 @@ def upload_record_content(xml_content, title):
 
     _ = nexus_req(wrk_endpoint, "PATCH", basic_auth=True)
 
-    logger.info('Record "%s" available at %s', title, record_url)
+    _logger.info('Record "%s" available at %s', title, record_url)
     return post_r, record_id
 
 
@@ -160,7 +160,7 @@ def delete_record(record_id):
     response = nexus_req(endpoint, "DELETE", basic_auth=True)
     if response.status_code != HTTPStatus.NO_CONTENT:
         # anything other than 204 status means something went wrong
-        logger.error("Received error while deleting %s:\n%s", record_id, response.text)
+        _logger.error("Received error while deleting %s:\n%s", record_id, response.text)
     return response
 
 
@@ -250,12 +250,12 @@ def search_records(title=None, template_id=None, keyword=None):
         raise AuthenticationError(msg)
 
     if response.status_code == HTTPStatus.BAD_REQUEST:
-        logger.error("Bad request while searching records:\n%s", response.text)
+        _logger.error("Bad request while searching records:\n%s", response.text)
         msg = f"Invalid search parameters: {response.text}"
         raise ValueError(msg)
 
     if response.status_code != HTTPStatus.OK:
-        logger.error("Got error while searching records:\n%s", response.text)
+        _logger.error("Got error while searching records:\n%s", response.text)
         return []
 
     return response.json()
@@ -297,7 +297,7 @@ def download_record(record_id):
         raise ValueError(msg)
 
     if response.status_code != HTTPStatus.OK:
-        logger.error("Got error while downloading %s:\n%s", record_id, response.text)
+        _logger.error("Got error while downloading %s:\n%s", record_id, response.text)
         msg = f"Failed to download record {record_id}: {response.text}"
         raise ValueError(msg)
 
@@ -331,19 +331,19 @@ def upload_record_files(
         A list of the record id values (on the server) that were uploaded
     """
     if files_to_upload is None:
-        logger.info("Using all .xml files in this directory")
+        _logger.info("Using all .xml files in this directory")
         files_to_upload = list(Path().glob("*.xml"))
     else:
-        logger.info("Using .xml files from command line")
+        _logger.info("Using .xml files from command line")
 
-    logger.info("Found %s files to upload\n", len(files_to_upload))
+    _logger.info("Found %s files to upload\n", len(files_to_upload))
     if len(files_to_upload) == 0:
         msg = (
             "No .xml files were found (please specify on the "
             "command line, or run this script from a directory "
             "containing one or more .xml files"
         )
-        logger.error(msg)
+        _logger.error(msg)
         raise ValueError(msg)
 
     files_uploaded = []
@@ -358,13 +358,13 @@ def upload_record_files(
         response, record_id = upload_record_content(xml_content, title)
 
         if response.status_code != HTTPStatus.CREATED:
-            logger.warning("Could not upload %s", f_path.name)
+            _logger.warning("Could not upload %s", f_path.name)
             continue
 
         files_uploaded.append(f_path)
         record_ids.append(record_id)
 
-    logger.info(
+    _logger.info(
         "Successfully uploaded %i of %i files",
         len(files_uploaded),
         len(files_to_upload),
@@ -379,7 +379,7 @@ if __name__ == "__main__":  # pragma: no cover
     )
     parser.add_argument(
         "--upload-records",
-        help="Upload .xml records to the the Nexus CDCS",
+        help="Upload .xml records to the Nexus CDCS",
         action="store_true",
     )
     parser.add_argument(

@@ -11,7 +11,7 @@ from PIL import Image
 
 from nexusLIMS.extractors.base import ExtractionContext
 
-logger = logging.getLogger(__name__)
+_logger = logging.getLogger(__name__)
 
 _LANCZOS = Image.Resampling.LANCZOS
 
@@ -105,19 +105,19 @@ def text_to_thumbnail(
         for encoding in encodings_to_try:
             try:
                 content = raw_bytes.decode(encoding)
-                logger.debug("Successfully decoded %s with %s encoding", f, encoding)
+                _logger.debug("Successfully decoded %s with %s encoding", f, encoding)
                 break
             except (UnicodeDecodeError, LookupError):
                 continue
 
         if content is None:
-            logger.warning(
+            _logger.warning(
                 "Failed to decode text file %s with any supported encoding", f
             )
             return False
 
     except Exception as e:
-        logger.warning("Failed to read text file %s: %s", f, e)
+        _logger.warning("Failed to read text file %s: %s", f, e)
         return False
 
     # Normalize line endings (CRLF to LF) for consistent handling
@@ -186,7 +186,7 @@ def text_to_thumbnail(
         fig.savefig(out_path, dpi=output_size / _DEFAULT_SIZE)
         _pad_to_square(out_path, output_size)
     except Exception as e:
-        logger.warning("Failed to save text thumbnail to %s: %s", out_path, e)
+        _logger.warning("Failed to save text thumbnail to %s: %s", out_path, e)
         plt.close(fig)
         return False
     else:
@@ -240,7 +240,7 @@ class TextPreviewGenerator:
             True if preview was successfully generated, False otherwise
         """
         try:
-            logger.debug("Generating text preview for: %s", context.file_path)
+            _logger.debug("Generating text preview for: %s", context.file_path)
 
             # Generate the thumbnail using the local function
             text_to_thumbnail(
@@ -251,7 +251,7 @@ class TextPreviewGenerator:
 
             return output_path.exists()
         except Exception as e:
-            logger.warning(
+            _logger.warning(
                 "Failed to generate text preview for %s: %s",
                 context.file_path,
                 e,

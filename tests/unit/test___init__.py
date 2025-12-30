@@ -22,8 +22,8 @@ class TestLazyLoading:
 
         db = nexusLIMS.db
         assert db is not None
-        # Check for function that exists in db __init__.py
-        assert hasattr(db, "make_db_query")
+        # The db package exists and has a docstring
+        assert db.__name__ == "nexusLIMS.db"
 
     def test_lazy_import_extractors(self):
         """Test that extractors module is lazy loaded via __getattr__."""

@@ -1,6 +1,7 @@
 """Tests for the Zeiss Orion/Fibics TIFF extractor plugin."""
 
 import xml.etree.ElementTree as ET
+from decimal import Decimal
 from pathlib import Path
 from unittest.mock import patch
 
@@ -15,6 +16,9 @@ from nexusLIMS.extractors.plugins.orion_HIM_tif import (
     OrionTiffExtractor,
 )
 from nexusLIMS.extractors.registry import get_registry
+from nexusLIMS.schemas.units import ureg
+
+from .conftest import get_field
 
 
 @pytest.fixture
@@ -207,7 +211,7 @@ class TestOrionFibicsTiffExtractor:
         result = self.extractor._detect_variant(img)  # noqa: SLF001
         assert result is None
 
-    def test_extract_from_real_orion_zeiss_file(self, orion_zeiss_zeroed_file):
+    def test_extract_from_real_orion_zeiss_file(self, orion_zeiss_zeroed_file):  # noqa: PLR0915
         """Test extraction from real Zeiss Orion TIFF file."""
         if orion_zeiss_zeroed_file is None:
             pytest.skip("Real test file not available")
@@ -221,68 +225,127 @@ class TestOrionFibicsTiffExtractor:
         assert result[0]["nx_meta"]["Data Type"] == "HIM_Imaging"
         assert result[0]["nx_meta"]["DatasetType"] == "Image"
 
+        assert isinstance(result[0]["nx_meta"]["acceleration_voltage"], ureg.Quantity)
+        assert float(result[0]["nx_meta"]["acceleration_voltage"].magnitude) == 29.997
+        assert result[0]["nx_meta"]["acceleration_voltage"].units == ureg.kilovolt
+
         # Random sampling of extracted values from real file
-        meta = result[0]["nx_meta"]
-        # Beam section
-        assert meta["Beam"]["Voltage (kV)"] == 29.997
-        assert meta["Beam"]["Spot Number"] == 6.0
-        assert meta["Beam"]["Pan X (μm)"] == 3.0
-        assert meta["Beam"]["Extraction Voltage (kV)"] == -36.769
+        # Beam section - now Pint Quantities (in extensions)
+        beam = get_field(result, "Beam")
+        assert beam["Spot Number"] == 6.0  # Dimensionless
+        assert isinstance(beam["Pan X"], ureg.Quantity)
+        assert float(beam["Pan X"].magnitude) == 3.0
+        assert beam["Pan X"].units == ureg.micrometer
+        assert isinstance(beam["Extraction Voltage"], ureg.Quantity)
+        assert float(beam["Extraction Voltage"].magnitude) == -36.769
+        assert beam["Extraction Voltage"].units == ureg.kilovolt
         # GFIS section
-        assert meta["GFIS"]["Ion Gas"] == "Helium"
-        assert meta["GFIS"]["Beam Current (pA)"] == 0.938
-        assert meta["GFIS"]["Crossover Position (mm)"] == -246.999
+        gfis = get_field(result, "GFIS")
+        assert gfis["Ion Gas"] == "Helium"  # String
+        assert isinstance(gfis["Beam Current"], ureg.Quantity)
+        assert float(gfis["Beam Current"].magnitude) == 0.938
+        assert gfis["Beam Current"].units == ureg.picoampere
+        assert isinstance(gfis["Crossover Position"], ureg.Quantity)
+        assert float(gfis["Crossover Position"].magnitude) == -246.999
+        assert gfis["Crossover Position"].units == ureg.millimeter
         # Calibration
-        assert meta["Calibration"]["X Scale (m)"] == 9.765625e-10
+        calibration = get_field(result, "Calibration")
+        assert isinstance(calibration["X Scale"], ureg.Quantity)
+        assert float(calibration["X Scale"].magnitude) == 9.765625e-10
+        assert calibration["X Scale"].units == ureg.meter
         # Detector
-        assert meta["Detector"]["ET Image Intensity"] == 23.3
-        assert meta["Detector"]["Name"] == "ETDetector"
+        detector = get_field(result, "Detector")
+        assert detector["ET Image Intensity"] == 23.3  # Dimensionless
+        assert detector["Name"] == "ETDetector"  # String
         # Scan
-        assert meta["Scan"]["Averaging Mode"] == "Line"
-        assert meta["Scan"]["Number of Averages"] == 64.0
+        scan = get_field(result, "Scan")
+        assert scan["Averaging Mode"] == "Line"  # String
+        assert scan["Number of Averages"] == 64.0  # Dimensionless
         # Stage Position
-        assert meta["Stage Position"]["X (μm)"] == 25157.23
-        assert meta["Stage Position"]["Tilt (degrees)"] == 0.16
+        stage = get_field(result, "Stage Position")
+        assert isinstance(stage["X"], ureg.Quantity)
+        assert float(stage["X"].magnitude) == 25157.23
+        assert stage["X"].units == ureg.micrometer
+        assert isinstance(stage["Tilt"], ureg.Quantity)
+        assert float(stage["Tilt"].magnitude) == 0.16
+        assert stage["Tilt"].units == ureg.degree
         # System
-        assert meta["System"]["Column Type"] == "GFIS"
-        assert meta["System"]["Gun Temperature (K)"] == 75.5
+        system = get_field(result, "System")
+        assert system["Column Type"] == "GFIS"  # String
+        assert isinstance(system["Gun Temperature"], ureg.Quantity)
+        assert float(system["Gun Temperature"].magnitude) == 75.5
+        assert system["Gun Temperature"].units == ureg.kelvin
         # Optics
-        assert meta["Optics"]["sFIM Field of View (μm)"] == 0.04
-        assert meta["Optics"]["MC X Shift (μrad)"] == -0.0007959
+        optics = get_field(result, "Optics")
+        assert isinstance(optics["sFIM Field of View"], ureg.Quantity)
+        assert float(optics["sFIM Field of View"].magnitude) == 0.04
+        assert optics["sFIM Field of View"].units == ureg.micrometer
+        assert isinstance(optics["MC X Shift"], ureg.Quantity)
+        assert float(optics["MC X Shift"].magnitude) == -0.0007959
+        assert optics["MC X Shift"].units == ureg.microradian
         # Image dimensions
-        assert meta["Image"]["Height (pixels)"] == 1024.0
-        assert meta["Image"]["Width (pixels)"] == 1024.0
+        image = get_field(result, "Image")
+        assert image["Height"] == 1024.0  # Dimensionless
+        assert image["Width"] == 1024.0  # Dimensionless
 
     def test_voltage_unit_conversions(self, orion_zeiss_zeroed_file):
-        """Test that voltage values are correctly converted from V to kV."""
+        """Test that voltages are correctly converted from V to kV Pint Quantities."""
         if orion_zeiss_zeroed_file is None:
             pytest.skip("Real test file not available")
 
         context = ExtractionContext(orion_zeiss_zeroed_file, instrument=None)
         result = self.extractor.extract(context)
-        meta = result[0]["nx_meta"]
 
         # Test various voltage conversions (V to kV, multiply by 1000)
-        # Beam section voltages
-        assert meta["Beam"]["Voltage (kV)"] == 29.997  # AccelerationVoltage: 29997 V
+        # acceleration voltage should be at top level
+        acc_voltage = get_field(result, "acceleration_voltage")
+        assert isinstance(acc_voltage, ureg.Quantity)
+        assert float(acc_voltage.magnitude) == 29.997  # AccelerationVoltage: 29997 V
+        assert acc_voltage.units == ureg.kilovolt
+
+        # Beam section voltages (in extensions)
+        beam = get_field(result, "Beam")
+        assert isinstance(beam["Extraction Voltage"], ureg.Quantity)
         assert (
-            meta["Beam"]["Extraction Voltage (kV)"] == -36.769
+            float(beam["Extraction Voltage"].magnitude) == -36.769
         )  # ExtractionVoltage: -36769 V
+        assert beam["Extraction Voltage"].units == ureg.kilovolt
 
         # GFIS section voltages (same values as non-GFIS versions)
-        assert meta["GFIS"]["Acceleration Voltage (kV)"] == 29.997
-        assert meta["GFIS"]["Extraction Voltage (kV)"] == -36.769
-        assert meta["GFIS"]["Condenser Voltage (kV)"] == 23.995  # Lens1Voltage: 23995 V
-        assert meta["GFIS"]["Objective Voltage (kV)"] == 18.535  # Lens2Voltage: 18535 V
+        gfis = get_field(result, "GFIS")
+        assert isinstance(gfis["Acceleration Voltage"], ureg.Quantity)
+        assert float(gfis["Acceleration Voltage"].magnitude) == 29.997
+        assert gfis["Acceleration Voltage"].units == ureg.kilovolt
+        assert isinstance(gfis["Extraction Voltage"], ureg.Quantity)
+        assert float(gfis["Extraction Voltage"].magnitude) == -36.769
+        assert gfis["Extraction Voltage"].units == ureg.kilovolt
+        assert isinstance(gfis["Condenser Voltage"], ureg.Quantity)
+        assert (
+            float(gfis["Condenser Voltage"].magnitude) == 23.995
+        )  # Lens1Voltage: 23995 V
+        assert gfis["Condenser Voltage"].units == ureg.kilovolt
+        assert isinstance(gfis["Objective Voltage"], ureg.Quantity)
+        assert (
+            float(gfis["Objective Voltage"].magnitude) == 18.535
+        )  # Lens2Voltage: 18535 V
+        assert gfis["Objective Voltage"].units == ureg.kilovolt
 
         # Optics section voltages (Lens voltages)
-        assert meta["Optics"]["Lens 1 Voltage (kV)"] == 23.995
-        assert meta["Optics"]["Lens 2 Voltage (kV)"] == 18.535
+        optics = get_field(result, "Optics")
+        assert isinstance(optics["Lens 1 Voltage"], ureg.Quantity)
+        assert float(optics["Lens 1 Voltage"].magnitude) == 23.995
+        assert optics["Lens 1 Voltage"].units == ureg.kilovolt
+        assert isinstance(optics["Lens 2 Voltage"], ureg.Quantity)
+        assert float(optics["Lens 2 Voltage"].magnitude) == 18.535
+        assert optics["Lens 2 Voltage"].units == ureg.kilovolt
 
         # Detector scintillator voltage
+        detector = get_field(result, "Detector")
+        assert isinstance(detector["Scintillator"], ureg.Quantity)
         assert (
-            meta["Detector"]["Scintillator (kV)"] == 10.000
+            float(detector["Scintillator"].magnitude) == 10.000
         )  # Detector.Scintillator: 10000 V
+        assert detector["Scintillator"].units == ureg.kilovolt
 
     def test_extract_from_real_orion_fibics_file(self, orion_fibics_zeroed_file):  # noqa: PLR0915
         """Test extraction from real Fibics Orion TIFF file."""
@@ -299,66 +362,104 @@ class TestOrionFibicsTiffExtractor:
         assert result[0]["nx_meta"]["DatasetType"] == "Image"
 
         # Comprehensive value checks from orion_fibics_tif_metadata.xml
-        meta = result[0]["nx_meta"]
+        # top-level core values
+        dwell_time = get_field(result, "dwell_time")
+        assert isinstance(dwell_time, ureg.Quantity)
+        # 10000 ns converted to μs
+        assert dwell_time.magnitude == 10.0
+        assert dwell_time.units == ureg.microsecond
+        hfw = get_field(result, "horizontal_field_width")
+        assert isinstance(hfw, ureg.Quantity)
+        assert hfw.magnitude == 2.5
+        assert hfw.units == ureg.micrometer
+        vfw = get_field(result, "vertical_field_width")
+        assert isinstance(vfw, ureg.Quantity)
+        assert vfw.magnitude == 2.5
+        assert vfw.units == ureg.micrometer
+        scan_rot = get_field(result, "scan_rotation")
+        assert isinstance(scan_rot, ureg.Quantity)
+        assert scan_rot.magnitude == Decimal("1.23797181004193e-05")
+        assert scan_rot.units == ureg.degree
+        beam_current = get_field(result, "beam_current")
+        assert isinstance(beam_current, ureg.Quantity)
+        assert beam_current.magnitude == 1.3275146484375
+        assert beam_current.units == ureg.picoampere
+        acc_volt = get_field(result, "acceleration_voltage")
+        assert isinstance(acc_volt, ureg.Quantity)
+        assert acc_volt.magnitude == 30.0
+        assert acc_volt.units == ureg.kilovolt
 
-        # Application section
-        assert meta["Application"]["Software Version"] == "NPVE v4.5"
-        assert (
-            meta["Application"]["Acquisition Date/Time"]
-            == "2025-05-27T10:32:12.498-04:00"
-        )
-        assert meta["Application"]["Supports Transparency"] == "true"
-        assert meta["Application"]["Transparent Pixel Value"] == 0.0
+        # Application section (strings, in extensions)
+        application = get_field(result, "Application")
+        assert application["Software Version"] == "NPVE v4.5"
+        assert application["Acquisition Date/Time"] == "2025-05-27T10:32:12.498-04:00"
+        assert application["Supports Transparency"] == "true"
+        assert application["Transparent Pixel Value"] == 0.0  # Dimensionless
 
-        # Image section
-        assert meta["Image"]["Width (pixels)"] == 2048.0
-        assert meta["Image"]["Height (pixels)"] == 2048.0
-        assert meta["Image"]["Bounding Box Left"] == 0.0
-        assert meta["Image"]["Bounding Box Right"] == 2048.0
-        assert meta["Image"]["Bounding Box Top"] == 0.0
-        assert meta["Image"]["Bounding Box Bottom"] == 2048.0
-        assert meta["Image"]["Machine Name"] == "CONSOLE18"
-        assert meta["Image"]["Beam Type"] == "Orion"
-        assert meta["Image"]["Aperture Description"] == "[1] Ne 10 µm (30.0kV|s=5.0)"
-        assert meta["Detector"]["Name"] == "ET"
-        assert meta["Detector"]["Contrast"] == 32.466667175293
-        assert meta["Detector"]["Brightness"] == 55.0
+        # Image section (dimensionless and strings)
+        image = get_field(result, "Image")
+        assert image["Width"] == 2048.0
+        assert image["Height"] == 2048.0
+        assert image["Bounding Box Left"] == 0.0
+        assert image["Bounding Box Right"] == 2048.0
+        assert image["Bounding Box Top"] == 0.0
+        assert image["Bounding Box Bottom"] == 2048.0
+        assert image["Machine Name"] == "CONSOLE18"
+        assert image["Beam Type"] == "Orion"
+        assert image["Aperture Description"] == "[1] Ne 10 µm (30.0kV|s=5.0)"
+        detector = get_field(result, "Detector")
+        assert detector["Name"] == "ET"
+        assert detector["Contrast"] == 32.466667175293  # Dimensionless
+        assert detector["Brightness"] == 55.0  # Dimensionless
 
-        # Scan section
-        assert meta["Scan"]["Pixel Dwell Time (μs)"] == 10.0  # 10000 ns converted to μs
-        assert meta["Scan"]["Line Averaging"] == 1.0
-        assert meta["Scan"]["Field of View X (μm)"] == 2.5
-        assert meta["Scan"]["Field of View Y (μm)"] == 2.5
-        assert meta["Scan"]["Scan Rotation (degrees)"] == 1.23797181004193e-05
-        assert meta["Scan"]["Affine Ux"] == 0.001220703125
-        assert meta["Scan"]["Affine Uy"] == 0.0
-        assert meta["Scan"]["Affine Vx"] == 0.0
-        assert meta["Scan"]["Affine Vy"] == -0.001220703125
-        assert meta["Scan"]["Focus Value"] == 0.0118617592379451
-        assert meta["Scan"]["Stigmator X Value"] == -16.4666652679443
-        assert meta["Scan"]["Stigmator Y Value"] == 9.63332939147949
+        # Scan section - now with Pint Quantities where applicable
+        scan = get_field(result, "Scan")
+        assert scan["Line Averaging"] == 1.0  # Dimensionless
+        assert scan["Affine Ux"] == 0.001220703125  # Dimensionless
+        assert scan["Affine Uy"] == 0.0  # Dimensionless
+        assert scan["Affine Vx"] == 0.0  # Dimensionless
+        assert scan["Affine Vy"] == -0.001220703125  # Dimensionless
+        assert scan["Focus Value"] == 0.0118617592379451  # Dimensionless
+        assert scan["Stigmator X Value"] == -16.4666652679443  # Dimensionless
+        assert scan["Stigmator Y Value"] == 9.63332939147949  # Dimensionless
 
-        # Stage section
-        assert meta["Stage Position"]["X (μm)"] == -21319.2368624182
-        assert meta["Stage Position"]["Y (μm)"] == -27311.808629448
-        assert meta["Stage Position"]["Z (μm)"] == 10.80012316379
-        assert meta["Stage Position"]["Tilt (degrees)"] == 0.191424190998077
-        assert meta["Stage Position"]["Rotation (degrees)"] == 46.2030220031738
-        assert meta["Stage Position"]["M (mm)"] == 0.0
+        # Stage section - now with Pint Quantities
+        stage = get_field(result, "Stage Position")
+        assert isinstance(stage["X"], ureg.Quantity)
+        assert float(stage["X"].magnitude) == -21319.2368624182
+        assert stage["X"].units == ureg.micrometer
+        assert isinstance(stage["Y"], ureg.Quantity)
+        assert float(stage["Y"].magnitude) == -27311.808629448
+        assert stage["Y"].units == ureg.micrometer
+        assert isinstance(stage["Z"], ureg.Quantity)
+        assert float(stage["Z"].magnitude) == 10.80012316379
+        assert stage["Z"].units == ureg.micrometer
+        assert isinstance(stage["Tilt"], ureg.Quantity)
+        assert float(stage["Tilt"].magnitude) == 0.191424190998077
+        assert stage["Tilt"].units == ureg.degree
+        assert isinstance(stage["Rotation"], ureg.Quantity)
+        assert float(stage["Rotation"].magnitude) == 46.2030220031738
+        assert stage["Rotation"].units == ureg.degree
+        assert isinstance(stage["M"], ureg.Quantity)
+        assert float(stage["M"].magnitude) == 0.0
+        assert stage["M"].units == ureg.millimeter
 
-        # BeamInfo section (item-based)
-        assert meta["Beam"]["Beam Current (pA)"] == 1.3275146484375
-        assert (
-            meta["Beam"]["Acceleration Voltage (kV)"] == 30.0
-        )  # 30000 V converted to kV
-        assert meta["Beam"]["Aperture"] == 0.0
-        assert meta["Beam"]["GFIS Gas Type"] == "He"
-        assert meta["Beam"]["Gun Gas Pressure"] == 0.0
-        assert meta["Beam"]["Spot Control"] == 5.0
+        # BeamInfo section (item-based) - now with Pint Quantities
+        beam = get_field(result, "Beam")
+        assert beam["Aperture"] == 0.0  # Dimensionless
+        assert beam["GFIS Gas Type"] == "He"  # String
+        assert beam["Gun Gas Pressure"] == 0.0  # Dimensionless (or unknown unit)
+        assert beam["Spot Control"] == 5.0  # Dimensionless
 
-        # DetectorInfo section (item-based with unit stripping)
-        assert meta["Detector"]["Collector Voltage (V)"] == 500.0  # "=500.0 V" stripped
-        assert meta["Detector"]["Stage Bias Voltage (V)"] == 0.0  # "=0.0 V" stripped
+        # DetectorInfo section (item-based with unit stripping) - with Pint Quantities
+        assert isinstance(detector["Collector Voltage"], ureg.Quantity)
+        # "=500.0 V" stripped
+        assert float(detector["Collector Voltage"].magnitude) == 500.0
+        assert detector["Collector Voltage"].units == ureg.volt
+        assert isinstance(detector["Stage Bias Voltage"], ureg.Quantity)
+        # "=0.0 V" stripped
+        assert float(detector["Stage Bias Voltage"].magnitude) == 0.0
+        assert detector["Stage Bias Voltage"].units == ureg.volt
 
     def test_extractor_priority_higher_than_quanta(self):
         """Test OrionFibicsTiffExtractor is higher priority than QuantaTiffExtractor."""
@@ -474,14 +575,23 @@ class TestOrionFibicsTiffExtractor:
         """
         context = ExtractionContext(fibics_tiff_file, instrument=None)
         result = self.extractor.extract(context)
-        meta = result[0]["nx_meta"]
 
-        # Verify dwell time conversion (ns to μs)
-        assert meta["Scan"]["Pixel Dwell Time (μs)"] == 10.0
-        # Verify item-based field extraction
-        assert "Beam Current (pA)" in meta.get("Beam", {})
-        # Verify unit stripping works
-        assert "Collector Voltage (V)" in meta.get("Detector", {})
+        # Verify dwell time conversion (ns to μs) as Pint Quantity
+        dwell_time = get_field(result, "dwell_time")
+        assert isinstance(dwell_time, ureg.Quantity)
+        assert dwell_time.magnitude == 10.0
+        assert dwell_time.units == ureg.microsecond
+
+        # Verify beam current converted to pA
+        beam_current = get_field(result, "beam_current")
+        assert isinstance(beam_current, ureg.Quantity)
+        assert beam_current.magnitude == 1.3275146484375
+        assert beam_current.units == ureg.picoampere
+
+        # Verify unit stripping works (should be
+        # "Collector Voltage" rather than "Collector")
+        detector = get_field(result, "Detector")
+        assert "Collector Voltage" in detector
 
     def test_parse_zeiss_field_exception_handling(self):
         """Test that _parse_zeiss_field handles exceptions during parsing gracefully."""
@@ -542,6 +652,28 @@ class TestOrionFibicsTiffExtractor:
         # Should return the text portion after stripping
         assert result == "invalid"
 
+    def test_parse_fibics_value_strip_units_numeric_without_unit(self):
+        """Test _parse_fibics_value with strip_units, numeric value, but no unit arg.
+
+        This tests line 968 in orion_HIM_tif.py where conversion_factor is
+        "strip_units", the value converts to float successfully, but unit=None
+        so it returns the raw numeric value instead of a Quantity.
+        """
+        import xml.etree.ElementTree as ET
+
+        section = ET.Element("TestSection")
+        field = ET.Element("NumericField")
+        field.text = "=42.5 V"  # Numeric value with unit suffix
+        section.append(field)
+
+        # Call with strip_units but no unit parameter (defaults to None)
+        result = self.extractor._parse_fibics_value(  # noqa: SLF001
+            section, "NumericField", "strip_units", unit=None
+        )
+        # Should return numeric value without creating a Quantity
+        assert result == 42.5
+        assert not isinstance(result, ureg.Quantity)
+
     def test_find_fibics_section_exception_handling(self):
         """Test that _find_fibics_section handles exceptions during iteration."""
         from unittest.mock import MagicMock
@@ -568,3 +700,84 @@ class TestOrionFibicsTiffExtractor:
         result = self.extractor._find_fibics_section(root, "NonExistent")  # noqa: SLF001
         # Should return None when section not found
         assert result is None
+
+    def test_migrate_to_schema_compliant_metadata_with_field_renaming(self):
+        """Test that display names are renamed to EM Glossary names.
+
+        This test covers orion_HIM_tif.py where fields with
+        display names (like "Acceleration Voltage") are renamed to EM Glossary
+        names (like "acceleration_voltage") and kept at the top level.
+        """
+        # Create metadata dict with fields using display names
+        mdict = {
+            "nx_meta": {
+                "DatasetType": "Image",
+                "Data Type": "HIM_Imaging",
+                "Creation Time": "2024-01-15T10:30:00-05:00",
+                # Add fields with display names that need renaming
+                "Acceleration Voltage": ureg.Quantity(30.0, "kilovolt"),
+                "Working Distance": ureg.Quantity(5.0, "millimeter"),
+                "Beam Current": ureg.Quantity(1.5, "picoampere"),
+                "Emission Current": ureg.Quantity(100.0, "microampere"),
+                "Dwell Time": ureg.Quantity(10.0, "microsecond"),
+                "Field of View": ureg.Quantity(50.0, "micrometer"),
+                "Pixel Width": ureg.Quantity(0.1, "micrometer"),
+                "Pixel Height": ureg.Quantity(0.1, "micrometer"),
+                # Add a vendor-specific section that should go to extensions
+                "Beam": {"some_field": "value"},
+            }
+        }
+
+        # Call the migration method
+        result = self.extractor._migrate_to_schema_compliant_metadata(mdict)  # noqa: SLF001
+
+        # Verify display names were renamed to EM Glossary names and stayed at top level
+        assert "acceleration_voltage" in result["nx_meta"]
+        assert result["nx_meta"]["acceleration_voltage"] == ureg.Quantity(
+            30.0, "kilovolt"
+        )
+
+        assert "working_distance" in result["nx_meta"]
+        assert result["nx_meta"]["working_distance"] == ureg.Quantity(5.0, "millimeter")
+
+        assert "beam_current" in result["nx_meta"]
+        assert result["nx_meta"]["beam_current"] == ureg.Quantity(1.5, "picoampere")
+
+        assert "emission_current" in result["nx_meta"]
+        assert result["nx_meta"]["emission_current"] == ureg.Quantity(
+            100.0, "microampere"
+        )
+
+        assert "dwell_time" in result["nx_meta"]
+        assert result["nx_meta"]["dwell_time"] == ureg.Quantity(10.0, "microsecond")
+
+        assert "horizontal_field_width" in result["nx_meta"]
+        assert result["nx_meta"]["horizontal_field_width"] == ureg.Quantity(
+            50.0, "micrometer"
+        )
+
+        assert "pixel_width" in result["nx_meta"]
+        assert result["nx_meta"]["pixel_width"] == ureg.Quantity(0.1, "micrometer")
+
+        assert "pixel_height" in result["nx_meta"]
+        assert result["nx_meta"]["pixel_height"] == ureg.Quantity(0.1, "micrometer")
+
+        # Verify original display names are NOT at top level
+        assert "Acceleration Voltage" not in result["nx_meta"]
+        assert "Working Distance" not in result["nx_meta"]
+        assert "Beam Current" not in result["nx_meta"]
+        assert "Emission Current" not in result["nx_meta"]
+        assert "Dwell Time" not in result["nx_meta"]
+        assert "Field of View" not in result["nx_meta"]
+        assert "Pixel Width" not in result["nx_meta"]
+        assert "Pixel Height" not in result["nx_meta"]
+
+        # Verify vendor sections went to extensions
+        assert "extensions" in result["nx_meta"]
+        assert "Beam" in result["nx_meta"]["extensions"]
+        assert result["nx_meta"]["extensions"]["Beam"]["some_field"] == "value"
+
+        # Verify core fields stayed at top level
+        assert result["nx_meta"]["DatasetType"] == "Image"
+        assert result["nx_meta"]["Data Type"] == "HIM_Imaging"
+        assert result["nx_meta"]["Creation Time"] == "2024-01-15T10:30:00-05:00"

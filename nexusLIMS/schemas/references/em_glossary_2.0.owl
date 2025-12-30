@@ -1,0 +1,2075 @@
+<?xml version="1.0"?>
+<!--
+This file is version 2.0 of the EM Glossary in RDF/XML format
+
+It is accessible at https://purls.helmholtz-metadaten.de/emg/v2.0.0/
+and is used under the terms of the CC BY 4.0 license under which it
+was published: https://creativecommons.org/licenses/by/4.0/
+-->
+<rdf:RDF xmlns="https://purls.helmholtz-metadaten.de/emg/"
+     xml:base="https://purls.helmholtz-metadaten.de/emg/"
+     xmlns:obo="http://purl.obolibrary.org/obo/"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+     xmlns:terms="http://purl.org/dc/terms/"
+     xmlns:schema="https://schema.org/"
+     xmlns:oboInOwl="http://www.geneontology.org/formats/oboInOwl#">
+    <owl:Ontology rdf:about="https://purls.helmholtz-metadaten.de/emg/">
+        <owl:versionIRI rdf:resource="https://purls.helmholtz-metadaten.de/emg/v2.0.0/"/>
+        <terms:contributor>https://orcid.org/0000-0001-5870-4658</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0001-8480-4775</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-0070-4337</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1008-4530</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1418-0984</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1507-9327</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-2818-5890</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-3054-8734</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-4499-0355</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6004-2304</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7086-1901</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-8218-3116</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-9555-7455</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-9700-4803</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0000-4784</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0575-2853</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0930-082X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-1965-7996</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2285-9329</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2534-0063</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-4745-9735</terms:contributor>
+        <terms:contributor>https://orcid.org/0009-0008-6410-7217</terms:contributor>
+        <terms:creator rdf:resource="https://orcid.org/0000-0001-7564-7990"/>
+        <terms:creator rdf:resource="https://orcid.org/0000-0002-5149-603X"/>
+        <terms:creator rdf:resource="https://orcid.org/0000-0003-0575-2853"/>
+        <terms:description>The EM Glossary is a widespread community effort to harmonize terminology in the electron and ion microscopies. It is created in a not-for profit collaboration between academic and non-university research institutions including domain and metadata experts. It provides harmonized terminology for application level semantic artifacts to source from and align with.</terms:description>
+        <terms:license>https://creativecommons.org/licenses/by/4.0/</terms:license>
+        <terms:title>Electron Microscopy Glossary</terms:title>
+        <rdfs:seeAlso rdf:resource="https://codebase.helmholtz.cloud/em_glossary/em_glossary_owl"/>
+        <owl:priorVersion>https://purls.helmholtz-metadaten.de/emg/v1.0.0/</owl:priorVersion>
+        <owl:versionInfo>v2.0.0</owl:versionInfo>
+        <schema:citation>Azocar Guzman, A., Brendike-Mannix, O., Hofmann, V. (2024), Electron Microscopy Glossary, https://purls.helmholtz-metadaten.de/emg/</schema:citation>
+        <schema:creativeWorkStatus>Glossary Specification</schema:creativeWorkStatus>
+        <schema:funder rdf:resource="https://ror.org/0281dp749"/>
+        <schema:funder rdf:resource="https://ror.org/05qj6w324"/>
+        <schema:logo>https://codebase.helmholtz.cloud/em_glossary/em_glossary/-/raw/main/EMGlossary.png</schema:logo>
+    </owl:Ontology>
+
+
+
+    <!--
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Annotation properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+
+
+
+
+    <!-- http://purl.obolibrary.org/obo/IAO_0000111 -->
+
+
+    <owl:AnnotationProperty rdf:about="http://purl.obolibrary.org/obo/IAO_0000111"/>
+
+
+
+    <!-- http://purl.obolibrary.org/obo/IAO_0000112 -->
+
+
+    <owl:AnnotationProperty rdf:about="http://purl.obolibrary.org/obo/IAO_0000112"/>
+
+
+
+    <!-- http://purl.obolibrary.org/obo/IAO_0000114 -->
+
+
+    <owl:AnnotationProperty rdf:about="http://purl.obolibrary.org/obo/IAO_0000114"/>
+
+
+
+    <!-- http://purl.obolibrary.org/obo/IAO_0000115 -->
+
+
+    <owl:AnnotationProperty rdf:about="http://purl.obolibrary.org/obo/IAO_0000115">
+        <obo:IAO_0000114 rdf:resource="http://purl.obolibrary.org/obo/IAO_0000122"/>
+        <obo:IAO_0000115 xml:lang="en">The official definition, explaining the meaning of a class or property. Shall be Aristotelian, formalized and normalized. Can be augmented with colloquial definitions.</obo:IAO_0000115>
+        <obo:IAO_0000116 xml:lang="en">2012-04-05:
+Barry Smith
+
+The official OBI definition, explaining the meaning of a class or property: &apos;Shall be Aristotelian, formalized and normalized. Can be augmented with colloquial definitions&apos;  is terrible.
+
+Can you fix to something like:
+
+A statement of necessary and sufficient conditions explaining the meaning of an expression referring to a class or property.
+
+Alan Ruttenberg
+
+Your proposed definition is a reasonable candidate, except that it is very common that necessary and sufficient conditions are not given. Mostly they are necessary, occasionally they are necessary and sufficient or just sufficient. Often they use terms that are not themselves defined and so they effectively can&apos;t be evaluated by those criteria.
+
+On the specifics of the proposed definition:
+
+We don&apos;t have definitions of &apos;meaning&apos; or &apos;expression&apos; or &apos;property&apos;. For &apos;reference&apos; in the intended sense I think we use the term &apos;denotation&apos;. For &apos;expression&apos;, I think we you mean symbol, or identifier. For &apos;meaning&apos; it differs for class and property. For class we want documentation that let&apos;s the intended reader determine whether an entity is instance of the class, or not. For property we want documentation that let&apos;s the intended reader determine, given a pair of potential relata, whether the assertion that the relation holds is true. The &apos;intended reader&apos; part suggests that we also specify who, we expect, would be able to understand the definition, and also generalizes over human and computer reader to include textual and logical definition.
+
+Personally, I am more comfortable weakening definition to documentation, with instructions as to what is desirable.
+
+We also have the outstanding issue of how to aim different definitions to different audiences. A clinical audience reading chebi wants a different sort of definition documentation/definition from a chemistry trained audience, and similarly there is a need for a definition that is adequate for an ontologist to work with.  </obo:IAO_0000116>
+        <obo:IAO_0000117 xml:lang="en">PERSON:Daniel Schober</obo:IAO_0000117>
+        <obo:IAO_0000119 xml:lang="en">GROUP:OBI:&lt;http://purl.obolibrary.org/obo/obi&gt;</obo:IAO_0000119>
+        <rdfs:isDefinedBy rdf:resource="http://purl.obolibrary.org/obo/iao.owl"/>
+        <rdfs:label xml:lang="en">definition</rdfs:label>
+    </owl:AnnotationProperty>
+
+
+
+    <!-- http://purl.obolibrary.org/obo/IAO_0000116 -->
+
+
+    <owl:AnnotationProperty rdf:about="http://purl.obolibrary.org/obo/IAO_0000116"/>
+
+
+
+    <!-- http://purl.obolibrary.org/obo/IAO_0000117 -->
+
+
+    <owl:AnnotationProperty rdf:about="http://purl.obolibrary.org/obo/IAO_0000117"/>
+
+
+
+    <!-- http://purl.obolibrary.org/obo/IAO_0000119 -->
+
+
+    <owl:AnnotationProperty rdf:about="http://purl.obolibrary.org/obo/IAO_0000119">
+        <obo:IAO_0000111 xml:lang="en">definition source</obo:IAO_0000111>
+        <obo:IAO_0000114 rdf:resource="http://purl.obolibrary.org/obo/IAO_0000122"/>
+        <obo:IAO_0000115 xml:lang="en">Formal citation, e.g. identifier in external database to indicate / attribute source(s) for the definition. Free text indicate / attribute source(s) for the definition. EXAMPLE: Author Name, URI, MeSH Term C04, PUBMED ID, Wiki uri on 31.01.2007</obo:IAO_0000115>
+        <obo:IAO_0000117 xml:lang="en">PERSON:Daniel Schober</obo:IAO_0000117>
+        <obo:IAO_0000119 xml:lang="en">Discussion on obo-discuss mailing-list, see http://bit.ly/hgm99w</obo:IAO_0000119>
+        <obo:IAO_0000119 xml:lang="en">GROUP:OBI:&lt;http://purl.obolibrary.org/obo/obi&gt;</obo:IAO_0000119>
+        <rdfs:label xml:lang="en">definition source</rdfs:label>
+    </owl:AnnotationProperty>
+
+
+
+    <!-- http://purl.obolibrary.org/obo/IAO_0000233 -->
+
+
+    <owl:AnnotationProperty rdf:about="http://purl.obolibrary.org/obo/IAO_0000233"/>
+
+
+
+    <!-- http://purl.obolibrary.org/obo/OMO_0003000 -->
+
+
+    <owl:AnnotationProperty rdf:about="http://purl.obolibrary.org/obo/OMO_0003000">
+        <obo:IAO_0000112>CHEBI:26523 (reactive oxygen species) has an exact synonym (ROS), which is of type OMO:0003000 (abbreviation)</obo:IAO_0000112>
+        <obo:IAO_0000115>A synonym type for describing abbreviations or initalisms</obo:IAO_0000115>
+        <obo:IAO_0000233 rdf:resource="https://github.com/information-artifact-ontology/ontology-metadata/issues/122"/>
+        <terms:contributor rdf:resource="https://orcid.org/0000-0003-4423-4370"/>
+        <terms:created rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2023-03-03</terms:created>
+        <rdfs:label>abbreviation</rdfs:label>
+        <rdfs:subPropertyOf rdf:resource="http://www.geneontology.org/formats/oboInOwl#SynonymTypeProperty"/>
+    </owl:AnnotationProperty>
+
+
+
+    <!-- http://purl.obolibrary.org/obo/OMO_0003012 -->
+
+
+    <owl:AnnotationProperty rdf:about="http://purl.obolibrary.org/obo/OMO_0003012">
+        <obo:IAO_0000112>NASA is an word acronym for the US National Aeronautics and Space Administration because the acronym is pronounced. FBI is an initialism (also known as alphabetism) for the US Federal Bureau of Investigation since the letters are pronounced one at a time. JPEG is an acronym for Joint Photographic Experts Group but does not count as a word acronym nor an initialism since it is mixed how it is pronounced.</obo:IAO_0000112>
+        <obo:IAO_0000115>A synonym type for describing abbreviations that are a part of the full name&apos;s words, such as initialisms or alphabetisms.</obo:IAO_0000115>
+        <obo:IAO_0000233 rdf:resource="https://github.com/information-artifact-ontology/ontology-metadata/issues/135"/>
+        <terms:contributor rdf:resource="https://orcid.org/0000-0003-4423-4370"/>
+        <terms:created rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2023-11-01</terms:created>
+        <rdfs:label>acronym</rdfs:label>
+        <rdfs:subPropertyOf rdf:resource="http://www.geneontology.org/formats/oboInOwl#SynonymTypeProperty"/>
+    </owl:AnnotationProperty>
+
+
+
+    <!-- http://purl.org/dc/terms/contributor -->
+
+
+    <owl:AnnotationProperty rdf:about="http://purl.org/dc/terms/contributor">
+        <rdfs:range rdf:resource="http://purl.org/dc/terms/Agent"/>
+    </owl:AnnotationProperty>
+
+
+
+    <!-- http://purl.org/dc/terms/created -->
+
+
+    <owl:AnnotationProperty rdf:about="http://purl.org/dc/terms/created"/>
+
+
+
+    <!-- http://purl.org/dc/terms/creator -->
+
+
+    <owl:AnnotationProperty rdf:about="http://purl.org/dc/terms/creator">
+        <rdfs:subPropertyOf rdf:resource="http://purl.org/dc/terms/contributor"/>
+        <rdfs:range rdf:resource="http://purl.org/dc/terms/Agent"/>
+    </owl:AnnotationProperty>
+
+
+
+    <!-- http://purl.org/dc/terms/description -->
+
+
+    <owl:AnnotationProperty rdf:about="http://purl.org/dc/terms/description"/>
+
+
+
+    <!-- http://purl.org/dc/terms/issued -->
+
+
+    <owl:AnnotationProperty rdf:about="http://purl.org/dc/terms/issued">
+        <rdfs:label xml:lang="en-us">Date Issued</rdfs:label>
+        <skos:definition xml:lang="en-us">Date of formal issuance (e.g., publication) of the resource.</skos:definition>
+        <rdfs:range rdf:resource="http://www.w3.org/2000/01/rdf-schema#Literal"/>
+    </owl:AnnotationProperty>
+
+
+
+    <!-- http://purl.org/dc/terms/license -->
+
+
+    <owl:AnnotationProperty rdf:about="http://purl.org/dc/terms/license">
+        <rdfs:range rdf:resource="http://purl.org/dc/terms/LicenseDocument"/>
+    </owl:AnnotationProperty>
+
+
+
+    <!-- http://purl.org/dc/terms/title -->
+
+
+    <owl:AnnotationProperty rdf:about="http://purl.org/dc/terms/title"/>
+
+
+
+    <!-- http://www.geneontology.org/formats/oboInOwl#SynonymTypeProperty -->
+
+
+    <owl:AnnotationProperty rdf:about="http://www.geneontology.org/formats/oboInOwl#SynonymTypeProperty"/>
+
+
+
+    <!-- http://www.geneontology.org/formats/oboInOwl#hasBroadSynonym -->
+
+
+    <owl:AnnotationProperty rdf:about="http://www.geneontology.org/formats/oboInOwl#hasBroadSynonym">
+        <obo:IAO_0000115>An alternative label for a class or property which has a more general meaning than the preferred name/primary label.</obo:IAO_0000115>
+        <obo:IAO_0000117 rdf:resource="http://orcid.org/0000-0001-5208-3432"/>
+        <oboInOwl:hasDefinition>
+  </oboInOwl:hasDefinition>
+        <rdfs:label xml:lang="en">has broad synonym</rdfs:label>
+        <rdfs:label xml:lang="en">has_broad_synonym</rdfs:label>
+        <rdfs:label>has_broad_synonym</rdfs:label>
+        <rdfs:seeAlso>https://github.com/information-artifact-ontology/ontology-metadata/issues/18</rdfs:seeAlso>
+        <rdfs:subPropertyOf rdf:resource="http://www.geneontology.org/formats/oboInOwl#hasSynonym"/>
+    </owl:AnnotationProperty>
+
+
+
+    <!-- http://www.geneontology.org/formats/oboInOwl#hasDefinition -->
+
+
+    <owl:AnnotationProperty rdf:about="http://www.geneontology.org/formats/oboInOwl#hasDefinition"/>
+
+
+
+    <!-- http://www.geneontology.org/formats/oboInOwl#hasExactSynonym -->
+
+
+    <owl:AnnotationProperty rdf:about="http://www.geneontology.org/formats/oboInOwl#hasExactSynonym">
+        <obo:IAO_0000115>An alternative label for a class or property which has the exact same meaning than the preferred name/primary label.</obo:IAO_0000115>
+        <obo:IAO_0000117 rdf:resource="http://orcid.org/0000-0001-5208-3432"/>
+        <oboInOwl:hasDefinition>
+  </oboInOwl:hasDefinition>
+        <rdfs:label xml:lang="en">has exact synonym</rdfs:label>
+        <rdfs:label xml:lang="en">has_exact_synonym</rdfs:label>
+        <rdfs:label>has_exact_synonym</rdfs:label>
+        <rdfs:seeAlso>https://github.com/information-artifact-ontology/ontology-metadata/issues/20</rdfs:seeAlso>
+        <rdfs:subPropertyOf rdf:resource="http://www.geneontology.org/formats/oboInOwl#hasSynonym"/>
+    </owl:AnnotationProperty>
+
+
+
+    <!-- http://www.geneontology.org/formats/oboInOwl#hasNarrowSynonym -->
+
+
+    <owl:AnnotationProperty rdf:about="http://www.geneontology.org/formats/oboInOwl#hasNarrowSynonym">
+        <obo:IAO_0000115>An alternative label for a class or property which has a more specific meaning than the preferred name/primary label.</obo:IAO_0000115>
+        <obo:IAO_0000117 rdf:resource="http://orcid.org/0000-0001-5208-3432"/>
+        <oboInOwl:hasDefinition>
+  </oboInOwl:hasDefinition>
+        <rdfs:label xml:lang="en">has narrow synonym</rdfs:label>
+        <rdfs:label xml:lang="en">has_narrow_synonym</rdfs:label>
+        <rdfs:label>has_narrow_synonym</rdfs:label>
+        <rdfs:seeAlso>https://github.com/information-artifact-ontology/ontology-metadata/issues/19</rdfs:seeAlso>
+        <rdfs:subPropertyOf rdf:resource="http://www.geneontology.org/formats/oboInOwl#hasSynonym"/>
+    </owl:AnnotationProperty>
+
+
+
+    <!-- http://www.geneontology.org/formats/oboInOwl#hasRelatedSynonym -->
+
+
+    <owl:AnnotationProperty rdf:about="http://www.geneontology.org/formats/oboInOwl#hasRelatedSynonym">
+        <obo:IAO_0000115>An alternative label for a class or property that has been used synonymously with the primary term name, but the usage is not strictly correct.</obo:IAO_0000115>
+        <obo:IAO_0000117 rdf:resource="http://orcid.org/0000-0001-5208-3432"/>
+        <oboInOwl:hasDefinition>
+  </oboInOwl:hasDefinition>
+        <rdfs:label xml:lang="en">has related synonym</rdfs:label>
+        <rdfs:label xml:lang="en">has_related_synonym</rdfs:label>
+        <rdfs:label>has_related_synonym</rdfs:label>
+        <rdfs:seeAlso>https://github.com/information-artifact-ontology/ontology-metadata/issues/21</rdfs:seeAlso>
+        <rdfs:subPropertyOf rdf:resource="http://www.geneontology.org/formats/oboInOwl#hasSynonym"/>
+    </owl:AnnotationProperty>
+
+
+
+    <!-- http://www.geneontology.org/formats/oboInOwl#hasSynonym -->
+
+
+    <owl:AnnotationProperty rdf:about="http://www.geneontology.org/formats/oboInOwl#hasSynonym">
+        <oboInOwl:hasDefinition>
+  </oboInOwl:hasDefinition>
+        <rdfs:comment>Note that this should be a super-property of hasRelatedSynonym, hasExactSynonym etc; however, we cannot state this and remain in OWL-DL</rdfs:comment>
+        <rdfs:label xml:lang="en">has_synonym</rdfs:label>
+    </owl:AnnotationProperty>
+
+
+
+    <!-- http://www.w3.org/2004/02/skos/core#definition -->
+
+
+    <owl:AnnotationProperty rdf:about="http://www.w3.org/2004/02/skos/core#definition"/>
+
+
+
+    <!-- http://www.w3.org/2004/02/skos/core#example -->
+
+
+    <owl:AnnotationProperty rdf:about="http://www.w3.org/2004/02/skos/core#example">
+        <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2004/02/skos/core"/>
+        <rdfs:label xml:lang="en">example</rdfs:label>
+        <skos:definition xml:lang="en">An example of the use of a concept.</skos:definition>
+        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2004/02/skos/core#note"/>
+    </owl:AnnotationProperty>
+
+
+
+    <!-- http://www.w3.org/2004/02/skos/core#note -->
+
+
+    <owl:AnnotationProperty rdf:about="http://www.w3.org/2004/02/skos/core#note">
+        <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2004/02/skos/core"/>
+        <rdfs:label xml:lang="en">note</rdfs:label>
+        <skos:definition xml:lang="en">A general note, for any purpose.</skos:definition>
+        <skos:scopeNote xml:lang="en">This property may be used directly, or as a super-property for more specific note types.</skos:scopeNote>
+    </owl:AnnotationProperty>
+
+
+
+    <!-- http://www.w3.org/2004/02/skos/core#scopeNote -->
+
+
+    <owl:AnnotationProperty rdf:about="http://www.w3.org/2004/02/skos/core#scopeNote">
+        <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2004/02/skos/core"/>
+        <rdfs:label xml:lang="en">scope note</rdfs:label>
+        <skos:definition xml:lang="en">A note that helps to clarify the meaning and/or the use of a concept.</skos:definition>
+        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2004/02/skos/core#note"/>
+    </owl:AnnotationProperty>
+
+
+
+    <!-- https://schema.org/citation -->
+
+
+    <owl:AnnotationProperty rdf:about="https://schema.org/citation"/>
+
+
+
+    <!-- https://schema.org/creativeWorkStatus -->
+
+
+    <owl:AnnotationProperty rdf:about="https://schema.org/creativeWorkStatus"/>
+
+
+
+    <!-- https://schema.org/funder -->
+
+
+    <owl:AnnotationProperty rdf:about="https://schema.org/funder"/>
+
+
+
+    <!-- https://schema.org/logo -->
+
+
+    <owl:AnnotationProperty rdf:about="https://schema.org/logo"/>
+
+
+
+    <!--
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Datatypes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+
+
+
+
+    <!-- http://www.w3.org/2001/XMLSchema#date -->
+
+
+    <rdfs:Datatype rdf:about="http://www.w3.org/2001/XMLSchema#date"/>
+
+
+
+    <!--
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000001 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000001">
+        <rdfs:subClassOf rdf:resource="https://purls.helmholtz-metadaten.de/emg/EMG_00000043"/>
+        <obo:IAO_0000115>Scattering during which electrons of an incident beam are scattered by a specimen, such that some of the scattered particles leave the specimen via the incident surface again.</obo:IAO_0000115>
+        <obo:IAO_0000119>Ludwig Reimer, Scanning Electron Microscopy - Physics of Image Formation and Microanalysis (ISBN 978-3-642-08372-3) - pages 57ff</obo:IAO_0000119>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7086-1901</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-1965-7996</terms:contributor>
+        <terms:contributor>https://orcid.org/0009-0008-6410-7217</terms:contributor>
+        <rdfs:label>SEM Backscattering</rdfs:label>
+        <skos:scopeNote>We note that electrons can be backscattered inside the sample but not leave it via the surface. Therefore the definition is limited to &quot;some&quot; electrons.</skos:scopeNote>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000002 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000002">
+        <rdfs:subClassOf rdf:resource="https://purls.helmholtz-metadaten.de/emg/EMG_00000043"/>
+        <obo:IAO_0000115>Scattering which results in scattered electrons with an absolute scattering angle larger than 90 degrees.</obo:IAO_0000115>
+        <obo:IAO_0000119>Ludwig Reimer, Scanning Electron Microscopy - Physics of Image Formation and Microanalysis (ISBN 978-3-642-08372-3) - pages 57ff</obo:IAO_0000119>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7086-1901</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0575-2853</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-1965-7996</terms:contributor>
+        <terms:contributor>https://orcid.org/0009-0008-6410-7217</terms:contributor>
+        <rdfs:label>TEM Backscattering</rdfs:label>
+        <skos:scopeNote>Here we decided to differentiate backscattering and forwardscattering purely based on angle of the particle trajectory relative to the incident beam. We are aware that, in some instances, particles that fall under the here established definitions for backscattering as well as forwardscattering, might be referred as backscattered.</skos:scopeNote>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000003 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000003">
+        <rdfs:subClassOf rdf:resource="https://purls.helmholtz-metadaten.de/emg/EMG_00000043"/>
+        <obo:IAO_0000115>Scattering which results in scattered electrons with an absolute scattering angle smaller than 90 degrees.</obo:IAO_0000115>
+        <obo:IAO_0000119>Ludwig Reimer, Scanning Electron Microscopy - Physics of Image Formation and Microanalysis (ISBN 978-3-642-08372-3) - pages 57ff</obo:IAO_0000119>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7086-1901</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0575-2853</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-1965-7996</terms:contributor>
+        <terms:contributor>https://orcid.org/0009-0008-6410-7217</terms:contributor>
+        <rdfs:label>TEM Forwardscattering</rdfs:label>
+        <skos:scopeNote>Here we decided to differentiate backscattering and forwardscattering purely based on the particle trajectory angle relative to the incident beam.</skos:scopeNote>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000004 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000004">
+        <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+        <obo:IAO_0000115>The potential difference between anode and cathode.</obo:IAO_0000115>
+        <terms:contributor>https://orcid.org/0000-0001-5870-4658</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0001-8480-4775</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-0070-4337</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1008-4530</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1507-9327</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6004-2304</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0000-4784</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0575-2853</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0930-082X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2285-9329</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2534-0063</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-4745-9735</terms:contributor>
+        <rdfs:label>Acceleration Voltage</rdfs:label>
+        <skos:scopeNote>The acceleration voltage adds kinetic energy to the particles of the beam.</skos:scopeNote>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000005 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000005">
+        <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+        <obo:IAO_0000115>A group of particles which move, on average, in a common direction.</obo:IAO_0000115>
+        <obo:IAO_0000119>https://en.wikipedia.org/wiki/Charged_particle_beam</obo:IAO_0000119>
+        <terms:contributor>https://orcid.org/0000-0001-5870-4658</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0001-8480-4775</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-0070-4337</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1008-4530</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1507-9327</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6004-2304</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0000-4784</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0575-2853</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0930-082X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2285-9329</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2534-0063</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-4745-9735</terms:contributor>
+        <oboInOwl:hasRelatedSynonym>charged particle beam</oboInOwl:hasRelatedSynonym>
+        <rdfs:label>Beam</rdfs:label>
+        <skos:scopeNote>In an electron microscope particles are originally emitted by a particle source and intended to interact with a sample or a detector. The definition here should be differentiated from particles moving due to electrochemical gradient (i.e. in diffusion of liquids). Due to the wave-particle duality, a beam can also be considered as a series of waves propagating in a common direction.</skos:scopeNote>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000006 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000006">
+        <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+        <obo:IAO_0000115>Electrical current which flows along the beam path.</obo:IAO_0000115>
+        <terms:contributor>https://orcid.org/0000-0001-5870-4658</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0001-8480-4775</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-0070-4337</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1008-4530</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1507-9327</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6004-2304</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0000-4784</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0575-2853</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0930-082X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2285-9329</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2534-0063</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-4745-9735</terms:contributor>
+        <rdfs:label>Beam Current</rdfs:label>
+        <skos:scopeNote>The value of beam current varies along the beam axis. The points at which the beam current is measured varies between instruments and manufacturers. Beam current is always measured with respect to ground.</skos:scopeNote>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000007 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000007">
+        <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+        <obo:IAO_0000115>Path which the beam flows along defined by the optical components of the instrument.</obo:IAO_0000115>
+        <terms:contributor>https://orcid.org/0000-0001-5870-4658</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0001-8480-4775</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-0070-4337</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1008-4530</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1507-9327</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6004-2304</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0000-4784</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0575-2853</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0930-082X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2285-9329</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2534-0063</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-4745-9735</terms:contributor>
+        <rdfs:label>Beam Path</rdfs:label>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000008 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000008">
+        <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+        <obo:IAO_0000115>Distance which is present between the specimen surface and the detector plane.</obo:IAO_0000115>
+        <obo:IAO_0000119>https://www.doi.org/10.1007/978-3-030-00069-1</obo:IAO_0000119>
+        <obo:IAO_0000119>https://www.em.tf.fau.de/2020/04/02/low-energy-electron-diffraction-lend-published-in-ultramicroscopy/</obo:IAO_0000119>
+        <obo:IAO_0000119>https://www.globalsino.com/EM/page3245.html</obo:IAO_0000119>
+        <obo:IAO_0000119>https://www.jeol.co.jp/en/words/emterms/search_result.html?keyword=camera%20length</obo:IAO_0000119>
+        <terms:contributor>https://orcid.org/0000-0001-8480-4775</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1008-4530</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1507-9327</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7086-1901</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-9700-4803</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0000-4784</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0575-2853</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2285-9329</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2534-0063</terms:contributor>
+        <oboInOwl:hasExactSynonym>effective camera length</oboInOwl:hasExactSynonym>
+        <rdfs:label>Camera Length</rdfs:label>
+        <rdfs:seeAlso>https://doi.org/10.1016/j.ultramic.2020.112956</rdfs:seeAlso>
+        <rdfs:seeAlso>https://doi.org/10.1017/S1431927619002988</rdfs:seeAlso>
+        <skos:scopeNote>Camera length depends on the optical setup and it is ideally determined from calibration measurements using known samples, e.g., gold on carbon.</skos:scopeNote>
+        <skos:scopeNote>Historically the term camera length was used in TEM, however more recently there have been innovative applications in SEM, see publications provided under examples provided in this class.</skos:scopeNote>
+        <skos:scopeNote>This definition applies to the experimental technique of Fraunhofer far field diffraction. In diffraction mode the quantity camera length is used to qualify the level of magnification of the diffraction pattern onto the detector. Note that the camera length may by altered by the addition of lenses in the beam transforming the physical quantity in a virtual one.</skos:scopeNote>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000009 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000009">
+        <rdfs:subClassOf rdf:resource="https://purls.helmholtz-metadaten.de/emg/EMG_00000038"/>
+        <obo:IAO_0000115>A monochromatic beam which consists of waves that have a defined phase relationship.</obo:IAO_0000115>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0575-2853</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2285-9329</terms:contributor>
+        <terms:contributor>https://orcid.org/0009-0008-6410-7217</terms:contributor>
+        <rdfs:label>Coherent Beam</rdfs:label>
+        <skos:scopeNote>This definition refers to partial waves.</skos:scopeNote>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000010 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000010">
+        <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+        <obo:IAO_0000115>The angle which is given by the semi-opening angle of the cone in a convergent beam.</obo:IAO_0000115>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2285-9329</terms:contributor>
+        <terms:contributor>https://orcid.org/0009-0008-6410-7217</terms:contributor>
+        <rdfs:label>Convergence Angle</rdfs:label>
+        <skos:scopeNote>The convergence angle of a beam is of high relevance in both SEM and TEM as it impacts a variety of image properties. It is affected by the focusing strength of the beam forming lens and can be reduced by inserting apertures into the beam path.</skos:scopeNote>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000011 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000011">
+        <rdfs:subClassOf rdf:resource="https://purls.helmholtz-metadaten.de/emg/EMG_00000005"/>
+        <obo:IAO_0000115>A beam which is conically shaped such that its cross section is decreased to form a disc of least confusion.</obo:IAO_0000115>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2285-9329</terms:contributor>
+        <terms:contributor>https://orcid.org/0009-0008-6410-7217</terms:contributor>
+        <rdfs:label>Convergent Beam</rdfs:label>
+        <skos:scopeNote>To manipulate the direction and intensity of beam particles a lens is required. Using an aperture may decrease the cross section of a beam but will not serve to create a convergent beam. A convergent beam is typically characterised through the semi-opening angle of its cone typically termed convergence angle.</skos:scopeNote>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000012 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000012">
+        <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+        <obo:IAO_0000115>A physical phenomenon during which the direction and intensity of a propagating wave is changed due to interaction with matter having structure dimensions in the order of the wavelength.</obo:IAO_0000115>
+        <obo:IAO_0000119>https://doi.org/10.1016/j.jqsrt.2018.02.002</obo:IAO_0000119>
+        <obo:IAO_0000119>https://doi.org/10.1351/goldbook.D01711</obo:IAO_0000119>
+        <obo:IAO_0000119>https://en.wikipedia.org/wiki/diffraction</obo:IAO_0000119>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-3054-8734</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7086-1901</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0575-2853</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-1965-7996</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2285-9329</terms:contributor>
+        <terms:contributor>https://orcid.org/0009-0008-6410-7217</terms:contributor>
+        <oboInOwl:hasBroadSynonym>scattering</oboInOwl:hasBroadSynonym>
+        <rdfs:label>Diffraction</rdfs:label>
+        <skos:scopeNote>Due to the wave-particle dualism, a beam of sub-atomic particles (e.g. electrons) can be diffracted.</skos:scopeNote>
+        <skos:scopeNote>The term &quot;matter&quot; used in this definition is meant to represent crystalline as well as amorphous matter (e.g. gases or objects). Diffraction might be regarded as a specific type of elastic scattering. Diffracted waves are coherent and can interfere, forming diffraction patterns.</skos:scopeNote>
+        <skos:scopeNote>The terms scattering and diffraction are used to describe the same phenomenon from different perspectives. From the view of a particle, people tend to speak of scattering, while from the view of waves and the related patterns, people speak of diffraction.</skos:scopeNote>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000013 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000013">
+        <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+        <obo:IAO_0000115>A pattern which consists of spatial intensity modulation generated by diffraction.</obo:IAO_0000115>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0575-2853</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2285-9329</terms:contributor>
+        <terms:contributor>https://orcid.org/0009-0008-6410-7217</terms:contributor>
+        <rdfs:label>Diffraction Pattern</rdfs:label>
+        <skos:scopeNote>For practical purposes we do not distinguish here between the physical phenomenon of a diffraction pattern, and the experimental recording of a diffraction pattern, although we realize that these are indeed separate concepts. A diffraction pattern is commonly recorded as an image. Changing the geometry and/or the orientation of the detector will directly influence the pattern detected.</skos:scopeNote>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000014 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000014">
+        <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+        <obo:IAO_0000115>A cross section of a beam at which the beam has the smallest spatial extent.</obo:IAO_0000115>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2285-9329</terms:contributor>
+        <terms:contributor>https://orcid.org/0009-0008-6410-7217</terms:contributor>
+        <rdfs:label>Disk Of Least Confusion</rdfs:label>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000015 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000015">
+        <rdfs:subClassOf rdf:resource="https://purls.helmholtz-metadaten.de/emg/EMG_00000048"/>
+        <obo:IAO_0000115>Time period during which the beam remains at one position.</obo:IAO_0000115>
+        <obo:IAO_0000119>https://doi.org/10.1007/978-1-4939-6676-9</obo:IAO_0000119>
+        <obo:IAO_0000119>https://www.iso.org/obp/ui/#iso:std:iso:22493:ed-2:v1:en</obo:IAO_0000119>
+        <terms:contributor>https://orcid.org/0000-0001-5870-4658</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0001-8480-4775</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-0070-4337</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1008-4530</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1418-0984</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1507-9327</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-2818-5890</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6004-2304</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7086-1901</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-8218-3116</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-9555-7455</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0000-4784</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0575-2853</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0930-082X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2285-9329</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2534-0063</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-4745-9735</terms:contributor>
+        <rdfs:label>Dwell Time</rdfs:label>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000016 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000016">
+        <rdfs:subClassOf rdf:resource="https://purls.helmholtz-metadaten.de/emg/EMG_00000017"/>
+        <obo:IAO_0000115>Dynamic refocusing which keeps the electron probe focused on the surface of a tilted sample.</obo:IAO_0000115>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-0070-4337</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0575-2853</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2285-9329</terms:contributor>
+        <oboInOwl:hasExactSynonym>Frame corrected focus</oboInOwl:hasExactSynonym>
+        <rdfs:label>Dynamic Focus Correction</rdfs:label>
+        <skos:scopeNote>Implementation strongly depends on the microscope and its control software.</skos:scopeNote>
+        <skos:scopeNote>Information about dynamic focus correction may help others to understand the quality of an experiment.</skos:scopeNote>
+        <skos:scopeNote>Relevant when an area is scanned which extends off-(tilt) axis. An automatic change of the electron optics to keep the sample in focus.</skos:scopeNote>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000017 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000017">
+        <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+        <obo:IAO_0000115>A workflow to keep the specimen in focus by automatic means.</obo:IAO_0000115>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-0070-4337</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0575-2853</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2285-9329</terms:contributor>
+        <rdfs:label>Dynamic Refocusing</rdfs:label>
+        <skos:scopeNote>To achieve experimental reproducibility this workflow should be described in detail.</skos:scopeNote>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000018 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000018">
+        <rdfs:subClassOf rdf:resource="https://purls.helmholtz-metadaten.de/emg/EMG_00000043"/>
+        <obo:IAO_0000115>Scattering during which the particle that is scattered does not change its energy.</obo:IAO_0000115>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7086-1901</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-1965-7996</terms:contributor>
+        <terms:contributor>https://orcid.org/0009-0008-6410-7217</terms:contributor>
+        <rdfs:label>Elastic Scattering</rdfs:label>
+        <skos:scopeNote>Diffraction may be seen as a type of elastic scattering. The change in energy mentioned in the definition depends on the measurable energy loss within an electron microscope. A physical definition of elastic scattering is, when the state of the system (probe and target) remain unchanged.</skos:scopeNote>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000019 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000019">
+        <rdfs:subClassOf rdf:resource="https://purls.helmholtz-metadaten.de/emg/EMG_00000022"/>
+        <obo:IAO_0000115>Electron diffraction which primarily involves backscattered electrons from a solid sample.</obo:IAO_0000115>
+        <obo:IAO_0000119>https://en.wikipedia.org/wiki/Electron_backscatter_diffraction</obo:IAO_0000119>
+        <obo:OMO_0003012>EBSD</obo:OMO_0003012>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7086-1901</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0575-2853</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-1965-7996</terms:contributor>
+        <terms:contributor>https://orcid.org/0009-0008-6410-7217</terms:contributor>
+        <oboInOwl:hasExactSynonym>Backscatter Kikuchi diffraction</oboInOwl:hasExactSynonym>
+        <rdfs:label>Electron Backscatter Diffraction</rdfs:label>
+        <skos:scopeNote>Electron backscatter diffraction (EBSD) is primarily used in Scanning Electron Microscopy (SEM). The term EBSD might be understood differently based on community and due to the differences in concepts of &quot;TEM_backscattering&quot; and &quot;SEM_backscattering&quot;.</skos:scopeNote>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000020 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000020">
+        <rdfs:subClassOf rdf:resource="https://purls.helmholtz-metadaten.de/emg/EMG_00000013"/>
+        <obo:IAO_0000115>A diffraction pattern which is generated by electron backscatter diffraction.</obo:IAO_0000115>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0575-2853</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-1965-7996</terms:contributor>
+        <terms:contributor>https://orcid.org/0009-0008-6410-7217</terms:contributor>
+        <oboInOwl:hasRelatedSynonym>Kikuchi pattern</oboInOwl:hasRelatedSynonym>
+        <rdfs:label>Electron Backscatter Diffraction Pattern</rdfs:label>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000021 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000021">
+        <rdfs:subClassOf rdf:resource="https://purls.helmholtz-metadaten.de/emg/EMG_00000005"/>
+        <obo:IAO_0000115>A beam which consists of electrons.</obo:IAO_0000115>
+        <terms:contributor>https://orcid.org/0000-0001-5870-4658</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0001-8480-4775</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-0070-4337</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1008-4530</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1507-9327</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6004-2304</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0000-4784</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0575-2853</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0930-082X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2285-9329</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2534-0063</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-4745-9735</terms:contributor>
+        <rdfs:label>Electron Beam</rdfs:label>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000022 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000022">
+        <rdfs:subClassOf rdf:resource="https://purls.helmholtz-metadaten.de/emg/EMG_00000012"/>
+        <obo:IAO_0000115>Diffraction which is based on a propagating electron wave.</obo:IAO_0000115>
+        <obo:IAO_0000119>https://en.wikipedia.org/wiki/Diffraction</obo:IAO_0000119>
+        <obo:IAO_0000119>https://www.sciencedirect.com/topics/chemistry/electron-diffraction#:~:text=Electron%20diffraction%20is%20a%20technique,resulting%20in%20a%20diffraction%20pattern</obo:IAO_0000119>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0575-2853</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2285-9329</terms:contributor>
+        <terms:contributor>https://orcid.org/0009-0008-6410-7217</terms:contributor>
+        <rdfs:label>Electron Diffraction</rdfs:label>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000023 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000023">
+        <rdfs:subClassOf rdf:resource="https://purls.helmholtz-metadaten.de/emg/EMG_00000013"/>
+        <obo:IAO_0000115>A diffraction pattern which is generated from electron diffraction.</obo:IAO_0000115>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0575-2853</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2285-9329</terms:contributor>
+        <terms:contributor>https://orcid.org/0009-0008-6410-7217</terms:contributor>
+        <rdfs:label>Electron Diffraction Pattern</rdfs:label>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000024 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000024">
+        <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+        <obo:IAO_0000115>The part of the beam which interacts with the sample.</obo:IAO_0000115>
+        <terms:contributor>https://orcid.org/0000-0001-8480-4775</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-0070-4337</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1507-9327</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0000-4784</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0575-2853</terms:contributor>
+        <oboInOwl:hasRelatedSynonym>probe</oboInOwl:hasRelatedSynonym>
+        <rdfs:label>Electron Probe</rdfs:label>
+        <skos:scopeNote>Often electron probe is used to describe a point where the beam is focused. It is commonly used in connection with focused beams.</skos:scopeNote>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000025 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000025">
+        <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+        <obo:IAO_0000115>Electrical current which is released from the source.</obo:IAO_0000115>
+        <terms:contributor>https://orcid.org/0000-0001-5870-4658</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0001-8480-4775</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-0070-4337</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1008-4530</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1507-9327</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-4499-0355</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6004-2304</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0000-4784</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0575-2853</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0930-082X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2285-9329</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2534-0063</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-4745-9735</terms:contributor>
+        <rdfs:label>Emission Current</rdfs:label>
+        <skos:scopeNote>Emission current is a device- and component-dependent numerical property that can be monitored over time to evaluate e.g. service life and wear of a source. It is not cross-vendor or cross-device comparable.</skos:scopeNote>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000026 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000026">
+        <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+        <obo:IAO_0000115>Voltage which is utilised to create an electric field that draws particles from the source.</obo:IAO_0000115>
+        <terms:contributor>https://orcid.org/0000-0001-5870-4658</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0001-8480-4775</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-0070-4337</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1008-4530</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1507-9327</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-4499-0355</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6004-2304</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0000-4784</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0575-2853</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0930-082X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2285-9329</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2534-0063</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-4745-9735</terms:contributor>
+        <rdfs:label>Extraction Voltage</rdfs:label>
+        <skos:scopeNote>Extraction voltage is applied to Schottky and Cold Field Emission electron sources, but not to thermionic emitters. The purpose of applying an extraction voltage is to help emit electrons from inside the source material to overcome the work function and be emitted. Gallium liquid metal ion sources also use an extraction voltage to produce ions. Higher extraction voltages will lead to higher beam currents.</skos:scopeNote>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000027 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000027">
+        <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+        <obo:IAO_0000115>Electrical current which flows through the source.</obo:IAO_0000115>
+        <terms:contributor>https://orcid.org/0000-0001-5870-4658</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0001-8480-4775</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-0070-4337</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1008-4530</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1507-9327</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6004-2304</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0000-4784</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0575-2853</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0930-082X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2285-9329</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2534-0063</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-4745-9735</terms:contributor>
+        <rdfs:label>Filament Current</rdfs:label>
+        <skos:scopeNote>This is typically used for heating a source and supplies the emission current. Higher filament currents will result in higher beam currents.</skos:scopeNote>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000028 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000028">
+        <rdfs:subClassOf rdf:resource="https://purls.helmholtz-metadaten.de/emg/EMG_00000048"/>
+        <obo:IAO_0000115>Time period during which the beam moves from the final position of one scan line to the starting position of the subsequent scan line.</obo:IAO_0000115>
+        <terms:contributor>https://orcid.org/0000-0001-5870-4658</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0001-8480-4775</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-0070-4337</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1008-4530</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1418-0984</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1507-9327</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-2818-5890</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6004-2304</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7086-1901</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-8218-3116</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-9555-7455</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0000-4784</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0575-2853</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0930-082X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2285-9329</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2534-0063</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-4745-9735</terms:contributor>
+        <rdfs:label>Flyback Time</rdfs:label>
+        <skos:scopeNote>Flyback time is commonly associated with rectangular scan patterns and often described in metadata from vendors as such. A typical geometrical primitive for rectangular scans are lines. Flyback time may be considered a specific instance of wait time, however some instruments might still be able to acquire data during flyback time which is why it is defined separately in this artefact.</skos:scopeNote>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000029 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000029">
+        <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+        <obo:IAO_0000115>Distance which lies between the principal plane of the lens and the focal point along the optical axis.</obo:IAO_0000115>
+        <obo:OMO_0003012>f</obo:OMO_0003012>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-0070-4337</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0575-2853</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2285-9329</terms:contributor>
+        <rdfs:label>Focal Length</rdfs:label>
+        <skos:scopeNote>A beam consisting of parallel rays converges into one point for positive focal lengths. The focal length is an inherent property of a lens.</skos:scopeNote>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000030 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000030">
+        <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+        <obo:IAO_0000115>Plane which is perpendicular to the optical axis and includes the focal point.</obo:IAO_0000115>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-0070-4337</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0575-2853</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2285-9329</terms:contributor>
+        <oboInOwl:hasExactSynonym>front focal plane</oboInOwl:hasExactSynonym>
+        <oboInOwl:hasRelatedSynonym>specimen plane</oboInOwl:hasRelatedSynonym>
+        <rdfs:label>Focal Plane</rdfs:label>
+        <skos:scopeNote>The plane is typically on the specimen.</skos:scopeNote>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000031 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000031">
+        <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+        <obo:IAO_0000115>Point which is defined by the intersection of the optical axis and the backwards extrapolated path of a ray that (1) is tending towards infinity, (2) was parallel to the optical axis in the incident beam, and (3) that was deflected by an electron lens.</obo:IAO_0000115>
+        <obo:IAO_0000119>https://www.iso.org/obp/ui/#iso:std:iso:15932:ed-1:v1:en 2.1.4</obo:IAO_0000119>
+        <obo:IAO_0000119>https://www.iso.org/obp/ui/#iso:std:iso:22493:ed-2:v1:en 3.1.4</obo:IAO_0000119>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-0070-4337</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0575-2853</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2285-9329</terms:contributor>
+        <rdfs:label>Focal Point</rdfs:label>
+        <skos:scopeNote>The here given definition applies to electromagnetic lenses and is a more general definition compared to those typically given in classical optics. The focal point is an inherent property of a lens. Definition only holds if the (virtual) source is &quot;at infinity&quot;, meaning very far away as compared to the focal length of the objective lens. This is for an ideal lens, in  the reality there might be aberrations affecting the beam profile at the focal point.</skos:scopeNote>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000032 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000032">
+        <rdfs:subClassOf rdf:resource="https://purls.helmholtz-metadaten.de/emg/EMG_00000011"/>
+        <obo:IAO_0000115>A convergent beam which originates from a coherent beam and whose cross section is decreased to the physically smallest possible disc of least confusion.</obo:IAO_0000115>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0575-2853</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2285-9329</terms:contributor>
+        <terms:contributor>https://orcid.org/0009-0008-6410-7217</terms:contributor>
+        <rdfs:label>Focused Beam</rdfs:label>
+        <skos:scopeNote>The terms focused beam and convergent beam are colloquially often used almost interchangeably. Here we differentiate these terms by pointing to focused beams being used with the intention to direct the beam to the physically smallest possible area.</skos:scopeNote>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000033 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000033">
+        <rdfs:subClassOf rdf:resource="https://purls.helmholtz-metadaten.de/emg/EMG_00000048"/>
+        <obo:IAO_0000115>Time period during which the beam moves from the final position of one frame to the starting position of the subsequent frame.</obo:IAO_0000115>
+        <terms:contributor>https://orcid.org/0000-0001-5870-4658</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0001-8480-4775</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-0070-4337</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1008-4530</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1418-0984</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1507-9327</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-2818-5890</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6004-2304</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7086-1901</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-8218-3116</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-9555-7455</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0000-4784</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0575-2853</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0930-082X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2285-9329</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2534-0063</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-4745-9735</terms:contributor>
+        <rdfs:label>Frame Flyback Time</rdfs:label>
+        <skos:scopeNote>Frame flyback time may be considered a specific instance of wait time, however some instruments might still be able to acquire data during frame flyback time which is why it is defined separately in this artefact.</skos:scopeNote>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000034 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000034">
+        <rdfs:subClassOf rdf:resource="https://purls.helmholtz-metadaten.de/emg/EMG_00000048"/>
+        <obo:IAO_0000115>Time period during which a frame is fully scanned.</obo:IAO_0000115>
+        <obo:IAO_0000119>https://doi.org/10.1007/978-1-4939-6676-9</obo:IAO_0000119>
+        <terms:contributor>https://orcid.org/0000-0001-5870-4658</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0001-8480-4775</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-0070-4337</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1008-4530</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1418-0984</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1507-9327</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-2818-5890</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6004-2304</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7086-1901</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-8218-3116</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-9555-7455</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0000-4784</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0575-2853</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0930-082X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2285-9329</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2534-0063</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-4745-9735</terms:contributor>
+        <rdfs:label>Frame Time</rdfs:label>
+        <skos:scopeNote>The frame time is typically determined by a weighted sum of dwell time, move times and potentially wait time. The weighting factors are determined by the specific scan pattern.</skos:scopeNote>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000035 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000035">
+        <rdfs:subClassOf rdf:resource="https://purls.helmholtz-metadaten.de/emg/EMG_00000040"/>
+        <obo:IAO_0000115>Primary beam before it interacts with the specimen.</obo:IAO_0000115>
+        <terms:contributor>https://orcid.org/0000-0002-0070-4337</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0575-2853</terms:contributor>
+        <oboInOwl:hasBroadSynonym>primary beam</oboInOwl:hasBroadSynonym>
+        <rdfs:label>Incident Beam</rdfs:label>
+        <rdfs:seeAlso>https://www.iso.org/obp/ui/#iso:std:iso:15932:ed-1:v1:en</rdfs:seeAlso>
+        <rdfs:seeAlso>https://www.iso.org/obp/ui/#iso:std:iso:23833:ed-2:v1:en</rdfs:seeAlso>
+        <skos:scopeNote>You can only have an incident beam in the presence of a specimen. Incident in this sense is a verb used to describe the action of the beam. Typically the beam path of an incident beam intersects with the specimen.</skos:scopeNote>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000036 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000036">
+        <rdfs:subClassOf rdf:resource="https://purls.helmholtz-metadaten.de/emg/EMG_00000043"/>
+        <obo:IAO_0000115>Scattering during which the particle that is scattered changes its energy.</obo:IAO_0000115>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7086-1901</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-1965-7996</terms:contributor>
+        <terms:contributor>https://orcid.org/0009-0008-6410-7217</terms:contributor>
+        <rdfs:label>Inelastic Scattering</rdfs:label>
+        <skos:scopeNote>The change in energy mentioned in the definition depends on the measurable energy loss within an electron microscope. A physical definition of inelastic scattering is, when the state of the system (probe and target) changes.</skos:scopeNote>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000037 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000037">
+        <rdfs:subClassOf rdf:resource="https://purls.helmholtz-metadaten.de/emg/EMG_00000005"/>
+        <obo:IAO_0000115>A beam which consists of ions.</obo:IAO_0000115>
+        <terms:contributor>https://orcid.org/0000-0001-5870-4658</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0001-8480-4775</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-0070-4337</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1008-4530</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1507-9327</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6004-2304</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0000-4784</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0575-2853</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0930-082X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2285-9329</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2534-0063</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-4745-9735</terms:contributor>
+        <rdfs:label>Ion Beam</rdfs:label>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000038 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000038">
+        <rdfs:subClassOf rdf:resource="https://purls.helmholtz-metadaten.de/emg/EMG_00000005"/>
+        <obo:IAO_0000115>A beam which consists of particles of the same energy.</obo:IAO_0000115>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0575-2853</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2285-9329</terms:contributor>
+        <terms:contributor>https://orcid.org/0009-0008-6410-7217</terms:contributor>
+        <rdfs:label>Monochromatic Beam</rdfs:label>
+        <skos:scopeNote>According to the wave particle dualism the here given definition translates also to a beam which consists of waves having the same wavelength. Note that in practice, absolute monochromaticity cannot  be achieved and consequently a small energy spread always persists.</skos:scopeNote>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000039 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000039">
+        <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+        <obo:IAO_0000115>A physical part of an electron or ion microscope which is part of the electromagnetic lens and is used to amplify and shape the magnetic field used to manipulate the beam.</obo:IAO_0000115>
+        <obo:IAO_0000119>https://en.wikipedia.org/wiki/Pole_piece</obo:IAO_0000119>
+        <obo:IAO_0000119>https://www.jeol.co.jp/en/words/emterms/search_result.html?keyword=polepiece</obo:IAO_0000119>
+        <terms:contributor>https://orcid.org/0000-0001-8480-4775</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1507-9327</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0575-2853</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0930-082X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2285-9329</terms:contributor>
+        <rdfs:label>Pole Piece</rdfs:label>
+        <skos:scopeNote>A given electron microscope is likely to have multiple pole pieces. However the term is commonly used to refer to the pole piece of the final optical element between the source and the specimen.</skos:scopeNote>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000040 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000040">
+        <rdfs:subClassOf rdf:resource="https://purls.helmholtz-metadaten.de/emg/EMG_00000005"/>
+        <obo:IAO_0000115>A beam which is unaltered in terms of its direction after interaction with the specimen.</obo:IAO_0000115>
+        <obo:IAO_0000119>https://www.iso.org/obp/ui/#iso:std:iso:15932:ed-1:v1:en</obo:IAO_0000119>
+        <obo:IAO_0000119>https://www.iso.org/obp/ui/#iso:std:iso:23833:ed-2:v1:en</obo:IAO_0000119>
+        <terms:contributor>https://orcid.org/0000-0002-0070-4337</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0575-2853</terms:contributor>
+        <oboInOwl:hasNarrowSynonym>incident beam</oboInOwl:hasNarrowSynonym>
+        <rdfs:label>Primary Beam</rdfs:label>
+        <skos:scopeNote>The term is commonly used in diffraction experiments to describe the non-diffracted/non-scattered part of the beam after the specimen.</skos:scopeNote>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000041 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000041">
+        <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+        <obo:IAO_0000115>Electrical current which arrives at the specimen.</obo:IAO_0000115>
+        <terms:contributor>https://orcid.org/0000-0001-5870-4658</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0001-8480-4775</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-0070-4337</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1008-4530</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1507-9327</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6004-2304</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0000-4784</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0575-2853</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0930-082X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2285-9329</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2534-0063</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-4745-9735</terms:contributor>
+        <rdfs:label>Probe Current</rdfs:label>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000042 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000042">
+        <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+        <obo:IAO_0000115>Area which is (1) on the specimen and (2) to be sampled during an experiment.</obo:IAO_0000115>
+        <obo:OMO_0003012>ROI</obo:OMO_0003012>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-0070-4337</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0575-2853</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2285-9329</terms:contributor>
+        <rdfs:label>Region Of Interest</rdfs:label>
+        <skos:scopeNote>The region of interest might be incoherent (i.e. random walk) or consist of a set of multiple geometric coherent parts.</skos:scopeNote>
+        <skos:scopeNote>We recognise this definition breaks down for non-2D regions of interest. In the future we will consider defining superclass such as &quot;volume of interest&quot;. At the moment the majority of regions of interest are 2D and this is why this is a priority term. This class could be a potential synonym to space time in EOSC ontology</skos:scopeNote>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000043 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000043">
+        <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+        <obo:IAO_0000115>A physical phenomenon during which the trajectory of a particle is changed due to interaction with matter.</obo:IAO_0000115>
+        <obo:IAO_0000119>https://doi.org/10.1016/j.jqsrt.2018.02.002</obo:IAO_0000119>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-1965-7996</terms:contributor>
+        <terms:contributor>https://orcid.org/0009-0008-6410-7217</terms:contributor>
+        <rdfs:label>Scattering</rdfs:label>
+        <skos:scopeNote>The term &quot;matter&quot; used in this definition is meant to represent crystalline as well as amorphous matter (e.g. gases or objects). Diffraction might be regarded as a specific type of elastic scattering. The terms scattering and diffraction are used to describe the same phenomenon from different perspectives. From the view of a particle, people tend to speak of scattering, while from the view of waves and the related patterns, people speak of diffraction.</skos:scopeNote>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000044 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000044">
+        <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+        <obo:IAO_0000115>The angle which spans between the tangent of the incoming trajectory of an particle and the the tangent of the outgoing trajectory of the same particle, prior and past an instance of scattering.</obo:IAO_0000115>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0575-2853</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-1965-7996</terms:contributor>
+        <terms:contributor>https://orcid.org/0009-0008-6410-7217</terms:contributor>
+        <rdfs:label>Scattering Angle</rdfs:label>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000045 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000045">
+        <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+        <obo:IAO_0000115>A physical part of an electron or ion microscope from which the particles that form the beam are emitted.</obo:IAO_0000115>
+        <obo:IAO_0000119>https://cmrf.research.uiowa.edu/scanning-electron-microscopy</obo:IAO_0000119>
+        <terms:contributor>https://orcid.org/0000-0001-5870-4658</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0001-8480-4775</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-0070-4337</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1008-4530</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1507-9327</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6004-2304</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0000-4784</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0575-2853</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0930-082X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2285-9329</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2534-0063</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-4745-9735</terms:contributor>
+        <oboInOwl:hasExactSynonym>emission source</oboInOwl:hasExactSynonym>
+        <rdfs:label>Source</rdfs:label>
+        <skos:example>LaB_6 crystal</skos:example>
+        <skos:example>liquid metal Gallium</skos:example>
+        <skos:example>tungsten crystal</skos:example>
+        <skos:example>tungsten wire</skos:example>
+        <skos:scopeNote>The nature and the function of sources differ depending on application case and  instrument. There are two classes of emission sources, thermionic emitters (filament &amp; LaB6)  and field emitters.</skos:scopeNote>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000046 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000046">
+        <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+        <obo:IAO_0000115>A physical entity which contains material intended to be investigated.</obo:IAO_0000115>
+        <obo:IAO_0000119>https://biolincc.nhlbi.nih.gov/glossary/</obo:IAO_0000119>
+        <obo:IAO_0000119>https://doi.org/10.1351/pac199062061193</obo:IAO_0000119>
+        <obo:IAO_0000119>https://goldbook.iupac.org/terms/view/S05809</obo:IAO_0000119>
+        <obo:OMO_0003012>SPEC</obo:OMO_0003012>
+        <terms:contributor>https://orcid.org/0000-0001-5870-4658</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0001-8480-4775</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-0070-4337</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1008-4530</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1418-0984</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1507-9327</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-2818-5890</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6004-2304</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7086-1901</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-8218-3116</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-9555-7455</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0000-4784</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0575-2853</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0930-082X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2285-9329</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2534-0063</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-4745-9735</terms:contributor>
+        <oboInOwl:hasExactSynonym>sample</oboInOwl:hasExactSynonym>
+        <rdfs:label>Specimen</rdfs:label>
+        <skos:scopeNote>It should also be noted that one often probes special anomalies, such as specific locations of the parent material. Furthermore, if the properties of a specimen are assumed to be the same as they were at the time when a specimen was taken from the parental  material, they still might change over time. A specimen may not be reproducible in time, e.g. it may be taken from a flowing stream or a portion of blood, no separable sampling error exists since this error is unavoidably included with the corresponding error of the estimate of the property, function being studied. The term is used across fields, i.e. in clinical, biological, geological, and  materials science studies.</skos:scopeNote>
+        <skos:scopeNote>The terms specimen and sample are used widely interchangeable in the community. In some cases a sample might be thought of as something which is statistically representative of the parent material/sample where it was taken from while a specimen is not. However, this statistical value is not an inherent property of the sample but of the feature that was characterized. Therefore, this the relevance of this distinction depends on the application case. During discussions a large majority of contributors favoured these terms to be implemented as synonyms in this glossary.</skos:scopeNote>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000047 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000047">
+        <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+        <obo:IAO_0000115>An imaging setting which can be used during acquisition to correct perspective distortion when imaging a tilted surface or cross section.</obo:IAO_0000115>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-0070-4337</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0575-2853</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2285-9329</terms:contributor>
+        <rdfs:label>Tilt Correction</rdfs:label>
+        <skos:scopeNote>Applied during acquisition to compensate for tilt.</skos:scopeNote>
+        <skos:scopeNote>As an option in a GUI it triggers a set of algorithms to apply stretching transformation on the image.</skos:scopeNote>
+        <skos:scopeNote>Tilt correction involves either stretching or compression along one direction or dimension of the scan area.</skos:scopeNote>
+        <skos:scopeNote>Tilt correction needs to be noted at data collection.</skos:scopeNote>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000048 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000048">
+        <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+        <obo:IAO_0000115>An interval of time.</obo:IAO_0000115>
+        <oboInOwl:hasExactSynonym>epoch</oboInOwl:hasExactSynonym>
+        <oboInOwl:hasExactSynonym>period</oboInOwl:hasExactSynonym>
+        <rdfs:label>Time Period</rdfs:label>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000049 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000049">
+        <rdfs:subClassOf rdf:resource="https://purls.helmholtz-metadaten.de/emg/EMG_00000048"/>
+        <obo:IAO_0000115>Time period in which no data are acquired.</obo:IAO_0000115>
+        <terms:contributor>https://orcid.org/0000-0001-5870-4658</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0001-8480-4775</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-0070-4337</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1008-4530</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1418-0984</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1507-9327</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-2818-5890</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6004-2304</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7086-1901</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-8218-3116</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-9555-7455</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0000-4784</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0575-2853</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0930-082X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2285-9329</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2534-0063</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-4745-9735</terms:contributor>
+        <oboInOwl:hasRelatedSynonym>elapsed time</oboInOwl:hasRelatedSynonym>
+        <rdfs:label>Wait Time</rdfs:label>
+        <skos:scopeNote>Wait time can happen for multiple reasons. For example, the time period until a detector is ready (e.g. EDS detector is cooled down). The time period until the specimen has reached the desired state for a measurement (e.g. in-situ heating/cooling). The time period until the machine has reached the desired state (e.g. switching from high vacuum to low vacuum mode in a variable pressure SEM). Frame flyback time may also be considered a wait time.</skos:scopeNote>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000050 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000050">
+        <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+        <obo:IAO_0000115>Distance which is determined along the optical axis within the column from (1) the lower end of the final optical element between the source and the specimen stage; to (2) the point where the beam is focused.</obo:IAO_0000115>
+        <obo:IAO_0000119>https://www.globalsino.com/EM/page4586.html</obo:IAO_0000119>
+        <terms:contributor>https://orcid.org/0000-0002-1507-9327</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0000-4784</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0575-2853</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0930-082X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-2285-9329</terms:contributor>
+        <rdfs:label>Working Distance</rdfs:label>
+        <skos:scopeNote>In modern SEM and focused ion beam microscopes working distance is displayed in the user interface as a calibrated value based on the final lens excitation. For practical reasons it commonly refers to the lower end of the column instead of the lens as this gives the user an indication how much space there is between the column and the sample surface when the latter is in focus. In general, a short working distance improves resolution and signal collection for in-column detectors.</skos:scopeNote>
+        <skos:scopeNote>The term is frequently used in scanning electron microscopy &amp; scanning ion microscopy.</skos:scopeNote>
+        <skos:scopeNote>Typically, the unit used for expressing the working distance is millimetre.</skos:scopeNote>
+        <skos:scopeNote>Working distance is a property of the optical system and as such independent of the position of the specimen. During regular operation, e.g. of SEM &amp; STEM, the here mentioned point of focus will  be in direct vicinity of the specimen surface.</skos:scopeNote>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000051 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000051">
+        <rdfs:subClassOf rdf:resource="https://purls.helmholtz-metadaten.de/emg/EMG_00000022"/>
+        <obo:IAO_0000115>Electron diffraction during which, in a sequential order, electrons of the incident beam are inelastically scattered, form a point source inside the specimen, and leave the specimen through Bragg diffraction.</obo:IAO_0000115>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-1965-7996</terms:contributor>
+        <rdfs:label>Kikuchi Diffraction</rdfs:label>
+        <skos:scopeNote>In an experimental setup the diffraction described here will form a Kikuchi pattern which is measured to infer information about the crystal lattice of the sample.</skos:scopeNote>
+        <skos:scopeNote>This definition makes use of the wave-particle dualism in the sense that we use both the term scattering and diffraction in one definition.</skos:scopeNote>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000052 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000052">
+        <rdfs:subClassOf rdf:resource="https://purls.helmholtz-metadaten.de/emg/EMG_00000013"/>
+        <obo:IAO_0000115>A diffraction pattern which is generated by Kikuchi diffraction.</obo:IAO_0000115>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-1965-7996</terms:contributor>
+        <terms:contributor>https://orcid.org/0009-0008-6410-7217</terms:contributor>
+        <oboInOwl:hasRelatedSynonym>Electron backscatter diffraction pattern (EBSP)</oboInOwl:hasRelatedSynonym>
+        <rdfs:label>Kikuchi Pattern</rdfs:label>
+        <skos:scopeNote>A Kikuchi pattern used for further analysis typically shows seemingly parallel lines or bands on the detector plane.</skos:scopeNote>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000053 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000053">
+        <rdfs:subClassOf rdf:resource="https://purls.helmholtz-metadaten.de/emg/EMG_00000051"/>
+        <obo:IAO_0000115>Kikuchi diffraction during which electrons leave the electron-transparent sample at the side opposite to the incident beam.</obo:IAO_0000115>
+        <obo:OMO_0003000>TKD</obo:OMO_0003000>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-1965-7996</terms:contributor>
+        <rdfs:label>Transmission Kikuchi Diffraction</rdfs:label>
+        <skos:scopeNote>Compared to EBSD, TKD has a higher spatial resolution.</skos:scopeNote>
+        <skos:scopeNote>In TKD a dedicated &quot;on-axis detector&quot; can be used to record the diffraction pattern at highest intensities and best signal-to-noise ratio.</skos:scopeNote>
+        <skos:scopeNote>Sometimes TKD might be referred to as &quot;Transmission EBSD&quot; (t-EBSD). The authors of this glossary consider this however technically wrong and deprecate the use of this terminology.</skos:scopeNote>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000054 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000054">
+        <rdfs:subClassOf rdf:resource="https://purls.helmholtz-metadaten.de/emg/EMG_00000049"/>
+        <obo:IAO_0000115>Wait time which is due to a particle detector being physically incapable of registering detector events.</obo:IAO_0000115>
+        <obo:IAO_0000119>https://www.iso.org/obp/ui/#iso:std:iso:15932:ed-1:v1:en</obo:IAO_0000119>
+        <obo:IAO_0000119>https://www.iso.org/obp/ui/#iso:std:iso:23833:ed-2:v1:en</obo:IAO_0000119>
+        <terms:contributor>https://orcid.org/0000-0001-5870-4658</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-0070-4337</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7086-1901</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0575-2853</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-1965-7996</terms:contributor>
+        <terms:contributor>https://orcid.org/0009-0008-6410-7217</terms:contributor>
+        <rdfs:label>Dead Time</rdfs:label>
+        <skos:scopeNote>This is often related to the detector specifics - because the system may be physically unable to record a particle measurement due to it being busy processing the previously detected event. In electron microscopy, it is commonly encountered when using energy dispersive x-ray detectors.</skos:scopeNote>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000055 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000055">
+        <rdfs:subClassOf rdf:resource="https://purls.helmholtz-metadaten.de/emg/EMG_00000048"/>
+        <obo:IAO_0000115>time period during which data is acquired.</obo:IAO_0000115>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7086-1901</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-1965-7996</terms:contributor>
+        <rdfs:label>Acquisition Time</rdfs:label>
+        <skos:example>camera exposure time in an EBSD measurement</skos:example>
+        <skos:example>dwell time in SEM and STEM imaging</skos:example>
+        <skos:example>time period during which image data (e.g. TEM) is acquired</skos:example>
+        <skos:example>time period during which spectroscopic data (e.g. EDS, EELS) is acquired</skos:example>
+        <skos:scopeNote>Note that acquisition time does not include time periods like flyback time or wait times.</skos:scopeNote>
+        <skos:scopeNote>depending on type of measurement and method the acquisition time might be interpreted differently.</skos:scopeNote>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000056 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000056">
+        <rdfs:subClassOf rdf:resource="https://purls.helmholtz-metadaten.de/emg/EMG_00000058"/>
+        <obo:IAO_0000115>Moving time during which either the position or the tilt of the beam is altered.
+</obo:IAO_0000115>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7086-1901</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-9700-4803</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-1965-7996</terms:contributor>
+        <terms:contributor>https://orcid.org/0009-0008-6410-7217</terms:contributor>
+        <rdfs:label>Beam Moving Time</rdfs:label>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000057 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000057">
+        <rdfs:subClassOf rdf:resource="https://purls.helmholtz-metadaten.de/emg/EMG_00000058"/>
+        <obo:IAO_0000115>Moving time during which either the position or the  orientation of a detector is altered.
+</obo:IAO_0000115>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7086-1901</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-9700-4803</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-1965-7996</terms:contributor>
+        <terms:contributor>https://orcid.org/0009-0008-6410-7217</terms:contributor>
+        <rdfs:label>Detector Moving Time</rdfs:label>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000058 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000058">
+        <rdfs:subClassOf rdf:resource="https://purls.helmholtz-metadaten.de/emg/EMG_00000048"/>
+        <obo:IAO_0000115>Time period during which the position or orientation of either the beam  or physical components are changed within a coordinate system of the  microscope.
+</obo:IAO_0000115>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7086-1901</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-9700-4803</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-1965-7996</terms:contributor>
+        <terms:contributor>https://orcid.org/0009-0008-6410-7217</terms:contributor>
+        <rdfs:label>Moving Time</rdfs:label>
+        <skos:scopeNote>The physical components relevant to moving time are typically the stage, the specimen, and the retractable detectors.</skos:scopeNote>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000059 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000059">
+        <rdfs:subClassOf rdf:resource="https://purls.helmholtz-metadaten.de/emg/EMG_00000058"/>
+        <obo:IAO_0000115>Moving time during which either the position or the orientation  of the sample is altered.
+</obo:IAO_0000115>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7086-1901</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-9700-4803</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-1965-7996</terms:contributor>
+        <terms:contributor>https://orcid.org/0009-0008-6410-7217</terms:contributor>
+        <rdfs:label>Sample Moving Time</rdfs:label>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000060 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000060">
+        <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+        <obo:IAO_0000115>An array of data which represents a coherent and discrete set of time.</obo:IAO_0000115>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7086-1901</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-9700-4803</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0575-2853</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-1965-7996</terms:contributor>
+        <terms:contributor>https://orcid.org/0009-0008-6410-7217</terms:contributor>
+        <rdfs:label>Frame</rdfs:label>
+        <skos:example>A 2D EBSD map containing orientation data.</skos:example>
+        <skos:example>A 2D EDS map with compositional information.</skos:example>
+        <skos:example>A single Kikuchi pattern acquired by an EBSD camera.</skos:example>
+        <skos:example>Any 2D image acquired with an SEM or (S)TEM.</skos:example>
+        <skos:scopeNote>We note that the term is widely used in different contexts (videography, photography, data recording, data analysis). Often it is used colloquially with imprecise semantic meaning. Therefore, the definition here focuses on its use within electron microscopy and we do not claim the definition to be ubiquitously applicable.</skos:scopeNote>
+        <skos:scopeNote>With \&quot;coherent\&quot; we refer to the data within a frame being in some way logically and looked at as one unit. Furthermore, we refer to discretization of time not in the sense of smallest possible discretization because data frames may be dependent on extended exposure time periods or might also represent results of processing averaged sub-frames e.g. during analyses.</skos:scopeNote>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000061 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000061">
+        <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+        <obo:IAO_0000115>Spatial volume which has negligible extent, and from where particles or radiation originate and are emitted in all directions.</obo:IAO_0000115>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-0575-2853</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-1965-7996</terms:contributor>
+        <terms:contributor>https://orcid.org/0009-0008-6410-7217</terms:contributor>
+        <oboInOwl:hasBroadSynonym>interaction volume</oboInOwl:hasBroadSynonym>
+        <oboInOwl:hasBroadSynonym>source point</oboInOwl:hasBroadSynonym>
+        <rdfs:label>Point Source</rdfs:label>
+        <rdfs:seeAlso>https://en.wikipedia.org/wiki/Point_source#:~:text=A%20point%20source%20is%20a,mathematical%20point%20to%20simplify%20analysis.</rdfs:seeAlso>
+        <skos:scopeNote>In Kikuchi diffraction the term \&quot;point source\&quot; may be used to refer to the volume inside the non-electron transparent sample that is illuminated with the incident beam, and from which electrons are scattered into all spatial directions. More broadly, a point source might also be a volume from which photons are emitted.</skos:scopeNote>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000062 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000062">
+        <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+        <obo:IAO_0000115>Patterns of electron intensity which are (1) formed by electron diffraction, (2) appear as a geometrical  feature in a Kikuchi pattern as a pair of lines limiting Kikuchi bands.
+</obo:IAO_0000115>
+        <obo:IAO_0000119>https://www.iso.org/obp/ui/en/#iso:std:iso:22493:ed-2:v1:en (section 6.5.1)</obo:IAO_0000119>
+        <obo:IAO_0000119>https://www.jeol.com/words/emterms/20121023.015559.php</obo:IAO_0000119>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <rdfs:label>Kikuchi Lines</rdfs:label>
+        <skos:scopeNote>Due to the anisotropy of the source point, Kikuchi lines typically appear as a pair of excess and defect lines.</skos:scopeNote>
+        <skos:scopeNote>Kikuchi lines are in fact no lines but Kossel-cone cuts. More precisely they are intersections of two opposite (Kossel) cones with the detector plane. Usually the opening angle of the cones is nearly 90 deg, therefore only at low (SEM) voltages the hyperbolic character becomes recognizable, hence the term Kikuchi lines.</skos:scopeNote>
+        <skos:scopeNote>Kikuchi lines can can be attributed to a specific set of lattice planes.</skos:scopeNote>
+        <skos:scopeNote>We note that the current definition is made for plane detectors and might need to be adjusted should non-planar detectors be used.</skos:scopeNote>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000063 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000063">
+        <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+        <obo:IAO_0000115>Pattern of electron intensity which is (1) formed by electron diffraction, (2) appears  as a geometrical feature in a Kikuchi pattern, (3) is an area different in intensity  compared to background, and (4) is limited on each side by a Kikuchi line.
+</obo:IAO_0000115>
+        <obo:IAO_0000119>https://en.wikipedia.org/wiki/Intensity_(physics)</obo:IAO_0000119>
+        <obo:IAO_0000119>https://en.wikipedia.org/wiki/Kikuchi_lines_(physics)</obo:IAO_0000119>
+        <obo:IAO_0000119>https://www.jeol.com/words/emterms/20121023.015559.php</obo:IAO_0000119>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7117-5196</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0003-1965-7996</terms:contributor>
+        <rdfs:label>Kikuchi Band</rdfs:label>
+        <skos:scopeNote>With small angle approximation the distance between a pair of Kikuchi lines is proportional to twice the Bragg angle.</skos:scopeNote>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000064 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000064">
+        <rdfs:subClassOf rdf:resource="https://purls.helmholtz-metadaten.de/emg/EMG_00000022"/>
+        <obo:IAO_0000115>Diffraction which follows Bragg&apos;s law.</obo:IAO_0000115>
+        <obo:IAO_0000119>https://physicsopenlab.org/2018/01/18/bragg-diffraction/</obo:IAO_0000119>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7086-1901</terms:contributor>
+        <terms:contributor>https://orcid.org/0009-0008-6410-7217</terms:contributor>
+        <rdfs:label>Bragg Diffraction</rdfs:label>
+        <skos:scopeNote>The here given definition is \&quot;unpacked\&quot; in order to keep brevity and precision. The specifics for e.g. \&quot;Bragg&apos;s law\&quot; are therefore defined elsewhere in the glossary and not part of the definition here.</skos:scopeNote>
+    </owl:Class>
+
+
+
+    <!-- https://purls.helmholtz-metadaten.de/emg/EMG_00000065 -->
+
+
+    <owl:Class rdf:about="https://purls.helmholtz-metadaten.de/emg/EMG_00000065">
+        <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+        <obo:IAO_0000115>A condition which (1) is defined as twice the lattice spacing in a large crystal multiplied with the sine of the Bragg angle between the incident beam and a set of lattice planes, being a whole multiple of the radiation wavelength, and (2) if satisfied, may allow to relate the location of a scattering intensity maximum within a diffraction pattern to the corresponding lattice plane spacing.</obo:IAO_0000115>
+        <terms:contributor>https://orcid.org/0000-0001-6534-4195</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-1278-4928</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-5149-603X</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-6368-2067</terms:contributor>
+        <terms:contributor>https://orcid.org/0000-0002-7086-1901</terms:contributor>
+        <terms:contributor>https://orcid.org/0009-0008-6410-7217</terms:contributor>
+        <rdfs:label>Bragg&apos;s Law</rdfs:label>
+        <rdfs:seeAlso>https://physicsopenlab.org/2018/01/18/bragg-diffraction/</rdfs:seeAlso>
+        <skos:scopeNote>Bragg&apos;s Law is a condition for constructive interference of diffracted radiation.</skos:scopeNote>
+        <skos:scopeNote>Bragg&apos;s law is commonly used in TEM to calculate the lattice spacing of a crystal from a diffraction pattern, most commonly zone axis or ring diffraction patterns.</skos:scopeNote>
+        <skos:scopeNote>We define the use of Bragg&apos;s Law for extracting information about lattice plane spacing as \&quot;may allow to\&quot; because in addition to Bragg&apos;s law also other conditions need to be satisfied. For example the structure factor must be non-zero.</skos:scopeNote>
+        <skos:scopeNote>While Bragg&apos;s Law applies to real space (or direct space), Laue condition is its equivalent in reciprocal space (or k-space).</skos:scopeNote>
+    </owl:Class>
+
+
+
+    <!--
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Annotations
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+
+    <rdf:Description rdf:about="http://purl.org/dc/terms/contributor">
+        <rdfs:comment xml:lang="en-us">Examples of a Contributor include a person, an organization, or a service. Typically, the name of a Contributor should be used to indicate the entity.</rdfs:comment>
+        <rdfs:label xml:lang="en-us">Contributor</rdfs:label>
+        <skos:definition xml:lang="en-us">An entity responsible for making contributions to the resource.</skos:definition>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://purl.org/dc/terms/creator">
+        <rdfs:comment xml:lang="en-us">Examples of a Creator include a person, an organization, or a service. Typically, the name of a Creator should be used to indicate the entity.</rdfs:comment>
+        <rdfs:label xml:lang="en-us">Creator</rdfs:label>
+        <skos:definition xml:lang="en-us">An entity primarily responsible for making the resource.</skos:definition>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://purl.org/dc/terms/description">
+        <rdfs:comment xml:lang="en-us">Description may include but is not limited to: an abstract, a table of contents, a graphical representation, or a free-text account of the resource.</rdfs:comment>
+        <rdfs:label xml:lang="en-us">Description</rdfs:label>
+        <rdfs:label>description</rdfs:label>
+        <skos:definition xml:lang="en-us">An account of the resource.</skos:definition>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://purl.org/dc/terms/license">
+        <rdfs:label xml:lang="en-us">License</rdfs:label>
+        <skos:definition xml:lang="en-us">A legal document giving official permission to do something with the resource.</skos:definition>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://purl.org/dc/terms/title">
+        <rdfs:label xml:lang="en-us">Title</rdfs:label>
+        <rdfs:label>title</rdfs:label>
+        <skos:definition xml:lang="en-us">A name given to the resource.</skos:definition>
+        <skos:note xml:lang="en-us">In current practice, this term is used primarily with literal values; however, there are important uses with non-literal values as well. As of December 2007, the DCMI Usage Board is leaving this range unspecified pending an investigation of options.</skos:note>
+    </rdf:Description>
+    <rdf:Description rdf:about="https://orcid.org/0000-0001-7564-7990">
+        <rdfs:label>Abril Azocar Guzman</rdfs:label>
+    </rdf:Description>
+    <rdf:Description rdf:about="https://orcid.org/0000-0002-5149-603X">
+        <rdfs:label>Volker Hofmann</rdfs:label>
+    </rdf:Description>
+    <rdf:Description rdf:about="https://orcid.org/0000-0003-0575-2853">
+        <rdfs:label>Oonagh Brendike-Mannix</rdfs:label>
+    </rdf:Description>
+    <rdf:Description rdf:about="https://ror.org/0281dp749">
+        <rdfs:label>Helmholtz-Gemeinschaft Deutscher Forschungszentren</rdfs:label>
+    </rdf:Description>
+    <rdf:Description rdf:about="https://ror.org/05qj6w324">
+        <rdfs:label>Nationale Forschungsdateninfrastruktur</rdfs:label>
+    </rdf:Description>
+</rdf:RDF>
+
+
+
+<!-- Generated by the OWL API (version 5.1.18) https://github.com/owlcs/owlapi/ -->

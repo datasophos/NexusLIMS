@@ -16,8 +16,9 @@ from PIL import Image
 
 from nexusLIMS.extractors.base import ExtractionContext, FieldDefinition
 from nexusLIMS.extractors.base import FieldDefinition as FD
-from nexusLIMS.extractors.utils import _set_instr_name_and_time
+from nexusLIMS.extractors.utils import _set_instr_name_and_time, add_to_extensions
 from nexusLIMS.instruments import get_instr_from_filepath
+from nexusLIMS.schemas.units import ureg
 from nexusLIMS.utils import set_nested_dict_value, sort_dict, try_getting_dict_value
 
 FEI_TIFF_TAG = 34682
@@ -161,6 +162,9 @@ class QuantaTiffExtractor:
 
             # Extract important fields to nx_meta
             mdict = self._parse_nx_meta(mdict)
+
+            # Migrate metadata to schema-compliant format
+            mdict = self._migrate_to_schema_compliant_metadata(mdict)
 
         except Exception as e:
             _logger.exception("Error extracting metadata from %s", filename)
@@ -473,12 +477,20 @@ class QuantaTiffExtractor:
                     FD(
                         beam_name,
                         "EmissionCurrent",
-                        "Emission Current (μA)",
-                        1e6,
+                        "Emission Current",
+                        1.0,
                         False,
+                        target_unit="ampere",
                     ),
-                    FD(beam_name, "HFW", "Horizontal Field Width (μm)", 1e6, False),
-                    FD(beam_name, "HV", "Voltage (kV)", 1e-3, False),
+                    FD(
+                        beam_name,
+                        "HFW",
+                        "Horizontal Field Width",
+                        1.0,
+                        False,
+                        target_unit="meter",
+                    ),
+                    FD(beam_name, "HV", "Voltage", 1.0, False, target_unit="volt"),
                     FD(beam_name, "SourceTiltX", "Beam Tilt X", 1.0, False),
                     FD(beam_name, "SourceTiltY", "Beam Tilt Y", 1.0, False),
                     FD(beam_name, "StageR", ["Stage Position", "R"], 1.0, False),
@@ -496,9 +508,30 @@ class QuantaTiffExtractor:
                     ),
                     FD(beam_name, "StigmatorX", "Stigmator X Value", 1.0, False),
                     FD(beam_name, "StigmatorY", "Stigmator Y Value", 1.0, False),
-                    FD(beam_name, "VFW", "Vertical Field Width (μm)", 1e6, False),
-                    FD(beam_name, "WD", "Working Distance (mm)", 1e3, False),
-                    FD(beam_name, "EucWD", "Eucentric WD (mm)", 1e3, False),
+                    FD(
+                        beam_name,
+                        "VFW",
+                        "Vertical Field Width",
+                        1.0,
+                        False,
+                        target_unit="meter",
+                    ),
+                    FD(
+                        beam_name,
+                        "WD",
+                        "Working Distance",
+                        1.0,
+                        False,
+                        target_unit="meter",
+                    ),
+                    FD(
+                        beam_name,
+                        "EucWD",
+                        "Eucentric WD",
+                        1.0,
+                        False,
+                        target_unit="meter",
+                    ),
                     FD(beam_name, "ImageMode", "Image Mode", 1.0, True),
                     FD(
                         beam_name,
@@ -523,25 +556,62 @@ class QuantaTiffExtractor:
         if scan_name is not None:
             fields.extend(
                 [
-                    FD(scan_name, "Dwell", "Pixel Dwell Time (μs)", 1e6, False),
-                    FD(scan_name, "FrameTime", "Total Frame Time (s)", 1.0, False),
+                    FD(
+                        scan_name,
+                        "Dwell",
+                        "Pixel Dwell Time",
+                        1.0,
+                        False,
+                        target_unit="second",
+                    ),
+                    FD(
+                        scan_name,
+                        "FrameTime",
+                        "Total Frame Time",
+                        1.0,
+                        False,
+                        target_unit="second",
+                    ),
                     FD(
                         scan_name,
                         "HorFieldsize",
-                        "Horizontal Field Width (μm)",
-                        1e6,
+                        "Horizontal Field Width",
+                        1.0,
                         False,
+                        target_unit="meter",
                     ),
                     FD(
                         scan_name,
                         "VerFieldsize",
-                        "Vertical Field Width (μm)",
-                        1e6,
+                        "Vertical Field Width",
+                        1.0,
                         False,
+                        target_unit="meter",
                     ),
-                    FD(scan_name, "PixelHeight", "Pixel Width (nm)", 1e9, False),
-                    FD(scan_name, "PixelWidth", "Pixel Height (nm)", 1e9, False),
-                    FD(scan_name, "LineTime", "Line Time (s)", 1.0, False),
+                    FD(
+                        scan_name,
+                        "PixelHeight",
+                        "Pixel Width",
+                        1.0,
+                        False,
+                        target_unit="meter",
+                    ),
+                    FD(
+                        scan_name,
+                        "PixelWidth",
+                        "Pixel Height",
+                        1.0,
+                        False,
+                        target_unit="meter",
+                    ),
+                    FD(
+                        scan_name,
+                        "LineTime",
+                        "Line Time",
+                        1.0,
+                        False,
+                        target_unit="second",
+                    ),
                     FD(
                         scan_name,
                         "LineIntegration",
@@ -579,7 +649,14 @@ class QuantaTiffExtractor:
                         False,
                     ),
                     FD(det_name, "Signal", "Detector Signal", 1.0, False),
-                    FD(det_name, "Grid", "Detector Grid Voltage (V)", 1.0, False),
+                    FD(
+                        det_name,
+                        "Grid",
+                        "Detector Grid Voltage",
+                        1.0,
+                        False,
+                        target_unit="volt",
+                    ),
                     FD(
                         det_name, "BrightnessDB", "Detector Brightness (DB)", 1.0, False
                     ),
@@ -594,9 +671,10 @@ class QuantaTiffExtractor:
                     FD(
                         det_name,
                         "MinimumDwellTime",
-                        "Minimum Dwell Time (μs)",
-                        1e6,
+                        "Minimum Dwell Time",
+                        1.0,
                         False,
+                        target_unit="second",
                     ),
                 ]
             )
@@ -620,8 +698,22 @@ class QuantaTiffExtractor:
         fields.extend(
             [
                 FD("Beam", "Spot", "Spot Size", 1.0, False),
-                FD("Specimen", "Temperature", "Specimen Temperature (K)", 1.0, False),
-                FD("Specimen", "Humidity", "Specimen Humidity (%)", 1.0, False),
+                FD(
+                    "Specimen",
+                    "Temperature",
+                    "Specimen Temperature",
+                    1.0,
+                    False,
+                    target_unit="kelvin",
+                ),
+                FD(
+                    "Specimen",
+                    "Humidity",
+                    "Specimen Humidity",
+                    1.0,
+                    False,
+                    target_unit="percent",
+                ),
                 FD("User", "UserText", "User Text", 1.0, True),
                 FD("User", "Date", "Acquisition Date", 1.0, True),
                 FD("User", "Time", "Acquisition Time", 1.0, True),
@@ -715,6 +807,7 @@ class QuantaTiffExtractor:
                         value,
                         field.factor,
                         field.suppress_zero,
+                        field.target_unit,
                     )
 
     def _set_field_value(self, mdict: dict, output_key: str | list, value: str) -> None:
@@ -724,20 +817,42 @@ class QuantaTiffExtractor:
         else:
             set_nested_dict_value(mdict, ["nx_meta", output_key], value)
 
-    def _set_numeric_field_value(
+    def _set_numeric_field_value(  # noqa: PLR0913
         self,
         mdict: dict,
         output_key: str | list,
         value: str,
         factor: float,
         suppress_zero: bool,
+        unit: str | None = None,
     ) -> None:
-        """Set a numeric field value with unit conversion."""
+        """Set a numeric field value with unit conversion.
+
+        Parameters
+        ----------
+        mdict
+            Metadata dictionary
+        output_key
+            Output key or nested path
+        value
+            String value to convert
+        factor
+            Multiplicative conversion factor
+        suppress_zero
+            If True, skip if value equals zero
+        unit
+            Pint unit string (e.g., "kilovolt"). If provided, creates a Quantity.
+        """
         try:
             decimal_val = Decimal(value) * Decimal(str(factor))
-            float_val = float(decimal_val)
-            if not suppress_zero or float_val != 0.0:
-                self._set_field_value(mdict, output_key, float_val)
+            if not suppress_zero or decimal_val != 0:
+                # Create Pint Quantity if unit is specified
+                if unit is not None:
+                    quantity_val = ureg.Quantity(decimal_val, unit)
+                    self._set_field_value(mdict, output_key, quantity_val)
+                else:
+                    # Convert to float for non-quantity values
+                    self._set_field_value(mdict, output_key, float(decimal_val))
         except (ValueError, InvalidOperation, TypeError):
             # TypeError can occur if value is None
             if value is not None:
@@ -769,8 +884,11 @@ class QuantaTiffExtractor:
         if scan_rot_val is not None:
             scan_rot_dec = Decimal(scan_rot_val)
             digits = abs(scan_rot_dec.as_tuple().exponent)
-            scan_rot_val = round(degrees(scan_rot_dec), digits)
-            set_nested_dict_value(mdict, ["nx_meta", "Scan Rotation (°)"], scan_rot_val)
+            scan_rot_degrees = round(degrees(scan_rot_dec), digits)
+            scan_rot_quantity = ureg.Quantity(scan_rot_degrees, "degree")
+            set_nested_dict_value(
+                mdict, ["nx_meta", "Scan Rotation"], scan_rot_quantity
+            )
 
     def _parse_tilt_correction(self, mdict: dict, beam_name: str) -> None:
         """Parse tilt correction (conditional on TiltCorrectionIsOn)."""
@@ -853,28 +971,29 @@ class QuantaTiffExtractor:
         if ch_pres_val is not None and ch_pres_val != "":
             try:
                 ch_pres_decimal = Decimal(ch_pres_val)
-                if (
+                is_high_vacuum = (
                     try_getting_dict_value(mdict, ["nx_meta", "Vacuum Mode"])
                     == "High vacuum"
-                ):
-                    ch_pres_str = "Chamber Pressure (mPa)"
-                    ch_pres_decimal = ch_pres_decimal * 10**3
+                )
+
+                if is_high_vacuum:
+                    # Value is in Pa, multiply by 1000 to get mPa
+                    ch_pres_decimal_mpa = ch_pres_decimal * 10**3
+                    ch_pres_quantity = ureg.Quantity(ch_pres_decimal_mpa, "millipascal")
                 else:
-                    ch_pres_str = "Chamber Pressure (Pa)"
+                    # Value is already in Pa
+                    ch_pres_quantity = ureg.Quantity(ch_pres_decimal, "pascal")
+
                 set_nested_dict_value(
                     mdict,
-                    ["nx_meta", ch_pres_str],
-                    float(ch_pres_decimal),
+                    ["nx_meta", "Chamber Pressure"],
+                    ch_pres_quantity,
                 )
             except (ValueError, InvalidOperation):
-                if (
-                    try_getting_dict_value(mdict, ["nx_meta", "Vacuum Mode"])
-                    == "High vacuum"
-                ):
-                    ch_pres_str = "Chamber Pressure (mPa)"
-                else:
-                    ch_pres_str = "Chamber Pressure (Pa)"
-                set_nested_dict_value(mdict, ["nx_meta", ch_pres_str], ch_pres_val)
+                # If conversion fails, store as string without unit
+                set_nested_dict_value(
+                    mdict, ["nx_meta", "Chamber Pressure"], ch_pres_val
+                )
 
     def _parse_software_version(self, mdict: dict) -> None:
         """Parse software version (aggregate Software + BuildNr)."""
@@ -947,6 +1066,143 @@ class QuantaTiffExtractor:
         self._process_standard_fields(mdict, fields, det_name)
         self._parse_special_cases(mdict, beam_name, det_name)
 
+        return mdict
+
+    def _migrate_to_schema_compliant_metadata(self, mdict: dict) -> dict:
+        """
+        Migrate metadata to schema-compliant format.
+
+        Reorganizes metadata to conform to type-specific Pydantic schemas:
+        - Extracts core EM Glossary fields to top level with standardized names
+        - Moves vendor-specific nested dictionaries to extensions section
+        - Preserves existing extensions from instrument profiles
+
+        Parameters
+        ----------
+        mdict
+            Metadata dictionary with nx_meta containing extracted fields
+
+        Returns
+        -------
+        dict
+            Metadata dictionary with schema-compliant nx_meta structure
+        """
+        nx_meta = mdict.get("nx_meta", {})
+
+        # Preserve existing extensions from instrument profiles
+        extensions = (
+            nx_meta.get("extensions", {}).copy() if "extensions" in nx_meta else {}
+        )
+
+        # Field mappings from display names to EM Glossary names
+        field_mappings = {
+            "Voltage": "acceleration_voltage",
+            "Working Distance": "working_distance",
+            "Emission Current": "emission_current",
+            "Pixel Dwell Time": "dwell_time",
+            "Horizontal Field Width": "horizontal_field_width",
+            "Vertical Field Width": "vertical_field_width",
+            "Pixel Width": "pixel_width",
+            "Pixel Height": "pixel_height",
+        }
+
+        # Fields that ALWAYS go to extensions (vendor-specific nested dicts)
+        extension_top_level_keys = {
+            "Beam",
+            "Scan",
+            "Detector",
+            "Stage Position",
+            "Image",
+            "Application",
+            "Vacuum",
+            "System",
+            "User",
+            "Detectors",
+            "GIS",
+            "Specimen",
+            "PrivateFei",
+            "FEI_XML_Metadata",
+            "Optics",
+        }
+
+        # Also move these individual vendor fields to extensions
+        extension_field_names = {
+            "Detector Brightness Setting",
+            "Detector Contrast Setting",
+            "Detector Enhanced Contrast Setting",
+            "Detector Signal",
+            "Detector Grid Voltage",
+            "Beam Tilt X",
+            "Beam Tilt Y",
+            "Stigmator X Value",
+            "Stigmator Y Value",
+            "Beam Shift X",
+            "Beam Shift Y",
+            "Beam Mode",
+            "Image Mode",
+            "Pre-Tilt",
+            "Eucentric WD",
+            "Total Frame Time",
+            "Line Time",
+            "Line Integration",
+            "Scan Interlacing",
+        }
+
+        # Build new nx_meta with proper field organization
+        new_nx_meta = {}
+
+        # Copy required fields
+        for field in ["DatasetType", "Data Type", "Creation Time"]:
+            if field in nx_meta:
+                new_nx_meta[field] = nx_meta[field]
+
+        # Copy instrument identification
+        if "Instrument ID" in nx_meta:
+            new_nx_meta["Instrument ID"] = nx_meta["Instrument ID"]
+
+        # Process all fields and categorize
+        for old_name, value in nx_meta.items():
+            # Skip fields we've already handled
+            if old_name in [
+                "DatasetType",
+                "Data Type",
+                "Creation Time",
+                "Instrument ID",
+                "Extractor Warnings",
+                "warnings",
+                "extensions",
+            ]:
+                continue
+
+            # Top-level vendor sections go to extensions
+            if old_name in extension_top_level_keys:
+                extensions[old_name] = value
+                continue
+
+            # Check if this is a core field that needs renaming
+            if old_name in field_mappings:
+                emg_name = field_mappings[old_name]
+                new_nx_meta[emg_name] = value
+                continue
+
+            # Vendor-specific individual fields go to extensions
+            if old_name in extension_field_names:
+                extensions[old_name] = value
+                continue
+
+            # Everything else goes to extensions (vendor-specific by default)
+            # This is safer than at top level where schema validation will reject
+            extensions[old_name] = value
+
+        # Copy warnings if present
+        if "warnings" in nx_meta:
+            new_nx_meta["warnings"] = nx_meta["warnings"]
+
+        # Add extensions section if we have any
+        for key, value in extensions.items():
+            add_to_extensions(new_nx_meta, key, value)
+
+        mdict["nx_meta"] = new_nx_meta
         return mdict
 
 

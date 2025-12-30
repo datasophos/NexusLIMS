@@ -28,7 +28,7 @@ logging.getLogger("nexusLIMS.instruments").addFilter(
     not in record.getMessage()
 )
 
-# Add custom extensions directory to path
+# Add custom extensions directory to path (includes custom parsers)
 sys.path.insert(0, os.path.abspath("_ext"))
 
 import nexusLIMS.version
@@ -121,6 +121,7 @@ else:
 extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.napoleon",
+    "sphinx.ext.doctest",  # Support for doctest-style examples
     "sphinx.ext.intersphinx",
     "sphinx.ext.coverage",
     "sphinx.ext.viewcode",
@@ -133,12 +134,42 @@ extensions = [
     "sphinxcontrib.mermaid",  # Support for Mermaid diagrams
     "xsd_documenter",  # Custom XSD documentation extension with D3.js diagrams
     "autodoc2",  # Automatic API documentation generation
+    "sphinx_copybutton",  # Add copy buttons to code blocks
 ]
 
 mermaid_d3_zoom = True
 
+# -- Options for sphinx-copybutton -------------------------------------------
+# Strip Python prompts (>>>, ...) and output when copying code blocks
+copybutton_prompt_text = r">>> |\.\.\. |\$ |In \[\d*\]: | {2,5}\.\.\.: | {5,8}: "
+copybutton_prompt_is_regexp = True
+# Don't copy output lines (lines that don't start with a prompt)
+copybutton_only_copy_prompt_lines = True
+# Remove prompts before copying
+copybutton_remove_prompts = True
+
+# MyST parser extensions - enable fieldlist for proper parameter/return rendering
+myst_enable_extensions = [
+    "fieldlist",  # Required for Napoleon-parsed docstrings
+    "colon_fence",  # Allow ::: for RST directives (including doctest blocks)
+]
+
+# Napoleon settings - these affect docstring parsing
+napoleon_use_ivar = True  # Fixes duplicate descriptions for class attributes
+napoleon_use_admonition_for_examples = False  # Use code blocks for examples
+napoleon_use_admonition_for_notes = False  # Use plain formatting for notes
+napoleon_use_admonition_for_references = False  # Use plain formatting for refs
+
+# Suppress MyST warnings about H1 headers in docstrings
+# These come from code examples and literal blocks in docstrings
+suppress_warnings = [
+    "myst.header",  # Suppress "Document headings start at H2, not H1" warnings
+]
+
 autodoc_pydantic_model_show_json = False
 autodoc_pydantic_model_show_config_summary = False
+autodoc_pydantic_model_show_validator_members = False
+autodoc_pydantic_model_show_validator_summary = False
 
 # Options for sphinx_autodoc_typehints
 set_type_checking_flag = True
@@ -165,8 +196,19 @@ autodoc2_render_plugin = "myst"
 autodoc2_output_dir = "api"
 autodoc2_index_template = None  # We'll use a custom api.rst instead
 
+# Control how __init__ is documented: "merge" appends __init__ docstring to class
+# docstring and omits the method separately, "both" includes it as a distinct item
+autodoc2_class_docstring = "both"
+
 # Exclude private members (those starting with underscore like _logger)
 autodoc2_hidden_objects = ["private", "inherited", "dunder"]
+
+# Enable NumPy-style docstring support via custom Napoleon parser
+# This uses the autodoc2_docstrings_parser.py file in the docs directory
+autodoc2_docstring_parser_regexes = [
+    # Process all docstrings with custom Napoleon parser to support NumPy-style
+    (r".*", "autodoc2_docstrings_parser"),
+]
 
 # -- Options for towncrier_draft extension -----------------------------------
 towncrier_draft_autoversion_mode = "draft"
@@ -182,7 +224,9 @@ source_suffix = {
     ".md": "markdown",
 }
 highlight_language = "python"
-today = ""
+# Set today to current timestamp in local timezone
+today = datetime.now().strftime("%B %d, %Y at %I:%M %p %Z")
+# Format: e.g., "December 28, 2025 at 02:30 PM PST"
 pygments_style = "sphinx"
 add_function_parentheses = True
 # master_doc = 'index'
@@ -255,6 +299,10 @@ html_static_path = ["_static"]
 
 html_css_files = [
     "custom.css",
+]
+
+html_js_files = [
+    "custom.js",
 ]
 
 # html_title = "NexusLIMS documentation"
@@ -340,23 +388,33 @@ nitpick_ignore = [
     ("py:class", "pydantic_settings.sources.PathType"),
     # lxml types not in custom objects.inv
     ("py:class", "lxml.etree.ElementBase"),
+    # NexusLIMS type aliases (Annotated types can't be cross-referenced as classes)
+    ("py:class", "nexusLIMS.schemas.pint_types.PintQuantity"),
+    # Pint library types (no intersphinx inventory available)
+    ("py:class", "pint.Quantity"),
+    # Pydantic exceptions (intersphinx doesn't resolve pydantic_core exceptions)
+    ("py:exc", "pydantic.ValidationError"),
 ]
 
 
 def skip(app, what, name, obj, would_skip, options):
     if name == "__init__":
         return False
+    # Skip logger attributes
+    if name == "logger":
+        return True
     return would_skip
 
 
 def setup(app):
-    # app.connect("autodoc-skip-member", skip)
+    app.connect("autodoc-skip-member", skip)
     app.connect("builder-inited", autodoc_mock_settings)
+
+    # Patch autodoc2 to suppress Pydantic Field(...) values
+    from autodoc2_docstrings_parser import patch_autodoc2_renderer
+
+    patch_autodoc2_renderer()
 
     # autodoc2 handles API doc generation automatically, no need for run_apidoc
     # app.connect('builder-inited', build_plantuml)
-    print(
-        "If you need to update the PlantUML diagrams, run\n"
-        "build_plantuml.sh in this directory"
-    )
     # app.add_stylesheet("custom-styles.css")

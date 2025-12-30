@@ -4,6 +4,7 @@
 """Tests for nexusLIMS.extractors.plugins.tescan_pfib_tif."""
 
 import logging
+from decimal import Decimal
 from pathlib import Path
 
 import pytest
@@ -14,6 +15,8 @@ from nexusLIMS.extractors.plugins.tescan_tif import (
     TescanTiffExtractor,
 )
 from nexusLIMS.instruments import get_instr_from_filepath
+from nexusLIMS.schemas.units import ureg
+from tests.unit.test_extractors.conftest import get_field
 
 
 @pytest.fixture
@@ -42,6 +45,34 @@ def tescan_tif_without_hdr(tescan_tif_file):
         # Restore HDR file
         if hdr_backup.exists():
             hdr_backup.rename(hdr_file)
+
+
+def _create_test_tif_with_metadata(tmp_path, metadata_content, filename="test.tif"):
+    r"""Create a test TIFF file with custom Tescan metadata.
+
+    Parameters
+    ----------
+    tmp_path : Path
+        Temporary directory path from pytest fixture
+    metadata_content : bytes
+        Content to embed in TESCAN_TIFF_TAG (e.g., b"[SEM]\nKey=Value\n")
+    filename : str, default="test.tif"
+        Name of the test file to create
+
+    Returns
+    -------
+    Path
+        Path to the created test TIFF file
+    """
+    from PIL import Image
+    from PIL.TiffImagePlugin import ImageFileDirectory_v2
+
+    test_tif = tmp_path / filename
+    img = Image.new("I", (10, 10))
+    ifd = ImageFileDirectory_v2()
+    ifd[TESCAN_TIFF_TAG] = metadata_content
+    img.save(test_tif, tiffinfo=ifd)
+    return test_tif
 
 
 def _assert_tescan_raw_sections(metadata):
@@ -80,7 +111,7 @@ def _assert_tescan_raw_sections(metadata):
     assert metadata[0]["SEM"]["StageTilt"] == "0.0"
 
 
-def _assert_tescan_nx_meta(metadata):
+def _assert_tescan_nx_meta(metadata):  # noqa: PLR0915
     """Assert parsed nx_meta metadata values.
 
     Parameters
@@ -93,67 +124,124 @@ def _assert_tescan_nx_meta(metadata):
     assert metadata[0]["nx_meta"]["DatasetType"] == "Image"
 
     # Test parsed nx_meta values from [MAIN]
-    assert metadata[0]["nx_meta"]["Device"] == "TESCAN AMBER X"
-    assert metadata[0]["nx_meta"]["Device Model"] == "S12345"
-    assert metadata[0]["nx_meta"]["Serial Number"] == "119-0053"
-    assert metadata[0]["nx_meta"]["Operator"] == "Nexus User"
+    # Fields may be in extensions after schema migration
+    assert get_field(metadata, "Device") == "TESCAN AMBER X"
+    assert get_field(metadata, "Device Model") == "S12345"
+    assert get_field(metadata, "Serial Number") == "119-0053"
+    assert get_field(metadata, "Operator") == "Nexus User"
     assert metadata[0]["nx_meta"]["warnings"] == [["Operator"]]
-    assert metadata[0]["nx_meta"]["Acquisition Date"] == "2025-12-03"
-    assert metadata[0]["nx_meta"]["Acquisition Time"] == "17:19:26"
-    assert metadata[0]["nx_meta"]["Magnification (kX)"] == pytest.approx(160.0)
+    assert get_field(metadata, "Acquisition Date") == "2025-12-03"
+    assert get_field(metadata, "Acquisition Time") == "17:19:26"
+    # Magnification is a Quantity
+    magnification_qty = get_field(metadata, "Magnification")
+    assert isinstance(magnification_qty, ureg.Quantity)
+    assert magnification_qty.magnitude == Decimal("160")
+    assert str(magnification_qty.units) == "kiloX"
     assert (
-        metadata[0]["nx_meta"]["Software Version"]
+        get_field(metadata, "Software Version")
         == "TESCAN Essence Version 1.3.7.1, build 8915"
     )
 
     # Test pixel size parsing (converted from m to nm)
-    assert metadata[0]["nx_meta"]["Pixel Width (nm)"] == pytest.approx(1.5625)
-    assert metadata[0]["nx_meta"]["Pixel Height (nm)"] == pytest.approx(1.5625)
+    # Pixel Width is a Quantity - test exact Decimal value
+    pixel_width_qty = get_field(metadata, "pixel_width")
+    assert isinstance(pixel_width_qty, ureg.Quantity)
+    assert pixel_width_qty.magnitude == Decimal("1.5625")
+    assert str(pixel_width_qty.units) == "nanometer"
+    # Pixel Height is a Quantity
+    pixel_height_qty = get_field(metadata, "pixel_height")
+    assert isinstance(pixel_height_qty, ureg.Quantity)
+    assert pixel_height_qty.magnitude == Decimal("1.5625")
+    assert str(pixel_height_qty.units) == "nanometer"
 
     # Test parsed nx_meta values from [SEM]
-    assert metadata[0]["nx_meta"]["HV Voltage (kV)"] == pytest.approx(15.0)
-    assert metadata[0]["nx_meta"]["Working Distance (mm)"] == pytest.approx(5.947501)
-    assert metadata[0]["nx_meta"]["Spot Size (nm)"] == pytest.approx(3.0)
-    assert metadata[0]["nx_meta"]["Detector Name"] == "E-T"
-    assert metadata[0]["nx_meta"]["Scan Mode"] == "UH-RESOLUTION"
-    assert metadata[0]["nx_meta"]["Chamber Pressure (mPa)"] == pytest.approx(0.61496)
+    # Hv Voltage is a Quantity
+    hv_voltage_qty = get_field(metadata, "acceleration_voltage")
+    assert isinstance(hv_voltage_qty, ureg.Quantity)
+    assert hv_voltage_qty.magnitude == Decimal("15")
+    assert str(hv_voltage_qty.units) == "kilovolt"
+    # Working Distance is a Quantity
+    working_distance_qty = get_field(metadata, "working_distance")
+    assert isinstance(working_distance_qty, ureg.Quantity)
+    assert working_distance_qty.magnitude == Decimal("5.947501")
+    assert str(working_distance_qty.units) == "millimeter"
+    # Spot Size is a Quantity
+    spot_size_qty = get_field(metadata, "Spot Size")
+    assert isinstance(spot_size_qty, ureg.Quantity)
+    assert spot_size_qty.magnitude == Decimal("3")
+    assert str(spot_size_qty.units) == "nanometer"
+    assert get_field(metadata, "Detector Name") == "E-T"
+    assert get_field(metadata, "Scan Mode") == "UH-RESOLUTION"
+    # Chamber Pressure is a Quantity
+    chamber_pressure_qty = get_field(metadata, "Chamber Pressure")
+    assert isinstance(chamber_pressure_qty, ureg.Quantity)
+    assert chamber_pressure_qty.magnitude == Decimal("0.61496")
+    assert str(chamber_pressure_qty.units) == "millipascal"
 
     # Test stage position parsing
-    assert metadata[0]["nx_meta"]["Stage Position"]["X"] == pytest.approx(0.00407293)
-    assert metadata[0]["nx_meta"]["Stage Position"]["Y"] == pytest.approx(0.016073298)
-    assert metadata[0]["nx_meta"]["Stage Position"]["Z"] == pytest.approx(0.006311907)
-    assert metadata[0]["nx_meta"]["Stage Position"][
-        "Rotation (degrees)"
-    ] == pytest.approx(30.0)
-    assert metadata[0]["nx_meta"]["Stage Position"]["Tilt (degrees)"] == pytest.approx(
-        0.0
-    )
+    # Stage Position may be in extensions
+    stage_pos = get_field(metadata, "Stage Position")
+    # X is a Quantity
+    x_qty = stage_pos["X"]
+    assert isinstance(x_qty, ureg.Quantity)
+    assert x_qty.magnitude == Decimal("0.00407293")
+    assert str(x_qty.units) == "meter"
+    # Y is a Quantity
+    y_qty = stage_pos["Y"]
+    assert isinstance(y_qty, ureg.Quantity)
+    assert y_qty.magnitude == Decimal("0.016073298")
+    assert str(y_qty.units) == "meter"
+    # Z is a Quantity
+    z_qty = stage_pos["Z"]
+    assert isinstance(z_qty, ureg.Quantity)
+    assert z_qty.magnitude == Decimal("0.006311907")
+    assert str(z_qty.units) == "meter"
+    # Rotation is a Quantity
+    rotation_qty = stage_pos["Rotation"]
+    assert isinstance(rotation_qty, ureg.Quantity)
+    assert rotation_qty.magnitude == Decimal("30")
+    assert str(rotation_qty.units) == "degree"
+    # Tilt is a Quantity
+    tilt_qty = stage_pos["Tilt"]
+    assert isinstance(tilt_qty, ureg.Quantity)
+    assert tilt_qty.magnitude == Decimal("0")
+    assert str(tilt_qty.units) == "degree"
 
     # Test detector settings
-    assert metadata[0]["nx_meta"]["Detector 0 Gain"] == pytest.approx(46.562)
-    assert metadata[0]["nx_meta"]["Detector 0 Offset"] == pytest.approx(73.76)
+    assert get_field(metadata, "Detector 0 Gain") == Decimal("46.562")
+    assert get_field(metadata, "Detector 0 Offset") == Decimal("73.76")
 
     # Test scan parameters
-    assert metadata[0]["nx_meta"]["Pixel Dwell Time (μs)"] == pytest.approx(10.0)
+    # Pixel Dwell Time is a Quantity
+    pixel_dwell_time_qty = get_field(metadata, "dwell_time")
+    assert isinstance(pixel_dwell_time_qty, ureg.Quantity)
+    assert pixel_dwell_time_qty.magnitude == Decimal("10")
+    assert str(pixel_dwell_time_qty.units) == "microsecond"
     # Scan rotation
-    assert metadata[0]["nx_meta"]["Scan Rotation (degrees)"] == pytest.approx(0.0)
+    # Scan Rotation is a Quantity
+    scan_rotation_qty = get_field(metadata, "Scan Rotation")
+    assert isinstance(scan_rotation_qty, ureg.Quantity)
+    assert scan_rotation_qty.magnitude == Decimal("0")
+    assert str(scan_rotation_qty.units) == "degree"
 
     # Test emission current (converted from A to μA)
-    assert metadata[0]["nx_meta"]["Emission Current (μA)"] == pytest.approx(
-        217.642, rel=1e-3
+    # Emission Current is a Quantity - may be at top level after migration
+    emission_current_qty = metadata[0]["nx_meta"].get("emission_current") or get_field(
+        metadata, "Emission Current"
     )
+    assert isinstance(emission_current_qty, ureg.Quantity)
+    assert emission_current_qty.magnitude == Decimal("217.6420018")
+    assert str(emission_current_qty.units) == "microampere"
 
     # Test stigmator values
-    assert metadata[0]["nx_meta"]["Stigmator X Value"] == pytest.approx(6.02430344)
-    assert metadata[0]["nx_meta"]["Stigmator Y Value"] == pytest.approx(-2.90339509)
+    assert get_field(metadata, "Stigmator X Value") == Decimal("6.02430344")
+    assert get_field(metadata, "Stigmator Y Value") == Decimal("-2.90339509")
 
     # Test gun type
-    assert metadata[0]["nx_meta"]["Gun Type"] == "Schottky"
+    assert get_field(metadata, "Gun Type") == "Schottky"
 
     # Test session ID
-    assert (
-        metadata[0]["nx_meta"]["Session ID"] == "abcdefgh-ijkl-mnop-qrst-uvwxyz123456"
-    )
+    assert get_field(metadata, "Session ID") == "abcdefgh-ijkl-mnop-qrst-uvwxyz123456"
 
 
 def _assert_all_tescan_metadata(metadata):
@@ -412,7 +500,7 @@ class TestTescanPfibTiffExtractor:
         extractor._extract_from_tiff_tags(fake_tif, mdict)
         assert "Extractor Warnings" in mdict["nx_meta"]
 
-    def test_tescan_parse_nx_meta_edge_cases(self):
+    def test_tescan_parse_nx_meta_edge_cases(self):  # noqa: PLR0915
         """Test _parse_nx_meta() handles various edge cases gracefully."""
         extractor = TescanTiffExtractor()
 
@@ -422,15 +510,23 @@ class TestTescanPfibTiffExtractor:
         assert "nx_meta" in result
         assert "warnings" in result["nx_meta"]
 
-        # Test valid numeric values
+        # Test valid numeric values - now returns Quantities
         mdict = {
             "nx_meta": {},
             "MAIN": {"Magnification": "1000.0"},
             "SEM": {"HV": "15000.0"},
         }
         result = extractor._parse_nx_meta(mdict)
-        assert result["nx_meta"]["Magnification (kX)"] == 1.0
-        assert result["nx_meta"]["HV Voltage (kV)"] == 15.0
+        # Magnification is a Quantity
+        mag = result["nx_meta"]["Magnification"]
+        assert isinstance(mag, ureg.Quantity)
+        assert mag.magnitude == 1.0
+        assert str(mag.units) == "kiloX"
+        # HV Voltage is a Quantity
+        hv = result["nx_meta"]["HV Voltage"]
+        assert isinstance(hv, ureg.Quantity)
+        assert hv.magnitude == 15.0
+        assert str(hv.units) == "kilovolt"
 
         # Test zero values (should be included for fields with suppress_zero=False)
         mdict = {
@@ -439,8 +535,16 @@ class TestTescanPfibTiffExtractor:
             "SEM": {"StageX": "0.0"},
         }
         result = extractor._parse_nx_meta(mdict)
-        assert result["nx_meta"]["Magnification (kX)"] == 0.0
-        assert result["nx_meta"]["Stage Position"]["X"] == 0.0
+        # Magnification zero is a Quantity
+        mag_zero = result["nx_meta"]["Magnification"]
+        assert isinstance(mag_zero, ureg.Quantity)
+        assert mag_zero.magnitude == 0.0
+        assert str(mag_zero.units) == "kiloX"
+        # Stage Position X is also a Quantity
+        stage_x = result["nx_meta"]["Stage Position"]["X"]
+        assert isinstance(stage_x, ureg.Quantity)
+        assert stage_x.magnitude == 0.0
+        assert str(stage_x.units) == "meter"
 
         # Test fallback keys
         mdict = {
@@ -453,8 +557,12 @@ class TestTescanPfibTiffExtractor:
             },
         }
         result = extractor._parse_nx_meta(mdict)
-        assert result["nx_meta"]["HV Voltage (kV)"] == pytest.approx(15.0)
-        assert result["nx_meta"]["Detector 0 Gain"] == pytest.approx(46.562)
+        # HV Voltage from AcceleratorVoltage fallback is a Quantity
+        hv_fallback = result["nx_meta"]["HV Voltage"]
+        assert isinstance(hv_fallback, ureg.Quantity)
+        assert float(hv_fallback.magnitude) == 15.0
+        assert str(hv_fallback.units) == "kilovolt"
+        assert result["nx_meta"]["Detector 0 Gain"] == Decimal("46.562")
 
         # Test user info preference
         mdict = {
@@ -479,11 +587,18 @@ class TestTescanPfibTiffExtractor:
         }
         result = extractor._parse_nx_meta(mdict)
         stage_pos = result["nx_meta"]["Stage Position"]
-        assert stage_pos["X"] == pytest.approx(0.00407293)
-        assert stage_pos["Y"] == pytest.approx(0.016073298)
-        assert stage_pos["Z"] == pytest.approx(0.006311907)
+        # Stage Position fields are Quantities
+        assert isinstance(stage_pos["X"], ureg.Quantity)
+        assert float(stage_pos["X"].magnitude) == 0.00407293
+        assert str(stage_pos["X"].units) == "meter"
+        assert isinstance(stage_pos["Y"], ureg.Quantity)
+        assert float(stage_pos["Y"].magnitude) == 0.016073298
+        assert str(stage_pos["Y"].units) == "meter"
+        assert isinstance(stage_pos["Z"], ureg.Quantity)
+        assert float(stage_pos["Z"].magnitude) == 0.006311907
+        assert str(stage_pos["Z"].units) == "meter"
 
-        # Test nested dictionary paths for string fields (covers line 654)
+        # Test nested dictionary paths for string fields
         # This test directly tests the set_nested_dict_value function call
         # by simulating the exact code path that would be executed
         from nexusLIMS.utils import set_nested_dict_value
@@ -541,7 +656,7 @@ class TestTescanPfibTiffExtractor:
         """Test _is_tescan_hdr() handles file reading exceptions.
 
         This test covers the exception handling in _is_tescan_hdr() method where it
-        catches exceptions during file reading (lines 208-210).
+        catches exceptions during file reading.
         """
         extractor = TescanTiffExtractor()
 
@@ -554,10 +669,6 @@ class TestTescanPfibTiffExtractor:
             raise OSError(msg)
 
         monkeypatch.setattr(Path, "open", mock_path_open)
-
-        # Set the logger level to capture the debug message
-        logger = logging.getLogger("nexusLIMS.extractors.plugins.tescan_tif")
-        logger.setLevel(logging.DEBUG)
 
         # Should return False without crashing
         with caplog.at_level(
@@ -689,10 +800,6 @@ class TestTescanPfibTiffExtractor:
         # Return an integer (unsupported type) instead of bytes or str
         fake_tif, extractor = _setup_mock_tiff_file(12345)
 
-        # Set the logger level to DEBUG to capture the debug message
-        logger = logging.getLogger("nexusLIMS.extractors.plugins.tescan_tif")
-        logger.setLevel(logging.DEBUG)
-
         # Should return None and not crash - the TypeError should be caught internally
         with caplog.at_level(
             logging.DEBUG, logger="nexusLIMS.extractors.plugins.tescan_tif"
@@ -705,7 +812,7 @@ class TestTescanPfibTiffExtractor:
     def test_tescan_extract_embedded_hdr_fallback_decode(self, _setup_mock_tiff_file):  # noqa: PT019
         """Test _extract_embedded_hdr() fallback decode when no search keys found.
 
-        This test covers the fallback case in _extract_embedded_hdr() method (lines 273-278)
+        This test covers the fallback case in _extract_embedded_hdr() method
         where none of the search keys ([MAIN], AccFrames=, etc.) are found in the metadata,
         so it falls back to decoding the entire metadata bytes.
         """
@@ -727,7 +834,7 @@ class TestTescanPfibTiffExtractor:
     def test_tescan_extract_embedded_hdr_sem_key_at_start(self, _setup_mock_tiff_file):  # noqa: PT019
         """Test _extract_embedded_hdr() when SEM key is at start of string.
 
-        This test covers the else branch (line 315) where line_start = 0 is set
+        This test covers the else branch where line_start = 0 is set
         when no newline is found before the SEM key position.
         """
         # Return metadata where SEM key appears at start (no newline before it)
@@ -788,7 +895,7 @@ class TestTescanPfibTiffExtractor:
         """Test extract() method handles exceptions from _parse_nx_meta gracefully.
 
         This test covers the exception handling in extract() method where it catches
-        exceptions from _parse_nx_meta() and logs them with debug level (line 140).
+        exceptions from _parse_nx_meta() and logs them with debug level.
         """
         extractor = TescanTiffExtractor()
 
@@ -809,10 +916,6 @@ class TestTescanPfibTiffExtractor:
             extractor, "_extract_embedded_hdr", mock_extract_embedded_hdr_success
         )
         monkeypatch.setattr(extractor, "_parse_nx_meta", mock_parse_nx_meta_exception)
-
-        # Set the logger level to DEBUG to capture the debug message
-        logger = logging.getLogger("nexusLIMS.extractors.plugins.tescan_tif")
-        logger.setLevel(logging.DEBUG)
 
         # The extract method should handle the exception gracefully and not crash
         context = ExtractionContext(file_path=fake_tif, instrument=None)
@@ -854,7 +957,7 @@ class TestTescanPfibTiffExtractor:
 
         This test covers the exception handling in extract() method where it catches
         exceptions from _read_hdr_metadata() and _parse_nx_meta() when parsing
-        sidecar HDR files (lines 151-157).
+        sidecar HDR files.
         """
         extractor = TescanTiffExtractor()
 
@@ -909,7 +1012,7 @@ class TestTescanPfibTiffExtractor:
         """Test extract() method successfully parses sidecar HDR file.
 
         This test covers the successful path in extract() method where sidecar HDR
-        file parsing succeeds (lines 148-151).
+        file parsing succeeds.
         """
         extractor = TescanTiffExtractor()
 
@@ -937,10 +1040,6 @@ WD=0.005
             extractor, "_extract_embedded_hdr", mock_extract_embedded_hdr_failure
         )
 
-        # Set the logger level to capture the debug message
-        logger = logging.getLogger("nexusLIMS.extractors.plugins.tescan_tif")
-        logger.setLevel(logging.DEBUG)
-
         # The extract method should successfully parse the sidecar HDR file
         context = ExtractionContext(file_path=fake_tif, instrument=None)
         with caplog.at_level(
@@ -964,8 +1063,8 @@ WD=0.005
         assert result[0]["SEM"]["HV"] == "15000.0"
 
         # Assert that nx_meta was also populated
-        assert "Device" in result[0]["nx_meta"]
-        assert result[0]["nx_meta"]["Device"] == "TESCAN AMBER X"
+        assert "Device" in result[0]["nx_meta"]["extensions"]
+        assert result[0]["nx_meta"]["extensions"]["Device"] == "TESCAN AMBER X"
 
     def test_tescan_extract_software_version_from_tiff_tags(
         self, tescan_tif_file, monkeypatch
@@ -986,9 +1085,9 @@ WD=0.005
             # Call the original method
             result = original_parse_nx_meta(mdict)
             # Remove Software Version if it was added from HDR
-            # This forces the code to extract it from TIFF tags instead (line 495)
-            if "Software Version" in result["nx_meta"]:
-                del result["nx_meta"]["Software Version"]
+            # This forces the code to extract it from TIFF tags instead
+            if "Software Version" in result["nx_meta"]["extensions"]:
+                del result["nx_meta"]["extensions"]["Software Version"]
             return result
 
         monkeypatch.setattr(extractor, "_parse_nx_meta", mock_parse_nx_meta)
@@ -1002,10 +1101,9 @@ WD=0.005
         metadata = extractor.extract(context)
 
         # Verify that Software Version was extracted from TIFF tag 305
-        # This ensures line 495 is executed: mdict["nx_meta"]["Software Version"] = software
-        assert "Software Version" in metadata[0]["nx_meta"]
+        assert "Software Version" in metadata[0]["nx_meta"]["extensions"]
         assert (
-            metadata[0]["nx_meta"]["Software Version"]
+            metadata[0]["nx_meta"]["extensions"]["Software Version"]
             == "TESCAN Essence Version 1.3.7.1, build 8915"
         )
 
@@ -1039,14 +1137,94 @@ WD=0.005
         metadata = extractor.extract(context)
 
         # Verify that Operator was extracted from TIFF tags
-        assert "Operator" in metadata[0]["nx_meta"]
-        assert isinstance(metadata[0]["nx_meta"]["Operator"], str)
-        assert len(metadata[0]["nx_meta"]["Operator"]) > 0
+        ext = metadata[0]["nx_meta"]["extensions"]
+        assert "Operator" in ext
+        assert isinstance(ext["Operator"], str)
+        assert len(ext["Operator"]) > 0
 
         # Verify it's the expected value from the TIFF tag (Artist tag 315)
-        # From the debug output, we can see tag 315 contains "nxuser"
-        assert metadata[0]["nx_meta"]["Operator"] == "nxuser"
+        # From the debug output, we can see tag 315 contains "nxuser",
+        # compared to the HDR, which contains "Nexus User"
+        assert ext["Operator"] == "nxuser"
 
         # Verify that the warning was added
         assert "warnings" in metadata[0]["nx_meta"]
         assert ["Operator"] in metadata[0]["nx_meta"]["warnings"]
+
+    def test_software_version_from_tiff_tag(self, tescan_tif_file, monkeypatch):
+        """Test Software Version from TIFF tag 305 when not in metadata (line 499)."""
+        extractor = TescanTiffExtractor()
+
+        # Mock _parse_nx_meta to not add Software Version
+        def mock_parse(root, mdict):
+            pass  # Don't add any fields
+
+        monkeypatch.setattr(extractor, "_parse_nx_meta", mock_parse)
+        context = ExtractionContext(tescan_tif_file, instrument=None)
+        result = extractor.extract(context)
+
+        # Line 499 should add Software Version from TIFF tag
+        ext = result[0]["nx_meta"]["extensions"]
+        assert "Software Version" in ext
+
+    def test_suppress_zero_skips_value(self, tmp_path, monkeypatch):
+        """Test suppress_zero=True skips zero values."""
+        from nexusLIMS.extractors.base import FieldDefinition
+
+        test_tif = _create_test_tif_with_metadata(tmp_path, b"[SEM]\nZero=0\n")
+
+        extractor = TescanTiffExtractor()
+        original_get_fields = extractor._get_field_definitions
+
+        def patched_get_fields():
+            return [
+                *original_get_fields(),
+                FieldDefinition(
+                    "SEM",
+                    "Zero",
+                    "zero_field",
+                    1.0,
+                    is_string=False,
+                    suppress_zero=True,
+                ),
+            ]
+
+        monkeypatch.setattr(extractor, "_get_field_definitions", patched_get_fields)
+        result = extractor.extract(ExtractionContext(test_tif, None))
+
+        # Lines 814-815 skip zero value
+        assert "zero_field" not in result[0]["nx_meta"]
+
+    def test_nested_value_without_unit(self, tmp_path, monkeypatch):
+        """Test nested output_key without unit (lines 837-838)."""
+        from decimal import Decimal
+
+        from nexusLIMS.extractors.base import FieldDefinition
+
+        test_tif = _create_test_tif_with_metadata(tmp_path, b"[SEM]\nTestValue=42.5\n")
+
+        extractor = TescanTiffExtractor()
+        original_get_fields = extractor._get_field_definitions
+
+        def patched_get_fields():
+            return [
+                *original_get_fields(),
+                FieldDefinition(
+                    "SEM",
+                    "TestValue",
+                    ["nested", "test_value"],
+                    1.0,
+                    is_string=False,
+                    target_unit=None,  # No unit specified
+                ),
+            ]
+
+        monkeypatch.setattr(extractor, "_get_field_definitions", patched_get_fields)
+        result = extractor.extract(ExtractionContext(test_tif, None))
+
+        # Nested path without unit stores as Decimal
+        assert "nested" in result[0]["nx_meta"]["extensions"]
+        nested = result[0]["nx_meta"]["extensions"]["nested"]
+        assert "test_value" in nested
+        assert nested["test_value"] == 42.5
+        assert isinstance(nested["test_value"], Decimal)

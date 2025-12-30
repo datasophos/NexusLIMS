@@ -56,7 +56,7 @@ def sample_profile():
     return InstrumentProfile(
         instrument_id="FEI-Titan-STEM",
         parsers={"microscope": sample_parser},
-        static_metadata={"nx_meta.Facility": "Nexus Facility"},
+        extension_fields={"facility": "Nexus Facility"},
     )
 
 
@@ -137,7 +137,7 @@ class TestProfileRegistration:
             caplog.clear()
             duplicate_profile = InstrumentProfile(
                 instrument_id="FEI-Titan-STEM",
-                static_metadata={"different": "data"},
+                extension_fields={"different": "data"},
             )
             registry.register(duplicate_profile)
 
@@ -263,34 +263,20 @@ class TestInstrumentProfile:
         metadata = profile.transformations["double_value"](metadata)
         assert metadata["value"] == 10
 
-    def test_profile_with_extractor_overrides(self):
-        """Profile overriding extractors."""
+    def test_profile_with_extension_fields(self):
+        """Profile with extension fields injection."""
         profile = InstrumentProfile(
             instrument_id="test-inst",
-            extractor_overrides={
-                "tif": "zeiss_tif_extractor",
-                "dm3": "custom_dm3_extractor",
+            extension_fields={
+                "facility": "Nexus Facility",
+                "building": "Bldg 1",
+                "room": "Room A",
             },
         )
 
-        assert len(profile.extractor_overrides) == 2
-        assert profile.extractor_overrides["tif"] == "zeiss_tif_extractor"
-        assert profile.extractor_overrides["dm3"] == "custom_dm3_extractor"
-
-    def test_profile_with_static_metadata(self):
-        """Profile with static metadata injection."""
-        profile = InstrumentProfile(
-            instrument_id="test-inst",
-            static_metadata={
-                "nx_meta.Facility": "Nexus Facility",
-                "nx_meta.Building": "Bldg 1",
-                "nx_meta.Room": "Room A",
-            },
-        )
-
-        assert len(profile.static_metadata) == 3
-        assert profile.static_metadata["nx_meta.Facility"] == "Nexus Facility"
-        assert profile.static_metadata["nx_meta.Building"] == "Bldg 1"
+        assert len(profile.extension_fields) == 3
+        assert profile.extension_fields["facility"] == "Nexus Facility"
+        assert profile.extension_fields["building"] == "Bldg 1"
 
     def test_profile_all_fields(self):
         """Profile using all fields together."""
@@ -305,15 +291,13 @@ class TestInstrumentProfile:
             instrument_id="comprehensive-inst",
             parsers={"main": parser_func},
             transformations={"main": transform_func},
-            extractor_overrides={"tif": "custom_tif"},
-            static_metadata={"facility": "TEST"},
+            extension_fields={"facility": "TEST"},
         )
 
         assert profile.instrument_id == "comprehensive-inst"
         assert len(profile.parsers) == 1
         assert len(profile.transformations) == 1
-        assert len(profile.extractor_overrides) == 1
-        assert len(profile.static_metadata) == 1
+        assert len(profile.extension_fields) == 1
 
     def test_profile_default_empty_dicts(self):
         """Profile with only instrument_id uses empty dicts for other fields."""
@@ -322,8 +306,7 @@ class TestInstrumentProfile:
         assert profile.instrument_id == "minimal-inst"
         assert profile.parsers == {}
         assert profile.transformations == {}
-        assert profile.extractor_overrides == {}
-        assert profile.static_metadata == {}
+        assert profile.extension_fields == {}
 
 
 class TestProfileLogging:
@@ -474,7 +457,7 @@ from nexusLIMS.extractors.profiles import get_profile_registry
 
 test_profile = InstrumentProfile(
     instrument_id="Test-Local-Instrument",
-    static_metadata={"test": "local"}
+    extension_fields={"test": "local"}
 )
 
 get_profile_registry().register(test_profile)
@@ -489,7 +472,8 @@ get_profile_registry().register(test_profile)
             all_profiles = registry.get_all_profiles()
             assert "Test-Local-Instrument" in all_profiles
             assert (
-                all_profiles["Test-Local-Instrument"].static_metadata["test"] == "local"
+                all_profiles["Test-Local-Instrument"].extension_fields["test"]
+                == "local"
             )
         finally:
             registry.clear()
@@ -558,7 +542,7 @@ from nexusLIMS.extractors.profiles import get_profile_registry
 
 profile = InstrumentProfile(
     instrument_id="Custom-Instrument-12345",
-    static_metadata={"site": "My Lab"}
+    extension_fields={"site": "My Lab"}
 )
 
 get_profile_registry().register(profile)
@@ -736,3 +720,310 @@ get_profile_registry().register(profile)
         finally:
             # Explicitly restore
             importlib.util.spec_from_file_location = original_spec_from_file
+
+
+class TestProfileApplicationDuringExtraction:
+    """Test profile application during extraction.
+
+    Tests parsers, transformations, and extension fields are applied when
+    extractors run, using Digital Micrograph files as test data but testing
+    the profile system itself.
+    """
+
+    @pytest.fixture
+    def profile_registry_manager(self):
+        """Provide a profile registry that cleans up after tests."""
+        registry = get_profile_registry()
+        original_profiles = registry._profiles.copy()
+        yield registry
+        # Restore original state
+        registry._profiles = original_profiles
+
+    @pytest.fixture
+    def mock_instrument_from_filepath(self, monkeypatch):
+        """Mock get_instr_from_filepath to return a test instrument."""
+
+        def _mock(instrument):
+            def mock_func(filepath):  # noqa: ARG001
+                return instrument
+
+            monkeypatch.setattr(
+                "nexusLIMS.instruments.get_instr_from_filepath",
+                mock_func,
+            )
+
+        return _mock
+
+    @pytest.fixture
+    def list_signal(self):
+        """Provide a DM3 test file path for extraction tests."""
+        from tests.unit.utils import extract_files
+
+        # Cleanup handled by module-level fixture in conftest
+        return extract_files("LIST_SIGNAL")
+
+    def test_apply_profile_with_parsers(
+        self,
+        list_signal,
+        mock_instrument_from_filepath,
+        caplog,
+        profile_registry_manager,
+    ):
+        """Test that profile parsers are applied during extraction."""
+        import logging
+
+        from nexusLIMS.extractors.plugins import digital_micrograph
+        from tests.unit.test_instrument_factory import make_test_tool
+
+        # Create instrument and setup context
+        instrument = make_test_tool()
+        mock_instrument_from_filepath(instrument)
+
+        # Create a profile with a custom parser
+        def custom_parser(metadata, ctx):  # noqa: ARG001
+            metadata["nx_meta"]["CustomField"] = "CustomValue"
+            return metadata
+
+        profile = InstrumentProfile(
+            instrument_id=instrument.name,
+            parsers={"custom": custom_parser},
+        )
+
+        # Register the profile
+        profile_registry_manager.register(profile)
+
+        # Extract metadata - should apply profile
+        digital_micrograph._logger.setLevel(logging.DEBUG)
+        result_list = digital_micrograph.get_dm3_metadata(
+            list_signal[0], instrument=instrument
+        )
+
+        # Verify parser was applied - custom fields go to extensions
+        assert result_list is not None
+        assert isinstance(result_list, list)
+        result = result_list[0]
+        assert "extensions" in result["nx_meta"]
+        assert result["nx_meta"]["extensions"]["CustomField"] == "CustomValue"
+
+        # Verify log message
+        assert f"Applying profile for instrument: {instrument.name}" in caplog.text
+
+    def test_apply_profile_parser_failure(
+        self,
+        list_signal,
+        mock_instrument_from_filepath,
+        caplog,
+        profile_registry_manager,
+    ):
+        """Test that extraction continues gracefully when a parser fails."""
+        import logging
+
+        from nexusLIMS.extractors.plugins import digital_micrograph
+        from tests.unit.test_instrument_factory import make_test_tool
+
+        # Create instrument and setup context
+        instrument = make_test_tool()
+        mock_instrument_from_filepath(instrument)
+
+        # Create a profile with a failing parser
+        def failing_parser(metadata, ctx):  # noqa: ARG001
+            msg = "Parser intentionally failed"
+            raise ValueError(msg)
+
+        profile = InstrumentProfile(
+            instrument_id=instrument.name,
+            parsers={"failing": failing_parser},
+        )
+
+        # Register the profile
+        profile_registry_manager.register(profile)
+
+        # Extract metadata - should handle parser failure gracefully
+        digital_micrograph._logger.setLevel(logging.WARNING)
+
+        result_list = digital_micrograph.get_dm3_metadata(
+            list_signal[0], instrument=instrument
+        )
+
+        # Metadata should still be extracted despite parser failure
+        assert result_list is not None
+        assert isinstance(result_list, list)
+        result = result_list[0]
+        assert "nx_meta" in result
+
+        # Verify warning was logged
+        assert "Profile parser 'failing' failed" in caplog.text
+        assert "Parser intentionally failed" in caplog.text
+
+    def test_apply_profile_with_transformations(
+        self,
+        list_signal,
+        mock_instrument_from_filepath,
+        profile_registry_manager,
+    ):
+        """Test that profile transformations are applied during extraction."""
+        from nexusLIMS.extractors.plugins import digital_micrograph
+        from tests.unit.test_instrument_factory import make_test_tool
+
+        # Create instrument and setup context
+        instrument = make_test_tool()
+        mock_instrument_from_filepath(instrument)
+
+        # Create a profile with a transformation on the nx_meta dict
+        # Transformations work on top-level keys in the metadata dict
+        def add_custom_field(nx_meta_dict):
+            """Transform nx_meta by adding a custom field."""
+            nx_meta_dict["TransformedField"] = "TRANSFORMATION_APPLIED"
+            return nx_meta_dict
+
+        profile = InstrumentProfile(
+            instrument_id=instrument.name,
+            # Transform the "nx_meta" top-level key
+            transformations={"nx_meta": add_custom_field},
+        )
+
+        # Register the profile
+        profile_registry_manager.register(profile)
+
+        # Extract metadata - should apply transformation
+        result_list = digital_micrograph.get_dm3_metadata(
+            list_signal[0], instrument=instrument
+        )
+
+        # Verify transformation was applied
+        # The transformed field goes to extensions
+        assert result_list is not None
+        assert isinstance(result_list, list)
+        result = result_list[0]
+        assert "extensions" in result["nx_meta"]
+        assert (
+            result["nx_meta"]["extensions"]["TransformedField"]
+            == "TRANSFORMATION_APPLIED"
+        )
+
+    def test_apply_profile_transformation_failure(
+        self,
+        list_signal,
+        mock_instrument_from_filepath,
+        caplog,
+        profile_registry_manager,
+    ):
+        """Test that extraction continues gracefully when a transformation fails."""
+        import logging
+
+        from nexusLIMS.extractors.plugins import digital_micrograph
+        from tests.unit.test_instrument_factory import make_test_tool
+
+        # Create instrument and setup context
+        instrument = make_test_tool()
+        mock_instrument_from_filepath(instrument)
+
+        # Create a profile with a failing transformation
+        def failing_transform(value):  # noqa: ARG001
+            msg = "Transform intentionally failed"
+            raise RuntimeError(msg)
+
+        profile = InstrumentProfile(
+            instrument_id=instrument.name,
+            transformations={"nx_meta": failing_transform},
+        )
+
+        # Register the profile
+        profile_registry_manager.register(profile)
+
+        # Extract metadata - should handle transformation failure gracefully
+        digital_micrograph._logger.setLevel(logging.WARNING)
+
+        result_list = digital_micrograph.get_dm3_metadata(
+            list_signal[0], instrument=instrument
+        )
+
+        # Metadata should still be extracted despite transformation failure
+        assert result_list is not None
+        assert isinstance(result_list, list)
+        result = result_list[0]
+        assert "nx_meta" in result
+
+        # Verify warning was logged
+        assert "Profile transformation 'nx_meta' failed" in caplog.text
+        assert "Transform intentionally failed" in caplog.text
+
+    def test_apply_profile_with_extension_fields(
+        self,
+        list_signal,
+        mock_instrument_from_filepath,
+        profile_registry_manager,
+    ):
+        """Test that profile extension fields are injected during extraction."""
+        from nexusLIMS.extractors.plugins import digital_micrograph
+        from tests.unit.test_instrument_factory import make_test_tool
+
+        # Create instrument and setup context
+        instrument = make_test_tool()
+        mock_instrument_from_filepath(instrument)
+
+        # Create a profile with extension fields
+        profile = InstrumentProfile(
+            instrument_id=instrument.name,
+            extension_fields={
+                "facility": "Test Facility",
+                "building": "Building 123",
+                "custom_info": "Custom Value",
+            },
+        )
+
+        # Register the profile
+        profile_registry_manager.register(profile)
+
+        # Extract metadata - should inject extension fields
+        result_list = digital_micrograph.get_dm3_metadata(
+            list_signal[0], instrument=instrument
+        )
+
+        # Verify extension fields were injected
+        assert result_list is not None
+        assert isinstance(result_list, list)
+        result = result_list[0]
+        assert "extensions" in result["nx_meta"]
+        assert result["nx_meta"]["extensions"]["facility"] == "Test Facility"
+        assert result["nx_meta"]["extensions"]["building"] == "Building 123"
+        assert result["nx_meta"]["extensions"]["custom_info"] == "Custom Value"
+
+    def test_apply_profile_empty_extension_fields(
+        self,
+        list_signal,
+        mock_instrument_from_filepath,
+        profile_registry_manager,
+    ):
+        """Test that extraction works with empty extension fields."""
+        from nexusLIMS.extractors.plugins import digital_micrograph
+        from tests.unit.test_instrument_factory import make_test_tool
+
+        # Create instrument and setup context
+        instrument = make_test_tool()
+        mock_instrument_from_filepath(instrument)
+
+        # Create a profile with empty extension fields
+        profile = InstrumentProfile(
+            instrument_id=instrument.name,
+            extension_fields={},
+        )
+
+        # Register the profile
+        profile_registry_manager.register(profile)
+
+        result_list = digital_micrograph.get_dm3_metadata(
+            list_signal[0], instrument=instrument
+        )
+
+        # Metadata should still be extracted
+        assert result_list is not None
+        assert isinstance(result_list, list)
+        result = result_list[0]
+        assert "nx_meta" in result
+        # Extensions section will exist due to vendor-specific fields from extraction
+        # (e.g., NexusLIMS Extraction, vendor metadata) but won't have profile fields
+        assert "extensions" in result["nx_meta"]
+        # Verify the profile's extension fields were not added
+        assert "facility" not in result["nx_meta"]["extensions"]
+        assert "building" not in result["nx_meta"]["extensions"]

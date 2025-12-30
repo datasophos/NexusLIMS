@@ -18,16 +18,19 @@ from xml.sax.saxutils import escape
 
 import numpy as np
 from lxml import etree
+from pint import Quantity
 from scipy.signal import argrelextrema
 from sklearn.model_selection import GridSearchCV, LeaveOneOut
 from sklearn.neighbors import KernelDensity
 
 from nexusLIMS.config import settings
 from nexusLIMS.extractors import flatten_dict, parse_metadata
+from nexusLIMS.extractors.xml_serialization import serialize_quantity_to_xml
+from nexusLIMS.schemas import em_glossary
 from nexusLIMS.utils import current_system_tz
 
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
+_logger = logging.getLogger(__name__)
+_logger.setLevel(logging.INFO)
 
 
 def cluster_filelist_mtimes(filelist: List[str]) -> List[float]:
@@ -44,19 +47,15 @@ def cluster_filelist_mtimes(filelist: List[str]) -> List[float]:
     a "large gap" will need to be correspondingly larger.
 
     The approach this method uses is to detect minima in the
-    `Kernel Density Estimation`_ (KDE) of the file modification times. To
-    determine the optimal bandwidth parameter to use in KDE, a `grid search`_
-    over possible appropriate bandwidths is performed, using `Leave One Out`_
+    [Kernel Density Estimation](https://scikit-learn.org/stable/modules/density.html#kernel-density)
+    (KDE) of the file modification times. To determine the optimal bandwidth parameter
+    to use in KDE, a [grid search](https://scikit-learn.org/stable/modules/grid_search.html#grid-search)
+    over possible appropriate bandwidths is performed, using
+    [Leave One Out](https://scikit-learn.org/stable/modules/cross_validation.html#leave-one-out-loo)
     cross-validation. This approach allows the method to determine the
     important gaps in file acquisition times with sensitivity controlled by
     the distribution of the data itself, rather than a pre-supposed optimum.
-    The KDE minima approach was suggested `here`_.
-
-    .. _Kernel Density Estimation: https://scikit-learn.org/stable/modules/density.html#kernel-density
-    .. _grid search: https://scikit-learn.org/stable/modules/grid_search.html#grid-search
-    .. _Leave One Out: https://scikit-learn.org/stable/modules/cross_validation.html#leave-one-out-loo
-    .. _here: https://stackoverflow.com/a/35151947/1435788
-
+    The KDE minima approach was suggested [here](https://stackoverflow.com/a/35151947/1435788).
 
     Parameters
     ----------
@@ -71,7 +70,7 @@ def cluster_filelist_mtimes(filelist: List[str]) -> List[float]:
         A list of the `mtime` values that represent boundaries between
         discrete Acquisition Activities
     """
-    logger.info("Starting clustering of file mtimes")
+    _logger.info("Starting clustering of file mtimes")
     start_timer = default_timer()
     mtimes = sorted([f.stat().st_mtime for f in filelist])
 
@@ -99,7 +98,7 @@ def cluster_filelist_mtimes(filelist: List[str]) -> List[float]:
         35,
         base=math.e,
     )
-    logger.info("KDE bandwidth grid search")
+    _logger.info("KDE bandwidth grid search")
     grid = GridSearchCV(
         KernelDensity(kernel="gaussian"),
         {"bandwidth": bandwidths},
@@ -108,7 +107,7 @@ def cluster_filelist_mtimes(filelist: List[str]) -> List[float]:
     )
     grid.fit(m_array)
     bandwidth = grid.best_params_["bandwidth"]
-    logger.info("Using bandwidth of %.3f minutes for KDE", bandwidth)
+    _logger.info("Using bandwidth of %.3f minutes for KDE", bandwidth)
 
     # Calculate AcquisitionActivity boundaries by "clustering" the timestamps
     # using KDE using KDTree nearest neighbor estimates, and the previously
@@ -121,7 +120,7 @@ def cluster_filelist_mtimes(filelist: List[str]) -> List[float]:
     mins = argrelextrema(scores, np.less)[0]  # the minima indices
     aa_boundaries = [s[m] for m in mins]  # the minima mtime values
     end_timer = default_timer()
-    logger.info(
+    _logger.info(
         "Detected %i activities in %.2f seconds",
         len(aa_boundaries) + 1,
         end_timer - start_timer,
@@ -207,12 +206,20 @@ def _add_dataset_element(  # noqa: PLR0913
 
     for meta_k, meta_v in sorted(unique_meta.items(), key=lambda i: i[0].lower()):
         if meta_k not in ["warnings", "DatasetType"]:
-            meta_v = _escape(meta_v)  # noqa: PLW2901
             meta_el = etree.SubElement(dset_el, "meta")
             meta_el.set("name", str(meta_k))
             if meta_k in warning:
                 meta_el.set("warning", "true")
-            meta_el.text = str(meta_v)
+
+            # Handle Pint Quantity objects with unit attribute
+            if isinstance(meta_v, Quantity):
+                magnitude, unit = serialize_quantity_to_xml(meta_v)
+                meta_el.text = str(magnitude)
+                meta_el.set("unit", unit)
+            else:
+                # Handle regular values (strings, numbers, etc.)
+                meta_v = _escape(meta_v)  # noqa: PLW2901
+                meta_el.text = str(meta_v)
 
     return aq_ac_xml_el
 
@@ -223,7 +230,7 @@ class AcquisitionActivity:
     A collection of files/metadata attributed to a physical acquisition activity.
 
     Instances of this class correspond to AcquisitionActivity nodes in the
-    `NexusLIMS schema <https://data.nist.gov/od/dm/nexus/experiment/v1.0>`_
+    [NexusLIMS schema](https://data.nist.gov/od/dm/nexus/experiment/v1.0).
 
     Parameters
     ----------
@@ -316,7 +323,7 @@ class AcquisitionActivity:
 
             if meta_list is None:
                 # Something bad happened, so we need to alert the user
-                logger.warning("Could not parse metadata of %s", fname)
+                _logger.warning("Could not parse metadata of %s", fname)
                 # Still add the file to maintain original behavior
                 self.files.append(str(fname))
                 self.previews.append(None)
@@ -328,7 +335,30 @@ class AcquisitionActivity:
                     self.files.append(
                         str(fname)
                     )  # Same file, repeated for multi-signal
-                    self.meta.append(flatten_dict(signal_meta["nx_meta"]))
+
+                    # Merge extensions into root level before flattening
+                    # This ensures vendor-specific fields appear at root in XML
+                    nx_meta = signal_meta["nx_meta"].copy()
+                    if "extensions" in nx_meta:
+                        extensions = nx_meta.pop("extensions")
+                        nx_meta.update(extensions)
+
+                    # Convert EM Glossary snake_case fields to display names for XML
+                    # Only convert fields that are in snake_case (contain underscores)
+
+                    nx_meta_for_xml = {}
+                    for field_name, value in nx_meta.items():
+                        # Only convert snake_case EM Glossary field names
+                        if "_" in field_name and field_name.islower():
+                            display_name = em_glossary.get_display_name(field_name)
+                            nx_meta_for_xml[display_name] = value
+                        else:
+                            # Keep original name (DatasetType, Data Type, etc.)
+                            nx_meta_for_xml[field_name] = value
+
+                    self.meta.append(
+                        flatten_dict(nx_meta_for_xml, separator=" – ")  # noqa: RUF001
+                    )
 
                     # Handle previews (always a list)
                     if preview_fnames and i < len(preview_fnames):
@@ -344,8 +374,8 @@ class AcquisitionActivity:
         else:
             msg = f"{fname} was not found"
             raise FileNotFoundError(msg)
-        logger.debug("appended %s to files", fname)
-        logger.debug("self.files is now %s", self.files)
+        _logger.debug("appended %s to files", fname)
+        _logger.debug("self.files is now %s", self.files)
 
     def store_unique_params(self):
         """
@@ -380,11 +410,11 @@ class AcquisitionActivity:
         """
         # Make sure unique params are defined before proceeding:
         if self.unique_params == set():
-            logger.info("Storing unique parameters for files in AcquisitionActivity")
+            _logger.info("Storing unique parameters for files in AcquisitionActivity")
             self.store_unique_params()
 
         if len(self.files) == 1:
-            logger.info(
+            _logger.info(
                 "Only one file found in this activity, so leaving "
                 "metadata associated with the file, rather than "
                 "activity",
@@ -412,7 +442,7 @@ class AcquisitionActivity:
                     if vts in meta:
                         # this value was found in meta, so store it
                         setup_params[vts] = meta[vts]
-                        logger.debug(
+                        _logger.debug(
                             "iter: %i; adding %s = %s to setup_params",
                             i,
                             vts,
@@ -421,7 +451,7 @@ class AcquisitionActivity:
                     else:
                         # this value wasn't present in meta, so it can't be
                         # common to all, so remove it:
-                        logger.debug("iter: %i; removing %s", i, vts)
+                        _logger.debug("iter: %i; removing %s", i, vts)
                         values_to_search.remove(vts)
                 # On the subsequent iterations test if values are same/different
                 # If different, then remove the key from setup_params and
@@ -433,24 +463,30 @@ class AcquisitionActivity:
                         # but if it is, it means this value, which should
                         # have already been added to setup_params is somehow
                         # new, so delete vts from values to search
-                        logger.debug(
+                        _logger.debug(
                             "iter: %i; removing %s",
                             i,
                             vts,
                         )  # pragma: no cover
                         values_to_search.remove(vts)  # pragma: no cover
-                    if vts in meta and setup_params[vts] != meta[vts]:
-                        # value does not match, so this must be a
-                        # individual dataset metadata, so remove it from
-                        # setup_params, and remove it from values_to_search
-                        logger.debug(
+                    # Check if the parameter is missing in this file OR
+                    # has a different value
+                    if vts not in meta or setup_params[vts] != meta[vts]:
+                        # Parameter is either missing or has different value,
+                        # so this must be individual dataset metadata.
+                        # Remove it from setup_params and values_to_search
+                        _logger.debug(
                             "iter: %i; vts=%s - "
-                            "meta[vts]=%s != setup_params[vts]=%s; "
+                            "%s; "
                             "removing %s from setup_params and values to search",
                             i,
                             vts,
-                            meta[vts],
-                            setup_params[vts],
+                            "not in meta"
+                            if vts not in meta
+                            else (
+                                f"meta[vts]={meta[vts]} != "
+                                f"setup_params[vts]={setup_params[vts]}"
+                            ),
                             vts,
                         )
                         del setup_params[vts]
@@ -467,7 +503,7 @@ class AcquisitionActivity:
         are kept in ``self.setup_params``.
         """
         if self.setup_params is None:
-            logger.warning(
+            _logger.warning(
                 "%s -- setup_params has not been defined; call store_setup_params() "
                 "prior to using this method. Nothing was done.",
                 self,
@@ -528,7 +564,6 @@ class AcquisitionActivity:
         ):
             # metadata values to skip in XML output
             if param_k not in ["warnings", "DatasetType"]:
-                param_v = _escape(param_v)  # noqa: PLW2901
                 # for setup parameters, a key in the first dataset's warning
                 # list is the same as in all of them
                 pk_warning = param_k in self.warnings[0]
@@ -536,7 +571,15 @@ class AcquisitionActivity:
                 param_el.set("name", str(param_k))
                 if pk_warning:
                     param_el.set("warning", "true")
-                param_el.text = str(param_v)
+
+                # Handle Pint Quantity objects with unit attribute
+                if isinstance(param_v, Quantity):
+                    magnitude, unit = serialize_quantity_to_xml(param_v)
+                    param_el.text = str(magnitude)
+                    param_el.set("unit", unit)
+                else:
+                    param_v = _escape(param_v)  # noqa: PLW2901
+                    param_el.text = str(param_v)
 
         # Count how many times each file appears (for multi-signal files)
         file_signal_counts = {}

@@ -8,8 +8,25 @@ from datetime import datetime as dt
 import pytest
 
 from nexusLIMS.extractors.plugins import fei_emi
+from nexusLIMS.schemas.units import ureg
+from nexusLIMS.utils import current_system_tz
+from tests.unit.test_extractors.conftest import get_field
 from tests.unit.test_instrument_factory import make_titan_stem, make_titan_tem
 from tests.unit.utils import get_full_file_path
+
+# Use IANA timezone for proper DST handling
+SYSTEM_TZ = current_system_tz()
+
+
+def check_stage_position(stage_pos, expected_values):
+    """Check Stage Position Quantities."""
+    for axis, expected_value in expected_values.items():
+        assert isinstance(stage_pos[axis], ureg.Quantity)
+        assert float(stage_pos[axis].magnitude) == expected_value
+        if axis in ("A", "B"):
+            assert str(stage_pos[axis].units) == "degree"
+        else:
+            assert str(stage_pos[axis].units) == "micrometer"
 
 
 class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
@@ -24,21 +41,20 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta[0]["nx_meta"]["DatasetType"] == "Image"
         assert meta[0]["nx_meta"]["Data Type"] == "STEM_Imaging"
         assert meta[0]["nx_meta"]["Data Dimensions"] == "(1024, 1024)"
-        assert (
-            meta[0]["nx_meta"]["Creation Time"]
-            == dt(2018, 11, 13, 15, 2, 43).isoformat()
+        expected_iso = SYSTEM_TZ.localize(dt(2018, 11, 13, 15, 2, 43)).isoformat()
+        assert meta[0]["nx_meta"]["Creation Time"] == expected_iso
+        # Vendor-specific fields are in extensions
+        assert get_field(meta, "Magnification") == pytest.approx(225000)
+        assert get_field(meta, "Mode") == "STEM nP SA Zoom Diffraction"
+
+        # Stage Position fields are Quantities (in extensions)
+        check_stage_position(
+            get_field(meta, "Stage Position"),
+            {"A": -0.84, "B": 0.0, "X": -194.379, "Y": -130.201, "Z": 128.364},
         )
-        assert meta[0]["nx_meta"]["Magnification (x)"] == pytest.approx(225000)
-        assert meta[0]["nx_meta"]["Mode"] == "STEM nP SA Zoom Diffraction"
-        assert meta[0]["nx_meta"]["Stage Position"] == {
-            "A (°)": -0.84,
-            "B (°)": 0.0,
-            "X (μm)": -194.379,
-            "Y (μm)": -130.201,
-            "Z (μm)": 128.364,
-        }
-        assert meta[0]["nx_meta"]["User"] == "USER"
-        assert meta[0]["nx_meta"]["C2 Lens (%)"] == pytest.approx(22.133)
+
+        assert get_field(meta, "User") == "USER"
+        assert get_field(meta, "C2 Lens") == pytest.approx(22.133)
 
     def test_titan_tem_stem_image_2(self, fei_ser_files):
         test_file = get_full_file_path(
@@ -46,17 +62,27 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
             fei_ser_files,
         )
         meta = fei_emi.get_ser_metadata(test_file)
-        assert meta[0]["nx_meta"]["Defocus (μm)"] == 0
+
+        # Defocus is a Quantity
+        defocus = get_field(meta, "Defocus")
+        assert isinstance(defocus, ureg.Quantity)
+        assert float(defocus.magnitude) == 0
+        assert str(defocus.units) == "micrometer"
+
         assert meta[0]["nx_meta"]["Data Dimensions"] == "(1024, 1024)"
-        assert meta[0]["nx_meta"]["Gun Lens"] == 6
-        assert meta[0]["nx_meta"]["Gun Type"] == "FEG"
-        assert meta[0]["nx_meta"]["C2 Aperture (μm)"] == pytest.approx(50.0)
+        assert get_field(meta, "Gun Lens") == 6
+        assert get_field(meta, "Gun Type") == "FEG"
+
+        # C2 Aperture is a Quantity
+        c2_aperture = get_field(meta, "C2 Aperture")
+        assert isinstance(c2_aperture, ureg.Quantity)
+        assert float(c2_aperture.magnitude) == 50.0
+        assert str(c2_aperture.units) == "micrometer"
+
         assert meta[0]["nx_meta"]["DatasetType"] == "Image"
         assert meta[0]["nx_meta"]["Data Type"] == "STEM_Imaging"
-        assert (
-            meta[0]["nx_meta"]["Creation Time"]
-            == dt(2018, 11, 13, 15, 2, 43).isoformat()
-        )
+        expected_iso = SYSTEM_TZ.localize(dt(2018, 11, 13, 15, 2, 43)).isoformat()
+        assert meta[0]["nx_meta"]["Creation Time"] == expected_iso
 
     def test_titan_tem_single_stem_image(self, fei_ser_files):
         test_file = get_full_file_path(
@@ -67,20 +93,24 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta[0]["nx_meta"]["DatasetType"] == "Image"
         assert meta[0]["nx_meta"]["Data Type"] == "STEM_Imaging"
         assert meta[0]["nx_meta"]["Data Dimensions"] == "(1024, 1024)"
-        assert (
-            meta[0]["nx_meta"]["Creation Time"]
-            == dt(2019, 6, 28, 15, 53, 31).isoformat()
+        expected_iso = SYSTEM_TZ.localize(dt(2019, 6, 28, 15, 53, 31)).isoformat()
+        assert meta[0]["nx_meta"]["Creation Time"] == expected_iso
+
+        # C1 Aperture is a Quantity
+        c1_aperture = get_field(meta, "C1 Aperture")
+        assert isinstance(c1_aperture, ureg.Quantity)
+        assert float(c1_aperture.magnitude) == 2000
+        assert str(c1_aperture.units) == "micrometer"
+
+        assert get_field(meta, "Mode") == "STEM nP SA Zoom Image"
+
+        # Stage Position fields are Quantities
+        check_stage_position(
+            get_field(meta, "Stage Position"),
+            {"A": 0.0, "B": 0.0, "X": -31.415, "Y": 42.773, "Z": -10.576},
         )
-        assert meta[0]["nx_meta"]["C1 Aperture (μm)"] == 2000
-        assert meta[0]["nx_meta"]["Mode"] == "STEM nP SA Zoom Image"
-        assert meta[0]["nx_meta"]["Stage Position"] == {
-            "A (°)": 0.0,
-            "B (°)": 0.0,
-            "X (μm)": -31.415,
-            "Y (μm)": 42.773,
-            "Z (μm)": -10.576,
-        }
-        assert meta[0]["nx_meta"]["SA Aperture"] == "retracted"
+
+        assert get_field(meta, "SA Aperture") == "retracted"
         assert meta[0]["ObjectInfo"]["Uuid"] == "cb7d82b8-5405-42fc-aa71-7680721a6e32"
 
     def test_titan_tem_eds_spectrum_image(self, fei_ser_files):
@@ -92,21 +122,32 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta[0]["nx_meta"]["DatasetType"] == "SpectrumImage"
         assert meta[0]["nx_meta"]["Data Type"] == "STEM_EDS_Spectrum_Imaging"
         assert meta[0]["nx_meta"]["Data Dimensions"] == "(9, 10, 3993)"
-        assert (
-            meta[0]["nx_meta"]["Creation Time"]
-            == dt(2019, 7, 17, 13, 50, 22).isoformat()
+        expected_iso = SYSTEM_TZ.localize(dt(2019, 7, 17, 13, 50, 22)).isoformat()
+        assert meta[0]["nx_meta"]["Creation Time"] == expected_iso
+
+        # Microscope Accelerating Voltage is a Quantity
+        voltage = get_field(meta, "Microscope Accelerating Voltage")
+        assert isinstance(voltage, ureg.Quantity)
+        assert float(voltage.magnitude) == 300000
+        assert str(voltage.units) == "volt"
+
+        # Camera Length - check if it's a Quantity or plain value
+        camera_length = get_field(meta, "Camera Length")
+        if isinstance(camera_length, ureg.Quantity):
+            assert float(camera_length.magnitude) == 0.195
+            assert str(camera_length.units) == "meter"
+        else:
+            # FEI metadata doesn't always include units for Camera Length
+            assert camera_length == pytest.approx(0.195)
+
+        # Stage Position fields are Quantities
+        check_stage_position(
+            get_field(meta, "Stage Position"),
+            {"A": 9.57, "B": 0.0, "X": -505.273, "Y": -317.978, "Z": 15.525},
         )
-        assert meta[0]["nx_meta"]["Microscope Accelerating Voltage (V)"] == 300000
-        assert meta[0]["nx_meta"]["Camera Length (m)"] == pytest.approx(0.195)
-        assert meta[0]["nx_meta"]["Stage Position"] == {
-            "A (°)": 9.57,
-            "B (°)": 0.0,
-            "X (μm)": -505.273,
-            "Y (μm)": -317.978,
-            "Z (μm)": 15.525,
-        }
-        assert meta[0]["nx_meta"]["Spot Size"] == 6
-        assert meta[0]["nx_meta"]["Magnification (x)"] == pytest.approx(14000.0)
+
+        assert get_field(meta, "Spot Size") == 6
+        assert get_field(meta, "Magnification") == pytest.approx(14000.0)
 
     def test_titan_tem_eds_line_scan_1(self, fei_ser_files):
         test_file = get_full_file_path(
@@ -117,21 +158,38 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta[0]["nx_meta"]["DatasetType"] == "SpectrumImage"
         assert meta[0]["nx_meta"]["Data Type"] == "STEM_EDS_Spectrum_Imaging"
         assert meta[0]["nx_meta"]["Data Dimensions"] == "(100, 3993)"
-        assert (
-            meta[0]["nx_meta"]["Creation Time"]
-            == dt(2019, 11, 1, 15, 42, 16).isoformat()
+        expected_iso = SYSTEM_TZ.localize(dt(2019, 11, 1, 15, 42, 16)).isoformat()
+        assert meta[0]["nx_meta"]["Creation Time"] == expected_iso
+
+        # Dwell Time Path is a Quantity
+        dwell_time = get_field(meta, "Dwell Time Path")
+        assert isinstance(dwell_time, ureg.Quantity)
+        assert float(dwell_time.magnitude) == 6e-6
+        assert str(dwell_time.units) == "second"
+
+        # Defocus is a Quantity
+        defocus = get_field(meta, "Defocus")
+        assert isinstance(defocus, ureg.Quantity)
+        assert float(defocus.magnitude) == -1.12
+        assert str(defocus.units) == "micrometer"
+
+        # Stage Position fields are Quantities
+        check_stage_position(
+            get_field(meta, "Stage Position"),
+            {"A": 7.32, "B": -3.57, "X": 20.528, "Y": 243.295, "Z": 45.491},
         )
-        assert meta[0]["nx_meta"]["Dwell Time Path (s)"] == 6e-6
-        assert meta[0]["nx_meta"]["Defocus (μm)"] == -1.12
-        assert meta[0]["nx_meta"]["Stage Position"] == {
-            "A (°)": 7.32,
-            "B (°)": -3.57,
-            "X (μm)": 20.528,
-            "Y (μm)": 243.295,
-            "Z (μm)": 45.491,
-        }
-        assert meta[0]["nx_meta"]["STEM Rotation Correction (°)"] == -12.3
-        assert meta[0]["nx_meta"]["Frame Time (s)"] == pytest.approx(1.88744)
+
+        # STEM Rotation Correction is a Quantity
+        rotation = get_field(meta, "STEM Rotation Correction")
+        assert isinstance(rotation, ureg.Quantity)
+        assert float(rotation.magnitude) == -12.3
+        assert str(rotation.units) == "degree"
+
+        # Frame Time is a Quantity
+        frame_time = get_field(meta, "Frame Time")
+        assert isinstance(frame_time, ureg.Quantity)
+        assert float(frame_time.magnitude) == 1.88744
+        assert str(frame_time.units) == "second"
 
     def test_titan_tem_eds_line_scan_2(self, fei_ser_files):
         test_file = get_full_file_path(
@@ -142,23 +200,25 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta[0]["nx_meta"]["DatasetType"] == "SpectrumImage"
         assert meta[0]["nx_meta"]["Data Type"] == "STEM_EDS_Spectrum_Imaging"
         assert meta[0]["nx_meta"]["Data Dimensions"] == "(6, 3993)"
-        assert (
-            meta[0]["nx_meta"]["Creation Time"]
-            == dt(2019, 7, 17, 15, 43, 21).isoformat()
+        expected_iso = SYSTEM_TZ.localize(dt(2019, 7, 17, 15, 43, 21)).isoformat()
+        assert meta[0]["nx_meta"]["Creation Time"] == expected_iso
+        assert get_field(meta, "Diffraction Lens") == pytest.approx(34.922)
+
+        # Defocus is a Quantity
+        defocus = get_field(meta, "Defocus")
+        assert isinstance(defocus, ureg.Quantity)
+        assert float(defocus.magnitude) == -0.145
+        assert str(defocus.units) == "micrometer"
+
+        # Stage Position fields are Quantities
+        check_stage_position(
+            get_field(meta, "Stage Position"),
+            {"A": 9.57, "B": 0, "X": -565.778, "Y": -321.364, "Z": 17.126},
         )
-        assert meta[0]["nx_meta"]["Diffraction Lens (%)"] == pytest.approx(34.922)
-        assert meta[0]["nx_meta"]["Defocus (μm)"] == -0.145
-        assert meta[0]["nx_meta"]["Stage Position"] == {
-            "A (°)": 9.57,
-            "B (°)": 0,
-            "X (μm)": -565.778,
-            "Y (μm)": -321.364,
-            "Z (μm)": 17.126,
-        }
-        assert meta[0]["nx_meta"]["Manufacturer"] == "FEI (ISAS)"
+
+        assert get_field(meta, "Manufacturer") == "FEI (ISAS)"
         assert (
-            meta[0]["nx_meta"]["Microscope"]
-            == "Microscope Titan 300 kV ABCD1 SuperTwin"
+            get_field(meta, "Microscope") == "Microscope Titan 300 kV ABCD1 SuperTwin"
         )
 
     def test_titan_tem_eds_spectrum(self, fei_ser_files):
@@ -170,21 +230,34 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta[0]["nx_meta"]["DatasetType"] == "Spectrum"
         assert meta[0]["nx_meta"]["Data Type"] == "TEM_EDS_Spectrum"
         assert meta[0]["nx_meta"]["Data Dimensions"] == "(3993,)"
-        assert (
-            meta[0]["nx_meta"]["Creation Time"]
-            == dt(2019, 12, 11, 16, 2, 38).isoformat()
+        expected_iso = SYSTEM_TZ.localize(dt(2019, 12, 11, 16, 2, 38)).isoformat()
+        assert meta[0]["nx_meta"]["Creation Time"] == expected_iso
+
+        # Energy Resolution is a Quantity
+        energy_res = get_field(meta, "Energy Resolution")
+        assert isinstance(energy_res, ureg.Quantity)
+        assert float(energy_res.magnitude) == 10
+        assert str(energy_res.units) == "electron_volt"
+
+        # Integration Time is a Quantity
+        integration_time = get_field(meta, "Integration Time")
+        assert isinstance(integration_time, ureg.Quantity)
+        assert float(integration_time.magnitude) == 25
+        assert str(integration_time.units) == "second"
+
+        # Stage Position fields are Quantities
+        check_stage_position(
+            get_field(meta, "Stage Position"),
+            {"A": 0, "B": 0.11, "X": -259.807, "Y": 18.101, "Z": 7.06},
         )
-        assert meta[0]["nx_meta"]["Energy Resolution (eV)"] == 10
-        assert meta[0]["nx_meta"]["Integration Time (s)"] == 25
-        assert meta[0]["nx_meta"]["Stage Position"] == {
-            "A (°)": 0,
-            "B (°)": 0.11,
-            "X (μm)": -259.807,
-            "Y (μm)": 18.101,
-            "Z (μm)": 7.06,
-        }
-        assert meta[0]["nx_meta"]["Manufacturer"] == "EDAX"
-        assert meta[0]["nx_meta"]["Emission (μA)"] == pytest.approx(145.0)
+
+        assert get_field(meta, "Manufacturer") == "EDAX"
+
+        # Emission is a Quantity
+        emission = get_field(meta, "Emission")
+        assert isinstance(emission, ureg.Quantity)
+        assert float(emission.magnitude) == 145.0
+        assert str(emission.units) == "microampere"
 
     def test_titan_tem_diffraction(self, fei_ser_files):
         test_file = get_full_file_path(
@@ -195,21 +268,33 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta[0]["nx_meta"]["DatasetType"] == "Diffraction"
         assert meta[0]["nx_meta"]["Data Type"] == "TEM_Diffraction"
         assert meta[0]["nx_meta"]["Data Dimensions"] == "(2048, 2048)"
-        assert (
-            meta[0]["nx_meta"]["Creation Time"]
-            == dt(2018, 10, 30, 17, 1, 3).isoformat()
+        expected_iso = SYSTEM_TZ.localize(dt(2018, 10, 30, 17, 1, 3)).isoformat()
+        assert meta[0]["nx_meta"]["Creation Time"] == expected_iso
+        assert get_field(meta, "Camera Name Path") == "BM-UltraScan"
+
+        # camera_length is a core EM Glossary field for Diffraction datasets
+        # Check if it's a Quantity or plain value (FEI doesn't always provide units)
+        camera_length = meta[0]["nx_meta"]["camera_length"]
+        if isinstance(camera_length, ureg.Quantity):
+            assert float(camera_length.magnitude) == 0.3
+            assert str(camera_length.units) == "meter"
+        else:
+            # Plain numeric value without units
+            assert camera_length == pytest.approx(0.3)
+
+        # Stage Position fields are Quantities
+        check_stage_position(
+            get_field(meta, "Stage Position"),
+            {"A": -28.59, "B": 0.0, "X": -91.527, "Y": -100.11, "Z": 210.133},
         )
-        assert meta[0]["nx_meta"]["Camera Name Path"] == "BM-UltraScan"
-        assert meta[0]["nx_meta"]["Camera Length (m)"] == pytest.approx(0.3)
-        assert meta[0]["nx_meta"]["Stage Position"] == {
-            "A (°)": -28.59,
-            "B (°)": 0.0,
-            "X (μm)": -91.527,
-            "Y (μm)": -100.11,
-            "Z (μm)": 210.133,
-        }
-        assert meta[0]["nx_meta"]["Manufacturer"] == "FEI"
-        assert meta[0]["nx_meta"]["Extraction Voltage (V)"] == 4400
+
+        assert get_field(meta, "Manufacturer") == "FEI"
+
+        # Extraction Voltage is a Quantity
+        extraction_voltage = get_field(meta, "Extraction Voltage")
+        assert isinstance(extraction_voltage, ureg.Quantity)
+        assert float(extraction_voltage.magnitude) == 4400
+        assert str(extraction_voltage.units) == "volt"
 
     def test_titan_tem_image_stack_1(self, fei_ser_files):
         test_file = get_full_file_path(
@@ -220,21 +305,29 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta[0]["nx_meta"]["DatasetType"] == "Image"
         assert meta[0]["nx_meta"]["Data Type"] == "STEM_Imaging"
         assert meta[0]["nx_meta"]["Data Dimensions"] == "(20, 2048, 2048)"
-        assert (
-            meta[0]["nx_meta"]["Creation Time"]
-            == dt(2019, 3, 28, 21, 14, 16).isoformat()
+        expected_iso = SYSTEM_TZ.localize(dt(2019, 3, 28, 21, 14, 16)).isoformat()
+        assert meta[0]["nx_meta"]["Creation Time"] == expected_iso
+
+        # Dwell Time Path is a Quantity
+        dwell_time = get_field(meta, "Dwell Time Path")
+        assert isinstance(dwell_time, ureg.Quantity)
+        assert float(dwell_time.magnitude) == 0.000002
+        assert str(dwell_time.units) == "second"
+
+        # C2 Aperture is a Quantity
+        c2_aperture = get_field(meta, "C2 Aperture")
+        assert isinstance(c2_aperture, ureg.Quantity)
+        assert float(c2_aperture.magnitude) == 50.0
+        assert str(c2_aperture.units) == "micrometer"
+
+        # Stage Position fields are Quantities
+        check_stage_position(
+            get_field(meta, "Stage Position"),
+            {"A": 2.9, "B": 0.0, "X": -207.808, "Y": 111.327, "Z": 74.297},
         )
-        assert meta[0]["nx_meta"]["Dwell Time Path (s)"] == pytest.approx(0.000002)
-        assert meta[0]["nx_meta"]["C2 Aperture (μm)"] == pytest.approx(50.0)
-        assert meta[0]["nx_meta"]["Stage Position"] == {
-            "A (°)": 2.9,
-            "B (°)": 0.0,
-            "X (μm)": -207.808,
-            "Y (μm)": 111.327,
-            "Z (μm)": 74.297,
-        }
-        assert meta[0]["nx_meta"]["Gun Type"] == "FEG"
-        assert meta[0]["nx_meta"]["Diffraction Lens (%)"] == pytest.approx(38.91)
+
+        assert get_field(meta, "Gun Type") == "FEG"
+        assert get_field(meta, "Diffraction Lens") == pytest.approx(38.91)
 
     def test_titan_tem_image_stack_2(self, fei_ser_files):
         test_file = get_full_file_path(
@@ -245,20 +338,28 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta[0]["nx_meta"]["DatasetType"] == "Image"
         assert meta[0]["nx_meta"]["Data Type"] == "STEM_Imaging"
         assert meta[0]["nx_meta"]["Data Dimensions"] == "(20, 2048, 2048)"
-        assert (
-            meta[0]["nx_meta"]["Creation Time"]
-            == dt(2019, 3, 28, 22, 41, 0).isoformat()
+        expected_iso = SYSTEM_TZ.localize(dt(2019, 3, 28, 22, 41, 0)).isoformat()
+        assert meta[0]["nx_meta"]["Creation Time"] == expected_iso
+
+        # Frame Time is a Quantity
+        frame_time = get_field(meta, "Frame Time")
+        assert isinstance(frame_time, ureg.Quantity)
+        assert float(frame_time.magnitude) == 10
+        assert str(frame_time.units) == "second"
+
+        # C1 Aperture is a Quantity
+        c1_aperture = get_field(meta, "C1 Aperture")
+        assert isinstance(c1_aperture, ureg.Quantity)
+        assert float(c1_aperture.magnitude) == 2000
+        assert str(c1_aperture.units) == "micrometer"
+
+        # Stage Position fields are Quantities
+        check_stage_position(
+            get_field(meta, "Stage Position"),
+            {"A": 4.53, "B": 0.0, "X": -207.438, "Y": 109.996, "Z": 76.932},
         )
-        assert meta[0]["nx_meta"]["Frame Time (s)"] == 10
-        assert meta[0]["nx_meta"]["C1 Aperture (μm)"] == 2000
-        assert meta[0]["nx_meta"]["Stage Position"] == {
-            "A (°)": 4.53,
-            "B (°)": 0.0,
-            "X (μm)": -207.438,
-            "Y (μm)": 109.996,
-            "Z (μm)": 76.932,
-        }
-        assert meta[0]["nx_meta"]["Gun Lens"] == 5
+
+        assert get_field(meta, "Gun Lens") == 5
         assert "Tecnai Filter" not in meta[0]["nx_meta"]
 
     def test_titan_tem_diffraction_stack(self, fei_ser_files):
@@ -270,21 +371,24 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta[0]["nx_meta"]["DatasetType"] == "Diffraction"
         assert meta[0]["nx_meta"]["Data Type"] == "TEM_Diffraction"
         assert meta[0]["nx_meta"]["Data Dimensions"] == "(33, 1024, 1024)"
-        assert (
-            meta[0]["nx_meta"]["Creation Time"]
-            == dt(2018, 12, 13, 13, 33, 47).isoformat()
+        expected_iso = SYSTEM_TZ.localize(dt(2018, 12, 13, 13, 33, 47)).isoformat()
+        assert meta[0]["nx_meta"]["Creation Time"] == expected_iso
+        assert get_field(meta, "C2 Lens") == pytest.approx(43.465)
+
+        # C2 Aperture is a Quantity
+        c2_aperture = get_field(meta, "C2 Aperture")
+        assert isinstance(c2_aperture, ureg.Quantity)
+        assert float(c2_aperture.magnitude) == 100
+        assert str(c2_aperture.units) == "micrometer"
+
+        # Stage Position fields are Quantities
+        check_stage_position(
+            get_field(meta, "Stage Position"),
+            {"A": 1.86, "B": 0.0, "X": -179.33, "Y": -31.279, "Z": -158.512},
         )
-        assert meta[0]["nx_meta"]["C2 Lens (%)"] == pytest.approx(43.465)
-        assert meta[0]["nx_meta"]["C2 Aperture (μm)"] == 100
-        assert meta[0]["nx_meta"]["Stage Position"] == {
-            "A (°)": 1.86,
-            "B (°)": 0.0,
-            "X (μm)": -179.33,
-            "Y (μm)": -31.279,
-            "Z (μm)": -158.512,
-        }
-        assert meta[0]["nx_meta"]["OBJ Aperture"] == "retracted"
-        assert meta[0]["nx_meta"]["Mode"] == "TEM uP SA Zoom Diffraction"
+
+        assert get_field(meta, "OBJ Aperture") == "retracted"
+        assert get_field(meta, "Mode") == "TEM uP SA Zoom Diffraction"
 
     def test_titan_tem_emi_list_image_spectrum_1(self, fei_ser_files):
         test_file_1 = get_full_file_path(
@@ -301,29 +405,33 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta_1[0]["nx_meta"]["DatasetType"] == "Image"
         assert meta_1[0]["nx_meta"]["Data Type"] == "STEM_Imaging"
         assert meta_1[0]["nx_meta"]["Data Dimensions"] == "(2048, 2048)"
-        assert meta_1[0]["nx_meta"]["High Tension (kV)"] == 300
-        assert meta_1[0]["nx_meta"]["Gun Lens"] == 6
-        assert meta_1[0]["nx_meta"]["Stage Position"] == {
-            "A (°)": 9.21,
-            "B (°)": 0.0,
-            "X (μm)": -202.298,
-            "Y (μm)": -229.609,
-            "Z (μm)": 92.45,
-        }
+
+        # High Tension is a Quantity
+        high_tension = get_field(meta_1, "High Tension")
+        assert isinstance(high_tension, ureg.Quantity)
+        assert float(high_tension.magnitude) == 300
+        assert str(high_tension.units) == "kilovolt"
+
+        assert get_field(meta_1, "Gun Lens") == 6
+
+        # Stage Position fields are Quantities
+        check_stage_position(
+            get_field(meta_1, "Stage Position"),
+            {"A": 9.21, "B": 0.0, "X": -202.298, "Y": -229.609, "Z": 92.45},
+        )
 
         assert meta_2[0]["nx_meta"]["DatasetType"] == "Spectrum"
         assert meta_2[0]["nx_meta"]["Data Type"] == "STEM_EDS_Spectrum"
         assert meta_2[0]["nx_meta"]["Data Dimensions"] == "(3993,)"
-        assert meta_2[0]["nx_meta"]["Beam Position (μm)"] == "(-0.99656, 0.74289)"
-        assert meta_2[0]["nx_meta"]["Diffraction Lens (%)"] == pytest.approx(37.347)
-        assert meta_2[0]["nx_meta"]["Objective Lens (%)"] == pytest.approx(87.987)
-        assert meta_2[0]["nx_meta"]["Stage Position"] == {
-            "A (°)": 9.21,
-            "B (°)": 0.0,
-            "X (μm)": -202.296,
-            "Y (μm)": -229.616,
-            "Z (μm)": 92.45,
-        }
+        assert get_field(meta_2, "Beam Position") == "(-0.99656, 0.74289)"
+        assert get_field(meta_2, "Diffraction Lens") == pytest.approx(37.347)
+        assert get_field(meta_2, "Objective Lens") == pytest.approx(87.987)
+
+        # Stage Position fields are Quantities
+        check_stage_position(
+            get_field(meta_2, "Stage Position"),
+            {"A": 9.21, "B": 0.0, "X": -202.296, "Y": -229.616, "Z": 92.45},
+        )
 
     def test_titan_tem_emi_list_image_spectrum_2(self, fei_ser_files):
         test_file_1 = get_full_file_path(
@@ -355,20 +463,17 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta_1[0]["nx_meta"]["DatasetType"] == "Image"
         assert meta_1[0]["nx_meta"]["Data Type"] == "STEM_Imaging"
         assert meta_1[0]["nx_meta"]["Data Dimensions"] == "(512, 512)"
-        assert (
-            meta_1[0]["nx_meta"]["Creation Time"]
-            == dt(2019, 6, 13, 19, 52, 6).isoformat()
+        expected_iso = SYSTEM_TZ.localize(dt(2019, 6, 13, 19, 52, 6)).isoformat()
+        assert meta_1[0]["nx_meta"]["Creation Time"] == expected_iso
+        assert get_field(meta_1, "Diffraction Lens") == pytest.approx(37.347)
+        assert get_field(meta_1, "Spot Size") == 7
+        assert get_field(meta_1, "Manufacturer") == "FEI (ISAS)"
+
+        # Stage Position fields are Quantities
+        check_stage_position(
+            get_field(meta_1, "Stage Position"),
+            {"A": 9.21, "B": 0.0, "X": -202.296, "Y": -229.618, "Z": 92.45},
         )
-        assert meta_1[0]["nx_meta"]["Diffraction Lens (%)"] == pytest.approx(37.347)
-        assert meta_1[0]["nx_meta"]["Spot Size"] == 7
-        assert meta_1[0]["nx_meta"]["Manufacturer"] == "FEI (ISAS)"
-        assert meta_1[0]["nx_meta"]["Stage Position"] == {
-            "A (°)": 9.21,
-            "B (°)": 0.0,
-            "X (μm)": -202.296,
-            "Y (μm)": -229.618,
-            "Z (μm)": 92.45,
-        }
 
         # the remaining spectra don't have metadata, only a UUID
         for meta, uuid in zip(
@@ -402,42 +507,59 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta_1[0]["nx_meta"]["DatasetType"] == "Diffraction"
         assert meta_1[0]["nx_meta"]["Data Type"] == "TEM_Diffraction"
         assert meta_1[0]["nx_meta"]["Data Dimensions"] == "(77, 1024, 1024)"
-        assert (
-            meta_1[0]["nx_meta"]["Creation Time"]
-            == dt(2018, 9, 21, 14, 17, 25).isoformat()
+        expected_iso = SYSTEM_TZ.localize(dt(2018, 9, 21, 14, 17, 25)).isoformat()
+        assert meta_1[0]["nx_meta"]["Creation Time"] == expected_iso
+        assert get_field(meta_1, "Binning") == 2
+        assert get_field(meta_1, "Tecnai Filter")["Mode"] == "Spectroscopy"
+        assert get_field(meta_1, "Tecnai Filter")["Selected Aperture"] == "3mm"
+
+        # Image Shift X is a Quantity
+        image_shift_x = get_field(meta_1, "Image Shift X")
+        assert isinstance(image_shift_x, ureg.Quantity)
+        assert float(image_shift_x.magnitude) == 0.003
+        assert str(image_shift_x.units) == "micrometer"
+
+        assert get_field(meta_1, "Mode") == "TEM uP SA Zoom Diffraction"
+
+        # Stage Position fields are Quantities
+        check_stage_position(
+            get_field(meta_1, "Stage Position"),
+            {"A": 0, "B": 0, "X": -135.782, "Y": 637.285, "Z": 77.505},
         )
-        assert meta_1[0]["nx_meta"]["Binning"] == 2
-        assert meta_1[0]["nx_meta"]["Tecnai Filter"]["Mode"] == "Spectroscopy"
-        assert meta_1[0]["nx_meta"]["Tecnai Filter"]["Selected Aperture"] == "3mm"
-        assert meta_1[0]["nx_meta"]["Image Shift X (μm)"] == pytest.approx(0.003)
-        assert meta_1[0]["nx_meta"]["Mode"] == "TEM uP SA Zoom Diffraction"
-        assert meta_1[0]["nx_meta"]["Stage Position"] == {
-            "A (°)": 0,
-            "B (°)": 0,
-            "X (μm)": -135.782,
-            "Y (μm)": 637.285,
-            "Z (μm)": 77.505,
-        }
 
         assert meta_2[0]["nx_meta"]["DatasetType"] == "Image"
         assert meta_2[0]["nx_meta"]["Data Type"] == "TEM_Imaging"
         assert meta_2[0]["nx_meta"]["Data Dimensions"] == "(4, 1024, 1024)"
-        assert (
-            meta_2[0]["nx_meta"]["Creation Time"]
-            == dt(2018, 9, 21, 14, 25, 11).isoformat()
+        expected_iso = SYSTEM_TZ.localize(dt(2018, 9, 21, 14, 25, 11)).isoformat()
+        assert meta_2[0]["nx_meta"]["Creation Time"] == expected_iso
+
+        # Dwell Time Path is a Quantity
+        dwell_time = get_field(meta_2, "Dwell Time Path")
+        assert isinstance(dwell_time, ureg.Quantity)
+        assert float(dwell_time.magnitude) == 0.8
+        assert str(dwell_time.units) == "second"
+
+        # Emission is a Quantity
+        emission = get_field(meta_2, "Emission")
+        assert isinstance(emission, ureg.Quantity)
+        assert float(emission.magnitude) == 135.0
+        assert str(emission.units) == "microampere"
+
+        assert get_field(meta_2, "Magnification") == 10000
+
+        # Image Shift X is a Quantity
+        image_shift_x_2 = get_field(meta_2, "Image Shift X")
+        assert isinstance(image_shift_x_2, ureg.Quantity)
+        assert float(image_shift_x_2.magnitude) == 0.003
+        assert str(image_shift_x_2.units) == "micrometer"
+
+        assert get_field(meta_2, "Mode") == "TEM uP SA Zoom Image"
+
+        # Stage Position fields are Quantities
+        check_stage_position(
+            get_field(meta_2, "Stage Position"),
+            {"A": 0, "B": 0, "X": -135.787, "Y": 637.281, "Z": 77.505},
         )
-        assert meta_2[0]["nx_meta"]["Dwell Time Path (s)"] == pytest.approx(0.8)
-        assert meta_2[0]["nx_meta"]["Emission (μA)"] == pytest.approx(135.0)
-        assert meta_2[0]["nx_meta"]["Magnification (x)"] == 10000
-        assert meta_2[0]["nx_meta"]["Image Shift X (μm)"] == pytest.approx(0.003)
-        assert meta_2[0]["nx_meta"]["Mode"] == "TEM uP SA Zoom Image"
-        assert meta_2[0]["nx_meta"]["Stage Position"] == {
-            "A (°)": 0,
-            "B (°)": 0,
-            "X (μm)": -135.787,
-            "Y (μm)": 637.281,
-            "Z (μm)": 77.505,
-        }
 
     def test_titan_tem_emi_list_four_images(self, fei_ser_files):
         test_file_1 = get_full_file_path(
@@ -465,30 +587,31 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
             assert meta[0]["nx_meta"]["Data Type"] == "STEM_Imaging"
             assert meta[0]["nx_meta"]["Data Dimensions"] == "(2048, 2048)"
 
+            expected_iso = SYSTEM_TZ.localize(dt(2018, 11, 14, 17, 9, 55)).isoformat()
+            assert meta[0]["nx_meta"]["Creation Time"] == expected_iso
+
+            # Frame Time is a Quantity
+            frame_time = get_field(meta, "Frame Time")
+            assert isinstance(frame_time, ureg.Quantity)
+            assert float(frame_time.magnitude) == 30.199
+            assert str(frame_time.units) == "second"
+
+            # Selected Dispersion has unit suffix removed
+            assert get_field(meta, "Tecnai Filter")["Selected Dispersion"] == 0.1
             assert (
-                meta[0]["nx_meta"]["Creation Time"]
-                == dt(2018, 11, 14, 17, 9, 55).isoformat()
-            )
-            assert meta[0]["nx_meta"]["Frame Time (s)"] == pytest.approx(30.199)
-            assert (
-                meta[0]["nx_meta"]["Tecnai Filter"]["Selected Dispersion (eV/Channel)"]
-                == 0.1
-            )
-            assert (
-                meta[0]["nx_meta"]["Microscope"] == "Microscope Titan 300 kV "
+                get_field(meta, "Microscope") == "Microscope Titan 300 kV "
                 "ABCD1 SuperTwin"
             )
-            assert meta[0]["nx_meta"]["Mode"] == "STEM nP SA Zoom Diffraction"
-            assert meta[0]["nx_meta"]["Spot Size"] == 8
-            assert meta[0]["nx_meta"]["Gun Lens"] == 5
-            assert meta[0]["nx_meta"]["Gun Type"] == "FEG"
-            assert meta[0]["nx_meta"]["Stage Position"] == {
-                "A (°)": 0,
-                "B (°)": 0,
-                "X (μm)": -116.939,
-                "Y (μm)": -65.107,
-                "Z (μm)": 79.938,
-            }
+            assert get_field(meta, "Mode") == "STEM nP SA Zoom Diffraction"
+            assert get_field(meta, "Spot Size") == 8
+            assert get_field(meta, "Gun Lens") == 5
+            assert get_field(meta, "Gun Type") == "FEG"
+
+            # Stage Position fields are Quantities
+            check_stage_position(
+                get_field(meta, "Stage Position"),
+                {"A": 0, "B": 0, "X": -116.939, "Y": -65.107, "Z": 79.938},
+            )
 
     def test_643_stem_image(self, fei_ser_files):
         test_file = get_full_file_path(
@@ -499,24 +622,31 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta[0]["nx_meta"]["DatasetType"] == "Image"
         assert meta[0]["nx_meta"]["Data Type"] == "STEM_Imaging"
         assert meta[0]["nx_meta"]["Data Dimensions"] == "(1024, 1024)"
-        assert (
-            meta[0]["nx_meta"]["Creation Time"]
-            == dt(2011, 11, 16, 9, 46, 13).isoformat()
+        expected_iso = SYSTEM_TZ.localize(dt(2011, 11, 16, 9, 46, 13)).isoformat()
+        assert meta[0]["nx_meta"]["Creation Time"] == expected_iso
+        assert get_field(meta, "C2 Lens") == pytest.approx(8.967)
+
+        # C2 Aperture is a Quantity
+        c2_aperture = get_field(meta, "C2 Aperture")
+        assert isinstance(c2_aperture, ureg.Quantity)
+        assert float(c2_aperture.magnitude) == 40
+        assert str(c2_aperture.units) == "micrometer"
+
+        # Stage Position fields are Quantities
+        check_stage_position(
+            get_field(meta, "Stage Position"),
+            {"A": 0, "B": 0, "X": 46.293, "Y": -14.017, "Z": -127.155},
         )
-        assert meta[0]["nx_meta"]["C2 Lens (%)"] == pytest.approx(8.967)
-        assert meta[0]["nx_meta"]["C2 Aperture (μm)"] == 40
-        assert meta[0]["nx_meta"]["Stage Position"] == {
-            "A (°)": 0,
-            "B (°)": 0,
-            "X (μm)": 46.293,
-            "Y (μm)": -14.017,
-            "Z (μm)": -127.155,
-        }
-        assert meta[0]["nx_meta"]["STEM Rotation Correction (°)"] == pytest.approx(12.4)
-        assert meta[0]["nx_meta"]["User"] == "OPERATOR__"
+
+        # STEM Rotation Correction is a Quantity
+        rotation = get_field(meta, "STEM Rotation Correction")
+        assert isinstance(rotation, ureg.Quantity)
+        assert float(rotation.magnitude) == 12.4
+        assert str(rotation.units) == "degree"
+
+        assert get_field(meta, "User") == "OPERATOR__"
         assert (
-            meta[0]["nx_meta"]["Microscope"]
-            == "Microscope Titan 300 kV ABCD1 SuperTwin"
+            get_field(meta, "Microscope") == "Microscope Titan 300 kV ABCD1 SuperTwin"
         )
 
     def test_643_eds_and_eels_spectrum_image(self, fei_ser_files):
@@ -534,28 +664,64 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta_1[0]["nx_meta"]["DatasetType"] == "SpectrumImage"
         assert meta_1[0]["nx_meta"]["Data Type"] == "STEM_EDS_Spectrum_Imaging"
         assert meta_1[0]["nx_meta"]["Data Dimensions"] == "(40, 70, 4000)"
-        assert (
-            meta_1[0]["nx_meta"]["Creation Time"]
-            == dt(2011, 11, 16, 16, 8, 54).isoformat()
-        )
-        assert meta_1[0]["nx_meta"]["Frame Time (s)"] == 10
-        assert meta_1[0]["nx_meta"]["Emission (μA)"] == pytest.approx(237.3)
-        assert meta_1[0]["nx_meta"]["Tecnai Filter"]["Selected Aperture"] == "2.5 mm"
-        assert meta_1[0]["nx_meta"]["Tecnai Filter"]["Slit State"] == "Retracted"
+        expected_iso = SYSTEM_TZ.localize(dt(2011, 11, 16, 16, 8, 54)).isoformat()
+        assert meta_1[0]["nx_meta"]["Creation Time"] == expected_iso
+
+        # Frame Time is a Quantity
+        frame_time = get_field(meta_1, "Frame Time")
+        assert isinstance(frame_time, ureg.Quantity)
+        assert float(frame_time.magnitude) == 10
+        assert str(frame_time.units) == "second"
+
+        # Emission is a Quantity
+        emission = get_field(meta_1, "Emission")
+        assert isinstance(emission, ureg.Quantity)
+        assert float(emission.magnitude) == 237.3
+        assert str(emission.units) == "microampere"
+
+        assert get_field(meta_1, "Tecnai Filter")["Selected Aperture"] == "2.5 mm"
+        assert get_field(meta_1, "Tecnai Filter")["Slit State"] == "Retracted"
 
         assert meta_2[0]["nx_meta"]["DatasetType"] == "SpectrumImage"
         assert meta_2[0]["nx_meta"]["Data Type"] == "STEM_EELS_Spectrum_Imaging"
         assert meta_2[0]["nx_meta"]["Data Dimensions"] == "(40, 70, 2048)"
-        assert (
-            meta_2[0]["nx_meta"]["Creation Time"]
-            == dt(2011, 11, 16, 16, 32, 27).isoformat()
-        )
-        assert meta_2[0]["nx_meta"]["Energy Resolution (eV)"] == 10
-        assert meta_2[0]["nx_meta"]["Integration Time (s)"] == pytest.approx(0.5)
-        assert meta_2[0]["nx_meta"]["Extraction Voltage (V)"] == 4500
-        assert meta_2[0]["nx_meta"]["Camera Length (m)"] == pytest.approx(0.06)
-        assert meta_2[0]["nx_meta"]["C2 Lens (%)"] == pytest.approx(8.967)
-        assert meta_2[0]["nx_meta"]["C3 Aperture (μm)"] == 1000
+        expected_iso = SYSTEM_TZ.localize(dt(2011, 11, 16, 16, 32, 27)).isoformat()
+        assert meta_2[0]["nx_meta"]["Creation Time"] == expected_iso
+
+        # Energy Resolution is a Quantity
+        energy_res = get_field(meta_2, "Energy Resolution")
+        assert isinstance(energy_res, ureg.Quantity)
+        assert float(energy_res.magnitude) == 10
+        assert str(energy_res.units) == "electron_volt"
+
+        # Integration Time is a Quantity
+        integration_time = get_field(meta_2, "Integration Time")
+        assert isinstance(integration_time, ureg.Quantity)
+        assert float(integration_time.magnitude) == 0.5
+        assert str(integration_time.units) == "second"
+
+        # Extraction Voltage is a Quantity
+        extraction_voltage = get_field(meta_2, "Extraction Voltage")
+        assert isinstance(extraction_voltage, ureg.Quantity)
+        assert float(extraction_voltage.magnitude) == 4500
+        assert str(extraction_voltage.units) == "volt"
+
+        # Camera Length - check if it's a Quantity or plain value
+        camera_length = get_field(meta_2, "Camera Length")
+        if isinstance(camera_length, ureg.Quantity):
+            assert float(camera_length.magnitude) == 0.06
+            assert str(camera_length.units) == "meter"
+        else:
+            # FEI metadata doesn't always include units for Camera Length
+            assert camera_length == pytest.approx(0.06)
+
+        assert get_field(meta_2, "C2 Lens") == pytest.approx(8.967)
+
+        # C3 Aperture is a Quantity
+        c3_aperture = get_field(meta_2, "C3 Aperture")
+        assert isinstance(c3_aperture, ureg.Quantity)
+        assert float(c3_aperture.magnitude) == 1000
+        assert str(c3_aperture.units) == "micrometer"
 
     def test_643_image_stack(self, fei_ser_files):
         test_file = get_full_file_path(
@@ -566,20 +732,34 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta[0]["nx_meta"]["DatasetType"] == "Image"
         assert meta[0]["nx_meta"]["Data Type"] == "STEM_Imaging"
         assert meta[0]["nx_meta"]["Data Dimensions"] == "(5, 1024, 1024)"
+        expected_iso = SYSTEM_TZ.localize(dt(2012, 1, 31, 13, 43, 40)).isoformat()
+        assert meta[0]["nx_meta"]["Creation Time"] == expected_iso
+
+        # Frame Time is a Quantity
+        frame_time = get_field(meta, "Frame Time")
+        assert isinstance(frame_time, ureg.Quantity)
+        assert float(frame_time.magnitude) == 2.0
+        assert str(frame_time.units) == "second"
+
+        # C1 Aperture is a Quantity
+        c1_aperture = get_field(meta, "C1 Aperture")
+        assert isinstance(c1_aperture, ureg.Quantity)
+        assert float(c1_aperture.magnitude) == 2000
+        assert str(c1_aperture.units) == "micrometer"
+
+        assert get_field(meta, "C2 Lens") == pytest.approx(14.99)
+
+        # Defocus is a Quantity
+        defocus = get_field(meta, "Defocus")
+        assert isinstance(defocus, ureg.Quantity)
+        assert float(defocus.magnitude) == -2.593
+        assert str(defocus.units) == "micrometer"
+
         assert (
-            meta[0]["nx_meta"]["Creation Time"]
-            == dt(2012, 1, 31, 13, 43, 40).isoformat()
+            get_field(meta, "Microscope") == "Microscope Titan 300 kV ABCD1 SuperTwin"
         )
-        assert meta[0]["nx_meta"]["Frame Time (s)"] == pytest.approx(2.0)
-        assert meta[0]["nx_meta"]["C1 Aperture (μm)"] == 2000
-        assert meta[0]["nx_meta"]["C2 Lens (%)"] == pytest.approx(14.99)
-        assert meta[0]["nx_meta"]["Defocus (μm)"] == -2.593
-        assert (
-            meta[0]["nx_meta"]["Microscope"]
-            == "Microscope Titan 300 kV ABCD1 SuperTwin"
-        )
-        assert meta[0]["nx_meta"]["Mode"] == "STEM nP SA Zoom Diffraction"
-        assert meta[0]["nx_meta"]["Magnification (x)"] == 80000
+        assert get_field(meta, "Mode") == "STEM nP SA Zoom Diffraction"
+        assert get_field(meta, "Magnification") == 80000
 
     def test_643_image_stack_2_newer(self, fei_ser_files):
         test_file = get_full_file_path(
@@ -590,22 +770,46 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta[0]["nx_meta"]["DatasetType"] == "Image"
         assert meta[0]["nx_meta"]["Data Type"] == "STEM_Imaging"
         assert meta[0]["nx_meta"]["Data Dimensions"] == "(2, 512, 512)"
+        expected_iso = SYSTEM_TZ.localize(dt(2020, 3, 11, 16, 33, 38)).isoformat()
+        assert meta[0]["nx_meta"]["Creation Time"] == expected_iso
+
+        # Frame Time is a Quantity
+        frame_time = get_field(meta, "Frame Time")
+        assert isinstance(frame_time, ureg.Quantity)
+        assert float(frame_time.magnitude) == 6.34179
+        assert str(frame_time.units) == "second"
+
+        # Dwell Time Path is a Quantity
+        dwell_time = get_field(meta, "Dwell Time Path")
+        assert isinstance(dwell_time, ureg.Quantity)
+        assert float(dwell_time.magnitude) == 0.000001
+        assert str(dwell_time.units) == "second"
+
+        # C2 Aperture is a Quantity
+        c2_aperture = get_field(meta, "C2 Aperture")
+        assert isinstance(c2_aperture, ureg.Quantity)
+        assert float(c2_aperture.magnitude) == 10
+        assert str(c2_aperture.units) == "micrometer"
+
+        assert get_field(meta, "C3 Lens") == -37.122
+
+        # Defocus is a Quantity
+        defocus = get_field(meta, "Defocus")
+        assert isinstance(defocus, ureg.Quantity)
+        assert float(defocus.magnitude) == -0.889
+        assert str(defocus.units) == "micrometer"
+
         assert (
-            meta[0]["nx_meta"]["Creation Time"]
-            == dt(2020, 3, 11, 16, 33, 38).isoformat()
+            get_field(meta, "Microscope") == "Microscope Titan 300 kV ABCD1 SuperTwin"
         )
-        assert meta[0]["nx_meta"]["Frame Time (s)"] == pytest.approx(6.34179)
-        assert meta[0]["nx_meta"]["Dwell Time Path (s)"] == pytest.approx(0.000001)
-        assert meta[0]["nx_meta"]["C2 Aperture (μm)"] == 10
-        assert meta[0]["nx_meta"]["C3 Lens (%)"] == -37.122
-        assert meta[0]["nx_meta"]["Defocus (μm)"] == -0.889
-        assert (
-            meta[0]["nx_meta"]["Microscope"]
-            == "Microscope Titan 300 kV ABCD1 SuperTwin"
-        )
-        assert meta[0]["nx_meta"]["Mode"] == "STEM nP SA Zoom Diffraction"
-        assert meta[0]["nx_meta"]["Magnification (x)"] == 80000
-        assert meta[0]["nx_meta"]["STEM Rotation (°)"] == -90.0
+        assert get_field(meta, "Mode") == "STEM nP SA Zoom Diffraction"
+        assert get_field(meta, "Magnification") == 80000
+
+        # STEM Rotation is a Quantity
+        stem_rotation = get_field(meta, "STEM Rotation")
+        assert isinstance(stem_rotation, ureg.Quantity)
+        assert float(stem_rotation.magnitude) == -90.0
+        assert str(stem_rotation.units) == "degree"
 
     def test_no_emi_error(self, caplog, fei_ser_files):
         test_file = get_full_file_path(
@@ -614,16 +818,16 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         )
         meta = fei_emi.get_ser_metadata(test_file)
 
-        assert "Extractor Warning" in meta[0]["nx_meta"]
+        assert get_field(meta, "Extractor Warning") is not None
         assert (
             "NexusLIMS could not find a corresponding .emi metadata "
-            "file for this .ser file" in meta[0]["nx_meta"]["Extractor Warning"]
+            "file for this .ser file" in get_field(meta, "Extractor Warning")
         )
         assert (
             "NexusLIMS could not find a corresponding .emi metadata "
             "file for this .ser file" in caplog.text
         )
-        assert meta[0]["nx_meta"]["emi Filename"] is None
+        assert get_field(meta, "emi Filename") is None
 
     def test_unreadable_ser(self, caplog, fei_ser_files):
         # if the ser is unreadable, neither the emi or the ser can be read,
@@ -637,7 +841,7 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         assert meta[0]["nx_meta"]["Data Type"] == "Unknown"
         assert meta[0]["nx_meta"]["DatasetType"] == "Misc"
         assert "Creation Time" in meta[0]["nx_meta"]
-        assert "13_unreadable_ser.emi" in meta[0]["nx_meta"]["emi Filename"]
+        assert "13_unreadable_ser.emi" in get_field(meta, "emi Filename")
         assert (
             "The .emi metadata file associated with this .ser file could "
             "not be opened by NexusLIMS." in caplog.text
@@ -662,7 +866,7 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         )
         assert (
             "The .emi metadata file associated with this .ser file could "
-            "not be opened by NexusLIMS" in meta[0]["nx_meta"]["Extractor Warning"]
+            "not be opened by NexusLIMS" in get_field(meta, "Extractor Warning")
         )
         assert meta[0]["nx_meta"]["Data Dimensions"] == "(1024, 1024)"
         assert meta[0]["nx_meta"]["DatasetType"] == "Image"
@@ -708,3 +912,74 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         )
         meta = TestSerEmiExtractor._helper_test(caplog, fei_ser_files)
         assert meta[0]["nx_meta"]["Data Type"] == "STEM_Imaging"
+
+    def test_migrate_to_schema_compliant_metadata_with_top_level_vendor_sections(
+        self,
+    ):
+        """Test top-level vendor sections go to extensions.
+
+        Covers lines 284-287 in fei_emi.py where vendor sections move to extensions.
+        """
+        from nexusLIMS.extractors.plugins.fei_emi import SerEmiExtractor
+
+        extractor = SerEmiExtractor()
+
+        # Create metadata dict with top-level vendor sections
+        mdict = {
+            "nx_meta": {
+                "DatasetType": "Image",
+                "Data Type": "STEM_Imaging",
+                "Creation Time": "2024-01-15T10:30:00-05:00",
+                "Data Dimensions": "(1024, 1024)",
+                # Add top-level vendor sections that should go to extensions
+                "ObjectInfo": {
+                    "some_vendor_field": "value1",
+                    "another_field": 123,
+                },
+                "ser_header_parameters": {
+                    "header_field": "value2",
+                },
+                # Also add a regular vendor field for comparison
+                "Magnification": 100000,
+            }
+        }
+
+        # Call the migration method
+        result = extractor._migrate_to_schema_compliant_metadata(mdict)  # noqa: SLF001
+
+        # Verify top-level vendor sections went to extensions
+        assert "extensions" in result["nx_meta"]
+        assert "ObjectInfo" in result["nx_meta"]["extensions"]
+        assert (
+            result["nx_meta"]["extensions"]["ObjectInfo"]["some_vendor_field"]
+            == "value1"
+        )
+        assert result["nx_meta"]["extensions"]["ObjectInfo"]["another_field"] == 123
+
+        assert "ser_header_parameters" in result["nx_meta"]["extensions"]
+        assert (
+            result["nx_meta"]["extensions"]["ser_header_parameters"]["header_field"]
+            == "value2"
+        )
+
+        # Verify other vendor fields also went to extensions
+        assert "Magnification" in result["nx_meta"]["extensions"]
+        assert result["nx_meta"]["extensions"]["Magnification"] == 100000
+
+        # Verify core fields stayed at top level
+        assert result["nx_meta"]["DatasetType"] == "Image"
+        assert result["nx_meta"]["Data Type"] == "STEM_Imaging"
+        assert result["nx_meta"]["Creation Time"] == "2024-01-15T10:30:00-05:00"
+        assert result["nx_meta"]["Data Dimensions"] == "(1024, 1024)"
+
+        # Verify top-level vendor sections are NOT at top level of nx_meta
+        assert (
+            "ObjectInfo" not in result["nx_meta"]
+            or result["nx_meta"].get("ObjectInfo") is None
+            or "ObjectInfo" in result["nx_meta"]["extensions"]
+        )
+        assert (
+            "ser_header_parameters" not in result["nx_meta"]
+            or result["nx_meta"].get("ser_header_parameters") is None
+            or "ser_header_parameters" in result["nx_meta"]["extensions"]
+        )

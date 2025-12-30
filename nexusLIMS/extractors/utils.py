@@ -1,5 +1,6 @@
 """Methods (primarily intended to be private) that are used by the other extractors."""
 
+import contextlib
 import logging
 import re
 import shutil
@@ -7,7 +8,7 @@ import tarfile
 from datetime import UTC, datetime
 from decimal import Decimal, InvalidOperation
 from pathlib import Path
-from typing import Dict, List
+from typing import Any, Dict, List
 
 from rsciio.digitalmicrograph._api import (  # pylint: disable=import-error,no-name-in-module
     DigitalMicrographReader,
@@ -15,9 +16,10 @@ from rsciio.digitalmicrograph._api import (  # pylint: disable=import-error,no-n
 )
 
 from nexusLIMS.instruments import Instrument, get_instr_from_filepath
+from nexusLIMS.schemas.units import ureg
 from nexusLIMS.utils import set_nested_dict_value, try_getting_dict_value
 
-logger = logging.getLogger(__name__)
+_logger = logging.getLogger(__name__)
 
 
 def _coerce_to_list(meta_key):
@@ -59,7 +61,10 @@ def _set_exposure_time(mdict: Dict, pre_path: List[str]):
     if val is None:
         val = try_getting_dict_value(mdict, [*pre_path, "DataBar", "Exposure Time (s)"])
     if val is not None:
-        set_nested_dict_value(mdict, ["nx_meta", "Exposure Time (s)"], val)
+        # Convert to Pint Quantity with seconds unit
+        with contextlib.suppress(ValueError, TypeError):
+            val = ureg.Quantity(val, "second")
+        set_nested_dict_value(mdict, ["nx_meta", "Exposure Time"], val)
 
 
 def _set_gms_version(mdict: Dict, pre_path: List[str]):
@@ -95,17 +100,43 @@ def _set_eels_meta(mdict, base, meta_key):
     # only add the value to this list if we found it, and it's not
     # one of the "facility-wide" set values that do not have any meaning:
     if val is not None:
+        field_name = meta_key[-1]
+        # Convert to Pint Quantity if the field has units
+        unit_map = {
+            "Exposure (s)": "second",
+            "Integration time (s)": "second",
+            "Collection semi-angle (mrad)": "milliradian",
+            "Convergence semi-angle (mrad)": "milliradian",
+        }
+        if field_name in unit_map:
+            with contextlib.suppress(ValueError, TypeError):
+                val = ureg.Quantity(val, unit_map[field_name])
+                # Remove unit suffix from field name
+                field_name = field_name.rsplit(" (", 1)[0]
         # add last value of each parameter to the "EELS" sub-tree of nx_meta
-        set_nested_dict_value(mdict, ["nx_meta", "EELS", meta_key[-1]], val)
+        set_nested_dict_value(mdict, ["nx_meta", "EELS", field_name], val)
 
 
 def _set_eels_spectrometer_meta(mdict, base, meta_key):
     val = try_getting_dict_value(mdict, base + meta_key)
     if val is not None:
+        field_name = meta_key[0]
+        # Convert to Pint Quantity if the field has units
+        unit_map = {
+            "Energy loss (eV)": "electron_volt",
+            "Drift tube voltage (V)": "volt",
+            "Slit width (eV)": "electron_volt",
+            "Prism offset (V)": "volt",
+        }
+        if field_name in unit_map:
+            with contextlib.suppress(ValueError, TypeError):
+                val = ureg.Quantity(val, unit_map[field_name])
+                # Remove unit suffix from field name
+                field_name = field_name.rsplit(" (", 1)[0]
         # add last value of each param to the "EELS" sub-tree of nx_meta
         set_nested_dict_value(
             mdict,
-            ["nx_meta", "EELS", "Spectrometer " + meta_key[0]],
+            ["nx_meta", "EELS", "Spectrometer " + field_name],
             val,
         )
 
@@ -195,10 +226,28 @@ def _set_eds_meta(mdict, base, meta_key):
     # only add the value to this list if we found it, and it's not
     # one of the "facility-wide" set values that do not have any meaning:
     if val is not None:
+        field_name = meta_key[-1] if len(meta_key) > 1 else meta_key[0]
+        # Convert to Pint Quantity if the field has units
+        unit_map = {
+            "Dispersion (eV)": "electron_volt",
+            "Energy Cutoff (V)": "volt",
+            "Exposure (s)": "second",
+            "Azimuthal angle": "degree",
+            "Elevation angle": "degree",
+            "Incidence angle": "degree",
+            "Stage tilt": "degree",
+            "Live time": "second",
+            "Real time": "second",
+        }
+        if field_name in unit_map:
+            with contextlib.suppress(ValueError, TypeError):
+                val = ureg.Quantity(val, unit_map[field_name])
+                # Remove unit suffix from field name if present
+                field_name = field_name.rsplit(" (", 1)[0]
         # add last value of each parameter to the "EDS" sub-tree of nx_meta
         set_nested_dict_value(
             mdict,
-            ["nx_meta", "EDS", meta_key[-1] if len(meta_key) > 1 else meta_key[0]],
+            ["nx_meta", "EDS", field_name],
             val,
         )
 
@@ -206,9 +255,21 @@ def _set_eds_meta(mdict, base, meta_key):
 def _set_si_meta(mdict, pre_path, meta_key):
     val = try_getting_dict_value(mdict, [*pre_path, "SI", *meta_key])
     if val is not None:
+        field_name = meta_key[-1]
+        # Convert to Pint Quantity if the field has units
+        unit_map = {
+            "Dispersion (eV)": "electron_volt",
+            "Energy Cutoff (V)": "volt",
+            "Exposure (s)": "second",
+        }
+        if field_name in unit_map:
+            with contextlib.suppress(ValueError, TypeError):
+                val = ureg.Quantity(val, unit_map[field_name])
+                # Remove unit suffix from field name
+                field_name = field_name.rsplit(" (", 1)[0]
         # add last value of each parameter to the "EDS" sub-tree of
         # nx_meta
-        set_nested_dict_value(mdict, ["nx_meta", "EDS", meta_key[-1]], val)
+        set_nested_dict_value(mdict, ["nx_meta", "EDS", field_name], val)
 
 
 def _try_decimal(val):
@@ -258,7 +319,7 @@ def _parse_filter_settings(info_dict, tecnai_info):
             tmp = re.sub(r"\[eV\]", "", tmp)
             info_dict["Filter_Settings"]["Total_Energy_Loss"] = _try_decimal(tmp)
     except ValueError:
-        logger.info("Filter settings not found in Tecnai microscope info")
+        _logger.info("Filter settings not found in Tecnai microscope info")
 
     return info_dict
 
@@ -348,3 +409,59 @@ def _find_val(s_to_find, list_to_search):
         return re.sub("^" + s_to_find, "", res)
 
     return None
+
+
+# Field categorization helpers for schema-based metadata extraction
+
+
+def add_to_extensions(nx_meta: dict, field_name: str, value: Any) -> None:
+    """
+    Add a field to the extensions section of nx_meta.
+
+    This is a convenience function that ensures the extensions dict exists
+    before adding a field. Use this for vendor-specific, instrument-specific,
+    or facility-specific metadata that doesn't fit the core schema.
+
+    Parameters
+    ----------
+    nx_meta : dict
+        The nx_meta dictionary being built by the extractor. Will be modified
+        in place to add the field to the extensions section.
+    field_name : str
+        Name of the field to add. Use descriptive names that clearly indicate
+        the field's meaning (e.g., 'quanta_spot_size', 'detector_contrast').
+    value : Any
+        The value to store. Can be any JSON-serializable type, including
+        Pint Quantity objects which will be automatically serialized.
+
+    Examples
+    --------
+    Add vendor-specific fields during metadata extraction:
+
+    >>> nx_meta = {
+    ...     "DatasetType": "Image",
+    ...     "Data Type": "SEM_Imaging",
+    ...     "Creation Time": "2024-01-15T10:30:00-05:00",
+    ... }
+    >>> add_to_extensions(nx_meta, "spot_size", 3.5)
+    >>> add_to_extensions(nx_meta, "detector_contrast", 50.0)
+    >>> nx_meta["extensions"]
+    {'spot_size': 3.5, 'detector_contrast': 50.0}
+
+    Works with Pint Quantities:
+
+    >>> from nexusLIMS.schemas.units import ureg
+    >>> add_to_extensions(nx_meta, "chamber_pressure", ureg.Quantity(79.8, "pascal"))
+
+    Notes
+    -----
+    The extensions section preserves all metadata that doesn't fit the core
+    schema, ensuring no data loss during extraction. Extensions are included
+    in the XML output and preserved through the record building process.
+    """
+    # Ensure extensions dict exists
+    if "extensions" not in nx_meta:
+        nx_meta["extensions"] = {}
+
+    # Add the field
+    nx_meta["extensions"][field_name] = value

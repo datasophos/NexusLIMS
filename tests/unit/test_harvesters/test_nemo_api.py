@@ -373,7 +373,7 @@ class TestNemoConnectorEvents:
             # Verify warning was logged for duplicate END log
             assert "An 'END' log with session id" in caplog.text
             # Both warnings should mention the DB check
-            assert caplog.text.count("was found in the the DB") == 2
+            assert caplog.text.count("was found in the DB") == 2
 
         # Verify no new logs were added (count should be same as after first insert)
         _, results_after_second = db_query("SELECT * FROM session_log;")
@@ -406,7 +406,7 @@ class TestNemoConnectorEvents:
         nemo_connector,
     ):
         session = nemo_connector.get_session_from_usage_event(0)
-        assert "No usage event with id = 0 was found" in caplog.text
+        assert "No usage event with id = 0 found" in caplog.text
         assert "WARNING" in caplog.text
         assert session is None
 

@@ -1,0 +1,43 @@
+{
+  "65000": "b'<ImageTags><ImageTagsVersion>1.4.0</ImageTagsVersion><ScalingX><Value>9.765625E-10</Value><Units>m</Units></ScalingX><ScalingY><Value>9.7656606023011E-10</Value><Units>m</Units></ScalingY><ColumnType><Value>GFIS</Value><Units>Unitless</Units></ColumnType><AccelerationVoltage><Value>29997</Value><Units>Volts</Units></AccelerationVoltage><ExtractionVoltage><Value>-36769</Value><Units>Volts</Units></ExtractionVoltage><SpotNumber><Value>6</Value><Units>Unitless</Units></SpotNumber><BlankerCurrent><Value>0.938</Value><Units>picoAmps</Units></BlankerCurrent><SampleCurrent><Value>0</Value><Units>picoAmps</Units></SampleCurrent><Lens1Voltage><Value>23995</Value><Units>Volts</Units></Lens1Voltage><Lens2Voltage><Value>18535</Value><Units>Volts</Units></Lens2Voltage><WorkingDistance><Value>11.977</Value><Units>mm</Units></WorkingDistance><Fov><Value>1</Value><Units>Microns</Units></Fov><StigmationX><Value>-2.22</Value><Units>Unitless</Units></StigmationX><StigmationY><Value>1.63</Value><Units>Unitless</Units></StigmationY><McXShift><Value>-0.0007959</Value><Units>Micro Radians</Units></McXShift><McXTilt><Value>0.000167</Value><Units>Micro Radians</Units></McXTilt><McYShift><Value>-0.0001649</Value><Units>Micro Radians</Units></McYShift><McYTilt><Value>-9.299E-05</Value><Units>Micro Radians</Units></McYTilt><ScanRotate><Value>0</Value><Units>Degrees</Units></ScanRotate><PanX><Value>3</Value><Units>Microns</Units></PanX><PanY><Value>0.2</Value><Units>Microns</Units></PanY><ApertureSize><Value>20</Value><Units></Units></ApertureSize><ColumnMag><Value>0</Value><Units>Unitless</Units></ColumnMag><ColumnMode><Value>NormalImaging</Value><Units></Units></ColumnMode><sFimFOV><Value>0.04</Value><Units>Microns</Units></sFimFOV><CrossOverPosition><Value>0</Value><Units>mm</Units></CrossOverPosition><GunPressure><Value>2.68E-06</Value><Units>Torr</Units></GunPressure><ColumnPressure><Value>0</Value><Units>Torr</Units></ColumnPressure><ChamberPressure><Value>4.89E-07</Value><Units>Torr</Units></ChamberPressure><GunTemp><Value>75.5</Value><Units>K</Units></GunTemp><HeliumPressure><Value>0</Value><Units>Torr</Units></HeliumPressure><DetectorName><Value>ETDetector</Value><Units></Units></DetectorName><ETGridVoltage><Value>500</Value><Units>Volts</Units></ETGridVoltage><ETContrast><Value>35</Value><Units></Units></ETContrast><ETBrightness><Value>0</Value><Units></Units></ETBrightness><MCPContrast><Value>0</Value><Units></Units></MCPContrast><MCPBrightness><Value>0</Value><Units></Units></MCPBrightness><MCPBias><Value>0</Value><Units>Volts</Units></MCPBias><SampleBiasVoltage><Value>-0.8</Value><Units>Volts</Units></SampleBiasVoltage><FloodGunState><Value></Value><Units></Units></FloodGunState><FloodGunMode><Value>Off</Value><Units></Units></FloodGunMode><FloodGunEnergy><Value>677</Value><Units>ElectronVolts</Units></FloodGunEnergy><FloodGunTime><Value>100</Value><Units>uSec</Units></FloodGunTime><StageTilt><Value>0.16</Value><Units>Degrees</Units></StageTilt><StageZ><Value>0.01</Value><Units>mm</Units></StageZ><StageRotate><Value>1.2</Value><Units>Degrees</Units></StageRotate><StageX><Value>25157.23</Value><Units>um</Units></StageX><StageY><Value>25101.9</Value><Units>um</Units></StageY><ImageWidth><Value>1024</Value><Units></Units></ImageWidth><ImageHeight><Value>1024</Value><Units></Units></ImageHeight><DwellTime><Value>0.5</Value><Units>uSec</Units></DwellTime><FrameRetrace><Value>20</Value><Units>uSec</Units></FrameRetrace><LineRetrace><Value>0</Value><Units>uSec</Units></LineRetrace><MagnificationDisplay><Value>0</Value><Units>X</Units></MagnificationDisplay><AveragingMode><Value>Line</Value><Units></Units></AveragingMode><NumAverages><Value>64</Value><Units></Units></NumAverages><ETImageIntensity><Value>23.3</Value><Units></Units></ETImageIntensity><MCPImageIntensity><Value>0</Value><Units></Units></MCPImageIntensity><TimeStamp><Value>1/01/2025 1:00:00 PM</Value><Units></Units></TimeStamp><LutMode><Value></Value><Units></Units></LutMode><LowGray><Value>0</Value><Units></Units></LowGray><HighGray><Value>1</Value><Units></Units></HighGray><Magnification4x5><Value>114300</Value><Units></Units></Magnification4x5><System.Name><Value>XX</Value><Units></Units></System.Name><System.Model><Value>_Orion_</Value><Units></Units></System.Model><GFIS.AccelerationVoltage><Value>29997</Value><Units>Volts</Units></GFIS.AccelerationVoltage><GFIS.ExtractionVoltage><Value>-36769</Value><Units>Volts</Units></GFIS.ExtractionVoltage><GFIS.CondenserVoltage><Value>23995</Value><Units>Volts</Units></GFIS.CondenserVoltage><GFIS.ObjectiveVoltage><Value>18535</Value><Units>Volts</Units></GFIS.ObjectiveVoltage><GFIS.IonGas><Value>Helium</Value><Units></Units></GFIS.IonGas><GFIS.FieldOfView><Value>1</Value><Units>Microns</Units></GFIS.FieldOfView><GFIS.WorkingDistance><Value>11.977</Value><Units>Millimeters</Units></GFIS.WorkingDistance><GFIS.PanX><Value>3</Value><Units>Microns</Units></GFIS.PanX><GFIS.PanY><Value>0.2</Value><Units>Microns</Units></GFIS.PanY><GFIS.ScanRotation><Value>0</Value><Units>Degrees</Units></GFIS.ScanRotation><GFIS.StigmationX><Value>-2.22</Value><Units></Units></GFIS.StigmationX><GFIS.StigmationY><Value>1.63</Value><Units></Units></GFIS.StigmationY><GFIS.CrossoverPosition><Value>-246.999</Value><Units>Millimeters</Units></GFIS.CrossoverPosition><GFIS.ApertureSize><Value>20</Value><Units>Microns</Units></GFIS.ApertureSize><GFIS.ApertureIndex><Value>1</Value><Units></Units></GFIS.ApertureIndex><GFIS.BeamCurrent><Value>0.938</Value><Units>pA</Units></GFIS.BeamCurrent><Detector.Scintillator><Value>10000</Value><Units>Volts</Units></Detector.Scintillator><FloodGun.DeflectionX><Value>0</Value><Units></Units></FloodGun.DeflectionX><FloodGun.DeflectionY><Value>0</Value><Units></Units></FloodGun.DeflectionY><SAS.ScanSize><Value>1024 x 1024</Value><Units></Units></SAS.ScanSize><Stage.XLocation><Value>25157.23</Value><Units>\\xce\\xbcm</Units></Stage.XLocation><Stage.YLocation><Value>25101.9</Value><Units>\\xce\\xbcm</Units></Stage.YLocation><LUT.LUTGamma><Value>1</Value><Units></Units></LUT.LUTGamma></ImageTags>'",
+  "BitsPerSample": [
+    8,
+    8,
+    8,
+    8
+  ],
+  "CZ_SEM": {
+    "": [
+      0,
+      0,
+      0
+    ]
+  },
+  "Compression": 5,
+  "ExtraSamples": [
+    2
+  ],
+  "ImageLength": 1120,
+  "ImageWidth": 1024,
+  "NewSubfileType": 0,
+  "PhotometricInterpretation": 2,
+  "PlanarConfiguration": 1,
+  "Predictor": 1,
+  "ResolutionUnit": 2,
+  "RowsPerStrip": 1120,
+  "SamplesPerPixel": 4,
+  "StripByteCounts": [
+    4195
+  ],
+  "StripOffsets": [
+    8
+  ],
+  "XResolution": [
+    96000,
+    1000
+  ],
+  "YResolution": [
+    96000,
+    1000
+  ]
+}

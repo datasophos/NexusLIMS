@@ -10,7 +10,7 @@ from PIL import Image, UnidentifiedImageError
 
 from nexusLIMS.extractors.base import ExtractionContext
 
-logger = logging.getLogger(__name__)
+_logger = logging.getLogger(__name__)
 
 _LANCZOS = Image.Resampling.LANCZOS
 
@@ -76,7 +76,7 @@ def image_to_square_thumbnail(f: Path, out_path: Path, output_size: int) -> bool
     try:
         _pad_to_square(out_path, output_size)
     except UnidentifiedImageError as exc:
-        logger.warning("no preview generated; PIL error text: %s", str(exc))
+        _logger.warning("no preview generated; PIL error text: %s", str(exc))
         out_path.unlink()
         return False
 
@@ -195,7 +195,7 @@ class ImagePreviewGenerator:
             True if preview was successfully generated, False otherwise
         """
         try:
-            logger.debug("Generating image preview for: %s", context.file_path)
+            _logger.debug("Generating image preview for: %s", context.file_path)
 
             # Generate the thumbnail using the local function
             return image_to_square_thumbnail(
@@ -205,7 +205,7 @@ class ImagePreviewGenerator:
             )
 
         except Exception as e:
-            logger.warning(
+            _logger.warning(
                 "Failed to generate image preview for %s: %s",
                 context.file_path,
                 e,

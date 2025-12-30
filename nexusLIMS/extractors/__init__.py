@@ -1,19 +1,40 @@
 """
 Extract metadata from various electron microscopy file types.
 
-Extractors should return a dictionary containing the values to be displayed
-in NexusLIMS as a sub-dictionary under the key ``nx_meta``. The remaining keys
-will be for the metadata as extracted. Under ``nx_meta``, a few keys are
-expected (although not enforced):
+Extractors should return a list of dictionaries, where each dictionary contains
+the extracted metadata under the key ``nx_meta``. The ``nx_meta`` structure is
+validated against the :class:`~nexusLIMS.schemas.metadata.NexusMetadata` Pydantic
+schema to ensure consistency across all extractors.
 
-* ``'Creation Time'`` - ISO format date and time as a string
-* ``'Data Type'`` - a human-readable description of the data type separated by
-  underscores - e.g "STEM_Imaging", "TEM_EDS", etc.
-* ``'DatasetType'`` - determines the value of the Type attribute for the dataset
-  (defined in the schema)
-* ``'Data Dimensions'`` - dimensions of the dataset, surrounded by parentheses,
-  separated by commas as a string- e.g. '(12, 1024, 1024)'
-* ``'Instrument ID'`` - instrument PID pulled from the instrument database
+Required Fields
+---------------
+All extractors must include these fields in ``nx_meta``:
+
+* ``'Creation Time'`` - ISO-8601 timestamp string **with timezone** (e.g.,
+  ``"2024-01-15T10:30:00-05:00"`` or ``"2024-01-15T15:30:00Z"``)
+* ``'Data Type'`` - Human-readable description using underscores (e.g.,
+  ``"STEM_Imaging"``, ``"TEM_EDS"``, ``"SEM_Imaging"``)
+* ``'DatasetType'`` - Schema-defined category, must be one of: ``"Image"``,
+  ``"Spectrum"``, ``"SpectrumImage"``, ``"Diffraction"``, ``"Misc"``, or ``"Unknown"``
+
+Optional Fields
+---------------
+Common optional fields include:
+
+* ``'Data Dimensions'`` - Dataset shape as string (e.g., ``"(1024, 1024)"``)
+* ``'Instrument ID'`` - Instrument PID from database (e.g., ``"FEI-Titan-TEM-635816"``)
+* ``'warnings'`` - List of warning messages or [message, context] pairs
+
+Additional instrument-specific fields are allowed beyond these standard fields.
+
+Schema Validation
+-----------------
+The ``nx_meta`` structure is validated using Pydantic strict mode. Validation occurs
+after default values are set (e.g., missing ``DatasetType`` defaults to ``"Misc"``).
+If validation fails, a ``pydantic.ValidationError`` is raised with detailed information
+about which fields are invalid.
+
+For complete schema details, see :class:`~nexusLIMS.schemas.metadata.NexusMetadata`.
 """
 
 import base64
@@ -22,16 +43,26 @@ import json
 import logging
 import shutil
 from datetime import datetime as dt
+from decimal import Decimal
 from pathlib import Path
 from typing import Any, Callable, Dict, Tuple
 
 import hyperspy.api as hs
 import numpy as np
 from benedict import benedict
+from pydantic import ValidationError
 
 from nexusLIMS.extractors.base import ExtractionContext
 from nexusLIMS.extractors.registry import get_registry
 from nexusLIMS.instruments import get_instr_from_filepath
+from nexusLIMS.schemas.metadata import (
+    DiffractionMetadata,
+    ImageMetadata,
+    NexusMetadata,
+    SpectrumImageMetadata,
+    SpectrumMetadata,
+)
+from nexusLIMS.schemas.units import ureg
 from nexusLIMS.utils import current_system_tz, replace_instrument_data_path
 from nexusLIMS.version import __version__
 
@@ -43,27 +74,28 @@ from .plugins.preview_generators.image_preview import (
 )
 from .plugins.preview_generators.text_preview import text_to_thumbnail
 
-logger = logging.getLogger(__name__)
+_logger = logging.getLogger(__name__)
+
 PLACEHOLDER_PREVIEW = Path(__file__).parent / "assets" / "extractor_error.png"
+"""Path to placeholder preview image used when preview generation fails."""
 
 __all__ = [
     "PLACEHOLDER_PREVIEW",
+    "_logger",
     "create_preview",
     "down_sample_image",
     "flatten_dict",
     "get_instr_from_filepath",
     "get_registry",
     "image_to_square_thumbnail",
-    "logger",
     "parse_metadata",
     "sig_to_thumbnail",
     "text_to_thumbnail",
     "unextracted_preview_map",
     "utils",
+    "validate_nx_meta",
 ]
 
-# filetypes that will only have basic metadata extracted but will nonetheless
-# have a custom preview image generated
 unextracted_preview_map = {
     "txt": text_to_thumbnail,
     "png": image_to_square_thumbnail,
@@ -73,6 +105,8 @@ unextracted_preview_map = {
     "jpg": image_to_square_thumbnail,
     "jpeg": image_to_square_thumbnail,
 }
+"""Filetypes that will only have basic metadata extracted but will nonetheless
+have a custom preview image generated"""
 
 
 def _add_extraction_details(
@@ -123,13 +157,202 @@ def _add_extraction_details(
             module.__name__ if module is not None else "unknown"
         )
 
-    nx_meta["nx_meta"]["NexusLIMS Extraction"] = {
+    # Build NexusLIMS Extraction details
+    extraction_details = {
         "Date": dt.now(tz=current_system_tz()).isoformat(),
         "Module": module_name,
         "Version": __version__,
     }
 
+    # Move "Extractor Warnings" from nx_meta to extraction details if present
+    # Check both nx_meta and extensions (some extractors migrate it to extensions)
+    if "Extractor Warnings" in nx_meta["nx_meta"]:
+        extraction_details["Extractor Warnings"] = nx_meta["nx_meta"].pop(
+            "Extractor Warnings"
+        )
+    elif (
+        "extensions" in nx_meta["nx_meta"]
+        and "Extractor Warnings" in nx_meta["nx_meta"]["extensions"]
+    ):
+        extraction_details["Extractor Warnings"] = nx_meta["nx_meta"]["extensions"].pop(
+            "Extractor Warnings"
+        )
+
+    nx_meta["nx_meta"]["NexusLIMS Extraction"] = extraction_details
+
     return nx_meta
+
+
+def get_schema_for_dataset_type(dataset_type: str) -> type[NexusMetadata]:
+    """
+    Select the appropriate schema class based on DatasetType.
+
+    This function maps dataset types to their corresponding type-specific
+    metadata schemas. Type-specific schemas (ImageMetadata, SpectrumMetadata, etc.)
+    provide stricter validation of fields appropriate for each data type.
+
+    Parameters
+    ----------
+    dataset_type : str
+        The value of the 'DatasetType' field. Must be one of: 'Image', 'Spectrum',
+        'SpectrumImage', 'Diffraction', 'Misc', or 'Unknown'.
+
+    Returns
+    -------
+    type[NexusMetadata]
+        The schema class to use for validation. Returns a type-specific schema
+        (ImageMetadata, SpectrumMetadata, etc.) for known dataset types, or the
+        base NexusMetadata schema for 'Misc' and 'Unknown' types.
+
+    Notes
+    -----
+    Schema mapping:
+    - 'Image' → ImageMetadata (SEM/TEM/STEM images)
+    - 'Spectrum' → SpectrumMetadata (EDS/EELS spectra)
+    - 'SpectrumImage' → SpectrumImageMetadata (hyperspectral data)
+    - 'Diffraction' → DiffractionMetadata (diffraction patterns)
+    - 'Misc' → NexusMetadata (base schema)
+    - 'Unknown' → NexusMetadata (base schema)
+    - Other values → NexusMetadata (fallback)
+
+    Examples
+    --------
+    >>> schema = get_schema_for_dataset_type("Image")
+    >>> schema.__name__
+    'ImageMetadata'
+
+    >>> schema = get_schema_for_dataset_type("Unknown")
+    >>> schema.__name__
+    'NexusMetadata'
+    """
+    schema_mapping = {
+        "Image": ImageMetadata,
+        "Spectrum": SpectrumMetadata,
+        "SpectrumImage": SpectrumImageMetadata,
+        "Diffraction": DiffractionMetadata,
+        "Misc": NexusMetadata,
+        "Unknown": NexusMetadata,
+    }
+
+    return schema_mapping.get(dataset_type, NexusMetadata)
+
+
+def validate_nx_meta(
+    metadata_dict: dict[str, Any], *, filename: Path | None = None
+) -> dict[str, Any]:
+    """
+    Validate the nx_meta structure against type-specific metadata schemas.
+
+    This function ensures that metadata returned by extractor plugins conforms
+    to the required structure defined in the type-specific metadata schemas
+    (ImageMetadata, SpectrumMetadata, etc.). The appropriate schema is selected
+    based on the 'DatasetType' field. Validation is performed strictly - any
+    schema violations will raise a ValidationError with detailed information
+    about the failure.
+
+    Parameters
+    ----------
+    metadata_dict : dict[str, Any]
+        Dictionary containing an 'nx_meta' key with the metadata to validate.
+        This is the format returned by all extractor plugins.
+    filename : :class:`~pathlib.Path` or None, optional
+        The file path being processed. Used only for error message context.
+        If None, error messages will not include file path information.
+
+    Returns
+    -------
+    dict[str, Any]
+        The original metadata_dict, unchanged. Validation does not modify data,
+        it only checks conformance to the schema.
+
+    Raises
+    ------
+    pydantic.ValidationError
+        If the nx_meta structure fails validation. The error message will include
+        detailed information about which fields are invalid and why.
+
+    Notes
+    -----
+    This function validates:
+
+    - **Required fields**: 'Creation Time', 'Data Type', 'DatasetType' must be present
+    - **ISO-8601 timestamps**: 'Creation Time' must be valid ISO-8601 with timezone
+    - **Controlled vocabularies**: 'DatasetType' must be one of the allowed values
+    - **Type-specific fields**: Fields appropriate for the dataset type (e.g.,
+      'acceleration_voltage' for Image, 'acquisition_time' for Spectrum)
+    - **Type constraints**: All fields must match their expected types
+    - **Pint Quantities**: Physical measurements must use Pint Quantity objects
+
+    The validation system uses type-specific schemas:
+    - Image → ImageMetadata (SEM/TEM/STEM imaging)
+    - Spectrum → SpectrumMetadata (EDS/EELS spectra)
+    - SpectrumImage → SpectrumImageMetadata (hyperspectral)
+    - Diffraction → DiffractionMetadata (TEM diffraction)
+    - Misc/Unknown → NexusMetadata (base schema)
+
+    All schemas support the 'extensions' section for instrument-specific
+    metadata that doesn't fit the core schema.
+
+    Examples
+    --------
+    Valid metadata passes without modification:
+
+    >>> metadata = {
+    ...     "nx_meta": {
+    ...         "Creation Time": "2024-01-15T10:30:00-05:00",
+    ...         "Data Type": "STEM_Imaging",
+    ...         "DatasetType": "Image",
+    ...     }
+    ... }
+    >>> result = validate_nx_meta(metadata)
+    >>> result == metadata
+    True
+
+    Invalid metadata raises ValidationError:
+
+    >>> bad_metadata = {
+    ...     "nx_meta": {
+    ...         "Creation Time": "invalid-timestamp",
+    ...         "Data Type": "STEM_Imaging",
+    ...         "DatasetType": "Image",
+    ...     }
+    ... }
+    >>> validate_nx_meta(bad_metadata)  # doctest: +SKIP
+    Traceback (most recent call last):
+        ...
+    pydantic.ValidationError: ...
+
+    See Also
+    --------
+    nexusLIMS.schemas.metadata.NexusMetadata
+        The base Pydantic schema model for nx_meta validation
+    nexusLIMS.schemas.metadata.ImageMetadata
+        Schema for Image dataset types
+    nexusLIMS.schemas.metadata.SpectrumMetadata
+        Schema for Spectrum dataset types
+    get_schema_for_dataset_type
+        Helper function that selects the appropriate schema
+    parse_metadata
+        Main extraction function that uses this validator
+    """
+    nx_meta = metadata_dict["nx_meta"]
+
+    # Get dataset type and select appropriate schema
+    dataset_type = nx_meta.get("DatasetType", "Misc")
+    schema_class = get_schema_for_dataset_type(dataset_type)
+
+    try:
+        schema_class.model_validate(nx_meta)
+    except ValidationError as e:
+        # Enhance error message with file and dataset type context
+        if filename:
+            msg = f"Validation failed for {filename} ({dataset_type}): {e}"
+        else:
+            msg = f"Validation failed ({dataset_type}): {e}"
+        _logger.exception(msg)
+        raise
+
+    return metadata_dict
 
 
 def parse_metadata(  # noqa: PLR0912
@@ -215,13 +438,13 @@ def parse_metadata(  # noqa: PLR0912
     if extractor.name == "basic_file_info_extractor":
         if extension not in unextracted_preview_map:
             generate_preview = False
-            logger.info(
+            _logger.info(
                 "No specialized extractor found for file extension; "
                 "setting generate_preview to False",
             )
         else:
             generate_preview = True
-            logger.info(
+            _logger.info(
                 "No specialized extractor found for file extension; "
                 "but file extension was in unextracted_preview_map; "
                 "setting generate_preview to True",
@@ -238,6 +461,11 @@ def parse_metadata(  # noqa: PLR0912
         if "DatasetType" not in nx_meta["nx_meta"]:
             nx_meta["nx_meta"]["DatasetType"] = "Misc"
             nx_meta["nx_meta"]["Data Type"] = "Miscellaneous"
+
+    # Validate each metadata dict against the schema (strict mode)
+    # This happens AFTER setting defaults to allow extractors to omit optional fields
+    for nx_meta in nx_meta_list:
+        validate_nx_meta(nx_meta, filename=fname)
 
     # Write output for each signal (single and multi-signal files)
     if write_output:
@@ -261,7 +489,7 @@ def parse_metadata(  # noqa: PLR0912
                     else:
                         out_dict[k] = v
                 with out_fname.open(mode="w", encoding="utf-8") as f:
-                    logger.debug("Dumping metadata to %s", out_fname)
+                    _logger.debug("Dumping metadata to %s", out_fname)
                     json.dump(
                         out_dict,
                         f,
@@ -325,7 +553,7 @@ def create_preview(  # noqa: PLR0911, PLR0912, PLR0915
 
     # Skip if preview exists and overwrite is False
     if preview_fname.is_file() and not overwrite:
-        logger.info("Preview already exists: %s", preview_fname)
+        _logger.info("Preview already exists: %s", preview_fname)
         return preview_fname
 
     # Create context for preview generation
@@ -340,7 +568,7 @@ def create_preview(  # noqa: PLR0911, PLR0912, PLR0915
 
     if generator:
         # Use plugin-based preview generation
-        logger.info("Generating preview using %s: %s", generator.name, preview_fname)
+        _logger.info("Generating preview using %s: %s", generator.name, preview_fname)
         # Create the directory for the thumbnail, if needed
         preview_fname.parent.mkdir(parents=True, exist_ok=True)
 
@@ -348,7 +576,7 @@ def create_preview(  # noqa: PLR0911, PLR0912, PLR0915
         if success:
             return preview_fname
 
-        logger.warning(
+        _logger.warning(
             "Preview generator %s failed for %s",
             generator.name,
             fname,
@@ -358,7 +586,7 @@ def create_preview(  # noqa: PLR0911, PLR0912, PLR0915
     # Legacy fallback for .tif files (special case with downsampling)
     extension = fname.suffix[1:]
     if extension == "tif":
-        logger.info("Using legacy downsampling for .tif: %s", preview_fname)
+        _logger.info("Using legacy downsampling for .tif: %s", preview_fname)
         preview_fname.parent.mkdir(parents=True, exist_ok=True)
         factor = 2
         down_sample_image(fname, out_path=preview_fname, factor=factor)
@@ -366,7 +594,7 @@ def create_preview(  # noqa: PLR0911, PLR0912, PLR0915
 
     # Legacy fallback for files in unextracted_preview_map
     if extension in unextracted_preview_map:
-        logger.info("Using legacy preview map for %s: %s", extension, preview_fname)
+        _logger.info("Using legacy preview map for %s: %s", extension, preview_fname)
         preview_fname.parent.mkdir(parents=True, exist_ok=True)
         preview_return = unextracted_preview_map[extension](
             f=fname,
@@ -381,7 +609,7 @@ def create_preview(  # noqa: PLR0911, PLR0912, PLR0915
         return preview_fname
 
     # Legacy fallback for HyperSpy-loadable files
-    logger.info("Trying legacy HyperSpy preview generation: %s", preview_fname)
+    _logger.info("Trying legacy HyperSpy preview generation: %s", preview_fname)
     load_options = {"lazy": True}
     if extension == "ser":
         load_options["only_valid_data"] = True
@@ -390,7 +618,7 @@ def create_preview(  # noqa: PLR0911, PLR0912, PLR0915
     try:
         s = hs.load(fname, **load_options)
     except Exception:  # pylint: disable=broad-exception-caught
-        logger.warning(
+        _logger.warning(
             "Signal could not be loaded by HyperSpy. "
             "Using placeholder image for preview.",
         )
@@ -424,7 +652,7 @@ def create_preview(  # noqa: PLR0911, PLR0912, PLR0915
         ).strip(".")
 
     # Generate the preview
-    logger.info("Generating HyperSpy preview: %s", preview_fname)
+    _logger.info("Generating HyperSpy preview: %s", preview_fname)
     preview_fname.parent.mkdir(parents=True, exist_ok=True)
     s.compute(show_progressbar=False)
     sig_to_thumbnail(s, out_path=preview_fname)
@@ -471,7 +699,7 @@ class _CustomEncoder(json.JSONEncoder):
     not able to be by default (taken from https://stackoverflow.com/a/27050186).
     """
 
-    def default(self, o):
+    def default(self, o):  # noqa: PLR0911
         if isinstance(o, np.integer):
             return int(o)
         if isinstance(o, np.floating):
@@ -483,5 +711,11 @@ class _CustomEncoder(json.JSONEncoder):
         if isinstance(o, np.void):
             # np.void array may contain arbitary binary, so base64 encode it
             return base64.b64encode(o.tolist()).decode("utf-8")
+        # Handle Pint Quantity objects
+        if isinstance(o, ureg.Quantity):
+            return {"value": float(o.magnitude), "unit": str(o.units)}
+        # Handle Decimal objects (convert to float for JSON serialization)
+        if isinstance(o, Decimal):
+            return float(o)
 
         return super().default(o)

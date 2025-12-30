@@ -30,7 +30,9 @@ from pydantic import (
 )
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-logger = logging.getLogger(__name__)
+from nexusLIMS.version import __version__
+
+_logger = logging.getLogger(__name__)
 
 
 class NemoHarvesterConfig(BaseModel):
@@ -188,15 +190,6 @@ class Settings(BaseSettings):
             "record uploads that are authenticated using the CDCS credentials."
         ),
     )
-    NX_TEST_CDCS_URL: AnyHttpUrl | None = Field(
-        None,
-        description=(
-            "(development setting) The root URL of a NexusLIMS CDCS instance to use "
-            "for integration testing. If defined, this URL will be used for the CDCS "
-            'tests rather than the "actual" URL defined in NX_CDCS_URL. If not '
-            "defined, no integration tests will be run."
-        ),
-    )
     NX_CERT_BUNDLE_FILE: FilePath | None = Field(
         None,
         description=(
@@ -343,7 +336,7 @@ class Settings(BaseSettings):
                 token = all_env.get(f"NX_NEMO_TOKEN_{harvester_num}")
 
                 if not address or not token:
-                    logger.warning(
+                    _logger.warning(
                         "Skipping NEMO harvester %d: "
                         "both NX_NEMO_ADDRESS_%d and "
                         "NX_NEMO_TOKEN_%d must be set",
@@ -372,7 +365,7 @@ class Settings(BaseSettings):
                 try:
                     harvesters[harvester_num] = NemoHarvesterConfig(**config_dict)
                 except ValidationError:
-                    logger.exception(
+                    _logger.exception(
                         "Invalid configuration for NEMO harvester %d",
                         harvester_num,
                     )
@@ -449,7 +442,7 @@ class Settings(BaseSettings):
         try:
             return EmailConfig(**config_dict)
         except ValidationError:
-            logger.exception("Invalid email configuration")
+            _logger.exception("Invalid email configuration")
             return None
 
 
@@ -474,8 +467,19 @@ class _SettingsManager:
         """Create a new Settings instance."""
         try:
             return Settings()
-        except ValidationError:
-            logger.exception("Configuration validation error")
+        except ValidationError as e:
+            # Add help message to exception using add_note (Python 3.11+)
+            # This appears after the exception traceback
+            # Strip .dev* suffix from version for documentation link
+            doc_version = re.sub(r"\.dev.*$", "", __version__)
+            help_msg = (
+                "\n" + "=" * 80 + "\n"
+                "NexusLIMS configuration validation failed.\n"
+                f"See https://datasophos.github.io/NexusLIMS/v{doc_version}/configuration.html\n"
+                "for complete environment variable reference.\n" + "=" * 80
+            )
+            if hasattr(e, "add_note"):
+                e.add_note(help_msg)
             raise
 
     def refresh(self) -> Settings:
@@ -596,5 +600,5 @@ def clear_settings() -> None:
     _manager.clear()
 
 
-# The settings "singleton" - accessed like a normal object throughout the application
 settings = _SettingsProxy()
+"""The settings "singleton" - accessed like a normal object in the application"""

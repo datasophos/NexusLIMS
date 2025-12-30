@@ -8,7 +8,7 @@ from uuid import uuid4
 
 import pytest
 
-from nexusLIMS.db import make_db_query, session_handler
+from nexusLIMS.db import session_handler
 from nexusLIMS.db.session_handler import db_query
 
 from .test_instrument_factory import make_test_tool
@@ -53,7 +53,7 @@ class TestSession:
             f"VALUES ('FEI-Titan-TEM-012345', 'START', "
             f"'{uuid}', 'TO_BE_BUILT', datetime('now'));"
         )
-        make_db_query(query)
+        db_query(query)
         # because we put in an extra START log with TO_BE_BUILT status,
         # this should raise an error:
         with pytest.raises(
@@ -64,7 +64,7 @@ class TestSession:
 
         # remove the session log we added
         query = f"DELETE FROM session_log WHERE session_identifier = '{uuid}'"
-        make_db_query(query)
+        db_query(query)
 
 
 class TestSessionLog:

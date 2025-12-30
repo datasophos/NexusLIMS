@@ -18,7 +18,7 @@ from nexusLIMS.utils import (
 if TYPE_CHECKING:
     from nexusLIMS.extractors.base import ExtractionContext
 
-logger = logging.getLogger(__name__)
+_logger = logging.getLogger(__name__)
 
 
 def parse_tecnai_metadata(
@@ -155,7 +155,7 @@ def detect_diffraction_mode(
         "Tecnai Mode" in metadata["nx_meta"]
         and metadata["nx_meta"]["Tecnai Mode"] == "STEM nP SA Zoom Diffraction"
     ):
-        logger.info(
+        _logger.info(
             'Detected file as Diffraction type based on "Tecnai '
             'Mode" == "STEM nP SA Zoom Diffraction"',
         )
@@ -167,7 +167,7 @@ def detect_diffraction_mode(
         "Operation Mode" in metadata["nx_meta"]
         and metadata["nx_meta"]["Operation Mode"] == "DIFFRACTION"
     ):
-        logger.info(
+        _logger.info(
             'Detected file as Diffraction type based on "Operation '
             'Mode" == "DIFFRACTION"',
         )
@@ -185,10 +185,10 @@ fei_titan_tem_642_profile = InstrumentProfile(
         "diffraction_detection": detect_diffraction_mode,
     },
     transformations={},
-    extractor_overrides={},
-    static_metadata={},
+    extension_fields={},
 )
+"""An instrument profile for the FEI Titan TEM"""
 
 get_profile_registry().register(fei_titan_tem_642_profile)
 
-logger.debug("Registered FEI Titan TEM (642) instrument profile")
+_logger.debug("Registered FEI Titan TEM (642) instrument profile")

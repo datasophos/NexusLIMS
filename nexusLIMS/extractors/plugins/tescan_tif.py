@@ -13,7 +13,8 @@ from PIL import Image
 
 from nexusLIMS.extractors.base import ExtractionContext
 from nexusLIMS.extractors.base import FieldDefinition as FD
-from nexusLIMS.extractors.utils import _set_instr_name_and_time
+from nexusLIMS.extractors.utils import _set_instr_name_and_time, add_to_extensions
+from nexusLIMS.schemas.units import ureg
 from nexusLIMS.utils import set_nested_dict_value, sort_dict
 
 TESCAN_TIFF_TAG = 50431
@@ -160,6 +161,9 @@ class TescanTiffExtractor:
 
         # Strategy 3: Always extract basic TIFF tags (may supplement or override)
         self._extract_from_tiff_tags(filename, mdict)
+
+        # Migrate metadata to schema-compliant format
+        mdict = self._migrate_to_schema_compliant_metadata(mdict)
 
         # Sort the nx_meta dictionary (recursively) for nicer display
         mdict["nx_meta"] = sort_dict(mdict["nx_meta"])
@@ -516,6 +520,243 @@ class TescanTiffExtractor:
             _logger.warning("Failed to extract TIFF tags from %s: %s", filename, e)
             mdict["nx_meta"]["Extractor Warnings"] = f"Failed to extract TIFF tags: {e}"
 
+    def _get_field_definitions(self) -> list:
+        """
+        Get field definitions for metadata extraction.
+
+        Returns
+        -------
+        list
+            List of FieldDefinition tuples
+        """
+        return [
+            # [MAIN] section - in order as they appear in HDR file
+            FD("MAIN", "AccFrames", "Accumulated Frames", 1, False),
+            FD("MAIN", "AccType", "Accumulation Type", 1, True),
+            FD("MAIN", "Company", "Company", 1, True),
+            FD("MAIN", "Date", "Acquisition Date", 1, True),
+            FD("MAIN", "Description", "Description", 1, True),
+            FD("MAIN", "Device", "Device", 1, True),
+            FD("MAIN", "DeviceModel", "Device Model", 1, True),
+            FD("MAIN", "FullUserName", "Full User Name", 1, True),
+            FD("MAIN", "ImageStripSize", "Image Strip Size", 1, False),
+            FD(
+                "MAIN",
+                "Magnification",
+                "Magnification",
+                1e-3,
+                False,
+                target_unit="kiloX",
+            ),
+            FD("MAIN", "MagnificationReference", "Magnification Reference", 1, False),
+            FD("MAIN", "OrigFileName", "Original Filename", 1, True),
+            FD(
+                "MAIN", "PixelSizeX", "Pixel Width", 1e9, False, target_unit="nanometer"
+            ),
+            FD(
+                "MAIN",
+                "PixelSizeY",
+                "Pixel Height",
+                1e9,
+                False,
+                target_unit="nanometer",
+            ),
+            FD("MAIN", "SerialNumber", "Serial Number", 1, True),
+            FD("MAIN", "Sign", "Sign", 1, True),
+            FD("MAIN", "SoftwareVersion", "Software Version", 1, True),
+            FD("MAIN", "Time", "Acquisition Time", 1, True),
+            FD("MAIN", "UserName", "User Name", 1, True),
+            FD("MAIN", "ViewFieldsCountX", "View Fields Count X", 1, False),
+            FD("MAIN", "ViewFieldsCountY", "View Fields Count Y", 1, False),
+            # [SEM] section - in order as they appear in HDR file
+            FD(
+                "SEM",
+                "AcceleratorVoltage",
+                "Accelerator Voltage",
+                1e-3,
+                False,
+                target_unit="kilovolt",
+            ),
+            FD(
+                "SEM",
+                "ApertureDiameter",
+                "Aperture Diameter",
+                1e6,
+                False,
+                target_unit="micrometer",
+            ),
+            FD("SEM", "ApertureOptimization", "Aperture Optimization", 1, False),
+            FD(
+                "SEM",
+                "ChamberPressure",
+                "Chamber Pressure",
+                1e3,
+                False,
+                target_unit="millipascal",
+            ),
+            FD("SEM", "CrossFree", "Cross Free", 1, False),
+            FD(
+                "SEM",
+                "CrossSectionShiftX",
+                "Cross Section Shift X",
+                1e6,
+                False,
+                target_unit="micrometer",
+            ),
+            FD(
+                "SEM",
+                "CrossSectionShiftY",
+                "Cross Section Shift Y",
+                1e6,
+                False,
+                target_unit="micrometer",
+            ),
+            FD(
+                "SEM",
+                "DepthOfFocus",
+                "Depth of Focus",
+                1e6,
+                False,
+                target_unit="micrometer",
+            ),
+            FD("SEM", "Detector", "Detector Name", 1, True),
+            FD("SEM", "Detector0", "Detector 0", 1, True),
+            FD("SEM", "Detector0FlatField", "Detector 0 Flat Field", 1, False),
+            FD("SEM", "Detector0Gain", "Detector 0 Gain", 1, False),
+            FD("SEM", "Detector0Offset", "Detector 0 Offset", 1, False),
+            FD(
+                "SEM",
+                "DwellTime",
+                "Pixel Dwell Time",
+                1e6,
+                False,
+                target_unit="microsecond",
+            ),
+            FD(
+                "SEM",
+                "EmissionCurrent",
+                "Emission Current",
+                1e6,
+                False,
+                target_unit="microampere",
+            ),
+            FD("SEM", "Gun", "Gun Type", 1, True),
+            FD("SEM", "GunShiftX", "Gun Shift X", 1, False),
+            FD("SEM", "GunShiftY", "Gun Shift Y", 1, False),
+            FD("SEM", "GunTiltX", "Gun Tilt X", 1, False),
+            FD("SEM", "GunTiltY", "Gun Tilt Y", 1, False),
+            FD("SEM", "HV", "HV Voltage", 1e-3, False, target_unit="kilovolt"),
+            FD("SEM", "IMLCenteringX", "IML Centering X", 1, False),
+            FD("SEM", "IMLCenteringY", "IML Centering Y", 1, False),
+            FD(
+                "SEM",
+                "ImageShiftX",
+                "Image Shift X",
+                1e9,
+                False,
+                target_unit="nanometer",
+            ),
+            FD(
+                "SEM",
+                "ImageShiftY",
+                "Image Shift Y",
+                1e9,
+                False,
+                target_unit="nanometer",
+            ),
+            FD("SEM", "InjectedGas", "Injected Gas", 1, True),
+            FD("SEM", "LUTGamma", "LUT Gamma", 1, False),
+            FD("SEM", "LUTMaximum", "LUT Maximum", 1, False),
+            FD("SEM", "LUTMinimum", "LUT Minimum", 1, False),
+            FD("SEM", "MTDGrid", "MTD Grid", 1e-3, False, target_unit="kilovolt"),
+            FD(
+                "SEM",
+                "MTDScintillator",
+                "MTD Scintillator",
+                1e-3,
+                False,
+                target_unit="kilovolt",
+            ),
+            FD("SEM", "OBJCenteringX", "OBJ Centering X", 1, False),
+            FD("SEM", "OBJCenteringY", "OBJ Centering Y", 1, False),
+            FD("SEM", "OBJPreCenteringX", "OBJ Pre-Centering X", 1, False),
+            FD("SEM", "OBJPreCenteringY", "OBJ Pre-Centering Y", 1, False),
+            FD("SEM", "PotentialMode", "Potential Mode", 1, True),
+            FD(
+                "SEM",
+                "PredictedBeamCurrent",
+                "Predicted Beam Current",
+                1e12,
+                False,
+                target_unit="picoampere",
+            ),
+            FD("SEM", "PrimaryDetectorGain", "Primary Detector Gain", 1, False),
+            FD("SEM", "PrimaryDetectorOffset", "Primary Detector Offset", 1, False),
+            FD("SEM", "SampleVoltage", "Sample Voltage", 1, False, target_unit="volt"),
+            FD("SEM", "ScanID", "Scan ID", 1, False),
+            FD("SEM", "ScanMode", "Scan Mode", 1, True),
+            FD("SEM", "ScanRotation", "Scan Rotation", 1, False, target_unit="degree"),
+            FD("SEM", "ScanSpeed", "Scan Speed", 1, False),
+            FD("SEM", "SessionID", "Session ID", 1, True),
+            FD(
+                "SEM",
+                "SpecimenCurrent",
+                "Specimen Current",
+                1e12,
+                False,
+                target_unit="picoampere",
+            ),
+            FD("SEM", "SpotSize", "Spot Size", 1e9, False, target_unit="nanometer"),
+            FD(
+                "SEM",
+                "StageRotation",
+                ["Stage Position", "Rotation"],
+                1,
+                False,
+                target_unit="degree",
+            ),
+            FD(
+                "SEM",
+                "StageTilt",
+                ["Stage Position", "Tilt"],
+                1,
+                False,
+                target_unit="degree",
+            ),
+            FD("SEM", "StageX", ["Stage Position", "X"], 1, False, target_unit="meter"),
+            FD("SEM", "StageY", ["Stage Position", "Y"], 1, False, target_unit="meter"),
+            FD("SEM", "StageZ", ["Stage Position", "Z"], 1, False, target_unit="meter"),
+            FD("SEM", "StigmatorX", "Stigmator X Value", 1, False),
+            FD("SEM", "StigmatorY", "Stigmator Y Value", 1, False),
+            FD(
+                "SEM",
+                "SymmetrizationVoltage",
+                "Symmetrization Voltage",
+                1e-3,
+                False,
+                target_unit="kilovolt",
+            ),
+            FD("SEM", "SyncMains", "Sync to Mains", 1, True),
+            FD("SEM", "TiltCorrection", "Tilt Correction", 1, False),
+            FD(
+                "SEM",
+                "TubeVoltage",
+                "Tube Voltage",
+                1e-3,
+                False,
+                target_unit="kilovolt",
+            ),
+            FD(
+                "SEM",
+                "VirtualObserverDistance",
+                "Virtual Observer Distance",
+                1e3,
+                False,
+                target_unit="millimeter",
+            ),
+            FD("SEM", "WD", "Working Distance", 1e3, False, target_unit="millimeter"),
+        ]
+
     def _parse_nx_meta(self, mdict: dict) -> dict:  # noqa: PLR0912
         """
         Parse metadata into NexusLIMS format.
@@ -541,116 +782,8 @@ class TescanTiffExtractor:
         main_section = mdict.get("MAIN", {})
         sem_section = mdict.get("SEM", {})
 
-        # Field definitions using FD NamedTuple
-        fields = [
-            # [MAIN] section - in order as they appear in HDR file
-            FD("MAIN", "AccFrames", "Accumulated Frames", 1, False),
-            FD("MAIN", "AccType", "Accumulation Type", 1, True),
-            FD("MAIN", "Company", "Company", 1, True),
-            FD("MAIN", "Date", "Acquisition Date", 1, True),
-            FD("MAIN", "Description", "Description", 1, True),
-            FD("MAIN", "Device", "Device", 1, True),
-            FD("MAIN", "DeviceModel", "Device Model", 1, True),
-            FD("MAIN", "FullUserName", "Full User Name", 1, True),
-            FD("MAIN", "ImageStripSize", "Image Strip Size", 1, False),
-            FD("MAIN", "Magnification", "Magnification (kX)", 1e-3, False),
-            FD("MAIN", "MagnificationReference", "Magnification Reference", 1, False),
-            FD("MAIN", "OrigFileName", "Original Filename", 1, True),
-            FD("MAIN", "PixelSizeX", "Pixel Width (nm)", 1e9, False),
-            FD("MAIN", "PixelSizeY", "Pixel Height (nm)", 1e9, False),
-            FD("MAIN", "SerialNumber", "Serial Number", 1, True),
-            FD("MAIN", "Sign", "Sign", 1, True),
-            FD("MAIN", "SoftwareVersion", "Software Version", 1, True),
-            FD("MAIN", "Time", "Acquisition Time", 1, True),
-            FD("MAIN", "UserName", "User Name", 1, True),
-            FD("MAIN", "ViewFieldsCountX", "View Fields Count X", 1, False),
-            FD("MAIN", "ViewFieldsCountY", "View Fields Count Y", 1, False),
-            # [SEM] section - in order as they appear in HDR file
-            FD("SEM", "AcceleratorVoltage", "Accelerator Voltage (kV)", 1e-3, False),
-            FD("SEM", "ApertureDiameter", "Aperture Diameter (μm)", 1e6, False),
-            FD("SEM", "ApertureOptimization", "Aperture Optimization", 1, False),
-            FD("SEM", "ChamberPressure", "Chamber Pressure (mPa)", 1e3, False),
-            FD("SEM", "CrossFree", "Cross Free", 1, False),
-            FD("SEM", "CrossSectionShiftX", "Cross Section Shift X (μm)", 1e6, False),
-            FD("SEM", "CrossSectionShiftY", "Cross Section Shift Y (μm)", 1e6, False),
-            FD("SEM", "DepthOfFocus", "Depth of Focus (μm)", 1e6, False),
-            FD("SEM", "Detector", "Detector Name", 1, True),
-            FD("SEM", "Detector0", "Detector 0", 1, True),
-            FD("SEM", "Detector0FlatField", "Detector 0 Flat Field", 1, False),
-            FD("SEM", "Detector0Gain", "Detector 0 Gain", 1, False),
-            FD("SEM", "Detector0Offset", "Detector 0 Offset", 1, False),
-            FD("SEM", "DwellTime", "Pixel Dwell Time (μs)", 1e6, False),
-            FD("SEM", "EmissionCurrent", "Emission Current (μA)", 1e6, False),
-            FD("SEM", "Gun", "Gun Type", 1, True),
-            FD("SEM", "GunShiftX", "Gun Shift X", 1, False),
-            FD("SEM", "GunShiftY", "Gun Shift Y", 1, False),
-            FD("SEM", "GunTiltX", "Gun Tilt X", 1, False),
-            FD("SEM", "GunTiltY", "Gun Tilt Y", 1, False),
-            FD("SEM", "HV", "HV Voltage (kV)", 1e-3, False),
-            FD("SEM", "IMLCenteringX", "IML Centering X", 1, False),
-            FD("SEM", "IMLCenteringY", "IML Centering Y", 1, False),
-            FD("SEM", "ImageShiftX", "Image Shift X (m)", 1, False),
-            FD("SEM", "ImageShiftY", "Image Shift Y (m)", 1, False),
-            FD("SEM", "InjectedGas", "Injected Gas", 1, True),
-            FD("SEM", "LUTGamma", "LUT Gamma", 1, False),
-            FD("SEM", "LUTMaximum", "LUT Maximum", 1, False),
-            FD("SEM", "LUTMinimum", "LUT Minimum", 1, False),
-            FD("SEM", "MTDGrid", "MTD Grid (kV)", 1e-3, False),
-            FD("SEM", "MTDScintillator", "MTD Scintillator (kV)", 1e-3, False),
-            FD("SEM", "OBJCenteringX", "OBJ Centering X", 1, False),
-            FD("SEM", "OBJCenteringY", "OBJ Centering Y", 1, False),
-            FD("SEM", "OBJPreCenteringX", "OBJ Pre-Centering X", 1, False),
-            FD("SEM", "OBJPreCenteringY", "OBJ Pre-Centering Y", 1, False),
-            FD("SEM", "PotentialMode", "Potential Mode", 1, True),
-            FD(
-                "SEM",
-                "PredictedBeamCurrent",
-                "Predicted Beam Current (pA)",
-                1e12,
-                False,
-            ),
-            FD("SEM", "PrimaryDetectorGain", "Primary Detector Gain", 1, False),
-            FD("SEM", "PrimaryDetectorOffset", "Primary Detector Offset", 1, False),
-            FD("SEM", "SampleVoltage", "Sample Voltage (V)", 1, False),
-            FD("SEM", "ScanID", "Scan ID", 1, False),
-            FD("SEM", "ScanMode", "Scan Mode", 1, True),
-            FD("SEM", "ScanRotation", "Scan Rotation (degrees)", 1, False),
-            FD("SEM", "ScanSpeed", "Scan Speed", 1, False),
-            FD("SEM", "SessionID", "Session ID", 1, True),
-            FD("SEM", "SpecimenCurrent", "Specimen Current (pA)", 1e12, False),
-            FD("SEM", "SpotSize", "Spot Size (nm)", 1e9, False),
-            FD(
-                "SEM",
-                "StageRotation",
-                ["Stage Position", "Rotation (degrees)"],
-                1,
-                False,
-            ),
-            FD("SEM", "StageTilt", ["Stage Position", "Tilt (degrees)"], 1, False),
-            FD("SEM", "StageX", ["Stage Position", "X"], 1, False),
-            FD("SEM", "StageY", ["Stage Position", "Y"], 1, False),
-            FD("SEM", "StageZ", ["Stage Position", "Z"], 1, False),
-            FD("SEM", "StigmatorX", "Stigmator X Value", 1, False),
-            FD("SEM", "StigmatorY", "Stigmator Y Value", 1, False),
-            FD(
-                "SEM",
-                "SymmetrizationVoltage",
-                "Symmetrization Voltage (kV)",
-                1e-3,
-                False,
-            ),
-            FD("SEM", "SyncMains", "Sync to Mains", 1, True),
-            FD("SEM", "TiltCorrection", "Tilt Correction", 1, False),
-            FD("SEM", "TubeVoltage", "Tube Voltage (kV)", 1e-3, False),
-            FD(
-                "SEM",
-                "VirtualObserverDistance",
-                "Virtual Observer Distance (mm)",
-                1e3,
-                False,
-            ),
-            FD("SEM", "WD", "Working Distance (mm)", 1e3, False),
-        ]
+        # Get field definitions
+        fields = self._get_field_definitions()
 
         # Extract standard fields
         for field in fields:
@@ -678,17 +811,34 @@ class TescanTiffExtractor:
                         mdict["nx_meta"][field.output_key] = value
                 else:
                     with contextlib.suppress(ValueError):
-                        # Use Decimal for precise arithmetic to avoid floating-point
-                        # rounding errors during unit conversions
-                        float_val = float(Decimal(value) * Decimal(str(field.factor)))
+                        # Convert to Decimal to preserve precision through unit
+                        # conversions. The ureg uses non_int_type=Decimal to avoid
+                        # floating-point errors during internal conversions.
+                        # Also apply scaling factor for unit conversion
+                        decimal_val = Decimal(value) * Decimal(str(field.factor))
+
                         # Skip if suppress_zero is True and value is zero
-                        if not field.suppress_zero or float_val != 0.0:
+                        if field.suppress_zero and decimal_val == 0:
+                            continue
+
+                        # Create Pint Quantity if unit is specified
+                        if field.target_unit:
+                            # Create Quantity with the value after factor conversion
+                            quantity = ureg.Quantity(decimal_val, field.target_unit)
+
                             if isinstance(field.output_key, list):
                                 set_nested_dict_value(
-                                    mdict, ["nx_meta", *field.output_key], float_val
+                                    mdict, ["nx_meta", *field.output_key], quantity
                                 )
                             else:
-                                mdict["nx_meta"][field.output_key] = float_val
+                                mdict["nx_meta"][field.output_key] = quantity
+                        # No unit specified, keep as Decimal for precision
+                        elif isinstance(field.output_key, list):
+                            set_nested_dict_value(
+                                mdict, ["nx_meta", *field.output_key], decimal_val
+                            )
+                        else:
+                            mdict["nx_meta"][field.output_key] = decimal_val
 
         # Handle user information (prefer FullUserName over UserName)
         full_username = main_section.get("FullUserName")
@@ -697,4 +847,103 @@ class TescanTiffExtractor:
             mdict["nx_meta"]["Operator"] = full_username or username
             mdict["nx_meta"]["warnings"].append(["Operator"])
 
+        return mdict
+
+    def _migrate_to_schema_compliant_metadata(self, mdict: dict) -> dict:
+        """
+        Migrate metadata to schema-compliant format.
+
+        Reorganizes metadata to conform to type-specific Pydantic schemas:
+        - Extracts core EM Glossary fields to top level with standardized names
+        - Moves vendor-specific nested dictionaries and fields to extensions section
+        - Preserves existing extensions from instrument profiles
+
+        Parameters
+        ----------
+        mdict
+            Metadata dictionary with nx_meta containing extracted fields
+
+        Returns
+        -------
+        dict
+            Metadata dictionary with schema-compliant nx_meta structure
+        """
+        nx_meta = mdict.get("nx_meta", {})
+
+        # Preserve existing extensions from instrument profiles
+        extensions = (
+            nx_meta.get("extensions", {}).copy() if "extensions" in nx_meta else {}
+        )
+
+        # Field mappings from display names to EM Glossary names
+        field_mappings = {
+            "HV Voltage": "acceleration_voltage",
+            "Accelerator Voltage": "acceleration_voltage",
+            "Working Distance": "working_distance",
+            "Beam Current": "beam_current",
+            "Emission Current": "emission_current",
+            "Pixel Dwell Time": "dwell_time",
+            "Horizontal Field Width": "horizontal_field_width",
+            "Pixel Width": "pixel_width",
+            "Pixel Height": "pixel_height",
+        }
+
+        # Tescan-specific fields that go to extensions (ALL non-core fields)
+        # Since tescan extractor currently extracts many individual fields at top level,
+        # we move them all to extensions except the core EM Glossary ones
+        extension_field_names = {
+            "Operator",  # User info
+            # Any other Tescan-specific fields we discover
+        }
+
+        # Build new nx_meta with proper field organization
+        new_nx_meta = {}
+
+        # Copy required fields
+        for field in ["DatasetType", "Data Type", "Creation Time"]:
+            if field in nx_meta:
+                new_nx_meta[field] = nx_meta[field]
+
+        # Copy instrument identification
+        if "Instrument ID" in nx_meta:
+            new_nx_meta["Instrument ID"] = nx_meta["Instrument ID"]
+
+        # Process all fields and categorize
+        for old_name, value in nx_meta.items():
+            # Skip fields we've already handled
+            if old_name in [
+                "DatasetType",
+                "Data Type",
+                "Creation Time",
+                "Instrument ID",
+                "Extractor Warnings",
+                "warnings",
+                "extensions",
+            ]:
+                continue
+
+            # Check if this is a core field that needs renaming
+            if old_name in field_mappings:
+                emg_name = field_mappings[old_name]
+                new_nx_meta[emg_name] = value
+                continue
+
+            # Fields explicitly marked as extensions
+            if old_name in extension_field_names:
+                extensions[old_name] = value
+                continue
+
+            # Everything else goes to extensions (Tescan-specific fields)
+            # This is the safest approach since most Tescan fields are vendor-specific
+            extensions[old_name] = value
+
+        # Copy warnings if present
+        if "warnings" in nx_meta:
+            new_nx_meta["warnings"] = nx_meta["warnings"]
+
+        # Add extensions section if we have any
+        for key, value in extensions.items():
+            add_to_extensions(new_nx_meta, key, value)
+
+        mdict["nx_meta"] = new_nx_meta
         return mdict

@@ -1,0 +1,3162 @@
+{
+  "ApplicationBounds": [
+    0,
+    0,
+    1089,
+    1920
+  ],
+  "DocumentObjectList": {
+    "TagGroup0": {
+      "AnnotationGroupList": {
+        "TagGroup0": {
+          "AnnotationType": 31,
+          "BackgroundColor": [
+            -1,
+            -1,
+            -1
+          ],
+          "BackgroundMode": 1,
+          "FillMode": 1,
+          "Font": {
+            "Attributes": 15,
+            "FamilyName": "Arial",
+            "Size": 0
+          },
+          "ForegroundColor": [
+            0,
+            0,
+            0
+          ],
+          "HasBackground": 1,
+          "IsMoveable": 1,
+          "IsResizable": 1,
+          "IsSelectable": 1,
+          "IsTranslatable": 1,
+          "IsVisible": 1,
+          "ObjectTags": {},
+          "Rectangle": [
+            1954.0,
+            32.0,
+            2016.0,
+            272.0
+          ],
+          "TextOffsetH": 1.0,
+          "TextOffsetV": 1.0,
+          "TextWidth": 126.0,
+          "UniqueID": 9
+        }
+      },
+      "AnnotationType": 20,
+      "BackgroundColor": [
+        -1,
+        -1,
+        -1
+      ],
+      "BackgroundMode": 2,
+      "FillMode": 1,
+      "ForegroundColor": [
+        -1,
+        0,
+        0
+      ],
+      "HasBackground": 0,
+      "ImageDisplayInfo": {
+        "BrightColor": [
+          -1,
+          -1,
+          -1
+        ],
+        "Brightness": 0.5,
+        "CLUT": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            257,
+            257,
+            257
+          ],
+          [
+            514,
+            514,
+            514
+          ],
+          [
+            771,
+            771,
+            771
+          ],
+          [
+            1028,
+            1028,
+            1028
+          ],
+          [
+            1285,
+            1285,
+            1285
+          ],
+          [
+            1542,
+            1542,
+            1542
+          ],
+          [
+            1799,
+            1799,
+            1799
+          ],
+          [
+            2056,
+            2056,
+            2056
+          ],
+          [
+            2313,
+            2313,
+            2313
+          ],
+          [
+            2570,
+            2570,
+            2570
+          ],
+          [
+            2827,
+            2827,
+            2827
+          ],
+          [
+            3084,
+            3084,
+            3084
+          ],
+          [
+            3341,
+            3341,
+            3341
+          ],
+          [
+            3598,
+            3598,
+            3598
+          ],
+          [
+            3855,
+            3855,
+            3855
+          ],
+          [
+            4112,
+            4112,
+            4112
+          ],
+          [
+            4369,
+            4369,
+            4369
+          ],
+          [
+            4626,
+            4626,
+            4626
+          ],
+          [
+            4883,
+            4883,
+            4883
+          ],
+          [
+            5140,
+            5140,
+            5140
+          ],
+          [
+            5397,
+            5397,
+            5397
+          ],
+          [
+            5654,
+            5654,
+            5654
+          ],
+          [
+            5911,
+            5911,
+            5911
+          ],
+          [
+            6168,
+            6168,
+            6168
+          ],
+          [
+            6425,
+            6425,
+            6425
+          ],
+          [
+            6682,
+            6682,
+            6682
+          ],
+          [
+            6939,
+            6939,
+            6939
+          ],
+          [
+            7196,
+            7196,
+            7196
+          ],
+          [
+            7453,
+            7453,
+            7453
+          ],
+          [
+            7710,
+            7710,
+            7710
+          ],
+          [
+            7967,
+            7967,
+            7967
+          ],
+          [
+            8224,
+            8224,
+            8224
+          ],
+          [
+            8481,
+            8481,
+            8481
+          ],
+          [
+            8738,
+            8738,
+            8738
+          ],
+          [
+            8995,
+            8995,
+            8995
+          ],
+          [
+            9252,
+            9252,
+            9252
+          ],
+          [
+            9509,
+            9509,
+            9509
+          ],
+          [
+            9766,
+            9766,
+            9766
+          ],
+          [
+            10023,
+            10023,
+            10023
+          ],
+          [
+            10280,
+            10280,
+            10280
+          ],
+          [
+            10537,
+            10537,
+            10537
+          ],
+          [
+            10794,
+            10794,
+            10794
+          ],
+          [
+            11051,
+            11051,
+            11051
+          ],
+          [
+            11308,
+            11308,
+            11308
+          ],
+          [
+            11565,
+            11565,
+            11565
+          ],
+          [
+            11822,
+            11822,
+            11822
+          ],
+          [
+            12079,
+            12079,
+            12079
+          ],
+          [
+            12336,
+            12336,
+            12336
+          ],
+          [
+            12593,
+            12593,
+            12593
+          ],
+          [
+            12850,
+            12850,
+            12850
+          ],
+          [
+            13107,
+            13107,
+            13107
+          ],
+          [
+            13364,
+            13364,
+            13364
+          ],
+          [
+            13621,
+            13621,
+            13621
+          ],
+          [
+            13878,
+            13878,
+            13878
+          ],
+          [
+            14135,
+            14135,
+            14135
+          ],
+          [
+            14392,
+            14392,
+            14392
+          ],
+          [
+            14649,
+            14649,
+            14649
+          ],
+          [
+            14906,
+            14906,
+            14906
+          ],
+          [
+            15163,
+            15163,
+            15163
+          ],
+          [
+            15420,
+            15420,
+            15420
+          ],
+          [
+            15677,
+            15677,
+            15677
+          ],
+          [
+            15934,
+            15934,
+            15934
+          ],
+          [
+            16191,
+            16191,
+            16191
+          ],
+          [
+            16448,
+            16448,
+            16448
+          ],
+          [
+            16705,
+            16705,
+            16705
+          ],
+          [
+            16962,
+            16962,
+            16962
+          ],
+          [
+            17219,
+            17219,
+            17219
+          ],
+          [
+            17476,
+            17476,
+            17476
+          ],
+          [
+            17733,
+            17733,
+            17733
+          ],
+          [
+            17990,
+            17990,
+            17990
+          ],
+          [
+            18247,
+            18247,
+            18247
+          ],
+          [
+            18504,
+            18504,
+            18504
+          ],
+          [
+            18761,
+            18761,
+            18761
+          ],
+          [
+            19018,
+            19018,
+            19018
+          ],
+          [
+            19275,
+            19275,
+            19275
+          ],
+          [
+            19532,
+            19532,
+            19532
+          ],
+          [
+            19789,
+            19789,
+            19789
+          ],
+          [
+            20046,
+            20046,
+            20046
+          ],
+          [
+            20303,
+            20303,
+            20303
+          ],
+          [
+            20560,
+            20560,
+            20560
+          ],
+          [
+            20817,
+            20817,
+            20817
+          ],
+          [
+            21074,
+            21074,
+            21074
+          ],
+          [
+            21331,
+            21331,
+            21331
+          ],
+          [
+            21588,
+            21588,
+            21588
+          ],
+          [
+            21845,
+            21845,
+            21845
+          ],
+          [
+            22102,
+            22102,
+            22102
+          ],
+          [
+            22359,
+            22359,
+            22359
+          ],
+          [
+            22616,
+            22616,
+            22616
+          ],
+          [
+            22873,
+            22873,
+            22873
+          ],
+          [
+            23130,
+            23130,
+            23130
+          ],
+          [
+            23387,
+            23387,
+            23387
+          ],
+          [
+            23644,
+            23644,
+            23644
+          ],
+          [
+            23901,
+            23901,
+            23901
+          ],
+          [
+            24158,
+            24158,
+            24158
+          ],
+          [
+            24415,
+            24415,
+            24415
+          ],
+          [
+            24672,
+            24672,
+            24672
+          ],
+          [
+            24929,
+            24929,
+            24929
+          ],
+          [
+            25186,
+            25186,
+            25186
+          ],
+          [
+            25443,
+            25443,
+            25443
+          ],
+          [
+            25700,
+            25700,
+            25700
+          ],
+          [
+            25957,
+            25957,
+            25957
+          ],
+          [
+            26214,
+            26214,
+            26214
+          ],
+          [
+            26471,
+            26471,
+            26471
+          ],
+          [
+            26728,
+            26728,
+            26728
+          ],
+          [
+            26985,
+            26985,
+            26985
+          ],
+          [
+            27242,
+            27242,
+            27242
+          ],
+          [
+            27499,
+            27499,
+            27499
+          ],
+          [
+            27756,
+            27756,
+            27756
+          ],
+          [
+            28013,
+            28013,
+            28013
+          ],
+          [
+            28270,
+            28270,
+            28270
+          ],
+          [
+            28527,
+            28527,
+            28527
+          ],
+          [
+            28784,
+            28784,
+            28784
+          ],
+          [
+            29041,
+            29041,
+            29041
+          ],
+          [
+            29298,
+            29298,
+            29298
+          ],
+          [
+            29555,
+            29555,
+            29555
+          ],
+          [
+            29812,
+            29812,
+            29812
+          ],
+          [
+            30069,
+            30069,
+            30069
+          ],
+          [
+            30326,
+            30326,
+            30326
+          ],
+          [
+            30583,
+            30583,
+            30583
+          ],
+          [
+            30840,
+            30840,
+            30840
+          ],
+          [
+            31097,
+            31097,
+            31097
+          ],
+          [
+            31354,
+            31354,
+            31354
+          ],
+          [
+            31611,
+            31611,
+            31611
+          ],
+          [
+            31868,
+            31868,
+            31868
+          ],
+          [
+            32125,
+            32125,
+            32125
+          ],
+          [
+            32382,
+            32382,
+            32382
+          ],
+          [
+            32639,
+            32639,
+            32639
+          ],
+          [
+            -32640,
+            -32640,
+            -32640
+          ],
+          [
+            -32383,
+            -32383,
+            -32383
+          ],
+          [
+            -32126,
+            -32126,
+            -32126
+          ],
+          [
+            -31869,
+            -31869,
+            -31869
+          ],
+          [
+            -31612,
+            -31612,
+            -31612
+          ],
+          [
+            -31355,
+            -31355,
+            -31355
+          ],
+          [
+            -31098,
+            -31098,
+            -31098
+          ],
+          [
+            -30841,
+            -30841,
+            -30841
+          ],
+          [
+            -30584,
+            -30584,
+            -30584
+          ],
+          [
+            -30327,
+            -30327,
+            -30327
+          ],
+          [
+            -30070,
+            -30070,
+            -30070
+          ],
+          [
+            -29813,
+            -29813,
+            -29813
+          ],
+          [
+            -29556,
+            -29556,
+            -29556
+          ],
+          [
+            -29299,
+            -29299,
+            -29299
+          ],
+          [
+            -29042,
+            -29042,
+            -29042
+          ],
+          [
+            -28785,
+            -28785,
+            -28785
+          ],
+          [
+            -28528,
+            -28528,
+            -28528
+          ],
+          [
+            -28271,
+            -28271,
+            -28271
+          ],
+          [
+            -28014,
+            -28014,
+            -28014
+          ],
+          [
+            -27757,
+            -27757,
+            -27757
+          ],
+          [
+            -27500,
+            -27500,
+            -27500
+          ],
+          [
+            -27243,
+            -27243,
+            -27243
+          ],
+          [
+            -26986,
+            -26986,
+            -26986
+          ],
+          [
+            -26729,
+            -26729,
+            -26729
+          ],
+          [
+            -26472,
+            -26472,
+            -26472
+          ],
+          [
+            -26215,
+            -26215,
+            -26215
+          ],
+          [
+            -25958,
+            -25958,
+            -25958
+          ],
+          [
+            -25701,
+            -25701,
+            -25701
+          ],
+          [
+            -25444,
+            -25444,
+            -25444
+          ],
+          [
+            -25187,
+            -25187,
+            -25187
+          ],
+          [
+            -24930,
+            -24930,
+            -24930
+          ],
+          [
+            -24673,
+            -24673,
+            -24673
+          ],
+          [
+            -24416,
+            -24416,
+            -24416
+          ],
+          [
+            -24159,
+            -24159,
+            -24159
+          ],
+          [
+            -23902,
+            -23902,
+            -23902
+          ],
+          [
+            -23645,
+            -23645,
+            -23645
+          ],
+          [
+            -23388,
+            -23388,
+            -23388
+          ],
+          [
+            -23131,
+            -23131,
+            -23131
+          ],
+          [
+            -22874,
+            -22874,
+            -22874
+          ],
+          [
+            -22617,
+            -22617,
+            -22617
+          ],
+          [
+            -22360,
+            -22360,
+            -22360
+          ],
+          [
+            -22103,
+            -22103,
+            -22103
+          ],
+          [
+            -21846,
+            -21846,
+            -21846
+          ],
+          [
+            -21589,
+            -21589,
+            -21589
+          ],
+          [
+            -21332,
+            -21332,
+            -21332
+          ],
+          [
+            -21075,
+            -21075,
+            -21075
+          ],
+          [
+            -20818,
+            -20818,
+            -20818
+          ],
+          [
+            -20561,
+            -20561,
+            -20561
+          ],
+          [
+            -20304,
+            -20304,
+            -20304
+          ],
+          [
+            -20047,
+            -20047,
+            -20047
+          ],
+          [
+            -19790,
+            -19790,
+            -19790
+          ],
+          [
+            -19533,
+            -19533,
+            -19533
+          ],
+          [
+            -19276,
+            -19276,
+            -19276
+          ],
+          [
+            -19019,
+            -19019,
+            -19019
+          ],
+          [
+            -18762,
+            -18762,
+            -18762
+          ],
+          [
+            -18505,
+            -18505,
+            -18505
+          ],
+          [
+            -18248,
+            -18248,
+            -18248
+          ],
+          [
+            -17991,
+            -17991,
+            -17991
+          ],
+          [
+            -17734,
+            -17734,
+            -17734
+          ],
+          [
+            -17477,
+            -17477,
+            -17477
+          ],
+          [
+            -17220,
+            -17220,
+            -17220
+          ],
+          [
+            -16963,
+            -16963,
+            -16963
+          ],
+          [
+            -16706,
+            -16706,
+            -16706
+          ],
+          [
+            -16449,
+            -16449,
+            -16449
+          ],
+          [
+            -16192,
+            -16192,
+            -16192
+          ],
+          [
+            -15935,
+            -15935,
+            -15935
+          ],
+          [
+            -15678,
+            -15678,
+            -15678
+          ],
+          [
+            -15421,
+            -15421,
+            -15421
+          ],
+          [
+            -15164,
+            -15164,
+            -15164
+          ],
+          [
+            -14907,
+            -14907,
+            -14907
+          ],
+          [
+            -14650,
+            -14650,
+            -14650
+          ],
+          [
+            -14393,
+            -14393,
+            -14393
+          ],
+          [
+            -14136,
+            -14136,
+            -14136
+          ],
+          [
+            -13879,
+            -13879,
+            -13879
+          ],
+          [
+            -13622,
+            -13622,
+            -13622
+          ],
+          [
+            -13365,
+            -13365,
+            -13365
+          ],
+          [
+            -13108,
+            -13108,
+            -13108
+          ],
+          [
+            -12851,
+            -12851,
+            -12851
+          ],
+          [
+            -12594,
+            -12594,
+            -12594
+          ],
+          [
+            -12337,
+            -12337,
+            -12337
+          ],
+          [
+            -12080,
+            -12080,
+            -12080
+          ],
+          [
+            -11823,
+            -11823,
+            -11823
+          ],
+          [
+            -11566,
+            -11566,
+            -11566
+          ],
+          [
+            -11309,
+            -11309,
+            -11309
+          ],
+          [
+            -11052,
+            -11052,
+            -11052
+          ],
+          [
+            -10795,
+            -10795,
+            -10795
+          ],
+          [
+            -10538,
+            -10538,
+            -10538
+          ],
+          [
+            -10281,
+            -10281,
+            -10281
+          ],
+          [
+            -10024,
+            -10024,
+            -10024
+          ],
+          [
+            -9767,
+            -9767,
+            -9767
+          ],
+          [
+            -9510,
+            -9510,
+            -9510
+          ],
+          [
+            -9253,
+            -9253,
+            -9253
+          ],
+          [
+            -8996,
+            -8996,
+            -8996
+          ],
+          [
+            -8739,
+            -8739,
+            -8739
+          ],
+          [
+            -8482,
+            -8482,
+            -8482
+          ],
+          [
+            -8225,
+            -8225,
+            -8225
+          ],
+          [
+            -7968,
+            -7968,
+            -7968
+          ],
+          [
+            -7711,
+            -7711,
+            -7711
+          ],
+          [
+            -7454,
+            -7454,
+            -7454
+          ],
+          [
+            -7197,
+            -7197,
+            -7197
+          ],
+          [
+            -6940,
+            -6940,
+            -6940
+          ],
+          [
+            -6683,
+            -6683,
+            -6683
+          ],
+          [
+            -6426,
+            -6426,
+            -6426
+          ],
+          [
+            -6169,
+            -6169,
+            -6169
+          ],
+          [
+            -5912,
+            -5912,
+            -5912
+          ],
+          [
+            -5655,
+            -5655,
+            -5655
+          ],
+          [
+            -5398,
+            -5398,
+            -5398
+          ],
+          [
+            -5141,
+            -5141,
+            -5141
+          ],
+          [
+            -4884,
+            -4884,
+            -4884
+          ],
+          [
+            -4627,
+            -4627,
+            -4627
+          ],
+          [
+            -4370,
+            -4370,
+            -4370
+          ],
+          [
+            -4113,
+            -4113,
+            -4113
+          ],
+          [
+            -3856,
+            -3856,
+            -3856
+          ],
+          [
+            -3599,
+            -3599,
+            -3599
+          ],
+          [
+            -3342,
+            -3342,
+            -3342
+          ],
+          [
+            -3085,
+            -3085,
+            -3085
+          ],
+          [
+            -2828,
+            -2828,
+            -2828
+          ],
+          [
+            -2571,
+            -2571,
+            -2571
+          ],
+          [
+            -2314,
+            -2314,
+            -2314
+          ],
+          [
+            -2057,
+            -2057,
+            -2057
+          ],
+          [
+            -1800,
+            -1800,
+            -1800
+          ],
+          [
+            -1543,
+            -1543,
+            -1543
+          ],
+          [
+            -1286,
+            -1286,
+            -1286
+          ],
+          [
+            -1029,
+            -1029,
+            -1029
+          ],
+          [
+            -772,
+            -772,
+            -772
+          ],
+          [
+            -515,
+            -515,
+            -515
+          ],
+          [
+            -258,
+            -258,
+            -258
+          ],
+          [
+            -1,
+            -1,
+            -1
+          ]
+        ],
+        "CLUTName": "Greyscale",
+        "CaptionOn": 0,
+        "CaptionSize": 12,
+        "ComplexMode": 4,
+        "ComplexRange": 1000.0,
+        "Contrast": 0.5,
+        "ContrastMode": 1,
+        "DimensionLabels": {
+          "Data0": []
+        },
+        "DoAutoSurvey": 1,
+        "EstimatedMax": -197.0,
+        "EstimatedMaxTrimPercentage": 0.0010000000474974513,
+        "EstimatedMin": 651.0,
+        "EstimatedMinTrimPercentage": 0.0010000000474974513,
+        "Gamma": 0.5,
+        "HiLimitContrastDeltaTriggerPercentage": 0.0,
+        "HighLimit": 542.0498046875,
+        "IsInverted": 0,
+        "LowLimit": -9.015625,
+        "LowLimitContrastDeltaTriggerPercentage": 0.0,
+        "MainSliceId": {
+          "Data0": 0
+        },
+        "MinimumContrast": 0.0,
+        "RangeAdjust": 1.0,
+        "SparseSurvey_GridSize": 16,
+        "SparseSurvey_NumberPixels": 32,
+        "SparseSurvey_UseNumberPixels": 1,
+        "SurveyTechique": 1
+      },
+      "ImageDisplayType": 1,
+      "ImageSource": 0,
+      "IsMoveable": 1,
+      "IsResizable": 1,
+      "IsSelectable": 1,
+      "IsTranslatable": 1,
+      "IsVisible": 1,
+      "ObjectTags": {},
+      "Rectangle": [
+        0.0,
+        0.0,
+        1024.0,
+        1024.0
+      ],
+      "UniqueID": 8
+    }
+  },
+  "DocumentTags": {},
+  "HasWindowPosition": 1,
+  "Image Behavior": {
+    "DoIntegralZoom": 1,
+    "ImageDisplayBounds": [
+      0.0,
+      0.0,
+      1024.0,
+      1024.0
+    ],
+    "IsZoomedToWindow": 1,
+    "UnscaledTransform": {
+      "Offset": [
+        0.0,
+        0.0
+      ],
+      "Scale": [
+        1.0,
+        1.0
+      ]
+    },
+    "ViewDisplayID": 8,
+    "WindowRect": [
+      0.0,
+      0.0,
+      1024.0,
+      1024.0
+    ],
+    "ZoomAndMoveTransform": {
+      "Offset": [
+        0.0,
+        0.0
+      ],
+      "Scale": [
+        1.0,
+        1.0
+      ]
+    }
+  },
+  "ImageList": {
+    "TagGroup0": {
+      "ImageData": {
+        "Calibrations": {
+          "Brightness": {
+            "Origin": 0.0,
+            "Scale": 1.0,
+            "Units": []
+          },
+          "Dimension": {
+            "TagGroup0": {
+              "Origin": 0.0,
+              "Scale": 0.02902260050177574,
+              "Units": "1/nm"
+            },
+            "TagGroup1": {
+              "Origin": 0.0,
+              "Scale": 0.02902260050177574,
+              "Units": "1/nm"
+            }
+          },
+          "DisplayCalibratedUnits": 1
+        },
+        "Data": {
+          "endian": "little",
+          "offset": 595680,
+          "size": 4194304,
+          "size_bytes": 16777216
+        },
+        "DataType": 7,
+        "Dimensions": {
+          "Data0": 2048,
+          "Data1": 2048
+        },
+        "PixelDepth": 4
+      },
+      "ImageTags": {
+        "Acquisition": {
+          "Device": {
+            "Active Size (pixels)": [
+              2048,
+              2048
+            ],
+            "CCD": {
+              "Pixel Size (um)": [
+                14.0,
+                14.0
+              ]
+            },
+            "Camera Number": 1,
+            "Configuration": {
+              "Transpose": {
+                "Diagonal Flip": 0,
+                "Horizontal Flip": 1,
+                "Vertical Flip": 0
+              }
+            },
+            "Name": "BM-UltraScan",
+            "Source": "BM-UltraScan"
+          },
+          "Frame": {
+            "Area": {
+              "Transform": {
+                "Class Name": "cm_acquisitiontransform_list",
+                "Transform List": {
+                  "TagGroup0": {
+                    "Binning": [
+                      1,
+                      1
+                    ],
+                    "Class Name": "cm_acquisitiontransform",
+                    "Sub Area Adjust": [
+                      0,
+                      0,
+                      0,
+                      0
+                    ],
+                    "Transpose": {
+                      "Diagonal Flip": 0,
+                      "Horizontal Flip": 1,
+                      "Vertical Flip": 0
+                    }
+                  }
+                }
+              }
+            },
+            "CCD": {
+              "Pixel Size (um)": [
+                14.0,
+                14.0
+              ]
+            },
+            "Intensity": {
+              "Range": {
+                "Bias (counts)": 1000.0,
+                "Dark Current (counts/s)": 0.0,
+                "Dark Level (counts)": 1000.0,
+                "Maximum Value (counts)": 65535.0,
+                "Minimum Value (counts)": 0.0,
+                "Saturation Level (counts)": 50000.0
+              },
+              "Transform": {
+                "Class Name": "cm_valuetransform_list",
+                "Transform List": {
+                  "TagGroup0": {
+                    "Class Name": "cm_valuetransform_affine",
+                    "Offset": 1000.0,
+                    "Scale": 1.0
+                  },
+                  "TagGroup1": {
+                    "ADC Max": 65535.0,
+                    "ADC Min": 0.0,
+                    "Class Name": "cm_valuetransform_adc"
+                  }
+                }
+              }
+            },
+            "Reference Images": {
+              "Dark": {
+                "Mean (counts)": 1000.4988062381744,
+                "Standard Deviation (counts)": 2.990790096894242
+              }
+            },
+            "Sequence": {
+              "Acquisition Start Time (epoch)": 1568932468531.0,
+              "Exposure Start (ns)": 31407736660.0224,
+              "Exposure Time (ns)": 2000000080.0,
+              "Frame Index": 8,
+              "Frame Start (ns)": 31306381059.838406,
+              "Frame Time (ns)": 3478486040.0,
+              "Readout Time (ns)": 1377130360.0
+            }
+          },
+          "Parameters": {
+            "Acquisition Write Flags": 4294967295,
+            "Base Detector": {
+              "Class Name": "cm_namedcameradetectorparameterset",
+              "Name": "default"
+            },
+            "Detector": {
+              "Do Continuous Readout": 1,
+              "Required Data Characteristics": 3,
+              "frame sequence": {
+                "read section index": 0,
+                "sections": {
+                  "TagGroup0": {
+                    "frame idle shutter state": 2,
+                    "num frames": 8000000,
+                    "segments": {
+                      "TagGroup0": {
+                        "kind": "parallel clear",
+                        "parameters": {
+                          "num blocks": 1,
+                          "num rows": 10,
+                          "ser clr": 1120
+                        },
+                        "segment flags": 0,
+                        "shutter state": 2
+                      },
+                      "TagGroup1": {
+                        "kind": "parallel clear",
+                        "parameters": {
+                          "num blocks": 1,
+                          "num rows": 4808,
+                          "ser clr": 1120
+                        },
+                        "segment flags": 1,
+                        "shutter state": 0
+                      },
+                      "TagGroup2": {
+                        "kind": "accumulate",
+                        "parameters": {
+                          "num accumulate units": 50000000.0
+                        },
+                        "segment flags": 0,
+                        "shutter state": 0
+                      },
+                      "TagGroup3": {
+                        "kind": "parallel skip",
+                        "parameters": {
+                          "num blocks": 1,
+                          "num rows": 0,
+                          "output source": 15,
+                          "read mode": 0,
+                          "ser clr": 1120
+                        },
+                        "segment flags": 1,
+                        "shutter state": 2
+                      },
+                      "TagGroup4": {
+                        "kind": "readout",
+                        "parameters": {
+                          "bias post blank": 50,
+                          "bias pre blank": 36,
+                          "bias read": 102,
+                          "bias skip": 0,
+                          "output source": 15,
+                          "par bin": 1,
+                          "par post blank": 0,
+                          "par pre blank": 16,
+                          "par read": 1040,
+                          "read flags": 1,
+                          "read mode": 0,
+                          "ser bin": 1,
+                          "ser post blank": 0,
+                          "ser pre blank": 33,
+                          "ser read": 1057,
+                          "ser skip": 0
+                        },
+                        "segment flags": 2,
+                        "shutter state": 2
+                      }
+                    }
+                  }
+                },
+                "sequence idle shutter state": 3
+              }
+            },
+            "Environment": {
+              "Mode Name": "Imaging"
+            },
+            "High Level": {
+              "Antiblooming": 1,
+              "Binning": [
+                1,
+                1
+              ],
+              "CCD Read Area": [
+                0,
+                0,
+                2048,
+                2048
+              ],
+              "CCD Read Ports": 15,
+              "Choose Number Of Frame Shutters Automatically": 1,
+              "Class Name": "cm_camera_highlevelparameters",
+              "Continuous Readout": 1,
+              "Corrections": 817,
+              "Corrections Mask": 817,
+              "Exposure (s)": 2.0,
+              "Number Of Frame Shutters": 1,
+              "Processing": "Gain Normalized",
+              "Quality Level": 0,
+              "Read Frame Style": 0,
+              "Read Mode": 0,
+              "Secondary Shutter Post Exposure Compensation (s)": 0.0,
+              "Secondary Shutter Pre Exposure Compensation (s)": 0.0,
+              "Shutter": {
+                "Primary Shutter States": 0,
+                "Primary Shutter States Mask": 0,
+                "Secondary Shutter States": 0,
+                "Secondary Shutter States Mask": 0,
+                "Shutter Exposure": 0,
+                "Shutter Index": 1
+              },
+              "Shutter Post Exposure Compensation (s)": 0.0,
+              "Shutter Pre Exposure Compensation (s)": 0.1,
+              "Transform": {
+                "Diagonal Flip": 0,
+                "Horizontal Flip": 0,
+                "Vertical Flip": 0
+              }
+            },
+            "Objects": {
+              "TagGroup0": {
+                "Class Name": "cm_autoexpose_acquireimage",
+                "Do Auto Expose": 0,
+                "Maximum Exposure (s)": 5.0,
+                "Minimum Exposure (s)": 0.05,
+                "Target Intensity (%)": 50.0,
+                "Test Exposure (s)": 0.1
+              },
+              "TagGroup1": {
+                "Class Name": "cm_stdviewerimagedisplayer",
+                "Do Auto Zoom": 0,
+                "Screen Relative Position": [
+                  1.0,
+                  0.0
+                ],
+                "Version": 33816576,
+                "View Name": "Frame",
+                "Viewer Class": "acquire",
+                "Window Relative Position": [
+                  1.0,
+                  0.0
+                ],
+                "Zoom": 1.0
+              },
+              "TagGroup2": {
+                "Class Name": "cm_imgproc_finalcombine",
+                "Frame Combine Style": "Copy",
+                "Parameter 1": 1.0
+              },
+              "TagGroup3": {
+                "Class Name": "cm_imgproc_histogram"
+              }
+            },
+            "Parameter Set Name": "Record",
+            "Parameter Set Tag Path": "Imaging:Acquire:Record",
+            "Version": 33816576
+          }
+        },
+        "DataBar": {
+          "Acquisition Date": "9/19/2019",
+          "Acquisition Time": "6:35:12 PM",
+          "Device Name": "BM-UltraScan",
+          "Exposure Number": 475199,
+          "Exposure Time (s)": 2.0,
+          "System Info": 1.32134061125625e+17
+        },
+        "Microscope Info": {
+          "Actual Magnification": 245.00000000000003,
+          "Cs(mm)": 1.2,
+          "Emission Current (\u00b5A)": 0.0,
+          "Illumination Mode": "STEM",
+          "Imaging Mode": "DIFFRACTION",
+          "Indicated Magnification": 1800000.0,
+          "Items": {
+            "TagGroup0": {
+              "Data Type": 20,
+              "Label": "Specimen",
+              "Tag path": "Microscope Info:Specimen",
+              "Value": "DO NOT EDIT"
+            },
+            "TagGroup1": {
+              "Data Type": 20,
+              "Label": "Operator",
+              "Tag path": "Microscope Info:Operator",
+              "Value": "DO NOT EDIT"
+            },
+            "TagGroup2": {
+              "Data Type": 20,
+              "Label": "Microscope",
+              "Tag path": "Microscope Info:Microscope",
+              "Value": "TEST Titan"
+            }
+          },
+          "Magnification Interpolated": 1,
+          "Microscope": "TEST Titan",
+          "Name": "FEI Tecnai",
+          "Operation Mode": "STEM",
+          "Operator": "DO NOT EDIT",
+          "Probe Current (nA)": 0.0,
+          "Probe Size (nm)": 0.0,
+          "STEM Camera Length": 245.00000000000003,
+          "Specimen": "DO NOT EDIT",
+          "Voltage": 300000.0
+        },
+        "Private": {
+          "DataBar": {
+            "Applied": 1
+          }
+        },
+        "Tecnai": {
+          "Microscope Info": "Microscope Titan 300 kV ABCD1 SuperTwin\u2028User USER\u2028Gun FEG HT 300 Extr volt 4500 V Gun Lens 7 Emission 150.0uA\u2028Mode STEM nP SA Zoom Diffraction Defocus (um) 0.082 Magn 1800000x CL 0.245m\u2028Stem rotation: 69.0 deg\u2028Stem rotation correction: -12.3 deg\u2028Spot 8\u2028C2 21.658%\u2028C3 12.606%\u2028Obj 88.246%\u2028Dif 30.825%\u2028Image shift 0.000/0.000um\u2028Stage -201.900 um, 269.484 um, 31.231 um, 0.64 deg, 0.22 deg\u2028C2 Aperture: 50 um\u2028OBJ Aperture: retracted\u2028SA Aperture: retracted\u2028Filter related settings:\u2028Mode: Spectroscopy\u2028Selected dispersion: 0.10[eV/Channel]\u2028Selected aperture: 3mm\u2028Prism shift: -0.00[eV]\u2028Drift tube: 0.00[eV]\u2028Total energy loss: 0.00[eV]\u2028\u2028",
+          "Specimen Info": "Custom value for specimen Tecnai tag     "
+        }
+      },
+      "Name": "XXXX_XXXXXX_XXXXX",
+      "UniqueID": {
+        "Data0": 1140393037,
+        "Data1": 735979272,
+        "Data2": 925780069,
+        "Data3": 1989041156
+      }
+    }
+  },
+  "ImageSourceList": {
+    "TagGroup0": {
+      "ClassName": "ImageSource:Simple",
+      "Id": {
+        "Data0": 0
+      },
+      "ImageRef": 1
+    }
+  },
+  "InImageMode": 1,
+  "MinVersionList": {
+    "TagGroup0": {
+      "RequiredVersion": 50659328
+    }
+  },
+  "NextDocumentObjectID": 10,
+  "Page Behavior": {
+    "DoIntegralZoom": 0,
+    "IsZoomedToWindow": 0,
+    "LayedOut": 0,
+    "PageTransform": {
+      "Offset": [
+        0.0,
+        0.0
+      ],
+      "Scale": [
+        1.0,
+        1.0
+      ]
+    },
+    "RestoreImageDisplayBounds": [
+      0.0,
+      0.0,
+      2048.0,
+      2048.0
+    ],
+    "RestoreImageDisplayID": 8,
+    "TargetDisplayID": 4294967295
+  },
+  "PageSetup": {
+    "General": [
+      1,
+      1000,
+      8500,
+      11000,
+      1000,
+      1000,
+      -1000,
+      -1000
+    ],
+    "Win32": [
+      4,
+      0,
+      0,
+      0,
+      52,
+      33,
+      0,
+      0,
+      -8,
+      42,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      -24,
+      3,
+      0,
+      0,
+      -24,
+      3,
+      0,
+      0,
+      -24,
+      3,
+      0,
+      0,
+      -24,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      79,
+      0
+    ],
+    "Win32_DevModeW": [
+      77,
+      0,
+      105,
+      0,
+      99,
+      0,
+      114,
+      0,
+      111,
+      0,
+      115,
+      0,
+      111,
+      0,
+      102,
+      0,
+      116,
+      0,
+      32,
+      0,
+      88,
+      0,
+      80,
+      0,
+      83,
+      0,
+      32,
+      0,
+      68,
+      0,
+      111,
+      0,
+      99,
+      0,
+      117,
+      0,
+      109,
+      0,
+      101,
+      0,
+      110,
+      0,
+      116,
+      0,
+      32,
+      0,
+      87,
+      0,
+      114,
+      0,
+      105,
+      0,
+      116,
+      0,
+      101,
+      0,
+      114,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      4,
+      0,
+      6,
+      -36,
+      0,
+      88,
+      3,
+      3,
+      -1,
+      0,
+      0,
+      1,
+      0,
+      1,
+      0,
+      -22,
+      10,
+      111,
+      8,
+      100,
+      0,
+      1,
+      0,
+      15,
+      0,
+      88,
+      2,
+      2,
+      0,
+      1,
+      0,
+      88,
+      2,
+      2,
+      0,
+      0,
+      0,
+      76,
+      0,
+      101,
+      0,
+      116,
+      0,
+      116,
+      0,
+      101,
+      0,
+      114,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      -1,
+      -1,
+      -1,
+      -1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      68,
+      73,
+      78,
+      85,
+      34,
+      0,
+      16,
+      1,
+      76,
+      3,
+      12,
+      0,
+      -54,
+      -46,
+      -10,
+      114,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      9,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      16,
+      1,
+      0,
+      0,
+      83,
+      77,
+      84,
+      74,
+      0,
+      0,
+      0,
+      0,
+      16,
+      0,
+      0,
+      1,
+      77,
+      0,
+      105,
+      0,
+      99,
+      0,
+      114,
+      0,
+      111,
+      0,
+      115,
+      0,
+      111,
+      0,
+      102,
+      0,
+      116,
+      0,
+      32,
+      0,
+      88,
+      0,
+      80,
+      0,
+      83,
+      0,
+      32,
+      0,
+      68,
+      0,
+      111,
+      0,
+      99,
+      0,
+      117,
+      0,
+      109,
+      0,
+      101,
+      0,
+      110,
+      0,
+      116,
+      0,
+      32,
+      0,
+      87,
+      0,
+      114,
+      0,
+      105,
+      0,
+      116,
+      0,
+      101,
+      0,
+      114,
+      0,
+      0,
+      0,
+      73,
+      110,
+      112,
+      117,
+      116,
+      66,
+      105,
+      110,
+      0,
+      70,
+      79,
+      82,
+      77,
+      83,
+      79,
+      85,
+      82,
+      67,
+      69,
+      0,
+      82,
+      69,
+      83,
+      68,
+      76,
+      76,
+      0,
+      85,
+      110,
+      105,
+      114,
+      101,
+      115,
+      68,
+      76,
+      76,
+      0,
+      73,
+      110,
+      116,
+      101,
+      114,
+      108,
+      101,
+      97,
+      118,
+      105,
+      110,
+      103,
+      0,
+      79,
+      70,
+      70,
+      0,
+      73,
+      109,
+      97,
+      103,
+      101,
+      84,
+      121,
+      112,
+      101,
+      0,
+      74,
+      80,
+      69,
+      71,
+      77,
+      101,
+      100,
+      0,
+      79,
+      114,
+      105,
+      101,
+      110,
+      116,
+      97,
+      116,
+      105,
+      111,
+      110,
+      0,
+      80,
+      79,
+      82,
+      84,
+      82,
+      65,
+      73,
+      84,
+      0,
+      67,
+      111,
+      108,
+      108,
+      97,
+      116,
+      101,
+      0,
+      79,
+      70,
+      70,
+      0,
+      82,
+      101,
+      115,
+      111,
+      108,
+      117,
+      116,
+      105,
+      111,
+      110,
+      0,
+      79,
+      112,
+      116,
+      105,
+      111,
+      110,
+      49,
+      0,
+      80,
+      97,
+      112,
+      101,
+      114,
+      83,
+      105,
+      122,
+      101,
+      0,
+      76,
+      69,
+      84,
+      84,
+      69,
+      82,
+      0,
+      67,
+      111,
+      108,
+      111,
+      114,
+      77,
+      111,
+      100,
+      101,
+      0,
+      50,
+      52,
+      98,
+      112,
+      112,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      12,
+      0,
+      0,
+      0,
+      77,
+      88,
+      68,
+      87,
+      1,
+      1,
+      0,
+      0
+    ],
+    "Win32_DevNamesW": [
+      4,
+      0,
+      34,
+      0,
+      64,
+      0,
+      0,
+      0,
+      77,
+      0,
+      105,
+      0,
+      99,
+      0,
+      114,
+      0,
+      111,
+      0,
+      115,
+      0,
+      111,
+      0,
+      102,
+      0,
+      116,
+      0,
+      32,
+      0,
+      88,
+      0,
+      80,
+      0,
+      83,
+      0,
+      32,
+      0,
+      68,
+      0,
+      111,
+      0,
+      99,
+      0,
+      117,
+      0,
+      109,
+      0,
+      101,
+      0,
+      110,
+      0,
+      116,
+      0,
+      32,
+      0,
+      87,
+      0,
+      114,
+      0,
+      105,
+      0,
+      116,
+      0,
+      101,
+      0,
+      114,
+      0,
+      0,
+      0,
+      77,
+      0,
+      105,
+      0,
+      99,
+      0,
+      114,
+      0,
+      111,
+      0,
+      115,
+      0,
+      111,
+      0,
+      102,
+      0,
+      116,
+      0,
+      32,
+      0,
+      88,
+      0,
+      80,
+      0,
+      83,
+      0,
+      32,
+      0,
+      68,
+      0,
+      111,
+      0,
+      99,
+      0,
+      117,
+      0,
+      109,
+      0,
+      101,
+      0,
+      110,
+      0,
+      116,
+      0,
+      32,
+      0,
+      87,
+      0,
+      114,
+      0,
+      105,
+      0,
+      116,
+      0,
+      101,
+      0,
+      114,
+      0,
+      0,
+      0,
+      88,
+      0,
+      80,
+      0,
+      83,
+      0,
+      80,
+      0,
+      111,
+      0,
+      114,
+      0,
+      116,
+      0,
+      58,
+      0,
+      0,
+      0
+    ]
+  },
+  "SentinelList": {},
+  "Thumbnails": {
+    "TagGroup0": {
+      "ImageIndex": 0,
+      "SourceSize_Pixels": [
+        1024,
+        1024
+      ]
+    }
+  },
+  "WindowPosition": [
+    21,
+    308,
+    1045,
+    1332
+  ],
+  "root": {}
+}

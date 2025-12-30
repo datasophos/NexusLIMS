@@ -1,5 +1,6 @@
 """FEI TIA (.ser/.emi) extractor plugin."""
 
+import contextlib
 import logging
 from datetime import datetime as dt
 from pathlib import Path
@@ -10,10 +11,17 @@ from hyperspy.io import load as hs_load
 from hyperspy.signal import BaseSignal
 
 from nexusLIMS.extractors.base import ExtractionContext
-from nexusLIMS.instruments import get_instr_from_filepath
-from nexusLIMS.utils import set_nested_dict_value, sort_dict, try_getting_dict_value
+from nexusLIMS.extractors.utils import add_to_extensions
+from nexusLIMS.instruments import Instrument, get_instr_from_filepath
+from nexusLIMS.schemas.units import ureg
+from nexusLIMS.utils import (
+    current_system_tz,
+    set_nested_dict_value,
+    sort_dict,
+    try_getting_dict_value,
+)
 
-logger = logging.getLogger(__name__)
+_logger = logging.getLogger(__name__)
 
 
 class SerEmiExtractor:
@@ -66,7 +74,7 @@ class SerEmiExtractor:
             creation time, etc.)
         """
         filename = context.file_path
-        logger.debug("Extracting metadata from SER/EMI file: %s", filename)
+        _logger.debug("Extracting metadata from SER/EMI file: %s", filename)
 
         # ObjectInfo present in emi; ser_header_parameters present in .ser
         # ObjectInfo should contain all the interesting metadata,
@@ -86,7 +94,7 @@ class SerEmiExtractor:
                 "file for this .ser file. Metadata extraction will be "
                 "limited."
             )
-            logger.warning(warning)
+            _logger.warning(warning)
             emi_loaded = False
             emi_filename = None
 
@@ -98,7 +106,7 @@ class SerEmiExtractor:
                 ".ser file could not be opened by NexusLIMS. "
                 "Metadata extraction will be limited."
             )
-            logger.warning(warning)
+            _logger.warning(warning)
             emi_loaded = False
 
         if not emi_loaded:
@@ -113,7 +121,7 @@ class SerEmiExtractor:
                     "The .ser file could not be opened (perhaps file is "
                     "corrupted?); Metadata extraction is not possible."
                 )
-                logger.warning(warning)
+                _logger.warning(warning)
                 # set s to an empty signal just so we can process some basic
                 # metadata using same syntax as if we had read it correctly
                 s = BaseSignal(np.zeros(1))
@@ -135,7 +143,7 @@ class SerEmiExtractor:
                 "corresponding .emi file for this .ser. "
                 "Metadata extraction will be limited."
             )
-            logger.warning(warning)
+            _logger.warning(warning)
             metadata["nx_meta"]["Extractor Warning"] = warning
 
         # if we successfully found the .emi file, add it to the metadata
@@ -160,15 +168,20 @@ class SerEmiExtractor:
         instr_name = instr.name if instr is not None else None
         metadata["nx_meta"]["fname"] = filename
         # get the modification time:
-        metadata["nx_meta"]["Creation Time"] = dt.fromtimestamp(
-            filename.stat().st_mtime,
-            tz=instr.timezone if instr else None,
-        ).isoformat()
+        # Use instrument timezone if available, otherwise fall back to system timezone
+        mtime_naive_dt = dt.fromtimestamp(filename.stat().st_mtime)  # noqa: DTZ006
+        tz = instr.timezone if instr is not None else None
+        tz = tz if tz is not None else current_system_tz()
+        mtime_aware_dt = tz.localize(mtime_naive_dt)
+        metadata["nx_meta"]["Creation Time"] = mtime_aware_dt.isoformat()
         metadata["nx_meta"]["Instrument ID"] = instr_name
 
         # we could not read the signal, so add some basic metadata and return
         if ser_error:
-            return _handle_ser_error(metadata)
+            metadata = _handle_ser_error_metadata(metadata)
+            # Migrate to schema-compliant format (move vendor meta to extensions)
+            metadata = self._migrate_to_schema_compliant_metadata(metadata)
+            return [metadata]
 
         metadata = parse_basic_info(metadata, s.data.shape, instr)
         metadata = parse_acquire_info(metadata)
@@ -183,20 +196,133 @@ class SerEmiExtractor:
         # we don't need to save the filename, it's just for internal processing
         del metadata["nx_meta"]["fname"]
 
+        # Migrate metadata to schema-compliant format
+        metadata = self._migrate_to_schema_compliant_metadata(metadata)
+
         # sort the nx_meta dictionary (recursively) for nicer display
         metadata["nx_meta"] = sort_dict(metadata["nx_meta"])
 
         return [metadata]
 
+    def _migrate_to_schema_compliant_metadata(self, mdict: dict) -> dict:
+        """
+        Migrate metadata to schema-compliant format.
 
-def _handle_ser_error(metadata):
+        Reorganizes metadata to conform to type-specific Pydantic schemas:
+        - Extracts core EM Glossary fields to top level with standardized names
+        - Moves vendor-specific nested dictionaries to extensions section
+        - Preserves existing extensions from instrument profiles
+
+        Parameters
+        ----------
+        mdict
+            Metadata dictionary with nx_meta containing extracted fields
+
+        Returns
+        -------
+        dict
+            Metadata dictionary with schema-compliant nx_meta structure
+        """
+        nx_meta = mdict.get("nx_meta", {})
+        dataset_type = nx_meta.get("DatasetType", "Image")
+
+        # Preserve existing extensions from instrument profiles
+        extensions = (
+            nx_meta.get("extensions", {}).copy() if "extensions" in nx_meta else {}
+        )
+
+        # Field mappings from display names to EM Glossary names
+        field_mappings = {
+            "AccelerationVoltage": "acceleration_voltage",
+            "Convergence Angle": "convergence_angle",
+            "Acquisition Device": "acquisition_device",
+        }
+
+        # Camera Length is only core for Diffraction datasets
+        if dataset_type == "Diffraction":
+            field_mappings["Camera Length"] = "camera_length"
+
+        # FEI TIA-specific top-level sections that go to extensions
+        extension_top_level_keys = {
+            "ObjectInfo",  # Main FEI metadata section
+            "ser_header_parameters",  # SER file header
+        }
+
+        # Individual vendor-specific fields to move to extensions
+        extension_field_names = {
+            "emi Filename",
+            "Extractor Warning",
+            # Any other FEI-specific fields
+        }
+
+        # Build new nx_meta with proper field organization
+        new_nx_meta = {}
+
+        # Copy required fields
+        for field in ["DatasetType", "Data Type", "Creation Time", "Data Dimensions"]:
+            if field in nx_meta:
+                new_nx_meta[field] = nx_meta[field]
+
+        # Copy instrument identification
+        if "Instrument ID" in nx_meta:
+            new_nx_meta["Instrument ID"] = nx_meta["Instrument ID"]
+
+        # Process all fields and categorize
+        for old_name, value in nx_meta.items():
+            # Skip fields we've already handled
+            if old_name in [
+                "DatasetType",
+                "Data Type",
+                "Creation Time",
+                "Data Dimensions",
+                "Instrument ID",
+                "Extractor Warnings",
+                "warnings",
+                "extensions",
+            ]:
+                continue
+
+            # Top-level vendor sections go to extensions
+            if old_name in extension_top_level_keys:
+                extensions[old_name] = value
+                continue
+
+            # Check if this is a core field that needs renaming
+            if old_name in field_mappings:
+                emg_name = field_mappings[old_name]
+                new_nx_meta[emg_name] = value
+                continue
+
+            # Vendor-specific individual fields go to extensions
+            if old_name in extension_field_names:
+                extensions[old_name] = value
+                continue
+
+            # Everything else goes to extensions (FEI-specific fields)
+            # This is safer since most FEI fields are vendor-specific
+            extensions[old_name] = value
+
+        # Copy warnings if present
+        if "warnings" in nx_meta:
+            new_nx_meta["warnings"] = nx_meta["warnings"]
+
+        # Add extensions section if we have any
+        for key, value in extensions.items():
+            add_to_extensions(new_nx_meta, key, value)
+
+        mdict["nx_meta"] = new_nx_meta
+        return mdict
+
+
+def _handle_ser_error_metadata(metadata):
+    """Handle metadata when .ser file cannot be read."""
     metadata["nx_meta"]["DatasetType"] = "Misc"
     metadata["nx_meta"]["Data Type"] = "Unknown"
     metadata["nx_meta"]["warnings"] = []
     # sort the nx_meta dictionary (recursively) for nicer display
     metadata["nx_meta"] = sort_dict(metadata["nx_meta"])
     del metadata["nx_meta"]["fname"]
-    return [metadata]
+    return metadata
 
 
 def _load_ser(emi_filename: Path, ser_index: int):
@@ -237,7 +363,7 @@ def _load_ser(emi_filename: Path, ser_index: int):
     return s, True
 
 
-def parse_basic_info(metadata, shape, instrument):
+def parse_basic_info(metadata, shape, instrument: Instrument):
     """
     Parse basic metadata from file.
 
@@ -264,14 +390,13 @@ def parse_basic_info(metadata, shape, instrument):
     # try to set creation time to acquisition time from metadata
     acq_time = try_getting_dict_value(metadata, ["ObjectInfo", "AcquireDate"])
     if acq_time is not None:
-        metadata["nx_meta"]["Creation Time"] = (
-            dt.strptime(
-                acq_time,
-                "%a %b %d %H:%M:%S %Y",
-            )
-            .replace(tzinfo=instrument.timezone if instrument else None)
-            .isoformat()
-        )
+        # Use instrument timezone if available, otherwise fall back to system timezone
+        tz = instrument.timezone if instrument else current_system_tz()
+        naive_dt = dt.strptime(acq_time, "%a %b %d %H:%M:%S %Y")  # noqa: DTZ007
+        # Both instrument.timezone and current_system_tz() return pytz objects,
+        # so use localize() for proper DST handling
+        aware_dt = tz.localize(naive_dt)
+        metadata["nx_meta"]["Creation Time"] = aware_dt.isoformat()
 
     # manufacturer is at high level, so parse it now
     manufacturer = try_getting_dict_value(metadata, ["ObjectInfo", "Manufacturer"])
@@ -308,28 +433,24 @@ def parse_experimental_conditions(metadata):
         The same metadata dictionary with some values added under the
         root-level ``nx_meta`` key
     """
+    # Map input field names to (output_name, unit) tuples
+    # If unit is None, value is stored as-is; otherwise, create Pint Quantity
     term_mapping = {
-        ("DwellTimePath",): "Dwell Time Path (s)",
-        ("FrameTime",): "Frame Time (s)",
-        ("CameraNamePath",): "Camera Name Path",
-        ("Binning",): "Binning",
-        ("BeamPosition",): "Beam Position (μm)",
-        ("EnergyResolution",): "Energy Resolution (eV)",
-        ("IntegrationTime",): "Integration Time (s)",
-        ("NumberSpectra",): "Number of Spectra",
-        ("ShapingTime",): "Shaping Time (s)",
-        ("ScanArea",): "Scan Area",
+        ("DwellTimePath",): ("Dwell Time Path", "second"),
+        ("FrameTime",): ("Frame Time", "second"),
+        ("CameraNamePath",): ("Camera Name Path", None),
+        ("Binning",): ("Binning", None),
+        ("BeamPosition",): ("Beam Position", "micrometer"),
+        ("EnergyResolution",): ("Energy Resolution", "electron_volt"),
+        ("IntegrationTime",): ("Integration Time", "second"),
+        ("NumberSpectra",): ("Number of Spectra", None),
+        ("ShapingTime",): ("Shaping Time", "second"),
+        ("ScanArea",): ("Scan Area", None),
     }
     base = ["ObjectInfo", "AcquireInfo"]
 
     if try_getting_dict_value(metadata, base) is not None:
-        metadata = map_keys(term_mapping, base, metadata)
-
-    # remove units from beam position (if present)
-    if "Beam Position (μm)" in metadata["nx_meta"]:
-        metadata["nx_meta"]["Beam Position (μm)"] = metadata["nx_meta"][
-            "Beam Position (μm)"
-        ].replace(" um", "")
+        metadata = map_keys_with_units(term_mapping, base, metadata)
 
     return metadata
 
@@ -354,15 +475,16 @@ def parse_acquire_info(metadata):
         The same metadata dictionary with some values added under the
         root-level ``nx_meta`` key
     """
+    # Map input field names to (output_name, unit) tuples
     term_mapping = {
-        ("AcceleratingVoltage",): "Microscope Accelerating Voltage (V)",
-        ("Tilt1",): "Microscope Tilt 1",
-        ("Tilt2",): "Microscope Tilt 2",
+        ("AcceleratingVoltage",): ("Microscope Accelerating Voltage", "volt"),
+        ("Tilt1",): ("Microscope Tilt 1", None),
+        ("Tilt2",): ("Microscope Tilt 2", None),
     }
     base = ["ObjectInfo", "ExperimentalConditions", "MicroscopeConditions"]
 
     if try_getting_dict_value(metadata, base) is not None:
-        metadata = map_keys(term_mapping, base, metadata)
+        metadata = map_keys_with_units(term_mapping, base, metadata)
 
     return metadata
 
@@ -403,26 +525,24 @@ def parse_experimental_description(metadata):
     ):
         term_mapping = {}
         for k in metadata["ObjectInfo"]["ExperimentalDescription"]:
-            term, unit = split_fei_metadata_units(k)
-            if unit:
-                unit = unit.replace("uA", "μA").replace("um", "μm").replace("deg", "°")
-            term_mapping[(k,)] = f"{term}" + (f" ({unit})" if unit else "")
-            # Make stage position a nested list
-            if "Stage" in term:
-                term = term.replace("Stage ", "")
-                term_mapping[(k,)] = [
-                    "Stage Position",
-                    f"{term}" + (f" ({unit})" if unit else ""),
-                ]
-            # Make filter settings a nested list
-            if "Filter " in term:
-                term = term.replace("Filter ", "")
-                term_mapping[(k,)] = [
-                    "Tecnai Filter",
-                    f"{term.title()}" + (f" ({unit})" if unit else ""),
-                ]
+            term, fei_unit = split_fei_metadata_units(k)
+            pint_unit = fei_unit_to_pint(fei_unit)
 
-        metadata = map_keys(term_mapping, base, metadata)
+            # Determine output field name(s)
+            if "Stage" in term:
+                # Make stage position a nested list
+                term = term.replace("Stage ", "")
+                out_name = ["Stage Position", term]
+            elif "Filter " in term:
+                # Make filter settings a nested list
+                term = term.replace("Filter ", "")
+                out_name = ["Tecnai Filter", term.title()]
+            else:
+                out_name = term
+
+            term_mapping[(k,)] = (out_name, pint_unit)
+
+        metadata = map_keys_with_units(term_mapping, base, metadata)
 
         # Microscope Mode often has excess spaces, so fix that if needed:
         if "Mode" in metadata["nx_meta"]:
@@ -468,6 +588,41 @@ def get_emi_from_ser(ser_fname: Path) -> Path:
     return emi_fname, index
 
 
+def fei_unit_to_pint(fei_unit):
+    """
+    Convert FEI unit string to Pint unit name.
+
+    Parameters
+    ----------
+    fei_unit : str or None
+        The unit string from FEI metadata (e.g., "kV", "uA", "um", "deg")
+
+    Returns
+    -------
+    str or None
+        The corresponding Pint unit name, or None if no unit or not recognized
+    """
+    if fei_unit is None:
+        return None
+
+    # Map FEI units to Pint unit names
+    unit_map = {
+        "kV": "kilovolt",
+        "V": "volt",
+        "uA": "microampere",
+        "um": "micrometer",
+        "deg": "degree",
+        "s": "second",
+        "eV": "electron_volt",
+        "keV": "kiloelectron_volt",
+        "mm": "millimeter",
+        "nm": "nanometer",
+        "mrad": "milliradian",
+    }
+
+    return unit_map.get(fei_unit)
+
+
 def split_fei_metadata_units(metadata_term):
     """
     Split metadata into value and units.
@@ -503,66 +658,58 @@ def split_fei_metadata_units(metadata_term):
     return (mdata_term, mdata_and_unit[1])
 
 
-def map_keys(term_mapping, base, metadata):
+def map_keys_with_units(term_mapping, base, metadata):
     """
-    Map keys into NexusLIMS metadata structure.
+    Map keys into NexusLIMS metadata structure with unit support.
 
-    Given a term mapping dictionary and a metadata dictionary, translate
-    the input keys within the "raw" metadata into a parsed value in the
-    "nx_meta" metadata structure.
+    Maps input metadata terms to NexusLIMS metadata structure, with support
+    for (output_name, unit) tuples in the term_mapping values to create Pint
+    Quantities.
 
     Parameters
     ----------
     term_mapping : dict
         Dictionary where keys are tuples of strings (the input terms),
-        and values are either a single string or a list of strings (the
-        output terms).
+        and values are tuples of (output_name, unit) where output_name
+        is either a string or list of strings, and unit is either a string
+        (Pint unit name) or None
     base : list
-        The 'root' path within the metadata dictionary of where to start
-        applying the input terms
+        The 'root' path within the metadata dictionary
     metadata : dict
-        A metadata dictionary as returned by :py:meth:`get_ser_metadata`
+        A metadata dictionary
 
     Returns
     -------
     metadata : dict
-        The same metadata dictionary with some values added under the
-        root-level ``nx_meta`` key, as specified by ``term_mapping``
-
-    Notes
-    -----
-    The ``term_mapping`` parameter should be a dictionary of the form:
-
-    ```python
-    {
-        ('val1_1', 'val1_2') : 'output_val_1',
-        ('val1_1', 'val2_2') : 'output_val_2',
-        etc.
-    }
-    ```
-
-    Assuming ``base`` is ``['ObjectInfo', 'AcquireInfo']``, this would map
-    the term present at ``ObjectInfo.AcquireInfo.val1_1.val1_2`` into
-    ``nx_meta.output_val_1``, and ``ObjectInfo.AcquireInfo.val1_1.val2_2`` into
-    ``nx_meta.output_val_2``, and so on. If one of the output terms is a list,
-    the resulting metadata will be nested. `e.g.` ``['output_val_1',
-    'output_val_2']`` would get mapped to ``nx_meta.output_val_1.output_val_2``.
+        The same metadata dictionary with values added to nx_meta
     """
     for in_term in term_mapping:
-        out_term = term_mapping[in_term]
+        out_spec, unit = term_mapping[in_term]
         if isinstance(in_term, tuple):
             in_term = list(in_term)  # noqa: PLW2901
-        if isinstance(out_term, str):
-            out_term = [out_term]
+        if isinstance(out_spec, str):
+            out_spec = [out_spec]
+
         val = try_getting_dict_value(metadata, base + in_term)
         # only add the value to this list if we found it
         if val is not None:
+            # Clean up string values (remove " um" etc.)
+            if isinstance(val, str):
+                val = val.replace(" um", "").strip()
+
+            # Convert to numeric first (handles string numbers)
+            val = _convert_to_numeric(val)
+
+            # Create Quantity if unit specified and value is numeric
+            if unit is not None and isinstance(val, (int, float)):
+                with contextlib.suppress(ValueError, TypeError):
+                    val = ureg.Quantity(val, unit)
+
             set_nested_dict_value(
                 metadata,
-                ["nx_meta", *out_term],
-                _convert_to_numeric(val),
+                ["nx_meta", *out_spec],
+                val,
             )
-
     return metadata
 
 

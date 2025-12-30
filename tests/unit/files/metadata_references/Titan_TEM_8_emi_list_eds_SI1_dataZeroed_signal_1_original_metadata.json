@@ -1,0 +1,84 @@
+{
+  "ObjectInfo": {
+    "AcquireDate": "Thu Jun 13 19:50:12 2019",
+    "AcquireInfo": {
+      "BeamPosition": "(-0.99656, 0.74289) um",
+      "EnergyResolution": "10.0000",
+      "IntegrationTime": "60.0000",
+      "NumberSpectra": "0",
+      "ShapingTime": "51.2000"
+    },
+    "DetectorRange": {
+      "End": "3993.00",
+      "Start": "0.000000"
+    },
+    "ExperimentalConditions": {
+      "MicroscopeConditions": {
+        "AcceleratingVoltage": "300000",
+        "Tilt1": "0.160686",
+        "Tilt2": "0.000000"
+      }
+    },
+    "ExperimentalDescription": {
+      "C1 Aperture_um": 2000.0,
+      "C2 Aperture_um": 100.0,
+      "C2 lens_%": 22.128,
+      "C3 lens_%": 11.861,
+      "Camera length_m": 0.13,
+      "Defocus_um": 0.271,
+      "Diffraction lens_%": 37.347,
+      "Emission_uA": 145.0,
+      "Extraction voltage_V": 4400.0,
+      "Filter mode": null,
+      "Gun lens": "6",
+      "Gun type": "FEG",
+      "High tension_kV": 300.0,
+      "Magnification_x": 20000.0,
+      "Microscope": "Microscope Titan 300 kV ABCD1 SuperTwin",
+      "Mode": " STEM nP SA Zoom Diffraction",
+      "OBJ Aperture": "retracted",
+      "Objective lens_%": 87.987,
+      "SA Aperture": "retracted",
+      "Spot size": "7",
+      "Stage A_deg": 9.21,
+      "Stage B_deg": 0.0,
+      "Stage X_um": -202.296,
+      "Stage Y_um": -229.616,
+      "Stage Z_um": 92.45,
+      "Stem rotation correction_deg": -12.3,
+      "Stem rotation_deg": -57.7,
+      "User": "userL"
+    },
+    "Manufacturer": "EDAX",
+    "TrueImageHeaderInfo": {},
+    "Uuid": "2e3d3c11-499b-409c-8f9a-512666480e9a"
+  },
+  "ser_header_parameters": {
+    "ArrayLength": "3993",
+    "ByteOrder": "18761",
+    "CalibrationDelta": 9.975283269992229,
+    "CalibrationElement": "0",
+    "CalibrationOffset": 11.981245606192715,
+    "DataType": "3",
+    "DataTypeID": "16672",
+    "Dim-1_CalibrationDelta": 1.0,
+    "Dim-1_CalibrationElement": "0",
+    "Dim-1_CalibrationOffset": 0.0,
+    "Dim-1_Description": "b'Number'",
+    "Dim-1_DescriptionLength": "6",
+    "Dim-1_DimensionSize": "10",
+    "Dim-1_Units": "b''",
+    "Dim-1_UnitsLength": "0",
+    "NumberDimensions": "1",
+    "OffsetArrayOffset": "68",
+    "PositionX": 0.0,
+    "PositionY": 0.0,
+    "SeriesID": "407",
+    "SeriesVersion": "528",
+    "TagTypeID": "0",
+    "Time": "0",
+    "TotalNumberElements": "10",
+    "Unknown": "0",
+    "ValidNumberElements": "1"
+  }
+}
