@@ -1,0 +1,58 @@
+# {py:mod}`nexusLIMS.db.engine`
+
+```{py:module} nexusLIMS.db.engine
+```
+
+```{autodoc2-docstring} nexusLIMS.db.engine
+:parser: autodoc2_docstrings_parser
+:allowtitles:
+```
+
+## Module Contents
+
+### Functions
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`get_engine <nexusLIMS.db.engine.get_engine>`
+  - ```{autodoc2-docstring} nexusLIMS.db.engine.get_engine
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
+### Data
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`engine <nexusLIMS.db.engine.engine>`
+  - ```{autodoc2-docstring} nexusLIMS.db.engine.engine
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
+### API
+
+````{py:data} engine
+:canonical: nexusLIMS.db.engine.engine
+:value: >
+   'create_engine(...)'
+
+```{autodoc2-docstring} nexusLIMS.db.engine.engine
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:function} get_engine()
+:canonical: nexusLIMS.db.engine.get_engine
+
+```{autodoc2-docstring} nexusLIMS.db.engine.get_engine
+:parser: autodoc2_docstrings_parser
+```
+````

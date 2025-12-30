@@ -916,8 +916,19 @@ uv<span class="w"> </span>sync
 </pre></div>
 </div>
 </section>
+<section id="mark-database-as-migrated">
+<h3>6. Mark Database as Migrated<a class="headerlink" href="#mark-database-as-migrated" title="Link to this heading">#</a></h3>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 2.2.0: </span>NexusLIMS now uses Alembic for database schema version control. You need to mark your existing database as migrated to the current schema.</p>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Mark database as at current schema version</span>
+uv<span class="w"> </span>run<span class="w"> </span>alembic<span class="w"> </span>stamp<span class="w"> </span>head
+</pre></div>
+</div>
+<p>This tells Alembic that your database already has the current schema structure and doesn’t need any migrations applied. This is a one-time operation for existing installations.</p>
+</section>
 <section id="verify-installation">
-<h3>6. Verify Installation<a class="headerlink" href="#verify-installation" title="Link to this heading">#</a></h3>
+<h3>7. Verify Installation<a class="headerlink" href="#verify-installation" title="Link to this heading">#</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Test configuration loading</span>
 uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;from nexusLIMS.config import settings; print(settings.NX_DATA_PATH)&quot;</span>
 
@@ -930,7 +941,7 @@ uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </sp
 </div>
 </section>
 <section id="update-deployment-scripts">
-<h3>7. Update Deployment Scripts<a class="headerlink" href="#update-deployment-scripts" title="Link to this heading">#</a></h3>
+<h3>8. Update Deployment Scripts<a class="headerlink" href="#update-deployment-scripts" title="Link to this heading">#</a></h3>
 <p>If you have cron jobs or systemd services running NexusLIMS:</p>
 <p><strong>Old command style (v1.x)</strong>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Using Poetry</span>
@@ -949,7 +960,7 @@ uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </sp
 </div>
 </section>
 <section id="test-record-building">
-<h3>8. Test Record Building<a class="headerlink" href="#test-record-building" title="Link to this heading">#</a></h3>
+<h3>9. Test Record Building<a class="headerlink" href="#test-record-building" title="Link to this heading">#</a></h3>
 <p>Run a test record build to verify everything works:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Dry run mode (find files but don&#39;t build records)</span>
 uv<span class="w"> </span>run<span class="w"> </span>nexuslims-process-records<span class="w"> </span>-n
@@ -1124,9 +1135,10 @@ mkdir<span class="w"> </span>-p<span class="w"> </span>/path/to/nexuslims/logs
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#update-your-env-file">3. Update Your .env File</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#remove-old-virtual-environment">4. Remove Old Virtual Environment</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#create-new-environment-with-uv">5. Create New Environment with uv</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#verify-installation">6. Verify Installation</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#update-deployment-scripts">7. Update Deployment Scripts</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#test-record-building">8. Test Record Building</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mark-database-as-migrated">6. Mark Database as Migrated</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#verify-installation">7. Verify Installation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#update-deployment-scripts">8. Update Deployment Scripts</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#test-record-building">9. Test Record Building</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#common-migration-issues">Common Migration Issues</a><ul class="nav section-nav flex-column">

@@ -798,143 +798,21 @@ window.addEventListener("load", load);
   <h1>Source code for nexusLIMS.db.session_handler</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Classes and methods to interact with sessions from the NexusLIMS database.&quot;&quot;&quot;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">contextlib</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">sqlite3</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span> <span class="k">as</span> <span class="n">dt</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Tuple</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS</span><span class="w"> </span><span class="kn">import</span> <span class="n">instruments</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.orm</span><span class="w"> </span><span class="kn">import</span> <span class="n">selectinload</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sqlmodel</span><span class="w"> </span><span class="kn">import</span> <span class="n">Session</span> <span class="k">as</span> <span class="n">DBSession</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sqlmodel</span><span class="w"> </span><span class="kn">import</span> <span class="n">select</span>
+
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">settings</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.instruments</span><span class="w"> </span><span class="kn">import</span> <span class="n">Instrument</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.db.engine</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_engine</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.db.enums</span><span class="w"> </span><span class="kn">import</span> <span class="n">EventType</span><span class="p">,</span> <span class="n">RecordStatus</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.db.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Instrument</span><span class="p">,</span> <span class="n">SessionLog</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">current_system_tz</span>
 
 <span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
-
-
-<div class="viewcode-block" id="db_query">
-<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.db.session_handler.html#nexusLIMS.db.session_handler.db_query">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">db_query</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Make a query on the NexusLIMS database.&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">args</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">args</span> <span class="o">=</span> <span class="p">()</span>
-    <span class="n">success</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="k">with</span> <span class="p">(</span>
-        <span class="n">contextlib</span><span class="o">.</span><span class="n">closing</span><span class="p">(</span>
-            <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">NX_DB_PATH</span><span class="p">)),</span>
-        <span class="p">)</span> <span class="k">as</span> <span class="n">conn</span><span class="p">,</span>
-        <span class="n">conn</span><span class="p">,</span>
-        <span class="n">contextlib</span><span class="o">.</span><span class="n">closing</span><span class="p">(</span><span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">())</span> <span class="k">as</span> <span class="n">cursor</span><span class="p">,</span>
-    <span class="p">):</span>  <span class="c1"># auto-commits</span>
-        <span class="n">results</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
-        <span class="n">success</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="k">return</span> <span class="n">success</span><span class="p">,</span> <span class="n">results</span></div>
-
-
-
-<div class="viewcode-block" id="SessionLog">
-<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.db.session_handler.html#nexusLIMS.db.session_handler.SessionLog">[docs]</a>
-<span class="nd">@dataclass</span>
-<span class="k">class</span><span class="w"> </span><span class="nc">SessionLog</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A log of the start or end of a Session.</span>
-
-<span class="sd">    A simple mapping of one row in the ``session_log`` table of the NexusLIMS</span>
-<span class="sd">    database (all values are strings).</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    session_identifier</span>
-<span class="sd">         A unique string that is consistent among a single</span>
-<span class="sd">         record&#39;s `&quot;START&quot;`, `&quot;END&quot;`, and `&quot;RECORD_GENERATION&quot;` events (often a</span>
-<span class="sd">         UUID, but is not required to be so)</span>
-<span class="sd">    instrument</span>
-<span class="sd">        The instrument associated with this session (foreign key reference to</span>
-<span class="sd">        the ``instruments`` table)</span>
-<span class="sd">    timestamp</span>
-<span class="sd">        The ISO format timestamp representing the date and time of the logged</span>
-<span class="sd">        event</span>
-<span class="sd">    event_type</span>
-<span class="sd">        The type of log for this session (either `&quot;START&quot;`, `&quot;END&quot;`,</span>
-<span class="sd">        or `&quot;RECORD_GENERATION&quot;`)</span>
-<span class="sd">    user</span>
-<span class="sd">        The username associated with this session (if known)</span>
-<span class="sd">    record_status</span>
-<span class="sd">        The status to use for this record (defaults to ``&#39;TO_BE_BUILT&#39;``)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">session_identifier</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">instrument</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">timestamp</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">event_type</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">user</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">record_status</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;TO_BE_BUILT&quot;</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return custom representation of a SessionLog.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;SessionLog (id=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">session_identifier</span><span class="si">}</span><span class="s2">, &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;instrument=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">instrument</span><span class="si">}</span><span class="s2">, &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;timestamp=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">timestamp</span><span class="si">}</span><span class="s2">, &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;event_type=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">event_type</span><span class="si">}</span><span class="s2">, &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;user=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">user</span><span class="si">}</span><span class="s2">, &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;record_status=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">record_status</span><span class="si">}</span><span class="s2">)&quot;</span>
-        <span class="p">)</span>
-
-<div class="viewcode-block" id="SessionLog.insert_log">
-<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.db.session_handler.html#nexusLIMS.db.session_handler.SessionLog.insert_log">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">insert_log</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Insert this log into the NexusLIMS database.</span>
-
-<span class="sd">        Inserts a log into the database with the information contained within</span>
-<span class="sd">        this SessionLog&#39;s attributes (used primarily for NEMO ``usage_event``</span>
-<span class="sd">        integration). It will check for the presence of a matching record first</span>
-<span class="sd">        and warn without inserting anything if it finds one.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        success : bool</span>
-<span class="sd">            Whether or not the session log row was inserted successfully</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">query</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s2">&quot;SELECT * FROM session_log &quot;</span>
-            <span class="s2">&quot;WHERE session_identifier=? AND &quot;</span>
-            <span class="s2">&quot;instrument=? AND &quot;</span>
-            <span class="s2">&quot;timestamp=? AND &quot;</span>
-            <span class="s2">&quot;event_type=? AND &quot;</span>
-            <span class="s2">&quot;record_status=? AND &quot;</span>
-            <span class="s2">&quot;user=?&quot;</span>
-        <span class="p">)</span>
-        <span class="n">args</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">session_identifier</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">instrument</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">timestamp</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">event_type</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">record_status</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">user</span><span class="p">,</span>
-        <span class="p">)</span>
-
-        <span class="n">success</span><span class="p">,</span> <span class="n">results</span> <span class="o">=</span> <span class="n">db_query</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">results</span><span class="p">:</span>
-            <span class="c1"># There was a matching record in the DB, so warn and return success</span>
-            <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="s2">&quot;SessionLog already existed in DB, so no row was added: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
-                <span class="bp">self</span><span class="p">,</span>
-            <span class="p">)</span>
-            <span class="k">return</span> <span class="n">success</span>
-
-        <span class="n">query</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s2">&quot;INSERT INTO session_log(session_identifier, instrument, &quot;</span>
-            <span class="s2">&quot;timestamp, event_type, record_status, user) VALUES &quot;</span>
-            <span class="s2">&quot;(?, ?, ?, ?, ?, ?)&quot;</span>
-        <span class="p">)</span>
-        <span class="n">success</span><span class="p">,</span> <span class="n">results</span> <span class="o">=</span> <span class="n">db_query</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">success</span></div>
-</div>
-
 
 
 <div class="viewcode-block" id="Session">
@@ -982,7 +860,7 @@ window.addEventListener("load", load);
 
 <div class="viewcode-block" id="Session.update_session_status">
 <a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.db.session_handler.html#nexusLIMS.db.session_handler.Session.update_session_status">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">update_session_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">status</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_session_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">status</span><span class="p">:</span> <span class="n">RecordStatus</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Update the status of this Session in the NexusLIMS database.</span>
 
@@ -991,30 +869,22 @@ window.addEventListener("load", load);
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        status : str</span>
-<span class="sd">            One of ``&quot;COMPLETED&quot;``, ``&quot;WAITING_FOR_END&quot;``, ``&quot;TO_BE_BUILT&quot;``,</span>
-<span class="sd">            ``&quot;ERROR&quot;``, ``&quot;NO_FILES_FOUND&quot;``, ``&quot;NO_CONSENT&quot;``, or ``&quot;NO_RESERVATION&quot;``</span>
-<span class="sd">            (the allowed values in the NexusLIMS database). Status value will be</span>
-<span class="sd">            validated by a check constraint in the database</span>
+<span class="sd">        status : RecordStatus</span>
+<span class="sd">            The new status for this session (type-safe enum value)</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        success : bool</span>
 <span class="sd">            Whether the update operation was successful</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">update_query</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s2">&quot;UPDATE session_log SET record_status = ? WHERE session_identifier = ?&quot;</span>
-        <span class="p">)</span>
-
-        <span class="c1"># use contextlib to auto-close the connection and database cursors</span>
-        <span class="k">with</span> <span class="p">(</span>
-            <span class="n">contextlib</span><span class="o">.</span><span class="n">closing</span><span class="p">(</span>
-                <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">NX_DB_PATH</span><span class="p">)),</span>
-            <span class="p">)</span> <span class="k">as</span> <span class="n">conn</span><span class="p">,</span>
-            <span class="n">conn</span><span class="p">,</span>
-            <span class="n">contextlib</span><span class="o">.</span><span class="n">closing</span><span class="p">(</span><span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">())</span> <span class="k">as</span> <span class="n">cursor</span><span class="p">,</span>
-        <span class="p">):</span>  <span class="c1"># auto-commits</span>
-            <span class="n">_</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">update_query</span><span class="p">,</span> <span class="p">(</span><span class="n">status</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_identifier</span><span class="p">))</span>
+        <span class="k">with</span> <span class="n">DBSession</span><span class="p">(</span><span class="n">get_engine</span><span class="p">())</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+            <span class="n">statement</span> <span class="o">=</span> <span class="n">select</span><span class="p">(</span><span class="n">SessionLog</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+                <span class="n">SessionLog</span><span class="o">.</span><span class="n">session_identifier</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_identifier</span>
+            <span class="p">)</span>
+            <span class="n">logs</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">exec</span><span class="p">(</span><span class="n">statement</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">log</span> <span class="ow">in</span> <span class="n">logs</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">record_status</span> <span class="o">=</span> <span class="n">status</span>
+            <span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
             <span class="k">return</span> <span class="kc">True</span></div>
 
 
@@ -1031,131 +901,97 @@ window.addEventListener("load", load);
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        res : dict</span>
-<span class="sd">            A dictionary containing the results from the query to check that</span>
-<span class="sd">            a RECORD_GENERATION event was added</span>
+<span class="sd">            A dictionary containing the inserted log information</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Logging RECORD_GENERATION for </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_identifier</span><span class="p">)</span>
-        <span class="n">insert_query</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s2">&quot;INSERT INTO session_log &quot;</span>
-            <span class="s2">&quot;(instrument, event_type, session_identifier, &quot;</span>
-            <span class="s2">&quot;user, timestamp) VALUES (?, ?, ?, ?, ?)&quot;</span>
+
+        <span class="n">log</span> <span class="o">=</span> <span class="n">SessionLog</span><span class="p">(</span>
+            <span class="n">session_identifier</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">session_identifier</span><span class="p">,</span>
+            <span class="n">instrument</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">instrument</span><span class="o">.</span><span class="n">instrument_pid</span><span class="p">,</span>
+            <span class="n">timestamp</span><span class="o">=</span><span class="n">dt</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">tz</span><span class="o">=</span><span class="n">current_system_tz</span><span class="p">()),</span>
+            <span class="n">event_type</span><span class="o">=</span><span class="n">EventType</span><span class="o">.</span><span class="n">RECORD_GENERATION</span><span class="p">,</span>
+            <span class="n">user</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">NX_CDCS_USER</span><span class="p">,</span>
+            <span class="n">record_status</span><span class="o">=</span><span class="n">RecordStatus</span><span class="o">.</span><span class="n">WAITING_FOR_END</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="n">args</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">instrument</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
-            <span class="s2">&quot;RECORD_GENERATION&quot;</span><span class="p">,</span>
+
+        <span class="k">with</span> <span class="n">DBSession</span><span class="p">(</span><span class="n">get_engine</span><span class="p">())</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+            <span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">log</span><span class="p">)</span>
+            <span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+            <span class="n">session</span><span class="o">.</span><span class="n">refresh</span><span class="p">(</span><span class="n">log</span><span class="p">)</span>
+
+        <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="s2">&quot;Confirmed RECORD_GENERATION insertion for </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">session_identifier</span><span class="p">,</span>
-            <span class="n">settings</span><span class="o">.</span><span class="n">NX_CDCS_USER</span><span class="p">,</span>
-            <span class="n">dt</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">tz</span><span class="o">=</span><span class="n">current_system_tz</span><span class="p">()),</span>
         <span class="p">)</span>
 
-        <span class="c1"># use contextlib to auto-close the connection and database cursors</span>
-        <span class="k">with</span> <span class="p">(</span>
-            <span class="n">contextlib</span><span class="o">.</span><span class="n">closing</span><span class="p">(</span>
-                <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">NX_DB_PATH</span><span class="p">)),</span>
-            <span class="p">)</span> <span class="k">as</span> <span class="n">conn</span><span class="p">,</span>
-            <span class="n">conn</span><span class="p">,</span>
-            <span class="n">contextlib</span><span class="o">.</span><span class="n">closing</span><span class="p">(</span><span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">())</span> <span class="k">as</span> <span class="n">cursor</span><span class="p">,</span>
-        <span class="p">):</span>  <span class="c1"># auto-commits</span>
-            <span class="n">results</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">insert_query</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
-
-        <span class="n">check_query</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s2">&quot;SELECT id_session_log, event_type, &quot;</span>
-            <span class="s2">&quot;session_identifier, timestamp FROM session_log &quot;</span>
-            <span class="s2">&quot;WHERE instrument = ?&quot;</span>
-            <span class="s2">&quot;AND event_type = ?&quot;</span>
-            <span class="s2">&quot;ORDER BY timestamp DESC LIMIT 1&quot;</span>
-        <span class="p">)</span>
-        <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">instrument</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;RECORD_GENERATION&quot;</span><span class="p">)</span>
-
-        <span class="c1"># use contextlib to auto-close the connection and database cursors</span>
-        <span class="k">with</span> <span class="p">(</span>
-            <span class="n">contextlib</span><span class="o">.</span><span class="n">closing</span><span class="p">(</span>
-                <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">NX_DB_PATH</span><span class="p">)),</span>
-            <span class="p">)</span> <span class="k">as</span> <span class="n">conn</span><span class="p">,</span>
-            <span class="n">conn</span><span class="p">,</span>
-        <span class="p">):</span>  <span class="c1"># auto-commits</span>
-            <span class="n">conn</span><span class="o">.</span><span class="n">row_factory</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Row</span>
-            <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">closing</span><span class="p">(</span><span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">())</span> <span class="k">as</span> <span class="n">cursor</span><span class="p">:</span>
-                <span class="n">results</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">check_query</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
-                <span class="n">res</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
-
-        <span class="n">event_match</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="s2">&quot;event_type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;RECORD_GENERATION&quot;</span>
-        <span class="n">id_match</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="s2">&quot;session_identifier&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_identifier</span>
-        <span class="k">if</span> <span class="n">event_match</span> <span class="ow">and</span> <span class="n">id_match</span><span class="p">:</span>
-            <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                <span class="s2">&quot;Confirmed RECORD_GENERATION insertion for </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">session_identifier</span><span class="p">,</span>
-            <span class="p">)</span>
-
-        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">res</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;id_session_log&quot;</span><span class="p">:</span> <span class="n">log</span><span class="o">.</span><span class="n">id_session_log</span><span class="p">,</span>
+            <span class="s2">&quot;event_type&quot;</span><span class="p">:</span> <span class="n">log</span><span class="o">.</span><span class="n">event_type</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+            <span class="s2">&quot;session_identifier&quot;</span><span class="p">:</span> <span class="n">log</span><span class="o">.</span><span class="n">session_identifier</span><span class="p">,</span>
+            <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="n">log</span><span class="o">.</span><span class="n">timestamp</span><span class="p">,</span>
+        <span class="p">}</span></div>
 </div>
 
 
 
 <div class="viewcode-block" id="get_sessions_to_build">
 <a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.db.session_handler.html#nexusLIMS.db.session_handler.get_sessions_to_build">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">get_sessions_to_build</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Session</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_sessions_to_build</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Session</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get list of sessions that need to be built from the NexusLIMS database.</span>
 
 <span class="sd">    Query the NexusLIMS database for pairs of logs with status</span>
-<span class="sd">    ``&#39;TO_BE_BUILT&#39;`` and return the information needed to build a record for</span>
+<span class="sd">    ``TO_BE_BUILT`` and return the information needed to build a record for</span>
 <span class="sd">    that session.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    sessions : List[Session]</span>
+<span class="sd">    sessions : list[Session]</span>
 <span class="sd">        A list of :py:class:`~nexusLIMS.db.session_handler.Session` objects</span>
-<span class="sd">        containing the sessions that the need their record built. Will be an</span>
+<span class="sd">        containing the sessions that need their record built. Will be an</span>
 <span class="sd">        empty list if there&#39;s nothing to do.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">sessions</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="n">query_string</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="s2">&quot;SELECT session_identifier, instrument, timestamp, &quot;</span>
-        <span class="s2">&quot;event_type, user &quot;</span>
-        <span class="s2">&quot;FROM session_log WHERE record_status == &#39;TO_BE_BUILT&#39;&quot;</span>
-    <span class="p">)</span>
-
-    <span class="c1"># use contextlib to auto-close the connection and database cursors</span>
-    <span class="k">with</span> <span class="p">(</span>
-        <span class="n">contextlib</span><span class="o">.</span><span class="n">closing</span><span class="p">(</span>
-            <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">NX_DB_PATH</span><span class="p">)),</span>
-        <span class="p">)</span> <span class="k">as</span> <span class="n">conn</span><span class="p">,</span>
-        <span class="n">conn</span><span class="p">,</span>
-        <span class="n">contextlib</span><span class="o">.</span><span class="n">closing</span><span class="p">(</span><span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">())</span> <span class="k">as</span> <span class="n">cursor</span><span class="p">,</span>
-    <span class="p">):</span>  <span class="c1"># auto-commits</span>
-        <span class="n">results</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query_string</span><span class="p">)</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
-
-    <span class="n">session_logs</span> <span class="o">=</span> <span class="p">[</span><span class="n">SessionLog</span><span class="p">(</span><span class="o">*</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">results</span><span class="p">]</span>
-    <span class="n">start_logs</span> <span class="o">=</span> <span class="p">[</span><span class="n">sl</span> <span class="k">for</span> <span class="n">sl</span> <span class="ow">in</span> <span class="n">session_logs</span> <span class="k">if</span> <span class="n">sl</span><span class="o">.</span><span class="n">event_type</span> <span class="o">==</span> <span class="s2">&quot;START&quot;</span><span class="p">]</span>
-    <span class="n">end_logs</span> <span class="o">=</span> <span class="p">[</span><span class="n">sl</span> <span class="k">for</span> <span class="n">sl</span> <span class="ow">in</span> <span class="n">session_logs</span> <span class="k">if</span> <span class="n">sl</span><span class="o">.</span><span class="n">event_type</span> <span class="o">==</span> <span class="s2">&quot;END&quot;</span><span class="p">]</span>
-
-    <span class="k">for</span> <span class="n">start_l</span> <span class="ow">in</span> <span class="n">start_logs</span><span class="p">:</span>
-        <span class="c1"># for every log that has a &#39;START&#39;, there should be one corresponding</span>
-        <span class="c1"># log with &#39;END&#39; that has the same session identifier. If not,</span>
-        <span class="c1"># the database is in an inconsistent state and we should know about it</span>
-        <span class="n">el_list</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">el</span> <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">end_logs</span> <span class="k">if</span> <span class="n">el</span><span class="o">.</span><span class="n">session_identifier</span> <span class="o">==</span> <span class="n">start_l</span><span class="o">.</span><span class="n">session_identifier</span>
-        <span class="p">]</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">el_list</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="s2">&quot;There was not exactly one &#39;END&#39; log for this &#39;START&#39; log; &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;len(el_list) was </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">el_list</span><span class="p">)</span><span class="si">}</span><span class="s2">; sl was </span><span class="si">{</span><span class="n">start_l</span><span class="si">}</span><span class="s2">; el_list &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;was </span><span class="si">{</span><span class="n">el_list</span><span class="si">}</span><span class="s2">&quot;</span>
-            <span class="p">)</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-
-        <span class="n">end_l</span> <span class="o">=</span> <span class="n">el_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">dt_from</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="n">start_l</span><span class="o">.</span><span class="n">timestamp</span><span class="p">)</span>
-        <span class="n">dt_to</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="n">end_l</span><span class="o">.</span><span class="n">timestamp</span><span class="p">)</span>
-        <span class="n">session</span> <span class="o">=</span> <span class="n">Session</span><span class="p">(</span>
-            <span class="n">session_identifier</span><span class="o">=</span><span class="n">start_l</span><span class="o">.</span><span class="n">session_identifier</span><span class="p">,</span>
-            <span class="n">instrument</span><span class="o">=</span><span class="n">instruments</span><span class="o">.</span><span class="n">instrument_db</span><span class="p">[</span><span class="n">start_l</span><span class="o">.</span><span class="n">instrument</span><span class="p">],</span>
-            <span class="n">dt_range</span><span class="o">=</span><span class="p">(</span><span class="n">dt_from</span><span class="p">,</span> <span class="n">dt_to</span><span class="p">),</span>
-            <span class="n">user</span><span class="o">=</span><span class="n">start_l</span><span class="o">.</span><span class="n">user</span><span class="p">,</span>
+    <span class="k">with</span> <span class="n">DBSession</span><span class="p">(</span><span class="n">get_engine</span><span class="p">())</span> <span class="k">as</span> <span class="n">db_session</span><span class="p">:</span>
+        <span class="c1"># Query for all TO_BE_BUILT logs with eager loading of instrument relationship</span>
+        <span class="n">statement</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">select</span><span class="p">(</span><span class="n">SessionLog</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">SessionLog</span><span class="o">.</span><span class="n">record_status</span> <span class="o">==</span> <span class="n">RecordStatus</span><span class="o">.</span><span class="n">TO_BE_BUILT</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">options</span><span class="p">(</span><span class="n">selectinload</span><span class="p">(</span><span class="n">SessionLog</span><span class="o">.</span><span class="n">instrument_obj</span><span class="p">))</span>
         <span class="p">)</span>
-        <span class="n">sessions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
+        <span class="n">session_logs</span> <span class="o">=</span> <span class="n">db_session</span><span class="o">.</span><span class="n">exec</span><span class="p">(</span><span class="n">statement</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+
+        <span class="c1"># Separate START and END logs</span>
+        <span class="n">start_logs</span> <span class="o">=</span> <span class="p">[</span><span class="n">sl</span> <span class="k">for</span> <span class="n">sl</span> <span class="ow">in</span> <span class="n">session_logs</span> <span class="k">if</span> <span class="n">sl</span><span class="o">.</span><span class="n">event_type</span> <span class="o">==</span> <span class="n">EventType</span><span class="o">.</span><span class="n">START</span><span class="p">]</span>
+        <span class="n">end_logs</span> <span class="o">=</span> <span class="p">[</span><span class="n">sl</span> <span class="k">for</span> <span class="n">sl</span> <span class="ow">in</span> <span class="n">session_logs</span> <span class="k">if</span> <span class="n">sl</span><span class="o">.</span><span class="n">event_type</span> <span class="o">==</span> <span class="n">EventType</span><span class="o">.</span><span class="n">END</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">start_l</span> <span class="ow">in</span> <span class="n">start_logs</span><span class="p">:</span>
+            <span class="c1"># for every log that has a &#39;START&#39;, there should be one corresponding</span>
+            <span class="c1"># log with &#39;END&#39; that has the same session identifier. If not,</span>
+            <span class="c1"># the database is in an inconsistent state and we should know about it</span>
+            <span class="n">el_list</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">el</span>
+                <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">end_logs</span>
+                <span class="k">if</span> <span class="n">el</span><span class="o">.</span><span class="n">session_identifier</span> <span class="o">==</span> <span class="n">start_l</span><span class="o">.</span><span class="n">session_identifier</span>
+            <span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">el_list</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="s2">&quot;There was not exactly one &#39;END&#39; log for this &#39;START&#39; log; &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;len(el_list) was </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">el_list</span><span class="p">)</span><span class="si">}</span><span class="s2">; sl was </span><span class="si">{</span><span class="n">start_l</span><span class="si">}</span><span class="s2">; el_list &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;was </span><span class="si">{</span><span class="n">el_list</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+            <span class="n">end_l</span> <span class="o">=</span> <span class="n">el_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="c1"># Use relationship to get Instrument object (eagerly loaded above)</span>
+            <span class="n">session</span> <span class="o">=</span> <span class="n">Session</span><span class="p">(</span>
+                <span class="n">session_identifier</span><span class="o">=</span><span class="n">start_l</span><span class="o">.</span><span class="n">session_identifier</span><span class="p">,</span>
+                <span class="n">instrument</span><span class="o">=</span><span class="n">start_l</span><span class="o">.</span><span class="n">instrument_obj</span><span class="p">,</span>  <span class="c1"># Relationship navigation!</span>
+                <span class="n">dt_range</span><span class="o">=</span><span class="p">(</span><span class="n">start_l</span><span class="o">.</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">end_l</span><span class="o">.</span><span class="n">timestamp</span><span class="p">),</span>  <span class="c1"># No fromisoformat()!</span>
+                <span class="n">user</span><span class="o">=</span><span class="n">start_l</span><span class="o">.</span><span class="n">user</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">sessions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
 
     <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Found </span><span class="si">%i</span><span class="s2"> new sessions to build&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">sessions</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">sessions</span></div>
@@ -1174,25 +1010,10 @@ window.addEventListener("load", load);
 <span class="sd">        A list of all SessionLog objects from the database, ordered by timestamp.</span>
 <span class="sd">        Will be an empty list if there are no session logs.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">session_logs</span> <span class="o">=</span> <span class="p">[]</span>
-
-    <span class="n">query_string</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="s2">&quot;SELECT session_identifier, instrument, timestamp, &quot;</span>
-        <span class="s2">&quot;event_type, user, record_status &quot;</span>
-        <span class="s2">&quot;FROM session_log ORDER BY timestamp&quot;</span>
-    <span class="p">)</span>
-
-    <span class="c1"># use contextlib to auto-close the connection and database cursors</span>
-    <span class="k">with</span> <span class="p">(</span>
-        <span class="n">contextlib</span><span class="o">.</span><span class="n">closing</span><span class="p">(</span>
-            <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">NX_DB_PATH</span><span class="p">)),</span>
-        <span class="p">)</span> <span class="k">as</span> <span class="n">conn</span><span class="p">,</span>
-        <span class="n">conn</span><span class="p">,</span>
-        <span class="n">contextlib</span><span class="o">.</span><span class="n">closing</span><span class="p">(</span><span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">())</span> <span class="k">as</span> <span class="n">cursor</span><span class="p">,</span>
-    <span class="p">):</span>  <span class="c1"># auto-commits</span>
-        <span class="n">results</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query_string</span><span class="p">)</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
-
-    <span class="n">session_logs</span> <span class="o">=</span> <span class="p">[</span><span class="n">SessionLog</span><span class="p">(</span><span class="o">*</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">results</span><span class="p">]</span>
+    <span class="k">with</span> <span class="n">DBSession</span><span class="p">(</span><span class="n">get_engine</span><span class="p">())</span> <span class="k">as</span> <span class="n">db_session</span><span class="p">:</span>
+        <span class="c1"># Query for all session logs, ordered by timestamp</span>
+        <span class="n">statement</span> <span class="o">=</span> <span class="n">select</span><span class="p">(</span><span class="n">SessionLog</span><span class="p">)</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">SessionLog</span><span class="o">.</span><span class="n">timestamp</span><span class="p">)</span>
+        <span class="n">session_logs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">db_session</span><span class="o">.</span><span class="n">exec</span><span class="p">(</span><span class="n">statement</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">())</span>
 
     <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Found </span><span class="si">%i</span><span class="s2"> session logs in database&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">session_logs</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">session_logs</span></div>

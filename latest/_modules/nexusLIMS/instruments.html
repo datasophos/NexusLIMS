@@ -809,18 +809,15 @@ window.addEventListener("load", load);
 <span class="sd">    NexusLIMS remote database.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">contextlib</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">sqlite3</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">asdict</span><span class="p">,</span> <span class="n">dataclass</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">pytz</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pytz.tzinfo</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseTzInfo</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sqlmodel</span><span class="w"> </span><span class="kn">import</span> <span class="n">Session</span> <span class="k">as</span> <span class="n">DBSession</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sqlmodel</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_engine</span><span class="p">,</span> <span class="n">select</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">settings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.db.engine</span><span class="w"> </span><span class="kn">import</span> <span class="n">engine</span> <span class="k">as</span> <span class="n">default_engine</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.db.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Instrument</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">is_subpath</span>
 
 <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">()</span>
@@ -831,8 +828,6 @@ window.addEventListener("load", load);
 <span class="k">def</span><span class="w"> </span><span class="nf">_get_instrument_db</span><span class="p">(</span><span class="n">db_path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get dictionary of instruments from the NexusLIMS database.</span>
-
-<span class="sd">    Sort of like a very very basic ORM, but much worse.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -847,273 +842,26 @@ window.addEventListener("load", load);
 <span class="sd">        instruments that were found in the ``instruments`` table of the</span>
 <span class="sd">        NexusLIMS database</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;SELECT * from instruments&quot;</span>
-    <span class="n">instr_db</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># Initialize instr_db here</span>
-
     <span class="c1"># Use provided path or fall back to settings</span>
     <span class="n">_db_path</span> <span class="o">=</span> <span class="n">db_path</span> <span class="k">if</span> <span class="n">db_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">settings</span><span class="o">.</span><span class="n">NX_DB_PATH</span>
 
+    <span class="c1"># Create temporary engine if non-default path (for testing)</span>
+    <span class="k">if</span> <span class="n">db_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">temp_engine</span> <span class="o">=</span> <span class="n">create_engine</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;sqlite:///</span><span class="si">{</span><span class="n">_db_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">temp_engine</span> <span class="o">=</span> <span class="n">default_engine</span>
+
     <span class="k">try</span><span class="p">:</span>
-        <span class="k">with</span> <span class="p">(</span>
-            <span class="n">contextlib</span><span class="o">.</span><span class="n">closing</span><span class="p">(</span>
-                <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">_db_path</span><span class="p">)),</span>
-            <span class="p">)</span> <span class="k">as</span> <span class="n">conn</span><span class="p">,</span>
-            <span class="n">conn</span><span class="p">,</span>
-            <span class="n">contextlib</span><span class="o">.</span><span class="n">closing</span><span class="p">(</span><span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">())</span> <span class="k">as</span> <span class="n">cursor</span><span class="p">,</span>
-        <span class="p">):</span>  <span class="c1"># auto-commits</span>
-            <span class="n">results</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">)</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
-            <span class="n">col_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">cursor</span><span class="o">.</span><span class="n">description</span><span class="p">]</span>
-
-        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
-            <span class="n">this_dict</span> <span class="o">=</span> <span class="p">{}</span>
-            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">col_names</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
-                <span class="n">this_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
-
-            <span class="n">key</span> <span class="o">=</span> <span class="n">this_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;instrument_pid&quot;</span><span class="p">)</span>
-            <span class="n">this_dict</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">key</span>
-            <span class="c1"># remove keys from this_dict that we don&#39;t know about yet so we don&#39;t</span>
-            <span class="c1"># crash and burn if a new column is added</span>
-            <span class="n">known_cols</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="s2">&quot;api_url&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;calendar_name&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;calendar_url&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;location&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;name&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;schema_name&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;property_tag&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;filestore_path&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;computer_ip&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;computer_name&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;computer_mount&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;harvester&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;timezone&quot;</span><span class="p">,</span>
-            <span class="p">]</span>
-            <span class="n">this_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">this_dict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">known_cols</span><span class="p">}</span>
-            <span class="n">instr_db</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Instrument</span><span class="p">(</span><span class="o">**</span><span class="n">this_dict</span><span class="p">)</span>
-
-    <span class="k">except</span> <span class="p">(</span><span class="n">sqlite3</span><span class="o">.</span><span class="n">Error</span><span class="p">,</span> <span class="ne">KeyError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">DBSession</span><span class="p">(</span><span class="n">temp_engine</span><span class="p">)</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+            <span class="n">instruments_list</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">exec</span><span class="p">(</span><span class="n">select</span><span class="p">(</span><span class="n">Instrument</span><span class="p">))</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+            <span class="k">return</span> <span class="p">{</span><span class="n">inst</span><span class="o">.</span><span class="n">instrument_pid</span><span class="p">:</span> <span class="n">inst</span> <span class="k">for</span> <span class="n">inst</span> <span class="ow">in</span> <span class="n">instruments_list</span><span class="p">}</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
             <span class="s2">&quot;Could not connect to database or retrieve instruments. &quot;</span>
             <span class="s2">&quot;Returning empty instrument dictionary.</span><span class="se">\n\n</span><span class="s2"> Details:</span><span class="se">\n</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
             <span class="n">e</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="p">{}</span>
-
-    <span class="k">return</span> <span class="n">instr_db</span>
-
-
-<div class="viewcode-block" id="Instrument">
-<a class="viewcode-back" href="../../api/nexusLIMS/nexusLIMS.instruments.html#nexusLIMS.instruments.Instrument">[docs]</a>
-<span class="nd">@dataclass</span>
-<span class="k">class</span><span class="w"> </span><span class="nc">Instrument</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Representation of a NexusLIMS instrument.</span>
-
-<span class="sd">    A simple object to hold information about an instrument in the Microscopy</span>
-<span class="sd">    Nexus facility, fetched from the external NexusLIMS database.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    api_url : str or None</span>
-<span class="sd">        The calendar API endpoint url for this instrument&#39;s scheduler</span>
-<span class="sd">    calendar_name : str or None</span>
-<span class="sd">        The &quot;user-friendly&quot; name of the calendar for this instrument as displayed on the</span>
-<span class="sd">        reservation system resource (e.g. &quot;FEI Titan TEM&quot;)</span>
-<span class="sd">    calendar_url : str or None</span>
-<span class="sd">        The URL to this instrument&#39;s web-accessible calendar</span>
-<span class="sd">    location : str or None</span>
-<span class="sd">        The physical location of this instrument (building and room number)</span>
-<span class="sd">    name : str or None</span>
-<span class="sd">        The unique identifier for an instrument in the facility, currently</span>
-<span class="sd">        (but not required to be) built from the make, model, and type of instrument,</span>
-<span class="sd">        plus a unique numeric code (e.g. ``FEI-Titan-TEM-012345``)</span>
-<span class="sd">    schema_name : str or None</span>
-<span class="sd">        The human-readable name of instrument as defined in the Nexus Microscopy</span>
-<span class="sd">        schema and displayed in the records</span>
-<span class="sd">    property_tag : str or None</span>
-<span class="sd">        A unique numeric identifier for this instrument (not used by NexusLIMS,</span>
-<span class="sd">        but for reference and potential future use)</span>
-<span class="sd">    filestore_path : str or None</span>
-<span class="sd">        The path (relative to central storage location specified in</span>
-<span class="sd">        :ref:`NX_INSTRUMENT_DATA_PATH &lt;config-instrument-data-path&gt;`) where</span>
-<span class="sd">        this instrument stores its data (e.g. ``./Titan``)</span>
-<span class="sd">    computer_name : str or None</span>
-<span class="sd">        The hostname of the `support PC` connected to this instrument that runs</span>
-<span class="sd">        the `Session Logger App`. If this is incorrect (or not included), the</span>
-<span class="sd">        logger application will fail when attempting  to start a session from</span>
-<span class="sd">        the microscope (only relevant if using the `Session Logger App`)</span>
-<span class="sd">    computer_ip : str or None</span>
-<span class="sd">        The IP address of the support PC connected to this instrument (not</span>
-<span class="sd">        currently utilized)</span>
-<span class="sd">    computer_mount : str or None</span>
-<span class="sd">        The full path where the central file storage is mounted and files are</span>
-<span class="sd">        saved on the &#39;support PC&#39; for the instrument (e.g. &#39;M:/&#39;; only relevant if</span>
-<span class="sd">        using the `Session Logger App`)</span>
-<span class="sd">    harvester : str or None</span>
-<span class="sd">        The specific submodule within :py:mod:`nexusLIMS.harvesters` that should be</span>
-<span class="sd">        used to harvest reservation information for this instrument. At the time of</span>
-<span class="sd">        writing, the only possible value is ``nemo``.</span>
-<span class="sd">    timezone : pytz.tzinfo.BaseTzInfo or None</span>
-<span class="sd">        The timezone in which this instrument is located, in the format of the IANA</span>
-<span class="sd">        timezone database (e.g. ``America/New_York``). This is used to properly localize</span>
-<span class="sd">        dates and times when communicating with the harvester APIs.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">api_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">calendar_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">calendar_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">location</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">schema_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">property_tag</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">filestore_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">computer_ip</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">computer_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">computer_mount</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">harvester</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">timezone</span><span class="p">:</span> <span class="n">BaseTzInfo</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Post-initialization to convert timezone string to timezone object.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timezone</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">timezone</span> <span class="o">=</span> <span class="n">pytz</span><span class="o">.</span><span class="n">timezone</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timezone</span><span class="p">)</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return custom representation of an Instrument.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Nexus Instrument: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;API url:          </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;Calendar name:    </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">calendar_name</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;Calendar url:     </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">calendar_url</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;Schema name:      </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">schema_name</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;Location:         </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">location</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;Property tag:     </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">property_tag</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;Filestore path:   </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">filestore_path</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;Computer IP:      </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">computer_ip</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;Computer name:    </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">computer_name</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;Computer mount:   </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">computer_mount</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;Harvester:        </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">harvester</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;Timezone:         </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">timezone</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="p">)</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return custom string representation of an Instrument.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">location</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">location</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
-
-<div class="viewcode-block" id="Instrument.localize_datetime">
-<a class="viewcode-back" href="../../api/nexusLIMS/nexusLIMS.instruments.html#nexusLIMS.instruments.Instrument.localize_datetime">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">localize_datetime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_dt</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Localize a datetime to an Instrument&#39;s timezone.</span>
-
-<span class="sd">        Convert a date and time to the timezone of this instrument. If the</span>
-<span class="sd">        supplied datetime is naive (i.e. does not have a timezone), it will be</span>
-<span class="sd">        assumed to already be in the timezone of the instrument, and the</span>
-<span class="sd">        displayed time will not change. If the timezone of the supplied</span>
-<span class="sd">        datetime is different than the instrument&#39;s, the time will be</span>
-<span class="sd">        adjusted to compensate for the timezone offset.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        _dt</span>
-<span class="sd">            The datetime object to localize</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        datetime.datetime</span>
-<span class="sd">            A datetime object with the same timezone as the instrument</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">timezone</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="s2">&quot;Tried to localize a datetime with instrument that does not have &quot;</span>
-                <span class="s2">&quot;timezone information (</span><span class="si">%s</span><span class="s2">)&quot;</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
-            <span class="p">)</span>
-            <span class="k">return</span> <span class="n">_dt</span>
-        <span class="k">if</span> <span class="n">_dt</span><span class="o">.</span><span class="n">tzinfo</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="c1"># dt is timezone naive</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">localize</span><span class="p">(</span><span class="n">_dt</span><span class="p">)</span>
-
-        <span class="c1"># dt has timezone info</span>
-        <span class="k">return</span> <span class="n">_dt</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timezone</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="Instrument.localize_datetime_str">
-<a class="viewcode-back" href="../../api/nexusLIMS/nexusLIMS.instruments.html#nexusLIMS.instruments.Instrument.localize_datetime_str">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">localize_datetime_str</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">_dt</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span>
-        <span class="n">fmt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S %Z&quot;</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Localize a datetime to an Instrument&#39;s timezone and return as string.</span>
-
-<span class="sd">        Convert a date and time to the timezone of this instrument, returning</span>
-<span class="sd">        a textual representation of the object, rather than the datetime</span>
-<span class="sd">        itself. Uses :py:meth:`localize_datetime` for the actual conversion.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        _dt</span>
-<span class="sd">            The datetime object ot localize</span>
-<span class="sd">        fmt</span>
-<span class="sd">            The strftime format string to use to format the output</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        str</span>
-<span class="sd">            The formatted textual representation of the localized datetime</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">localize_datetime</span><span class="p">(</span><span class="n">_dt</span><span class="p">)</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="n">fmt</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="Instrument.to_dict">
-<a class="viewcode-back" href="../../api/nexusLIMS/nexusLIMS.instruments.html#nexusLIMS.instruments.Instrument.to_dict">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Return a dictionary representation of the Instrument object.</span>
-
-<span class="sd">        Handles special cases like renaming &#39;name&#39; to &#39;instrument_pid&#39; and</span>
-<span class="sd">        converting timezone objects to strings.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        dict</span>
-<span class="sd">            A dictionary representation of the instrument, suitable for database</span>
-<span class="sd">            insertion or JSON serialization.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">instr_dict</span> <span class="o">=</span> <span class="n">asdict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-
-        <span class="c1"># Rename &#39;name&#39; to &#39;instrument_pid&#39; for database compatibility</span>
-        <span class="k">if</span> <span class="s2">&quot;name&quot;</span> <span class="ow">in</span> <span class="n">instr_dict</span><span class="p">:</span>
-            <span class="n">instr_dict</span><span class="p">[</span><span class="s2">&quot;instrument_pid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">instr_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span>
-
-        <span class="c1"># Convert timezone object to string</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">instr_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;timezone&quot;</span><span class="p">),</span> <span class="n">BaseTzInfo</span><span class="p">):</span>
-            <span class="n">instr_dict</span><span class="p">[</span><span class="s2">&quot;timezone&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">instr_dict</span><span class="p">[</span><span class="s2">&quot;timezone&quot;</span><span class="p">])</span>
-
-        <span class="k">return</span> <span class="n">instr_dict</span></div>
-
-
-<div class="viewcode-block" id="Instrument.to_json">
-<a class="viewcode-back" href="../../api/nexusLIMS/nexusLIMS.instruments.html#nexusLIMS.instruments.Instrument.to_json">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Return a JSON string representation of the Instrument object.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        **kwargs</span>
-<span class="sd">            Additional keyword arguments to pass to `json.dumps`.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        str</span>
-<span class="sd">            A JSON string representation of the instrument.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
-</div>
-
 
 
 <span class="n">instrument_db</span> <span class="o">=</span> <span class="n">_get_instrument_db</span><span class="p">()</span>

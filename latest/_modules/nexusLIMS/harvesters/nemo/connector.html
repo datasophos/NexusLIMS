@@ -808,7 +808,9 @@ window.addEventListener("load", load);
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">pytz</span><span class="w"> </span><span class="kn">import</span> <span class="n">timezone</span> <span class="k">as</span> <span class="n">pytz_timezone</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.db.session_handler</span><span class="w"> </span><span class="kn">import</span> <span class="n">Session</span><span class="p">,</span> <span class="n">SessionLog</span><span class="p">,</span> <span class="n">db_query</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.db.enums</span><span class="w"> </span><span class="kn">import</span> <span class="n">EventType</span><span class="p">,</span> <span class="n">RecordStatus</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.db.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">SessionLog</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.db.session_handler</span><span class="w"> </span><span class="kn">import</span> <span class="n">Session</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.instruments</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_instr_from_api_url</span><span class="p">,</span> <span class="n">instrument_db</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">nexus_req</span>
 
@@ -1489,54 +1491,28 @@ window.addEventListener("load", load);
             <span class="n">session_id</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;base_url&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">usage_events/?id=</span><span class="si">{</span><span class="n">event</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
 
             <span class="c1"># try to insert start log</span>
-            <span class="n">res</span> <span class="o">=</span> <span class="n">db_query</span><span class="p">(</span>
-                <span class="s2">&quot;SELECT * FROM session_log WHERE session_identifier &quot;</span>
-                <span class="s2">&quot;= ? AND event_type = ?&quot;</span><span class="p">,</span>
-                <span class="p">(</span><span class="n">session_id</span><span class="p">,</span> <span class="s2">&quot;START&quot;</span><span class="p">),</span>
+            <span class="n">start_log</span> <span class="o">=</span> <span class="n">SessionLog</span><span class="p">(</span>
+                <span class="n">session_identifier</span><span class="o">=</span><span class="n">session_id</span><span class="p">,</span>
+                <span class="n">instrument</span><span class="o">=</span><span class="n">instr</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                <span class="c1"># SQLModel handles datetime, no need for isoformat()</span>
+                <span class="n">timestamp</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">event</span><span class="p">[</span><span class="s2">&quot;start&quot;</span><span class="p">]),</span>
+                <span class="n">event_type</span><span class="o">=</span><span class="n">EventType</span><span class="o">.</span><span class="n">START</span><span class="p">,</span>
+                <span class="n">user</span><span class="o">=</span><span class="n">event</span><span class="p">[</span><span class="s2">&quot;user&quot;</span><span class="p">][</span><span class="s2">&quot;username&quot;</span><span class="p">],</span>
+                <span class="n">record_status</span><span class="o">=</span><span class="n">RecordStatus</span><span class="o">.</span><span class="n">TO_BE_BUILT</span><span class="p">,</span>
             <span class="p">)</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="c1"># there was already a start log, so warn and don&#39;t do anything:</span>
-                <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                    <span class="s2">&quot;A &#39;START&#39; log with session id </span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2"> was found in the DB, &quot;</span>
-                    <span class="s2">&quot;so a new one will not be inserted for this event&quot;</span><span class="p">,</span>
-                    <span class="n">session_id</span><span class="p">,</span>
-                <span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">start_log</span> <span class="o">=</span> <span class="n">SessionLog</span><span class="p">(</span>
-                    <span class="n">session_identifier</span><span class="o">=</span><span class="n">session_id</span><span class="p">,</span>
-                    <span class="n">instrument</span><span class="o">=</span><span class="n">instr</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
-                    <span class="c1"># make sure to coerce format to ISO before putting in DB</span>
-                    <span class="n">timestamp</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">event</span><span class="p">[</span><span class="s2">&quot;start&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
-                    <span class="n">event_type</span><span class="o">=</span><span class="s2">&quot;START&quot;</span><span class="p">,</span>
-                    <span class="n">user</span><span class="o">=</span><span class="n">event</span><span class="p">[</span><span class="s2">&quot;user&quot;</span><span class="p">][</span><span class="s2">&quot;username&quot;</span><span class="p">],</span>
-                    <span class="n">record_status</span><span class="o">=</span><span class="s2">&quot;TO_BE_BUILT&quot;</span><span class="p">,</span>
-                <span class="p">)</span>
-                <span class="n">start_log</span><span class="o">.</span><span class="n">insert_log</span><span class="p">()</span>
+            <span class="n">start_log</span><span class="o">.</span><span class="n">insert_log</span><span class="p">()</span>  <span class="c1"># insert_log() is idempotent, handles duplicates</span>
 
             <span class="c1"># try to insert end log</span>
-            <span class="n">res</span> <span class="o">=</span> <span class="n">db_query</span><span class="p">(</span>
-                <span class="s2">&quot;SELECT * FROM session_log WHERE session_identifier &quot;</span>
-                <span class="s2">&quot;= ? AND event_type = ?&quot;</span><span class="p">,</span>
-                <span class="p">(</span><span class="n">session_id</span><span class="p">,</span> <span class="s2">&quot;END&quot;</span><span class="p">),</span>
+            <span class="n">end_log</span> <span class="o">=</span> <span class="n">SessionLog</span><span class="p">(</span>
+                <span class="n">session_identifier</span><span class="o">=</span><span class="n">session_id</span><span class="p">,</span>
+                <span class="n">instrument</span><span class="o">=</span><span class="n">instr</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                <span class="c1"># SQLModel handles datetime, no need for isoformat()</span>
+                <span class="n">timestamp</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">event</span><span class="p">[</span><span class="s2">&quot;end&quot;</span><span class="p">]),</span>
+                <span class="n">event_type</span><span class="o">=</span><span class="n">EventType</span><span class="o">.</span><span class="n">END</span><span class="p">,</span>
+                <span class="n">user</span><span class="o">=</span><span class="n">event</span><span class="p">[</span><span class="s2">&quot;user&quot;</span><span class="p">][</span><span class="s2">&quot;username&quot;</span><span class="p">],</span>
+                <span class="n">record_status</span><span class="o">=</span><span class="n">RecordStatus</span><span class="o">.</span><span class="n">TO_BE_BUILT</span><span class="p">,</span>
             <span class="p">)</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="c1"># there was already an end log, so warn and don&#39;t do anything:</span>
-                <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                    <span class="s2">&quot;An &#39;END&#39; log with session id </span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2"> was found in the DB, &quot;</span>
-                    <span class="s2">&quot;so a new one will not be inserted for this event&quot;</span><span class="p">,</span>
-                    <span class="n">session_id</span><span class="p">,</span>
-                <span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">end_log</span> <span class="o">=</span> <span class="n">SessionLog</span><span class="p">(</span>
-                    <span class="n">session_identifier</span><span class="o">=</span><span class="n">session_id</span><span class="p">,</span>
-                    <span class="n">instrument</span><span class="o">=</span><span class="n">instr</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
-                    <span class="c1"># make sure to coerce format to ISO before putting in DB</span>
-                    <span class="n">timestamp</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">event</span><span class="p">[</span><span class="s2">&quot;end&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
-                    <span class="n">event_type</span><span class="o">=</span><span class="s2">&quot;END&quot;</span><span class="p">,</span>
-                    <span class="n">user</span><span class="o">=</span><span class="n">event</span><span class="p">[</span><span class="s2">&quot;user&quot;</span><span class="p">][</span><span class="s2">&quot;username&quot;</span><span class="p">],</span>
-                    <span class="n">record_status</span><span class="o">=</span><span class="s2">&quot;TO_BE_BUILT&quot;</span><span class="p">,</span>
-                <span class="p">)</span>
-                <span class="n">end_log</span><span class="o">.</span><span class="n">insert_log</span><span class="p">()</span>
+            <span class="n">end_log</span><span class="o">.</span><span class="n">insert_log</span><span class="p">()</span>  <span class="c1"># insert_log() is idempotent, handles duplicates</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
                 <span class="s2">&quot;No usage event with id = </span><span class="si">%s</span><span class="s2"> was found for </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>

@@ -16,11 +16,6 @@
 :class: autosummary longtable
 :align: left
 
-* - {py:obj}`SessionLog <nexusLIMS.db.session_handler.SessionLog>`
-  - ```{autodoc2-docstring} nexusLIMS.db.session_handler.SessionLog
-    :parser: autodoc2_docstrings_parser
-    :summary:
-    ```
 * - {py:obj}`Session <nexusLIMS.db.session_handler.Session>`
   - ```{autodoc2-docstring} nexusLIMS.db.session_handler.Session
     :parser: autodoc2_docstrings_parser
@@ -34,11 +29,6 @@
 :class: autosummary longtable
 :align: left
 
-* - {py:obj}`db_query <nexusLIMS.db.session_handler.db_query>`
-  - ```{autodoc2-docstring} nexusLIMS.db.session_handler.db_query
-    :parser: autodoc2_docstrings_parser
-    :summary:
-    ```
 * - {py:obj}`get_sessions_to_build <nexusLIMS.db.session_handler.get_sessions_to_build>`
   - ```{autodoc2-docstring} nexusLIMS.db.session_handler.get_sessions_to_build
     :parser: autodoc2_docstrings_parser
@@ -53,108 +43,14 @@
 
 ### API
 
-````{py:function} db_query(query, args=None)
-:canonical: nexusLIMS.db.session_handler.db_query
-
-```{autodoc2-docstring} nexusLIMS.db.session_handler.db_query
-:parser: autodoc2_docstrings_parser
-```
-````
-
-`````{py:class} SessionLog
-:canonical: nexusLIMS.db.session_handler.SessionLog
-
-```{autodoc2-docstring} nexusLIMS.db.session_handler.SessionLog
-:parser: autodoc2_docstrings_parser
-```
-
-````{py:attribute} session_identifier
-:canonical: nexusLIMS.db.session_handler.SessionLog.session_identifier
-
-**Type:** str
-
-```{autodoc2-docstring} nexusLIMS.db.session_handler.SessionLog.session_identifier
-:parser: autodoc2_docstrings_parser
-```
-
-````
-
-````{py:attribute} instrument
-:canonical: nexusLIMS.db.session_handler.SessionLog.instrument
-
-**Type:** str
-
-```{autodoc2-docstring} nexusLIMS.db.session_handler.SessionLog.instrument
-:parser: autodoc2_docstrings_parser
-```
-
-````
-
-````{py:attribute} timestamp
-:canonical: nexusLIMS.db.session_handler.SessionLog.timestamp
-
-**Type:** str
-
-```{autodoc2-docstring} nexusLIMS.db.session_handler.SessionLog.timestamp
-:parser: autodoc2_docstrings_parser
-```
-
-````
-
-````{py:attribute} event_type
-:canonical: nexusLIMS.db.session_handler.SessionLog.event_type
-
-**Type:** str
-
-```{autodoc2-docstring} nexusLIMS.db.session_handler.SessionLog.event_type
-:parser: autodoc2_docstrings_parser
-```
-
-````
-
-````{py:attribute} user
-:canonical: nexusLIMS.db.session_handler.SessionLog.user
-
-**Type:** str
-
-```{autodoc2-docstring} nexusLIMS.db.session_handler.SessionLog.user
-:parser: autodoc2_docstrings_parser
-```
-
-````
-
-````{py:attribute} record_status
-:canonical: nexusLIMS.db.session_handler.SessionLog.record_status
-:value: >
-   'TO_BE_BUILT'
-
-**Type:** str
-
-```{autodoc2-docstring} nexusLIMS.db.session_handler.SessionLog.record_status
-:parser: autodoc2_docstrings_parser
-```
-
-````
-
-````{py:method} insert_log() -> bool
-:canonical: nexusLIMS.db.session_handler.SessionLog.insert_log
-
-```{autodoc2-docstring} nexusLIMS.db.session_handler.SessionLog.insert_log
-:parser: autodoc2_docstrings_parser
-```
-
-````
-
-`````
-
-`````{py:class} Session(session_identifier: str, instrument: nexusLIMS.instruments.Instrument, dt_range: typing.Tuple[datetime.datetime, datetime.datetime], user: str)
+`````{py:class} Session(session_identifier: str, instrument: nexusLIMS.db.models.Instrument, dt_range: typing.Tuple[datetime.datetime, datetime.datetime], user: str)
 :canonical: nexusLIMS.db.session_handler.Session
 
 ```{autodoc2-docstring} nexusLIMS.db.session_handler.Session
 :parser: autodoc2_docstrings_parser
 ```
 
-````{py:method} update_session_status(status)
+````{py:method} update_session_status(status: nexusLIMS.db.enums.RecordStatus)
 :canonical: nexusLIMS.db.session_handler.Session.update_session_status
 
 ```{autodoc2-docstring} nexusLIMS.db.session_handler.Session.update_session_status
@@ -174,7 +70,7 @@
 
 `````
 
-````{py:function} get_sessions_to_build() -> typing.List[nexusLIMS.db.session_handler.Session]
+````{py:function} get_sessions_to_build() -> list[nexusLIMS.db.session_handler.Session]
 :canonical: nexusLIMS.db.session_handler.get_sessions_to_build
 
 ```{autodoc2-docstring} nexusLIMS.db.session_handler.get_sessions_to_build
@@ -182,7 +78,7 @@
 ```
 ````
 
-````{py:function} get_all_session_logs() -> list[nexusLIMS.db.session_handler.SessionLog]
+````{py:function} get_all_session_logs() -> list[nexusLIMS.db.models.SessionLog]
 :canonical: nexusLIMS.db.session_handler.get_all_session_logs
 
 ```{autodoc2-docstring} nexusLIMS.db.session_handler.get_all_session_logs
