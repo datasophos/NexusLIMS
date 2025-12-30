@@ -7,7 +7,9 @@ from urllib.parse import parse_qs, urljoin, urlparse
 
 from pytz import timezone as pytz_timezone
 
-from nexusLIMS.db.session_handler import Session, SessionLog, db_query
+from nexusLIMS.db.enums import EventType, RecordStatus
+from nexusLIMS.db.models import SessionLog
+from nexusLIMS.db.session_handler import Session
 from nexusLIMS.instruments import get_instr_from_api_url, instrument_db
 from nexusLIMS.utils import nexus_req
 
@@ -660,54 +662,28 @@ class NemoConnector:
             session_id = f"{self.config['base_url']}usage_events/?id={event['id']}"
 
             # try to insert start log
-            res = db_query(
-                "SELECT * FROM session_log WHERE session_identifier "
-                "= ? AND event_type = ?",
-                (session_id, "START"),
+            start_log = SessionLog(
+                session_identifier=session_id,
+                instrument=instr.name,
+                # SQLModel handles datetime, no need for isoformat()
+                timestamp=self.strptime(event["start"]),
+                event_type=EventType.START,
+                user=event["user"]["username"],
+                record_status=RecordStatus.TO_BE_BUILT,
             )
-            if len(res[1]) > 0:
-                # there was already a start log, so warn and don't do anything:
-                _logger.warning(
-                    "A 'START' log with session id \"%s\" was found in the DB, "
-                    "so a new one will not be inserted for this event",
-                    session_id,
-                )
-            else:
-                start_log = SessionLog(
-                    session_identifier=session_id,
-                    instrument=instr.name,
-                    # make sure to coerce format to ISO before putting in DB
-                    timestamp=self.strptime(event["start"]).isoformat(),
-                    event_type="START",
-                    user=event["user"]["username"],
-                    record_status="TO_BE_BUILT",
-                )
-                start_log.insert_log()
+            start_log.insert_log()  # insert_log() is idempotent, handles duplicates
 
             # try to insert end log
-            res = db_query(
-                "SELECT * FROM session_log WHERE session_identifier "
-                "= ? AND event_type = ?",
-                (session_id, "END"),
+            end_log = SessionLog(
+                session_identifier=session_id,
+                instrument=instr.name,
+                # SQLModel handles datetime, no need for isoformat()
+                timestamp=self.strptime(event["end"]),
+                event_type=EventType.END,
+                user=event["user"]["username"],
+                record_status=RecordStatus.TO_BE_BUILT,
             )
-            if len(res[1]) > 0:
-                # there was already an end log, so warn and don't do anything:
-                _logger.warning(
-                    "An 'END' log with session id \"%s\" was found in the DB, "
-                    "so a new one will not be inserted for this event",
-                    session_id,
-                )
-            else:
-                end_log = SessionLog(
-                    session_identifier=session_id,
-                    instrument=instr.name,
-                    # make sure to coerce format to ISO before putting in DB
-                    timestamp=self.strptime(event["end"]).isoformat(),
-                    event_type="END",
-                    user=event["user"]["username"],
-                    record_status="TO_BE_BUILT",
-                )
-                end_log.insert_log()
+            end_log.insert_log()  # insert_log() is idempotent, handles duplicates
         else:
             _logger.warning(
                 "No usage event with id = %s was found for %s",

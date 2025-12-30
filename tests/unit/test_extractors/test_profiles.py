@@ -159,8 +159,9 @@ class TestProfileRegistration:
 
             # Create mock instrument with matching name
             instrument = make_titan_stem()
-            # Override the name to match our profile
-            instrument.name = "FEI-Titan-STEM"
+            # Override the instrument_pid to match our profile
+            # (name is a read-only property that returns instrument_pid)
+            instrument.instrument_pid = "FEI-Titan-STEM"
 
             profile = registry.get_profile(instrument)
             assert profile is not None

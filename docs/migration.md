@@ -258,7 +258,20 @@ rm poetry.lock  # if it exists
 uv sync
 ```
 
-### 6. Verify Installation
+### 6. Mark Database as Migrated
+
+```{versionadded} 2.2.0
+NexusLIMS now uses Alembic for database schema version control. You need to mark your existing database as migrated to the current schema.
+```
+
+```bash
+# Mark database as at current schema version
+uv run alembic stamp head
+```
+
+This tells Alembic that your database already has the current schema structure and doesn't need any migrations applied. This is a one-time operation for existing installations.
+
+### 7. Verify Installation
 
 ```bash
 # Test configuration loading
@@ -271,7 +284,7 @@ uv run pytest tests/unit
 uv run python -c "from nexusLIMS.instruments import instrument_db; print(f'{len(instrument_db)} instruments found:'); [print(f'  - {pid}') for pid in instrument_db.keys()]"
 ```
 
-### 7. Update Deployment Scripts
+### 8. Update Deployment Scripts
 
 If you have cron jobs or systemd services running NexusLIMS:
 
@@ -294,7 +307,7 @@ uv run nexuslims-process-records
 uv run python -m nexusLIMS.cli.process_records
 ```
 
-### 8. Test Record Building
+### 9. Test Record Building
 
 Run a test record build to verify everything works:
 

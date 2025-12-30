@@ -345,10 +345,16 @@ class TestMultiInstanceConnectorSelection:
 
         # Create a mock instrument with an unknown API URL
         unknown_instrument = Instrument(
-            name="UNKNOWN-NEMO-INST",
+            instrument_pid="UNKNOWN-NEMO-INST",
             schema_name="Unknown NEMO Instrument",
             harvester="nemo",
             api_url="https://unknown-nemo.example.com/api/tools/?id=999",
+            calendar_name="Unknown NEMO Instrument",
+            calendar_url="https://unknown-nemo.example.com/calendar/",
+            location="Unknown",
+            property_tag="UNKNOWN",
+            filestore_path="./unknown",
+            timezone_str="America/New_York",
         )
 
         # Create a session with this unknown instrument

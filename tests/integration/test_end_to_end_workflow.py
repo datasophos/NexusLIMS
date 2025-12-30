@@ -10,9 +10,13 @@ from datetime import timedelta
 
 import pytest
 from lxml import etree
+from sqlmodel import Session as DBSession
+from sqlmodel import select
 
 from nexusLIMS.builder import record_builder
-from nexusLIMS.db.session_handler import db_query
+from nexusLIMS.db.engine import get_engine
+from nexusLIMS.db.enums import EventType, RecordStatus
+from nexusLIMS.db.models import SessionLog
 from tests.integration.conftest import (
     _get_metadata_urls_for_datasets,
     _verify_json_metadata_accessible,
@@ -92,20 +96,22 @@ class TestEndToEndWorkflow:
 
         # Verify database has correct session log entries
         # Should have 3 COMPLETED entries: START, END, and RECORD_GENERATION
-        _success, all_sessions = db_query(
-            "SELECT event_type, record_status FROM session_log "
-            "ORDER BY session_identifier, event_type"
-        )
+        with DBSession(get_engine()) as db_session:
+            all_sessions = db_session.exec(
+                select(SessionLog.event_type, SessionLog.record_status).order_by(
+                    SessionLog.session_identifier, SessionLog.event_type
+                )
+            ).all()
 
-        completed_sessions = [s for s in all_sessions if s[1] == "COMPLETED"]
+        completed_sessions = [s for s in all_sessions if s[1] == RecordStatus.COMPLETED]
         count = len(completed_sessions)
         assert count == 3, f"Expected 3 COMPLETED sessions, got {count}"
 
         events = {s[0] for s in completed_sessions}
         assert events == {
-            "START",
-            "END",
-            "RECORD_GENERATION",
+            EventType.START,
+            EventType.END,
+            EventType.RECORD_GENERATION,
         }, f"Expected START, END, and RECORD_GENERATION events, got {events}"
 
         # Verify that XML records were written to disk and moved to uploaded/

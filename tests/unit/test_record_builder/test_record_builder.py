@@ -12,11 +12,16 @@ from pathlib import Path
 
 import pytest
 from lxml import etree
+from sqlmodel import Session as DBSession
+from sqlmodel import select
 
 from nexusLIMS.builder import record_builder
 from nexusLIMS.builder.record_builder import build_record
 from nexusLIMS.db import session_handler
-from nexusLIMS.db.session_handler import Session, SessionLog, db_query
+from nexusLIMS.db.engine import get_engine
+from nexusLIMS.db.enums import EventType, RecordStatus
+from nexusLIMS.db.models import SessionLog
+from nexusLIMS.db.session_handler import Session
 from nexusLIMS.harvesters.nemo.exceptions import NoMatchingReservationError
 from nexusLIMS.harvesters.reservation_event import ReservationEvent
 from nexusLIMS.instruments import Instrument
@@ -46,6 +51,10 @@ def skip_preview_generation(monkeypatch):
     )
 
 
+@pytest.mark.needs_db(
+    instruments=["FEI-Titan-TEM", "JEOL-JEM-TEM", "testtool-TEST-A1234567"],
+    sessions=True,
+)
 class TestRecordBuilder:
     """Tests the record building module."""
 
@@ -285,10 +294,16 @@ class TestRecordBuilder:
         assert "No files found in " in caplog.text
 
     @pytest.fixture(name="_add_recent_test_session")
-    def _add_recent_test_session(self, request, monkeypatch):
+    def _add_recent_test_session(self, request, monkeypatch, db_context):
         # insert a dummy session to DB that was within past day so it gets
         # skipped (we assume no files are being regularly added into the test
         # instrument folder)
+        # NOTE: Depends on db_context to ensure test database is set up first
+
+        # Create the instrument directory structure for file finding
+        # This prevents gfind errors when trying to search for files
+        instrument_dir = self.instr_data_path / "Titan_TEM"
+        instrument_dir.mkdir(parents=True, exist_ok=True)
 
         # the ``request.param`` parameter controls whether the timestamps have
         # timezones attached
@@ -301,19 +316,19 @@ class TestRecordBuilder:
         start = SessionLog(
             session_identifier="test_session",
             instrument="FEI-Titan-TEM",
-            timestamp=start_ts.isoformat(),
-            event_type="START",
+            timestamp=start_ts,
+            event_type=EventType.START,
             user="test",
-            record_status="TO_BE_BUILT",
+            record_status=RecordStatus.TO_BE_BUILT,
         )
         start.insert_log()
         end = SessionLog(
             session_identifier="test_session",
             instrument="FEI-Titan-TEM",
-            timestamp=end_ts.isoformat(),
-            event_type="END",
+            timestamp=end_ts,
+            event_type=EventType.END,
             user="test",
-            record_status="TO_BE_BUILT",
+            record_status=RecordStatus.TO_BE_BUILT,
         )
         end.insert_log()
 
@@ -362,14 +377,28 @@ class TestRecordBuilder:
             "Removing previously inserted RECORD_GENERATION " in caplog.text
         )
 
-        _, res = db_query(
-            "SELECT * FROM session_log WHERE session_identifier = ?",
-            ("test_session",),
-        )
+        with DBSession(get_engine()) as db_session:
+            statement = select(SessionLog).where(
+                SessionLog.session_identifier == "test_session"
+            )
+            res = db_session.exec(statement).all()
+
+        # Filter to START and END events (record_builder adds RECORD_GENERATION)
+        start_end_logs = [
+            r for r in res if r.event_type in (EventType.START, EventType.END)
+        ]
         inserted_row_count = 2
-        assert res[0][5] == "TO_BE_BUILT"
-        assert res[1][5] == "TO_BE_BUILT"
-        assert len(res) == inserted_row_count
+        assert start_end_logs[0].record_status == RecordStatus.TO_BE_BUILT
+        assert start_end_logs[1].record_status == RecordStatus.TO_BE_BUILT
+        assert len(start_end_logs) == inserted_row_count
+
+        # Verify that RECORD_GENERATION log was actually deleted
+        record_gen_logs = [
+            r for r in res if r.event_type == EventType.RECORD_GENERATION
+        ]
+        assert len(record_gen_logs) == 0, (
+            "RECORD_GENERATION log should have been deleted when delay hasn't passed"
+        )
 
     @pytest.mark.usefixtures("_cleanup_session_log")
     def test_process_new_nemo_record_with_no_reservation(
@@ -383,31 +412,31 @@ class TestRecordBuilder:
         This test method tests building a record from a NEMO instrument with
         no matching reservation; should result in "COMPLETED" status
         """
-        start_ts = "2020-01-01T12:00:00.000-05:00"
-        end_ts = "2020-01-01T20:00:00.000-05:00"
+        start_ts = dt.fromisoformat("2020-01-01T12:00:00.000-05:00")
+        end_ts = dt.fromisoformat("2020-01-01T20:00:00.000-05:00")
         start = SessionLog(
             session_identifier="test_session",
             instrument="FEI-Titan-TEM",
             timestamp=start_ts,
-            event_type="START",
+            event_type=EventType.START,
             user="test",
-            record_status="TO_BE_BUILT",
+            record_status=RecordStatus.TO_BE_BUILT,
         )
         start.insert_log()
         end = SessionLog(
             session_identifier="test_session",
             instrument="FEI-Titan-TEM",
             timestamp=end_ts,
-            event_type="END",
+            event_type=EventType.END,
             user="test",
-            record_status="TO_BE_BUILT",
+            record_status=RecordStatus.TO_BE_BUILT,
         )
         end.insert_log()
 
         s = Session(
             session_identifier="test_session",
             instrument=make_test_tool(),
-            dt_range=(dt.fromisoformat(start_ts), dt.fromisoformat(end_ts)),
+            dt_range=(start_ts, end_ts),  # Already datetime objects
             user="test",
         )
         # return just our session of interest to build and disable nemo
@@ -440,13 +469,16 @@ class TestRecordBuilder:
             "NexusLIMS does not have user consent for data harvesting." in caplog.text
         )
 
-        _, res = db_query(
-            "SELECT * FROM session_log WHERE session_identifier = ?",
-            ("test_session",),
-        )
-        assert res[0][5] == "NO_RESERVATION"
-        assert res[1][5] == "NO_RESERVATION"
-        assert res[2][5] == "NO_RESERVATION"
+        # Query session logs using SQLModel
+        with DBSession(get_engine()) as db_session:
+            statement = select(SessionLog).where(
+                SessionLog.session_identifier == "test_session"
+            )
+            logs = db_session.exec(statement).all()
+
+        assert len(logs) == 3
+        for log in logs:
+            assert log.record_status == RecordStatus.NO_RESERVATION
 
     @pytest.mark.usefixtures("mock_nemo_reservation", "skip_preview_generation")
     def test_new_session_processor(
@@ -479,45 +511,43 @@ class TestRecordBuilder:
         to_be_built_count = 0
         no_files_found_count = 0
         completed_count = 9  # All 9 logs marked as COMPLETED
-        assert (
-            len(
-                db_query("SELECT * FROM session_log")[1],
-            )
-            == total_session_log_count
-        )
-        assert (
-            len(
-                db_query(
-                    "SELECT * FROM session_log WHERE "
-                    '"event_type" = "RECORD_GENERATION"',
-                )[1],
-            )
-            == record_generation_count
-        )
-        assert (
-            len(
-                db_query(
-                    'SELECT * FROM session_log WHERE "record_status" = "TO_BE_BUILT"',
-                )[1],
-            )
-            == to_be_built_count
-        )
-        assert (
-            len(
-                db_query(
-                    'SELECT * FROM session_log WHERE"record_status" = "NO_FILES_FOUND"',
-                )[1],
-            )
-            == no_files_found_count
-        )
-        assert (
-            len(
-                db_query(
-                    'SELECT * FROM session_log WHERE "record_status" = "COMPLETED"',
-                )[1],
-            )
-            == completed_count
-        )
+
+        with DBSession(get_engine()) as db_session:
+            # Count all session logs
+            all_logs = db_session.exec(select(SessionLog)).all()
+            assert len(all_logs) == total_session_log_count
+
+            # Count RECORD_GENERATION logs
+            record_gen_logs = db_session.exec(
+                select(SessionLog).where(
+                    SessionLog.event_type == EventType.RECORD_GENERATION
+                )
+            ).all()
+            assert len(record_gen_logs) == record_generation_count
+
+            # Count TO_BE_BUILT logs
+            to_be_built_logs = db_session.exec(
+                select(SessionLog).where(
+                    SessionLog.record_status == RecordStatus.TO_BE_BUILT
+                )
+            ).all()
+            assert len(to_be_built_logs) == to_be_built_count
+
+            # Count NO_FILES_FOUND logs
+            no_files_logs = db_session.exec(
+                select(SessionLog).where(
+                    SessionLog.record_status == RecordStatus.NO_FILES_FOUND
+                )
+            ).all()
+            assert len(no_files_logs) == no_files_found_count
+
+            # Count COMPLETED logs
+            completed_logs = db_session.exec(
+                select(SessionLog).where(
+                    SessionLog.record_status == RecordStatus.COMPLETED
+                )
+            ).all()
+            assert len(completed_logs) == completed_count
 
         # tests on the XML records
         # Updated for 3 test sessions (Titan TEM, JEOL TEM, Nexus Test Instrument)
@@ -811,11 +841,17 @@ class TestRecordBuilder:
         monkeypatch.setattr(record_builder, "get_sessions_to_build", mock_get_sessions)
         xmls_files = record_builder.build_new_session_records()
 
-        _, res = db_query(
-            "SELECT * FROM session_log WHERE session_identifier = ?",
-            ("test_session",),
-        )
-        assert res[0][5] == "NO_CONSENT"
+        # Query session logs using SQLModel
+        with DBSession(get_engine()) as db_session:
+            statement = select(SessionLog).where(
+                SessionLog.session_identifier == "test_session"
+            )
+            logs = db_session.exec(statement).all()
+
+        assert len(logs) >= 1
+        # All logs should have NO_CONSENT status
+        for log in logs:
+            assert log.record_status == RecordStatus.NO_CONSENT
         assert "Reservation requested not to have their data harvested" in caplog.text
         assert len(xmls_files) == 0  # no record should be returned
 

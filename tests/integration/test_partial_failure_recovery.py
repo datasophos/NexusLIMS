@@ -14,9 +14,14 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 import requests
+from sqlmodel import Session as DBSession
+from sqlmodel import select
 
 from nexusLIMS.builder import record_builder
-from nexusLIMS.db.session_handler import Session, db_query
+from nexusLIMS.db.engine import get_engine
+from nexusLIMS.db.enums import EventType, RecordStatus
+from nexusLIMS.db.models import SessionLog
+from nexusLIMS.db.session_handler import Session
 
 
 @pytest.mark.integration
@@ -30,6 +35,7 @@ class TestPartialFailureRecovery:
         populated_test_database,
         extracted_test_files,
         cdcs_client,
+        clear_session_logs,
         monkeypatch,
     ):
         """
@@ -99,11 +105,13 @@ class TestPartialFailureRecovery:
         assert len(sessions_after_build) == 0, "Session should be COMPLETED"
 
         # Verify database has COMPLETED status
-        _, all_sessions = db_query(
-            "SELECT event_type, record_status FROM session_log "
-            "ORDER BY session_identifier, event_type"
-        )
-        completed_sessions = [s for s in all_sessions if s[1] == "COMPLETED"]
+        with DBSession(get_engine()) as db_session:
+            all_sessions = db_session.exec(
+                select(SessionLog.event_type, SessionLog.record_status).order_by(
+                    SessionLog.session_identifier, SessionLog.event_type
+                )
+            ).all()
+        completed_sessions = [s for s in all_sessions if s[1] == RecordStatus.COMPLETED]
         assert len(completed_sessions) == 3  # START, END, RECORD_GENERATION
 
         # Now simulate CDCS upload failure by patching upload_record_content
@@ -124,10 +132,12 @@ class TestPartialFailureRecovery:
             assert len(record_ids) == 0, "No record IDs should be returned"
 
         # Verify session REMAINS COMPLETED (current behavior - no rollback)
-        _success, sessions_after_upload_failure = db_query(
-            "SELECT event_type, record_status FROM session_log "
-            "WHERE record_status = 'COMPLETED'"
-        )
+        with DBSession(get_engine()) as db_session:
+            sessions_after_upload_failure = db_session.exec(
+                select(SessionLog.event_type, SessionLog.record_status).where(
+                    SessionLog.record_status == RecordStatus.COMPLETED
+                )
+            ).all()
         assert len(sessions_after_upload_failure) == 3, (
             "Session status should NOT be rolled back on upload failure"
         )
@@ -152,6 +162,7 @@ class TestPartialFailureRecovery:
         populated_test_database,
         extracted_test_files,
         cdcs_client,
+        clear_session_logs,
         monkeypatch,
     ):
         """
@@ -240,6 +251,7 @@ class TestPartialFailureRecovery:
         docker_services_running,
         nemo_connector,
         populated_test_database,
+        clear_session_logs,
         monkeypatch,
     ):
         """
@@ -285,11 +297,12 @@ class TestPartialFailureRecovery:
         assert len(sessions) == 0, "No sessions should be created on NEMO failure"
 
         # Verify database is empty
-        _success, all_sessions = db_query("SELECT * FROM session_log")
+        with DBSession(get_engine()) as db_session:
+            all_sessions = db_session.exec(select(SessionLog)).all()
         assert len(all_sessions) == 0, "Database should remain empty on failure"
 
     def test_database_constraint_validation_on_invalid_status(
-        self, nemo_connector, populated_test_database, monkeypatch
+        self, nemo_connector, populated_test_database, clear_session_logs, monkeypatch
     ):
         """
         Test that database CHECK constraints prevent invalid record_status values.
@@ -316,15 +329,13 @@ class TestPartialFailureRecovery:
         start_time = datetime(2018, 11, 13, 10, 0, 0)
         end_time = datetime(2018, 11, 13, 12, 0, 0)
 
-        from nexusLIMS.db.session_handler import SessionLog
-
         start_log = SessionLog(
             session_identifier="test-session-001",
-            instrument=instrument.name,
-            timestamp=start_time.isoformat(),
-            event_type="START",
+            instrument=instrument.instrument_pid,
+            timestamp=start_time,
+            event_type=EventType.START,
             user="testuser",
-            record_status="WAITING_FOR_END",
+            record_status=RecordStatus.WAITING_FOR_END,
         )
 
         # Insert START event
@@ -339,43 +350,49 @@ class TestPartialFailureRecovery:
         )
 
         # Verify START event was inserted
-        success, rows = db_query(
-            "SELECT event_type, record_status FROM session_log "
-            "WHERE session_identifier = ?",
-            ("test-session-001",),
-        )
+        with DBSession(get_engine()) as db_session:
+            rows = db_session.exec(
+                select(SessionLog.event_type, SessionLog.record_status).where(
+                    SessionLog.session_identifier == "test-session-001"
+                )
+            ).all()
         assert len(rows) == 1
-        assert rows[0] == ("START", "WAITING_FOR_END")
+        assert rows[0] == (EventType.START, RecordStatus.WAITING_FOR_END)
 
         # Try to update with an invalid status (should fail due to check constraint)
         # The database has a check constraint on record_status
-        from sqlite3 import IntegrityError
+        from sqlalchemy.exc import IntegrityError
 
         with pytest.raises(IntegrityError):
             session.update_session_status("INVALID_STATUS")
 
         # Verify database state was not corrupted - should still be WAITING_FOR_END
-        success, rows = db_query(
-            "SELECT record_status FROM session_log WHERE session_identifier = ?",
-            ("test-session-001",),
-        )
-        assert rows[0][0] == "WAITING_FOR_END", "Status should not have changed"
+        with DBSession(get_engine()) as db_session:
+            rows = db_session.exec(
+                select(SessionLog.record_status).where(
+                    SessionLog.session_identifier == "test-session-001"
+                )
+            ).all()
+        assert rows[0] == RecordStatus.WAITING_FOR_END, "Status should not have changed"
 
         # Update with valid status should work
-        success = session.update_session_status("ERROR")
+        success = session.update_session_status(RecordStatus.ERROR)
         assert success
 
-        success, rows = db_query(
-            "SELECT record_status FROM session_log WHERE session_identifier = ?",
-            ("test-session-001",),
-        )
-        assert rows[0][0] == "ERROR"
+        with DBSession(get_engine()) as db_session:
+            rows = db_session.exec(
+                select(SessionLog.record_status).where(
+                    SessionLog.session_identifier == "test-session-001"
+                )
+            ).all()
+        assert rows[0] == RecordStatus.ERROR
 
     def test_error_propagation_through_process_new_records(
         self,
         docker_services_running,
         nemo_connector,
         populated_test_database,
+        clear_session_logs,
         monkeypatch,
     ):
         """
@@ -410,8 +427,10 @@ class TestPartialFailureRecovery:
             )
 
         # Verify sessions were marked as ERROR (if any were harvested)
-        _, error_sessions = db_query(
-            "SELECT session_identifier, record_status FROM session_log "
-            "WHERE record_status = 'ERROR'"
-        )
-        assert all(e[1] == "ERROR" for e in error_sessions)
+        with DBSession(get_engine()) as db_session:
+            error_sessions = db_session.exec(
+                select(SessionLog.session_identifier, SessionLog.record_status).where(
+                    SessionLog.record_status == RecordStatus.ERROR
+                )
+            ).all()
+        assert all(e[1] == RecordStatus.ERROR for e in error_sessions)

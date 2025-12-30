@@ -5,6 +5,9 @@
 from datetime import datetime
 from pathlib import Path
 
+import pytest
+import pytz
+
 from nexusLIMS.instruments import (
     Instrument,
     get_instr_from_api_url,
@@ -69,6 +72,9 @@ class TestInstruments:
         assert instr is None
 
     def test_get_instr_from_cal_name(self):
+        """Test get_instr_from_calendar_name with a known calendar name."""
+        # Search for a calendar name substring that should match an instrument
+        # in the test database (e.g., "id=3" matches api_url containing that)
         instr = get_instr_from_calendar_name("id=3")
         # This test requires an instrument in the database with api_url
         # containing "id=3". Since we're testing the database lookup
@@ -80,9 +86,30 @@ class TestInstruments:
         instr = get_instr_from_calendar_name("bogus calendar name")
         assert instr is None
 
+    @pytest.mark.needs_db(instruments=["FEI-Quanta-ESEM"])
+    def test_get_instr_from_cal_name_found(self):
+        """Test that get_instr_from_calendar_name returns an instrument when found."""
+        # FEI-Quanta-ESEM has api_url "https://nemo.example.com/api/tools/?id=3"
+        # So searching for "id=3" should find it
+        instr = get_instr_from_calendar_name("id=3")
+        assert instr is not None
+        assert isinstance(instr, Instrument)
+        assert instr.instrument_pid == "FEI-Quanta-ESEM"
+
     def test_instrument_datetime_location_no_tz(self, monkeypatch, caplog):
         titan_tem = make_titan_tem()
-        monkeypatch.setattr(titan_tem, "timezone", None)
+        # Set timezone_str to None to test the None timezone case
+        monkeypatch.setattr(titan_tem, "timezone_str", None)
+        # Mock the timezone property to return None
+        monkeypatch.setattr(
+            type(titan_tem),
+            "timezone",
+            property(
+                lambda self: None
+                if self.timezone_str is None
+                else pytz.timezone(self.timezone_str)
+            ),
+        )
         dt_naive = datetime.fromisoformat("2021-11-26T12:00:00.000")
         assert titan_tem.localize_datetime(dt_naive) == dt_naive
         assert "Tried to localize a datetime with instrument" in caplog.text
@@ -145,22 +172,20 @@ class TestInstruments:
 
     def test_get_instruments_db_error(self, monkeypatch, caplog):
         """Test _get_instrument_db with database error."""
-        import sqlite3
-
         from nexusLIMS.instruments import _get_instrument_db
 
-        # Mock sqlite3.connect to raise sqlite3.Error
-        def mock_connect(*_args, **_kwargs):
+        # Mock DBSession to raise an exception
+        def mock_session(*_args, **_kwargs):
             msg = "Database connection failed"
-            raise sqlite3.Error(msg)
+            raise RuntimeError(msg)
 
-        monkeypatch.setattr("sqlite3.connect", mock_connect)
+        monkeypatch.setattr("nexusLIMS.instruments.DBSession", mock_session)
 
         with caplog.at_level("WARNING"):
             result = _get_instrument_db()
 
         assert result == {}
-        assert "Could not connect to database" in caplog.text
+        assert "Could not connect to database or retrieve instruments" in caplog.text
 
     def test_get_instruments_db_key_error(self, tmp_path, caplog):
         """Test _get_instrument_db with KeyError from missing instrument_pid column."""
@@ -196,15 +221,14 @@ class TestInstruments:
 
     def test_instrument_to_dict(self):
         """Test Instrument.to_dict() method."""
-        import pytz
-
         from nexusLIMS.instruments import Instrument
 
         instrument = Instrument(
-            name="test-instrument",
+            instrument_pid="test-instrument",
             schema_name="TestInstrument",
             api_url="https://example.com/api/",
             calendar_name="Test Tool",
+            calendar_url="https://example.com/calendar/",
             location="Building 1",
             property_tag="12345",
             filestore_path="/path/to/files",
@@ -212,29 +236,29 @@ class TestInstruments:
             computer_ip="192.168.1.1",
             computer_mount="/mount/path",
             harvester="nemo",
-            timezone=pytz.timezone("America/New_York"),
+            timezone_str="America/New_York",
         )
 
         result = instrument.to_dict()
 
-        # Check that 'name' was renamed to 'instrument_pid'
+        # Check that 'instrument_pid' is in the result
         assert "instrument_pid" in result
-        assert "name" not in result
         assert result["instrument_pid"] == "test-instrument"
 
-        # Check that timezone was converted to string
+        # Check that timezone was kept as string
         assert isinstance(result["timezone"], str)
-        assert "America/New_York" in result["timezone"]
+        assert result["timezone"] == "America/New_York"
 
     def test_instrument_to_dict_timezone_string(self):
         """Test Instrument.to_dict() when timezone is already a string."""
         from nexusLIMS.instruments import Instrument
 
         instrument = Instrument(
-            name="test-instrument",
+            instrument_pid="test-instrument",
             schema_name="TestInstrument",
             api_url="https://example.com/api/",
             calendar_name="Test Tool",
+            calendar_url="https://example.com/calendar/",
             location="Building 1",
             property_tag="12345",
             filestore_path="/path/to/files",
@@ -242,7 +266,7 @@ class TestInstruments:
             computer_ip="192.168.1.1",
             computer_mount="/mount/path",
             harvester="nemo",
-            timezone="America/Denver",  # Already a string
+            timezone_str="America/Denver",  # Already a string
         )
 
         result = instrument.to_dict()
@@ -258,10 +282,11 @@ class TestInstruments:
         from nexusLIMS.instruments import Instrument
 
         instrument = Instrument(
-            name="test-instrument",
+            instrument_pid="test-instrument",
             schema_name="TestInstrument",
             api_url="https://example.com/api/",
             calendar_name="Test Tool",
+            calendar_url="https://example.com/calendar/",
             location="Building 1",
             property_tag="12345",
             filestore_path="/path/to/files",
@@ -269,7 +294,7 @@ class TestInstruments:
             computer_ip="192.168.1.1",
             computer_mount="/mount/path",
             harvester="nemo",
-            timezone="America/Denver",
+            timezone_str="America/Denver",
         )
 
         json_str = instrument.to_json()
