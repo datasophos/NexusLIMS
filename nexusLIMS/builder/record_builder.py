@@ -197,7 +197,7 @@ def build_acq_activities(instrument, dt_from, dt_to, generate_previews):
 
     Parameters
     ----------
-    instrument : :py:class:`~nexusLIMS.instruments.Instrument`
+    instrument : :py:class:`~nexusLIMS.db.models.Instrument`
         One of the NexusLIMS instruments contained in the
         :py:attr:`~nexusLIMS.instruments.instrument_db` database.
         Controls what instrument calendar is used to get events.

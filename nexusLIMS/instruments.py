@@ -5,7 +5,7 @@ Methods and representations for instruments in a NexusLIMS system.
 Attributes
 ----------
 instrument_db : dict
-    A dictionary of :py:class:`~nexusLIMS.instruments.Instrument` objects.
+    A dictionary of :py:class:`~nexusLIMS.db.models.Instrument` objects.
 
     Each object in this dictionary represents an instrument detected in the
     NexusLIMS remote database.
@@ -69,7 +69,8 @@ def _get_instrument_db(db_path: Path | str | None = None):
 instrument_db = _get_instrument_db()
 """dict[str, Instrument]: Module-level cache of all instruments from the database.
 
-Keys are instrument PIDs (str), values are :class:`Instrument` instances.
+Keys are instrument PIDs (str), values are
+:class:`~nexusLIMS.db.models.Instrument` instances.
 Populated once at module import time from the NexusLIMS database.
 """
 

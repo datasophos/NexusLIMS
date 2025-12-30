@@ -418,7 +418,7 @@ is copied from the original NIST [NexusLIMS project](https://github.com/usnistgo
   for development.
 - Fully implemented tests to ensure 100% of codebase is covered by test functions.
 - Refactored record builder and harvester to use
-  {py:class}`~nexusLIMS.instruments.Instrument` instances rather than string parsing.
+  {py:class}`~nexusLIMS.db.models.Instrument` instances rather than string parsing.
 
 ## 0.0.2 (2020-01-08) - Pre-release version
 

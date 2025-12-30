@@ -23,7 +23,7 @@ class Session:
 
     A record of an individual session as read from the Nexus Microscopy
     facility session database. Created by combining two
-    :py:class:`~nexusLIMS.db.session_handler.SessionLog` objects with status
+    :py:class:`~nexusLIMS.db.models.SessionLog` objects with status
     ``"TO_BE_BUILT"``.
 
     Parameters

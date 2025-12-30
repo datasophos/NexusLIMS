@@ -15,8 +15,8 @@ import logging
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
+    from nexusLIMS.db.models import Instrument
     from nexusLIMS.extractors.base import InstrumentProfile
-    from nexusLIMS.instruments import Instrument
 
 _logger = logging.getLogger(__name__)
 
