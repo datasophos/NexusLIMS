@@ -48,7 +48,7 @@ requiring record generation through two steps:
    FROM session_log WHERE record_status == 'TO_BE_BUILT';
    ```
 
-Results are converted to {py:class}`~nexusLIMS.db.session_handler.SessionLog` objects,
+Results are converted to {py:class}`~nexusLIMS.db.models.SessionLog` objects,
 then paired into {py:class}`~nexusLIMS.db.session_handler.Session` objects by matching
 `START` and `END` logs with the same `session_identifier`.
 
@@ -58,7 +58,7 @@ Each {py:class}`~nexusLIMS.db.session_handler.Session` contains:
 
 (session-contents)=
 - **`session_identifier`** ({py:class}`str`): Session ID ( resolvable URL for NEMO events)
-- **`instrument`** ({py:class}`~nexusLIMS.instruments.Instrument`): Associated instrument object
+- **`instrument`** ({py:class}`~nexusLIMS.db.models.Instrument`): Associated instrument object
 - **`dt_from`** ({py:class}`~datetime.datetime`): Session start time
 - **`dt_to`** ({py:class}`~datetime.datetime`): Session end time
 - **`user`** ({py:class}`str`): Username (may be unreliable if instrument doesn't require login)

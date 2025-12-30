@@ -10,7 +10,8 @@ import logging
 
 import pytz
 from pytz.tzinfo import BaseTzInfo
-from sqlalchemy import TypeDecorator, types
+from sqlalchemy import types
+from sqlalchemy.types import TypeDecorator
 from sqlmodel import Column, Field, Relationship, SQLModel, select
 from sqlmodel import Session as DBSession
 

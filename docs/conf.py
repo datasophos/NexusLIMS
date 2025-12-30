@@ -260,6 +260,7 @@ intersphinx_mapping = {
     # use the custom objects.inv file above for LXML:
     "lxml": ("https://lxml.de/", "objects_lxml.inv"),
     "pydantic": ("https://docs.pydantic.dev/latest/", None),
+    "sqlalchemy": ("https://docs.sqlalchemy.org/en/20/", None),
 }
 
 html_theme = "pydata_sphinx_theme"
@@ -394,6 +395,8 @@ nitpick_ignore = [
     ("py:class", "pint.Quantity"),
     # Pydantic exceptions (intersphinx doesn't resolve pydantic_core exceptions)
     ("py:exc", "pydantic.ValidationError"),
+    # SQLModel does not have intersphinx inventory
+    ("py:obj", "sqlmodel.SQLModel"),
 ]
 
 

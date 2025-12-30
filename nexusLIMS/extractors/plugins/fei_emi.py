@@ -10,9 +10,10 @@ import numpy as np
 from hyperspy.io import load as hs_load
 from hyperspy.signal import BaseSignal
 
+from nexusLIMS.db.models import Instrument
 from nexusLIMS.extractors.base import ExtractionContext
 from nexusLIMS.extractors.utils import add_to_extensions
-from nexusLIMS.instruments import Instrument, get_instr_from_filepath
+from nexusLIMS.instruments import get_instr_from_filepath
 from nexusLIMS.schemas.units import ureg
 from nexusLIMS.utils import (
     current_system_tz,

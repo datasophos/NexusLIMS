@@ -226,7 +226,7 @@ uv run ruff format pyproject.toml || true
 
 # Stage changes
 info "Staging changes..."
-git add pyproject.toml docs/development_log.md docs/changes/
+git add pyproject.toml docs/changelog.md docs/changes/
 success "Changes staged"
 
 # Commit

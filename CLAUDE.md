@@ -93,10 +93,12 @@ uv run python -m nexusLIMS.builder.record_builder
 ### Core Components
 
 1. **Database Layer** (`nexusLIMS/db/`)
-   - SQLite database tracks instruments and session logs
+   - SQLite database tracks instruments and session logs (managed with Alembic migrations)
    - Two main tables: `instruments` (instrument config) and `session_log` (session tracking)
-   - `session_handler.py` provides ORM-like Session objects
-   - Sessions have states: WAITING_FOR_END, TO_BE_BUILT, COMPLETED, ERROR, NO_FILES_FOUND
+   - `models.py` defines SQLModel ORM classes (`Instrument` and `SessionLog`)
+   - `enums.py` defines type-safe enums (`EventType` and `RecordStatus`)
+   - `session_handler.py` provides higher-level session management utilities (`Session` class, `get_sessions_to_build()`)
+   - Sessions have states (defined in `RecordStatus` enum): WAITING_FOR_END, TO_BE_BUILT, COMPLETED, ERROR, NO_FILES_FOUND, NO_CONSENT, NO_RESERVATION
 
 2. **Harvesters** (`nexusLIMS/harvesters/`)
    - Extract reservation/usage data from external systems

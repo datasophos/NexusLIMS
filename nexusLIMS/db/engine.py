@@ -4,9 +4,14 @@ This module provides a centralized SQLModel engine and session factory
 for database operations, replacing the manual sqlite3 connection management.
 """
 
+from typing import TYPE_CHECKING
+
 from sqlmodel import create_engine
 
 from nexusLIMS.config import settings
+
+if TYPE_CHECKING:
+    from sqlalchemy.engine.base import Engine
 
 # Create SQLite engine (connects to NexusLIMS database)
 engine = create_engine(
@@ -16,14 +21,14 @@ engine = create_engine(
 )
 
 
-def get_engine():
+def get_engine() -> "Engine":
     """
     Get the database engine.
 
     Returns
     -------
-    Engine
-        The SQLModel engine for the NexusLIMS database.
+    sqlalchemy.engine.base.Engine
+        The SQLAlchemy/SQLModel engine for the NexusLIMS database.
 
     Examples
     --------
