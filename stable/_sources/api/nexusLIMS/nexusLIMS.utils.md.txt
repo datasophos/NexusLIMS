@@ -1,0 +1,266 @@
+# {py:mod}`nexusLIMS.utils`
+
+```{py:module} nexusLIMS.utils
+```
+
+```{autodoc2-docstring} nexusLIMS.utils
+:parser: autodoc2_docstrings_parser
+:allowtitles:
+```
+
+## Module Contents
+
+### Functions
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`setup_loggers <nexusLIMS.utils.setup_loggers>`
+  - ```{autodoc2-docstring} nexusLIMS.utils.setup_loggers
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`nexus_req <nexusLIMS.utils.nexus_req>`
+  - ```{autodoc2-docstring} nexusLIMS.utils.nexus_req
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`is_subpath <nexusLIMS.utils.is_subpath>`
+  - ```{autodoc2-docstring} nexusLIMS.utils.is_subpath
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`get_nested_dict_value_by_path <nexusLIMS.utils.get_nested_dict_value_by_path>`
+  - ```{autodoc2-docstring} nexusLIMS.utils.get_nested_dict_value_by_path
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`set_nested_dict_value <nexusLIMS.utils.set_nested_dict_value>`
+  - ```{autodoc2-docstring} nexusLIMS.utils.set_nested_dict_value
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`try_getting_dict_value <nexusLIMS.utils.try_getting_dict_value>`
+  - ```{autodoc2-docstring} nexusLIMS.utils.try_getting_dict_value
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`find_dirs_by_mtime <nexusLIMS.utils.find_dirs_by_mtime>`
+  - ```{autodoc2-docstring} nexusLIMS.utils.find_dirs_by_mtime
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`find_files_by_mtime <nexusLIMS.utils.find_files_by_mtime>`
+  - ```{autodoc2-docstring} nexusLIMS.utils.find_files_by_mtime
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`gnu_find_files_by_mtime <nexusLIMS.utils.gnu_find_files_by_mtime>`
+  - ```{autodoc2-docstring} nexusLIMS.utils.gnu_find_files_by_mtime
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`sort_dict <nexusLIMS.utils.sort_dict>`
+  - ```{autodoc2-docstring} nexusLIMS.utils.sort_dict
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`remove_dtb_element <nexusLIMS.utils.remove_dtb_element>`
+  - ```{autodoc2-docstring} nexusLIMS.utils.remove_dtb_element
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`remove_dict_nones <nexusLIMS.utils.remove_dict_nones>`
+  - ```{autodoc2-docstring} nexusLIMS.utils.remove_dict_nones
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`get_timespan_overlap <nexusLIMS.utils.get_timespan_overlap>`
+  - ```{autodoc2-docstring} nexusLIMS.utils.get_timespan_overlap
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`get_auth <nexusLIMS.utils.get_auth>`
+  - ```{autodoc2-docstring} nexusLIMS.utils.get_auth
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`has_delay_passed <nexusLIMS.utils.has_delay_passed>`
+  - ```{autodoc2-docstring} nexusLIMS.utils.has_delay_passed
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`current_system_tz_name <nexusLIMS.utils.current_system_tz_name>`
+  - ```{autodoc2-docstring} nexusLIMS.utils.current_system_tz_name
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`current_system_tz <nexusLIMS.utils.current_system_tz>`
+  - ```{autodoc2-docstring} nexusLIMS.utils.current_system_tz
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`replace_instrument_data_path <nexusLIMS.utils.replace_instrument_data_path>`
+  - ```{autodoc2-docstring} nexusLIMS.utils.replace_instrument_data_path
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
+### API
+
+````{py:function} setup_loggers(log_level)
+:canonical: nexusLIMS.utils.setup_loggers
+
+```{autodoc2-docstring} nexusLIMS.utils.setup_loggers
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} nexus_req(url: str, function: str, *, retries: int = 5, basic_auth: bool = False, token_auth: str | None = None, **kwargs: dict | None)
+:canonical: nexusLIMS.utils.nexus_req
+
+```{autodoc2-docstring} nexusLIMS.utils.nexus_req
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} is_subpath(path: pathlib.Path, of_paths: typing.Union[pathlib.Path, typing.List[pathlib.Path]])
+:canonical: nexusLIMS.utils.is_subpath
+
+```{autodoc2-docstring} nexusLIMS.utils.is_subpath
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} get_nested_dict_value_by_path(nest_dict, path)
+:canonical: nexusLIMS.utils.get_nested_dict_value_by_path
+
+```{autodoc2-docstring} nexusLIMS.utils.get_nested_dict_value_by_path
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} set_nested_dict_value(nest_dict, path, value)
+:canonical: nexusLIMS.utils.set_nested_dict_value
+
+```{autodoc2-docstring} nexusLIMS.utils.set_nested_dict_value
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} try_getting_dict_value(dict_, key)
+:canonical: nexusLIMS.utils.try_getting_dict_value
+
+```{autodoc2-docstring} nexusLIMS.utils.try_getting_dict_value
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} find_dirs_by_mtime(path: str, dt_from: datetime.datetime, dt_to: datetime.datetime, *, followlinks: bool = True) -> typing.List[str]
+:canonical: nexusLIMS.utils.find_dirs_by_mtime
+
+```{autodoc2-docstring} nexusLIMS.utils.find_dirs_by_mtime
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} find_files_by_mtime(path: pathlib.Path, dt_from, dt_to) -> typing.List[pathlib.Path]
+:canonical: nexusLIMS.utils.find_files_by_mtime
+
+```{autodoc2-docstring} nexusLIMS.utils.find_files_by_mtime
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} gnu_find_files_by_mtime(path: pathlib.Path, dt_from: datetime.datetime, dt_to: datetime.datetime, extensions: typing.List[str] | None = None, *, followlinks: bool = True) -> typing.List[pathlib.Path]
+:canonical: nexusLIMS.utils.gnu_find_files_by_mtime
+
+```{autodoc2-docstring} nexusLIMS.utils.gnu_find_files_by_mtime
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} sort_dict(item)
+:canonical: nexusLIMS.utils.sort_dict
+
+```{autodoc2-docstring} nexusLIMS.utils.sort_dict
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} remove_dtb_element(tree, path)
+:canonical: nexusLIMS.utils.remove_dtb_element
+
+```{autodoc2-docstring} nexusLIMS.utils.remove_dtb_element
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} remove_dict_nones(dictionary: typing.Dict[typing.Any, typing.Any]) -> typing.Dict[typing.Any, typing.Any]
+:canonical: nexusLIMS.utils.remove_dict_nones
+
+```{autodoc2-docstring} nexusLIMS.utils.remove_dict_nones
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} get_timespan_overlap(range_1: typing.Tuple[datetime.datetime, datetime.datetime], range_2: typing.Tuple[datetime.datetime, datetime.datetime]) -> datetime.timedelta
+:canonical: nexusLIMS.utils.get_timespan_overlap
+
+```{autodoc2-docstring} nexusLIMS.utils.get_timespan_overlap
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} get_auth(*, basic: bool = False)
+:canonical: nexusLIMS.utils.get_auth
+
+```{autodoc2-docstring} nexusLIMS.utils.get_auth
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} has_delay_passed(date: datetime.datetime) -> bool
+:canonical: nexusLIMS.utils.has_delay_passed
+
+```{autodoc2-docstring} nexusLIMS.utils.has_delay_passed
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} current_system_tz_name() -> str
+:canonical: nexusLIMS.utils.current_system_tz_name
+
+```{autodoc2-docstring} nexusLIMS.utils.current_system_tz_name
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} current_system_tz() -> pytz.tzinfo.DstTzInfo
+:canonical: nexusLIMS.utils.current_system_tz
+
+```{autodoc2-docstring} nexusLIMS.utils.current_system_tz
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} replace_instrument_data_path(path: pathlib.Path, suffix: str) -> pathlib.Path
+:canonical: nexusLIMS.utils.replace_instrument_data_path
+
+```{autodoc2-docstring} nexusLIMS.utils.replace_instrument_data_path
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:exception} AuthenticationError(message)
+:canonical: nexusLIMS.utils.AuthenticationError
+
+Bases: {py:obj}`Exception`
+
+```{autodoc2-docstring} nexusLIMS.utils.AuthenticationError
+:parser: autodoc2_docstrings_parser
+```
+
+````
