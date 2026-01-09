@@ -66,30 +66,43 @@ author = "datasophos, LLC"
 numfig = True
 
 # The full version, including alpha/beta/rc tags
-release = nexusLIMS.version.__version__
-# Use full version everywhere
-version = release
+actual_release = nexusLIMS.version.__version__
 
 # Add PR number to context if available
 pr_number = os.environ.get("PR_NUMBER")
 
-# Determine version_match for switcher.json
-# This should match the "version" field in switcher.json entries
+# Determine version, release, and version_match for switcher.json
+# version/release must be semver for PyData theme banner comparison
+# version_match is used for dropdown highlighting only
+deploy_target = os.environ.get("DEPLOY_TARGET")
 if pr_number:
     # PR builds use "pr-<number>" as version
+    version = f"pr-{pr_number}"
+    release = f"pr-{pr_number}"
     version_match = f"pr-{pr_number}"
+elif deploy_target == "stable":
+    # Stable builds: use actual version number for banner comparison
+    # Theme requires semver to suppress banner on preferred version
+    version = actual_release
+    release = actual_release
+    version_match = actual_release
 elif os.environ.get("GITHUB_REF") == "refs/heads/main":
     # Main branch builds use "dev" as version
+    version = "dev"
+    release = "dev"
     version_match = "dev"
 else:
     # Release builds use full version (e.g., "2.1.0") to match switcher.json
-    version_match = release
+    version = actual_release
+    release = actual_release
+    version_match = actual_release
 
 # Debug output for version matching
 print(f"[DEBUG] Sphinx conf.py version info:")
 print(f"  release: {release}")
 print(f"  version: {version}")
 print(f"  version_match: {version_match}")
+print(f"  deploy_target: {deploy_target}")
 print(f"  PR_NUMBER: {pr_number}")
 print(f"  GITHUB_REF: {os.environ.get('GITHUB_REF', 'not set')}")
 

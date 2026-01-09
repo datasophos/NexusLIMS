@@ -213,19 +213,25 @@ def build_switcher_json(dirs, current_pr_num=None):
     filtered_versions = filter_latest_patch_versions(version_dirs)
 
     # Add stable link at the top (if it exists)
+    stable_version = None
     if "stable" in dirs:
         # Get the version number of the latest release
-        latest_version = filtered_versions[0] if filtered_versions else "stable"
+        # Use the actual version number (not "stable") for PyData theme banner comparison
+        stable_version = filtered_versions[0] if filtered_versions else "stable"
         entries.append(
             {
-                "name": f"v{latest_version} (stable)",
-                "version": "stable",
+                "name": f"v{stable_version} (stable)",
+                "version": stable_version,  # Use semver for theme comparison
                 "url": f"{BASE_URL}/stable/",
                 "preferred": True,
             }
         )
 
     for v in filtered_versions:
+        # Skip adding a separate numbered version entry if it's the same as stable
+        # This avoids duplicate "v2.2.0 (stable)" and "v2.2.0" entries
+        if v == stable_version:
+            continue
         # Add numbered version entries without marking any as stable/preferred
         # since we now have a dedicated stable/ directory
         entries.append(
@@ -263,15 +269,20 @@ def build_switcher_json(dirs, current_pr_num=None):
     # Add latest dev build at the top (if it exists)
     if "latest" in dirs:
         dev_version = get_current_dev_version()
-        label = f"v{dev_version}" if dev_version else f"({get_short_commit_hash()})"
-        entries.insert(
-            0,
-            {
-                "name": f"{label} (latest)",
-                "version": "dev",
-                "url": f"{BASE_URL}/latest/",
-            },
-        )
+        # Skip adding "latest" if dev version exactly matches any released version
+        # This avoids duplicates when main branch is at the same version as a release
+        # (e.g., both are "2.2.0", but "2.2.0.dev0" would be different and shown)
+        if not dev_version or dev_version not in filtered_versions:
+            # Only add latest if it's a different version than any release
+            label = f"v{dev_version}" if dev_version else f"({get_short_commit_hash()})"
+            entries.insert(
+                0,
+                {
+                    "name": f"{label} (latest)",
+                    "version": "dev",
+                    "url": f"{BASE_URL}/latest/",
+                },
+            )
 
     # Add link to upstream NIST project documentation
     entries.append(

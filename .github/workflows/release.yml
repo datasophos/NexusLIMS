@@ -125,9 +125,6 @@ jobs:
       - name: Install dependencies
         run: uv sync
 
-      - name: Build documentation
-        run: ./scripts/build_docs.sh
-
       - name: Extract version from tag or input
         id: version
         run: |
@@ -139,6 +136,19 @@ jobs:
             echo "Extracted version from tag: $VERSION"
           fi
           echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Build documentation for versioned directory
+        run: ./scripts/build_docs.sh
+
+      - name: Save versioned build
+        run: |
+          mkdir -p /tmp/versioned_build
+          rsync -avr _build/ /tmp/versioned_build/
+
+      - name: Build documentation for stable directory
+        env:
+          DEPLOY_TARGET: stable
+        run: ./scripts/build_docs.sh
 
       - name: Generate root index.html redirect
         # Create root index.html that redirects to stable directory
@@ -178,11 +188,12 @@ jobs:
           rm -rf "$VERSION_DIR"
           mkdir -p "$VERSION_DIR"
 
-          # Copy built docs to version directory
-          rsync -avr _build/ "$VERSION_DIR/"
+          # Copy versioned build to version directory (e.g., 2.2.0/)
+          echo "Deploying versioned documentation to $VERSION_DIR/..."
+          rsync -avr /tmp/versioned_build/ "$VERSION_DIR/"
 
-          # Copy to stable directory (latest stable release)
-          echo "Copying documentation to stable/ directory..."
+          # Copy stable build to stable directory
+          echo "Deploying stable documentation to stable/..."
           rm -rf stable
           mkdir -p stable
           rsync -avr _build/ stable/
