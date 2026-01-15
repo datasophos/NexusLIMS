@@ -938,6 +938,41 @@ def safe_refresh_settings(monkeypatch, tmp_path):
     return _refresh
 
 
+def delete_all_cdcs_records():
+    """
+    Delete all records from the CDCS instance.
+
+    This helper function fetches all records from CDCS and deletes them.
+    Useful for cleanup after tests to ensure a clean state.
+
+    Returns
+    -------
+    int
+        Number of records deleted
+    """
+    import nexusLIMS.cdcs as cdcs_module
+
+    deleted_count = 0
+    print("\n[*] Cleaning up CDCS records...")
+    try:
+        all_records = cdcs_module.search_records()
+        if all_records:
+            for record in all_records:
+                try:
+                    cdcs_module.delete_record(record["id"])
+                    print(f"    Deleted record: {record.get('title', record['id'])}")
+                    deleted_count += 1
+                except Exception as e:
+                    print(f"[!] Failed to delete record {record['id']}: {e}")
+            print(f"[+] Deleted {deleted_count} records from CDCS")
+        else:
+            print("[+] No records to delete from CDCS")
+    except Exception as e:
+        print(f"[!] Failed to fetch records for cleanup: {e}")
+
+    return deleted_count
+
+
 def setup_cdcs_environment(cdcs_url, cdcs_credentials):
     """
     Set up CDCS environment variables and refresh settings.
@@ -1714,8 +1749,8 @@ def test_environment_setup(  # noqa: PLR0913
     monkeypatch : pytest.MonkeyPatch
         Pytest monkeypatch fixture
 
-    Returns
-    -------
+    Yields
+    ------
     dict
         Test environment information:
         - 'instrument_pid': Instrument PID to use for testing
@@ -1724,6 +1759,11 @@ def test_environment_setup(  # noqa: PLR0913
         - 'user': Expected username
         - 'instrument_db': Test instrument database
         - 'cdcs_client': CDCS client configuration
+
+    Notes
+    -----
+    After the test completes, all records are deleted from the CDCS instance
+    to ensure a clean state for subsequent tests.
     """
     from datetime import timedelta
 
@@ -1751,7 +1791,7 @@ def test_environment_setup(  # noqa: PLR0913
     print(f"    Expected session time: {session_start} to {session_end}")
     print("    Expected user: captain")
 
-    return {
+    yield {
         "instrument_pid": instrument.name,  # instrument.name is the PID
         "dt_from": session_start,
         "dt_to": session_end,
@@ -1759,6 +1799,9 @@ def test_environment_setup(  # noqa: PLR0913
         "instrument_db": test_instrument_db,
         "cdcs_client": cdcs_client,
     }
+
+    # Cleanup: Delete all records from CDCS
+    delete_all_cdcs_records()
 
 
 # ============================================================================

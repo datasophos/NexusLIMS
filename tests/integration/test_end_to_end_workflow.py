@@ -172,6 +172,12 @@ class TestEndToEndWorkflow:
         is_valid_download = schema.validate(downloaded_doc)
         assert is_valid_download, "Downloaded XML from CDCS is not valid against schema"
 
+        # verify number of expected activities for default setting
+        activities = downloaded_doc.findall(f".//{nx_ns}acquisitionActivity")
+        assert len(activities) == 2, (
+            "Did not find expected number of activities with default clustering"
+        )
+
         # Verify fileserver URLs are accessible
         # Extract dataset location and preview URLs from the downloaded XML
         import requests
@@ -231,7 +237,112 @@ class TestEndToEndWorkflow:
             cdcs_module.download_record(record_id)
 
     # ========================================================================
-    # Multi-signal workflow tests - Refactored into focused test methods
+    # Clustering sensitivity end to end tests
+    # ========================================================================
+
+    @pytest.mark.integration
+    @pytest.mark.filterwarnings(
+        "ignore:invalid value encountered in divide:RuntimeWarning"
+    )
+    def test_clustering_sensitivity_disabled(
+        self,
+        test_environment_setup,
+        monkeypatch,
+    ):
+        """
+        Test that NX_CLUSTERING_SENSITIVITY=0 disables file clustering.
+
+        When clustering sensitivity is set to 0, all files should be grouped
+        into a single acquisition activity regardless of their temporal
+        distribution. This test verifies that the configuration is properly
+        applied during record building.
+
+        The default condition for this record produces 2 activities, and
+        is tested in ``test_complete_record_building_workflow()``
+        """
+        import nexusLIMS.cdcs as cdcs_module
+        from nexusLIMS.config import refresh_settings, settings
+
+        # disable clustering to put all datasets in one activity
+        monkeypatch.setenv("NX_CLUSTERING_SENSITIVITY", str(0))
+        refresh_settings()
+
+        # process record with default sensitivity
+        record_builder.process_new_records(
+            dt_from=test_environment_setup["dt_from"] - timedelta(hours=1),
+            dt_to=test_environment_setup["dt_to"] + timedelta(hours=1),
+        )
+
+        uploaded_dir = settings.records_dir_path / "uploaded"
+        uploaded_records = list(uploaded_dir.glob("*.xml"))
+        test_record = uploaded_records[0]
+        record_title = test_record.stem
+
+        # this is not reliable if generating the same record twice
+        search_results = cdcs_module.search_records(title=record_title)
+
+        cdcs_record = search_results[0]
+        record_id = cdcs_record["id"]
+
+        # Download the record from CDCS and verify it matches
+        downloaded_xml = cdcs_module.download_record(record_id)
+        downloaded_doc = etree.fromstring(downloaded_xml.encode())
+        nx_ns = "{https://data.nist.gov/od/dm/nexus/experiment/v1.0}"
+        activities = downloaded_doc.findall(f".//{nx_ns}acquisitionActivity")
+        assert len(activities) == 1, (
+            "Did not find expected number of activities with default clustering"
+        )
+
+    @pytest.mark.integration
+    @pytest.mark.filterwarnings(
+        "ignore:invalid value encountered in divide:RuntimeWarning"
+    )
+    def test_clustering_high_sensitivity(
+        self,
+        test_environment_setup,
+        monkeypatch,
+    ):
+        """
+        Test that NX_CLUSTERING_SENSITIVITY=30 results in many activities.
+
+        The default condition for this record produces 2 activities, and
+        is tested in ``test_complete_record_building_workflow()``
+        """
+        import nexusLIMS.cdcs as cdcs_module
+        from nexusLIMS.config import refresh_settings, settings
+
+        # high sensitivity should result in more activities (6, tested empirically)
+        monkeypatch.setenv("NX_CLUSTERING_SENSITIVITY", str(50))
+        refresh_settings()
+
+        # process record with default sensitivity
+        record_builder.process_new_records(
+            dt_from=test_environment_setup["dt_from"] - timedelta(hours=1),
+            dt_to=test_environment_setup["dt_to"] + timedelta(hours=1),
+        )
+
+        uploaded_dir = settings.records_dir_path / "uploaded"
+        uploaded_records = list(uploaded_dir.glob("*.xml"))
+        test_record = uploaded_records[0]
+        record_title = test_record.stem
+
+        # this is not reliable if generating the same record twice
+        search_results = cdcs_module.search_records(title=record_title)
+
+        cdcs_record = search_results[0]
+        record_id = cdcs_record["id"]
+
+        # Download the record from CDCS and verify it matches
+        downloaded_xml = cdcs_module.download_record(record_id)
+        downloaded_doc = etree.fromstring(downloaded_xml.encode())
+        nx_ns = "{https://data.nist.gov/od/dm/nexus/experiment/v1.0}"
+        activities = downloaded_doc.findall(f".//{nx_ns}acquisitionActivity")
+        assert len(activities) == 6, (
+            "Did not find expected number of activities with default clustering"
+        )
+
+    # ========================================================================
+    # Multi-signal workflow tests
     # ========================================================================
 
     @pytest.mark.integration

@@ -169,7 +169,7 @@ def search_records(title=None, template_id=None, keyword=None):
     Search for records in the CDCS instance by title, keyword, or other criteria.
 
     This function uses the CDCS query endpoint to search for records.
-    At least one search parameter must be provided.
+    If no parameters are provided, all records are returned.
 
     Note
     ----
@@ -202,18 +202,9 @@ def search_records(title=None, template_id=None, keyword=None):
 
     Raises
     ------
-    ValueError
-        If no search parameters are provided or if keyword is empty
     AuthenticationError
         If authentication fails
     """
-    if title is None and template_id is None and keyword is None:
-        msg = (
-            "At least one search parameter (title, template_id, or keyword) "
-            "must be provided"
-        )
-        raise ValueError(msg)
-
     if keyword is not None and not keyword.strip():
         msg = "Keyword parameter cannot be empty"
         raise ValueError(msg)

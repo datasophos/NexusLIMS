@@ -404,10 +404,20 @@ class TestCdcsSearchAndDownload:
                 f"Record {record['title']} not found in search results"
             )
 
-    def test_search_records_with_no_parameters(self, cdcs_client):
+    def test_search_records_with_no_parameters(self, cdcs_client, cdcs_test_record):
         """Test that search_records raises ValueError with no parameters."""
-        with pytest.raises(ValueError, match="At least one search parameter"):
-            cdcs.search_records()
+        results = cdcs.search_records()
+        # Should find at least our two test records
+        assert len(results) >= 2, f"Expected at least 2 records, found {len(results)}"
+        assert isinstance(results, list)
+
+        # Verify both test records are in the results
+        result_ids = {r["id"] for r in results}
+        for record in cdcs_test_record:
+            assert "template" in record or any("template" in r for r in results)
+            assert record["record_id"] in result_ids, (
+                f"Record {record['title']} not found in search results"
+            )
 
     def test_search_records_with_nonexistent_title(self, cdcs_client):
         """Test searching for a record that doesn't exist."""

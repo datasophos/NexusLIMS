@@ -179,6 +179,36 @@ Maximum delay (in days) between session end and when files are expected to be pr
 NX_FILE_DELAY_DAYS=2.5
 ```
 
+(config-clustering-sensitivity)=
+#### `NX_CLUSTERING_SENSITIVITY`
+
+**Type:** Float (must be >= 0)\
+**Default:** `1.0`
+
+Controls the sensitivity of file clustering into [Acquisition Activities](taxonomy.md#acquisition-activity). When building records, NexusLIMS groups files into activities based on temporal gaps in file modification times using Kernel Density Estimation (KDE). This setting allows you to adjust or disable this clustering behavior.
+
+- **Values > 1.0**: More sensitive to time gaps, resulting in more activities (finer granularity)
+- **Values < 1.0**: Less sensitive to time gaps, resulting in fewer activities (coarser granularity)
+- **Value of 0**: Disables clustering entirely; all files are grouped into a single activity
+- **Value of 1.0**: Default behavior with automatic clustering based on data distribution
+
+This is useful when:
+- The automatic clustering creates too many or too few activities for your workflow
+- You want to disable clustering for simpler record structures
+- Your data acquisition patterns don't match the default clustering assumptions
+
+**Examples:**
+```bash
+# More sensitive - detects smaller time gaps as activity boundaries
+NX_CLUSTERING_SENSITIVITY=2.0
+
+# Less sensitive - only large time gaps create new activities
+NX_CLUSTERING_SENSITIVITY=0.5
+
+# Disable clustering - all files in one activity
+NX_CLUSTERING_SENSITIVITY=0
+```
+
 ### Directory Paths
 
 (config-log-path)=
