@@ -142,7 +142,7 @@ Files are grouped into logical {py:class}`~nexusLIMS.schemas.activity.Acquisitio
 objects to approximate conceptual experiment boundaries using statistical analysis of
 file creation times.
 
-{numref}`cluster-fig` illustrates the clustering process for an EELS spectrum image
+The figure below illustrates the clustering process for an EELS spectrum image
 experiment. Panel (a) shows creation time differences revealing 13 distinct groups.
 Panel (b) histograms time gaps between consecutive files—small gaps indicate
 related files, large gaps mark activity boundaries.
