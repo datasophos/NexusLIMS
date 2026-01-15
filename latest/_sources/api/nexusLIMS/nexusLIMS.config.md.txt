@@ -371,6 +371,17 @@ Bases: {py:obj}`pydantic_settings.BaseSettings`
 
 ````
 
+````{py:attribute} NX_CLUSTERING_SENSITIVITY
+:canonical: nexusLIMS.config.Settings.NX_CLUSTERING_SENSITIVITY
+
+**Type:** float
+
+```{autodoc2-docstring} nexusLIMS.config.Settings.NX_CLUSTERING_SENSITIVITY
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
 ````{py:attribute} NX_LOG_PATH
 :canonical: nexusLIMS.config.Settings.NX_LOG_PATH
 

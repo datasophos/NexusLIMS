@@ -628,7 +628,7 @@ the delete operation</p>
 <span class="sig-prename descclassname"><span class="pre">nexusLIMS.cdcs.</span></span><span class="sig-name descname"><span class="pre">search_records</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">template_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keyword</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/cdcs.html#search_records"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.cdcs.search_records" title="Link to this definition">#</a></dt>
 <dd><p>Search for records in the CDCS instance by title, keyword, or other criteria.</p>
 <p>This function uses the CDCS query endpoint to search for records.
-At least one search parameter must be provided.</p>
+If no parameters are provided, all records are returned.</p>
 <p>.. note::</p>
 <p>If <code class="docutils literal notranslate"><span class="pre">keyword</span></code> is provided, it takes precedence and the <code class="docutils literal notranslate"><span class="pre">title</span></code> parameter
 is ignored. The keyword search uses a different CDCS endpoint
@@ -660,10 +660,7 @@ takes precedence over <code class="docutils literal notranslate"><span class="pr
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a> of <a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3.11/library/exceptions.html#ValueError" title="(in Python v3.11)"><strong>ValueError</strong></a> – If no search parameters are provided or if keyword is empty</p></li>
-<li><p><a class="reference internal" href="nexusLIMS.utils.html#nexusLIMS.utils.AuthenticationError" title="nexusLIMS.utils.AuthenticationError"><strong>AuthenticationError</strong></a> – If authentication fails</p></li>
-</ul>
+<dd class="field-even"><p><a class="reference internal" href="nexusLIMS.utils.html#nexusLIMS.utils.AuthenticationError" title="nexusLIMS.utils.AuthenticationError"><strong>AuthenticationError</strong></a> – If authentication fails</p>
 </dd>
 </dl>
 </dd></dl>

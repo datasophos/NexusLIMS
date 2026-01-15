@@ -1055,6 +1055,18 @@ window.addEventListener("load", load);
         <span class="p">),</span>
         <span class="n">gt</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
     <span class="p">)</span>
+    <span class="n">NX_CLUSTERING_SENSITIVITY</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">&quot;Controls the sensitivity of file clustering into Acquisition Activities. &quot;</span>
+            <span class="s2">&quot;Higher values (e.g., 2.0) make clustering more sensitive to time gaps, &quot;</span>
+            <span class="s2">&quot;resulting in more activities. Lower values (e.g., 0.5) make clustering &quot;</span>
+            <span class="s2">&quot;less sensitive, resulting in fewer activities. Set to 0 to disable &quot;</span>
+            <span class="s2">&quot;clustering entirely and group all files into a single activity. &quot;</span>
+            <span class="s2">&quot;Default is 1.0 (no change to automatic clustering).&quot;</span>
+        <span class="p">),</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="n">NX_LOG_PATH</span><span class="p">:</span> <span class="n">DirectoryPath</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="p">(</span>

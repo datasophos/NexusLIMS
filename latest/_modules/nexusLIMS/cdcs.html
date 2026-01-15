@@ -1008,7 +1008,7 @@ window.addEventListener("load", load);
 <span class="sd">    Search for records in the CDCS instance by title, keyword, or other criteria.</span>
 
 <span class="sd">    This function uses the CDCS query endpoint to search for records.</span>
-<span class="sd">    At least one search parameter must be provided.</span>
+<span class="sd">    If no parameters are provided, all records are returned.</span>
 
 <span class="sd">    Note</span>
 <span class="sd">    ----</span>
@@ -1041,18 +1041,9 @@ window.addEventListener("load", load);
 
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
-<span class="sd">    ValueError</span>
-<span class="sd">        If no search parameters are provided or if keyword is empty</span>
 <span class="sd">    AuthenticationError</span>
 <span class="sd">        If authentication fails</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">title</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">template_id</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">keyword</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s2">&quot;At least one search parameter (title, template_id, or keyword) &quot;</span>
-            <span class="s2">&quot;must be provided&quot;</span>
-        <span class="p">)</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-
     <span class="k">if</span> <span class="n">keyword</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">keyword</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Keyword parameter cannot be empty&quot;</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>

@@ -624,6 +624,35 @@
 </pre></div>
 </div>
 </section>
+<section id="nx-clustering-sensitivity">
+<span id="config-clustering-sensitivity"></span><h4><code class="docutils literal notranslate"><span class="pre">NX_CLUSTERING_SENSITIVITY</span></code><a class="headerlink" href="#nx-clustering-sensitivity" title="Link to this heading">#</a></h4>
+<p><strong>Type:</strong> Float (must be &gt;= 0)<br />
+<strong>Default:</strong> <code class="docutils literal notranslate"><span class="pre">1.0</span></code></p>
+<p>Controls the sensitivity of file clustering into <a class="reference internal" href="taxonomy.html#acquisition-activity"><span class="std std-ref">Acquisition Activities</span></a>. When building records, NexusLIMS groups files into activities based on temporal gaps in file modification times using Kernel Density Estimation (KDE). This setting allows you to adjust or disable this clustering behavior.</p>
+<ul class="simple">
+<li><p><strong>Values &gt; 1.0</strong>: More sensitive to time gaps, resulting in more activities (finer granularity)</p></li>
+<li><p><strong>Values &lt; 1.0</strong>: Less sensitive to time gaps, resulting in fewer activities (coarser granularity)</p></li>
+<li><p><strong>Value of 0</strong>: Disables clustering entirely; all files are grouped into a single activity</p></li>
+<li><p><strong>Value of 1.0</strong>: Default behavior with automatic clustering based on data distribution</p></li>
+</ul>
+<p>This is useful when:</p>
+<ul class="simple">
+<li><p>The automatic clustering creates too many or too few activities for your workflow</p></li>
+<li><p>You want to disable clustering for simpler record structures</p></li>
+<li><p>Your data acquisition patterns don’t match the default clustering assumptions</p></li>
+</ul>
+<p><strong>Examples:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># More sensitive - detects smaller time gaps as activity boundaries</span>
+<span class="nv">NX_CLUSTERING_SENSITIVITY</span><span class="o">=</span><span class="m">2</span>.0
+
+<span class="c1"># Less sensitive - only large time gaps create new activities</span>
+<span class="nv">NX_CLUSTERING_SENSITIVITY</span><span class="o">=</span><span class="m">0</span>.5
+
+<span class="c1"># Disable clustering - all files in one activity</span>
+<span class="nv">NX_CLUSTERING_SENSITIVITY</span><span class="o">=</span><span class="m">0</span>
+</pre></div>
+</div>
+</section>
 </section>
 <section id="directory-paths">
 <h3>Directory Paths<a class="headerlink" href="#directory-paths" title="Link to this heading">#</a></h3>
@@ -1084,6 +1113,7 @@
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-file-strategy"><code class="docutils literal notranslate"><span class="pre">NX_FILE_STRATEGY</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-ignore-patterns"><code class="docutils literal notranslate"><span class="pre">NX_IGNORE_PATTERNS</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-file-delay-days"><code class="docutils literal notranslate"><span class="pre">NX_FILE_DELAY_DAYS</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-clustering-sensitivity"><code class="docutils literal notranslate"><span class="pre">NX_CLUSTERING_SENSITIVITY</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#directory-paths">Directory Paths</a><ul class="nav section-nav flex-column">
