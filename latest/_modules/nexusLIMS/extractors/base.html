@@ -428,7 +428,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Jan, 09, 2026"/>
+    <meta name="docbuild:last-update" content="Jan, 15, 2026"/>
   </head>
   
   
@@ -559,11 +559,28 @@ window.addEventListener("load", load);
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../reference.html">
+  <a class="nav-link nav-internal" href="../../../frontend_guide.html">
+    Frontend Guide
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../reference.html">
     Reference
   </a>
 </li>
 
+                </ul>
+            </li>
+            
   </ul>
 </nav></div>
       
@@ -674,6 +691,13 @@ window.addEventListener("load", load);
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../dev_guide.html">
     Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../frontend_guide.html">
+    Frontend Guide
   </a>
 </li>
 
@@ -830,7 +854,7 @@ window.addEventListener("load", load);
 
 
 <div class="viewcode-block" id="FieldDefinition">
-<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643.FieldDefinition">[docs]</a>
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.plugins.profiles.jeol_jem_642.FieldDefinition">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">FieldDefinition</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Configuration for extracting a single metadata field.</span>
@@ -895,7 +919,7 @@ window.addEventListener("load", load);
 
 
 <div class="viewcode-block" id="ExtractionContext">
-<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643.ExtractionContext">[docs]</a>
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.plugins.profiles.jeol_jem_642.ExtractionContext">[docs]</a>
 <span class="nd">@dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">ExtractionContext</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -932,7 +956,7 @@ window.addEventListener("load", load);
 
 
 <div class="viewcode-block" id="BaseExtractor">
-<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643.BaseExtractor">[docs]</a>
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.plugins.profiles.jeol_jem_642.BaseExtractor">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">BaseExtractor</span><span class="p">(</span><span class="n">Protocol</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Protocol defining the interface for metadata extractors.</span>
@@ -994,7 +1018,7 @@ window.addEventListener("load", load);
     <span class="n">supported_extensions</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="BaseExtractor.supports">
-<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643.BaseExtractor.supports">[docs]</a>
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.plugins.profiles.jeol_jem_642.BaseExtractor.supports">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">supports</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ExtractionContext</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Determine if this extractor can handle the given file.</span>
@@ -1045,7 +1069,7 @@ window.addEventListener("load", load);
 
 
 <div class="viewcode-block" id="BaseExtractor.extract">
-<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643.BaseExtractor.extract">[docs]</a>
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.plugins.profiles.jeol_jem_642.BaseExtractor.extract">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">extract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ExtractionContext</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Extract metadata from the file.</span>
@@ -1149,7 +1173,7 @@ window.addEventListener("load", load);
 
 
 <div class="viewcode-block" id="PreviewGenerator">
-<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643.PreviewGenerator">[docs]</a>
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.plugins.profiles.jeol_jem_642.PreviewGenerator">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">PreviewGenerator</span><span class="p">(</span><span class="n">Protocol</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Protocol for thumbnail/preview image generation.</span>
@@ -1195,7 +1219,7 @@ window.addEventListener("load", load);
     <span class="n">supported_extensions</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="PreviewGenerator.supports">
-<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643.PreviewGenerator.supports">[docs]</a>
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.plugins.profiles.jeol_jem_642.PreviewGenerator.supports">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">supports</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ExtractionContext</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Determine if this generator can create a preview for the given file.</span>
@@ -1214,7 +1238,7 @@ window.addEventListener("load", load);
 
 
 <div class="viewcode-block" id="PreviewGenerator.generate">
-<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643.PreviewGenerator.generate">[docs]</a>
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.plugins.profiles.jeol_jem_642.PreviewGenerator.generate">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">generate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ExtractionContext</span><span class="p">,</span> <span class="n">output_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generate a thumbnail preview and save to output_path.</span>
@@ -1256,7 +1280,7 @@ window.addEventListener("load", load);
 
 
 <div class="viewcode-block" id="InstrumentProfile">
-<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643.InstrumentProfile">[docs]</a>
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.plugins.profiles.jeol_jem_642.InstrumentProfile">[docs]</a>
 <span class="nd">@dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">InstrumentProfile</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1349,7 +1373,7 @@ window.addEventListener("load", load);
 
   <p class="copyright">
     
-      © Copyright 2026, datasophos, LLC.
+      © Copyright 2025 - 2026, datasophos, LLC.
       <br/>
     
   </p>

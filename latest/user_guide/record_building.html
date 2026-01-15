@@ -431,7 +431,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Jan, 09, 2026"/>
+    <meta name="docbuild:last-update" content="Jan, 15, 2026"/>
   </head>
   
   
@@ -562,11 +562,28 @@ window.addEventListener("load", load);
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../reference.html">
+  <a class="nav-link nav-internal" href="../frontend_guide.html">
+    Frontend Guide
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../reference.html">
     Reference
   </a>
 </li>
 
+                </ul>
+            </li>
+            
   </ul>
 </nav></div>
       
@@ -679,6 +696,13 @@ window.addEventListener("load", load);
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../dev_guide.html">
     Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../frontend_guide.html">
+    Frontend Guide
   </a>
 </li>
 
@@ -942,7 +966,7 @@ are marked <code class="docutils literal notranslate"><span class="pre">NO_FILES
 <p>Files are grouped into logical <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.schemas.activity.html#nexusLIMS.schemas.activity.AcquisitionActivity" title="nexusLIMS.schemas.activity.AcquisitionActivity"><code class="xref py py-class docutils literal notranslate"><span class="pre">AcquisitionActivity</span></code></a>
 objects to approximate conceptual experiment boundaries using statistical analysis of
 file creation times.</p>
-<p><a class="reference internal" href="#cluster-fig"><span class="std std-numref">Fig. 1</span></a> illustrates the clustering process for an EELS spectrum image
+<p>The figure below illustrates the clustering process for an EELS spectrum image
 experiment. Panel (a) shows creation time differences revealing 13 distinct groups.
 Panel (b) histograms time gaps between consecutive files—small gaps indicate
 related files, large gaps mark activity boundaries.</p>
@@ -950,7 +974,7 @@ related files, large gaps mark activity boundaries.</p>
 <span id="cluster-fig"></span><a class="reference internal image-reference" href="../_images/file_clustering.png"><img alt="How groups of files are separated into Acquisition Activities" src="../_images/file_clustering.png" style="width: 640.0px; height: 480.0px;" />
 </a>
 <figcaption>
-<p><span class="caption-number">Fig. 1 </span><span class="caption-text">An example of determining the
+<p><span class="caption-text">An example of determining the
 <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.schemas.activity.html#nexusLIMS.schemas.activity.AcquisitionActivity" title="nexusLIMS.schemas.activity.AcquisitionActivity"><code class="xref py py-class docutils literal notranslate"><span class="pre">AcquisitionActivity</span></code></a> time boundaries
 for a group of files collected during an experiment. See the surrounding
 text for a full explanation of these plots.</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
@@ -1279,7 +1303,7 @@ flowchart TD
 
   <p class="copyright">
     
-      © Copyright 2026, datasophos, LLC.
+      © Copyright 2025 - 2026, datasophos, LLC.
       <br/>
     
   </p>
