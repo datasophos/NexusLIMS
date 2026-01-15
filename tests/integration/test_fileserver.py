@@ -23,7 +23,7 @@ class TestHostFileserver:
         test_file.write_text("Hello from instrument data!")
 
         # Request the file through the fileserver
-        response = requests.get("http://localhost:8081/instrument-data/test_file.txt")
+        response = requests.get("http://localhost:48081/instrument-data/test_file.txt")
 
         # Verify the response
         assert response.status_code == 200
@@ -40,7 +40,7 @@ class TestHostFileserver:
         test_file.write_text("Fake preview content")
 
         # Request the file through the fileserver
-        response = requests.get("http://localhost:8081/data/test_preview.png")
+        response = requests.get("http://localhost:48081/data/test_preview.png")
 
         # Verify the response
         assert response.status_code == 200
@@ -57,7 +57,7 @@ class TestHostFileserver:
         test_file.write_text("CORS test")
 
         # Request the file
-        response = requests.get("http://localhost:8081/instrument-data/cors_test.txt")
+        response = requests.get("http://localhost:48081/instrument-data/cors_test.txt")
 
         # Verify CORS headers
         assert response.status_code == 200
@@ -79,7 +79,9 @@ class TestHostFileserver:
     def test_fileserver_404_handling(self, host_fileserver):
         """Test that the fileserver handles non-existent files correctly."""
         # Request a non-existent file
-        response = requests.get("http://localhost:8081/instrument-data/nonexistent.txt")
+        response = requests.get(
+            "http://localhost:48081/instrument-data/nonexistent.txt"
+        )
 
         # Should return 404
         assert response.status_code == 404

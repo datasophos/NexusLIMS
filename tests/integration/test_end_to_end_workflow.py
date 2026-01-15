@@ -185,7 +185,9 @@ class TestEndToEndWorkflow:
         # Location is relative path like "/path/to/data/file.dm3"
         # Convert to fileserver URL
         # The XML should contain the full path from NX_INSTRUMENT_DATA_PATH
-        dataset_url = f"http://fileserver.localhost/instrument-data{dataset_location}"
+        dataset_url = (
+            f"http://fileserver.localhost:40080/instrument-data{dataset_location}"
+        )
 
         print(f"\n[*] Testing fileserver access to dataset: {dataset_url}")
         dataset_response = requests.get(dataset_url, timeout=10)
@@ -202,7 +204,7 @@ class TestEndToEndWorkflow:
             preview_path = preview_elements[0].text
             # Preview paths are relative to NX_DATA_PATH
             # Convert to fileserver URL using /data/ prefix
-            preview_url = f"http://fileserver.localhost/data{preview_path}"
+            preview_url = f"http://fileserver.localhost:40080/data{preview_path}"
             print(f"\n[*] Testing fileserver access to preview: {preview_url}")
 
             preview_response = requests.get(preview_url, timeout=10)
@@ -415,7 +417,7 @@ class TestEndToEndWorkflow:
         for i, location_el in enumerate(dataset_locations, 1):
             dataset_location = location_el.text
             dataset_url = (
-                f"http://fileserver.localhost/instrument-data{dataset_location}"
+                f"http://fileserver.localhost:40080/instrument-data{dataset_location}"
             )
             _verify_url_accessible(dataset_url, i, len(dataset_locations))
 
@@ -436,7 +438,7 @@ class TestEndToEndWorkflow:
             print(f"\n[*] Testing access to {len(preview_elements)} preview images...")
             for i, preview_el in enumerate(preview_elements, 1):
                 preview_path = preview_el.text
-                preview_url = f"http://fileserver.localhost/data{preview_path}"
+                preview_url = f"http://fileserver.localhost:40080/data{preview_path}"
                 _verify_url_accessible(
                     preview_url, i, len(preview_elements), expected_type="image"
                 )

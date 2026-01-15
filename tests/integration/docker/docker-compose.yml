@@ -6,7 +6,7 @@ services:
       dockerfile: Dockerfile
     container_name: nexuslims-test-nemo
     ports:
-      - "8000:8000"
+      - "48000:8000"
     environment:
       # Django configuration
       - DJANGO_SETTINGS_MODULE=splash_pad_settings
@@ -92,8 +92,8 @@ services:
     image: axllent/mailpit:latest
     container_name: nexuslims-test-mailpit
     ports:
-      - "1025:1025" # SMTP server
-      - "8025:8025" # Web UI
+      - "41025:1025" # SMTP server
+      - "48025:8025" # Web UI
     environment:
       # Require SMTP authentication with specific credentials
       - MP_SMTP_AUTH=test:testpass
@@ -112,7 +112,7 @@ services:
     image: caddy:2-alpine
     container_name: nexuslims-test-caddy-proxy
     ports:
-      - "80:80"
+      - "40080:80"
     extra_hosts:
       - "nemo.localhost:127.0.0.1"
       - "nemo2.localhost:127.0.0.1"
@@ -137,9 +137,9 @@ services:
       dockerfile: Dockerfile
     container_name: nexuslims-test-cdcs
     ports:
-      - "8080:8080"
+      - "48080:8080"
     extra_hosts:
-      # Allow CDCS to resolve *.localhost URLs via host gateway (where Caddy proxy listens on port 80)
+      # Allow CDCS to resolve *.localhost URLs via host gateway (where Caddy proxy listens on port 40080)
       - "cdcs.localhost:host-gateway"
       - "nemo.localhost:host-gateway"
       - "nemo2.localhost:host-gateway"

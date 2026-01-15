@@ -14,7 +14,7 @@ Usage:
     chmod +x tests/integration/debug_fileserver.py
     ./tests/integration/debug_fileserver.py
 
-The fileserver will run on http://localhost:8081 and serve files from:
+The fileserver will run on http://localhost:48081 and serve files from:
     - /instrument-data/ -> /tmp/nexuslims-test-instrument-data/
     - /data/ -> /tmp/nexuslims-test-data/
 
@@ -67,14 +67,16 @@ def main():
         "-p",
         "--port",
         type=int,
-        default=8081,
-        help="Port to listen on (default: 8081)",
+        default=48081,
+        help="Port to listen on (default: 48081)",
     )
 
     args = parser.parse_args()
 
-    if args.port != 8081:
-        print("[!] Warning: Port argument ignored. Fileserver always runs on port 8081")
+    if args.port != 48081:
+        print(
+            "[!] Warning: Port argument ignored. Fileserver always runs on port 48081"
+        )
         print(
             "[!] To change port, modify server_address in conftest.py::host_fileserver"
         )
@@ -83,13 +85,13 @@ def main():
     ensure_directories_exist()
 
     print(f"\n{'=' * 70}")
-    print("[+] Starting fileserver on port 8081")
+    print("[+] Starting fileserver on port 48081")
     print(f"[+] Serving instrument data from: {TEST_INSTRUMENT_DATA_DIR}")
     print(f"[+] Serving NexusLIMS data from: {TEST_DATA_DIR}")
     print(f"{'=' * 70}")
     print("\nAccess URLs:")
-    print("  - http://localhost:8081/instrument-data/")
-    print("  - http://localhost:8081/data/")
+    print("  - http://localhost:48081/instrument-data/")
+    print("  - http://localhost:48081/data/")
     print("\nPress Ctrl+C to stop the server...")
     print(f"{'=' * 70}\n")
 

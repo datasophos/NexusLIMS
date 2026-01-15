@@ -32,7 +32,7 @@ http://cdcs.localhost {
 
 # Fileserver (served by host Python server to avoid Docker volume issues)
 http://fileserver.localhost {
-    reverse_proxy host.docker.internal:8081
+    reverse_proxy host.docker.internal:48081
 }
 
 # Mailpit SMTP testing UI

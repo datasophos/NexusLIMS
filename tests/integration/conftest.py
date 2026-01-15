@@ -31,15 +31,16 @@ if TYPE_CHECKING:
 DOCKER_DIR = Path(__file__).parent / "docker"
 
 # Service URLs (base URLs without /api/)
-NEMO_BASE_URL = "http://nemo.localhost"
+# These use the Caddy reverse proxy on port 40080
+NEMO_BASE_URL = "http://nemo.localhost:40080"
 NEMO2_BASE_URL = (
-    "http://nemo2.localhost"  # Second NEMO instance for multi-instance testing
+    "http://nemo2.localhost:40080"  # Second NEMO instance for multi-instance testing
 )
-CDCS_URL = "http://cdcs.localhost"
-FILESERVER_URL = "http://fileserver.localhost"
-MAILPIT_URL = "http://mailpit.localhost"
+CDCS_URL = "http://cdcs.localhost:40080"
+FILESERVER_URL = "http://fileserver.localhost:40080"
+MAILPIT_URL = "http://mailpit.localhost:40080"
 MAILPIT_SMTP_HOST = "localhost"
-MAILPIT_SMTP_PORT = 1025
+MAILPIT_SMTP_PORT = 41025
 MAILPIT_SMTP_USER = "test"
 MAILPIT_SMTP_PASS = "testpass"
 
@@ -149,7 +150,7 @@ def start_fileserver():
 
     Notes
     -----
-    - Fileserver runs on port 8081
+    - Fileserver runs on port 48081
     - Serves files from TEST_INSTRUMENT_DATA_DIR and TEST_DATA_DIR
     - Uses Python's built-in HTTP server with custom routing
     - Server runs in a daemon thread
@@ -227,10 +228,10 @@ def start_fileserver():
                 )
 
     # Create and start the server
-    server_address = ("", 8081)
+    server_address = ("", 48081)
     httpd = ThreadingHTTPServer(server_address, TestFileHandler)
 
-    print("[+] Host fileserver started successfully on port 8081")
+    print("[+] Host fileserver started successfully on port 48081")
     print(f"[+] Serving instrument data from: {TEST_INSTRUMENT_DATA_DIR}")
     print(f"[+] Serving NexusLIMS data from: {TEST_DATA_DIR}")
 
@@ -1967,14 +1968,16 @@ def _get_metadata_urls_for_datasets(xml_doc, namespace):
     for location, names in location_to_names.items():
         if len(names) == 1:
             # Single signal
-            metadata_urls.append(f"http://fileserver.localhost/data{location}.json")
+            metadata_urls.append(
+                f"http://fileserver.localhost:40080/data{location}.json"
+            )
         else:
             # Multi-signal - extract signal indices from names
             for name in names:
                 match = re.search(r"\((\d+) of \d+\)", name)
                 if match:
                     signal_idx = int(match.group(1)) - 1
-                    url = f"http://fileserver.localhost/data{location}_signal{signal_idx}.json"
+                    url = f"http://fileserver.localhost:40080/data{location}_signal{signal_idx}.json"
                     metadata_urls.append(url)
 
     return metadata_urls
