@@ -61,9 +61,9 @@ def autodoc_mock_settings(_):
 # -- Project information -----------------------------------------------------
 
 project = "NexusLIMS"
-copyright = f"{datetime.now().year}, datasophos, LLC"
+copyright = f"2025 - {datetime.now().year}, datasophos, LLC"
 author = "datasophos, LLC"
-numfig = True
+numfig = False
 
 # The full version, including alpha/beta/rc tags
 actual_release = nexusLIMS.version.__version__

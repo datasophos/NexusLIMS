@@ -1,5 +1,9 @@
 # NexusLIMS - Automated Laboratory Information Management for Electron Microscopy
 
+<p align="center">
+  <img src="docs/_static/logo_horizontal_text.png" alt="NexusLIMS Logo" width="400">
+</p>
+
 [![Documentation](https://img.shields.io/badge/📖%20docs-stable-blue)](https://datasophos.github.io/NexusLIMS/stable/)
 [![Python 3.11+](https://img.shields.io/badge/🐍%20python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![Maintained by Datasophos](https://img.shields.io/badge/🏢%20maintained%20by-datasophos%20LLC-blue)](https://datasophos.co)
@@ -52,7 +56,7 @@ pip install nexusLIMS
 uv pip install nexusLIMS
 ```
 
-**Note**: When installing from PyPI, you'll need to manually create a `.env` file in your working directory or set environment variables for configuration. See the [Configuration Documentation](https://datasophos.github.io/NexusLIMS/stable/getting_started.html#configuration) for required settings.
+**Note**: When installing from PyPI, you'll need to manually create a `.env` file in your working directory or set environment variables for configuration. See the [Configuration Documentation](https://datasophos.github.io/NexusLIMS/stable/user_guide/configuration.html) for required settings.
 
 #### Option 2: Install from Source (Recommended for Development)
 
@@ -86,7 +90,7 @@ uv sync
    - NEMO API credentials (if using)
    - Database path
 
-See [Configuration Documentation](https://datasophos.github.io/NexusLIMS/stable/getting_started.html#configuration) for details.
+See [Configuration Documentation](https://datasophos.github.io/NexusLIMS/stable/user_guide/configuration.html) for details.
 
 ### Initialize Database
 

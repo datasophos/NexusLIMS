@@ -6,6 +6,7 @@ Home <self>
 user_guide
 migration
 dev_guide
+frontend_guide
 reference
 ```
 
@@ -39,6 +40,13 @@ instrument information.
 
 ````{grid} 2
 :gutter: 3
+
+```{grid-item-card} 📸 Screenshots
+:link: frontend_guide/gallery
+:link-type: doc
+
+Click here to see screenshots of the user-facing frontend and its features.
+```
 
 ```{grid-item-card} 🚀 Getting Started
 :link: user_guide/getting_started
@@ -80,6 +88,13 @@ Understand the architecture, database design, and how to extend NexusLIMS.
 :link-type: doc
 
 Complete API documentation and changelog.
+```
+
+```{grid-item-card} 🖥️ Frontend Web Interface
+:link: frontend_guide
+:link-type: doc
+
+Documentation about deployment and management of the CDCS web frontend for searching and visualizing records.
 ```
 
 ````

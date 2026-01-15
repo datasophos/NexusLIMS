@@ -475,7 +475,7 @@ class _SettingsManager:
             help_msg = (
                 "\n" + "=" * 80 + "\n"
                 "NexusLIMS configuration validation failed.\n"
-                f"See https://datasophos.github.io/NexusLIMS/v{doc_version}/configuration.html\n"
+                f"See https://datasophos.github.io/NexusLIMS/{doc_version}/configuration.html\n"
                 "for complete environment variable reference.\n" + "=" * 80
             )
             if hasattr(e, "add_note"):
