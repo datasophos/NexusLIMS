@@ -31,15 +31,16 @@ if TYPE_CHECKING:
 DOCKER_DIR = Path(__file__).parent / "docker"
 
 # Service URLs (base URLs without /api/)
-NEMO_BASE_URL = "http://nemo.localhost"
+# These use the Caddy reverse proxy on port 40080
+NEMO_BASE_URL = "http://nemo.localhost:40080"
 NEMO2_BASE_URL = (
-    "http://nemo2.localhost"  # Second NEMO instance for multi-instance testing
+    "http://nemo2.localhost:40080"  # Second NEMO instance for multi-instance testing
 )
-CDCS_URL = "http://cdcs.localhost"
-FILESERVER_URL = "http://fileserver.localhost"
-MAILPIT_URL = "http://mailpit.localhost"
+CDCS_URL = "http://cdcs.localhost:40080"
+FILESERVER_URL = "http://fileserver.localhost:40080"
+MAILPIT_URL = "http://mailpit.localhost:40080"
 MAILPIT_SMTP_HOST = "localhost"
-MAILPIT_SMTP_PORT = 1025
+MAILPIT_SMTP_PORT = 41025
 MAILPIT_SMTP_USER = "test"
 MAILPIT_SMTP_PASS = "testpass"
 
@@ -149,7 +150,7 @@ def start_fileserver():
 
     Notes
     -----
-    - Fileserver runs on port 8081
+    - Fileserver runs on port 48081
     - Serves files from TEST_INSTRUMENT_DATA_DIR and TEST_DATA_DIR
     - Uses Python's built-in HTTP server with custom routing
     - Server runs in a daemon thread
@@ -227,10 +228,10 @@ def start_fileserver():
                 )
 
     # Create and start the server
-    server_address = ("", 8081)
+    server_address = ("", 48081)
     httpd = ThreadingHTTPServer(server_address, TestFileHandler)
 
-    print("[+] Host fileserver started successfully on port 8081")
+    print("[+] Host fileserver started successfully on port 48081")
     print(f"[+] Serving instrument data from: {TEST_INSTRUMENT_DATA_DIR}")
     print(f"[+] Serving NexusLIMS data from: {TEST_DATA_DIR}")
 
@@ -935,6 +936,41 @@ def safe_refresh_settings(monkeypatch, tmp_path):
         refresh_settings()
 
     return _refresh
+
+
+def delete_all_cdcs_records():
+    """
+    Delete all records from the CDCS instance.
+
+    This helper function fetches all records from CDCS and deletes them.
+    Useful for cleanup after tests to ensure a clean state.
+
+    Returns
+    -------
+    int
+        Number of records deleted
+    """
+    import nexusLIMS.cdcs as cdcs_module
+
+    deleted_count = 0
+    print("\n[*] Cleaning up CDCS records...")
+    try:
+        all_records = cdcs_module.search_records()
+        if all_records:
+            for record in all_records:
+                try:
+                    cdcs_module.delete_record(record["id"])
+                    print(f"    Deleted record: {record.get('title', record['id'])}")
+                    deleted_count += 1
+                except Exception as e:
+                    print(f"[!] Failed to delete record {record['id']}: {e}")
+            print(f"[+] Deleted {deleted_count} records from CDCS")
+        else:
+            print("[+] No records to delete from CDCS")
+    except Exception as e:
+        print(f"[!] Failed to fetch records for cleanup: {e}")
+
+    return deleted_count
 
 
 def setup_cdcs_environment(cdcs_url, cdcs_credentials):
@@ -1713,8 +1749,8 @@ def test_environment_setup(  # noqa: PLR0913
     monkeypatch : pytest.MonkeyPatch
         Pytest monkeypatch fixture
 
-    Returns
-    -------
+    Yields
+    ------
     dict
         Test environment information:
         - 'instrument_pid': Instrument PID to use for testing
@@ -1723,6 +1759,11 @@ def test_environment_setup(  # noqa: PLR0913
         - 'user': Expected username
         - 'instrument_db': Test instrument database
         - 'cdcs_client': CDCS client configuration
+
+    Notes
+    -----
+    After the test completes, all records are deleted from the CDCS instance
+    to ensure a clean state for subsequent tests.
     """
     from datetime import timedelta
 
@@ -1750,7 +1791,7 @@ def test_environment_setup(  # noqa: PLR0913
     print(f"    Expected session time: {session_start} to {session_end}")
     print("    Expected user: captain")
 
-    return {
+    yield {
         "instrument_pid": instrument.name,  # instrument.name is the PID
         "dt_from": session_start,
         "dt_to": session_end,
@@ -1758,6 +1799,9 @@ def test_environment_setup(  # noqa: PLR0913
         "instrument_db": test_instrument_db,
         "cdcs_client": cdcs_client,
     }
+
+    # Cleanup: Delete all records from CDCS
+    delete_all_cdcs_records()
 
 
 # ============================================================================
@@ -1967,14 +2011,16 @@ def _get_metadata_urls_for_datasets(xml_doc, namespace):
     for location, names in location_to_names.items():
         if len(names) == 1:
             # Single signal
-            metadata_urls.append(f"http://fileserver.localhost/data{location}.json")
+            metadata_urls.append(
+                f"http://fileserver.localhost:40080/data{location}.json"
+            )
         else:
             # Multi-signal - extract signal indices from names
             for name in names:
                 match = re.search(r"\((\d+) of \d+\)", name)
                 if match:
                     signal_idx = int(match.group(1)) - 1
-                    url = f"http://fileserver.localhost/data{location}_signal{signal_idx}.json"
+                    url = f"http://fileserver.localhost:40080/data{location}_signal{signal_idx}.json"
                     metadata_urls.append(url)
 
     return metadata_urls

@@ -8,6 +8,8 @@ and that the Docker services are accessible.
 import pytest
 import requests
 
+caddy_port_designation = ":40080"
+
 
 @pytest.mark.integration
 class TestDockerServiceFixtures:
@@ -32,18 +34,24 @@ class TestNemoFixtures:
 
     def test_nemo_url_fixture(self, nemo_url):
         """Test nemo_url fixture provides URL."""
-        assert nemo_url == "http://nemo.localhost"
+        assert nemo_url.replace(caddy_port_designation, "") == "http://nemo.localhost"
 
     def test_nemo_api_url_fixture(self, nemo_api_url):
         """Test nemo_api_url fixture provides API URL."""
-        assert nemo_api_url == "http://nemo.localhost/api/"
+        assert (
+            nemo_api_url.replace(caddy_port_designation, "")
+            == "http://nemo.localhost/api/"
+        )
 
     def test_nemo_client_fixture(self, nemo_client):
         """Test nemo_client fixture provides configuration."""
         assert "url" in nemo_client
         assert "token" in nemo_client
         assert "timezone" in nemo_client
-        assert nemo_client["url"] == "http://nemo.localhost/api/"
+        assert (
+            nemo_client["url"].replace(caddy_port_designation, "")
+            == "http://nemo.localhost/api/"
+        )
 
     def test_mock_users_data_fixture(self, mock_users_data):
         """Test mock_users_data fixture provides user data (shared from unit tests)."""
@@ -74,7 +82,7 @@ class TestCdcsFixtures:
 
     def test_cdcs_url_fixture(self, cdcs_url):
         """Test cdcs_url fixture provides URL."""
-        assert cdcs_url == "http://cdcs.localhost"
+        assert cdcs_url.replace(caddy_port_designation, "") == "http://cdcs.localhost"
 
     def test_cdcs_credentials_fixture(self, cdcs_credentials):
         """Test cdcs_credentials fixture provides credentials."""
@@ -90,7 +98,10 @@ class TestCdcsFixtures:
         assert "password" in cdcs_client
         assert "register_record" in cdcs_client
         assert "created_records" in cdcs_client
-        assert cdcs_client["url"] == "http://cdcs.localhost"
+        assert (
+            cdcs_client["url"].replace(caddy_port_designation, "")
+            == "http://cdcs.localhost"
+        )
 
     def test_cdcs_service_accessible(self, cdcs_url):
         """Test that CDCS service is actually accessible."""

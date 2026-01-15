@@ -173,17 +173,17 @@ jobs:
 
       - name: Wait for services to be healthy
         run: |
-          timeout 120 bash -c 'until curl -f http://localhost:8000/ > /dev/null 2>&1; do sleep 2; done'
-          timeout 120 bash -c 'until curl -f http://localhost:8080/ > /dev/null 2>&1; do sleep 2; done'
+          timeout 120 bash -c 'until curl -f http://localhost:48000/ > /dev/null 2>&1; do sleep 2; done'
+          timeout 120 bash -c 'until curl -f http://localhost:48080/ > /dev/null 2>&1; do sleep 2; done'
 
       - name: Test service accessibility
         run: |
           echo "Testing NEMO web UI..."
-          curl -f http://localhost:8000/ > /dev/null 2>&1 || (echo "NEMO not accessible" && exit 1)
+          curl -f http://localhost:48000/ > /dev/null 2>&1 || (echo "NEMO not accessible" && exit 1)
           echo "✓ NEMO is accessible"
 
           echo "Testing CDCS web UI..."
-          curl -f http://localhost:8080/ > /dev/null 2>&1 || (echo "CDCS not accessible" && exit 1)
+          curl -f http://localhost:48080/ > /dev/null 2>&1 || (echo "CDCS not accessible" && exit 1)
           echo "✓ CDCS is accessible"
 
           echo "All services are responding correctly!"

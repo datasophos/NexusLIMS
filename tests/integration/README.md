@@ -9,7 +9,7 @@ This directory contains integration tests for NexusLIMS that use real Docker ser
 - Docker and Docker Compose installed
 - `uv` package manager installed
 - At least 4GB of available RAM for Docker services
-- Ports 8000, 8080, and 8081 available
+- Ports 40080, 41025, 48000, 48025, 48080, and 48081 available (esoteric ports to avoid collisions)
 
 ### Running Integration Tests
 
@@ -21,11 +21,11 @@ This directory contains integration tests for NexusLIMS that use real Docker ser
 
 2. **Wait for services to be ready (check health):**
    ```bash
-   # NEMO should respond
-   curl http://localhost:8000/
+   # NEMO should respond (via Caddy proxy)
+   curl http://nemo.localhost:40080/
 
-   # CDCS should respond
-   curl http://localhost:8080/
+   # CDCS should respond (via Caddy proxy)
+   curl http://cdcs.localhost:40080/
    ```
 
 3. **Run integration tests:**
@@ -72,12 +72,15 @@ The integration test environment consists of the following Docker services:
 
 #### Services
 
-- **NEMO** (port 8000): Lab management system with test users, tools, and reservations
-- **CDCS** (port 8080): Curator/Django application for XML record storage
+- **Caddy Proxy** (port 40080): Reverse proxy for all services via *.localhost URLs
+- **NEMO** (port 48000): Lab management system with test users, tools, and reservations
+- **CDCS** (port 48080): Curator/Django application for XML record storage
   - **MongoDB** (internal): Document storage for CDCS records
   - **PostgreSQL** (internal): Django database for CDCS metadata
   - **Redis** (internal): Celery task queue for background jobs
-- **Fileserver** (port 8081): Caddy fileserver for serving instrument data and previews
+- **Mailpit SMTP** (port 41025): SMTP testing server
+- **Mailpit Web UI** (port 48025): Email testing web interface
+- **Fileserver** (port 48081): Host Python server for serving instrument data and previews
 
 ### Test Data Flow
 
@@ -99,8 +102,8 @@ Starts all Docker services once per test session and tears them down after all t
 **Usage:**
 ```python
 def test_something(docker_services):
-    # Services are running and healthy
-    response = requests.get("http://localhost:8000/")
+    # Services are running and healthy (via Caddy proxy)
+    response = requests.get("http://nemo.localhost:40080/")
     assert response.status_code == 200
 ```
 
@@ -117,18 +120,18 @@ Convenience fixture that provides service URLs and status.
 ```python
 def test_services(docker_services_running):
     nemo_url = docker_services_running["nemo_url"]
-    assert nemo_url == "http://localhost:8000"
+    assert nemo_url == "http://nemo.localhost:40080/api/"
 ```
 
 ### NEMO Fixtures
 
 #### `nemo_url`
 
-Provides NEMO base URL (`http://localhost:8000`).
+Provides NEMO base URL (`http://nemo.localhost:40080`).
 
 #### `nemo_api_url`
 
-Provides NEMO API base URL (`http://localhost:8000/api/`).
+Provides NEMO API base URL (`http://nemo.localhost:40080/api/`).
 
 #### `nemo_client`
 
@@ -140,7 +143,7 @@ def test_nemo_harvester(nemo_client):
     # Config is already patched to use test NEMO
     from nexusLIMS.harvesters.nemo import connector
 
-    # This will connect to http://localhost:8000/api/
+    # This will connect to http://nemo.localhost:40080/api/
     conn = connector.NemoConnector(
         base_url=nemo_client["url"],
         token=nemo_client["token"],
@@ -167,7 +170,7 @@ Provides list of test instruments seeded in NEMO:
 
 #### `cdcs_url`
 
-Provides CDCS base URL (`http://localhost:8080`).
+Provides CDCS base URL (`http://cdcs.localhost:40080`).
 
 #### `cdcs_credentials`
 
@@ -449,10 +452,10 @@ python tests/integration/debug_fileserver.py
 ```
 
 **What it does:**
-- Runs the same fileserver used in integration tests on port 8081
+- Runs the same fileserver used in integration tests on port 48081
 - Serves files from test data directories:
-  - `http://localhost:8081/instrument-data/` → `/tmp/nexuslims-test-instrument-data/`
-  - `http://localhost:8081/data/` → `/tmp/nexuslims-test-data/`
+  - `http://localhost:48081/instrument-data/` → `/tmp/nexuslims-test-instrument-data/`
+  - `http://localhost:48081/data/` → `/tmp/nexuslims-test-data/`
 - Shows directory contents and diagnostics on startup
 - Runs until stopped with Ctrl+C
 
@@ -478,23 +481,23 @@ $ python tests/integration/debug_fileserver.py
       - Titan_TEM
 
 ======================================================================
-[+] Starting fileserver on port 8081
+[+] Starting fileserver on port 48081
 [+] Serving instrument data from: /tmp/nexuslims-test-instrument-data
 [+] Serving NexusLIMS data from: /tmp/nexuslims-test-data
 ======================================================================
 
 Access URLs:
-  - http://localhost:8081/instrument-data/
-  - http://localhost:8081/data/
+  - http://localhost:48081/instrument-data/
+  - http://localhost:48081/data/
 
 Press Ctrl+C to stop the server...
 ======================================================================
 
 # Test access
-$ curl http://localhost:8081/instrument-data/
+$ curl http://localhost:48081/instrument-data/
 # Returns directory listing
 
-$ curl http://localhost:8081/some-other-path
+$ curl http://localhost:48081/some-other-path
 # Returns 404
 ```
 
@@ -519,7 +522,7 @@ docker compose logs cdcs
 ```
 
 **Common issues:**
-- Ports already in use (8000, 8080, 8081)
+- Ports already in use (40080, 41025, 48000, 48025, 48080, 48081)
 - Insufficient Docker resources (increase RAM/CPU in Docker settings)
 - Previous containers not cleaned up (run `docker compose down -v`)
 
@@ -552,7 +555,7 @@ If services take too long to start:
 ### CDCS Upload Failures
 
 **Check:**
-- CDCS service is healthy: `curl http://localhost:8080/`
+- CDCS service is healthy: `curl http://cdcs.localhost:40080/`
 - Credentials are correct (admin/admin)
 - XML record is valid against schema
 - Network connectivity to CDCS container

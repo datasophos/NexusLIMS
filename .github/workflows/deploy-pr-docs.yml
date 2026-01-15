@@ -217,9 +217,15 @@ jobs:
           git add -A "pr-${PR_NUMBER}/" 2>/dev/null || true
           git add -A latest/ 2>/dev/null || true
           git add -A [0-9]*/ 2>/dev/null || true
+          git add -A stable/ 2>/dev/null || true
           # Note: We only add the specific pr-${PR_NUMBER} directory above.
           # Do NOT use "pr-*/" pattern as it would also match the temporary "pr-source/" checkout directory.
           git commit -m "Deploy docs preview for PR #${PR_NUMBER} and update switcher.json" || echo "No changes to commit"
+
+          # debugging
+          git status
+          git diff
+
           git pull --rebase origin gh-pages
           git push origin gh-pages
           echo "✅ Documentation preview deployed!"

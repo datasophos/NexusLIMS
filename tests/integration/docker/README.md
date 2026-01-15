@@ -38,9 +38,9 @@ docker-compose down -v
 
 ### NEMO Service
 
-- **URL**: http://localhost:8000
-- **API**: http://localhost:8000/api/
-- **Admin Panel**: http://localhost:8000/admin/
+- **URL**: http://nemo.localhost:40080 (via Caddy proxy) or http://localhost:48000 (direct)
+- **API**: http://nemo.localhost:40080/api/
+- **Admin Panel**: http://nemo.localhost:40080/admin/
 - **Admin Credentials**: admin / admin
 
 #### Test Data
@@ -86,14 +86,14 @@ All users have the password: `test_password_123`
 #### Testing the NEMO API
 
 ```bash
-# List users
-curl http://localhost:8000/api/users/
+# List users (via Caddy proxy)
+curl http://nemo.localhost:40080/api/users/
 
 # List tools
-curl http://localhost:8000/api/tools/
+curl http://nemo.localhost:40080/api/tools/
 
 # List projects
-curl http://localhost:8000/api/projects/
+curl http://nemo.localhost:40080/api/projects/
 ```
 
 ### PostgreSQL Database
@@ -191,18 +191,7 @@ docker-compose exec nemo python /init_data.py
 
 ### Port conflicts
 
-If ports 8000 or 5432 are already in use, modify [`docker-compose.yml`](docker-compose.yml):
-
-```yaml
-services:
-  nemo:
-    ports:
-      - "8001:8000"  # Use different host port
-
-  nemo-postgres:
-    ports:
-      - "5433:5432"  # Use different host port
-```
+If ports are already in use, modify [`docker-compose.yml`](docker-compose.yml). The integration tests use esoteric ports (40080, 41025, 48000, 48025, 48080, 48081) to reduce the chance of port collisions.
 
 ### Clearing all data
 
@@ -252,16 +241,16 @@ docker-compose -f docker-compose.yml -f docker-compose.ci.yml up -d
 
 ### Accessing CDCS
 
-- **URL**: http://localhost:8080
-- **Admin Panel**: http://localhost:8080/admin/
+- **URL**: http://cdcs.localhost:40080 (via Caddy proxy) or http://localhost:48080 (direct)
+- **Admin Panel**: http://cdcs.localhost:40080/admin/
 - **Admin Credentials**: admin / admin
-- **Templates Page**: http://localhost:8080/admin/templates
+- **Templates Page**: http://cdcs.localhost:40080/admin/templates
 
 ### File Server
 
-- **URL**: http://localhost:8081
-- **Instrument Data**: http://localhost:8081/instrument-data
-- **Preview Data**: http://localhost:8081/data
+- **URL**: http://fileserver.localhost:40080 (via Caddy proxy) or http://localhost:48081 (direct)
+- **Instrument Data**: http://fileserver.localhost:40080/instrument-data
+- **Preview Data**: http://fileserver.localhost:40080/data
 
 The file server uses Caddy and serves test data from:
 - `/tmp/nexuslims-test-instrument-data` → Instrument files
@@ -276,8 +265,8 @@ The Nexus Experiment schema is automatically loaded on first startup:
 1. Schema loaded from `nexusLIMS/schemas/nexus-experiment.xsd` as a global template
 2. XSLT stylesheets downloaded from NexusLIMS-CDCS repository
 3. XSLT variables patched with fileserver URLs:
-   - `datasetBaseUrl` → `http://localhost:8081/instrument-data`
-   - `previewBaseUrl` → `http://localhost:8081/data`
+   - `datasetBaseUrl` → `http://fileserver.localhost:40080/instrument-data`
+   - `previewBaseUrl` → `http://fileserver.localhost:40080/data`
 4. Template registered with XSLT rendering configuration
 5. Test workspace created
 6. Anonymous access configured

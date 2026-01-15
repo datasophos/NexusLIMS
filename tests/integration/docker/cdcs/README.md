@@ -101,21 +101,21 @@ docker-compose logs -f cdcs
 ### Accessing the Service
 
 Once started, the CDCS instance is available at:
-- **URL:** http://localhost:8080
-- **Admin Interface:** http://localhost:8080/admin
-- **REST API:** http://localhost:8080/rest/
+- **URL:** http://cdcs.localhost:40080
+- **Admin Interface:** http://cdcs.localhost:40080/admin
+- **REST API:** http://cdcs.localhost:40080/rest/
 
 ### Testing the Service
 
 ```bash
 # Check service health
-curl http://localhost:8080/
+curl http://cdcs.localhost:40080/
 
 # Check REST API
-curl http://localhost:8080/rest/workspace/read_access
+curl http://cdcs.localhost:40080/rest/workspace/read_access
 
 # Login and get API token
-curl -X POST http://localhost:8080/rest/auth/login/ \
+curl -X POST http://cdcs.localhost:40080/rest/auth/login/ \
   -H "Content-Type: application/json" \
   -d '{"username": "admin", "password": "admin"}'
 ```
@@ -147,7 +147,7 @@ The service includes comprehensive health checks:
 - Interval: 5s, Start period: 5s
 
 **CDCS Application:**
-- Command: `curl -f http://localhost:8080/`
+- Command: `curl -f http://cdcs.localhost:40080/`
 - Interval: 10s, Start period: 60s (allows time for initialization)
 
 ## Initialization Process
@@ -185,7 +185,7 @@ The initialization script (`init_schema.py`) uses a marker file to prevent dupli
 docker-compose logs cdcs cdcs-mongo cdcs-postgres cdcs-redis
 
 # Check if ports are already in use
-lsof -i :8080  # CDCS web interface
+lsof -i :48080  # CDCS web interface
 
 # Rebuild from scratch
 docker-compose down -v

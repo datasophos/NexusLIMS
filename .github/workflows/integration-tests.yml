@@ -88,15 +88,15 @@ jobs:
       - name: Wait for services to be healthy
         run: |
           echo "Waiting for NEMO to be ready..."
-          timeout 180 bash -c 'until curl -f http://localhost:8000/ > /dev/null 2>&1; do echo -n "."; sleep 3; done'
+          timeout 180 bash -c 'until curl -f http://localhost:48000/ > /dev/null 2>&1; do echo -n "."; sleep 3; done'
           echo "✓ NEMO is ready"
 
           echo "Waiting for CDCS to be ready..."
-          timeout 240 bash -c 'until curl -f http://localhost:8080/ > /dev/null 2>&1; do echo -n "."; sleep 5; done'
+          timeout 240 bash -c 'until curl -f http://localhost:48080/ > /dev/null 2>&1; do echo -n "."; sleep 5; done'
           echo "✓ CDCS is ready"
 
           echo "Waiting for MailPit to be ready..."
-          timeout 60 bash -c 'until curl -f http://localhost:8025/ > /dev/null 2>&1; do echo -n "."; sleep 2; done'
+          timeout 60 bash -c 'until curl -f http://localhost:48025/ > /dev/null 2>&1; do echo -n "."; sleep 2; done'
           echo "✓ MailPit is ready"
 
       - name: Show Docker service status
@@ -143,7 +143,7 @@ jobs:
           NX_DB_PATH=/tmp/nexuslims-test-data/nexuslims_test.db
 
           # CDCS configuration (will be overridden by fixtures)
-          NX_CDCS_URL=http://localhost:8080
+          NX_CDCS_URL=http://localhost:48080
           NX_CDCS_USER=admin
           NX_CDCS_PASS=admin
           EOF
@@ -197,12 +197,12 @@ jobs:
         working-directory: tests/integration/docker
         run: |
           mkdir -p ../../docker-logs
-          
+
           # Debug: Show what containers exist
           echo "=== Running Containers ==="
           docker ps -a --filter "name=nexuslims-test" || true
           echo ""
-          
+
           # Determine which compose file was used and collect logs
           if docker image inspect nexuslims-test-nemo:latest >/dev/null 2>&1 && \
              docker image inspect nexuslims-test-cdcs:latest >/dev/null 2>&1; then
@@ -210,17 +210,17 @@ jobs:
           else
             COMPOSE_FILE="docker-compose.yml"
           fi
-          
+
           echo "Collecting logs from compose stack (using $COMPOSE_FILE)..."
-          
+
           # Collect full compose logs (try both approaches)
           docker compose -f "$COMPOSE_FILE" logs --no-color > ../../docker-logs/docker-compose.log 2>&1 || true
-          
+
           # Also try collecting by container name directly as fallback
           for container in nexuslims-test-nemo nexuslims-test-cdcs nexuslims-test-cdcs-mongo nexuslims-test-cdcs-postgres nexuslims-test-cdcs-redis nexuslims-test-mailpit nexuslims-test-caddy-proxy; do
             docker logs "$container" > "../../docker-logs/${container##*-}.log" 2>&1 || true
           done
-          
+
           # Display summary to action logs
           echo "=== Docker Logs Summary ==="
           du -sh ../../docker-logs/* 2>/dev/null || echo "No logs collected"

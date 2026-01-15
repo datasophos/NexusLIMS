@@ -222,6 +222,18 @@ class Settings(BaseSettings):
         ),
         gt=0,
     )
+    NX_CLUSTERING_SENSITIVITY: float = Field(
+        1.0,
+        description=(
+            "Controls the sensitivity of file clustering into Acquisition Activities. "
+            "Higher values (e.g., 2.0) make clustering more sensitive to time gaps, "
+            "resulting in more activities. Lower values (e.g., 0.5) make clustering "
+            "less sensitive, resulting in fewer activities. Set to 0 to disable "
+            "clustering entirely and group all files into a single activity. "
+            "Default is 1.0 (no change to automatic clustering)."
+        ),
+        ge=0,
+    )
     NX_LOG_PATH: DirectoryPath | None = Field(
         None,
         description=(

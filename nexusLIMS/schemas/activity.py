@@ -57,6 +57,14 @@ def cluster_filelist_mtimes(filelist: List[str]) -> List[float]:
     the distribution of the data itself, rather than a pre-supposed optimum.
     The KDE minima approach was suggested [here](https://stackoverflow.com/a/35151947/1435788).
 
+    The sensitivity of the clustering can be controlled via the
+    ``NX_CLUSTERING_SENSITIVITY`` environment variable:
+
+    - Values > 1.0 make clustering more sensitive to time gaps (more activities)
+    - Values < 1.0 make clustering less sensitive (fewer activities)
+    - Value of 0 disables clustering entirely (all files in one activity)
+    - Default is 1.0 (no adjustment to automatic clustering)
+
     Parameters
     ----------
     filelist : List[str]
@@ -68,8 +76,15 @@ def cluster_filelist_mtimes(filelist: List[str]) -> List[float]:
     -------
     aa_boundaries : List[float]
         A list of the `mtime` values that represent boundaries between
-        discrete Acquisition Activities
+        discrete Acquisition Activities. Returns empty list if clustering
+        is disabled or only one file is provided.
     """
+    # Check if clustering is disabled
+    sensitivity = settings.NX_CLUSTERING_SENSITIVITY
+    if sensitivity == 0:
+        _logger.info("Clustering disabled (NX_CLUSTERING_SENSITIVITY=0)")
+        return []
+
     _logger.info("Starting clustering of file mtimes")
     start_timer = default_timer()
     mtimes = sorted([f.stat().st_mtime for f in filelist])
@@ -107,7 +122,21 @@ def cluster_filelist_mtimes(filelist: List[str]) -> List[float]:
     )
     grid.fit(m_array)
     bandwidth = grid.best_params_["bandwidth"]
-    _logger.info("Using bandwidth of %.3f minutes for KDE", bandwidth)
+
+    # Apply sensitivity adjustment: higher sensitivity = smaller bandwidth = more
+    # activity boundaries detected. We divide by sensitivity so that values > 1
+    # result in smaller bandwidth (more sensitive to gaps).
+    if sensitivity != 1.0:
+        adjusted_bandwidth = bandwidth / sensitivity
+        _logger.info(
+            "Adjusted bandwidth from %.3f to %.3f (sensitivity=%.2f)",
+            bandwidth,
+            adjusted_bandwidth,
+            sensitivity,
+        )
+        bandwidth = adjusted_bandwidth
+    else:
+        _logger.info("Using bandwidth of %.3f for KDE", bandwidth)
 
     # Calculate AcquisitionActivity boundaries by "clustering" the timestamps
     # using KDE using KDTree nearest neighbor estimates, and the previously

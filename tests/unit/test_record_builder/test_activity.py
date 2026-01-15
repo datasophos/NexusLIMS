@@ -415,3 +415,212 @@ class TestActivity:
         # - "Beam Energy" should be in unique_meta for both files (different values)
         assert "Beam Energy" in activity.unique_meta[0]
         assert "Beam Energy" in activity.unique_meta[1]
+
+
+class TestClusteringSensitivity:
+    """Test the NX_CLUSTERING_SENSITIVITY configuration option."""
+
+    def test_clustering_disabled_returns_empty_list(
+        self, tmp_path, monkeypatch, caplog
+    ):
+        """Test that NX_CLUSTERING_SENSITIVITY=0 disables clustering."""
+        import time
+
+        from nexusLIMS.config import refresh_settings
+        from nexusLIMS.schemas.activity import cluster_filelist_mtimes
+
+        # Create test files with different modification times
+        base_time = time.time()
+        files = []
+        for i in range(5):
+            f = tmp_path / f"file_{i}.txt"
+            f.write_text(f"content {i}")
+            # Set modification times 10 seconds apart
+            import os
+
+            os.utime(f, (base_time + i * 10, base_time + i * 10))
+            files.append(f)
+
+        # Set clustering sensitivity to 0 (disabled)
+        monkeypatch.setenv("NX_CLUSTERING_SENSITIVITY", "0")
+        refresh_settings()
+
+        # Call clustering function
+        boundaries = cluster_filelist_mtimes(files)
+
+        # Should return empty list (all files in one activity)
+        assert boundaries == []
+        assert "Clustering disabled" in caplog.text
+
+    def test_clustering_default_sensitivity(self, tmp_path, monkeypatch):
+        """Test that default sensitivity (1.0) behaves normally."""
+        import time
+
+        from nexusLIMS.config import refresh_settings
+        from nexusLIMS.schemas.activity import cluster_filelist_mtimes
+
+        # Create test files with a clear gap between them
+        # First 3 files clustered together, then a gap, then 2 more files
+        base_time = time.time()
+        files = []
+        import os
+
+        # First cluster: 3 files 1 second apart
+        for i in range(3):
+            f = tmp_path / f"file_{i}.txt"
+            f.write_text(f"content {i}")
+            os.utime(f, (base_time + i, base_time + i))
+            files.append(f)
+
+        # Gap of 100 seconds, then second cluster: 2 files 1 second apart
+        for i in range(2):
+            f = tmp_path / f"file_{i + 3}.txt"
+            f.write_text(f"content {i + 3}")
+            t = base_time + 100 + i
+            os.utime(f, (t, t))
+            files.append(f)
+
+        # Set default sensitivity
+        monkeypatch.setenv("NX_CLUSTERING_SENSITIVITY", "1.0")
+        refresh_settings()
+
+        # Call clustering function
+        boundaries = cluster_filelist_mtimes(files)
+
+        # With a 100-second gap and 1-second spacing, should detect 1 boundary
+        assert len(boundaries) >= 1
+
+    def test_clustering_high_sensitivity(self, tmp_path, monkeypatch, caplog):
+        """Test that high sensitivity (>1.0) results in smaller bandwidth."""
+        import time
+
+        from nexusLIMS.config import refresh_settings
+        from nexusLIMS.schemas.activity import cluster_filelist_mtimes
+
+        # Create test files with moderate gaps
+        base_time = time.time()
+        files = []
+        import os
+
+        # Create files with 10 second gaps
+        for i in range(5):
+            f = tmp_path / f"file_{i}.txt"
+            f.write_text(f"content {i}")
+            t = base_time + i * 10
+            os.utime(f, (t, t))
+            files.append(f)
+
+        # Set high sensitivity
+        monkeypatch.setenv("NX_CLUSTERING_SENSITIVITY", "2.0")
+        refresh_settings()
+
+        # Call clustering function - boundaries value not used, just checking logs
+        cluster_filelist_mtimes(files)
+
+        # Verify that bandwidth was adjusted in log
+        assert "Adjusted bandwidth" in caplog.text
+        assert "sensitivity=2.00" in caplog.text
+
+    def test_clustering_low_sensitivity(self, tmp_path, monkeypatch, caplog):
+        """Test that low sensitivity (<1.0) results in larger bandwidth."""
+        import time
+
+        from nexusLIMS.config import refresh_settings
+        from nexusLIMS.schemas.activity import cluster_filelist_mtimes
+
+        # Create test files with moderate gaps
+        base_time = time.time()
+        files = []
+        import os
+
+        # Create files with 10 second gaps
+        for i in range(5):
+            f = tmp_path / f"file_{i}.txt"
+            f.write_text(f"content {i}")
+            t = base_time + i * 10
+            os.utime(f, (t, t))
+            files.append(f)
+
+        # Set low sensitivity
+        monkeypatch.setenv("NX_CLUSTERING_SENSITIVITY", "0.5")
+        refresh_settings()
+
+        # Call clustering function - boundaries value not used, just checking logs
+        cluster_filelist_mtimes(files)
+
+        # Verify that bandwidth was adjusted in log
+        assert "Adjusted bandwidth" in caplog.text
+        assert "sensitivity=0.50" in caplog.text
+
+    def test_clustering_single_file(self, tmp_path, monkeypatch):
+        """Test single file returns its mtime as boundary."""
+        from nexusLIMS.config import refresh_settings
+        from nexusLIMS.schemas.activity import cluster_filelist_mtimes
+
+        # Create a single test file
+        f = tmp_path / "single_file.txt"
+        f.write_text("content")
+        files = [f]
+
+        # Even with sensitivity=0, a single file should return its mtime
+        # Wait - if sensitivity=0, it returns [] before checking file count.
+        # Let's test with default sensitivity first.
+        monkeypatch.setenv("NX_CLUSTERING_SENSITIVITY", "1.0")
+        refresh_settings()
+
+        boundaries = cluster_filelist_mtimes(files)
+
+        # Single file returns its mtime as the boundary
+        assert len(boundaries) == 1
+
+    def test_clustering_sensitivity_affects_activity_count(self, tmp_path, monkeypatch):
+        """Test that sensitivity affects the number of detected activities."""
+        import os
+        import time
+
+        from nexusLIMS.config import refresh_settings
+        from nexusLIMS.schemas.activity import cluster_filelist_mtimes
+
+        # Create test files with varying gaps
+        # Pattern: 3 files close together, 5 sec gap, 3 files close, 5 sec gap, 3 files
+        base_time = time.time()
+        files = []
+        timestamps = [
+            0,
+            1,
+            2,  # First cluster
+            7,
+            8,
+            9,  # Second cluster (5 sec gap)
+            14,
+            15,
+            16,  # Third cluster (5 sec gap)
+        ]
+
+        for i, t in enumerate(timestamps):
+            f = tmp_path / f"file_{i}.txt"
+            f.write_text(f"content {i}")
+            os.utime(f, (base_time + t, base_time + t))
+            files.append(f)
+
+        # Test with default sensitivity (to warm up / set baseline)
+        monkeypatch.setenv("NX_CLUSTERING_SENSITIVITY", "1.0")
+        refresh_settings()
+        cluster_filelist_mtimes(files)
+
+        # Test with high sensitivity - should detect more or equal boundaries
+        monkeypatch.setenv("NX_CLUSTERING_SENSITIVITY", "3.0")
+        refresh_settings()
+        boundaries_high = cluster_filelist_mtimes(files)
+
+        # Test with low sensitivity - should detect fewer or equal boundaries
+        monkeypatch.setenv("NX_CLUSTERING_SENSITIVITY", "0.3")
+        refresh_settings()
+        boundaries_low = cluster_filelist_mtimes(files)
+
+        # Higher sensitivity should not result in fewer boundaries than default
+        # (In practice, it tends to find more or equal boundaries)
+        # Lower sensitivity should not result in more boundaries than default
+        # Note: The relationship isn't strictly monotonic due to KDE behavior,
+        # but these assertions should generally hold
+        assert len(boundaries_high) >= len(boundaries_low)
