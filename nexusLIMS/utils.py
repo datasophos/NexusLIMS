@@ -17,7 +17,6 @@ import tzlocal
 from benedict import benedict
 from requests import Session
 from requests.adapters import HTTPAdapter
-from requests_ntlm import HttpNtlmAuth
 
 from .config import settings
 from .harvesters import CA_BUNDLE_CONTENT
@@ -57,7 +56,6 @@ def nexus_req(
     function: str,
     *,
     retries: int = 5,
-    basic_auth: bool = False,
     token_auth: str | None = None,
     **kwargs: dict | None,
 ):
@@ -65,9 +63,9 @@ def nexus_req(
     Make a request from NexusLIMS.
 
     A helper method that wraps a function from :py:mod:`requests`, but adds a
-    local certificate authority chain to validate any custom certificates and
-    allow authenticatation using NTLM. Will automatically retry on transient
-    server errors (502, 503, 504) with exponential backoff.
+    local certificate authority chain to validate any custom certificates.
+    Will automatically retry on transient server errors (502, 503, 504) with
+    exponential backoff.
 
     Parameters
     ----------
@@ -78,13 +76,8 @@ def nexus_req(
         ``'GET'``, ``'POST'``, ``'PATCH'``, etc.)
     retries
         The maximum number of retry attempts (total attempts = retries + 1)
-    basic_auth
-        If True, use only username and password for authentication rather than
-        NTLM
     token_auth
         If a value is provided, it will be used as a token for authentication
-        (only one of ``token_auth`` or ``basic_auth`` should be provided. The
-        method will error if both are provided
     **kwargs :
         Other keyword arguments are passed along to the ``fn``
 
@@ -92,19 +85,7 @@ def nexus_req(
     -------
     r : :py:class:`requests.Response`
         A requests response object
-
-    Raises
-    ------
-    ValueError
-        If multiple methods of authentication are provided to the function
     """
-    if basic_auth and token_auth:
-        msg = (
-            "Both `basic_auth` and `token_auth` were provided. "
-            "Only one can be used at a time"
-        )
-        raise ValueError(msg)
-
     # if token_auth is desired, add it to any existing headers passed along
     # with the request
     if token_auth:
@@ -135,16 +116,7 @@ def nexus_req(
 
         # Retry loop with exponential backoff
         for attempt in range(retries + 1):
-            if token_auth:
-                response = s.request(function, url, verify=verify_arg, **kwargs)
-            else:
-                response = s.request(
-                    function,
-                    url,
-                    auth=get_auth(basic=basic_auth),
-                    verify=verify_arg,
-                    **kwargs,
-                )
+            response = s.request(function, url, verify=verify_arg, **kwargs)
 
             # If we got a successful response or non-retryable error, return it
             if response.status_code not in retry_status_codes:
@@ -805,53 +777,6 @@ def get_timespan_overlap(
     delta = earliest_end - latest_start
 
     return max(timedelta(0), delta)
-
-
-def get_auth(*, basic: bool = False):
-    """
-    Get an authentication scheme for NexusLIMS requests.
-
-    Get authentication credentials from settings (NX_CDCS_USER and NX_CDCS_PASS
-    environment variables) and return either NTLM authentication or basic
-    username/password tuple.
-
-    Parameters
-    ----------
-    basic : bool
-        If True, return only username and password tuple rather than NTLM
-        authentication object
-
-    Returns
-    -------
-    auth : ``requests_ntlm.HttpNtlmAuth`` or tuple
-        NTLM authentication handler for ``requests`` (default), or
-        (username, password) tuple if basic=True
-
-    Raises
-    ------
-    AuthenticationError
-        If NX_CDCS_USER or NX_CDCS_PASS are not configured in settings
-    """
-    try:
-        username = settings.NX_CDCS_USER
-        passwd = settings.NX_CDCS_PASS
-        _logger.info("Authenticating using credentials from settings")
-    except (KeyError, AttributeError) as exception:
-        msg = (
-            "No credentials were found in settings. "
-            "Please configure NX_CDCS_USER and NX_CDCS_PASS "
-            "environment variables."
-        )
-        raise AuthenticationError(msg) from exception
-
-    if basic:
-        # return just username and password (for BasicAuthentication)
-        return username, passwd
-
-    domain = "nist"
-    path = domain + "\\" + username
-
-    return HttpNtlmAuth(path, passwd)
 
 
 def has_delay_passed(date: datetime) -> bool:

@@ -169,17 +169,10 @@ class Settings(BaseSettings):
             "information about instruments and sessions that are built into records."
         ),
     )
-    NX_CDCS_USER: str = Field(
+    NX_CDCS_TOKEN: str = Field(
         ...,
         description=(
-            "The username used to authenticate to the CDCS API for uploading "
-            "built records to the NexusLIMS front-end."
-        ),
-    )
-    NX_CDCS_PASS: str = Field(
-        ...,
-        description=(
-            "The password used to authenticate to the CDCS API for uploading "
+            "API token for authenticating to the CDCS API for uploading "
             "built records to the NexusLIMS front-end."
         ),
     )

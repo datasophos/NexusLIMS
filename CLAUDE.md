@@ -194,7 +194,7 @@ Environment variables are loaded from `.env` file (see `.env.example`):
 - Optional timezone/datetime format overrides per instance
 
 **CDCS authentication:**
-- `NX_CDCS_USER` / `NX_CDCS_PASS`: Credentials for CDCS uploads
+- `NX_CDCS_TOKEN`: API token for CDCS uploads
 - `NX_CDCS_URL`: Target CDCS instance URL
 
 ## Important Implementation Details

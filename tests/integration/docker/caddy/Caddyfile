@@ -20,9 +20,9 @@ http://nemo2.localhost {
     }
 }
 
-# CDCS service
+# CDCS service (Django runserver on port 8000)
 http://cdcs.localhost {
-    reverse_proxy cdcs:8080 {
+    reverse_proxy cdcs:8000 {
         # Forward headers needed for Django
         header_up X-Forwarded-Proto {scheme}
         header_up X-Forwarded-Host {host}

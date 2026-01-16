@@ -71,34 +71,21 @@ Root URL of the NexusLIMS CDCS frontend where generated records will be uploaded
 NX_CDCS_URL=https://nexuslims.example.com
 ```
 
-(config-cdcs-user)=
-#### `NX_CDCS_USER`
+(config-cdcs-token)=
+#### `NX_CDCS_TOKEN`
 
 **Type:** String\
 **Required:** Yes
 
-Username for authenticating to the CDCS API for record uploads.
+API token for authenticating to the CDCS API for record uploads. Obtain this token from the CDCS admin panel or via the API token endpoint.
 
 **Example:**
 ```bash
-NX_CDCS_USER=nexuslims_uploader
-```
-
-(config-cdcs-pass)=
-#### `NX_CDCS_PASS`
-
-**Type:** String\
-**Required:** Yes
-
-Password for authenticating to the CDCS API.
-
-**Example:**
-```bash
-NX_CDCS_PASS=secure_password_here
+NX_CDCS_TOKEN=your-api-token-here
 ```
 
 ```{warning}
-Store credentials securely. Use environment variables or a secure secrets management system rather than committing passwords to version control.
+Store API tokens securely. Use environment variables or a secure secrets management system rather than committing tokens to version control.
 ```
 
 ### NEMO Integration
@@ -496,8 +483,7 @@ NX_DB_PATH=/var/nexuslims/data/nexuslims.db
 
 # CDCS
 NX_CDCS_URL=https://nexuslims.example.com
-NX_CDCS_USER=nexuslims_uploader
-NX_CDCS_PASS=secure_password
+NX_CDCS_TOKEN=your-api-token-here
 
 # NEMO
 NX_NEMO_ADDRESS_1=https://nemo.example.com/api/
@@ -519,8 +505,7 @@ NX_LOCAL_PROFILES_PATH=/etc/nexuslims/profiles
 
 # CDCS
 NX_CDCS_URL=https://nexuslims.example.com
-NX_CDCS_USER=nexuslims_uploader
-NX_CDCS_PASS=secure_password
+NX_CDCS_TOKEN=your-api-token-here
 
 # File handling
 NX_FILE_STRATEGY=inclusive
@@ -559,8 +544,7 @@ NX_DB_PATH=/tmp/test_data/nexuslims.db
 
 # CDCS (test instance)
 NX_CDCS_URL=https://nexuslims-test.example.com
-NX_CDCS_USER=test_user
-NX_CDCS_PASS=test_password
+NX_CDCS_TOKEN=test-api-token-here
 
 # NEMO (test instance)
 NX_NEMO_ADDRESS_1=https://nemo-test.example.com/api/

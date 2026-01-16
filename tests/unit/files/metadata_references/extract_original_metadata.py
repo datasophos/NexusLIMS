@@ -83,8 +83,7 @@ os.environ["NX_INSTRUMENT_DATA_PATH"] = str(_instr_data_path)
 os.environ["NX_IGNORE_PATTERNS"] = '["*.mib", "*.db", "*.emi"]'
 os.environ["NX_FILE_STRATEGY"] = "exclusive"
 os.environ["NX_CDCS_URL"] = "https://cdcs.example.com"
-os.environ["NX_CDCS_USER"] = "username"
-os.environ["NX_CDCS_PASS"] = "dummy_password"
+os.environ["NX_CDCS_TOKEN"] = "test-api-token-not-for-production"
 os.environ["NX_CERT_BUNDLE"] = (
     "-----BEGIN CERTIFICATE-----\\nDUMMY\\n-----END CERTIFICATE-----"
 )

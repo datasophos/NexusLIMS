@@ -8,7 +8,6 @@ from sqlalchemy.orm import selectinload
 from sqlmodel import Session as DBSession
 from sqlmodel import select
 
-from nexusLIMS.config import settings
 from nexusLIMS.db.engine import get_engine
 from nexusLIMS.db.enums import EventType, RecordStatus
 from nexusLIMS.db.models import Instrument, SessionLog
@@ -105,7 +104,7 @@ class Session:
             instrument=self.instrument.instrument_pid,
             timestamp=dt.now(tz=current_system_tz()),
             event_type=EventType.RECORD_GENERATION,
-            user=settings.NX_CDCS_USER,
+            user="nexuslims",
             record_status=RecordStatus.WAITING_FOR_END,
         )
 

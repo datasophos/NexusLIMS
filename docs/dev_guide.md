@@ -100,9 +100,9 @@ NexusLIMS follows a pipeline architecture with six main components:
 
 6. **CDCS Integration** (`cdcs.py`)
    - Uploads XML records to NexusLIMS CDCS frontend
-   - REST API communication with authentication
+   - REST API communication with token authentication
    - Workspace and template management
-   - **Configuration:** `NX_CDCS_URL`, `NX_CDCS_USER`, `NX_CDCS_PASS`
+   - **Configuration:** `NX_CDCS_URL`, `NX_CDCS_TOKEN`
 
 ### Data Flow
 

@@ -108,7 +108,7 @@ NexusLIMS requires configuration through environment variables, typically stored
    - `NX_INSTRUMENT_DATA_PATH` - Path to instrument data
    - `NX_DATA_PATH` - Path for NexusLIMS data
    - `NX_DB_PATH` - Path to SQLite database
-   - `NX_CDCS_URL`, `NX_CDCS_USER`, `NX_CDCS_PASS` - CDCS credentials
+   - `NX_CDCS_URL`, `NX_CDCS_TOKEN` - CDCS API credentials
    - `NX_NEMO_ADDRESS_N`, `NX_NEMO_TOKEN_N` - NEMO integration
 
 ```{seealso}

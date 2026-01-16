@@ -54,8 +54,7 @@ def autodoc_mock_settings(_):
 
     # Set dummy CDCS environment variables (same as conftest.py)
     os.environ["NX_CDCS_URL"] = "https://cdcs.example.com"
-    os.environ["NX_CDCS_USER"] = "username"
-    os.environ["NX_CDCS_PASS"] = "dummy_password"
+    os.environ["NX_CDCS_TOKEN"] = "test-api-token-not-for-production"
 
 
 # -- Project information -----------------------------------------------------

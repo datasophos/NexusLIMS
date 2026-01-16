@@ -86,16 +86,16 @@ class TestCdcsFixtures:
 
     def test_cdcs_credentials_fixture(self, cdcs_credentials):
         """Test cdcs_credentials fixture provides credentials."""
-        assert "username" in cdcs_credentials
-        assert "password" in cdcs_credentials
-        assert cdcs_credentials["username"] == "admin"
-        assert cdcs_credentials["password"] == "admin"
+        assert "token" in cdcs_credentials
+        assert cdcs_credentials["token"] == "nexuslims-dev-token-not-for-production"
+        assert len(cdcs_credentials) == 1
 
     def test_cdcs_client_fixture(self, cdcs_client):
         """Test cdcs_client fixture provides configuration."""
         assert "url" in cdcs_client
-        assert "username" in cdcs_client
-        assert "password" in cdcs_client
+        assert "token" in cdcs_client
+        assert "username" not in cdcs_client
+        assert "password" not in cdcs_client
         assert "register_record" in cdcs_client
         assert "created_records" in cdcs_client
         assert (

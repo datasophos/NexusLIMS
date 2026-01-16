@@ -146,7 +146,7 @@ NexusLIMS-CDCS works alongside the [NexusLIMS backend](https://github.com/dataso
 4. **Users** search, browse, and export records through the CDCS web interface
 
 ```{seealso}
-- {ref}`Configuration variables <configuration>` for connecting NexusLIMS to CDCS (`NX_CDCS_URL`, `NX_CDCS_USER`, `NX_CDCS_PASS`)
+- {ref}`Configuration variables <configuration>` for connecting NexusLIMS to CDCS (`NX_CDCS_URL`, `NX_CDCS_TOKEN`)
 - The [CDCS Integration](reference/api.md) section in the API reference
 ```
 

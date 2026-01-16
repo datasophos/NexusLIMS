@@ -144,8 +144,7 @@ jobs:
 
           # CDCS configuration (will be overridden by fixtures)
           NX_CDCS_URL=http://localhost:48080
-          NX_CDCS_USER=admin
-          NX_CDCS_PASS=admin
+          NX_CDCS_TOKEN=nexuslims-dev-token-do-not-use-in-production
           EOF
 
       - name: Run unit tests

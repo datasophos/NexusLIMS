@@ -224,16 +224,6 @@ class TestUtils:
             == logging.DEBUG
         )
 
-    def test_bad_auth_options(self):
-        with pytest.raises(
-            ValueError,
-            match=(
-                r"Both `basic_auth` and `token_auth` were provided\. Only one can "
-                r"be used at a time"
-            ),
-        ):
-            nexus_req("http://example.com", "GET", basic_auth=True, token_auth="test")
-
     @responses.activate
     def test_header_addition_nexus_req(self):
         from nexusLIMS.config import settings
@@ -300,9 +290,6 @@ class TestUtils:
         # Should append suffix but log warning
         assert new_path == Path("/tmp/other/path/entirely/test.txt.json")
         assert f"{other_path} is not a sub-path of" in caplog.text
-
-    # Note: File-based credential tests removed - get_auth() now only uses
-    # settings (NX_CDCS_USER and NX_CDCS_PASS environment variables)
 
     @responses.activate
     def test_request_retry(self, monkeypatch):
@@ -484,32 +471,6 @@ class TestUtils:
         assert "find_path is:" in caplog.text
         assert len(result) == 1
         assert str(link) in str(result[0])
-
-    def test_get_auth_missing_credentials(self, monkeypatch):
-        """Test get_auth when credentials are missing."""
-        from nexusLIMS.utils import AuthenticationError, get_auth
-
-        # Mock settings to not have credentials
-        mock_settings = Mock()
-        del mock_settings.NX_CDCS_USER  # Trigger AttributeError
-        monkeypatch.setattr("nexusLIMS.utils.settings", mock_settings)
-
-        with pytest.raises(AuthenticationError, match="No credentials were found"):
-            get_auth()
-
-    def test_get_auth_basic(self, monkeypatch):
-        """Test get_auth with basic=True."""
-        from nexusLIMS.utils import get_auth
-
-        mock_settings = Mock()
-        mock_settings.NX_CDCS_USER = "testuser"
-        mock_settings.NX_CDCS_PASS = "testpass"
-        monkeypatch.setattr("nexusLIMS.utils.settings", mock_settings)
-
-        username, password = get_auth(basic=True)
-
-        assert username == "testuser"
-        assert password == "testpass"
 
     def test_gnu_find_files_by_mtime_instrument_path(self, tmp_path, monkeypatch):
         """Test gnu_find_files_by_mtime with instrument-relative path."""

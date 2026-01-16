@@ -266,7 +266,7 @@ def test_settings_proxy_dir():
     """Exercise the __dir__ method of the _SettingsProxy class."""
     from nexusLIMS.config import settings
 
-    assert "NX_CDCS_PASS" in dir(settings)
+    assert "NX_CDCS_TOKEN" in dir(settings)
 
 
 def test_settings_proxy_repr():
@@ -283,7 +283,7 @@ def test_settings_validation_error(monkeypatch):
     from nexusLIMS.config import clear_settings, refresh_settings
 
     # Unset a required environment variable to create an invalid state
-    monkeypatch.delenv("NX_CDCS_USER", raising=False)
+    monkeypatch.delenv("NX_CDCS_TOKEN", raising=False)
 
     # Clear any existing settings instance that was created at test startup
     # using the environment from conftest.py. This ensures the next access
@@ -292,7 +292,7 @@ def test_settings_validation_error(monkeypatch):
 
     with pytest.raises(ValidationError) as exc_info:
         # refresh_settings() will now fail because it creates a new Settings
-        # instance and NX_CDCS_USER is missing.
+        # instance and NX_CDCS_TOKEN is missing.
         refresh_settings()
 
     # Verify the exception has the help note added (Python 3.11+)

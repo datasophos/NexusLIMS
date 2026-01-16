@@ -83,8 +83,7 @@ os.environ["NX_FILE_STRATEGY"] = "exclusive"
 # the local .env file (these are not used, since only unit tests are done
 # and there's no integration testing to an actual CDCS server at this moment)
 os.environ["NX_CDCS_URL"] = "https://cdcs.example.com"
-os.environ["NX_CDCS_USER"] = "username"
-os.environ["NX_CDCS_PASS"] = "dummy_password"
+os.environ["NX_CDCS_TOKEN"] = "test-api-token-not-for-production"
 os.environ["NX_CERT_BUNDLE"] = (
     "-----BEGIN CERTIFICATE-----\nDUMMY\n-----END CERTIFICATE-----"
 )
