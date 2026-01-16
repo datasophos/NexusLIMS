@@ -3,6 +3,7 @@
 # pylint: disable=unused-argument
 # ruff: noqa: ARG001
 
+import contextlib
 import os
 import shutil
 import sqlite3
@@ -1182,3 +1183,65 @@ def file_factory(tmp_path):
     test_files_dir = Path(__file__).parent / "files"
 
     return FileFactory(test_files_dir, tmp_path)
+
+
+@pytest.fixture
+def with_validation(monkeypatch):
+    """
+    Temporarily enable validation for tests that specifically test validation behavior.
+
+    By default, tests run with NX_TEST_MODE=true (from conftest.py), which disables
+    validation. This fixture temporarily disables test mode to allow validation tests
+    to run as expected.
+    """
+    import importlib
+    import sys
+
+    import nexusLIMS.config
+
+    # Helper function to reload nexusLIMS modules that import from config
+    def reload_dependent_modules():
+        """Reload modules that import from config to pick up type alias changes."""
+        # List of modules that import from config and need reloading
+        # Note: We DON'T reload profiles module because it has a registry that
+        # would be cleared and not properly repopulated
+        modules_to_reload = [
+            "nexusLIMS.db.engine",
+            "nexusLIMS.db.session_handler",
+            "nexusLIMS.builder.record_builder",
+            "nexusLIMS.extractors.utils",
+            "nexusLIMS.extractors.registry",
+        ]
+
+        for module_name in modules_to_reload:
+            if module_name in sys.modules:
+                with contextlib.suppress(Exception):
+                    # If reload fails, just continue - module might have dependencies
+                    importlib.reload(sys.modules[module_name])
+
+    # Temporarily disable test mode
+    monkeypatch.setenv("NX_TEST_MODE", "false")
+
+    # Clear any cached settings BEFORE reloading
+    nexusLIMS.config.clear_settings()
+
+    # Reload the config module so that Settings class is redefined with validation
+    # This is necessary because the class fields are evaluated at class definition time
+    importlib.reload(nexusLIMS.config)
+
+    # Clear settings again after reload to ensure fresh instance with new class
+    nexusLIMS.config.clear_settings()
+
+    # Reload dependent modules to pick up new type aliases
+    reload_dependent_modules()
+
+    yield
+
+    # Cleanup: Restore test mode and reload config again to restore test defaults
+    monkeypatch.setenv("NX_TEST_MODE", "true")
+    nexusLIMS.config.clear_settings()
+    importlib.reload(nexusLIMS.config)
+    nexusLIMS.config.clear_settings()
+
+    # Reload dependent modules again to restore test mode state
+    reload_dependent_modules()

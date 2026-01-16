@@ -44,7 +44,7 @@ def test_trailing_slash_nemo_address_validation(mock_nemo_env):
     assert addr.endswith("/")
 
 
-def test_nemo_address_missing_trailing_slash():
+def test_nemo_address_missing_trailing_slash(with_validation):
     """Test that NEMO address without trailing slash raises validation error."""
     from pydantic import ValidationError
 
@@ -97,7 +97,7 @@ def test_nemo_harvester_skipped_when_incomplete(monkeypatch, caplog):
         assert "Skipping NEMO harvester 5" in caplog.text
 
 
-def test_nemo_harvester_invalid_config_raises(monkeypatch):
+def test_nemo_harvester_invalid_config_raises(monkeypatch, with_validation):
     """Test that an invalid NEMO harvester config raises a ValidationError."""
     from pydantic import ValidationError
 
@@ -188,7 +188,7 @@ def test_email_config_partial_configuration(monkeypatch):
     assert settings.email_config() is None
 
 
-def test_email_config_invalid_returns_none(monkeypatch, caplog):
+def test_email_config_invalid_returns_none(monkeypatch, caplog, with_validation):
     """Test that invalid email configuration returns None and logs error."""
     from nexusLIMS.config import refresh_settings, settings
 
@@ -276,7 +276,7 @@ def test_settings_proxy_repr():
     assert repr(settings) == str(settings)
 
 
-def test_settings_validation_error(monkeypatch):
+def test_settings_validation_error(monkeypatch, with_validation):
     """Test that a validation error during settings creation is logged and raised."""
     from pydantic import ValidationError
 
