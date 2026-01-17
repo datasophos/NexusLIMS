@@ -132,6 +132,7 @@ Backups, XSLT updates, schema management, and monitoring.
 - **Cache**: Redis
 - **Web Server**: Caddy (with automatic HTTPS via Let's Encrypt)
 - **Container Platform**: Docker and Docker Compose
+- **Package Management**: UV (with pyproject.toml and lockfile for reproducible builds)
 - **Base System**: NIST MDCS (Materials Data Curation System)
 
 ---
