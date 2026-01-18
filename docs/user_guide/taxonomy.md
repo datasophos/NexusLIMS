@@ -291,6 +291,7 @@ nx_meta = {
 
 ---
 
+(acquisition-activities)=
 ## Acquisition Activities
 
 An **Acquisition Activity** is a group of files created in temporal proximity during an experimental session. Activities represent discrete experimental tasks (e.g., "Survey of sample region 1", "EDS line scan across interface").

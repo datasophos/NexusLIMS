@@ -172,7 +172,7 @@ NX_FILE_DELAY_DAYS=2.5
 **Type:** Float (must be >= 0)\
 **Default:** `1.0`
 
-Controls the sensitivity of file clustering into [Acquisition Activities](taxonomy.md#acquisition-activity). When building records, NexusLIMS groups files into activities based on temporal gaps in file modification times using Kernel Density Estimation (KDE). This setting allows you to adjust or disable this clustering behavior.
+Controls the sensitivity of file clustering into {ref}`Acquisition Activities <acquisition-activities>`. When building records, NexusLIMS groups files into activities based on temporal gaps in file modification times using Kernel Density Estimation (KDE). This setting allows you to adjust or disable this clustering behavior.
 
 - **Values > 1.0**: More sensitive to time gaps, resulting in more activities (finer granularity)
 - **Values < 1.0**: Less sensitive to time gaps, resulting in fewer activities (coarser granularity)
