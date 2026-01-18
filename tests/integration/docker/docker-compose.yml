@@ -111,11 +111,9 @@ services:
 
   # CDCS service - built from NexusLIMS-CDCS repository
   # Uses the deployment Dockerfile which includes all dependencies
-  # NOTE: Using local path for testing; will switch to Git URL after pushing CDCS changes:
-  #   context: https://github.com/datasophos/NexusLIMS-CDCS.git#main
   cdcs:
     build:
-      context: ../../../../NexusLIMS-CDCS
+      context: https://github.com/datasophos/NexusLIMS-CDCS.git#main
       dockerfile: deployment/Dockerfile
     container_name: nexuslims-test-cdcs
     ports:
