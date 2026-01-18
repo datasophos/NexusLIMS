@@ -119,11 +119,8 @@ def pytest_configure(config):
     if "NX_CDCS_URL" not in os.environ:
         os.environ["NX_CDCS_URL"] = "https://cdcs.example.com"
 
-    if "NX_CDCS_USER" not in os.environ:
-        os.environ["NX_CDCS_USER"] = "test_user"
-
-    if "NX_CDCS_PASS" not in os.environ:
-        os.environ["NX_CDCS_PASS"] = "test_password"
+    if "NX_CDCS_TOKEN" not in os.environ:
+        os.environ["NX_CDCS_TOKEN"] = "test-api-token"
 
     if "NX_CERT_BUNDLE" not in os.environ:
         os.environ["NX_CERT_BUNDLE"] = (
@@ -270,7 +267,7 @@ def docker_services(request, host_fileserver):  # noqa: PLR0912, PLR0915
     Start Docker services once per test session.
 
     This fixture manages the lifecycle of all Docker services defined in
-    docker-compose.yml including NEMO, CDCS, MongoDB, PostgreSQL, Redis.
+    docker-compose.yml including NEMO, CDCS, PostgreSQL, Redis, and Mailpit.
     Note that the fileserver now runs on the host machine (via host_fileserver fixture)
     to avoid Docker volume mount issues on macOS.
 
@@ -868,11 +865,12 @@ def cdcs_credentials() -> dict[str, str]:
     Returns
     -------
     dict[str, str]
-        Dictionary with 'username' and 'password' keys
+        Dictionary with 'token' key containing the API token
     """
+    # Use the same fixed dev token defined in NexusLIMS-CDCS's
+    # NX_DEV_API_TOKEN setting in config/settings/dev_settings.py
     return {
-        "username": "admin",
-        "password": "admin",
+        "token": "nexuslims-dev-token-not-for-production",
     }
 
 
@@ -902,8 +900,7 @@ def safe_refresh_settings(monkeypatch, tmp_path):
     --------
     >>> def test_invalid_credentials(safe_refresh_settings):
     ...     safe_refresh_settings(
-    ...         NX_CDCS_USER="invalid",
-    ...         NX_CDCS_PASS="invalid",
+    ...         NX_CDCS_TOKEN="invalid-token",
     ...     )
     """
     from nexusLIMS.config import refresh_settings
@@ -985,7 +982,7 @@ def setup_cdcs_environment(cdcs_url, cdcs_credentials):
     cdcs_url : str
         CDCS base URL
     cdcs_credentials : dict
-        Authentication credentials with 'username' and 'password' keys
+        Authentication credentials with 'token' key
 
     Returns
     -------
@@ -995,8 +992,7 @@ def setup_cdcs_environment(cdcs_url, cdcs_credentials):
     import os
 
     os.environ["NX_CDCS_URL"] = cdcs_url
-    os.environ["NX_CDCS_USER"] = cdcs_credentials["username"]
-    os.environ["NX_CDCS_PASS"] = cdcs_credentials["password"]
+    os.environ["NX_CDCS_TOKEN"] = cdcs_credentials["token"]
 
     from nexusLIMS.config import refresh_settings
 
@@ -1029,8 +1025,7 @@ def cdcs_client(cdcs_url, cdcs_credentials, monkeypatch):
 
     # Use monkeypatch for function-scoped environment setup
     monkeypatch.setenv("NX_CDCS_URL", cdcs_url)
-    monkeypatch.setenv("NX_CDCS_USER", cdcs_credentials["username"])
-    monkeypatch.setenv("NX_CDCS_PASS", cdcs_credentials["password"])
+    monkeypatch.setenv("NX_CDCS_TOKEN", cdcs_credentials["token"])
 
     # Ensure the database file exists (Settings validation requires it)
     # Get the current NX_DB_PATH from environment
@@ -1053,8 +1048,7 @@ def cdcs_client(cdcs_url, cdcs_credentials, monkeypatch):
 
     yield {
         "url": cdcs_url,
-        "username": cdcs_credentials["username"],
-        "password": cdcs_credentials["password"],
+        "token": cdcs_credentials["token"],
         "register_record": register_record,
         "created_records": created_records,
     }

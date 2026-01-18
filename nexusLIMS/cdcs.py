@@ -13,9 +13,10 @@ import logging
 import sys
 from http import HTTPStatus
 from pathlib import Path
-from typing import List
+from typing import List, TypedDict
 from urllib.parse import urljoin
 
+from requests.models import Response
 from tqdm import tqdm
 
 from nexusLIMS.config import settings
@@ -24,6 +25,25 @@ from nexusLIMS.utils import AuthenticationError, nexus_req
 logging.basicConfig()
 _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.INFO)
+
+
+class CDCSDataRecord(TypedDict):
+    """Type definition for a CDCS Data record returned by the API.
+
+    This represents the structure of record objects returned by CDCS endpoints
+    like /rest/data/query/ and /rest/data/query/keyword/.
+    """
+
+    id: int
+    template: int
+    workspace: int | None
+    user_id: str
+    title: str
+    checksum: str | None
+    creation_date: str | None
+    last_modification_date: str | None
+    last_change_date: str | None
+    xml_content: str
 
 
 def get_cdcs_url() -> str:
@@ -45,7 +65,7 @@ def get_cdcs_url() -> str:
     return str(settings.NX_CDCS_URL)
 
 
-def get_workspace_id():
+def get_workspace_id() -> int:
     """
     Get the workspace ID that the user has access to.
 
@@ -54,24 +74,24 @@ def get_workspace_id():
 
     Returns
     -------
-    workspace_id : str
+    workspace_id : int
         The workspace ID
     """
     # assuming there's only one workspace for this user (that is the public
     # workspace)
     _endpoint = urljoin(get_cdcs_url(), "rest/workspace/read_access")
-    _r = nexus_req(_endpoint, "GET", basic_auth=True)
-    if _r.status_code == HTTPStatus.UNAUTHORIZED:
+    _r = nexus_req(_endpoint, "GET", token_auth=settings.NX_CDCS_TOKEN)
+    if _r.status_code in (HTTPStatus.UNAUTHORIZED, HTTPStatus.FORBIDDEN):
         msg = (
-            "Could not authenticate to CDCS. Are the NX_CDCS_USER and "
-            "NX_CDCS_PASS environment variables set correctly?"
+            "Could not authenticate to CDCS. Is the NX_CDCS_TOKEN "
+            "environment variable set correctly?"
         )
         raise AuthenticationError(msg)
 
     return _r.json()[0]["id"]  # return workspace id
 
 
-def get_template_id():
+def get_template_id() -> str:
     """
     Get the template ID for the schema (so the record can be associated with it).
 
@@ -82,18 +102,18 @@ def get_template_id():
     """
     # get the current template (XSD) id value:
     _endpoint = urljoin(get_cdcs_url(), "rest/template-version-manager/global")
-    _r = nexus_req(_endpoint, "GET", basic_auth=True)
-    if _r.status_code == HTTPStatus.UNAUTHORIZED:
+    _r = nexus_req(_endpoint, "GET", token_auth=settings.NX_CDCS_TOKEN)
+    if _r.status_code in (HTTPStatus.UNAUTHORIZED, HTTPStatus.FORBIDDEN):
         msg = (
-            "Could not authenticate to CDCS. Are the NX_CDCS_USER and NX_CDCS_PASS "
-            "environment variables set correctly?",
+            "Could not authenticate to CDCS. Is the NX_CDCS_TOKEN "
+            "environment variable set correctly?"
         )
         raise AuthenticationError(msg)
 
     return _r.json()[0]["current"]  # return template id
 
 
-def upload_record_content(xml_content, title):
+def upload_record_content(xml_content, title) -> tuple[Response, int | None]:
     """
     Upload a single XML record to the NexusLIMS CDCS instance.
 
@@ -109,7 +129,7 @@ def upload_record_content(xml_content, title):
     post_r : :py:class:`~requests.Response`
         The REST response returned from the CDCS instance after attempting
         the upload
-    record_id : str | None
+    record_id : int | None
         The id (on the server) of the record that was uploaded, or None if error
     """
     endpoint = urljoin(get_cdcs_url(), "rest/data/")
@@ -120,7 +140,9 @@ def upload_record_content(xml_content, title):
         "xml_content": xml_content,
     }
 
-    post_r = nexus_req(endpoint, "POST", json=payload, basic_auth=True)
+    post_r = nexus_req(
+        endpoint, "POST", json=payload, token_auth=settings.NX_CDCS_TOKEN
+    )
 
     if post_r.status_code != HTTPStatus.CREATED:
         # anything other than 201 status means something went wrong
@@ -135,7 +157,7 @@ def upload_record_content(xml_content, title):
         f"rest/data/{record_id}/assign/{get_workspace_id()}",
     )
 
-    _ = nexus_req(wrk_endpoint, "PATCH", basic_auth=True)
+    _ = nexus_req(wrk_endpoint, "PATCH", token_auth=settings.NX_CDCS_TOKEN)
 
     _logger.info('Record "%s" available at %s', title, record_url)
     return post_r, record_id
@@ -157,14 +179,18 @@ def delete_record(record_id):
         the delete operation
     """
     endpoint = urljoin(get_cdcs_url(), f"rest/data/{record_id}")
-    response = nexus_req(endpoint, "DELETE", basic_auth=True)
+    response = nexus_req(endpoint, "DELETE", token_auth=settings.NX_CDCS_TOKEN)
     if response.status_code != HTTPStatus.NO_CONTENT:
         # anything other than 204 status means something went wrong
         _logger.error("Received error while deleting %s:\n%s", record_id, response.text)
     return response
 
 
-def search_records(title=None, template_id=None, keyword=None):
+def search_records(
+    title: str | None = None,
+    template_id: str | None = None,
+    keyword: str | None = None,
+) -> list[CDCSDataRecord]:
     """
     Search for records in the CDCS instance by title, keyword, or other criteria.
 
@@ -192,13 +218,10 @@ def search_records(title=None, template_id=None, keyword=None):
 
     Returns
     -------
-    records : list of dict
-        List of matching record objects from CDCS, each containing:
-        - id: The record ID
-        - title: The record title
-        - xml_content: The XML content (if included in response)
-        - template: The template ID
-        - Other metadata fields
+    list[CDCSDataRecord]
+        List of matching record objects from CDCS. Each record is a dictionary
+        containing id, title, xml_content, template, workspace, user_id, checksum,
+        and date fields. See :class:`CDCSDataRecord` for complete structure.
 
     Raises
     ------
@@ -231,12 +254,14 @@ def search_records(title=None, template_id=None, keyword=None):
         if template_id is not None:
             payload["templates"] = [{"id": template_id}]
 
-    response = nexus_req(endpoint, "POST", json=payload, basic_auth=True)
+    response = nexus_req(
+        endpoint, "POST", json=payload, token_auth=settings.NX_CDCS_TOKEN
+    )
 
     if response.status_code == HTTPStatus.UNAUTHORIZED:
         msg = (
-            "Could not authenticate to CDCS. Are the NX_CDCS_USER and "
-            "NX_CDCS_PASS environment variables set correctly?"
+            "Could not authenticate to CDCS. Is the NX_CDCS_TOKEN "
+            "environment variable set correctly?"
         )
         raise AuthenticationError(msg)
 
@@ -252,7 +277,7 @@ def search_records(title=None, template_id=None, keyword=None):
     return response.json()
 
 
-def download_record(record_id):
+def download_record(record_id) -> str:
     """
     Download the XML content of a record from the CDCS instance.
 
@@ -274,12 +299,12 @@ def download_record(record_id):
         If the record is not found or another error occurs
     """
     endpoint = urljoin(get_cdcs_url(), f"rest/data/download/{record_id}/")
-    response = nexus_req(endpoint, "GET", basic_auth=True)
+    response = nexus_req(endpoint, "GET", token_auth=settings.NX_CDCS_TOKEN)
 
     if response.status_code == HTTPStatus.UNAUTHORIZED:
         msg = (
-            "Could not authenticate to CDCS. Are the NX_CDCS_USER and "
-            "NX_CDCS_PASS environment variables set correctly?"
+            "Could not authenticate to CDCS. Is the NX_CDCS_TOKEN "
+            "environment variable set correctly?"
         )
         raise AuthenticationError(msg)
 
@@ -299,7 +324,7 @@ def upload_record_files(
     files_to_upload: List[Path] | None,
     *,
     progress: bool = False,
-) -> tuple[List[Path], List[str]]:
+) -> tuple[List[Path], List[int]]:
     """
     Upload record files to CDCS.
 
@@ -318,7 +343,7 @@ def upload_record_files(
     -------
     files_uploaded : list of pathlib.Path
         A list of the files that were successfully uploaded
-    record_ids : list of str
+    record_ids : list of int
         A list of the record id values (on the server) that were uploaded
     """
     if files_to_upload is None:

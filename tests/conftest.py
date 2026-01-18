@@ -4,6 +4,13 @@
 import os
 from pathlib import Path
 
+# ============================================================================
+# CRITICAL: Enable test mode BEFORE any nexusLIMS imports
+# ============================================================================
+# This disables Pydantic validation in nexusLIMS.config, allowing tests to
+# set up the environment at runtime without validation errors during import
+os.environ["NX_TEST_MODE"] = "true"
+
 # This MUST be at the top-level conftest.py (not in subdirectories)
 # Include unit test fixtures in pytest_plugins to make them available to both
 # unit and integration tests. This allows fixtures like multi_signal_test_files

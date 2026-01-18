@@ -41,21 +41,16 @@ See the ``.env.example`` file for more documentation and examples.
     is provided in the ``.env.example`` file that should work for most users,
     but this setting allows for further customization of the file-finding routine.
 
-(nexuslims-user)=
+(nexuslims-cdcs-token)=
 
-`NX_CDCS_USER`
-    The username used to authenticate to CDCS API
-
-(nexuslims-pass)=
-
-`NX_CDCS_PASS`
-    The password used to authenticate to CDCS API
+`NX_CDCS_TOKEN`
+    API token used to authenticate to CDCS API
 
 (nexuslims-cdcs-url)=
 
 `NX_CDCS_URL`
     The root URL of the NexusLIMS CDCS front-end. This will be the target for
-    record uploads that are authenticated using the CDCS credentials.
+    record uploads that are authenticated using the CDCS token.
 
 (nexuslims-instrument-data-path)=
 

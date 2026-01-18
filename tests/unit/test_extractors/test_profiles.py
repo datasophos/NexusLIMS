@@ -594,7 +594,7 @@ get_profile_registry().register(profile)
                 os.environ["NX_LOCAL_PROFILES_PATH"] = env_backup
             config.refresh_settings()
 
-    def test_register_all_profiles_with_invalid_path(self, registry):
+    def test_register_all_profiles_with_invalid_path(self, registry, with_validation):
         """Config validation prevents nonexistent NX_LOCAL_PROFILES_PATH."""
         # Since NX_LOCAL_PROFILES_PATH is a DirectoryPath in pydantic settings,
         # it will raise ValidationError if the path doesn't exist.

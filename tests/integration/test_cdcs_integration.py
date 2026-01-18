@@ -62,8 +62,8 @@ class TestCdcsServiceAccess:
             f"{cdcs_url}/rest/workspace/read_access",
             timeout=10,
         )
-        # Should return 401 Unauthorized without credentials
-        assert response.status_code == HTTPStatus.UNAUTHORIZED
+        # Should return 403 Forbidden without credentials
+        assert response.status_code == HTTPStatus.FORBIDDEN
 
 
 @pytest.mark.integration
@@ -74,8 +74,7 @@ class TestCdcsAuthentication:
         """Test fetching workspace ID with valid credentials."""
         workspace_id = cdcs.get_workspace_id()
         assert workspace_id is not None
-        assert isinstance(workspace_id, str)
-        assert len(workspace_id) > 0
+        assert isinstance(workspace_id, int)
 
     def test_get_workspace_id_with_invalid_credentials(
         self, cdcs_url, safe_refresh_settings
@@ -84,8 +83,7 @@ class TestCdcsAuthentication:
         # Set invalid credentials using safe_refresh_settings helper
         safe_refresh_settings(
             NX_CDCS_URL=cdcs_url,
-            NX_CDCS_USER="invalid_user",
-            NX_CDCS_PASS="invalid_password",
+            NX_CDCS_TOKEN="invalid-token",
         )
 
         # Should raise AuthenticationError
@@ -106,8 +104,7 @@ class TestCdcsAuthentication:
         # Set invalid credentials using safe_refresh_settings helper
         safe_refresh_settings(
             NX_CDCS_URL=cdcs_url,
-            NX_CDCS_USER="invalid_user",
-            NX_CDCS_PASS="invalid_password",
+            NX_CDCS_TOKEN="invalid-token",
         )
 
         # Should raise AuthenticationError
@@ -127,8 +124,7 @@ class TestCdcsRecordOperations:
         # Verify upload was successful
         assert response.status_code == HTTPStatus.CREATED
         assert record_id is not None
-        assert isinstance(record_id, str)
-        assert len(record_id) > 0
+        assert isinstance(record_id, int)
 
         # Register for cleanup
         cdcs_client["register_record"](record_id)
@@ -227,10 +223,11 @@ class TestCdcsRecordRetrieval:
         # Now try to retrieve it via REST API
         from urllib.parse import urljoin
 
+        from nexusLIMS import config
         from nexusLIMS.utils import nexus_req
 
         endpoint = urljoin(cdcs_url, f"rest/data/{record_id}")
-        response = nexus_req(endpoint, "GET", basic_auth=True)
+        response = nexus_req(endpoint, "GET", token_auth=config.settings.NX_CDCS_TOKEN)
 
         # Verify retrieval was successful
         assert response.status_code == HTTPStatus.OK
@@ -254,10 +251,11 @@ class TestCdcsRecordRetrieval:
         # Retrieve the record
         from urllib.parse import urljoin
 
+        from nexusLIMS import config
         from nexusLIMS.utils import nexus_req
 
         endpoint = urljoin(cdcs_url, f"rest/data/{record_id}")
-        response = nexus_req(endpoint, "GET", basic_auth=True)
+        response = nexus_req(endpoint, "GET", token_auth=config.settings.NX_CDCS_TOKEN)
 
         assert response.status_code == HTTPStatus.OK
         record_data = response.json()
@@ -289,6 +287,7 @@ class TestCdcsWorkspaceAssignment:
         # Verify the record is in the workspace
         from urllib.parse import urljoin
 
+        from nexusLIMS import config
         from nexusLIMS.utils import nexus_req
 
         workspace_id = cdcs.get_workspace_id()
@@ -296,7 +295,7 @@ class TestCdcsWorkspaceAssignment:
             cdcs_url,
             f"rest/workspace/{workspace_id}/data/",
         )
-        response = nexus_req(endpoint, "GET", basic_auth=True)
+        response = nexus_req(endpoint, "GET", token_auth=config.settings.NX_CDCS_TOKEN)
 
         assert response.status_code == HTTPStatus.OK
         workspace_records = response.json()
@@ -533,7 +532,6 @@ class TestCdcsSearchAndDownload:
         # 2. Extract and verify record ID
         record_id = search_results[0]["id"]
         assert record_id is not None
-        assert len(record_id) > 0
         assert record_id == cdcs_test_record[0]["record_id"]
 
         # 3. Download the record
@@ -613,8 +611,7 @@ class TestCdcsFileUploadOperations:
             # Verify all record IDs are valid
             for record_id in record_ids:
                 assert record_id is not None
-                assert isinstance(record_id, str)
-                assert len(record_id) > 0
+                assert isinstance(record_id, int)
                 # Register for cleanup
                 cdcs_client["register_record"](record_id)
         finally:

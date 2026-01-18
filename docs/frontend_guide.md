@@ -132,6 +132,7 @@ Backups, XSLT updates, schema management, and monitoring.
 - **Cache**: Redis
 - **Web Server**: Caddy (with automatic HTTPS via Let's Encrypt)
 - **Container Platform**: Docker and Docker Compose
+- **Package Management**: UV (with pyproject.toml and lockfile for reproducible builds)
 - **Base System**: NIST MDCS (Materials Data Curation System)
 
 ---
@@ -146,7 +147,7 @@ NexusLIMS-CDCS works alongside the [NexusLIMS backend](https://github.com/dataso
 4. **Users** search, browse, and export records through the CDCS web interface
 
 ```{seealso}
-- {ref}`Configuration variables <configuration>` for connecting NexusLIMS to CDCS (`NX_CDCS_URL`, `NX_CDCS_USER`, `NX_CDCS_PASS`)
+- {ref}`Configuration variables <configuration>` for connecting NexusLIMS to CDCS (`NX_CDCS_URL`, `NX_CDCS_TOKEN`)
 - The [CDCS Integration](reference/api.md) section in the API reference
 ```
 

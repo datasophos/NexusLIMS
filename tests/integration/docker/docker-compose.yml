@@ -35,37 +35,16 @@ services:
     networks:
       - nexuslims-test
 
-  # MongoDB for CDCS
-  cdcs-mongo:
-    image: mongo:7
-    container_name: nexuslims-test-cdcs-mongo
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=admin
-      - MONGO_INITDB_ROOT_PASSWORD=admin
-      - MONGO_INITDB_DATABASE=cdcs
-      - MONGO_USER=cdcs
-      - MONGO_PASS=cdcs
-    volumes:
-      - ./cdcs/mongo-init.sh:/docker-entrypoint-initdb.d/mongo-init.sh:ro
-    healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
-      start_period: 10s
-    networks:
-      - nexuslims-test
-
   # PostgreSQL for CDCS
   cdcs-postgres:
-    image: postgres:16
+    image: postgres:17
     container_name: nexuslims-test-cdcs-postgres
     environment:
-      - POSTGRES_USER=cdcs
-      - POSTGRES_PASSWORD=cdcs
-      - POSTGRES_DB=cdcs
+      - POSTGRES_USER=nexuslims
+      - POSTGRES_PASSWORD=nexuslims
+      - POSTGRES_DB=nexuslims
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U cdcs"]
+      test: ["CMD-SHELL", "pg_isready -U nexuslims"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -75,11 +54,11 @@ services:
 
   # Redis for CDCS
   cdcs-redis:
-    image: redis:7-alpine
+    image: redis:8-alpine
     container_name: nexuslims-test-cdcs-redis
-    command: redis-server --requirepass cdcs
+    command: redis-server --requirepass nexuslims
     healthcheck:
-      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      test: ["CMD", "redis-cli", "-a", "nexuslims", "--raw", "incr", "ping"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -130,14 +109,15 @@ services:
     networks:
       - nexuslims-test
 
-  # CDCS service (Curator/Django application)
+  # CDCS service - built from NexusLIMS-CDCS repository
+  # Uses the deployment Dockerfile which includes all dependencies
   cdcs:
     build:
-      context: ./cdcs
-      dockerfile: Dockerfile
+      context: https://github.com/datasophos/NexusLIMS-CDCS.git#main
+      dockerfile: deployment/Dockerfile
     container_name: nexuslims-test-cdcs
     ports:
-      - "48080:8080"
+      - "48080:8000"
     extra_hosts:
       # Allow CDCS to resolve *.localhost URLs via host gateway (where Caddy proxy listens on port 40080)
       - "cdcs.localhost:host-gateway"
@@ -145,55 +125,49 @@ services:
       - "nemo2.localhost:host-gateway"
       - "fileserver.localhost:host-gateway"
     depends_on:
-      cdcs-mongo:
-        condition: service_healthy
       cdcs-postgres:
         condition: service_healthy
       cdcs-redis:
         condition: service_healthy
     environment:
       # Django configuration
-      - DJANGO_SETTINGS_MODULE=mdcs.settings
+      - DJANGO_SETTINGS_MODULE=config.settings.dev_settings
       - DJANGO_SECRET_KEY=test-secret-key-not-for-production-use
-      - SERVER_URI=http://cdcs.localhost
+      - DJANGO_DEBUG=True
+      - SERVER_URI=http://cdcs.localhost:40080
       - ALLOWED_HOSTS=*
       - SERVER_NAME=NexusLIMS Test
 
-      # Anonymous access configuration
+      # Anonymous access configuration (for testing)
       - CAN_ANONYMOUS_ACCESS_PUBLIC_DOCUMENT=True
       - VERIFY_DATA_ACCESS=False
-
-      # MongoDB configuration
-      - MONGO_HOST=cdcs-mongo
-      - MONGO_PORT=27017
-      - MONGO_DB=cdcs
-      - MONGO_USER=cdcs
-      - MONGO_PASS=cdcs
 
       # PostgreSQL configuration
       - POSTGRES_HOST=cdcs-postgres
       - POSTGRES_PORT=5432
-      - POSTGRES_DB=cdcs
-      - POSTGRES_USER=cdcs
-      - POSTGRES_PASS=cdcs
+      - POSTGRES_DB=nexuslims
+      - POSTGRES_USER=nexuslims
+      - POSTGRES_PASS=nexuslims
 
       # Redis configuration
       - REDIS_HOST=cdcs-redis
       - REDIS_PORT=6379
-      - REDIS_PASS=cdcs
+      - REDIS_PASS=nexuslims
 
-      # uWSGI configuration
-      - UWSGI_PROCESSES=2
+      # XSLT configuration (fileserver URLs for rendering records)
+      - XSLT_DATASET_BASE_URL=http://fileserver.localhost:40080/instrument-data
+      - XSLT_PREVIEW_BASE_URL=http://fileserver.localhost:40080/data
 
-      # Fileserver URLs for XSLT rendering
-      - FILESERVER_DATASET_URL=http://fileserver.localhost/instrument-data
-      - FILESERVER_PREVIEW_URL=http://fileserver.localhost/data
+      # Disable optional features not needed for testing
+      - ENABLE_SAML2_SSO_AUTH=False
+      - ENABLE_ALLAUTH=False
+      - ENABLE_HANDLE_PID=False
     volumes:
-      # Mount the nexus-experiment.xsd schema from the source repository
-      # This avoids file duplication and ensures we always use the latest schema
-      - ../../../nexusLIMS/schemas/nexus-experiment.xsd:/fixtures/nexus-experiment.xsd:ro
+      # Mount the nexus-experiment.xsd schema from the NexusLIMS source repository
+      # This ensures we always test against the current schema version
+      - ../../../nexusLIMS/schemas/nexus-experiment.xsd:/srv/nexuslims/schemas/nexus-experiment.xsd:ro
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://cdcs:8080/"]
+      test: ["CMD", "curl", "-f", "http://cdcs:8000/"]
       interval: 10s
       timeout: 5s
       retries: 15

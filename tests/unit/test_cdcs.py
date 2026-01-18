@@ -35,8 +35,7 @@ class TestCDCS:
     def _setup_cdcs_env(self, monkeypatch, mock_cdcs_server):
         """Set up CDCS environment variables and mock server."""
         monkeypatch.setenv("NX_CDCS_URL", "http://test-cdcs.example.com")
-        monkeypatch.setenv("NX_CDCS_USER", "testuser")
-        monkeypatch.setenv("NX_CDCS_PASS", "testpass")
+        monkeypatch.setenv("NX_CDCS_TOKEN", "test-api-token-not-for-production")
 
     def test_upload_and_delete_record(self, test_xml_record_file):
         _files_uploaded, record_ids = cdcs.upload_record_files(
@@ -102,7 +101,7 @@ class TestCDCS:
         monkeypatch.setattr(
             cdcs,
             "nexus_req",
-            lambda _x, _y, basic_auth: MockResponse(
+            lambda _x, _y, token_auth=None: MockResponse(
                 status_code=404,
                 text="This is a fake request error!",
             ),
@@ -115,7 +114,7 @@ class TestCDCS:
         """Test upload_record_content with bad server response."""
 
         # pylint: disable=unused-argument
-        def mock_req(_a, _b, json=None, *, basic_auth=False):
+        def mock_req(_a, _b, json=None, *, token_auth=None):
             return MockResponseWithJson(
                 status_code=404,
                 text="This is a fake request error!",

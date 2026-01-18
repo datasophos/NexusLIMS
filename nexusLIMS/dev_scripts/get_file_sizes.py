@@ -21,15 +21,13 @@ from urllib3.exceptions import InsecureRequestWarning
 # Import settings from config module
 from nexusLIMS.config import settings
 
-USERNAME = settings.NX_CDCS_USER
-PASSWORD = settings.NX_CDCS_PASS
+TOKEN = settings.NX_CDCS_TOKEN
 URL = str(settings.NX_CDCS_URL)
 FNAME = os.environ.get("RECORDS_JSON_PATH", "records.json")
 ROOT_PATH = str(settings.NX_INSTRUMENT_DATA_PATH)
 
 for var, val in [
-    ("NX_CDCS_USER", USERNAME),
-    ("NX_CDCS_PASS", PASSWORD),
+    ("NX_CDCS_TOKEN", TOKEN),
     ("NX_CDCS_URL", URL),
     ("records_json_path", FNAME),
     ("NX_INSTRUMENT_DATA_PATH", ROOT_PATH),
@@ -70,7 +68,8 @@ def get_all_docs(
     """
     url = f"{URL}rest/admin/data/"
     logger.debug("Fetching records from %s", url)
-    response = requests.get(url, verify=verify, auth=(USERNAME, PASSWORD), timeout=600)
+    headers = {"Authorization": f"Bearer {TOKEN}"}
+    response = requests.get(url, verify=verify, headers=headers, timeout=600)
     response.raise_for_status()
 
     if write_to_file:

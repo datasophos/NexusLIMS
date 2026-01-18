@@ -34,19 +34,46 @@ from nexusLIMS.version import __version__
 
 _logger = logging.getLogger(__name__)
 
+# ============================================================================
+# TEST MODE: Disable Pydantic validation when running tests
+# ============================================================================
+# Check if we're in test mode BEFORE defining the Settings class
+# This allows tests to control the environment setup without validation errors
+TEST_MODE = os.getenv("NX_TEST_MODE", "").lower() in ("true", "1", "yes")
+
+if TEST_MODE:
+    _logger.warning("NX_TEST_MODE enabled - Pydantic validation disabled")
+
+# Type aliases that conditionally use strict validation types or plain Path
+# based on TEST_MODE. When TEST_MODE=True, use Path (no existence validation).
+# When TEST_MODE=False, use DirectoryPath/FilePath (validates existence).
+if TYPE_CHECKING:
+    # For type checkers, always use the strict types for proper type hints
+    TestAwareDirectoryPath = DirectoryPath
+    TestAwareFilePath = FilePath
+    TestAwareHttpUrl = AnyHttpUrl
+    TestAwareEmailStr = EmailStr
+else:
+    # At runtime, conditionally use strict or lenient types
+    TestAwareDirectoryPath = Path if TEST_MODE else DirectoryPath
+    TestAwareFilePath = Path if TEST_MODE else FilePath
+    TestAwareHttpUrl = str if TEST_MODE else AnyHttpUrl
+    TestAwareEmailStr = str if TEST_MODE else EmailStr
+
 
 class NemoHarvesterConfig(BaseModel):
     """Configuration for a single NEMO harvester instance."""
 
-    address: AnyHttpUrl = Field(
-        ...,
+    # Uses TestAwareHttpUrl which is str in test mode, AnyHttpUrl in production
+    address: TestAwareHttpUrl = Field(  # type: ignore[valid-type]
+        "http://localhost:8080/api/" if TEST_MODE else ...,
         description=(
             "Full path to the root of the NEMO API, with trailing slash included "
             "(e.g., 'https://nemo.example.com/api/')"
         ),
     )
     token: str = Field(
-        ...,
+        "test_nemo_token" if TEST_MODE else ...,
         description=(
             "Authentication token for the NEMO server. Obtain from the 'detailed "
             "administration' page of the NEMO installation."
@@ -77,8 +104,10 @@ class NemoHarvesterConfig(BaseModel):
 
     @field_validator("address")
     @classmethod
-    def validate_trailing_slash(cls, v: AnyHttpUrl) -> AnyHttpUrl:
+    def validate_trailing_slash(cls, v: str | AnyHttpUrl) -> str | AnyHttpUrl:
         """Ensure the API address has a trailing slash."""
+        if TEST_MODE:
+            return v  # Skip validation in test mode
         if not str(v).endswith("/"):
             msg = "NEMO address must end with a trailing slash"
             raise ValueError(msg)
@@ -89,7 +118,7 @@ class EmailConfig(BaseModel):
     """Config for email notifications from the nexuslims-process-records script."""
 
     smtp_host: str = Field(
-        ...,
+        "localhost" if TEST_MODE else ...,
         description="SMTP server hostname (e.g., 'smtp.gmail.com')",
     )
     smtp_port: int = Field(
@@ -108,12 +137,12 @@ class EmailConfig(BaseModel):
         default=True,
         description="Use TLS encryption (default: True)",
     )
-    sender: EmailStr = Field(
-        ...,
+    sender: TestAwareEmailStr = Field(  # type: ignore[valid-type]
+        "test@example.com" if TEST_MODE else ...,
         description="Email address to send from",
     )
-    recipients: list[EmailStr] = Field(
-        ...,
+    recipients: list[TestAwareEmailStr] = Field(  # type: ignore[valid-type]
+        ["test@example.com"] if TEST_MODE else ...,
         description="List of recipient email addresses for error notifications",
     )
 
@@ -131,6 +160,8 @@ class Settings(BaseSettings):
         env_file=".env",
         env_file_encoding="utf-8",
         extra="ignore",  # Ignore extra environment variables not defined here
+        # In test mode, disable path validation to allow non-existent paths
+        validate_default=not TEST_MODE,
     )
 
     NX_FILE_STRATEGY: Literal["exclusive", "inclusive"] = Field(
@@ -148,49 +179,43 @@ class Settings(BaseSettings):
             "Default is `['*.mib','*.db','*.emi','*.hdr']`."
         ),
     )
-    NX_INSTRUMENT_DATA_PATH: DirectoryPath = Field(
-        ...,
+    # Use TestAware types which are strict in production, lenient in test mode
+    NX_INSTRUMENT_DATA_PATH: TestAwareDirectoryPath = Field(  # type: ignore[valid-type]
+        Path("/tmp") / "test_instrument_data" if TEST_MODE else ...,  # noqa: S108
         description=(
             "Root path to the centralized file store for instrument data "
             "(mounted read-only). The directory must exist."
         ),
     )
-    NX_DATA_PATH: DirectoryPath = Field(
-        ...,
+    NX_DATA_PATH: TestAwareDirectoryPath = Field(  # type: ignore[valid-type]
+        Path("/tmp") / "test_data" if TEST_MODE else ...,  # noqa: S108
         description=(
             "Writable path parallel to NX_INSTRUMENT_DATA_PATH for "
             "extracted metadata and generated preview images. The directory must exist."
         ),
     )
-    NX_DB_PATH: FilePath = Field(
-        ...,
+    NX_DB_PATH: TestAwareFilePath = Field(  # type: ignore[valid-type]
+        Path("/tmp") / "test.db" if TEST_MODE else ...,  # noqa: S108
         description=(
             "The writable path to the NexusLIMS SQLite database that is used to get "
             "information about instruments and sessions that are built into records."
         ),
     )
-    NX_CDCS_USER: str = Field(
-        ...,
+    NX_CDCS_TOKEN: str = Field(
+        "test_token" if TEST_MODE else ...,
         description=(
-            "The username used to authenticate to the CDCS API for uploading "
+            "API token for authenticating to the CDCS API for uploading "
             "built records to the NexusLIMS front-end."
         ),
     )
-    NX_CDCS_PASS: str = Field(
-        ...,
-        description=(
-            "The password used to authenticate to the CDCS API for uploading "
-            "built records to the NexusLIMS front-end."
-        ),
-    )
-    NX_CDCS_URL: AnyHttpUrl = Field(
-        ...,
+    NX_CDCS_URL: TestAwareHttpUrl = Field(  # type: ignore[valid-type]
+        "http://localhost:8000" if TEST_MODE else ...,
         description=(
             "The root URL of the NexusLIMS CDCS front-end. This will be the target for "
             "record uploads that are authenticated using the CDCS credentials."
         ),
     )
-    NX_CERT_BUNDLE_FILE: FilePath | None = Field(
+    NX_CERT_BUNDLE_FILE: TestAwareFilePath | None = Field(  # type: ignore[valid-type]
         None,
         description=(
             "If needed, a custom SSL certificate CA bundle can be used to verify "
@@ -234,14 +259,14 @@ class Settings(BaseSettings):
         ),
         ge=0,
     )
-    NX_LOG_PATH: DirectoryPath | None = Field(
+    NX_LOG_PATH: TestAwareDirectoryPath | None = Field(  # type: ignore[valid-type]
         None,
         description=(
             "Directory for application logs. If not specified, defaults to "
             "NX_DATA_PATH/logs/. Logs are organized by date: logs/YYYY/MM/DD/"
         ),
     )
-    NX_RECORDS_PATH: DirectoryPath | None = Field(
+    NX_RECORDS_PATH: TestAwareDirectoryPath | None = Field(  # type: ignore[valid-type]
         None,
         description=(
             "Directory for generated XML records. If not specified, defaults to "
@@ -249,7 +274,7 @@ class Settings(BaseSettings):
             "a 'uploaded' subdirectory."
         ),
     )
-    NX_LOCAL_PROFILES_PATH: DirectoryPath | None = Field(
+    NX_LOCAL_PROFILES_PATH: TestAwareDirectoryPath | None = Field(  # type: ignore[valid-type]
         None,
         description=(
             "Directory for site-specific instrument profiles. These profiles "
