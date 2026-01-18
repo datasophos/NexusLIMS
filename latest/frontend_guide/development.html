@@ -431,7 +431,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Jan, 15, 2026"/>
+    <meta name="docbuild:last-update" content="Jan, 18, 2026"/>
   </head>
   
   
@@ -1112,6 +1112,49 @@ will appear to be all black or blank. This is expected.</p></li>
 </table>
 </div>
 </section>
+<section id="dependency-management">
+<h3>Dependency Management<a class="headerlink" href="#dependency-management" title="Link to this heading">#</a></h3>
+<p>The project uses <a class="reference external" href="https://github.com/astral-sh/uv">UV</a> for fast, reliable Python dependency management with lockfiles for reproducibility.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Command</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dev-uv-lock</span></code></p></td>
+<td><p>Regenerate <code class="docutils literal notranslate"><span class="pre">uv.lock</span></code> from <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dev-uv-upgrade</span></code></p></td>
+<td><p>Upgrade all dependencies (respecting version constraints)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dev-uv-sync</span></code></p></td>
+<td><p>Sync local environment with lockfile (for local dev outside Docker)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dev-uv-add</span></code></p></td>
+<td><p>Show usage for adding new dependencies</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>After adding or updating dependencies, rebuild the Docker image with <code class="docutils literal notranslate"><span class="pre">dev-build-clean</span></code> to apply changes.</p>
+</div>
+<p><strong>Key Files:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> - Single source of truth for all dependencies</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">uv.lock</span></code> - Lockfile ensuring reproducible builds (must be committed)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.python-version</span></code> - Required Python version (3.13)</p></li>
+</ul>
+<p><strong>Dependency Groups:</strong></p>
+<ul class="simple">
+<li><p><strong>Main</strong>: Core application (celery, Django, django-redis)</p></li>
+<li><p><strong>core</strong>: 21 CDCS/MDCS packages pinned to <code class="docutils literal notranslate"><span class="pre">2.18.*</span></code></p></li>
+<li><p><strong>server</strong>: Production servers (psycopg2-binary, uwsgi, gunicorn)</p></li>
+</ul>
+<p>For detailed dependency workflows, see the repository’s <code class="docutils literal notranslate"><span class="pre">CLAUDE.md</span></code> and <code class="docutils literal notranslate"><span class="pre">deployment/README.md</span></code>.</p>
+</section>
 </section>
 <hr class="docutils" />
 <section id="architecture">
@@ -1342,6 +1385,7 @@ chmod<span class="w"> </span>+x<span class="w"> </span>scripts/*.sh<span class="
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#shell-access">Shell Access</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#database">Database</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nexuslims-specific">NexusLIMS-Specific</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dependency-management">Dependency Management</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#architecture">Architecture</a></li>

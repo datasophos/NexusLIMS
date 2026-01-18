@@ -66,7 +66,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Jan, 15, 2026"/>
+    <meta name="docbuild:last-update" content="Jan, 18, 2026"/>
   </head>
   
   
@@ -540,7 +540,10 @@ environment variables.</p>
 <h3>Data<a class="headerlink" href="#data" title="Link to this heading">#</a></h3>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table table-left">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.config.settings" title="nexusLIMS.config.settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">settings</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.config.TEST_MODE" title="nexusLIMS.config.TEST_MODE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TEST_MODE</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.config.settings" title="nexusLIMS.config.settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">settings</span></code></a></p></td>
 <td><p>The settings “singleton” - accessed like a normal object in the application</p></td>
 </tr>
 </tbody>
@@ -549,6 +552,11 @@ environment variables.</p>
 </section>
 <section id="api">
 <h3>API<a class="headerlink" href="#api" title="Link to this heading">#</a></h3>
+<dl class="py data">
+<dt class="sig sig-object py" id="nexusLIMS.config.TEST_MODE">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.config.</span></span><span class="sig-name descname"><span class="pre">TEST_MODE</span></span><a class="headerlink" href="#nexusLIMS.config.TEST_MODE" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
 <dl class="py class">
 <dt class="sig sig-object py" id="nexusLIMS.config.NemoHarvesterConfig">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nexusLIMS.config.</span></span><span class="sig-name descname"><span class="pre">NemoHarvesterConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**data:</span> <span class="pre">typing.Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/config.html#NemoHarvesterConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.config.NemoHarvesterConfig" title="Link to this definition">#</a></dt>
@@ -557,7 +565,7 @@ environment variables.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.config.NemoHarvesterConfig.address">
 <span class="sig-name descname"><span class="pre">address</span></span><a class="headerlink" href="#nexusLIMS.config.NemoHarvesterConfig.address" title="Link to this definition">#</a></dt>
-<dd><p><strong>Type:</strong> pydantic.AnyHttpUrl</p>
+<dd><p><strong>Type:</strong> nexusLIMS.config.TestAwareHttpUrl</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -586,7 +594,7 @@ environment variables.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="nexusLIMS.config.NemoHarvesterConfig.validate_trailing_slash">
-<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">validate_trailing_slash</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pydantic.dev/latest/api/networks/#pydantic.networks.AnyHttpUrl" title="(in Pydantic Validation v0.0.0)"><span class="pre">AnyHttpUrl</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.pydantic.dev/latest/api/networks/#pydantic.networks.AnyHttpUrl" title="(in Pydantic Validation v0.0.0)"><span class="pre">AnyHttpUrl</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/config.html#NemoHarvesterConfig.validate_trailing_slash"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.config.NemoHarvesterConfig.validate_trailing_slash" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">validate_trailing_slash</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.pydantic.dev/latest/api/networks/#pydantic.networks.AnyHttpUrl" title="(in Pydantic Validation v0.0.0)"><span class="pre">AnyHttpUrl</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.pydantic.dev/latest/api/networks/#pydantic.networks.AnyHttpUrl" title="(in Pydantic Validation v0.0.0)"><span class="pre">AnyHttpUrl</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/config.html#NemoHarvesterConfig.validate_trailing_slash"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.config.NemoHarvesterConfig.validate_trailing_slash" title="Link to this definition">#</a></dt>
 <dd><p>Ensure the API address has a trailing slash.</p>
 </dd></dl>
 
@@ -630,13 +638,13 @@ environment variables.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.config.EmailConfig.sender">
 <span class="sig-name descname"><span class="pre">sender</span></span><a class="headerlink" href="#nexusLIMS.config.EmailConfig.sender" title="Link to this definition">#</a></dt>
-<dd><p><strong>Type:</strong> pydantic.EmailStr</p>
+<dd><p><strong>Type:</strong> nexusLIMS.config.TestAwareEmailStr</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.config.EmailConfig.recipients">
 <span class="sig-name descname"><span class="pre">recipients</span></span><a class="headerlink" href="#nexusLIMS.config.EmailConfig.recipients" title="Link to this definition">#</a></dt>
-<dd><p><strong>Type:</strong> list[pydantic.EmailStr]</p>
+<dd><p><strong>Type:</strong> list[nexusLIMS.config.TestAwareEmailStr]</p>
 </dd></dl>
 
 </dd></dl>
@@ -670,43 +678,37 @@ that settings are loaded with proper types and provides descriptions for each.</
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.config.Settings.NX_INSTRUMENT_DATA_PATH">
 <span class="sig-name descname"><span class="pre">NX_INSTRUMENT_DATA_PATH</span></span><a class="headerlink" href="#nexusLIMS.config.Settings.NX_INSTRUMENT_DATA_PATH" title="Link to this definition">#</a></dt>
-<dd><p><strong>Type:</strong> pydantic.DirectoryPath</p>
+<dd><p><strong>Type:</strong> nexusLIMS.config.TestAwareDirectoryPath</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.config.Settings.NX_DATA_PATH">
 <span class="sig-name descname"><span class="pre">NX_DATA_PATH</span></span><a class="headerlink" href="#nexusLIMS.config.Settings.NX_DATA_PATH" title="Link to this definition">#</a></dt>
-<dd><p><strong>Type:</strong> pydantic.DirectoryPath</p>
+<dd><p><strong>Type:</strong> nexusLIMS.config.TestAwareDirectoryPath</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.config.Settings.NX_DB_PATH">
 <span class="sig-name descname"><span class="pre">NX_DB_PATH</span></span><a class="headerlink" href="#nexusLIMS.config.Settings.NX_DB_PATH" title="Link to this definition">#</a></dt>
-<dd><p><strong>Type:</strong> pydantic.FilePath</p>
+<dd><p><strong>Type:</strong> nexusLIMS.config.TestAwareFilePath</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="nexusLIMS.config.Settings.NX_CDCS_USER">
-<span class="sig-name descname"><span class="pre">NX_CDCS_USER</span></span><a class="headerlink" href="#nexusLIMS.config.Settings.NX_CDCS_USER" title="Link to this definition">#</a></dt>
-<dd><p><strong>Type:</strong> str</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="nexusLIMS.config.Settings.NX_CDCS_PASS">
-<span class="sig-name descname"><span class="pre">NX_CDCS_PASS</span></span><a class="headerlink" href="#nexusLIMS.config.Settings.NX_CDCS_PASS" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="nexusLIMS.config.Settings.NX_CDCS_TOKEN">
+<span class="sig-name descname"><span class="pre">NX_CDCS_TOKEN</span></span><a class="headerlink" href="#nexusLIMS.config.Settings.NX_CDCS_TOKEN" title="Link to this definition">#</a></dt>
 <dd><p><strong>Type:</strong> str</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.config.Settings.NX_CDCS_URL">
 <span class="sig-name descname"><span class="pre">NX_CDCS_URL</span></span><a class="headerlink" href="#nexusLIMS.config.Settings.NX_CDCS_URL" title="Link to this definition">#</a></dt>
-<dd><p><strong>Type:</strong> pydantic.AnyHttpUrl</p>
+<dd><p><strong>Type:</strong> nexusLIMS.config.TestAwareHttpUrl</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.config.Settings.NX_CERT_BUNDLE_FILE">
 <span class="sig-name descname"><span class="pre">NX_CERT_BUNDLE_FILE</span></span><a class="headerlink" href="#nexusLIMS.config.Settings.NX_CERT_BUNDLE_FILE" title="Link to this definition">#</a></dt>
-<dd><p><strong>Type:</strong> pydantic.FilePath | None</p>
+<dd><p><strong>Type:</strong> nexusLIMS.config.TestAwareFilePath | None</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -730,19 +732,19 @@ that settings are loaded with proper types and provides descriptions for each.</
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.config.Settings.NX_LOG_PATH">
 <span class="sig-name descname"><span class="pre">NX_LOG_PATH</span></span><a class="headerlink" href="#nexusLIMS.config.Settings.NX_LOG_PATH" title="Link to this definition">#</a></dt>
-<dd><p><strong>Type:</strong> pydantic.DirectoryPath | None</p>
+<dd><p><strong>Type:</strong> nexusLIMS.config.TestAwareDirectoryPath | None</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.config.Settings.NX_RECORDS_PATH">
 <span class="sig-name descname"><span class="pre">NX_RECORDS_PATH</span></span><a class="headerlink" href="#nexusLIMS.config.Settings.NX_RECORDS_PATH" title="Link to this definition">#</a></dt>
-<dd><p><strong>Type:</strong> pydantic.DirectoryPath | None</p>
+<dd><p><strong>Type:</strong> nexusLIMS.config.TestAwareDirectoryPath | None</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.config.Settings.NX_LOCAL_PROFILES_PATH">
 <span class="sig-name descname"><span class="pre">NX_LOCAL_PROFILES_PATH</span></span><a class="headerlink" href="#nexusLIMS.config.Settings.NX_LOCAL_PROFILES_PATH" title="Link to this definition">#</a></dt>
-<dd><p><strong>Type:</strong> pydantic.DirectoryPath | None</p>
+<dd><p><strong>Type:</strong> nexusLIMS.config.TestAwareDirectoryPath | None</p>
 </dd></dl>
 
 <dl class="py property">
@@ -938,6 +940,7 @@ Useful in test teardown to ensure clean state.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data">Data</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#api">API</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.TEST_MODE"><code class="docutils literal notranslate"><span class="pre">TEST_MODE</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.NemoHarvesterConfig"><code class="docutils literal notranslate"><span class="pre">NemoHarvesterConfig</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.NemoHarvesterConfig.address"><code class="docutils literal notranslate"><span class="pre">NemoHarvesterConfig.address</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.NemoHarvesterConfig.token"><code class="docutils literal notranslate"><span class="pre">NemoHarvesterConfig.token</span></code></a></li>
@@ -964,8 +967,7 @@ Useful in test teardown to ensure clean state.</p>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.NX_INSTRUMENT_DATA_PATH"><code class="docutils literal notranslate"><span class="pre">Settings.NX_INSTRUMENT_DATA_PATH</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.NX_DATA_PATH"><code class="docutils literal notranslate"><span class="pre">Settings.NX_DATA_PATH</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.NX_DB_PATH"><code class="docutils literal notranslate"><span class="pre">Settings.NX_DB_PATH</span></code></a></li>
-<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.NX_CDCS_USER"><code class="docutils literal notranslate"><span class="pre">Settings.NX_CDCS_USER</span></code></a></li>
-<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.NX_CDCS_PASS"><code class="docutils literal notranslate"><span class="pre">Settings.NX_CDCS_PASS</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.NX_CDCS_TOKEN"><code class="docutils literal notranslate"><span class="pre">Settings.NX_CDCS_TOKEN</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.NX_CDCS_URL"><code class="docutils literal notranslate"><span class="pre">Settings.NX_CDCS_URL</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.NX_CERT_BUNDLE_FILE"><code class="docutils literal notranslate"><span class="pre">Settings.NX_CERT_BUNDLE_FILE</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.NX_CERT_BUNDLE"><code class="docutils literal notranslate"><span class="pre">Settings.NX_CERT_BUNDLE</span></code></a></li>

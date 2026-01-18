@@ -428,7 +428,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Jan, 15, 2026"/>
+    <meta name="docbuild:last-update" content="Jan, 18, 2026"/>
   </head>
   
   
@@ -839,7 +839,6 @@ window.addEventListener("load", load);
 <span class="kn">from</span><span class="w"> </span><span class="nn">benedict</span><span class="w"> </span><span class="kn">import</span> <span class="n">benedict</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">requests</span><span class="w"> </span><span class="kn">import</span> <span class="n">Session</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">requests.adapters</span><span class="w"> </span><span class="kn">import</span> <span class="n">HTTPAdapter</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">requests_ntlm</span><span class="w"> </span><span class="kn">import</span> <span class="n">HttpNtlmAuth</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">settings</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.harvesters</span><span class="w"> </span><span class="kn">import</span> <span class="n">CA_BUNDLE_CONTENT</span>
@@ -884,7 +883,6 @@ window.addEventListener("load", load);
     <span class="n">function</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">retries</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
-    <span class="n">basic_auth</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">token_auth</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
@@ -892,9 +890,9 @@ window.addEventListener("load", load);
 <span class="sd">    Make a request from NexusLIMS.</span>
 
 <span class="sd">    A helper method that wraps a function from :py:mod:`requests`, but adds a</span>
-<span class="sd">    local certificate authority chain to validate any custom certificates and</span>
-<span class="sd">    allow authenticatation using NTLM. Will automatically retry on transient</span>
-<span class="sd">    server errors (502, 503, 504) with exponential backoff.</span>
+<span class="sd">    local certificate authority chain to validate any custom certificates.</span>
+<span class="sd">    Will automatically retry on transient server errors (502, 503, 504) with</span>
+<span class="sd">    exponential backoff.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -905,13 +903,8 @@ window.addEventListener("load", load);
 <span class="sd">        ``&#39;GET&#39;``, ``&#39;POST&#39;``, ``&#39;PATCH&#39;``, etc.)</span>
 <span class="sd">    retries</span>
 <span class="sd">        The maximum number of retry attempts (total attempts = retries + 1)</span>
-<span class="sd">    basic_auth</span>
-<span class="sd">        If True, use only username and password for authentication rather than</span>
-<span class="sd">        NTLM</span>
 <span class="sd">    token_auth</span>
 <span class="sd">        If a value is provided, it will be used as a token for authentication</span>
-<span class="sd">        (only one of ``token_auth`` or ``basic_auth`` should be provided. The</span>
-<span class="sd">        method will error if both are provided</span>
 <span class="sd">    **kwargs :</span>
 <span class="sd">        Other keyword arguments are passed along to the ``fn``</span>
 
@@ -919,19 +912,7 @@ window.addEventListener("load", load);
 <span class="sd">    -------</span>
 <span class="sd">    r : :py:class:`requests.Response`</span>
 <span class="sd">        A requests response object</span>
-
-<span class="sd">    Raises</span>
-<span class="sd">    ------</span>
-<span class="sd">    ValueError</span>
-<span class="sd">        If multiple methods of authentication are provided to the function</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">basic_auth</span> <span class="ow">and</span> <span class="n">token_auth</span><span class="p">:</span>
-        <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s2">&quot;Both `basic_auth` and `token_auth` were provided. &quot;</span>
-            <span class="s2">&quot;Only one can be used at a time&quot;</span>
-        <span class="p">)</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-
     <span class="c1"># if token_auth is desired, add it to any existing headers passed along</span>
     <span class="c1"># with the request</span>
     <span class="k">if</span> <span class="n">token_auth</span><span class="p">:</span>
@@ -962,16 +943,7 @@ window.addEventListener("load", load);
 
         <span class="c1"># Retry loop with exponential backoff</span>
         <span class="k">for</span> <span class="n">attempt</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">retries</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">token_auth</span><span class="p">:</span>
-                <span class="n">response</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="n">verify_arg</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">response</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
-                    <span class="n">function</span><span class="p">,</span>
-                    <span class="n">url</span><span class="p">,</span>
-                    <span class="n">auth</span><span class="o">=</span><span class="n">get_auth</span><span class="p">(</span><span class="n">basic</span><span class="o">=</span><span class="n">basic_auth</span><span class="p">),</span>
-                    <span class="n">verify</span><span class="o">=</span><span class="n">verify_arg</span><span class="p">,</span>
-                    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-                <span class="p">)</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="n">verify_arg</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
             <span class="c1"># If we got a successful response or non-retryable error, return it</span>
             <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">retry_status_codes</span><span class="p">:</span>
@@ -1665,56 +1637,6 @@ window.addEventListener("load", load);
     <span class="n">delta</span> <span class="o">=</span> <span class="n">earliest_end</span> <span class="o">-</span> <span class="n">latest_start</span>
 
     <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">timedelta</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">delta</span><span class="p">)</span></div>
-
-
-
-<div class="viewcode-block" id="get_auth">
-<a class="viewcode-back" href="../../api/nexusLIMS/nexusLIMS.utils.html#nexusLIMS.utils.get_auth">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">get_auth</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">basic</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Get an authentication scheme for NexusLIMS requests.</span>
-
-<span class="sd">    Get authentication credentials from settings (NX_CDCS_USER and NX_CDCS_PASS</span>
-<span class="sd">    environment variables) and return either NTLM authentication or basic</span>
-<span class="sd">    username/password tuple.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    basic : bool</span>
-<span class="sd">        If True, return only username and password tuple rather than NTLM</span>
-<span class="sd">        authentication object</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    auth : ``requests_ntlm.HttpNtlmAuth`` or tuple</span>
-<span class="sd">        NTLM authentication handler for ``requests`` (default), or</span>
-<span class="sd">        (username, password) tuple if basic=True</span>
-
-<span class="sd">    Raises</span>
-<span class="sd">    ------</span>
-<span class="sd">    AuthenticationError</span>
-<span class="sd">        If NX_CDCS_USER or NX_CDCS_PASS are not configured in settings</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">username</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">NX_CDCS_USER</span>
-        <span class="n">passwd</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">NX_CDCS_PASS</span>
-        <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Authenticating using credentials from settings&quot;</span><span class="p">)</span>
-    <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">AttributeError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exception</span><span class="p">:</span>
-        <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s2">&quot;No credentials were found in settings. &quot;</span>
-            <span class="s2">&quot;Please configure NX_CDCS_USER and NX_CDCS_PASS &quot;</span>
-            <span class="s2">&quot;environment variables.&quot;</span>
-        <span class="p">)</span>
-        <span class="k">raise</span> <span class="n">AuthenticationError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exception</span>
-
-    <span class="k">if</span> <span class="n">basic</span><span class="p">:</span>
-        <span class="c1"># return just username and password (for BasicAuthentication)</span>
-        <span class="k">return</span> <span class="n">username</span><span class="p">,</span> <span class="n">passwd</span>
-
-    <span class="n">domain</span> <span class="o">=</span> <span class="s2">&quot;nist&quot;</span>
-    <span class="n">path</span> <span class="o">=</span> <span class="n">domain</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">username</span>
-
-    <span class="k">return</span> <span class="n">HttpNtlmAuth</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">passwd</span><span class="p">)</span></div>
 
 
 

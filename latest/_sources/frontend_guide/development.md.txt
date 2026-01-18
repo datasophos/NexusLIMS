@@ -176,6 +176,33 @@ Load commands with `source dev-commands.sh` from the `deployment/` directory.
 | `dev-update-xslt-detail` | Update only detail_stylesheet.xsl |
 | `dev-update-xslt-list` | Update only list_stylesheet.xsl |
 
+### Dependency Management
+
+The project uses [UV](https://github.com/astral-sh/uv) for fast, reliable Python dependency management with lockfiles for reproducibility.
+
+| Command | Description |
+|---------|-------------|
+| `dev-uv-lock` | Regenerate `uv.lock` from `pyproject.toml` |
+| `dev-uv-upgrade` | Upgrade all dependencies (respecting version constraints) |
+| `dev-uv-sync` | Sync local environment with lockfile (for local dev outside Docker) |
+| `dev-uv-add` | Show usage for adding new dependencies |
+
+```{note}
+After adding or updating dependencies, rebuild the Docker image with `dev-build-clean` to apply changes.
+```
+
+**Key Files:**
+- `pyproject.toml` - Single source of truth for all dependencies
+- `uv.lock` - Lockfile ensuring reproducible builds (must be committed)
+- `.python-version` - Required Python version (3.13)
+
+**Dependency Groups:**
+- **Main**: Core application (celery, Django, django-redis)
+- **core**: 21 CDCS/MDCS packages pinned to `2.18.*`
+- **server**: Production servers (psycopg2-binary, uwsgi, gunicorn)
+
+For detailed dependency workflows, see the repository's `CLAUDE.md` and `deployment/README.md`.
+
 ---
 
 ## Architecture

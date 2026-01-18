@@ -66,7 +66,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Jan, 15, 2026"/>
+    <meta name="docbuild:last-update" content="Jan, 18, 2026"/>
   </head>
   
   
@@ -527,11 +527,11 @@ powershell<span class="w"> </span>-c<span class="w"> </span><span class="s2">&qu
 <td><p>Yes</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">nexusLIMS_user</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">NX_CDCS_USER</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">NX_CDCS_TOKEN</span></code></p></td>
 <td><p>Yes</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">nexusLIMS_pass</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">NX_CDCS_PASS</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">NX_CDCS_TOKEN</span></code></p></td>
 <td><p>Yes</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">cdcs_url</span></code></p></td>
@@ -580,6 +580,10 @@ powershell<span class="w"> </span>-c<span class="w"> </span><span class="s2">&qu
 </tr>
 </tbody>
 </table>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>v2.3.0+ Authentication Change</strong>: CDCS authentication has changed from username/password (<code class="docutils literal notranslate"><span class="pre">NX_CDCS_USER</span></code> and <code class="docutils literal notranslate"><span class="pre">NX_CDCS_PASS</span></code>) to token-based authentication (<code class="docutils literal notranslate"><span class="pre">NX_CDCS_TOKEN</span></code>). Replace your username and password with an API token obtained from the CDCS admin panel. See <a class="reference internal" href="user_guide/configuration.html#config-cdcs-token"><span class="std std-ref">NX_CDCS_TOKEN</span></a> for details.</p>
 </div>
 </section>
 <section id="new-variables">
@@ -726,23 +730,19 @@ powershell<span class="w"> </span>-c<span class="w"> </span><span class="s2">&qu
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">NX_CDCS_USER</span></code></p></td>
-<td><p>Username for CDCS API</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">nexuslims_service</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">NX_CDCS_TOKEN</span></code></p></td>
+<td><p>API token for CDCS authentication</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">your-api-token-here</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">NX_CDCS_PASS</span></code></p></td>
-<td><p>Password for CDCS API</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">your-secure-password</span></code></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">NX_CDCS_URL</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">NX_CDCS_URL</span></code></p></td>
 <td><p>Root URL of NexusLIMS CDCS instance (with trailing slash)</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">https://nexuslims.example.com/</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">NX_CERT_BUNDLE_FILE</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">NX_CERT_BUNDLE_FILE</span></code></p></td>
 <td><p>Optional: Path to SSL certificate bundle</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">/etc/ssl/certs/custom-ca.pem</span></code></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">NX_CERT_BUNDLE</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">NX_CERT_BUNDLE</span></code></p></td>
 <td><p>Optional: SSL certificate bundle as string</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">-----BEGIN</span> <span class="pre">CERTIFICATE-----\n...</span></code></p></td>
 </tr>
@@ -909,8 +909,7 @@ nano<span class="w"> </span>.env<span class="w">  </span><span class="c1"># or y
 <li><p>Rename <code class="docutils literal notranslate"><span class="pre">mmfnexus_path</span></code> → <code class="docutils literal notranslate"><span class="pre">NX_INSTRUMENT_DATA_PATH</span></code></p></li>
 <li><p>Rename <code class="docutils literal notranslate"><span class="pre">nexusLIMS_path</span></code> → <code class="docutils literal notranslate"><span class="pre">NX_DATA_PATH</span></code></p></li>
 <li><p>Rename <code class="docutils literal notranslate"><span class="pre">nexusLIMS_db_path</span></code> → <code class="docutils literal notranslate"><span class="pre">NX_DB_PATH</span></code></p></li>
-<li><p>Rename <code class="docutils literal notranslate"><span class="pre">nexusLIMS_user</span></code> → <code class="docutils literal notranslate"><span class="pre">NX_CDCS_USER</span></code></p></li>
-<li><p>Rename <code class="docutils literal notranslate"><span class="pre">nexusLIMS_pass</span></code> → <code class="docutils literal notranslate"><span class="pre">NX_CDCS_PASS</span></code></p></li>
+<li><p>Replace <code class="docutils literal notranslate"><span class="pre">nexusLIMS_user</span></code> and <code class="docutils literal notranslate"><span class="pre">nexusLIMS_pass</span></code> → <code class="docutils literal notranslate"><span class="pre">NX_CDCS_TOKEN</span></code> (obtain token from CDCS admin panel)</p></li>
 <li><p>Rename <code class="docutils literal notranslate"><span class="pre">cdcs_url</span></code> → <code class="docutils literal notranslate"><span class="pre">NX_CDCS_URL</span></code></p></li>
 <li><p>Rename <code class="docutils literal notranslate"><span class="pre">NexusLIMS_cert_bundle_file</span></code> → <code class="docutils literal notranslate"><span class="pre">NX_CERT_BUNDLE_FILE</span></code> (if used)</p></li>
 <li><p>Rename <code class="docutils literal notranslate"><span class="pre">NexusLIMS_cert_bundle</span></code> → <code class="docutils literal notranslate"><span class="pre">NX_CERT_BUNDLE</span></code> (if used)</p></li>

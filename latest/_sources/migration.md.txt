@@ -48,8 +48,8 @@ The following variables have been renamed:
 | `mmfnexus_path` | `NX_INSTRUMENT_DATA_PATH` | Yes |
 | `nexusLIMS_path` | `NX_DATA_PATH` | Yes |
 | `nexusLIMS_db_path` | `NX_DB_PATH` | Yes |
-| `nexusLIMS_user` | `NX_CDCS_USER` | Yes |
-| `nexusLIMS_pass` | `NX_CDCS_PASS` | Yes |
+| `nexusLIMS_user` | `NX_CDCS_TOKEN` | Yes |
+| `nexusLIMS_pass` | `NX_CDCS_TOKEN` | Yes |
 | `cdcs_url` | `NX_CDCS_URL` | Yes |
 | `NexusLIMS_cert_bundle_file` | `NX_CERT_BUNDLE_FILE` | No |
 | `NexusLIMS_cert_bundle` | `NX_CERT_BUNDLE` | No |
@@ -61,6 +61,10 @@ The following variables have been renamed:
 | `NEMO_strftime_fmt_*` | `NX_NEMO_STRFTIME_FMT_*` | No |
 | `NEMO_strptime_fmt_*` | `NX_NEMO_STRPTIME_FMT_*` | No |
 | `NEMO_tz_*` | `NX_NEMO_TZ_*` | No |
+
+```{note}
+**v2.3.0+ Authentication Change**: CDCS authentication has changed from username/password (`NX_CDCS_USER` and `NX_CDCS_PASS`) to token-based authentication (`NX_CDCS_TOKEN`). Replace your username and password with an API token obtained from the CDCS admin panel. See {ref}`config-cdcs-token` for details.
+```
 
 ### New Variables
 
@@ -110,8 +114,7 @@ The following variables from v1.x are no longer used:
 
 | **Variable** | **Description** | **Example** |
 |--------------|-----------------|-------------|
-| `NX_CDCS_USER` | Username for CDCS API | `nexuslims_service` |
-| `NX_CDCS_PASS` | Password for CDCS API | `your-secure-password` |
+| `NX_CDCS_TOKEN` | API token for CDCS authentication | `your-api-token-here` |
 | `NX_CDCS_URL` | Root URL of NexusLIMS CDCS instance (with trailing slash) | `https://nexuslims.example.com/` |
 | `NX_CERT_BUNDLE_FILE` | Optional: Path to SSL certificate bundle | `/etc/ssl/certs/custom-ca.pem` |
 | `NX_CERT_BUNDLE` | Optional: SSL certificate bundle as string | `-----BEGIN CERTIFICATE-----\n...` |
@@ -228,8 +231,7 @@ nano .env  # or your preferred editor
 - Rename `mmfnexus_path` → `NX_INSTRUMENT_DATA_PATH`
 - Rename `nexusLIMS_path` → `NX_DATA_PATH`
 - Rename `nexusLIMS_db_path` → `NX_DB_PATH`
-- Rename `nexusLIMS_user` → `NX_CDCS_USER`
-- Rename `nexusLIMS_pass` → `NX_CDCS_PASS`
+- Replace `nexusLIMS_user` and `nexusLIMS_pass` → `NX_CDCS_TOKEN` (obtain token from CDCS admin panel)
 - Rename `cdcs_url` → `NX_CDCS_URL`
 - Rename `NexusLIMS_cert_bundle_file` → `NX_CERT_BUNDLE_FILE` (if used)
 - Rename `NexusLIMS_cert_bundle` → `NX_CERT_BUNDLE` (if used)

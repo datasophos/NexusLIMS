@@ -57,6 +57,11 @@
 :class: autosummary longtable
 :align: left
 
+* - {py:obj}`TEST_MODE <nexusLIMS.config.TEST_MODE>`
+  - ```{autodoc2-docstring} nexusLIMS.config.TEST_MODE
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
 * - {py:obj}`settings <nexusLIMS.config.settings>`
   - ```{autodoc2-docstring} nexusLIMS.config.settings
     :parser: autodoc2_docstrings_parser
@@ -65,6 +70,15 @@
 ````
 
 ### API
+
+````{py:data} TEST_MODE
+:canonical: nexusLIMS.config.TEST_MODE
+
+```{autodoc2-docstring} nexusLIMS.config.TEST_MODE
+:parser: autodoc2_docstrings_parser
+```
+
+````
 
 `````{py:class} NemoHarvesterConfig(/, **data: typing.Any)
 :canonical: nexusLIMS.config.NemoHarvesterConfig
@@ -78,7 +92,7 @@ Bases: {py:obj}`pydantic.BaseModel`
 ````{py:attribute} address
 :canonical: nexusLIMS.config.NemoHarvesterConfig.address
 
-**Type:** pydantic.AnyHttpUrl
+**Type:** nexusLIMS.config.TestAwareHttpUrl
 
 ```{autodoc2-docstring} nexusLIMS.config.NemoHarvesterConfig.address
 :parser: autodoc2_docstrings_parser
@@ -130,7 +144,7 @@ Bases: {py:obj}`pydantic.BaseModel`
 
 ````
 
-````{py:method} validate_trailing_slash(v: pydantic.AnyHttpUrl) -> pydantic.AnyHttpUrl
+````{py:method} validate_trailing_slash(v: str | pydantic.AnyHttpUrl) -> str | pydantic.AnyHttpUrl
 :canonical: nexusLIMS.config.NemoHarvesterConfig.validate_trailing_slash
 :classmethod:
 
@@ -209,7 +223,7 @@ Bases: {py:obj}`pydantic.BaseModel`
 ````{py:attribute} sender
 :canonical: nexusLIMS.config.EmailConfig.sender
 
-**Type:** pydantic.EmailStr
+**Type:** nexusLIMS.config.TestAwareEmailStr
 
 ```{autodoc2-docstring} nexusLIMS.config.EmailConfig.sender
 :parser: autodoc2_docstrings_parser
@@ -220,7 +234,7 @@ Bases: {py:obj}`pydantic.BaseModel`
 ````{py:attribute} recipients
 :canonical: nexusLIMS.config.EmailConfig.recipients
 
-**Type:** list[pydantic.EmailStr]
+**Type:** list[nexusLIMS.config.TestAwareEmailStr]
 
 ```{autodoc2-docstring} nexusLIMS.config.EmailConfig.recipients
 :parser: autodoc2_docstrings_parser
@@ -275,7 +289,7 @@ Bases: {py:obj}`pydantic_settings.BaseSettings`
 ````{py:attribute} NX_INSTRUMENT_DATA_PATH
 :canonical: nexusLIMS.config.Settings.NX_INSTRUMENT_DATA_PATH
 
-**Type:** pydantic.DirectoryPath
+**Type:** nexusLIMS.config.TestAwareDirectoryPath
 
 ```{autodoc2-docstring} nexusLIMS.config.Settings.NX_INSTRUMENT_DATA_PATH
 :parser: autodoc2_docstrings_parser
@@ -286,7 +300,7 @@ Bases: {py:obj}`pydantic_settings.BaseSettings`
 ````{py:attribute} NX_DATA_PATH
 :canonical: nexusLIMS.config.Settings.NX_DATA_PATH
 
-**Type:** pydantic.DirectoryPath
+**Type:** nexusLIMS.config.TestAwareDirectoryPath
 
 ```{autodoc2-docstring} nexusLIMS.config.Settings.NX_DATA_PATH
 :parser: autodoc2_docstrings_parser
@@ -297,7 +311,7 @@ Bases: {py:obj}`pydantic_settings.BaseSettings`
 ````{py:attribute} NX_DB_PATH
 :canonical: nexusLIMS.config.Settings.NX_DB_PATH
 
-**Type:** pydantic.FilePath
+**Type:** nexusLIMS.config.TestAwareFilePath
 
 ```{autodoc2-docstring} nexusLIMS.config.Settings.NX_DB_PATH
 :parser: autodoc2_docstrings_parser
@@ -305,23 +319,12 @@ Bases: {py:obj}`pydantic_settings.BaseSettings`
 
 ````
 
-````{py:attribute} NX_CDCS_USER
-:canonical: nexusLIMS.config.Settings.NX_CDCS_USER
+````{py:attribute} NX_CDCS_TOKEN
+:canonical: nexusLIMS.config.Settings.NX_CDCS_TOKEN
 
 **Type:** str
 
-```{autodoc2-docstring} nexusLIMS.config.Settings.NX_CDCS_USER
-:parser: autodoc2_docstrings_parser
-```
-
-````
-
-````{py:attribute} NX_CDCS_PASS
-:canonical: nexusLIMS.config.Settings.NX_CDCS_PASS
-
-**Type:** str
-
-```{autodoc2-docstring} nexusLIMS.config.Settings.NX_CDCS_PASS
+```{autodoc2-docstring} nexusLIMS.config.Settings.NX_CDCS_TOKEN
 :parser: autodoc2_docstrings_parser
 ```
 
@@ -330,7 +333,7 @@ Bases: {py:obj}`pydantic_settings.BaseSettings`
 ````{py:attribute} NX_CDCS_URL
 :canonical: nexusLIMS.config.Settings.NX_CDCS_URL
 
-**Type:** pydantic.AnyHttpUrl
+**Type:** nexusLIMS.config.TestAwareHttpUrl
 
 ```{autodoc2-docstring} nexusLIMS.config.Settings.NX_CDCS_URL
 :parser: autodoc2_docstrings_parser
@@ -341,7 +344,7 @@ Bases: {py:obj}`pydantic_settings.BaseSettings`
 ````{py:attribute} NX_CERT_BUNDLE_FILE
 :canonical: nexusLIMS.config.Settings.NX_CERT_BUNDLE_FILE
 
-**Type:** pydantic.FilePath | None
+**Type:** nexusLIMS.config.TestAwareFilePath | None
 
 ```{autodoc2-docstring} nexusLIMS.config.Settings.NX_CERT_BUNDLE_FILE
 :parser: autodoc2_docstrings_parser
@@ -385,7 +388,7 @@ Bases: {py:obj}`pydantic_settings.BaseSettings`
 ````{py:attribute} NX_LOG_PATH
 :canonical: nexusLIMS.config.Settings.NX_LOG_PATH
 
-**Type:** pydantic.DirectoryPath | None
+**Type:** nexusLIMS.config.TestAwareDirectoryPath | None
 
 ```{autodoc2-docstring} nexusLIMS.config.Settings.NX_LOG_PATH
 :parser: autodoc2_docstrings_parser
@@ -396,7 +399,7 @@ Bases: {py:obj}`pydantic_settings.BaseSettings`
 ````{py:attribute} NX_RECORDS_PATH
 :canonical: nexusLIMS.config.Settings.NX_RECORDS_PATH
 
-**Type:** pydantic.DirectoryPath | None
+**Type:** nexusLIMS.config.TestAwareDirectoryPath | None
 
 ```{autodoc2-docstring} nexusLIMS.config.Settings.NX_RECORDS_PATH
 :parser: autodoc2_docstrings_parser
@@ -407,7 +410,7 @@ Bases: {py:obj}`pydantic_settings.BaseSettings`
 ````{py:attribute} NX_LOCAL_PROFILES_PATH
 :canonical: nexusLIMS.config.Settings.NX_LOCAL_PROFILES_PATH
 
-**Type:** pydantic.DirectoryPath | None
+**Type:** nexusLIMS.config.TestAwareDirectoryPath | None
 
 ```{autodoc2-docstring} nexusLIMS.config.Settings.NX_LOCAL_PROFILES_PATH
 :parser: autodoc2_docstrings_parser

@@ -75,8 +75,7 @@ following (substituting real credentials, of course). See {ref}`configuration`
 for a complete reference of all environment variables.
 
 ```bash
-NX_CDCS_USER='username'
-NX_CDCS_PASS='password'
+NX_CDCS_TOKEN='your-api-token-here'
 NX_INSTRUMENT_DATA_PATH='/path/to/mmfnexus/mount'
 NX_DATA_PATH='/path/to/nexusLIMS/mount/mmfnexus'
 NX_DB_PATH='/path/to/nexusLIMS/nexuslims_db.sqlite'

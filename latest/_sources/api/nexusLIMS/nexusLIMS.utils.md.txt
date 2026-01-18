@@ -81,11 +81,6 @@
     :parser: autodoc2_docstrings_parser
     :summary:
     ```
-* - {py:obj}`get_auth <nexusLIMS.utils.get_auth>`
-  - ```{autodoc2-docstring} nexusLIMS.utils.get_auth
-    :parser: autodoc2_docstrings_parser
-    :summary:
-    ```
 * - {py:obj}`has_delay_passed <nexusLIMS.utils.has_delay_passed>`
   - ```{autodoc2-docstring} nexusLIMS.utils.has_delay_passed
     :parser: autodoc2_docstrings_parser
@@ -118,7 +113,7 @@
 ```
 ````
 
-````{py:function} nexus_req(url: str, function: str, *, retries: int = 5, basic_auth: bool = False, token_auth: str | None = None, **kwargs: dict | None)
+````{py:function} nexus_req(url: str, function: str, *, retries: int = 5, token_auth: str | None = None, **kwargs: dict | None)
 :canonical: nexusLIMS.utils.nexus_req
 
 ```{autodoc2-docstring} nexusLIMS.utils.nexus_req
@@ -210,14 +205,6 @@
 :canonical: nexusLIMS.utils.get_timespan_overlap
 
 ```{autodoc2-docstring} nexusLIMS.utils.get_timespan_overlap
-:parser: autodoc2_docstrings_parser
-```
-````
-
-````{py:function} get_auth(*, basic: bool = False)
-:canonical: nexusLIMS.utils.get_auth
-
-```{autodoc2-docstring} nexusLIMS.utils.get_auth
 :parser: autodoc2_docstrings_parser
 ```
 ````

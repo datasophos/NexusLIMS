@@ -428,7 +428,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Jan, 15, 2026"/>
+    <meta name="docbuild:last-update" content="Jan, 18, 2026"/>
   </head>
   
   
@@ -856,21 +856,48 @@ window.addEventListener("load", load);
 
 <span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
+<span class="c1"># ============================================================================</span>
+<span class="c1"># TEST MODE: Disable Pydantic validation when running tests</span>
+<span class="c1"># ============================================================================</span>
+<span class="c1"># Check if we&#39;re in test mode BEFORE defining the Settings class</span>
+<span class="c1"># This allows tests to control the environment setup without validation errors</span>
+<span class="n">TEST_MODE</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;NX_TEST_MODE&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;true&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;yes&quot;</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">TEST_MODE</span><span class="p">:</span>
+    <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;NX_TEST_MODE enabled - Pydantic validation disabled&quot;</span><span class="p">)</span>
+
+<span class="c1"># Type aliases that conditionally use strict validation types or plain Path</span>
+<span class="c1"># based on TEST_MODE. When TEST_MODE=True, use Path (no existence validation).</span>
+<span class="c1"># When TEST_MODE=False, use DirectoryPath/FilePath (validates existence).</span>
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="c1"># For type checkers, always use the strict types for proper type hints</span>
+    <span class="n">TestAwareDirectoryPath</span> <span class="o">=</span> <span class="n">DirectoryPath</span>
+    <span class="n">TestAwareFilePath</span> <span class="o">=</span> <span class="n">FilePath</span>
+    <span class="n">TestAwareHttpUrl</span> <span class="o">=</span> <span class="n">AnyHttpUrl</span>
+    <span class="n">TestAwareEmailStr</span> <span class="o">=</span> <span class="n">EmailStr</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="c1"># At runtime, conditionally use strict or lenient types</span>
+    <span class="n">TestAwareDirectoryPath</span> <span class="o">=</span> <span class="n">Path</span> <span class="k">if</span> <span class="n">TEST_MODE</span> <span class="k">else</span> <span class="n">DirectoryPath</span>
+    <span class="n">TestAwareFilePath</span> <span class="o">=</span> <span class="n">Path</span> <span class="k">if</span> <span class="n">TEST_MODE</span> <span class="k">else</span> <span class="n">FilePath</span>
+    <span class="n">TestAwareHttpUrl</span> <span class="o">=</span> <span class="nb">str</span> <span class="k">if</span> <span class="n">TEST_MODE</span> <span class="k">else</span> <span class="n">AnyHttpUrl</span>
+    <span class="n">TestAwareEmailStr</span> <span class="o">=</span> <span class="nb">str</span> <span class="k">if</span> <span class="n">TEST_MODE</span> <span class="k">else</span> <span class="n">EmailStr</span>
+
 
 <div class="viewcode-block" id="NemoHarvesterConfig">
 <a class="viewcode-back" href="../../api/nexusLIMS/nexusLIMS.config.html#nexusLIMS.config.NemoHarvesterConfig">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">NemoHarvesterConfig</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for a single NEMO harvester instance.&quot;&quot;&quot;</span>
 
-    <span class="n">address</span><span class="p">:</span> <span class="n">AnyHttpUrl</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="o">...</span><span class="p">,</span>
+    <span class="c1"># Uses TestAwareHttpUrl which is str in test mode, AnyHttpUrl in production</span>
+    <span class="n">address</span><span class="p">:</span> <span class="n">TestAwareHttpUrl</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>  <span class="c1"># type: ignore[valid-type]</span>
+        <span class="s2">&quot;http://localhost:8080/api/&quot;</span> <span class="k">if</span> <span class="n">TEST_MODE</span> <span class="k">else</span> <span class="o">...</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="p">(</span>
             <span class="s2">&quot;Full path to the root of the NEMO API, with trailing slash included &quot;</span>
             <span class="s2">&quot;(e.g., &#39;https://nemo.example.com/api/&#39;)&quot;</span>
         <span class="p">),</span>
     <span class="p">)</span>
     <span class="n">token</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="o">...</span><span class="p">,</span>
+        <span class="s2">&quot;test_nemo_token&quot;</span> <span class="k">if</span> <span class="n">TEST_MODE</span> <span class="k">else</span> <span class="o">...</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="p">(</span>
             <span class="s2">&quot;Authentication token for the NEMO server. Obtain from the &#39;detailed &quot;</span>
             <span class="s2">&quot;administration&#39; page of the NEMO installation.&quot;</span>
@@ -903,8 +930,10 @@ window.addEventListener("load", load);
 <a class="viewcode-back" href="../../api/nexusLIMS/nexusLIMS.config.html#nexusLIMS.config.NemoHarvesterConfig.validate_trailing_slash">[docs]</a>
     <span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;address&quot;</span><span class="p">)</span>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">validate_trailing_slash</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="n">AnyHttpUrl</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AnyHttpUrl</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_trailing_slash</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">AnyHttpUrl</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">AnyHttpUrl</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Ensure the API address has a trailing slash.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">TEST_MODE</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">v</span>  <span class="c1"># Skip validation in test mode</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">):</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;NEMO address must end with a trailing slash&quot;</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
@@ -919,7 +948,7 @@ window.addEventListener("load", load);
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Config for email notifications from the nexuslims-process-records script.&quot;&quot;&quot;</span>
 
     <span class="n">smtp_host</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="o">...</span><span class="p">,</span>
+        <span class="s2">&quot;localhost&quot;</span> <span class="k">if</span> <span class="n">TEST_MODE</span> <span class="k">else</span> <span class="o">...</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;SMTP server hostname (e.g., &#39;smtp.gmail.com&#39;)&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">smtp_port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
@@ -938,12 +967,12 @@ window.addEventListener("load", load);
         <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Use TLS encryption (default: True)&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">sender</span><span class="p">:</span> <span class="n">EmailStr</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="o">...</span><span class="p">,</span>
+    <span class="n">sender</span><span class="p">:</span> <span class="n">TestAwareEmailStr</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>  <span class="c1"># type: ignore[valid-type]</span>
+        <span class="s2">&quot;test@example.com&quot;</span> <span class="k">if</span> <span class="n">TEST_MODE</span> <span class="k">else</span> <span class="o">...</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Email address to send from&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">recipients</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">EmailStr</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="o">...</span><span class="p">,</span>
+    <span class="n">recipients</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">TestAwareEmailStr</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>  <span class="c1"># type: ignore[valid-type]</span>
+        <span class="p">[</span><span class="s2">&quot;test@example.com&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">TEST_MODE</span> <span class="k">else</span> <span class="o">...</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;List of recipient email addresses for error notifications&quot;</span><span class="p">,</span>
     <span class="p">)</span></div>
 
@@ -964,6 +993,8 @@ window.addEventListener("load", load);
         <span class="n">env_file</span><span class="o">=</span><span class="s2">&quot;.env&quot;</span><span class="p">,</span>
         <span class="n">env_file_encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span>
         <span class="n">extra</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span>  <span class="c1"># Ignore extra environment variables not defined here</span>
+        <span class="c1"># In test mode, disable path validation to allow non-existent paths</span>
+        <span class="n">validate_default</span><span class="o">=</span><span class="ow">not</span> <span class="n">TEST_MODE</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="n">NX_FILE_STRATEGY</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;exclusive&quot;</span><span class="p">,</span> <span class="s2">&quot;inclusive&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
@@ -981,49 +1012,43 @@ window.addEventListener("load", load);
             <span class="s2">&quot;Default is `[&#39;*.mib&#39;,&#39;*.db&#39;,&#39;*.emi&#39;,&#39;*.hdr&#39;]`.&quot;</span>
         <span class="p">),</span>
     <span class="p">)</span>
-    <span class="n">NX_INSTRUMENT_DATA_PATH</span><span class="p">:</span> <span class="n">DirectoryPath</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="o">...</span><span class="p">,</span>
+    <span class="c1"># Use TestAware types which are strict in production, lenient in test mode</span>
+    <span class="n">NX_INSTRUMENT_DATA_PATH</span><span class="p">:</span> <span class="n">TestAwareDirectoryPath</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>  <span class="c1"># type: ignore[valid-type]</span>
+        <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;/tmp&quot;</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;test_instrument_data&quot;</span> <span class="k">if</span> <span class="n">TEST_MODE</span> <span class="k">else</span> <span class="o">...</span><span class="p">,</span>  <span class="c1"># noqa: S108</span>
         <span class="n">description</span><span class="o">=</span><span class="p">(</span>
             <span class="s2">&quot;Root path to the centralized file store for instrument data &quot;</span>
             <span class="s2">&quot;(mounted read-only). The directory must exist.&quot;</span>
         <span class="p">),</span>
     <span class="p">)</span>
-    <span class="n">NX_DATA_PATH</span><span class="p">:</span> <span class="n">DirectoryPath</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="o">...</span><span class="p">,</span>
+    <span class="n">NX_DATA_PATH</span><span class="p">:</span> <span class="n">TestAwareDirectoryPath</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>  <span class="c1"># type: ignore[valid-type]</span>
+        <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;/tmp&quot;</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;test_data&quot;</span> <span class="k">if</span> <span class="n">TEST_MODE</span> <span class="k">else</span> <span class="o">...</span><span class="p">,</span>  <span class="c1"># noqa: S108</span>
         <span class="n">description</span><span class="o">=</span><span class="p">(</span>
             <span class="s2">&quot;Writable path parallel to NX_INSTRUMENT_DATA_PATH for &quot;</span>
             <span class="s2">&quot;extracted metadata and generated preview images. The directory must exist.&quot;</span>
         <span class="p">),</span>
     <span class="p">)</span>
-    <span class="n">NX_DB_PATH</span><span class="p">:</span> <span class="n">FilePath</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="o">...</span><span class="p">,</span>
+    <span class="n">NX_DB_PATH</span><span class="p">:</span> <span class="n">TestAwareFilePath</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>  <span class="c1"># type: ignore[valid-type]</span>
+        <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;/tmp&quot;</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;test.db&quot;</span> <span class="k">if</span> <span class="n">TEST_MODE</span> <span class="k">else</span> <span class="o">...</span><span class="p">,</span>  <span class="c1"># noqa: S108</span>
         <span class="n">description</span><span class="o">=</span><span class="p">(</span>
             <span class="s2">&quot;The writable path to the NexusLIMS SQLite database that is used to get &quot;</span>
             <span class="s2">&quot;information about instruments and sessions that are built into records.&quot;</span>
         <span class="p">),</span>
     <span class="p">)</span>
-    <span class="n">NX_CDCS_USER</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="o">...</span><span class="p">,</span>
+    <span class="n">NX_CDCS_TOKEN</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="s2">&quot;test_token&quot;</span> <span class="k">if</span> <span class="n">TEST_MODE</span> <span class="k">else</span> <span class="o">...</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="p">(</span>
-            <span class="s2">&quot;The username used to authenticate to the CDCS API for uploading &quot;</span>
+            <span class="s2">&quot;API token for authenticating to the CDCS API for uploading &quot;</span>
             <span class="s2">&quot;built records to the NexusLIMS front-end.&quot;</span>
         <span class="p">),</span>
     <span class="p">)</span>
-    <span class="n">NX_CDCS_PASS</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="o">...</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="p">(</span>
-            <span class="s2">&quot;The password used to authenticate to the CDCS API for uploading &quot;</span>
-            <span class="s2">&quot;built records to the NexusLIMS front-end.&quot;</span>
-        <span class="p">),</span>
-    <span class="p">)</span>
-    <span class="n">NX_CDCS_URL</span><span class="p">:</span> <span class="n">AnyHttpUrl</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="o">...</span><span class="p">,</span>
+    <span class="n">NX_CDCS_URL</span><span class="p">:</span> <span class="n">TestAwareHttpUrl</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>  <span class="c1"># type: ignore[valid-type]</span>
+        <span class="s2">&quot;http://localhost:8000&quot;</span> <span class="k">if</span> <span class="n">TEST_MODE</span> <span class="k">else</span> <span class="o">...</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="p">(</span>
             <span class="s2">&quot;The root URL of the NexusLIMS CDCS front-end. This will be the target for &quot;</span>
             <span class="s2">&quot;record uploads that are authenticated using the CDCS credentials.&quot;</span>
         <span class="p">),</span>
     <span class="p">)</span>
-    <span class="n">NX_CERT_BUNDLE_FILE</span><span class="p">:</span> <span class="n">FilePath</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">NX_CERT_BUNDLE_FILE</span><span class="p">:</span> <span class="n">TestAwareFilePath</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>  <span class="c1"># type: ignore[valid-type]</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="p">(</span>
             <span class="s2">&quot;If needed, a custom SSL certificate CA bundle can be used to verify &quot;</span>
@@ -1067,14 +1092,14 @@ window.addEventListener("load", load);
         <span class="p">),</span>
         <span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">NX_LOG_PATH</span><span class="p">:</span> <span class="n">DirectoryPath</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">NX_LOG_PATH</span><span class="p">:</span> <span class="n">TestAwareDirectoryPath</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>  <span class="c1"># type: ignore[valid-type]</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="p">(</span>
             <span class="s2">&quot;Directory for application logs. If not specified, defaults to &quot;</span>
             <span class="s2">&quot;NX_DATA_PATH/logs/. Logs are organized by date: logs/YYYY/MM/DD/&quot;</span>
         <span class="p">),</span>
     <span class="p">)</span>
-    <span class="n">NX_RECORDS_PATH</span><span class="p">:</span> <span class="n">DirectoryPath</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">NX_RECORDS_PATH</span><span class="p">:</span> <span class="n">TestAwareDirectoryPath</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>  <span class="c1"># type: ignore[valid-type]</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="p">(</span>
             <span class="s2">&quot;Directory for generated XML records. If not specified, defaults to &quot;</span>
@@ -1082,7 +1107,7 @@ window.addEventListener("load", load);
             <span class="s2">&quot;a &#39;uploaded&#39; subdirectory.&quot;</span>
         <span class="p">),</span>
     <span class="p">)</span>
-    <span class="n">NX_LOCAL_PROFILES_PATH</span><span class="p">:</span> <span class="n">DirectoryPath</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">NX_LOCAL_PROFILES_PATH</span><span class="p">:</span> <span class="n">TestAwareDirectoryPath</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>  <span class="c1"># type: ignore[valid-type]</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="p">(</span>
             <span class="s2">&quot;Directory for site-specific instrument profiles. These profiles &quot;</span>
