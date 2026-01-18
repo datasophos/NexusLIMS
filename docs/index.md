@@ -32,7 +32,7 @@ with the
 system for harvesting of experimental sessions and
 instrument information.
 - **Comprehensive support for common Electron Microscopy file formats** - NexusLIMS extracts detailed metadata from DigitalMicrograph DM3/DM4 files, FEI/Thermo TIF images, Tescan TIF images, Zeiss TIF images, FEI TIA (.ser/.emi), EDAX (.spc/.msa) EDS spectra, and more
-- **Temporal File Clustering** - Intelligent grouping of files into Acquisition Activities based on temporal analysis
+- **Temporal File Clustering** - Intelligent grouping of files into Acquisition Activities based on temporal analysis (with customizable sensitivity)
 - **Extensible Architecture** - Plugin-based extractor system and instrument profiles for easy customization
 - **Structured XML Records** - Standards-compliant records with comprehensive session and technical metadata
 - **Metadata Standardization** - Emerging standardization using [EM Glossary](https://emglossary.helmholtz-metadaten.de/) terms and Pydantic validation (work in progress)

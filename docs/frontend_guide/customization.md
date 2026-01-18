@@ -29,8 +29,8 @@ This directory contains default values appropriate for development (`dev_setting
 The logo displayed in the top-left corner of the navigation bar.
 
 ```python
-# Default: "nexuslims/img/nav_logo.png"
-NX_NAV_LOGO = "path/to/your/nav_logo.png"
+# Default: "nexuslims/img/logo_horizontal_light.png"
+NX_NAV_LOGO = "path/to/your/logo_horizontal_light.png"
 ```
 
 **Recommendations:**
@@ -55,7 +55,7 @@ NX_FOOTER_LINK = "https://your-organization.com"
 The logo displayed on the homepage alongside the welcome text.
 
 ```python
-# Default: "nexuslims/img/logo_horizontal_text.png"
+# Default: "nexuslims/img/logo_stacked_modern.png"
 NX_HOMEPAGE_LOGO = "path/to/your/homepage_logo.png"
 ```
 
@@ -270,7 +270,7 @@ Place custom assets in `config/static_files/`:
 ```text
 config/
 ├── static_files/
-│   ├── nav_logo.png
+│   ├── logo_horizontal_light.png
 │   ├── footer_logo.png
 │   ├── logo_horizontal_text.png
 │   └── custom_icon.png
