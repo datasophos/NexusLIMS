@@ -982,3 +982,433 @@ class TestNemoConnectorReservationQuestions:
         with pytest.raises(nemo.NoDataConsentError) as exception:
             nemo.res_event_from_session(s)
         assert "requested not to have their data harvested" in str(exception.value)
+
+
+@pytest.mark.needs_db(instruments=["test-tool-10"])
+class TestUsageEventQuestionData:
+    """Tests for usage event question data (run_data and pre_run_data) handling."""
+
+    def test_create_res_event_from_usage_event_run_data(
+        self,
+        nemo_connector,
+        mock_usage_events_with_question_data,
+    ):
+        """Test creating ReservationEvent from usage event with run_data."""
+        from nexusLIMS.instruments import instrument_db
+
+        # Get usage event with valid run_data (ID 100 from fixture)
+        usage_event = mock_usage_events_with_question_data[0]
+        assert usage_event["id"] == 100
+
+        # Create a mock session
+        test_tool = instrument_db["test-tool-10"]
+        session = Session(
+            session_identifier=f"https://nemo.example.com/api/usage_events/?id={usage_event['id']}",
+            instrument=test_tool,
+            dt_range=(
+                dt.fromisoformat(usage_event["start"]),
+                dt.fromisoformat(usage_event["end"]),
+            ),
+            user="ned",
+        )
+
+        # Create ReservationEvent from run_data
+        res_event = nemo.create_res_event_from_usage_event(
+            usage_event,
+            session,
+            nemo_connector,
+            field="run_data",
+        )
+
+        # Verify ReservationEvent attributes
+        assert res_event.instrument == test_tool
+        assert res_event.experiment_title == "Test run_data experiment"
+        assert res_event.experiment_purpose == "Testing run_data field"
+        assert res_event.sample_name[0] == "sample from run_data"
+        assert res_event.project_id[0] == "RUN_DATA_PROJECT"
+        assert res_event.username == "ned"
+        assert res_event.created_by == "commander"  # Operator, not user
+        assert res_event.internal_id == "100"
+        assert res_event.url == "https://nemo.example.com/event_details/usage/100/"
+
+    def test_create_res_event_from_usage_event_pre_run_data(
+        self,
+        nemo_connector,
+        mock_usage_events_with_question_data,
+    ):
+        """Test creating ReservationEvent from usage event with pre_run_data."""
+        from nexusLIMS.instruments import instrument_db
+
+        # Get usage event with only pre_run_data (ID 101 from fixture)
+        usage_event = mock_usage_events_with_question_data[1]
+        assert usage_event["id"] == 101
+
+        test_tool = instrument_db["test-tool-10"]
+        session = Session(
+            session_identifier=f"https://nemo.example.com/api/usage_events/?id={usage_event['id']}",
+            instrument=test_tool,
+            dt_range=(
+                dt.fromisoformat(usage_event["start"]),
+                dt.fromisoformat(usage_event["end"]),
+            ),
+            user="ned",
+        )
+
+        # Create ReservationEvent from pre_run_data
+        res_event = nemo.create_res_event_from_usage_event(
+            usage_event,
+            session,
+            nemo_connector,
+            field="pre_run_data",
+        )
+
+        # Verify ReservationEvent attributes
+        assert res_event.instrument == test_tool
+        assert res_event.experiment_title == "Test pre_run_data experiment"
+        assert res_event.experiment_purpose == "Testing pre_run_data field"
+        assert res_event.sample_name[0] == "sample from pre_run_data"
+        assert res_event.project_id[0] == "PRE_RUN_PROJECT"
+        assert res_event.username == "professor"  # User ID 2
+        assert res_event.created_by == "professor"  # Operator same as user
+        assert res_event.internal_id == "101"
+        assert res_event.url == "https://nemo.example.com/event_details/usage/101/"
+
+    def test_create_res_event_operator_fallback(
+        self,
+        nemo_connector,
+        mock_usage_events_with_question_data,
+    ):
+        """Test that operator is used as creator, falling back to user."""
+        from nexusLIMS.instruments import instrument_db
+
+        # Get usage event with operator (ID 100)
+        usage_event = mock_usage_events_with_question_data[0]
+        test_tool = instrument_db["test-tool-10"]
+        session = Session(
+            session_identifier=f"https://nemo.example.com/api/usage_events/?id={usage_event['id']}",
+            instrument=test_tool,
+            dt_range=(
+                dt.fromisoformat(usage_event["start"]),
+                dt.fromisoformat(usage_event["end"]),
+            ),
+            user="ned",
+        )
+
+        res_event = nemo.create_res_event_from_usage_event(
+            usage_event,
+            session,
+            nemo_connector,
+            field="run_data",
+        )
+
+        # Verify operator is used
+        assert res_event.created_by == "commander"
+
+        # Test fallback when operator is None
+        usage_event_no_op = usage_event.copy()
+        usage_event_no_op["operator"] = None
+
+        res_event = nemo.create_res_event_from_usage_event(
+            usage_event_no_op,
+            session,
+            nemo_connector,
+            field="run_data",
+        )
+
+        # Verify user is used as fallback
+        assert res_event.created_by == "ned"
+
+    def test_create_res_event_no_consent(
+        self,
+        nemo_connector,
+        mock_usage_events_with_question_data,
+    ):
+        """Test that NoDataConsentError is raised when user declines consent."""
+        from nexusLIMS.instruments import instrument_db
+
+        # Get usage event with Disagree consent (ID 103 from fixture)
+        usage_event = mock_usage_events_with_question_data[3]
+        assert usage_event["id"] == 103
+
+        test_tool = instrument_db["test-tool-10"]
+        session = Session(
+            session_identifier=f"https://nemo.example.com/api/usage_events/?id={usage_event['id']}",
+            instrument=test_tool,
+            dt_range=(
+                dt.fromisoformat(usage_event["start"]),
+                dt.fromisoformat(usage_event["end"]),
+            ),
+            user="ned",
+        )
+
+        # Should raise NoDataConsentError
+        with pytest.raises(nemo.NoDataConsentError) as exception:
+            nemo.create_res_event_from_usage_event(
+                usage_event,
+                session,
+                nemo_connector,
+                field="pre_run_data",
+            )
+        assert "requested not to have their data harvested" in str(exception.value)
+
+    def test_create_res_event_missing_consent_field(
+        self,
+        nemo_connector,
+    ):
+        """Test that NoDataConsentError raised when data_consent missing."""
+        # Create usage event without data_consent field
+        import json
+
+        from nexusLIMS.instruments import instrument_db
+
+        question_data = {
+            "experiment_title": {"user_input": "Test"},
+            "sample_name": {"user_input": "Sample"},
+        }
+        usage_event = {
+            "id": 999,
+            "start": "2021-09-01T10:00:00-06:00",
+            "end": "2021-09-01T12:00:00-06:00",
+            "run_data": json.dumps(question_data),
+            "user": {"username": "ned", "first_name": "Ned", "last_name": "Stark"},
+            "operator": {"username": "ned", "first_name": "Ned", "last_name": "Stark"},
+        }
+
+        test_tool = instrument_db["test-tool-10"]
+        session = Session(
+            session_identifier="https://nemo.example.com/api/usage_events/?id=999",
+            instrument=test_tool,
+            dt_range=(
+                dt.fromisoformat("2021-09-01T10:00:00-06:00"),
+                dt.fromisoformat("2021-09-01T12:00:00-06:00"),
+            ),
+            user="ned",
+        )
+
+        with pytest.raises(nemo.NoDataConsentError) as exception:
+            nemo.create_res_event_from_usage_event(
+                usage_event,
+                session,
+                nemo_connector,
+                field="run_data",
+            )
+        assert "did not have data_consent defined" in str(exception.value)
+
+    def test_create_res_event_invalid_json(
+        self,
+        nemo_connector,
+    ):
+        """Test that ValueError is raised when field contains invalid JSON."""
+        from nexusLIMS.instruments import instrument_db
+
+        usage_event = {
+            "id": 999,
+            "start": "2021-09-01T10:00:00-06:00",
+            "end": "2021-09-01T12:00:00-06:00",
+            "run_data": "not valid JSON {{{",
+            "user": {"username": "ned", "first_name": "Ned", "last_name": "Stark"},
+            "operator": {"username": "ned", "first_name": "Ned", "last_name": "Stark"},
+        }
+
+        test_tool = instrument_db["test-tool-10"]
+        session = Session(
+            session_identifier="https://nemo.example.com/api/usage_events/?id=999",
+            instrument=test_tool,
+            dt_range=(
+                dt.fromisoformat("2021-09-01T10:00:00-06:00"),
+                dt.fromisoformat("2021-09-01T12:00:00-06:00"),
+            ),
+            user="ned",
+        )
+
+        with pytest.raises(ValueError) as exception:  # noqa: PT011
+            nemo.create_res_event_from_usage_event(
+                usage_event,
+                session,
+                nemo_connector,
+                field="run_data",
+            )
+        assert "Failed to parse run_data" in str(exception.value)
+
+    def test_res_event_prioritizes_run_data(
+        self,
+        nemo_connector,
+        mock_usage_events_with_question_data,
+        monkeypatch,
+    ):
+        """Test that res_event_from_session prioritizes run_data over pre_run_data."""
+        from nexusLIMS.instruments import instrument_db
+
+        # Get usage event with both run_data and pre_run_data (ID 102)
+        usage_event = mock_usage_events_with_question_data[2]
+        assert usage_event["id"] == 102
+
+        # Mock get_connector_for_session to return our mocked connector
+        # We need to test "res_event_from_session" to exercise the
+        # pre/run_data priorty logic
+        monkeypatch.setattr(
+            "nexusLIMS.harvesters.nemo.get_connector_for_session",
+            lambda _: nemo_connector,
+        )
+
+        # Mock get_usage_events to return our usage event
+        def mock_get_usage_events(event_id=None, **_kwargs):
+            if event_id == 102:
+                return [usage_event]
+            return []
+
+        monkeypatch.setattr(nemo_connector, "get_usage_events", mock_get_usage_events)
+
+        test_tool = instrument_db["test-tool-10"]
+        session = Session(
+            session_identifier="https://nemo.example.com/api/usage_events/?id=102",
+            instrument=test_tool,
+            dt_range=(
+                dt.fromisoformat(usage_event["start"]),
+                dt.fromisoformat(usage_event["end"]),
+            ),
+            user="ned",
+        )
+
+        res_event = nemo.res_event_from_session(session, connector=nemo_connector)
+
+        # Should use run_data (not pre_run_data)
+        assert res_event.experiment_title == "Test run_data priority"
+        assert res_event.project_id[0] == "RUN_DATA_PRIORITY"
+
+    def test_res_event_uses_pre_run_data_when_run_data_empty(
+        self,
+        nemo_connector,
+        mock_usage_events_with_question_data,
+        monkeypatch,
+    ):
+        """Test that pre_run_data is used when run_data is empty."""
+        from nexusLIMS.instruments import instrument_db
+
+        # Get usage event with only pre_run_data (ID 101)
+        usage_event = mock_usage_events_with_question_data[1]
+        assert usage_event["id"] == 101
+
+        # Mock get_connector_for_session
+        monkeypatch.setattr(
+            "nexusLIMS.harvesters.nemo.get_connector_for_session",
+            lambda _: nemo_connector,
+        )
+
+        # Mock get_usage_events
+        def mock_get_usage_events(event_id=None, **_kwargs):
+            if event_id == 101:
+                return [usage_event]
+            return []
+
+        monkeypatch.setattr(nemo_connector, "get_usage_events", mock_get_usage_events)
+
+        test_tool = instrument_db["test-tool-10"]
+        session = Session(
+            session_identifier="https://nemo.example.com/api/usage_events/?id=101",
+            instrument=test_tool,
+            dt_range=(
+                dt.fromisoformat(usage_event["start"]),
+                dt.fromisoformat(usage_event["end"]),
+            ),
+            user="ned",
+        )
+
+        res_event = nemo.res_event_from_session(session, connector=nemo_connector)
+
+        # Should use pre_run_data
+        assert res_event.experiment_title == "Test pre_run_data experiment"
+        assert res_event.project_id[0] == "PRE_RUN_PROJECT"
+
+    def test_res_event_fallback_to_reservation_empty_fields(
+        self,
+        nemo_connector,
+        mock_usage_events_with_question_data,
+        monkeypatch,
+    ):
+        """Test fallback to reservation when both run_data and pre_run_data empty."""
+        from nexusLIMS.instruments import instrument_db
+
+        # Get usage event with empty fields (ID 105)
+        usage_event = mock_usage_events_with_question_data[5]
+        assert usage_event["id"] == 105
+
+        # Mock get_connector_for_session
+        monkeypatch.setattr(
+            "nexusLIMS.harvesters.nemo.get_connector_for_session",
+            lambda _: nemo_connector,
+        )
+
+        # Mock get_usage_events
+        def mock_get_usage_events(event_id=None, **_kwargs):
+            if event_id == 105:
+                return [usage_event]
+            return []
+
+        monkeypatch.setattr(nemo_connector, "get_usage_events", mock_get_usage_events)
+
+        test_tool = instrument_db["test-tool-10"]
+        session = Session(
+            session_identifier="https://nemo.example.com/api/usage_events/?id=105",
+            instrument=test_tool,
+            dt_range=(
+                # Use a time that matches reservation 187
+                dt.fromisoformat("2021-08-02T11:00:00-06:00"),
+                dt.fromisoformat("2021-08-02T16:00:00-06:00"),
+            ),
+            user="ned",
+        )
+
+        res_event = nemo.res_event_from_session(session, connector=nemo_connector)
+
+        # Should fall back to reservation matching
+        # Reservation 187 has these values
+        assert res_event.experiment_title == "Test Reservation Title"
+        assert res_event.experiment_purpose == "Testing the NEMO harvester integration."
+        assert res_event.project_id[0] == "NexusLIMS-Test"
+        assert res_event.internal_id == "187"  # Reservation ID, not usage event ID
+
+    def test_res_event_fallback_to_reservation_malformed_json(
+        self,
+        nemo_connector,
+        mock_usage_events_with_question_data,
+        monkeypatch,
+    ):
+        """Test fallback to reservation when fields contain malformed JSON."""
+        from nexusLIMS.instruments import instrument_db
+
+        # Get usage event with malformed JSON (ID 106)
+        usage_event = mock_usage_events_with_question_data[6]
+        assert usage_event["id"] == 106
+
+        # Mock get_connector_for_session
+        monkeypatch.setattr(
+            "nexusLIMS.harvesters.nemo.get_connector_for_session",
+            lambda _: nemo_connector,
+        )
+
+        # Mock get_usage_events
+        def mock_get_usage_events(event_id=None, **_kwargs):
+            if event_id == 106:
+                return [usage_event]
+            return []
+
+        monkeypatch.setattr(nemo_connector, "get_usage_events", mock_get_usage_events)
+
+        test_tool = instrument_db["test-tool-10"]
+        session = Session(
+            session_identifier="https://nemo.example.com/api/usage_events/?id=106",
+            instrument=test_tool,
+            dt_range=(
+                # Use a time that matches reservation 187
+                dt.fromisoformat("2021-08-02T11:00:00-06:00"),
+                dt.fromisoformat("2021-08-02T16:00:00-06:00"),
+            ),
+            user="ned",
+        )
+
+        res_event = nemo.res_event_from_session(session, connector=nemo_connector)
+
+        # Should fall back to reservation matching
+        assert res_event.experiment_title == "Test Reservation Title"
+        assert res_event.internal_id == "187"

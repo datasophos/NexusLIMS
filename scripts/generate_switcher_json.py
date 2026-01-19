@@ -216,7 +216,7 @@ def build_switcher_json(dirs, current_pr_num=None):
     stable_version = None
     if "stable" in dirs:
         # Get the version number of the latest release
-        # Use the actual version number (not "stable") for PyData theme banner comparison
+        # Use the actual version (not "stable") for PyData theme banner comparison
         stable_version = filtered_versions[0] if filtered_versions else "stable"
         entries.append(
             {
