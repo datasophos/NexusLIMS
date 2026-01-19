@@ -304,7 +304,7 @@ class TestNemoAPIConnectivity:
 
         assert isinstance(all_usage_events, list)
         # Should have at least as many events as our September query
-        assert len(all_usage_events) == 4
+        assert len(all_usage_events) == 11
 
 
 @pytest.mark.integration
@@ -676,9 +676,10 @@ class TestNemoAPIEdgeCases:
         # Get usage events for this user
         usage_events = nemo_connector.get_usage_events(user=user_id)
 
-        # Should return a list with three events (IDs 29, 30, 31 from seed data)
+        # Should return a list with eight events
+        # (IDs 29, 30, 31, 100, 102, 104, 105, 106 from seed data)
         assert isinstance(usage_events, list)
-        assert len(usage_events) == 3
+        assert len(usage_events) == 8
 
         # Verify that all events are for the specified user
         for event in usage_events:
@@ -693,9 +694,9 @@ class TestNemoAPIEdgeCases:
         # Get usage events for this tool
         usage_events = nemo_connector.get_usage_events(tool_id=tool_id)
 
-        # Should return a list with 2 usage events
+        # Should return a list with 9 usage events
         assert isinstance(usage_events, list)
-        assert len(usage_events) == 2
+        assert len(usage_events) == 9
 
         # Verify that all events are for the specified tool
         for event in usage_events:
@@ -817,10 +818,12 @@ class TestNemoUtilityFunctions:
         # Query all session logs
         after_logs = get_all_session_logs()
 
-        # Check that we added exactly 8 new session logs
-        # (2 per usage event * 4 usage events)
+        # Check that we added exactly 22 new session logs
+        # (2 per usage event * 11 usage events)
         new_logs_count = len(after_logs) - len(before_logs)
-        assert new_logs_count == 8, f"Expected 8 new session logs, got {new_logs_count}"
+        assert new_logs_count == 22, (
+            f"Expected 22 new session logs, got {new_logs_count}"
+        )
 
         # Also verify that the new logs contain the expected usage event IDs
         # Each usage event should have a START and END log
@@ -832,8 +835,20 @@ class TestNemoUtilityFunctions:
                 event_id = log.session_identifier.split("?id=")[1].split("&")[0]
                 usage_event_ids.add(event_id)
 
-        # We expect usage events 29, 30, 31, and 32
-        expected_event_ids = {"29", "30", "31", "32"}
+        # We expect usage events 29, 30, 31, and 32, 100, 101, 102, 103, 104, 105, 106
+        expected_event_ids = {
+            "29",
+            "30",
+            "31",
+            "32",
+            "100",
+            "101",
+            "102",
+            "103",
+            "104",
+            "105",
+            "106",
+        }
         assert usage_event_ids == expected_event_ids, (
             f"Expected event IDs {expected_event_ids}, got {usage_event_ids}"
         )
@@ -889,3 +904,264 @@ class TestNemoEndToEndWorkflow:
         # Simple test that repr works
         repr_str = repr(nemo_connector)
         assert repr_str == f"Connection to NEMO API at {NEMO_URL}"
+
+
+@pytest.mark.integration
+class TestNemoUsageEventQuestions:
+    """Test parsing of NEMO usage event question data (run_data and pre_run_data)."""
+
+    def test_usage_event_with_run_data(
+        self,
+        nemo_connector: NemoConnector,
+        test_instrument_db,
+    ):
+        """Test usage event with run_data populated (highest priority)."""
+        # Get usage event ID 100 which has run_data populated
+        usage_events = nemo_connector.get_usage_events(event_id=100)
+        assert len(usage_events) == 1
+        usage_event = usage_events[0]
+
+        # Verify run_data is populated and pre_run_data is empty
+        assert usage_event["run_data"] != ""
+        assert usage_event["pre_run_data"] == ""
+
+        # Create session from usage event
+        session = _create_session_from_iso_timestamps(
+            session_identifier=f"{NEMO_URL}api/usage_events/?id=100",
+            instrument_pid="TEST-TOOL-010",
+            start_iso="2024-01-15T10:00:00-05:00",
+            end_iso="2024-01-15T15:00:00-05:00",
+            user="ned",
+            instrument_db=test_instrument_db,
+        )
+
+        # Get reservation event - should use run_data
+        res_event = res_event_from_session(session, nemo_connector)
+
+        # Verify data from run_data
+        assert res_event.experiment_title == "Test run_data experiment"
+        assert res_event.experiment_purpose == "Testing run_data field"
+        assert res_event.project_id[0] == "RUN_DATA_PROJECT"
+        assert res_event.sample_name[0] == "sample from run_data"
+        assert res_event.internal_id == "100"
+
+    def test_usage_event_with_pre_run_data_only(
+        self,
+        nemo_connector: NemoConnector,
+        test_instrument_db,
+    ):
+        """Test usage event with only pre_run_data populated (medium priority)."""
+        # Get usage event ID 101 which has only pre_run_data
+        usage_events = nemo_connector.get_usage_events(event_id=101)
+        assert len(usage_events) == 1
+        usage_event = usage_events[0]
+
+        # Verify pre_run_data is populated and run_data is empty
+        assert usage_event["pre_run_data"] != ""
+        assert usage_event["run_data"] == ""
+
+        # Create session from usage event
+        session = _create_session_from_iso_timestamps(
+            session_identifier=f"{NEMO_URL}api/usage_events/?id=101",
+            instrument_pid="TEST-TOOL-010",
+            start_iso="2024-01-16T10:00:00-05:00",
+            end_iso="2024-01-16T15:00:00-05:00",
+            user="professor",
+            instrument_db=test_instrument_db,
+        )
+
+        # Get reservation event - should use pre_run_data
+        res_event = res_event_from_session(session, nemo_connector)
+
+        # Verify data from pre_run_data
+        assert res_event.experiment_title == "Test pre_run_data experiment"
+        assert res_event.experiment_purpose == "Testing pre_run_data field"
+        assert res_event.project_id[0] == "PRE_RUN_PROJECT"
+        assert res_event.sample_name[0] == "sample from pre_run_data"
+        assert res_event.internal_id == "101"
+
+    def test_usage_event_prioritizes_run_data_over_pre_run_data(
+        self,
+        nemo_connector: NemoConnector,
+        test_instrument_db,
+    ):
+        """Test that run_data is prioritized over pre_run_data when both exist."""
+        # Get usage event ID 102 which has both run_data and pre_run_data
+        usage_events = nemo_connector.get_usage_events(event_id=102)
+        assert len(usage_events) == 1
+        usage_event = usage_events[0]
+
+        # Verify both fields are populated
+        assert usage_event["run_data"] != ""
+        assert usage_event["pre_run_data"] != ""
+
+        # Create session from usage event
+        session = _create_session_from_iso_timestamps(
+            session_identifier=f"{NEMO_URL}api/usage_events/?id=102",
+            instrument_pid="TEST-TOOL-010",
+            start_iso="2024-01-17T10:00:00-05:00",
+            end_iso="2024-01-17T15:00:00-05:00",
+            user="ned",
+            instrument_db=test_instrument_db,
+        )
+
+        # Get reservation event - should use run_data, not pre_run_data
+        res_event = res_event_from_session(session, nemo_connector)
+
+        # Verify data from run_data (not pre_run_data)
+        assert res_event.experiment_title == "Test run_data priority"
+        assert res_event.project_id[0] == "RUN_DATA_PRIORITY"
+        # Should NOT be the pre_run_data values
+        assert res_event.experiment_title != "Pre-run title (should NOT use this)"
+        assert res_event.project_id[0] != "PRE_RUN_DATA_PRIORITY"
+
+    def test_usage_event_no_consent_raises_error(
+        self,
+        nemo_connector: NemoConnector,
+        test_instrument_db,
+    ):
+        """Test that NoDataConsentError is raised when user declines consent."""
+        # Get usage event ID 103 which has consent = Disagree
+        usage_events = nemo_connector.get_usage_events(event_id=103)
+        assert len(usage_events) == 1
+
+        # Create session from usage event
+        session = _create_session_from_iso_timestamps(
+            session_identifier=f"{NEMO_URL}api/usage_events/?id=103",
+            instrument_pid="TEST-TOOL-010",
+            start_iso="2024-01-18T10:00:00-05:00",
+            end_iso="2024-01-18T15:00:00-05:00",
+            user="professor",
+            instrument_db=test_instrument_db,
+        )
+
+        # Should raise NoDataConsentError
+        with pytest.raises(NoDataConsentError) as excinfo:
+            res_event_from_session(session, nemo_connector)
+
+        assert "requested not to have their data harvested" in str(excinfo.value)
+
+    def test_usage_event_with_missing_user_input_fields(
+        self,
+        nemo_connector: NemoConnector,
+        test_instrument_db,
+    ):
+        """Test handling of usage event with missing user_input fields."""
+        # Get usage event ID 104 which has missing user_input fields
+        usage_events = nemo_connector.get_usage_events(event_id=104)
+        assert len(usage_events) == 1
+        usage_event = usage_events[0]
+
+        # Verify pre_run_data is populated
+        assert usage_event["pre_run_data"] != ""
+
+        # Create session from usage event
+        session = _create_session_from_iso_timestamps(
+            session_identifier=f"{NEMO_URL}api/usage_events/?id=104",
+            instrument_pid="TEST-TOOL-010",
+            start_iso="2024-01-19T10:00:00-05:00",
+            end_iso="2024-01-19T15:00:00-05:00",
+            user="ned",
+            instrument_db=test_instrument_db,
+        )
+
+        # Should handle gracefully (missing fields return None)
+        res_event = res_event_from_session(session, nemo_connector)
+
+        # experiment_title and project_id should be None (missing user_input)
+        assert res_event.experiment_title is None
+        assert res_event.project_id[0] is None
+        assert res_event.internal_id == "104"
+
+    def test_usage_event_empty_fields_falls_back_to_reservation(
+        self,
+        nemo_connector: NemoConnector,
+        test_instrument_db,
+    ):
+        """Test fallback to reservation when run_data and pre_run_data are empty."""
+        # Get usage event ID 105 which has empty run_data and pre_run_data
+        usage_events = nemo_connector.get_usage_events(event_id=105)
+        assert len(usage_events) == 1
+        usage_event = usage_events[0]
+
+        # Verify both fields are empty
+        assert usage_event["run_data"] == ""
+        assert usage_event["pre_run_data"] == ""
+
+        # Create session that matches reservation 187 time window
+        session = _create_session_from_iso_timestamps(
+            session_identifier=f"{NEMO_URL}api/usage_events/?id=105",
+            instrument_pid="TEST-TOOL-010",
+            start_iso="2021-08-02T11:00:00-06:00",
+            end_iso="2021-08-02T16:00:00-06:00",
+            user="ned",
+            instrument_db=test_instrument_db,
+        )
+
+        # Get reservation event - should fall back to reservation matching
+        res_event = res_event_from_session(session, nemo_connector)
+
+        # Verify data from reservation 187 (not usage event)
+        assert res_event.experiment_title == "Test Reservation Title"
+        assert res_event.experiment_purpose == "Testing the NEMO harvester integration."
+        assert res_event.project_id[0] == "NexusLIMS-Test"
+        assert res_event.internal_id == "187"  # Reservation ID, not usage event ID
+
+    def test_usage_event_malformed_json_falls_back_to_reservation(
+        self,
+        nemo_connector: NemoConnector,
+        test_instrument_db,
+    ):
+        """Test fallback to reservation when question data contains malformed JSON."""
+        # Get usage event ID 106 which has malformed JSON
+        usage_events = nemo_connector.get_usage_events(event_id=106)
+        assert len(usage_events) == 1
+        usage_event = usage_events[0]
+
+        # Verify pre_run_data contains malformed JSON
+        assert usage_event["pre_run_data"] == "{invalid json}"
+
+        # Create session that matches reservation 187 time window
+        session = _create_session_from_iso_timestamps(
+            session_identifier=f"{NEMO_URL}api/usage_events/?id=106",
+            instrument_pid="TEST-TOOL-010",
+            start_iso="2021-08-02T11:00:00-06:00",
+            end_iso="2021-08-02T16:00:00-06:00",
+            user="ned",
+            instrument_db=test_instrument_db,
+        )
+
+        # Get reservation event - should fall back to reservation matching
+        res_event = res_event_from_session(session, nemo_connector)
+
+        # Verify data from reservation 187 (not usage event)
+        assert res_event.experiment_title == "Test Reservation Title"
+        assert res_event.internal_id == "187"  # Reservation ID, not usage event ID
+
+    def test_has_valid_question_data_helper(self, nemo_connector: NemoConnector):
+        """Test the has_valid_question_data helper function."""
+        from nexusLIMS.harvesters.nemo.utils import has_valid_question_data
+
+        # Test with valid run_data (ID 100)
+        usage_events = nemo_connector.get_usage_events(event_id=100)
+        assert has_valid_question_data(usage_events[0], field="run_data") is True
+        assert has_valid_question_data(usage_events[0], field="pre_run_data") is False
+
+        # Test with valid pre_run_data (ID 101)
+        usage_events = nemo_connector.get_usage_events(event_id=101)
+        assert has_valid_question_data(usage_events[0], field="run_data") is False
+        assert has_valid_question_data(usage_events[0], field="pre_run_data") is True
+
+        # Test with both populated (ID 102)
+        usage_events = nemo_connector.get_usage_events(event_id=102)
+        assert has_valid_question_data(usage_events[0], field="run_data") is True
+        assert has_valid_question_data(usage_events[0], field="pre_run_data") is True
+
+        # Test with empty fields (ID 105)
+        usage_events = nemo_connector.get_usage_events(event_id=105)
+        assert has_valid_question_data(usage_events[0], field="run_data") is False
+        assert has_valid_question_data(usage_events[0], field="pre_run_data") is False
+
+        # Test with malformed JSON (ID 106)
+        usage_events = nemo_connector.get_usage_events(event_id=106)
+        assert has_valid_question_data(usage_events[0], field="pre_run_data") is False
