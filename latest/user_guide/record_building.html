@@ -34,7 +34,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/autodoc_pydantic.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=8633d6cc" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=acda69ee" />
   
   <!-- So that users can add custom icons -->
   <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -431,7 +431,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Jan, 18, 2026"/>
+    <meta name="docbuild:last-update" content="Jan, 20, 2026"/>
   </head>
   
   
@@ -549,7 +549,7 @@ window.addEventListener("load", load);
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../migration.html">
-    Migration Guide: v1.4.3 to v2.2.0
+    Migration Guide
   </a>
 </li>
 
@@ -688,7 +688,7 @@ window.addEventListener("load", load);
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../migration.html">
-    Migration Guide: v1.4.3 to v2.2.0
+    Migration Guide
   </a>
 </li>
 
@@ -929,18 +929,83 @@ session’s instrument and timestamp information</p></li>
 </ol>
 <p><a class="reference internal" href="#overview"><span class="std std-ref">(go to top)</span></a></p>
 </section>
-<section id="querying-the-reservation-calendars">
-<span id="harvesting-calendar"></span><h3>2. Querying the Reservation Calendars<a class="headerlink" href="#querying-the-reservation-calendars" title="Link to this heading">#</a></h3>
-<p>Instrument reservation systems (like NEMO) provide experiment metadata (user, sample,
-motivation, etc.) for the record’s <code class="docutils literal notranslate"><span class="pre">&lt;summary&gt;</span></code> element.</p>
+<section id="querying-the-reservation-tool-usage-calendars">
+<span id="harvesting-calendar"></span><h3>2. Querying the Reservation/Tool Usage Calendars<a class="headerlink" href="#querying-the-reservation-tool-usage-calendars" title="Link to this heading">#</a></h3>
+<p>Instrument reservation and usage tracking systems (like NEMO) provide experiment metadata
+(user, sample, motivation, etc.) for the record’s <code class="docutils literal notranslate"><span class="pre">&lt;summary&gt;</span></code> element.</p>
 <p>The record builder queries the harvester specified in the instrument’s database entry
 (typically <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.harvesters.nemo.html#module-nexusLIMS.harvesters.nemo" title="nexusLIMS.harvesters.nemo"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nemo</span></code></a>). Each harvester implements
 <code class="docutils literal notranslate"><span class="pre">res_event_from_session()</span></code>, which returns a
 <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.harvesters.reservation_event.html#nexusLIMS.harvesters.reservation_event.ReservationEvent" title="nexusLIMS.harvesters.reservation_event.ReservationEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ReservationEvent</span></code></a> object representing
 the reservation with maximum time overlap (or a generic event if none found).</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 2.3.0: </span>While the class is named <code class="docutils literal notranslate"><span class="pre">ReservationEvent</span></code> for historical reasons, it can contain
+metadata harvested from either <em>Reservations</em> or <em>Usage Events</em> (actual instrument
+usage sessions). This capability prioritizes Usage Event data since it
+reflects what was actually performed, falling back to Reservation data when usage
+information is unavailable.</p>
+</div>
 <p>This adapter layer provides uniform reservation data regardless of the source system.
 The event is then serialized to schema-compliant XML.</p>
+<section id="three-tier-fallback-strategy-for-nemo">
+<h4>Three-Tier Fallback Strategy for NEMO<a class="headerlink" href="#three-tier-fallback-strategy-for-nemo" title="Link to this heading">#</a></h4>
+<p>For NEMO-based systems, the harvester uses a <strong>three-tier fallback strategy</strong> to obtain
+experiment metadata, prioritizing the most recent and accurate information:</p>
+<p><strong>Priority 1: Post-Run Questions (<code class="docutils literal notranslate"><span class="pre">run_data</span></code>)</strong></p>
+<p>The highest priority source is the <code class="docutils literal notranslate"><span class="pre">run_data</span></code> field from NEMO usage events. This field
+is populated when users answer questions <strong>at the end</strong> of their instrument session
+(when they “enable” the tool to end their usage). Since these questions are answered
+after the experiment completes, they represent the most accurate description of what
+was actually performed.</p>
+<p><strong>Priority 2: Pre-Run Questions (<code class="docutils literal notranslate"><span class="pre">pre_run_data</span></code>)</strong></p>
+<p>If <code class="docutils literal notranslate"><span class="pre">run_data</span></code> is empty or invalid, the harvester falls back to the <code class="docutils literal notranslate"><span class="pre">pre_run_data</span></code> field.
+This field is populated when users answer questions <strong>at the start</strong> of their instrument
+session (when they initially “enable” the tool). While potentially less accurate
+than post-run data (since the experiment plan may change during execution),
+this provides valuable metadata when users don’t complete post-run questions.</p>
+<p><strong>Priority 3: Reservation Matching</strong></p>
+<p>If neither usage event question data source is available, the harvester falls back to
+traditional reservation matching. The system finds the reservation with maximum time
+overlap with the usage event and extracts metadata from the reservation’s question data.
+This is the least reliable method since reservations may be created well in advance and
+might not reflect the actual experiment performed.</p>
+<div class="tip admonition">
+<p class="admonition-title">Question Data Structure</p>
+<p>All three sources (<code class="docutils literal notranslate"><span class="pre">run_data</span></code>, <code class="docutils literal notranslate"><span class="pre">pre_run_data</span></code>, and reservation <code class="docutils literal notranslate"><span class="pre">question_data</span></code>) use
+identical JSON structure, enabling consistent metadata extraction. Both usage event
+fields are JSON-encoded strings that are parsed and validated during harvesting.</p>
+<p>See <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.harvesters.nemo.html#nexusLIMS.harvesters.nemo.res_event_from_session" title="nexusLIMS.harvesters.nemo.res_event_from_session"><code class="xref py py-func docutils literal notranslate"><span class="pre">res_event_from_session()</span></code></a> documentation for
+the required question structure and examples.</p>
+</div>
+</section>
+<section id="data-consent-validation">
+<h4>Data Consent Validation<a class="headerlink" href="#data-consent-validation" title="Link to this heading">#</a></h4>
+<p>All metadata sources require affirmative user consent via a <code class="docutils literal notranslate"><span class="pre">data_consent</span></code> question.
+The harvester validates consent for each source in priority order:</p>
+<ul class="simple">
+<li><p><strong>Missing consent field</strong>: Falls back to next priority level or raises
+<a class="reference internal" href="../api/nexusLIMS/nexusLIMS.harvesters.nemo.exceptions.html#nexusLIMS.harvesters.nemo.exceptions.NoDataConsentError" title="nexusLIMS.harvesters.nemo.exceptions.NoDataConsentError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataConsentError</span></code></a></p></li>
+<li><p><strong>Declined consent</strong> (“Disagree”, “No”, etc.): Falls back to next priority level or
+raises <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.harvesters.nemo.exceptions.html#nexusLIMS.harvesters.nemo.exceptions.NoDataConsentError" title="nexusLIMS.harvesters.nemo.exceptions.NoDataConsentError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataConsentError</span></code></a></p></li>
+<li><p><strong>Invalid JSON or missing question data</strong>: Falls back to next priority level</p></li>
+</ul>
+<p>If all three tiers fail (no valid question data with consent), the session is marked
+<code class="docutils literal notranslate"><span class="pre">NO_CONSENT</span></code> or <code class="docutils literal notranslate"><span class="pre">NO_RESERVATION</span></code> in the database and no record is generated.</p>
+</section>
+<section id="graceful-degradation">
+<h4>Graceful Degradation<a class="headerlink" href="#graceful-degradation" title="Link to this heading">#</a></h4>
+<p>The three-tier system provides graceful degradation:</p>
+<ol class="arabic simple">
+<li><p>Empty strings, malformed JSON, or missing fields in higher-priority sources
+automatically trigger fallback to the next tier</p></li>
+<li><p>Each tier is validated independently for data completeness and consent</p></li>
+<li><p>Logging tracks which data source was ultimately used for each session</p></li>
+<li><p>The system prioritizes data quality over data availability</p></li>
+</ol>
+<p>This approach maximizes record generation success while preferring the most accurate
+metadata source available for each session.</p>
 <p><a class="reference internal" href="#overview"><span class="std std-ref">(go to top)</span></a></p>
+</section>
 </section>
 <section id="identifying-files">
 <span id="identifying-files-to-include"></span><h3>3. Identifying Files to Include<a class="headerlink" href="#identifying-files" title="Link to this heading">#</a></h3>

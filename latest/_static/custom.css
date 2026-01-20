@@ -1,5 +1,10 @@
 /* Custom styling for NexusLIMS documentation */
 
+/* Also hide the h1 containing that ID */
+section#nexuslims > h1 {
+    display: none;
+}
+
 /* Logo sizing - constrain logo to reasonable navbar height */
 .navbar-brand img {
     /* max-height: 32px; */
@@ -16,6 +21,25 @@
     .navbar-brand img {
         max-height: 28px;
     }
+}
+
+/* Give more room to navbar-header-items__start (logo + version switcher) */
+/* This prevents version switcher from wrapping to next line with wider logos */
+.navbar-header-items__start {
+    flex: 0 0 auto !important;
+    max-width: none !important;
+    min-width: fit-content;
+}
+
+/* Allow navbar-header-items to shrink more to make room for logo */
+.navbar-header-items {
+    flex: 1 1 auto !important;
+    max-width: none !important;
+}
+
+/* Ensure navbar center navigation can compress if needed */
+.navbar-header-items__center {
+    min-width: 0;
 }
 
 /* fix offset of version switcher button */

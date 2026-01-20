@@ -46,6 +46,11 @@
     :parser: autodoc2_docstrings_parser
     :summary:
     ```
+* - {py:obj}`has_valid_question_data <nexusLIMS.harvesters.nemo.utils.has_valid_question_data>`
+  - ```{autodoc2-docstring} nexusLIMS.harvesters.nemo.utils.has_valid_question_data
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
 * - {py:obj}`id_from_url <nexusLIMS.harvesters.nemo.utils.id_from_url>`
   - ```{autodoc2-docstring} nexusLIMS.harvesters.nemo.utils.id_from_url
     :parser: autodoc2_docstrings_parser
@@ -99,6 +104,14 @@
 :canonical: nexusLIMS.harvesters.nemo.utils.process_res_question_samples
 
 ```{autodoc2-docstring} nexusLIMS.harvesters.nemo.utils.process_res_question_samples
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} has_valid_question_data(event_dict: typing.Dict, field: str = 'run_data') -> bool
+:canonical: nexusLIMS.harvesters.nemo.utils.has_valid_question_data
+
+```{autodoc2-docstring} nexusLIMS.harvesters.nemo.utils.has_valid_question_data
 :parser: autodoc2_docstrings_parser
 ```
 ````

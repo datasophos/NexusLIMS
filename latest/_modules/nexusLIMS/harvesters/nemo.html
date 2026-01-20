@@ -33,7 +33,7 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/autodoc_pydantic.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=8633d6cc" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=acda69ee" />
   
   <!-- So that users can add custom icons -->
   <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -428,7 +428,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Jan, 18, 2026"/>
+    <meta name="docbuild:last-update" content="Jan, 20, 2026"/>
   </head>
   
   
@@ -546,7 +546,7 @@ window.addEventListener("load", load);
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../migration.html">
-    Migration Guide: v1.4.3 to v2.2.0
+    Migration Guide
   </a>
 </li>
 
@@ -683,7 +683,7 @@ window.addEventListener("load", load);
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../migration.html">
-    Migration Guide: v1.4.3 to v2.2.0
+    Migration Guide
   </a>
 </li>
 
@@ -828,6 +828,7 @@ window.addEventListener("load", load);
 <span class="sd">calendering and laboratory logistics application.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">timedelta</span>
 
@@ -840,11 +841,128 @@ window.addEventListener("load", load);
 <span class="kn">from</span><span class="w"> </span><span class="nn">.utils</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">_get_res_question_value</span><span class="p">,</span>
     <span class="n">get_connector_for_session</span><span class="p">,</span>
+    <span class="n">has_valid_question_data</span><span class="p">,</span>
     <span class="n">id_from_url</span><span class="p">,</span>
     <span class="n">process_res_question_samples</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="create_res_event_from_usage_event">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.harvesters.nemo.html#nexusLIMS.harvesters.nemo.create_res_event_from_usage_event">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_res_event_from_usage_event</span><span class="p">(</span>
+    <span class="n">usage_event</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">Session</span><span class="p">,</span>
+    <span class="n">nemo_connector</span><span class="p">:</span> <span class="n">NemoConnector</span><span class="p">,</span>
+    <span class="n">field</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;run_data&quot;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ReservationEvent</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create ReservationEvent from usage event with question data.</span>
+
+<span class="sd">    Assumes usage_event has been expanded via _parse_event() and</span>
+<span class="sd">    has valid question data in the specified field (run_data or pre_run_data).</span>
+
+<span class="sd">    Both run_data and pre_run_data fields are JSON-encoded strings that use</span>
+<span class="sd">    the same structure as reservation question_data, so we can parse them and</span>
+<span class="sd">    reuse existing helper functions by creating a wrapper dict.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    usage_event</span>
+<span class="sd">        The usage event dictionary from NEMO API</span>
+<span class="sd">    session</span>
+<span class="sd">        The Session object</span>
+<span class="sd">    nemo_connector</span>
+<span class="sd">        The NemoConnector instance</span>
+<span class="sd">    field</span>
+<span class="sd">        Which field to extract question data from (&quot;run_data&quot; or &quot;pre_run_data&quot;)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ReservationEvent</span>
+<span class="sd">        The created reservation event</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the field cannot be parsed as JSON</span>
+<span class="sd">    NoDataConsentError</span>
+<span class="sd">        If data_consent is missing or the user declined consent</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Parse JSON-encoded question data string</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">question_data_parsed</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">usage_event</span><span class="p">[</span><span class="n">field</span><span class="p">])</span>
+    <span class="k">except</span> <span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">JSONDecodeError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Failed to parse </span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s2"> for usage event </span><span class="si">{</span><span class="n">usage_event</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
+
+    <span class="c1"># Wrap parsed data as question_data for compatibility with helper functions</span>
+    <span class="n">wrapped_event</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;question_data&quot;</span><span class="p">:</span> <span class="n">question_data_parsed</span><span class="p">}</span>
+
+    <span class="c1"># Validate consent first</span>
+    <span class="n">consent</span> <span class="o">=</span> <span class="n">_get_res_question_value</span><span class="p">(</span><span class="s2">&quot;data_consent&quot;</span><span class="p">,</span> <span class="n">wrapped_event</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">consent</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Usage event </span><span class="si">{</span><span class="n">usage_event</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> did not have data_consent defined, &quot;</span>
+            <span class="s2">&quot;so we should not harvest its data&quot;</span>
+        <span class="p">)</span>
+        <span class="k">raise</span> <span class="n">NoDataConsentError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">consent</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;disagree&quot;</span><span class="p">,</span> <span class="s2">&quot;no&quot;</span><span class="p">,</span> <span class="s2">&quot;false&quot;</span><span class="p">,</span> <span class="s2">&quot;negative&quot;</span><span class="p">]:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Usage event </span><span class="si">{</span><span class="n">usage_event</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> requested not to have &quot;</span>
+            <span class="s2">&quot;their data harvested&quot;</span>
+        <span class="p">)</span>
+        <span class="k">raise</span> <span class="n">NoDataConsentError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="c1"># Process sample information</span>
+    <span class="p">(</span>
+        <span class="n">sample_details</span><span class="p">,</span>
+        <span class="n">sample_pid</span><span class="p">,</span>
+        <span class="n">sample_name</span><span class="p">,</span>
+        <span class="n">sample_elements</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">=</span> <span class="n">process_res_question_samples</span><span class="p">(</span><span class="n">wrapped_event</span><span class="p">)</span>
+
+    <span class="c1"># Use operator as creator (who started the session)</span>
+    <span class="c1"># Fallback to user if operator is None</span>
+    <span class="n">creator</span> <span class="o">=</span> <span class="n">usage_event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;operator&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">usage_event</span><span class="p">[</span><span class="s2">&quot;user&quot;</span><span class="p">]</span>
+
+    <span class="c1"># Create ReservationEvent (using wrapped_event for question data)</span>
+    <span class="k">return</span> <span class="n">ReservationEvent</span><span class="p">(</span>
+        <span class="n">experiment_title</span><span class="o">=</span><span class="n">_get_res_question_value</span><span class="p">(</span><span class="s2">&quot;experiment_title&quot;</span><span class="p">,</span> <span class="n">wrapped_event</span><span class="p">),</span>
+        <span class="n">instrument</span><span class="o">=</span><span class="n">session</span><span class="o">.</span><span class="n">instrument</span><span class="p">,</span>
+        <span class="n">last_updated</span><span class="o">=</span><span class="n">nemo_connector</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">usage_event</span><span class="p">[</span><span class="s2">&quot;start&quot;</span><span class="p">]),</span>  <span class="c1"># No creation_time</span>
+        <span class="n">username</span><span class="o">=</span><span class="n">usage_event</span><span class="p">[</span><span class="s2">&quot;user&quot;</span><span class="p">][</span><span class="s2">&quot;username&quot;</span><span class="p">],</span>
+        <span class="n">user_full_name</span><span class="o">=</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">usage_event</span><span class="p">[</span><span class="s1">&#39;user&#39;</span><span class="p">][</span><span class="s1">&#39;first_name&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">usage_event</span><span class="p">[</span><span class="s1">&#39;user&#39;</span><span class="p">][</span><span class="s1">&#39;last_name&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">usage_event</span><span class="p">[</span><span class="s1">&#39;user&#39;</span><span class="p">][</span><span class="s1">&#39;username&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">)&quot;</span>
+        <span class="p">),</span>
+        <span class="n">created_by</span><span class="o">=</span><span class="n">creator</span><span class="p">[</span><span class="s2">&quot;username&quot;</span><span class="p">],</span>
+        <span class="n">created_by_full_name</span><span class="o">=</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">creator</span><span class="p">[</span><span class="s1">&#39;first_name&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">creator</span><span class="p">[</span><span class="s1">&#39;last_name&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">creator</span><span class="p">[</span><span class="s1">&#39;username&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">)&quot;</span>
+        <span class="p">),</span>
+        <span class="n">start_time</span><span class="o">=</span><span class="n">nemo_connector</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">usage_event</span><span class="p">[</span><span class="s2">&quot;start&quot;</span><span class="p">]),</span>
+        <span class="n">end_time</span><span class="o">=</span><span class="n">nemo_connector</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">usage_event</span><span class="p">[</span><span class="s2">&quot;end&quot;</span><span class="p">]),</span>
+        <span class="n">reservation_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">experiment_purpose</span><span class="o">=</span><span class="n">_get_res_question_value</span><span class="p">(</span><span class="s2">&quot;experiment_purpose&quot;</span><span class="p">,</span> <span class="n">wrapped_event</span><span class="p">),</span>
+        <span class="n">sample_details</span><span class="o">=</span><span class="n">sample_details</span><span class="p">,</span>
+        <span class="n">sample_pid</span><span class="o">=</span><span class="n">sample_pid</span><span class="p">,</span>
+        <span class="n">sample_name</span><span class="o">=</span><span class="n">sample_name</span><span class="p">,</span>
+        <span class="n">sample_elements</span><span class="o">=</span><span class="n">sample_elements</span><span class="p">,</span>
+        <span class="n">project_name</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">],</span>
+        <span class="n">project_id</span><span class="o">=</span><span class="p">[</span><span class="n">_get_res_question_value</span><span class="p">(</span><span class="s2">&quot;project_id&quot;</span><span class="p">,</span> <span class="n">wrapped_event</span><span class="p">)],</span>
+        <span class="n">project_ref</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">],</span>
+        <span class="n">internal_id</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">usage_event</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]),</span>  <span class="c1"># Usage event ID</span>
+        <span class="n">division</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">group</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">url</span><span class="o">=</span><span class="n">nemo_connector</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;base_url&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+            <span class="s2">&quot;api/&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;event_details/usage/</span><span class="si">{</span><span class="n">usage_event</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">/&quot;</span><span class="p">,</span>  <span class="c1"># Usage event URL</span>
+        <span class="p">),</span>
+    <span class="p">)</span></div>
+
 
 
 <div class="viewcode-block" id="res_event_from_session">
@@ -944,6 +1062,44 @@ window.addEventListener("load", load);
         <span class="n">nemo_connector</span> <span class="o">=</span> <span class="n">get_connector_for_session</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">nemo_connector</span> <span class="o">=</span> <span class="n">connector</span>
+
+    <span class="c1"># NEW: Three-tier fallback - try to get usage event question data first</span>
+    <span class="c1"># This eliminates the need for reservation matching when usage events</span>
+    <span class="c1"># contain all necessary metadata (run_data filled at END of experiment,</span>
+    <span class="c1"># or pre_run_data filled at START of experiment)</span>
+    <span class="n">usage_event_id</span> <span class="o">=</span> <span class="n">id_from_url</span><span class="p">(</span><span class="n">session</span><span class="o">.</span><span class="n">session_identifier</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">usage_event_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">usage_events</span> <span class="o">=</span> <span class="n">nemo_connector</span><span class="o">.</span><span class="n">get_usage_events</span><span class="p">(</span><span class="n">event_id</span><span class="o">=</span><span class="n">usage_event_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">usage_events</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">usage_events</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">usage_event</span> <span class="o">=</span> <span class="n">usage_events</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="c1"># Priority 1: Check run_data (most recent - filled at END)</span>
+            <span class="k">if</span> <span class="n">has_valid_question_data</span><span class="p">(</span><span class="n">usage_event</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s2">&quot;run_data&quot;</span><span class="p">):</span>
+                <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="s2">&quot;Usage event </span><span class="si">%s</span><span class="s2"> has run_data with questions, &quot;</span>
+                    <span class="s2">&quot;using it instead of reservation&quot;</span><span class="p">,</span>
+                    <span class="n">usage_event_id</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="k">return</span> <span class="n">create_res_event_from_usage_event</span><span class="p">(</span>
+                    <span class="n">usage_event</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">nemo_connector</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s2">&quot;run_data&quot;</span>
+                <span class="p">)</span>
+
+            <span class="c1"># Priority 2: Check pre_run_data (backup - filled at START)</span>
+            <span class="k">if</span> <span class="n">has_valid_question_data</span><span class="p">(</span><span class="n">usage_event</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s2">&quot;pre_run_data&quot;</span><span class="p">):</span>
+                <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="s2">&quot;Usage event </span><span class="si">%s</span><span class="s2"> has pre_run_data with questions, &quot;</span>
+                    <span class="s2">&quot;using it instead of reservation&quot;</span><span class="p">,</span>
+                    <span class="n">usage_event_id</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="k">return</span> <span class="n">create_res_event_from_usage_event</span><span class="p">(</span>
+                    <span class="n">usage_event</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">nemo_connector</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s2">&quot;pre_run_data&quot;</span>
+                <span class="p">)</span>
+
+    <span class="c1"># Priority 3: Fall back to reservation matching (existing behavior)</span>
+    <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+        <span class="s2">&quot;Usage event does not have valid question data in run_data or pre_run_data, &quot;</span>
+        <span class="s2">&quot;falling back to reservation matching&quot;</span>
+    <span class="p">)</span>
 
     <span class="c1"># get reservation with maximum overlap</span>
     <span class="n">reservations</span> <span class="o">=</span> <span class="n">nemo_connector</span><span class="o">.</span><span class="n">get_reservations</span><span class="p">(</span>

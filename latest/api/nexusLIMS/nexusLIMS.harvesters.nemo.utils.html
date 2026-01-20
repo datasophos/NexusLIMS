@@ -34,7 +34,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/autodoc_pydantic.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=8633d6cc" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=acda69ee" />
   
   <!-- So that users can add custom icons -->
   <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -66,7 +66,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Jan, 18, 2026"/>
+    <meta name="docbuild:last-update" content="Jan, 20, 2026"/>
   </head>
   
   
@@ -184,7 +184,7 @@
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../../migration.html">
-    Migration Guide: v1.4.3 to v2.2.0
+    Migration Guide
   </a>
 </li>
 
@@ -323,7 +323,7 @@
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../../migration.html">
-    Migration Guide: v1.4.3 to v2.2.0
+    Migration Guide
   </a>
 </li>
 
@@ -410,6 +410,7 @@
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../reference/changelog.html">Changelog</a></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../../reference/api.html">API documentation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="nexusLIMS.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS</span></code></a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.db.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.db</span></code></a></li>
@@ -430,7 +431,7 @@
 </details></li>
 </ul>
 </details></li>
-<li class="toctree-l1"><a class="reference internal" href="../../reference/changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/NEMO_Reference.html">NEMO System Reference for NexusLIMS</a></li>
 </ul>
 </div>
 </nav></div>
@@ -530,7 +531,10 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.harvesters.nemo.utils.process_res_question_samples" title="nexusLIMS.harvesters.nemo.utils.process_res_question_samples"><code class="xref py py-obj docutils literal notranslate"><span class="pre">process_res_question_samples</span></code></a></p></td>
 <td><p>Process sample information from reservation questions.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.harvesters.nemo.utils.id_from_url" title="nexusLIMS.harvesters.nemo.utils.id_from_url"><code class="xref py py-obj docutils literal notranslate"><span class="pre">id_from_url</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.harvesters.nemo.utils.has_valid_question_data" title="nexusLIMS.harvesters.nemo.utils.has_valid_question_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_valid_question_data</span></code></a></p></td>
+<td><p>Check if usage event has valid question data in specified field.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.harvesters.nemo.utils.id_from_url" title="nexusLIMS.harvesters.nemo.utils.id_from_url"><code class="xref py py-obj docutils literal notranslate"><span class="pre">id_from_url</span></code></a></p></td>
 <td><p>Get the value of the id query parameter stored in URL string.</p></td>
 </tr>
 </tbody>
@@ -658,6 +662,36 @@ endpoint)</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.harvesters.nemo.utils.has_valid_question_data">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.harvesters.nemo.utils.</span></span><span class="sig-name descname"><span class="pre">has_valid_question_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'run_data'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/harvesters/nemo/utils.html#has_valid_question_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.harvesters.nemo.utils.has_valid_question_data" title="Link to this definition">#</a></dt>
+<dd><p>Check if usage event has valid question data in specified field.</p>
+<p>Works for both run_data and pre_run_data fields, which use identical structure.</p>
+<p>A usage event has valid question data if:</p>
+<ol class="arabic simple">
+<li><p>It has the specified field</p></li>
+<li><p>Field value is not None or empty string</p></li>
+<li><p>Field value can be parsed as JSON</p></li>
+<li><p>Parsed data is not empty</p></li>
+<li><p>Parsed data has data_consent field (required)</p></li>
+</ol>
+<dl class="myst field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>event_dict</strong> – The usage event dictionary from NEMO API</p></li>
+<li><p><strong>field</strong> – Field name to check (“run_data” or “pre_run_data”)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if usage event has valid question data in the specified field,
+False otherwise</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="nexusLIMS.harvesters.nemo.utils.id_from_url">
 <span class="sig-prename descclassname"><span class="pre">nexusLIMS.harvesters.nemo.utils.</span></span><span class="sig-name descname"><span class="pre">id_from_url</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/harvesters/nemo/utils.html#id_from_url"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.harvesters.nemo.utils.id_from_url" title="Link to this definition">#</a></dt>
 <dd><p>Get the value of the id query parameter stored in URL string.</p>
@@ -736,6 +770,7 @@ endpoint)</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.harvesters.nemo.utils.get_connector_for_session"><code class="docutils literal notranslate"><span class="pre">get_connector_for_session()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.harvesters.nemo.utils.get_connector_by_base_url"><code class="docutils literal notranslate"><span class="pre">get_connector_by_base_url()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.harvesters.nemo.utils.process_res_question_samples"><code class="docutils literal notranslate"><span class="pre">process_res_question_samples()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.harvesters.nemo.utils.has_valid_question_data"><code class="docutils literal notranslate"><span class="pre">has_valid_question_data()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.harvesters.nemo.utils.id_from_url"><code class="docutils literal notranslate"><span class="pre">id_from_url()</span></code></a></li>
 </ul>
 </li>

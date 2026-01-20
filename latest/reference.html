@@ -34,7 +34,7 @@
     <link rel="stylesheet" type="text/css" href="_static/autodoc_pydantic.css" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=8633d6cc" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=acda69ee" />
   
   <!-- So that users can add custom icons -->
   <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -61,12 +61,12 @@
     <link rel="icon" href="_static/nexusLIMS_bare_logo.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="API documentation" href="reference/api.html" />
+    <link rel="next" title="Changelog" href="reference/changelog.html" />
     <link rel="prev" title="Troubleshooting" href="frontend_guide/troubleshooting.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Jan, 18, 2026"/>
+    <meta name="docbuild:last-update" content="Jan, 20, 2026"/>
   </head>
   
   
@@ -184,7 +184,7 @@
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="migration.html">
-    Migration Guide: v1.4.3 to v2.2.0
+    Migration Guide
   </a>
 </li>
 
@@ -323,7 +323,7 @@
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="migration.html">
-    Migration Guide: v1.4.3 to v2.2.0
+    Migration Guide
   </a>
 </li>
 
@@ -410,8 +410,9 @@
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="reference/api.html">API documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reference/changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/api.html">API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/NEMO_Reference.html">NEMO System Reference for NexusLIMS</a></li>
 </ul>
 </div>
 </nav></div>
@@ -474,12 +475,8 @@
 <p>Technical reference documentation for NexusLIMS.</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="reference/api.html">API documentation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="api/nexusLIMS/nexusLIMS.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS</span></code></a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="reference/changelog.html">Changelog</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="reference/changelog.html#unreleased-2026-01-18">[Unreleased] (2026-01-18)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/changelog.html#unreleased-2026-01-20">[Unreleased] (2026-01-20)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/changelog.html#id1">2.2.0 (2026-01-09)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/changelog.html#id5">2.1.1 (2025-12-16)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/changelog.html#id7">2.1.0 (2025-12-16)</a></li>
@@ -497,6 +494,23 @@
 <li class="toctree-l2"><a class="reference internal" href="reference/changelog.html#first-real-working-release">0.0.9 (2020-02-24) - First real working release</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/changelog.html#pre-release-version">0.0.2 (2020-01-08) - Pre-release version</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference/changelog.html#id63">0.0.1 (2019-03-26) - Pre-release version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="reference/api.html">API documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/nexusLIMS/nexusLIMS.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="reference/NEMO_Reference.html">NEMO System Reference for NexusLIMS</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="reference/NEMO_Reference.html#table-of-contents">Table of Contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/NEMO_Reference.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/NEMO_Reference.html#usage-events">Usage Events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/NEMO_Reference.html#pre-post-usage-questions">Pre/Post Usage Questions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/NEMO_Reference.html#reservation-questions">Reservation Questions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/NEMO_Reference.html#dynamic-form-fields">Dynamic Form Fields</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/NEMO_Reference.html#api-access">API Access</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/NEMO_Reference.html#nexuslims-integration-notes">NexusLIMS Integration Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/NEMO_Reference.html#additional-resources">Additional Resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/NEMO_Reference.html#reference-metadata">Reference Metadata</a></li>
 </ul>
 </li>
 </ul>
@@ -523,11 +537,11 @@
       </div>
     </a>
     <a class="right-next"
-       href="reference/api.html"
+       href="reference/changelog.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">API documentation</p>
+        <p class="prev-next-title">Changelog</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

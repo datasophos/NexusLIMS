@@ -34,7 +34,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/autodoc_pydantic.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=8633d6cc" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=acda69ee" />
   
   <!-- So that users can add custom icons -->
   <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -61,11 +61,12 @@
     <link rel="icon" href="../_static/nexusLIMS_bare_logo.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="prev" title="nexusLIMS.config" href="../api/nexusLIMS/nexusLIMS.config.html" />
+    <link rel="next" title="API documentation" href="api.html" />
+    <link rel="prev" title="Reference" href="../reference.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Jan, 18, 2026"/>
+    <meta name="docbuild:last-update" content="Jan, 20, 2026"/>
   </head>
   
   
@@ -183,7 +184,7 @@
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../migration.html">
-    Migration Guide: v1.4.3 to v2.2.0
+    Migration Guide
   </a>
 </li>
 
@@ -322,7 +323,7 @@
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../migration.html">
-    Migration Guide: v1.4.3 to v2.2.0
+    Migration Guide
   </a>
 </li>
 
@@ -409,8 +410,9 @@
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="api.html">API documentation</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="NEMO_Reference.html">NEMO System Reference for NexusLIMS</a></li>
 </ul>
 </div>
 </nav></div>
@@ -478,24 +480,26 @@
 <p>This changelog documents development history including the original NIST project
 up to version 1.4.3. The datasophos fork begins at version 2.0.</p>
 </div>
-<section id="unreleased-2026-01-18">
-<h2>[Unreleased] (2026-01-18)<a class="headerlink" href="#unreleased-2026-01-18" title="Link to this heading">#</a></h2>
+<section id="unreleased-2026-01-20">
+<h2>[Unreleased] (2026-01-20)<a class="headerlink" href="#unreleased-2026-01-20" title="Link to this heading">#</a></h2>
 <section id="new-features">
 <h3>New features<a class="headerlink" href="#new-features" title="Link to this heading">#</a></h3>
 <ul class="simple">
-<li><p>Add <code class="docutils literal notranslate"><span class="pre">NX_CLUSTERING_SENSITIVITY</span></code> configuration option to control the sensitivity of file clustering into Acquisition Activities. Higher values make clustering more sensitive to time gaps (resulting in more activities), lower values make it less sensitive (fewer activities). Setting to <code class="docutils literal notranslate"><span class="pre">0</span></code> disables clustering entirely and groups all files into a single activity. (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/26">#26</a>)</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">NX_CLUSTERING_SENSITIVITY</span></code> configuration option to control the sensitivity of file clustering into Acquisition Activities. Higher values make clustering more sensitive to time gaps (resulting in more activities), lower values make it less sensitive (fewer activities). Setting to <code class="docutils literal notranslate"><span class="pre">0</span></code> disables clustering entirely and groups all files into a single activity. (<em>Sponsored by UPenn/<a class="reference external" href="https://www.nano.upenn.edu/resources/nanoscale-characterization/">Singh Center for Nanotechnology</a>, thank you!</em>) (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/26">#26</a>)</p></li>
+<li><p>Add support for harvesting experiment metadata from NEMO usage event questions. The NEMO harvester now prioritizes data from usage events (what users actually did during their session) over reservation data (what they planned to do), using a three-tier fallback strategy that checks post-run questions, pre-run questions, and finally reservation questions to maximize record accuracy. (<em>Sponsored by UPenn/<a class="reference external" href="https://www.nano.upenn.edu/resources/nanoscale-characterization/">Singh Center for Nanotechnology</a>, thank you!</em>) (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/33">#33</a>)</p></li>
 </ul>
 </section>
 <section id="documentation-improvements">
 <h3>Documentation improvements<a class="headerlink" href="#documentation-improvements" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Add comprehensive documentation about features, development, and deployment of the CDCS-based frontend. These docs are kept in this repository to have one common documentation site. (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/28">#28</a>)</p></li>
+<li><p>Refreshed the NexusLIMS logo to be more modern!</p></li>
 </ul>
 </section>
 <section id="miscellaneous-development-changes">
 <h3>Miscellaneous/Development changes<a class="headerlink" href="#miscellaneous-development-changes" title="Link to this heading">#</a></h3>
 <ul class="simple">
-<li><p>Updated integration test infrastructure to use CDCS 3.18.0. Replaced username/password authentication with API token-based authentication throughout the codebase and test fixtures. Added <code class="docutils literal notranslate"><span class="pre">NX_TEST_MODE</span></code> environment variable to conditionally disable Pydantic validation during testing. (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/30">#30</a>)</p></li>
+<li><p>Updated integration test infrastructure to use CDCS 3.18.0. Replaced username/password authentication with API token-based authentication throughout the codebase and test fixtures. Added <code class="docutils literal notranslate"><span class="pre">NX_TEST_MODE</span></code> environment variable to conditionally disable Pydantic validation during testing. (<em>Sponsored by UPenn/<a class="reference external" href="https://www.nano.upenn.edu/resources/nanoscale-characterization/">Singh Center for Nanotechnology</a>, thank you!</em>) (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/30">#30</a>)</p></li>
 </ul>
 </section>
 </section>
@@ -1146,13 +1150,22 @@ delineate functionality of the various parts of NexusLIMS</p></li>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../api/nexusLIMS/nexusLIMS.config.html"
+       href="../reference.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.config</span></code></p>
+        <p class="prev-next-title">Reference</p>
       </div>
+    </a>
+    <a class="right-next"
+       href="api.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">API documentation</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
     </a>
 </div>
                 </footer>
@@ -1173,7 +1186,7 @@ delineate functionality of the various parts of NexusLIMS</p></li>
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#unreleased-2026-01-18">[Unreleased] (2026-01-18)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#unreleased-2026-01-20">[Unreleased] (2026-01-20)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">2.2.0 (2026-01-09)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">2.1.1 (2025-12-16)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">2.1.0 (2025-12-16)</a></li>

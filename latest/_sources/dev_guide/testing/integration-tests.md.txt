@@ -269,6 +269,62 @@ def test_nemo_connector_fetches_users(nemo_client):
     assert any(u["username"] == "captain" for u in users)
 ```
 
+#### Testing NEMO Usage Event Questions
+
+NEMO usage events can contain experiment metadata in two JSON-encoded fields:
+- **`run_data`**: Questions answered at the **end** of instrument usage (highest priority)
+- **`pre_run_data`**: Questions answered at the **start** of instrument usage (medium priority)
+
+The harvester implements a three-tier fallback strategy (run_data → pre_run_data → reservation matching) to obtain the most accurate metadata. Integration tests verify this behavior using test usage events (IDs 100-106) seeded in the NEMO Docker instance.
+
+**Test usage events in `seed_data.json`:**
+
+| Event ID | `run_data` | `pre_run_data` | Test Purpose |
+|----------|------------|----------------|--------------|
+| 100 | Valid questions | Empty | Tests Priority 1: run_data |
+| 101 | Empty | Valid questions | Tests Priority 2: pre_run_data |
+| 102 | Valid questions | Valid questions | Tests run_data priority over pre_run_data |
+| 103 | Empty | "Disagree" consent | Tests consent validation and fallback |
+| 104 | Missing user_input fields | Empty | Tests graceful handling of incomplete data |
+| 105 | Empty strings | Empty strings | Tests fallback to reservation matching |
+| 106 | Malformed JSON | Malformed JSON | Tests JSON parsing error handling |
+
+**Example test:**
+
+```python
+@pytest.mark.integration
+def test_usage_event_with_run_data(test_instrument, nemo_connector):
+    """Verify run_data is used when populated."""
+    from nexusLIMS.db.session_handler import Session
+    from nexusLIMS.harvesters.nemo import res_event_from_session
+
+    # Create session for usage event 100 (has run_data)
+    session = Session(
+        instrument=test_instrument,
+        session_identifier="http://nemo.localhost/api/usage_events/100/",
+        dt_from=datetime(2024, 7, 1, 10, 0, tzinfo=timezone.utc),
+        dt_to=datetime(2024, 7, 1, 12, 0, tzinfo=timezone.utc),
+        user="captain",
+    )
+
+    res_event = res_event_from_session(session, nemo_connector)
+
+    # Verify metadata came from run_data (not reservation)
+    assert res_event.experiment_title == "Au-TiO2 characterization"
+    assert res_event.experiment_purpose == "Measuring particle size distribution"
+    assert "http://nemo.localhost/event_details/usage/100/" in res_event.url
+```
+
+**Test coverage includes:**
+- Three-tier priority ordering (run_data > pre_run_data > reservation)
+- Data consent validation and rejection
+- JSON parsing error handling
+- Empty/missing field fallback behavior
+- Operator vs. user field handling
+- Helper function validation (`has_valid_question_data()`)
+
+See `TestNemoUsageEventQuestions` class in `tests/integration/test_nemo_integration.py` for complete test suite.
+
 ### 2. CDCS Integration Tests
 
 The `cdcs_client` fixture provides connection information and utilities for the CDCS Docker instance:
