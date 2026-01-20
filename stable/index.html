@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>NexusLIMS - An Automated Laboratory Information Management System for Electron Microscopy &#8212; NexusLIMS 2.2.0 documentation</title>
+    <title>NexusLIMS &#8212; NexusLIMS 2.3.0 documentation</title>
   
   
   
@@ -34,7 +34,7 @@
     <link rel="stylesheet" type="text/css" href="_static/autodoc_pydantic.css?v=a0a71c94" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=8633d6cc" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=acda69ee" />
   
   <!-- So that users can add custom icons -->
   <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="_static/documentation_options.js?v=b21de401"></script>
+    <script src="_static/documentation_options.js?v=c3c8ae58"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -52,20 +52,19 @@
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.2.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.3.0';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
     <script src="_static/custom.js?v=ba087cdf"></script>
-    <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/latest/index.html" />
     <link rel="icon" href="_static/nexusLIMS_bare_logo.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="User Guide" href="user_guide.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.2.0" />
-    <meta name="docbuild:last-update" content="Jan, 09, 2026"/>
+  <meta name="docsearch:version" content="2.3.0" />
+    <meta name="docbuild:last-update" content="Jan, 20, 2026"/>
   </head>
   
   
@@ -131,8 +130,8 @@
       
     
     
-    <img src="_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.2.0 documentation - Home"/>
-    <img src="_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.2.0 documentation - Home"/>
+    <img src="_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.3.0 documentation - Home"/>
+    <img src="_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.3.0 documentation - Home"/>
   
   
 </a></div>
@@ -183,7 +182,7 @@
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="migration.html">
-    Migration Guide: v1.4.3 to v2.2.0
+    Migration Guide
   </a>
 </li>
 
@@ -196,11 +195,28 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="reference.html">
+  <a class="nav-link nav-internal" href="frontend_guide.html">
+    Frontend Guide
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="reference.html">
     Reference
   </a>
 </li>
 
+                </ul>
+            </li>
+            
   </ul>
 </nav></div>
       
@@ -307,7 +323,7 @@
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="migration.html">
-    Migration Guide: v1.4.3 to v2.2.0
+    Migration Guide
   </a>
 </li>
 
@@ -315,6 +331,13 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="dev_guide.html">
     Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="frontend_guide.html">
+    Frontend Guide
   </a>
 </li>
 
@@ -411,16 +434,15 @@
                   
   <div class="toctree-wrapper compound">
 </div>
-<section id="nexuslims-an-automated-laboratory-information-management-system-for-electron-microscopy">
-<h1><strong>NexusLIMS</strong> - An Automated Laboratory Information Management System for Electron Microscopy<a class="headerlink" href="#nexuslims-an-automated-laboratory-information-management-system-for-electron-microscopy" title="Link to this heading">#</a></h1>
+<section id="nexuslims">
+<h1>NexusLIMS<a class="headerlink" href="#nexuslims" title="Link to this heading">#</a></h1>
+<p align="center">
+  <img src="_static/logo_horizontal_text.png" alt="NexusLIMS" width="100%">
+  <br>
+  <em>An automated Laboratory Information Management System for electron microscopy</em>
+</p>
 <p>NexusLIMS automatically generates experimental records by extracting metadata from microscopy data
 files and harvesting information from laboratory calendar systems.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This is a fork of the original NexusLIMS project maintained by Datasophos.
-This fork is <strong>not affiliated with NIST</strong>. For the official NIST version,
-please visit the <a class="reference external" href="https://github.com/usnistgov/NexusLIMS">original repository</a>.</p>
-</div>
 <section id="key-features">
 <h2>Key Features<a class="headerlink" href="#key-features" title="Link to this heading">#</a></h2>
 <ul class="simple">
@@ -433,7 +455,7 @@ with the
 system for harvesting of experimental sessions and
 instrument information.</p></li>
 <li><p><strong>Comprehensive support for common Electron Microscopy file formats</strong> - NexusLIMS extracts detailed metadata from DigitalMicrograph DM3/DM4 files, FEI/Thermo TIF images, Tescan TIF images, Zeiss TIF images, FEI TIA (.ser/.emi), EDAX (.spc/.msa) EDS spectra, and more</p></li>
-<li><p><strong>Temporal File Clustering</strong> - Intelligent grouping of files into Acquisition Activities based on temporal analysis</p></li>
+<li><p><strong>Temporal File Clustering</strong> - Intelligent grouping of files into Acquisition Activities based on temporal analysis (with customizable sensitivity)</p></li>
 <li><p><strong>Extensible Architecture</strong> - Plugin-based extractor system and instrument profiles for easy customization</p></li>
 <li><p><strong>Structured XML Records</strong> - Standards-compliant records with comprehensive session and technical metadata</p></li>
 <li><p><strong>Metadata Standardization</strong> - Emerging standardization using <a class="reference external" href="https://emglossary.helmholtz-metadaten.de/">EM Glossary</a> terms and Pydantic validation (work in progress)</p></li>
@@ -441,6 +463,15 @@ instrument information.</p></li>
 </ul>
 <div class="sd-container-fluid sd-sphinx-override sd-mb-4 docutils">
 <div class="sd-row sd-row-cols-2 sd-row-cols-xs-2 sd-row-cols-sm-2 sd-row-cols-md-2 sd-row-cols-lg-2 sd-g-3 sd-g-xs-3 sd-g-sm-3 sd-g-md-3 sd-g-lg-3 docutils">
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm sd-card-hover docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+📸 Screenshots</div>
+<p class="sd-card-text">Click here to see screenshots of the user-facing frontend and its features.</p>
+</div>
+<a class="sd-stretched-link sd-hide-link-text reference internal" href="frontend_guide/gallery.html"><span class="doc">Screenshot Gallery</span></a></div>
+</div>
 <div class="sd-col sd-d-flex-row docutils">
 <div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm sd-card-hover docutils">
 <div class="sd-card-body docutils">
@@ -457,7 +488,7 @@ instrument information.</p></li>
 🔄 Migration Guide</div>
 <p class="sd-card-text">Upgrading from v1.x? Step-by-step instructions for migrating to v2.0+.</p>
 </div>
-<a class="sd-stretched-link sd-hide-link-text reference internal" href="migration.html"><span class="doc">Migration Guide: v1.4.3 to v2.2.0</span></a></div>
+<a class="sd-stretched-link sd-hide-link-text reference internal" href="migration.html"><span class="doc">Migration Guide</span></a></div>
 </div>
 <div class="sd-col sd-d-flex-row docutils">
 <div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm sd-card-hover docutils">
@@ -495,6 +526,15 @@ instrument information.</p></li>
 </div>
 <a class="sd-stretched-link sd-hide-link-text reference internal" href="reference.html"><span class="doc">Reference</span></a></div>
 </div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm sd-card-hover docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+🖥️ Frontend Web Interface</div>
+<p class="sd-card-text">Documentation about deployment and management of the CDCS web frontend for searching and visualizing records.</p>
+</div>
+<a class="sd-stretched-link sd-hide-link-text reference internal" href="frontend_guide.html"><span class="doc">Frontend Guide</span></a></div>
+</div>
 </div>
 </div>
 <hr class="docutils" />
@@ -527,11 +567,17 @@ instrument information.</p></li>
 <li><p><strong>Issues</strong>: <a class="github reference external" href="https://github.com/datasophos/NexusLIMS/issues">datasophos/NexusLIMS#issues</a></p></li>
 <li><p><strong>Datasophos</strong>: <a class="reference external" href="https://datasophos.co">https://datasophos.co</a></p></li>
 </ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is a fork of the original NexusLIMS project maintained by Datasophos.
+This fork is <strong>not affiliated with NIST</strong>. For the official NIST version,
+please visit the <a class="reference external" href="https://github.com/usnistgov/NexusLIMS">original repository</a>.</p>
+</div>
 <hr class="docutils" />
 <div class="note admonition">
 <p class="admonition-title">Documentation Metadata</p>
-<p><strong>Package version:</strong> 2.2.0<br />
-<strong>Documentation built:</strong> January 09, 2026 at 05:11 PM </p>
+<p><strong>Package version:</strong> 2.3.0<br />
+<strong>Documentation built:</strong> January 20, 2026 at 01:11 AM </p>
 </div>
 </section>
 </section>
@@ -613,7 +659,7 @@ instrument information.</p></li>
 
   <p class="copyright">
     
-      © Copyright 2026, datasophos, LLC.
+      © Copyright 2025 - 2026, datasophos, LLC.
       <br/>
     
   </p>

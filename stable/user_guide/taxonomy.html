@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>NexusLIMS Taxonomy &#8212; NexusLIMS 2.2.0 documentation</title>
+    <title>NexusLIMS Taxonomy &#8212; NexusLIMS 2.3.0 documentation</title>
   
   
   
@@ -34,7 +34,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/autodoc_pydantic.css?v=a0a71c94" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=8633d6cc" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=acda69ee" />
   
   <!-- So that users can add custom icons -->
   <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=b21de401"></script>
+    <script src="../_static/documentation_options.js?v=c3c8ae58"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -417,21 +417,20 @@ window.addEventListener("load", load);
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.2.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.3.0';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
     <script src="../_static/custom.js?v=ba087cdf"></script>
-    <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/latest/user_guide/taxonomy.html" />
     <link rel="icon" href="../_static/nexusLIMS_bare_logo.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Migration Guide: v1.4.3 to v2.2.0" href="../migration.html" />
+    <link rel="next" title="Migration Guide" href="../migration.html" />
     <link rel="prev" title="Extractors" href="extractors.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.2.0" />
-    <meta name="docbuild:last-update" content="Jan, 09, 2026"/>
+  <meta name="docsearch:version" content="2.3.0" />
+    <meta name="docbuild:last-update" content="Jan, 20, 2026"/>
   </head>
   
   
@@ -497,8 +496,8 @@ window.addEventListener("load", load);
       
     
     
-    <img src="../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.2.0 documentation - Home"/>
-    <img src="../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.2.0 documentation - Home"/>
+    <img src="../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.3.0 documentation - Home"/>
+    <img src="../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.3.0 documentation - Home"/>
   
   
 </a></div>
@@ -549,7 +548,7 @@ window.addEventListener("load", load);
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../migration.html">
-    Migration Guide: v1.4.3 to v2.2.0
+    Migration Guide
   </a>
 </li>
 
@@ -562,11 +561,28 @@ window.addEventListener("load", load);
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../reference.html">
+  <a class="nav-link nav-internal" href="../frontend_guide.html">
+    Frontend Guide
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../reference.html">
     Reference
   </a>
 </li>
 
+                </ul>
+            </li>
+            
   </ul>
 </nav></div>
       
@@ -671,7 +687,7 @@ window.addEventListener("load", load);
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../migration.html">
-    Migration Guide: v1.4.3 to v2.2.0
+    Migration Guide
   </a>
 </li>
 
@@ -679,6 +695,13 @@ window.addEventListener("load", load);
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../dev_guide.html">
     Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../frontend_guide.html">
+    Frontend Guide
   </a>
 </li>
 
@@ -1184,11 +1207,11 @@ flowchart TD
 <li><p><strong>Extensibility</strong> - New fields can be added without breaking existing code</p></li>
 <li><p><strong>Semantic clarity</strong> - Clear separation between standardized and custom metadata</p></li>
 </ol>
-</section>
-</section>
 <hr class="docutils" />
+</section>
+</section>
 <section id="acquisition-activities">
-<h2>Acquisition Activities<a class="headerlink" href="#acquisition-activities" title="Link to this heading">#</a></h2>
+<span id="id1"></span><h2>Acquisition Activities<a class="headerlink" href="#acquisition-activities" title="Link to this heading">#</a></h2>
 <p>An <strong>Acquisition Activity</strong> is a group of files created in temporal proximity during an experimental session. Activities represent discrete experimental tasks (e.g., “Survey of sample region 1”, “EDS line scan across interface”).</p>
 <section id="motivation">
 <h3>Motivation<a class="headerlink" href="#motivation" title="Link to this heading">#</a></h3>
@@ -1344,7 +1367,7 @@ graph TD
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Migration Guide: v1.4.3 to v2.2.0</p>
+        <p class="prev-next-title">Migration Guide</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -1436,7 +1459,7 @@ graph TD
 
   <p class="copyright">
     
-      © Copyright 2026, datasophos, LLC.
+      © Copyright 2025 - 2026, datasophos, LLC.
       <br/>
     
   </p>

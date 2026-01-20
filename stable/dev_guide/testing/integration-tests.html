@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Integration Testing Guide &#8212; NexusLIMS 2.2.0 documentation</title>
+    <title>Integration Testing Guide &#8212; NexusLIMS 2.3.0 documentation</title>
   
   
   
@@ -34,7 +34,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/autodoc_pydantic.css?v=a0a71c94" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=8633d6cc" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=acda69ee" />
   
   <!-- So that users can add custom icons -->
   <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../_static/documentation_options.js?v=b21de401"></script>
+    <script src="../../_static/documentation_options.js?v=c3c8ae58"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -417,21 +417,20 @@ window.addEventListener("load", load);
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.2.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.3.0';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
     <script src="../../_static/custom.js?v=ba087cdf"></script>
-    <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/latest/dev_guide/testing/integration-tests.html" />
     <link rel="icon" href="../../_static/nexusLIMS_bare_logo.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Reference" href="../../reference.html" />
+    <link rel="next" title="Frontend Guide" href="../../frontend_guide.html" />
     <link rel="prev" title="XML Schema Reference" href="../schema_documentation.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.2.0" />
-    <meta name="docbuild:last-update" content="Jan, 09, 2026"/>
+  <meta name="docsearch:version" content="2.3.0" />
+    <meta name="docbuild:last-update" content="Jan, 20, 2026"/>
   </head>
   
   
@@ -497,8 +496,8 @@ window.addEventListener("load", load);
       
     
     
-    <img src="../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.2.0 documentation - Home"/>
-    <img src="../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.2.0 documentation - Home"/>
+    <img src="../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.3.0 documentation - Home"/>
+    <img src="../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.3.0 documentation - Home"/>
   
   
 </a></div>
@@ -549,7 +548,7 @@ window.addEventListener("load", load);
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../../migration.html">
-    Migration Guide: v1.4.3 to v2.2.0
+    Migration Guide
   </a>
 </li>
 
@@ -562,11 +561,28 @@ window.addEventListener("load", load);
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../reference.html">
+  <a class="nav-link nav-internal" href="../../frontend_guide.html">
+    Frontend Guide
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../reference.html">
     Reference
   </a>
 </li>
 
+                </ul>
+            </li>
+            
   </ul>
 </nav></div>
       
@@ -671,7 +687,7 @@ window.addEventListener("load", load);
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../../migration.html">
-    Migration Guide: v1.4.3 to v2.2.0
+    Migration Guide
   </a>
 </li>
 
@@ -679,6 +695,13 @@ window.addEventListener("load", load);
 <li class="nav-item current active">
   <a class="nav-link nav-internal" href="../../dev_guide.html">
     Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../frontend_guide.html">
+    Frontend Guide
   </a>
 </li>
 
@@ -1156,6 +1179,97 @@ uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </sp
     <span class="k">assert</span> <span class="nb">any</span><span class="p">(</span><span class="n">u</span><span class="p">[</span><span class="s2">&quot;username&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;captain&quot;</span> <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">users</span><span class="p">)</span>
 </pre></div>
 </div>
+<section id="testing-nemo-usage-event-questions">
+<h4>Testing NEMO Usage Event Questions<a class="headerlink" href="#testing-nemo-usage-event-questions" title="Link to this heading">#</a></h4>
+<p>NEMO usage events can contain experiment metadata in two JSON-encoded fields:</p>
+<ul class="simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">run_data</span></code></strong>: Questions answered at the <strong>end</strong> of instrument usage (highest priority)</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">pre_run_data</span></code></strong>: Questions answered at the <strong>start</strong> of instrument usage (medium priority)</p></li>
+</ul>
+<p>The harvester implements a three-tier fallback strategy (run_data → pre_run_data → reservation matching) to obtain the most accurate metadata. Integration tests verify this behavior using test usage events (IDs 100-106) seeded in the NEMO Docker instance.</p>
+<p><strong>Test usage events in <code class="docutils literal notranslate"><span class="pre">seed_data.json</span></code>:</strong></p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Event ID</p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">run_data</span></code></p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">pre_run_data</span></code></p></th>
+<th class="head"><p>Test Purpose</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>100</p></td>
+<td><p>Valid questions</p></td>
+<td><p>Empty</p></td>
+<td><p>Tests Priority 1: run_data</p></td>
+</tr>
+<tr class="row-odd"><td><p>101</p></td>
+<td><p>Empty</p></td>
+<td><p>Valid questions</p></td>
+<td><p>Tests Priority 2: pre_run_data</p></td>
+</tr>
+<tr class="row-even"><td><p>102</p></td>
+<td><p>Valid questions</p></td>
+<td><p>Valid questions</p></td>
+<td><p>Tests run_data priority over pre_run_data</p></td>
+</tr>
+<tr class="row-odd"><td><p>103</p></td>
+<td><p>Empty</p></td>
+<td><p>“Disagree” consent</p></td>
+<td><p>Tests consent validation and fallback</p></td>
+</tr>
+<tr class="row-even"><td><p>104</p></td>
+<td><p>Missing user_input fields</p></td>
+<td><p>Empty</p></td>
+<td><p>Tests graceful handling of incomplete data</p></td>
+</tr>
+<tr class="row-odd"><td><p>105</p></td>
+<td><p>Empty strings</p></td>
+<td><p>Empty strings</p></td>
+<td><p>Tests fallback to reservation matching</p></td>
+</tr>
+<tr class="row-even"><td><p>106</p></td>
+<td><p>Malformed JSON</p></td>
+<td><p>Malformed JSON</p></td>
+<td><p>Tests JSON parsing error handling</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Example test:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">integration</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_usage_event_with_run_data</span><span class="p">(</span><span class="n">test_instrument</span><span class="p">,</span> <span class="n">nemo_connector</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Verify run_data is used when populated.&quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.db.session_handler</span><span class="w"> </span><span class="kn">import</span> <span class="n">Session</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.harvesters.nemo</span><span class="w"> </span><span class="kn">import</span> <span class="n">res_event_from_session</span>
+
+    <span class="c1"># Create session for usage event 100 (has run_data)</span>
+    <span class="n">session</span> <span class="o">=</span> <span class="n">Session</span><span class="p">(</span>
+        <span class="n">instrument</span><span class="o">=</span><span class="n">test_instrument</span><span class="p">,</span>
+        <span class="n">session_identifier</span><span class="o">=</span><span class="s2">&quot;http://nemo.localhost/api/usage_events/100/&quot;</span><span class="p">,</span>
+        <span class="n">dt_from</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2024</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">),</span>
+        <span class="n">dt_to</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2024</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">),</span>
+        <span class="n">user</span><span class="o">=</span><span class="s2">&quot;captain&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">res_event</span> <span class="o">=</span> <span class="n">res_event_from_session</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">nemo_connector</span><span class="p">)</span>
+
+    <span class="c1"># Verify metadata came from run_data (not reservation)</span>
+    <span class="k">assert</span> <span class="n">res_event</span><span class="o">.</span><span class="n">experiment_title</span> <span class="o">==</span> <span class="s2">&quot;Au-TiO2 characterization&quot;</span>
+    <span class="k">assert</span> <span class="n">res_event</span><span class="o">.</span><span class="n">experiment_purpose</span> <span class="o">==</span> <span class="s2">&quot;Measuring particle size distribution&quot;</span>
+    <span class="k">assert</span> <span class="s2">&quot;http://nemo.localhost/event_details/usage/100/&quot;</span> <span class="ow">in</span> <span class="n">res_event</span><span class="o">.</span><span class="n">url</span>
+</pre></div>
+</div>
+<p><strong>Test coverage includes:</strong></p>
+<ul class="simple">
+<li><p>Three-tier priority ordering (run_data &gt; pre_run_data &gt; reservation)</p></li>
+<li><p>Data consent validation and rejection</p></li>
+<li><p>JSON parsing error handling</p></li>
+<li><p>Empty/missing field fallback behavior</p></li>
+<li><p>Operator vs. user field handling</p></li>
+<li><p>Helper function validation (<code class="docutils literal notranslate"><span class="pre">has_valid_question_data()</span></code>)</p></li>
+</ul>
+<p>See <code class="docutils literal notranslate"><span class="pre">TestNemoUsageEventQuestions</span></code> class in <code class="docutils literal notranslate"><span class="pre">tests/integration/test_nemo_integration.py</span></code> for complete test suite.</p>
+</section>
 </section>
 <section id="cdcs-integration-tests">
 <h3>2. CDCS Integration Tests<a class="headerlink" href="#cdcs-integration-tests" title="Link to this heading">#</a></h3>
@@ -1573,11 +1687,11 @@ docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> 
       </div>
     </a>
     <a class="right-next"
-       href="../../reference.html"
+       href="../../frontend_guide.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Reference</p>
+        <p class="prev-next-title">Frontend Guide</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -1630,7 +1744,10 @@ docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> 
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#key-integration-test-patterns">Key Integration Test Patterns</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nemo-integration-tests">1. NEMO Integration Tests</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nemo-integration-tests">1. NEMO Integration Tests</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#testing-nemo-usage-event-questions">Testing NEMO Usage Event Questions</a></li>
+</ul>
+</li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cdcs-integration-tests">2. CDCS Integration Tests</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#end-to-end-workflow-tests">3. End-to-End Workflow Tests</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#error-handling-tests">4. Error Handling Tests</a></li>
@@ -1712,7 +1829,7 @@ docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> 
 
   <p class="copyright">
     
-      © Copyright 2026, datasophos, LLC.
+      © Copyright 2025 - 2026, datasophos, LLC.
       <br/>
     
   </p>

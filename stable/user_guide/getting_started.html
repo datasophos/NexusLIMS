@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Getting Started &#8212; NexusLIMS 2.2.0 documentation</title>
+    <title>Getting Started &#8212; NexusLIMS 2.3.0 documentation</title>
   
   
   
@@ -34,7 +34,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/autodoc_pydantic.css?v=a0a71c94" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=8633d6cc" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=acda69ee" />
   
   <!-- So that users can add custom icons -->
   <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=b21de401"></script>
+    <script src="../_static/documentation_options.js?v=c3c8ae58"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -52,12 +52,11 @@
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.2.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.3.0';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
     <script src="../_static/custom.js?v=ba087cdf"></script>
-    <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/latest/user_guide/getting_started.html" />
     <link rel="icon" href="../_static/nexusLIMS_bare_logo.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -65,8 +64,8 @@
     <link rel="prev" title="User Guide" href="../user_guide.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.2.0" />
-    <meta name="docbuild:last-update" content="Jan, 09, 2026"/>
+  <meta name="docsearch:version" content="2.3.0" />
+    <meta name="docbuild:last-update" content="Jan, 20, 2026"/>
   </head>
   
   
@@ -132,8 +131,8 @@
       
     
     
-    <img src="../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.2.0 documentation - Home"/>
-    <img src="../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.2.0 documentation - Home"/>
+    <img src="../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.3.0 documentation - Home"/>
+    <img src="../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.3.0 documentation - Home"/>
   
   
 </a></div>
@@ -184,7 +183,7 @@
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../migration.html">
-    Migration Guide: v1.4.3 to v2.2.0
+    Migration Guide
   </a>
 </li>
 
@@ -197,11 +196,28 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../reference.html">
+  <a class="nav-link nav-internal" href="../frontend_guide.html">
+    Frontend Guide
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../reference.html">
     Reference
   </a>
 </li>
 
+                </ul>
+            </li>
+            
   </ul>
 </nav></div>
       
@@ -306,7 +322,7 @@
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../migration.html">
-    Migration Guide: v1.4.3 to v2.2.0
+    Migration Guide
   </a>
 </li>
 
@@ -314,6 +330,13 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../dev_guide.html">
     Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../frontend_guide.html">
+    Frontend Guide
   </a>
 </li>
 
@@ -461,7 +484,7 @@
 <p>Welcome to NexusLIMS! This guide will help you get up and running quickly.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p><strong>Upgrading from v1.x?</strong> See the <a class="reference internal" href="../migration.html#migration"><span class="std std-ref">Migration Guide: v1.4.3 to v2.2.0</span></a> guide for step-by-step instructions on migrating from NexusLIMS v1.4.3 to v2.0+.</p>
+<p><strong>Upgrading from v1.x?</strong> See the <a class="reference internal" href="../migration.html#migration"><span class="std std-ref">Migration Guide</span></a> guide for step-by-step instructions on migrating from NexusLIMS v1.4.3 to v2.0+.</p>
 </div>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
@@ -558,7 +581,7 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 <li><p><code class="docutils literal notranslate"><span class="pre">NX_INSTRUMENT_DATA_PATH</span></code> - Path to instrument data</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">NX_DATA_PATH</span></code> - Path for NexusLIMS data</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">NX_DB_PATH</span></code> - Path to SQLite database</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">NX_CDCS_URL</span></code>, <code class="docutils literal notranslate"><span class="pre">NX_CDCS_USER</span></code>, <code class="docutils literal notranslate"><span class="pre">NX_CDCS_PASS</span></code> - CDCS credentials</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">NX_CDCS_URL</span></code>, <code class="docutils literal notranslate"><span class="pre">NX_CDCS_TOKEN</span></code> - CDCS API credentials</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">NX_NEMO_ADDRESS_N</span></code>, <code class="docutils literal notranslate"><span class="pre">NX_NEMO_TOKEN_N</span></code> - NEMO integration</p></li>
 </ul>
 </li>
@@ -669,7 +692,7 @@ nexuslims-process-records<span class="w"> </span>-vv
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">NO_CONSENT</span></code></p></td>
 <td><p>A user did not consent to have their data harvested for the session</p></td>
-<td><p>Ensure that you click “Agree” in the NEMO reservation under data consent</p></td>
+<td><p>Provide consent by clicking “Agree” in NEMO questions (post-run, pre-run, or reservation)</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">NO_RESERVATION</span></code></p></td>
 <td><p>There was no matching reservation found for this session</p></td>
@@ -802,7 +825,7 @@ nexuslims-process-records<span class="w"> </span>-vv
 
   <p class="copyright">
     
-      © Copyright 2026, datasophos, LLC.
+      © Copyright 2025 - 2026, datasophos, LLC.
       <br/>
     
   </p>

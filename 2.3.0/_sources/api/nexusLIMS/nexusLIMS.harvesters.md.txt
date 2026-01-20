@@ -1,0 +1,67 @@
+# {py:mod}`nexusLIMS.harvesters`
+
+```{py:module} nexusLIMS.harvesters
+```
+
+```{autodoc2-docstring} nexusLIMS.harvesters
+:parser: autodoc2_docstrings_parser
+:allowtitles:
+```
+
+## Subpackages
+
+```{toctree}
+:titlesonly:
+:maxdepth: 3
+
+nexusLIMS.harvesters.nemo
+```
+
+## Submodules
+
+```{toctree}
+:titlesonly:
+:maxdepth: 1
+
+nexusLIMS.harvesters.reservation_event
+```
+
+## Package Contents
+
+### Data
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`CA_BUNDLE_PATH <nexusLIMS.harvesters.CA_BUNDLE_PATH>`
+  - ```{autodoc2-docstring} nexusLIMS.harvesters.CA_BUNDLE_PATH
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`CA_BUNDLE_CONTENT <nexusLIMS.harvesters.CA_BUNDLE_CONTENT>`
+  - ```{autodoc2-docstring} nexusLIMS.harvesters.CA_BUNDLE_CONTENT
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
+### API
+
+````{py:data} CA_BUNDLE_PATH
+:canonical: nexusLIMS.harvesters.CA_BUNDLE_PATH
+
+```{autodoc2-docstring} nexusLIMS.harvesters.CA_BUNDLE_PATH
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:data} CA_BUNDLE_CONTENT
+:canonical: nexusLIMS.harvesters.CA_BUNDLE_CONTENT
+
+```{autodoc2-docstring} nexusLIMS.harvesters.CA_BUNDLE_CONTENT
+:parser: autodoc2_docstrings_parser
+```
+
+````
