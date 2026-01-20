@@ -17,6 +17,8 @@ gitlab_backup.log
 .coverage
 .coverage.*
 tests/coverage
+NEMO_Feature_Manual.*
+
 # Test data files (extracted from archives)
 client/
 tests/unit/files/*.dm[3-4]

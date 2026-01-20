@@ -36,6 +36,8 @@ from NEMO.models import (
     Reservation,
     ReservationQuestions,
     Tool,
+    ToolUsageQuestions,
+    ToolUsageQuestionType,
     UsageEvent,
 )
 
@@ -264,6 +266,7 @@ def create_tools(tools_data, users):
             name=name,
             visible=tool_data.get("visible", True),
             operational=tool_data.get("operational", True),
+            _category="Microscopy",
         )
 
         tool.save()
@@ -441,6 +444,42 @@ def configure_reservation_questions(tools, reservation_questions_json):
 
     rq.save()
     print("  - Reservation questions configured successfully")
+    print(f"DEBUG: Questions associated with tools: {[t.name for t in tools.values()]}")
+
+
+def configure_tool_usage_questions(tools, tool_usage_questions_json):
+    """Configure tool usage questions for all tools."""
+    if not tool_usage_questions_json:
+        print("DEBUG: No tool usage questions provided, skipping configuration")
+        return
+
+    print("Configuring tool usage questions...")
+    print(f"DEBUG: Configuring questions for {len(tools)} tools")
+
+    # Check if ToolUsageQuestions already exists
+    tuq_name = "NexusLIMS Sample Tool Usage Questions"
+    tuq = ToolUsageQuestions.objects.filter(name=tuq_name).first()
+
+    if tuq:
+        print(f"  - Updating existing ToolUsageQuestions: {tuq_name}")
+        tuq.questions = tool_usage_questions_json
+        tuq.save()
+    else:
+        print(f"  - Creating new ToolUsageQuestions: {tuq_name}")
+        tuq = ToolUsageQuestions.objects.create(
+            name=tuq_name,
+            questions=tool_usage_questions_json,
+            enabled=True,
+            questions_type=ToolUsageQuestionType.PRE,  # Pre-usage questions
+        )
+
+    # Associate with all tools
+    for tool in tools.values():
+        tuq.only_for_tools.add(tool)
+        print(f"  - Associated questions with tool: {tool.name}")
+
+    tuq.save()
+    print("  - Tool usage questions configured successfully")
     print(f"DEBUG: Questions associated with tools: {[t.name for t in tools.values()]}")
 
 
@@ -700,6 +739,10 @@ def main():
     if reservation_questions:
         configure_reservation_questions(tools, reservation_questions)
 
+    # Configure tool usage questions (using same questions as reservation questions)
+    if reservation_questions:
+        configure_tool_usage_questions(tools, reservation_questions)
+
     # Create API tokens for authentication
     create_api_tokens(list(users.values()))
 
@@ -717,6 +760,7 @@ def main():
     print(f"  - Projects created: {len(projects)}")
     if reservation_questions:
         print("  - Reservation questions configured")
+        print("  - Tool usage questions configured")
 
     # Print ID mapping summary
     print("\nDEBUG: ID Mapping Summary:")

@@ -1,7 +1,5 @@
-# NexusLIMS - Automated Laboratory Information Management for Electron Microscopy
-
-<p align="center">
-  <img src="docs/_static/logo_horizontal_text.png" alt="NexusLIMS Logo" width="400">
+<p align="left">
+  <img src="docs/_static/logo_horizontal_text.png" alt="NexusLIMS Logo" width="600">
 </p>
 
 [![Documentation](https://img.shields.io/badge/📖%20docs-stable-blue)](https://datasophos.github.io/NexusLIMS/stable/)
@@ -11,6 +9,8 @@
 [![Tests](https://github.com/datasophos/NexusLIMS/actions/workflows/test.yml/badge.svg)](https://github.com/datasophos/NexusLIMS/actions/workflows/test.yml)
 [![Integration Tests](https://github.com/datasophos/NexusLIMS/actions/workflows/integration-tests.yml/badge.svg)](https://github.com/datasophos/NexusLIMS/actions/workflows/integration-tests.yml)
 [![codecov](https://codecov.io/gh/datasophos/NexusLIMS/branch/main/graph/badge.svg)](https://codecov.io/gh/datasophos/NexusLIMS)
+
+# NexusLIMS - Automated Laboratory Information Management for Electron Microscopy
 
 > **⚠️ Notice**: This is a fork of the original NexusLIMS project, created after the lead developer (@jat255) left NIST and founded [Datasophos](https://datasophos.co). This fork is maintained by Datasophos and is **not affiliated with NIST** in any way. For the official NIST version, please visit the [original repository](https://github.com/usnistgov/NexusLIMS).
 

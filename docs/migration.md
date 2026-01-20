@@ -1,7 +1,7 @@
 (migration)=
-# Migration Guide: v1.4.3 to v2.2.0
+# Migration Guide
 
-This guide is for system administrators, and will help you migrate your NexusLIMS installation from v1.4.3 to v2.2.0.
+This guide is for system administrators, and will help you migrate your NexusLIMS installation from v1.4.3 to v2.3.0.
 
 ## What Changed
 

@@ -195,7 +195,7 @@ NexusLIMS tracks your sessions through several states:
 | `COMPLETED` | Record successfully created | View record in CDCS |
 | `NO_FILES_FOUND` | No data files detected | Check if files were saved to correct location |
 | `ERROR` | Record generation failed | Contact facility administrator |
-| `NO_CONSENT` | A user did not consent to have their data harvested for the session | Ensure that you click "Agree" in the NEMO reservation under data consent |
+| `NO_CONSENT` | A user did not consent to have their data harvested for the session | Provide consent by clicking "Agree" in NEMO questions (post-run, pre-run, or reservation) |
 | `NO_RESERVATION` | There was no matching reservation found for this session | Make sure you made a reservation for your usage event |
 
 ## Getting Help

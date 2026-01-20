@@ -10,16 +10,16 @@ frontend_guide
 reference
 ```
 
-# **NexusLIMS** - An Automated Laboratory Information Management System for Electron Microscopy
+# NexusLIMS
+
+<p align="center">
+  <img src="_static/logo_horizontal_text.png" alt="NexusLIMS" width="100%">
+  <br>
+  <em>An automated Laboratory Information Management System for electron microscopy</em>
+</p>
 
 NexusLIMS automatically generates experimental records by extracting metadata from microscopy data
 files and harvesting information from laboratory calendar systems.
-
-```{note}
-This is a fork of the original NexusLIMS project maintained by Datasophos.
-This fork is **not affiliated with NIST**. For the official NIST version,
-please visit the [original repository](https://github.com/usnistgov/NexusLIMS).
-```
 
 ## Key Features
 
@@ -32,7 +32,7 @@ with the
 system for harvesting of experimental sessions and
 instrument information.
 - **Comprehensive support for common Electron Microscopy file formats** - NexusLIMS extracts detailed metadata from DigitalMicrograph DM3/DM4 files, FEI/Thermo TIF images, Tescan TIF images, Zeiss TIF images, FEI TIA (.ser/.emi), EDAX (.spc/.msa) EDS spectra, and more
-- **Temporal File Clustering** - Intelligent grouping of files into Acquisition Activities based on temporal analysis
+- **Temporal File Clustering** - Intelligent grouping of files into Acquisition Activities based on temporal analysis (with customizable sensitivity)
 - **Extensible Architecture** - Plugin-based extractor system and instrument profiles for easy customization
 - **Structured XML Records** - Standards-compliant records with comprehensive session and technical metadata
 - **Metadata Standardization** - Emerging standardization using [EM Glossary](https://emglossary.helmholtz-metadaten.de/) terms and Pydantic validation (work in progress)
@@ -133,6 +133,13 @@ Contact Datasophos
 - **Repository**: [https://github.com/datasophos/NexusLIMS](https://github.com/datasophos/NexusLIMS)
 - **Issues**: [https://github.com/datasophos/NexusLIMS/issues](https://github.com/datasophos/NexusLIMS/issues)
 - **Datasophos**: [https://datasophos.co](https://datasophos.co)
+
+
+```{note}
+This is a fork of the original NexusLIMS project maintained by Datasophos.
+This fork is **not affiliated with NIST**. For the official NIST version,
+please visit the [original repository](https://github.com/usnistgov/NexusLIMS).
+```
 
 ---
 

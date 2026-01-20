@@ -1,5 +1,6 @@
 """Various utility functions used by the NEMO harvester."""
 
+import json
 import logging
 from datetime import datetime
 from typing import Dict, List, Tuple, Union
@@ -280,6 +281,55 @@ def _get_res_question_value(value: str, res_dict: Dict) -> Union[str, Dict] | No
         return None
 
     return None
+
+
+def has_valid_question_data(event_dict: Dict, field: str = "run_data") -> bool:
+    """
+    Check if usage event has valid question data in specified field.
+
+    Works for both run_data and pre_run_data fields, which use identical structure.
+
+    A usage event has valid question data if:
+    1. It has the specified field
+    2. Field value is not None or empty string
+    3. Field value can be parsed as JSON
+    4. Parsed data is not empty
+    5. Parsed data has data_consent field (required)
+
+    Parameters
+    ----------
+    event_dict
+        The usage event dictionary from NEMO API
+    field
+        Field name to check ("run_data" or "pre_run_data")
+
+    Returns
+    -------
+    bool
+        True if usage event has valid question data in the specified field,
+        False otherwise
+    """
+    # Check field exists and is a non-empty string
+    if (
+        field not in event_dict
+        or event_dict[field] is None
+        or not isinstance(event_dict[field], str)
+        or len(event_dict[field]) == 0
+    ):
+        return False
+
+    # Try to parse JSON
+    try:
+        parsed_data = json.loads(event_dict[field])
+    except (json.JSONDecodeError, TypeError):
+        return False
+
+    # Check parsed data is a non-empty dict with data_consent field
+    return (
+        isinstance(parsed_data, dict)
+        and len(parsed_data) > 0
+        and "data_consent" in parsed_data
+    )
 
 
 def id_from_url(url: str) -> int | None:

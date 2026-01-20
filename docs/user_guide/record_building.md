@@ -97,10 +97,10 @@ Before building each record:
 [(go to top)](overview)
 
 (harvesting-calendar)=
-### 2. Querying the Reservation Calendars
+### 2. Querying the Reservation/Tool Usage Calendars
 
-Instrument reservation systems (like NEMO) provide experiment metadata (user, sample,
-motivation, etc.) for the record's `<summary>` element.
+Instrument reservation and usage tracking systems (like NEMO) provide experiment metadata
+(user, sample, motivation, etc.) for the record's `<summary>` element.
 
 The record builder queries the harvester specified in the instrument's database entry
 (typically {py:mod}`~nexusLIMS.harvesters.nemo`). Each harvester implements
@@ -108,8 +108,83 @@ The record builder queries the harvester specified in the instrument's database 
 {py:class}`~nexusLIMS.harvesters.reservation_event.ReservationEvent` object representing
 the reservation with maximum time overlap (or a generic event if none found).
 
+```{versionadded} 2.3.0
+While the class is named `ReservationEvent` for historical reasons, it can contain
+metadata harvested from either *Reservations* or *Usage Events* (actual instrument
+usage sessions). This capability prioritizes Usage Event data since it
+reflects what was actually performed, falling back to Reservation data when usage
+information is unavailable.
+```
+
 This adapter layer provides uniform reservation data regardless of the source system.
 The event is then serialized to schema-compliant XML.
+
+#### Three-Tier Fallback Strategy for NEMO
+
+For NEMO-based systems, the harvester uses a **three-tier fallback strategy** to obtain
+experiment metadata, prioritizing the most recent and accurate information:
+
+**Priority 1: Post-Run Questions (`run_data`)**
+
+The highest priority source is the `run_data` field from NEMO usage events. This field
+is populated when users answer questions **at the end** of their instrument session
+(when they "enable" the tool to end their usage). Since these questions are answered
+after the experiment completes, they represent the most accurate description of what
+was actually performed.
+
+**Priority 2: Pre-Run Questions (`pre_run_data`)**
+
+If `run_data` is empty or invalid, the harvester falls back to the `pre_run_data` field.
+This field is populated when users answer questions **at the start** of their instrument
+session (when they initially "enable" the tool). While potentially less accurate
+than post-run data (since the experiment plan may change during execution),
+this provides valuable metadata when users don't complete post-run questions.
+
+**Priority 3: Reservation Matching**
+
+If neither usage event question data source is available, the harvester falls back to
+traditional reservation matching. The system finds the reservation with maximum time
+overlap with the usage event and extracts metadata from the reservation's question data.
+This is the least reliable method since reservations may be created well in advance and
+might not reflect the actual experiment performed.
+
+```{admonition} Question Data Structure
+:class: tip
+
+All three sources (`run_data`, `pre_run_data`, and reservation `question_data`) use
+identical JSON structure, enabling consistent metadata extraction. Both usage event
+fields are JSON-encoded strings that are parsed and validated during harvesting.
+
+See {py:func}`~nexusLIMS.harvesters.nemo.res_event_from_session` documentation for
+the required question structure and examples.
+```
+
+#### Data Consent Validation
+
+All metadata sources require affirmative user consent via a `data_consent` question.
+The harvester validates consent for each source in priority order:
+
+- **Missing consent field**: Falls back to next priority level or raises
+  {py:exc}`~nexusLIMS.harvesters.nemo.exceptions.NoDataConsentError`
+- **Declined consent** ("Disagree", "No", etc.): Falls back to next priority level or
+  raises {py:exc}`~nexusLIMS.harvesters.nemo.exceptions.NoDataConsentError`
+- **Invalid JSON or missing question data**: Falls back to next priority level
+
+If all three tiers fail (no valid question data with consent), the session is marked
+`NO_CONSENT` or `NO_RESERVATION` in the database and no record is generated.
+
+#### Graceful Degradation
+
+The three-tier system provides graceful degradation:
+
+1. Empty strings, malformed JSON, or missing fields in higher-priority sources
+   automatically trigger fallback to the next tier
+2. Each tier is validated independently for data completeness and consent
+3. Logging tracks which data source was ultimately used for each session
+4. The system prioritizes data quality over data availability
+
+This approach maximizes record generation success while preferring the most accurate
+metadata source available for each session.
 
 [(go to top)](overview)
 

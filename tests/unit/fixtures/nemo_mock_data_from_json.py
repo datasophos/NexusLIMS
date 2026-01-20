@@ -209,3 +209,45 @@ def filter_by_params():
         return filtered
 
     return _filter_by_params
+
+
+@pytest.fixture
+def mock_usage_events_with_question_data(mock_usage_events_data):
+    """
+    Mock NEMO usage events with question data for testing three-tier fallback.
+
+    This fixture filters usage events (IDs 100-106) from the consolidated data
+    and returns them with expanded user/operator/tool fields.
+
+    Test scenarios:
+    - ID 100: run_data populated (highest priority)
+    - ID 101: Only pre_run_data populated (medium priority)
+    - ID 102: Both populated (should prefer run_data)
+    - ID 103: pre_run_data with Disagree consent
+    - ID 104: Missing user_input fields
+    - ID 105: Empty strings (should fall back to reservation)
+    - ID 106: Malformed JSON (should fall back to reservation)
+    """
+    # Filter for test usage events (IDs 100-106)
+    test_event_ids = {100, 101, 102, 103, 104, 105, 106}
+    test_events = [e for e in mock_usage_events_data if e["id"] in test_event_ids]
+
+    # Expand user/operator/tool fields (simulating _parse_event())
+    # Load user/tool/project data for expansion
+    users_data = convert_to_python_types(consolidated_data["users"])
+    tools_data = convert_to_python_types(consolidated_data["tools"])
+
+    # Create lookup dicts
+    users_by_id = {u["id"]: u for u in users_data}
+    tools_by_id = {t["id"]: t for t in tools_data}
+
+    # Expand each event
+    for event in test_events:
+        if event["user"] and event["user"] in users_by_id:
+            event["user"] = users_by_id[event["user"]]
+        if event["operator"] and event["operator"] in users_by_id:
+            event["operator"] = users_by_id[event["operator"]]
+        if event["tool"] and event["tool"] in tools_by_id:
+            event["tool"] = tools_by_id[event["tool"]]
+
+    return test_events

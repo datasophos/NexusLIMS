@@ -1,5 +1,6 @@
 """Tests for the NEMO harvester utility functions."""
 
+import json
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -10,6 +11,7 @@ from nexusLIMS.harvesters.nemo.utils import (
     get_connector_by_base_url,
     get_connector_for_session,
     get_usage_events_as_sessions,
+    has_valid_question_data,
 )
 
 
@@ -140,3 +142,91 @@ def test_get_res_question_value_none_question_data():
 
     result = _get_res_question_value("sample_name", res_dict)
     assert result is None
+
+
+class TestHasValidQuestionData:
+    """Tests for the has_valid_question_data() helper function."""
+
+    def test_valid_run_data(self):
+        """Test that valid run_data with data_consent returns True."""
+        question_data = {
+            "experiment_title": {"user_input": "Test Experiment"},
+            "data_consent": {"user_input": "Agree"},
+        }
+        event_dict = {"run_data": json.dumps(question_data)}
+
+        assert has_valid_question_data(event_dict, field="run_data") is True
+
+    def test_valid_pre_run_data(self):
+        """Test that valid pre_run_data with data_consent returns True."""
+        question_data = {
+            "experiment_title": {"user_input": "Test Experiment"},
+            "data_consent": {"user_input": "Agree"},
+        }
+        event_dict = {"pre_run_data": json.dumps(question_data)}
+
+        assert has_valid_question_data(event_dict, field="pre_run_data") is True
+
+    def test_missing_field(self):
+        """Test that missing field in event_dict returns False."""
+        event_dict = {"some_other_field": "value"}
+
+        assert has_valid_question_data(event_dict, field="run_data") is False
+
+    def test_field_is_none(self):
+        """Test that None field value returns False."""
+        event_dict = {"run_data": None}
+
+        assert has_valid_question_data(event_dict, field="run_data") is False
+
+    def test_field_not_string(self):
+        """Test that non-string field value returns False."""
+        question_data = {"data_consent": {"user_input": "Agree"}}
+        event_dict = {"run_data": question_data}  # dict instead of JSON string
+
+        assert has_valid_question_data(event_dict, field="run_data") is False
+
+    def test_field_empty_string(self):
+        """Test that empty string field value returns False."""
+        event_dict = {"run_data": ""}
+
+        assert has_valid_question_data(event_dict, field="run_data") is False
+
+    def test_field_invalid_json(self):
+        """Test that invalid JSON in field returns False."""
+        event_dict = {"run_data": "not valid JSON {{{"}
+
+        assert has_valid_question_data(event_dict, field="run_data") is False
+
+    def test_parsed_data_empty_dict(self):
+        """Test that empty dict after parsing returns False."""
+        event_dict = {"run_data": json.dumps({})}
+
+        assert has_valid_question_data(event_dict, field="run_data") is False
+
+    def test_parsed_data_not_dict(self):
+        """Test that non-dict parsed data (e.g., list) returns False."""
+        event_dict = {"run_data": json.dumps(["item1", "item2"])}
+
+        assert has_valid_question_data(event_dict, field="run_data") is False
+
+    def test_parsed_data_missing_data_consent(self):
+        """Test that parsed data without data_consent field returns False."""
+        question_data = {
+            "experiment_title": {"user_input": "Test Experiment"},
+            "sample_name": {"user_input": "Sample 1"},
+        }
+        event_dict = {"run_data": json.dumps(question_data)}
+
+        assert has_valid_question_data(event_dict, field="run_data") is False
+
+    def test_default_field_parameter(self):
+        """Test that default field parameter is 'run_data'."""
+        question_data = {
+            "experiment_title": {"user_input": "Test Experiment"},
+            "data_consent": {"user_input": "Agree"},
+        }
+        event_dict = {"run_data": json.dumps(question_data)}
+
+        # Call without specifying field - should default to "run_data"
+        assert has_valid_question_data(event_dict) is True
