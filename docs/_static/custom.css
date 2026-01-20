@@ -1,5 +1,10 @@
 /* Custom styling for NexusLIMS documentation */
 
+/* Also hide the h1 containing that ID */
+section#nexuslims > h1 {
+    display: none;
+}
+
 /* Logo sizing - constrain logo to reasonable navbar height */
 .navbar-brand img {
     /* max-height: 32px; */

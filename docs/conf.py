@@ -164,6 +164,7 @@ copybutton_remove_prompts = True
 myst_enable_extensions = [
     "fieldlist",  # Required for Napoleon-parsed docstrings
     "colon_fence",  # Allow ::: for RST directives (including doctest blocks)
+    "attrs_block",  # Allow setting custom attributes via block quote
 ]
 
 # Napoleon settings - these affect docstring parsing
@@ -318,8 +319,8 @@ html_js_files = [
     "custom.js",
 ]
 
-# html_title = "NexusLIMS documentation"
-html_short_title = "NexusLIMS"
+# html_title is not set - will use page title from first heading
+html_short_title = ""
 html_logo = "_static/nexusLIMS_bare_logo.png"
 html_favicon = "_static/nexusLIMS_bare_logo.ico"
 html_last_updated_fmt = "%b, %d, %Y"

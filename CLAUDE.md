@@ -268,6 +268,12 @@ Additional technical documentation for specific tasks:
 
 - **[Zeroing Compressed TIFF Files](.claude/notes/zeroing-compressed-tiff-files.md)**: Binary patching method for zeroing out LZW-compressed TIFF image data while preserving all metadata and file structure. Use when you need to create test fixtures or anonymized data files.
 - **Creating archive files**: When creating an archive file with test files (or for any other purpose), ensure that MacOS hidden files (like `.DS_Store`), MacOS resource forks, or others do not end up in the archive. Always use COPYFILE_DISABLE=1 when creating archives on MacOS.
+- **NEMO Reference Document**: The `docs/reference/NEMO_Reference.md` document was generated from the official NEMO Feature Manual. To update it:
+  1. Download the latest PDF: `https://nemo.nist.gov/public/NEMO_Feature_Manual.pdf`
+  2. Extract text: `pdftotext NEMO_Feature_Manual.pdf docs/reference/NEMO_Feature_Manual.txt`
+  3. Parse relevant sections and format into markdown at `docs/reference/NEMO_Reference.md`
+  4. Focus on: Usage Events, Pre/Post Usage Questions, Reservation Questions, Dynamic Form Fields, API Access
+  5. Include NexusLIMS-specific integration notes about the three-tier metadata fallback strategy
 
 
 ## Python Version Support
