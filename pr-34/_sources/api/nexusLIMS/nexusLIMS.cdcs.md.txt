@@ -1,0 +1,259 @@
+# {py:mod}`nexusLIMS.cdcs`
+
+```{py:module} nexusLIMS.cdcs
+```
+
+```{autodoc2-docstring} nexusLIMS.cdcs
+:parser: autodoc2_docstrings_parser
+:allowtitles:
+```
+
+## Module Contents
+
+### Classes
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`CDCSDataRecord <nexusLIMS.cdcs.CDCSDataRecord>`
+  - ```{autodoc2-docstring} nexusLIMS.cdcs.CDCSDataRecord
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
+### Functions
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`get_cdcs_url <nexusLIMS.cdcs.get_cdcs_url>`
+  - ```{autodoc2-docstring} nexusLIMS.cdcs.get_cdcs_url
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`get_workspace_id <nexusLIMS.cdcs.get_workspace_id>`
+  - ```{autodoc2-docstring} nexusLIMS.cdcs.get_workspace_id
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`get_template_id <nexusLIMS.cdcs.get_template_id>`
+  - ```{autodoc2-docstring} nexusLIMS.cdcs.get_template_id
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`upload_record_content <nexusLIMS.cdcs.upload_record_content>`
+  - ```{autodoc2-docstring} nexusLIMS.cdcs.upload_record_content
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`delete_record <nexusLIMS.cdcs.delete_record>`
+  - ```{autodoc2-docstring} nexusLIMS.cdcs.delete_record
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`search_records <nexusLIMS.cdcs.search_records>`
+  - ```{autodoc2-docstring} nexusLIMS.cdcs.search_records
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`download_record <nexusLIMS.cdcs.download_record>`
+  - ```{autodoc2-docstring} nexusLIMS.cdcs.download_record
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`upload_record_files <nexusLIMS.cdcs.upload_record_files>`
+  - ```{autodoc2-docstring} nexusLIMS.cdcs.upload_record_files
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
+### API
+
+`````{py:class} CDCSDataRecord()
+:canonical: nexusLIMS.cdcs.CDCSDataRecord
+
+Bases: {py:obj}`typing.TypedDict`
+
+```{autodoc2-docstring} nexusLIMS.cdcs.CDCSDataRecord
+:parser: autodoc2_docstrings_parser
+```
+
+````{py:attribute} id
+:canonical: nexusLIMS.cdcs.CDCSDataRecord.id
+
+**Type:** int
+
+```{autodoc2-docstring} nexusLIMS.cdcs.CDCSDataRecord.id
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} template
+:canonical: nexusLIMS.cdcs.CDCSDataRecord.template
+
+**Type:** int
+
+```{autodoc2-docstring} nexusLIMS.cdcs.CDCSDataRecord.template
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} workspace
+:canonical: nexusLIMS.cdcs.CDCSDataRecord.workspace
+
+**Type:** int | None
+
+```{autodoc2-docstring} nexusLIMS.cdcs.CDCSDataRecord.workspace
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} user_id
+:canonical: nexusLIMS.cdcs.CDCSDataRecord.user_id
+
+**Type:** str
+
+```{autodoc2-docstring} nexusLIMS.cdcs.CDCSDataRecord.user_id
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} title
+:canonical: nexusLIMS.cdcs.CDCSDataRecord.title
+
+**Type:** str
+
+```{autodoc2-docstring} nexusLIMS.cdcs.CDCSDataRecord.title
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} checksum
+:canonical: nexusLIMS.cdcs.CDCSDataRecord.checksum
+
+**Type:** str | None
+
+```{autodoc2-docstring} nexusLIMS.cdcs.CDCSDataRecord.checksum
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} creation_date
+:canonical: nexusLIMS.cdcs.CDCSDataRecord.creation_date
+
+**Type:** str | None
+
+```{autodoc2-docstring} nexusLIMS.cdcs.CDCSDataRecord.creation_date
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} last_modification_date
+:canonical: nexusLIMS.cdcs.CDCSDataRecord.last_modification_date
+
+**Type:** str | None
+
+```{autodoc2-docstring} nexusLIMS.cdcs.CDCSDataRecord.last_modification_date
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} last_change_date
+:canonical: nexusLIMS.cdcs.CDCSDataRecord.last_change_date
+
+**Type:** str | None
+
+```{autodoc2-docstring} nexusLIMS.cdcs.CDCSDataRecord.last_change_date
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} xml_content
+:canonical: nexusLIMS.cdcs.CDCSDataRecord.xml_content
+
+**Type:** str
+
+```{autodoc2-docstring} nexusLIMS.cdcs.CDCSDataRecord.xml_content
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+`````
+
+````{py:function} get_cdcs_url() -> str
+:canonical: nexusLIMS.cdcs.get_cdcs_url
+
+```{autodoc2-docstring} nexusLIMS.cdcs.get_cdcs_url
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} get_workspace_id() -> int
+:canonical: nexusLIMS.cdcs.get_workspace_id
+
+```{autodoc2-docstring} nexusLIMS.cdcs.get_workspace_id
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} get_template_id() -> str
+:canonical: nexusLIMS.cdcs.get_template_id
+
+```{autodoc2-docstring} nexusLIMS.cdcs.get_template_id
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} upload_record_content(xml_content, title) -> tuple[requests.models.Response, int | None]
+:canonical: nexusLIMS.cdcs.upload_record_content
+
+```{autodoc2-docstring} nexusLIMS.cdcs.upload_record_content
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} delete_record(record_id)
+:canonical: nexusLIMS.cdcs.delete_record
+
+```{autodoc2-docstring} nexusLIMS.cdcs.delete_record
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} search_records(title: str | None = None, template_id: str | None = None, keyword: str | None = None) -> list[nexusLIMS.cdcs.CDCSDataRecord]
+:canonical: nexusLIMS.cdcs.search_records
+
+```{autodoc2-docstring} nexusLIMS.cdcs.search_records
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} download_record(record_id) -> str
+:canonical: nexusLIMS.cdcs.download_record
+
+```{autodoc2-docstring} nexusLIMS.cdcs.download_record
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} upload_record_files(files_to_upload: typing.List[pathlib.Path] | None, *, progress: bool = False) -> tuple[typing.List[pathlib.Path], typing.List[int]]
+:canonical: nexusLIMS.cdcs.upload_record_files
+
+```{autodoc2-docstring} nexusLIMS.cdcs.upload_record_files
+:parser: autodoc2_docstrings_parser
+```
+````
