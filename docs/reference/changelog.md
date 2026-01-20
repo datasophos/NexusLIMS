@@ -14,6 +14,23 @@ up to version 1.4.3. The datasophos fork begins at version 2.0.
 
 <!-- towncrier release notes start -->
 
+## 2.3.0 (2026-01-19)
+
+### New features
+
+- Add `NX_CLUSTERING_SENSITIVITY` configuration option to control the sensitivity of file clustering into Acquisition Activities. Higher values make clustering more sensitive to time gaps (resulting in more activities), lower values make it less sensitive (fewer activities). Setting to `0` disables clustering entirely and groups all files into a single activity. (*Sponsored by UPenn/[Singh Center for Nanotechnology](https://www.nano.upenn.edu/resources/nanoscale-characterization/), thank you!*) ([#26](https://github.com/datasophos/NexusLIMS/issues/26))
+- Add support for harvesting experiment metadata from NEMO usage event questions. The NEMO harvester now prioritizes data from usage events (what users actually did during their session) over reservation data (what they planned to do), using a three-tier fallback strategy that checks post-run questions, pre-run questions, and finally reservation questions to maximize record accuracy. (*Sponsored by UPenn/[Singh Center for Nanotechnology](https://www.nano.upenn.edu/resources/nanoscale-characterization/), thank you!*) ([#33](https://github.com/datasophos/NexusLIMS/issues/33))
+
+### Documentation improvements
+
+- Add comprehensive documentation about features, development, and deployment of the CDCS-based frontend. These docs are kept in this repository to have one common documentation site. ([#28](https://github.com/datasophos/NexusLIMS/issues/28))
+- Refreshed the NexusLIMS logo to be more modern!
+
+### Miscellaneous/Development changes
+
+- Updated integration test infrastructure to use CDCS 3.18.0. Replaced username/password authentication with API token-based authentication throughout the codebase and test fixtures. Added `NX_TEST_MODE` environment variable to conditionally disable Pydantic validation during testing. (*Sponsored by UPenn/[Singh Center for Nanotechnology](https://www.nano.upenn.edu/resources/nanoscale-characterization/), thank you!*) ([#30](https://github.com/datasophos/NexusLIMS/issues/30))
+
+
 ## 2.2.0 (2026-01-09)
 
 ### New features
