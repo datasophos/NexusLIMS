@@ -1,7 +1,7 @@
 """Tests functionality related to the interacting with the CDCS frontend."""
 
 # pylint: disable=missing-function-docstring
-# ruff: noqa: D102, ARG001, ARG002, ARG005
+# ruff: noqa: D102, ARG001, ARG005
 
 import os
 from pathlib import Path

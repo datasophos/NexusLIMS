@@ -1,4 +1,4 @@
-# ruff: noqa: DTZ001, ARG002, DTZ005, SLF001
+# ruff: noqa: SLF001
 """Unit tests for the CDCS export destination plugin."""
 
 from datetime import datetime
@@ -386,6 +386,7 @@ class TestCDCSDestinationIntegration:
             side_effect=[
                 mock_template_response,  # get_template_id
                 mock_create_response,  # create record
+                mock_workspace_response,  # get_workspace_id
                 mock_assign_response,  # assign to workspace
             ],
         ):

@@ -1,4 +1,3 @@
-# ruff: noqa: ARG002
 """Tests for the process_records CLI module."""
 
 import logging

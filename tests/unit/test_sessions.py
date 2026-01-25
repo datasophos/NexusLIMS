@@ -24,7 +24,7 @@ class TestSession:
     """Test the Session class representing a unit of time on an instrument."""
 
     @pytest.fixture
-    def session(self, db_context):  # noqa: ARG002
+    def session(self, db_context):
         # Depend on db_context to ensure test database setup
         return session_handler.Session(
             session_identifier="test_session",
@@ -97,7 +97,7 @@ class TestSessionLog:
     """
 
     @pytest.fixture
-    def sl(self, db_context):  # noqa: ARG002
+    def sl(self, db_context):
         """Create a test SessionLog instance."""
         # Depend on db_context to ensure test database setup
         return SessionLog(

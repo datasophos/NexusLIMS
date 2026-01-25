@@ -1,5 +1,5 @@
 # pylint: disable=missing-function-docstring,too-many-public-methods
-# ruff: noqa: D102, ARG001, ARG002
+# ruff: noqa: D102, ARG001
 
 """Tests the various utilities shared among NexusLIMS modules."""
 
@@ -509,8 +509,8 @@ class TestUtils:
 
         monkeypatch.setattr("subprocess.run", mock_run)
 
-        dt_from = datetime.now() - timedelta(days=1)  # noqa: DTZ005
-        dt_to = datetime.now() + timedelta(days=1)  # noqa: DTZ005
+        dt_from = datetime.now() - timedelta(days=1)
+        dt_to = datetime.now() + timedelta(days=1)
 
         # Should use the instrument path construction
         files = gnu_find_files_by_mtime(

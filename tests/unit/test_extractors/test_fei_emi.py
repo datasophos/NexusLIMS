@@ -1,5 +1,5 @@
 # pylint: disable=C0116,too-many-public-methods
-# ruff: noqa: D102, DTZ001
+# ruff: noqa: D102
 
 """Tests for nexusLIMS.extractors.fei_emi."""
 

@@ -18,7 +18,7 @@ class TestReservationEvent:
     """Test the ReservationEvent class."""
 
     @pytest.fixture
-    def res_event(self, db_context):  # noqa: ARG002
+    def res_event(self, db_context):
         from nexusLIMS.instruments import instrument_db
 
         return ReservationEvent(
@@ -44,7 +44,7 @@ class TestReservationEvent:
         )
 
     @pytest.fixture
-    def res_event_no_calendar_match(self, db_context):  # noqa: ARG002
+    def res_event_no_calendar_match(self, db_context):
         from nexusLIMS.instruments import instrument_db
 
         return ReservationEvent(instrument=instrument_db["FEI-Titan-TEM"])

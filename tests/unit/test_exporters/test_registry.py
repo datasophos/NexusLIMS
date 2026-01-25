@@ -1,8 +1,8 @@
-# ruff: noqa: SLF001, DTZ005
+# ruff: noqa: SLF001
 """Unit tests for the exporter registry and plugin discovery."""
 
 from datetime import datetime
-from unittest.mock import Mock, patch
+from unittest.mock import MagicMock, Mock, patch
 
 from nexusLIMS.exporters.base import ExportContext, ExportResult
 from nexusLIMS.exporters.registry import ExporterRegistry, get_registry
@@ -32,7 +32,7 @@ class TestExporterRegistry:
             def validate_config(self):
                 return True, None
 
-            def export(self, context):  # noqa: ARG002
+            def export(self, context):
                 return ExportResult(success=True, destination_name=self.name)
 
         registry = ExporterRegistry()
@@ -320,8 +320,14 @@ class TestRegistryErrorHandling:
 
         # Patch destinations path to non-existent directory
         with patch("nexusLIMS.exporters.registry.Path") as mock_path:
-            mock_path.return_value.parent = tmp_path / "nonexistent"
-            mock_path.return_value.parent.__truediv__.return_value.exists.return_value = False  # noqa: E501
+            # Create a mock path that doesn't exist
+            mock_destinations_path = MagicMock()
+            mock_destinations_path.exists.return_value = False
+
+            # Set up the chain: Path(__file__).parent / "destinations"
+            mock_parent = MagicMock()
+            mock_parent.__truediv__.return_value = mock_destinations_path
+            mock_path.return_value.parent = mock_parent
 
             # Should not raise, just log warning
             registry.discover_plugins()
@@ -350,7 +356,7 @@ class TestRegistryErrorHandling:
             def validate_config(self):
                 return True, None
 
-            def export(self, context):  # noqa: ARG002
+            def export(self, context):
                 return ExportResult(success=True, destination_name="valid")
 
         # Invalid destination (missing export method)

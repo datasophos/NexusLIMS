@@ -1,4 +1,3 @@
-# ruff: noqa: DTZ005
 """Unit tests for export strategies."""
 
 from datetime import datetime
@@ -84,16 +83,19 @@ class TestStrategyAll:
         """Test all strategy continues even when one destination fails."""
         dest1 = Mock()
         dest1.name = "dest1"
+        dest1.priority = 100
         dest1.export.return_value = ExportResult(success=True, destination_name="dest1")
 
         dest2 = Mock()
         dest2.name = "dest2"
+        dest2.priority = 100
         dest2.export.return_value = ExportResult(
             success=False, destination_name="dest2", error_message="Failed"
         )
 
         dest3 = Mock()
         dest3.name = "dest3"
+        dest3.priority = 100
         dest3.export.return_value = ExportResult(success=True, destination_name="dest3")
 
         results = _strategy_all([dest1, dest2, dest3], mock_context)
@@ -113,12 +115,14 @@ class TestStrategyAll:
         """Test that previous_results is populated for each destination."""
         dest1 = Mock()
         dest1.name = "dest1"
+        dest1.priority = 100
         dest1.export.return_value = ExportResult(
             success=True, destination_name="dest1", record_id="id1"
         )
 
         dest2 = Mock()
         dest2.name = "dest2"
+        dest2.priority = 90
         dest2.export.return_value = ExportResult(
             success=True, destination_name="dest2", record_id="id2"
         )
@@ -139,14 +143,17 @@ class TestStrategyFirstSuccess:
         """Test that first_success stops after the first successful export."""
         dest1 = Mock()
         dest1.name = "dest1"
+        dest1.priority = 100
         dest1.export.return_value = ExportResult(success=True, destination_name="dest1")
 
         dest2 = Mock()
         dest2.name = "dest2"
+        dest2.priority = 90
         dest2.export.return_value = ExportResult(success=True, destination_name="dest2")
 
         dest3 = Mock()
         dest3.name = "dest3"
+        dest3.priority = 80
         dest3.export.return_value = ExportResult(success=True, destination_name="dest3")
 
         results = _strategy_first_success([dest1, dest2, dest3], mock_context)
@@ -165,22 +172,26 @@ class TestStrategyFirstSuccess:
         """Test that first_success continues trying until one succeeds."""
         dest1 = Mock()
         dest1.name = "dest1"
+        dest1.priority = 100
         dest1.export.return_value = ExportResult(
             success=False, destination_name="dest1", error_message="Failed"
         )
 
         dest2 = Mock()
         dest2.name = "dest2"
+        dest2.priority = 90
         dest2.export.return_value = ExportResult(
             success=False, destination_name="dest2", error_message="Failed"
         )
 
         dest3 = Mock()
         dest3.name = "dest3"
+        dest3.priority = 80
         dest3.export.return_value = ExportResult(success=True, destination_name="dest3")
 
         dest4 = Mock()
         dest4.name = "dest4"
+        dest4.priority = 70
         dest4.export.return_value = ExportResult(success=True, destination_name="dest4")
 
         results = _strategy_first_success([dest1, dest2, dest3, dest4], mock_context)
@@ -201,12 +212,14 @@ class TestStrategyFirstSuccess:
         """Test first_success when all destinations fail."""
         dest1 = Mock()
         dest1.name = "dest1"
+        dest1.priority = 100
         dest1.export.return_value = ExportResult(
             success=False, destination_name="dest1", error_message="Failed"
         )
 
         dest2 = Mock()
         dest2.name = "dest2"
+        dest2.priority = 90
         dest2.export.return_value = ExportResult(
             success=False, destination_name="dest2", error_message="Failed"
         )
@@ -227,10 +240,12 @@ class TestStrategyBestEffort:
         """Test best_effort when all destinations succeed."""
         dest1 = Mock()
         dest1.name = "dest1"
+        dest1.priority = 100
         dest1.export.return_value = ExportResult(success=True, destination_name="dest1")
 
         dest2 = Mock()
         dest2.name = "dest2"
+        dest2.priority = 90
         dest2.export.return_value = ExportResult(success=True, destination_name="dest2")
 
         results = _strategy_best_effort([dest1, dest2], mock_context)
@@ -242,16 +257,19 @@ class TestStrategyBestEffort:
         """Test best_effort when some destinations succeed and some fail."""
         dest1 = Mock()
         dest1.name = "dest1"
+        dest1.priority = 100
         dest1.export.return_value = ExportResult(success=True, destination_name="dest1")
 
         dest2 = Mock()
         dest2.name = "dest2"
+        dest2.priority = 90
         dest2.export.return_value = ExportResult(
             success=False, destination_name="dest2", error_message="Failed"
         )
 
         dest3 = Mock()
         dest3.name = "dest3"
+        dest3.priority = 80
         dest3.export.return_value = ExportResult(success=True, destination_name="dest3")
 
         results = _strategy_best_effort([dest1, dest2, dest3], mock_context)
@@ -271,12 +289,14 @@ class TestStrategyBestEffort:
         """Test best_effort when all destinations fail."""
         dest1 = Mock()
         dest1.name = "dest1"
+        dest1.priority = 100
         dest1.export.return_value = ExportResult(
             success=False, destination_name="dest1", error_message="Failed"
         )
 
         dest2 = Mock()
         dest2.name = "dest2"
+        dest2.priority = 90
         dest2.export.return_value = ExportResult(
             success=False, destination_name="dest2", error_message="Failed"
         )
@@ -397,6 +417,7 @@ class TestInterDestinationDependencies:
         # CDCS fails
         cdcs = Mock()
         cdcs.name = "cdcs"
+        cdcs.priority = 100
         cdcs.export.return_value = ExportResult(
             success=False,
             destination_name="cdcs",
@@ -406,6 +427,7 @@ class TestInterDestinationDependencies:
         # LabArchives checks dependency and degrades gracefully
         labarchives = Mock()
         labarchives.name = "labarchives"
+        labarchives.priority = 90
 
         def labarchives_export(context):
             # Check if CDCS succeeded
