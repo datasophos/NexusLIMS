@@ -31,6 +31,8 @@ class RecordStatus(str, Enum):
         Session has ended and needs record generation
     COMPLETED
         Record has been successfully built and uploaded
+    BUILT_NOT_EXPORTED
+        Record was built successfully but all export destinations failed
     ERROR
         Record building failed with an error
     NO_FILES_FOUND
@@ -44,6 +46,7 @@ class RecordStatus(str, Enum):
     WAITING_FOR_END = "WAITING_FOR_END"
     TO_BE_BUILT = "TO_BE_BUILT"
     COMPLETED = "COMPLETED"
+    BUILT_NOT_EXPORTED = "BUILT_NOT_EXPORTED"
     ERROR = "ERROR"
     NO_FILES_FOUND = "NO_FILES_FOUND"
     NO_CONSENT = "NO_CONSENT"

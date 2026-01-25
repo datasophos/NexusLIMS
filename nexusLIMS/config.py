@@ -215,6 +215,15 @@ class Settings(BaseSettings):
             "record uploads that are authenticated using the CDCS credentials."
         ),
     )
+    NX_EXPORT_STRATEGY: Literal["all", "first_success", "best_effort"] = Field(
+        "best_effort",
+        description=(
+            "Strategy for exporting records to multiple destinations. "
+            "'all': All destinations must succeed. "
+            "'first_success': Stop after first successful export. "
+            "'best_effort': Try all destinations, succeed if any succeed (recommended)."
+        ),
+    )
     NX_CERT_BUNDLE_FILE: TestAwareFilePath | None = Field(  # type: ignore[valid-type]
         None,
         description=(

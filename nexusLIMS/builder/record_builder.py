@@ -27,12 +27,12 @@ from sqlmodel import Session as DBSession
 from sqlmodel import select
 
 from nexusLIMS import version
-from nexusLIMS.cdcs import upload_record_files
 from nexusLIMS.config import settings
 from nexusLIMS.db.engine import get_engine
 from nexusLIMS.db.enums import RecordStatus
 from nexusLIMS.db.models import SessionLog
 from nexusLIMS.db.session_handler import Session, get_sessions_to_build
+from nexusLIMS.exporters import export_records, was_successfully_exported
 from nexusLIMS.extractors import get_registry
 from nexusLIMS.harvesters import nemo
 from nexusLIMS.harvesters.nemo import utils as nemo_utils
@@ -433,6 +433,8 @@ def build_new_session_records(generate_previews: bool = True) -> List[Path]:  # 
     xml_files : typing.List[pathlib.Path]
         A list of record files that were successfully built and saved to
         centralized storage
+    sessions_built : typing.List[Session]
+        Corresponding Session objects for each built XML file (same length and order)
     """
     # get the list of sessions with 'TO_BE_BUILT' status; does not fetch new
     # usage events from any NEMO instances;
@@ -442,6 +444,7 @@ def build_new_session_records(generate_previews: bool = True) -> List[Path]:  # 
     if not sessions:
         sys.exit("No 'TO_BE_BUILT' sessions were found. Exiting.")
     xml_files = []
+    sessions_built = []
     # loop through the sessions
     for s in sessions:
         try:
@@ -508,12 +511,16 @@ def build_new_session_records(generate_previews: bool = True) -> List[Path]:  # 
                 _logger.exception('Marking %s as "ERROR"', s.session_identifier)
                 s.update_session_status(RecordStatus.ERROR)
         else:
-            xml_files = _record_validation_flow(record_text, s, xml_files)
+            xml_files, sessions_built = _record_validation_flow(
+                record_text, s, xml_files, sessions_built
+            )
 
-    return xml_files
+    return xml_files, sessions_built
 
 
-def _record_validation_flow(record_text, s, xml_files) -> List[Path]:
+def _record_validation_flow(
+    record_text, s, xml_files, sessions_built
+) -> tuple[List[Path], List[Session]]:
     if validate_record(BytesIO(bytes(record_text, "UTF-8"))):
         _logger.info("Validated newly generated record")
         # generate filename for saved record and make sure path exists
@@ -533,14 +540,17 @@ def _record_validation_flow(record_text, s, xml_files) -> List[Path]:
             f.write(record_text)
         _logger.info("Wrote record to %s", filename)
         xml_files.append(Path(filename))
-        # Mark this session as completed in the database
-        _logger.info('Marking %s as "COMPLETED"', s.session_identifier)
-        s.update_session_status(RecordStatus.COMPLETED)
+        sessions_built.append(s)
+        # Note: Session status will be updated after export attempt
+        _logger.info(
+            "Built record for %s, will export to destinations", s.session_identifier
+        )
     else:
         _logger.error('Marking %s as "ERROR"', s.session_identifier)
         _logger.error("Could not validate record, did not write to disk")
         s.update_session_status(RecordStatus.ERROR)
-    return xml_files
+
+    return xml_files, sessions_built
 
 
 def process_new_records(
@@ -592,23 +602,44 @@ def process_new_records(
             dry_run_file_find(s)
     else:
         nemo_utils.add_all_usage_events_to_db(dt_from=dt_from, dt_to=dt_to)
-        xml_files = build_new_session_records()
+        xml_files, sessions_built = build_new_session_records()
         if len(xml_files) == 0:
-            _logger.warning("No XML files built, so no files uploaded")
+            _logger.warning("No XML files built, so no files exported")
         else:
-            files_uploaded, _ = upload_record_files(xml_files)
-            for f in files_uploaded:
+            # Export records to all configured destinations
+            export_results = export_records(xml_files, sessions_built)
+
+            # Update session status based on export results
+            sessions_by_file = dict(zip(xml_files, sessions_built, strict=True))
+            for xml_file, session in sessions_by_file.items():
+                if was_successfully_exported(xml_file, export_results):
+                    session.update_session_status(RecordStatus.COMPLETED)
+                    _logger.info(
+                        'Marking %s as "COMPLETED"', session.session_identifier
+                    )
+                else:
+                    session.update_session_status(RecordStatus.BUILT_NOT_EXPORTED)
+                    _logger.error(
+                        'All exports failed for %s, marking as "BUILT_NOT_EXPORTED"',
+                        session.session_identifier,
+                    )
+
+            # Move successfully exported files to uploaded directory
+            files_exported = [
+                f for f in xml_files if was_successfully_exported(f, export_results)
+            ]
+            for f in files_exported:
                 uploaded_dir = settings.records_dir_path / "uploaded"
                 Path(uploaded_dir).mkdir(parents=True, exist_ok=True)
 
                 shutil.copy2(f, uploaded_dir)
                 Path(f).unlink()
-            files_not_uploaded = [f for f in xml_files if f not in files_uploaded]
 
-            if len(files_not_uploaded) > 0:
+            files_not_exported = [f for f in xml_files if f not in files_exported]
+            if len(files_not_exported) > 0:
                 _logger.error(
-                    "Some record files were not uploaded: %s",
-                    files_not_uploaded,
+                    "Some record files were not exported: %s",
+                    files_not_exported,
                 )
     return
 

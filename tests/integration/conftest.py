@@ -1,4 +1,4 @@
-# ruff: noqa: T201
+# ruff: noqa: T201, SLF001
 """
 Integration test fixtures for NexusLIMS.
 
@@ -808,9 +808,7 @@ def nemo_connector(
     from nexusLIMS.harvesters.nemo import connector
 
     # Reload instrument_db from the test database
-    test_instrument_db = instruments._get_instrument_db(  # noqa: SLF001
-        db_path=populated_test_database
-    )
+    test_instrument_db = instruments._get_instrument_db(db_path=populated_test_database)
 
     # Patch the instrument_db in both the instruments module and the connector module
     # This is necessary because the connector imports instrument_db at module level
@@ -1474,7 +1472,7 @@ def populated_test_database(docker_services, mock_tools_data):
 
     instruments_module.instrument_db.clear()
     instruments_module.instrument_db.update(
-        instruments_module._get_instrument_db(db_path=db_path)  # noqa: SLF001
+        instruments_module._get_instrument_db(db_path=db_path)
     )
 
     return Path(db_path)
@@ -1764,9 +1762,7 @@ def test_environment_setup(  # noqa: PLR0913
     from nexusLIMS import instruments
 
     # Patch the instrument_db to use test database
-    test_instrument_db = instruments._get_instrument_db(  # noqa: SLF001
-        db_path=populated_test_database
-    )
+    test_instrument_db = instruments._get_instrument_db(db_path=populated_test_database)
     monkeypatch.setattr(instruments, "instrument_db", test_instrument_db)
 
     # Get Titan instrument from test database (should be FEI-Titan-TEM)
@@ -2123,9 +2119,7 @@ def multi_signal_integration_record(  # noqa: PLR0913, PLR0915
     refresh_settings()
 
     # Patch the instrument_db to use test database
-    test_instrument_db = instruments._get_instrument_db(  # noqa: SLF001
-        db_path=populated_test_database
-    )
+    test_instrument_db = instruments._get_instrument_db(db_path=populated_test_database)
     monkeypatch.setattr(instruments, "instrument_db", test_instrument_db)
 
     # Get the test instrument from database

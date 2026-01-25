@@ -116,6 +116,7 @@ ignore = ["N999", "UP006", "UP007", "UP035", "B905", "RUF007", "S603", "COM812"]
 "tests/*" = ["S", "PLC0415", "PLR2004"]
 "tests/fixtures/**/*.py" = ["F401", "E402"]
 "tests/integration/**/*.py" = ["ARG002", "ARG001"]
+"migrations/**/*.py" = ["D400"]  # Migration files don't need perfect docstrings
 
 
 [tool.ruff.lint.pydocstyle]
