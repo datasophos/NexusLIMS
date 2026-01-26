@@ -179,6 +179,7 @@ exclude_lines = [
     "class _CustomEncoder",
     "if TYPE_CHECKING:",
     "@overload",
+    "\\.\\.\\.",  # Exclude Protocol abstract methods (ellipsis)
 ]
 
 [tool.pytest.ini_options]

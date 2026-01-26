@@ -126,6 +126,17 @@ class TestExporterRegistry:
         registry = ExporterRegistry()
         assert registry._matches_protocol(MissingExport) is False
 
+    def test_matches_protocol_exception_in_hasattr(self):
+        """Test that _matches_protocol catches exceptions and returns False."""
+        registry = ExporterRegistry()
+
+        # Use a mock class and mock hasattr to raise an exception
+        mock_cls = Mock()
+
+        with patch("builtins.hasattr", side_effect=RuntimeError("Unexpected error")):
+            # Should catch the exception and return False instead of raising
+            assert registry._matches_protocol(mock_cls) is False
+
     def test_discover_plugins_real(self):
         """Test that discover_plugins finds real destination plugins."""
         registry = ExporterRegistry()
@@ -335,6 +346,79 @@ class TestRegistryErrorHandling:
             assert registry._discovered is True
             # No destinations should be registered
             # (can't test exact count due to patching, but should handle gracefully)
+
+    def test_discover_plugins_module_import_failure(self):
+        """Test discover_plugins handles module import failures gracefully."""
+        registry = ExporterRegistry()
+
+        # Mock pkgutil.iter_modules to return a fake module
+        mock_module_info = Mock()
+        mock_module_info.name = "broken_module"
+
+        with (
+            patch("nexusLIMS.exporters.registry.Path") as mock_path,
+            patch(
+                "nexusLIMS.exporters.registry.pkgutil.iter_modules",
+                return_value=[mock_module_info],
+            ),
+            patch(
+                "nexusLIMS.exporters.registry.importlib.import_module",
+                side_effect=ImportError("Module not found"),
+            ) as mock_import,
+        ):
+            # Set up Path mock
+            mock_destinations_path = MagicMock()
+            mock_destinations_path.exists.return_value = True
+            mock_parent = MagicMock()
+            mock_parent.__truediv__.return_value = mock_destinations_path
+            mock_path.return_value.parent = mock_parent
+
+            # Should not raise exception, just log and continue
+            registry.discover_plugins()
+
+            assert registry._discovered is True
+            # Verify import was attempted
+            mock_import.assert_called_once_with(
+                "nexusLIMS.exporters.destinations.broken_module"
+            )
+
+    def test_register_from_module_instantiation_failure(self):
+        """Test _register_from_module handles instantiation failures gracefully."""
+        registry = ExporterRegistry()
+
+        # Create a class that raises during instantiation
+        class FailingDestination:
+            name = "failing"
+            priority = 100
+
+            @property
+            def enabled(self):
+                return True
+
+            def validate_config(self):
+                return True, None
+
+            def export(self, context):
+                pass
+
+            def __init__(self):
+                msg = "Cannot initialize"
+                raise RuntimeError(msg)
+
+        # Create mock module
+        mock_module = Mock()
+        mock_module.__name__ = "test_module"
+
+        FailingDestination.__module__ = "test_module"
+
+        with patch("inspect.getmembers") as mock_getmembers:
+            mock_getmembers.return_value = [("FailingDestination", FailingDestination)]
+
+            # Should not raise exception, just log and continue
+            registry._register_from_module(mock_module)
+
+        # Destination should not be registered
+        assert "failing" not in registry._destinations
 
     def test_register_from_module_skips_invalid_classes(self):
         """Test that _register_from_module skips classes that don't match protocol."""

@@ -13,7 +13,7 @@ from sqlmodel import select
 from nexusLIMS.db import session_handler
 from nexusLIMS.db.engine import engine
 from nexusLIMS.db.enums import EventType, RecordStatus
-from nexusLIMS.db.models import SessionLog, TZDateTime
+from nexusLIMS.db.models import SessionLog, TZDateTime, UploadLog
 from nexusLIMS.utils import current_system_tz
 
 from .test_instrument_factory import make_test_tool
@@ -210,6 +210,40 @@ class TestSessionLog:
         assert isinstance(all_logs, list)
         # Note: We don't assert len(all_logs) == 0 because there might be other logs
         # from other tests, but we verify it returns a list
+
+
+class TestUploadLog:
+    """Test the UploadLog class."""
+
+    def test_repr_success(self):
+        """Test __repr__ for successful upload."""
+        upload_log = UploadLog(
+            session_identifier="test-session-123",
+            destination_name="cdcs",
+            success=True,
+            timestamp=dt.fromisoformat("2020-02-04T09:00:00+00:00"),
+        )
+        assert (
+            repr(upload_log) == "UploadLog (session=test-session-123, "
+            "destination=cdcs, "
+            "status=SUCCESS, "
+            "timestamp=2020-02-04 09:00:00+00:00)"
+        )
+
+    def test_repr_failed(self):
+        """Test __repr__ for failed upload."""
+        upload_log = UploadLog(
+            session_identifier="test-session-456",
+            destination_name="labarchives",
+            success=False,
+            timestamp=dt.fromisoformat("2020-02-04T10:30:00+00:00"),
+        )
+        assert (
+            repr(upload_log) == "UploadLog (session=test-session-456, "
+            "destination=labarchives, "
+            "status=FAILED, "
+            "timestamp=2020-02-04 10:30:00+00:00)"
+        )
 
 
 class TestTZDateTime:

@@ -127,6 +127,18 @@ class TestCDCSDestinationConfiguration:
             assert is_valid is False
             assert "NX_CDCS_URL not configured" in error_msg
 
+    def test_validate_config_empty_url(self):
+        """Test validate_config when URL is empty."""
+        with patch("nexusLIMS.exporters.destinations.cdcs.settings") as mock_cfg:
+            mock_cfg.NX_CDCS_TOKEN = "test_token"
+            mock_cfg.NX_CDCS_URL = ""
+
+            dest = CDCSDestination()
+            is_valid, error_msg = dest.validate_config()
+
+            assert is_valid is False
+            assert "NX_CDCS_URL is empty" in error_msg
+
     def test_validate_config_authentication_failure(self, mock_config_enabled):
         """Test validate_config when authentication fails."""
         dest = CDCSDestination()
@@ -140,6 +152,20 @@ class TestCDCSDestinationConfiguration:
             assert is_valid is False
             assert "CDCS authentication failed" in error_msg
             assert "Auth failed" in error_msg
+
+    def test_validate_config_generic_exception(self, mock_config_enabled):
+        """Test validate_config when generic exception occurs."""
+        dest = CDCSDestination()
+
+        # Mock _get_workspace_id to raise a generic exception
+        with patch.object(
+            dest, "_get_workspace_id", side_effect=RuntimeError("Connection timeout")
+        ):
+            is_valid, error_msg = dest.validate_config()
+
+            assert is_valid is False
+            assert "CDCS configuration error" in error_msg
+            assert "Connection timeout" in error_msg
 
     def test_validate_config_success(self, mock_config_enabled):
         """Test validate_config when everything is configured correctly."""
