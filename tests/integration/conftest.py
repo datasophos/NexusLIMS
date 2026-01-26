@@ -935,16 +935,16 @@ def delete_all_cdcs_records():
     int
         Number of records deleted
     """
-    from nexusLIMS.utils import CDCSUtils
+    from nexusLIMS.utils import cdcs
 
     deleted_count = 0
     print("\n[*] Cleaning up CDCS records...")
     try:
-        all_records = CDCSUtils.search_records()
+        all_records = cdcs.search_records()
         if all_records:
             for record in all_records:
                 try:
-                    CDCSUtils.delete_record(record["id"])
+                    cdcs.delete_record(record["id"])
                     print(f"    Deleted record: {record.get('title', record['id'])}")
                     deleted_count += 1
                 except Exception as e:
@@ -1042,11 +1042,11 @@ def cdcs_client(cdcs_url, cdcs_credentials, monkeypatch):
     }
 
     # Cleanup: Delete all records created during the test
-    from nexusLIMS.utils import CDCSUtils
+    from nexusLIMS.utils import cdcs
 
     for record_id in created_records:
         try:
-            CDCSUtils.delete_record(record_id)
+            cdcs.delete_record(record_id)
         except Exception as e:
             # Log but don't fail test on cleanup error
             print(f"[!] Failed to cleanup record {record_id}: {e}")
@@ -1200,12 +1200,12 @@ def cdcs_test_record(
     # Set up CDCS environment for session scope
     setup_cdcs_environment(cdcs_url, cdcs_credentials)
 
-    from nexusLIMS.utils import CDCSUtils
+    from nexusLIMS.utils import cdcs
 
     # Upload all test records
     created_records = []
     for test_record_title, test_record_xml in cdcs_test_record_xml:
-        response, record_id = CDCSUtils.upload_record_content(
+        response, record_id = cdcs.upload_record_content(
             test_record_xml, test_record_title
         )
 
@@ -1213,7 +1213,7 @@ def cdcs_test_record(
             # Cleanup any previously created records before raising
             for record in created_records:
                 with contextlib.suppress(Exception):
-                    CDCSUtils.delete_record(record["record_id"])
+                    cdcs.delete_record(record["record_id"])
             msg = (
                 f"Failed to create test record '{test_record_title}': "
                 f"{response.status_code} - {response.text}"
@@ -1234,7 +1234,7 @@ def cdcs_test_record(
     # Cleanup: Delete all test records
     for record in created_records:
         try:
-            CDCSUtils.delete_record(record["record_id"])
+            cdcs.delete_record(record["record_id"])
             print(f"[+] Deleted test record: {record['record_id']}")
         except Exception as e:
             print(f"[!] Failed to cleanup test record {record['record_id']}: {e}")
@@ -2229,10 +2229,10 @@ def multi_signal_integration_record(  # noqa: PLR0913, PLR0915
         pytest.fail(f"XML validation failed: {schema.error_log}")
 
     # Get record ID from CDCS (record should already be uploaded)
-    from nexusLIMS.utils import CDCSUtils
+    from nexusLIMS.utils import cdcs
 
     record_title = record_path.stem
-    search_results = CDCSUtils.search_records(title=record_title)
+    search_results = cdcs.search_records(title=record_title)
     if not search_results:
         pytest.fail(f"Record '{record_title}' not found in CDCS after upload")
 
@@ -2251,7 +2251,7 @@ def multi_signal_integration_record(  # noqa: PLR0913, PLR0915
     # Cleanup: Delete record from CDCS
     print("\n[*] Cleaning up multi-signal test record...")
     try:
-        CDCSUtils.delete_record(record_id)
+        cdcs.delete_record(record_id)
         print(f"  Deleted record from CDCS: {record_id}")
     except Exception as e:
         print(f"[!] Failed to cleanup record {record_id}: {e}")

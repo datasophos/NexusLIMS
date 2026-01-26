@@ -17,15 +17,15 @@ import responses
 from nexusLIMS import utils
 from nexusLIMS.extractors import get_registry
 from nexusLIMS.extractors.plugins import quanta_tif
-from nexusLIMS.utils import (
+from nexusLIMS.utils.dicts import try_getting_dict_value
+from nexusLIMS.utils.files import (
     _zero_bytes,
     find_dirs_by_mtime,
     gnu_find_files_by_mtime,
-    nexus_req,
-    replace_instrument_data_path,
-    setup_loggers,
-    try_getting_dict_value,
 )
+from nexusLIMS.utils.logging import setup_loggers
+from nexusLIMS.utils.network import nexus_req
+from nexusLIMS.utils.paths import replace_instrument_data_path
 
 from .utils import get_full_file_path
 
@@ -58,21 +58,21 @@ class TestUtils:
         }
 
     def test_set_nested_dict_value_creates_intermediate_dicts(self):
-        from nexusLIMS.utils import set_nested_dict_value
+        from nexusLIMS.utils.dicts import set_nested_dict_value
 
         d = {}
         set_nested_dict_value(d, ["a", "b", "c"], "value")
         assert d == {"a": {"b": {"c": "value"}}}
 
     def test_set_nested_dict_value_preserves_existing_keys(self):
-        from nexusLIMS.utils import set_nested_dict_value
+        from nexusLIMS.utils.dicts import set_nested_dict_value
 
         d = {"a": {"existing": "preserved"}}
         set_nested_dict_value(d, ["a", "b"], "new")
         assert d == {"a": {"existing": "preserved", "b": "new"}}
 
     def test_set_nested_dict_value_with_special_chars_in_keys(self):
-        from nexusLIMS.utils import set_nested_dict_value
+        from nexusLIMS.utils.dicts import set_nested_dict_value
 
         # Keys with dots work fine with benedict when keypath_separator is disabled
         d = {}
@@ -80,20 +80,20 @@ class TestUtils:
         assert d == {"key.with.dots": {"nested": "value"}}
 
     def test_get_nested_dict_value_by_path_returns_value(self):
-        from nexusLIMS.utils import get_nested_dict_value_by_path
+        from nexusLIMS.utils.dicts import get_nested_dict_value_by_path
 
         d = {"a": {"b": {"c": "value"}}}
         assert get_nested_dict_value_by_path(d, ["a", "b", "c"]) == "value"
 
     def test_get_nested_dict_value_by_path_returns_none_for_missing(self):
-        from nexusLIMS.utils import get_nested_dict_value_by_path
+        from nexusLIMS.utils.dicts import get_nested_dict_value_by_path
 
         d = {"a": {"b": "value"}}
         assert get_nested_dict_value_by_path(d, ["a", "c"]) is None
         assert get_nested_dict_value_by_path(d, ["x", "y", "z"]) is None
 
     def test_get_nested_dict_value_by_path_with_special_chars(self):
-        from nexusLIMS.utils import get_nested_dict_value_by_path
+        from nexusLIMS.utils.dicts import get_nested_dict_value_by_path
 
         d = {"key.with.dots": {"nested": "value"}}
         assert get_nested_dict_value_by_path(d, ["key.with.dots", "nested"]) == "value"
@@ -318,7 +318,7 @@ class TestUtils:
 
     def test_get_find_command_not_found(self, monkeypatch):
         """Test _get_find_command when find is not on PATH."""
-        from nexusLIMS.utils import _get_find_command
+        from nexusLIMS.utils.files import _get_find_command
 
         # Mock os.environ to have an empty PATH
         monkeypatch.setattr("os.environ", {"PATH": ""})
@@ -330,7 +330,7 @@ class TestUtils:
         """Test _get_find_command when subprocess fails."""
         import subprocess
 
-        from nexusLIMS.utils import _get_find_command
+        from nexusLIMS.utils.files import _get_find_command
 
         # Mock platform to not be Darwin to simplify test
         monkeypatch.setattr("platform.system", lambda: "Linux")
@@ -357,7 +357,7 @@ class TestUtils:
         """Test _get_find_command with BSD find and no gfind available."""
         from unittest.mock import Mock
 
-        from nexusLIMS.utils import _get_find_command
+        from nexusLIMS.utils.files import _get_find_command
 
         # Create a fake find executable
         find_dir = tmp_path / "bin"
@@ -388,7 +388,7 @@ class TestUtils:
         """Test _get_find_command with BSD find and gfind available."""
         from unittest.mock import Mock
 
-        from nexusLIMS.utils import _get_find_command
+        from nexusLIMS.utils.files import _get_find_command
 
         # Mock platform to be darwin
         monkeypatch.setattr("platform.system", lambda: "Darwin")
@@ -424,7 +424,7 @@ class TestUtils:
         """Test _get_find_command warns for non-GNU find on non-macOS."""
         from unittest.mock import Mock
 
-        from nexusLIMS.utils import _get_find_command
+        from nexusLIMS.utils.files import _get_find_command
 
         # Mock platform to be Linux
         monkeypatch.setattr("platform.system", lambda: "Linux")
@@ -446,7 +446,7 @@ class TestUtils:
 
     def test_find_symlink_dirs_with_results(self, tmp_path, monkeypatch, caplog):
         """Test _find_symlink_dirs when symlinks are found."""
-        from nexusLIMS.utils import _find_symlink_dirs
+        from nexusLIMS.utils.files import _find_symlink_dirs
 
         # Create a test symlink
         target = tmp_path / "target"
@@ -477,7 +477,7 @@ class TestUtils:
         from datetime import datetime, timedelta
         from pathlib import Path
 
-        from nexusLIMS.utils import gnu_find_files_by_mtime
+        from nexusLIMS.utils.files import gnu_find_files_by_mtime
 
         # Create test directory structure
         instr_data = tmp_path / "instruments"
@@ -490,14 +490,14 @@ class TestUtils:
         mock_settings = Mock()
         mock_settings.NX_INSTRUMENT_DATA_PATH = instr_data
         mock_settings.NX_IGNORE_PATTERNS = ["*.mib", "*.db", "*.emi"]
-        monkeypatch.setattr("nexusLIMS.utils.settings", mock_settings)
+        monkeypatch.setattr("nexusLIMS.utils.files.settings", mock_settings)
 
         # Mock _get_find_command to return a simple command
-        monkeypatch.setattr("nexusLIMS.utils._get_find_command", lambda: "gfind")
+        monkeypatch.setattr("nexusLIMS.utils.files._get_find_command", lambda: "gfind")
 
         # Mock _find_symlink_dirs to return the test path
         monkeypatch.setattr(
-            "nexusLIMS.utils._find_symlink_dirs",
+            "nexusLIMS.utils.files._find_symlink_dirs",
             lambda *_: [test_path],
         )
 
@@ -533,7 +533,7 @@ class TestUtils:
         """
         # Mock CA_BUNDLE_CONTENT with test certificate data
         mock_ca_bundle = [b"-----BEGIN CERTIFICATE-----\n", b"TESTDATA\n"]
-        monkeypatch.setattr("nexusLIMS.utils.CA_BUNDLE_CONTENT", mock_ca_bundle)
+        monkeypatch.setattr("nexusLIMS.utils.network.CA_BUNDLE_CONTENT", mock_ca_bundle)
 
         # Create fake system cert file for mocking
         fake_sys_cert = tmp_path / "sys_cert.pem"
@@ -560,7 +560,7 @@ class TestUtils:
     def test_nexus_req_no_ca_bundle_content(self, monkeypatch):
         """Test nexus_req when CA_BUNDLE_CONTENT is empty/None."""
         # Mock CA_BUNDLE_CONTENT as empty
-        monkeypatch.setattr("nexusLIMS.utils.CA_BUNDLE_CONTENT", None)
+        monkeypatch.setattr("nexusLIMS.utils.network.CA_BUNDLE_CONTENT", None)
 
         # Mock the response
         responses.add(
@@ -584,7 +584,7 @@ class TestUtils:
         system_cert = b"SYSTEM CERTIFICATE\n"
 
         mock_ca_bundle = [custom_cert]
-        monkeypatch.setattr("nexusLIMS.utils.CA_BUNDLE_CONTENT", mock_ca_bundle)
+        monkeypatch.setattr("nexusLIMS.utils.network.CA_BUNDLE_CONTENT", mock_ca_bundle)
 
         # Create fake system cert file
         fake_sys_cert = tmp_path / "sys_cert.pem"

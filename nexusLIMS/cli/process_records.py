@@ -310,7 +310,7 @@ def _setup_logging(log_level: int, dry_run: bool) -> tuple[Path, logging.FileHan
     SystemExit
         If file logging setup fails (exits with code 1)
     """
-    from nexusLIMS.utils import setup_loggers  # noqa: PLC0415
+    from nexusLIMS.utils.logging import setup_loggers  # noqa: PLC0415
 
     # Setup console logging with rich
     logging.basicConfig(

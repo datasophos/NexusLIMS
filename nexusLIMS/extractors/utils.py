@@ -17,7 +17,7 @@ from rsciio.digitalmicrograph._api import (  # pylint: disable=import-error,no-n
 
 from nexusLIMS.instruments import Instrument, get_instr_from_filepath
 from nexusLIMS.schemas.units import ureg
-from nexusLIMS.utils import set_nested_dict_value, try_getting_dict_value
+from nexusLIMS.utils.dicts import set_nested_dict_value, try_getting_dict_value
 
 _logger = logging.getLogger(__name__)
 

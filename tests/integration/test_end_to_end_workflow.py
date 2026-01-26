@@ -155,16 +155,16 @@ class TestEndToEndWorkflow:
         )
 
         # Verify record is present in CDCS via API
-        from nexusLIMS.utils import CDCSUtils
+        from nexusLIMS.utils import cdcs
 
-        search_results = CDCSUtils.search_records(title=record_title)
+        search_results = cdcs.search_records(title=record_title)
         assert len(search_results) > 0, f"Record '{record_title}' not found in CDCS"
 
         cdcs_record = search_results[0]
         record_id = cdcs_record["id"]
 
         # Download the record from CDCS and verify it matches
-        downloaded_xml = CDCSUtils.download_record(record_id)
+        downloaded_xml = cdcs.download_record(record_id)
         assert len(downloaded_xml) > 0, "Downloaded XML is empty"
 
         # Verify downloaded XML is also valid
@@ -232,9 +232,9 @@ class TestEndToEndWorkflow:
             print("[!] No preview elements found in XML (this may be expected)")
 
         # clean up uploaded record on success
-        CDCSUtils.delete_record(record_id)
+        cdcs.delete_record(record_id)
         with pytest.raises(ValueError, match=f"Record with id {record_id} not found"):
-            CDCSUtils.download_record(record_id)
+            cdcs.download_record(record_id)
 
     # ========================================================================
     # Clustering sensitivity end to end tests
@@ -261,7 +261,7 @@ class TestEndToEndWorkflow:
         is tested in ``test_complete_record_building_workflow()``
         """
         from nexusLIMS.config import refresh_settings, settings
-        from nexusLIMS.utils import CDCSUtils
+        from nexusLIMS.utils import cdcs
 
         # disable clustering to put all datasets in one activity
         monkeypatch.setenv("NX_CLUSTERING_SENSITIVITY", str(0))
@@ -279,13 +279,13 @@ class TestEndToEndWorkflow:
         record_title = test_record.stem
 
         # this is not reliable if generating the same record twice
-        search_results = CDCSUtils.search_records(title=record_title)
+        search_results = cdcs.search_records(title=record_title)
 
         cdcs_record = search_results[0]
         record_id = cdcs_record["id"]
 
         # Download the record from CDCS and verify it matches
-        downloaded_xml = CDCSUtils.download_record(record_id)
+        downloaded_xml = cdcs.download_record(record_id)
         downloaded_doc = etree.fromstring(downloaded_xml.encode())
         nx_ns = "{https://data.nist.gov/od/dm/nexus/experiment/v1.0}"
         activities = downloaded_doc.findall(f".//{nx_ns}acquisitionActivity")
@@ -309,7 +309,7 @@ class TestEndToEndWorkflow:
         is tested in ``test_complete_record_building_workflow()``
         """
         from nexusLIMS.config import refresh_settings, settings
-        from nexusLIMS.utils import CDCSUtils
+        from nexusLIMS.utils import cdcs
 
         # high sensitivity should result in more activities (6, tested empirically)
         monkeypatch.setenv("NX_CLUSTERING_SENSITIVITY", str(50))
@@ -327,13 +327,13 @@ class TestEndToEndWorkflow:
         record_title = test_record.stem
 
         # this is not reliable if generating the same record twice
-        search_results = CDCSUtils.search_records(title=record_title)
+        search_results = cdcs.search_records(title=record_title)
 
         cdcs_record = search_results[0]
         record_id = cdcs_record["id"]
 
         # Download the record from CDCS and verify it matches
-        downloaded_xml = CDCSUtils.download_record(record_id)
+        downloaded_xml = cdcs.download_record(record_id)
         downloaded_doc = etree.fromstring(downloaded_xml.encode())
         nx_ns = "{https://data.nist.gov/od/dm/nexus/experiment/v1.0}"
         activities = downloaded_doc.findall(f".//{nx_ns}acquisitionActivity")
@@ -465,20 +465,20 @@ class TestEndToEndWorkflow:
             Fixture providing the generated XML and metadata
         """
         from nexusLIMS.builder import record_builder
-        from nexusLIMS.utils import CDCSUtils
+        from nexusLIMS.utils import cdcs
 
         record_title = multi_signal_integration_record["record_title"]
         record_id = multi_signal_integration_record["record_id"]
 
         # Verify record is present in CDCS
-        search_results = CDCSUtils.search_records(title=record_title)
+        search_results = cdcs.search_records(title=record_title)
         assert len(search_results) > 0, f"Record '{record_title}' not found in CDCS"
 
         cdcs_record = search_results[0]
         assert cdcs_record["id"] == record_id, "Record ID mismatch"
 
         # Download the record from CDCS
-        downloaded_xml = CDCSUtils.download_record(record_id)
+        downloaded_xml = cdcs.download_record(record_id)
         assert len(downloaded_xml) > 0, "Downloaded XML is empty"
 
         # Verify downloaded XML is valid against schema

@@ -10,7 +10,7 @@ from benedict import benedict
 
 from nexusLIMS.extractors.base import InstrumentProfile
 from nexusLIMS.extractors.profiles import get_profile_registry
-from nexusLIMS.utils import (
+from nexusLIMS.utils.dicts import (
     set_nested_dict_value,
     try_getting_dict_value,
 )

@@ -312,7 +312,7 @@ def _create_default_sessions(instrument_keys: list[str]) -> list[dict]:
             # Fallback for instruments without predefined dates
             from datetime import timedelta
 
-            from nexusLIMS.utils import current_system_tz
+            from nexusLIMS.utils.time import current_system_tz
 
             tz = current_system_tz()
             start_time = datetime.now(tz=tz) - timedelta(days=1)

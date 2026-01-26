@@ -7,7 +7,7 @@ from typing import NamedTuple
 
 import pytest
 
-from nexusLIMS.utils import AuthenticationError, CDCSUtils
+from nexusLIMS.utils import cdcs
 
 
 class MockResponse(NamedTuple):
@@ -45,22 +45,23 @@ class TestCDCS:
                 text="Unauthorized",
             )
 
-        monkeypatch.setattr("nexusLIMS.utils.nexus_req", mock_nexus_req_bad_auth)
+        # Patch nexus_req in the cdcs module where it's imported
+        monkeypatch.setattr("nexusLIMS.utils.cdcs.nexus_req", mock_nexus_req_bad_auth)
 
-        with pytest.raises(AuthenticationError):
-            CDCSUtils.get_workspace_id()
-        with pytest.raises(AuthenticationError):
-            CDCSUtils.get_template_id()
+        with pytest.raises(cdcs.AuthenticationError):
+            cdcs.get_workspace_id()
+        with pytest.raises(cdcs.AuthenticationError):
+            cdcs.get_template_id()
 
     def test_delete_record_bad_response(self, monkeypatch, caplog):
         monkeypatch.setattr(
-            "nexusLIMS.utils.nexus_req",
+            "nexusLIMS.utils.cdcs.nexus_req",
             lambda _x, _y, token_auth=None: MockResponse(
                 status_code=404,
                 text="This is a fake request error!",
             ),
         )
-        CDCSUtils.delete_record("dummy")
+        cdcs.delete_record("dummy")
         assert "Received error while deleting dummy:" in caplog.text
         assert "This is a fake request error!" in caplog.text
 
@@ -74,10 +75,14 @@ class TestCDCS:
                 text="Unauthorized",
             )
 
-        monkeypatch.setattr("nexusLIMS.utils.nexus_req", mock_nexus_req_unauthorized)
+        monkeypatch.setattr(
+            "nexusLIMS.utils.cdcs.nexus_req", mock_nexus_req_unauthorized
+        )
 
-        with pytest.raises(AuthenticationError, match="Could not authenticate to CDCS"):
-            CDCSUtils.search_records(title="test")
+        with pytest.raises(
+            cdcs.AuthenticationError, match="Could not authenticate to CDCS"
+        ):
+            cdcs.search_records(title="test")
 
     def test_search_records_bad_request(self, monkeypatch, caplog):
         """Test search_records with bad request error."""
@@ -89,10 +94,12 @@ class TestCDCS:
                 text="Invalid query parameters",
             )
 
-        monkeypatch.setattr("nexusLIMS.utils.nexus_req", mock_nexus_req_bad_request)
+        monkeypatch.setattr(
+            "nexusLIMS.utils.cdcs.nexus_req", mock_nexus_req_bad_request
+        )
 
         with pytest.raises(ValueError, match="Invalid search parameters"):
-            CDCSUtils.search_records(title="test")
+            cdcs.search_records(title="test")
 
         assert "Bad request while searching records" in caplog.text
 
@@ -106,9 +113,11 @@ class TestCDCS:
                 text="Server error",
             )
 
-        monkeypatch.setattr("nexusLIMS.utils.nexus_req", mock_nexus_req_server_error)
+        monkeypatch.setattr(
+            "nexusLIMS.utils.cdcs.nexus_req", mock_nexus_req_server_error
+        )
 
-        results = CDCSUtils.search_records(title="test")
+        results = cdcs.search_records(title="test")
 
         assert results == []
         assert "Got error while searching records" in caplog.text
@@ -123,10 +132,14 @@ class TestCDCS:
                 text="Unauthorized",
             )
 
-        monkeypatch.setattr("nexusLIMS.utils.nexus_req", mock_nexus_req_unauthorized)
+        monkeypatch.setattr(
+            "nexusLIMS.utils.cdcs.nexus_req", mock_nexus_req_unauthorized
+        )
 
-        with pytest.raises(AuthenticationError, match="Could not authenticate to CDCS"):
-            CDCSUtils.download_record("test_id")
+        with pytest.raises(
+            cdcs.AuthenticationError, match="Could not authenticate to CDCS"
+        ):
+            cdcs.download_record("test_id")
 
     def test_download_record_not_found(self, monkeypatch):
         """Test download_record with record not found."""
@@ -138,10 +151,10 @@ class TestCDCS:
                 text="Not found",
             )
 
-        monkeypatch.setattr("nexusLIMS.utils.nexus_req", mock_nexus_req_not_found)
+        monkeypatch.setattr("nexusLIMS.utils.cdcs.nexus_req", mock_nexus_req_not_found)
 
         with pytest.raises(ValueError, match="Record with id test_id not found"):
-            CDCSUtils.download_record("test_id")
+            cdcs.download_record("test_id")
 
     def test_download_record_server_error(self, monkeypatch, caplog):
         """Test download_record with server error."""
@@ -153,9 +166,11 @@ class TestCDCS:
                 text="Server error",
             )
 
-        monkeypatch.setattr("nexusLIMS.utils.nexus_req", mock_nexus_req_server_error)
+        monkeypatch.setattr(
+            "nexusLIMS.utils.cdcs.nexus_req", mock_nexus_req_server_error
+        )
 
         with pytest.raises(ValueError, match="Failed to download record test_id"):
-            CDCSUtils.download_record("test_id")
+            cdcs.download_record("test_id")
 
         assert "Got error while downloading test_id" in caplog.text

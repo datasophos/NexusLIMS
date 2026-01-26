@@ -65,7 +65,7 @@ import pytest  # noqa: E402
 from _pytest.monkeypatch import MonkeyPatch  # noqa: E402
 
 from nexusLIMS.config import settings  # noqa: E402
-from nexusLIMS.utils import current_system_tz  # noqa: E402
+from nexusLIMS.utils.time import current_system_tz  # noqa: E402
 
 # Import context fixtures for marker-based resource allocation
 # These must be imported directly (not via pytest_plugins) to avoid conflicts
@@ -250,7 +250,7 @@ def _fix_mountain_time(monkey_session):
     Hack to determine if we need to adjust our datetime objects for the time
     difference between Boulder and G'burg.
     """
-    import nexusLIMS.utils  # pylint: disable=import-outside-toplevel
+    import nexusLIMS.utils.time  # pylint: disable=import-outside-toplevel
 
     tz_string = current_system_tz().tzname(dt.now(tz=current_system_tz()))
 
@@ -258,7 +258,7 @@ def _fix_mountain_time(monkey_session):
     # datetime objects to match file store
     if tz_string in ["MST", "MDT"]:
         # get current timezone, and adjust tz_offset as needed
-        monkey_session.setattr(nexusLIMS.utils, "tz_offset", td(hours=-2))
+        monkey_session.setattr(nexusLIMS.utils.time, "tz_offset", td(hours=-2))
         monkey_session.setenv("ignore_mib", "True")
         monkey_session.setenv("is_mountain_time", "True")
 
@@ -753,7 +753,7 @@ def mock_cdcs_server(monkeypatch, mock_cdcs_responses):
     from typing import NamedTuple
     from urllib.parse import urlparse
 
-    import nexusLIMS.utils
+    import nexusLIMS.utils.network
 
     class MockResponse(NamedTuple):
         """Mock HTTP response."""
@@ -829,7 +829,7 @@ def mock_cdcs_server(monkeypatch, mock_cdcs_responses):
         )
 
     # Patch the nexus_req function in the utils module
-    monkeypatch.setattr(nexusLIMS.utils, "nexus_req", mock_nexus_req)
+    monkeypatch.setattr(nexusLIMS.utils.network, "nexus_req", mock_nexus_req)
 
 
 @pytest.fixture(scope="module")

@@ -14,7 +14,7 @@ from nexusLIMS.db import session_handler
 from nexusLIMS.db.engine import engine
 from nexusLIMS.db.enums import EventType, RecordStatus
 from nexusLIMS.db.models import SessionLog, TZDateTime, UploadLog
-from nexusLIMS.utils import current_system_tz
+from nexusLIMS.utils.time import current_system_tz
 
 from .test_instrument_factory import make_test_tool
 

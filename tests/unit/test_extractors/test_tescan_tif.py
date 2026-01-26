@@ -601,7 +601,7 @@ class TestTescanPfibTiffExtractor:
         # Test nested dictionary paths for string fields
         # This test directly tests the set_nested_dict_value function call
         # by simulating the exact code path that would be executed
-        from nexusLIMS.utils import set_nested_dict_value
+        from nexusLIMS.utils.dicts import set_nested_dict_value
 
         # Create a test metadata dict
         test_mdict = {

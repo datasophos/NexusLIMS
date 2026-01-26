@@ -122,7 +122,7 @@ class TestPartialFailureRecovery:
         assert len(to_be_built_sessions) == 2  # START, END
 
         # Now simulate CDCS upload failure by patching upload_record_content
-        with patch("nexusLIMS.utils.CDCSUtils.upload_record_content") as mock_upload:
+        with patch("nexusLIMS.utils.cdcs.upload_record_content") as mock_upload:
             # Make upload_record_content return a failed response
             mock_response = MagicMock(spec=requests.Response)
             mock_response.status_code = HTTPStatus.INTERNAL_SERVER_ERROR
@@ -130,9 +130,9 @@ class TestPartialFailureRecovery:
             mock_upload.return_value = (mock_response, None)
 
             # Attempt to upload the built records
-            from nexusLIMS.utils import CDCSUtils
+            from nexusLIMS.utils import cdcs
 
-            files_uploaded, record_ids = CDCSUtils.upload_record_files(
+            files_uploaded, record_ids = cdcs.upload_record_files(
                 xml_files, progress=False
             )
 
@@ -241,12 +241,12 @@ class TestPartialFailureRecovery:
             return (response, None)
 
         with patch(
-            "nexusLIMS.utils.CDCSUtils.upload_record_content",
+            "nexusLIMS.utils.cdcs.upload_record_content",
             side_effect=mock_upload_side_effect,
         ):
-            from nexusLIMS.utils import CDCSUtils
+            from nexusLIMS.utils import cdcs
 
-            files_uploaded, record_ids = CDCSUtils.upload_record_files(
+            files_uploaded, record_ids = cdcs.upload_record_files(
                 xml_files, progress=False
             )
 

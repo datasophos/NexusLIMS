@@ -369,7 +369,7 @@ class TestMainCLI:
 
     @patch("nexusLIMS.builder.record_builder.process_new_records")
     @patch("nexusLIMS.cli.process_records.send_error_notification")
-    @patch("nexusLIMS.utils.setup_loggers")
+    @patch("nexusLIMS.utils.logging.setup_loggers")
     def test_dry_run_mode(
         self,
         mock_setup_loggers,
@@ -393,7 +393,7 @@ class TestMainCLI:
         mock_process_records.assert_called_once_with(dry_run=True)
 
     @patch("nexusLIMS.builder.record_builder.process_new_records")
-    @patch("nexusLIMS.utils.setup_loggers")
+    @patch("nexusLIMS.utils.logging.setup_loggers")
     def test_lock_file_prevents_concurrent_run(
         self, mock_setup_loggers, mock_process_records, tmp_path, monkeypatch
     ):
@@ -423,7 +423,7 @@ class TestMainCLI:
 
     @patch("nexusLIMS.builder.record_builder.process_new_records")
     @patch("nexusLIMS.cli.process_records.send_error_notification")
-    @patch("nexusLIMS.utils.setup_loggers")
+    @patch("nexusLIMS.utils.logging.setup_loggers")
     def test_verbose_flag(
         self,
         mock_setup_loggers,
@@ -450,7 +450,7 @@ class TestMainCLI:
     @patch("nexusLIMS.builder.record_builder.process_new_records")
     @patch("nexusLIMS.cli.process_records.check_log_for_errors")
     @patch("nexusLIMS.cli.process_records.send_error_notification")
-    @patch("nexusLIMS.utils.setup_loggers")
+    @patch("nexusLIMS.utils.logging.setup_loggers")
     def test_sends_email_on_errors(  # noqa: PLR0913
         self,
         mock_setup_loggers,
@@ -480,7 +480,7 @@ class TestMainCLI:
     @patch("nexusLIMS.builder.record_builder.process_new_records")
     @patch("nexusLIMS.cli.process_records.check_log_for_errors")
     @patch("nexusLIMS.cli.process_records.send_error_notification")
-    @patch("nexusLIMS.utils.setup_loggers")
+    @patch("nexusLIMS.utils.logging.setup_loggers")
     def test_no_email_without_errors(  # noqa: PLR0913
         self,
         mock_setup_loggers,
@@ -508,7 +508,7 @@ class TestMainCLI:
         mock_send_email.assert_not_called()
 
     @patch("nexusLIMS.cli.process_records.setup_file_logging")
-    @patch("nexusLIMS.utils.setup_loggers")
+    @patch("nexusLIMS.utils.logging.setup_loggers")
     def test_setup_file_logging_error(
         self, mock_setup_loggers, mock_setup_file_logging, tmp_path, monkeypatch
     ):
@@ -529,7 +529,7 @@ class TestMainCLI:
 
     @patch("nexusLIMS.builder.record_builder.process_new_records")
     @patch("nexusLIMS.cli.process_records.send_error_notification")
-    @patch("nexusLIMS.utils.setup_loggers")
+    @patch("nexusLIMS.utils.logging.setup_loggers")
     def test_exception_during_record_processing(  # noqa: PLR0913
         self,
         mock_setup_loggers,
@@ -560,7 +560,7 @@ class TestMainCLI:
     @patch("nexusLIMS.builder.record_builder.process_new_records")
     @patch("nexusLIMS.cli.process_records.check_log_for_errors")
     @patch("nexusLIMS.cli.process_records.send_error_notification")
-    @patch("nexusLIMS.utils.setup_loggers")
+    @patch("nexusLIMS.utils.logging.setup_loggers")
     def test_exception_during_log_check(  # noqa: PLR0913
         self,
         mock_setup_loggers,
@@ -591,7 +591,7 @@ class TestMainCLI:
 
     @patch("nexusLIMS.builder.record_builder.process_new_records")
     @patch("nexusLIMS.cli.process_records.send_error_notification")
-    @patch("nexusLIMS.utils.setup_loggers")
+    @patch("nexusLIMS.utils.logging.setup_loggers")
     def test_verbose_level_zero(
         self,
         mock_setup_loggers,
@@ -617,7 +617,7 @@ class TestMainCLI:
 
     @patch("nexusLIMS.builder.record_builder.process_new_records")
     @patch("nexusLIMS.cli.process_records.send_error_notification")
-    @patch("nexusLIMS.utils.setup_loggers")
+    @patch("nexusLIMS.utils.logging.setup_loggers")
     def test_verbose_level_one(
         self,
         mock_setup_loggers,

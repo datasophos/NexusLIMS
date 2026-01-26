@@ -9,7 +9,7 @@ import pytest
 
 from nexusLIMS.exporters.base import ExportContext
 from nexusLIMS.exporters.destinations.cdcs import CDCSDestination
-from nexusLIMS.utils import AuthenticationError
+from nexusLIMS.utils.cdcs import AuthenticationError
 
 
 @pytest.fixture

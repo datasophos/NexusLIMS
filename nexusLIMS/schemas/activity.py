@@ -27,7 +27,7 @@ from nexusLIMS.config import settings
 from nexusLIMS.extractors import flatten_dict, parse_metadata
 from nexusLIMS.extractors.xml_serialization import serialize_quantity_to_xml
 from nexusLIMS.schemas import em_glossary
-from nexusLIMS.utils import current_system_tz
+from nexusLIMS.utils.time import current_system_tz
 
 _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.INFO)

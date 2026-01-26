@@ -12,7 +12,8 @@ from urllib.parse import urljoin
 
 from nexusLIMS.config import settings
 from nexusLIMS.exporters.base import ExportContext, ExportResult
-from nexusLIMS.utils import AuthenticationError, nexus_req
+from nexusLIMS.utils.cdcs import AuthenticationError
+from nexusLIMS.utils.network import nexus_req
 
 _logger = logging.getLogger(__name__)
 

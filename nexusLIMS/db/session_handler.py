@@ -11,7 +11,7 @@ from sqlmodel import select
 from nexusLIMS.db.engine import get_engine
 from nexusLIMS.db.enums import EventType, RecordStatus
 from nexusLIMS.db.models import Instrument, SessionLog
-from nexusLIMS.utils import current_system_tz
+from nexusLIMS.utils.time import current_system_tz
 
 _logger = logging.getLogger(__name__)
 

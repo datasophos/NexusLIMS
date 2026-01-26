@@ -13,7 +13,7 @@ from pathlib import Path
 import pytest
 import requests
 
-from nexusLIMS.utils import AuthenticationError, CDCSUtils
+from nexusLIMS.utils import cdcs
 
 logger = logging.getLogger(__name__)
 
@@ -71,27 +71,27 @@ class TestCdcsAuthentication:
 
     def test_get_workspace_id_with_valid_credentials(self, cdcs_client):
         """Test fetching workspace ID with valid credentials."""
-        workspace_id = CDCSUtils.get_workspace_id()
+        workspace_id = cdcs.get_workspace_id()
         assert workspace_id is not None
         assert isinstance(workspace_id, int)
 
     def test_get_workspace_id_with_invalid_credentials(
         self, cdcs_url, safe_refresh_settings
     ):
-        """Test that invalid credentials raise AuthenticationError."""
+        """Test that invalid credentials raise cdcs.AuthenticationError."""
         # Set invalid credentials using safe_refresh_settings helper
         safe_refresh_settings(
             NX_CDCS_URL=cdcs_url,
             NX_CDCS_TOKEN="invalid-token",
         )
 
-        # Should raise AuthenticationError
-        with pytest.raises(AuthenticationError):
-            CDCSUtils.get_workspace_id()
+        # Should raise cdcs.AuthenticationError
+        with pytest.raises(cdcs.AuthenticationError):
+            cdcs.get_workspace_id()
 
     def test_get_template_id_with_valid_credentials(self, cdcs_client):
         """Test fetching template ID with valid credentials."""
-        template_id = CDCSUtils.get_template_id()
+        template_id = cdcs.get_template_id()
         assert template_id is not None
         assert isinstance(template_id, str)
         assert len(template_id) > 0
@@ -99,7 +99,7 @@ class TestCdcsAuthentication:
     def test_get_template_id_with_invalid_credentials(
         self, cdcs_url, safe_refresh_settings
     ):
-        """Test that invalid credentials raise AuthenticationError."""
+        """Test that invalid credentials raise cdcs.AuthenticationError."""
         # Set invalid credentials using safe_refresh_settings helper
         safe_refresh_settings(
             NX_CDCS_URL=cdcs_url,
@@ -107,8 +107,8 @@ class TestCdcsAuthentication:
         )
 
         # Should raise AuthenticationError
-        with pytest.raises(AuthenticationError):
-            CDCSUtils.get_template_id()
+        with pytest.raises(cdcs.AuthenticationError):
+            cdcs.get_template_id()
 
 
 @pytest.mark.integration
@@ -118,9 +118,7 @@ class TestCdcsRecordOperations:
     def test_upload_minimal_record(self, cdcs_client):
         """Test uploading a minimal valid XML record to CDCS."""
         title = "Test Record - Minimal"
-        response, record_id = CDCSUtils.upload_record_content(
-            MINIMAL_TEST_RECORD, title
-        )
+        response, record_id = cdcs.upload_record_content(MINIMAL_TEST_RECORD, title)
 
         # Verify upload was successful
         assert response.status_code == HTTPStatus.CREATED
@@ -133,9 +131,7 @@ class TestCdcsRecordOperations:
     def test_upload_record_with_special_characters_in_title(self, cdcs_client):
         """Test uploading a record with special characters in title."""
         title = "Test Record: Special Characters & Symbols (2024)"
-        response, record_id = CDCSUtils.upload_record_content(
-            MINIMAL_TEST_RECORD, title
-        )
+        response, record_id = cdcs.upload_record_content(MINIMAL_TEST_RECORD, title)
 
         # Verify upload was successful
         assert response.status_code == HTTPStatus.CREATED
@@ -149,7 +145,7 @@ class TestCdcsRecordOperations:
         invalid_xml = "<InvalidRoot>This is not a valid Nexus Experiment</InvalidRoot>"
         title = "Test Record - Invalid"
 
-        response, record_id = CDCSUtils.upload_record_content(invalid_xml, title)
+        response, record_id = cdcs.upload_record_content(invalid_xml, title)
 
         # Should fail (not return 201 CREATED)
         assert response.status_code != HTTPStatus.CREATED
@@ -160,14 +156,14 @@ class TestCdcsRecordOperations:
         """Test deleting an existing record from CDCS."""
         # First upload a record
         title = "Test Record - To Be Deleted"
-        upload_response, record_id = CDCSUtils.upload_record_content(
+        upload_response, record_id = cdcs.upload_record_content(
             MINIMAL_TEST_RECORD,
             title,
         )
         assert upload_response.status_code == HTTPStatus.CREATED
 
         # Now delete it
-        delete_response = CDCSUtils.delete_record(record_id)
+        delete_response = cdcs.delete_record(record_id)
 
         # Verify deletion was successful (204 No Content)
         assert delete_response.status_code == HTTPStatus.NO_CONTENT
@@ -179,7 +175,7 @@ class TestCdcsRecordOperations:
         # Use a fake record ID that doesn't exist
         fake_record_id = "000000000000000000000000"  # 24-character hex string
 
-        delete_response = CDCSUtils.delete_record(fake_record_id)
+        delete_response = cdcs.delete_record(fake_record_id)
 
         # Should fail (not return 204 No Content)
         assert delete_response.status_code != HTTPStatus.NO_CONTENT
@@ -190,7 +186,7 @@ class TestCdcsRecordOperations:
 
         for i in range(3):
             title = f"Test Record - Multiple Upload {i + 1}"
-            response, record_id = CDCSUtils.upload_record_content(
+            response, record_id = cdcs.upload_record_content(
                 MINIMAL_TEST_RECORD,
                 title,
             )
@@ -214,7 +210,7 @@ class TestCdcsRecordRetrieval:
         """Test that an uploaded record can be retrieved via API."""
         # Upload a record first
         title = "Test Record - Retrieval"
-        upload_response, record_id = CDCSUtils.upload_record_content(
+        upload_response, record_id = cdcs.upload_record_content(
             MINIMAL_TEST_RECORD,
             title,
         )
@@ -227,7 +223,7 @@ class TestCdcsRecordRetrieval:
         from urllib.parse import urljoin
 
         from nexusLIMS import config
-        from nexusLIMS.utils import nexus_req
+        from nexusLIMS.utils.network import nexus_req
 
         endpoint = urljoin(cdcs_url, f"rest/data/{record_id}")
         response = nexus_req(endpoint, "GET", token_auth=config.settings.NX_CDCS_TOKEN)
@@ -242,7 +238,7 @@ class TestCdcsRecordRetrieval:
         """Test retrieving the XML content of an uploaded record."""
         # Upload a record first
         title = "Test Record - XML Content Retrieval"
-        upload_response, record_id = CDCSUtils.upload_record_content(
+        upload_response, record_id = cdcs.upload_record_content(
             MINIMAL_TEST_RECORD,
             title,
         )
@@ -255,7 +251,7 @@ class TestCdcsRecordRetrieval:
         from urllib.parse import urljoin
 
         from nexusLIMS import config
-        from nexusLIMS.utils import nexus_req
+        from nexusLIMS.utils.network import nexus_req
 
         endpoint = urljoin(cdcs_url, f"rest/data/{record_id}")
         response = nexus_req(endpoint, "GET", token_auth=config.settings.NX_CDCS_TOKEN)
@@ -278,7 +274,7 @@ class TestCdcsWorkspaceAssignment:
         """Test that uploaded records are assigned to the workspace."""
         # Upload a record
         title = "Test Record - Workspace Assignment"
-        upload_response, record_id = CDCSUtils.upload_record_content(
+        upload_response, record_id = cdcs.upload_record_content(
             MINIMAL_TEST_RECORD,
             title,
         )
@@ -291,9 +287,9 @@ class TestCdcsWorkspaceAssignment:
         from urllib.parse import urljoin
 
         from nexusLIMS import config
-        from nexusLIMS.utils import nexus_req
+        from nexusLIMS.utils.network import nexus_req
 
-        workspace_id = CDCSUtils.get_workspace_id()
+        workspace_id = cdcs.get_workspace_id()
         endpoint = urljoin(
             cdcs_url,
             f"rest/workspace/{workspace_id}/data/",
@@ -315,7 +311,7 @@ class TestCdcsErrorHandling:
     def test_upload_with_empty_xml(self, cdcs_client):
         """Test handling of empty XML content."""
         title = "Test Record - Empty XML"
-        response, _record_id = CDCSUtils.upload_record_content("", title)
+        response, _record_id = cdcs.upload_record_content("", title)
 
         # Should fail (not return 201 CREATED)
         assert response.status_code != HTTPStatus.CREATED
@@ -324,7 +320,7 @@ class TestCdcsErrorHandling:
         """Test handling of malformed XML."""
         malformed_xml = "<Experiment><unclosed>"
         title = "Test Record - Malformed XML"
-        response, _record_id = CDCSUtils.upload_record_content(malformed_xml, title)
+        response, _record_id = cdcs.upload_record_content(malformed_xml, title)
 
         # Should fail (not return 201 CREATED)
         assert response.status_code != HTTPStatus.CREATED
@@ -333,7 +329,7 @@ class TestCdcsErrorHandling:
         """Test uploading a record with empty title."""
         # This might be allowed by CDCS, or it might fail
         # Either way, we should handle it gracefully
-        response, record_id = CDCSUtils.upload_record_content(MINIMAL_TEST_RECORD, "")
+        response, record_id = cdcs.upload_record_content(MINIMAL_TEST_RECORD, "")
 
         # Check result - either succeeds with empty title or fails gracefully
         if response.status_code == HTTPStatus.CREATED:
@@ -350,7 +346,7 @@ class TestCdcsUrlConfiguration:
 
     def test_get_cdcs_url(self, cdcs_client, cdcs_url):
         """Test retrieving configured CDCS URL."""
-        url = CDCSUtils.get_cdcs_url()
+        url = cdcs.get_cdcs_url()
         # Pydantic may add trailing slash, so normalize for comparison
         assert url.rstrip("/") == cdcs_url.rstrip("/")
         assert url.startswith("http")
@@ -364,7 +360,7 @@ class TestCdcsUrlConfiguration:
         refresh_settings()
 
         # Should still work (urljoin handles this)
-        workspace_id = CDCSUtils.get_workspace_id()
+        workspace_id = cdcs.get_workspace_id()
         assert workspace_id is not None
 
 
@@ -377,7 +373,7 @@ class TestCdcsSearchAndDownload:
         # Both test records should be searchable by their unique titles
         for record in cdcs_test_record:
             test_record_title = record["title"]
-            results = CDCSUtils.search_records(title=test_record_title)
+            results = cdcs.search_records(title=test_record_title)
 
             # Should find exactly one record with this title
             assert len(results) == 1, f"Expected 1 record, found {len(results)}"
@@ -391,8 +387,8 @@ class TestCdcsSearchAndDownload:
 
     def test_search_records_by_template(self, cdcs_client, cdcs_test_record):
         """Test that searching by template returns all test records."""
-        template_id = CDCSUtils.get_template_id()
-        results = CDCSUtils.search_records(template_id=template_id)
+        template_id = cdcs.get_template_id()
+        results = cdcs.search_records(template_id=template_id)
 
         # Should find at least our two test records
         assert len(results) >= 2, f"Expected at least 2 records, found {len(results)}"
@@ -408,7 +404,7 @@ class TestCdcsSearchAndDownload:
 
     def test_search_records_with_no_parameters(self, cdcs_client, cdcs_test_record):
         """Test that search_records raises ValueError with no parameters."""
-        results = CDCSUtils.search_records()
+        results = cdcs.search_records()
         # Should find at least our two test records
         assert len(results) >= 2, f"Expected at least 2 records, found {len(results)}"
         assert isinstance(results, list)
@@ -423,7 +419,7 @@ class TestCdcsSearchAndDownload:
 
     def test_search_records_with_nonexistent_title(self, cdcs_client):
         """Test searching for a record that doesn't exist."""
-        results = CDCSUtils.search_records(title="This Record Does Not Exist XYZ123")
+        results = cdcs.search_records(title="This Record Does Not Exist XYZ123")
 
         # Should return empty list
         assert isinstance(results, list)
@@ -432,7 +428,7 @@ class TestCdcsSearchAndDownload:
     def test_search_records_by_keyword(self, cdcs_client, cdcs_test_record):
         """Test keyword search functionality."""
         # Search for "STEM" keyword - should find the first record
-        results = CDCSUtils.search_records(keyword="STEM")
+        results = cdcs.search_records(keyword="STEM")
 
         assert isinstance(results, list)
         assert len(results) >= 1, "Should find at least the STEM test record"
@@ -445,10 +441,10 @@ class TestCdcsSearchAndDownload:
         self, cdcs_client, cdcs_test_record
     ):
         """Test keyword search combined with template filter."""
-        template_id = CDCSUtils.get_template_id()
+        template_id = cdcs.get_template_id()
 
         # Search for "SEM" keyword with template filter
-        results = CDCSUtils.search_records(keyword="SEM", template_id=template_id)
+        results = cdcs.search_records(keyword="SEM", template_id=template_id)
 
         assert isinstance(results, list)
         assert len(results) >= 1, "Should find at least the SEM test record"
@@ -460,14 +456,14 @@ class TestCdcsSearchAndDownload:
     def test_search_records_keyword_empty_string(self, cdcs_client):
         """Test that keyword search with empty string raises ValueError."""
         with pytest.raises(ValueError, match="Keyword parameter cannot be empty"):
-            CDCSUtils.search_records(keyword="")
+            cdcs.search_records(keyword="")
 
         with pytest.raises(ValueError, match="Keyword parameter cannot be empty"):
-            CDCSUtils.search_records(keyword="   ")
+            cdcs.search_records(keyword="   ")
 
     def test_search_records_keyword_nonexistent(self, cdcs_client):
         """Test keyword search with term that doesn't exist."""
-        results = CDCSUtils.search_records(keyword="NonexistentKeywordXYZ123")
+        results = cdcs.search_records(keyword="NonexistentKeywordXYZ123")
 
         # Should return empty list
         assert isinstance(results, list)
@@ -485,7 +481,7 @@ class TestCdcsSearchAndDownload:
 
         downloaded_records = []
         for record in cdcs_test_record:
-            xml_content = CDCSUtils.download_record(record["record_id"])
+            xml_content = cdcs.download_record(record["record_id"])
             downloaded_records.append(xml_content)
 
             # Verify basic XML structure
@@ -519,7 +515,7 @@ class TestCdcsSearchAndDownload:
         fake_record_id = "000000000000000000000000"  # 24-character hex string
 
         with pytest.raises(ValueError, match=r"Record with id .* not found"):
-            CDCSUtils.download_record(fake_record_id)
+            cdcs.download_record(fake_record_id)
 
     def test_search_and_download_workflow(self, cdcs_client, cdcs_test_record):
         """Test complete workflow: search by title -> verify -> download -> validate."""
@@ -527,7 +523,7 @@ class TestCdcsSearchAndDownload:
 
         # 1. Search for the first test record by title
         test_record_title = cdcs_test_record[0]["title"]
-        search_results = CDCSUtils.search_records(title=test_record_title)
+        search_results = cdcs.search_records(title=test_record_title)
 
         assert len(search_results) > 0, "Test record not found"
         assert search_results[0]["title"] == test_record_title
@@ -538,7 +534,7 @@ class TestCdcsSearchAndDownload:
         assert record_id == cdcs_test_record[0]["record_id"]
 
         # 3. Download the record
-        xml_content = CDCSUtils.download_record(record_id)
+        xml_content = cdcs.download_record(record_id)
 
         # 4. Verify content
         assert "Integration test seed record" in xml_content
@@ -556,7 +552,7 @@ class TestCdcsSearchAndDownload:
         """Test uploading a new record and then searching for it."""
         # Upload a new record
         test_title = "Test Record - Search After Upload"
-        upload_response, record_id = CDCSUtils.upload_record_content(
+        upload_response, record_id = cdcs.upload_record_content(
             MINIMAL_TEST_RECORD,
             test_title,
         )
@@ -564,13 +560,13 @@ class TestCdcsSearchAndDownload:
         cdcs_client["register_record"](record_id)
 
         # Search for it
-        search_results = CDCSUtils.search_records(title=test_title)
+        search_results = cdcs.search_records(title=test_title)
         assert len(search_results) > 0
         assert search_results[0]["title"] == test_title
         assert search_results[0]["id"] == record_id
 
         # Download it
-        downloaded_xml = CDCSUtils.download_record(record_id)
+        downloaded_xml = cdcs.download_record(record_id)
         assert "Testing CDCS integration" in downloaded_xml
 
 
@@ -587,7 +583,7 @@ class TestCdcsFileUploadOperations:
 
             # Should raise ValueError when no files found
             with pytest.raises(ValueError, match=r"No \.xml files were found"):
-                CDCSUtils.upload_record_files(None)
+                cdcs.upload_record_files(None)
         finally:
             os.chdir(original_cwd)
 
@@ -605,7 +601,7 @@ class TestCdcsFileUploadOperations:
             os.chdir(tmp_path)
 
             # Upload all files using globbing
-            uploaded_files, record_ids = CDCSUtils.upload_record_files(None)
+            uploaded_files, record_ids = cdcs.upload_record_files(None)
 
             # Verify all files were uploaded
             assert len(uploaded_files) == 3
@@ -630,7 +626,7 @@ class TestCdcsFileUploadOperations:
             test_files.append(xml_file)
 
         # Upload specific files
-        uploaded_files, record_ids = CDCSUtils.upload_record_files(test_files)
+        uploaded_files, record_ids = cdcs.upload_record_files(test_files)
 
         # Verify correct number of files were uploaded
         assert len(uploaded_files) == 2
@@ -655,7 +651,7 @@ class TestCdcsFileUploadOperations:
         invalid_file.write_text(MINIMAL_INVALID_TEST_RECORD)
 
         # Upload both files
-        uploaded_files, record_ids = CDCSUtils.upload_record_files(
+        uploaded_files, record_ids = cdcs.upload_record_files(
             [valid_file, invalid_file]
         )
 
@@ -677,9 +673,7 @@ class TestCdcsFileUploadOperations:
             test_files.append(xml_file)
 
         # Upload with progress bar
-        uploaded_files, record_ids = CDCSUtils.upload_record_files(
-            test_files, progress=True
-        )
+        uploaded_files, record_ids = cdcs.upload_record_files(test_files, progress=True)
 
         # Verify all files were uploaded
         assert len(uploaded_files) == 3

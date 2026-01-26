@@ -6,7 +6,7 @@ from typing import Any, ClassVar
 
 from nexusLIMS.extractors.base import ExtractionContext
 from nexusLIMS.instruments import get_instr_from_filepath
-from nexusLIMS.utils import current_system_tz
+from nexusLIMS.utils.time import current_system_tz
 
 _logger = logging.getLogger(__name__)
 

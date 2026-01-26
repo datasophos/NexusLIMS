@@ -20,7 +20,7 @@ from sqlmodel import create_engine, select
 from nexusLIMS.config import settings
 from nexusLIMS.db.engine import engine as default_engine
 from nexusLIMS.db.models import Instrument
-from nexusLIMS.utils import is_subpath
+from nexusLIMS.utils.paths import is_subpath
 
 logging.basicConfig()
 _logger = logging.getLogger(__name__)

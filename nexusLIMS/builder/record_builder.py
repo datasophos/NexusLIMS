@@ -39,10 +39,12 @@ from nexusLIMS.harvesters.nemo import utils as nemo_utils
 from nexusLIMS.harvesters.reservation_event import ReservationEvent
 from nexusLIMS.schemas import activity
 from nexusLIMS.schemas.activity import AcquisitionActivity, cluster_filelist_mtimes
-from nexusLIMS.utils import (
-    current_system_tz,
+from nexusLIMS.utils.files import (
     find_files_by_mtime,
     gnu_find_files_by_mtime,
+)
+from nexusLIMS.utils.time import (
+    current_system_tz,
     has_delay_passed,
 )
 
