@@ -240,17 +240,17 @@ class TestNetworkResilience:
 
         This simulates a network partition or service being down completely.
         """
-        from nexusLIMS import cdcs
+        from nexusLIMS.utils import CDCSUtils
 
         # Mock nexus_req to raise a ConnectionError
-        with patch("nexusLIMS.cdcs.nexus_req") as mock_req:
+        with patch("nexusLIMS.utils.nexus_req") as mock_req:
             mock_req.side_effect = requests.exceptions.ConnectionError(
                 "Connection refused"
             )
 
             # This should raise a ConnectionError
             with pytest.raises(requests.exceptions.ConnectionError):
-                cdcs.get_workspace_id()
+                CDCSUtils.get_workspace_id()
 
     def test_nemo_connection_error_handling(self):
         """
@@ -293,10 +293,10 @@ class TestNetworkResilience:
         ):
             mock_req.side_effect = mock_side_effect
 
-            from nexusLIMS import cdcs
+            from nexusLIMS.utils import CDCSUtils
 
             # This should retry and eventually succeed
-            workspace_id = cdcs.get_workspace_id()
+            workspace_id = CDCSUtils.get_workspace_id()
             assert workspace_id == "workspace-123"
             assert get_call_count() == 2
 
@@ -355,14 +355,14 @@ class TestNetworkResilience:
             response.text = "Unauthorized"
             return response
 
-        with patch("nexusLIMS.cdcs.nexus_req") as mock_req:
+        with patch("nexusLIMS.utils.nexus_req") as mock_req:
             mock_req.side_effect = mock_nexus_req_returns_401
 
-            from nexusLIMS import cdcs
+            from nexusLIMS.utils import AuthenticationError, CDCSUtils
 
             # Should raise authentication error
-            with pytest.raises(cdcs.AuthenticationError):
-                cdcs.get_workspace_id()
+            with pytest.raises(AuthenticationError):
+                CDCSUtils.get_workspace_id()
 
             # Should have only tried once (no retries)
             assert mock_req.call_count == 1

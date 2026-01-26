@@ -122,7 +122,7 @@ class TestPartialFailureRecovery:
         assert len(to_be_built_sessions) == 2  # START, END
 
         # Now simulate CDCS upload failure by patching upload_record_content
-        with patch("nexusLIMS.cdcs.upload_record_content") as mock_upload:
+        with patch("nexusLIMS.utils.CDCSUtils.upload_record_content") as mock_upload:
             # Make upload_record_content return a failed response
             mock_response = MagicMock(spec=requests.Response)
             mock_response.status_code = HTTPStatus.INTERNAL_SERVER_ERROR
@@ -130,9 +130,11 @@ class TestPartialFailureRecovery:
             mock_upload.return_value = (mock_response, None)
 
             # Attempt to upload the built records
-            from nexusLIMS.cdcs import upload_record_files
+            from nexusLIMS.utils import CDCSUtils
 
-            files_uploaded, record_ids = upload_record_files(xml_files, progress=False)
+            files_uploaded, record_ids = CDCSUtils.upload_record_files(
+                xml_files, progress=False
+            )
 
             # Verify upload failed
             assert len(files_uploaded) == 0, "No files should be uploaded on failure"
@@ -239,11 +241,14 @@ class TestPartialFailureRecovery:
             return (response, None)
 
         with patch(
-            "nexusLIMS.cdcs.upload_record_content", side_effect=mock_upload_side_effect
+            "nexusLIMS.utils.CDCSUtils.upload_record_content",
+            side_effect=mock_upload_side_effect,
         ):
-            from nexusLIMS.cdcs import upload_record_files
+            from nexusLIMS.utils import CDCSUtils
 
-            files_uploaded, record_ids = upload_record_files(xml_files, progress=False)
+            files_uploaded, record_ids = CDCSUtils.upload_record_files(
+                xml_files, progress=False
+            )
 
             # Verify partial success
             assert len(files_uploaded) == 1, "Only first file should be uploaded"

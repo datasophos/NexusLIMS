@@ -753,7 +753,7 @@ def mock_cdcs_server(monkeypatch, mock_cdcs_responses):
     from typing import NamedTuple
     from urllib.parse import urlparse
 
-    import nexusLIMS.cdcs
+    import nexusLIMS.utils
 
     class MockResponse(NamedTuple):
         """Mock HTTP response."""
@@ -828,8 +828,8 @@ def mock_cdcs_server(monkeypatch, mock_cdcs_responses):
             text="Mock endpoint not found",
         )
 
-    # Patch the nexus_req function in the cdcs module
-    monkeypatch.setattr(nexusLIMS.cdcs, "nexus_req", mock_nexus_req)
+    # Patch the nexus_req function in the utils module
+    monkeypatch.setattr(nexusLIMS.utils, "nexus_req", mock_nexus_req)
 
 
 @pytest.fixture(scope="module")
