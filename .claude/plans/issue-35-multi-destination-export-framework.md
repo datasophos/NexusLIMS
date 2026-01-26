@@ -8,7 +8,7 @@ Build an extensible framework for exporting NexusLIMS records to multiple reposi
 
 **Key decisions:**
 - Per-destination tracking via new `upload_log` database table
-- Default strategy: `best_effort` (succeed if any destination succeeds)
+- Default strategy: `all` (succeed if any destination succeeds)
 - Breaking change: Refactor `cdcs.py` immediately into new framework (no wrapper)
 - **Inter-destination dependencies**: Destinations can access results from higher-priority destinations
 
@@ -205,7 +205,7 @@ class ExporterRegistry:
         self,
         context: ExportContext,
         *,
-        strategy: ExportStrategy = "best_effort"
+        strategy: ExportStrategy = "all"
     ) -> list[ExportResult]:
         """Export to destinations according to strategy."""
         from nexusLIMS.exporters.strategies import execute_strategy
@@ -802,7 +802,7 @@ Update `tests/integration/`:
    # Set up test environment
    export NX_CDCS_URL="https://cdcs-test.example.com"
    export NX_CDCS_TOKEN="test_token"
-   export NX_EXPORT_STRATEGY="best_effort"
+   export NX_EXPORT_STRATEGY="all"
 
    # Run record builder
    nexuslims-process-records -vv
@@ -920,7 +920,7 @@ Implement extensible multi-destination export framework for NexusLIMS records. R
 - Run `uv run alembic upgrade head` after updating
 
 **Configuration:**
-- Add `NX_EXPORT_STRATEGY=best_effort` to `.env` (or use default)
+- Add `NX_EXPORT_STRATEGY=all` to `.env` (or use default)
 - Existing CDCS configuration (`NX_CDCS_URL`, `NX_CDCS_TOKEN`) still works
 
 ## Future Enhancements

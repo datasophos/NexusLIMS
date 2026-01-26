@@ -14,20 +14,20 @@ from nexusLIMS.utils import AuthenticationError
 
 @pytest.fixture
 def mock_config_enabled():
-    """Mock config with CDCS enabled."""
-    with patch("nexusLIMS.exporters.destinations.cdcs.config") as mock_cfg:
-        mock_cfg.NX_CDCS_TOKEN = "test_token"
-        mock_cfg.NX_CDCS_URL = "http://localhost:8000"
-        yield mock_cfg
+    """Mock settings with CDCS enabled."""
+    with patch("nexusLIMS.exporters.destinations.cdcs.settings") as mock_settings:
+        mock_settings.NX_CDCS_TOKEN = "test_token"
+        mock_settings.NX_CDCS_URL = "http://localhost:8000"
+        yield mock_settings
 
 
 @pytest.fixture
 def mock_config_disabled():
-    """Mock config with CDCS disabled."""
-    with patch("nexusLIMS.exporters.destinations.cdcs.config") as mock_cfg:
-        mock_cfg.NX_CDCS_TOKEN = None
-        mock_cfg.NX_CDCS_URL = None
-        yield mock_cfg
+    """Mock settings with CDCS disabled."""
+    with patch("nexusLIMS.exporters.destinations.cdcs.settings") as mock_settings:
+        mock_settings.NX_CDCS_TOKEN = None
+        mock_settings.NX_CDCS_URL = None
+        yield mock_settings
 
 
 @pytest.fixture
@@ -67,7 +67,7 @@ class TestCDCSDestinationConfiguration:
 
     def test_enabled_without_token(self):
         """Test that destination is disabled without token."""
-        with patch("nexusLIMS.exporters.destinations.cdcs.config") as mock_cfg:
+        with patch("nexusLIMS.exporters.destinations.cdcs.settings") as mock_cfg:
             mock_cfg.NX_CDCS_TOKEN = None
             mock_cfg.NX_CDCS_URL = "http://localhost:8000"
 
@@ -76,7 +76,7 @@ class TestCDCSDestinationConfiguration:
 
     def test_enabled_without_url(self):
         """Test that destination is disabled without URL."""
-        with patch("nexusLIMS.exporters.destinations.cdcs.config") as mock_cfg:
+        with patch("nexusLIMS.exporters.destinations.cdcs.settings") as mock_cfg:
             mock_cfg.NX_CDCS_TOKEN = "test_token"
             mock_cfg.NX_CDCS_URL = None
 
@@ -90,7 +90,7 @@ class TestCDCSDestinationConfiguration:
 
     def test_validate_config_missing_token(self):
         """Test validate_config when token is missing."""
-        with patch("nexusLIMS.exporters.destinations.cdcs.config") as mock_cfg:
+        with patch("nexusLIMS.exporters.destinations.cdcs.settings") as mock_cfg:
             # Remove token attribute entirely
             if hasattr(mock_cfg, "NX_CDCS_TOKEN"):
                 delattr(mock_cfg, "NX_CDCS_TOKEN")
@@ -103,7 +103,7 @@ class TestCDCSDestinationConfiguration:
 
     def test_validate_config_empty_token(self):
         """Test validate_config when token is empty."""
-        with patch("nexusLIMS.exporters.destinations.cdcs.config") as mock_cfg:
+        with patch("nexusLIMS.exporters.destinations.cdcs.settings") as mock_cfg:
             mock_cfg.NX_CDCS_TOKEN = ""
             mock_cfg.NX_CDCS_URL = "http://localhost:8000"
 
@@ -115,7 +115,7 @@ class TestCDCSDestinationConfiguration:
 
     def test_validate_config_missing_url(self):
         """Test validate_config when URL is missing."""
-        with patch("nexusLIMS.exporters.destinations.cdcs.config") as mock_cfg:
+        with patch("nexusLIMS.exporters.destinations.cdcs.settings") as mock_cfg:
             mock_cfg.NX_CDCS_TOKEN = "test_token"
             # Remove URL attribute entirely
             if hasattr(mock_cfg, "NX_CDCS_URL"):

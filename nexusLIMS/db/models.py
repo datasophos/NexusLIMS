@@ -10,7 +10,7 @@ import logging
 
 import pytz
 from pytz.tzinfo import BaseTzInfo
-from sqlalchemy import types
+from sqlalchemy import CheckConstraint, types
 from sqlalchemy.types import TypeDecorator
 from sqlmodel import Column, Field, Relationship, SQLModel, select
 from sqlmodel import Session as DBSession
@@ -286,6 +286,18 @@ class SessionLog(SQLModel, table=True):
     """
 
     __tablename__ = "session_log"
+    __table_args__ = (
+        CheckConstraint(
+            "event_type IN ('START', 'END', 'RECORD_GENERATION')",
+            name="check_event_type",
+        ),
+        CheckConstraint(
+            "record_status IN ('COMPLETED', 'WAITING_FOR_END', 'TO_BE_BUILT', "
+            "'BUILT_NOT_EXPORTED', 'ERROR', 'NO_FILES_FOUND', 'NO_CONSENT', "
+            "'NO_RESERVATION')",
+            name="check_record_status",
+        ),
+    )
 
     # Primary key
     id_session_log: int | None = Field(default=None, primary_key=True)

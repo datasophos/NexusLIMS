@@ -420,7 +420,9 @@ def validate_record(xml_filename):
     return xml_schema.validate(xml_doc)
 
 
-def build_new_session_records(generate_previews: bool = True) -> List[Path]:  # noqa: FBT002, FBT001
+def build_new_session_records(
+    generate_previews: bool = True,  # noqa: FBT002, FBT001
+) -> tuple[List[Path], List[Session]]:
     """
     Build records for new sessions from the database.
 

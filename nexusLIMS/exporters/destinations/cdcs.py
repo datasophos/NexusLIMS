@@ -10,7 +10,7 @@ import logging
 from http import HTTPStatus
 from urllib.parse import urljoin
 
-from nexusLIMS import config
+from nexusLIMS.config import settings
 from nexusLIMS.exporters.base import ExportContext, ExportResult
 from nexusLIMS.utils import AuthenticationError, nexus_req
 
@@ -44,10 +44,10 @@ class CDCSDestination:
             True if both NX_CDCS_TOKEN and NX_CDCS_URL are configured
         """
         return (
-            hasattr(config, "NX_CDCS_TOKEN")
-            and hasattr(config, "NX_CDCS_URL")
-            and config.NX_CDCS_TOKEN is not None
-            and config.NX_CDCS_URL is not None
+            hasattr(settings, "NX_CDCS_TOKEN")
+            and hasattr(settings, "NX_CDCS_URL")
+            and settings.NX_CDCS_TOKEN is not None
+            and settings.NX_CDCS_URL is not None
         )
 
     def validate_config(self) -> tuple[bool, str | None]:  # noqa: PLR0911
@@ -63,13 +63,13 @@ class CDCSDestination:
         tuple[bool, str | None]
             (is_valid, error_message)
         """
-        if not hasattr(config, "NX_CDCS_TOKEN"):
+        if not hasattr(settings, "NX_CDCS_TOKEN"):
             return False, "NX_CDCS_TOKEN not configured"
-        if not config.NX_CDCS_TOKEN:
+        if not settings.NX_CDCS_TOKEN:
             return False, "NX_CDCS_TOKEN is empty"
-        if not hasattr(config, "NX_CDCS_URL"):
+        if not hasattr(settings, "NX_CDCS_URL"):
             return False, "NX_CDCS_URL not configured"
-        if not config.NX_CDCS_URL:
+        if not settings.NX_CDCS_URL:
             return False, "NX_CDCS_URL is empty"
 
         # Test authentication by getting workspace ID
@@ -146,7 +146,7 @@ class CDCSDestination:
         RuntimeError
             If upload fails
         """
-        endpoint = urljoin(str(config.NX_CDCS_URL), "rest/data/")
+        endpoint = urljoin(str(settings.NX_CDCS_URL), "rest/data/")
 
         payload = {
             "template": self._get_template_id(),
@@ -155,7 +155,7 @@ class CDCSDestination:
         }
 
         post_r = nexus_req(
-            endpoint, "POST", json=payload, token_auth=config.NX_CDCS_TOKEN
+            endpoint, "POST", json=payload, token_auth=settings.NX_CDCS_TOKEN
         )
 
         if post_r.status_code != HTTPStatus.CREATED:
@@ -166,12 +166,12 @@ class CDCSDestination:
 
         # Assign to workspace
         wrk_endpoint = urljoin(
-            str(config.NX_CDCS_URL),
+            str(settings.NX_CDCS_URL),
             f"rest/data/{record_id}/assign/{self._get_workspace_id()}",
         )
-        _ = nexus_req(wrk_endpoint, "PATCH", token_auth=config.NX_CDCS_TOKEN)
+        _ = nexus_req(wrk_endpoint, "PATCH", token_auth=settings.NX_CDCS_TOKEN)
 
-        record_url = urljoin(str(config.NX_CDCS_URL), f"data?id={record_id}")
+        record_url = urljoin(str(settings.NX_CDCS_URL), f"data?id={record_id}")
         _logger.info('Record "%s" available at %s', title, record_url)
 
         return record_id, record_url
@@ -190,9 +190,9 @@ class CDCSDestination:
             If authentication fails
         """
         endpoint = urljoin(
-            str(config.NX_CDCS_URL), "rest/template-version-manager/global"
+            str(settings.NX_CDCS_URL), "rest/template-version-manager/global"
         )
-        r = nexus_req(endpoint, "GET", token_auth=config.NX_CDCS_TOKEN)
+        r = nexus_req(endpoint, "GET", token_auth=settings.NX_CDCS_TOKEN)
 
         if r.status_code in (HTTPStatus.UNAUTHORIZED, HTTPStatus.FORBIDDEN):
             msg = "Could not authenticate to CDCS"
@@ -213,8 +213,8 @@ class CDCSDestination:
         AuthenticationError
             If authentication fails
         """
-        endpoint = urljoin(str(config.NX_CDCS_URL), "rest/workspace/read_access")
-        r = nexus_req(endpoint, "GET", token_auth=config.NX_CDCS_TOKEN)
+        endpoint = urljoin(str(settings.NX_CDCS_URL), "rest/workspace/read_access")
+        r = nexus_req(endpoint, "GET", token_auth=settings.NX_CDCS_TOKEN)
 
         if r.status_code in (HTTPStatus.UNAUTHORIZED, HTTPStatus.FORBIDDEN):
             msg = "Could not authenticate to CDCS"

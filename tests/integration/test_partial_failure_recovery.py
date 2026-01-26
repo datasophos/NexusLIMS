@@ -1,4 +1,3 @@
-# ruff: noqa: DTZ001
 """
 Partial failure recovery integration tests for NexusLIMS.
 
@@ -97,22 +96,30 @@ class TestPartialFailureRecovery:
         assert len(sessions_to_build) == 1
 
         # Build the record (this will succeed)
-        xml_files = record_builder.build_new_session_records(generate_previews=False)
+        xml_files, sessions_built = record_builder.build_new_session_records(
+            generate_previews=False
+        )
         assert len(xml_files) == 1
+        assert len(sessions_built) == 1
 
-        # Verify session is now marked COMPLETED after record building
+        # With new export framework, sessions remain TO_BE_BUILT after building
+        # (status only updated after export in process_new_records)
         sessions_after_build = get_sessions_to_build()
-        assert len(sessions_after_build) == 0, "Session should be COMPLETED"
+        assert len(sessions_after_build) == 1, (
+            "Session should still be TO_BE_BUILT after building (before export)"
+        )
 
-        # Verify database has COMPLETED status
+        # Verify database still has TO_BE_BUILT status (export hasn't happened yet)
         with DBSession(get_engine()) as db_session:
             all_sessions = db_session.exec(
                 select(SessionLog.event_type, SessionLog.record_status).order_by(
                     SessionLog.session_identifier, SessionLog.event_type
                 )
             ).all()
-        completed_sessions = [s for s in all_sessions if s[1] == RecordStatus.COMPLETED]
-        assert len(completed_sessions) == 3  # START, END, RECORD_GENERATION
+        to_be_built_sessions = [
+            s for s in all_sessions if s[1] == RecordStatus.TO_BE_BUILT
+        ]
+        assert len(to_be_built_sessions) == 2  # START, END
 
         # Now simulate CDCS upload failure by patching upload_record_content
         with patch("nexusLIMS.cdcs.upload_record_content") as mock_upload:
@@ -131,15 +138,16 @@ class TestPartialFailureRecovery:
             assert len(files_uploaded) == 0, "No files should be uploaded on failure"
             assert len(record_ids) == 0, "No record IDs should be returned"
 
-        # Verify session REMAINS COMPLETED (current behavior - no rollback)
+        # Verify session REMAINS TO_BE_BUILT since we're using old upload function
+        # (new export framework would mark as BUILT_NOT_EXPORTED)
         with DBSession(get_engine()) as db_session:
             sessions_after_upload_failure = db_session.exec(
                 select(SessionLog.event_type, SessionLog.record_status).where(
-                    SessionLog.record_status == RecordStatus.COMPLETED
+                    SessionLog.record_status == RecordStatus.TO_BE_BUILT
                 )
             ).all()
-        assert len(sessions_after_upload_failure) == 3, (
-            "Session status should NOT be rolled back on upload failure"
+        assert len(sessions_after_upload_failure) == 2, (
+            "Session should still be TO_BE_BUILT when using old upload_record_files"
         )
 
         # Verify XML files are still on disk (not moved to uploaded/)
@@ -203,7 +211,7 @@ class TestPartialFailureRecovery:
         )
 
         # Build records
-        xml_files = record_builder.build_new_session_records(generate_previews=False)
+        xml_files, _ = record_builder.build_new_session_records(generate_previews=False)
         assert len(xml_files) == 1
 
         # Create a second dummy XML file to test partial failure

@@ -1,4 +1,4 @@
-# ruff: noqa: DTZ001, E501
+# ruff: noqa: E501
 """
 Shared test fixtures and data for both unit and integration tests.
 

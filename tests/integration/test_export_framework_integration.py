@@ -1,4 +1,3 @@
-# ruff: noqa: DTZ001, DTZ005
 """Integration tests for the multi-destination export framework.
 
 Tests the complete export workflow including:
@@ -25,20 +24,25 @@ from nexusLIMS.exporters.base import ExportContext, ExportResult
 
 
 @pytest.fixture
-def db_session(tmp_path):
-    """Create a test database session."""
-    # Create in-memory SQLite database
-    db_path = tmp_path / "test.db"
-    engine = create_engine(f"sqlite:///{db_path}")
+def db_session(test_database):
+    """Create a test database session using the integration test database fixture."""
+    # Create engine from test_database path
+    engine = create_engine(f"sqlite:///{test_database}")
 
-    # Create all tables
-    from sqlmodel import SQLModel
+    # CRITICAL: Update the global engine to point to test database
+    # This ensures export_records() uses the same database as the test
+    from nexusLIMS.db import engine as engine_module
 
-    SQLModel.metadata.create_all(engine)
+    original_engine = engine_module.engine
+    engine_module.engine = engine
 
-    # Create session
-    with DBSession(engine) as session:
-        yield session
+    try:
+        # Create session
+        with DBSession(engine) as session:
+            yield session
+    finally:
+        # Restore original engine
+        engine_module.engine = original_engine
 
 
 @pytest.fixture
@@ -95,8 +99,7 @@ def sample_session(db_session, instrument):
     return Session(
         session_identifier="test-session-123",
         instrument=instrument,
-        dt_from=datetime(2025, 1, 1, 10, 0, 0),
-        dt_to=datetime(2025, 1, 1, 12, 0, 0),
+        dt_range=(datetime(2025, 1, 1, 10, 0, 0), datetime(2025, 1, 1, 12, 0, 0)),
         user="testuser",
     )
 
@@ -218,8 +221,8 @@ class TestExportRecordsBasic:
             session = Session(
                 session_identifier=session_id,
                 instrument=instrument,
-                dt_from=datetime.now(),
-                dt_to=datetime.now(),
+                dt_range=(datetime.now(), datetime.now()),
+                user="testuser",
             )
             sessions.append(session)
 

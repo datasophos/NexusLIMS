@@ -94,25 +94,15 @@ def pytest_configure(config):
     if "NX_DATA_PATH" not in os.environ:
         os.environ["NX_DATA_PATH"] = str(TEST_DATA_DIR)
 
-    # Create a temporary database file for validation
+    # Create a temporary database file for integration tests
+    # Always use integration test database (don't reuse unit test database)
     db_path = TEST_DATA_DIR / "integration_test.db"
-    if "NX_DB_PATH" not in os.environ:
-        # Initialize database with schema if it doesn't exist
-        if not db_path.exists():
-            import sqlite3
 
-            schema_script = (
-                Path(__file__).parent.parent.parent
-                / "nexusLIMS"
-                / "db"
-                / "dev"
-                / "NexusLIMS_db_creation_script.sql"
-            )
-            conn = sqlite3.connect(str(db_path))
-            with schema_script.open() as f:
-                conn.executescript(f.read())
-            conn.close()
-        os.environ["NX_DB_PATH"] = str(db_path)
+    # Use shared database creation function from top-level conftest
+    from tests.conftest import create_test_database
+
+    create_test_database(db_path)
+    os.environ["NX_DB_PATH"] = str(db_path)
 
     # Set required CDCS environment variables to dummy values
     # (actual values will be set per-test via fixtures)
@@ -312,22 +302,22 @@ def docker_services(request, host_fileserver):  # noqa: PLR0912, PLR0915
         print(f"[+] Created {test_dir}")
 
     # Initialize default database for Settings validation
-    # (pytest_configure creates an empty file, but we need the schema)
     print("[*] Initializing default test database...")
-    import sqlite3
+    from sqlmodel import SQLModel, create_engine
+
+    # Import all models to register them with SQLModel metadata
+    from nexusLIMS.db.models import (  # noqa: F401
+        Instrument,
+        SessionLog,
+        UploadLog,
+    )
 
     db_path = TEST_DATA_DIR / "integration_test.db"
-    schema_script = (
-        Path(__file__).parent.parent.parent
-        / "nexusLIMS"
-        / "db"
-        / "dev"
-        / "NexusLIMS_db_creation_script.sql"
-    )
-    conn = sqlite3.connect(str(db_path))
-    with schema_script.open() as f:
-        conn.executescript(f.read())
-    conn.close()
+
+    # Create engine and tables using SQLModel
+    engine = create_engine(f"sqlite:///{db_path}")
+    SQLModel.metadata.create_all(engine)
+
     print(f"[+] Initialized {db_path}")
 
     # Check if services are already running
@@ -1289,8 +1279,8 @@ def test_database(tmp_path, monkeypatch):
     Create fresh test database for integration tests.
 
     This fixture creates a temporary SQLite database and initializes the
-    NexusLIMS database schema. The database is isolated for each test and
-    automatically cleaned up after the test completes.
+    NexusLIMS database schema using SQLModel. The database is isolated for
+    each test and automatically cleaned up after the test completes.
 
     Parameters
     ----------
@@ -1308,28 +1298,23 @@ def test_database(tmp_path, monkeypatch):
     -----
     The database is automatically cleaned up by pytest's tmp_path fixture
     """
-    import sqlite3
+    from sqlmodel import SQLModel, create_engine
 
     from nexusLIMS.config import refresh_settings
+
+    # Import all models to register them with SQLModel metadata
+    from nexusLIMS.db.models import (  # noqa: F401
+        Instrument,
+        SessionLog,
+        UploadLog,
+    )
 
     # Create database in temporary directory
     db_path = tmp_path / "test_integration.db"
 
-    # Initialize database schema using production SQL script
-    # NOTE: Must create database BEFORE refreshing settings since NX_DB_PATH
-    # validation requires the file to exist
-    schema_script = (
-        Path(__file__).parent.parent.parent
-        / "nexusLIMS"
-        / "db"
-        / "dev"
-        / "NexusLIMS_db_creation_script.sql"
-    )
-
-    conn = sqlite3.connect(db_path)
-    with schema_script.open() as f:
-        conn.executescript(f.read())
-    conn.close()
+    # Create engine and tables using SQLModel
+    engine = create_engine(f"sqlite:///{db_path}")
+    SQLModel.metadata.create_all(engine)
 
     # Now that the database file exists, update the config
     monkeypatch.setenv("NX_DB_PATH", str(db_path))
@@ -2168,24 +2153,42 @@ def multi_signal_integration_record(  # noqa: PLR0913, PLR0915
 
     # Run record building (skip NEMO harvesting since we already created the sessions)
     print("\n[*] Running record builder...")
-    xml_files = record_builder.build_new_session_records(generate_previews=True)
+    xml_files, sessions_built = record_builder.build_new_session_records(
+        generate_previews=True
+    )
 
-    # Upload the built records to CDCS and move to uploaded directory
+    # Export the built records using the new export framework
     if xml_files:
-        print(f"\n[*] Uploading {len(xml_files)} records to CDCS...")
+        print(f"\n[*] Exporting {len(xml_files)} records to configured destinations...")
         import shutil
 
-        from nexusLIMS.cdcs import upload_record_files
         from nexusLIMS.config import settings
+        from nexusLIMS.exporters import export_records, was_successfully_exported
 
-        files_uploaded, _ = upload_record_files(xml_files, progress=False)
+        # Export to all configured destinations
+        export_results = export_records(xml_files, sessions_built)
 
-        # Move uploaded files to the "uploaded" subdirectory
-        # (matching process_new_records behavior)
+        # Update session status based on export results
+        sessions_by_file = dict(zip(xml_files, sessions_built, strict=True))
+        for xml_file, session_obj in sessions_by_file.items():
+            if was_successfully_exported(xml_file, export_results):
+                session_obj.update_session_status(RecordStatus.COMPLETED)
+                print(f"  Session {session_obj.session_identifier} marked COMPLETED")
+            else:
+                session_obj.update_session_status(RecordStatus.BUILT_NOT_EXPORTED)
+                pytest.fail(
+                    f"Export failed for {xml_file.name}. "
+                    f"Session marked BUILT_NOT_EXPORTED"
+                )
+
+        # Move successfully exported files to uploaded directory
         uploaded_dir = settings.records_dir_path / "uploaded"
         uploaded_dir.mkdir(parents=True, exist_ok=True)
 
-        for f in files_uploaded:
+        files_exported = [
+            f for f in xml_files if was_successfully_exported(f, export_results)
+        ]
+        for f in files_exported:
             shutil.copy2(f, uploaded_dir)
             Path(f).unlink()
 

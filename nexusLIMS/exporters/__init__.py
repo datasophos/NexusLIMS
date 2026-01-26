@@ -24,7 +24,7 @@ from typing import TYPE_CHECKING
 
 from sqlmodel import Session as DBSession
 
-from nexusLIMS import config
+from nexusLIMS.config import settings
 from nexusLIMS.db.engine import get_engine
 from nexusLIMS.db.models import UploadLog
 from nexusLIMS.exporters.base import ExportContext, ExportResult
@@ -69,7 +69,7 @@ def export_records(
         raise ValueError(msg)
 
     registry = get_registry()
-    strategy = config.NX_EXPORT_STRATEGY
+    strategy = settings.NX_EXPORT_STRATEGY
 
     _logger.info(
         "Exporting %d record(s) using strategy: %s",

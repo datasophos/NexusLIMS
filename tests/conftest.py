@@ -11,6 +11,43 @@ from pathlib import Path
 # set up the environment at runtime without validation errors during import
 os.environ["NX_TEST_MODE"] = "true"
 
+
+# ============================================================================
+# Shared Database Initialization
+# ============================================================================
+
+
+def create_test_database(db_path: Path) -> None:
+    """
+    Create a test database using SQLModel.
+
+    This ensures the schema matches the actual model definitions and is used
+    by both unit and integration tests to maintain consistency.
+
+    Parameters
+    ----------
+    db_path : Path
+        Path where the database should be created
+    """
+    from sqlmodel import SQLModel, create_engine
+
+    # Import all models to register them with SQLModel metadata
+    from nexusLIMS.db.models import (  # noqa: F401
+        Instrument,
+        SessionLog,
+        UploadLog,
+    )
+
+    # Always recreate to ensure latest schema
+    if db_path.exists():
+        db_path.unlink()
+
+    # Create engine and tables
+    engine = create_engine(f"sqlite:///{db_path}")
+    SQLModel.metadata.create_all(engine)
+    engine.dispose()
+
+
 # This MUST be at the top-level conftest.py (not in subdirectories)
 # Include unit test fixtures in pytest_plugins to make them available to both
 # unit and integration tests. This allows fixtures like multi_signal_test_files

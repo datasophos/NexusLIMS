@@ -166,7 +166,7 @@ class ExporterRegistry:
         self,
         context: ExportContext,
         *,
-        strategy: ExportStrategy = "best_effort",
+        strategy: ExportStrategy = "all",
     ) -> list[ExportResult]:
         """Export to destinations according to strategy.
 
@@ -175,7 +175,7 @@ class ExporterRegistry:
         context
             Export context with file path and session metadata
         strategy
-            Export strategy to use (default: "best_effort")
+            Export strategy to use (default: "all")
 
         Returns
         -------

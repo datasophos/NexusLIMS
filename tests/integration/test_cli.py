@@ -119,7 +119,7 @@ class TestProcessRecordsScript:
         from nexusLIMS.config import settings
 
         # Capture current time to compare against log file path
-        test_start_time = datetime.now()  # noqa: DTZ005
+        test_start_time = datetime.now()
 
         # Mock sys.argv to pass dry-run and verbose flags
         monkeypatch.setattr("sys.argv", ["nexuslims-process-records", "-n", "-vv"])

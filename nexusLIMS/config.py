@@ -216,12 +216,12 @@ class Settings(BaseSettings):
         ),
     )
     NX_EXPORT_STRATEGY: Literal["all", "first_success", "best_effort"] = Field(
-        "best_effort",
+        "all",
         description=(
             "Strategy for exporting records to multiple destinations. "
-            "'all': All destinations must succeed. "
+            "'all': All destinations must succeed (recommended). "
             "'first_success': Stop after first successful export. "
-            "'best_effort': Try all destinations, succeed if any succeed (recommended)."
+            "'best_effort': Try all destinations, succeed if any succeed."
         ),
     )
     NX_CERT_BUNDLE_FILE: TestAwareFilePath | None = Field(  # type: ignore[valid-type]

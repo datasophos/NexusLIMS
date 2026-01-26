@@ -39,9 +39,9 @@ Successfully implemented a comprehensive multi-destination export framework for 
 - **Auto-discovery**: Walks `exporters/destinations/` directory to find plugins
 - **Priority-based execution**: Higher priority (0-1000) destinations run first
 - **Export strategies**:
-  - `all`: All destinations must succeed
+  - `all`: All destinations must succeed (default)
   - `first_success`: Stop after first successful export
-  - `best_effort`: Try all, succeed if any succeed (default)
+  - `best_effort`: Try all, succeed if any succeed
 - **Inter-destination dependencies**: `ExportContext.previous_results` allows destinations to access results from higher-priority destinations
 - **Database logging**: Automatic logging to `upload_log` table
 
@@ -210,7 +210,7 @@ class LabArchivesDestination:
 2. **Configure export strategy (optional):**
    ```bash
    # Add to .env
-   NX_EXPORT_STRATEGY=best_effort  # or "all", "first_success"
+   NX_EXPORT_STRATEGY=all  # or "all", "first_success"
    ```
 
 3. **Existing CDCS configuration continues to work:**
