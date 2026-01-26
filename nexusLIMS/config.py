@@ -215,6 +215,21 @@ class Settings(BaseSettings):
             "record uploads that are authenticated using the CDCS credentials."
         ),
     )
+    NX_LABARCHIVES_API_KEY: str | None = Field(
+        "test_labarchives_key" if TEST_MODE else None,
+        description=(
+            "API key for authenticating to the LabArchives API for uploading "
+            "built records. If not configured, LabArchives export will be disabled."
+        ),
+    )
+    NX_LABARCHIVES_URL: TestAwareHttpUrl | None = Field(  # type: ignore[valid-type]
+        "http://localhost:9000" if TEST_MODE else None,
+        description=(
+            "The root URL of the LabArchives instance. This will be the target for "
+            "record uploads authenticated using the LabArchives API key. "
+            "If not configured, LabArchives export will be disabled."
+        ),
+    )
     NX_EXPORT_STRATEGY: Literal["all", "first_success", "best_effort"] = Field(
         "all",
         description=(
