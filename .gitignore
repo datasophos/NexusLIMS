@@ -8,6 +8,8 @@ api_tests/
 backups
 .~lock*
 
+labarchives_api_docs
+
 # Other files
 TODO.md
 nemo_api_schemas
