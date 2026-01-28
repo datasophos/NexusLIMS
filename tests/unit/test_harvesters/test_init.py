@@ -36,14 +36,34 @@ class TestCABundleHandling:
         # Verify all lines end with newline
         assert all(line.endswith(b"\n") for line in result)
 
-    def test_ca_bundle_content_is_set(self):
-        """Verify that CA_BUNDLE_CONTENT is actually set in the module."""
+    def test_ca_bundle_content_is_set(self, monkeypatch):
+        """Verify that CA_BUNDLE_CONTENT is set when NX_CERT_BUNDLE is provided."""
+        import importlib
+
+        import nexusLIMS.harvesters
+        from nexusLIMS.config import refresh_settings
+
+        # Set up environment with test certificate
+        monkeypatch.setenv(
+            "NX_CERT_BUNDLE",
+            "-----BEGIN CERTIFICATE-----\\nDUMMY\\n-----END CERTIFICATE-----",
+        )
+
+        # Refresh settings and reload the harvesters module to pick up changes
+        refresh_settings()
+        importlib.reload(nexusLIMS.harvesters)
+
         from nexusLIMS.harvesters import CA_BUNDLE_CONTENT
 
-        # The conftest.py sets NX_CERT_BUNDLE, so CA_BUNDLE_CONTENT should exist
+        # CA_BUNDLE_CONTENT should now be set from the environment variable
         assert CA_BUNDLE_CONTENT is not None
         assert isinstance(CA_BUNDLE_CONTENT, list)
+        assert len(CA_BUNDLE_CONTENT) > 0
 
         # Verify it contains bytes
-        if len(CA_BUNDLE_CONTENT) > 0:
-            assert all(isinstance(line, bytes) for line in CA_BUNDLE_CONTENT)
+        assert all(isinstance(line, bytes) for line in CA_BUNDLE_CONTENT)
+
+        # Verify the content matches what we set
+        assert b"-----BEGIN CERTIFICATE-----\n" in CA_BUNDLE_CONTENT
+        assert b"DUMMY\n" in CA_BUNDLE_CONTENT
+        assert b"-----END CERTIFICATE-----\n" in CA_BUNDLE_CONTENT

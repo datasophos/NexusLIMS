@@ -11,7 +11,7 @@ from sqlmodel import Session as DBSession
 from sqlmodel import select
 
 from nexusLIMS.db import session_handler
-from nexusLIMS.db.engine import engine
+from nexusLIMS.db.engine import get_engine
 from nexusLIMS.db.enums import EventType, RecordStatus
 from nexusLIMS.db.models import SessionLog, TZDateTime, UploadLog
 from nexusLIMS.utils.time import current_system_tz
@@ -46,7 +46,7 @@ class TestSession:
     @pytest.mark.usefixtures("_cleanup_session_log")
     def test_record_generation_timestamp(self, session):
         row_dict = session.insert_record_generation_event()
-        with DBSession(engine) as db_session:
+        with DBSession(get_engine()) as db_session:
             statement = select(SessionLog).where(
                 SessionLog.id_session_log == row_dict["id_session_log"]
             )
@@ -64,7 +64,7 @@ class TestSession:
             record_status=RecordStatus.TO_BE_BUILT,
             user="test",
         )
-        with DBSession(engine) as db_session:
+        with DBSession(get_engine()) as db_session:
             db_session.add(log)
             db_session.commit()
 
@@ -77,7 +77,7 @@ class TestSession:
             session_handler.get_sessions_to_build()
 
         # remove the session log we added
-        with DBSession(engine) as db_session:
+        with DBSession(get_engine()) as db_session:
             statement = select(SessionLog).where(
                 SessionLog.session_identifier == uuid_str
             )
@@ -115,7 +115,7 @@ class TestSessionLog:
         # this test class, so it doesn't mess up future record building tests
         yield None
         # below runs on test teardown
-        with DBSession(engine) as db_session:
+        with DBSession(get_engine()) as db_session:
             statement = select(SessionLog).where(
                 SessionLog.session_identifier == "testing-session-log"
             )
@@ -138,14 +138,14 @@ class TestSessionLog:
     @pytest.mark.usefixtures("_record_cleanup_session_log")
     def test_insert_log(self, sl):
         # Count existing session logs
-        with DBSession(engine) as db_session:
+        with DBSession(get_engine()) as db_session:
             res_before = db_session.exec(select(SessionLog)).all()
 
         # Insert a new log
         sl.insert_log()
 
         # Count session logs after insert
-        with DBSession(engine) as db_session:
+        with DBSession(get_engine()) as db_session:
             res_after = db_session.exec(select(SessionLog)).all()
 
         assert len(res_after) - len(res_before) == 1

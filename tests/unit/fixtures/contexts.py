@@ -116,14 +116,6 @@ def db_context(request, db_factory, monkeypatch):
     # This ensures all code using get_engine() gets the test database
     monkeypatch.setattr(nexusLIMS.db.engine, "get_engine", lambda: new_engine)
 
-    # Patch test modules that import engine at module level
-    try:
-        import tests.unit.test_sessions
-
-        monkeypatch.setattr(tests.unit.test_sessions, "engine", new_engine)
-    except (ImportError, AttributeError):
-        pass  # Module not imported yet or doesn't have engine
-
     return db_path
 
     # Cleanup handled by tmp_path fixture (db_factory uses temp_dir)
