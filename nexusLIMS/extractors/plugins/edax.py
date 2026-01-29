@@ -10,7 +10,7 @@ from nexusLIMS.extractors.base import ExtractionContext
 from nexusLIMS.extractors.utils import _set_instr_name_and_time, add_to_extensions
 from nexusLIMS.instruments import get_instr_from_filepath
 from nexusLIMS.schemas.units import ureg
-from nexusLIMS.utils import try_getting_dict_value
+from nexusLIMS.utils.dicts import try_getting_dict_value
 
 _logger = logging.getLogger(__name__)
 

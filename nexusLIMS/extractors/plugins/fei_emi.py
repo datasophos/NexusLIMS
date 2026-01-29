@@ -15,12 +15,12 @@ from nexusLIMS.extractors.base import ExtractionContext
 from nexusLIMS.extractors.utils import add_to_extensions
 from nexusLIMS.instruments import get_instr_from_filepath
 from nexusLIMS.schemas.units import ureg
-from nexusLIMS.utils import (
-    current_system_tz,
+from nexusLIMS.utils.dicts import (
     set_nested_dict_value,
     sort_dict,
     try_getting_dict_value,
 )
+from nexusLIMS.utils.time import current_system_tz
 
 _logger = logging.getLogger(__name__)
 

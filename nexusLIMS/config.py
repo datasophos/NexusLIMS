@@ -215,6 +215,15 @@ class Settings(BaseSettings):
             "record uploads that are authenticated using the CDCS credentials."
         ),
     )
+    NX_EXPORT_STRATEGY: Literal["all", "first_success", "best_effort"] = Field(
+        "all",
+        description=(
+            "Strategy for exporting records to multiple destinations. "
+            "'all': All destinations must succeed (recommended). "
+            "'first_success': Stop after first successful export. "
+            "'best_effort': Try all destinations, succeed if any succeed."
+        ),
+    )
     NX_CERT_BUNDLE_FILE: TestAwareFilePath | None = Field(  # type: ignore[valid-type]
         None,
         description=(
@@ -512,7 +521,7 @@ class _SettingsManager:
             help_msg = (
                 "\n" + "=" * 80 + "\n"
                 "NexusLIMS configuration validation failed.\n"
-                f"See https://datasophos.github.io/NexusLIMS/{doc_version}/configuration.html\n"
+                f"See https://datasophos.github.io/NexusLIMS/{doc_version}/user_guide/configuration.html\n"
                 "for complete environment variable reference.\n" + "=" * 80
             )
             if hasattr(e, "add_note"):

@@ -1,7 +1,7 @@
 """Tests for the record builder module."""
 
 # pylint: disable=missing-function-docstring,too-many-locals
-# ruff: noqa: D102, ARG001, ARG002, ARG005
+# ruff: noqa: D102, ARG001, ARG005
 
 import re
 import shutil
@@ -22,10 +22,11 @@ from nexusLIMS.db.engine import get_engine
 from nexusLIMS.db.enums import EventType, RecordStatus
 from nexusLIMS.db.models import SessionLog
 from nexusLIMS.db.session_handler import Session
+from nexusLIMS.exporters.base import ExportResult
 from nexusLIMS.harvesters.nemo.exceptions import NoMatchingReservationError
 from nexusLIMS.harvesters.reservation_event import ReservationEvent
 from nexusLIMS.instruments import Instrument
-from nexusLIMS.utils import current_system_tz
+from nexusLIMS.utils.time import current_system_tz
 from tests.unit.test_instrument_factory import (
     make_test_tool,
     make_titan_tem,
@@ -33,6 +34,47 @@ from tests.unit.test_instrument_factory import (
 
 NX_NS = "https://data.nist.gov/od/dm/nexus/experiment/v1.0"
 """Nexus Schema XML namespace for use throughout the tests"""
+
+
+def _mock_successful_export(xml_files, sessions):
+    """Create mock successful export results for testing.
+
+    Returns a dict mapping each XML file to a list with one successful ExportResult.
+    """
+    from datetime import datetime as dt
+
+    results = {}
+    for xml_file in xml_files:
+        results[xml_file] = [
+            ExportResult(
+                success=True,
+                destination_name="cdcs",
+                record_id="test_record_id",
+                record_url="https://test.cdcs.url/record/123",
+                timestamp=dt.now(),
+            )
+        ]
+    return results
+
+
+def _mock_failed_export(xml_files, sessions):
+    """Create mock failed export results for testing.
+
+    Returns a dict mapping each XML file to a list with one failed ExportResult.
+    """
+    from datetime import datetime as dt
+
+    results = {}
+    for xml_file in xml_files:
+        results[xml_file] = [
+            ExportResult(
+                success=False,
+                destination_name="cdcs",
+                error_message="Test export failure",
+                timestamp=dt.now(),
+            )
+        ]
+    return results
 
 
 @pytest.fixture
@@ -486,9 +528,8 @@ class TestRecordBuilder:
         test_record_files,
         monkeypatch,
     ):
-        # make record uploader just pretend by returning all files provided
-        # (as if they were actually uploaded)
-        monkeypatch.setattr(record_builder, "upload_record_files", lambda x: (x, x))
+        # Mock export_records to return successful results
+        monkeypatch.setattr(record_builder, "export_records", _mock_successful_export)
 
         # Process all sessions in the database (all 3 test sessions)
         # The fresh_test_db fixture already has FEI-Titan-TEM, JEOL-JEM-TEM,
@@ -662,7 +703,7 @@ class TestRecordBuilder:
             return [s for s in all_sessions if s.instrument.name == "FEI-Titan-TEM"]
 
         monkeypatch.setattr(record_builder, "get_sessions_to_build", mock_get_sessions)
-        monkeypatch.setattr(record_builder, "upload_record_files", lambda x: (x, x))
+        monkeypatch.setattr(record_builder, "export_records", _mock_successful_export)
         monkeypatch.setattr(
             record_builder,
             "build_record",
@@ -681,7 +722,7 @@ class TestRecordBuilder:
             monkeypatch.setattr(settings, "NX_FILE_STRATEGY", env_value)
 
         # Build the record
-        xml_files = record_builder.build_new_session_records()
+        xml_files, _ = record_builder.build_new_session_records()
         assert len(xml_files) == 1
         f = xml_files[0]
 
@@ -714,23 +755,31 @@ class TestRecordBuilder:
         monkeypatch,
         caplog,
     ):
-        # set the methods used to determine if all records were uploaded to
-        # just return known lists
+        # Mock build_new_session_records to return dummy files and mock sessions
+        # Mock export_records to return failed results
+        dummy_files = [Path("dummy_file1"), Path("dummy_file2"), Path("dummy_file3")]
+
+        # Create mock Session objects with required attributes
+        from unittest.mock import Mock
+
+        dummy_sessions = []
+        for i in range(3):
+            mock_session = Mock(spec=Session)
+            mock_session.session_identifier = f"dummy_session_{i}"
+            dummy_sessions.append(mock_session)
+
         monkeypatch.setattr(
             record_builder,
             "build_new_session_records",
-            lambda: ["dummy_file1", "dummy_file2", "dummy_file3"],
+            lambda: (dummy_files, dummy_sessions),
         )
-        monkeypatch.setattr(record_builder, "upload_record_files", lambda _x: ([], []))
+        monkeypatch.setattr(record_builder, "export_records", _mock_failed_export)
 
         record_builder.process_new_records(
             dt_from=dt.fromisoformat("2021-08-01T13:00:00-06:00"),
             dt_to=dt.fromisoformat("2021-09-05T20:00:00-06:00"),
         )
-        assert (
-            "Some record files were not uploaded: "
-            "['dummy_file1', 'dummy_file2', 'dummy_file3']" in caplog.text
-        )
+        assert "Some record files were not exported:" in caplog.text
 
     def test_build_record_error(self, monkeypatch, caplog, skip_preview_generation):
         def mock_get_sessions():
@@ -839,7 +888,7 @@ class TestRecordBuilder:
             ]
 
         monkeypatch.setattr(record_builder, "get_sessions_to_build", mock_get_sessions)
-        xmls_files = record_builder.build_new_session_records()
+        xml_files, _ = record_builder.build_new_session_records()
 
         # Query session logs using SQLModel
         with DBSession(get_engine()) as db_session:
@@ -853,7 +902,7 @@ class TestRecordBuilder:
         for log in logs:
             assert log.record_status == RecordStatus.NO_CONSENT
         assert "Reservation requested not to have their data harvested" in caplog.text
-        assert len(xmls_files) == 0  # no record should be returned
+        assert len(xml_files) == 0  # no record should be returned
 
     @pytest.mark.usefixtures("mock_nemo_reservation", "skip_preview_generation")
     def test_build_record_single_file(self, test_record_files, monkeypatch):
@@ -881,9 +930,9 @@ class TestRecordBuilder:
             ]
 
         monkeypatch.setattr(record_builder, "get_sessions_to_build", mock_get_sessions)
-        monkeypatch.setattr(record_builder, "upload_record_files", lambda x: (x, x))
+        monkeypatch.setattr(record_builder, "export_records", _mock_successful_export)
 
-        xml_files = record_builder.build_new_session_records()
+        xml_files, _ = record_builder.build_new_session_records()
         assert len(xml_files) == 1
 
         aa_count = 1
@@ -958,9 +1007,8 @@ class TestRecordBuilder:
 
         monkeypatch.setattr(record_builder, "get_sessions_to_build", mock_get_sessions)
 
-        # make record uploader just pretend by returning all files provided (
-        # as if they were actually uploaded)
-        monkeypatch.setattr(record_builder, "upload_record_files", lambda x: (x, x))
+        # Mock export_records to return successful results
+        monkeypatch.setattr(record_builder, "export_records", _mock_successful_export)
 
         # override preview generation to save time
         monkeypatch.setattr(
@@ -969,7 +1017,7 @@ class TestRecordBuilder:
             partial(build_record, generate_previews=False),
         )
 
-        xml_files = record_builder.build_new_session_records()
+        xml_files, _ = record_builder.build_new_session_records()
 
         aa_count = 1
         dataset_count = 4
@@ -1095,9 +1143,9 @@ class TestRecordBuilder:
             ]
 
         monkeypatch.setattr(record_builder, "get_sessions_to_build", mock_get_sessions)
-        monkeypatch.setattr(record_builder, "upload_record_files", lambda x: (x, x))
+        monkeypatch.setattr(record_builder, "export_records", _mock_successful_export)
 
-        xml_files = record_builder.build_new_session_records()
+        xml_files, _ = record_builder.build_new_session_records()
         assert len(xml_files) == 1
 
         f = xml_files[0]

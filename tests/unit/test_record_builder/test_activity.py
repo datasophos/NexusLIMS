@@ -30,7 +30,7 @@ class TestActivity:
         from freezegun import freeze_time
 
         from nexusLIMS.schemas.activity import AcquisitionActivity
-        from nexusLIMS.utils import current_system_tz
+        from nexusLIMS.utils.time import current_system_tz
 
         # Freeze time at a specific moment
         frozen_time = "2024-01-15 10:30:00"

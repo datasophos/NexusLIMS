@@ -19,7 +19,11 @@ from nexusLIMS.extractors.base import FieldDefinition as FD
 from nexusLIMS.extractors.utils import _set_instr_name_and_time, add_to_extensions
 from nexusLIMS.instruments import get_instr_from_filepath
 from nexusLIMS.schemas.units import ureg
-from nexusLIMS.utils import set_nested_dict_value, sort_dict, try_getting_dict_value
+from nexusLIMS.utils.dicts import (
+    set_nested_dict_value,
+    sort_dict,
+    try_getting_dict_value,
+)
 
 FEI_TIFF_TAG = 34682
 """

@@ -1,4 +1,3 @@
-# ruff: noqa: ARG002
 """
 Test suite for validating pytest fixture infrastructure.
 

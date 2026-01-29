@@ -12,7 +12,7 @@ from datetime import timedelta
 
 from nexusLIMS.db.session_handler import Session
 from nexusLIMS.harvesters.reservation_event import ReservationEvent
-from nexusLIMS.utils import get_timespan_overlap
+from nexusLIMS.utils.time import get_timespan_overlap
 
 from .connector import NemoConnector
 from .exceptions import NoDataConsentError, NoMatchingReservationError

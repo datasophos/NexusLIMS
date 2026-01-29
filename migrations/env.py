@@ -28,7 +28,7 @@ from sqlalchemy import engine_from_config, pool
 from sqlmodel import SQLModel
 
 from nexusLIMS.config import settings
-from nexusLIMS.db.models import Instrument, SessionLog  # noqa: F401
+from nexusLIMS.db.models import Instrument, SessionLog, UploadLog  # noqa: F401
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

@@ -1,16 +1,13 @@
 """Tests functionality related to the interacting with the CDCS frontend."""
 
 # pylint: disable=missing-function-docstring
-# ruff: noqa: D102, ARG001, ARG002, ARG005
+# ruff: noqa: D102, ARG005
 
-import os
-from pathlib import Path
 from typing import NamedTuple
 
 import pytest
 
-from nexusLIMS import cdcs
-from nexusLIMS.utils import AuthenticationError
+from nexusLIMS.utils import cdcs
 
 
 class MockResponse(NamedTuple):
@@ -29,55 +26,13 @@ class MockResponseWithJson(NamedTuple):
 
 
 class TestCDCS:
-    """Test the CDCS module using mocked server."""
+    """Test the CDCS utility functions."""
 
     @pytest.fixture(autouse=True)
     def _setup_cdcs_env(self, monkeypatch, mock_cdcs_server):
         """Set up CDCS environment variables and mock server."""
         monkeypatch.setenv("NX_CDCS_URL", "http://test-cdcs.example.com")
         monkeypatch.setenv("NX_CDCS_TOKEN", "test-api-token-not-for-production")
-
-    def test_upload_and_delete_record(self, test_xml_record_file):
-        _files_uploaded, record_ids = cdcs.upload_record_files(
-            [test_xml_record_file[0]],
-        )
-        cdcs.delete_record(record_ids[0])
-
-    def test_upload_and_delete_record_glob(self, test_xml_record_file):
-        prev_dir = Path.cwd()
-        os.chdir(test_xml_record_file[0].parent)
-        _files_uploaded, record_ids = cdcs.upload_record_files(None)
-        for id_ in record_ids:
-            cdcs.delete_record(id_)
-        os.chdir(prev_dir)
-
-    def test_upload_no_files_glob(self, test_xml_record_file):
-        prev_dir = Path.cwd()
-        os.chdir(test_xml_record_file[0].parent / "figs")
-        with pytest.raises(ValueError, match=r"No \.xml files were found"):
-            _files_uploaded, _record_ids = cdcs.upload_record_files(None)
-        os.chdir(prev_dir)
-
-    def test_upload_file_bad_response(
-        self,
-        monkeypatch,
-        test_xml_record_file,
-        caplog,
-    ):
-        def mock_upload(_xml_content, _title):
-            return (
-                MockResponse(status_code=404, text="This is a fake request error!"),
-                "dummy_id",
-            )
-
-        monkeypatch.setattr(cdcs, "upload_record_content", mock_upload)
-
-        files_uploaded, record_ids = cdcs.upload_record_files(
-            [test_xml_record_file[0]],
-        )
-        assert len(files_uploaded) == 0
-        assert len(record_ids) == 0
-        assert f"Could not upload {test_xml_record_file[0].name}" in caplog.text
 
     def test_bad_auth(self, monkeypatch):
         """Test that bad authentication credentials raise AuthenticationError."""
@@ -90,17 +45,17 @@ class TestCDCS:
                 text="Unauthorized",
             )
 
-        monkeypatch.setattr(cdcs, "nexus_req", mock_nexus_req_bad_auth)
+        # Patch nexus_req in the cdcs module where it's imported
+        monkeypatch.setattr("nexusLIMS.utils.cdcs.nexus_req", mock_nexus_req_bad_auth)
 
-        with pytest.raises(AuthenticationError):
+        with pytest.raises(cdcs.AuthenticationError):
             cdcs.get_workspace_id()
-        with pytest.raises(AuthenticationError):
+        with pytest.raises(cdcs.AuthenticationError):
             cdcs.get_template_id()
 
     def test_delete_record_bad_response(self, monkeypatch, caplog):
         monkeypatch.setattr(
-            cdcs,
-            "nexus_req",
+            "nexusLIMS.utils.cdcs.nexus_req",
             lambda _x, _y, token_auth=None: MockResponse(
                 status_code=404,
                 text="This is a fake request error!",
@@ -109,29 +64,6 @@ class TestCDCS:
         cdcs.delete_record("dummy")
         assert "Received error while deleting dummy:" in caplog.text
         assert "This is a fake request error!" in caplog.text
-
-    def test_upload_content_bad_response(self, monkeypatch, caplog):
-        """Test upload_record_content with bad server response."""
-
-        # pylint: disable=unused-argument
-        def mock_req(_a, _b, json=None, *, token_auth=None):
-            return MockResponseWithJson(
-                status_code=404,
-                text="This is a fake request error!",
-                json=lambda: [{"id": "dummy", "current": "dummy"}],
-            )
-
-        monkeypatch.setattr(cdcs, "nexus_req", mock_req)
-
-        resp, record_id = cdcs.upload_record_content("<xml>content</xml>", "title")
-        # When upload fails, a tuple is returned with response and None
-        assert isinstance(resp, (MockResponse, MockResponseWithJson))
-        assert record_id is None
-        assert "Got error while uploading title:" in caplog.text
-        assert "This is a fake request error!" in caplog.text
-
-    # Note: test_no_env_variable removed - pydantic Settings now validates
-    # NX_CDCS_URL at module import time, not at function call time
 
     def test_search_records_unauthorized(self, monkeypatch):
         """Test search_records with authentication error."""
@@ -143,9 +75,13 @@ class TestCDCS:
                 text="Unauthorized",
             )
 
-        monkeypatch.setattr(cdcs, "nexus_req", mock_nexus_req_unauthorized)
+        monkeypatch.setattr(
+            "nexusLIMS.utils.cdcs.nexus_req", mock_nexus_req_unauthorized
+        )
 
-        with pytest.raises(AuthenticationError, match="Could not authenticate to CDCS"):
+        with pytest.raises(
+            cdcs.AuthenticationError, match="Could not authenticate to CDCS"
+        ):
             cdcs.search_records(title="test")
 
     def test_search_records_bad_request(self, monkeypatch, caplog):
@@ -158,7 +94,9 @@ class TestCDCS:
                 text="Invalid query parameters",
             )
 
-        monkeypatch.setattr(cdcs, "nexus_req", mock_nexus_req_bad_request)
+        monkeypatch.setattr(
+            "nexusLIMS.utils.cdcs.nexus_req", mock_nexus_req_bad_request
+        )
 
         with pytest.raises(ValueError, match="Invalid search parameters"):
             cdcs.search_records(title="test")
@@ -175,7 +113,9 @@ class TestCDCS:
                 text="Server error",
             )
 
-        monkeypatch.setattr(cdcs, "nexus_req", mock_nexus_req_server_error)
+        monkeypatch.setattr(
+            "nexusLIMS.utils.cdcs.nexus_req", mock_nexus_req_server_error
+        )
 
         results = cdcs.search_records(title="test")
 
@@ -192,9 +132,13 @@ class TestCDCS:
                 text="Unauthorized",
             )
 
-        monkeypatch.setattr(cdcs, "nexus_req", mock_nexus_req_unauthorized)
+        monkeypatch.setattr(
+            "nexusLIMS.utils.cdcs.nexus_req", mock_nexus_req_unauthorized
+        )
 
-        with pytest.raises(AuthenticationError, match="Could not authenticate to CDCS"):
+        with pytest.raises(
+            cdcs.AuthenticationError, match="Could not authenticate to CDCS"
+        ):
             cdcs.download_record("test_id")
 
     def test_download_record_not_found(self, monkeypatch):
@@ -207,7 +151,7 @@ class TestCDCS:
                 text="Not found",
             )
 
-        monkeypatch.setattr(cdcs, "nexus_req", mock_nexus_req_not_found)
+        monkeypatch.setattr("nexusLIMS.utils.cdcs.nexus_req", mock_nexus_req_not_found)
 
         with pytest.raises(ValueError, match="Record with id test_id not found"):
             cdcs.download_record("test_id")
@@ -222,7 +166,9 @@ class TestCDCS:
                 text="Server error",
             )
 
-        monkeypatch.setattr(cdcs, "nexus_req", mock_nexus_req_server_error)
+        monkeypatch.setattr(
+            "nexusLIMS.utils.cdcs.nexus_req", mock_nexus_req_server_error
+        )
 
         with pytest.raises(ValueError, match="Failed to download record test_id"):
             cdcs.download_record("test_id")

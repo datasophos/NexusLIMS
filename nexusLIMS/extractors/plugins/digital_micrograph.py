@@ -41,14 +41,14 @@ from nexusLIMS.extractors.utils import (
 )
 from nexusLIMS.instruments import get_instr_from_filepath
 from nexusLIMS.schemas.units import ureg
-from nexusLIMS.utils import (
-    current_system_tz,
+from nexusLIMS.utils.dicts import (
     remove_dict_nones,
     remove_dtb_element,
     set_nested_dict_value,
     sort_dict,
     try_getting_dict_value,
 )
+from nexusLIMS.utils.time import current_system_tz
 
 _logger = logging.getLogger(__name__)
 

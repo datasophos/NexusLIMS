@@ -1,64 +1,77 @@
+"""CDCS interaction utilities for NexusLIMS.
+
+This module provides functions for querying, downloading, and deleting records
+from a CDCS instance. These are non-export operations used primarily for
+testing and maintenance.
+
+For exporting records to CDCS, use the CDCSDestination plugin in
+nexusLIMS.exporters.destinations.cdcs instead.
 """
-A module to handle the uploading of previously-built XML records to a CDCS instance.
 
-See https://github.com/usnistgov/NexusLIMS-CDCS for more details on the NexusLIMS
-customizations to the CDCS application.
-
-This module can also be run directly to upload records to a CDCS instance without
-invoking the record builder.
-"""
-
-import argparse
 import logging
-import sys
 from http import HTTPStatus
 from pathlib import Path
-from typing import List, TypedDict
+from typing import Any, Dict, List
 from urllib.parse import urljoin
 
-from requests.models import Response
 from tqdm import tqdm
 
 from nexusLIMS.config import settings
-from nexusLIMS.utils import AuthenticationError, nexus_req
+from nexusLIMS.utils.network import nexus_req
 
-logging.basicConfig()
 _logger = logging.getLogger(__name__)
-_logger.setLevel(logging.INFO)
 
 
-class CDCSDataRecord(TypedDict):
+class AuthenticationError(Exception):
+    """Class for showing an exception having to do with authentication."""
+
+    def __init__(self, message):
+        self.message = message
+
+
+class CDCSDataRecord(Dict[str, Any]):
     """Type definition for a CDCS Data record returned by the API.
 
     This represents the structure of record objects returned by CDCS endpoints
     like /rest/data/query/ and /rest/data/query/keyword/.
-    """
 
-    id: int
-    template: int
-    workspace: int | None
-    user_id: str
-    title: str
-    checksum: str | None
-    creation_date: str | None
-    last_modification_date: str | None
-    last_change_date: str | None
-    xml_content: str
+    Attributes
+    ----------
+    id : int
+        The record ID
+    template : int
+        The template ID
+    workspace : int | None
+        The workspace ID
+    user_id : str
+        The user ID that created the record
+    title : str
+        The record title
+    checksum : str | None
+        The record checksum
+    creation_date : str | None
+        The record creation date
+    last_modification_date : str | None
+        The last modification date
+    last_change_date : str | None
+        The last change date
+    xml_content : str
+        The XML content of the record
+    """
 
 
 def get_cdcs_url() -> str:
-    """
-    Return the url to the NexusLIMS CDCS instance by fetching it from the environment.
+    """Return the URL to the NexusLIMS CDCS instance from environment.
 
     Returns
     -------
-    url : str
+    str
         The URL of the NexusLIMS CDCS instance to use
 
     Raises
     ------
     ValueError
-        If the ``NX_CDCS_URL`` setting is not defined, raise a ``ValueError``
+        If the NX_CDCS_URL setting is not defined
     """
     # NX_CDCS_URL is required, so validation ensures it exists
     # Convert AnyHttpUrl to string
@@ -66,115 +79,74 @@ def get_cdcs_url() -> str:
 
 
 def get_workspace_id() -> int:
-    """
-    Get the workspace ID that the user has access to.
+    """Get the workspace ID that the user has access to.
 
     This should be the Global Public Workspace in the current NexusLIMS CDCS
     implementation.
 
     Returns
     -------
-    workspace_id : int
+    int
         The workspace ID
+
+    Raises
+    ------
+    AuthenticationError
+        If authentication to CDCS fails
     """
     # assuming there's only one workspace for this user (that is the public
     # workspace)
-    _endpoint = urljoin(get_cdcs_url(), "rest/workspace/read_access")
-    _r = nexus_req(_endpoint, "GET", token_auth=settings.NX_CDCS_TOKEN)
-    if _r.status_code in (HTTPStatus.UNAUTHORIZED, HTTPStatus.FORBIDDEN):
+    endpoint = urljoin(get_cdcs_url(), "rest/workspace/read_access")
+    r = nexus_req(endpoint, "GET", token_auth=settings.NX_CDCS_TOKEN)
+    if r.status_code in (HTTPStatus.UNAUTHORIZED, HTTPStatus.FORBIDDEN):
         msg = (
             "Could not authenticate to CDCS. Is the NX_CDCS_TOKEN "
             "environment variable set correctly?"
         )
         raise AuthenticationError(msg)
 
-    return _r.json()[0]["id"]  # return workspace id
+    return r.json()[0]["id"]  # return workspace id
 
 
 def get_template_id() -> str:
-    """
-    Get the template ID for the schema (so the record can be associated with it).
+    """Get the template ID for the schema.
+
+    Returns the template ID so records can be associated with the correct schema.
 
     Returns
     -------
-    template_id : str
+    str
         The template ID
+
+    Raises
+    ------
+    AuthenticationError
+        If authentication to CDCS fails
     """
     # get the current template (XSD) id value:
-    _endpoint = urljoin(get_cdcs_url(), "rest/template-version-manager/global")
-    _r = nexus_req(_endpoint, "GET", token_auth=settings.NX_CDCS_TOKEN)
-    if _r.status_code in (HTTPStatus.UNAUTHORIZED, HTTPStatus.FORBIDDEN):
+    endpoint = urljoin(get_cdcs_url(), "rest/template-version-manager/global")
+    r = nexus_req(endpoint, "GET", token_auth=settings.NX_CDCS_TOKEN)
+    if r.status_code in (HTTPStatus.UNAUTHORIZED, HTTPStatus.FORBIDDEN):
         msg = (
             "Could not authenticate to CDCS. Is the NX_CDCS_TOKEN "
             "environment variable set correctly?"
         )
         raise AuthenticationError(msg)
 
-    return _r.json()[0]["current"]  # return template id
+    return r.json()[0]["current"]  # return template id
 
 
-def upload_record_content(xml_content, title) -> tuple[Response, int | None]:
-    """
-    Upload a single XML record to the NexusLIMS CDCS instance.
-
-    Parameters
-    ----------
-    xml_content : str
-        The actual content of an XML record (rather than a file)
-    title : str
-        The title to give to the record in CDCS
-
-    Returns
-    -------
-    post_r : :py:class:`~requests.Response`
-        The REST response returned from the CDCS instance after attempting
-        the upload
-    record_id : int | None
-        The id (on the server) of the record that was uploaded, or None if error
-    """
-    endpoint = urljoin(get_cdcs_url(), "rest/data/")
-
-    payload = {
-        "template": get_template_id(),
-        "title": title,
-        "xml_content": xml_content,
-    }
-
-    post_r = nexus_req(
-        endpoint, "POST", json=payload, token_auth=settings.NX_CDCS_TOKEN
-    )
-
-    if post_r.status_code != HTTPStatus.CREATED:
-        # anything other than 201 status means something went wrong
-        _logger.error("Got error while uploading %s:\n%s", title, post_r.text)
-        return post_r, None
-
-    # assign this record to the public workspace
-    record_id = post_r.json()["id"]
-    record_url = urljoin(get_cdcs_url(), f"data?id={record_id}")
-    wrk_endpoint = urljoin(
-        get_cdcs_url(),
-        f"rest/data/{record_id}/assign/{get_workspace_id()}",
-    )
-
-    _ = nexus_req(wrk_endpoint, "PATCH", token_auth=settings.NX_CDCS_TOKEN)
-
-    _logger.info('Record "%s" available at %s', title, record_url)
-    return post_r, record_id
-
-
-def delete_record(record_id):
-    """
-    Delete a Data record from the NexusLIMS CDCS instance via REST API.
+def delete_record(record_id: str):
+    """Delete a Data record from the NexusLIMS CDCS instance via REST API.
 
     Parameters
     ----------
-    record_id : str
+    record_id
         The id value (on the CDCS server) of the record to be deleted
 
     Returns
     -------
-    response : :py:class:`~requests.Response`
+    requests.Response
         The REST response returned from the CDCS instance after attempting
         the delete operation
     """
@@ -191,8 +163,7 @@ def search_records(
     template_id: str | None = None,
     keyword: str | None = None,
 ) -> list[CDCSDataRecord]:
-    """
-    Search for records in the CDCS instance by title, keyword, or other criteria.
+    """Search for records in the CDCS instance by title, keyword, or criteria.
 
     This function uses the CDCS query endpoint to search for records.
     If no parameters are provided, all records are returned.
@@ -207,12 +178,12 @@ def search_records(
 
     Parameters
     ----------
-    title : str, optional
+    title
         The title to search for (exact match). Only used when ``keyword`` is None.
-    template_id : str, optional
+    template_id
         The template ID to filter by. Can be combined with either ``title`` or
         ``keyword``.
-    keyword : str, optional
+    keyword
         Keyword(s) for full-text search across record content. When provided,
         takes precedence over ``title`` parameter.
 
@@ -227,6 +198,8 @@ def search_records(
     ------
     AuthenticationError
         If authentication fails
+    ValueError
+        If keyword parameter is empty or search parameters are invalid
     """
     if keyword is not None and not keyword.strip():
         msg = "Keyword parameter cannot be empty"
@@ -277,18 +250,17 @@ def search_records(
     return response.json()
 
 
-def download_record(record_id) -> str:
-    """
-    Download the XML content of a record from the CDCS instance.
+def download_record(record_id: str) -> str:
+    """Download the XML content of a record from the CDCS instance.
 
     Parameters
     ----------
-    record_id : str
+    record_id
         The id value (on the CDCS server) of the record to download
 
     Returns
     -------
-    xml_content : str
+    str
         The XML content of the record
 
     Raises
@@ -320,31 +292,96 @@ def download_record(record_id) -> str:
     return response.text
 
 
+def upload_record_content(xml_content: str, title: str) -> tuple[Any, int | None]:
+    """Upload a single XML record to the NexusLIMS CDCS instance.
+
+    Note
+    ----
+    This is a low-level utility function primarily used for testing.
+    For production record uploads, use the CDCSDestination exporter plugin
+    in nexusLIMS.exporters.destinations.cdcs instead.
+
+    Parameters
+    ----------
+    xml_content
+        The actual content of an XML record (rather than a file)
+    title
+        The title to give to the record in CDCS
+
+    Returns
+    -------
+    tuple[requests.Response, int | None]
+        A tuple of (response, record_id). The response is the REST response
+        returned from the CDCS instance after attempting the upload.
+        The record_id is the id (on the server) of the record that was uploaded,
+        or None if there was an error.
+    """
+    endpoint = urljoin(get_cdcs_url(), "rest/data/")
+
+    payload = {
+        "template": get_template_id(),
+        "title": title,
+        "xml_content": xml_content,
+    }
+
+    post_r = nexus_req(
+        endpoint, "POST", json=payload, token_auth=settings.NX_CDCS_TOKEN
+    )
+
+    if post_r.status_code != HTTPStatus.CREATED:
+        # anything other than 201 status means something went wrong
+        _logger.error("Got error while uploading %s:\n%s", title, post_r.text)
+        return post_r, None
+
+    # assign this record to the public workspace
+    record_id = post_r.json()["id"]
+    record_url = urljoin(get_cdcs_url(), f"data?id={record_id}")
+    wrk_endpoint = urljoin(
+        get_cdcs_url(),
+        f"rest/data/{record_id}/assign/{get_workspace_id()}",
+    )
+
+    _ = nexus_req(wrk_endpoint, "PATCH", token_auth=settings.NX_CDCS_TOKEN)
+
+    _logger.info('Record "%s" available at %s', title, record_url)
+    return post_r, record_id
+
+
 def upload_record_files(
     files_to_upload: List[Path] | None,
     *,
     progress: bool = False,
 ) -> tuple[List[Path], List[int]]:
-    """
-    Upload record files to CDCS.
+    """Upload record files to CDCS.
 
     Upload a list of .xml files (or all .xml files in the current directory)
     to the NexusLIMS CDCS instance using :py:meth:`upload_record_content`.
 
+    Note
+    ----
+    This is a utility function primarily used for testing and manual uploads.
+    For production record uploads, use the CDCSDestination exporter plugin
+    in nexusLIMS.exporters.destinations.cdcs instead.
+
     Parameters
     ----------
-    files_to_upload : typing.Optional[typing.List[pathlib.Path]]
+    files_to_upload: List[pathlib.Path] | None
         The list of .xml files to upload. If ``None``, all .xml files in the
         current directory will be used instead.
-    progress : bool
+    progress
         Whether to show a progress bar for uploading
 
     Returns
     -------
-    files_uploaded : list of pathlib.Path
-        A list of the files that were successfully uploaded
-    record_ids : list of int
-        A list of the record id values (on the server) that were uploaded
+    tuple[list[pathlib.Path], list[int]]
+        A tuple of (files_uploaded, record_ids). files_uploaded is a list of
+        the files that were successfully uploaded. record_ids is a list of the
+        record id values (on the server) that were uploaded.
+
+    Raises
+    ------
+    ValueError
+        If no .xml files are found
     """
     if files_to_upload is None:
         _logger.info("Using all .xml files in this directory")
@@ -387,36 +424,3 @@ def upload_record_files(
     )
 
     return files_uploaded, record_ids
-
-
-if __name__ == "__main__":  # pragma: no cover
-    parser = argparse.ArgumentParser(
-        description="Communicate with the Nexus CDCS instance",
-    )
-    parser.add_argument(
-        "--upload-records",
-        help="Upload .xml records to the Nexus CDCS",
-        action="store_true",
-    )
-    parser.add_argument(
-        "xml",
-        nargs="*",
-        help="(used with --upload-records) "
-        "Files to upload (separated by space and "
-        "surrounded by quotes, if needed). If no files "
-        "are specified, all .xml files in the current "
-        "directory will be used instead.",
-    )
-
-    args = parser.parse_args()
-
-    if len(sys.argv) == 1:
-        parser.print_help()
-
-    if args.upload_records:
-        if len(sys.argv) == 2:  # noqa: PLR2004
-            # no files were provided, so assume the user wanted to glob all
-            # .xml files in the current directory
-            upload_record_files(None)
-        elif len(sys.argv) > 2:  # noqa: PLR2004
-            upload_record_files(args.xml)

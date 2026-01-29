@@ -6,7 +6,6 @@
 import contextlib
 import os
 import shutil
-import sqlite3
 from datetime import datetime as dt
 from datetime import timedelta as td
 from pathlib import Path
@@ -29,45 +28,11 @@ _instr_data_path.mkdir(exist_ok=True)
 # Define path for dynamically-created test database
 _test_db_path = _nexuslims_path / "test_db.sqlite"
 
-# Create empty database with tables if it doesn't exist
-if not _test_db_path.exists():
-    conn = sqlite3.connect(_test_db_path)
-    cursor = conn.cursor()
-    # Create empty tables (will be populated by fresh_test_db fixture)
-    cursor.execute(
-        """
-        CREATE TABLE IF NOT EXISTS instruments (
-            instrument_pid VARCHAR(100) NOT NULL PRIMARY KEY,
-            api_url TEXT NOT NULL UNIQUE,
-            calendar_name TEXT NOT NULL,
-            calendar_url TEXT NOT NULL,
-            location VARCHAR(100) NOT NULL,
-            schema_name TEXT NOT NULL,
-            property_tag VARCHAR(20) NOT NULL,
-            filestore_path TEXT NOT NULL,
-            computer_name TEXT UNIQUE,
-            computer_ip VARCHAR(15) UNIQUE,
-            computer_mount TEXT,
-            harvester TEXT,
-            timezone TEXT DEFAULT 'America/New_York' NOT NULL
-        )
-    """,
-    )
-    cursor.execute(
-        """
-        CREATE TABLE IF NOT EXISTS session_log (
-            id_session_log INTEGER PRIMARY KEY AUTOINCREMENT,
-            session_identifier TEXT NOT NULL,
-            instrument TEXT NOT NULL,
-            timestamp TEXT NOT NULL,
-            event_type TEXT NOT NULL,
-            record_status TEXT DEFAULT 'TO_BE_BUILT' CHECK(record_status IN ('COMPLETED', 'WAITING_FOR_END', 'TO_BE_BUILT', 'ERROR', 'NO_FILES_FOUND', 'NO_CONSENT', 'NO_RESERVATION')),
-            user TEXT
-        )
-    """,  # noqa: E501
-    )
-    conn.commit()
-    conn.close()
+# Create database using shared function from top-level conftest
+# This ensures consistency between unit and integration test databases
+from tests.conftest import create_test_database  # noqa: E402
+
+create_test_database(_test_db_path)
 
 # Set environment variables to use test paths
 # CRITICAL: This MUST happen before importing nexusLIMS.config
@@ -100,7 +65,7 @@ import pytest  # noqa: E402
 from _pytest.monkeypatch import MonkeyPatch  # noqa: E402
 
 from nexusLIMS.config import settings  # noqa: E402
-from nexusLIMS.utils import current_system_tz  # noqa: E402
+from nexusLIMS.utils.time import current_system_tz  # noqa: E402
 
 # Import context fixtures for marker-based resource allocation
 # These must be imported directly (not via pytest_plugins) to avoid conflicts
@@ -285,7 +250,7 @@ def _fix_mountain_time(monkey_session):
     Hack to determine if we need to adjust our datetime objects for the time
     difference between Boulder and G'burg.
     """
-    import nexusLIMS.utils  # pylint: disable=import-outside-toplevel
+    import nexusLIMS.utils.time  # pylint: disable=import-outside-toplevel
 
     tz_string = current_system_tz().tzname(dt.now(tz=current_system_tz()))
 
@@ -293,7 +258,7 @@ def _fix_mountain_time(monkey_session):
     # datetime objects to match file store
     if tz_string in ["MST", "MDT"]:
         # get current timezone, and adjust tz_offset as needed
-        monkey_session.setattr(nexusLIMS.utils, "tz_offset", td(hours=-2))
+        monkey_session.setattr(nexusLIMS.utils.time, "tz_offset", td(hours=-2))
         monkey_session.setenv("ignore_mib", "True")
         monkey_session.setenv("is_mountain_time", "True")
 
@@ -788,7 +753,7 @@ def mock_cdcs_server(monkeypatch, mock_cdcs_responses):
     from typing import NamedTuple
     from urllib.parse import urlparse
 
-    import nexusLIMS.cdcs
+    import nexusLIMS.utils.network
 
     class MockResponse(NamedTuple):
         """Mock HTTP response."""
@@ -863,8 +828,8 @@ def mock_cdcs_server(monkeypatch, mock_cdcs_responses):
             text="Mock endpoint not found",
         )
 
-    # Patch the nexus_req function in the cdcs module
-    monkeypatch.setattr(nexusLIMS.cdcs, "nexus_req", mock_nexus_req)
+    # Patch the nexus_req function in the utils module
+    monkeypatch.setattr(nexusLIMS.utils.network, "nexus_req", mock_nexus_req)
 
 
 @pytest.fixture(scope="module")

@@ -63,7 +63,8 @@ from nexusLIMS.schemas.metadata import (
     SpectrumMetadata,
 )
 from nexusLIMS.schemas.units import ureg
-from nexusLIMS.utils import current_system_tz, replace_instrument_data_path
+from nexusLIMS.utils.paths import replace_instrument_data_path
+from nexusLIMS.utils.time import current_system_tz
 from nexusLIMS.version import __version__
 
 from . import utils

@@ -46,7 +46,7 @@ class TestLazyLoading:
         """Test that utils module is lazy loaded via __getattr__."""
         import nexusLIMS
 
-        utils = nexusLIMS.utils
+        utils = nexusLIMS.utils.time
         assert utils is not None
         assert hasattr(utils, "current_system_tz")
 

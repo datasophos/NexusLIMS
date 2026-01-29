@@ -11,7 +11,7 @@ from nexusLIMS.db.enums import EventType, RecordStatus
 from nexusLIMS.db.models import SessionLog
 from nexusLIMS.db.session_handler import Session
 from nexusLIMS.instruments import get_instr_from_api_url, instrument_db
-from nexusLIMS.utils import nexus_req
+from nexusLIMS.utils.network import nexus_req
 
 _logger = logging.getLogger(__name__)
 

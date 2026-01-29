@@ -14,7 +14,7 @@ import pytest
 import requests
 from requests.exceptions import Timeout
 
-from nexusLIMS.utils import nexus_req
+from nexusLIMS.utils.network import nexus_req
 
 
 @pytest.fixture
@@ -80,8 +80,8 @@ class TestNetworkResilience:
         )
 
         with (
-            patch("nexusLIMS.utils.Session.request") as mock_request,
-            patch("nexusLIMS.utils.time.sleep") as mock_sleep,
+            patch("nexusLIMS.utils.network.Session.request") as mock_request,
+            patch("nexusLIMS.utils.network.time.sleep") as mock_sleep,
         ):
             mock_request.side_effect = mock_side_effect
 
@@ -110,8 +110,8 @@ class TestNetworkResilience:
         )
 
         with (
-            patch("nexusLIMS.utils.Session.request") as mock_request,
-            patch("nexusLIMS.utils.time.sleep"),
+            patch("nexusLIMS.utils.network.Session.request") as mock_request,
+            patch("nexusLIMS.utils.network.time.sleep"),
         ):
             mock_request.side_effect = mock_side_effect
 
@@ -135,8 +135,8 @@ class TestNetworkResilience:
         )
 
         with (
-            patch("nexusLIMS.utils.Session.request") as mock_request,
-            patch("nexusLIMS.utils.time.sleep"),
+            patch("nexusLIMS.utils.network.Session.request") as mock_request,
+            patch("nexusLIMS.utils.network.time.sleep"),
         ):
             mock_request.side_effect = mock_side_effect
 
@@ -160,8 +160,8 @@ class TestNetworkResilience:
         )
 
         with (
-            patch("nexusLIMS.utils.Session.request") as mock_request,
-            patch("nexusLIMS.utils.time.sleep"),
+            patch("nexusLIMS.utils.network.Session.request") as mock_request,
+            patch("nexusLIMS.utils.network.time.sleep"),
         ):
             mock_request.side_effect = mock_side_effect
 
@@ -189,8 +189,8 @@ class TestNetworkResilience:
         )
 
         with (
-            patch("nexusLIMS.utils.Session.request") as mock_request,
-            patch("nexusLIMS.utils.time.sleep"),
+            patch("nexusLIMS.utils.network.Session.request") as mock_request,
+            patch("nexusLIMS.utils.network.time.sleep"),
         ):
             mock_request.side_effect = mock_side_effect
 
@@ -220,8 +220,8 @@ class TestNetworkResilience:
 
         sleep_calls = []
         with (
-            patch("nexusLIMS.utils.Session.request") as mock_request,
-            patch("nexusLIMS.utils.time.sleep") as mock_sleep,
+            patch("nexusLIMS.utils.network.Session.request") as mock_request,
+            patch("nexusLIMS.utils.network.time.sleep") as mock_sleep,
         ):
             mock_request.side_effect = mock_side_effect
             mock_sleep.side_effect = lambda x: sleep_calls.append(x)
@@ -240,10 +240,10 @@ class TestNetworkResilience:
 
         This simulates a network partition or service being down completely.
         """
-        from nexusLIMS import cdcs
+        from nexusLIMS.utils import cdcs
 
         # Mock nexus_req to raise a ConnectionError
-        with patch("nexusLIMS.cdcs.nexus_req") as mock_req:
+        with patch("nexusLIMS.utils.cdcs.nexus_req") as mock_req:
             mock_req.side_effect = requests.exceptions.ConnectionError(
                 "Connection refused"
             )
@@ -266,7 +266,7 @@ class TestNetworkResilience:
         )
 
         # Mock the request to raise a ConnectionError
-        with patch("nexusLIMS.utils.Session.request") as mock_request:
+        with patch("nexusLIMS.utils.network.Session.request") as mock_request:
             mock_request.side_effect = ConnectionError("Connection refused")
 
             # This should raise a ConnectionError
@@ -288,12 +288,12 @@ class TestNetworkResilience:
         )
 
         with (
-            patch("nexusLIMS.utils.Session.request") as mock_req,
-            patch("nexusLIMS.utils.time.sleep"),
+            patch("nexusLIMS.utils.network.Session.request") as mock_req,
+            patch("nexusLIMS.utils.network.time.sleep"),
         ):
             mock_req.side_effect = mock_side_effect
 
-            from nexusLIMS import cdcs
+            from nexusLIMS.utils import cdcs
 
             # This should retry and eventually succeed
             workspace_id = cdcs.get_workspace_id()
@@ -331,8 +331,8 @@ class TestNetworkResilience:
         )
 
         with (
-            patch("nexusLIMS.utils.Session.request") as mock_request,
-            patch("nexusLIMS.utils.time.sleep"),
+            patch("nexusLIMS.utils.network.Session.request") as mock_request,
+            patch("nexusLIMS.utils.network.time.sleep"),
         ):
             mock_request.side_effect = mock_request_side_effect
 
@@ -355,10 +355,10 @@ class TestNetworkResilience:
             response.text = "Unauthorized"
             return response
 
-        with patch("nexusLIMS.cdcs.nexus_req") as mock_req:
+        with patch("nexusLIMS.utils.cdcs.nexus_req") as mock_req:
             mock_req.side_effect = mock_nexus_req_returns_401
 
-            from nexusLIMS import cdcs
+            from nexusLIMS.utils import cdcs
 
             # Should raise authentication error
             with pytest.raises(cdcs.AuthenticationError):
@@ -396,7 +396,7 @@ class TestNetworkResilience:
             call_count += 1
             return response
 
-        with patch("nexusLIMS.utils.Session.request") as mock_request:
+        with patch("nexusLIMS.utils.network.Session.request") as mock_request:
             mock_request.side_effect = mock_request_error_sequence
 
             response = nexus_req("http://test.example.com/api", "GET", retries=5)
@@ -423,7 +423,7 @@ class TestNetworkResilience:
             response.headers = {"Retry-After": "60"}
             return response
 
-        with patch("nexusLIMS.utils.Session.request") as mock_request:
+        with patch("nexusLIMS.utils.network.Session.request") as mock_request:
             mock_request.side_effect = mock_request_returns_429
 
             response = nexus_req("http://test.example.com/api", "GET", retries=5)
@@ -446,7 +446,7 @@ class TestNetworkResilience:
             msg = "Connection timed out"
             raise Timeout(msg)
 
-        with patch("nexusLIMS.utils.Session.request") as mock_request:
+        with patch("nexusLIMS.utils.network.Session.request") as mock_request:
             mock_request.side_effect = mock_request_timeout
 
             # Timeout should propagate up
@@ -468,7 +468,7 @@ class TestNetworkResilience:
             msg = "Certificate verification failed"
             raise requests.exceptions.SSLError(msg)
 
-        with patch("nexusLIMS.utils.Session.request") as mock_request:
+        with patch("nexusLIMS.utils.network.Session.request") as mock_request:
             mock_request.side_effect = mock_request_ssl_error
 
             # SSL error should propagate

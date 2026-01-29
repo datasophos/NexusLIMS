@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS "session_log" (
 	"instrument"	VARCHAR(100) NOT NULL,
 	"timestamp"	DATETIME NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%f', 'now', 'localtime')),
 	"event_type"	TEXT NOT NULL CHECK("event_type" IN ('START', 'END', 'RECORD_GENERATION')),
-	"record_status"	TEXT NOT NULL DEFAULT 'WAITING_FOR_END' CHECK("record_status" IN ('COMPLETED', 'WAITING_FOR_END', 'TO_BE_BUILT', 'ERROR', 'NO_FILES_FOUND', 'NO_CONSENT', 'NO_RESERVATION')),
+	"record_status"	TEXT NOT NULL DEFAULT 'WAITING_FOR_END' CHECK("record_status" IN ('COMPLETED', 'WAITING_FOR_END', 'TO_BE_BUILT', 'BUILT_NOT_EXPORTED', 'ERROR', 'NO_FILES_FOUND', 'NO_CONSENT', 'NO_RESERVATION')),
 	"user"	VARCHAR(50),
 	CONSTRAINT "fk_instrument" FOREIGN KEY("instrument") REFERENCES "instruments"("instrument_pid") ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT "id_session_log_UNIQUE" UNIQUE("id_session_log"),

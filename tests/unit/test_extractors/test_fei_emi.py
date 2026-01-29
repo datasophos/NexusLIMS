@@ -1,5 +1,5 @@
 # pylint: disable=C0116,too-many-public-methods
-# ruff: noqa: D102, DTZ001
+# ruff: noqa: D102
 
 """Tests for nexusLIMS.extractors.fei_emi."""
 
@@ -9,7 +9,7 @@ import pytest
 
 from nexusLIMS.extractors.plugins import fei_emi
 from nexusLIMS.schemas.units import ureg
-from nexusLIMS.utils import current_system_tz
+from nexusLIMS.utils.time import current_system_tz
 from tests.unit.test_extractors.conftest import get_field
 from tests.unit.test_instrument_factory import make_titan_stem, make_titan_tem
 from tests.unit.utils import get_full_file_path

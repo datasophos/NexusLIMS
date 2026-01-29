@@ -138,7 +138,7 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Build documentation for versioned directory
-        run: ./scripts/build_docs.sh
+        run: ./scripts/build_docs.sh --strict
 
       - name: Save versioned build
         run: |
@@ -148,7 +148,7 @@ jobs:
       - name: Build documentation for stable directory
         env:
           DEPLOY_TARGET: stable
-        run: ./scripts/build_docs.sh
+        run: ./scripts/build_docs.sh --strict
 
       - name: Generate root index.html redirect
         # Create root index.html that redirects to stable directory

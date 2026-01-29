@@ -65,6 +65,12 @@ pyright
 # Build documentation
 ./scripts/build_docs.sh
 
+# Build with strict mode (treat warnings as errors - used in CI)
+./scripts/build_docs.sh --strict
+
+# Watch mode for auto-rebuild during development
+./scripts/build_docs.sh --watch
+
 # Documentation will be in ./_build directory
 ```
 

@@ -3,7 +3,7 @@ name: Deploy Documentation
 on:
   # Trigger after the test workflow completes successfully
   workflow_run:
-    workflows: ["Unit Tests"]
+    workflows: ["Integration Tests"]
     types:
       - completed
     branches:
@@ -124,7 +124,7 @@ jobs:
 
       - name: Build documentation
         # Build Sphinx documentation (includes API docs, coverage link, and switcher.json)
-        run: ./scripts/build_docs.sh
+        run: ./scripts/build_docs.sh --strict
 
       - name: Deploy to gh-pages branch
         # Deploy docs to gh-pages branch in latest/ directory for dev builds

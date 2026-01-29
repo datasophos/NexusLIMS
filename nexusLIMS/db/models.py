@@ -10,7 +10,7 @@ import logging
 
 import pytz
 from pytz.tzinfo import BaseTzInfo
-from sqlalchemy import types
+from sqlalchemy import CheckConstraint, types
 from sqlalchemy.types import TypeDecorator
 from sqlmodel import Column, Field, Relationship, SQLModel, select
 from sqlmodel import Session as DBSession
@@ -286,6 +286,18 @@ class SessionLog(SQLModel, table=True):
     """
 
     __tablename__ = "session_log"
+    __table_args__ = (
+        CheckConstraint(
+            "event_type IN ('START', 'END', 'RECORD_GENERATION')",
+            name="check_event_type",
+        ),
+        CheckConstraint(
+            "record_status IN ('COMPLETED', 'WAITING_FOR_END', 'TO_BE_BUILT', "
+            "'BUILT_NOT_EXPORTED', 'ERROR', 'NO_FILES_FOUND', 'NO_CONSENT', "
+            "'NO_RESERVATION')",
+            name="check_record_status",
+        ),
+    )
 
     # Primary key
     id_session_log: int | None = Field(default=None, primary_key=True)
@@ -348,3 +360,60 @@ class SessionLog(SQLModel, table=True):
             session.add(self)
             session.commit()
             return True
+
+
+class UploadLog(SQLModel, table=True):
+    """
+    Log of export attempts to destination repositories.
+
+    Tracks per-destination export results for each session, enabling
+    multi-destination export with granular success/failure tracking.
+
+    Parameters
+    ----------
+    id
+        Auto-incrementing primary key
+    session_identifier
+        Foreign key reference to session_log.session_identifier
+    destination_name
+        Name of the export destination (e.g., "cdcs", "labarchives")
+    success
+        Whether the export succeeded
+    record_id
+        Destination-specific record identifier (if successful)
+    record_url
+        Direct URL to view the exported record (if successful)
+    error_message
+        Error message if export failed
+    timestamp
+        When the export attempt occurred
+    metadata_json
+        JSON-serialized metadata dict with destination-specific details
+    """
+
+    __tablename__ = "upload_log"
+
+    # Primary key
+    id: int | None = Field(default=None, primary_key=True)
+
+    # Required fields
+    session_identifier: str = Field(index=True, max_length=36)
+    destination_name: str = Field(index=True, max_length=100)
+    success: bool
+    timestamp: datetime.datetime = Field(sa_column=Column(TZDateTime))
+
+    # Optional fields
+    record_id: str | None = Field(default=None, max_length=255)
+    record_url: str | None = Field(default=None, max_length=500)
+    error_message: str | None = Field(default=None)
+    metadata_json: str | None = Field(default=None)
+
+    def __repr__(self):
+        """Return custom representation of an UploadLog."""
+        status = "SUCCESS" if self.success else "FAILED"
+        return (
+            f"UploadLog (session={self.session_identifier}, "
+            f"destination={self.destination_name}, "
+            f"status={status}, "
+            f"timestamp={self.timestamp})"
+        )

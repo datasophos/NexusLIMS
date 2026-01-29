@@ -1,4 +1,4 @@
-# ruff: noqa: T201
+# ruff: noqa: T201, SLF001
 """
 Integration test fixtures for NexusLIMS.
 
@@ -94,25 +94,15 @@ def pytest_configure(config):
     if "NX_DATA_PATH" not in os.environ:
         os.environ["NX_DATA_PATH"] = str(TEST_DATA_DIR)
 
-    # Create a temporary database file for validation
+    # Create a temporary database file for integration tests
+    # Always use integration test database (don't reuse unit test database)
     db_path = TEST_DATA_DIR / "integration_test.db"
-    if "NX_DB_PATH" not in os.environ:
-        # Initialize database with schema if it doesn't exist
-        if not db_path.exists():
-            import sqlite3
 
-            schema_script = (
-                Path(__file__).parent.parent.parent
-                / "nexusLIMS"
-                / "db"
-                / "dev"
-                / "NexusLIMS_db_creation_script.sql"
-            )
-            conn = sqlite3.connect(str(db_path))
-            with schema_script.open() as f:
-                conn.executescript(f.read())
-            conn.close()
-        os.environ["NX_DB_PATH"] = str(db_path)
+    # Use shared database creation function from top-level conftest
+    from tests.conftest import create_test_database
+
+    create_test_database(db_path)
+    os.environ["NX_DB_PATH"] = str(db_path)
 
     # Set required CDCS environment variables to dummy values
     # (actual values will be set per-test via fixtures)
@@ -312,22 +302,22 @@ def docker_services(request, host_fileserver):  # noqa: PLR0912, PLR0915
         print(f"[+] Created {test_dir}")
 
     # Initialize default database for Settings validation
-    # (pytest_configure creates an empty file, but we need the schema)
     print("[*] Initializing default test database...")
-    import sqlite3
+    from sqlmodel import SQLModel, create_engine
+
+    # Import all models to register them with SQLModel metadata
+    from nexusLIMS.db.models import (  # noqa: F401
+        Instrument,
+        SessionLog,
+        UploadLog,
+    )
 
     db_path = TEST_DATA_DIR / "integration_test.db"
-    schema_script = (
-        Path(__file__).parent.parent.parent
-        / "nexusLIMS"
-        / "db"
-        / "dev"
-        / "NexusLIMS_db_creation_script.sql"
-    )
-    conn = sqlite3.connect(str(db_path))
-    with schema_script.open() as f:
-        conn.executescript(f.read())
-    conn.close()
+
+    # Create engine and tables using SQLModel
+    engine = create_engine(f"sqlite:///{db_path}")
+    SQLModel.metadata.create_all(engine)
+
     print(f"[+] Initialized {db_path}")
 
     # Check if services are already running
@@ -808,9 +798,7 @@ def nemo_connector(
     from nexusLIMS.harvesters.nemo import connector
 
     # Reload instrument_db from the test database
-    test_instrument_db = instruments._get_instrument_db(  # noqa: SLF001
-        db_path=populated_test_database
-    )
+    test_instrument_db = instruments._get_instrument_db(db_path=populated_test_database)
 
     # Patch the instrument_db in both the instruments module and the connector module
     # This is necessary because the connector imports instrument_db at module level
@@ -947,16 +935,16 @@ def delete_all_cdcs_records():
     int
         Number of records deleted
     """
-    import nexusLIMS.cdcs as cdcs_module
+    from nexusLIMS.utils import cdcs
 
     deleted_count = 0
     print("\n[*] Cleaning up CDCS records...")
     try:
-        all_records = cdcs_module.search_records()
+        all_records = cdcs.search_records()
         if all_records:
             for record in all_records:
                 try:
-                    cdcs_module.delete_record(record["id"])
+                    cdcs.delete_record(record["id"])
                     print(f"    Deleted record: {record.get('title', record['id'])}")
                     deleted_count += 1
                 except Exception as e:
@@ -1054,11 +1042,11 @@ def cdcs_client(cdcs_url, cdcs_credentials, monkeypatch):
     }
 
     # Cleanup: Delete all records created during the test
-    import nexusLIMS.cdcs as cdcs_module
+    from nexusLIMS.utils import cdcs
 
     for record_id in created_records:
         try:
-            cdcs_module.delete_record(record_id)
+            cdcs.delete_record(record_id)
         except Exception as e:
             # Log but don't fail test on cleanup error
             print(f"[!] Failed to cleanup record {record_id}: {e}")
@@ -1212,12 +1200,12 @@ def cdcs_test_record(
     # Set up CDCS environment for session scope
     setup_cdcs_environment(cdcs_url, cdcs_credentials)
 
-    import nexusLIMS.cdcs as cdcs_module
+    from nexusLIMS.utils import cdcs
 
     # Upload all test records
     created_records = []
     for test_record_title, test_record_xml in cdcs_test_record_xml:
-        response, record_id = cdcs_module.upload_record_content(
+        response, record_id = cdcs.upload_record_content(
             test_record_xml, test_record_title
         )
 
@@ -1225,7 +1213,7 @@ def cdcs_test_record(
             # Cleanup any previously created records before raising
             for record in created_records:
                 with contextlib.suppress(Exception):
-                    cdcs_module.delete_record(record["record_id"])
+                    cdcs.delete_record(record["record_id"])
             msg = (
                 f"Failed to create test record '{test_record_title}': "
                 f"{response.status_code} - {response.text}"
@@ -1246,7 +1234,7 @@ def cdcs_test_record(
     # Cleanup: Delete all test records
     for record in created_records:
         try:
-            cdcs_module.delete_record(record["record_id"])
+            cdcs.delete_record(record["record_id"])
             print(f"[+] Deleted test record: {record['record_id']}")
         except Exception as e:
             print(f"[!] Failed to cleanup test record {record['record_id']}: {e}")
@@ -1291,8 +1279,8 @@ def test_database(tmp_path, monkeypatch):
     Create fresh test database for integration tests.
 
     This fixture creates a temporary SQLite database and initializes the
-    NexusLIMS database schema. The database is isolated for each test and
-    automatically cleaned up after the test completes.
+    NexusLIMS database schema using SQLModel. The database is isolated for
+    each test and automatically cleaned up after the test completes.
 
     Parameters
     ----------
@@ -1310,28 +1298,23 @@ def test_database(tmp_path, monkeypatch):
     -----
     The database is automatically cleaned up by pytest's tmp_path fixture
     """
-    import sqlite3
+    from sqlmodel import SQLModel, create_engine
 
     from nexusLIMS.config import refresh_settings
+
+    # Import all models to register them with SQLModel metadata
+    from nexusLIMS.db.models import (  # noqa: F401
+        Instrument,
+        SessionLog,
+        UploadLog,
+    )
 
     # Create database in temporary directory
     db_path = tmp_path / "test_integration.db"
 
-    # Initialize database schema using production SQL script
-    # NOTE: Must create database BEFORE refreshing settings since NX_DB_PATH
-    # validation requires the file to exist
-    schema_script = (
-        Path(__file__).parent.parent.parent
-        / "nexusLIMS"
-        / "db"
-        / "dev"
-        / "NexusLIMS_db_creation_script.sql"
-    )
-
-    conn = sqlite3.connect(db_path)
-    with schema_script.open() as f:
-        conn.executescript(f.read())
-    conn.close()
+    # Create engine and tables using SQLModel
+    engine = create_engine(f"sqlite:///{db_path}")
+    SQLModel.metadata.create_all(engine)
 
     # Now that the database file exists, update the config
     monkeypatch.setenv("NX_DB_PATH", str(db_path))
@@ -1474,7 +1457,7 @@ def populated_test_database(docker_services, mock_tools_data):
 
     instruments_module.instrument_db.clear()
     instruments_module.instrument_db.update(
-        instruments_module._get_instrument_db(db_path=db_path)  # noqa: SLF001
+        instruments_module._get_instrument_db(db_path=db_path)
     )
 
     return Path(db_path)
@@ -1764,9 +1747,7 @@ def test_environment_setup(  # noqa: PLR0913
     from nexusLIMS import instruments
 
     # Patch the instrument_db to use test database
-    test_instrument_db = instruments._get_instrument_db(  # noqa: SLF001
-        db_path=populated_test_database
-    )
+    test_instrument_db = instruments._get_instrument_db(db_path=populated_test_database)
     monkeypatch.setattr(instruments, "instrument_db", test_instrument_db)
 
     # Get Titan instrument from test database (should be FEI-Titan-TEM)
@@ -2123,9 +2104,7 @@ def multi_signal_integration_record(  # noqa: PLR0913, PLR0915
     refresh_settings()
 
     # Patch the instrument_db to use test database
-    test_instrument_db = instruments._get_instrument_db(  # noqa: SLF001
-        db_path=populated_test_database
-    )
+    test_instrument_db = instruments._get_instrument_db(db_path=populated_test_database)
     monkeypatch.setattr(instruments, "instrument_db", test_instrument_db)
 
     # Get the test instrument from database
@@ -2174,24 +2153,42 @@ def multi_signal_integration_record(  # noqa: PLR0913, PLR0915
 
     # Run record building (skip NEMO harvesting since we already created the sessions)
     print("\n[*] Running record builder...")
-    xml_files = record_builder.build_new_session_records(generate_previews=True)
+    xml_files, sessions_built = record_builder.build_new_session_records(
+        generate_previews=True
+    )
 
-    # Upload the built records to CDCS and move to uploaded directory
+    # Export the built records using the new export framework
     if xml_files:
-        print(f"\n[*] Uploading {len(xml_files)} records to CDCS...")
+        print(f"\n[*] Exporting {len(xml_files)} records to configured destinations...")
         import shutil
 
-        from nexusLIMS.cdcs import upload_record_files
         from nexusLIMS.config import settings
+        from nexusLIMS.exporters import export_records, was_successfully_exported
 
-        files_uploaded, _ = upload_record_files(xml_files, progress=False)
+        # Export to all configured destinations
+        export_results = export_records(xml_files, sessions_built)
 
-        # Move uploaded files to the "uploaded" subdirectory
-        # (matching process_new_records behavior)
+        # Update session status based on export results
+        sessions_by_file = dict(zip(xml_files, sessions_built, strict=True))
+        for xml_file, session_obj in sessions_by_file.items():
+            if was_successfully_exported(xml_file, export_results):
+                session_obj.update_session_status(RecordStatus.COMPLETED)
+                print(f"  Session {session_obj.session_identifier} marked COMPLETED")
+            else:
+                session_obj.update_session_status(RecordStatus.BUILT_NOT_EXPORTED)
+                pytest.fail(
+                    f"Export failed for {xml_file.name}. "
+                    f"Session marked BUILT_NOT_EXPORTED"
+                )
+
+        # Move successfully exported files to uploaded directory
         uploaded_dir = settings.records_dir_path / "uploaded"
         uploaded_dir.mkdir(parents=True, exist_ok=True)
 
-        for f in files_uploaded:
+        files_exported = [
+            f for f in xml_files if was_successfully_exported(f, export_results)
+        ]
+        for f in files_exported:
             shutil.copy2(f, uploaded_dir)
             Path(f).unlink()
 
@@ -2232,10 +2229,10 @@ def multi_signal_integration_record(  # noqa: PLR0913, PLR0915
         pytest.fail(f"XML validation failed: {schema.error_log}")
 
     # Get record ID from CDCS (record should already be uploaded)
-    import nexusLIMS.cdcs as cdcs_module
+    from nexusLIMS.utils import cdcs
 
     record_title = record_path.stem
-    search_results = cdcs_module.search_records(title=record_title)
+    search_results = cdcs.search_records(title=record_title)
     if not search_results:
         pytest.fail(f"Record '{record_title}' not found in CDCS after upload")
 
@@ -2254,7 +2251,7 @@ def multi_signal_integration_record(  # noqa: PLR0913, PLR0915
     # Cleanup: Delete record from CDCS
     print("\n[*] Cleaning up multi-signal test record...")
     try:
-        cdcs_module.delete_record(record_id)
+        cdcs.delete_record(record_id)
         print(f"  Deleted record from CDCS: {record_id}")
     except Exception as e:
         print(f"[!] Failed to cleanup record {record_id}: {e}")

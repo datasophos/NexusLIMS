@@ -1,6 +1,9 @@
 (instrument-profiles)=
 # Instrument Profiles
 
+```{versionadded} 2.1.0
+```
+
 ## Overview
 
 Instrument profiles provide a powerful mechanism for customizing metadata extraction behavior for specific microscopes without modifying core extractor code. This system is critical for NexusLIMS extensibility, as each installation has unique instruments with specific metadata quirks.

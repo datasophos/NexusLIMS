@@ -13,8 +13,7 @@ from pathlib import Path
 import pytest
 import requests
 
-from nexusLIMS import cdcs
-from nexusLIMS.utils import AuthenticationError
+from nexusLIMS.utils import cdcs
 
 logger = logging.getLogger(__name__)
 
@@ -79,15 +78,15 @@ class TestCdcsAuthentication:
     def test_get_workspace_id_with_invalid_credentials(
         self, cdcs_url, safe_refresh_settings
     ):
-        """Test that invalid credentials raise AuthenticationError."""
+        """Test that invalid credentials raise cdcs.AuthenticationError."""
         # Set invalid credentials using safe_refresh_settings helper
         safe_refresh_settings(
             NX_CDCS_URL=cdcs_url,
             NX_CDCS_TOKEN="invalid-token",
         )
 
-        # Should raise AuthenticationError
-        with pytest.raises(AuthenticationError):
+        # Should raise cdcs.AuthenticationError
+        with pytest.raises(cdcs.AuthenticationError):
             cdcs.get_workspace_id()
 
     def test_get_template_id_with_valid_credentials(self, cdcs_client):
@@ -100,7 +99,7 @@ class TestCdcsAuthentication:
     def test_get_template_id_with_invalid_credentials(
         self, cdcs_url, safe_refresh_settings
     ):
-        """Test that invalid credentials raise AuthenticationError."""
+        """Test that invalid credentials raise cdcs.AuthenticationError."""
         # Set invalid credentials using safe_refresh_settings helper
         safe_refresh_settings(
             NX_CDCS_URL=cdcs_url,
@@ -108,7 +107,7 @@ class TestCdcsAuthentication:
         )
 
         # Should raise AuthenticationError
-        with pytest.raises(AuthenticationError):
+        with pytest.raises(cdcs.AuthenticationError):
             cdcs.get_template_id()
 
 
@@ -224,7 +223,7 @@ class TestCdcsRecordRetrieval:
         from urllib.parse import urljoin
 
         from nexusLIMS import config
-        from nexusLIMS.utils import nexus_req
+        from nexusLIMS.utils.network import nexus_req
 
         endpoint = urljoin(cdcs_url, f"rest/data/{record_id}")
         response = nexus_req(endpoint, "GET", token_auth=config.settings.NX_CDCS_TOKEN)
@@ -252,7 +251,7 @@ class TestCdcsRecordRetrieval:
         from urllib.parse import urljoin
 
         from nexusLIMS import config
-        from nexusLIMS.utils import nexus_req
+        from nexusLIMS.utils.network import nexus_req
 
         endpoint = urljoin(cdcs_url, f"rest/data/{record_id}")
         response = nexus_req(endpoint, "GET", token_auth=config.settings.NX_CDCS_TOKEN)
@@ -288,7 +287,7 @@ class TestCdcsWorkspaceAssignment:
         from urllib.parse import urljoin
 
         from nexusLIMS import config
-        from nexusLIMS.utils import nexus_req
+        from nexusLIMS.utils.network import nexus_req
 
         workspace_id = cdcs.get_workspace_id()
         endpoint = urljoin(

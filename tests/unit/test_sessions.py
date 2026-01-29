@@ -11,10 +11,10 @@ from sqlmodel import Session as DBSession
 from sqlmodel import select
 
 from nexusLIMS.db import session_handler
-from nexusLIMS.db.engine import engine
+from nexusLIMS.db.engine import get_engine
 from nexusLIMS.db.enums import EventType, RecordStatus
-from nexusLIMS.db.models import SessionLog, TZDateTime
-from nexusLIMS.utils import current_system_tz
+from nexusLIMS.db.models import SessionLog, TZDateTime, UploadLog
+from nexusLIMS.utils.time import current_system_tz
 
 from .test_instrument_factory import make_test_tool
 
@@ -24,7 +24,7 @@ class TestSession:
     """Test the Session class representing a unit of time on an instrument."""
 
     @pytest.fixture
-    def session(self, db_context):  # noqa: ARG002
+    def session(self, db_context):
         # Depend on db_context to ensure test database setup
         return session_handler.Session(
             session_identifier="test_session",
@@ -46,7 +46,7 @@ class TestSession:
     @pytest.mark.usefixtures("_cleanup_session_log")
     def test_record_generation_timestamp(self, session):
         row_dict = session.insert_record_generation_event()
-        with DBSession(engine) as db_session:
+        with DBSession(get_engine()) as db_session:
             statement = select(SessionLog).where(
                 SessionLog.id_session_log == row_dict["id_session_log"]
             )
@@ -64,7 +64,7 @@ class TestSession:
             record_status=RecordStatus.TO_BE_BUILT,
             user="test",
         )
-        with DBSession(engine) as db_session:
+        with DBSession(get_engine()) as db_session:
             db_session.add(log)
             db_session.commit()
 
@@ -77,7 +77,7 @@ class TestSession:
             session_handler.get_sessions_to_build()
 
         # remove the session log we added
-        with DBSession(engine) as db_session:
+        with DBSession(get_engine()) as db_session:
             statement = select(SessionLog).where(
                 SessionLog.session_identifier == uuid_str
             )
@@ -97,7 +97,7 @@ class TestSessionLog:
     """
 
     @pytest.fixture
-    def sl(self, db_context):  # noqa: ARG002
+    def sl(self, db_context):
         """Create a test SessionLog instance."""
         # Depend on db_context to ensure test database setup
         return SessionLog(
@@ -115,7 +115,7 @@ class TestSessionLog:
         # this test class, so it doesn't mess up future record building tests
         yield None
         # below runs on test teardown
-        with DBSession(engine) as db_session:
+        with DBSession(get_engine()) as db_session:
             statement = select(SessionLog).where(
                 SessionLog.session_identifier == "testing-session-log"
             )
@@ -138,14 +138,14 @@ class TestSessionLog:
     @pytest.mark.usefixtures("_record_cleanup_session_log")
     def test_insert_log(self, sl):
         # Count existing session logs
-        with DBSession(engine) as db_session:
+        with DBSession(get_engine()) as db_session:
             res_before = db_session.exec(select(SessionLog)).all()
 
         # Insert a new log
         sl.insert_log()
 
         # Count session logs after insert
-        with DBSession(engine) as db_session:
+        with DBSession(get_engine()) as db_session:
             res_after = db_session.exec(select(SessionLog)).all()
 
         assert len(res_after) - len(res_before) == 1
@@ -210,6 +210,40 @@ class TestSessionLog:
         assert isinstance(all_logs, list)
         # Note: We don't assert len(all_logs) == 0 because there might be other logs
         # from other tests, but we verify it returns a list
+
+
+class TestUploadLog:
+    """Test the UploadLog class."""
+
+    def test_repr_success(self):
+        """Test __repr__ for successful upload."""
+        upload_log = UploadLog(
+            session_identifier="test-session-123",
+            destination_name="cdcs",
+            success=True,
+            timestamp=dt.fromisoformat("2020-02-04T09:00:00+00:00"),
+        )
+        assert (
+            repr(upload_log) == "UploadLog (session=test-session-123, "
+            "destination=cdcs, "
+            "status=SUCCESS, "
+            "timestamp=2020-02-04 09:00:00+00:00)"
+        )
+
+    def test_repr_failed(self):
+        """Test __repr__ for failed upload."""
+        upload_log = UploadLog(
+            session_identifier="test-session-456",
+            destination_name="labarchives",
+            success=False,
+            timestamp=dt.fromisoformat("2020-02-04T10:30:00+00:00"),
+        )
+        assert (
+            repr(upload_log) == "UploadLog (session=test-session-456, "
+            "destination=labarchives, "
+            "status=FAILED, "
+            "timestamp=2020-02-04 10:30:00+00:00)"
+        )
 
 
 class TestTZDateTime:

@@ -1,5 +1,5 @@
 # pylint: disable=C0116
-# ruff: noqa: D102, ARG002, ARG001, SLF001
+# ruff: noqa: D102, ARG001, SLF001
 
 """Tests for nexusLIMS.extractors top-level module functions."""
 
