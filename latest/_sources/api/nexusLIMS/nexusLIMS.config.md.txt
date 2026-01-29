@@ -341,6 +341,17 @@ Bases: {py:obj}`pydantic_settings.BaseSettings`
 
 ````
 
+````{py:attribute} NX_EXPORT_STRATEGY
+:canonical: nexusLIMS.config.Settings.NX_EXPORT_STRATEGY
+
+**Type:** typing.Literal[all, first_success, best_effort]
+
+```{autodoc2-docstring} nexusLIMS.config.Settings.NX_EXPORT_STRATEGY
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
 ````{py:attribute} NX_CERT_BUNDLE_FILE
 :canonical: nexusLIMS.config.Settings.NX_CERT_BUNDLE_FILE
 

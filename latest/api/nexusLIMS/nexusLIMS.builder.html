@@ -62,11 +62,11 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="nexusLIMS.builder.record_builder" href="nexusLIMS.builder.record_builder.html" />
-    <link rel="prev" title="nexusLIMS.db.enums" href="nexusLIMS.db.enums.html" />
+    <link rel="prev" title="nexusLIMS.utils.logging" href="nexusLIMS.utils.logging.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Jan, 20, 2026"/>
+    <meta name="docbuild:last-update" content="Jan, 29, 2026"/>
   </head>
   
   
@@ -414,6 +414,7 @@
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../../reference/api.html">API documentation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="nexusLIMS.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS</span></code></a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.db.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.db</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils</span></code></a></li>
 <li class="toctree-l3 current active has-children"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.builder</span></code></a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="nexusLIMS.builder.record_builder.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.builder.record_builder</span></code></a></li>
 </ul>
@@ -422,9 +423,8 @@
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.cli.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.harvesters.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.harvesters</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.schemas.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.schemas</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.exporters.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.exporters</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.instruments.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.instruments</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.cdcs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cdcs</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.config.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.config</span></code></a></li>
 </ul>
 </details></li>
@@ -521,12 +521,12 @@
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="nexusLIMS.db.enums.html"
+       href="nexusLIMS.utils.logging.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.db.enums</span></code></p>
+        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils.logging</span></code></p>
       </div>
     </a>
     <a class="right-next"

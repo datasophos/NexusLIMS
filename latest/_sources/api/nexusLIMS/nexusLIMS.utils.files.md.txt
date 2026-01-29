@@ -1,0 +1,60 @@
+# {py:mod}`nexusLIMS.utils.files`
+
+```{py:module} nexusLIMS.utils.files
+```
+
+```{autodoc2-docstring} nexusLIMS.utils.files
+:parser: autodoc2_docstrings_parser
+:allowtitles:
+```
+
+## Module Contents
+
+### Functions
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`find_dirs_by_mtime <nexusLIMS.utils.files.find_dirs_by_mtime>`
+  - ```{autodoc2-docstring} nexusLIMS.utils.files.find_dirs_by_mtime
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`find_files_by_mtime <nexusLIMS.utils.files.find_files_by_mtime>`
+  - ```{autodoc2-docstring} nexusLIMS.utils.files.find_files_by_mtime
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`gnu_find_files_by_mtime <nexusLIMS.utils.files.gnu_find_files_by_mtime>`
+  - ```{autodoc2-docstring} nexusLIMS.utils.files.gnu_find_files_by_mtime
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
+### API
+
+````{py:function} find_dirs_by_mtime(path: str, dt_from: datetime.datetime, dt_to: datetime.datetime, *, followlinks: bool = True) -> typing.List[str]
+:canonical: nexusLIMS.utils.files.find_dirs_by_mtime
+
+```{autodoc2-docstring} nexusLIMS.utils.files.find_dirs_by_mtime
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} find_files_by_mtime(path: pathlib.Path, dt_from, dt_to) -> typing.List[pathlib.Path]
+:canonical: nexusLIMS.utils.files.find_files_by_mtime
+
+```{autodoc2-docstring} nexusLIMS.utils.files.find_files_by_mtime
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} gnu_find_files_by_mtime(path: pathlib.Path, dt_from: datetime.datetime, dt_to: datetime.datetime, extensions: typing.List[str] | None = None, *, followlinks: bool = True) -> typing.List[pathlib.Path]
+:canonical: nexusLIMS.utils.files.gnu_find_files_by_mtime
+
+```{autodoc2-docstring} nexusLIMS.utils.files.gnu_find_files_by_mtime
+:parser: autodoc2_docstrings_parser
+```
+````

@@ -61,12 +61,12 @@
     <link rel="icon" href="../../_static/nexusLIMS_bare_logo.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="nexusLIMS.builder" href="nexusLIMS.builder.html" />
+    <link rel="next" title="nexusLIMS.utils" href="nexusLIMS.utils.html" />
     <link rel="prev" title="nexusLIMS.db.models" href="nexusLIMS.db.models.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Jan, 20, 2026"/>
+    <meta name="docbuild:last-update" content="Jan, 29, 2026"/>
   </head>
   
   
@@ -420,14 +420,14 @@
 <li class="toctree-l4 current active"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.db.enums</span></code></a></li>
 </ul>
 </details></li>
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.builder.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.builder</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.extractors.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.cli.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.harvesters.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.harvesters</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.schemas.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.schemas</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.exporters.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.exporters</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.instruments.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.instruments</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.cdcs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cdcs</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.config.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.config</span></code></a></li>
 </ul>
 </details></li>
@@ -564,6 +564,7 @@ constrained values (CHECK constraints in the database schema).</p>
 <li><p><strong>WAITING_FOR_END</strong> – Session has started but not yet ended</p></li>
 <li><p><strong>TO_BE_BUILT</strong> – Session has ended and needs record generation</p></li>
 <li><p><strong>COMPLETED</strong> – Record has been successfully built and uploaded</p></li>
+<li><p><strong>BUILT_NOT_EXPORTED</strong> – Record was built successfully but all export destinations failed</p></li>
 <li><p><strong>ERROR</strong> – Record building failed with an error</p></li>
 <li><p><strong>NO_FILES_FOUND</strong> – No files were found for this session</p></li>
 <li><p><strong>NO_CONSENT</strong> – User did not consent to data harvesting</p></li>
@@ -587,6 +588,12 @@ constrained values (CHECK constraints in the database schema).</p>
 <dt class="sig sig-object py" id="nexusLIMS.db.enums.RecordStatus.COMPLETED">
 <span class="sig-name descname"><span class="pre">COMPLETED</span></span><a class="headerlink" href="#nexusLIMS.db.enums.RecordStatus.COMPLETED" title="Link to this definition">#</a></dt>
 <dd><p>‘COMPLETED’</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.db.enums.RecordStatus.BUILT_NOT_EXPORTED">
+<span class="sig-name descname"><span class="pre">BUILT_NOT_EXPORTED</span></span><a class="headerlink" href="#nexusLIMS.db.enums.RecordStatus.BUILT_NOT_EXPORTED" title="Link to this definition">#</a></dt>
+<dd><p>‘BUILT_NOT_EXPORTED’</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -639,11 +646,11 @@ constrained values (CHECK constraints in the database schema).</p>
       </div>
     </a>
     <a class="right-next"
-       href="nexusLIMS.builder.html"
+       href="nexusLIMS.utils.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.builder</span></code></p>
+        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils</span></code></p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -679,6 +686,7 @@ constrained values (CHECK constraints in the database schema).</p>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.enums.RecordStatus.WAITING_FOR_END"><code class="docutils literal notranslate"><span class="pre">RecordStatus.WAITING_FOR_END</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.enums.RecordStatus.TO_BE_BUILT"><code class="docutils literal notranslate"><span class="pre">RecordStatus.TO_BE_BUILT</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.enums.RecordStatus.COMPLETED"><code class="docutils literal notranslate"><span class="pre">RecordStatus.COMPLETED</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.enums.RecordStatus.BUILT_NOT_EXPORTED"><code class="docutils literal notranslate"><span class="pre">RecordStatus.BUILT_NOT_EXPORTED</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.enums.RecordStatus.ERROR"><code class="docutils literal notranslate"><span class="pre">RecordStatus.ERROR</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.enums.RecordStatus.NO_FILES_FOUND"><code class="docutils literal notranslate"><span class="pre">RecordStatus.NO_FILES_FOUND</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.enums.RecordStatus.NO_CONSENT"><code class="docutils literal notranslate"><span class="pre">RecordStatus.NO_CONSENT</span></code></a></li>

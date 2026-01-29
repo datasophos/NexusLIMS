@@ -31,6 +31,11 @@
     :parser: autodoc2_docstrings_parser
     :summary:
     ```
+* - {py:obj}`UploadLog <nexusLIMS.db.models.UploadLog>`
+  - ```{autodoc2-docstring} nexusLIMS.db.models.UploadLog
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
 ````
 
 ### API
@@ -410,6 +415,116 @@ Bases: {py:obj}`sqlmodel.SQLModel`
 :canonical: nexusLIMS.db.models.SessionLog.insert_log
 
 ```{autodoc2-docstring} nexusLIMS.db.models.SessionLog.insert_log
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+`````
+
+`````{py:class} UploadLog(**data: typing.Any)
+:canonical: nexusLIMS.db.models.UploadLog
+
+Bases: {py:obj}`sqlmodel.SQLModel`
+
+```{autodoc2-docstring} nexusLIMS.db.models.UploadLog
+:parser: autodoc2_docstrings_parser
+```
+
+````{py:attribute} id
+:canonical: nexusLIMS.db.models.UploadLog.id
+
+**Type:** int | None
+
+```{autodoc2-docstring} nexusLIMS.db.models.UploadLog.id
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} session_identifier
+:canonical: nexusLIMS.db.models.UploadLog.session_identifier
+
+**Type:** str
+
+```{autodoc2-docstring} nexusLIMS.db.models.UploadLog.session_identifier
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} destination_name
+:canonical: nexusLIMS.db.models.UploadLog.destination_name
+
+**Type:** str
+
+```{autodoc2-docstring} nexusLIMS.db.models.UploadLog.destination_name
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} success
+:canonical: nexusLIMS.db.models.UploadLog.success
+
+**Type:** bool
+
+```{autodoc2-docstring} nexusLIMS.db.models.UploadLog.success
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} timestamp
+:canonical: nexusLIMS.db.models.UploadLog.timestamp
+
+**Type:** datetime.datetime
+
+```{autodoc2-docstring} nexusLIMS.db.models.UploadLog.timestamp
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} record_id
+:canonical: nexusLIMS.db.models.UploadLog.record_id
+
+**Type:** str | None
+
+```{autodoc2-docstring} nexusLIMS.db.models.UploadLog.record_id
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} record_url
+:canonical: nexusLIMS.db.models.UploadLog.record_url
+
+**Type:** str | None
+
+```{autodoc2-docstring} nexusLIMS.db.models.UploadLog.record_url
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} error_message
+:canonical: nexusLIMS.db.models.UploadLog.error_message
+
+**Type:** str | None
+
+```{autodoc2-docstring} nexusLIMS.db.models.UploadLog.error_message
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} metadata_json
+:canonical: nexusLIMS.db.models.UploadLog.metadata_json
+
+**Type:** str | None
+
+```{autodoc2-docstring} nexusLIMS.db.models.UploadLog.metadata_json
 :parser: autodoc2_docstrings_parser
 ```
 

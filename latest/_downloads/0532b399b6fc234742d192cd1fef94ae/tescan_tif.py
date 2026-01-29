@@ -15,7 +15,7 @@ from nexusLIMS.extractors.base import ExtractionContext
 from nexusLIMS.extractors.base import FieldDefinition as FD
 from nexusLIMS.extractors.utils import _set_instr_name_and_time, add_to_extensions
 from nexusLIMS.schemas.units import ureg
-from nexusLIMS.utils import set_nested_dict_value, sort_dict
+from nexusLIMS.utils.dicts import set_nested_dict_value, sort_dict
 
 TESCAN_TIFF_TAG = 50431
 """

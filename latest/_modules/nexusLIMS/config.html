@@ -428,7 +428,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Jan, 20, 2026"/>
+    <meta name="docbuild:last-update" content="Jan, 29, 2026"/>
   </head>
   
   
@@ -1048,6 +1048,15 @@ window.addEventListener("load", load);
             <span class="s2">&quot;record uploads that are authenticated using the CDCS credentials.&quot;</span>
         <span class="p">),</span>
     <span class="p">)</span>
+    <span class="n">NX_EXPORT_STRATEGY</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="s2">&quot;first_success&quot;</span><span class="p">,</span> <span class="s2">&quot;best_effort&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="s2">&quot;all&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">&quot;Strategy for exporting records to multiple destinations. &quot;</span>
+            <span class="s2">&quot;&#39;all&#39;: All destinations must succeed (recommended). &quot;</span>
+            <span class="s2">&quot;&#39;first_success&#39;: Stop after first successful export. &quot;</span>
+            <span class="s2">&quot;&#39;best_effort&#39;: Try all destinations, succeed if any succeed.&quot;</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
     <span class="n">NX_CERT_BUNDLE_FILE</span><span class="p">:</span> <span class="n">TestAwareFilePath</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>  <span class="c1"># type: ignore[valid-type]</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="p">(</span>
@@ -1352,7 +1361,7 @@ window.addEventListener("load", load);
             <span class="n">help_msg</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">80</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
                 <span class="s2">&quot;NexusLIMS configuration validation failed.</span><span class="se">\n</span><span class="s2">&quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;See https://datasophos.github.io/NexusLIMS/</span><span class="si">{</span><span class="n">doc_version</span><span class="si">}</span><span class="s2">/configuration.html</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;See https://datasophos.github.io/NexusLIMS/</span><span class="si">{</span><span class="n">doc_version</span><span class="si">}</span><span class="s2">/user_guide/configuration.html</span><span class="se">\n</span><span class="s2">&quot;</span>
                 <span class="s2">&quot;for complete environment variable reference.</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">80</span>
             <span class="p">)</span>
             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="s2">&quot;add_note&quot;</span><span class="p">):</span>

@@ -415,31 +415,31 @@ NX_EMAIL_RECIPIENTS=admin@example.com,team@example.com
 
 ### Accessing Configuration
 
-Always access configuration through the `nexusLIMS.config` module:
+Always access configuration through the `settings` object from the `nexusLIMS.config` module:
 
 ```python
-from nexusLIMS import config
+from nexusLIMS.config import settings
 
 # Access configuration values
-data_path = config.NX_DATA_PATH
-file_strategy = config.NX_FILE_STRATEGY
-db_path = config.NX_DB_PATH
+data_path = settings.NX_DATA_PATH
+file_strategy = settings.NX_FILE_STRATEGY
+db_path = settings.NX_DB_PATH
 
 # Access NEMO harvesters (returns dict of configurations)
-nemo_harvesters = config.nemo_harvesters()
+nemo_harvesters = settings.nemo_harvesters()
 
 # Access email configuration (returns EmailConfig or None)
-email_config = config.email_config()
+email_config = settings.email_config()
 ```
 
 ```{danger}
 **Never use `os.getenv()` or `os.environ` directly for NexusLIMS configuration.**
 
-Always access configuration through `nexusLIMS.config`. This ensures:
+Always access configuration through the `settings` object from `nexusLIMS.config`. This ensures:
 - Type safety and validation
 - Consistent behavior across the codebase
 - Proper defaults and error handling
-- Easier testing (can mock the config module)
+- Easier testing (can mock the settings object)
 ```
 
 ### Testing with Configuration

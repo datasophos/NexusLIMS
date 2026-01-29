@@ -116,6 +116,17 @@ Bases: {py:obj}`str`, {py:obj}`enum.Enum`
 
 ````
 
+````{py:attribute} BUILT_NOT_EXPORTED
+:canonical: nexusLIMS.db.enums.RecordStatus.BUILT_NOT_EXPORTED
+:value: >
+   'BUILT_NOT_EXPORTED'
+
+```{autodoc2-docstring} nexusLIMS.db.enums.RecordStatus.BUILT_NOT_EXPORTED
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
 ````{py:attribute} ERROR
 :canonical: nexusLIMS.db.enums.RecordStatus.ERROR
 :value: >

@@ -428,7 +428,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Jan, 20, 2026"/>
+    <meta name="docbuild:last-update" content="Jan, 29, 2026"/>
   </head>
   
   
@@ -849,22 +849,24 @@ window.addEventListener("load", load);
 <span class="kn">from</span><span class="w"> </span><span class="nn">sqlmodel</span><span class="w"> </span><span class="kn">import</span> <span class="n">select</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS</span><span class="w"> </span><span class="kn">import</span> <span class="n">version</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.cdcs</span><span class="w"> </span><span class="kn">import</span> <span class="n">upload_record_files</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">settings</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.db.engine</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_engine</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.db.enums</span><span class="w"> </span><span class="kn">import</span> <span class="n">RecordStatus</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.db.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">SessionLog</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.db.session_handler</span><span class="w"> </span><span class="kn">import</span> <span class="n">Session</span><span class="p">,</span> <span class="n">get_sessions_to_build</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.exporters</span><span class="w"> </span><span class="kn">import</span> <span class="n">export_records</span><span class="p">,</span> <span class="n">was_successfully_exported</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.extractors</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_registry</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.harvesters</span><span class="w"> </span><span class="kn">import</span> <span class="n">nemo</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.harvesters.nemo</span><span class="w"> </span><span class="kn">import</span> <span class="n">utils</span> <span class="k">as</span> <span class="n">nemo_utils</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.harvesters.reservation_event</span><span class="w"> </span><span class="kn">import</span> <span class="n">ReservationEvent</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas</span><span class="w"> </span><span class="kn">import</span> <span class="n">activity</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas.activity</span><span class="w"> </span><span class="kn">import</span> <span class="n">AcquisitionActivity</span><span class="p">,</span> <span class="n">cluster_filelist_mtimes</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.utils</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">current_system_tz</span><span class="p">,</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.utils.files</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">find_files_by_mtime</span><span class="p">,</span>
     <span class="n">gnu_find_files_by_mtime</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.utils.time</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">current_system_tz</span><span class="p">,</span>
     <span class="n">has_delay_passed</span><span class="p">,</span>
 <span class="p">)</span>
 
@@ -1262,7 +1264,9 @@ window.addEventListener("load", load);
 
 <div class="viewcode-block" id="build_new_session_records">
 <a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.builder.record_builder.html#nexusLIMS.builder.record_builder.build_new_session_records">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">build_new_session_records</span><span class="p">(</span><span class="n">generate_previews</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]:</span>  <span class="c1"># noqa: FBT002, FBT001</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">build_new_session_records</span><span class="p">(</span>
+    <span class="n">generate_previews</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># noqa: FBT002, FBT001</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Session</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Build records for new sessions from the database.</span>
 
@@ -1275,6 +1279,8 @@ window.addEventListener("load", load);
 <span class="sd">    xml_files : typing.List[pathlib.Path]</span>
 <span class="sd">        A list of record files that were successfully built and saved to</span>
 <span class="sd">        centralized storage</span>
+<span class="sd">    sessions_built : typing.List[Session]</span>
+<span class="sd">        Corresponding Session objects for each built XML file (same length and order)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># get the list of sessions with &#39;TO_BE_BUILT&#39; status; does not fetch new</span>
     <span class="c1"># usage events from any NEMO instances;</span>
@@ -1284,6 +1290,7 @@ window.addEventListener("load", load);
     <span class="k">if</span> <span class="ow">not</span> <span class="n">sessions</span><span class="p">:</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="s2">&quot;No &#39;TO_BE_BUILT&#39; sessions were found. Exiting.&quot;</span><span class="p">)</span>
     <span class="n">xml_files</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">sessions_built</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="c1"># loop through the sessions</span>
     <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">sessions</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
@@ -1350,13 +1357,17 @@ window.addEventListener("load", load);
                 <span class="n">_logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;Marking </span><span class="si">%s</span><span class="s1"> as &quot;ERROR&quot;&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">session_identifier</span><span class="p">)</span>
                 <span class="n">s</span><span class="o">.</span><span class="n">update_session_status</span><span class="p">(</span><span class="n">RecordStatus</span><span class="o">.</span><span class="n">ERROR</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">xml_files</span> <span class="o">=</span> <span class="n">_record_validation_flow</span><span class="p">(</span><span class="n">record_text</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">xml_files</span><span class="p">)</span>
+            <span class="n">xml_files</span><span class="p">,</span> <span class="n">sessions_built</span> <span class="o">=</span> <span class="n">_record_validation_flow</span><span class="p">(</span>
+                <span class="n">record_text</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">xml_files</span><span class="p">,</span> <span class="n">sessions_built</span>
+            <span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">xml_files</span></div>
+    <span class="k">return</span> <span class="n">xml_files</span><span class="p">,</span> <span class="n">sessions_built</span></div>
 
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_record_validation_flow</span><span class="p">(</span><span class="n">record_text</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">xml_files</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_record_validation_flow</span><span class="p">(</span>
+    <span class="n">record_text</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">xml_files</span><span class="p">,</span> <span class="n">sessions_built</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Session</span><span class="p">]]:</span>
     <span class="k">if</span> <span class="n">validate_record</span><span class="p">(</span><span class="n">BytesIO</span><span class="p">(</span><span class="nb">bytes</span><span class="p">(</span><span class="n">record_text</span><span class="p">,</span> <span class="s2">&quot;UTF-8&quot;</span><span class="p">))):</span>
         <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Validated newly generated record&quot;</span><span class="p">)</span>
         <span class="c1"># generate filename for saved record and make sure path exists</span>
@@ -1376,14 +1387,17 @@ window.addEventListener("load", load);
             <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">record_text</span><span class="p">)</span>
         <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Wrote record to </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
         <span class="n">xml_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
-        <span class="c1"># Mark this session as completed in the database</span>
-        <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Marking </span><span class="si">%s</span><span class="s1"> as &quot;COMPLETED&quot;&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">session_identifier</span><span class="p">)</span>
-        <span class="n">s</span><span class="o">.</span><span class="n">update_session_status</span><span class="p">(</span><span class="n">RecordStatus</span><span class="o">.</span><span class="n">COMPLETED</span><span class="p">)</span>
+        <span class="n">sessions_built</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+        <span class="c1"># Note: Session status will be updated after export attempt</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s2">&quot;Built record for </span><span class="si">%s</span><span class="s2">, will export to destinations&quot;</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">session_identifier</span>
+        <span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Marking </span><span class="si">%s</span><span class="s1"> as &quot;ERROR&quot;&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">session_identifier</span><span class="p">)</span>
         <span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Could not validate record, did not write to disk&quot;</span><span class="p">)</span>
         <span class="n">s</span><span class="o">.</span><span class="n">update_session_status</span><span class="p">(</span><span class="n">RecordStatus</span><span class="o">.</span><span class="n">ERROR</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">xml_files</span>
+
+    <span class="k">return</span> <span class="n">xml_files</span><span class="p">,</span> <span class="n">sessions_built</span>
 
 
 <div class="viewcode-block" id="process_new_records">
@@ -1437,23 +1451,44 @@ window.addEventListener("load", load);
             <span class="n">dry_run_file_find</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">nemo_utils</span><span class="o">.</span><span class="n">add_all_usage_events_to_db</span><span class="p">(</span><span class="n">dt_from</span><span class="o">=</span><span class="n">dt_from</span><span class="p">,</span> <span class="n">dt_to</span><span class="o">=</span><span class="n">dt_to</span><span class="p">)</span>
-        <span class="n">xml_files</span> <span class="o">=</span> <span class="n">build_new_session_records</span><span class="p">()</span>
+        <span class="n">xml_files</span><span class="p">,</span> <span class="n">sessions_built</span> <span class="o">=</span> <span class="n">build_new_session_records</span><span class="p">()</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">xml_files</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;No XML files built, so no files uploaded&quot;</span><span class="p">)</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;No XML files built, so no files exported&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">files_uploaded</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">upload_record_files</span><span class="p">(</span><span class="n">xml_files</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files_uploaded</span><span class="p">:</span>
+            <span class="c1"># Export records to all configured destinations</span>
+            <span class="n">export_results</span> <span class="o">=</span> <span class="n">export_records</span><span class="p">(</span><span class="n">xml_files</span><span class="p">,</span> <span class="n">sessions_built</span><span class="p">)</span>
+
+            <span class="c1"># Update session status based on export results</span>
+            <span class="n">sessions_by_file</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">xml_files</span><span class="p">,</span> <span class="n">sessions_built</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">xml_file</span><span class="p">,</span> <span class="n">session</span> <span class="ow">in</span> <span class="n">sessions_by_file</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">was_successfully_exported</span><span class="p">(</span><span class="n">xml_file</span><span class="p">,</span> <span class="n">export_results</span><span class="p">):</span>
+                    <span class="n">session</span><span class="o">.</span><span class="n">update_session_status</span><span class="p">(</span><span class="n">RecordStatus</span><span class="o">.</span><span class="n">COMPLETED</span><span class="p">)</span>
+                    <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                        <span class="s1">&#39;Marking </span><span class="si">%s</span><span class="s1"> as &quot;COMPLETED&quot;&#39;</span><span class="p">,</span> <span class="n">session</span><span class="o">.</span><span class="n">session_identifier</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">session</span><span class="o">.</span><span class="n">update_session_status</span><span class="p">(</span><span class="n">RecordStatus</span><span class="o">.</span><span class="n">BUILT_NOT_EXPORTED</span><span class="p">)</span>
+                    <span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                        <span class="s1">&#39;All exports failed for </span><span class="si">%s</span><span class="s1">, marking as &quot;BUILT_NOT_EXPORTED&quot;&#39;</span><span class="p">,</span>
+                        <span class="n">session</span><span class="o">.</span><span class="n">session_identifier</span><span class="p">,</span>
+                    <span class="p">)</span>
+
+            <span class="c1"># Move successfully exported files to uploaded directory</span>
+            <span class="n">files_exported</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">xml_files</span> <span class="k">if</span> <span class="n">was_successfully_exported</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">export_results</span><span class="p">)</span>
+            <span class="p">]</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files_exported</span><span class="p">:</span>
                 <span class="n">uploaded_dir</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">records_dir_path</span> <span class="o">/</span> <span class="s2">&quot;uploaded&quot;</span>
                 <span class="n">Path</span><span class="p">(</span><span class="n">uploaded_dir</span><span class="p">)</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
                 <span class="n">shutil</span><span class="o">.</span><span class="n">copy2</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">uploaded_dir</span><span class="p">)</span>
                 <span class="n">Path</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
-            <span class="n">files_not_uploaded</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">xml_files</span> <span class="k">if</span> <span class="n">f</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">files_uploaded</span><span class="p">]</span>
 
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">files_not_uploaded</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">files_not_exported</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">xml_files</span> <span class="k">if</span> <span class="n">f</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">files_exported</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">files_not_exported</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
-                    <span class="s2">&quot;Some record files were not uploaded: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
-                    <span class="n">files_not_uploaded</span><span class="p">,</span>
+                    <span class="s2">&quot;Some record files were not exported: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="n">files_not_exported</span><span class="p">,</span>
                 <span class="p">)</span>
     <span class="k">return</span></div>
 

@@ -137,7 +137,7 @@
 ```
 ````
 
-````{py:function} build_new_session_records(generate_previews: bool = True) -> typing.List[pathlib.Path]
+````{py:function} build_new_session_records(generate_previews: bool = True) -> tuple[typing.List[pathlib.Path], typing.List[nexusLIMS.db.session_handler.Session]]
 :canonical: nexusLIMS.builder.record_builder.build_new_session_records
 
 ```{autodoc2-docstring} nexusLIMS.builder.record_builder.build_new_session_records

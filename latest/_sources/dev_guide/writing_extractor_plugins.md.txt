@@ -1,5 +1,8 @@
 # Writing Extractor Plugins
 
+```{versionadded} 2.1.0
+```
+
 This guide explains how to create custom metadata extractors for NexusLIMS using the plugin-based system introduced in v2.1.0.
 
 ## Overview

@@ -66,7 +66,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Jan, 20, 2026"/>
+    <meta name="docbuild:last-update" content="Jan, 29, 2026"/>
   </head>
   
   
@@ -414,6 +414,7 @@
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../../reference/api.html">API documentation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="nexusLIMS.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS</span></code></a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.db.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.db</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.builder.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.builder</span></code></a></li>
 <li class="toctree-l3 current active has-children"><a class="reference internal" href="nexusLIMS.extractors.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors</span></code></a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l4 current active"><a class="reference internal" href="nexusLIMS.extractors.plugins.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins</span></code></a></li>
@@ -427,9 +428,8 @@
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.cli.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.harvesters.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.harvesters</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.schemas.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.schemas</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.exporters.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.exporters</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.instruments.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.instruments</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.cdcs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cdcs</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.config.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.config</span></code></a></li>
 </ul>
 </details></li>
@@ -569,7 +569,7 @@ convert the ones (that we can) into HyperSpy 2.0+ markers for plotting.
 Uses the modern hs.plot.markers API instead of the deprecated dict2marker.</p>
 <dl class="myst field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>s</strong> (<a class="reference external" href="http://hyperspy.org/hyperspy-doc/current/reference/api.signals/BaseSignal.html#hyperspy.api.signals.BaseSignal" title="(in HyperSpy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">hyperspy.signal.BaseSignal</span></code></a> (or subclass)) – The HyperSpy signal for which a thumbnail should be generated</p>
+<dd class="field-odd"><p><strong>s</strong> (<a class="reference external" href="http://hyperspy.org/hyperspy-doc/current/reference/api.signals/BaseSignal.html#hyperspy.api.signals.BaseSignal" title="(in HyperSpy v2.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">hyperspy.signal.BaseSignal</span></code></a> (or subclass)) – The HyperSpy signal for which a thumbnail should be generated</p>
 </dd>
 </dl>
 </dd></dl>
@@ -591,7 +591,7 @@ number of navigation dimensions:</p>
 <dl class="myst field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>s</strong> (<a class="reference external" href="http://hyperspy.org/hyperspy-doc/current/reference/api.signals/BaseSignal.html#hyperspy.api.signals.BaseSignal" title="(in HyperSpy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">hyperspy.signal.BaseSignal</span></code></a> (or subclass)) – The HyperSpy signal for which a thumbnail should be generated</p></li>
+<li><p><strong>s</strong> (<a class="reference external" href="http://hyperspy.org/hyperspy-doc/current/reference/api.signals/BaseSignal.html#hyperspy.api.signals.BaseSignal" title="(in HyperSpy v2.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">hyperspy.signal.BaseSignal</span></code></a> (or subclass)) – The HyperSpy signal for which a thumbnail should be generated</p></li>
 <li><p><strong>out_path</strong> – A path to the desired thumbnail filename. All formats supported by
 <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.figure.Figure.savefig.html#matplotlib.figure.Figure.savefig" title="(in Matplotlib v3.10.8)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">savefig()</span></code></a> can be used.</p></li>
 <li><p><strong>dpi</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – The “dots per inch” resolution for the outputted figure</p></li>

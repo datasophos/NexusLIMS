@@ -66,7 +66,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Jan, 20, 2026"/>
+    <meta name="docbuild:last-update" content="Jan, 29, 2026"/>
   </head>
   
   
@@ -420,14 +420,14 @@
 <li class="toctree-l4"><a class="reference internal" href="nexusLIMS.db.enums.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.db.enums</span></code></a></li>
 </ul>
 </details></li>
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.builder.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.builder</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.extractors.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.cli.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.harvesters.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.harvesters</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.schemas.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.schemas</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.exporters.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.exporters</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.instruments.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.instruments</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.cdcs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cdcs</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.config.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.config</span></code></a></li>
 </ul>
 </details></li>
@@ -522,6 +522,9 @@ database tables (<code class="docutils literal notranslate"><span class="pre">in
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.db.models.SessionLog" title="nexusLIMS.db.models.SessionLog"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SessionLog</span></code></a></p></td>
 <td><p>Individual session log entry (START, END, or RECORD_GENERATION event).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.db.models.UploadLog" title="nexusLIMS.db.models.UploadLog"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UploadLog</span></code></a></p></td>
+<td><p>Log of export attempts to destination repositories.</p></td>
 </tr>
 </tbody>
 </table>
@@ -858,6 +861,84 @@ and warn without inserting anything if it finds one.</p>
 
 </dd></dl>
 
+<dl class="py class">
+<dt class="sig sig-object py" id="nexusLIMS.db.models.UploadLog">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nexusLIMS.db.models.</span></span><span class="sig-name descname"><span class="pre">UploadLog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/db/models.html#UploadLog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.db.models.UploadLog" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">sqlmodel.SQLModel</span></code></p>
+<p>Log of export attempts to destination repositories.</p>
+<p>Tracks per-destination export results for each session, enabling
+multi-destination export with granular success/failure tracking.</p>
+<dl class="myst field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> – Auto-incrementing primary key</p></li>
+<li><p><strong>session_identifier</strong> – Foreign key reference to session_log.session_identifier</p></li>
+<li><p><strong>destination_name</strong> – Name of the export destination (e.g., “cdcs”, “labarchives”)</p></li>
+<li><p><strong>success</strong> – Whether the export succeeded</p></li>
+<li><p><strong>record_id</strong> – Destination-specific record identifier (if successful)</p></li>
+<li><p><strong>record_url</strong> – Direct URL to view the exported record (if successful)</p></li>
+<li><p><strong>error_message</strong> – Error message if export failed</p></li>
+<li><p><strong>timestamp</strong> – When the export attempt occurred</p></li>
+<li><p><strong>metadata_json</strong> – JSON-serialized metadata dict with destination-specific details</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.db.models.UploadLog.id">
+<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#nexusLIMS.db.models.UploadLog.id" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> int | None</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.db.models.UploadLog.session_identifier">
+<span class="sig-name descname"><span class="pre">session_identifier</span></span><a class="headerlink" href="#nexusLIMS.db.models.UploadLog.session_identifier" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.db.models.UploadLog.destination_name">
+<span class="sig-name descname"><span class="pre">destination_name</span></span><a class="headerlink" href="#nexusLIMS.db.models.UploadLog.destination_name" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.db.models.UploadLog.success">
+<span class="sig-name descname"><span class="pre">success</span></span><a class="headerlink" href="#nexusLIMS.db.models.UploadLog.success" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> bool</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.db.models.UploadLog.timestamp">
+<span class="sig-name descname"><span class="pre">timestamp</span></span><a class="headerlink" href="#nexusLIMS.db.models.UploadLog.timestamp" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> datetime.datetime</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.db.models.UploadLog.record_id">
+<span class="sig-name descname"><span class="pre">record_id</span></span><a class="headerlink" href="#nexusLIMS.db.models.UploadLog.record_id" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> str | None</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.db.models.UploadLog.record_url">
+<span class="sig-name descname"><span class="pre">record_url</span></span><a class="headerlink" href="#nexusLIMS.db.models.UploadLog.record_url" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> str | None</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.db.models.UploadLog.error_message">
+<span class="sig-name descname"><span class="pre">error_message</span></span><a class="headerlink" href="#nexusLIMS.db.models.UploadLog.error_message" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> str | None</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.db.models.UploadLog.metadata_json">
+<span class="sig-name descname"><span class="pre">metadata_json</span></span><a class="headerlink" href="#nexusLIMS.db.models.UploadLog.metadata_json" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> str | None</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 </section>
 </section>
@@ -952,6 +1033,18 @@ and warn without inserting anything if it finds one.</p>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.SessionLog.user"><code class="docutils literal notranslate"><span class="pre">SessionLog.user</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.SessionLog.instrument_obj"><code class="docutils literal notranslate"><span class="pre">SessionLog.instrument_obj</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.SessionLog.insert_log"><code class="docutils literal notranslate"><span class="pre">SessionLog.insert_log()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.UploadLog"><code class="docutils literal notranslate"><span class="pre">UploadLog</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.UploadLog.id"><code class="docutils literal notranslate"><span class="pre">UploadLog.id</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.UploadLog.session_identifier"><code class="docutils literal notranslate"><span class="pre">UploadLog.session_identifier</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.UploadLog.destination_name"><code class="docutils literal notranslate"><span class="pre">UploadLog.destination_name</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.UploadLog.success"><code class="docutils literal notranslate"><span class="pre">UploadLog.success</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.UploadLog.timestamp"><code class="docutils literal notranslate"><span class="pre">UploadLog.timestamp</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.UploadLog.record_id"><code class="docutils literal notranslate"><span class="pre">UploadLog.record_id</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.UploadLog.record_url"><code class="docutils literal notranslate"><span class="pre">UploadLog.record_url</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.UploadLog.error_message"><code class="docutils literal notranslate"><span class="pre">UploadLog.error_message</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.UploadLog.metadata_json"><code class="docutils literal notranslate"><span class="pre">UploadLog.metadata_json</span></code></a></li>
 </ul>
 </li>
 </ul>

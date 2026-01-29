@@ -66,7 +66,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Jan, 20, 2026"/>
+    <meta name="docbuild:last-update" content="Jan, 29, 2026"/>
   </head>
   
   
@@ -821,30 +821,30 @@
 <h2>Configuration in Code<a class="headerlink" href="#configuration-in-code" title="Link to this heading">#</a></h2>
 <section id="accessing-configuration">
 <h3>Accessing Configuration<a class="headerlink" href="#accessing-configuration" title="Link to this heading">#</a></h3>
-<p>Always access configuration through the <code class="docutils literal notranslate"><span class="pre">nexusLIMS.config</span></code> module:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS</span><span class="w"> </span><span class="kn">import</span> <span class="n">config</span>
+<p>Always access configuration through the <code class="docutils literal notranslate"><span class="pre">settings</span></code> object from the <code class="docutils literal notranslate"><span class="pre">nexusLIMS.config</span></code> module:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">settings</span>
 
 <span class="c1"># Access configuration values</span>
-<span class="n">data_path</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">NX_DATA_PATH</span>
-<span class="n">file_strategy</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">NX_FILE_STRATEGY</span>
-<span class="n">db_path</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">NX_DB_PATH</span>
+<span class="n">data_path</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">NX_DATA_PATH</span>
+<span class="n">file_strategy</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">NX_FILE_STRATEGY</span>
+<span class="n">db_path</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">NX_DB_PATH</span>
 
 <span class="c1"># Access NEMO harvesters (returns dict of configurations)</span>
-<span class="n">nemo_harvesters</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">nemo_harvesters</span><span class="p">()</span>
+<span class="n">nemo_harvesters</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">nemo_harvesters</span><span class="p">()</span>
 
 <span class="c1"># Access email configuration (returns EmailConfig or None)</span>
-<span class="n">email_config</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">email_config</span><span class="p">()</span>
+<span class="n">email_config</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">email_config</span><span class="p">()</span>
 </pre></div>
 </div>
 <div class="admonition danger">
 <p class="admonition-title">Danger</p>
 <p><strong>Never use <code class="docutils literal notranslate"><span class="pre">os.getenv()</span></code> or <code class="docutils literal notranslate"><span class="pre">os.environ</span></code> directly for NexusLIMS configuration.</strong></p>
-<p>Always access configuration through <code class="docutils literal notranslate"><span class="pre">nexusLIMS.config</span></code>. This ensures:</p>
+<p>Always access configuration through the <code class="docutils literal notranslate"><span class="pre">settings</span></code> object from <code class="docutils literal notranslate"><span class="pre">nexusLIMS.config</span></code>. This ensures:</p>
 <ul class="simple">
 <li><p>Type safety and validation</p></li>
 <li><p>Consistent behavior across the codebase</p></li>
 <li><p>Proper defaults and error handling</p></li>
-<li><p>Easier testing (can mock the config module)</p></li>
+<li><p>Easier testing (can mock the settings object)</p></li>
 </ul>
 </div>
 </section>
