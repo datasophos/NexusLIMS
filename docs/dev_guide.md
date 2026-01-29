@@ -491,6 +491,7 @@ We especially welcome contributions in these areas:
 
 dev_guide/development
 dev_guide/writing_extractor_plugins
+dev_guide/writing_export_destinations
 dev_guide/instrument_profiles
 dev_guide/nexuslims_internal_schema
 dev_guide/em_glossary_reference

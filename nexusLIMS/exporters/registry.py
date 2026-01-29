@@ -20,6 +20,11 @@ if TYPE_CHECKING:
 
 _logger = logging.getLogger(__name__)
 
+#: Export strategy type: controls how records are exported to multiple destinations.
+#:
+#: - ``"all"``: Export to all destinations (default)
+#: - ``"first_success"``: Stop after first successful export
+#: - ``"best_effort"``: Continue exporting even if some destinations fail
 ExportStrategy = Literal["all", "first_success", "best_effort"]
 
 

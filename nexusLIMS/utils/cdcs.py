@@ -365,7 +365,7 @@ def upload_record_files(
 
     Parameters
     ----------
-    files_to_upload
+    files_to_upload: List[pathlib.Path] | None
         The list of .xml files to upload. If ``None``, all .xml files in the
         current directory will be used instead.
     progress
@@ -373,7 +373,7 @@ def upload_record_files(
 
     Returns
     -------
-    tuple[list[Path], list[int]]
+    tuple[list[pathlib.Path], list[int]]
         A tuple of (files_uploaded, record_ids). files_uploaded is a list of
         the files that were successfully uploaded. record_ids is a list of the
         record id values (on the server) that were uploaded.

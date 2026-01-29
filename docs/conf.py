@@ -165,6 +165,7 @@ myst_enable_extensions = [
     "fieldlist",  # Required for Napoleon-parsed docstrings
     "colon_fence",  # Allow ::: for RST directives (including doctest blocks)
     "attrs_block",  # Allow setting custom attributes via block quote
+    "tasklist",  # Enable GitHub-style task lists (- [ ] / - [x])
 ]
 
 # Napoleon settings - these affect docstring parsing
@@ -404,6 +405,7 @@ nitpick_ignore = [
     ("py:class", "lxml.etree.ElementBase"),
     # NexusLIMS type aliases (Annotated types can't be cross-referenced as classes)
     ("py:class", "nexusLIMS.schemas.pint_types.PintQuantity"),
+    ("py:class", "nexusLIMS.exporters.registry.ExportStrategy"),
     # Pint library types (no intersphinx inventory available)
     ("py:class", "pint.Quantity"),
     # Pydantic exceptions (intersphinx doesn't resolve pydantic_core exceptions)

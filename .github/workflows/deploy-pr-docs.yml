@@ -169,7 +169,7 @@ jobs:
           PR_NUMBER: ${{ steps.pr.outputs.number }}
         run: |
           cd pr-source
-          ./scripts/build_docs.sh
+          ./scripts/build_docs.sh --strict
 
       - name: Deploy to PR preview directory
         # Create/update pr-{NUMBER} directory in gh-pages with docs and coverage

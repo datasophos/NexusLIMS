@@ -58,7 +58,7 @@ def export_records(
 
     Returns
     -------
-    dict[Path, list[ExportResult]]
+    dict[pathlib.Path, list[ExportResult]]
         Mapping of XML file path to list of export results (one per destination)
     """
     if len(xml_files) != len(sessions):

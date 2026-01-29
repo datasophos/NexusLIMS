@@ -1,5 +1,8 @@
 # EM Glossary Field Reference
 
+```{versionadded} 2.2.0
+```
+
 This document provides a reference for standardized field names in NexusLIMS metadata, aligned with the **Electron Microscopy Glossary v2.0.0** community standard.
 
 ## Field Coverage Statistics

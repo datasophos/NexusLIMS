@@ -199,9 +199,9 @@ is read from the database `instruments` table, centralizing configuration manage
 
 **File search strategy:**
 
-1. **Primary:** {py:meth}`~nexusLIMS.utils.gnu_find_files_by_mtime` uses GNU
+1. **Primary:** {py:meth}`~nexusLIMS.utils.files.gnu_find_files_by_mtime` uses GNU
    [`find`](https://www.gnu.org/software/findutils/) (available on Linux/macOS, ~tens of seconds)
-2. **Fallback:** {py:meth}`~nexusLIMS.utils.find_files_by_mtime` provides pure-Python
+2. **Fallback:** {py:meth}`~nexusLIMS.utils.files.find_files_by_mtime` provides pure-Python
    implementation (~3× slower if GNU find unavailable)
 
 Only files modified within the session timespan are returned.
@@ -337,9 +337,8 @@ The builder then processes the next session, repeating until all are complete.
 (upload-records)=
 ### 8. Uploading Completed Records and Updating Database
 
-After all sessions are processed, {py:func}`~nexusLIMS.cdcs.upload_record_files`
-uploads generated XML records to the CDCS instance via the
-[CDCS REST API](https://cdcs.nist.gov/cdcs-documentation/18-rest-api-examples.html).
+After all sessions are processed, {py:func}`~nexusLIMS.exporters.export_records`
+uploads generated XML records to configured export destinations.
 
 **Upload process:**
 
