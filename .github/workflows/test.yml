@@ -100,10 +100,3 @@ jobs:
           coverage xml -o combined-coverage.xml
           # Show report in logs
           coverage report
-
-      - name: Upload combined coverage to Codecov
-        uses: codecov/codecov-action@v5
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./combined-coverage.xml
-          fail_ci_if_error: false
