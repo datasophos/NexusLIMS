@@ -1216,7 +1216,7 @@ window.addEventListener("load", load);
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    files_to_upload</span>
+<span class="sd">    files_to_upload: List[pathlib.Path] | None</span>
 <span class="sd">        The list of .xml files to upload. If ``None``, all .xml files in the</span>
 <span class="sd">        current directory will be used instead.</span>
 <span class="sd">    progress</span>
@@ -1224,7 +1224,7 @@ window.addEventListener("load", load);
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    tuple[list[Path], list[int]]</span>
+<span class="sd">    tuple[list[pathlib.Path], list[int]]</span>
 <span class="sd">        A tuple of (files_uploaded, record_ids). files_uploaded is a list of</span>
 <span class="sd">        the files that were successfully uploaded. record_ids is a list of the</span>
 <span class="sd">        record id values (on the server) that were uploaded.</span>

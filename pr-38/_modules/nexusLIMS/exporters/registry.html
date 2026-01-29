@@ -845,6 +845,11 @@ window.addEventListener("load", load);
 
 <span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
+<span class="c1">#: Export strategy type: controls how records are exported to multiple destinations.</span>
+<span class="c1">#:</span>
+<span class="c1">#: - ``&quot;all&quot;``: Export to all destinations (default)</span>
+<span class="c1">#: - ``&quot;first_success&quot;``: Stop after first successful export</span>
+<span class="c1">#: - ``&quot;best_effort&quot;``: Continue exporting even if some destinations fail</span>
 <span class="n">ExportStrategy</span> <span class="o">=</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="s2">&quot;first_success&quot;</span><span class="p">,</span> <span class="s2">&quot;best_effort&quot;</span><span class="p">]</span>
 
 

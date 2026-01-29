@@ -1,5 +1,8 @@
 # Writing Export Destination Plugins
 
+```{versionadded} 2.4.0
+```
+
 This guide explains how to create custom export destination plugins for the NexusLIMS multi-destination export framework.
 
 ## Overview
@@ -610,4 +613,4 @@ When creating a new export destination, ensure you:
 - [ ] Test integration with the full export workflow
 - [ ] Document any special requirements or dependencies
 
-For more examples, see the CDCS destination implementation at `nexusLIMS/exporters/destinations/cdcs.py`.
+For more examples, see the CDCS destination implementation at {py:mod}`nexusLIMS.exporters.destinations.cdcs`.
