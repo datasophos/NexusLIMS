@@ -162,7 +162,7 @@ frontend_guide/gallery
 frontend_guide/overview
 frontend_guide/development
 frontend_guide/production
-frontend_guide/local-https-testing
+frontend_guide/local-test-deployment
 frontend_guide/configuration
 frontend_guide/customization
 frontend_guide/administration

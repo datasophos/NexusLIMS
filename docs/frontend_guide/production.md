@@ -531,4 +531,4 @@ admin-db-restore /opt/nexuslims/backups/backup_20260109_120000.sql
 - {doc}`configuration` - Detailed environment variable reference
 - {doc}`administration` - Backup, restore, and maintenance procedures
 - {doc}`troubleshooting` - Common issues and solutions
-- {doc}`local-https-testing` - Test production config locally before deploying
+- {doc}`local-test-deployment` - Test production config locally with mkcert
