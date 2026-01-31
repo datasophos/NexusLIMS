@@ -1,0 +1,1377 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Local Test Deployment &#8212; NexusLIMS dev documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=acda69ee" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=3ce10a4d"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=30646c52"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'frontend_guide/local-test-deployment';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'dev';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script src="../_static/custom.js?v=ba087cdf"></script>
+    <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/latest/frontend_guide/local-test-deployment.html" />
+    <link rel="icon" href="../_static/nexusLIMS_bare_logo.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Configuration" href="configuration.html" />
+    <link rel="prev" title="Production Deployment" href="production.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="dev" />
+    <meta name="docbuild:last-update" content="Jan, 31, 2026"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS dev documentation - Home"/>
+    <img src="../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS dev documentation - Home"/>
+  
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../migration.html">
+    Migration Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../dev_guide.html">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../frontend_guide.html">
+    Frontend Guide
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../reference.html">
+    Reference
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datasophos/NexusLIMS" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://datasophos.co" title="Datasophos" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-globe fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Datasophos</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../migration.html">
+    Migration Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../dev_guide.html">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../frontend_guide.html">
+    Frontend Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../reference.html">
+    Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datasophos/NexusLIMS" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://datasophos.co" title="Datasophos" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-globe fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Datasophos</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="gallery.html">Screenshot Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development.html">Development Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="production.html">Production Deployment</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Local Test Deployment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="customization.html">Branding and Customization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="administration.html">Administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../frontend_guide.html" class="nav-link">Frontend Guide</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Local Test Deployment</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="local-test-deployment">
+<span id="cdcs-local-test-deployment"></span><h1>Local Test Deployment<a class="headerlink" href="#local-test-deployment" title="Link to this heading">#</a></h1>
+<p>This guide explains how to set up a local production-like environment with HTTPS for testing production deployment procedures before deploying to a real server. The instructions assume you have adminstrator rights for the system, and (on MacOS and Linux) use directories such as <code class="docutils literal notranslate"><span class="pre">/opt</span></code> for system data. It also requires admin access to modify your system’s <code class="docutils literal notranslate"><span class="pre">hosts</span></code> file. You may be able to run most the setup without admin privileges by changing all the directories to sub-folders of <code class="docutils literal notranslate"><span class="pre">${HOME}</span></code>, but that is as-of-yet untested.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
+<p>Testing production configurations locally helps you:</p>
+<ul class="simple">
+<li><p>Validate your <code class="docutils literal notranslate"><span class="pre">.env</span></code> settings before deployment</p></li>
+<li><p>Test backup and restore procedures</p></li>
+<li><p>Verify SSL certificate configuration</p></li>
+<li><p>Practice upgrade and rollback procedures</p></li>
+<li><p>Debug issues in a safe environment</p></li>
+</ul>
+</section>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Docker Desktop or Docker Engine with Compose</p></li>
+<li><p>For MacOS, <a class="reference external" href="https://brew.sh/"><code class="docutils literal notranslate"><span class="pre">homebrew</span></code></a> installed and available</p></li>
+<li><p>For Windows, <a class="reference external" href="https://scoop.sh/"><code class="docutils literal notranslate"><span class="pre">scoop</span></code></a> installed and available</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sudo</span></code> or administrator access to edit system files such as <code class="docutils literal notranslate"><span class="pre">/etc/hosts</span></code></p></li>
+<li><p>Optionally, <code class="docutils literal notranslate"><span class="pre">git</span></code> and <code class="docutils literal notranslate"><span class="pre">jq</span></code> installed (can be installed with <code class="docutils literal notranslate"><span class="pre">homebrew</span></code> or <code class="docutils literal notranslate"><span class="pre">scoop</span></code>)</p></li>
+<li><p>Folders for your read-only instrument data (<code class="docutils literal notranslate"><span class="pre">NX_INSTRUMENT_DATA_HOST_PATH</span></code>) and NexusLIMS data (preview images, metadata files, etc. in <code class="docutils literal notranslate"><span class="pre">NX_DATA_HOST_PATH</span></code>). These can be network mounted folders, if desired.</p></li>
+</ul>
+<p><strong>Note</strong>: These instructions were developed primarily for a MacOS or Linux host, but the general approach should work on Windows</p>
+</section>
+<hr class="docutils" />
+<section id="setup-steps">
+<h2>Setup Steps<a class="headerlink" href="#setup-steps" title="Link to this heading">#</a></h2>
+<section id="obtain-nexuslims-cdcs-deployment-files">
+<h3>0. Obtain NexusLIMS-CDCS deployment files<a class="headerlink" href="#obtain-nexuslims-cdcs-deployment-files" title="Link to this heading">#</a></h3>
+<p>Create a folder to store NexusLIMS files, then clone the NexusLIMS-CDCS repository to get the deployment configuration files:</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-0">
+macOS (zsh/bash)</label><div class="sd-tab-content docutils">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>/opt/nexuslims
+sudo<span class="w"> </span>chown<span class="w"> </span><span class="si">${</span><span class="nv">USER</span><span class="si">}</span>:staff<span class="w"> </span>/opt/nexuslims
+
+<span class="nb">cd</span><span class="w"> </span>/opt/nexuslims
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/datasophos/NexusLIMS-CDCS.git
+<span class="nb">cd</span><span class="w"> </span>NexusLIMS-CDCS/deployment
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-1">
+Linux (zsh/bash)</label><div class="sd-tab-content docutils">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>/opt/nexuslims
+sudo<span class="w"> </span>chown<span class="w"> </span><span class="si">${</span><span class="nv">USER</span><span class="si">}</span>:<span class="si">${</span><span class="nv">USER</span><span class="si">}</span><span class="w"> </span>/opt/nexuslims
+
+<span class="nb">cd</span><span class="w"> </span>/opt/nexuslims
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/datasophos/NexusLIMS-CDCS.git
+<span class="nb">cd</span><span class="w"> </span>NexusLIMS-CDCS/deployment
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-2" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-2">
+Windows (Powershell)</label><div class="sd-tab-content docutils">
+<p>Run PowerShell as Administrator:</p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="c"># Create folder</span>
+<span class="nb">New-Item</span> <span class="n">-ItemType</span> <span class="n">Directory</span> <span class="n">-Force</span> <span class="n">-Path</span> <span class="n">C</span><span class="p">:\</span><span class="n">nexuslims</span>
+<span class="c"># Set ownership of that folder to current user</span>
+<span class="n">icacls</span> <span class="n">C</span><span class="p">:\</span><span class="n">nexuslims</span> <span class="p">/</span><span class="n">grant</span> <span class="s2">&quot;${env:USERNAME}:(OI)(CI)F&quot;</span> <span class="p">/</span><span class="n">T</span>
+</pre></div>
+</div>
+<p>Run Powershell as normal user:</p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="nb">cd </span><span class="n">C</span><span class="p">:\</span><span class="n">nexuslims</span>
+<span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">://</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="p">/</span><span class="n">datasophos</span><span class="p">/</span><span class="n">NexusLIMS-CDCS</span><span class="p">.</span><span class="n">git</span>
+<span class="nb">cd </span><span class="n">NexusLIMS-CDCS</span><span class="p">\</span><span class="n">deployment</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Note</strong>: The deployment files are located in the <code class="docutils literal notranslate"><span class="pre">deployment/</span></code> directory within the root of the NexusLIMS-CDCS repository.</p>
+<p><strong>Alternative to git clone</strong>: If you don’t have git installed or prefer not to use it, you can download the repository as a ZIP file from GitHub:</p>
+<ol class="arabic simple">
+<li><p>Download from: <a class="github reference external" href="https://github.com/datasophos/NexusLIMS-CDCS/archive/refs/heads/main.zip">datasophos/NexusLIMS-CDCS</a></p></li>
+<li><p>Extract the ZIP file to your nexuslims directory (<code class="docutils literal notranslate"><span class="pre">/opt/nexuslims</span></code> on macOS/Linux, <code class="docutils literal notranslate"><span class="pre">C:\nexuslims</span></code> on Windows)</p></li>
+<li><p>Rename the extracted folder from <code class="docutils literal notranslate"><span class="pre">NexusLIMS-CDCS-main</span></code> to <code class="docutils literal notranslate"><span class="pre">NexusLIMS-CDCS</span></code></p></li>
+</ol>
+</section>
+<section id="provide-docker-access-to-nexuslims-directory-macos-only">
+<h3>0.5. Provide Docker access to NexusLIMS directory (macOS only)<a class="headerlink" href="#provide-docker-access-to-nexuslims-directory-macos-only" title="Link to this heading">#</a></h3>
+<p>On macOS, Docker Desktop needs explicit permission to access directories outside of your home folder. Since we’re using <code class="docutils literal notranslate"><span class="pre">/opt/nexuslims</span></code>, you need to add it to Docker’s file sharing settings:</p>
+<ol class="arabic simple">
+<li><p>Open <strong>Docker Desktop</strong></p></li>
+<li><p>Click the <strong>Settings</strong> (gear) icon in the top-right</p></li>
+<li><p>Navigate to <strong>Resources</strong> → <strong>File sharing</strong></p></li>
+<li><p>Enter <code class="docutils literal notranslate"><span class="pre">/opt/nexuslims</span></code> or browse to select it in the list of folders</p></li>
+<li><p>Click the <strong>+</strong> button to add it to Docker’s allowed folders</p></li>
+<li><p>Click <strong>Apply &amp; restart</strong></p></li>
+</ol>
+<p>Docker will restart and mount the <code class="docutils literal notranslate"><span class="pre">/opt/nexuslims</span></code> directory, making it available to containers.</p>
+<p><strong>Note</strong>: If you see permission errors when running containers later, verify that this directory appears in the File sharing list.</p>
+</section>
+<section id="install-mkcert">
+<h3>1. Install mkcert<a class="headerlink" href="#install-mkcert" title="Link to this heading">#</a></h3>
+<p><a class="reference external" href="https://github.com/FiloSottile/mkcert"><code class="docutils literal notranslate"><span class="pre">mkcert</span></code></a> allows you to create locally-trusted certificates so the full HTTPS installation will work as if you had obtained a certificate from a trusted certificate authority.</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-3" name="sd-tab-set-1" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-3">
+macOS (zsh/bash)</label><div class="sd-tab-content docutils">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>brew<span class="w"> </span>install<span class="w"> </span>mkcert
+brew<span class="w"> </span>install<span class="w"> </span>nss<span class="w">  </span><span class="c1"># Firefox support</span>
+mkcert<span class="w"> </span>-install
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-4" name="sd-tab-set-1" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-4">
+Linux (zsh/bash)</label><div class="sd-tab-content docutils">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Ubuntu/Debian</span>
+sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>libnss3-tools
+
+<span class="c1"># Download mkcert from https://github.com/FiloSottile/mkcert/releases</span>
+<span class="c1"># or follow other instructions from https://github.com/FiloSottile/mkcert</span>
+sudo<span class="w"> </span>mv<span class="w"> </span>mkcert-v*-linux-amd64<span class="w"> </span>/usr/local/bin/mkcert
+sudo<span class="w"> </span>chmod<span class="w"> </span>+x<span class="w"> </span>/usr/local/bin/mkcert
+mkcert<span class="w"> </span>-install
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-5" name="sd-tab-set-1" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-5">
+Windows (Powershell)</label><div class="sd-tab-content docutils">
+<p>Install <code class="docutils literal notranslate"><span class="pre">mkcert</span></code> via <code class="docutils literal notranslate"><span class="pre">scoop</span></code></p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="n">scoop</span> <span class="n">bucket</span> <span class="n">add</span> <span class="n">extras</span>
+<span class="n">scoop</span> <span class="n">install</span> <span class="n">mkcert</span>
+<span class="n">mkcert</span> <span class="n">-install</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="generate-certificates">
+<h3>2. Generate Certificates<a class="headerlink" href="#generate-certificates" title="Link to this heading">#</a></h3>
+<p>Create certificates for your test domain:</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-6" name="sd-tab-set-2" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-6">
+macOS/Linux (zsh/bash)</label><div class="sd-tab-content docutils">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>-p<span class="w"> </span>/opt/nexuslims/local-certs
+
+<span class="nb">cd</span><span class="w"> </span>/opt/nexuslims/local-certs
+mkcert<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">&quot;nexuslims-local.test&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">&quot;files.nexuslims-local.test&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">&quot;localhost&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">&quot;127.0.0.1&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">&quot;::1&quot;</span>
+
+<span class="c1"># Rename to standard certificate names expected by NexusLIMS</span>
+mv<span class="w"> </span>nexuslims-local.test+4.pem<span class="w"> </span>fullchain.pem
+mv<span class="w"> </span>nexuslims-local.test+4-key.pem<span class="w"> </span>privkey.pem
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-7" name="sd-tab-set-2" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-7">
+Windows (Powershell)</label><div class="sd-tab-content docutils">
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="nb">New-Item</span> <span class="n">-ItemType</span> <span class="n">Directory</span> <span class="n">-Force</span> <span class="n">-Path</span> <span class="n">C</span><span class="p">:\</span><span class="n">nexuslims</span><span class="p">\</span><span class="n">local-certs</span>
+
+<span class="nb">cd </span><span class="n">C</span><span class="p">:\</span><span class="n">nexuslims</span><span class="p">\</span><span class="n">local-certs</span>
+<span class="n">mkcert</span> <span class="p">`</span>
+  <span class="s2">&quot;nexuslims-local.test&quot;</span> <span class="p">`</span>
+  <span class="s2">&quot;files.nexuslims-local.test&quot;</span> <span class="p">`</span>
+  <span class="s2">&quot;localhost&quot;</span> <span class="p">`</span>
+  <span class="s2">&quot;127.0.0.1&quot;</span> <span class="p">`</span>
+  <span class="s2">&quot;::1&quot;</span>
+
+<span class="c"># Rename to standard certificate names expected by NexusLIMS</span>
+<span class="nb">Move-Item</span> <span class="n">nexuslims-local</span><span class="p">.</span><span class="n">test</span><span class="p">+</span><span class="n">4</span><span class="p">.</span><span class="n">pem</span> <span class="n">fullchain</span><span class="p">.</span><span class="n">pem</span>
+<span class="nb">Move-Item</span> <span class="n">nexuslims-local</span><span class="p">.</span><span class="n">test</span><span class="p">+</span><span class="n">4-key</span><span class="p">.</span><span class="n">pem</span> <span class="n">privkey</span><span class="p">.</span><span class="n">pem</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>This creates a local certificate and key that will be trusted by your system as if it were issued by a trusted certificate authority:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">fullchain.pem</span></code> (certificate)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">privkey.pem</span></code> (private key)</p></li>
+</ul>
+<p><strong>Note</strong>: NexusLIMS expects standard certificate names (<code class="docutils literal notranslate"><span class="pre">fullchain.pem</span></code> and <code class="docutils literal notranslate"><span class="pre">privkey.pem</span></code>), which is why we rename the mkcert-generated files.</p>
+</section>
+<section id="update-your-system-s-hosts-file">
+<h3>3. Update your system’s hosts file<a class="headerlink" href="#update-your-system-s-hosts-file" title="Link to this heading">#</a></h3>
+<p>Redirect the test domains to localhost:</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-8" name="sd-tab-set-3" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-8">
+macOS/Linux (zsh/bash)</label><div class="sd-tab-content docutils">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>tee<span class="w"> </span>-a<span class="w"> </span>/etc/hosts<span class="w"> </span><span class="s">&lt;&lt; EOF</span>
+<span class="s">127.0.0.1 nexuslims-local.test</span>
+<span class="s">127.0.0.1 files.nexuslims-local.test</span>
+<span class="s">EOF</span>
+</pre></div>
+</div>
+<p>To verify the content:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cat<span class="w"> </span>/etc/hosts<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>nexus
+
+<span class="c1"># should return:</span>
+<span class="c1"># 127.0.0.1 nexuslims-local.test</span>
+<span class="c1"># 127.0.0.1 files.nexuslims-local.test</span>
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-9" name="sd-tab-set-3" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-9">
+Windows (Powershell)</label><div class="sd-tab-content docutils">
+<p>Run PowerShell as Administrator, then add the entries:</p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="nb">Add-Content</span> <span class="n">-Path</span> <span class="n">C</span><span class="p">:\</span><span class="n">Windows</span><span class="p">\</span><span class="n">System32</span><span class="p">\</span><span class="n">drivers</span><span class="p">\</span><span class="n">etc</span><span class="p">\</span><span class="n">hosts</span> <span class="n">-Value</span> <span class="sh">@&quot;</span>
+<span class="sh">127.0.0.1 nexuslims-local.test</span>
+<span class="sh">127.0.0.1 files.nexuslims-local.test</span>
+<span class="sh">&quot;@</span>
+</pre></div>
+</div>
+<p>To verify the content:</p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="nb">Get-Content</span> <span class="n">C</span><span class="p">:\</span><span class="n">Windows</span><span class="p">\</span><span class="n">System32</span><span class="p">\</span><span class="n">drivers</span><span class="p">\</span><span class="n">etc</span><span class="p">\</span><span class="n">hosts</span> <span class="p">|</span> <span class="nb">Select-String</span> <span class="n">nexus</span>
+
+<span class="c"># should return:</span>
+<span class="c"># 127.0.0.1 nexuslims-local.test</span>
+<span class="c"># 127.0.0.1 files.nexuslims-local.test</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="create-backup-directory">
+<h3>4. Create Backup Directory<a class="headerlink" href="#create-backup-directory" title="Link to this heading">#</a></h3>
+<p><em>Note</em>: this is not strictly necessary, but if you want to use the backup capabilities built into the NexusLIMS deployment helper scripts, this directory should be created:</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-10" name="sd-tab-set-4" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-10">
+macOS/Linux (zsh/bash)</label><div class="sd-tab-content docutils">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>-p<span class="w"> </span>/opt/nexuslims/backups
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-11" name="sd-tab-set-4" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-11">
+Windows (Powershell)</label><div class="sd-tab-content docutils">
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="nb">New-Item</span> <span class="n">-ItemType</span> <span class="n">Directory</span> <span class="n">-Force</span> <span class="n">-Path</span> <span class="n">C</span><span class="p">:\</span><span class="n">nexuslims</span><span class="p">\</span><span class="n">backups</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="configure-environment">
+<h3>5. Configure Environment<a class="headerlink" href="#configure-environment" title="Link to this heading">#</a></h3>
+<p>This section explains how to set values that will enable NexusLIMS-CDCS to work on your local machine:</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-12" name="sd-tab-set-5" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-12">
+macOS/Linux (zsh/bash)</label><div class="sd-tab-content docutils">
+<p>Change to the deployment folder (if you’re not already there) and copy the example <code class="docutils literal notranslate"><span class="pre">.env.prod.example</span></code> file
+into a new file named <code class="docutils literal notranslate"><span class="pre">.env</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>/opt/nexuslims/NexusLIMS-CDCS/deployment
+cp<span class="w"> </span>.env.prod.example<span class="w"> </span>.env
+</pre></div>
+</div>
+<p>Configure the <code class="docutils literal notranslate"><span class="pre">.env</span></code> file for local testing:</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-14" name="sd-tab-set-6" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-14">
+Automated (recommended)</label><div class="sd-tab-content docutils">
+<p>Use sed to update the standard values automatically:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sed<span class="w"> </span>-i<span class="w"> </span><span class="s1">&#39;&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="s1">&#39;s/^DOMAIN=.*/DOMAIN=nexuslims-local.test/&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="s1">&#39;s/^FILES_DOMAIN=.*/FILES_DOMAIN=files.nexuslims-local.test/&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="s1">&#39;s|^# CADDY_CERTS_HOST_PATH=.*|CADDY_CERTS_HOST_PATH=/opt/nexuslims/local-certs|&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="s1">&#39;s|^NX_CDCS_BACKUPS_HOST_PATH=.*|NX_CDCS_BACKUPS_HOST_PATH=/opt/nexuslims/backups|&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>.env
+</pre></div>
+</div>
+<p>Then manually edit <code class="docutils literal notranslate"><span class="pre">.env</span></code> to set your data paths and API token (these values are at the top of the file):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># File paths (adjust these to match your actual data locations)</span>
+<span class="nv">NX_DATA_HOST_PATH</span><span class="o">=</span>/mnt/nexuslims/data
+<span class="nv">NX_INSTRUMENT_DATA_HOST_PATH</span><span class="o">=</span>/mnt/nexuslims/instrument-data
+
+<span class="c1"># Admin API token (generate a secure random token)</span>
+<span class="c1"># This is used by the NexusLIMS backend to authenticate API requests</span>
+<span class="nv">NX_ADMIN_API_TOKEN</span><span class="o">=</span>&lt;generate-with-command-below&gt;
+</pre></div>
+</div>
+<p>Generate a secure API token:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;from secrets import token_urlsafe; print(token_urlsafe(30))&quot;</span>
+</pre></div>
+</div>
+<p>Copy the output and paste it as the value for <code class="docutils literal notranslate"><span class="pre">NX_ADMIN_API_TOKEN</span></code> in your <code class="docutils literal notranslate"><span class="pre">.env</span></code> file.</p>
+</div>
+<input id="sd-tab-item-15" name="sd-tab-set-6" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-15">
+Manual</label><div class="sd-tab-content docutils">
+<p>Edit <code class="docutils literal notranslate"><span class="pre">.env</span></code> with any text editor and set these values:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Domain configuration</span>
+<span class="nv">DOMAIN</span><span class="o">=</span>nexuslims-local.test
+<span class="nv">FILES_DOMAIN</span><span class="o">=</span>files.nexuslims-local.test
+
+<span class="c1"># Enable custom certificates</span>
+<span class="nv">CADDY_CERTS_HOST_PATH</span><span class="o">=</span>/opt/nexuslims/local-certs
+
+<span class="c1"># Backup directory</span>
+<span class="nv">NX_CDCS_BACKUPS_HOST_PATH</span><span class="o">=</span>/opt/nexuslims/backups
+
+<span class="c1"># Admin API token (generate with: python3 -c &quot;from secrets import token_urlsafe; print(token_urlsafe(30))&quot;)</span>
+<span class="nv">NX_ADMIN_API_TOKEN</span><span class="o">=</span>&lt;paste-generated-token-here&gt;
+
+<span class="c1"># File paths (adjust to match your actual data locations)</span>
+<span class="nv">NX_DATA_HOST_PATH</span><span class="o">=</span>/mnt/nexuslims/data
+<span class="nv">NX_INSTRUMENT_DATA_HOST_PATH</span><span class="o">=</span>/mnt/nexuslims/instrument-data
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<input id="sd-tab-item-13" name="sd-tab-set-5" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-13">
+Windows (Powershell)</label><div class="sd-tab-content docutils">
+<p>Change to the deployment folder (if you’re not already there) and copy the example <code class="docutils literal notranslate"><span class="pre">.env.prod.example</span></code> file
+into a new file named <code class="docutils literal notranslate"><span class="pre">.env</span></code>:</p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="nb">cd </span><span class="n">C</span><span class="p">:\</span><span class="n">nexuslims</span><span class="p">\</span><span class="n">NexusLIMS-CDCS</span><span class="p">\</span><span class="n">deployment</span>
+<span class="nb">Copy-Item</span> <span class="p">.</span><span class="n">env</span><span class="p">.</span><span class="n">prod</span><span class="p">.</span><span class="n">example</span> <span class="p">.</span><span class="n">env</span>
+</pre></div>
+</div>
+<p>Configure the <code class="docutils literal notranslate"><span class="pre">.env</span></code> file for local testing:</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-16" name="sd-tab-set-7" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-16">
+Automated (recommended)</label><div class="sd-tab-content docutils">
+<p>Use PowerShell to update the standard values automatically:</p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="c"># Update standard local test values</span>
+<span class="p">(</span><span class="nb">Get-Content</span> <span class="p">.</span><span class="n">env</span><span class="p">)</span> <span class="o">-replace</span> <span class="s1">&#39;^DOMAIN=.*&#39;</span><span class="p">,</span> <span class="s1">&#39;DOMAIN=nexuslims-local.test&#39;</span> <span class="p">|</span> <span class="nb">Set-Content</span> <span class="p">.</span><span class="n">env</span>
+<span class="p">(</span><span class="nb">Get-Content</span> <span class="p">.</span><span class="n">env</span><span class="p">)</span> <span class="o">-replace</span> <span class="s1">&#39;^FILES_DOMAIN=.*&#39;</span><span class="p">,</span> <span class="s1">&#39;FILES_DOMAIN=files.nexuslims-local.test&#39;</span> <span class="p">|</span> <span class="nb">Set-Content</span> <span class="p">.</span><span class="n">env</span>
+<span class="p">(</span><span class="nb">Get-Content</span> <span class="p">.</span><span class="n">env</span><span class="p">)</span> <span class="o">-replace</span> <span class="s1">&#39;^# CADDY_CERTS_HOST_PATH=.*&#39;</span><span class="p">,</span> <span class="s1">&#39;CADDY_CERTS_HOST_PATH=C:\nexuslims\local-certs&#39;</span> <span class="p">|</span> <span class="nb">Set-Content</span> <span class="p">.</span><span class="n">env</span>
+<span class="p">(</span><span class="nb">Get-Content</span> <span class="p">.</span><span class="n">env</span><span class="p">)</span> <span class="o">-replace</span> <span class="s1">&#39;^NX_CDCS_BACKUPS_HOST_PATH=.*&#39;</span><span class="p">,</span> <span class="s1">&#39;NX_CDCS_BACKUPS_HOST_PATH=C:\nexuslims\backups&#39;</span> <span class="p">|</span> <span class="nb">Set-Content</span> <span class="p">.</span><span class="n">env</span>
+</pre></div>
+</div>
+<p>Then manually edit <code class="docutils literal notranslate"><span class="pre">.env</span></code> to set your data paths and API token (these values are at the top of the file):</p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="c"># File paths (adjust these to match your actual data locations)</span>
+<span class="n">NX_DATA_HOST_PATH</span><span class="p">=</span><span class="n">C</span><span class="p">:\</span><span class="n">nexuslims</span><span class="p">\</span><span class="n">data</span>
+<span class="n">NX_INSTRUMENT_DATA_HOST_PATH</span><span class="p">=</span><span class="n">C</span><span class="p">:\</span><span class="n">nexuslims</span><span class="p">\</span><span class="n">instrument-data</span>
+
+<span class="c"># Admin API token (generate a secure random token)</span>
+<span class="c"># This is used by the NexusLIMS backend to authenticate API requests</span>
+<span class="n">NX_ADMIN_API_TOKEN</span><span class="p">=&lt;</span><span class="n">generate-with-command-below</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p>Generate a secure API token:</p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">-c</span> <span class="s2">&quot;from secrets import token_urlsafe; print(token_urlsafe(30))&quot;</span>
+</pre></div>
+</div>
+<p>Copy the output and paste it as the value for <code class="docutils literal notranslate"><span class="pre">NX_ADMIN_API_TOKEN</span></code> in your <code class="docutils literal notranslate"><span class="pre">.env</span></code> file.</p>
+</div>
+<input id="sd-tab-item-17" name="sd-tab-set-7" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-17">
+Manual</label><div class="sd-tab-content docutils">
+<p>Edit <code class="docutils literal notranslate"><span class="pre">.env</span></code> with any text editor and set these values:</p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="c"># Domain configuration</span>
+<span class="n">DOMAIN</span><span class="p">=</span><span class="n">nexuslims-local</span><span class="p">.</span><span class="n">test</span>
+<span class="n">FILES_DOMAIN</span><span class="p">=</span><span class="n">files</span><span class="p">.</span><span class="n">nexuslims-local</span><span class="p">.</span><span class="n">test</span>
+
+<span class="c"># Enable custom certificates</span>
+<span class="n">CADDY_CERTS_HOST_PATH</span><span class="p">=</span><span class="n">C</span><span class="p">:\</span><span class="n">nexuslims</span><span class="p">\</span><span class="n">local-certs</span>
+
+<span class="c"># Backup directory</span>
+<span class="n">NX_CDCS_BACKUPS_HOST_PATH</span><span class="p">=</span><span class="n">C</span><span class="p">:\</span><span class="n">nexuslims</span><span class="p">\</span><span class="n">backups</span>
+
+<span class="c"># Admin API token (generate with: python -c &quot;from secrets import token_urlsafe; print(token_urlsafe(30))&quot;)</span>
+<span class="n">NX_ADMIN_API_TOKEN</span><span class="p">=&lt;</span><span class="n">paste-generated-token-here</span><span class="p">&gt;</span>
+
+<span class="c"># File paths (adjust to match your actual data locations)</span>
+<span class="n">NX_DATA_HOST_PATH</span><span class="p">=</span><span class="n">C</span><span class="p">:\</span><span class="n">nexuslims</span><span class="p">\</span><span class="n">data</span>
+<span class="n">NX_INSTRUMENT_DATA_HOST_PATH</span><span class="p">=</span><span class="n">C</span><span class="p">:\</span><span class="n">nexuslims</span><span class="p">\</span><span class="n">instrument-data</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="start-services">
+<span id="id1"></span><h3>6. Start Services<a class="headerlink" href="#start-services" title="Link to this heading">#</a></h3>
+<p>NexusLIMS-CDCS includes helper scripts that provide some useful shortcuts for interacting with the docker deployment stack, including <code class="docutils literal notranslate"><span class="pre">admin-commands.sh</span></code>/<code class="docutils literal notranslate"><span class="pre">admin-commands.ps1</span></code>. These need to be sourced once to load the functions into your current session, and you will need to “re-source” the file again if you close your terminal session.</p>
+<p>For example, one command made available is <code class="docutils literal notranslate"><span class="pre">dc-prod</span></code>, which is a shortcut/alias for running <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span> <span class="pre">-f</span> <span class="pre">docker-compose.base.yml</span> <span class="pre">-f</span> <span class="pre">docker-compose.prod.yml</span></code>, so you don’t have to type those filenames out everytime you want to run a command:</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-18" name="sd-tab-set-8" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-18">
+macOS/Linux (zsh/bash)</label><div class="sd-tab-content docutils">
+<p>From the <code class="docutils literal notranslate"><span class="pre">NexusLIMS-CDCS/deployment</span></code> folder, run the following to load the helper functions into your session:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>admin-commands.sh
+</pre></div>
+</div>
+<p>Then you can run the following commands to bring up the docker deployment stack and initialize the CDCS application. This will take a few moments the first time, since it needs to build some containers locally,
+but subsequent runs will be much faster:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dc-prod<span class="w"> </span>up<span class="w"> </span>-d<span class="w">   </span><span class="c1"># Brings up the docker deployment stack and &quot;detaches&quot; to run it in the background</span>
+admin-init<span class="w">      </span><span class="c1"># Sets up the CDCS superuser, Nexus Experiment schema, XSLT translations, etc.</span>
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-19" name="sd-tab-set-8" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-19">
+Windows (Powershell)</label><div class="sd-tab-content docutils">
+<p>From the <code class="docutils literal notranslate"><span class="pre">NexusLIMS-CDCS/deployment</span></code> folder, run the following to load the helper functions into your session:</p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="p">.</span> <span class="p">.\</span><span class="n">admin-commands</span><span class="p">.</span><span class="n">ps1</span>
+</pre></div>
+</div>
+<p><strong>Note</strong>: The dot-space-dot syntax (<code class="docutils literal notranslate"><span class="pre">.</span> <span class="pre">.\admin-commands.ps1</span></code>) is PowerShell’s equivalent to bash’s <code class="docutils literal notranslate"><span class="pre">source</span></code> command. It loads the functions into your current session.</p>
+<p>Then you can run the following commands to bring up the docker deployment stack and initialize the CDCS application:</p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="n">dc-prod</span> <span class="n">up</span> <span class="n">-d</span>   <span class="c"># Brings up the docker deployment stack and &quot;detaches&quot; to run it in the background</span>
+<span class="n">admin-init</span>      <span class="c"># Sets up the CDCS superuser, Nexus Experiment schema, XSLT translations, etc.</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="test-nexuslims-cdcs-access">
+<h3>7. Test NexusLIMS-CDCS Access<a class="headerlink" href="#test-nexuslims-cdcs-access" title="Link to this heading">#</a></h3>
+<p>The NexusLIMS-CDCS application should now be up and running!</p>
+<p><strong>Access the application:</strong></p>
+<ul class="simple">
+<li><p><strong>Main application</strong>: <a class="reference external" href="https://nexuslims-local.test">https://nexuslims-local.test</a></p></li>
+<li><p><strong>File server (NexusLIMS metadata/image previews)</strong>: <a class="reference external" href="https://files.nexuslims-local.test/data">https://files.nexuslims-local.test/data</a></p></li>
+<li><p><strong>File server (instrument data)</strong>: <a class="reference external" href="https://files.nexuslims-local.test/instrument-data">https://files.nexuslims-local.test/instrument-data</a></p></li>
+</ul>
+<p>Your browser should trust the certificates since they were generated by <code class="docutils literal notranslate"><span class="pre">mkcert</span></code> and installed in your system’s certificate store.</p>
+<p>If needed, you can monitor the container logs with:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dc-prod<span class="w"> </span>logs<span class="w"> </span>--follow
+</pre></div>
+</div>
+</section>
+<section id="test-api-access">
+<h3>8. Test API Access<a class="headerlink" href="#test-api-access" title="Link to this heading">#</a></h3>
+<p>Verify that the CDCS REST API is accessible and returning data:</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-20" name="sd-tab-set-9" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-20">
+macOS/Linux</label><div class="sd-tab-content docutils">
+<p>The following tests require <a class="reference external" href="https://jqlang.org/"><code class="docutils literal notranslate"><span class="pre">jq</span></code></a> to be installed. If not
+already, install with <code class="docutils literal notranslate"><span class="pre">brew</span> <span class="pre">install</span> <span class="pre">jq</span></code> (macOS) or your system package manager (Linux).</p>
+<p>In each of the commands below, replace <code class="docutils literal notranslate"><span class="pre">YOUR_API_TOKEN</span></code> with the value from <code class="docutils literal notranslate"><span class="pre">NX_ADMIN_API_TOKEN</span></code>
+in your <code class="docutils literal notranslate"><span class="pre">.env</span></code> file</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Test basic API connectivity (should reply with &quot;Authentication credentials were not provided.&quot;)</span>
+curl<span class="w"> </span>-s<span class="w"> </span>https://nexuslims-local.test/rest/data/<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+
+<span class="c1"># Get template information (content field truncated for readability)</span>
+curl<span class="w"> </span>-s<span class="w"> </span>https://nexuslims-local.test/rest/template/<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Token YOUR_API_TOKEN&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>jq<span class="w"> </span><span class="s1">&#39;.[] | .content = (.content[:100] + &quot;... [truncated]&quot;)&#39;</span>
+
+<span class="c1"># Query for all data records (requires authentication, should return empty for new install)</span>
+curl<span class="w"> </span>-s<span class="w"> </span>https://nexuslims-local.test/rest/data/<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Token YOUR_API_TOKEN&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.&#39;</span>
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-21" name="sd-tab-set-9" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-21">
+Windows</label><div class="sd-tab-content docutils">
+<p>The following tests require <a class="reference external" href="https://jqlang.org/"><code class="docutils literal notranslate"><span class="pre">jq</span></code></a> to be installed. If not
+already, install with <code class="docutils literal notranslate"><span class="pre">scoop</span> <span class="pre">install</span> <span class="pre">jq</span></code>.</p>
+<p>In each of the commands below, replace <code class="docutils literal notranslate"><span class="pre">YOUR_API_TOKEN</span></code> with the value from <code class="docutils literal notranslate"><span class="pre">NX_ADMIN_API_TOKEN</span></code>
+in your <code class="docutils literal notranslate"><span class="pre">.env</span></code> file</p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="c"># Test basic API connectivity (should reply with &quot;Authentication credentials were not provided.&quot;)</span>
+<span class="nb">curl </span><span class="n">-s</span> <span class="n">https</span><span class="p">://</span><span class="n">nexuslims-local</span><span class="p">.</span><span class="n">test</span><span class="p">/</span><span class="n">rest</span><span class="p">/</span><span class="n">data</span><span class="p">/</span> <span class="p">|</span> <span class="n">jq</span> <span class="s1">&#39;.&#39;</span>
+
+<span class="c"># Get template information (content field truncated for readability)</span>
+<span class="c"># Replace YOUR_API_TOKEN with the value from NX_ADMIN_API_TOKEN in your .env file</span>
+<span class="nb">curl </span><span class="n">-s</span> <span class="n">https</span><span class="p">://</span><span class="n">nexuslims-local</span><span class="p">.</span><span class="n">test</span><span class="p">/</span><span class="n">rest</span><span class="p">/</span><span class="n">template</span><span class="p">/</span> <span class="p">`</span>
+  <span class="n">-H</span> <span class="s2">&quot;Authorization: Token YOUR_API_TOKEN&quot;</span> <span class="p">|</span> <span class="p">`</span>
+  <span class="n">jq</span> <span class="s1">&#39;.[] | .content = (.content[:100] + \&quot;... [truncated]\&quot;)&#39;</span>
+
+<span class="c"># Query for all data records (requires authentication, should return empty for new install)</span>
+<span class="nb">curl </span><span class="n">-s</span> <span class="n">https</span><span class="p">://</span><span class="n">nexuslims-local</span><span class="p">.</span><span class="n">test</span><span class="p">/</span><span class="n">rest</span><span class="p">/</span><span class="n">data</span><span class="p">/</span> <span class="p">`</span>
+  <span class="n">-H</span> <span class="s2">&quot;Authorization: Token YOUR_API_TOKEN&quot;</span> <span class="p">|</span> <span class="n">jq</span> <span class="s1">&#39;.&#39;</span>
+</pre></div>
+</div>
+<p><strong>Note</strong>: PowerShell requires escaping quotes in JSON strings with backslashes.</p>
+</div>
+</div>
+<p>If the API is working correctly, you should see JSON responses with available endpoints and data,
+and the backend should be able to communicate successfully with the CDCS frontend.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="testing-production-procedures">
+<h2>Testing Production Procedures<a class="headerlink" href="#testing-production-procedures" title="Link to this heading">#</a></h2>
+<p>With this setup, you can now test all production procedures from the <a class="reference internal" href="production.html"><span class="doc">Production Deployment</span></a> guide. These processes are totally optional. The application should be up and running for local testing at this point.</p>
+<section id="test-backups">
+<h3>Test Backups<a class="headerlink" href="#test-backups" title="Link to this heading">#</a></h3>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-22" name="sd-tab-set-10" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-22">
+macOS/Linux (zsh/bash)</label><div class="sd-tab-content docutils">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>admin-commands.sh<span class="w">    </span><span class="c1"># only required if using a new terminal window</span>
+admin-backup
+
+<span class="c1"># Check backup was created</span>
+ls<span class="w"> </span>-la<span class="w"> </span>/opt/nexuslims/backups/
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-23" name="sd-tab-set-10" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-23">
+Windows (Powershell)</label><div class="sd-tab-content docutils">
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="p">.</span> <span class="p">.\</span><span class="n">admin-commands</span><span class="p">.</span><span class="n">ps1</span>      <span class="c"># only required if using a new terminal window</span>
+<span class="n">admin-backup</span>
+
+<span class="c"># Check backup was created</span>
+<span class="nb">Get-ChildItem</span> <span class="n">C</span><span class="p">:\</span><span class="n">nexuslims</span><span class="p">\</span><span class="n">backups</span><span class="p">\</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="test-database-operations">
+<h3>Test Database Operations<a class="headerlink" href="#test-database-operations" title="Link to this heading">#</a></h3>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-24" name="sd-tab-set-11" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-24">
+macOS/Linux (zsh/bash)</label><div class="sd-tab-content docutils">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>admin-commands.sh<span class="w">    </span><span class="c1"># only required if using a new terminal window</span>
+
+<span class="c1"># Create a database dump</span>
+admin-db-dump
+
+<span class="c1"># View statistics</span>
+admin-stats
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-25" name="sd-tab-set-11" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-25">
+Windows (Powershell)</label><div class="sd-tab-content docutils">
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="p">.</span> <span class="p">.\</span><span class="n">admin-commands</span><span class="p">.</span><span class="n">ps1</span>      <span class="c"># only required if using a new terminal window</span>
+
+<span class="c"># Create a database dump</span>
+<span class="n">admin-db-dump</span>
+
+<span class="c"># View statistics</span>
+<span class="n">admin-stats</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="verify-ssl-certificate">
+<h3>Verify SSL Certificate<a class="headerlink" href="#verify-ssl-certificate" title="Link to this heading">#</a></h3>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-26" name="sd-tab-set-12" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-26">
+macOS/Linux (zsh/bash)</label><div class="sd-tab-content docutils">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Verify certificate files exist and show their details (requires openssl)</span>
+openssl<span class="w"> </span>x509<span class="w"> </span>-in<span class="w"> </span>/opt/nexuslims/local-certs/fullchain.pem<span class="w"> </span>-text<span class="w"> </span>-noout<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-E<span class="w"> </span><span class="s2">&quot;(Subject:|Issuer:|Not Before|Not After|DNS)&quot;</span>
+openssl<span class="w"> </span>rsa<span class="w"> </span>-in<span class="w"> </span>/opt/nexuslims/local-certs/privkey.pem<span class="w"> </span>-check<span class="w"> </span>-noout
+
+<span class="c1"># Verify HTTPS is working with trusted certificate</span>
+curl<span class="w"> </span>-I<span class="w"> </span>https://nexuslims-local.test
+
+<span class="c1"># Check certificate details from the running server (requires openssl)</span>
+openssl<span class="w"> </span>s_client<span class="w"> </span>-connect<span class="w"> </span>nexuslims-local.test:443<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-servername<span class="w"> </span>nexuslims-local.test<span class="w"> </span>&lt;<span class="w"> </span>/dev/null<span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>openssl<span class="w"> </span>x509<span class="w"> </span>-noout<span class="w"> </span>-dates<span class="w"> </span>-issuer
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-27" name="sd-tab-set-12" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-27">
+Windows (Powershell)</label><div class="sd-tab-content docutils">
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="c"># Verify certificate files exist and show their details</span>
+<span class="n">openssl</span> <span class="n">x509</span> <span class="n">-in</span> <span class="n">C</span><span class="p">:\</span><span class="n">nexuslims</span><span class="p">\</span><span class="n">local-certs</span><span class="p">\</span><span class="n">fullchain</span><span class="p">.</span><span class="n">pem</span> <span class="n">-text</span> <span class="n">-noout</span> <span class="p">|</span> <span class="nb">Select-String</span> <span class="s2">&quot;(Subject:|Issuer:|Not Before|Not After)&quot;</span>
+<span class="n">openssl</span> <span class="n">rsa</span> <span class="n">-in</span> <span class="n">C</span><span class="p">:\</span><span class="n">nexuslims</span><span class="p">\</span><span class="n">local-certs</span><span class="p">\</span><span class="n">privkey</span><span class="p">.</span><span class="n">pem</span> <span class="n">-check</span> <span class="n">-noout</span>
+
+<span class="c"># Verify HTTPS is working with trusted certificate</span>
+<span class="nb">curl </span><span class="n">-I</span> <span class="n">https</span><span class="p">://</span><span class="n">nexuslims-local</span><span class="p">.</span><span class="n">test</span>
+
+<span class="c"># Check certificate details from the running server (requires openssl)</span>
+<span class="c"># Note: You may need to install openssl via: scoop install openssl</span>
+<span class="n">openssl</span> <span class="n">s_client</span> <span class="n">-connect</span> <span class="n">nexuslims-local</span><span class="p">.</span><span class="n">test</span><span class="p">:</span><span class="n">443</span> <span class="p">`</span>
+  <span class="n">-servername</span> <span class="n">nexuslims-local</span><span class="p">.</span><span class="n">test</span> <span class="n">2</span><span class="p">&gt;</span><span class="nv">$null</span> <span class="p">|</span> <span class="p">`</span>
+  <span class="n">openssl</span> <span class="n">x509</span> <span class="n">-noout</span> <span class="n">-dates</span> <span class="n">-issuer</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="stopping-the-environment">
+<h2>Stopping the Environment<a class="headerlink" href="#stopping-the-environment" title="Link to this heading">#</a></h2>
+<p>The following commands will “tear down” the docker deployment stack, effectively stopping the application. Any data stored (users, records, etc.) will be preserved for the next time you run <code class="docutils literal notranslate"><span class="pre">dc-prod</span> <span class="pre">up</span> <span class="pre">-d</span></code>.</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-28" name="sd-tab-set-13" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-28">
+macOS/Linux (zsh/bash)</label><div class="sd-tab-content docutils">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>deployment
+<span class="nb">source</span><span class="w"> </span>admin-commands.sh
+dc-prod<span class="w"> </span>down
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-29" name="sd-tab-set-13" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-29">
+Windows (Powershell)</label><div class="sd-tab-content docutils">
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="nb">cd </span><span class="n">deployment</span>
+<span class="p">.</span> <span class="p">.\</span><span class="n">admin-commands</span><span class="p">.</span><span class="n">ps1</span>
+<span class="n">dc-prod</span> <span class="n">down</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="cleanup">
+<h2>Cleanup<a class="headerlink" href="#cleanup" title="Link to this heading">#</a></h2>
+<p>⚠️ <strong>Warning!</strong> ⚠️</p>
+<p>This will delete all data in the test environment, including any users you created and records you uploaded. You will have to start from <a class="reference internal" href="#start-services"><span class="std std-ref">Step 6: Start Services</span></a> again if you want to use it after cleanup.</p>
+<p>To completely remove the local test environment:</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-30" name="sd-tab-set-14" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-30">
+macOS/Linux (zsh/bash)</label><div class="sd-tab-content docutils">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Stop containers and remove volumes</span>
+<span class="nb">cd</span><span class="w"> </span>deployment
+<span class="nb">source</span><span class="w"> </span>admin-commands.sh
+dc-prod<span class="w"> </span>down<span class="w"> </span>-v<span class="w">           </span><span class="c1"># this command will delete all application data</span>
+
+<span class="c1">## NOTE! Stop here and do not run the following commands if all you want</span>
+<span class="c1">##       to do is clear application data. If you run the following commands,</span>
+<span class="c1">##       you&#39;ll have to start at the very beginning of this guide.</span>
+
+<span class="c1"># Remove certificates</span>
+sudo<span class="w"> </span>rm<span class="w"> </span>-rf<span class="w"> </span>/opt/nexuslims/local-certs
+
+<span class="c1"># Remove backups</span>
+sudo<span class="w"> </span>rm<span class="w"> </span>-rf<span class="w"> </span>/opt/nexuslims/backups
+
+<span class="c1"># Remove /etc/hosts entries (creating /etc/hosts.bak with current content)</span>
+sudo<span class="w"> </span>sed<span class="w"> </span>-i.bak<span class="w"> </span><span class="s1">&#39;/nexuslims-local.test/d&#39;</span><span class="w"> </span>/etc/hosts
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-31" name="sd-tab-set-14" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-31">
+Windows (Powershell)</label><div class="sd-tab-content docutils">
+<p>Run PowerShell as Administrator:</p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="c"># Stop containers and remove volumes</span>
+<span class="nb">cd </span><span class="n">C</span><span class="p">:\</span><span class="n">nexuslims</span><span class="p">\</span><span class="n">NexusLIMS-CDCS</span><span class="p">\</span><span class="n">deployment</span>
+<span class="p">.</span> <span class="p">.\</span><span class="n">admin-commands</span><span class="p">.</span><span class="n">ps1</span>
+<span class="n">dc-prod</span> <span class="n">down</span> <span class="n">-v</span>           <span class="c"># this command will delete all application data</span>
+
+<span class="c">## NOTE! Stop here and do not run the following commands if all you want</span>
+<span class="c">##       to do is clear application data. If you run the following commands,</span>
+<span class="c">##       you&#39;ll have to start at the very beginning of this guide.</span>
+
+<span class="c"># Remove certificates</span>
+<span class="nb">Remove-Item</span> <span class="n">-Recurse</span> <span class="n">-Force</span> <span class="n">C</span><span class="p">:\</span><span class="n">nexuslims</span><span class="p">\</span><span class="n">local-certs</span>
+
+<span class="c"># Remove backups</span>
+<span class="nb">Remove-Item</span> <span class="n">-Recurse</span> <span class="n">-Force</span> <span class="n">C</span><span class="p">:\</span><span class="n">nexuslims</span><span class="p">\</span><span class="n">backups</span>
+
+<span class="c"># Remove /etc/hosts entries (this command needs to be run as an administrator)</span>
+<span class="nv">$hostsPath</span> <span class="p">=</span> <span class="s2">&quot;C:\Windows\System32\drivers\etc\hosts&quot;</span>
+<span class="p">(</span><span class="nb">Get-Content</span> <span class="nv">$hostsPath</span><span class="p">)</span> <span class="p">|</span> <span class="nb">Where-Object</span> <span class="p">{</span> <span class="nv">$_</span> <span class="o">-notmatch</span> <span class="s1">&#39;nexuslims-local.test&#39;</span> <span class="p">}</span> <span class="p">|</span> <span class="nb">Set-Content</span> <span class="nv">$hostsPath</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="differences-from-production">
+<h2>Differences from Production<a class="headerlink" href="#differences-from-production" title="Link to this heading">#</a></h2>
+<p>This local test environment differs from real production in these ways:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Aspect</p></th>
+<th class="head"><p>Local Test</p></th>
+<th class="head"><p>Production</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Certificates</strong></p></td>
+<td><p>mkcert (local CA)</p></td>
+<td><p>Let’s Encrypt (ACME)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Domains</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">.test</span></code> TLD</p></td>
+<td><p>Real domains</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>DNS</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">/etc/hosts</span></code></p></td>
+<td><p>Real DNS</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Data</strong></p></td>
+<td><p>Test data or empty</p></td>
+<td><p>Production data</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Passwords</strong></p></td>
+<td><p>Simple test values</p></td>
+<td><p>Strong passwords</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<hr class="docutils" />
+<section id="troubleshooting">
+<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading">#</a></h2>
+<section id="certificate-not-trusted">
+<h3>Certificate Not Trusted<a class="headerlink" href="#certificate-not-trusted" title="Link to this heading">#</a></h3>
+<p>If browsers show “not secure”:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Reinstall mkcert CA</span>
+mkcert<span class="w"> </span>-install
+
+<span class="c1"># Restart browser</span>
+</pre></div>
+</div>
+</section>
+<section id="cannot-access-urls">
+<h3>Cannot Access URLs<a class="headerlink" href="#cannot-access-urls" title="Link to this heading">#</a></h3>
+<p>Check <code class="docutils literal notranslate"><span class="pre">/etc/hosts</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cat<span class="w"> </span>/etc/hosts<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>nexuslims
+</pre></div>
+</div>
+<p>Should show:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="mf">127.0.0.1</span> <span class="n">nexuslims</span><span class="o">-</span><span class="n">local</span><span class="o">.</span><span class="n">test</span>
+<span class="mf">127.0.0.1</span> <span class="n">files</span><span class="o">.</span><span class="n">nexuslims</span><span class="o">-</span><span class="n">local</span><span class="o">.</span><span class="n">test</span>
+</pre></div>
+</div>
+</section>
+<section id="port-already-in-use">
+<h3>Port Already in Use<a class="headerlink" href="#port-already-in-use" title="Link to this heading">#</a></h3>
+<p>If ports 80/443 are in use:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Find what&#39;s using the ports</span>
+sudo<span class="w"> </span>lsof<span class="w"> </span>-i<span class="w"> </span>:80
+sudo<span class="w"> </span>lsof<span class="w"> </span>-i<span class="w"> </span>:443
+
+<span class="c1"># Stop the conflicting service</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading">#</a></h2>
+<p>Once your local HTTPS test environment is working:</p>
+<ol class="arabic simple">
+<li><p>Walk through each section of the <a class="reference internal" href="production.html"><span class="doc">Production Deployment</span></a> guide</p></li>
+<li><p>Test backup and restore procedures</p></li>
+<li><p>Practice upgrade and rollback workflows</p></li>
+<li><p>Document any issues for your production deployment</p></li>
+</ol>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="production.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Production Deployment</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="configuration.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Configuration</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">Overview</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#prerequisites">Prerequisites</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setup-steps">Setup Steps</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#obtain-nexuslims-cdcs-deployment-files">0. Obtain NexusLIMS-CDCS deployment files</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#provide-docker-access-to-nexuslims-directory-macos-only">0.5. Provide Docker access to NexusLIMS directory (macOS only)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#install-mkcert">1. Install mkcert</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#generate-certificates">2. Generate Certificates</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#update-your-system-s-hosts-file">3. Update your system’s hosts file</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#create-backup-directory">4. Create Backup Directory</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#configure-environment">5. Configure Environment</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#start-services">6. Start Services</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#test-nexuslims-cdcs-access">7. Test NexusLIMS-CDCS Access</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#test-api-access">8. Test API Access</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#testing-production-procedures">Testing Production Procedures</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#test-backups">Test Backups</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#test-database-operations">Test Database Operations</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#verify-ssl-certificate">Verify SSL Certificate</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stopping-the-environment">Stopping the Environment</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cleanup">Cleanup</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#differences-from-production">Differences from Production</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#troubleshooting">Troubleshooting</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#certificate-not-trusted">Certificate Not Trusted</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cannot-access-urls">Cannot Access URLs</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#port-already-in-use">Port Already in Use</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#next-steps">Next Steps</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/frontend_guide/local-test-deployment.md.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2025 - 2026, datasophos, LLC.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
