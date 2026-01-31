@@ -14,6 +14,5 @@
 :titlesonly:
 :maxdepth: 1
 
-nexusLIMS.exporters.destinations.labarchives
 nexusLIMS.exporters.destinations.cdcs
 ```

@@ -341,28 +341,6 @@ Bases: {py:obj}`pydantic_settings.BaseSettings`
 
 ````
 
-````{py:attribute} NX_LABARCHIVES_API_KEY
-:canonical: nexusLIMS.config.Settings.NX_LABARCHIVES_API_KEY
-
-**Type:** str | None
-
-```{autodoc2-docstring} nexusLIMS.config.Settings.NX_LABARCHIVES_API_KEY
-:parser: autodoc2_docstrings_parser
-```
-
-````
-
-````{py:attribute} NX_LABARCHIVES_URL
-:canonical: nexusLIMS.config.Settings.NX_LABARCHIVES_URL
-
-**Type:** nexusLIMS.config.TestAwareHttpUrl | None
-
-```{autodoc2-docstring} nexusLIMS.config.Settings.NX_LABARCHIVES_URL
-:parser: autodoc2_docstrings_parser
-```
-
-````
-
 ````{py:attribute} NX_EXPORT_STRATEGY
 :canonical: nexusLIMS.config.Settings.NX_EXPORT_STRATEGY
 
