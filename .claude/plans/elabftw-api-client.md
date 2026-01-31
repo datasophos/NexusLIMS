@@ -9,8 +9,8 @@
 | Phase | Status | Files | Notes |
 |-------|--------|-------|-------|
 | 1. Configuration | ✅ **Complete** | `nexusLIMS/config.py`, `.env.example` | Added 4 eLabFTW settings with test defaults |
-| 2. API Client | ❌ Not Started | `nexusLIMS/utils/elabftw.py` | Low-level eLabFTW API wrapper |
-| 3. Export Plugin | ❌ Not Started | `nexusLIMS/exporters/destinations/elabftw.py` | Export destination integration |
+| 2. API Client | ✅ **Complete** | `nexusLIMS/utils/elabftw.py` | Low-level eLabFTW API wrapper with CRUD methods |
+| 3. Export Plugin | ✅ **Complete** | `nexusLIMS/exporters/destinations/elabftw.py` | Export destination with markdown body and XML attachment |
 | 4. Unit Tests | ❌ Not Started | `tests/unit/test_exporters/test_elabftw.py` | Comprehensive test coverage |
 | 5. Docker Stack | ✅ **Complete** | `tests/integration/docker/*` | MySQL + eLabFTW + Caddy configured |
 | 6. Integration Tests | 🟡 In Progress | `tests/integration/test_elabftw_integration.py` | Skeleton with smoke tests |
@@ -29,12 +29,14 @@
 - [x] **Environment variable documentation** - Added eLabFTW configuration section to `.env.example`
 - [x] **Pytest markers** - Verified existing `integration` marker is suitable for eLabFTW tests
 - [x] **Configuration tests** - Added 8 comprehensive tests to `tests/unit/test_config.py` covering all config scenarios
+- [x] **API Client** - Implemented `nexusLIMS/utils/elabftw.py` with full CRUD operations (create, read, list, update, delete experiments) and file upload functionality
+- [x] **Export Plugin** - Implemented `nexusLIMS/exporters/destinations/elabftw.py` with markdown body generation, CDCS cross-linking, and XML attachment upload
 
 ### Next Steps 🎯
 
 1. ~~**Add Configuration**~~ ✅ - ~~Add `NX_ELABFTW_API_KEY`, `NX_ELABFTW_URL`, etc. to `nexusLIMS/config.py`~~
-2. **Implement API Client** - Create `nexusLIMS/utils/elabftw.py` with CRUD methods
-3. **Implement Export Plugin** - Create `nexusLIMS/exporters/destinations/elabftw.py`
+2. ~~**Implement API Client**~~ ✅ - ~~Create `nexusLIMS/utils/elabftw.py` with CRUD methods~~
+3. ~~**Implement Export Plugin**~~ ✅ - ~~Create `nexusLIMS/exporters/destinations/elabftw.py`~~
 4. **Write Unit Tests** - Comprehensive test coverage (target >90%)
 5. **Complete Integration Tests** - Add full workflow tests to existing skeleton
 6. **Update Documentation** - User guide, changelog fragments
@@ -42,8 +44,8 @@
 ### Estimated Remaining Work
 
 - **Total planned**: 17-26 hours
-- **Completed**: ~5.5-6.5 hours (Docker infrastructure + integration test skeleton + configuration)
-- **Remaining**: ~11-19.5 hours (core implementation + testing + docs)
+- **Completed**: ~10.5-13.5 hours (Docker infrastructure + configuration + API client + export plugin)
+- **Remaining**: ~6.5-12.5 hours (unit tests + integration tests + documentation)
 
 ---
 
