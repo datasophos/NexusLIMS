@@ -294,6 +294,41 @@ class Settings(BaseSettings):
         ),
     )
 
+    # ========================================================================
+    # eLabFTW Export Destination Configuration (Optional)
+    # ========================================================================
+    NX_ELABFTW_API_KEY: str | None = Field(
+        "1-" + "a" * 84 if TEST_MODE else None,
+        description=(
+            "API key for authenticating to the eLabFTW API. Obtain from the user "
+            "panel in your eLabFTW instance. If not configured, eLabFTW export will "
+            "be disabled."
+        ),
+    )
+    NX_ELABFTW_URL: TestAwareHttpUrl | None = Field(  # type: ignore[valid-type]
+        "http://elabftw.localhost:40080" if TEST_MODE else None,
+        description=(
+            "Root URL of the eLabFTW instance (e.g., 'https://elabftw.example.com'). "
+            "If not configured, eLabFTW export will be disabled."
+        ),
+    )
+    NX_ELABFTW_EXPERIMENT_CATEGORY: int | None = Field(
+        None,
+        description=(
+            "Default category ID for created experiments. If not specified, "
+            "eLabFTW will use its default category. Category IDs can be found "
+            "in the eLabFTW admin panel."
+        ),
+    )
+    NX_ELABFTW_EXPERIMENT_STATUS: int | None = Field(
+        None,
+        description=(
+            "Default status ID for created experiments. If not specified, "
+            "eLabFTW will use its default status. Status IDs can be found "
+            "in the eLabFTW admin panel."
+        ),
+    )
+
     @property
     def nexuslims_instrument_data_path(self) -> Path:
         """Alias for NX_INSTRUMENT_DATA_PATH for easier access."""
