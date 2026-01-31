@@ -1,0 +1,306 @@
+# {py:mod}`nexusLIMS.exporters.base`
+
+```{py:module} nexusLIMS.exporters.base
+```
+
+```{autodoc2-docstring} nexusLIMS.exporters.base
+:parser: autodoc2_docstrings_parser
+:allowtitles:
+```
+
+## Module Contents
+
+### Classes
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`ExportResult <nexusLIMS.exporters.base.ExportResult>`
+  - ```{autodoc2-docstring} nexusLIMS.exporters.base.ExportResult
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`ExportContext <nexusLIMS.exporters.base.ExportContext>`
+  - ```{autodoc2-docstring} nexusLIMS.exporters.base.ExportContext
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`ExportDestination <nexusLIMS.exporters.base.ExportDestination>`
+  - ```{autodoc2-docstring} nexusLIMS.exporters.base.ExportDestination
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
+### API
+
+`````{py:class} ExportResult
+:canonical: nexusLIMS.exporters.base.ExportResult
+
+```{autodoc2-docstring} nexusLIMS.exporters.base.ExportResult
+:parser: autodoc2_docstrings_parser
+```
+
+````{py:attribute} success
+:canonical: nexusLIMS.exporters.base.ExportResult.success
+
+**Type:** bool
+
+```{autodoc2-docstring} nexusLIMS.exporters.base.ExportResult.success
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} destination_name
+:canonical: nexusLIMS.exporters.base.ExportResult.destination_name
+
+**Type:** str
+
+```{autodoc2-docstring} nexusLIMS.exporters.base.ExportResult.destination_name
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} record_id
+:canonical: nexusLIMS.exporters.base.ExportResult.record_id
+
+**Type:** str | None
+
+```{autodoc2-docstring} nexusLIMS.exporters.base.ExportResult.record_id
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} record_url
+:canonical: nexusLIMS.exporters.base.ExportResult.record_url
+
+**Type:** str | None
+
+```{autodoc2-docstring} nexusLIMS.exporters.base.ExportResult.record_url
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} error_message
+:canonical: nexusLIMS.exporters.base.ExportResult.error_message
+
+**Type:** str | None
+
+```{autodoc2-docstring} nexusLIMS.exporters.base.ExportResult.error_message
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} timestamp
+:canonical: nexusLIMS.exporters.base.ExportResult.timestamp
+:value: >
+   'field(...)'
+
+**Type:** datetime.datetime
+
+```{autodoc2-docstring} nexusLIMS.exporters.base.ExportResult.timestamp
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} metadata
+:canonical: nexusLIMS.exporters.base.ExportResult.metadata
+:value: >
+   'field(...)'
+
+**Type:** dict[str, typing.Any]
+
+```{autodoc2-docstring} nexusLIMS.exporters.base.ExportResult.metadata
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+`````
+
+`````{py:class} ExportContext
+:canonical: nexusLIMS.exporters.base.ExportContext
+
+```{autodoc2-docstring} nexusLIMS.exporters.base.ExportContext
+:parser: autodoc2_docstrings_parser
+```
+
+````{py:attribute} xml_file_path
+:canonical: nexusLIMS.exporters.base.ExportContext.xml_file_path
+
+**Type:** pathlib.Path
+
+```{autodoc2-docstring} nexusLIMS.exporters.base.ExportContext.xml_file_path
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} session_identifier
+:canonical: nexusLIMS.exporters.base.ExportContext.session_identifier
+
+**Type:** str
+
+```{autodoc2-docstring} nexusLIMS.exporters.base.ExportContext.session_identifier
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} instrument_pid
+:canonical: nexusLIMS.exporters.base.ExportContext.instrument_pid
+
+**Type:** str
+
+```{autodoc2-docstring} nexusLIMS.exporters.base.ExportContext.instrument_pid
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} dt_from
+:canonical: nexusLIMS.exporters.base.ExportContext.dt_from
+
+**Type:** datetime.datetime
+
+```{autodoc2-docstring} nexusLIMS.exporters.base.ExportContext.dt_from
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} dt_to
+:canonical: nexusLIMS.exporters.base.ExportContext.dt_to
+
+**Type:** datetime.datetime
+
+```{autodoc2-docstring} nexusLIMS.exporters.base.ExportContext.dt_to
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} user
+:canonical: nexusLIMS.exporters.base.ExportContext.user
+
+**Type:** str | None
+
+```{autodoc2-docstring} nexusLIMS.exporters.base.ExportContext.user
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} metadata
+:canonical: nexusLIMS.exporters.base.ExportContext.metadata
+:value: >
+   'field(...)'
+
+**Type:** dict[str, typing.Any]
+
+```{autodoc2-docstring} nexusLIMS.exporters.base.ExportContext.metadata
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} previous_results
+:canonical: nexusLIMS.exporters.base.ExportContext.previous_results
+:value: >
+   'field(...)'
+
+**Type:** dict[str, nexusLIMS.exporters.base.ExportResult]
+
+```{autodoc2-docstring} nexusLIMS.exporters.base.ExportContext.previous_results
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:method} get_result(destination_name: str) -> nexusLIMS.exporters.base.ExportResult | None
+:canonical: nexusLIMS.exporters.base.ExportContext.get_result
+
+```{autodoc2-docstring} nexusLIMS.exporters.base.ExportContext.get_result
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:method} has_successful_export(destination_name: str) -> bool
+:canonical: nexusLIMS.exporters.base.ExportContext.has_successful_export
+
+```{autodoc2-docstring} nexusLIMS.exporters.base.ExportContext.has_successful_export
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+`````
+
+`````{py:class} ExportDestination
+:canonical: nexusLIMS.exporters.base.ExportDestination
+
+Bases: {py:obj}`typing.Protocol`
+
+```{autodoc2-docstring} nexusLIMS.exporters.base.ExportDestination
+:parser: autodoc2_docstrings_parser
+```
+
+````{py:attribute} name
+:canonical: nexusLIMS.exporters.base.ExportDestination.name
+
+**Type:** str
+
+```{autodoc2-docstring} nexusLIMS.exporters.base.ExportDestination.name
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} priority
+:canonical: nexusLIMS.exporters.base.ExportDestination.priority
+
+**Type:** int
+
+```{autodoc2-docstring} nexusLIMS.exporters.base.ExportDestination.priority
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:property} enabled
+:canonical: nexusLIMS.exporters.base.ExportDestination.enabled
+:type: bool
+
+```{autodoc2-docstring} nexusLIMS.exporters.base.ExportDestination.enabled
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:method} validate_config() -> tuple[bool, str | None]
+:canonical: nexusLIMS.exporters.base.ExportDestination.validate_config
+
+```{autodoc2-docstring} nexusLIMS.exporters.base.ExportDestination.validate_config
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:method} export(context: nexusLIMS.exporters.base.ExportContext) -> nexusLIMS.exporters.base.ExportResult
+:canonical: nexusLIMS.exporters.base.ExportDestination.export
+
+```{autodoc2-docstring} nexusLIMS.exporters.base.ExportDestination.export
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+`````

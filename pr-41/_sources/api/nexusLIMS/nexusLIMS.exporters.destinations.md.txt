@@ -1,0 +1,18 @@
+# {py:mod}`nexusLIMS.exporters.destinations`
+
+```{py:module} nexusLIMS.exporters.destinations
+```
+
+```{autodoc2-docstring} nexusLIMS.exporters.destinations
+:parser: autodoc2_docstrings_parser
+:allowtitles:
+```
+
+## Submodules
+
+```{toctree}
+:titlesonly:
+:maxdepth: 1
+
+nexusLIMS.exporters.destinations.cdcs
+```

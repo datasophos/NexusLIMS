@@ -1,0 +1,143 @@
+# {py:mod}`nexusLIMS.cli.process_records`
+
+```{py:module} nexusLIMS.cli.process_records
+```
+
+```{autodoc2-docstring} nexusLIMS.cli.process_records
+:parser: autodoc2_docstrings_parser
+:allowtitles:
+```
+
+## Module Contents
+
+### Functions
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`setup_file_logging <nexusLIMS.cli.process_records.setup_file_logging>`
+  - ```{autodoc2-docstring} nexusLIMS.cli.process_records.setup_file_logging
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`check_log_for_errors <nexusLIMS.cli.process_records.check_log_for_errors>`
+  - ```{autodoc2-docstring} nexusLIMS.cli.process_records.check_log_for_errors
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`send_error_notification <nexusLIMS.cli.process_records.send_error_notification>`
+  - ```{autodoc2-docstring} nexusLIMS.cli.process_records.send_error_notification
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`main <nexusLIMS.cli.process_records.main>`
+  - ```{autodoc2-docstring} nexusLIMS.cli.process_records.main
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
+### Data
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`logger <nexusLIMS.cli.process_records.logger>`
+  - ```{autodoc2-docstring} nexusLIMS.cli.process_records.logger
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`console <nexusLIMS.cli.process_records.console>`
+  - ```{autodoc2-docstring} nexusLIMS.cli.process_records.console
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`ERROR_PATTERNS <nexusLIMS.cli.process_records.ERROR_PATTERNS>`
+  - ```{autodoc2-docstring} nexusLIMS.cli.process_records.ERROR_PATTERNS
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`EXCLUDE_PATTERNS <nexusLIMS.cli.process_records.EXCLUDE_PATTERNS>`
+  - ```{autodoc2-docstring} nexusLIMS.cli.process_records.EXCLUDE_PATTERNS
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
+### API
+
+````{py:data} logger
+:canonical: nexusLIMS.cli.process_records.logger
+:value: >
+   'getLogger(...)'
+
+```{autodoc2-docstring} nexusLIMS.cli.process_records.logger
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:data} console
+:canonical: nexusLIMS.cli.process_records.console
+:value: >
+   'Console(...)'
+
+```{autodoc2-docstring} nexusLIMS.cli.process_records.console
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:data} ERROR_PATTERNS
+:canonical: nexusLIMS.cli.process_records.ERROR_PATTERNS
+
+```{autodoc2-docstring} nexusLIMS.cli.process_records.ERROR_PATTERNS
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:data} EXCLUDE_PATTERNS
+:canonical: nexusLIMS.cli.process_records.EXCLUDE_PATTERNS
+:value: >
+   ['Temporary failure in name resolution', 'NoDataConsentError', 'NoMatchingReservationError']
+
+```{autodoc2-docstring} nexusLIMS.cli.process_records.EXCLUDE_PATTERNS
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:function} setup_file_logging(dry_run: bool = False) -> tuple[pathlib.Path, logging.FileHandler]
+:canonical: nexusLIMS.cli.process_records.setup_file_logging
+
+```{autodoc2-docstring} nexusLIMS.cli.process_records.setup_file_logging
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} check_log_for_errors(log_path: pathlib.Path) -> tuple[bool, list[str]]
+:canonical: nexusLIMS.cli.process_records.check_log_for_errors
+
+```{autodoc2-docstring} nexusLIMS.cli.process_records.check_log_for_errors
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} send_error_notification(log_path: pathlib.Path, found_patterns: list[str]) -> None
+:canonical: nexusLIMS.cli.process_records.send_error_notification
+
+```{autodoc2-docstring} nexusLIMS.cli.process_records.send_error_notification
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} main(*, dry_run: bool, verbose: int) -> None
+:canonical: nexusLIMS.cli.process_records.main
+
+```{autodoc2-docstring} nexusLIMS.cli.process_records.main
+:parser: autodoc2_docstrings_parser
+```
+````
