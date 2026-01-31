@@ -30,6 +30,22 @@ http://cdcs.localhost {
     }
 }
 
+# eLabFTW service (HTTP frontend via Caddy, HTTPS backend on port 443)
+http://elabftw.localhost {
+    reverse_proxy https://elabftw:443 {
+        # Forward headers needed for eLabFTW
+        header_up Host {host}
+        header_up X-Real-IP {remote_host}
+        header_up X-Forwarded-For {remote_host}
+        header_up X-Forwarded-Proto {scheme}
+
+        # Skip TLS verification for self-signed cert
+        transport http {
+            tls_insecure_skip_verify
+        }
+    }
+}
+
 # Fileserver (served by host Python server to avoid Docker volume issues)
 http://fileserver.localhost {
     reverse_proxy host.docker.internal:48081

@@ -86,6 +86,69 @@ services:
     networks:
       - nexuslims-test
 
+  # MySQL for eLabFTW
+  elabftw-mysql:
+    image: mysql:8.4
+    container_name: nexuslims-test-elabftw-mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=nexuslims_elabftw_root
+      - MYSQL_DATABASE=elabftw
+      - MYSQL_USER=elabftw
+      - MYSQL_PASSWORD=nexuslims_elabftw
+    volumes:
+      - elabftw-mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "elabftw", "-pnexuslims_elabftw"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    networks:
+      - nexuslims-test
+
+  # eLabFTW service (custom build with initialization)
+  elabftw:
+    build:
+      context: ./elabftw
+      dockerfile: Dockerfile
+    container_name: nexuslims-test-elabftw
+    ports:
+      - "48148:443"
+    depends_on:
+      elabftw-mysql:
+        condition: service_healthy
+    environment:
+      - DB_HOST=elabftw-mysql
+      - DB_NAME=elabftw
+      - DB_USER=elabftw
+      - DB_PASSWORD=nexuslims_elabftw
+      - SECRET_KEY=def00000661776ccddd9be0acb910675d9152a37ba3cf7dcec2ddcf533a4c084b54392d9da1772bbd4c1907a3bc93b70bbe5198311351ee064e7b45869cc246d0ec16e33
+      - SERVER_NAME=elabftw.localhost
+      - SITE_URL=http://elabftw.localhost:40080
+      - DISABLE_HTTPS=false
+      - PHP_TIMEZONE=America/New_York
+    volumes:
+      - elabftw-uploads:/elabftw/uploads
+      - elabftw-init-marker:/tmp
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID
+      - FOWNER
+      - DAC_OVERRIDE
+    security_opt:
+      - no-new-privileges
+    healthcheck:
+      test: ["CMD", "curl", "-fk", "https://elabftw:443/login.php"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+      start_period: 90s
+    networks:
+      - nexuslims-test
+
   # Caddy reverse proxy for easy-to-remember URLs
   caddy-proxy:
     image: caddy:2-alpine
@@ -96,6 +159,7 @@ services:
       - "nemo.localhost:127.0.0.1"
       - "nemo2.localhost:127.0.0.1"
       - "cdcs.localhost:127.0.0.1"
+      - "elabftw.localhost:127.0.0.1"
       - "fileserver.localhost:127.0.0.1"
       - "mailpit.localhost:127.0.0.1"
       # Map host.docker.internal to host gateway for fileserver access
@@ -105,6 +169,7 @@ services:
     depends_on:
       - nemo
       - cdcs
+      - elabftw
       - mailpit
     networks:
       - nexuslims-test
@@ -179,3 +244,8 @@ networks:
   nexuslims-test:
     name: nexuslims-test
     driver: bridge
+
+volumes:
+  elabftw-mysql-data:
+  elabftw-uploads:
+  elabftw-init-marker:
