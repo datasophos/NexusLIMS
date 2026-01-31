@@ -1,0 +1,2083 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>nexusLIMS.extractors.plugins.digital_micrograph &#8212; NexusLIMS pr-39 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=acda69ee" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../../../_static/documentation_options.js?v=3d2af201"></script>
+    <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../../_static/copybutton.js?v=30646c52"></script>
+    <script src="../../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";
+
+const defaultStyle = document.createElement('style');
+defaultStyle.textContent = `pre.mermaid {
+    /* Same as .mermaid-container > pre */
+    display: block;
+    width: 100%;
+}
+
+pre.mermaid > svg {
+    /* Same as .mermaid-container > pre > svg */
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+`;
+document.head.appendChild(defaultStyle);
+
+const fullscreenStyle = document.createElement('style');
+fullscreenStyle.textContent = `.mermaid-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.mermaid-container > pre {
+    display: block;
+    width: 100%;
+}
+
+.mermaid-container > pre > svg {
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+
+.mermaid-fullscreen-btn {
+    width: 28px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    font-size: 14px;
+    line-height: 1;
+    padding: 0;
+    color: #333;
+}
+
+.mermaid-fullscreen-btn:hover {
+    opacity: 100% !important;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-btn.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-btn.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 3px 10px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal {
+    display: none;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 95vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.98);
+    z-index: 9999;
+    padding: 20px;
+    overflow: auto;
+}
+
+.mermaid-fullscreen-modal.dark-theme {
+    background: rgba(0, 0, 0, 0.98);
+}
+
+.mermaid-fullscreen-modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen {
+    position: relative;
+    width: 95vw;
+    height: 90vh;
+    max-width: 95vw;
+    max-height: 90vh;
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    overflow: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen.dark-theme {
+    background: #1a1a1a;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+}
+
+.mermaid-container-fullscreen pre.mermaid {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen .mermaid svg {
+    height: 100% !important;
+    width: 100% !important;
+    cursor: grab;
+}
+
+.mermaid-fullscreen-close {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s;
+    font-size: 24px;
+    line-height: 1;
+    color: #333;
+}
+
+.mermaid-fullscreen-close:hover {
+    background: white;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-close.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-close.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal .mermaid-fullscreen-btn {
+    display: none !important;
+}`;
+document.head.appendChild(fullscreenStyle);
+
+// Detect if page has dark background
+const isDarkTheme = () => {
+    const bgColor = window.getComputedStyle(document.body).backgroundColor;
+    const match = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)/);
+    if (match) {
+        const r = parseInt(match[1]);
+        const g = parseInt(match[2]);
+        const b = parseInt(match[3]);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        return brightness < 128;
+    }
+    return false;
+};
+
+const load = async () => {
+    await mermaid.run();
+
+    const all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+
+    if ("True" === "True") {
+        const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+        if(mermaids_to_add_zoom > 0) {
+            var svgs = d3.selectAll(".mermaid svg");
+            if(all_mermaids.length !== mermaids_processed.length) {
+                setTimeout(load, 200);
+                return;
+            } else if(svgs.size() !== mermaids_to_add_zoom) {
+                setTimeout(load, 200);
+                return;
+            } else {
+                svgs.each(function() {
+                    var svg = d3.select(this);
+                    svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                    var inner = svg.select("g");
+                    var zoom = d3.zoom().on("zoom", function(event) {
+                        inner.attr("transform", event.transform);
+                    });
+                    svg.call(zoom);
+                });
+            }
+        }
+    } else if(all_mermaids.length !== mermaids_processed.length) {
+        // Wait for mermaid to process all diagrams
+        setTimeout(load, 200);
+        return;
+    }
+
+    const darkTheme = isDarkTheme();
+
+    // Stop here if not adding fullscreen capability
+    if ("True" !== "True") return;
+
+    const modal = document.createElement('div');
+    modal.className = 'mermaid-fullscreen-modal' + (darkTheme ? ' dark-theme' : '');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Fullscreen diagram viewer');
+    modal.innerHTML = `
+        <button class="mermaid-fullscreen-close${darkTheme ? ' dark-theme' : ''}" aria-label="Close fullscreen">✕</button>
+        <div class="mermaid-container-fullscreen${darkTheme ? ' dark-theme' : ''}"></div>
+    `;
+    document.body.appendChild(modal);
+
+    const modalContent = modal.querySelector('.mermaid-container-fullscreen');
+    const closeBtn = modal.querySelector('.mermaid-fullscreen-close');
+
+    let previousScrollOffset = [window.scrollX, window.scrollY];
+
+    const closeModal = () => {
+        modal.classList.remove('active');
+        modalContent.innerHTML = '';
+        document.body.style.overflow = ''
+        window.scrollTo({left: previousScrollOffset[0], top: previousScrollOffset[1], behavior: 'instant'});
+    };
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeModal();
+        }
+    });
+
+    const allButtons = [];
+
+    document.querySelectorAll('.mermaid').forEach((mermaidDiv) => {
+        if (mermaidDiv.parentNode.classList.contains('mermaid-container') ||
+            mermaidDiv.closest('.mermaid-fullscreen-modal')) {
+            return;
+        }
+
+        const container = document.createElement('div');
+        container.className = 'mermaid-container';
+        mermaidDiv.parentNode.insertBefore(container, mermaidDiv);
+        container.appendChild(mermaidDiv);
+
+        const fullscreenBtn = document.createElement('button');
+        fullscreenBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+        fullscreenBtn.setAttribute('aria-label', 'View diagram in fullscreen');
+        fullscreenBtn.textContent = '⛶';
+        fullscreenBtn.style.opacity = '50%';
+
+        // Calculate dynamic position based on diagram's margin and padding
+        const diagramStyle = window.getComputedStyle(mermaidDiv);
+        const marginTop = parseFloat(diagramStyle.marginTop) || 0;
+        const marginRight = parseFloat(diagramStyle.marginRight) || 0;
+        const paddingTop = parseFloat(diagramStyle.paddingTop) || 0;
+        const paddingRight = parseFloat(diagramStyle.paddingRight) || 0;
+        fullscreenBtn.style.top = `${marginTop + paddingTop + 4}px`;
+        fullscreenBtn.style.right = `${marginRight + paddingRight + 4}px`;
+
+        fullscreenBtn.addEventListener('click', () => {
+            previousScrollOffset = [window.scroll, window.scrollY];
+            const clone = mermaidDiv.cloneNode(true);
+            modalContent.innerHTML = '';
+            modalContent.appendChild(clone);
+
+            const svg = clone.querySelector('svg');
+            if (svg) {
+                svg.removeAttribute('width');
+                svg.removeAttribute('height');
+                svg.style.width = '100%';
+                svg.style.height = 'auto';
+                svg.style.maxWidth = '100%';
+                svg.style.sdisplay = 'block';
+
+                if ("True" === "True") {
+                    setTimeout(() => {
+                        const g = svg.querySelector('g');
+                        if (g) {
+                            var svgD3 = d3.select(svg);
+                            svgD3.html("<g class='wrapper'>" + svgD3.html() + "</g>");
+                            var inner = svgD3.select("g");
+                            var zoom = d3.zoom().on("zoom", function(event) {
+                                inner.attr("transform", event.transform);
+                            });
+                            svgD3.call(zoom);
+                        }
+                    }, 100);
+                }
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        container.appendChild(fullscreenBtn);
+        allButtons.push(fullscreenBtn);
+    });
+
+    // Update theme classes when theme changes
+    const updateTheme = () => {
+        const dark = isDarkTheme();
+        allButtons.forEach(btn => {
+            if (dark) {
+                btn.classList.add('dark-theme');
+            } else {
+                btn.classList.remove('dark-theme');
+            }
+        });
+        if (dark) {
+            modal.classList.add('dark-theme');
+            modalContent.classList.add('dark-theme');
+            closeBtn.classList.add('dark-theme');
+        } else {
+            modal.classList.remove('dark-theme');
+            modalContent.classList.remove('dark-theme');
+            closeBtn.classList.remove('dark-theme');
+        }
+    };
+
+    // Watch for theme changes
+    const observer = new MutationObserver(updateTheme);
+    observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+    observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class', 'style']
+    });
+};
+
+window.addEventListener("load", load);
+</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/nexusLIMS/extractors/plugins/digital_micrograph';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'pr-39';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script src="../../../../_static/custom.js?v=ba087cdf"></script>
+    <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/pr-39/_modules/nexusLIMS/extractors/plugins/digital_micrograph.html" />
+    <link rel="icon" href="../../../../_static/nexusLIMS_bare_logo.ico"/>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="pr-39" />
+    <meta name="docbuild:last-update" content="Jan, 31, 2026"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS pr-39 documentation - Home"/>
+    <img src="../../../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS pr-39 documentation - Home"/>
+  
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../migration.html">
+    Migration Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../dev_guide.html">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../frontend_guide.html">
+    Frontend Guide
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../reference.html">
+    Reference
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datasophos/NexusLIMS" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://datasophos.co" title="Datasophos" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-globe fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Datasophos</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../migration.html">
+    Migration Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../dev_guide.html">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../frontend_guide.html">
+    Frontend Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../reference.html">
+    Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datasophos/NexusLIMS" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://datasophos.co" title="Datasophos" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-globe fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Datasophos</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">Module code</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../../extractors.html" class="nav-link">nexusLIMS.extractors</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">nexusLIMS.extractors.plugins.digital_micrograph</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for nexusLIMS.extractors.plugins.digital_micrograph</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Digital Micrograph (.dm3/.dm4) extractor plugin.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">contextlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">UTC</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span> <span class="k">as</span> <span class="n">dt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">struct</span><span class="w"> </span><span class="kn">import</span> <span class="n">error</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hyperspy.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">load</span> <span class="k">as</span> <span class="n">hs_load</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">rsciio.utils.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">DM3DataTypeError</span><span class="p">,</span>
+    <span class="n">DM3FileVersionError</span><span class="p">,</span>
+    <span class="n">DM3TagError</span><span class="p">,</span>
+    <span class="n">DM3TagIDError</span><span class="p">,</span>
+    <span class="n">DM3TagTypeError</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.extractors.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExtractionContext</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.extractors.plugins.basic_metadata</span><span class="w"> </span><span class="kn">import</span> <span class="n">BasicFileInfoExtractor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.extractors.plugins.profiles</span><span class="w"> </span><span class="kn">import</span> <span class="n">register_all_profiles</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.extractors.profiles</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_profile_registry</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.extractors.utils</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">_coerce_to_list</span><span class="p">,</span>
+    <span class="n">_find_val</span><span class="p">,</span>
+    <span class="n">_parse_filter_settings</span><span class="p">,</span>
+    <span class="n">_set_acquisition_device_name</span><span class="p">,</span>
+    <span class="n">_set_camera_binning</span><span class="p">,</span>
+    <span class="n">_set_eds_meta</span><span class="p">,</span>
+    <span class="n">_set_eels_meta</span><span class="p">,</span>
+    <span class="n">_set_eels_processing</span><span class="p">,</span>
+    <span class="n">_set_eels_spectrometer_meta</span><span class="p">,</span>
+    <span class="n">_set_exposure_time</span><span class="p">,</span>
+    <span class="n">_set_gms_version</span><span class="p">,</span>
+    <span class="n">_set_image_processing</span><span class="p">,</span>
+    <span class="n">_set_si_meta</span><span class="p">,</span>
+    <span class="n">_try_decimal</span><span class="p">,</span>
+    <span class="n">add_to_extensions</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.instruments</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_instr_from_filepath</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas.units</span><span class="w"> </span><span class="kn">import</span> <span class="n">ureg</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.utils.dicts</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">remove_dict_nones</span><span class="p">,</span>
+    <span class="n">remove_dtb_element</span><span class="p">,</span>
+    <span class="n">set_nested_dict_value</span><span class="p">,</span>
+    <span class="n">sort_dict</span><span class="p">,</span>
+    <span class="n">try_getting_dict_value</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.utils.time</span><span class="w"> </span><span class="kn">import</span> <span class="n">current_system_tz</span>
+
+<span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="DM3Extractor">
+<a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.digital_micrograph.html#nexusLIMS.extractors.plugins.digital_micrograph.DM3Extractor">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DM3Extractor</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Extractor for Gatan DigitalMicrograph files (.dm3 and .dm4).</span>
+
+<span class="sd">    This extractor handles metadata extraction from files saved by Gatan&#39;s</span>
+<span class="sd">    DigitalMicrograph software, commonly used on FEI/Thermo and JEOL TEMs.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;dm3_extractor&quot;</span>
+    <span class="n">priority</span> <span class="o">=</span> <span class="mi">100</span>
+    <span class="n">supported_extensions</span><span class="p">:</span> <span class="n">ClassVar</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;dm3&quot;</span><span class="p">,</span> <span class="s2">&quot;dm4&quot;</span><span class="p">}</span>
+
+<div class="viewcode-block" id="DM3Extractor.supports">
+<a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.digital_micrograph.html#nexusLIMS.extractors.plugins.digital_micrograph.DM3Extractor.supports">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">supports</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ExtractionContext</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check if this extractor supports the given file.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        context</span>
+<span class="sd">            The extraction context containing file information</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        bool</span>
+<span class="sd">            True if file extension is .dm3 or .dm4</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">extension</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">file_path</span><span class="o">.</span><span class="n">suffix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">extension</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;dm3&quot;</span><span class="p">,</span> <span class="s2">&quot;dm4&quot;</span><span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="DM3Extractor.extract">
+<a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.digital_micrograph.html#nexusLIMS.extractors.plugins.digital_micrograph.DM3Extractor.extract">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">extract</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ExtractionContext</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extract metadata from a DM3/DM4 file.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        context</span>
+<span class="sd">            The extraction context containing file information</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list[dict] or dict</span>
+<span class="sd">            For DM3/DM4 files: Always returns a list of metadata dicts.</span>
+<span class="sd">            Each dict contains &#39;nx_meta&#39; with NexusLIMS-specific metadata.</span>
+<span class="sd">            Single-signal files return a 1-element list for consistency.</span>
+<span class="sd">            If the file cannot be opened, returns basic metadata as a single dict</span>
+<span class="sd">            (following the standard extractor contract for error cases).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Extracting metadata from DM3/DM4 file: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">context</span><span class="o">.</span><span class="n">file_path</span><span class="p">)</span>
+        <span class="c1"># get_dm3_metadata() handles profile application internally</span>
+        <span class="n">metadata_list</span> <span class="o">=</span> <span class="n">get_dm3_metadata</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">file_path</span><span class="p">,</span> <span class="n">context</span><span class="o">.</span><span class="n">instrument</span><span class="p">)</span>
+
+        <span class="c1"># If extraction failed, return minimal metadata with a warning</span>
+        <span class="k">if</span> <span class="n">metadata_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s2">&quot;Failed to extract DM3/DM4 metadata from </span><span class="si">%s</span><span class="s2">, &quot;</span>
+                <span class="s2">&quot;falling back to basic metadata&quot;</span><span class="p">,</span>
+                <span class="n">context</span><span class="o">.</span><span class="n">file_path</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="c1"># Use basic metadata extractor as fallback</span>
+            <span class="n">basic_extractor</span> <span class="o">=</span> <span class="n">BasicFileInfoExtractor</span><span class="p">()</span>
+            <span class="n">metadata_list</span> <span class="o">=</span> <span class="n">basic_extractor</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+            <span class="c1"># Add a warning to indicate extraction failed</span>
+            <span class="n">metadata</span> <span class="o">=</span> <span class="n">metadata_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;warnings&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;warnings&quot;</span><span class="p">,</span> <span class="p">[])</span>
+            <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;warnings&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="p">[</span><span class="s2">&quot;DM3/DM4 file could not be read by HyperSpy&quot;</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">metadata</span><span class="p">]</span>
+
+        <span class="c1"># Always return a list of metadata dicts</span>
+        <span class="c1"># Single-signal files return a 1-element list for consistent interface</span>
+        <span class="k">return</span> <span class="n">metadata_list</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="get_dm3_metadata">
+<a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.digital_micrograph.html#nexusLIMS.extractors.plugins.digital_micrograph.get_dm3_metadata">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_dm3_metadata</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">instrument</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get metadata from a dm3 or dm4 file.</span>
+
+<span class="sd">    Returns the metadata from a .dm3 file saved by Digital Micrograph, with some</span>
+<span class="sd">    non-relevant information stripped out. Instrument-specific metadata parsing is</span>
+<span class="sd">    handled by instrument profiles (see nexusLIMS.extractors.plugins.profiles).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename : str</span>
+<span class="sd">        path to a .dm3 file saved by Gatan&#39;s Digital Micrograph</span>
+<span class="sd">    instrument : Instrument, optional</span>
+<span class="sd">        The instrument object (used for timezone info). Instrument-specific parsing</span>
+<span class="sd">        is now handled via profiles, not this parameter.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    metadata : list[dict] or None</span>
+<span class="sd">        List of extracted metadata dicts, one per signal. If None, the file could</span>
+<span class="sd">        not be opened.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># We do lazy loading so we don&#39;t actually read the data from the disk to</span>
+    <span class="c1"># save time and memory.</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">hs_load</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">lazy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span>
+        <span class="n">DM3DataTypeError</span><span class="p">,</span>
+        <span class="n">DM3FileVersionError</span><span class="p">,</span>
+        <span class="n">DM3TagError</span><span class="p">,</span>
+        <span class="n">DM3TagIDError</span><span class="p">,</span>
+        <span class="n">DM3TagTypeError</span><span class="p">,</span>
+        <span class="n">error</span><span class="p">,</span>
+    <span class="p">)</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+            <span class="s2">&quot;File reader could not open </span><span class="si">%s</span><span class="s2">, received exception: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">filename</span><span class="p">,</span>
+            <span class="nb">repr</span><span class="p">(</span><span class="n">exc</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="c1"># s is a list, rather than a single signal</span>
+        <span class="n">m_list</span> <span class="o">=</span> <span class="p">[{}]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+            <span class="n">m_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">original_metadata</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span><span class="p">]</span>
+        <span class="n">m_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">original_metadata</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">m_tree</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">m_list</span><span class="p">):</span>
+        <span class="c1"># Important trees:</span>
+        <span class="c1">#   DocumentObjectList</span>
+        <span class="c1">#     Contains information about the display of the information, including bits</span>
+        <span class="c1">#     about annotations that are included on top of the image data, the CLUT</span>
+        <span class="c1">#     (color look-up table), data min/max.</span>
+        <span class="c1">#</span>
+        <span class="c1">#   ImageList</span>
+        <span class="c1">#     Contains the actual image information</span>
+
+        <span class="c1"># Remove the trees that are not of interest:</span>
+        <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="p">[</span>
+            <span class="s2">&quot;ApplicationBounds&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;LayoutType&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;DocumentTags&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;HasWindowPosition&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;ImageSourceList&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Image_Behavior&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;InImageMode&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;MinVersionList&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;NextDocumentObjectID&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;PageSetup&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Page_Behavior&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;SentinelList&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Thumbnails&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;WindowPosition&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;root&quot;</span><span class="p">,</span>
+        <span class="p">]:</span>
+            <span class="n">m_tree</span> <span class="o">=</span> <span class="n">remove_dtb_element</span><span class="p">(</span><span class="n">m_tree</span><span class="p">,</span> <span class="n">tag</span><span class="p">)</span>  <span class="c1"># noqa: PLW2901</span>
+
+        <span class="c1"># Within the DocumentObjectList tree, we really only care about the</span>
+        <span class="c1"># AnnotationGroupList for each TagGroup, so go into each TagGroup and</span>
+        <span class="c1"># delete everything but that...</span>
+        <span class="c1"># NB: the hyperspy DictionaryTreeBrowser __iter__ function returns each</span>
+        <span class="c1">#   tree element as a tuple containing the tree name and the actual</span>
+        <span class="c1">#   tree, so we loop through the tag names by taking the first part</span>
+        <span class="c1">#   of the tuple:</span>
+        <span class="k">for</span> <span class="n">tg_name</span><span class="p">,</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">m_tree</span><span class="o">.</span><span class="n">DocumentObjectList</span><span class="p">:</span>
+            <span class="c1"># tg_name should be &#39;TagGroup0&#39;, &#39;TagGroup1&#39;, etc.</span>
+            <span class="n">keys</span> <span class="o">=</span> <span class="n">tag</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+            <span class="c1"># we want to keep this, so remove from the list to loop through</span>
+            <span class="k">if</span> <span class="s2">&quot;AnnotationGroupList&quot;</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+                <span class="n">keys</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s2">&quot;AnnotationGroupList&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+                <span class="n">m_tree</span> <span class="o">=</span> <span class="n">remove_dtb_element</span><span class="p">(</span>  <span class="c1"># noqa: PLW2901</span>
+                    <span class="n">m_tree</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s2">&quot;DocumentObjectList.</span><span class="si">{</span><span class="n">tg_name</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">tg_name</span><span class="p">,</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">m_tree</span><span class="o">.</span><span class="n">ImageList</span><span class="p">:</span>
+            <span class="c1"># tg_name should be &#39;TagGroup0&#39;, &#39;TagGroup1&#39;, etc.</span>
+            <span class="n">keys</span> <span class="o">=</span> <span class="n">tag</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+            <span class="c1"># We want to keep &#39;ImageTags&#39; and &#39;Name&#39;, so remove from list</span>
+            <span class="n">keys</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s2">&quot;ImageTags&quot;</span><span class="p">)</span>
+            <span class="n">keys</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s2">&quot;Name&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+                <span class="c1"># k should be in [&#39;ImageData&#39;, &#39;UniqueID&#39;]</span>
+                <span class="n">m_tree</span> <span class="o">=</span> <span class="n">remove_dtb_element</span><span class="p">(</span>  <span class="c1"># noqa: PLW2901</span>
+                    <span class="n">m_tree</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s2">&quot;ImageList.</span><span class="si">{</span><span class="n">tg_name</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="p">)</span>
+
+        <span class="n">m_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">m_tree</span><span class="o">.</span><span class="n">as_dictionary</span><span class="p">()</span>
+
+        <span class="c1"># Get the instrument object associated with this file</span>
+        <span class="c1"># Use provided instrument if available, otherwise look it up</span>
+        <span class="n">instr</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">instrument</span> <span class="k">if</span> <span class="n">instrument</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">get_instr_from_filepath</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="c1"># get the modification time (as ISO format):</span>
+        <span class="n">mtime</span> <span class="o">=</span> <span class="n">filename</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_mtime</span>
+        <span class="c1"># Use instrument timezone if available, otherwise fall back to system timezone</span>
+        <span class="n">tz</span> <span class="o">=</span> <span class="n">instr</span><span class="o">.</span><span class="n">timezone</span> <span class="k">if</span> <span class="n">instr</span> <span class="k">else</span> <span class="n">current_system_tz</span><span class="p">()</span>
+        <span class="n">mtime_iso</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">mtime</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="n">tz</span><span class="p">)</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
+        <span class="c1"># if we found the instrument, then store the name as string, else None</span>
+        <span class="n">instr_name</span> <span class="o">=</span> <span class="n">instr</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="n">instr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">m_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">m_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;fname&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="c1"># set type to Image by default</span>
+        <span class="n">m_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;DatasetType&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Image&quot;</span>
+        <span class="n">m_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;Data Type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;TEM_Imaging&quot;</span>
+        <span class="n">m_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;Creation Time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mtime_iso</span>
+        <span class="n">m_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;Data Dimensions&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="n">m_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;Instrument ID&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">instr_name</span>
+        <span class="n">m_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;warnings&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">m_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">parse_dm3_microscope_info</span><span class="p">(</span><span class="n">m_list</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">m_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">parse_dm3_eels_info</span><span class="p">(</span><span class="n">m_list</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">m_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">parse_dm3_eds_info</span><span class="p">(</span><span class="n">m_list</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">m_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">parse_dm3_spectrum_image_info</span><span class="p">(</span><span class="n">m_list</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+        <span class="c1"># Apply instrument-specific profiles if an instrument was provided</span>
+        <span class="k">if</span> <span class="n">instr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">m_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">_apply_profile_to_metadata</span><span class="p">(</span><span class="n">m_list</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">instr</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+
+        <span class="c1"># we don&#39;t need to save the filename, it&#39;s just for internal processing</span>
+        <span class="k">del</span> <span class="n">m_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;fname&quot;</span><span class="p">]</span>
+
+        <span class="c1"># Migrate metadata to schema-compliant format</span>
+        <span class="n">m_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">_migrate_to_schema_compliant_metadata</span><span class="p">(</span><span class="n">m_list</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+        <span class="c1"># sort the nx_meta dictionary (recursively) for nicer display</span>
+        <span class="n">m_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sort_dict</span><span class="p">(</span><span class="n">m_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">])</span>
+
+    <span class="c1"># return all signals as a list of dictionaries:</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">remove_dict_nones</span><span class="p">(</span><span class="n">m</span><span class="p">)</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">m_list</span><span class="p">]</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_apply_profile_to_metadata</span><span class="p">(</span><span class="n">metadata</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">instrument</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Apply instrument profile to metadata dictionary.</span>
+
+<span class="sd">    This is a helper function used by get_dm3_metadata() to maintain backward</span>
+<span class="sd">    compatibility with code that calls it directly.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    metadata</span>
+<span class="sd">        Metadata dictionary with &#39;nx_meta&#39; key</span>
+<span class="sd">    instrument</span>
+<span class="sd">        Instrument object</span>
+<span class="sd">    file_path</span>
+<span class="sd">        Path to the file being processed</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict</span>
+<span class="sd">        Modified metadata dictionary with profile transformations applied</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Ensure profiles are loaded</span>
+    <span class="n">register_all_profiles</span><span class="p">()</span>
+
+    <span class="n">profile</span> <span class="o">=</span> <span class="n">get_profile_registry</span><span class="p">()</span><span class="o">.</span><span class="n">get_profile</span><span class="p">(</span><span class="n">instrument</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">profile</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">metadata</span>
+
+    <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Applying profile for instrument: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">instrument</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="c1"># Create a mock context for profile application</span>
+    <span class="n">context</span> <span class="o">=</span> <span class="n">ExtractionContext</span><span class="p">(</span><span class="n">file_path</span><span class="o">=</span><span class="n">file_path</span><span class="p">,</span> <span class="n">instrument</span><span class="o">=</span><span class="n">instrument</span><span class="p">)</span>
+
+    <span class="c1"># Apply custom parsers in order</span>
+    <span class="k">for</span> <span class="n">parser_name</span><span class="p">,</span> <span class="n">parser_func</span> <span class="ow">in</span> <span class="n">profile</span><span class="o">.</span><span class="n">parsers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">metadata</span> <span class="o">=</span> <span class="n">parser_func</span><span class="p">(</span><span class="n">metadata</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s2">&quot;Profile parser &#39;</span><span class="si">%s</span><span class="s2">&#39; failed: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="n">parser_name</span><span class="p">,</span>
+                <span class="n">e</span><span class="p">,</span>
+            <span class="p">)</span>
+
+    <span class="c1"># Apply transformations</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">transform_func</span> <span class="ow">in</span> <span class="n">profile</span><span class="o">.</span><span class="n">transformations</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">metadata</span><span class="p">:</span>
+                <span class="n">metadata</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">transform_func</span><span class="p">(</span><span class="n">metadata</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s2">&quot;Profile transformation &#39;</span><span class="si">%s</span><span class="s2">&#39; failed: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="n">key</span><span class="p">,</span>
+                <span class="n">e</span><span class="p">,</span>
+            <span class="p">)</span>
+
+    <span class="c1"># Inject extension fields</span>
+    <span class="k">if</span> <span class="n">profile</span><span class="o">.</span><span class="n">extension_fields</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">profile</span><span class="o">.</span><span class="n">extension_fields</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">add_to_extensions</span><span class="p">(</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">],</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="s2">&quot;Profile extension field injection &#39;</span><span class="si">%s</span><span class="s2">&#39; failed: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="n">key</span><span class="p">,</span>
+                    <span class="n">e</span><span class="p">,</span>
+                <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">metadata</span>
+
+
+<div class="viewcode-block" id="get_pre_path">
+<a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.digital_micrograph.html#nexusLIMS.extractors.plugins.digital_micrograph.get_pre_path">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_pre_path</span><span class="p">(</span><span class="n">mdict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the appropriate pre-path in the metadata tag structure for a given signal.</span>
+
+<span class="sd">    Get the path into a dictionary where the important DigitalMicrograph metadata is</span>
+<span class="sd">    expected to be found. If the .dm3/.dm4 file contains a stack of images, the</span>
+<span class="sd">    important metadata for NexusLIMS is not at its usual place and is instead under a</span>
+<span class="sd">    `plan info` tag, so this method will determine if the stack metadata is present and</span>
+<span class="sd">    return the correct path.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mdict : dict</span>
+<span class="sd">        A metadata dictionary as returned by :py:meth:`get_dm3_metadata`</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    A list containing the subsequent keys that need to be traversed to</span>
+<span class="sd">    get to the point in the `mdict` where the important metadata is stored</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># test if we have a stack</span>
+    <span class="n">stack_val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span>
+        <span class="n">mdict</span><span class="p">,</span>
+        <span class="p">[</span><span class="s2">&quot;ImageList&quot;</span><span class="p">,</span> <span class="s2">&quot;TagGroup0&quot;</span><span class="p">,</span> <span class="s2">&quot;ImageTags&quot;</span><span class="p">,</span> <span class="s2">&quot;plane info&quot;</span><span class="p">],</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">stack_val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># we&#39;re in a stack</span>
+        <span class="n">pre_path</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">&quot;ImageList&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;TagGroup0&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;ImageTags&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;plane info&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;TagGroup0&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;source tags&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">pre_path</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ImageList&quot;</span><span class="p">,</span> <span class="s2">&quot;TagGroup0&quot;</span><span class="p">,</span> <span class="s2">&quot;ImageTags&quot;</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">pre_path</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_migrate_to_schema_compliant_metadata</span><span class="p">(</span><span class="n">mdict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>  <span class="c1"># noqa: PLR0912</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Migrate metadata to schema-compliant format.</span>
+
+<span class="sd">    This function reorganizes metadata extracted from DM3/DM4 files to conform</span>
+<span class="sd">    to the type-specific metadata schemas. It:</span>
+<span class="sd">    1. Maps display names to EM Glossary field names for core fields</span>
+<span class="sd">    2. Moves vendor-specific fields to the extensions section</span>
+<span class="sd">    3. Converts Stage Position dict to proper StagePosition structure</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mdict : dict</span>
+<span class="sd">        Metadata dictionary with &#39;nx_meta&#39; key</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict</span>
+<span class="sd">        Metadata dictionary with schema-compliant nx_meta</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">nx_meta</span> <span class="o">=</span> <span class="n">mdict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="p">{})</span>
+    <span class="n">dataset_type</span> <span class="o">=</span> <span class="n">nx_meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;DatasetType&quot;</span><span class="p">,</span> <span class="s2">&quot;Image&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Field mappings from display names to EM Glossary names</span>
+    <span class="c1"># These are core schema fields that just need renaming</span>
+    <span class="c1"># Note: dataset_type-specific fields are handled conditionally below</span>
+    <span class="n">field_mappings</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="c1"># Common mappings for all types</span>
+        <span class="s2">&quot;Voltage&quot;</span><span class="p">:</span> <span class="s2">&quot;acceleration_voltage&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Horizontal Field Width&quot;</span><span class="p">:</span> <span class="s2">&quot;horizontal_field_width&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Vertical Field Width&quot;</span><span class="p">:</span> <span class="s2">&quot;vertical_field_width&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Acquisition Device&quot;</span><span class="p">:</span> <span class="s2">&quot;acquisition_device&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Sample Time&quot;</span><span class="p">:</span> <span class="s2">&quot;dwell_time&quot;</span><span class="p">,</span>
+        <span class="c1"># Image-specific</span>
+        <span class="s2">&quot;Indicated Magnification&quot;</span><span class="p">:</span> <span class="s2">&quot;magnification&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="c1"># Conditional mappings based on dataset type</span>
+    <span class="k">if</span> <span class="n">dataset_type</span> <span class="o">==</span> <span class="s2">&quot;Diffraction&quot;</span><span class="p">:</span>
+        <span class="n">field_mappings</span><span class="p">[</span><span class="s2">&quot;STEM Camera Length&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;camera_length&quot;</span>
+
+    <span class="c1"># Fields that should ALWAYS go to extensions (vendor/instrument-specific)</span>
+    <span class="n">extension_fields</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="c1"># Gatan-specific</span>
+        <span class="s2">&quot;GMS Version&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Microscope&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Operator&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Specimen&quot;</span><span class="p">,</span>
+        <span class="c1"># Operation modes</span>
+        <span class="s2">&quot;Illumination Mode&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Imaging Mode&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Operation Mode&quot;</span><span class="p">,</span>
+        <span class="c1"># Apertures</span>
+        <span class="s2">&quot;Condenser Aperture&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Objective Aperture&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Selected Area Aperture&quot;</span><span class="p">,</span>
+        <span class="c1"># Vendor-specific settings</span>
+        <span class="s2">&quot;Cs&quot;</span><span class="p">,</span>  <span class="c1"># Spherical aberration</span>
+        <span class="c1"># Signal/Analytic metadata</span>
+        <span class="s2">&quot;Signal Name&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Analytic Format&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Analytic Label&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Analytic Signal&quot;</span><span class="p">,</span>
+        <span class="c1"># Nested vendor metadata (will be moved as-is)</span>
+        <span class="s2">&quot;EELS&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;EDS&quot;</span><span class="p">,</span>
+        <span class="c1"># STEM-specific fields that should be extensions for non-Diffraction types</span>
+        <span class="s2">&quot;STEM Camera Length&quot;</span><span class="p">,</span>  <span class="c1"># Only core for Diffraction</span>
+    <span class="p">}</span>
+
+    <span class="c1"># NOTE: &quot;NexusLIMS Extraction&quot; is added AFTER this migration function runs</span>
+    <span class="c1"># by add_extraction_details in __init__.py, so we don&#39;t need to handle it here</span>
+
+    <span class="c1"># Create new nx_meta dict with schema-compliant structure</span>
+    <span class="n">new_nx_meta</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="c1"># Preserve any existing extensions (e.g., from instrument profiles)</span>
+    <span class="n">extensions</span> <span class="o">=</span> <span class="n">nx_meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;extensions&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">if</span> <span class="s2">&quot;extensions&quot;</span> <span class="ow">in</span> <span class="n">nx_meta</span> <span class="k">else</span> <span class="p">{}</span>
+
+    <span class="c1"># Copy required fields as-is</span>
+    <span class="n">required_fields</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Creation Time&quot;</span><span class="p">,</span> <span class="s2">&quot;Data Type&quot;</span><span class="p">,</span> <span class="s2">&quot;DatasetType&quot;</span><span class="p">}</span>
+    <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">required_fields</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">nx_meta</span><span class="p">:</span>
+            <span class="n">new_nx_meta</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="n">nx_meta</span><span class="p">[</span><span class="n">field</span><span class="p">]</span>
+
+    <span class="c1"># Copy common optional fields</span>
+    <span class="n">common_fields</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;Data Dimensions&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Instrument ID&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;warnings&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Extractor Warnings&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">common_fields</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">nx_meta</span><span class="p">:</span>
+            <span class="n">new_nx_meta</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="n">nx_meta</span><span class="p">[</span><span class="n">field</span><span class="p">]</span>
+
+    <span class="c1"># Process all other fields</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">nx_meta</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="c1"># Skip if already processed</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">required_fields</span> <span class="ow">or</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">common_fields</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># Check if it&#39;s a core field that needs renaming</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">field_mappings</span><span class="p">:</span>
+            <span class="n">new_key</span> <span class="o">=</span> <span class="n">field_mappings</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="n">new_nx_meta</span><span class="p">[</span><span class="n">new_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="c1"># Check if it should go to extensions</span>
+        <span class="k">elif</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">extension_fields</span><span class="p">:</span>
+            <span class="n">extensions</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="c1"># Handle Stage Position specially</span>
+        <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;Stage Position&quot;</span><span class="p">:</span>
+            <span class="c1"># DM3 files have Stage Position as a dict with keys</span>
+            <span class="c1"># like &#39;X&#39;, &#39;Y&#39;, &#39;α&#39;, etc.  # noqa: RUF003</span>
+            <span class="c1"># Convert to snake_case keys for StagePosition schema</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="n">stage_pos</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="n">key_map</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s2">&quot;X&quot;</span><span class="p">:</span> <span class="s2">&quot;x&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Y&quot;</span><span class="p">:</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Z&quot;</span><span class="p">:</span> <span class="s2">&quot;z&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;α&quot;</span><span class="p">:</span> <span class="s2">&quot;tilt_alpha&quot;</span><span class="p">,</span>  <span class="c1"># noqa: RUF001</span>
+                    <span class="s2">&quot;β&quot;</span><span class="p">:</span> <span class="s2">&quot;tilt_beta&quot;</span><span class="p">,</span>
+                <span class="p">}</span>
+                <span class="k">for</span> <span class="n">old_key</span><span class="p">,</span> <span class="n">new_key</span> <span class="ow">in</span> <span class="n">key_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="n">old_key</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
+                        <span class="c1"># Convert to Pint Quantity if needed</span>
+                        <span class="n">val</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="n">old_key</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="n">new_key</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">):</span>
+                            <span class="c1"># X/Y in micrometers</span>
+                            <span class="n">val</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="s2">&quot;micrometer&quot;</span><span class="p">)</span>
+                        <span class="k">elif</span> <span class="n">new_key</span> <span class="o">==</span> <span class="s2">&quot;z&quot;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">):</span>
+                            <span class="c1"># Z in millimeters</span>
+                            <span class="n">val</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="s2">&quot;millimeter&quot;</span><span class="p">)</span>
+                        <span class="k">elif</span> <span class="n">new_key</span> <span class="ow">in</span> <span class="p">(</span>
+                            <span class="s2">&quot;tilt_alpha&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;tilt_beta&quot;</span><span class="p">,</span>
+                        <span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">):</span>
+                            <span class="c1"># Tilts in degrees</span>
+                            <span class="n">val</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">)</span>
+                        <span class="n">stage_pos</span><span class="p">[</span><span class="n">new_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+                <span class="n">new_nx_meta</span><span class="p">[</span><span class="s2">&quot;stage_position&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">stage_pos</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># If it&#39;s not a dict, move to extensions (this is not expected)</span>
+                <span class="n">extensions</span><span class="p">[</span><span class="s2">&quot;Stage Position&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>  <span class="c1"># pragma: no cover</span>
+        <span class="c1"># Everything else goes to extensions</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">extensions</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="c1"># Add extensions if any</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">extensions</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">add_to_extensions</span><span class="p">(</span><span class="n">new_nx_meta</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_nx_meta</span>
+    <span class="k">return</span> <span class="n">mdict</span>
+
+
+<div class="viewcode-block" id="parse_dm3_microscope_info">
+<a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.digital_micrograph.html#nexusLIMS.extractors.plugins.digital_micrograph.parse_dm3_microscope_info">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_dm3_microscope_info</span><span class="p">(</span><span class="n">mdict</span><span class="p">):</span>  <span class="c1"># noqa: PLR0912</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parse the &quot;microscope info&quot; metadata.</span>
+
+<span class="sd">    Parse the &quot;important&quot; metadata that is saved at specific places within the DM3 tag</span>
+<span class="sd">    structure into a consistent place in the metadata dictionary returned by</span>
+<span class="sd">    :py:meth:`get_dm3_metadata`. Specifically looks at the &quot;Microscope Info&quot;,</span>
+<span class="sd">    &quot;Session Info&quot;, and &quot;Meta Data&quot; nodes (these are not present on every microscope).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mdict : dict</span>
+<span class="sd">        A metadata dictionary as returned by :py:meth:`get_dm3_metadata`</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    mdict : dict</span>
+<span class="sd">        The same metadata dictionary with some values added under the</span>
+<span class="sd">        root-level ``nx_meta`` key</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="s2">&quot;nx_meta&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">mdict</span><span class="p">:</span>
+        <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># pragma: no cover</span>
+
+    <span class="n">pre_path</span> <span class="o">=</span> <span class="n">get_pre_path</span><span class="p">(</span><span class="n">mdict</span><span class="p">)</span>
+
+    <span class="c1"># General &quot;microscope info&quot; .dm3 tags (not present on all instruments):</span>
+    <span class="k">for</span> <span class="n">meta_key</span> <span class="ow">in</span> <span class="p">[</span>
+        <span class="s2">&quot;Indicated Magnification&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Actual Magnification&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Cs(mm)&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;STEM Camera Length&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Voltage&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Operation Mode&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Specimen&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Microscope&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Operator&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Imaging Mode&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Illumination Mode&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Name&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Field of View (</span><span class="se">\u00b5</span><span class="s2">m)&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Facility&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Condenser Aperture&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Objective Aperture&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Selected Area Aperture&quot;</span><span class="p">,</span>
+        <span class="p">[</span><span class="s2">&quot;Stage Position&quot;</span><span class="p">,</span> <span class="s2">&quot;Stage Alpha&quot;</span><span class="p">],</span>
+        <span class="p">[</span><span class="s2">&quot;Stage Position&quot;</span><span class="p">,</span> <span class="s2">&quot;Stage Beta&quot;</span><span class="p">],</span>
+        <span class="p">[</span><span class="s2">&quot;Stage Position&quot;</span><span class="p">,</span> <span class="s2">&quot;Stage X&quot;</span><span class="p">],</span>
+        <span class="p">[</span><span class="s2">&quot;Stage Position&quot;</span><span class="p">,</span> <span class="s2">&quot;Stage Y&quot;</span><span class="p">],</span>
+        <span class="p">[</span><span class="s2">&quot;Stage Position&quot;</span><span class="p">,</span> <span class="s2">&quot;Stage Z&quot;</span><span class="p">],</span>
+    <span class="p">]:</span>
+        <span class="n">base</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="n">pre_path</span><span class="p">,</span> <span class="s2">&quot;Microscope Info&quot;</span><span class="p">]</span>
+        <span class="n">meta_key</span> <span class="o">=</span> <span class="n">_coerce_to_list</span><span class="p">(</span><span class="n">meta_key</span><span class="p">)</span>  <span class="c1"># noqa: PLW2901</span>
+
+        <span class="n">val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="n">base</span> <span class="o">+</span> <span class="n">meta_key</span><span class="p">)</span>
+        <span class="c1"># only add the value to this list if we found it, and it&#39;s not one of</span>
+        <span class="c1"># the &quot;facility-wide&quot; set values that do not have any meaning:</span>
+        <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">val</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;DO NOT EDIT&quot;</span><span class="p">,</span> <span class="s2">&quot;DO NOT ENTER&quot;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">val</span> <span class="o">!=</span> <span class="p">[]:</span>
+            <span class="c1"># Store original field name for unit mapping</span>
+            <span class="n">field_name</span> <span class="o">=</span> <span class="n">meta_key</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">meta_key</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">else</span> <span class="n">meta_key</span>
+
+            <span class="c1"># Convert to Pint Quantity if the field has units</span>
+            <span class="n">unit_map</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;Cs(mm)&quot;</span><span class="p">:</span> <span class="s2">&quot;millimeter&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;STEM Camera Length&quot;</span><span class="p">:</span> <span class="s2">&quot;millimeter&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Voltage&quot;</span><span class="p">:</span> <span class="s2">&quot;volt&quot;</span><span class="p">,</span>  <span class="c1"># Will auto-convert to kilovolt</span>
+                <span class="s2">&quot;Field of View (</span><span class="se">\u00b5</span><span class="s2">m)&quot;</span><span class="p">:</span> <span class="s2">&quot;micrometer&quot;</span><span class="p">,</span>
+            <span class="p">}</span>
+            <span class="k">if</span> <span class="n">field_name</span> <span class="ow">in</span> <span class="n">unit_map</span><span class="p">:</span>
+                <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+                    <span class="n">val</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">unit_map</span><span class="p">[</span><span class="n">field_name</span><span class="p">])</span>
+                    <span class="c1"># Remove unit suffix from field name</span>
+                    <span class="k">if</span> <span class="n">field_name</span> <span class="o">==</span> <span class="s2">&quot;Cs(mm)&quot;</span><span class="p">:</span>
+                        <span class="n">meta_key</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Cs&quot;</span><span class="p">]</span>  <span class="c1"># noqa: PLW2901</span>
+                    <span class="k">elif</span> <span class="n">field_name</span> <span class="o">==</span> <span class="s2">&quot;Field of View (</span><span class="se">\u00b5</span><span class="s2">m)&quot;</span><span class="p">:</span>
+                        <span class="n">meta_key</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Horizontal Field Width&quot;</span><span class="p">]</span>  <span class="c1"># noqa: PLW2901</span>
+
+            <span class="c1"># change output of &quot;Stage Position&quot; to unicode characters</span>
+            <span class="k">if</span> <span class="s2">&quot;Stage Position&quot;</span> <span class="ow">in</span> <span class="n">meta_key</span><span class="p">:</span>
+                <span class="n">meta_key</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">meta_key</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;Alpha&quot;</span><span class="p">,</span> <span class="s2">&quot;α&quot;</span><span class="p">)</span>  <span class="c1"># noqa: RUF001</span>
+                    <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;Beta&quot;</span><span class="p">,</span> <span class="s2">&quot;β&quot;</span><span class="p">)</span>
+                    <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;Stage &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="n">set_nested_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">meta_key</span><span class="p">],</span> <span class="n">val</span><span class="p">)</span>
+
+    <span class="c1"># General &quot;session info&quot; .dm3 tags (sometimes this information is stored</span>
+    <span class="c1"># here instead of under &quot;Microscope Info&quot;:</span>
+    <span class="k">for</span> <span class="n">meta_key</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;Detector&quot;</span><span class="p">,</span> <span class="s2">&quot;Microscope&quot;</span><span class="p">,</span> <span class="s2">&quot;Operator&quot;</span><span class="p">,</span> <span class="s2">&quot;Specimen&quot;</span><span class="p">]:</span>
+        <span class="n">base</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="n">pre_path</span><span class="p">,</span> <span class="s2">&quot;Session Info&quot;</span><span class="p">]</span>
+        <span class="n">meta_key</span> <span class="o">=</span> <span class="n">_coerce_to_list</span><span class="p">(</span><span class="n">meta_key</span><span class="p">)</span>  <span class="c1"># noqa: PLW2901</span>
+
+        <span class="n">val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="n">base</span> <span class="o">+</span> <span class="n">meta_key</span><span class="p">)</span>
+        <span class="c1"># only add the value to this list if we found it, and it&#39;s not</span>
+        <span class="c1"># one of the &quot;facility-wide&quot; set values that do not have any meaning:</span>
+        <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">val</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;DO NOT EDIT&quot;</span><span class="p">,</span> <span class="s2">&quot;DO NOT ENTER&quot;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">val</span> <span class="o">!=</span> <span class="p">[]:</span>
+            <span class="n">set_nested_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">meta_key</span><span class="p">],</span> <span class="n">val</span><span class="p">)</span>
+
+    <span class="c1"># General &quot;Meta Data&quot; .dm3 tags</span>
+    <span class="k">for</span> <span class="n">meta_key</span> <span class="ow">in</span> <span class="p">[</span>
+        <span class="s2">&quot;Acquisition Mode&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Format&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Signal&quot;</span><span class="p">,</span>
+        <span class="c1"># this one is seen sometimes in EDS signals:</span>
+        <span class="p">[</span><span class="s2">&quot;Experiment keywords&quot;</span><span class="p">,</span> <span class="s2">&quot;TagGroup1&quot;</span><span class="p">,</span> <span class="s2">&quot;Label&quot;</span><span class="p">],</span>
+    <span class="p">]:</span>
+        <span class="n">base</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="n">pre_path</span><span class="p">,</span> <span class="s2">&quot;Meta Data&quot;</span><span class="p">]</span>
+        <span class="n">meta_key</span> <span class="o">=</span> <span class="n">_coerce_to_list</span><span class="p">(</span><span class="n">meta_key</span><span class="p">)</span>  <span class="c1"># noqa: PLW2901</span>
+
+        <span class="n">val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="n">base</span> <span class="o">+</span> <span class="n">meta_key</span><span class="p">)</span>
+        <span class="c1"># only add the value to this list if we found it, and it&#39;s not</span>
+        <span class="c1"># one of the &quot;facility-wide&quot; set values that do not have any meaning:</span>
+        <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">val</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;DO NOT EDIT&quot;</span><span class="p">,</span> <span class="s2">&quot;DO NOT ENTER&quot;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">val</span> <span class="o">!=</span> <span class="p">[]:</span>
+            <span class="k">if</span> <span class="s2">&quot;Label&quot;</span> <span class="ow">in</span> <span class="n">meta_key</span><span class="p">:</span>
+                <span class="n">set_nested_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="s2">&quot;Analytic Label&quot;</span><span class="p">],</span> <span class="n">val</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">set_nested_dict_value</span><span class="p">(</span>
+                    <span class="n">mdict</span><span class="p">,</span>
+                    <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;Analytic </span><span class="si">{</span><span class="n">lbl</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">lbl</span> <span class="ow">in</span> <span class="n">meta_key</span><span class="p">],</span>
+                    <span class="n">val</span><span class="p">,</span>
+                <span class="p">)</span>
+
+    <span class="c1"># acquisition device name:</span>
+    <span class="n">_set_acquisition_device_name</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="n">pre_path</span><span class="p">)</span>
+
+    <span class="c1"># exposure time:</span>
+    <span class="n">_set_exposure_time</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="n">pre_path</span><span class="p">)</span>
+
+    <span class="c1"># GMS version:</span>
+    <span class="n">_set_gms_version</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="n">pre_path</span><span class="p">)</span>
+
+    <span class="c1"># camera binning:</span>
+    <span class="n">_set_camera_binning</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="n">pre_path</span><span class="p">)</span>
+
+    <span class="c1"># image processing:</span>
+    <span class="n">_set_image_processing</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="n">pre_path</span><span class="p">)</span>
+
+    <span class="c1"># Signal Name (from DataBar):</span>
+    <span class="n">signal_name</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="o">*</span><span class="n">pre_path</span><span class="p">,</span> <span class="s2">&quot;DataBar&quot;</span><span class="p">,</span> <span class="s2">&quot;Signal Name&quot;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">signal_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">set_nested_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="s2">&quot;Signal Name&quot;</span><span class="p">],</span> <span class="n">signal_name</span><span class="p">)</span>
+
+    <span class="c1"># DigiScan Sample Time (dwell time per pixel in microseconds):</span>
+    <span class="n">sample_time</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="o">*</span><span class="n">pre_path</span><span class="p">,</span> <span class="s2">&quot;DigiScan&quot;</span><span class="p">,</span> <span class="s2">&quot;Sample Time&quot;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">sample_time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+            <span class="n">sample_time</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">sample_time</span><span class="p">,</span> <span class="s2">&quot;microsecond&quot;</span><span class="p">)</span>
+        <span class="n">set_nested_dict_value</span><span class="p">(</span>
+            <span class="n">mdict</span><span class="p">,</span>
+            <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="s2">&quot;Sample Time&quot;</span><span class="p">],</span>
+            <span class="n">sample_time</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="p">(</span>
+        <span class="s2">&quot;Illumination Mode&quot;</span> <span class="ow">in</span> <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">]</span>
+        <span class="ow">and</span> <span class="s2">&quot;STEM&quot;</span> <span class="ow">in</span> <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;Illumination Mode&quot;</span><span class="p">]</span>
+    <span class="p">):</span>
+        <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;Data Type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;STEM_Imaging&quot;</span>
+
+    <span class="k">return</span> <span class="n">mdict</span></div>
+
+
+
+<div class="viewcode-block" id="parse_dm3_eels_info">
+<a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.digital_micrograph.html#nexusLIMS.extractors.plugins.digital_micrograph.parse_dm3_eels_info">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_dm3_eels_info</span><span class="p">(</span><span class="n">mdict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parse EELS information from the metadata.</span>
+
+<span class="sd">    Parses metadata from the DigitalMicrograph tag structure that concerns any</span>
+<span class="sd">    EELS acquisition or spectrometer settings, placing it in an ``EELS``</span>
+<span class="sd">    dictionary underneath the root-level ``nx_meta`` node.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mdict : dict</span>
+<span class="sd">        A metadata dictionary as returned by :py:meth:`get_dm3_metadata`</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    mdict : dict</span>
+<span class="sd">        The metadata dict with all the &quot;EELS-specific&quot; metadata added under ``nx_meta``</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pre_path</span> <span class="o">=</span> <span class="n">get_pre_path</span><span class="p">(</span><span class="n">mdict</span><span class="p">)</span>
+
+    <span class="c1"># EELS .dm3 tags of interest:</span>
+    <span class="n">base</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="n">pre_path</span><span class="p">,</span> <span class="s2">&quot;EELS&quot;</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">meta_key</span> <span class="ow">in</span> <span class="p">[</span>
+        <span class="p">[</span><span class="s2">&quot;Acquisition&quot;</span><span class="p">,</span> <span class="s2">&quot;Exposure (s)&quot;</span><span class="p">],</span>
+        <span class="p">[</span><span class="s2">&quot;Acquisition&quot;</span><span class="p">,</span> <span class="s2">&quot;Integration time (s)&quot;</span><span class="p">],</span>
+        <span class="p">[</span><span class="s2">&quot;Acquisition&quot;</span><span class="p">,</span> <span class="s2">&quot;Number of frames&quot;</span><span class="p">],</span>
+        <span class="p">[</span><span class="s2">&quot;Experimental Conditions&quot;</span><span class="p">,</span> <span class="s2">&quot;Collection semi-angle (mrad)&quot;</span><span class="p">],</span>
+        <span class="p">[</span><span class="s2">&quot;Experimental Conditions&quot;</span><span class="p">,</span> <span class="s2">&quot;Convergence semi-angle (mrad)&quot;</span><span class="p">],</span>
+    <span class="p">]:</span>
+        <span class="n">_set_eels_meta</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="n">base</span><span class="p">,</span> <span class="n">meta_key</span><span class="p">)</span>
+
+    <span class="c1"># different instruments have the spectrometer information in different</span>
+    <span class="c1"># places...</span>
+    <span class="k">if</span> <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;Instrument ID&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;FEI-Titan-TEM&quot;</span><span class="p">:</span>
+        <span class="n">base</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="n">pre_path</span><span class="p">,</span> <span class="s2">&quot;EELS&quot;</span><span class="p">,</span> <span class="s2">&quot;Acquisition&quot;</span><span class="p">,</span> <span class="s2">&quot;Spectrometer&quot;</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;Instrument ID&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;FEI-Titan-STEM&quot;</span><span class="p">:</span>
+        <span class="n">base</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="n">pre_path</span><span class="p">,</span> <span class="s2">&quot;EELS Spectrometer&quot;</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">base</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">base</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">meta_key</span> <span class="ow">in</span> <span class="p">[</span>
+            <span class="s2">&quot;Aperture label&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Dispersion (eV/ch)&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Energy loss (eV)&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Instrument name&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Drift tube enabled&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Drift tube voltage (V)&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Slit inserted&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Slit width (eV)&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Prism offset (V)&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Prism offset enabled &quot;</span><span class="p">,</span>
+        <span class="p">]:</span>
+            <span class="n">meta_key</span> <span class="o">=</span> <span class="p">[</span><span class="n">meta_key</span><span class="p">]</span>  <span class="c1"># noqa: PLW2901</span>
+            <span class="n">_set_eels_spectrometer_meta</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="n">base</span><span class="p">,</span> <span class="n">meta_key</span><span class="p">)</span>
+
+    <span class="n">_set_eels_processing</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="n">pre_path</span><span class="p">)</span>
+
+    <span class="c1"># Set the dataset type to Spectrum if any EELS tags were added</span>
+    <span class="k">if</span> <span class="s2">&quot;EELS&quot;</span> <span class="ow">in</span> <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">]:</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Detected file as Spectrum type based on EELS metadata&quot;</span><span class="p">)</span>
+        <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;DatasetType&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Spectrum&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;STEM&quot;</span> <span class="ow">in</span> <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;Illumination Mode&quot;</span><span class="p">]:</span>
+            <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;Data Type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;STEM_EELS&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;Data Type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;TEM_EELS&quot;</span>
+
+    <span class="k">return</span> <span class="n">mdict</span></div>
+
+
+
+<div class="viewcode-block" id="parse_dm3_eds_info">
+<a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.digital_micrograph.html#nexusLIMS.extractors.plugins.digital_micrograph.parse_dm3_eds_info">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_dm3_eds_info</span><span class="p">(</span><span class="n">mdict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parse EDS information from the dm3 metadata.</span>
+
+<span class="sd">    Parses metadata from the DigitalMicrograph tag structure that concerns any</span>
+<span class="sd">    EDS acquisition or spectrometer settings, placing it in an ``EDS``</span>
+<span class="sd">    dictionary underneath the root-level ``nx_meta`` node. Metadata values</span>
+<span class="sd">    that are commonly incorrect or may be placeholders are specified in a</span>
+<span class="sd">    list under the ``nx_meta.warnings`` node.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mdict : dict</span>
+<span class="sd">        A metadata dictionary as returned by :py:meth:`get_dm3_metadata`</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    mdict : dict</span>
+<span class="sd">        The metadata dictionary with all the &quot;EDS-specific&quot; metadata</span>
+<span class="sd">        added as sub-node under the ``nx_meta`` root level dictionary</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pre_path</span> <span class="o">=</span> <span class="n">get_pre_path</span><span class="p">(</span><span class="n">mdict</span><span class="p">)</span>
+
+    <span class="c1"># EELS .dm3 tags of interest:</span>
+    <span class="n">base</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="n">pre_path</span><span class="p">,</span> <span class="s2">&quot;EDS&quot;</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">meta_key</span> <span class="ow">in</span> <span class="p">[</span>
+        <span class="p">[</span><span class="s2">&quot;Acquisition&quot;</span><span class="p">,</span> <span class="s2">&quot;Continuous Mode&quot;</span><span class="p">],</span>
+        <span class="p">[</span><span class="s2">&quot;Acquisition&quot;</span><span class="p">,</span> <span class="s2">&quot;Count Rate Unit&quot;</span><span class="p">],</span>
+        <span class="p">[</span><span class="s2">&quot;Acquisition&quot;</span><span class="p">,</span> <span class="s2">&quot;Dispersion (eV)&quot;</span><span class="p">],</span>
+        <span class="p">[</span><span class="s2">&quot;Acquisition&quot;</span><span class="p">,</span> <span class="s2">&quot;Energy Cutoff (V)&quot;</span><span class="p">],</span>
+        <span class="p">[</span><span class="s2">&quot;Acquisition&quot;</span><span class="p">,</span> <span class="s2">&quot;Exposure (s)&quot;</span><span class="p">],</span>
+        <span class="p">[</span><span class="s2">&quot;Count rate&quot;</span><span class="p">],</span>
+        <span class="p">[</span><span class="s2">&quot;Detector Info&quot;</span><span class="p">,</span> <span class="s2">&quot;Active layer&quot;</span><span class="p">],</span>
+        <span class="p">[</span><span class="s2">&quot;Detector Info&quot;</span><span class="p">,</span> <span class="s2">&quot;Azimuthal angle&quot;</span><span class="p">],</span>
+        <span class="p">[</span><span class="s2">&quot;Detector Info&quot;</span><span class="p">,</span> <span class="s2">&quot;Dead layer&quot;</span><span class="p">],</span>
+        <span class="p">[</span><span class="s2">&quot;Detector Info&quot;</span><span class="p">,</span> <span class="s2">&quot;Detector type&quot;</span><span class="p">],</span>
+        <span class="p">[</span><span class="s2">&quot;Detector Info&quot;</span><span class="p">,</span> <span class="s2">&quot;Elevation angle&quot;</span><span class="p">],</span>
+        <span class="p">[</span><span class="s2">&quot;Detector Info&quot;</span><span class="p">,</span> <span class="s2">&quot;Fano&quot;</span><span class="p">],</span>
+        <span class="p">[</span><span class="s2">&quot;Detector Info&quot;</span><span class="p">,</span> <span class="s2">&quot;Gold layer&quot;</span><span class="p">],</span>
+        <span class="p">[</span><span class="s2">&quot;Detector Info&quot;</span><span class="p">,</span> <span class="s2">&quot;Incidence angle&quot;</span><span class="p">],</span>
+        <span class="p">[</span><span class="s2">&quot;Detector Info&quot;</span><span class="p">,</span> <span class="s2">&quot;Solid angle&quot;</span><span class="p">],</span>
+        <span class="p">[</span><span class="s2">&quot;Detector Info&quot;</span><span class="p">,</span> <span class="s2">&quot;Stage tilt&quot;</span><span class="p">],</span>
+        <span class="p">[</span><span class="s2">&quot;Detector Info&quot;</span><span class="p">,</span> <span class="s2">&quot;Window thickness&quot;</span><span class="p">],</span>
+        <span class="p">[</span><span class="s2">&quot;Detector Info&quot;</span><span class="p">,</span> <span class="s2">&quot;Window type&quot;</span><span class="p">],</span>
+        <span class="p">[</span><span class="s2">&quot;Detector Info&quot;</span><span class="p">,</span> <span class="s2">&quot;Zero fwhm&quot;</span><span class="p">],</span>
+        <span class="p">[</span><span class="s2">&quot;Live time&quot;</span><span class="p">],</span>
+        <span class="p">[</span><span class="s2">&quot;Real time&quot;</span><span class="p">],</span>
+    <span class="p">]:</span>
+        <span class="n">_set_eds_meta</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="n">base</span><span class="p">,</span> <span class="n">meta_key</span><span class="p">)</span>
+
+    <span class="c1"># test to see if the SI attribute is present in the metadata dictionary.</span>
+    <span class="c1"># If so, then some relevant EDS values are located there, rather</span>
+    <span class="c1"># than in the root-level EDS tag (all the EDS.Acquisition tags from</span>
+    <span class="c1"># above)</span>
+    <span class="k">if</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="o">*</span><span class="n">pre_path</span><span class="p">,</span> <span class="s2">&quot;SI&quot;</span><span class="p">])</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">meta_key</span> <span class="ow">in</span> <span class="p">[</span>
+            <span class="p">[</span><span class="s2">&quot;Acquisition&quot;</span><span class="p">,</span> <span class="s2">&quot;Continuous Mode&quot;</span><span class="p">],</span>
+            <span class="p">[</span><span class="s2">&quot;Acquisition&quot;</span><span class="p">,</span> <span class="s2">&quot;Count Rate Unit&quot;</span><span class="p">],</span>
+            <span class="p">[</span><span class="s2">&quot;Acquisition&quot;</span><span class="p">,</span> <span class="s2">&quot;Dispersion (eV)&quot;</span><span class="p">],</span>
+            <span class="p">[</span><span class="s2">&quot;Acquisition&quot;</span><span class="p">,</span> <span class="s2">&quot;Energy Cutoff (V)&quot;</span><span class="p">],</span>
+            <span class="p">[</span><span class="s2">&quot;Acquisition&quot;</span><span class="p">,</span> <span class="s2">&quot;Exposure (s)&quot;</span><span class="p">],</span>
+        <span class="p">]:</span>
+            <span class="n">_set_si_meta</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="n">pre_path</span><span class="p">,</span> <span class="n">meta_key</span><span class="p">)</span>
+
+        <span class="c1"># for an SI EDS dataset, set &quot;Live time&quot;, &quot;Real time&quot; and &quot;Count rate&quot;</span>
+        <span class="c1"># to the averages stored in the ImageList.TagGroup0.ImageTags.EDS.Images</span>
+        <span class="c1"># values</span>
+        <span class="n">im_dict</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="o">*</span><span class="n">pre_path</span><span class="p">,</span> <span class="s2">&quot;EDS&quot;</span><span class="p">,</span> <span class="s2">&quot;Images&quot;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">im_dict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">im_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;EDS&quot;</span><span class="p">]:</span>
+                    <span class="k">del</span> <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;EDS&quot;</span><span class="p">][</span><span class="n">k</span><span class="p">]</span>
+                <span class="c1"># this should work for 2D (spectrum image) as well as 1D</span>
+                <span class="c1"># (linescan) datasets since DM saves this information as a 1D</span>
+                <span class="c1"># list regardless of original data shape</span>
+                <span class="n">avg_val</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+                <span class="n">set_nested_dict_value</span><span class="p">(</span>
+                    <span class="n">mdict</span><span class="p">,</span>
+                    <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="s2">&quot;EDS&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2"> (SI Average)&quot;</span><span class="p">],</span>
+                    <span class="n">avg_val</span><span class="p">,</span>
+                <span class="p">)</span>
+
+    <span class="c1"># Add the .dm3 EDS values to the warnings list, since they might not be</span>
+    <span class="c1"># accurate</span>
+    <span class="k">for</span> <span class="n">meta_key</span> <span class="ow">in</span> <span class="p">[</span>
+        <span class="p">[</span><span class="s2">&quot;Count rate&quot;</span><span class="p">],</span>
+        <span class="p">[</span><span class="s2">&quot;Detector Info&quot;</span><span class="p">,</span> <span class="s2">&quot;Active layer&quot;</span><span class="p">],</span>
+        <span class="p">[</span><span class="s2">&quot;Detector Info&quot;</span><span class="p">,</span> <span class="s2">&quot;Azimuthal angle&quot;</span><span class="p">],</span>
+        <span class="p">[</span><span class="s2">&quot;Detector Info&quot;</span><span class="p">,</span> <span class="s2">&quot;Dead layer&quot;</span><span class="p">],</span>
+        <span class="p">[</span><span class="s2">&quot;Detector Info&quot;</span><span class="p">,</span> <span class="s2">&quot;Detector type&quot;</span><span class="p">],</span>
+        <span class="p">[</span><span class="s2">&quot;Detector Info&quot;</span><span class="p">,</span> <span class="s2">&quot;Elevation angle&quot;</span><span class="p">],</span>
+        <span class="p">[</span><span class="s2">&quot;Detector Info&quot;</span><span class="p">,</span> <span class="s2">&quot;Fano&quot;</span><span class="p">],</span>
+        <span class="p">[</span><span class="s2">&quot;Detector Info&quot;</span><span class="p">,</span> <span class="s2">&quot;Gold layer&quot;</span><span class="p">],</span>
+        <span class="p">[</span><span class="s2">&quot;Detector Info&quot;</span><span class="p">,</span> <span class="s2">&quot;Incidence angle&quot;</span><span class="p">],</span>
+        <span class="p">[</span><span class="s2">&quot;Detector Info&quot;</span><span class="p">,</span> <span class="s2">&quot;Solid angle&quot;</span><span class="p">],</span>
+        <span class="p">[</span><span class="s2">&quot;Detector Info&quot;</span><span class="p">,</span> <span class="s2">&quot;Stage tilt&quot;</span><span class="p">],</span>
+        <span class="p">[</span><span class="s2">&quot;Detector Info&quot;</span><span class="p">,</span> <span class="s2">&quot;Window thickness&quot;</span><span class="p">],</span>
+        <span class="p">[</span><span class="s2">&quot;Detector Info&quot;</span><span class="p">,</span> <span class="s2">&quot;Window type&quot;</span><span class="p">],</span>
+        <span class="p">[</span><span class="s2">&quot;Detector Info&quot;</span><span class="p">,</span> <span class="s2">&quot;Zero fwhm&quot;</span><span class="p">],</span>
+        <span class="p">[</span><span class="s2">&quot;Live time&quot;</span><span class="p">],</span>
+        <span class="p">[</span><span class="s2">&quot;Real time&quot;</span><span class="p">],</span>
+    <span class="p">]:</span>
+        <span class="k">if</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="n">base</span> <span class="o">+</span> <span class="n">meta_key</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;warnings&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="p">[</span><span class="s2">&quot;EDS&quot;</span><span class="p">,</span> <span class="n">meta_key</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">meta_key</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">meta_key</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
+            <span class="p">)</span>
+
+    <span class="c1"># Set the dataset type to Spectrum if any EDS tags were added</span>
+    <span class="k">if</span> <span class="s2">&quot;EDS&quot;</span> <span class="ow">in</span> <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">]:</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Detected file as Spectrum type based on presence of EDS metadata&quot;</span><span class="p">)</span>
+        <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;DatasetType&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Spectrum&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;STEM&quot;</span> <span class="ow">in</span> <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;Illumination Mode&quot;</span><span class="p">]:</span>
+            <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;Data Type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;STEM_EDS&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># no known files match this mode, so skip for coverage</span>
+            <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;Data Type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;TEM_EDS&quot;</span>  <span class="c1"># pragma: no cover</span>
+
+    <span class="k">return</span> <span class="n">mdict</span></div>
+
+
+
+<div class="viewcode-block" id="parse_dm3_spectrum_image_info">
+<a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.digital_micrograph.html#nexusLIMS.extractors.plugins.digital_micrograph.parse_dm3_spectrum_image_info">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_dm3_spectrum_image_info</span><span class="p">(</span><span class="n">mdict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parse &quot;spectrum image&quot; information from the metadata.</span>
+
+<span class="sd">    Parses metadata that concerns any spectrum imaging information (the &quot;SI&quot; tag) and</span>
+<span class="sd">    places it in a &quot;Spectrum Imaging&quot; dictionary underneath the root-level ``nx_meta``</span>
+<span class="sd">    node. Metadata values that are commonly incorrect or may be placeholders are</span>
+<span class="sd">    specified in a list under the ``nx_meta.warnings`` node.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mdict : dict</span>
+<span class="sd">        A metadata dictionary as returned by :py:meth:`get_dm3_metadata`</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    mdict : dict</span>
+<span class="sd">        The metadata dictionary with all the &quot;EDS-specific&quot; metadata</span>
+<span class="sd">        added as sub-node under the ``nx_meta`` root level dictionary</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pre_path</span> <span class="o">=</span> <span class="n">get_pre_path</span><span class="p">(</span><span class="n">mdict</span><span class="p">)</span>
+
+    <span class="c1"># Spectrum imaging .dm3 tags of interest:</span>
+    <span class="n">base</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="n">pre_path</span><span class="p">,</span> <span class="s2">&quot;SI&quot;</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">m_in</span><span class="p">,</span> <span class="n">m_out</span> <span class="ow">in</span> <span class="p">[</span>
+        <span class="p">([</span><span class="s2">&quot;Acquisition&quot;</span><span class="p">,</span> <span class="s2">&quot;Pixel time (s)&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;Pixel time (s)&quot;</span><span class="p">]),</span>
+        <span class="p">([</span><span class="s2">&quot;Acquisition&quot;</span><span class="p">,</span> <span class="s2">&quot;SI Application Mode&quot;</span><span class="p">,</span> <span class="s2">&quot;Name&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;Scan Mode&quot;</span><span class="p">]),</span>
+        <span class="p">(</span>
+            <span class="p">[</span><span class="s2">&quot;Acquisition&quot;</span><span class="p">,</span> <span class="s2">&quot;Spatial Sampling&quot;</span><span class="p">,</span> <span class="s2">&quot;Height (pixels)&quot;</span><span class="p">],</span>
+            <span class="p">[</span><span class="s2">&quot;Spatial Sampling (Vertical)&quot;</span><span class="p">],</span>
+        <span class="p">),</span>
+        <span class="p">(</span>
+            <span class="p">[</span><span class="s2">&quot;Acquisition&quot;</span><span class="p">,</span> <span class="s2">&quot;Spatial Sampling&quot;</span><span class="p">,</span> <span class="s2">&quot;Width (pixels)&quot;</span><span class="p">],</span>
+            <span class="p">[</span><span class="s2">&quot;Spatial Sampling (Horizontal)&quot;</span><span class="p">],</span>
+        <span class="p">),</span>
+        <span class="p">(</span>
+            <span class="p">[</span><span class="s2">&quot;Acquisition&quot;</span><span class="p">,</span> <span class="s2">&quot;Scan Options&quot;</span><span class="p">,</span> <span class="s2">&quot;Sub-pixel sampling&quot;</span><span class="p">],</span>
+            <span class="p">[</span><span class="s2">&quot;Sub-pixel Sampling Factor&quot;</span><span class="p">],</span>
+        <span class="p">),</span>
+    <span class="p">]:</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="n">base</span> <span class="o">+</span> <span class="n">m_in</span><span class="p">)</span>
+        <span class="c1"># only add the value to this list if we found it, and it&#39;s not</span>
+        <span class="c1"># one of the &quot;facility-wide&quot; set values that do not have any meaning:</span>
+        <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Convert to Pint Quantity if the field has units</span>
+            <span class="n">output_key</span> <span class="o">=</span> <span class="n">m_out</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">m_out</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">m_out</span>
+            <span class="k">if</span> <span class="n">output_key</span> <span class="o">==</span> <span class="s2">&quot;Pixel time (s)&quot;</span><span class="p">:</span>
+                <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+                    <span class="n">val</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="s2">&quot;second&quot;</span><span class="p">)</span>
+                    <span class="n">output_key</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Pixel time&quot;</span><span class="p">]</span>
+            <span class="c1"># add last value of each parameter to the &quot;Spectrum Imaging&quot; sub-tree</span>
+            <span class="n">key_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">output_key</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">output_key</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">output_key</span>
+            <span class="n">set_nested_dict_value</span><span class="p">(</span>
+                <span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="s2">&quot;Spectrum Imaging&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">key_list</span><span class="p">],</span> <span class="n">val</span>
+            <span class="p">)</span>
+
+    <span class="c1"># Check spatial drift correction separately:</span>
+    <span class="n">drift_per_val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span>
+        <span class="n">mdict</span><span class="p">,</span>
+        <span class="p">[</span><span class="o">*</span><span class="n">base</span><span class="p">,</span> <span class="s2">&quot;Acquisition&quot;</span><span class="p">,</span> <span class="s2">&quot;Artefact Correction&quot;</span><span class="p">,</span> <span class="s2">&quot;Spatial Drift&quot;</span><span class="p">,</span> <span class="s2">&quot;Periodicity&quot;</span><span class="p">],</span>
+    <span class="p">)</span>
+    <span class="n">drift_unit_val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span>
+        <span class="n">mdict</span><span class="p">,</span>
+        <span class="p">[</span><span class="o">*</span><span class="n">base</span><span class="p">,</span> <span class="s2">&quot;Acquisition&quot;</span><span class="p">,</span> <span class="s2">&quot;Artefact Correction&quot;</span><span class="p">,</span> <span class="s2">&quot;Spatial Drift&quot;</span><span class="p">,</span> <span class="s2">&quot;Units&quot;</span><span class="p">],</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">drift_per_val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">drift_unit_val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">val_to_set</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Spatial drift correction every </span><span class="si">{</span><span class="n">drift_per_val</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">drift_unit_val</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="c1"># make sure statement looks gramatically correct</span>
+        <span class="k">if</span> <span class="n">drift_per_val</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">val_to_set</span> <span class="o">=</span> <span class="n">val_to_set</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;(s)&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">val_to_set</span> <span class="o">=</span> <span class="n">val_to_set</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;(s)&quot;</span><span class="p">,</span> <span class="s2">&quot;s&quot;</span><span class="p">)</span>
+        <span class="c1"># fix for &quot;seconds(s)&quot; (*********...)</span>
+        <span class="k">if</span> <span class="n">val_to_set</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span> <span class="o">==</span> <span class="s2">&quot;ss&quot;</span><span class="p">:</span>
+            <span class="n">val_to_set</span> <span class="o">=</span> <span class="n">val_to_set</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">set_nested_dict_value</span><span class="p">(</span>
+            <span class="n">mdict</span><span class="p">,</span>
+            <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="s2">&quot;Spectrum Imaging&quot;</span><span class="p">,</span> <span class="s2">&quot;Artefact Correction&quot;</span><span class="p">],</span>
+            <span class="n">val_to_set</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="n">start_val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="o">*</span><span class="n">base</span><span class="p">,</span> <span class="s2">&quot;Acquisition&quot;</span><span class="p">,</span> <span class="s2">&quot;Start time&quot;</span><span class="p">])</span>
+    <span class="n">end_val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="o">*</span><span class="n">base</span><span class="p">,</span> <span class="s2">&quot;Acquisition&quot;</span><span class="p">,</span> <span class="s2">&quot;End time&quot;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">start_val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">end_val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">start_dt</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">start_val</span><span class="p">,</span> <span class="s2">&quot;%I:%M:%S %p&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">UTC</span><span class="p">)</span>
+        <span class="n">end_dt</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">end_val</span><span class="p">,</span> <span class="s2">&quot;%I:%M:%S %p&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">UTC</span><span class="p">)</span>
+        <span class="n">duration</span> <span class="o">=</span> <span class="p">(</span><span class="n">end_dt</span> <span class="o">-</span> <span class="n">start_dt</span><span class="p">)</span><span class="o">.</span><span class="n">seconds</span>  <span class="c1"># Calculate acquisition duration</span>
+        <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+            <span class="n">duration</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">duration</span><span class="p">,</span> <span class="s2">&quot;second&quot;</span><span class="p">)</span>
+        <span class="n">set_nested_dict_value</span><span class="p">(</span>
+            <span class="n">mdict</span><span class="p">,</span>
+            <span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">,</span> <span class="s2">&quot;Spectrum Imaging&quot;</span><span class="p">,</span> <span class="s2">&quot;Acquisition Duration&quot;</span><span class="p">],</span>
+            <span class="n">duration</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="c1"># Set the dataset type to SpectrumImage if it is already a Spectrum ( otherwise it&#39;s</span>
+    <span class="c1"># just a STEM image) and any Spectrum Imaging tags were added</span>
+    <span class="k">if</span> <span class="p">(</span>
+        <span class="s2">&quot;Spectrum Imaging&quot;</span> <span class="ow">in</span> <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">]</span>
+        <span class="ow">and</span> <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;DatasetType&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Spectrum&quot;</span>
+    <span class="p">):</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s2">&quot;Detected file as SpectrumImage type based on &quot;</span>
+            <span class="s2">&quot;presence of spectral metadata and spectrum imaging &quot;</span>
+            <span class="s2">&quot;info&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;DatasetType&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;SpectrumImage&quot;</span>
+        <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;Data Type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Spectrum_Imaging&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;EELS&quot;</span> <span class="ow">in</span> <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">]:</span>
+            <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;Data Type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;EELS_Spectrum_Imaging&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;EDS&quot;</span> <span class="ow">in</span> <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">]:</span>
+            <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">][</span><span class="s2">&quot;Data Type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;EDS_Spectrum_Imaging&quot;</span>
+
+    <span class="k">return</span> <span class="n">mdict</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_parse_stage_position</span><span class="p">(</span><span class="n">tecnai_info</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parse stage position from Tecnai metadata.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    tecnai_info : list</span>
+<span class="sd">        Split metadata strings</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict</span>
+<span class="sd">        Dictionary with stage position x, y, z, theta, phi values</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">tmp</span> <span class="o">=</span> <span class="n">_find_val</span><span class="p">(</span><span class="s2">&quot;Stage &quot;</span><span class="p">,</span> <span class="n">tecnai_info</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+    <span class="n">tmp</span> <span class="o">=</span> <span class="p">[</span><span class="n">_try_decimal</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot; umdeg&quot;</span><span class="p">))</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tmp</span><span class="p">]</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;Stage_Position_x&quot;</span><span class="p">:</span> <span class="n">tmp</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="s2">&quot;Stage_Position_y&quot;</span><span class="p">:</span> <span class="n">tmp</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+        <span class="s2">&quot;Stage_Position_z&quot;</span><span class="p">:</span> <span class="n">tmp</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+        <span class="s2">&quot;Stage_Position_theta&quot;</span><span class="p">:</span> <span class="n">tmp</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
+        <span class="s2">&quot;Stage_Position_phi&quot;</span><span class="p">:</span> <span class="n">tmp</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span>
+    <span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_parse_apertures</span><span class="p">(</span><span class="n">tecnai_info</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parse aperture settings from Tecnai metadata.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    tecnai_info : list</span>
+<span class="sd">        Split metadata strings</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict</span>
+<span class="sd">        Dictionary with C1, C2, Obj, and SA aperture values</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_read_aperture</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">tecnai_info_</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test if aperture has value or is retracted.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">_find_val</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">tecnai_info_</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot; um&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">AttributeError</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;C1_Aperture&quot;</span><span class="p">:</span> <span class="n">_read_aperture</span><span class="p">(</span><span class="s2">&quot;C1 Aperture: &quot;</span><span class="p">,</span> <span class="n">tecnai_info</span><span class="p">),</span>
+        <span class="s2">&quot;C2_Aperture&quot;</span><span class="p">:</span> <span class="n">_read_aperture</span><span class="p">(</span><span class="s2">&quot;C2 Aperture: &quot;</span><span class="p">,</span> <span class="n">tecnai_info</span><span class="p">),</span>
+        <span class="s2">&quot;Obj_Aperture&quot;</span><span class="p">:</span> <span class="n">_read_aperture</span><span class="p">(</span><span class="s2">&quot;OBJ Aperture: &quot;</span><span class="p">,</span> <span class="n">tecnai_info</span><span class="p">),</span>
+        <span class="s2">&quot;SA_Aperture&quot;</span><span class="p">:</span> <span class="n">_read_aperture</span><span class="p">(</span><span class="s2">&quot;SA Aperture: &quot;</span><span class="p">,</span> <span class="n">tecnai_info</span><span class="p">),</span>
+    <span class="p">}</span>
+
+
+<div class="viewcode-block" id="process_tecnai_microscope_info">
+<a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.digital_micrograph.html#nexusLIMS.extractors.plugins.digital_micrograph.process_tecnai_microscope_info">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">process_tecnai_microscope_info</span><span class="p">(</span>
+    <span class="n">microscope_info</span><span class="p">,</span>
+    <span class="n">delimiter</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\u2028</span><span class="s2">&quot;</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Process the Microscope_Info metadata string into a dictionary of key-value pairs.</span>
+
+<span class="sd">    This method is only relevant for FEI Titan TEMs that write additional metadata into</span>
+<span class="sd">    a unicode-delimited string at a certain place in the DM3 tag structure</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    microscope_info : str</span>
+<span class="sd">        The string of data obtained from the Tecnai.Microscope_Info leaf of the metadata</span>
+<span class="sd">    delimiter : str</span>
+<span class="sd">        The value (a unicode string) used to split the ``microscope_info`` string.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    info_dict : dict</span>
+<span class="sd">        The information contained in the string, in a more easily-digestible form.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">info_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">tecnai_info</span> <span class="o">=</span> <span class="n">microscope_info</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">delimiter</span><span class="p">)</span>
+    <span class="n">info_dict</span><span class="p">[</span><span class="s2">&quot;Microscope_Name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_find_val</span><span class="p">(</span><span class="s2">&quot;Microscope &quot;</span><span class="p">,</span> <span class="n">tecnai_info</span><span class="p">)</span>  <span class="c1"># String</span>
+    <span class="n">info_dict</span><span class="p">[</span><span class="s2">&quot;User&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_find_val</span><span class="p">(</span><span class="s2">&quot;User &quot;</span><span class="p">,</span> <span class="n">tecnai_info</span><span class="p">)</span>  <span class="c1"># String</span>
+
+    <span class="n">tmp</span> <span class="o">=</span> <span class="n">_find_val</span><span class="p">(</span><span class="s2">&quot;Gun &quot;</span><span class="p">,</span> <span class="n">tecnai_info</span><span class="p">)</span>
+    <span class="n">info_dict</span><span class="p">[</span><span class="s2">&quot;Gun_Name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[:</span> <span class="n">tmp</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot; Extr volt&quot;</span><span class="p">)]</span>
+    <span class="n">tmp</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[</span><span class="n">tmp</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">info_dict</span><span class="p">[</span><span class="s2">&quot;Gun_Name&quot;</span><span class="p">])</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">info_dict</span><span class="p">[</span><span class="s2">&quot;Gun_Name&quot;</span><span class="p">])</span> <span class="p">:]</span>  <span class="c1"># String</span>
+
+    <span class="n">tmp</span> <span class="o">=</span> <span class="n">tmp</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;Extr volt &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">info_dict</span><span class="p">[</span><span class="s2">&quot;Extractor_Voltage&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">tmp</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>  <span class="c1"># Integer (volts)</span>
+
+    <span class="n">tmp</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[</span><span class="n">tmp</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;Gun Lens &quot;</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="s2">&quot;Gun Lens &quot;</span><span class="p">)</span> <span class="p">:]</span>
+    <span class="n">info_dict</span><span class="p">[</span><span class="s2">&quot;Gun_Lens_No&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">tmp</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>  <span class="c1"># Integer</span>
+
+    <span class="n">tmp</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[</span><span class="n">tmp</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;Emission &quot;</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="s2">&quot;Emission &quot;</span><span class="p">)</span> <span class="p">:]</span>
+    <span class="n">info_dict</span><span class="p">[</span><span class="s2">&quot;Emission_Current&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_try_decimal</span><span class="p">(</span><span class="n">tmp</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;uA&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>  <span class="c1"># Decimal (microA)</span>
+
+    <span class="n">tmp</span> <span class="o">=</span> <span class="n">_find_val</span><span class="p">(</span><span class="s2">&quot;Mode &quot;</span><span class="p">,</span> <span class="n">tecnai_info</span><span class="p">)</span>
+    <span class="n">info_dict</span><span class="p">[</span><span class="s2">&quot;Mode&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[:</span> <span class="n">tmp</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot; Defocus&quot;</span><span class="p">)]</span>  <span class="c1"># String</span>
+    <span class="c1"># &#39;Mode&#39; should be five terms long, and the last term is either &#39;Image&#39;,</span>
+    <span class="c1"># &#39;Diffraction&#39;, (or maybe something else)</span>
+
+    <span class="c1"># Decimal val (micrometer)</span>
+    <span class="k">if</span> <span class="s2">&quot;Magn &quot;</span> <span class="ow">in</span> <span class="n">tmp</span><span class="p">:</span>  <span class="c1"># Imaging mode</span>
+        <span class="n">info_dict</span><span class="p">[</span><span class="s2">&quot;Defocus&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_try_decimal</span><span class="p">(</span><span class="n">tmp</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;Defocus (um) &quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">elif</span> <span class="s2">&quot;CL &quot;</span> <span class="ow">in</span> <span class="n">tmp</span><span class="p">:</span>  <span class="c1"># Diffraction mode</span>
+        <span class="n">info_dict</span><span class="p">[</span><span class="s2">&quot;Defocus&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_try_decimal</span><span class="p">(</span><span class="n">tmp</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;Defocus &quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="c1"># This value changes based on whether in image or diffraction mode (mag or CL)</span>
+    <span class="c1"># Integer</span>
+    <span class="k">if</span> <span class="n">info_dict</span><span class="p">[</span><span class="s2">&quot;Mode&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Image&quot;</span><span class="p">:</span>
+        <span class="n">info_dict</span><span class="p">[</span><span class="s2">&quot;Magnification&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">tmp</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;Magn &quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">))</span>
+    <span class="c1"># Decimal</span>
+    <span class="k">elif</span> <span class="n">info_dict</span><span class="p">[</span><span class="s2">&quot;Mode&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Diffraction&quot;</span><span class="p">:</span>
+        <span class="n">info_dict</span><span class="p">[</span><span class="s2">&quot;Camera_Length&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_try_decimal</span><span class="p">(</span><span class="n">tmp</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;CL &quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;m&quot;</span><span class="p">))</span>
+
+    <span class="c1"># Integer (1 to 5)</span>
+    <span class="n">info_dict</span><span class="p">[</span><span class="s2">&quot;Spot&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">_find_val</span><span class="p">(</span><span class="s2">&quot;Spot &quot;</span><span class="p">,</span> <span class="n">tecnai_info</span><span class="p">))</span>
+
+    <span class="c1"># Decimals - Lens strengths expressed as a &quot;%&quot; value</span>
+    <span class="n">info_dict</span><span class="p">[</span><span class="s2">&quot;C2_Strength&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_try_decimal</span><span class="p">(</span><span class="n">_find_val</span><span class="p">(</span><span class="s2">&quot;C2 &quot;</span><span class="p">,</span> <span class="n">tecnai_info</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;%&quot;</span><span class="p">))</span>
+    <span class="n">info_dict</span><span class="p">[</span><span class="s2">&quot;C3_Strength&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_try_decimal</span><span class="p">(</span><span class="n">_find_val</span><span class="p">(</span><span class="s2">&quot;C3 &quot;</span><span class="p">,</span> <span class="n">tecnai_info</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;%&quot;</span><span class="p">))</span>
+    <span class="n">info_dict</span><span class="p">[</span><span class="s2">&quot;Obj_Strength&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_try_decimal</span><span class="p">(</span><span class="n">_find_val</span><span class="p">(</span><span class="s2">&quot;Obj &quot;</span><span class="p">,</span> <span class="n">tecnai_info</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;%&quot;</span><span class="p">))</span>
+    <span class="n">info_dict</span><span class="p">[</span><span class="s2">&quot;Dif_Strength&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_try_decimal</span><span class="p">(</span><span class="n">_find_val</span><span class="p">(</span><span class="s2">&quot;Dif &quot;</span><span class="p">,</span> <span class="n">tecnai_info</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;%&quot;</span><span class="p">))</span>
+
+    <span class="c1"># Decimal values (micrometers)</span>
+    <span class="n">tmp</span> <span class="o">=</span> <span class="n">_find_val</span><span class="p">(</span><span class="s2">&quot;Image shift &quot;</span><span class="p">,</span> <span class="n">tecnai_info</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;um&quot;</span><span class="p">)</span>
+    <span class="n">info_dict</span><span class="p">[</span><span class="s2">&quot;Image_Shift_x&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_try_decimal</span><span class="p">(</span><span class="n">tmp</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">info_dict</span><span class="p">[</span><span class="s2">&quot;Image_Shift_y&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_try_decimal</span><span class="p">(</span><span class="n">tmp</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="c1"># Parse stage position and apertures using helper functions</span>
+    <span class="n">info_dict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">_parse_stage_position</span><span class="p">(</span><span class="n">tecnai_info</span><span class="p">))</span>
+    <span class="n">info_dict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">_parse_apertures</span><span class="p">(</span><span class="n">tecnai_info</span><span class="p">))</span>
+
+    <span class="c1"># Nested dictionary</span>
+    <span class="n">info_dict</span> <span class="o">=</span> <span class="n">_parse_filter_settings</span><span class="p">(</span><span class="n">info_dict</span><span class="p">,</span> <span class="n">tecnai_info</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">_parse_filter_settings</span><span class="p">(</span><span class="n">info_dict</span><span class="p">,</span> <span class="n">tecnai_info</span><span class="p">)</span></div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2025 - 2026, datasophos, LLC.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
