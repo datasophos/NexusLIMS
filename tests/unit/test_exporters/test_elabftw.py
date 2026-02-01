@@ -14,6 +14,7 @@ from nexusLIMS.utils.elabftw import (
     ELabFTWClient,
     ELabFTWError,
     ELabFTWNotFoundError,
+    State,
     get_elabftw_client,
 )
 
@@ -83,6 +84,45 @@ def export_context(tmp_path):
 
 
 # ============================================================================
+# TestState - State enum tests
+# ============================================================================
+
+
+class TestState:
+    """Test eLabFTW State enumeration."""
+
+    def test_state_values(self):
+        """Test that State enum has correct integer values."""
+        assert State.Normal == 1
+        assert State.Archived == 2
+        assert State.Deleted == 3
+        assert State.Pending == 4
+        assert State.Processing == 5
+        assert State.Error == 6
+
+    def test_state_names(self):
+        """Test that State enum has correct names."""
+        assert State(1).name == "Normal"
+        assert State(2).name == "Archived"
+        assert State(3).name == "Deleted"
+        assert State(4).name == "Pending"
+        assert State(5).name == "Processing"
+        assert State(6).name == "Error"
+
+    def test_state_is_int_enum(self):
+        """Test that State values can be used as integers."""
+        # IntEnum members can be compared with integers
+        assert State.Normal == 1
+        assert State.Normal < 2
+        assert State.Error > State.Normal
+
+    def test_state_invalid_value(self):
+        """Test that invalid state values raise ValueError."""
+        with pytest.raises(ValueError):
+            State(99)
+
+
+# ============================================================================
 # TestELabFTWClient - Low-level API client tests
 # ============================================================================
 
@@ -124,13 +164,14 @@ class TestELabFTWClient:
     def test_create_experiment_minimal(self, client, mock_response):
         """Test creating experiment with only title."""
         with patch("nexusLIMS.utils.elabftw.nexus_req") as mock_req:
-            mock_req.return_value = mock_response(
-                status_code=HTTPStatus.CREATED, json_data={"id": 42, "title": "Test"}
-            )
+            response = mock_response(status_code=HTTPStatus.CREATED)
+            response.headers = {"Location": "https://elab.example.com/api/v2/experiments/42"}
+            mock_req.return_value = response
 
             result = client.create_experiment(title="Test Experiment")
 
             assert result["id"] == 42
+            assert result["location"] == "https://elab.example.com/api/v2/experiments/42"
             mock_req.assert_called_once()
             args, kwargs = mock_req.call_args
             # nexus_req signature: nexus_req(url, method, ...)
@@ -141,9 +182,9 @@ class TestELabFTWClient:
     def test_create_experiment_with_all_fields(self, client, mock_response):
         """Test creating experiment with all optional fields."""
         with patch("nexusLIMS.utils.elabftw.nexus_req") as mock_req:
-            mock_req.return_value = mock_response(
-                status_code=HTTPStatus.CREATED, json_data={"id": 42}
-            )
+            response = mock_response(status_code=HTTPStatus.CREATED)
+            response.headers = {"Location": "https://elab.example.com/api/v2/experiments/42"}
+            mock_req.return_value = response
 
             result = client.create_experiment(
                 title="Full Test",
@@ -167,9 +208,9 @@ class TestELabFTWClient:
     def test_create_experiment_with_empty_tags(self, client, mock_response):
         """Test creating experiment with empty tag list."""
         with patch("nexusLIMS.utils.elabftw.nexus_req") as mock_req:
-            mock_req.return_value = mock_response(
-                status_code=HTTPStatus.CREATED, json_data={"id": 42}
-            )
+            response = mock_response(status_code=HTTPStatus.CREATED)
+            response.headers = {"Location": "https://elab.example.com/api/v2/experiments/42"}
+            mock_req.return_value = response
 
             client.create_experiment(title="Test", tags=[])
 
@@ -211,14 +252,17 @@ class TestELabFTWClient:
             # Verify the original exception is chained
             assert isinstance(exc_info.value.__cause__, ConnectionError)
 
-    def test_create_experiment_json_parse_error(self, client, mock_response):
-        """Test JSON parse error raises ELabFTWError."""
+    def test_create_experiment_missing_location_header(self, client, mock_response):
+        """Test 201 response without Location header raises ELabFTWError."""
         with patch("nexusLIMS.utils.elabftw.nexus_req") as mock_req:
             response = mock_response(status_code=HTTPStatus.CREATED)
-            response.json.side_effect = ValueError("Invalid JSON")
+            response.headers = {}  # No Location header
+            response.json.side_effect = ValueError("No JSON body")
             mock_req.return_value = response
 
-            with pytest.raises(ELabFTWError, match="Failed to parse response JSON"):
+            with pytest.raises(
+                ELabFTWError, match="201 Created response missing Location header"
+            ):
                 client.create_experiment(title="Test")
 
     # ------------------------------------------------------------------------
@@ -422,14 +466,16 @@ class TestELabFTWClient:
         test_file.write_text("<data>test</data>")
 
         with patch("nexusLIMS.utils.elabftw.nexus_req") as mock_req:
-            mock_req.return_value = mock_response(
-                status_code=HTTPStatus.CREATED,
-                json_data={"id": 1, "filename": "test_data.xml"},
-            )
+            response = mock_response(status_code=HTTPStatus.CREATED)
+            response.headers = {
+                "Location": "https://elab.example.com/api/v2/experiments/42/uploads/1"
+            }
+            mock_req.return_value = response
 
             result = client.upload_file_to_experiment(42, test_file)
 
-            assert result["filename"] == "test_data.xml"
+            assert result["id"] == 1
+            assert result["location"] == "https://elab.example.com/api/v2/experiments/42/uploads/1"
             mock_req.assert_called_once()
             args, kwargs = mock_req.call_args
             assert args[0] == "https://elab.example.com/api/v2/experiments/42/uploads"
@@ -442,9 +488,11 @@ class TestELabFTWClient:
         test_file.write_text("<data>test</data>")
 
         with patch("nexusLIMS.utils.elabftw.nexus_req") as mock_req:
-            mock_req.return_value = mock_response(
-                status_code=HTTPStatus.CREATED, json_data={"id": 1}
-            )
+            response = mock_response(status_code=HTTPStatus.CREATED)
+            response.headers = {
+                "Location": "https://elab.example.com/api/v2/experiments/42/uploads/1"
+            }
+            mock_req.return_value = response
 
             client.upload_file_to_experiment(
                 42, test_file, comment="NexusLIMS XML record"
@@ -459,9 +507,11 @@ class TestELabFTWClient:
         test_file.write_text("<data>test</data>")
 
         with patch("nexusLIMS.utils.elabftw.nexus_req") as mock_req:
-            mock_req.return_value = mock_response(
-                status_code=HTTPStatus.CREATED, json_data={"id": 1}
-            )
+            response = mock_response(status_code=HTTPStatus.CREATED)
+            response.headers = {
+                "Location": "https://elab.example.com/api/v2/experiments/42/uploads/1"
+            }
+            mock_req.return_value = response
 
             client.upload_file_to_experiment(42, test_file)
 
@@ -494,14 +544,17 @@ class TestELabFTWClient:
         test_file.write_text("<data>test</data>")
 
         with patch("nexusLIMS.utils.elabftw.nexus_req") as mock_req:
-            mock_req.return_value = mock_response(
-                status_code=HTTPStatus.CREATED, json_data={"id": 1}
-            )
+            response = mock_response(status_code=HTTPStatus.CREATED)
+            response.headers = {
+                "Location": "https://elab.example.com/api/v2/experiments/42/uploads/1"
+            }
+            mock_req.return_value = response
 
             # Pass as string instead of Path
             result = client.upload_file_to_experiment(42, str(test_file))
 
             assert result["id"] == 1
+            assert result["location"] == "https://elab.example.com/api/v2/experiments/42/uploads/1"
 
     def test_upload_file_auth_error(self, client, tmp_path, mock_response):
         """Test upload raises auth error on 401."""

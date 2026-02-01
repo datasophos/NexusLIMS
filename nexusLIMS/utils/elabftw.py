@@ -19,6 +19,7 @@ Example usage:
 """
 
 import logging
+from enum import IntEnum
 from http import HTTPStatus
 from pathlib import Path
 from typing import Any
@@ -39,6 +40,36 @@ class ELabFTWAuthenticationError(ELabFTWError):
 
 class ELabFTWNotFoundError(ELabFTWError):
     """Requested resource not found (404)."""
+
+
+class State(IntEnum):
+    """eLabFTW experiment state enumeration.
+
+    These states represent the lifecycle status of experiments in eLabFTW.
+    Values correspond to the eLabFTW database schema.
+
+    Attributes
+    ----------
+    Normal : int
+        Standard active experiment (value: 1)
+    Archived : int
+        Experiment has been archived (value: 2)
+    Deleted : int
+        Experiment has been soft-deleted (value: 3)
+    Pending : int
+        Experiment is pending approval or processing (value: 4)
+    Processing : int
+        Experiment is currently being processed (value: 5)
+    Error : int
+        Experiment encountered an error state (value: 6)
+    """
+
+    Normal = 1
+    Archived = 2
+    Deleted = 3
+    Pending = 4
+    Processing = 5
+    Error = 6
 
 
 class ELabFTWClient:
@@ -145,7 +176,28 @@ class ELabFTWClient:
             # No Content - successful delete
             return None
 
-        if response.status_code in (HTTPStatus.OK, HTTPStatus.CREATED):
+        if response.status_code == HTTPStatus.CREATED:
+            # Created - eLabFTW returns Location header with experiment URL
+            # Response body is typically empty
+            location = response.headers.get("Location")
+            if location:
+                # Extract experiment ID by removing the endpoint URL
+                # E.g., "http://host/api/v2/experiments/123" -> "123"
+                try:
+                    id_str = location.replace(url + "/", "").rstrip("/")
+                    experiment_id = int(id_str)
+                    return {"id": experiment_id, "location": location}
+                except ValueError as e:
+                    msg = f"Failed to parse experiment ID from Location header: {location}"
+                    raise ELabFTWError(msg) from e
+            # Fallback: try to parse JSON response (in case API behavior changes)
+            try:
+                return response.json()
+            except Exception:
+                msg = "201 Created response missing Location header and JSON body"
+                raise ELabFTWError(msg) from None
+
+        if response.status_code == HTTPStatus.OK:
             # Success with JSON response - wrap JSON parsing exceptions
             try:
                 return response.json()
@@ -510,7 +562,23 @@ class ELabFTWClient:
                 _logger.info(
                     "Uploaded %s to experiment %s", file_path.name, experiment_id
                 )
-                return response.json()
+                # eLabFTW returns Location header with upload URL
+                location = response.headers.get("Location")
+                if location:
+                    # Extract upload ID from URL
+                    try:
+                        id_str = location.replace(url + "/", "").rstrip("/")
+                        upload_id = int(id_str)
+                        return {"id": upload_id, "location": location}
+                    except ValueError as e:
+                        msg = f"Failed to parse upload ID from Location header: {location}"
+                        raise ELabFTWError(msg) from e
+                # Fallback: try to parse JSON response
+                try:
+                    return response.json()
+                except Exception:
+                    msg = "201 Created response missing Location header and JSON body"
+                    raise ELabFTWError(msg) from None
 
             if response.status_code == HTTPStatus.UNAUTHORIZED:
                 msg = "Authentication failed - check API key"

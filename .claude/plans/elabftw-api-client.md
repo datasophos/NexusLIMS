@@ -13,7 +13,7 @@
 | 3. Export Plugin | ✅ **Complete** | `nexusLIMS/exporters/destinations/elabftw.py` | Export destination with markdown body and XML attachment |
 | 4. Unit Tests | ✅ **Complete** | `tests/unit/test_exporters/test_elabftw.py` | 76 tests, 99% coverage |
 | 5. Docker Stack | ✅ **Complete** | `tests/integration/docker/*` | MySQL + eLabFTW + Caddy configured |
-| 6. Integration Tests | 🟡 In Progress | `tests/integration/test_elabftw_integration.py` | Skeleton with smoke tests |
+| 6. Integration Tests | ✅ **Complete** | `tests/integration/test_elabftw_integration.py` | 3 test classes, 17 comprehensive tests |
 | 7. Documentation | ❌ Not Started | User guide, changelog | Configuration docs needed |
 | 8. Validation | ❌ Not Started | End-to-end testing | Awaits implementation |
 
@@ -32,6 +32,7 @@
 - [x] **API Client** - Implemented `nexusLIMS/utils/elabftw.py` with full CRUD operations (create, read, list, update, delete experiments) and file upload functionality
 - [x] **Export Plugin** - Implemented `nexusLIMS/exporters/destinations/elabftw.py` with markdown body generation, CDCS cross-linking, and XML attachment upload
 - [x] **Unit Tests** - Implemented 76 comprehensive tests in `tests/unit/test_exporters/test_elabftw.py` with 99% code coverage (100% for API client, 97% for export plugin)
+- [x] **Integration Tests** - Implemented 17 comprehensive tests in `tests/integration/test_elabftw_integration.py` covering API client CRUD, export workflow, file uploads, CDCS cross-linking, database logging, and multi-destination export
 
 ### Next Steps 🎯
 
@@ -39,14 +40,14 @@
 2. ~~**Implement API Client**~~ ✅ - ~~Create `nexusLIMS/utils/elabftw.py` with CRUD methods~~
 3. ~~**Implement Export Plugin**~~ ✅ - ~~Create `nexusLIMS/exporters/destinations/elabftw.py`~~
 4. ~~**Write Unit Tests**~~ ✅ - ~~76 tests with 99% coverage~~
-5. **Complete Integration Tests** - Add full workflow tests to existing skeleton
+5. ~~**Complete Integration Tests**~~ ✅ - ~~17 comprehensive tests covering all functionality~~
 6. **Update Documentation** - User guide, changelog fragments
 
 ### Estimated Remaining Work
 
 - **Total planned**: 17-26 hours
-- **Completed**: ~14.5-19.5 hours (Docker + config + API client + export plugin + unit tests)
-- **Remaining**: ~2.5-6.5 hours (integration tests + documentation)
+- **Completed**: ~17.5-23.5 hours (Docker + config + API client + export plugin + unit tests + integration tests)
+- **Remaining**: ~1-2 hours (documentation only)
 
 ---
 

@@ -10,8 +10,22 @@ These tests run against a real eLabFTW instance in Docker and verify:
 Requires: docker compose up -d (in tests/integration/docker/)
 """
 
+from datetime import datetime
+from pathlib import Path
+
 import pytest
 import requests
+from sqlmodel import Session as DBSession
+from sqlmodel import select
+
+from nexusLIMS.db.models import UploadLog
+from nexusLIMS.exporters.base import ExportContext, ExportResult
+from nexusLIMS.exporters.destinations.elabftw import ELabFTWDestination
+from nexusLIMS.utils.elabftw import (
+    ELabFTWAuthenticationError,
+    ELabFTWClient,
+    State,
+)
 
 # eLabFTW service URL (via Caddy proxy)
 ELABFTW_URL = "http://elabftw.localhost:40080"
@@ -20,11 +34,92 @@ ELABFTW_URL = "http://elabftw.localhost:40080"
 ELABFTW_API_KEY = "1-" + "a" * 84
 
 
+# ============================================================================
+# Test Fixtures
+# ============================================================================
+
+
+@pytest.fixture
+def elabftw_client(docker_services) -> ELabFTWClient:
+    """Create eLabFTW client for integration tests.
+
+    Parameters
+    ----------
+    docker_services : None
+        Ensures Docker services (including eLabFTW) are running
+
+    Returns
+    -------
+    ELabFTWClient
+        Configured eLabFTW client instance
+    """
+    return ELabFTWClient(base_url=ELABFTW_URL, api_key=ELABFTW_API_KEY)
+
+
+@pytest.fixture
+def sample_xml_file(tmp_path):
+    """Create sample XML record for testing."""
+    xml_file = tmp_path / "integration_test_record.xml"
+    xml_content = """<?xml version="1.0" encoding="UTF-8"?>
+<record>
+    <session>integration-test-session</session>
+    <instrument>FEI-Titan-TEM</instrument>
+    <data>Integration test experiment data</data>
+</record>"""
+    xml_file.write_text(xml_content)
+    return xml_file
+
+
+@pytest.fixture
+def export_context_elabftw(sample_xml_file, docker_services, monkeypatch):
+    """Create ExportContext for eLabFTW export tests.
+
+    Parameters
+    ----------
+    sample_xml_file : Path
+        Path to sample XML file for testing
+    docker_services : None
+        Ensures Docker services (including eLabFTW) are running
+    monkeypatch : pytest.MonkeyPatch
+        Pytest monkeypatch fixture
+
+    Returns
+    -------
+    ExportContext
+        Configured export context for eLabFTW testing
+    """
+    # Configure eLabFTW settings
+    monkeypatch.setenv("NX_ELABFTW_URL", ELABFTW_URL)
+    monkeypatch.setenv("NX_ELABFTW_API_KEY", ELABFTW_API_KEY)
+
+    # Refresh settings to pick up environment variables
+    from nexusLIMS.config import refresh_settings
+
+    refresh_settings()
+
+    # Create export context
+    context = ExportContext(
+        xml_file_path=sample_xml_file,
+        session_identifier="integration-test-2025-01-27",
+        instrument_pid="FEI-Titan-TEM-012345",
+        dt_from=datetime(2025, 1, 27, 10, 30, 15),
+        dt_to=datetime(2025, 1, 27, 14, 45, 0),
+        user="integration_test_user",
+    )
+
+    return context
+
+
+# ============================================================================
+# Docker Stack Smoke Tests
+# ============================================================================
+
+
 @pytest.mark.integration
 class TestELabFTWDockerStack:
     """Smoke tests for eLabFTW Docker stack setup."""
 
-    def test_elabftw_api_accessible(self):
+    def test_elabftw_api_accessible(self, docker_services):
         """Test that eLabFTW API is accessible."""
         response = requests.get(
             f"{ELABFTW_URL}/api/v2/experiments",
@@ -37,7 +132,7 @@ class TestELabFTWDockerStack:
         data = response.json()
         assert isinstance(data, list)
 
-    def test_elabftw_api_authentication(self):
+    def test_elabftw_api_authentication(self, docker_services):
         """Test that API authentication works."""
         # Test with valid key
         response = requests.get(
@@ -55,7 +150,7 @@ class TestELabFTWDockerStack:
         )
         assert response.status_code in {401, 403}
 
-    def test_can_create_experiment(self):
+    def test_can_create_experiment(self, docker_services):
         """Test creating an experiment via API."""
         response = requests.post(
             f"{ELABFTW_URL}/api/v2/experiments",
@@ -68,3 +163,425 @@ class TestELabFTWDockerStack:
         if response.text:
             data = response.json()
             assert "id" in data
+
+
+# ============================================================================
+# API Client Integration Tests
+# ============================================================================
+
+
+@pytest.mark.integration
+class TestELabFTWClientIntegration:
+    """Integration tests for ELabFTWClient with real API."""
+
+    def test_create_and_get_experiment(self, elabftw_client: ELabFTWClient):
+        """Test creating experiment and retrieving it."""
+        # Create experiment
+        result = elabftw_client.create_experiment(
+            title="Integration Test - Create and Get",
+            body="Testing create and retrieve operations",
+        )
+
+        assert "id" in result
+        experiment_id = result["id"]
+
+        # Retrieve experiment
+        retrieved = elabftw_client.get_experiment(experiment_id)
+        assert retrieved["id"] == experiment_id
+        assert retrieved["title"] == "Integration Test - Create and Get"
+        assert "Testing create and retrieve" in retrieved["body"]
+
+        # Cleanup
+        elabftw_client.delete_experiment(experiment_id)
+
+    def test_list_experiments(self, elabftw_client: ELabFTWClient):
+        """Test listing experiments with pagination."""
+        # Create a few experiments
+        created_ids = []
+        for i in range(3):
+            result = elabftw_client.create_experiment(
+                title=f"Integration Test - List {i}",
+                body=f"Test experiment {i} for listing",
+            )
+            created_ids.append(result["id"])
+
+        # List all experiments
+        experiments = elabftw_client.list_experiments(limit=100)
+        assert len(experiments) >= 3
+
+        # Verify our created experiments are in the list
+        experiment_ids = {exp["id"] for exp in experiments}
+        for created_id in created_ids:
+            assert created_id in experiment_ids
+
+        # Test pagination with smaller limit
+        page1 = elabftw_client.list_experiments(limit=2, offset=0)
+        page2 = elabftw_client.list_experiments(limit=2, offset=2)
+        assert len(page1) <= 2
+        assert len(page2) <= 2
+
+        # Cleanup
+        for exp_id in created_ids:
+            elabftw_client.delete_experiment(exp_id)
+
+    def test_update_experiment(self, elabftw_client: ELabFTWClient):
+        """Test updating experiment fields."""
+        # Create experiment
+        result = elabftw_client.create_experiment(
+            title="Integration Test - Update Original",
+            body="Original body content",
+        )
+        experiment_id = result["id"]
+
+        # Update title and body
+        _ = elabftw_client.update_experiment(
+            experiment_id,
+            title="Integration Test - Update Modified",
+            body="Updated body content",
+        )
+
+        # Verify update
+        retrieved = elabftw_client.get_experiment(experiment_id)
+        assert retrieved["title"] == "Integration Test - Update Modified"
+        assert "Updated body content" in retrieved["body"]
+        assert retrieved["state"] == State.Normal
+
+        # Cleanup
+        elabftw_client.delete_experiment(experiment_id)
+
+    def test_delete_experiment(self, elabftw_client: ELabFTWClient):
+        """Test soft-deleting experiment."""
+        # Create experiment
+        result = elabftw_client.create_experiment(
+            title="Integration Test - Delete",
+            body="This will be deleted",
+        )
+        experiment_id = result["id"]
+
+        # Delete experiment
+        elabftw_client.delete_experiment(experiment_id)
+
+        # Verify deletion
+        record = elabftw_client.get_experiment(experiment_id)
+        assert record["state"] == State.Deleted
+
+    def test_upload_file(self, elabftw_client, tmp_path):
+        """Test uploading file to experiment."""
+        # Create experiment
+        result = elabftw_client.create_experiment(
+            title="Integration Test - File Upload",
+            body="Testing file upload",
+        )
+        experiment_id = result["id"]
+
+        # Create test file
+        test_file = tmp_path / "test_upload.txt"
+        test_file.write_text("Test file content for upload")
+
+        # Upload file
+        upload_result = elabftw_client.upload_file_to_experiment(
+            experiment_id, str(test_file), comment="Integration test file"
+        )
+
+        assert "id" in upload_result
+
+        # Retrieve experiment and verify file is attached
+        retrieved = elabftw_client.get_experiment(experiment_id)
+        assert "uploads" in retrieved
+        assert len(retrieved["uploads"]) > 0
+
+        # Cleanup
+        elabftw_client.delete_experiment(experiment_id)
+
+    def test_create_with_tags_and_metadata(self, elabftw_client: ELabFTWClient):
+        """Test creating experiment with tags and metadata."""
+        # Create experiment with tags and metadata
+        result = elabftw_client.create_experiment(
+            title="Integration Test - Tags and Metadata",
+            body="Testing tags and metadata",
+            tags="integration|test|nexuslims",
+            metadata={
+                "session_id": "test-session-123",
+                "instrument": "FEI-Titan-TEM",
+                "user": "testuser",
+            },
+        )
+
+        experiment_id = result["id"]
+
+        # Retrieve and verify
+        retrieved = elabftw_client.get_experiment(experiment_id)
+        assert retrieved["id"] == experiment_id
+
+        # Verify tags (eLabFTW returns tags as array or string)
+        tags_field = retrieved.get("tags", "")
+        if isinstance(tags_field, list):
+            tag_str = "|".join(t["tag"] for t in tags_field)
+        else:
+            tag_str = tags_field
+
+        # At least one of our tags should be present
+        assert any(
+            tag in tag_str for tag in ["integration", "test", "nexuslims"]
+        ), f"Expected tags not found in: {tag_str}"
+
+        # Verify metadata
+        metadata = retrieved.get("metadata", {})
+        if metadata:
+            # Metadata might be in different formats depending on eLabFTW version
+            metadata_str = str(metadata)
+            assert "test-session-123" in metadata_str or "session_id" in metadata_str
+
+        # Cleanup
+        elabftw_client.delete_experiment(experiment_id)
+
+    def test_authentication_error(self):
+        """Test that invalid credentials raise authentication error."""
+        bad_client = ELabFTWClient(
+            base_url=ELABFTW_URL, api_key="invalid-key-12345"
+        )
+
+        with pytest.raises(ELabFTWAuthenticationError):
+            bad_client.create_experiment(
+                title="Should Fail", body="Invalid credentials"
+            )
+
+
+# ============================================================================
+# Export Destination Integration Tests
+# ============================================================================
+
+
+@pytest.mark.integration
+class TestELabFTWDestinationIntegration:
+    """Integration tests for ELabFTWDestination export workflow."""
+
+    def test_export_creates_experiment(self, export_context_elabftw, elabftw_client: ELabFTWClient):
+        """Test export workflow creates experiment in eLabFTW."""
+        destination = ELabFTWDestination()
+
+        # Verify destination is enabled
+        assert destination.enabled is True
+
+        # Export record
+        result = destination.export(export_context_elabftw)
+
+        # Verify success
+        assert result.success is True
+        assert result.record_id is not None
+        assert result.record_url is not None
+
+        # Verify experiment was created
+        experiment_id = int(result.record_id)
+        experiment = elabftw_client.get_experiment(experiment_id)
+        assert experiment["id"] == experiment_id
+        assert "NexusLIMS" in experiment["title"]
+        assert "FEI-Titan-TEM" in experiment["title"]
+
+        # Cleanup
+        elabftw_client.delete_experiment(experiment_id)
+
+    def test_export_uploads_xml_attachment(self, export_context_elabftw, elabftw_client: ELabFTWClient):
+        """Test XML file attached to experiment."""
+        destination = ELabFTWDestination()
+
+        # Export record
+        result = destination.export(export_context_elabftw)
+        assert result.success is True
+
+        # Retrieve experiment and verify attachment
+        experiment_id = int(result.record_id)
+        experiment = elabftw_client.get_experiment(experiment_id)
+
+        assert "uploads" in experiment
+        assert len(experiment["uploads"]) > 0
+
+        # Find XML attachment
+        xml_upload = None
+        for upload in experiment["uploads"]:
+            if upload.get("real_name", "").endswith(".xml"):
+                xml_upload = upload
+                break
+
+        assert xml_upload is not None, "XML file not found in uploads"
+        assert "integration_test_record.xml" in xml_upload["real_name"]
+
+        # Cleanup
+        elabftw_client.delete_experiment(experiment_id)
+
+    def test_export_with_cdcs_crosslink(self, export_context_elabftw, elabftw_client: ELabFTWClient):
+        """Test CDCS URL appears in experiment body."""
+        destination = ELabFTWDestination()
+
+        # Add a mock CDCS result to the context
+        cdcs_result = ExportResult(
+            destination_name="cdcs",
+            success=True,
+            timestamp=datetime.now(),
+            record_id="test-cdcs-record-123",
+            record_url="http://cdcs.localhost:40080/data/test-cdcs-record-123",
+        )
+        export_context_elabftw._results["cdcs"] = cdcs_result
+
+        # Export record
+        result = destination.export(export_context_elabftw)
+        assert result.success is True
+
+        # Verify CDCS link in body
+        experiment_id = int(result.record_id)
+        experiment = elabftw_client.get_experiment(experiment_id)
+
+        body = experiment["body"]
+        assert "CDCS" in body or "cdcs" in body.lower()
+        assert "test-cdcs-record-123" in body or cdcs_result.record_url in body
+
+        # Cleanup
+        elabftw_client.delete_experiment(experiment_id)
+
+    def test_export_logs_to_database(
+        self, export_context_elabftw, elabftw_client, test_database
+    ):
+        """Test UploadLog entry created for export."""
+        from nexusLIMS.db.engine import get_engine
+
+        destination = ELabFTWDestination()
+
+        # Export record
+        result = destination.export(export_context_elabftw)
+        assert result.success is True
+
+        # Query UploadLog table
+        with DBSession(get_engine()) as db_session:
+            statement = select(UploadLog).where(
+                UploadLog.session_identifier
+                == export_context_elabftw.session_identifier
+            )
+            upload_logs = db_session.exec(statement).all()
+
+            # Should have at least one log entry
+            assert len(upload_logs) > 0
+
+            # Find eLabFTW log entry
+            elabftw_log = None
+            for log in upload_logs:
+                if log.destination == "elabftw":
+                    elabftw_log = log
+                    break
+
+            assert elabftw_log is not None, "eLabFTW upload log not found"
+            assert elabftw_log.success is True
+            assert elabftw_log.record_id == result.record_id
+
+        # Cleanup
+        elabftw_client.delete_experiment(int(result.record_id))
+
+    def test_export_handles_missing_xml_file(self, export_context_elabftw):
+        """Test export handles missing XML file gracefully."""
+        destination = ELabFTWDestination()
+
+        # Delete the XML file
+        export_context_elabftw.xml_file_path.unlink()
+
+        # Export should fail gracefully
+        result = destination.export(export_context_elabftw)
+
+        assert result.success is False
+        assert result.error_message is not None
+        assert "FileNotFoundError" in result.error_message or "No such file" in result.error_message
+
+    def test_validate_config_success(self, elabftw_client, monkeypatch):
+        """Test configuration validation with valid credentials."""
+        # Configure environment
+        monkeypatch.setenv("NX_ELABFTW_URL", ELABFTW_URL)
+        monkeypatch.setenv("NX_ELABFTW_API_KEY", ELABFTW_API_KEY)
+
+        from nexusLIMS.config import refresh_settings
+
+        refresh_settings()
+
+        destination = ELabFTWDestination()
+
+        # Validate config
+        is_valid, error_message = destination.validate_config()
+
+        assert is_valid is True
+        assert error_message is None
+
+    def test_validate_config_invalid_credentials(self, monkeypatch):
+        """Test configuration validation with invalid credentials."""
+        # Configure with invalid credentials
+        monkeypatch.setenv("NX_ELABFTW_URL", ELABFTW_URL)
+        monkeypatch.setenv("NX_ELABFTW_API_KEY", "invalid-key-12345")
+
+        from nexusLIMS.config import refresh_settings
+
+        refresh_settings()
+
+        destination = ELabFTWDestination()
+
+        # Validate config
+        is_valid, error_message = destination.validate_config()
+
+        assert is_valid is False
+        assert error_message is not None
+        assert "authentication" in error_message.lower() or "401" in error_message
+
+
+# ============================================================================
+# End-to-End Integration Tests
+# ============================================================================
+
+
+@pytest.mark.integration
+@pytest.mark.slow
+class TestELabFTWEndToEnd:
+    """End-to-end integration tests for eLabFTW export."""
+
+    def test_multi_destination_export(
+        self,
+        export_context_elabftw,
+        elabftw_client,
+        cdcs_client,
+        monkeypatch,
+    ):
+        """Test exporting to both CDCS and eLabFTW."""
+        from nexusLIMS.exporters import export_records
+        from nexusLIMS.exporters.destinations.cdcs import CDCSDestination
+        from nexusLIMS.exporters.destinations.elabftw import ELabFTWDestination
+
+        # Configure both destinations
+        monkeypatch.setenv("NX_ELABFTW_URL", ELABFTW_URL)
+        monkeypatch.setenv("NX_ELABFTW_API_KEY", ELABFTW_API_KEY)
+        monkeypatch.setenv("NX_CDCS_URL", cdcs_client["url"])
+        monkeypatch.setenv("NX_CDCS_TOKEN", cdcs_client["token"])
+
+        from nexusLIMS.config import refresh_settings
+
+        refresh_settings()
+
+        # Export to all destinations
+        xml_files = [export_context_elabftw.xml_file_path]
+        sessions = [None]  # Session object not needed for this test
+
+        results = export_records(xml_files, sessions)
+
+        # Verify both destinations succeeded
+        cdcs_results = [r for r in results if r.destination_name == "cdcs"]
+        elabftw_results = [r for r in results if r.destination_name == "elabftw"]
+
+        assert len(cdcs_results) > 0, "No CDCS export results found"
+        assert len(elabftw_results) > 0, "No eLabFTW export results found"
+
+        assert all(r.success for r in cdcs_results), "CDCS export failed"
+        assert all(r.success for r in elabftw_results), "eLabFTW export failed"
+
+        # Cleanup
+        for result in elabftw_results:
+            if result.success and result.record_id:
+                elabftw_client.delete_experiment(int(result.record_id))
+
+        for result in cdcs_results:
+            if result.success and result.record_id:
+                from nexusLIMS.utils import cdcs
+
+                cdcs.delete_record(result.record_id)
