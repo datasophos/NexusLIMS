@@ -23,7 +23,7 @@ from http import HTTPStatus
 from pathlib import Path
 from typing import Any
 
-from nexusLIMS import config
+from nexusLIMS.config import settings
 from nexusLIMS.utils.network import nexus_req
 
 _logger = logging.getLogger(__name__)
@@ -549,15 +549,15 @@ def get_elabftw_client() -> ELabFTWClient:
     >>> client = get_elabftw_client()
     >>> experiments = client.list_experiments(limit=10)
     """
-    if not config.NX_ELABFTW_API_KEY:
+    if not settings.NX_ELABFTW_API_KEY:
         msg = "NX_ELABFTW_API_KEY not configured"
         raise ValueError(msg)
 
-    if not config.NX_ELABFTW_URL:
+    if not settings.NX_ELABFTW_URL:
         msg = "NX_ELABFTW_URL not configured"
         raise ValueError(msg)
 
     return ELabFTWClient(
-        base_url=str(config.NX_ELABFTW_URL),
-        api_key=config.NX_ELABFTW_API_KEY,
+        base_url=str(settings.NX_ELABFTW_URL),
+        api_key=settings.NX_ELABFTW_API_KEY,
     )

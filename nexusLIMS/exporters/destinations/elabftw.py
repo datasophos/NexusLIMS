@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import logging
 
-from nexusLIMS import config
+from nexusLIMS.config import settings
 from nexusLIMS.exporters.base import ExportContext, ExportResult
 from nexusLIMS.utils.elabftw import (
     ELabFTWAuthenticationError,
@@ -45,13 +45,13 @@ class ELabFTWDestination:
             True if both NX_ELABFTW_API_KEY and NX_ELABFTW_URL are configured
         """
         return (
-            config.NX_ELABFTW_API_KEY is not None
-            and config.NX_ELABFTW_API_KEY != ""
-            and config.NX_ELABFTW_URL is not None
-            and config.NX_ELABFTW_URL != ""
+            settings.NX_ELABFTW_API_KEY is not None
+            and settings.NX_ELABFTW_API_KEY != ""
+            and settings.NX_ELABFTW_URL is not None
+            and settings.NX_ELABFTW_URL != ""
         )
 
-    def validate_config(self) -> tuple[bool, str | None]:  # noqa: PLR0911
+    def validate_config(self) -> tuple[bool, str | None]:
         """Validate eLabFTW configuration.
 
         Tests:
@@ -64,17 +64,11 @@ class ELabFTWDestination:
         tuple[bool, str | None]
             (is_valid, error_message)
         """
-        if not config.NX_ELABFTW_API_KEY:
+        if not settings.NX_ELABFTW_API_KEY:
             return False, "NX_ELABFTW_API_KEY not configured"
 
-        if config.NX_ELABFTW_API_KEY == "":
-            return False, "NX_ELABFTW_API_KEY is empty"
-
-        if not config.NX_ELABFTW_URL:
+        if not settings.NX_ELABFTW_URL:
             return False, "NX_ELABFTW_URL not configured"
-
-        if str(config.NX_ELABFTW_URL) == "":
-            return False, "NX_ELABFTW_URL is empty"
 
         # Test authentication by listing experiments (limit 1)
         try:
@@ -120,8 +114,8 @@ class ELabFTWDestination:
                 body=body,
                 tags=tags,
                 metadata=metadata,
-                category=config.NX_ELABFTW_EXPERIMENT_CATEGORY,
-                status=config.NX_ELABFTW_EXPERIMENT_STATUS,
+                category=settings.NX_ELABFTW_EXPERIMENT_CATEGORY,
+                status=settings.NX_ELABFTW_EXPERIMENT_STATUS,
             )
 
             experiment_id = experiment["id"]
@@ -136,7 +130,8 @@ class ELabFTWDestination:
 
             # Build experiment URL
             experiment_url = (
-                f"{config.NX_ELABFTW_URL}/experiments.php?mode=view&id={experiment_id}"
+                f"{settings.NX_ELABFTW_URL}/"
+                f"experiments.php?mode=view&id={experiment_id}"
             )
 
             return ExportResult(
