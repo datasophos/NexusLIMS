@@ -60,25 +60,55 @@ def sample_xml_file(tmp_path):
     """Create sample XML record for testing."""
     xml_file = tmp_path / "integration_test_record.xml"
     xml_content = """<?xml version="1.0" encoding="UTF-8"?>
-<record>
-    <session>integration-test-session</session>
-    <instrument>FEI-Titan-TEM</instrument>
-    <data>Integration test experiment data</data>
-</record>"""
+<nx:Experiment
+    xmlns:nx="https://data.nist.gov/od/dm/nexus/experiment/v1.0"
+    pid="test-experiment-001">
+    <nx:title>Integration Test TEM Session</nx:title>
+    <nx:summary>
+        <nx:experimenter>Test User</nx:experimenter>
+        <nx:instrument pid="FEI-Titan-TEM-1">FEI Titan TEM</nx:instrument>
+        <nx:reservationStart>2025-02-01T09:00:00-05:00</nx:reservationStart>
+        <nx:reservationEnd>2025-02-01T12:00:00-05:00</nx:reservationEnd>
+        <nx:motivation>
+            Integration testing of eLabFTW export functionality
+        </nx:motivation>
+    </nx:summary>
+    <nx:sample id="sample-001">
+        <nx:name>Test Sample</nx:name>
+        <nx:description>Sample used for integration testing</nx:description>
+    </nx:sample>
+    <nx:acquisitionActivity seqno="1">
+        <nx:startTime>2025-02-01T09:15:00-05:00</nx:startTime>
+        <nx:sampleID>sample-001</nx:sampleID>
+        <nx:setup>
+            <nx:param name="Acceleration Voltage" unit="kV">200</nx:param>
+            <nx:param name="Magnification">50000</nx:param>
+            <nx:param name="Microscope Mode">TEM</nx:param>
+        </nx:setup>
+        <nx:dataset type="Image">
+            <nx:name>test_image_001.tif</nx:name>
+            <nx:location>/path/to/data/test_image_001.tif</nx:location>
+            <nx:format>image/tiff</nx:format>
+            <nx:description>TEM image for integration testing</nx:description>
+            <nx:meta name="Exposure Time" unit="s">0.5</nx:meta>
+            <nx:meta name="Detector">CCD Camera</nx:meta>
+        </nx:dataset>
+    </nx:acquisitionActivity>
+</nx:Experiment>"""
     xml_file.write_text(xml_content)
     return xml_file
 
 
 @pytest.fixture
-def export_context_elabftw(sample_xml_file, docker_services, monkeypatch):
+def export_context_elabftw(sample_xml_file, test_environment_setup, monkeypatch):
     """Create ExportContext for eLabFTW export tests.
 
     Parameters
     ----------
     sample_xml_file : Path
         Path to sample XML file for testing
-    docker_services : None
-        Ensures Docker services (including eLabFTW) are running
+    test_environment_setup : dict
+        Test environment with populated database and configuration
     monkeypatch : pytest.MonkeyPatch
         Pytest monkeypatch fixture
 
@@ -96,14 +126,14 @@ def export_context_elabftw(sample_xml_file, docker_services, monkeypatch):
 
     refresh_settings()
 
-    # Create export context
+    # Create export context using test environment data
     return ExportContext(
         xml_file_path=sample_xml_file,
         session_identifier="integration-test-2025-01-27",
-        instrument_pid="FEI-Titan-TEM-012345",
-        dt_from=datetime(2025, 1, 27, 10, 30, 15),
-        dt_to=datetime(2025, 1, 27, 14, 45, 0),
-        user="integration_test_user",
+        instrument_pid=test_environment_setup["instrument_pid"],
+        dt_from=test_environment_setup["dt_from"],
+        dt_to=test_environment_setup["dt_to"],
+        user=test_environment_setup["user"],
     )
 
 
@@ -263,7 +293,7 @@ class TestELabFTWClientIntegration:
         assert record["state"] == State.Deleted
 
     def test_upload_file(self, elabftw_client, tmp_path):
-        """Test uploading file to experiment."""
+        """Test uploading text and binary files to experiment."""
         # Create experiment
         result = elabftw_client.create_experiment(
             title="Integration Test - File Upload",
@@ -271,37 +301,57 @@ class TestELabFTWClientIntegration:
         )
         experiment_id = result["id"]
 
-        # Create test file
+        # Create and upload text file
         test_file = tmp_path / "test_upload.txt"
         test_file.write_text("Test file content for upload")
 
-        # Upload file
         upload_result = elabftw_client.upload_file_to_experiment(
-            experiment_id, str(test_file), comment="Integration test file"
+            experiment_id, str(test_file), comment="Integration test text file"
         )
 
         assert "id" in upload_result
 
-        # Retrieve experiment and verify file is attached
+        # Create and upload binary PNG file using Pillow
+        from PIL import Image, ImageDraw
+
+        binary_file = tmp_path / "test_image.png"
+        img = Image.new("RGB", (100, 100), color="white")
+        draw = ImageDraw.Draw(img)
+        # Draw a simple checkerboard pattern
+        for i in range(0, 100, 20):
+            for j in range(0, 100, 20):
+                if (i + j) // 20 % 2 == 0:
+                    draw.rectangle([i, j, i + 20, j + 20], fill="red")
+        img.save(binary_file)
+
+        binary_upload_result = elabftw_client.upload_file_to_experiment(
+            experiment_id, str(binary_file), comment="Integration test binary file"
+        )
+
+        assert "id" in binary_upload_result
+
+        # Retrieve experiment and verify both files are attached
         retrieved = elabftw_client.get_experiment(experiment_id)
         assert "uploads" in retrieved
-        assert len(retrieved["uploads"]) > 0
+        assert len(retrieved["uploads"]) >= 2
 
         # Cleanup
         elabftw_client.delete_experiment(experiment_id)
 
-    def test_create_with_tags_and_metadata(self, elabftw_client: ELabFTWClient):
-        """Test creating experiment with tags and metadata."""
-        # Create experiment with tags and metadata
+    def test_create_with_tags_and_metadata(
+        self, elabftw_client: ELabFTWClient, export_context_elabftw
+    ):
+        """Test creating experiment with tags and extra_fields metadata."""
+        # Build metadata using the destination's method
+        destination = ELabFTWDestination()
+        metadata = destination._build_metadata(export_context_elabftw)  # noqa: SLF001
+
+        # Create experiment with tags and extra_fields metadata
         result = elabftw_client.create_experiment(
             title="Integration Test - Tags and Metadata",
             body="Testing tags and metadata",
             tags=["integration", "test", "nexuslims"],
-            metadata={
-                "session_id": "test-session-123",
-                "instrument": "FEI-Titan-TEM",
-                "user": "testuser",
-            },
+            metadata=metadata,
         )
 
         experiment_id = result["id"]
@@ -310,24 +360,68 @@ class TestELabFTWClientIntegration:
         retrieved = elabftw_client.get_experiment(experiment_id)
         assert retrieved["id"] == experiment_id
 
-        # Verify tags (eLabFTW returns tags as array or string)
-        tags_field = retrieved.get("tags", "")
-        if isinstance(tags_field, list):
-            tag_str = "|".join(t["tag"] for t in tags_field)
-        else:
-            tag_str = tags_field
-
-        # At least one of our tags should be present
-        assert any(tag in tag_str for tag in ["integration", "test", "nexuslims"]), (
-            f"Expected tags not found in: {tag_str}"
+        # Verify tags
+        # Note: eLabFTW API returns tags as pipe-separated string, but our client
+        # automatically converts it to a list for convenience
+        tags_field = retrieved.get("tags", [])
+        assert isinstance(tags_field, list), (
+            f"Expected tags as list, got {type(tags_field)}"
         )
 
-        # Verify metadata
+        # All tags should be present (use set comparison to ignore order)
+        expected_tags = {"integration", "test", "nexuslims"}
+        actual_tags = set(tags_field)
+        assert expected_tags == actual_tags, (
+            f"Expected tags {expected_tags}, got {actual_tags}"
+        )
+
+        # Verify metadata - client automatically parses JSON string to dict
         metadata = retrieved.get("metadata", {})
-        if metadata:
-            # Metadata might be in different formats depending on eLabFTW version
-            metadata_str = str(metadata)
-            assert "test-session-123" in metadata_str or "session_id" in metadata_str
+        assert metadata, "Metadata should be present"
+        assert isinstance(metadata, dict), (
+            f"Expected metadata as dict, got {type(metadata)}"
+        )
+
+        # Verify extra_fields structure and values
+        assert "extra_fields" in metadata, "Metadata should contain extra_fields"
+        extra_fields = metadata["extra_fields"]
+        assert isinstance(extra_fields, dict), "extra_fields should be a dict"
+
+        # Verify Session ID field
+        assert "Session ID" in extra_fields
+        session_field = extra_fields["Session ID"]
+        assert session_field["type"] == "text"
+        assert session_field["value"] == "integration-test-2025-01-27"
+
+        # Verify Instrument field
+        assert "Instrument" in extra_fields
+        instrument_field = extra_fields["Instrument"]
+        assert instrument_field["type"] == "text"
+        assert instrument_field["value"] == "FEI-Titan-TEM-012345"
+
+        # Verify Start Time field
+        assert "Start Time" in extra_fields
+        start_field = extra_fields["Start Time"]
+        assert start_field["type"] == "datetime-local"
+        assert start_field["value"] == "2025-01-27T10:30"
+
+        # Verify End Time field
+        assert "End Time" in extra_fields
+        end_field = extra_fields["End Time"]
+        assert end_field["type"] == "datetime-local"
+        assert end_field["value"] == "2025-01-27T14:45"
+
+        # Verify User field
+        assert "User" in extra_fields
+        user_field = extra_fields["User"]
+        assert user_field["type"] == "text"
+        assert user_field["value"] == "integration_test_user"
+
+        # Verify elabftw config
+        assert "elabftw" in metadata
+        elabftw_config = metadata["elabftw"]
+        assert elabftw_config["display_main_text"] is True
+        assert len(elabftw_config["extra_fields_groups"]) >= 1
 
         # Cleanup
         elabftw_client.delete_experiment(experiment_id)
@@ -366,14 +460,19 @@ class TestELabFTWDestinationIntegration:
         # Verify success
         assert result.success is True
         assert result.record_id is not None
-        assert result.record_url is not None
+        assert (
+            result.record_url
+            == f"http://elabftw.localhost:40080/experiments.php?mode=view&id={result.record_id}"
+        )
 
         # Verify experiment was created
         experiment_id = int(result.record_id)
         experiment = elabftw_client.get_experiment(experiment_id)
         assert experiment["id"] == experiment_id
-        assert "NexusLIMS" in experiment["title"]
-        assert "FEI-Titan-TEM" in experiment["title"]
+        assert (
+            experiment["title"]
+            == "NexusLIMS - FEI-Titan-TEM-012345 - integration-test-2025-01-27"
+        )
 
         # Cleanup
         elabftw_client.delete_experiment(experiment_id)
@@ -387,6 +486,7 @@ class TestELabFTWDestinationIntegration:
         # Export record
         result = destination.export(export_context_elabftw)
         assert result.success is True
+        assert result.record_id is not None
 
         # Retrieve experiment and verify attachment
         experiment_id = int(result.record_id)
@@ -440,16 +540,63 @@ class TestELabFTWDestinationIntegration:
         elabftw_client.delete_experiment(experiment_id)
 
     def test_export_logs_to_database(
-        self, export_context_elabftw, elabftw_client, test_database
+        self,
+        export_context_elabftw,
+        test_environment_setup,
+        elabftw_client,
+        monkeypatch,
     ):
         """Test UploadLog entry created for export."""
         from nexusLIMS.db.engine import get_engine
+        from nexusLIMS.db.session_handler import Session
+        from nexusLIMS.exporters import export_records
 
-        destination = ELabFTWDestination()
+        # Create a Session object for export_records
+        instrument = test_environment_setup["instrument_db"][
+            test_environment_setup["instrument_pid"]
+        ]
+        session = Session(
+            session_identifier=export_context_elabftw.session_identifier,
+            instrument=instrument,
+            dt_range=(export_context_elabftw.dt_from, export_context_elabftw.dt_to),
+            user=export_context_elabftw.user,
+        )
 
-        # Export record
-        result = destination.export(export_context_elabftw)
-        assert result.success is True
+        # Patch registry to only include eLabFTW destination
+        # (prevents CDCS export attempts during this test)
+        elabftw_dest = ELabFTWDestination()
+
+        def mock_get_enabled():
+            return [elabftw_dest]
+
+        from nexusLIMS.exporters import registry as registry_module
+
+        monkeypatch.setattr(
+            registry_module.ExporterRegistry,
+            "get_enabled_destinations",
+            lambda _: mock_get_enabled(),
+        )
+
+        # Export using the full framework (which handles database logging)
+        results = export_records(
+            xml_files=[export_context_elabftw.xml_file_path],
+            sessions=[session],
+        )
+
+        # Get the export results for our file
+        file_results = results[export_context_elabftw.xml_file_path]
+        assert len(file_results) > 0
+
+        # Find eLabFTW result (there should only be one, but still check)
+        elabftw_result = None
+        for result in file_results:
+            if result.destination_name == "elabftw":
+                elabftw_result = result
+                break
+
+        assert elabftw_result is not None, "eLabFTW export not found in results"
+        assert elabftw_result.success is True
+        assert elabftw_result.record_id is not None
 
         # Query UploadLog table
         with DBSession(get_engine()) as db_session:
@@ -462,19 +609,19 @@ class TestELabFTWDestinationIntegration:
             # Should have at least one log entry
             assert len(upload_logs) > 0
 
-            # Find eLabFTW log entry
+            # Find eLabFTW log entry (there should only be one, but still check)
             elabftw_log = None
             for log in upload_logs:
-                if log.destination == "elabftw":
+                if log.destination_name == "elabftw":
                     elabftw_log = log
                     break
 
             assert elabftw_log is not None, "eLabFTW upload log not found"
             assert elabftw_log.success is True
-            assert elabftw_log.record_id == result.record_id
+            assert elabftw_log.record_id == elabftw_result.record_id
 
         # Cleanup
-        elabftw_client.delete_experiment(int(result.record_id))
+        elabftw_client.delete_experiment(int(elabftw_result.record_id))
 
     def test_export_handles_missing_xml_file(self, export_context_elabftw):
         """Test export handles missing XML file gracefully."""
@@ -488,10 +635,7 @@ class TestELabFTWDestinationIntegration:
 
         assert result.success is False
         assert result.error_message is not None
-        assert (
-            "FileNotFoundError" in result.error_message
-            or "No such file" in result.error_message
-        )
+        assert "File not found" in result.error_message
 
     def test_validate_config_success(self, elabftw_client, monkeypatch):
         """Test configuration validation with valid credentials."""
@@ -537,7 +681,6 @@ class TestELabFTWDestinationIntegration:
 
 
 @pytest.mark.integration
-@pytest.mark.slow
 class TestELabFTWEndToEnd:
     """End-to-end integration tests for eLabFTW export."""
 

@@ -18,6 +18,7 @@ Example usage:
     >>> print(f"Created experiment {exp['id']}")
 """
 
+import json
 import logging
 from enum import IntEnum
 from http import HTTPStatus
@@ -40,6 +41,24 @@ class ELabFTWAuthenticationError(ELabFTWError):
 
 class ELabFTWNotFoundError(ELabFTWError):
     """Requested resource not found (404)."""
+
+
+class ContentType(IntEnum):
+    """eLabFTW content type for experiment body text.
+
+    Specifies how the body text of an experiment should be interpreted
+    and rendered by eLabFTW.
+
+    Attributes
+    ----------
+    HTML : int
+        Body text is HTML formatted (value: 1, default in eLabFTW)
+    MARKDOWN : int
+        Body text is Markdown formatted (value: 2)
+    """
+
+    HTML = 1
+    MARKDOWN = 2
 
 
 class State(IntEnum):
@@ -230,8 +249,9 @@ class ELabFTWClient:
         metadata: dict[str, Any] | None = None,
         category: int | None = None,
         status: int | None = None,
+        content_type: ContentType | None = None,
     ) -> dict[str, Any]:
-        """Create a new experiment in eLabFTW.
+        r"""Create a new experiment in eLabFTW.
 
         Parameters
         ----------
@@ -275,6 +295,9 @@ class ELabFTWClient:
             Category ID (uses eLabFTW default if not specified)
         status : int, optional
             Status ID (uses eLabFTW default if not specified)
+        content_type : ContentType, optional
+            Content type for body text (HTML or MARKDOWN).
+            Defaults to eLabFTW's default (HTML) if not specified.
 
         Returns
         -------
@@ -292,11 +315,25 @@ class ELabFTWClient:
         --------
         Simple metadata (flat key-value pairs):
 
+        >>> from nexusLIMS.utils.elabftw import ContentType
         >>> exp = client.create_experiment(
         ...     title="TEM Analysis",
         ...     body="Sample characterization with TEM",
         ...     tags=["microscopy", "analysis"],
         ...     metadata={"instrument": "FEI Titan", "operator": "jsmith"}
+        ... )
+        >>> print(f"Created experiment ID: {exp['id']}")
+
+        With Markdown body:
+
+        >>> exp = client.create_experiment(
+        ...     title="TEM Analysis",
+        ...     body=(
+        ...         "## Sample Analysis\\n\\n- **Sample**: Steel alloy\\n"
+        ...         "- **Method**: TEM imaging"
+        ...     ),
+        ...     content_type=ContentType.MARKDOWN,
+        ...     tags=["microscopy"]
         ... )
         >>> print(f"Created experiment ID: {exp['id']}")
 
@@ -356,6 +393,9 @@ class ELabFTWClient:
         if status is not None:
             payload["status"] = status
 
+        if content_type is not None:
+            payload["content_type"] = int(content_type)
+
         _logger.debug("Creating experiment: %s", title)
         result = self._make_request(
             "POST", self.experiments_endpoint, json_data=payload
@@ -375,7 +415,9 @@ class ELabFTWClient:
         Returns
         -------
         dict
-            Full experiment data
+            Full experiment data. Note that the 'tags' field is automatically
+            converted from eLabFTW's pipe-separated string format to a list of
+            strings for convenience.
 
         Raises
         ------
@@ -388,11 +430,37 @@ class ELabFTWClient:
         --------
         >>> exp = client.get_experiment(42)
         >>> print(exp['title'])
+        >>> print(exp['tags'])  # ['tag1', 'tag2', 'tag3']
         """
         url = f"{self.experiments_endpoint}/{experiment_id}"
         _logger.debug("Fetching experiment %s", experiment_id)
 
-        return self._make_request("GET", url)
+        result = self._make_request("GET", url)
+
+        # _make_request can return None for 204 responses, which shouldn't
+        # happen for GET requests but we handle it defensively
+        if result is None:
+            msg = f"Unexpected empty response when fetching experiment {experiment_id}"
+            raise ELabFTWError(msg)
+
+        # Convert tags from pipe-separated string to list
+        # eLabFTW returns tags as "tag1|tag2|tag3" but we normalize to a list
+        if "tags" in result and isinstance(result["tags"], str):
+            # Empty string should become empty list
+            result["tags"] = result["tags"].split("|") if result["tags"] else []
+
+        # Parse metadata if it's a JSON string
+        # eLabFTW may return metadata as a JSON string, normalize to dict
+        if "metadata" in result and isinstance(result["metadata"], str):
+            try:
+                result["metadata"] = json.loads(result["metadata"])
+            except json.JSONDecodeError:
+                # If parsing fails, leave as string
+                _logger.warning(
+                    "Failed to parse metadata JSON for experiment %s", experiment_id
+                )
+
+        return result
 
     def list_experiments(
         self,
@@ -545,7 +613,7 @@ class ELabFTWClient:
             payload["body"] = body
 
         if tags is not None:
-            payload["tags"] = "|".join(tags)
+            payload["tags"] = tags
 
         if metadata is not None:
             payload["metadata"] = metadata

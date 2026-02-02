@@ -361,6 +361,80 @@ class TestELabFTWClient:
             with pytest.raises(ELabFTWNotFoundError, match="Resource not found"):
                 client.get_experiment(999)
 
+    def test_get_experiment_unexpected_empty_response(self, client, mock_response):
+        """Test that None response (204 No Content) raises ELabFTWError."""
+        with patch("nexusLIMS.utils.elabftw.nexus_req") as mock_req:
+            # Mock 204 No Content response which causes _make_request to return None
+            mock_req.return_value = mock_response(status_code=HTTPStatus.NO_CONTENT)
+
+            with pytest.raises(
+                ELabFTWError,
+                match="Unexpected empty response when fetching experiment 42",
+            ):
+                client.get_experiment(42)
+
+    def test_get_experiment_parses_metadata_json_string(self, client, mock_response):
+        """Test that metadata JSON string is parsed to dict."""
+        with patch("nexusLIMS.utils.elabftw.nexus_req") as mock_req:
+            mock_req.return_value = mock_response(
+                status_code=HTTPStatus.OK,
+                json_data={
+                    "id": 42,
+                    "title": "Test",
+                    "metadata": '{"key": "value", "number": 123}',
+                },
+            )
+
+            result = client.get_experiment(42)
+
+            # Metadata should be parsed from string to dict
+            assert isinstance(result["metadata"], dict)
+            assert result["metadata"]["key"] == "value"
+            assert result["metadata"]["number"] == 123
+
+    def test_get_experiment_metadata_already_dict(self, client, mock_response):
+        """Test that metadata dict is left unchanged."""
+        with patch("nexusLIMS.utils.elabftw.nexus_req") as mock_req:
+            mock_req.return_value = mock_response(
+                status_code=HTTPStatus.OK,
+                json_data={
+                    "id": 42,
+                    "title": "Test",
+                    "metadata": {"key": "value"},
+                },
+            )
+
+            result = client.get_experiment(42)
+
+            # Metadata should remain as dict
+            assert isinstance(result["metadata"], dict)
+            assert result["metadata"]["key"] == "value"
+
+    def test_get_experiment_metadata_invalid_json(self, client, mock_response):
+        """Test that invalid metadata JSON is left as string with warning."""
+        with patch("nexusLIMS.utils.elabftw.nexus_req") as mock_req:
+            mock_req.return_value = mock_response(
+                status_code=HTTPStatus.OK,
+                json_data={
+                    "id": 42,
+                    "title": "Test",
+                    "metadata": "{invalid json}",
+                },
+            )
+
+            with patch("nexusLIMS.utils.elabftw._logger") as mock_logger:
+                result = client.get_experiment(42)
+
+                # Metadata should remain as string if JSON parsing fails
+                assert isinstance(result["metadata"], str)
+                assert result["metadata"] == "{invalid json}"
+
+                # Should log a warning
+                mock_logger.warning.assert_called_once()
+                assert "Failed to parse metadata JSON" in str(
+                    mock_logger.warning.call_args
+                )
+
     def test_list_experiments_default_params(self, client, mock_response):
         """Test listing with default limit=15, offset=0."""
         with patch("nexusLIMS.utils.elabftw.nexus_req") as mock_req:
@@ -438,7 +512,7 @@ class TestELabFTWClient:
             payload = kwargs["json"]
             assert "title" not in payload  # Not updated
             assert payload["body"] == "New body content"
-            assert payload["tags"] == "new-tag|another-tag"
+            assert payload["tags"] == ["new-tag", "another-tag"]
 
     def test_update_experiment_empty_payload(self, client, mock_response):
         """Test update with no fields specified."""
@@ -1016,10 +1090,10 @@ class TestELabFTWDestinationExport:
                 == "NexusLIMS - FEI-Titan-TEM-012345 - 2025-01-27_10-30-15_abc123"
             )
 
-    def test_export_includes_markdown_body(
+    def test_export_includes_html_body(
         self, destination, export_context, mock_config_enabled
     ):
-        """Verify body contains session metadata."""
+        """Verify body contains session metadata in HTML format."""
         with patch(
             "nexusLIMS.exporters.destinations.elabftw.get_elabftw_client"
         ) as mock_get_client:
@@ -1032,7 +1106,7 @@ class TestELabFTWDestinationExport:
 
             call_kwargs = mock_client.create_experiment.call_args[1]
             body = call_kwargs["body"]
-            assert "# NexusLIMS Microscopy Session" in body
+            assert "<h1>NexusLIMS Microscopy Session</h1>" in body
             assert "2025-01-27_10-30-15_abc123" in body
             assert "FEI-Titan-TEM-012345" in body
             assert "jsmith" in body
@@ -1140,6 +1214,25 @@ class TestELabFTWDestinationExport:
             assert call_kwargs["category"] == 1
             assert call_kwargs["status"] == 2
 
+    def test_export_sets_html_content_type(
+        self, destination, export_context, mock_config_enabled
+    ):
+        """Test export sets content_type to HTML."""
+        from nexusLIMS.utils.elabftw import ContentType
+
+        with patch(
+            "nexusLIMS.exporters.destinations.elabftw.get_elabftw_client"
+        ) as mock_get_client:
+            mock_client = Mock()
+            mock_client.create_experiment.return_value = {"id": 42}
+            mock_client.upload_file_to_experiment.return_value = {"id": 1}
+            mock_get_client.return_value = mock_client
+
+            destination.export(export_context)
+
+            call_kwargs = mock_client.create_experiment.call_args[1]
+            assert call_kwargs["content_type"] == ContentType.HTML
+
     # ------------------------------------------------------------------------
     # CDCS CROSS-LINKING tests
     # ------------------------------------------------------------------------
@@ -1169,8 +1262,10 @@ class TestELabFTWDestinationExport:
 
             call_kwargs = mock_client.create_experiment.call_args[1]
             body = call_kwargs["body"]
-            assert "## Related Records" in body
-            assert "[View in CDCS](https://cdcs.example.com/record/123)" in body
+            assert "<h2>Related Records</h2>" in body
+            assert (
+                '<a href="https://cdcs.example.com/record/123">View in CDCS</a>' in body
+            )
 
             metadata = call_kwargs["metadata"]
             # Check for CDCS URL in extra_fields
@@ -1325,42 +1420,42 @@ class TestELabFTWDestinationExport:
             )
 
     # ------------------------------------------------------------------------
-    # MARKDOWN GENERATION tests
+    # HTML GENERATION tests
     # ------------------------------------------------------------------------
 
-    def test_markdown_body_structure(self, destination, export_context):
-        """Test generated markdown has all required sections."""
-        body = destination._build_markdown_body(export_context)
+    def test_html_body_structure(self, destination, export_context):
+        """Test generated HTML has all required sections."""
+        body = destination._build_html_body(export_context)
 
-        assert "# NexusLIMS Microscopy Session" in body
-        assert "## Session Details" in body
-        assert "## Files" in body
+        assert "<h1>NexusLIMS Microscopy Session</h1>" in body
+        assert "<h2>Session Details</h2>" in body
+        assert "<h2>Files</h2>" in body
 
-    def test_markdown_includes_session_id(self, destination, export_context):
+    def test_html_includes_session_id(self, destination, export_context):
         """Test session_identifier in body."""
-        body = destination._build_markdown_body(export_context)
+        body = destination._build_html_body(export_context)
         assert "2025-01-27_10-30-15_abc123" in body
 
-    def test_markdown_includes_timestamps(self, destination, export_context):
+    def test_html_includes_timestamps(self, destination, export_context):
         """Test dt_from and dt_to formatted correctly."""
-        body = destination._build_markdown_body(export_context)
+        body = destination._build_html_body(export_context)
         assert "2025-01-27T10:30:15" in body
         assert "2025-01-27T14:45:00" in body
 
-    def test_markdown_includes_user(self, destination, export_context):
+    def test_html_includes_user(self, destination, export_context):
         """Test username appears in body."""
-        body = destination._build_markdown_body(export_context)
+        body = destination._build_html_body(export_context)
         assert "jsmith" in body
 
-    def test_markdown_with_none_user(self, destination, export_context):
+    def test_html_with_none_user(self, destination, export_context):
         """Test handles None user gracefully."""
         export_context.user = None
-        body = destination._build_markdown_body(export_context)
+        body = destination._build_html_body(export_context)
 
-        # Should still generate valid markdown
-        assert "# NexusLIMS Microscopy Session" in body
+        # Should still generate valid HTML
+        assert "<h1>NexusLIMS Microscopy Session</h1>" in body
         # Should not have user line
-        assert "**User**:" not in body
+        assert "<strong>User</strong>:" not in body
 
     # ------------------------------------------------------------------------
     # HELPER METHOD tests

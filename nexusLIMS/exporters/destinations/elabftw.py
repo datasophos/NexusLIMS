@@ -15,6 +15,7 @@ from pydantic import BaseModel, Field
 from nexusLIMS.config import settings
 from nexusLIMS.exporters.base import ExportContext, ExportResult
 from nexusLIMS.utils.elabftw import (
+    ContentType,
     ELabFTWAuthenticationError,
     get_elabftw_client,
 )
@@ -159,7 +160,7 @@ class ELabFTWDestination:
     def export(self, context: ExportContext) -> ExportResult:
         """Export record to eLabFTW.
 
-        Creates an experiment with a markdown summary of the session,
+        Creates an experiment with an HTML summary of the session,
         then attaches the XML record file. Never raises exceptions - all
         errors are caught and returned as ExportResult with success=False.
 
@@ -179,11 +180,13 @@ class ELabFTWDestination:
 
             # Build experiment content
             title = self._build_title(context)
-            body = self._build_markdown_body(context)
+            body = self._build_html_body(context)
             tags = self._build_tags(context)
             metadata = self._build_metadata(context)
 
             # Create experiment
+            # Note: Using HTML instead of Markdown due to eLabFTW API bug
+            # https://github.com/elabftw/elabftw/issues/6416
             experiment = client.create_experiment(
                 title=title,
                 body=body,
@@ -191,6 +194,7 @@ class ELabFTWDestination:
                 metadata=metadata,
                 category=settings.NX_ELABFTW_EXPERIMENT_CATEGORY,
                 status=settings.NX_ELABFTW_EXPERIMENT_STATUS,
+                content_type=ContentType.HTML,
             )
 
             experiment_id = experiment["id"]
@@ -242,8 +246,12 @@ class ELabFTWDestination:
         """
         return f"NexusLIMS - {context.instrument_pid} - {context.session_identifier}"
 
-    def _build_markdown_body(self, context: ExportContext) -> str:
-        """Build markdown body for experiment.
+    def _build_html_body(self, context: ExportContext) -> str:
+        """Build HTML body for experiment.
+
+        Note: We use HTML instead of Markdown due to an eLabFTW API bug that
+        prevents setting content_type via the API.
+        See: https://github.com/elabftw/elabftw/issues/6416
 
         Parameters
         ----------
@@ -253,26 +261,26 @@ class ELabFTWDestination:
         Returns
         -------
         str
-            Markdown-formatted body with session details and CDCS link
+            HTML-formatted body with session details and CDCS link
         """
         lines = [
-            "# NexusLIMS Microscopy Session",
-            "",
-            "## Session Details",
-            f"- **Session ID**: {context.session_identifier}",
-            f"- **Instrument**: {context.instrument_pid}",
+            "<h1>NexusLIMS Microscopy Session</h1>",
+            "<h2>Session Details</h2>",
+            "<ul>",
+            f"<li><strong>Session ID</strong>: {context.session_identifier}</li>",
+            f"<li><strong>Instrument</strong>: {context.instrument_pid}</li>",
         ]
 
         # Add user if available
         if context.user:
-            lines.append(f"- **User**: {context.user}")
+            lines.append(f"<li><strong>User</strong>: {context.user}</li>")
 
         # Add timestamps
         lines.extend(
             [
-                f"- **Start**: {context.dt_from.isoformat()}",
-                f"- **End**: {context.dt_to.isoformat()}",
-                "",
+                f"<li><strong>Start</strong>: {context.dt_from.isoformat()}</li>",
+                f"<li><strong>End</strong>: {context.dt_to.isoformat()}</li>",
+                "</ul>",
             ]
         )
 
@@ -281,17 +289,21 @@ class ELabFTWDestination:
         if cdcs_result and cdcs_result.success and cdcs_result.record_url:
             lines.extend(
                 [
-                    "## Related Records",
-                    f"- [View in CDCS]({cdcs_result.record_url})",
-                    "",
+                    "<h2>Related Records</h2>",
+                    "<ul>",
+                    f'<li><a href="{cdcs_result.record_url}">View in CDCS</a></li>',
+                    "</ul>",
                 ]
             )
 
         # Add note about XML attachment
         lines.extend(
             [
-                "## Files",
-                "The complete NexusLIMS XML record is attached to this experiment.",
+                "<h2>Files</h2>",
+                (
+                    "<p>The complete NexusLIMS XML record is attached to "
+                    "this experiment.</p>"
+                ),
             ]
         )
 
