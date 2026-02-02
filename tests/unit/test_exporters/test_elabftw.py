@@ -118,7 +118,7 @@ class TestState:
 
     def test_state_invalid_value(self):
         """Test that invalid state values raise ValueError."""
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match="99 is not a valid State"):
             State(99)
 
 
@@ -165,13 +165,17 @@ class TestELabFTWClient:
         """Test creating experiment with only title."""
         with patch("nexusLIMS.utils.elabftw.nexus_req") as mock_req:
             response = mock_response(status_code=HTTPStatus.CREATED)
-            response.headers = {"Location": "https://elab.example.com/api/v2/experiments/42"}
+            response.headers = {
+                "Location": "https://elab.example.com/api/v2/experiments/42"
+            }
             mock_req.return_value = response
 
             result = client.create_experiment(title="Test Experiment")
 
             assert result["id"] == 42
-            assert result["location"] == "https://elab.example.com/api/v2/experiments/42"
+            assert (
+                result["location"] == "https://elab.example.com/api/v2/experiments/42"
+            )
             mock_req.assert_called_once()
             args, kwargs = mock_req.call_args
             # nexus_req signature: nexus_req(url, method, ...)
@@ -183,7 +187,9 @@ class TestELabFTWClient:
         """Test creating experiment with all optional fields."""
         with patch("nexusLIMS.utils.elabftw.nexus_req") as mock_req:
             response = mock_response(status_code=HTTPStatus.CREATED)
-            response.headers = {"Location": "https://elab.example.com/api/v2/experiments/42"}
+            response.headers = {
+                "Location": "https://elab.example.com/api/v2/experiments/42"
+            }
             mock_req.return_value = response
 
             result = client.create_experiment(
@@ -200,7 +206,8 @@ class TestELabFTWClient:
             payload = kwargs["json"]
             assert payload["title"] == "Full Test"
             assert payload["body"] == "Test body content"
-            assert payload["tags"] == "tag1|tag2|tag3"  # Pipe-separated
+            # Tags are passed as list to eLabFTW API
+            assert payload["tags"] == ["tag1", "tag2", "tag3"]
             assert payload["metadata"] == {"key": "value", "number": 123}
             assert payload["category"] == 5
             assert payload["status"] == 10
@@ -209,7 +216,9 @@ class TestELabFTWClient:
         """Test creating experiment with empty tag list."""
         with patch("nexusLIMS.utils.elabftw.nexus_req") as mock_req:
             response = mock_response(status_code=HTTPStatus.CREATED)
-            response.headers = {"Location": "https://elab.example.com/api/v2/experiments/42"}
+            response.headers = {
+                "Location": "https://elab.example.com/api/v2/experiments/42"
+            }
             mock_req.return_value = response
 
             client.create_experiment(title="Test", tags=[])
@@ -265,9 +274,60 @@ class TestELabFTWClient:
             ):
                 client.create_experiment(title="Test")
 
+    def test_create_experiment_invalid_location_header(self, client, mock_response):
+        """Test 201 response with invalid Location header raises ELabFTWError."""
+        with patch("nexusLIMS.utils.elabftw.nexus_req") as mock_req:
+            response = mock_response(status_code=HTTPStatus.CREATED)
+            # Location header contains non-numeric ID
+            response.headers = {
+                "Location": "https://elab.example.com/api/v2/experiments/not-a-number"
+            }
+            mock_req.return_value = response
+
+            with pytest.raises(
+                ELabFTWError, match="Failed to parse experiment ID from Location header"
+            ) as exc_info:
+                client.create_experiment(title="Test")
+
+            # Verify the original ValueError is chained
+            assert isinstance(exc_info.value.__cause__, ValueError)
+
+    def test_create_experiment_fallback_json_response(self, client, mock_response):
+        """Test create falls back to JSON response when Location header missing."""
+        with patch("nexusLIMS.utils.elabftw.nexus_req") as mock_req:
+            response = mock_response(
+                status_code=HTTPStatus.CREATED,
+                json_data={"id": 123, "title": "Test Experiment"},
+            )
+            # No Location header, but valid JSON response
+            response.headers = {}
+            mock_req.return_value = response
+
+            result = client.create_experiment(title="Test")
+
+            # Should use JSON response as fallback
+            assert result["id"] == 123
+            assert result["title"] == "Test Experiment"
+
     # ------------------------------------------------------------------------
     # READ tests
     # ------------------------------------------------------------------------
+
+    def test_get_experiment_json_parse_error(self, client, mock_response):
+        """Test 200 response with invalid JSON raises ELabFTWError."""
+        with patch("nexusLIMS.utils.elabftw.nexus_req") as mock_req:
+            response = mock_response(status_code=HTTPStatus.OK)
+            # Simulate JSON parsing failure
+            response.json.side_effect = ValueError("Invalid JSON")
+            mock_req.return_value = response
+
+            with pytest.raises(
+                ELabFTWError, match="Failed to parse response JSON"
+            ) as exc_info:
+                client.get_experiment(42)
+
+            # Verify the original exception is chained
+            assert isinstance(exc_info.value.__cause__, ValueError)
 
     def test_get_experiment_success(self, client, mock_response):
         """Test retrieving experiment by ID."""
@@ -475,7 +535,10 @@ class TestELabFTWClient:
             result = client.upload_file_to_experiment(42, test_file)
 
             assert result["id"] == 1
-            assert result["location"] == "https://elab.example.com/api/v2/experiments/42/uploads/1"
+            assert (
+                result["location"]
+                == "https://elab.example.com/api/v2/experiments/42/uploads/1"
+            )
             mock_req.assert_called_once()
             args, kwargs = mock_req.call_args
             assert args[0] == "https://elab.example.com/api/v2/experiments/42/uploads"
@@ -554,7 +617,10 @@ class TestELabFTWClient:
             result = client.upload_file_to_experiment(42, str(test_file))
 
             assert result["id"] == 1
-            assert result["location"] == "https://elab.example.com/api/v2/experiments/42/uploads/1"
+            assert (
+                result["location"]
+                == "https://elab.example.com/api/v2/experiments/42/uploads/1"
+            )
 
     def test_upload_file_auth_error(self, client, tmp_path, mock_response):
         """Test upload raises auth error on 401."""
@@ -581,6 +647,67 @@ class TestELabFTWClient:
             )
 
             with pytest.raises(ELabFTWError, match="File upload failed"):
+                client.upload_file_to_experiment(42, test_file)
+
+    def test_upload_file_invalid_location_header(self, client, tmp_path, mock_response):
+        """Test upload with invalid Location header raises ELabFTWError."""
+        test_file = tmp_path / "test.xml"
+        test_file.write_text("<data>test</data>")
+
+        with patch("nexusLIMS.utils.elabftw.nexus_req") as mock_req:
+            response = mock_response(status_code=HTTPStatus.CREATED)
+            # Location header contains non-numeric upload ID
+            response.headers = {
+                "Location": "https://elab.example.com/api/v2/experiments/42/uploads/invalid-id"
+            }
+            mock_req.return_value = response
+
+            with pytest.raises(
+                ELabFTWError, match="Failed to parse upload ID from Location header"
+            ) as exc_info:
+                client.upload_file_to_experiment(42, test_file)
+
+            # Verify the original ValueError is chained
+            assert isinstance(exc_info.value.__cause__, ValueError)
+
+    def test_upload_file_fallback_json_response(self, client, tmp_path, mock_response):
+        """Test upload falls back to JSON response when Location header missing."""
+        test_file = tmp_path / "test.xml"
+        test_file.write_text("<data>test</data>")
+
+        with patch("nexusLIMS.utils.elabftw.nexus_req") as mock_req:
+            response = mock_response(
+                status_code=HTTPStatus.CREATED,
+                json_data={"id": 99, "filename": "test.xml"},
+            )
+            # No Location header, but valid JSON response
+            response.headers = {}
+            mock_req.return_value = response
+
+            result = client.upload_file_to_experiment(42, test_file)
+
+            # Should use JSON response as fallback
+            assert result["id"] == 99
+            assert result["filename"] == "test.xml"
+
+    def test_upload_file_missing_location_and_json(
+        self, client, tmp_path, mock_response
+    ):
+        """Test upload raises error when both Location header and JSON missing."""
+        test_file = tmp_path / "test.xml"
+        test_file.write_text("<data>test</data>")
+
+        with patch("nexusLIMS.utils.elabftw.nexus_req") as mock_req:
+            response = mock_response(status_code=HTTPStatus.CREATED)
+            # No Location header and JSON parsing fails
+            response.headers = {}
+            response.json.side_effect = ValueError("No JSON")
+            mock_req.return_value = response
+
+            with pytest.raises(
+                ELabFTWError,
+                match="201 Created response missing Location header and JSON body",
+            ):
                 client.upload_file_to_experiment(42, test_file)
 
     # ------------------------------------------------------------------------
@@ -953,7 +1080,7 @@ class TestELabFTWDestinationExport:
     def test_export_includes_metadata_json(
         self, destination, export_context, mock_config_enabled
     ):
-        """Verify metadata dict includes session_id, instrument, timestamps."""
+        """Verify metadata dict includes session info using extra_fields schema."""
         with patch(
             "nexusLIMS.exporters.destinations.elabftw.get_elabftw_client"
         ) as mock_get_client:
@@ -966,11 +1093,17 @@ class TestELabFTWDestinationExport:
 
             call_kwargs = mock_client.create_experiment.call_args[1]
             metadata = call_kwargs["metadata"]
-            assert metadata["nexuslims_session_id"] == "2025-01-27_10-30-15_abc123"
-            assert metadata["instrument"] == "FEI-Titan-TEM-012345"
-            assert "start_time" in metadata
-            assert "end_time" in metadata
-            assert metadata["user"] == "jsmith"
+
+            # Check for extra_fields structure
+            assert "extra_fields" in metadata
+            extra_fields = metadata["extra_fields"]
+
+            # Verify session information fields
+            assert extra_fields["Session ID"]["value"] == "2025-01-27_10-30-15_abc123"
+            assert extra_fields["Instrument"]["value"] == "FEI-Titan-TEM-012345"
+            assert "Start Time" in extra_fields
+            assert "End Time" in extra_fields
+            assert extra_fields["User"]["value"] == "jsmith"
 
     def test_export_returns_experiment_url(
         self, destination, export_context, mock_config_enabled
@@ -1014,7 +1147,7 @@ class TestELabFTWDestinationExport:
     def test_export_with_cdcs_result(
         self, destination, export_context, mock_config_enabled
     ):
-        """Test CDCS URL included in body when available."""
+        """Test CDCS URL included in body and extra_fields when available."""
         # Add CDCS result to context
         cdcs_result = ExportResult(
             success=True,
@@ -1040,7 +1173,15 @@ class TestELabFTWDestinationExport:
             assert "[View in CDCS](https://cdcs.example.com/record/123)" in body
 
             metadata = call_kwargs["metadata"]
-            assert metadata["cdcs_url"] == "https://cdcs.example.com/record/123"
+            # Check for CDCS URL in extra_fields
+            assert "extra_fields" in metadata
+            extra_fields = metadata["extra_fields"]
+            assert "CDCS Record" in extra_fields
+            assert (
+                extra_fields["CDCS Record"]["value"]
+                == "https://cdcs.example.com/record/123"
+            )
+            assert extra_fields["CDCS Record"]["type"] == "url"
 
     def test_export_without_cdcs_result(
         self, destination, export_context, mock_config_enabled
@@ -1246,13 +1387,19 @@ class TestELabFTWDestinationExport:
         assert len(tags) == 2  # Only NexusLIMS and instrument
 
     def test_build_metadata(self, destination, export_context):
-        """Test metadata generation."""
+        """Test metadata generation uses extra_fields format."""
         metadata = destination._build_metadata(export_context)
-        assert metadata["nexuslims_session_id"] == "2025-01-27_10-30-15_abc123"
-        assert metadata["instrument"] == "FEI-Titan-TEM-012345"
-        assert "start_time" in metadata
-        assert "end_time" in metadata
-        assert metadata["user"] == "jsmith"
+
+        # Should use extra_fields format
+        assert "extra_fields" in metadata
+        assert "elabftw" in metadata
+
+        extra_fields = metadata["extra_fields"]
+        assert extra_fields["Session ID"]["value"] == "2025-01-27_10-30-15_abc123"
+        assert extra_fields["Instrument"]["value"] == "FEI-Titan-TEM-012345"
+        assert "Start Time" in extra_fields
+        assert "End Time" in extra_fields
+        assert extra_fields["User"]["value"] == "jsmith"
 
     # ------------------------------------------------------------------------
     # RESULT STRUCTURE tests
@@ -1306,3 +1453,407 @@ class TestELabFTWDestinationExport:
 
             assert result.timestamp is not None
             assert isinstance(result.timestamp, datetime)
+
+
+# ============================================================================
+# TestELabFTWDestinationExtraFields - extra_fields schema tests
+# ============================================================================
+
+
+class TestELabFTWDestinationExtraFields:
+    """Test eLabFTW extra_fields metadata schema generation."""
+
+    @pytest.fixture
+    def destination(self):
+        """Create destination instance."""
+        return ELabFTWDestination()
+
+    # ------------------------------------------------------------------------
+    # EXTRA_FIELDS METADATA GENERATION tests
+    # ------------------------------------------------------------------------
+
+    def test_build_metadata_structure(self, destination, export_context):
+        """Test extra_fields metadata has correct top-level structure."""
+        metadata = destination._build_metadata(export_context)
+
+        # Verify top-level keys
+        assert "extra_fields" in metadata
+        assert "elabftw" in metadata
+
+        # Verify elabftw object structure
+        elabftw = metadata["elabftw"]
+        assert "display_main_text" in elabftw
+        assert "extra_fields_groups" in elabftw
+        assert elabftw["display_main_text"] is True
+        assert isinstance(elabftw["extra_fields_groups"], list)
+
+    def test_build_extra_fields_session_id(self, destination, export_context):
+        """Test Session ID field is correctly structured."""
+        metadata = destination._build_metadata(export_context)
+        extra_fields = metadata["extra_fields"]
+
+        assert "Session ID" in extra_fields
+        session_field = extra_fields["Session ID"]
+
+        assert session_field["type"] == "text"
+        assert session_field["value"] == "2025-01-27_10-30-15_abc123"
+        assert "description" in session_field
+        assert "NexusLIMS session identifier" in session_field["description"]
+        assert session_field["position"] == 1
+        assert session_field["group_id"] == 1
+
+    def test_build_extra_fields_instrument(self, destination, export_context):
+        """Test Instrument field is correctly structured."""
+        metadata = destination._build_metadata(export_context)
+        extra_fields = metadata["extra_fields"]
+
+        assert "Instrument" in extra_fields
+        instrument_field = extra_fields["Instrument"]
+
+        assert instrument_field["type"] == "text"
+        assert instrument_field["value"] == "FEI-Titan-TEM-012345"
+        assert "description" in instrument_field
+        assert instrument_field["position"] == 2
+        assert instrument_field["group_id"] == 1
+
+    def test_build_extra_fields_start_time(self, destination, export_context):
+        """Test Start Time uses datetime-local type with correct format."""
+        metadata = destination._build_metadata(export_context)
+        extra_fields = metadata["extra_fields"]
+
+        assert "Start Time" in extra_fields
+        start_field = extra_fields["Start Time"]
+
+        assert start_field["type"] == "datetime-local"
+        # datetime-local format is YYYY-MM-DDTHH:MM (no seconds, no timezone)
+        assert start_field["value"] == "2025-01-27T10:30"
+        assert "description" in start_field
+        assert start_field["position"] == 3
+        assert start_field["group_id"] == 1
+
+    def test_build_extra_fields_end_time(self, destination, export_context):
+        """Test End Time uses datetime-local type with correct format."""
+        metadata = destination._build_metadata(export_context)
+        extra_fields = metadata["extra_fields"]
+
+        assert "End Time" in extra_fields
+        end_field = extra_fields["End Time"]
+
+        assert end_field["type"] == "datetime-local"
+        assert end_field["value"] == "2025-01-27T14:45"
+        assert "description" in end_field
+        assert end_field["position"] == 4
+        assert end_field["group_id"] == 1
+
+    def test_build_extra_fields_user_present(self, destination, export_context):
+        """Test User field included when user is specified."""
+        metadata = destination._build_metadata(export_context)
+        extra_fields = metadata["extra_fields"]
+
+        assert "User" in extra_fields
+        user_field = extra_fields["User"]
+
+        assert user_field["type"] == "text"
+        assert user_field["value"] == "jsmith"
+        assert "description" in user_field
+        assert user_field["position"] == 5
+        assert user_field["group_id"] == 1
+
+    def test_build_extra_fields_user_absent(self, destination, export_context):
+        """Test User field omitted when user is None."""
+        export_context.user = None
+        metadata = destination._build_metadata(export_context)
+        extra_fields = metadata["extra_fields"]
+
+        # User field should not be present
+        assert "User" not in extra_fields
+
+        # But other fields should still be there
+        assert "Session ID" in extra_fields
+        assert "Instrument" in extra_fields
+
+    def test_build_extra_fields_groups_basic(self, destination, export_context):
+        """Test groups array with only Session Information group."""
+        # No CDCS result, so only one group
+        metadata = destination._build_metadata(export_context)
+        groups = metadata["elabftw"]["extra_fields_groups"]
+
+        assert len(groups) == 1
+        assert groups[0] == {"id": 1, "name": "Session Information"}
+
+    def test_build_extra_fields_cdcs_url_present(self, destination, export_context):
+        """Test CDCS Record field added when CDCS result available."""
+        # Add CDCS result to context
+        cdcs_result = ExportResult(
+            success=True,
+            destination_name="cdcs",
+            record_id="cdcs-123",
+            record_url="https://cdcs.example.com/record/123",
+        )
+        export_context.previous_results["cdcs"] = cdcs_result
+
+        metadata = destination._build_metadata(export_context)
+        extra_fields = metadata["extra_fields"]
+
+        # Verify CDCS Record field
+        assert "CDCS Record" in extra_fields
+        cdcs_field = extra_fields["CDCS Record"]
+
+        assert cdcs_field["type"] == "url"
+        assert cdcs_field["value"] == "https://cdcs.example.com/record/123"
+        assert "description" in cdcs_field
+        assert "CDCS" in cdcs_field["description"]
+        assert cdcs_field["position"] == 10  # Gap after user fields
+        assert cdcs_field["group_id"] == 2  # Different group
+
+    def test_build_extra_fields_cdcs_url_absent(self, destination, export_context):
+        """Test CDCS Record field omitted when no CDCS result."""
+        # Ensure no CDCS result
+        assert "cdcs" not in export_context.previous_results
+
+        metadata = destination._build_metadata(export_context)
+        extra_fields = metadata["extra_fields"]
+
+        # CDCS Record field should not be present
+        assert "CDCS Record" not in extra_fields
+
+    def test_build_extra_fields_groups_with_cdcs(self, destination, export_context):
+        """Test groups array includes Related Records when CDCS present."""
+        # Add CDCS result
+        cdcs_result = ExportResult(
+            success=True,
+            destination_name="cdcs",
+            record_id="cdcs-123",
+            record_url="https://cdcs.example.com/record/123",
+        )
+        export_context.previous_results["cdcs"] = cdcs_result
+
+        metadata = destination._build_metadata(export_context)
+        groups = metadata["elabftw"]["extra_fields_groups"]
+
+        assert len(groups) == 2
+        assert groups[0] == {"id": 1, "name": "Session Information"}
+        assert groups[1] == {"id": 2, "name": "Related Records"}
+
+    def test_build_extra_fields_cdcs_failed_not_included(
+        self, destination, export_context
+    ):
+        """Test CDCS field not added if CDCS export failed."""
+        # Add failed CDCS result
+        cdcs_result = ExportResult(
+            success=False,
+            destination_name="cdcs",
+            error_message="CDCS upload failed",
+        )
+        export_context.previous_results["cdcs"] = cdcs_result
+
+        metadata = destination._build_metadata(export_context)
+        extra_fields = metadata["extra_fields"]
+
+        # CDCS Record should not be added for failed exports
+        assert "CDCS Record" not in extra_fields
+        # Only one group (Session Information)
+        assert len(metadata["elabftw"]["extra_fields_groups"]) == 1
+
+    # ------------------------------------------------------------------------
+    # VALIDATION tests
+    # ------------------------------------------------------------------------
+
+    def test_validate_extra_field_valid_text(self, destination):
+        """Test validation passes for valid text field."""
+        field_def = {
+            "type": "text",
+            "value": "test value",
+            "description": "Test field",
+        }
+        assert destination._validate_extra_field("Test", field_def) is True
+
+    def test_validate_extra_field_valid_datetime_local(self, destination):
+        """Test validation passes for valid datetime-local field."""
+        field_def = {
+            "type": "datetime-local",
+            "value": "2025-01-27T10:30",
+        }
+        assert destination._validate_extra_field("Start Time", field_def) is True
+
+    def test_validate_extra_field_invalid_datetime_local(self, destination):
+        """Test validation fails for invalid datetime-local format."""
+        # Missing T separator
+        field_def = {
+            "type": "datetime-local",
+            "value": "2025-01-27 10:30",
+        }
+        assert destination._validate_extra_field("Start Time", field_def) is False
+
+        # Wrong format entirely
+        field_def = {
+            "type": "datetime-local",
+            "value": "not a datetime",
+        }
+        assert destination._validate_extra_field("Start Time", field_def) is False
+
+    def test_validate_extra_field_valid_date(self, destination):
+        """Test validation passes for valid date field."""
+        field_def = {
+            "type": "date",
+            "value": "2025-01-27",
+        }
+        assert destination._validate_extra_field("Date", field_def) is True
+
+    def test_validate_extra_field_invalid_date(self, destination):
+        """Test validation fails for invalid date format."""
+        field_def = {
+            "type": "date",
+            "value": "01/27/2025",  # Wrong format
+        }
+        assert destination._validate_extra_field("Date", field_def) is False
+
+    def test_validate_extra_field_valid_url(self, destination):
+        """Test validation passes for valid URL."""
+        # http URL
+        field_def = {
+            "type": "url",
+            "value": "http://example.com",
+        }
+        assert destination._validate_extra_field("Link", field_def) is True
+
+        # https URL
+        field_def = {
+            "type": "url",
+            "value": "https://cdcs.example.com/record/123",
+        }
+        assert destination._validate_extra_field("CDCS", field_def) is True
+
+    def test_validate_extra_field_invalid_url(self, destination):
+        """Test validation fails for invalid URL."""
+        field_def = {
+            "type": "url",
+            "value": "not a url",
+        }
+        assert destination._validate_extra_field("Link", field_def) is False
+
+        # Missing protocol
+        field_def = {
+            "type": "url",
+            "value": "example.com",
+        }
+        assert destination._validate_extra_field("Link", field_def) is False
+
+    def test_validate_extra_field_missing_type(self, destination):
+        """Test validation fails when type is missing."""
+        field_def = {
+            "value": "test value",
+        }
+        assert destination._validate_extra_field("Test", field_def) is False
+
+    def test_validate_extra_field_missing_value(self, destination):
+        """Test validation fails when value is missing."""
+        field_def = {
+            "type": "text",
+        }
+        assert destination._validate_extra_field("Test", field_def) is False
+
+    def test_validate_extra_field_unknown_type_passes(self, destination):
+        """Test validation passes for unknown types (no format check)."""
+        # eLabFTW supports many types; we only validate known ones
+        field_def = {
+            "type": "select",  # Not validated by our code
+            "value": "option1",
+        }
+        assert destination._validate_extra_field("Dropdown", field_def) is True
+
+    # ------------------------------------------------------------------------
+    # EXPORT INTEGRATION with extra_fields
+    # ------------------------------------------------------------------------
+
+    def test_export_uses_extra_fields_metadata(
+        self, destination, export_context, mock_config_enabled
+    ):
+        """Test export() calls create_experiment with extra_fields metadata."""
+        with patch(
+            "nexusLIMS.exporters.destinations.elabftw.get_elabftw_client"
+        ) as mock_get_client:
+            mock_client = Mock()
+            mock_client.create_experiment.return_value = {"id": 42}
+            mock_client.upload_file_to_experiment.return_value = {"id": 1}
+            mock_get_client.return_value = mock_client
+
+            destination.export(export_context)
+
+            # Verify create_experiment was called with extra_fields metadata
+            mock_client.create_experiment.assert_called_once()
+            call_kwargs = mock_client.create_experiment.call_args[1]
+
+            metadata = call_kwargs["metadata"]
+            assert "extra_fields" in metadata
+            assert "elabftw" in metadata
+
+            # Verify basic structure
+            extra_fields = metadata["extra_fields"]
+            assert "Session ID" in extra_fields
+            assert "Instrument" in extra_fields
+            assert "Start Time" in extra_fields
+            assert extra_fields["Start Time"]["type"] == "datetime-local"
+
+    # ------------------------------------------------------------------------
+    # PYDANTIC MODEL tests
+    # ------------------------------------------------------------------------
+
+    def test_pydantic_models_import(self):
+        """Test Pydantic models can be imported and used."""
+        from nexusLIMS.exporters.destinations.elabftw import (
+            ELabFTWConfig,
+            ExtraField,
+            ExtraFieldsGroup,
+            ExtraFieldsMetadata,
+        )
+
+        # Create valid models
+        field = ExtraField(type="text", value="test")
+        assert field.type == "text"
+        assert field.value == "test"
+
+        group = ExtraFieldsGroup(id=1, name="Test Group")
+        assert group.id == 1
+        assert group.name == "Test Group"
+
+        config = ELabFTWConfig(display_main_text=True, extra_fields_groups=[group])
+        assert config.display_main_text is True
+        assert len(config.extra_fields_groups) == 1
+
+        metadata = ExtraFieldsMetadata(extra_fields={"Test": field}, elabftw=config)
+        assert "Test" in metadata.extra_fields
+
+    def test_pydantic_field_type_validation(self):
+        """Test Pydantic validates field types."""
+        from pydantic import ValidationError
+
+        from nexusLIMS.exporters.destinations.elabftw import ExtraField
+
+        # Valid types
+        for field_type in [
+            "text",
+            "date",
+            "datetime-local",
+            "email",
+            "number",
+            "url",
+        ]:
+            field = ExtraField(type=field_type, value="test")
+            assert field.type == field_type
+
+        # Invalid type should raise ValidationError
+        with pytest.raises(ValidationError):
+            ExtraField(type="invalid-type", value="test")
+
+    def test_pydantic_model_dump_excludes_none(self, destination, export_context):
+        """Test model_dump excludes None values."""
+        metadata = destination._build_metadata(export_context)
+
+        # Check that fields without optional values don't have None keys
+        extra_fields = metadata["extra_fields"]
+        for field_name, field_data in extra_fields.items():
+            # None values should be excluded from the dict
+            assert None not in field_data.values(), (
+                f"Field '{field_name}' contains None values: {field_data}"
+            )

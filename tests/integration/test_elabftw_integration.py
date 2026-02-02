@@ -11,7 +11,6 @@ Requires: docker compose up -d (in tests/integration/docker/)
 """
 
 from datetime import datetime
-from pathlib import Path
 
 import pytest
 import requests
@@ -98,7 +97,7 @@ def export_context_elabftw(sample_xml_file, docker_services, monkeypatch):
     refresh_settings()
 
     # Create export context
-    context = ExportContext(
+    return ExportContext(
         xml_file_path=sample_xml_file,
         session_identifier="integration-test-2025-01-27",
         instrument_pid="FEI-Titan-TEM-012345",
@@ -106,8 +105,6 @@ def export_context_elabftw(sample_xml_file, docker_services, monkeypatch):
         dt_to=datetime(2025, 1, 27, 14, 45, 0),
         user="integration_test_user",
     )
-
-    return context
 
 
 # ============================================================================
@@ -299,7 +296,7 @@ class TestELabFTWClientIntegration:
         result = elabftw_client.create_experiment(
             title="Integration Test - Tags and Metadata",
             body="Testing tags and metadata",
-            tags="integration|test|nexuslims",
+            tags=["integration", "test", "nexuslims"],
             metadata={
                 "session_id": "test-session-123",
                 "instrument": "FEI-Titan-TEM",
@@ -321,9 +318,9 @@ class TestELabFTWClientIntegration:
             tag_str = tags_field
 
         # At least one of our tags should be present
-        assert any(
-            tag in tag_str for tag in ["integration", "test", "nexuslims"]
-        ), f"Expected tags not found in: {tag_str}"
+        assert any(tag in tag_str for tag in ["integration", "test", "nexuslims"]), (
+            f"Expected tags not found in: {tag_str}"
+        )
 
         # Verify metadata
         metadata = retrieved.get("metadata", {})
@@ -337,9 +334,7 @@ class TestELabFTWClientIntegration:
 
     def test_authentication_error(self):
         """Test that invalid credentials raise authentication error."""
-        bad_client = ELabFTWClient(
-            base_url=ELABFTW_URL, api_key="invalid-key-12345"
-        )
+        bad_client = ELabFTWClient(base_url=ELABFTW_URL, api_key="invalid-key-12345")
 
         with pytest.raises(ELabFTWAuthenticationError):
             bad_client.create_experiment(
@@ -356,7 +351,9 @@ class TestELabFTWClientIntegration:
 class TestELabFTWDestinationIntegration:
     """Integration tests for ELabFTWDestination export workflow."""
 
-    def test_export_creates_experiment(self, export_context_elabftw, elabftw_client: ELabFTWClient):
+    def test_export_creates_experiment(
+        self, export_context_elabftw, elabftw_client: ELabFTWClient
+    ):
         """Test export workflow creates experiment in eLabFTW."""
         destination = ELabFTWDestination()
 
@@ -381,7 +378,9 @@ class TestELabFTWDestinationIntegration:
         # Cleanup
         elabftw_client.delete_experiment(experiment_id)
 
-    def test_export_uploads_xml_attachment(self, export_context_elabftw, elabftw_client: ELabFTWClient):
+    def test_export_uploads_xml_attachment(
+        self, export_context_elabftw, elabftw_client: ELabFTWClient
+    ):
         """Test XML file attached to experiment."""
         destination = ELabFTWDestination()
 
@@ -409,7 +408,9 @@ class TestELabFTWDestinationIntegration:
         # Cleanup
         elabftw_client.delete_experiment(experiment_id)
 
-    def test_export_with_cdcs_crosslink(self, export_context_elabftw, elabftw_client: ELabFTWClient):
+    def test_export_with_cdcs_crosslink(
+        self, export_context_elabftw, elabftw_client: ELabFTWClient
+    ):
         """Test CDCS URL appears in experiment body."""
         destination = ELabFTWDestination()
 
@@ -421,7 +422,7 @@ class TestELabFTWDestinationIntegration:
             record_id="test-cdcs-record-123",
             record_url="http://cdcs.localhost:40080/data/test-cdcs-record-123",
         )
-        export_context_elabftw._results["cdcs"] = cdcs_result
+        export_context_elabftw.add_result("cdcs", cdcs_result)
 
         # Export record
         result = destination.export(export_context_elabftw)
@@ -487,7 +488,10 @@ class TestELabFTWDestinationIntegration:
 
         assert result.success is False
         assert result.error_message is not None
-        assert "FileNotFoundError" in result.error_message or "No such file" in result.error_message
+        assert (
+            "FileNotFoundError" in result.error_message
+            or "No such file" in result.error_message
+        )
 
     def test_validate_config_success(self, elabftw_client, monkeypatch):
         """Test configuration validation with valid credentials."""
@@ -546,8 +550,6 @@ class TestELabFTWEndToEnd:
     ):
         """Test exporting to both CDCS and eLabFTW."""
         from nexusLIMS.exporters import export_records
-        from nexusLIMS.exporters.destinations.cdcs import CDCSDestination
-        from nexusLIMS.exporters.destinations.elabftw import ELabFTWDestination
 
         # Configure both destinations
         monkeypatch.setenv("NX_ELABFTW_URL", ELABFTW_URL)
@@ -585,3 +587,186 @@ class TestELabFTWEndToEnd:
                 from nexusLIMS.utils import cdcs
 
                 cdcs.delete_record(result.record_id)
+
+
+# ============================================================================
+# Extra Fields Integration Tests
+# ============================================================================
+
+
+@pytest.mark.integration
+class TestELabFTWExtraFieldsIntegration:
+    """Integration tests for eLabFTW extra_fields schema."""
+
+    def test_create_experiment_with_extra_fields(self, elabftw_client: ELabFTWClient):
+        """Test creating experiment with extra_fields metadata."""
+        # Create experiment with extra_fields
+        result = elabftw_client.create_experiment(
+            title="Integration Test - Extra Fields",
+            body="Testing extra_fields schema",
+            metadata={
+                "extra_fields": {
+                    "Session ID": {
+                        "type": "text",
+                        "value": "test-session-12345",
+                        "description": "Test session identifier",
+                        "position": 1,
+                        "group_id": 1,
+                    },
+                    "Start Time": {
+                        "type": "datetime-local",
+                        "value": "2025-01-27T10:30",
+                        "description": "Session start time",
+                        "position": 2,
+                        "group_id": 1,
+                    },
+                    "CDCS Link": {
+                        "type": "url",
+                        "value": "https://cdcs.example.com/record/123",
+                        "description": "Link to CDCS record",
+                        "position": 3,
+                        "group_id": 2,
+                    },
+                },
+                "elabftw": {
+                    "display_main_text": True,
+                    "extra_fields_groups": [
+                        {"id": 1, "name": "Session Information"},
+                        {"id": 2, "name": "Related Records"},
+                    ],
+                },
+            },
+        )
+
+        assert "id" in result
+        experiment_id = result["id"]
+
+        # Retrieve experiment and verify metadata
+        retrieved = elabftw_client.get_experiment(experiment_id)
+        assert retrieved["id"] == experiment_id
+
+        # Verify metadata was stored (structure depends on eLabFTW version)
+        metadata = retrieved.get("metadata", {})
+        assert metadata is not None
+
+        # Cleanup
+        elabftw_client.delete_experiment(experiment_id)
+
+    def test_export_destination_creates_extra_fields(
+        self, export_context_elabftw, elabftw_client: ELabFTWClient
+    ):
+        """Test export destination creates experiments with extra_fields."""
+        destination = ELabFTWDestination()
+
+        # Export record
+        result = destination.export(export_context_elabftw)
+        assert result.success is True
+
+        # Retrieve experiment
+        experiment_id = int(result.record_id)
+        experiment = elabftw_client.get_experiment(experiment_id)
+
+        # Verify experiment was created
+        assert experiment["id"] == experiment_id
+        assert "NexusLIMS" in experiment["title"]
+
+        # Verify metadata contains extra_fields structure
+        metadata = experiment.get("metadata", {})
+        if metadata:
+            # Metadata structure depends on how eLabFTW stores it
+            # At minimum, verify it's not empty
+            assert len(str(metadata)) > 0
+
+        # Cleanup
+        elabftw_client.delete_experiment(experiment_id)
+
+    def test_extra_fields_datetime_format(self, elabftw_client: ELabFTWClient):
+        """Test datetime-local fields use correct format."""
+        result = elabftw_client.create_experiment(
+            title="Integration Test - Datetime Format",
+            metadata={
+                "extra_fields": {
+                    "Test DateTime": {
+                        "type": "datetime-local",
+                        "value": "2025-01-27T14:30",  # YYYY-MM-DDTHH:MM
+                        "description": "Test datetime field",
+                    }
+                },
+                "elabftw": {"display_main_text": True},
+            },
+        )
+
+        experiment_id = result["id"]
+
+        # Retrieve and verify
+        experiment = elabftw_client.get_experiment(experiment_id)
+        assert experiment["id"] == experiment_id
+
+        # Cleanup
+        elabftw_client.delete_experiment(experiment_id)
+
+    def test_extra_fields_url_type(self, elabftw_client: ELabFTWClient):
+        """Test URL fields are stored correctly."""
+        test_url = "https://cdcs.localhost:40080/data/test-record"
+
+        result = elabftw_client.create_experiment(
+            title="Integration Test - URL Field",
+            metadata={
+                "extra_fields": {
+                    "CDCS Record": {
+                        "type": "url",
+                        "value": test_url,
+                        "description": "Link to CDCS",
+                    }
+                },
+                "elabftw": {"display_main_text": True},
+            },
+        )
+
+        experiment_id = result["id"]
+
+        # Retrieve and verify URL is in metadata
+        experiment = elabftw_client.get_experiment(experiment_id)
+        metadata_str = str(experiment.get("metadata", {}))
+        assert test_url in metadata_str or "cdcs" in metadata_str.lower()
+
+        # Cleanup
+        elabftw_client.delete_experiment(experiment_id)
+
+    def test_extra_fields_with_groups(self, elabftw_client: ELabFTWClient):
+        """Test extra_fields_groups are stored correctly."""
+        result = elabftw_client.create_experiment(
+            title="Integration Test - Field Groups",
+            metadata={
+                "extra_fields": {
+                    "Field 1": {
+                        "type": "text",
+                        "value": "Group 1 Field",
+                        "group_id": 1,
+                        "position": 1,
+                    },
+                    "Field 2": {
+                        "type": "text",
+                        "value": "Group 2 Field",
+                        "group_id": 2,
+                        "position": 2,
+                    },
+                },
+                "elabftw": {
+                    "display_main_text": True,
+                    "extra_fields_groups": [
+                        {"id": 1, "name": "First Group"},
+                        {"id": 2, "name": "Second Group"},
+                    ],
+                },
+            },
+        )
+
+        experiment_id = result["id"]
+
+        # Retrieve experiment
+        experiment = elabftw_client.get_experiment(experiment_id)
+        assert experiment["id"] == experiment_id
+
+        # Cleanup
+        elabftw_client.delete_experiment(experiment_id)

@@ -186,10 +186,14 @@ class ELabFTWClient:
                 try:
                     id_str = location.replace(url + "/", "").rstrip("/")
                     experiment_id = int(id_str)
-                    return {"id": experiment_id, "location": location}
                 except ValueError as e:
-                    msg = f"Failed to parse experiment ID from Location header: {location}"
+                    msg = (
+                        "Failed to parse experiment ID from "
+                        f"Location header: {location}"
+                    )
                     raise ELabFTWError(msg) from e
+                else:
+                    return {"id": experiment_id, "location": location}
             # Fallback: try to parse JSON response (in case API behavior changes)
             try:
                 return response.json()
@@ -238,7 +242,35 @@ class ELabFTWClient:
         tags : list of str, optional
             List of tag strings to apply
         metadata : dict, optional
-            Extra metadata fields as key-value pairs
+            Experiment metadata. Can be either:
+
+            1. **Flat key-value pairs** (simple):
+               ``{"key": "value", "number": 123}``
+
+            2. **eLabFTW extra_fields schema** (recommended):
+               ``{``
+               ``    "extra_fields": {``
+               ``        "Field Name": {``
+               ``            "type": "text|date|datetime-local|email|number|url|...",``
+               ``            "value": "field value",``
+               ``            "description": "Optional description",``
+               ``            "position": 1,``
+               ``            "group_id": 1,``
+               ``            ...``
+               ``        },``
+               ``        ...``
+               ``    },``
+               ``    "elabftw": {``
+               ``        "display_main_text": true,``
+               ``        "extra_fields_groups": [``
+               ``            {"id": 1, "name": "Group Name"},``
+               ``            ...``
+               ``        ]``
+               ``    }``
+               ``}``
+
+            For extra_fields schema details, see:
+            https://doc.elabftw.net/metadata.html#schema-description
         category : int, optional
             Category ID (uses eLabFTW default if not specified)
         status : int, optional
@@ -258,6 +290,8 @@ class ELabFTWClient:
 
         Examples
         --------
+        Simple metadata (flat key-value pairs):
+
         >>> exp = client.create_experiment(
         ...     title="TEM Analysis",
         ...     body="Sample characterization with TEM",
@@ -265,6 +299,44 @@ class ELabFTWClient:
         ...     metadata={"instrument": "FEI Titan", "operator": "jsmith"}
         ... )
         >>> print(f"Created experiment ID: {exp['id']}")
+
+        Structured extra_fields (recommended):
+
+        >>> exp = client.create_experiment(
+        ...     title="TEM Analysis",
+        ...     metadata={
+        ...         "extra_fields": {
+        ...             "Instrument": {
+        ...                 "type": "text",
+        ...                 "value": "FEI Titan",
+        ...                 "description": "Instrument used",
+        ...                 "position": 1,
+        ...                 "group_id": 1
+        ...             },
+        ...             "Start Time": {
+        ...                 "type": "datetime-local",
+        ...                 "value": "2025-01-27T10:30",
+        ...                 "description": "Session start time",
+        ...                 "position": 2,
+        ...                 "group_id": 1
+        ...             },
+        ...             "CDCS Record": {
+        ...                 "type": "url",
+        ...                 "value": "https://cdcs.example.com/record/123",
+        ...                 "description": "Link to related CDCS record",
+        ...                 "position": 3,
+        ...                 "group_id": 2
+        ...             }
+        ...         },
+        ...         "elabftw": {
+        ...             "display_main_text": True,
+        ...             "extra_fields_groups": [
+        ...                 {"id": 1, "name": "Session Information"},
+        ...                 {"id": 2, "name": "Related Records"}
+        ...             ]
+        ...         }
+        ...     }
+        ... )
         """
         payload: dict[str, Any] = {"title": title}
 
@@ -272,8 +344,8 @@ class ELabFTWClient:
             payload["body"] = body
 
         if tags:
-            # eLabFTW expects pipe-separated tag string
-            payload["tags"] = "|".join(tags)
+            # eLabFTW expects list of strings
+            payload["tags"] = tags
 
         if metadata:
             payload["metadata"] = metadata
@@ -404,7 +476,16 @@ class ELabFTWClient:
         tags : list of str, optional
             New tag list (replaces existing tags)
         metadata : dict, optional
-            New metadata (replaces existing metadata)
+            New metadata (replaces existing metadata). Can be either:
+
+            1. **Flat key-value pairs** (simple):
+               ``{"key": "value", "number": 123}``
+
+            2. **eLabFTW extra_fields schema** (recommended):
+               See ``create_experiment()`` for full schema documentation.
+
+            For extra_fields schema details, see:
+            https://doc.elabftw.net/metadata.html#schema-description
         category : int, optional
             New category ID
         status : int, optional
@@ -424,15 +505,34 @@ class ELabFTWClient:
 
         Examples
         --------
-        >>> # Update title only
+        Update title only:
+
         >>> client.update_experiment(42, title="New Title")
-        >>>
-        >>> # Update multiple fields
+
+        Update multiple fields with flat metadata:
+
         >>> client.update_experiment(
         ...     42,
         ...     body="Updated description",
         ...     tags=["new-tag"],
         ...     metadata={"updated": "2025-01-31"}
+        ... )
+
+        Update with extra_fields schema:
+
+        >>> client.update_experiment(
+        ...     42,
+        ...     metadata={
+        ...         "extra_fields": {
+        ...             "Status": {
+        ...                 "type": "text",
+        ...                 "value": "Completed",
+        ...                 "description": "Experiment status",
+        ...                 "position": 1
+        ...             }
+        ...         },
+        ...         "elabftw": {"display_main_text": True}
+        ...     }
         ... )
         """
         url = f"{self.experiments_endpoint}/{experiment_id}"
@@ -569,10 +669,14 @@ class ELabFTWClient:
                     try:
                         id_str = location.replace(url + "/", "").rstrip("/")
                         upload_id = int(id_str)
-                        return {"id": upload_id, "location": location}
                     except ValueError as e:
-                        msg = f"Failed to parse upload ID from Location header: {location}"
+                        msg = (
+                            "Failed to parse upload ID from "
+                            f"Location header: {location}"
+                        )
                         raise ELabFTWError(msg) from e
+                    else:
+                        return {"id": upload_id, "location": location}
                 # Fallback: try to parse JSON response
                 try:
                     return response.json()
