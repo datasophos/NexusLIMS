@@ -25,10 +25,10 @@ from mysql.connector import Error
 
 # Test configuration
 TEST_USER = {
-    "email": "testuser@example.com",
+    "email": "admin@example.com",
     "firstname": "Test",
     "lastname": "User",
-    "password": "testpass123",  # Will be bcrypt hashed
+    "password": "admin",  # Will be bcrypt hashed
     "validated": 1,  # User is validated (can log in)
     "lang": "en_GB",
 }

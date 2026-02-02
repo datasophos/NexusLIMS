@@ -13,7 +13,7 @@ docker compose up -d
 
 The init script will automatically:
 1. Create a test team: "Test Team"
-2. Create a test user: testuser@example.com / testpass123
+2. Create a test user: admin@example.com / admin
 3. Add user to team
 4. Generate API key: `1-aaaa...` (84 'a' characters)
 
@@ -34,8 +34,8 @@ The following credentials are hardcoded for integration testing:
 
 - **API URL**: `http://elabftw.localhost:40080`
 - **API Key**: `1-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa` (84 'a' characters)
-- **Test User**: `testuser@example.com`
-- **Password**: `testpass123`
+- **Test User**: `admin@example.com`
+- **Password**: `admin`
 
 **Note**: The test user is created via direct database insertion for automated testing. The API key works perfectly for all integration tests.
 

@@ -744,10 +744,10 @@ from mysql.connector import Error
 
 # Test configuration
 TEST_USER = {
-    "email": "testuser@example.com",
+    "email": "admin@example.com",
     "firstname": "Test",
     "lastname": "User",
-    "password": "testpass123",  # Will be bcrypt hashed
+    "password": "admin",  # Will be bcrypt hashed
     "validated": 1,  # User is validated (can log in)
     "lang": "en_GB",
 }
@@ -1086,7 +1086,7 @@ docker compose up -d
 
 The init script will automatically:
 1. Create a test team: "Test Team"
-2. Create a test user: testuser@example.com / testpass123
+2. Create a test user: admin@example.com / admin
 3. Add user to team
 4. Generate API key: `1-aaaa...` (84 'a' characters)
 5. Write config to `/tmp/elabftw_test_config.env`
@@ -1108,8 +1108,8 @@ source /tmp/elabftw_test_config.env
 ### Access eLabFTW
 
 - **URL**: https://elabftw.localhost:40080
-- **Username**: testuser@example.com
-- **Password**: testpass123
+- **Username**: admin@example.com
+- **Password**: admin
 - **API Key**: Available in `/tmp/elabftw_test_config.env`
 
 ## Running Integration Tests
@@ -1359,7 +1359,7 @@ docker compose logs elabftw-mysql
 - [ ] MySQL container starts and passes health check
 - [ ] eLabFTW container starts and passes health check
 - [ ] Init script runs successfully (check logs for "Initialization complete!")
-- [ ] Test user created: testuser@example.com
+- [ ] Test user created: admin@example.com
 - [ ] API key generated and written to `/tmp/elabftw_test_config.env`
 - [ ] Can log in via web interface with test credentials
 - [ ] API key works for API requests

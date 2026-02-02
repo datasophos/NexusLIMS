@@ -244,7 +244,7 @@ class ELabFTWDestination:
         str
             Title in format: "NexusLIMS - {instrument} - {session_id}"
         """
-        return f"NexusLIMS - {context.instrument_pid} - {context.session_identifier}"
+        return f"NexusLIMS Experiment - {context.xml_file_path.stem}"
 
     def _build_html_body(self, context: ExportContext) -> str:
         """Build HTML body for experiment.

@@ -1085,10 +1085,7 @@ class TestELabFTWDestinationExport:
 
             mock_client.create_experiment.assert_called_once()
             call_kwargs = mock_client.create_experiment.call_args[1]
-            assert (
-                call_kwargs["title"]
-                == "NexusLIMS - FEI-Titan-TEM-012345 - 2025-01-27_10-30-15_abc123"
-            )
+            assert call_kwargs["title"] == "NexusLIMS Experiment - test_record"
 
     def test_export_includes_html_body(
         self, destination, export_context, mock_config_enabled
@@ -1464,7 +1461,7 @@ class TestELabFTWDestinationExport:
     def test_build_title(self, destination, export_context):
         """Test title generation format."""
         title = destination._build_title(export_context)
-        assert title == "NexusLIMS - FEI-Titan-TEM-012345 - 2025-01-27_10-30-15_abc123"
+        assert title == "NexusLIMS Experiment - test_record"
 
     def test_build_tags(self, destination, export_context):
         """Test tag generation includes required tags."""

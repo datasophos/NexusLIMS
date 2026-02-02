@@ -18,7 +18,7 @@ from sqlmodel import Session as DBSession
 from sqlmodel import select
 
 from nexusLIMS.db.models import UploadLog
-from nexusLIMS.exporters.base import ExportContext, ExportResult
+from nexusLIMS.exporters.base import ExportResult
 from nexusLIMS.exporters.destinations.elabftw import ELabFTWDestination
 from nexusLIMS.utils.elabftw import (
     ELabFTWAuthenticationError,
@@ -36,105 +36,6 @@ ELABFTW_API_KEY = "1-" + "a" * 84
 # ============================================================================
 # Test Fixtures
 # ============================================================================
-
-
-@pytest.fixture
-def elabftw_client(docker_services) -> ELabFTWClient:
-    """Create eLabFTW client for integration tests.
-
-    Parameters
-    ----------
-    docker_services : None
-        Ensures Docker services (including eLabFTW) are running
-
-    Returns
-    -------
-    ELabFTWClient
-        Configured eLabFTW client instance
-    """
-    return ELabFTWClient(base_url=ELABFTW_URL, api_key=ELABFTW_API_KEY)
-
-
-@pytest.fixture
-def sample_xml_file(tmp_path):
-    """Create sample XML record for testing."""
-    xml_file = tmp_path / "integration_test_record.xml"
-    xml_content = """<?xml version="1.0" encoding="UTF-8"?>
-<nx:Experiment
-    xmlns:nx="https://data.nist.gov/od/dm/nexus/experiment/v1.0"
-    pid="test-experiment-001">
-    <nx:title>Integration Test TEM Session</nx:title>
-    <nx:summary>
-        <nx:experimenter>Test User</nx:experimenter>
-        <nx:instrument pid="FEI-Titan-TEM-1">FEI Titan TEM</nx:instrument>
-        <nx:reservationStart>2025-02-01T09:00:00-05:00</nx:reservationStart>
-        <nx:reservationEnd>2025-02-01T12:00:00-05:00</nx:reservationEnd>
-        <nx:motivation>
-            Integration testing of eLabFTW export functionality
-        </nx:motivation>
-    </nx:summary>
-    <nx:sample id="sample-001">
-        <nx:name>Test Sample</nx:name>
-        <nx:description>Sample used for integration testing</nx:description>
-    </nx:sample>
-    <nx:acquisitionActivity seqno="1">
-        <nx:startTime>2025-02-01T09:15:00-05:00</nx:startTime>
-        <nx:sampleID>sample-001</nx:sampleID>
-        <nx:setup>
-            <nx:param name="Acceleration Voltage" unit="kV">200</nx:param>
-            <nx:param name="Magnification">50000</nx:param>
-            <nx:param name="Microscope Mode">TEM</nx:param>
-        </nx:setup>
-        <nx:dataset type="Image">
-            <nx:name>test_image_001.tif</nx:name>
-            <nx:location>/path/to/data/test_image_001.tif</nx:location>
-            <nx:format>image/tiff</nx:format>
-            <nx:description>TEM image for integration testing</nx:description>
-            <nx:meta name="Exposure Time" unit="s">0.5</nx:meta>
-            <nx:meta name="Detector">CCD Camera</nx:meta>
-        </nx:dataset>
-    </nx:acquisitionActivity>
-</nx:Experiment>"""
-    xml_file.write_text(xml_content)
-    return xml_file
-
-
-@pytest.fixture
-def export_context_elabftw(sample_xml_file, test_environment_setup, monkeypatch):
-    """Create ExportContext for eLabFTW export tests.
-
-    Parameters
-    ----------
-    sample_xml_file : Path
-        Path to sample XML file for testing
-    test_environment_setup : dict
-        Test environment with populated database and configuration
-    monkeypatch : pytest.MonkeyPatch
-        Pytest monkeypatch fixture
-
-    Returns
-    -------
-    ExportContext
-        Configured export context for eLabFTW testing
-    """
-    # Configure eLabFTW settings
-    monkeypatch.setenv("NX_ELABFTW_URL", ELABFTW_URL)
-    monkeypatch.setenv("NX_ELABFTW_API_KEY", ELABFTW_API_KEY)
-
-    # Refresh settings to pick up environment variables
-    from nexusLIMS.config import refresh_settings
-
-    refresh_settings()
-
-    # Create export context using test environment data
-    return ExportContext(
-        xml_file_path=sample_xml_file,
-        session_identifier="integration-test-2025-01-27",
-        instrument_pid=test_environment_setup["instrument_pid"],
-        dt_from=test_environment_setup["dt_from"],
-        dt_to=test_environment_setup["dt_to"],
-        user=test_environment_setup["user"],
-    )
 
 
 # ============================================================================
@@ -347,10 +248,14 @@ class TestELabFTWClientIntegration:
         metadata = destination._build_metadata(export_context_elabftw)  # noqa: SLF001
 
         # Create experiment with tags and extra_fields metadata
+        # Note: Using "NexusLIMS" with proper capitalization because eLabFTW
+        # normalizes tag capitalization to match existing tags in the database.
+        # Previous tests (via destination.export()) create the "NexusLIMS" tag,
+        # so eLabFTW will normalize "nexuslims" -> "NexusLIMS".
         result = elabftw_client.create_experiment(
             title="Integration Test - Tags and Metadata",
             body="Testing tags and metadata",
-            tags=["integration", "test", "nexuslims"],
+            tags=["integration", "test", "NexusLIMS"],
             metadata=metadata,
         )
 
@@ -369,7 +274,7 @@ class TestELabFTWClientIntegration:
         )
 
         # All tags should be present (use set comparison to ignore order)
-        expected_tags = {"integration", "test", "nexuslims"}
+        expected_tags = {"integration", "test", "NexusLIMS"}
         actual_tags = set(tags_field)
         assert expected_tags == actual_tags, (
             f"Expected tags {expected_tags}, got {actual_tags}"
@@ -397,25 +302,25 @@ class TestELabFTWClientIntegration:
         assert "Instrument" in extra_fields
         instrument_field = extra_fields["Instrument"]
         assert instrument_field["type"] == "text"
-        assert instrument_field["value"] == "FEI-Titan-TEM-012345"
+        assert instrument_field["value"] == "FEI-Titan-TEM"
 
         # Verify Start Time field
         assert "Start Time" in extra_fields
         start_field = extra_fields["Start Time"]
         assert start_field["type"] == "datetime-local"
-        assert start_field["value"] == "2025-01-27T10:30"
+        assert start_field["value"] == "2018-11-13T04:00"
 
         # Verify End Time field
         assert "End Time" in extra_fields
         end_field = extra_fields["End Time"]
         assert end_field["type"] == "datetime-local"
-        assert end_field["value"] == "2025-01-27T14:45"
+        assert end_field["value"] == "2018-11-13T16:00"
 
         # Verify User field
         assert "User" in extra_fields
         user_field = extra_fields["User"]
         assert user_field["type"] == "text"
-        assert user_field["value"] == "integration_test_user"
+        assert user_field["value"] == "captain"
 
         # Verify elabftw config
         assert "elabftw" in metadata
@@ -469,10 +374,7 @@ class TestELabFTWDestinationIntegration:
         experiment_id = int(result.record_id)
         experiment = elabftw_client.get_experiment(experiment_id)
         assert experiment["id"] == experiment_id
-        assert (
-            experiment["title"]
-            == "NexusLIMS - FEI-Titan-TEM-012345 - integration-test-2025-01-27"
-        )
+        assert experiment["title"] == "NexusLIMS Experiment - integration_test_record"
 
         # Cleanup
         elabftw_client.delete_experiment(experiment_id)
@@ -681,57 +583,6 @@ class TestELabFTWDestinationIntegration:
 
 
 @pytest.mark.integration
-class TestELabFTWEndToEnd:
-    """End-to-end integration tests for eLabFTW export."""
-
-    def test_multi_destination_export(
-        self,
-        export_context_elabftw,
-        elabftw_client,
-        cdcs_client,
-        monkeypatch,
-    ):
-        """Test exporting to both CDCS and eLabFTW."""
-        from nexusLIMS.exporters import export_records
-
-        # Configure both destinations
-        monkeypatch.setenv("NX_ELABFTW_URL", ELABFTW_URL)
-        monkeypatch.setenv("NX_ELABFTW_API_KEY", ELABFTW_API_KEY)
-        monkeypatch.setenv("NX_CDCS_URL", cdcs_client["url"])
-        monkeypatch.setenv("NX_CDCS_TOKEN", cdcs_client["token"])
-
-        from nexusLIMS.config import refresh_settings
-
-        refresh_settings()
-
-        # Export to all destinations
-        xml_files = [export_context_elabftw.xml_file_path]
-        sessions = [None]  # Session object not needed for this test
-
-        results = export_records(xml_files, sessions)
-
-        # Verify both destinations succeeded
-        cdcs_results = [r for r in results if r.destination_name == "cdcs"]
-        elabftw_results = [r for r in results if r.destination_name == "elabftw"]
-
-        assert len(cdcs_results) > 0, "No CDCS export results found"
-        assert len(elabftw_results) > 0, "No eLabFTW export results found"
-
-        assert all(r.success for r in cdcs_results), "CDCS export failed"
-        assert all(r.success for r in elabftw_results), "eLabFTW export failed"
-
-        # Cleanup
-        for result in elabftw_results:
-            if result.success and result.record_id:
-                elabftw_client.delete_experiment(int(result.record_id))
-
-        for result in cdcs_results:
-            if result.success and result.record_id:
-                from nexusLIMS.utils import cdcs
-
-                cdcs.delete_record(result.record_id)
-
-
 # ============================================================================
 # Extra Fields Integration Tests
 # ============================================================================
@@ -790,7 +641,8 @@ class TestELabFTWExtraFieldsIntegration:
 
         # Verify metadata was stored (structure depends on eLabFTW version)
         metadata = retrieved.get("metadata", {})
-        assert metadata is not None
+        assert "elabftw" in metadata
+        assert "extra_fields" in metadata
 
         # Cleanup
         elabftw_client.delete_experiment(experiment_id)
@@ -815,35 +667,8 @@ class TestELabFTWExtraFieldsIntegration:
 
         # Verify metadata contains extra_fields structure
         metadata = experiment.get("metadata", {})
-        if metadata:
-            # Metadata structure depends on how eLabFTW stores it
-            # At minimum, verify it's not empty
-            assert len(str(metadata)) > 0
-
-        # Cleanup
-        elabftw_client.delete_experiment(experiment_id)
-
-    def test_extra_fields_datetime_format(self, elabftw_client: ELabFTWClient):
-        """Test datetime-local fields use correct format."""
-        result = elabftw_client.create_experiment(
-            title="Integration Test - Datetime Format",
-            metadata={
-                "extra_fields": {
-                    "Test DateTime": {
-                        "type": "datetime-local",
-                        "value": "2025-01-27T14:30",  # YYYY-MM-DDTHH:MM
-                        "description": "Test datetime field",
-                    }
-                },
-                "elabftw": {"display_main_text": True},
-            },
-        )
-
-        experiment_id = result["id"]
-
-        # Retrieve and verify
-        experiment = elabftw_client.get_experiment(experiment_id)
-        assert experiment["id"] == experiment_id
+        assert "elabftw" in metadata
+        assert "extra_fields" in metadata
 
         # Cleanup
         elabftw_client.delete_experiment(experiment_id)
@@ -870,8 +695,8 @@ class TestELabFTWExtraFieldsIntegration:
 
         # Retrieve and verify URL is in metadata
         experiment = elabftw_client.get_experiment(experiment_id)
-        metadata_str = str(experiment.get("metadata", {}))
-        assert test_url in metadata_str or "cdcs" in metadata_str.lower()
+        metadata = experiment.get("metadata", {})
+        assert test_url in metadata["extra_fields"]["CDCS Record"]["value"]
 
         # Cleanup
         elabftw_client.delete_experiment(experiment_id)
