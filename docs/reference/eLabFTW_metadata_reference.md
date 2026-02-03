@@ -2,9 +2,9 @@
 
 This document provides a comprehensive reference for the eLabFTW metadata JSON field system, which allows custom data to be attached to experiments, items, and their templates.
 
-**Source:** https://doc.elabftw.net/metadata.html  
-**Version:** eLabFTW Version 5.3.11
-**Fetched:** 2026-02-01
+- **Source:** [https://doc.elabftw.net/metadata.html](https://doc.elabftw.net/metadata.html)  
+- **eLabFTW Version:** 5.3.11
+- **Fetched:** 2026-02-01
 
 ## Overview
 
@@ -61,13 +61,13 @@ Toggle "Display main text" in the JSON Editor section to hide/show the main text
 
 The metadata JSON follows this structure:
 
-```json
+```json5
 {
   "extra_fields": {
     "Field Name": {
       "type": "field_type",
       "value": "field_value",
-      ...
+      // ...
     }
   },
   "elabftw": {

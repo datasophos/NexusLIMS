@@ -31,6 +31,7 @@ with the
 [NEMO lab management](https://www.atlantislabs.io/nemo/)
 system for harvesting of experimental sessions and
 instrument information.
+- **Multi-Destination Export Framework** - Configurable plugin-based export system supporting multiple data repositories, including {ref}`NexusLIMS CDCS <frontend_guide>` as the primary destination and the {ref}`eLabFTW electronic lab notebook <elabftw-exporter>`. NexusLIMS can easily be extended for support of custom destinations.
 - **Comprehensive support for common Electron Microscopy file formats** - NexusLIMS extracts detailed metadata from DigitalMicrograph DM3/DM4 files, FEI/Thermo TIF images, Tescan TIF images, Zeiss TIF images, FEI TIA (.ser/.emi), EDAX (.spc/.msa) EDS spectra, and more
 - **Temporal File Clustering** - Intelligent grouping of files into Acquisition Activities based on temporal analysis (with customizable sensitivity)
 - **Extensible Architecture** - Plugin-based extractor system and instrument profiles for easy customization

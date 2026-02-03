@@ -239,6 +239,7 @@ def export(self, context: ExportContext) -> ExportResult:
         return ExportResult(success=False, error_message=str(e), ...)
 ```
 
+(inter-destination-dependencies)=
 ## Inter-Destination Dependencies
 
 Destinations may depend on results from other destinations (e.g., LabArchives including a CDCS link). Handle this using priority ordering and `context.previous_results`.
