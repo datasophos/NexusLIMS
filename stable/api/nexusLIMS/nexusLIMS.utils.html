@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>nexusLIMS.utils &#8212; NexusLIMS 2.3.0 documentation</title>
+    <title>nexusLIMS.utils &#8212; NexusLIMS 2.4.0 documentation</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../_static/documentation_options.js?v=c3c8ae58"></script>
+    <script src="../../_static/documentation_options.js?v=4d935f96"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -52,7 +52,7 @@
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.3.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.4.0';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
@@ -60,12 +60,12 @@
     <link rel="icon" href="../../_static/nexusLIMS_bare_logo.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="nexusLIMS.cdcs" href="nexusLIMS.cdcs.html" />
-    <link rel="prev" title="nexusLIMS.instruments" href="nexusLIMS.instruments.html" />
+    <link rel="next" title="nexusLIMS.utils.files" href="nexusLIMS.utils.files.html" />
+    <link rel="prev" title="nexusLIMS.db.enums" href="nexusLIMS.db.enums.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.3.0" />
-    <meta name="docbuild:last-update" content="Jan, 20, 2026"/>
+  <meta name="docsearch:version" content="2.4.0" />
+    <meta name="docbuild:last-update" content="Feb, 03, 2026"/>
   </head>
   
   
@@ -131,8 +131,8 @@
       
     
     
-    <img src="../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.3.0 documentation - Home"/>
-    <img src="../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.3.0 documentation - Home"/>
+    <img src="../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.4.0 documentation - Home"/>
+    <img src="../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.4.0 documentation - Home"/>
   
   
 </a></div>
@@ -410,23 +410,34 @@
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../reference/changelog.html">Changelog</a></li>
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../reference/api.html">API documentation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../reference/api.html">NexusLIMS API documentation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="nexusLIMS.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS</span></code></a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.db.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.db</span></code></a></li>
+<li class="toctree-l3 current active has-children"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils</span></code></a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="nexusLIMS.utils.files.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils.files</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nexusLIMS.utils.dicts.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils.dicts</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nexusLIMS.utils.paths.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils.paths</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nexusLIMS.utils.time.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils.time</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nexusLIMS.utils.network.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils.network</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nexusLIMS.utils.elabftw.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils.elabftw</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nexusLIMS.utils.cdcs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils.cdcs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nexusLIMS.utils.logging.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils.logging</span></code></a></li>
+</ul>
+</details></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.builder.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.builder</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.extractors.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.cli.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.harvesters.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.harvesters</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.schemas.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.schemas</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.exporters.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.exporters</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.instruments.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.instruments</span></code></a></li>
-<li class="toctree-l3 current active"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.cdcs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cdcs</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.config.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.config</span></code></a></li>
 </ul>
 </details></li>
 </ul>
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="../../reference/NEMO_Reference.html">NEMO System Reference for NexusLIMS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/eLabFTW_metadata_reference.html">eLabFTW Metadata Reference</a></li>
 </ul>
 </div>
 </nav></div>
@@ -471,7 +482,7 @@
     <li class="breadcrumb-item"><a href="../../reference.html" class="nav-link">Reference</a></li>
     
     
-    <li class="breadcrumb-item"><a href="../../reference/api.html" class="nav-link">API documentation</a></li>
+    <li class="breadcrumb-item"><a href="../../reference/api.html" class="nav-link">NexusLIMS API documentation</a></li>
     
     
     <li class="breadcrumb-item"><a href="nexusLIMS.html" class="nav-link"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS</span></code></a></li>
@@ -496,484 +507,30 @@
   <section id="module-nexusLIMS.utils">
 <span id="nexuslims-utils"></span><h1><a class="reference internal" href="#module-nexusLIMS.utils" title="nexusLIMS.utils"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils</span></code></a><a class="headerlink" href="#module-nexusLIMS.utils" title="Link to this heading">#</a></h1>
 <p>Utility functions used in potentially multiple places by NexusLIMS.</p>
-<section id="module-contents">
-<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
-<section id="functions">
-<h3>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h3>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table table-left">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.utils.setup_loggers" title="nexusLIMS.utils.setup_loggers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setup_loggers</span></code></a></p></td>
-<td><p>Set logging level of all NexusLIMS loggers.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.utils.nexus_req" title="nexusLIMS.utils.nexus_req"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nexus_req</span></code></a></p></td>
-<td><p>Make a request from NexusLIMS.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.utils.is_subpath" title="nexusLIMS.utils.is_subpath"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_subpath</span></code></a></p></td>
-<td><p>Return if this path is a subpath of other paths.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.utils.get_nested_dict_value_by_path" title="nexusLIMS.utils.get_nested_dict_value_by_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_nested_dict_value_by_path</span></code></a></p></td>
-<td><p>Get a nested dictionary value by path.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.utils.set_nested_dict_value" title="nexusLIMS.utils.set_nested_dict_value"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_nested_dict_value</span></code></a></p></td>
-<td><p>Set a nested dictionary value by path.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.utils.try_getting_dict_value" title="nexusLIMS.utils.try_getting_dict_value"><code class="xref py py-obj docutils literal notranslate"><span class="pre">try_getting_dict_value</span></code></a></p></td>
-<td><p>Try to get a nested dictionary value.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.utils.find_dirs_by_mtime" title="nexusLIMS.utils.find_dirs_by_mtime"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_dirs_by_mtime</span></code></a></p></td>
-<td><p>Find directories modified between two times.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.utils.find_files_by_mtime" title="nexusLIMS.utils.find_files_by_mtime"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_files_by_mtime</span></code></a></p></td>
-<td><p>Find files motified between two times.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.utils.gnu_find_files_by_mtime" title="nexusLIMS.utils.gnu_find_files_by_mtime"><code class="xref py py-obj docutils literal notranslate"><span class="pre">gnu_find_files_by_mtime</span></code></a></p></td>
-<td><p>Find files modified between two times.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.utils.sort_dict" title="nexusLIMS.utils.sort_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sort_dict</span></code></a></p></td>
-<td><p>Recursively sort a dictionary by keys.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.utils.remove_dtb_element" title="nexusLIMS.utils.remove_dtb_element"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_dtb_element</span></code></a></p></td>
-<td><p>Remove an element from a DictionaryTreeBrowser by setting it to None.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.utils.remove_dict_nones" title="nexusLIMS.utils.remove_dict_nones"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_dict_nones</span></code></a></p></td>
-<td><p>Delete keys with a value of <code class="docutils literal notranslate"><span class="pre">None</span></code> in a dictionary, recursively.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.utils.get_timespan_overlap" title="nexusLIMS.utils.get_timespan_overlap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_timespan_overlap</span></code></a></p></td>
-<td><p>Find the amount of overlap between two time spans.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.utils.has_delay_passed" title="nexusLIMS.utils.has_delay_passed"><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_delay_passed</span></code></a></p></td>
-<td><p>Check if the current time is greater than the configured delay.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.utils.current_system_tz_name" title="nexusLIMS.utils.current_system_tz_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">current_system_tz_name</span></code></a></p></td>
-<td><p>Get the system’s timezone name.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.utils.current_system_tz" title="nexusLIMS.utils.current_system_tz"><code class="xref py py-obj docutils literal notranslate"><span class="pre">current_system_tz</span></code></a></p></td>
-<td><p>Get the system’s timezone as a pytz timezone object.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.utils.replace_instrument_data_path" title="nexusLIMS.utils.replace_instrument_data_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">replace_instrument_data_path</span></code></a></p></td>
-<td><p>Given an “NX_INSTRUMENT_DATA_PATH” path, generate equivalent”NX_DATA_PATH” path.</p></td>
-</tr>
-</tbody>
-</table>
+<p>Functions are organized into the following submodules:</p>
+<ul class="simple">
+<li><p>logging: Logger configuration</p></li>
+<li><p>network: HTTP request utilities</p></li>
+<li><p>paths: Path manipulation utilities</p></li>
+<li><p>dicts: Dictionary manipulation utilities</p></li>
+<li><p>files: File finding and manipulation utilities</p></li>
+<li><p>time: Time and date utilities</p></li>
+<li><p>cdcs: CDCS interaction utilities</p></li>
+</ul>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">#</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="nexusLIMS.utils.files.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils.files</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="nexusLIMS.utils.dicts.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils.dicts</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="nexusLIMS.utils.paths.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils.paths</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="nexusLIMS.utils.time.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils.time</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="nexusLIMS.utils.network.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils.network</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="nexusLIMS.utils.elabftw.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils.elabftw</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="nexusLIMS.utils.cdcs.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils.cdcs</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="nexusLIMS.utils.logging.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils.logging</span></code></a></li>
+</ul>
 </div>
-</section>
-<section id="api">
-<h3>API<a class="headerlink" href="#api" title="Link to this heading">#</a></h3>
-<dl class="py function">
-<dt class="sig sig-object py" id="nexusLIMS.utils.setup_loggers">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.utils.</span></span><span class="sig-name descname"><span class="pre">setup_loggers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">log_level</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/utils.html#setup_loggers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.utils.setup_loggers" title="Link to this definition">#</a></dt>
-<dd><p>Set logging level of all NexusLIMS loggers.</p>
-<dl class="myst field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>log_level</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – The level of logging, such as <code class="docutils literal notranslate"><span class="pre">logging.DEBUG</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="nexusLIMS.utils.nexus_req">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.utils.</span></span><span class="sig-name descname"><span class="pre">nexus_req</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">retries</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token_auth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><span class="pre">dict</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/utils.html#nexus_req"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.utils.nexus_req" title="Link to this definition">#</a></dt>
-<dd><p>Make a request from NexusLIMS.</p>
-<p>A helper method that wraps a function from <a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#module-requests" title="(in Requests v2.32.5)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">requests</span></code></a>, but adds a
-local certificate authority chain to validate any custom certificates.
-Will automatically retry on transient server errors (502, 503, 504) with
-exponential backoff.</p>
-<dl class="myst field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>url</strong> – The URL to fetch</p></li>
-<li><p><strong>function</strong> – The function from the <code class="docutils literal notranslate"><span class="pre">requests</span></code> library to use (e.g.
-<code class="docutils literal notranslate"><span class="pre">'GET'</span></code>, <code class="docutils literal notranslate"><span class="pre">'POST'</span></code>, <code class="docutils literal notranslate"><span class="pre">'PATCH'</span></code>, etc.)</p></li>
-<li><p><strong>retries</strong> – The maximum number of retry attempts (total attempts = retries + 1)</p></li>
-<li><p><strong>token_auth</strong> – If a value is provided, it will be used as a token for authentication</p></li>
-<li><p><strong>**kwargs</strong> – Other keyword arguments are passed along to the <code class="docutils literal notranslate"><span class="pre">fn</span></code></p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>r</strong> – A requests response object</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://requests.readthedocs.io/en/latest/api/#requests.Response" title="(in Requests v2.32.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">requests.Response</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="nexusLIMS.utils.is_subpath">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.utils.</span></span><span class="sig-name descname"><span class="pre">is_subpath</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">of_paths</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Union" title="(in Python v3.11)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/utils.html#is_subpath"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.utils.is_subpath" title="Link to this definition">#</a></dt>
-<dd><p>Return if this path is a subpath of other paths.</p>
-<p>Helper function to determine if a given path is a “subpath” of a set of
-paths. Useful to help determine which instrument a given file comes from,
-given the instruments <code class="docutils literal notranslate"><span class="pre">filestore_path</span></code> and the path of the file to test.</p>
-<dl class="myst field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>path</strong> – The path of the file (or directory) to test. This will usually be the
-absolute path to a file on the local filesystem (to be compared using
-the host-specific <code class="docutils literal notranslate"><span class="pre">nx_instrument_data_path</span></code>.</p></li>
-<li><p><strong>of_paths</strong> – The “higher-level” path to test against (or list thereof). In typical
-use, this will be a path joined of an instruments <code class="docutils literal notranslate"><span class="pre">filestore_path</span></code>
-with the root-level <code class="docutils literal notranslate"><span class="pre">nx_instrument_data_path</span></code></p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>result</strong> – Whether or not path is a subpath of one of the directories in of_paths</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a></p>
-</dd>
-</dl>
-<p><strong>Examples:</strong></p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">is_subpath</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="s1">&#39;/path/to/file.dm3&#39;</span><span class="p">),</span>
-<span class="gp">... </span>           <span class="n">settings</span><span class="o">.</span><span class="n">NX_INSTRUMENT_DATA_PATH</span> <span class="o">/</span>
-<span class="gp">... </span>               <span class="n">titan</span><span class="o">.</span><span class="n">filestore_path</span><span class="p">))</span>
-<span class="go">True</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="nexusLIMS.utils.get_nested_dict_value_by_path">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.utils.</span></span><span class="sig-name descname"><span class="pre">get_nested_dict_value_by_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nest_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/utils.html#get_nested_dict_value_by_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.utils.get_nested_dict_value_by_path" title="Link to this definition">#</a></dt>
-<dd><p>Get a nested dictionary value by path.</p>
-<p>Get the value from within a nested dictionary structure by traversing into
-the dictionary as deep as that path found and returning that value.</p>
-<p>Uses python-benedict for robust nested dictionary operations.</p>
-<dl class="myst field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>nest_dict</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>) – A dictionary of dictionaries that is to be queried</p></li>
-<li><p><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#tuple" title="(in Python v3.11)"><em>tuple</em></a>) – A tuple (or other iterable type) that specifies the subsequent keys
-needed to get to a a value within <code class="docutils literal notranslate"><span class="pre">nest_dict</span></code></p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>value</strong> – The value at the path within the nested dictionary; if there’s no
-value there, return None</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#object" title="(in Python v3.11)"><em>object</em></a> or <em>None</em></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="nexusLIMS.utils.set_nested_dict_value">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.utils.</span></span><span class="sig-name descname"><span class="pre">set_nested_dict_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nest_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/utils.html#set_nested_dict_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.utils.set_nested_dict_value" title="Link to this definition">#</a></dt>
-<dd><p>Set a nested dictionary value by path.</p>
-<p>Set a value within a nested dictionary structure by traversing into
-the dictionary as deep as that path found and changing it to <code class="docutils literal notranslate"><span class="pre">value</span></code>.</p>
-<p>Uses python-benedict for robust nested dictionary operations.</p>
-<dl class="myst field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>nest_dict</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>) – A dictionary of dictionaries that is to be queried</p></li>
-<li><p><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#tuple" title="(in Python v3.11)"><em>tuple</em></a>) – A tuple (or other iterable type) that specifies the subsequent keys
-needed to get to a a value within <code class="docutils literal notranslate"><span class="pre">nest_dict</span></code></p></li>
-<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/functions.html#object" title="(in Python v3.11)"><em>object</em></a>) – The value which will be given to the path in the nested dictionary</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>value</strong> – The value at the path within the nested dictionary</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#object" title="(in Python v3.11)"><em>object</em></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="nexusLIMS.utils.try_getting_dict_value">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.utils.</span></span><span class="sig-name descname"><span class="pre">try_getting_dict_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dict_</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/utils.html#try_getting_dict_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.utils.try_getting_dict_value" title="Link to this definition">#</a></dt>
-<dd><p>Try to get a nested dictionary value.</p>
-<p>This method will try to get a value from a dictionary (potentially
-nested) and fail silently if the value is not found, returning None.</p>
-<dl class="myst field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>dict_</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>) – The dictionary from which to get a value</p></li>
-<li><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#tuple" title="(in Python v3.11)"><em>tuple</em></a>) – The key to query, or if an iterable container type (tuple, list,
-etc.) is given, the path into a nested dictionary to follow</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>val</strong> – The value of the dictionary specified by <code class="docutils literal notranslate"><span class="pre">key</span></code>. If the dictionary
-does not have a key, returns None without raising an error</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#object" title="(in Python v3.11)"><em>object</em></a> or <em>None</em></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="nexusLIMS.utils.find_dirs_by_mtime">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.utils.</span></span><span class="sig-name descname"><span class="pre">find_dirs_by_mtime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt_from</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><span class="pre">datetime</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt_to</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><span class="pre">datetime</span></a></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">followlinks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/nexusLIMS/utils.html#find_dirs_by_mtime"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.utils.find_dirs_by_mtime" title="Link to this definition">#</a></dt>
-<dd><p>Find directories modified between two times.</p>
-<p>Given two timestamps, find the directories under a path that were
-last modified between the two.</p>
-<div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version 0.0.9: </span><code class="docutils literal notranslate"><span class="pre">find_dirs_by_mtime</span></code> is not recommended for use to find files for
-record inclusion, because subsequent modifications to a directory
-(e.g. the user wrote a text file or did some analysis afterwards)
-means no files will be returned from that directory (because it is
-not searched)</p>
-</div>
-<dl class="myst field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>path</strong> – The root path from which to start the search</p></li>
-<li><p><strong>dt_from</strong> – The “starting” point of the search timeframe</p></li>
-<li><p><strong>dt_to</strong> – The “ending” point of the search timeframe</p></li>
-<li><p><strong>followlinks</strong> – Argument passed on to py<a class="reference external" href="https://docs.python.org/3.11/library/os.html#os.walk" title="(in Python v3.11)"><code class="xref py py-func docutils literal notranslate"><span class="pre">os.walk()</span></code></a> to control whether
-symbolic links are followed</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>dirs</strong> – A list of the directories that have modification times within the
-time range provided</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="nexusLIMS.utils.find_files_by_mtime">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.utils.</span></span><span class="sig-name descname"><span class="pre">find_files_by_mtime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt_from</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt_to</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/nexusLIMS/utils.html#find_files_by_mtime"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.utils.find_files_by_mtime" title="Link to this definition">#</a></dt>
-<dd><p>Find files motified between two times.</p>
-<p>Given two timestamps, find files under a path that were
-last modified between the two.</p>
-<dl class="myst field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>path</strong> – The root path from which to start the search</p></li>
-<li><p><strong>dt_from</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><em>datetime</em></a>) – The “starting” point of the search timeframe</p></li>
-<li><p><strong>dt_to</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><em>datetime</em></a>) – The “ending” point of the search timeframe</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>files</strong> – A list of the files that have modification times within the
-time range provided (sorted by modification time)</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="nexusLIMS.utils.gnu_find_files_by_mtime">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.utils.</span></span><span class="sig-name descname"><span class="pre">gnu_find_files_by_mtime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt_from</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><span class="pre">datetime</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt_to</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><span class="pre">datetime</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">extensions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">followlinks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/nexusLIMS/utils.html#gnu_find_files_by_mtime"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.utils.gnu_find_files_by_mtime" title="Link to this definition">#</a></dt>
-<dd><p>Find files modified between two times.</p>
-<p>Given two timestamps, find files under a path that were
-last modified between the two. Uses the system-provided GNU <code class="docutils literal notranslate"><span class="pre">find</span></code>
-command. In basic testing, this method was found to be approximately 3 times
-faster than using <a class="reference internal" href="#nexusLIMS.utils.find_files_by_mtime" title="nexusLIMS.utils.find_files_by_mtime"><code class="xref py py-meth docutils literal notranslate"><span class="pre">find_files_by_mtime()</span></code></a> (which is implemented in
-pure Python).</p>
-<dl class="myst field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>path</strong> – The root path from which to start the search, relative to
-the <a class="reference internal" href="../../user_guide/configuration.html#config-instrument-data-path"><span class="std std-ref">NX_INSTRUMENT_DATA_PATH</span></a>
-environment setting.</p></li>
-<li><p><strong>dt_from</strong> – The “starting” point of the search timeframe</p></li>
-<li><p><strong>dt_to</strong> – The “ending” point of the search timeframe</p></li>
-<li><p><strong>extensions</strong> – A list of strings representing the extensions to find. If None,
-all files between are found between the two times.</p></li>
-<li><p><strong>followlinks</strong> – Whether to follow symlinks using the <code class="docutils literal notranslate"><span class="pre">find</span></code> command via
-the <code class="docutils literal notranslate"><span class="pre">-H</span></code> command line flag. This is useful when the
-<a class="reference internal" href="../../user_guide/configuration.html#config-instrument-data-path"><span class="std std-ref">NX_INSTRUMENT_DATA_PATH</span></a> is actually a
-directory
-of symlinks. If this is the case and <code class="docutils literal notranslate"><span class="pre">followlinks</span></code> is
-<code class="docutils literal notranslate"><span class="pre">False</span></code>, no files will ever be found because the <code class="docutils literal notranslate"><span class="pre">find</span></code>
-command will not “dereference” the symbolic links it finds.
-See comments in the code for more comments on implementation
-of this feature.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A list of the files that have modification times within the
-time range provided (sorted by modification time)</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><em>List</em>[<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>]</p>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.11/library/exceptions.html#RuntimeError" title="(in Python v3.11)"><strong>RuntimeError</strong></a> – If the find command cannot be found, or running it results in output
-to <code class="docutils literal notranslate"><span class="pre">stderr</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="nexusLIMS.utils.sort_dict">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.utils.</span></span><span class="sig-name descname"><span class="pre">sort_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/utils.html#sort_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.utils.sort_dict" title="Link to this definition">#</a></dt>
-<dd><p>Recursively sort a dictionary by keys.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="nexusLIMS.utils.remove_dtb_element">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.utils.</span></span><span class="sig-name descname"><span class="pre">remove_dtb_element</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tree</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/utils.html#remove_dtb_element"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.utils.remove_dtb_element" title="Link to this definition">#</a></dt>
-<dd><p>Remove an element from a DictionaryTreeBrowser by setting it to None.</p>
-<p>Helper method that sets a specific leaf of a DictionaryTreeBrowser to None.
-Use with <a class="reference internal" href="#nexusLIMS.utils.remove_dict_nones" title="nexusLIMS.utils.remove_dict_nones"><code class="xref py py-meth docutils literal notranslate"><span class="pre">remove_dict_nones()</span></code></a> to fully remove the desired DTB element after
-setting it to None (after converting DTB to dictionary).</p>
-<dl class="myst field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>tree</strong> (<a class="reference external" href="http://hyperspy.org/hyperspy-doc/current/reference/utils/index.html#hyperspy.misc.utils.DictionaryTreeBrowser" title="(in HyperSpy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DictionaryTreeBrowser</span></code></a>) – the <code class="docutils literal notranslate"><span class="pre">DictionaryTreeBrowser</span></code> object to remove the object from</p></li>
-<li><p><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – period-delimited path to a DTB element</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>tree</strong></p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="http://hyperspy.org/hyperspy-doc/current/reference/utils/index.html#hyperspy.misc.utils.DictionaryTreeBrowser" title="(in HyperSpy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DictionaryTreeBrowser</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="nexusLIMS.utils.remove_dict_nones">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.utils.</span></span><span class="sig-name descname"><span class="pre">remove_dict_nones</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dictionary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/nexusLIMS/utils.html#remove_dict_nones"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.utils.remove_dict_nones" title="Link to this definition">#</a></dt>
-<dd><p>Delete keys with a value of <code class="docutils literal notranslate"><span class="pre">None</span></code> in a dictionary, recursively.</p>
-<p>Taken from https://stackoverflow.com/a/4256027.</p>
-<dl class="myst field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>dictionary</strong> – The dictionary, with keys that have None values removed</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The same dictionary, but with “Nones” removed</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="nexusLIMS.utils.get_timespan_overlap">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.utils.</span></span><span class="sig-name descname"><span class="pre">get_timespan_overlap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">range_1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Tuple" title="(in Python v3.11)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><span class="pre">datetime</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><span class="pre">datetime</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">range_2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Tuple" title="(in Python v3.11)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><span class="pre">datetime</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><span class="pre">datetime</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/datetime.html#datetime.timedelta" title="(in Python v3.11)"><span class="pre">timedelta</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/utils.html#get_timespan_overlap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.utils.get_timespan_overlap" title="Link to this definition">#</a></dt>
-<dd><p>Find the amount of overlap between two time spans.</p>
-<p>Adapted from https://stackoverflow.com/a/9044111.</p>
-<dl class="myst field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>range_1</strong> – Tuple of length 2 of datetime objects: first is the start of the time
-range and the second is the end of the time range</p></li>
-<li><p><strong>range_2</strong> – Tuple of length 2 of datetime objects: first is the start of the time
-range and the second is the end of the time range</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The amount of overlap between the time ranges</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/datetime.html#datetime.timedelta" title="(in Python v3.11)"><em>timedelta</em></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="nexusLIMS.utils.has_delay_passed">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.utils.</span></span><span class="sig-name descname"><span class="pre">has_delay_passed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><span class="pre">datetime</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/utils.html#has_delay_passed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.utils.has_delay_passed" title="Link to this definition">#</a></dt>
-<dd><p>Check if the current time is greater than the configured delay.</p>
-<p>Check if the current time is greater than the configured (or default) record
-building delay configured in the <code class="docutils literal notranslate"><span class="pre">NX_FILE_DELAY_DAYS</span></code> environment variable.
-If the date given is timezone-aware, the current time in that timezone will be
-compared.</p>
-<dl class="myst field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>date</strong> – The datetime to check; can be either timezone aware or naive</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Whether the current time is greater than the given date plus the
-configurable delay.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="nexusLIMS.utils.current_system_tz_name">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.utils.</span></span><span class="sig-name descname"><span class="pre">current_system_tz_name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/utils.html#current_system_tz_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.utils.current_system_tz_name" title="Link to this definition">#</a></dt>
-<dd><p>Get the system’s timezone name.</p>
-<p>Returns the IANA timezone database name for the system’s current timezone
-(e.g., ‘America/New_York’), never a simple UTC offset.</p>
-<dl class="myst field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>The IANA timezone name (e.g., ‘America/New_York’, ‘Europe/London’)</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a></p>
-</dd>
-</dl>
-<p><strong>Examples:</strong></p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">current_system_tz_name</span><span class="p">()</span>
-<span class="go">&#39;America/New_York&#39;</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="nexusLIMS.utils.current_system_tz">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.utils.</span></span><span class="sig-name descname"><span class="pre">current_system_tz</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pythonhosted.org/pytz/#tzinfo-api" title="(in pytz vlatest)"><span class="pre">DstTzInfo</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/utils.html#current_system_tz"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.utils.current_system_tz" title="Link to this definition">#</a></dt>
-<dd><p>Get the system’s timezone as a pytz timezone object.</p>
-<p>Returns the system’s current timezone as a pytz timezone object with a
-named timezone (e.g., ‘America/New_York’), never a simple UTC offset.</p>
-<dl class="myst field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A pytz timezone object representing the system’s timezone</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://pythonhosted.org/pytz/#tzinfo-api" title="(in pytz vlatest)"><em>DstTzInfo</em></a></p>
-</dd>
-</dl>
-<p><strong>Examples:</strong></p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tz</span> <span class="o">=</span> <span class="n">get_system_tz</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">tz</span><span class="o">.</span><span class="n">zone</span>
-<span class="go">&#39;America/New_York&#39;</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="nexusLIMS.utils.replace_instrument_data_path">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.utils.</span></span><span class="sig-name descname"><span class="pre">replace_instrument_data_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/utils.html#replace_instrument_data_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.utils.replace_instrument_data_path" title="Link to this definition">#</a></dt>
-<dd><p>Given an “NX_INSTRUMENT_DATA_PATH” path, generate equivalent”NX_DATA_PATH” path.</p>
-<p>If the given path is not a subpath of “NX_INSTRUMENT_DATA_PATH”, a warning will
-be logged and the suffix will just be added at the end.</p>
-<dl class="myst field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>path</strong> – The input path, which is expected to be a subpath of the
-NX_INSTRUMENT_DATA_PATH directory</p></li>
-<li><p><strong>suffix</strong> – Any added suffix to add to the path (useful for appending with a new extension,
-such as <code class="docutils literal notranslate"><span class="pre">.json</span></code>)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A resolved pathlib.Path object pointing to the new path</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><em>Path</em></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py exception">
-<dt class="sig sig-object py" id="nexusLIMS.utils.AuthenticationError">
-<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nexusLIMS.utils.</span></span><span class="sig-name descname"><span class="pre">AuthenticationError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/utils.html#AuthenticationError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.utils.AuthenticationError" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.11/library/exceptions.html#Exception" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Exception</span></code></a></p>
-<p>Class for showing an exception having to do with authentication.</p>
-</dd></dl>
-
-</section>
 </section>
 </section>
 
@@ -988,20 +545,20 @@ such as <code class="docutils literal notranslate"><span class="pre">.json</span
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="nexusLIMS.instruments.html"
+       href="nexusLIMS.db.enums.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.instruments</span></code></p>
+        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.db.enums</span></code></p>
       </div>
     </a>
     <a class="right-next"
-       href="nexusLIMS.cdcs.html"
+       href="nexusLIMS.utils.files.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cdcs</span></code></p>
+        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils.files</span></code></p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -1024,31 +581,7 @@ such as <code class="docutils literal notranslate"><span class="pre">.json</span
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#api">API</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.utils.setup_loggers"><code class="docutils literal notranslate"><span class="pre">setup_loggers()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.utils.nexus_req"><code class="docutils literal notranslate"><span class="pre">nexus_req()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.utils.is_subpath"><code class="docutils literal notranslate"><span class="pre">is_subpath()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.utils.get_nested_dict_value_by_path"><code class="docutils literal notranslate"><span class="pre">get_nested_dict_value_by_path()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.utils.set_nested_dict_value"><code class="docutils literal notranslate"><span class="pre">set_nested_dict_value()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.utils.try_getting_dict_value"><code class="docutils literal notranslate"><span class="pre">try_getting_dict_value()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.utils.find_dirs_by_mtime"><code class="docutils literal notranslate"><span class="pre">find_dirs_by_mtime()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.utils.find_files_by_mtime"><code class="docutils literal notranslate"><span class="pre">find_files_by_mtime()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.utils.gnu_find_files_by_mtime"><code class="docutils literal notranslate"><span class="pre">gnu_find_files_by_mtime()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.utils.sort_dict"><code class="docutils literal notranslate"><span class="pre">sort_dict()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.utils.remove_dtb_element"><code class="docutils literal notranslate"><span class="pre">remove_dtb_element()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.utils.remove_dict_nones"><code class="docutils literal notranslate"><span class="pre">remove_dict_nones()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.utils.get_timespan_overlap"><code class="docutils literal notranslate"><span class="pre">get_timespan_overlap()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.utils.has_delay_passed"><code class="docutils literal notranslate"><span class="pre">has_delay_passed()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.utils.current_system_tz_name"><code class="docutils literal notranslate"><span class="pre">current_system_tz_name()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.utils.current_system_tz"><code class="docutils literal notranslate"><span class="pre">current_system_tz()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.utils.replace_instrument_data_path"><code class="docutils literal notranslate"><span class="pre">replace_instrument_data_path()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.utils.AuthenticationError"><code class="docutils literal notranslate"><span class="pre">AuthenticationError</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
 </ul>
   </nav></div>
 

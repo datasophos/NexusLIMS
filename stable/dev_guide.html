@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Dev Guide &#8212; NexusLIMS 2.3.0 documentation</title>
+    <title>Dev Guide &#8212; NexusLIMS 2.4.0 documentation</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="_static/documentation_options.js?v=c3c8ae58"></script>
+    <script src="_static/documentation_options.js?v=4d935f96"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -417,7 +417,7 @@ window.addEventListener("load", load);
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.3.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.4.0';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
@@ -429,8 +429,8 @@ window.addEventListener("load", load);
     <link rel="prev" title="Migration Guide" href="migration.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.3.0" />
-    <meta name="docbuild:last-update" content="Jan, 20, 2026"/>
+  <meta name="docsearch:version" content="2.4.0" />
+    <meta name="docbuild:last-update" content="Feb, 03, 2026"/>
   </head>
   
   
@@ -496,8 +496,8 @@ window.addEventListener("load", load);
       
     
     
-    <img src="_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.3.0 documentation - Home"/>
-    <img src="_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.3.0 documentation - Home"/>
+    <img src="_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.4.0 documentation - Home"/>
+    <img src="_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.4.0 documentation - Home"/>
   
   
 </a></div>
@@ -776,6 +776,7 @@ window.addEventListener("load", load);
   <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="dev_guide/development.html">Development introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dev_guide/writing_extractor_plugins.html">Writing Extractor Plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev_guide/writing_export_destinations.html">Writing Export Destination Plugins</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dev_guide/instrument_profiles.html">Instrument Profiles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dev_guide/nexuslims_internal_schema.html">Internal Metadata Schema System</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dev_guide/em_glossary_reference.html">EM Glossary Field Reference</a></li>
@@ -1231,15 +1232,15 @@ tar<span class="w"> </span>-tzf<span class="w"> </span>xyz_format_dataZeroed.tar
 <section id="verification-checklist">
 <h3>Verification Checklist<a class="headerlink" href="#verification-checklist" title="Link to this heading">#</a></h3>
 <p>Before committing your sanitized test file:</p>
-<ul class="simple">
-<li><p>[ ] File still opens with intended software/library</p></li>
-<li><p>[ ] All metadata fields are present and correct</p></li>
-<li><p>[ ] Image/spectral data is zeroed</p></li>
-<li><p>[ ] File size is significantly reduced (check compression ratio)</p></li>
-<li><p>[ ] Archive contains no macOS hidden files (<code class="docutils literal notranslate"><span class="pre">.DS_Store</span></code>, <code class="docutils literal notranslate"><span class="pre">._*</span></code>)</p></li>
-<li><p>[ ] Your extractor tests pass using the sanitized file</p></li>
-<li><p>[ ] Archive is in <code class="docutils literal notranslate"><span class="pre">tests/unit/files/</span></code> directory</p></li>
-<li><p>[ ] Archive is registered in <code class="docutils literal notranslate"><span class="pre">tests/unit/utils.py</span></code></p></li>
+<ul class="contains-task-list simple">
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> File still opens with intended software/library</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> All metadata fields are present and correct</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Image/spectral data is zeroed</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> File size is significantly reduced (check compression ratio)</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Archive contains no macOS hidden files (<code class="docutils literal notranslate"><span class="pre">.DS_Store</span></code>, <code class="docutils literal notranslate"><span class="pre">._*</span></code>)</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Your extractor tests pass using the sanitized file</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Archive is in <code class="docutils literal notranslate"><span class="pre">tests/unit/files/</span></code> directory</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Archive is registered in <code class="docutils literal notranslate"><span class="pre">tests/unit/utils.py</span></code></p></li>
 </ul>
 </section>
 <section id="example-complete-workflow">
@@ -1380,6 +1381,7 @@ git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </sp
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="dev_guide/development.html">Development introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dev_guide/writing_extractor_plugins.html">Writing Extractor Plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev_guide/writing_export_destinations.html">Writing Export Destination Plugins</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dev_guide/instrument_profiles.html">Instrument Profiles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dev_guide/nexuslims_internal_schema.html">Internal Metadata Schema System</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dev_guide/em_glossary_reference.html">EM Glossary Field Reference</a></li>

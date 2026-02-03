@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>NexusLIMS Taxonomy &#8212; NexusLIMS 2.3.0 documentation</title>
+    <title>NexusLIMS Taxonomy &#8212; NexusLIMS 2.4.0 documentation</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=c3c8ae58"></script>
+    <script src="../_static/documentation_options.js?v=4d935f96"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -417,7 +417,7 @@ window.addEventListener("load", load);
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.3.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.4.0';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
@@ -426,11 +426,11 @@ window.addEventListener("load", load);
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Migration Guide" href="../migration.html" />
-    <link rel="prev" title="Extractors" href="extractors.html" />
+    <link rel="prev" title="Export Destinations" href="exporters.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.3.0" />
-    <meta name="docbuild:last-update" content="Jan, 20, 2026"/>
+  <meta name="docsearch:version" content="2.4.0" />
+    <meta name="docbuild:last-update" content="Feb, 03, 2026"/>
   </head>
   
   
@@ -496,8 +496,8 @@ window.addEventListener("load", load);
       
     
     
-    <img src="../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.3.0 documentation - Home"/>
-    <img src="../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.3.0 documentation - Home"/>
+    <img src="../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.4.0 documentation - Home"/>
+    <img src="../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.4.0 documentation - Home"/>
   
   
 </a></div>
@@ -778,6 +778,7 @@ window.addEventListener("load", load);
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="record_building.html">Record building workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="extractors.html">Extractors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exporters.html">Export Destinations</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">NexusLIMS Taxonomy</a></li>
 </ul>
 </div>
@@ -886,18 +887,31 @@ NexusLIMS back-end. It orchestrates the complete record creation workflow:</p>
 <li><p>Cluster files into Acquisition Activities based on temporal gaps</p></li>
 <li><p>Extract and validate metadata from each file</p></li>
 <li><p>Build XML record conforming to Nexus Experiment schema</p></li>
-<li><p>Upload record to CDCS instance</p></li>
+<li><p>Export record to configured destinations via the export framework</p></li>
 </ol>
 <p>Further details are provided on the <a class="reference internal" href="record_building.html"><span class="doc">record building</span></a>
 documentation page.</p>
 </li>
 </ul>
 </li>
-<li><p><strong>Session Logger:</strong></p>
+<li><p><strong>Exporters:</strong></p>
+<ul>
+<li><p>The exporters (implemented in the <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.exporters.html#module-nexusLIMS.exporters" title="nexusLIMS.exporters"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.exporters</span></code></a> package)
+form a plugin-based framework for publishing experimental records to multiple
+repository systems. After building XML records, the system can export them
+to one or more configured destinations:</p>
 <ul class="simple">
-<li><p>The session logger (removed) was a portable Windows application that ran on
-individual microscope PCs to log experiment session information. This was removed in version 1.1.0 and has been
-replaced by the NEMO harvester approach.</p></li>
+<li><p><strong>CDCS</strong> (<a class="reference internal" href="../api/nexusLIMS/nexusLIMS.exporters.destinations.cdcs.html#module-nexusLIMS.exporters.destinations.cdcs" title="nexusLIMS.exporters.destinations.cdcs"><code class="xref py py-mod docutils literal notranslate"><span class="pre">cdcs</span></code></a>) - Primary destination
+for web-based record viewing, search, and access control</p></li>
+<li><p><strong>eLabFTW</strong> (<a class="reference internal" href="../api/nexusLIMS/nexusLIMS.exporters.destinations.elabftw.html#module-nexusLIMS.exporters.destinations.elabftw" title="nexusLIMS.exporters.destinations.elabftw"><code class="xref py py-mod docutils literal notranslate"><span class="pre">elabftw</span></code></a>) - Electronic
+lab notebook integration with structured metadata and cross-linking</p></li>
+<li><p><strong>Custom destinations</strong> - Extensible plugin system for additional repositories</p></li>
+</ul>
+<p>The framework supports multiple destinations running in parallel, configurable
+failure handling strategies, inter-destination dependencies for cross-linking,
+and per-destination tracking in the database.</p>
+<p>Further details are provided on the <a class="reference internal" href="exporters.html"><span class="doc">exporters</span></a> documentation page.</p>
+</li>
 </ul>
 </li>
 </ul>
@@ -1354,12 +1368,12 @@ graph TD
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="extractors.html"
+       href="exporters.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Extractors</p>
+        <p class="prev-next-title">Export Destinations</p>
       </div>
     </a>
     <a class="right-next"
