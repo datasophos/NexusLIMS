@@ -88,6 +88,79 @@ NX_CDCS_TOKEN=your-api-token-here
 Store API tokens securely. Use environment variables or a secure secrets management system rather than committing tokens to version control.
 ```
 
+### eLabFTW Integration
+
+(config-elabftw)=
+
+NexusLIMS can optionally export records to [eLabFTW](https://www.elabftw.net/), an open-source electronic lab notebook. Each NexusLIMS session creates one eLabFTW experiment with a structured summary and the full XML record attached.
+
+(config-elabftw-url)=
+#### `NX_ELABFTW_URL`
+
+**Type:** URL\
+**Required:** No (only if using eLabFTW export)
+
+Root URL of your eLabFTW instance (without `/api/`). The eLabFTW export destination is automatically enabled when both `NX_ELABFTW_URL` and `NX_ELABFTW_API_KEY` are configured.
+
+**Example:**
+```bash
+NX_ELABFTW_URL=https://elabftw.example.com
+```
+
+(config-elabftw-api-key)=
+#### `NX_ELABFTW_API_KEY`
+
+**Type:** String\
+**Required:** No (only if using eLabFTW export)
+
+API key for authenticating to the eLabFTW API. Generate this from your eLabFTW user panel under "API Keys". The key should have write permissions to create experiments and upload files.
+
+**Example:**
+```bash
+NX_ELABFTW_API_KEY=1-abcdef0123456789...
+```
+
+```{note}
+eLabFTW API keys have the format `{id}-{key}` where the key portion is 84 hexadecimal characters.
+```
+
+(config-elabftw-experiment-category)=
+#### `NX_ELABFTW_EXPERIMENT_CATEGORY`
+
+**Type:** Integer\
+**Required:** No\
+**Default:** None (uses eLabFTW default)
+
+Optional category ID to assign to created experiments. Categories are defined in eLabFTW's admin panel and help organize experiments by project or type.
+
+**Example:**
+```bash
+NX_ELABFTW_EXPERIMENT_CATEGORY=1
+```
+
+(config-elabftw-experiment-status)=
+#### `NX_ELABFTW_EXPERIMENT_STATUS`
+
+**Type:** Integer\
+**Required:** No\
+**Default:** None (uses eLabFTW default)
+
+Optional status ID to assign to created experiments. Statuses represent the experiment lifecycle (e.g., "Running", "Success", "Need to be redone") and are configured in eLabFTW's admin panel.
+
+**Example:**
+```bash
+NX_ELABFTW_EXPERIMENT_STATUS=2
+```
+
+```{tip}
+When eLabFTW export is enabled, experiments are created with:
+- **Title:** "NexusLIMS Experiment - {session_id}"
+- **Body:** HTML summary with session details and link to CDCS record (if available)
+- **Tags:** NexusLIMS, instrument name, username
+- **Metadata:** Structured extra_fields including session times, instrument, user, and CDCS cross-link
+- **Attachment:** Full XML record file
+```
+
 ### NEMO Integration
 
 NexusLIMS supports multiple NEMO instances by using numbered environment variable pairs. Each NEMO instance requires an address and token.

@@ -428,7 +428,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="pr-39" />
-    <meta name="docbuild:last-update" content="Jan, 31, 2026"/>
+    <meta name="docbuild:last-update" content="Feb, 03, 2026"/>
   </head>
   
   
@@ -912,7 +912,7 @@ window.addEventListener("load", load);
         <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
 
         <span class="c1"># Add result to context for subsequent destinations</span>
-        <span class="n">context</span><span class="o">.</span><span class="n">previous_results</span><span class="p">[</span><span class="n">dest</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">add_result</span><span class="p">(</span><span class="n">dest</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="o">.</span><span class="n">success</span><span class="p">:</span>
             <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
@@ -966,7 +966,7 @@ window.addEventListener("load", load);
         <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
 
         <span class="c1"># Add result to context for subsequent destinations</span>
-        <span class="n">context</span><span class="o">.</span><span class="n">previous_results</span><span class="p">[</span><span class="n">dest</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">add_result</span><span class="p">(</span><span class="n">dest</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">success</span><span class="p">:</span>
             <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
@@ -1015,7 +1015,7 @@ window.addEventListener("load", load);
         <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
 
         <span class="c1"># Add result to context for subsequent destinations</span>
-        <span class="n">context</span><span class="o">.</span><span class="n">previous_results</span><span class="p">[</span><span class="n">dest</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">add_result</span><span class="p">(</span><span class="n">dest</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">success</span><span class="p">:</span>
             <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Export to </span><span class="si">%s</span><span class="s2"> succeeded&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>

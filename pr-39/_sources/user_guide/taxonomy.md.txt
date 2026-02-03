@@ -45,16 +45,29 @@ The following terms describe major architectural components:
     4. Cluster files into Acquisition Activities based on temporal gaps
     5. Extract and validate metadata from each file
     6. Build XML record conforming to Nexus Experiment schema
-    7. Upload record to CDCS instance
+    7. Export record to configured destinations via the export framework
 
     Further details are provided on the {doc}`record building <record_building>`
     documentation page.
 
-- **Session Logger:**
+- **Exporters:**
 
-  - The session logger (removed) was a portable Windows application that ran on
-    individual microscope PCs to log experiment session information. This was removed in version 1.1.0 and has been
-    replaced by the NEMO harvester approach.
+  - The exporters (implemented in the {py:mod}`nexusLIMS.exporters` package) 
+    form a plugin-based framework for publishing experimental records to multiple 
+    repository systems. After building XML records, the system can export them 
+    to one or more configured destinations:
+
+    - **CDCS** ({py:mod}`~nexusLIMS.exporters.destinations.cdcs`) - Primary destination 
+      for web-based record viewing, search, and access control
+    - **eLabFTW** ({py:mod}`~nexusLIMS.exporters.destinations.elabftw`) - Electronic 
+      lab notebook integration with structured metadata and cross-linking
+    - **Custom destinations** - Extensible plugin system for additional repositories
+
+    The framework supports multiple destinations running in parallel, configurable 
+    failure handling strategies, inter-destination dependencies for cross-linking, 
+    and per-destination tracking in the database.
+
+    Further details are provided on the {doc}`exporters <exporters>` documentation page.
 
 ---
 

@@ -66,7 +66,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="pr-39" />
-    <meta name="docbuild:last-update" content="Jan, 31, 2026"/>
+    <meta name="docbuild:last-update" content="Feb, 03, 2026"/>
   </head>
   
   
@@ -411,7 +411,7 @@
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../reference/changelog.html">Changelog</a></li>
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../reference/api.html">API documentation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../reference/api.html">NexusLIMS API documentation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="nexusLIMS.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS</span></code></a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.db.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.db</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils</span></code></a></li>
@@ -434,6 +434,7 @@
 </ul>
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="../../reference/NEMO_Reference.html">NEMO System Reference for NexusLIMS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/eLabFTW_metadata_reference.html">eLabFTW Metadata Reference</a></li>
 </ul>
 </div>
 </nav></div>
@@ -478,7 +479,7 @@
     <li class="breadcrumb-item"><a href="../../reference.html" class="nav-link">Reference</a></li>
     
     
-    <li class="breadcrumb-item"><a href="../../reference/api.html" class="nav-link">API documentation</a></li>
+    <li class="breadcrumb-item"><a href="../../reference/api.html" class="nav-link">NexusLIMS API documentation</a></li>
     
     
     <li class="breadcrumb-item"><a href="nexusLIMS.html" class="nav-link"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS</span></code></a></li>
@@ -685,6 +686,26 @@ dependencies (e.g., LabArchives including a CDCS link).</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="nexusLIMS.exporters.base.ExportContext.add_result">
+<span class="sig-name descname"><span class="pre">add_result</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">destination_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#nexusLIMS.exporters.base.ExportResult" title="nexusLIMS.exporters.base.ExportResult"><span class="pre">ExportResult</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/exporters/base.html#ExportContext.add_result"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.exporters.base.ExportContext.add_result" title="Link to this definition">#</a></dt>
+<dd><p>Add or update result from a destination.</p>
+<dl class="myst field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>destination_name</strong> – Name of the destination (e.g., “cdcs”, “elabftw”)</p></li>
+<li><p><strong>result</strong> – The export result to store</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Examples:</strong></p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.exporters.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExportResult</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">ExportResult</span><span class="p">(</span><span class="n">success</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Uploaded successfully&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">context</span><span class="o">.</span><span class="n">add_result</span><span class="p">(</span><span class="s2">&quot;cdcs&quot;</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="nexusLIMS.exporters.base.ExportContext.has_successful_export">
 <span class="sig-name descname"><span class="pre">has_successful_export</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">destination_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/exporters/base.html#ExportContext.has_successful_export"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.exporters.base.ExportContext.has_successful_export" title="Link to this definition">#</a></dt>
 <dd><p>Check if a destination successfully exported.</p>
@@ -868,6 +889,7 @@ results from higher-priority destinations</p>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.exporters.base.ExportContext.metadata"><code class="docutils literal notranslate"><span class="pre">ExportContext.metadata</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.exporters.base.ExportContext.previous_results"><code class="docutils literal notranslate"><span class="pre">ExportContext.previous_results</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.exporters.base.ExportContext.get_result"><code class="docutils literal notranslate"><span class="pre">ExportContext.get_result()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.exporters.base.ExportContext.add_result"><code class="docutils literal notranslate"><span class="pre">ExportContext.add_result()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.exporters.base.ExportContext.has_successful_export"><code class="docutils literal notranslate"><span class="pre">ExportContext.has_successful_export()</span></code></a></li>
 </ul>
 </li>

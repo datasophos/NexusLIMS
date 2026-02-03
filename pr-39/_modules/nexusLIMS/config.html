@@ -428,7 +428,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="pr-39" />
-    <meta name="docbuild:last-update" content="Jan, 31, 2026"/>
+    <meta name="docbuild:last-update" content="Feb, 03, 2026"/>
   </head>
   
   
@@ -1124,6 +1124,41 @@ window.addEventListener("load", load);
             <span class="s2">&quot;without modifying the core NexusLIMS codebase. Profile files should be &quot;</span>
             <span class="s2">&quot;Python modules that register InstrumentProfile objects. If not specified, &quot;</span>
             <span class="s2">&quot;only built-in profiles will be loaded.&quot;</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="c1"># ========================================================================</span>
+    <span class="c1"># eLabFTW Export Destination Configuration (Optional)</span>
+    <span class="c1"># ========================================================================</span>
+    <span class="n">NX_ELABFTW_API_KEY</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="s2">&quot;1-&quot;</span> <span class="o">+</span> <span class="s2">&quot;a&quot;</span> <span class="o">*</span> <span class="mi">84</span> <span class="k">if</span> <span class="n">TEST_MODE</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">&quot;API key for authenticating to the eLabFTW API. Obtain from the user &quot;</span>
+            <span class="s2">&quot;panel in your eLabFTW instance. If not configured, eLabFTW export will &quot;</span>
+            <span class="s2">&quot;be disabled.&quot;</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">NX_ELABFTW_URL</span><span class="p">:</span> <span class="n">TestAwareHttpUrl</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>  <span class="c1"># type: ignore[valid-type]</span>
+        <span class="s2">&quot;http://elabftw.localhost:40080&quot;</span> <span class="k">if</span> <span class="n">TEST_MODE</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">&quot;Root URL of the eLabFTW instance (e.g., &#39;https://elabftw.example.com&#39;). &quot;</span>
+            <span class="s2">&quot;If not configured, eLabFTW export will be disabled.&quot;</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">NX_ELABFTW_EXPERIMENT_CATEGORY</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">&quot;Default category ID for created experiments. If not specified, &quot;</span>
+            <span class="s2">&quot;eLabFTW will use its default category. Category IDs can be found &quot;</span>
+            <span class="s2">&quot;in the eLabFTW admin panel.&quot;</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">NX_ELABFTW_EXPERIMENT_STATUS</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">&quot;Default status ID for created experiments. If not specified, &quot;</span>
+            <span class="s2">&quot;eLabFTW will use its default status. Status IDs can be found &quot;</span>
+            <span class="s2">&quot;in the eLabFTW admin panel.&quot;</span>
         <span class="p">),</span>
     <span class="p">)</span>
 

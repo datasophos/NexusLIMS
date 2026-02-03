@@ -233,6 +233,15 @@
 
 ````
 
+````{py:method} add_result(destination_name: str, result: nexusLIMS.exporters.base.ExportResult) -> None
+:canonical: nexusLIMS.exporters.base.ExportContext.add_result
+
+```{autodoc2-docstring} nexusLIMS.exporters.base.ExportContext.add_result
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
 ````{py:method} has_successful_export(destination_name: str) -> bool
 :canonical: nexusLIMS.exporters.base.ExportContext.has_successful_export
 

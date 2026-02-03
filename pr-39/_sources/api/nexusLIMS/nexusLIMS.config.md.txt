@@ -429,6 +429,50 @@ Bases: {py:obj}`pydantic_settings.BaseSettings`
 
 ````
 
+````{py:attribute} NX_ELABFTW_API_KEY
+:canonical: nexusLIMS.config.Settings.NX_ELABFTW_API_KEY
+
+**Type:** str | None
+
+```{autodoc2-docstring} nexusLIMS.config.Settings.NX_ELABFTW_API_KEY
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} NX_ELABFTW_URL
+:canonical: nexusLIMS.config.Settings.NX_ELABFTW_URL
+
+**Type:** nexusLIMS.config.TestAwareHttpUrl | None
+
+```{autodoc2-docstring} nexusLIMS.config.Settings.NX_ELABFTW_URL
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} NX_ELABFTW_EXPERIMENT_CATEGORY
+:canonical: nexusLIMS.config.Settings.NX_ELABFTW_EXPERIMENT_CATEGORY
+
+**Type:** int | None
+
+```{autodoc2-docstring} nexusLIMS.config.Settings.NX_ELABFTW_EXPERIMENT_CATEGORY
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} NX_ELABFTW_EXPERIMENT_STATUS
+:canonical: nexusLIMS.config.Settings.NX_ELABFTW_EXPERIMENT_STATUS
+
+**Type:** int | None
+
+```{autodoc2-docstring} nexusLIMS.config.Settings.NX_ELABFTW_EXPERIMENT_STATUS
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
 ````{py:property} nexuslims_instrument_data_path
 :canonical: nexusLIMS.config.Settings.nexuslims_instrument_data_path
 :type: pathlib.Path

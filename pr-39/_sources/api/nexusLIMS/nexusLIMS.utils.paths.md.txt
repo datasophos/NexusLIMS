@@ -21,6 +21,11 @@
     :parser: autodoc2_docstrings_parser
     :summary:
     ```
+* - {py:obj}`join_instrument_filestore_path <nexusLIMS.utils.paths.join_instrument_filestore_path>`
+  - ```{autodoc2-docstring} nexusLIMS.utils.paths.join_instrument_filestore_path
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
 * - {py:obj}`replace_instrument_data_path <nexusLIMS.utils.paths.replace_instrument_data_path>`
   - ```{autodoc2-docstring} nexusLIMS.utils.paths.replace_instrument_data_path
     :parser: autodoc2_docstrings_parser
@@ -34,6 +39,14 @@
 :canonical: nexusLIMS.utils.paths.is_subpath
 
 ```{autodoc2-docstring} nexusLIMS.utils.paths.is_subpath
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} join_instrument_filestore_path(filestore_path: str) -> pathlib.Path
+:canonical: nexusLIMS.utils.paths.join_instrument_filestore_path
+
+```{autodoc2-docstring} nexusLIMS.utils.paths.join_instrument_filestore_path
 :parser: autodoc2_docstrings_parser
 ```
 ````

@@ -428,7 +428,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="pr-39" />
-    <meta name="docbuild:last-update" content="Jan, 31, 2026"/>
+    <meta name="docbuild:last-update" content="Feb, 03, 2026"/>
   </head>
   
   
@@ -868,6 +868,45 @@ window.addEventListener("load", load);
         <span class="n">of_paths</span> <span class="o">=</span> <span class="p">[</span><span class="n">of_paths</span><span class="p">]</span>
 
     <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="n">subpath</span> <span class="ow">in</span> <span class="n">path</span><span class="o">.</span><span class="n">parents</span> <span class="k">for</span> <span class="n">subpath</span> <span class="ow">in</span> <span class="n">of_paths</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="join_instrument_filestore_path">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.utils.paths.html#nexusLIMS.utils.paths.join_instrument_filestore_path">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">join_instrument_filestore_path</span><span class="p">(</span><span class="n">filestore_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Safely join NX_INSTRUMENT_DATA_PATH with an instrument&#39;s filestore_path.</span>
+
+<span class="sd">    This helper handles filestore_path values with leading slashes gracefully.</span>
+<span class="sd">    If filestore_path starts with &#39;/&#39;, the leading slash is stripped before joining</span>
+<span class="sd">    to ensure the path remains relative to NX_INSTRUMENT_DATA_PATH.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filestore_path</span>
+<span class="sd">        The instrument&#39;s filestore_path (may contain leading &#39;/&#39;)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pathlib.Path</span>
+<span class="sd">        A resolved Path object: NX_INSTRUMENT_DATA_PATH / filestore_path</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; join_instrument_filestore_path(&quot;./Titan_STEM&quot;)</span>
+<span class="sd">    PosixPath(&#39;/mnt/data/Titan_STEM&#39;)</span>
+
+<span class="sd">    &gt;&gt;&gt; join_instrument_filestore_path(&quot;/Titan_STEM&quot;)  # Leading slash stripped</span>
+<span class="sd">    PosixPath(&#39;/mnt/data/Titan_STEM&#39;)</span>
+
+<span class="sd">    &gt;&gt;&gt; join_instrument_filestore_path(&quot;Titan_STEM&quot;)</span>
+<span class="sd">    PosixPath(&#39;/mnt/data/Titan_STEM&#39;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Strip leading slash to ensure relative path behavior</span>
+    <span class="c1"># pathlib treats absolute paths specially - they override the base path</span>
+    <span class="n">normalized_path</span> <span class="o">=</span> <span class="n">filestore_path</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">Path</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">NX_INSTRUMENT_DATA_PATH</span><span class="p">)</span> <span class="o">/</span> <span class="n">normalized_path</span></div>
 
 
 

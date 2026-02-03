@@ -19,6 +19,7 @@ nexusLIMS.utils.dicts
 nexusLIMS.utils.paths
 nexusLIMS.utils.time
 nexusLIMS.utils.network
+nexusLIMS.utils.elabftw
 nexusLIMS.utils.cdcs
 nexusLIMS.utils.logging
 ```
