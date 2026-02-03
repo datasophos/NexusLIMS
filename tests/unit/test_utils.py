@@ -25,7 +25,10 @@ from nexusLIMS.utils.files import (
 )
 from nexusLIMS.utils.logging import setup_loggers
 from nexusLIMS.utils.network import nexus_req
-from nexusLIMS.utils.paths import replace_instrument_data_path
+from nexusLIMS.utils.paths import (
+    join_instrument_filestore_path,
+    replace_instrument_data_path,
+)
 
 from .utils import get_full_file_path
 
@@ -599,3 +602,61 @@ class TestUtils:
 
         assert response.status_code == 200
         assert len(responses.calls) == 1
+
+    def test_join_instrument_filestore_path_relative_dotslash(self):
+        """Test join_instrument_filestore_path with ./relative/path format."""
+        from nexusLIMS.config import settings
+
+        instr_path = Path(settings.NX_INSTRUMENT_DATA_PATH)
+        result = join_instrument_filestore_path("./Titan_STEM")
+        expected = instr_path / "./Titan_STEM"
+        assert result == expected
+
+    def test_join_instrument_filestore_path_relative_no_dot(self):
+        """Test join_instrument_filestore_path with relative/path format."""
+        from nexusLIMS.config import settings
+
+        instr_path = Path(settings.NX_INSTRUMENT_DATA_PATH)
+        result = join_instrument_filestore_path("Titan_STEM")
+        expected = instr_path / "Titan_STEM"
+        assert result == expected
+
+    def test_join_instrument_filestore_path_leading_slash(self):
+        """Test join_instrument_filestore_path strips leading slash."""
+        from nexusLIMS.config import settings
+
+        instr_path = Path(settings.NX_INSTRUMENT_DATA_PATH)
+        result = join_instrument_filestore_path("/Titan_STEM")
+        expected = instr_path / "Titan_STEM"
+        assert result == expected
+        # Ensure it doesn't become an absolute path ignoring NX_INSTRUMENT_DATA_PATH
+        assert instr_path in result.parents or result == instr_path
+
+    def test_join_instrument_filestore_path_multiple_leading_slashes(self):
+        """Test join_instrument_filestore_path strips multiple leading slashes."""
+        from nexusLIMS.config import settings
+
+        instr_path = Path(settings.NX_INSTRUMENT_DATA_PATH)
+        result = join_instrument_filestore_path("///Titan_STEM")
+        expected = instr_path / "Titan_STEM"
+        assert result == expected
+
+    def test_join_instrument_filestore_path_nested(self):
+        """Test join_instrument_filestore_path with nested directory structure."""
+        from nexusLIMS.config import settings
+
+        instr_path = Path(settings.NX_INSTRUMENT_DATA_PATH)
+        result = join_instrument_filestore_path("instruments/Titan_STEM/data")
+        expected = instr_path / "instruments/Titan_STEM/data"
+        assert result == expected
+
+    def test_join_instrument_filestore_path_nested_with_leading_slash(self):
+        """Test join_instrument_filestore_path with nested path and leading slash."""
+        from nexusLIMS.config import settings
+
+        instr_path = Path(settings.NX_INSTRUMENT_DATA_PATH)
+        result = join_instrument_filestore_path("/instruments/Titan_STEM/data")
+        expected = instr_path / "instruments/Titan_STEM/data"
+        assert result == expected
+        # Verify the base path is preserved
+        assert instr_path in result.parents or result.parent == instr_path

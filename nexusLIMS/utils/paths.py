@@ -46,6 +46,42 @@ def is_subpath(path: Path, of_paths: Union[Path, List[Path]]):
     return any(subpath in path.parents for subpath in of_paths)
 
 
+def join_instrument_filestore_path(filestore_path: str) -> Path:
+    """
+    Safely join NX_INSTRUMENT_DATA_PATH with an instrument's filestore_path.
+
+    This helper handles filestore_path values with leading slashes gracefully.
+    If filestore_path starts with '/', the leading slash is stripped before joining
+    to ensure the path remains relative to NX_INSTRUMENT_DATA_PATH.
+
+    Parameters
+    ----------
+    filestore_path
+        The instrument's filestore_path (may contain leading '/')
+
+    Returns
+    -------
+    pathlib.Path
+        A resolved Path object: NX_INSTRUMENT_DATA_PATH / filestore_path
+
+    Examples
+    --------
+    >>> join_instrument_filestore_path("./Titan_STEM")
+    PosixPath('/mnt/data/Titan_STEM')
+
+    >>> join_instrument_filestore_path("/Titan_STEM")  # Leading slash stripped
+    PosixPath('/mnt/data/Titan_STEM')
+
+    >>> join_instrument_filestore_path("Titan_STEM")
+    PosixPath('/mnt/data/Titan_STEM')
+    """
+    # Strip leading slash to ensure relative path behavior
+    # pathlib treats absolute paths specially - they override the base path
+    normalized_path = filestore_path.lstrip("/")
+
+    return Path(settings.NX_INSTRUMENT_DATA_PATH) / normalized_path
+
+
 def replace_instrument_data_path(path: Path, suffix: str) -> Path:
     """
     Given an "NX_INSTRUMENT_DATA_PATH" path, generate equivalent"NX_DATA_PATH" path.
