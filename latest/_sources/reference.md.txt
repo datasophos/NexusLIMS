@@ -9,4 +9,5 @@ Technical reference documentation for NexusLIMS.
 reference/changelog
 reference/api
 reference/NEMO_Reference
+reference/eLabFTW_metadata_reference
 ```

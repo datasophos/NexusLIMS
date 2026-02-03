@@ -61,7 +61,7 @@
     <link rel="icon" href="../_static/nexusLIMS_bare_logo.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="API documentation" href="api.html" />
+    <link rel="next" title="NexusLIMS API documentation" href="api.html" />
     <link rel="prev" title="Reference" href="../reference.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -411,8 +411,9 @@
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Changelog</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api.html">API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">NexusLIMS API documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="NEMO_Reference.html">NEMO System Reference for NexusLIMS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="eLabFTW_metadata_reference.html">eLabFTW Metadata Reference</a></li>
 </ul>
 </div>
 </nav></div>
@@ -485,8 +486,19 @@ up to version 1.4.3. The datasophos fork begins at version 2.0.</p>
 <section id="new-features">
 <h3>New features<a class="headerlink" href="#new-features" title="Link to this heading">#</a></h3>
 <ul>
-<li><p>Added plugin-based export framework supporting multiple repository destinations (currently only CDCS, but LabArchives and eLabFTW support planned in the future). Includes configurable export strategies (<code class="docutils literal notranslate"><span class="pre">all</span></code>, <code class="docutils literal notranslate"><span class="pre">first_success</span></code>, <code class="docutils literal notranslate"><span class="pre">best_effort</span></code> via <code class="docutils literal notranslate"><span class="pre">NX_EXPORT_STRATEGY</span></code>), per-destination upload tracking, and inter-destination dependencies. New <code class="docutils literal notranslate"><span class="pre">BUILT_NOT_EXPORTED</span></code> status for records that failed to export.</p>
+<li><p>Added plugin-based export framework supporting multiple repository destinations (currently only CDCS and eLabFTW support, but other exporters planned in the future). Includes configurable export strategies (<code class="docutils literal notranslate"><span class="pre">all</span></code>, <code class="docutils literal notranslate"><span class="pre">first_success</span></code>, <code class="docutils literal notranslate"><span class="pre">best_effort</span></code> via <code class="docutils literal notranslate"><span class="pre">NX_EXPORT_STRATEGY</span></code>), per-destination upload tracking, and inter-destination dependencies. New <code class="docutils literal notranslate"><span class="pre">BUILT_NOT_EXPORTED</span></code> status for records that failed to export.</p>
 <p><strong>Breaking changes:</strong> Database migration required (<code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">run</span> <span class="pre">alembic</span> <span class="pre">upgrade</span> <span class="pre">head</span></code>). <code class="docutils literal notranslate"><span class="pre">nexusLIMS.cdcs.upload_record_files()</span></code> removed; use <code class="docutils literal notranslate"><span class="pre">nexusLIMS.exporters.export_records()</span></code> instead. (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/35">#35</a>)</p>
+</li>
+<li><p>Added eLabFTW export destination plugin supporting automatic export of NexusLIMS session records to <a class="reference external" href="https://www.elabftw.net/">eLabFTW</a> electronic lab notebook instances. Each session creates one eLabFTW experiment with an HTML summary, structured metadata using eLabFTW’s <code class="docutils literal notranslate"><span class="pre">extra_fields</span></code> schema, automatic tagging, and the full XML record attached as a file. Cross-links to CDCS records are automatically included when both destinations are configured.</p>
+<p>Configure with environment variables:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">NX_ELABFTW_URL</span></code>: eLabFTW instance URL</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">NX_ELABFTW_API_KEY</span></code>: API authentication key</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">NX_ELABFTW_EXPERIMENT_CATEGORY</span></code>: Optional default category ID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">NX_ELABFTW_EXPERIMENT_STATUS</span></code>: Optional default status ID</p></li>
+</ul>
+<p>See <a class="reference internal" href="../user_guide/configuration.html#config-elabftw"><span class="std std-ref">eLabFTW configuration</span></a> for details.</p>
+<p>(<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/42">#42</a>)</p>
 </li>
 </ul>
 </section>
@@ -1186,7 +1198,7 @@ delineate functionality of the various parts of NexusLIMS</p></li>
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">API documentation</p>
+        <p class="prev-next-title">NexusLIMS API documentation</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

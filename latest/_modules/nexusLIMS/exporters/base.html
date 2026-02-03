@@ -946,6 +946,27 @@ window.addEventListener("load", load);
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">previous_results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">destination_name</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="ExportContext.add_result">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.exporters.base.html#nexusLIMS.exporters.base.ExportContext.add_result">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">destination_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">ExportResult</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add or update result from a destination.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        destination_name</span>
+<span class="sd">            Name of the destination (e.g., &quot;cdcs&quot;, &quot;elabftw&quot;)</span>
+<span class="sd">        result</span>
+<span class="sd">            The export result to store</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; from nexusLIMS.exporters.base import ExportResult</span>
+<span class="sd">        &gt;&gt;&gt; result = ExportResult(success=True, message=&quot;Uploaded successfully&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; context.add_result(&quot;cdcs&quot;, result)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">previous_results</span><span class="p">[</span><span class="n">destination_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span></div>
+
+
 <div class="viewcode-block" id="ExportContext.has_successful_export">
 <a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.exporters.base.html#nexusLIMS.exporters.base.ExportContext.has_successful_export">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">has_successful_export</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">destination_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
