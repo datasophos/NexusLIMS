@@ -14,6 +14,34 @@ up to version 1.4.3. The datasophos fork begins at version 2.0.
 
 <!-- towncrier release notes start -->
 
+## 2.4.0 (2026-02-02)
+
+### New features
+
+- Added plugin-based export framework supporting multiple repository destinations (currently only CDCS and eLabFTW support, but other exporters planned in the future). Includes configurable export strategies (`all`, `first_success`, `best_effort` via `NX_EXPORT_STRATEGY`), per-destination upload tracking, and inter-destination dependencies. New `BUILT_NOT_EXPORTED` status for records that failed to export.
+
+  **Breaking changes:** Database migration required (`uv run alembic upgrade head`). `nexusLIMS.cdcs.upload_record_files()` removed; use `nexusLIMS.exporters.export_records()` instead. ([#35](https://github.com/datasophos/NexusLIMS/issues/35))
+- Added eLabFTW export destination plugin supporting automatic export of NexusLIMS session records to [eLabFTW](https://www.elabftw.net/) electronic lab notebook instances. Each session creates one eLabFTW experiment with an HTML summary, structured metadata using eLabFTW's `extra_fields` schema, automatic tagging, and the full XML record attached as a file. Cross-links to CDCS records are automatically included when both destinations are configured.
+
+  Configure with environment variables:
+  - `NX_ELABFTW_URL`: eLabFTW instance URL
+  - `NX_ELABFTW_API_KEY`: API authentication key
+  - `NX_ELABFTW_EXPERIMENT_CATEGORY`: Optional default category ID
+  - `NX_ELABFTW_EXPERIMENT_STATUS`: Optional default status ID
+
+  See {ref}`eLabFTW configuration <config-elabftw>` for details.
+
+  ([#42](https://github.com/datasophos/NexusLIMS/issues/42))
+
+### Bug fixes
+
+- Fixed instrument filestore path handling to correctly resolve paths that start with a leading slash. Previously, `pathlib` would treat leading slashes as absolute paths and discard the `NX_INSTRUMENT_DATA_PATH` base directory entirely. A new `join_instrument_filestore_path()` helper function now strips leading slashes before joining paths. ([#43](https://github.com/datasophos/NexusLIMS/issues/43))
+
+### Documentation improvements
+
+- Updated [local deployment documentation](https://datasophos.github.io/NexusLIMS/stable/frontend_guide/local-test-deployment.html) to fix a few errors and be more complete. Also simplified local HTTPS configuration quite a bit in the [`3.18.0-nx1`](https://github.com/datasophos/NexusLIMS-CDCS/releases/tag/3.18.0-nx1) release of NexusLIMS-CDCS. ([#40](https://github.com/datasophos/NexusLIMS/issues/40))
+
+
 ## 2.3.0 (2026-01-19)
 
 ### New features
