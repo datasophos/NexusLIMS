@@ -66,7 +66,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Jan, 31, 2026"/>
+    <meta name="docbuild:last-update" content="Feb, 03, 2026"/>
   </head>
   
   
@@ -518,7 +518,10 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.utils.paths.is_subpath" title="nexusLIMS.utils.paths.is_subpath"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_subpath</span></code></a></p></td>
 <td><p>Return if this path is a subpath of other paths.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.utils.paths.replace_instrument_data_path" title="nexusLIMS.utils.paths.replace_instrument_data_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">replace_instrument_data_path</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.utils.paths.join_instrument_filestore_path" title="nexusLIMS.utils.paths.join_instrument_filestore_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">join_instrument_filestore_path</span></code></a></p></td>
+<td><p>Safely join NX_INSTRUMENT_DATA_PATH with an instrument’s filestore_path.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.utils.paths.replace_instrument_data_path" title="nexusLIMS.utils.paths.replace_instrument_data_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">replace_instrument_data_path</span></code></a></p></td>
 <td><p>Given an “NX_INSTRUMENT_DATA_PATH” path, generate equivalent”NX_DATA_PATH” path.</p></td>
 </tr>
 </tbody>
@@ -557,6 +560,39 @@ with the root-level <code class="docutils literal notranslate"><span class="pre"
 <span class="gp">... </span>           <span class="n">settings</span><span class="o">.</span><span class="n">NX_INSTRUMENT_DATA_PATH</span> <span class="o">/</span>
 <span class="gp">... </span>               <span class="n">titan</span><span class="o">.</span><span class="n">filestore_path</span><span class="p">))</span>
 <span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.utils.paths.join_instrument_filestore_path">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.utils.paths.</span></span><span class="sig-name descname"><span class="pre">join_instrument_filestore_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filestore_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/utils/paths.html#join_instrument_filestore_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.utils.paths.join_instrument_filestore_path" title="Link to this definition">#</a></dt>
+<dd><p>Safely join NX_INSTRUMENT_DATA_PATH with an instrument’s filestore_path.</p>
+<p>This helper handles filestore_path values with leading slashes gracefully.
+If filestore_path starts with ‘/’, the leading slash is stripped before joining
+to ensure the path remains relative to NX_INSTRUMENT_DATA_PATH.</p>
+<dl class="myst field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filestore_path</strong> – The instrument’s filestore_path (may contain leading ‘/’)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A resolved Path object: NX_INSTRUMENT_DATA_PATH / filestore_path</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><em>Path</em></a></p>
+</dd>
+</dl>
+<p><strong>Examples:</strong></p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">join_instrument_filestore_path</span><span class="p">(</span><span class="s2">&quot;./Titan_STEM&quot;</span><span class="p">)</span>
+<span class="go">PosixPath(&#39;/mnt/data/Titan_STEM&#39;)</span>
+</pre></div>
+</div>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">join_instrument_filestore_path</span><span class="p">(</span><span class="s2">&quot;/Titan_STEM&quot;</span><span class="p">)</span>  <span class="c1"># Leading slash stripped</span>
+<span class="go">PosixPath(&#39;/mnt/data/Titan_STEM&#39;)</span>
+</pre></div>
+</div>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">join_instrument_filestore_path</span><span class="p">(</span><span class="s2">&quot;Titan_STEM&quot;</span><span class="p">)</span>
+<span class="go">PosixPath(&#39;/mnt/data/Titan_STEM&#39;)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -640,6 +676,7 @@ such as <code class="docutils literal notranslate"><span class="pre">.json</span
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#api">API</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.utils.paths.is_subpath"><code class="docutils literal notranslate"><span class="pre">is_subpath()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.utils.paths.join_instrument_filestore_path"><code class="docutils literal notranslate"><span class="pre">join_instrument_filestore_path()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.utils.paths.replace_instrument_data_path"><code class="docutils literal notranslate"><span class="pre">replace_instrument_data_path()</span></code></a></li>
 </ul>
 </li>
