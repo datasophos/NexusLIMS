@@ -120,7 +120,7 @@ class TestExportContext:
             destination_name="cdcs",
             record_id="cdcs-123",
         )
-        base_context.previous_results["cdcs"] = cdcs_result
+        base_context.add_result("cdcs", cdcs_result)
 
         # Retrieve it
         result = base_context.get_result("cdcs")
@@ -132,6 +132,72 @@ class TestExportContext:
         result = base_context.get_result("nonexistent")
         assert result is None
 
+    def test_add_result(self, base_context):
+        """Test adding a result to the context."""
+        result = ExportResult(
+            success=True,
+            destination_name="cdcs",
+            record_id="cdcs-123",
+        )
+
+        base_context.add_result("cdcs", result)
+
+        # Verify it was added
+        assert "cdcs" in base_context.previous_results
+        assert base_context.previous_results["cdcs"] is result
+        assert base_context.get_result("cdcs") is result
+
+    def test_add_result_overwrites_existing(self, base_context):
+        """Test that add_result overwrites existing results."""
+        # Add initial result
+        first_result = ExportResult(
+            success=False,
+            destination_name="cdcs",
+            error_message="First attempt failed",
+        )
+        base_context.add_result("cdcs", first_result)
+
+        # Overwrite with new result
+        second_result = ExportResult(
+            success=True,
+            destination_name="cdcs",
+            record_id="cdcs-456",
+        )
+        base_context.add_result("cdcs", second_result)
+
+        # Verify only the second result remains
+        assert base_context.get_result("cdcs") is second_result
+        assert base_context.get_result("cdcs").success is True
+        assert base_context.get_result("cdcs").record_id == "cdcs-456"
+
+    def test_add_result_multiple_destinations(self, base_context):
+        """Test adding results from multiple destinations."""
+        cdcs_result = ExportResult(
+            success=True,
+            destination_name="cdcs",
+            record_id="cdcs-123",
+        )
+        elabftw_result = ExportResult(
+            success=True,
+            destination_name="elabftw",
+            record_id="elabftw-456",
+        )
+        labarchives_result = ExportResult(
+            success=False,
+            destination_name="labarchives",
+            error_message="Connection failed",
+        )
+
+        base_context.add_result("cdcs", cdcs_result)
+        base_context.add_result("elabftw", elabftw_result)
+        base_context.add_result("labarchives", labarchives_result)
+
+        # Verify all results are stored independently
+        assert len(base_context.previous_results) == 3
+        assert base_context.get_result("cdcs") is cdcs_result
+        assert base_context.get_result("elabftw") is elabftw_result
+        assert base_context.get_result("labarchives") is labarchives_result
+
     def test_has_successful_export_true(self, base_context):
         """Test has_successful_export when destination succeeded."""
         # Add a successful result
@@ -140,7 +206,7 @@ class TestExportContext:
             destination_name="cdcs",
             record_id="cdcs-123",
         )
-        base_context.previous_results["cdcs"] = cdcs_result
+        base_context.add_result("cdcs", cdcs_result)
 
         assert base_context.has_successful_export("cdcs") is True
 
@@ -152,7 +218,7 @@ class TestExportContext:
             destination_name="cdcs",
             error_message="Upload failed",
         )
-        base_context.previous_results["cdcs"] = cdcs_result
+        base_context.add_result("cdcs", cdcs_result)
 
         assert base_context.has_successful_export("cdcs") is False
 
@@ -175,9 +241,9 @@ class TestExportContext:
             error_message="Connection timeout",
         )
 
-        base_context.previous_results["cdcs"] = cdcs_result
-        base_context.previous_results["labarchives"] = labarchives_result
-        base_context.previous_results["elabftw"] = elabftw_result
+        base_context.add_result("cdcs", cdcs_result)
+        base_context.add_result("labarchives", labarchives_result)
+        base_context.add_result("elabftw", elabftw_result)
 
         # Verify all results are accessible
         assert base_context.get_result("cdcs") is cdcs_result
@@ -198,7 +264,7 @@ class TestExportContext:
             record_id="cdcs-789",
             record_url="http://cdcs.example.com/data?id=cdcs-789",
         )
-        base_context.previous_results["cdcs"] = cdcs_result
+        base_context.add_result("cdcs", cdcs_result)
 
         # LabArchives (priority 90) runs second and can access CDCS result
         if base_context.has_successful_export("cdcs"):
@@ -216,7 +282,7 @@ class TestExportContext:
                 record_id="la-999",
                 metadata=labarchives_metadata,
             )
-            base_context.previous_results["labarchives"] = labarchives_result
+            base_context.add_result("labarchives", labarchives_result)
 
         # Verify the dependency worked
         assert base_context.has_successful_export("labarchives") is True

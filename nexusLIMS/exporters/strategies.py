@@ -84,7 +84,7 @@ def _strategy_all(
         results.append(result)
 
         # Add result to context for subsequent destinations
-        context.previous_results[dest.name] = result
+        context.add_result(dest.name, result)
 
         if not result.success:
             _logger.warning(
@@ -138,7 +138,7 @@ def _strategy_first_success(
         results.append(result)
 
         # Add result to context for subsequent destinations
-        context.previous_results[dest.name] = result
+        context.add_result(dest.name, result)
 
         if result.success:
             _logger.info(
@@ -187,7 +187,7 @@ def _strategy_best_effort(
         results.append(result)
 
         # Add result to context for subsequent destinations
-        context.previous_results[dest.name] = result
+        context.add_result(dest.name, result)
 
         if result.success:
             _logger.info("Export to %s succeeded", dest.name)

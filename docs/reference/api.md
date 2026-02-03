@@ -1,4 +1,4 @@
-# API documentation
+# NexusLIMS API documentation
 
 This page contains links to the automatically generated documentation
 from the specific functions, classes, and methods that are part of the

@@ -61,12 +61,14 @@ jobs:
         run: |
           docker pull ${{ env.IMAGE_PREFIX }}-nemo:${{ steps.image-tag.outputs.tag }} || echo "Tagged NEMO image not found"
           docker pull ${{ env.IMAGE_PREFIX }}-cdcs:${{ steps.image-tag.outputs.tag }} || echo "Tagged CDCS image not found"
+          docker pull ${{ env.IMAGE_PREFIX }}-elabftw:${{ steps.image-tag.outputs.tag }} || echo "Tagged eLabFTW image not found"
 
       - name: Tag images for local use
         continue-on-error: true
         run: |
           docker tag ${{ env.IMAGE_PREFIX }}-nemo:${{ steps.image-tag.outputs.tag }} nexuslims-test-nemo:latest 2>/dev/null || true
           docker tag ${{ env.IMAGE_PREFIX }}-cdcs:${{ steps.image-tag.outputs.tag }} nexuslims-test-cdcs:latest 2>/dev/null || true
+          docker tag ${{ env.IMAGE_PREFIX }}-elabftw:${{ steps.image-tag.outputs.tag }} nexuslims-test-elabftw:latest 2>/dev/null || true
 
       - name: Start Docker services
         working-directory: tests/integration/docker
@@ -77,7 +79,8 @@ jobs:
         run: |
           # Try to use pre-built images with the PR/branch tag from build-test-images.yml
           if docker image inspect nexuslims-test-nemo:latest >/dev/null 2>&1 && \
-             docker image inspect nexuslims-test-cdcs:latest >/dev/null 2>&1; then
+             docker image inspect nexuslims-test-cdcs:latest >/dev/null 2>&1 && \
+             docker image inspect nexuslims-test-elabftw:latest >/dev/null 2>&1; then
             echo "Using pre-built images from registry (tag: ${{ steps.image-tag.outputs.tag }})"
             docker compose -f docker-compose.ci.yml up -d
           else
@@ -94,6 +97,10 @@ jobs:
           echo "Waiting for CDCS to be ready..."
           timeout 240 bash -c 'until curl -f http://localhost:48080/ > /dev/null 2>&1; do echo -n "."; sleep 5; done'
           echo "✓ CDCS is ready"
+
+          echo "Waiting for eLabFTW to be ready..."
+          timeout 240 bash -c 'until curl -fk https://localhost:48148/login.php > /dev/null 2>&1; do echo -n "."; sleep 5; done'
+          echo "✓ eLabFTW is ready"
 
           echo "Waiting for MailPit to be ready..."
           timeout 60 bash -c 'until curl -f http://localhost:48025/ > /dev/null 2>&1; do echo -n "."; sleep 2; done'
@@ -179,7 +186,8 @@ jobs:
 
           # Determine which compose file was used and collect logs
           if docker image inspect nexuslims-test-nemo:latest >/dev/null 2>&1 && \
-             docker image inspect nexuslims-test-cdcs:latest >/dev/null 2>&1; then
+             docker image inspect nexuslims-test-cdcs:latest >/dev/null 2>&1 && \
+             docker image inspect nexuslims-test-elabftw:latest >/dev/null 2>&1; then
             COMPOSE_FILE="docker-compose.ci.yml"
           else
             COMPOSE_FILE="docker-compose.yml"
@@ -191,7 +199,7 @@ jobs:
           docker compose -f "$COMPOSE_FILE" logs --no-color > ../../docker-logs/docker-compose.log 2>&1 || true
 
           # Also try collecting by container name directly as fallback
-          for container in nexuslims-test-nemo nexuslims-test-cdcs nexuslims-test-cdcs-mongo nexuslims-test-cdcs-postgres nexuslims-test-cdcs-redis nexuslims-test-mailpit nexuslims-test-caddy-proxy; do
+          for container in nexuslims-test-nemo nexuslims-test-cdcs nexuslims-test-cdcs-mongo nexuslims-test-cdcs-postgres nexuslims-test-cdcs-redis nexuslims-test-elabftw nexuslims-test-elabftw-mysql nexuslims-test-mailpit nexuslims-test-caddy-proxy; do
             docker logs "$container" > "../../docker-logs/${container##*-}.log" 2>&1 || true
           done
 
@@ -222,6 +230,12 @@ jobs:
           echo ""
           echo "=== Redis Log ==="
           cat docker-logs/redis.log 2>/dev/null || echo "No Redis log available"
+          echo ""
+          echo "=== eLabFTW Log ==="
+          cat docker-logs/elabftw.log 2>/dev/null || echo "No eLabFTW log available"
+          echo ""
+          echo "=== eLabFTW MySQL Log ==="
+          cat docker-logs/mysql.log 2>/dev/null || echo "No eLabFTW MySQL log available"
           echo ""
           echo "=== Mailpit Log ==="
           cat docker-logs/mailpit.log 2>/dev/null || echo "No Mailpit log available"

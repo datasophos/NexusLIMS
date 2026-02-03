@@ -423,3 +423,147 @@ def test_custom_log_and_records_paths(tmp_path, monkeypatch, mock_nemo_env):
     assert settings.records_dir_path == custom_records
     assert custom_log == settings.NX_LOG_PATH
     assert custom_records == settings.NX_RECORDS_PATH
+
+
+def test_elabftw_config_full(monkeypatch):
+    """Test eLabFTW configuration with all fields."""
+    from nexusLIMS.config import refresh_settings, settings
+
+    monkeypatch.setenv("NX_ELABFTW_API_KEY", "1-abcdef123456")
+    monkeypatch.setenv("NX_ELABFTW_URL", "https://elabftw.example.com")
+    monkeypatch.setenv("NX_ELABFTW_EXPERIMENT_CATEGORY", "5")
+    monkeypatch.setenv("NX_ELABFTW_EXPERIMENT_STATUS", "3")
+
+    # Refresh settings to pick up new environment variables
+    refresh_settings()
+
+    assert settings.NX_ELABFTW_API_KEY == "1-abcdef123456"
+    # In TEST_MODE, URL is a string without trailing slash normalization
+    assert str(settings.NX_ELABFTW_URL) == "https://elabftw.example.com"
+    assert settings.NX_ELABFTW_EXPERIMENT_CATEGORY == 5
+    assert settings.NX_ELABFTW_EXPERIMENT_STATUS == 3
+
+
+def test_elabftw_config_minimal(monkeypatch):
+    """Test eLabFTW configuration with only required fields."""
+    from nexusLIMS.config import refresh_settings, settings
+
+    # Only set API key and URL, not category/status
+    monkeypatch.setenv("NX_ELABFTW_API_KEY", "2-test-key-minimal")
+    monkeypatch.setenv("NX_ELABFTW_URL", "http://localhost:3148")
+    monkeypatch.delenv("NX_ELABFTW_EXPERIMENT_CATEGORY", raising=False)
+    monkeypatch.delenv("NX_ELABFTW_EXPERIMENT_STATUS", raising=False)
+
+    # Refresh settings to pick up new environment variables
+    refresh_settings()
+
+    assert settings.NX_ELABFTW_API_KEY == "2-test-key-minimal"
+    # In TEST_MODE, URL is a string without trailing slash normalization
+    assert str(settings.NX_ELABFTW_URL) == "http://localhost:3148"
+    # Optional fields should be None
+    assert settings.NX_ELABFTW_EXPERIMENT_CATEGORY is None
+    assert settings.NX_ELABFTW_EXPERIMENT_STATUS is None
+
+
+def test_elabftw_config_not_configured(monkeypatch, with_validation):
+    """Test eLabFTW config fields are None when not configured in production mode."""
+    from nexusLIMS.config import refresh_settings, settings
+
+    # Explicitly unset all eLabFTW environment variables
+    monkeypatch.delenv("NX_ELABFTW_API_KEY", raising=False)
+    monkeypatch.delenv("NX_ELABFTW_URL", raising=False)
+    monkeypatch.delenv("NX_ELABFTW_EXPERIMENT_CATEGORY", raising=False)
+    monkeypatch.delenv("NX_ELABFTW_EXPERIMENT_STATUS", raising=False)
+
+    # Refresh settings to pick up new environment variables
+    refresh_settings()
+
+    # All fields should be None when not configured in production mode
+    assert settings.NX_ELABFTW_API_KEY is None
+    assert settings.NX_ELABFTW_URL is None
+    assert settings.NX_ELABFTW_EXPERIMENT_CATEGORY is None
+    assert settings.NX_ELABFTW_EXPERIMENT_STATUS is None
+
+
+def test_elabftw_config_test_mode_defaults(monkeypatch):
+    """Test that eLabFTW has appropriate defaults in TEST_MODE."""
+    from nexusLIMS.config import TEST_MODE
+
+    # This test only makes sense if TEST_MODE is enabled
+    if not TEST_MODE:
+        pytest.skip("TEST_MODE not enabled")
+
+    from nexusLIMS.config import Settings
+
+    # Create a fresh Settings instance (without environment overrides)
+    # In TEST_MODE, it should have default values
+    settings = Settings()
+
+    # Verify test mode defaults
+    assert settings.NX_ELABFTW_API_KEY == "1-" + "a" * 84
+    # In TEST_MODE, URL is a string (not AnyHttpUrl), so no trailing slash normalization
+    assert str(settings.NX_ELABFTW_URL) == "http://elabftw.localhost:40080"
+    assert settings.NX_ELABFTW_EXPERIMENT_CATEGORY is None
+    assert settings.NX_ELABFTW_EXPERIMENT_STATUS is None
+
+
+def test_elabftw_api_key_format_validation(monkeypatch):
+    """Test that various API key formats are accepted."""
+    from nexusLIMS.config import refresh_settings, settings
+
+    test_keys = [
+        "1-" + "a" * 84,  # Format used in tests
+        "42-" + "x" * 84,  # Different ID
+        "999-" + "0" * 84,  # Numeric key portion
+    ]
+
+    for api_key in test_keys:
+        monkeypatch.setenv("NX_ELABFTW_API_KEY", api_key)
+        monkeypatch.setenv("NX_ELABFTW_URL", "http://localhost:3148")
+
+        refresh_settings()
+
+        assert api_key == settings.NX_ELABFTW_API_KEY
+
+
+def test_elabftw_url_trailing_slash_normalized(monkeypatch, with_validation):
+    """Test that eLabFTW URL gets normalized with trailing slash in production mode."""
+    from nexusLIMS.config import refresh_settings, settings
+
+    # Set URL without trailing slash
+    monkeypatch.setenv("NX_ELABFTW_API_KEY", "1-testkey")
+    monkeypatch.setenv("NX_ELABFTW_URL", "https://elabftw.example.com")
+
+    refresh_settings()
+
+    # URL should have trailing slash added by AnyHttpUrl validation
+    # (with_validation fixture enables production mode where URLs are validated)
+    assert str(settings.NX_ELABFTW_URL) == "https://elabftw.example.com/"
+
+
+def test_elabftw_experiment_category_as_int(monkeypatch):
+    """Test that experiment category is parsed as integer."""
+    from nexusLIMS.config import refresh_settings, settings
+
+    monkeypatch.setenv("NX_ELABFTW_API_KEY", "1-test")
+    monkeypatch.setenv("NX_ELABFTW_URL", "http://localhost:3148")
+    monkeypatch.setenv("NX_ELABFTW_EXPERIMENT_CATEGORY", "42")
+
+    refresh_settings()
+
+    assert settings.NX_ELABFTW_EXPERIMENT_CATEGORY == 42
+    assert isinstance(settings.NX_ELABFTW_EXPERIMENT_CATEGORY, int)
+
+
+def test_elabftw_experiment_status_as_int(monkeypatch):
+    """Test that experiment status is parsed as integer."""
+    from nexusLIMS.config import refresh_settings, settings
+
+    monkeypatch.setenv("NX_ELABFTW_API_KEY", "1-test")
+    monkeypatch.setenv("NX_ELABFTW_URL", "http://localhost:3148")
+    monkeypatch.setenv("NX_ELABFTW_EXPERIMENT_STATUS", "7")
+
+    refresh_settings()
+
+    assert settings.NX_ELABFTW_EXPERIMENT_STATUS == 7
+    assert isinstance(settings.NX_ELABFTW_EXPERIMENT_STATUS, int)

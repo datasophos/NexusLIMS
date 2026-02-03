@@ -113,6 +113,24 @@ class ExportContext:
         """
         return self.previous_results.get(destination_name)
 
+    def add_result(self, destination_name: str, result: ExportResult) -> None:
+        """Add or update result from a destination.
+
+        Parameters
+        ----------
+        destination_name
+            Name of the destination (e.g., "cdcs", "elabftw")
+        result
+            The export result to store
+
+        Examples
+        --------
+        >>> from nexusLIMS.exporters.base import ExportResult
+        >>> result = ExportResult(success=True, message="Uploaded successfully")
+        >>> context.add_result("cdcs", result)
+        """
+        self.previous_results[destination_name] = result
+
     def has_successful_export(self, destination_name: str) -> bool:
         """Check if a destination successfully exported.
 

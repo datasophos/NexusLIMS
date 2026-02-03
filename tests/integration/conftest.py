@@ -25,6 +25,7 @@ if TYPE_CHECKING:
     # Import statements or code that should only be evaluated during type checking
     # This code will be ignored at runtime
     from nexusLIMS.harvesters.nemo.connector import NemoConnector
+    from nexusLIMS.utils.elabftw import ELabFTWClient
 
 
 # Docker compose directory
@@ -43,6 +44,11 @@ MAILPIT_SMTP_HOST = "localhost"
 MAILPIT_SMTP_PORT = 41025
 MAILPIT_SMTP_USER = "test"
 MAILPIT_SMTP_PASS = "testpass"
+
+# eLabFTW service (accessed through Caddy reverse proxy)
+ELABFTW_URL = "http://elabftw.localhost:40080"
+# eLabFTW API key format: "1-" + 84 characters (minimum for validation)
+ELABFTW_API_KEY = "1-" + "a" * 84
 
 # NEMO API URLs (base URLs + /api/)
 NEMO_URL = f"{NEMO_BASE_URL}/api/"
@@ -1274,6 +1280,34 @@ def clear_session_logs():
 
 
 @pytest.fixture
+def clear_upload_logs():
+    """
+    Clear all upload_log entries from the database.
+
+    This fixture clears the upload_log table before each test to ensure
+    a clean state. It uses the database configured in settings (typically
+    the session-scoped integration test database).
+
+    Returns
+    -------
+    None
+        Returns after clearing upload logs
+    """
+    from sqlmodel import Session as DBSession
+    from sqlmodel import delete
+
+    from nexusLIMS.db.engine import get_engine
+    from nexusLIMS.db.models import UploadLog
+
+    # Clear upload_log table before test
+    with DBSession(get_engine()) as db_session:
+        # Delete all upload logs
+        statement = delete(UploadLog)
+        db_session.exec(statement)
+        db_session.commit()
+
+
+@pytest.fixture
 def test_database(tmp_path, monkeypatch):
     """
     Create fresh test database for integration tests.
@@ -1700,6 +1734,7 @@ def test_environment_setup(  # noqa: PLR0913
     extracted_test_files,
     cdcs_client,
     clear_session_logs,
+    clear_upload_logs,
     monkeypatch,
 ):
     """
@@ -1723,6 +1758,8 @@ def test_environment_setup(  # noqa: PLR0913
         CDCS client configuration for record uploads
     clear_session_logs : None
         Ensures session_log table is cleared before test
+    clear_upload_logs : None
+        Ensures upload_log table is cleared before test
     monkeypatch : pytest.MonkeyPatch
         Pytest monkeypatch fixture
 
@@ -1749,6 +1786,14 @@ def test_environment_setup(  # noqa: PLR0913
     # Patch the instrument_db to use test database
     test_instrument_db = instruments._get_instrument_db(db_path=populated_test_database)
     monkeypatch.setattr(instruments, "instrument_db", test_instrument_db)
+
+    # Configure eLabFTW export destination
+    monkeypatch.setenv("NX_ELABFTW_URL", ELABFTW_URL)
+    monkeypatch.setenv("NX_ELABFTW_API_KEY", ELABFTW_API_KEY)
+
+    from nexusLIMS.config import refresh_settings
+
+    refresh_settings()
 
     # Get Titan instrument from test database (should be FEI-Titan-TEM)
     instrument = test_instrument_db["FEI-Titan-TEM"]
@@ -2311,3 +2356,120 @@ def pytest_runtest_makereport(item, call):
         print(f"{'=' * 70}")
         print("END OF DOCKER LOGS")
         print(f"{'=' * 70}\n")
+
+
+# ============================================================================
+# eLabFTW Integration Fixtures
+# ============================================================================
+
+
+@pytest.fixture
+def elabftw_client(docker_services) -> "ELabFTWClient":
+    """Create eLabFTW client for integration tests.
+
+    Parameters
+    ----------
+    docker_services : None
+        Ensures Docker services (including eLabFTW) are running
+
+    Returns
+    -------
+    ELabFTWClient
+        Configured eLabFTW client instance
+    """
+    from nexusLIMS.utils.elabftw import ELabFTWClient
+
+    return ELabFTWClient(base_url=ELABFTW_URL, api_key=ELABFTW_API_KEY)
+
+
+@pytest.fixture
+def sample_xml_file(tmp_path):
+    """Create sample XML record for testing.
+
+    Parameters
+    ----------
+    tmp_path : Path
+        Pytest temporary directory
+
+    Returns
+    -------
+    Path
+        Path to created sample XML file
+    """
+    xml_file = tmp_path / "integration_test_record.xml"
+    xml_content = """<?xml version="1.0" encoding="UTF-8"?>
+<nx:Experiment
+    xmlns:nx="https://data.nist.gov/od/dm/nexus/experiment/v1.0"
+    pid="test-experiment-001">
+    <nx:title>Integration Test TEM Session</nx:title>
+    <nx:summary>
+        <nx:experimenter>Test User</nx:experimenter>
+        <nx:instrument pid="FEI-Titan-TEM-1">FEI Titan TEM</nx:instrument>
+        <nx:reservationStart>2025-02-01T09:00:00-05:00</nx:reservationStart>
+        <nx:reservationEnd>2025-02-01T12:00:00-05:00</nx:reservationEnd>
+        <nx:motivation>
+            Integration testing of eLabFTW export functionality
+        </nx:motivation>
+    </nx:summary>
+    <nx:sample id="sample-001">
+        <nx:name>Test Sample</nx:name>
+        <nx:description>Sample used for integration testing</nx:description>
+    </nx:sample>
+    <nx:acquisitionActivity seqno="1">
+        <nx:startTime>2025-02-01T09:15:00-05:00</nx:startTime>
+        <nx:sampleID>sample-001</nx:sampleID>
+        <nx:setup>
+            <nx:param name="Acceleration Voltage" unit="kV">200</nx:param>
+            <nx:param name="Magnification">50000</nx:param>
+            <nx:param name="Microscope Mode">TEM</nx:param>
+        </nx:setup>
+        <nx:dataset type="Image">
+            <nx:name>image_001.dm3</nx:name>
+            <nx:location>researcher_a/project_alpha/20181113/image_001.dm3</nx:location>
+            <nx:description>TEM image for integration testing</nx:description>
+            <nx:meta name="Exposure Time" unit="s">0.5</nx:meta>
+            <nx:meta name="Detector">CCD Camera</nx:meta>
+        </nx:dataset>
+    </nx:acquisitionActivity>
+</nx:Experiment>"""
+    xml_file.write_text(xml_content)
+    return xml_file
+
+
+@pytest.fixture
+def export_context_elabftw(sample_xml_file, test_environment_setup, monkeypatch):
+    """Create ExportContext for eLabFTW export tests.
+
+    Parameters
+    ----------
+    sample_xml_file : Path
+        Path to sample XML file for testing
+    test_environment_setup : dict
+        Test environment with populated database and configuration
+    monkeypatch : pytest.MonkeyPatch
+        Pytest monkeypatch fixture
+
+    Returns
+    -------
+    ExportContext
+        Configured export context for eLabFTW testing
+    """
+    from nexusLIMS.config import refresh_settings
+    from nexusLIMS.exporters.base import ExportContext
+
+    # Configure eLabFTW settings
+    monkeypatch.setenv("NX_ELABFTW_URL", ELABFTW_URL)
+    monkeypatch.setenv("NX_ELABFTW_API_KEY", ELABFTW_API_KEY)
+
+    # Refresh settings to pick up environment variables
+    refresh_settings()
+
+    # Create export context using test environment data
+    return ExportContext(
+        xml_file_path=sample_xml_file,
+        session_identifier="integration-test-2025-01-27",
+        instrument_pid=test_environment_setup["instrument_pid"],
+        dt_from=test_environment_setup["dt_from"],
+        dt_to=test_environment_setup["dt_to"],
+        user=test_environment_setup["user"],
+    )

@@ -100,7 +100,8 @@ packages = ["nexusLIMS"]
 exclude = [
     "nexusLIMS/dev_scripts",
     "tests/dev",
-    "nexusLIMS/db/dev/migrate_db.py"
+    "nexusLIMS/db/dev/migrate_db.py",
+    "tests/integration/docker/elabftw/init_elabftw.py"
 ]
 
 [tool.ruff.lint]
