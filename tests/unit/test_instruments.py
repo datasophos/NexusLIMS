@@ -15,6 +15,7 @@ from nexusLIMS.instruments import (
     get_instr_from_filepath,
     instrument_db,
 )
+from nexusLIMS.utils.paths import join_instrument_filestore_path
 
 from .test_instrument_factory import (
     make_titan_tem,
@@ -53,14 +54,11 @@ class TestInstruments:
         # Test that we can find the test instrument by its filepath
         # The test database contains TEST-INSTRUMENT-001 with
         # filestore_path = "./NexusLIMS/test_files"  # noqa: ERA001
-        from nexusLIMS.config import settings
-
         test_instrument = instrument_db.get("testtool-TEST-A1234567")
         if test_instrument is not None:
             # Construct a path under this instrument's filestore path
             path = (
-                Path(settings.NX_INSTRUMENT_DATA_PATH)
-                / test_instrument.filestore_path
+                join_instrument_filestore_path(test_instrument.filestore_path)
                 / "some_file.dm3"
             )
             instr = get_instr_from_filepath(path)

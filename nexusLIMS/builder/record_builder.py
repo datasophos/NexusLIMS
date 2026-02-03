@@ -43,6 +43,7 @@ from nexusLIMS.utils.files import (
     find_files_by_mtime,
     gnu_find_files_by_mtime,
 )
+from nexusLIMS.utils.paths import join_instrument_filestore_path
 from nexusLIMS.utils.time import (
     current_system_tz,
     has_delay_passed,
@@ -224,7 +225,7 @@ def build_acq_activities(instrument, dt_from, dt_to, generate_previews):
     )
 
     start_timer = default_timer()
-    path = Path(settings.NX_INSTRUMENT_DATA_PATH) / instrument.filestore_path
+    path = join_instrument_filestore_path(instrument.filestore_path)
     # find the files to be included (list of Paths)
     files = get_files(path, dt_from, dt_to)
 
@@ -461,9 +462,7 @@ def build_new_session_records(
             if isinstance(exception, FileNotFoundError):
                 # if no files were found for this session log, mark it as so in
                 # the database
-                path = (
-                    Path(settings.NX_INSTRUMENT_DATA_PATH) / s.instrument.filestore_path
-                )
+                path = join_instrument_filestore_path(s.instrument.filestore_path)
                 _logger.warning(
                     "No files found in %s between %s and %s",
                     path,
@@ -663,7 +662,7 @@ def dry_run_file_find(s: Session) -> List[Path]:
         A list of Paths containing the files that would be included for the
         record of this session (if it were not a dry run)
     """
-    path = Path(settings.NX_INSTRUMENT_DATA_PATH) / s.instrument.filestore_path
+    path = join_instrument_filestore_path(s.instrument.filestore_path)
     _logger.info(
         "Searching for files for %s in %s between %s and %s",
         s.instrument.name,
