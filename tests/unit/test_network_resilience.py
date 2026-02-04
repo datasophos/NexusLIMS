@@ -477,3 +477,63 @@ class TestNetworkResilience:
 
             # Should have tried only once (SSL errors are not retried by default)
             assert mock_request.call_count == 1
+
+    def test_ssl_verify_disabled_sets_verify_false(self):
+        """
+        Test that setting NX_DISABLE_SSL_VERIFY passes verify=False to requests.
+
+        When the setting is enabled, nexus_req should bypass all certificate
+        verification regardless of CA_BUNDLE_CONTENT.
+        """
+        import nexusLIMS.utils.network as network_mod
+
+        network_mod._ssl_warning_logged = False  # noqa: SLF001
+
+        response = MagicMock(spec=requests.Response)
+        response.status_code = HTTPStatus.OK
+
+        with (
+            patch(
+                "nexusLIMS.utils.network.Session.request", return_value=response
+            ) as mock_request,
+            patch("nexusLIMS.utils.network.settings") as mock_settings,
+        ):
+            mock_settings.NX_DISABLE_SSL_VERIFY = True
+
+            nexus_req("https://test.example.com/api", "GET", retries=0)
+
+            mock_request.assert_called_once()
+            _, call_kwargs = mock_request.call_args
+            assert call_kwargs["verify"] is False
+
+    def test_ssl_verify_disabled_logs_warning(self, caplog):
+        """
+        Test that enabling NX_DISABLE_SSL_VERIFY emits a WARNING log.
+
+        The warning should fire exactly once per process (controlled by the
+        module-level _ssl_warning_logged flag). This test resets the flag so
+        the warning fires, then calls nexus_req twice and asserts only one
+        warning was logged.
+        """
+        import nexusLIMS.utils.network as network_mod
+
+        network_mod._ssl_warning_logged = False  # noqa: SLF001
+
+        response = MagicMock(spec=requests.Response)
+        response.status_code = HTTPStatus.OK
+
+        with (
+            patch("nexusLIMS.utils.network.Session.request", return_value=response),
+            patch("nexusLIMS.utils.network.settings") as mock_settings,
+            caplog.at_level("WARNING", logger="nexusLIMS.utils.network"),
+        ):
+            mock_settings.NX_DISABLE_SSL_VERIFY = True
+
+            nexus_req("https://test.example.com/api", "GET", retries=0)
+            nexus_req("https://test.example.com/api", "GET", retries=0)
+
+            warning_messages = [
+                r.message for r in caplog.records if r.levelname == "WARNING"
+            ]
+            assert len(warning_messages) == 1
+            assert "NX_DISABLE_SSL_VERIFY" in warning_messages[0]

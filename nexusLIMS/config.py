@@ -243,6 +243,14 @@ class Settings(BaseSettings):
             "defined, this value will take precedence over NX_CERT_BUNDLE_FILE."
         ),
     )
+    NX_DISABLE_SSL_VERIFY: bool = Field(
+        default=False,
+        description=(
+            "Disable SSL certificate verification for all outgoing HTTPS requests. "
+            "This should ONLY be used during local development or testing with "
+            "self-signed certificates. Never enable this in production."
+        ),
+    )
     NX_FILE_DELAY_DAYS: float = Field(
         2.0,
         description=(
