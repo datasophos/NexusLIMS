@@ -386,6 +386,30 @@ Alternative to `NX_CERT_BUNDLE_FILE` - provide the entire certificate bundle as 
 NX_CERT_BUNDLE="-----BEGIN CERTIFICATE-----\nMIID...\n-----END CERTIFICATE-----"
 ```
 
+(config-disable-ssl-verify)=
+#### `NX_DISABLE_SSL_VERIFY`
+
+**Type:** Boolean\
+**Default:** `false`
+
+```{warning}
+This setting should **only** be used during local development or testing.
+Never enable it in production — it disables all certificate verification,
+leaving connections vulnerable to interception.
+```
+
+Disable SSL certificate verification for all outgoing HTTPS requests made by
+NexusLIMS (to CDCS, NEMO, eLabFTW, etc.). This is useful in local test
+deployments where multiple services use self-signed or `mkcert`-issued
+certificates and providing every CA via `NX_CERT_BUNDLE_FILE` is impractical.
+
+When enabled, a warning is logged once per process run as a reminder.
+
+**Example:**
+```bash
+NX_DISABLE_SSL_VERIFY=true
+```
+
 ### Email Notifications
 
 Email notifications are optional but recommended for production deployments. They alert administrators when record building fails.
@@ -626,6 +650,9 @@ NX_NEMO_TOKEN_1=test_token
 # Aggressive file finding for testing
 NX_FILE_STRATEGY=inclusive
 NX_FILE_DELAY_DAYS=0.1
+
+# Skip SSL verification for local self-signed/mkcert certs
+NX_DISABLE_SSL_VERIFY=true
 ```
 
 ## Troubleshooting
