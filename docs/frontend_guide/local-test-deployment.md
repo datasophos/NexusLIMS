@@ -529,6 +529,47 @@ curl -s https://nexuslims-local.test/rest/data/ `
 If the API is working correctly, you should see JSON responses with available endpoints and data,
 and the backend should be able to communicate successfully with the CDCS frontend.
 
+(backend-mkcert-ca)=
+### Configure the NexusLIMS backend to trust the mkcert CA
+
+The steps above make `nexuslims-local.test` trusted by your **browser** and command-line tools
+like `curl`, because `mkcert -install` adds the mkcert CA to your OS certificate store.
+However, the NexusLIMS **backend** (the record builder) uses Python's `requests` library,
+which does *not* consult the OS trust store — it only trusts certificates in the `certifi`
+bundle. You must explicitly tell it about the mkcert CA, or the backend will fail with an
+`SSLCertVerificationError` when trying to upload records to CDCS.
+
+Find the mkcert CA certificate path:
+
+`````{tab-set}
+
+````{tab-item} macOS/Linux (zsh/bash)
+```bash
+# Print the mkcert CA directory
+mkcert -CAROOT
+# The CA certificate is at: $(mkcert -CAROOT)/rootCA.pem
+# e.g. /Users/myuser/Library/Application Support/mkcert/rootCA.pem
+```
+````
+
+````{tab-item} Windows (Powershell)
+```powershell
+# Print the mkcert CA directory
+mkcert -CAROOT
+# The CA certificate is at: <output>\rootCA.pem
+# e.g. C:\Users\myuser\AppData\Local\mkcert\rootCA.pem
+```
+````
+
+`````
+
+Then add the following to the NexusLIMS **backend** `.env` file (not the CDCS deployment `.env`):
+
+```
+NX_CERT_BUNDLE_FILE=/path/to/mkcert/rootCA.pem
+```
+
+Replace the path with the actual location printed by `mkcert -CAROOT`, appending `/rootCA.pem`.
 
 ---
 
@@ -758,6 +799,15 @@ Should show:
 127.0.0.1 nexuslims-local.test
 127.0.0.1 files.nexuslims-local.test
 ```
+
+### Backend SSL error when uploading records
+
+If the record builder fails with `SSLCertVerificationError` / `certificate verify failed: unable
+to get local issuer certificate` when trying to reach `nexuslims-local.test`, the backend's
+Python `requests` library does not trust the mkcert CA. This is distinct from browser trust —
+`mkcert -install` only affects the OS/browser store, not Python. See the
+[Configure the NexusLIMS backend to trust the mkcert CA](#backend-mkcert-ca)
+section above and set `NX_CERT_BUNDLE_FILE` in the backend `.env` to the mkcert `rootCA.pem`.
 
 ### Port Already in Use
 

@@ -1,6 +1,6 @@
 [project]
 name = "nexusLIMS"
-version = "2.4.0"
+version = "2.4.1.dev0"
 description = "Electron Microscopy Nexus LIMS project (Datasophos fork)"
 authors = [
     {name = "Joshua Taillon", email = "josh@datasophos.co"}
@@ -80,9 +80,9 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/datasophos/NexusLIMS"
+Homepage = "https://datasophos.github.io/NexusLIMS/stable"
 Repository = "https://github.com/datasophos/NexusLIMS.git"
-Documentation = "https://github.com/datasophos/NexusLIMS"
+Documentation = "https://datasophos.github.io/NexusLIMS/stable"
 "Original-NIST-Repository" = "https://github.com/usnistgov/NexusLIMS.git"
 
 [project.scripts]
