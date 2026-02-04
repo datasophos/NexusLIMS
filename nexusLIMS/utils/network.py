@@ -9,9 +9,11 @@ import certifi
 from requests import Session
 from requests.adapters import HTTPAdapter
 
+from nexusLIMS.config import settings
 from nexusLIMS.harvesters import CA_BUNDLE_CONTENT
 
 _logger = logging.getLogger(__name__)
+_ssl_warning_logged = False
 
 
 def nexus_req(
@@ -68,8 +70,20 @@ def nexus_req(
     verify_arg = True
     response = None
 
+    # honour NX_DISABLE_SSL_VERIFY (warn once per process)
+    global _ssl_warning_logged  # noqa: PLW0603
+    if settings.NX_DISABLE_SSL_VERIFY:
+        verify_arg = False
+        if not _ssl_warning_logged:
+            _logger.warning(
+                "NX_DISABLE_SSL_VERIFY is enabled — SSL certificate "
+                "verification is disabled for all requests. This should "
+                "only be used during local development or testing."
+            )
+            _ssl_warning_logged = True
+
     with tempfile.NamedTemporaryFile() as tmp:
-        if CA_BUNDLE_CONTENT:
+        if verify_arg is not False and CA_BUNDLE_CONTENT:
             with Path(certifi.where()).open(mode="rb") as sys_cert:
                 lines = sys_cert.readlines()
             tmp.writelines(lines)
