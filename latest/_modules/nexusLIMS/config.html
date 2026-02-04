@@ -1076,6 +1076,14 @@ window.addEventListener("load", load);
             <span class="s2">&quot;defined, this value will take precedence over NX_CERT_BUNDLE_FILE.&quot;</span>
         <span class="p">),</span>
     <span class="p">)</span>
+    <span class="n">NX_DISABLE_SSL_VERIFY</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">&quot;Disable SSL certificate verification for all outgoing HTTPS requests. &quot;</span>
+            <span class="s2">&quot;This should ONLY be used during local development or testing with &quot;</span>
+            <span class="s2">&quot;self-signed certificates. Never enable this in production.&quot;</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
     <span class="n">NX_FILE_DELAY_DAYS</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="mf">2.0</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="p">(</span>

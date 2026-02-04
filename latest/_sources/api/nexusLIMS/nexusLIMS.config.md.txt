@@ -374,6 +374,17 @@ Bases: {py:obj}`pydantic_settings.BaseSettings`
 
 ````
 
+````{py:attribute} NX_DISABLE_SSL_VERIFY
+:canonical: nexusLIMS.config.Settings.NX_DISABLE_SSL_VERIFY
+
+**Type:** bool
+
+```{autodoc2-docstring} nexusLIMS.config.Settings.NX_DISABLE_SSL_VERIFY
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
 ````{py:attribute} NX_FILE_DELAY_DAYS
 :canonical: nexusLIMS.config.Settings.NX_FILE_DELAY_DAYS
 
