@@ -66,7 +66,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Feb, 03, 2026"/>
+    <meta name="docbuild:last-update" content="Feb, 04, 2026"/>
   </head>
   
   
@@ -963,6 +963,43 @@ in your <code class="docutils literal notranslate"><span class="pre">.env</span>
 <p>If the API is working correctly, you should see JSON responses with available endpoints and data,
 and the backend should be able to communicate successfully with the CDCS frontend.</p>
 </section>
+<section id="configure-the-nexuslims-backend-to-trust-the-mkcert-ca">
+<span id="backend-mkcert-ca"></span><h3>Configure the NexusLIMS backend to trust the mkcert CA<a class="headerlink" href="#configure-the-nexuslims-backend-to-trust-the-mkcert-ca" title="Link to this heading">#</a></h3>
+<p>The steps above make <code class="docutils literal notranslate"><span class="pre">nexuslims-local.test</span></code> trusted by your <strong>browser</strong> and command-line tools
+like <code class="docutils literal notranslate"><span class="pre">curl</span></code>, because <code class="docutils literal notranslate"><span class="pre">mkcert</span> <span class="pre">-install</span></code> adds the mkcert CA to your OS certificate store.
+However, the NexusLIMS <strong>backend</strong> (the record builder) uses Python’s <code class="docutils literal notranslate"><span class="pre">requests</span></code> library,
+which does <em>not</em> consult the OS trust store — it only trusts certificates in the <code class="docutils literal notranslate"><span class="pre">certifi</span></code>
+bundle. You must explicitly tell it about the mkcert CA, or the backend will fail with an
+<code class="docutils literal notranslate"><span class="pre">SSLCertVerificationError</span></code> when trying to upload records to CDCS.</p>
+<p>Find the mkcert CA certificate path:</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-22" name="sd-tab-set-10" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-22">
+macOS/Linux (zsh/bash)</label><div class="sd-tab-content docutils">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Print the mkcert CA directory</span>
+mkcert<span class="w"> </span>-CAROOT
+<span class="c1"># The CA certificate is at: $(mkcert -CAROOT)/rootCA.pem</span>
+<span class="c1"># e.g. /Users/myuser/Library/Application Support/mkcert/rootCA.pem</span>
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-23" name="sd-tab-set-10" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-23">
+Windows (Powershell)</label><div class="sd-tab-content docutils">
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="c"># Print the mkcert CA directory</span>
+<span class="n">mkcert</span> <span class="n">-CAROOT</span>
+<span class="c"># The CA certificate is at: &lt;output&gt;\rootCA.pem</span>
+<span class="c"># e.g. C:\Users\myuser\AppData\Local\mkcert\rootCA.pem</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Then add the following to the NexusLIMS <strong>backend</strong> <code class="docutils literal notranslate"><span class="pre">.env</span></code> file (not the CDCS deployment <code class="docutils literal notranslate"><span class="pre">.env</span></code>):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">NX_CERT_BUNDLE_FILE</span><span class="o">=/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">mkcert</span><span class="o">/</span><span class="n">rootCA</span><span class="o">.</span><span class="n">pem</span>
+</pre></div>
+</div>
+<p>Replace the path with the actual location printed by <code class="docutils literal notranslate"><span class="pre">mkcert</span> <span class="pre">-CAROOT</span></code>, appending <code class="docutils literal notranslate"><span class="pre">/rootCA.pem</span></code>.</p>
+</section>
 </section>
 <hr class="docutils" />
 <section id="testing-production-procedures">
@@ -971,8 +1008,8 @@ and the backend should be able to communicate successfully with the CDCS fronten
 <section id="test-backups">
 <h3>Test Backups<a class="headerlink" href="#test-backups" title="Link to this heading">#</a></h3>
 <div class="sd-tab-set docutils">
-<input checked="checked" id="sd-tab-item-22" name="sd-tab-set-10" type="radio">
-<label class="sd-tab-label" for="sd-tab-item-22">
+<input checked="checked" id="sd-tab-item-24" name="sd-tab-set-11" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-24">
 macOS/Linux (zsh/bash)</label><div class="sd-tab-content docutils">
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>admin-commands.sh<span class="w">    </span><span class="c1"># only required if using a new terminal window</span>
 admin-backup
@@ -982,8 +1019,8 @@ ls<span class="w"> </span>-la<span class="w"> </span>/opt/nexuslims/backups/
 </pre></div>
 </div>
 </div>
-<input id="sd-tab-item-23" name="sd-tab-set-10" type="radio">
-<label class="sd-tab-label" for="sd-tab-item-23">
+<input id="sd-tab-item-25" name="sd-tab-set-11" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-25">
 Windows (Powershell)</label><div class="sd-tab-content docutils">
 <div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="p">.</span> <span class="p">.\</span><span class="n">admin-commands</span><span class="p">.</span><span class="n">ps1</span>      <span class="c"># only required if using a new terminal window</span>
 <span class="n">admin-backup</span>
@@ -998,8 +1035,8 @@ Windows (Powershell)</label><div class="sd-tab-content docutils">
 <section id="test-database-operations">
 <h3>Test Database Operations<a class="headerlink" href="#test-database-operations" title="Link to this heading">#</a></h3>
 <div class="sd-tab-set docutils">
-<input checked="checked" id="sd-tab-item-24" name="sd-tab-set-11" type="radio">
-<label class="sd-tab-label" for="sd-tab-item-24">
+<input checked="checked" id="sd-tab-item-26" name="sd-tab-set-12" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-26">
 macOS/Linux (zsh/bash)</label><div class="sd-tab-content docutils">
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>admin-commands.sh<span class="w">    </span><span class="c1"># only required if using a new terminal window</span>
 
@@ -1011,8 +1048,8 @@ admin-stats
 </pre></div>
 </div>
 </div>
-<input id="sd-tab-item-25" name="sd-tab-set-11" type="radio">
-<label class="sd-tab-label" for="sd-tab-item-25">
+<input id="sd-tab-item-27" name="sd-tab-set-12" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-27">
 Windows (Powershell)</label><div class="sd-tab-content docutils">
 <div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="p">.</span> <span class="p">.\</span><span class="n">admin-commands</span><span class="p">.</span><span class="n">ps1</span>      <span class="c"># only required if using a new terminal window</span>
 
@@ -1029,8 +1066,8 @@ Windows (Powershell)</label><div class="sd-tab-content docutils">
 <section id="verify-ssl-certificate">
 <h3>Verify SSL Certificate<a class="headerlink" href="#verify-ssl-certificate" title="Link to this heading">#</a></h3>
 <div class="sd-tab-set docutils">
-<input checked="checked" id="sd-tab-item-26" name="sd-tab-set-12" type="radio">
-<label class="sd-tab-label" for="sd-tab-item-26">
+<input checked="checked" id="sd-tab-item-28" name="sd-tab-set-13" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-28">
 macOS/Linux (zsh/bash)</label><div class="sd-tab-content docutils">
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Verify certificate files exist and show their details (requires openssl)</span>
 openssl<span class="w"> </span>x509<span class="w"> </span>-in<span class="w"> </span>/opt/nexuslims/local-certs/fullchain.pem<span class="w"> </span>-text<span class="w"> </span>-noout<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-E<span class="w"> </span><span class="s2">&quot;(Subject:|Issuer:|Not Before|Not After|DNS)&quot;</span>
@@ -1046,8 +1083,8 @@ openssl<span class="w"> </span>s_client<span class="w"> </span>-connect<span cla
 </pre></div>
 </div>
 </div>
-<input id="sd-tab-item-27" name="sd-tab-set-12" type="radio">
-<label class="sd-tab-label" for="sd-tab-item-27">
+<input id="sd-tab-item-29" name="sd-tab-set-13" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-29">
 Windows (Powershell)</label><div class="sd-tab-content docutils">
 <div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="c"># Verify certificate files exist and show their details</span>
 <span class="n">openssl</span> <span class="n">x509</span> <span class="n">-in</span> <span class="n">C</span><span class="p">:\</span><span class="n">nexuslims</span><span class="p">\</span><span class="n">local-certs</span><span class="p">\</span><span class="n">fullchain</span><span class="p">.</span><span class="n">pem</span> <span class="n">-text</span> <span class="n">-noout</span> <span class="p">|</span> <span class="nb">Select-String</span> <span class="s2">&quot;(Subject:|Issuer:|Not Before|Not After)&quot;</span>
@@ -1072,8 +1109,8 @@ Windows (Powershell)</label><div class="sd-tab-content docutils">
 <h2>Stopping the Environment<a class="headerlink" href="#stopping-the-environment" title="Link to this heading">#</a></h2>
 <p>The following commands will “tear down” the docker deployment stack, effectively stopping the application. Any data stored (users, records, etc.) will be preserved for the next time you run <code class="docutils literal notranslate"><span class="pre">dc-prod</span> <span class="pre">up</span> <span class="pre">-d</span></code>.</p>
 <div class="sd-tab-set docutils">
-<input checked="checked" id="sd-tab-item-28" name="sd-tab-set-13" type="radio">
-<label class="sd-tab-label" for="sd-tab-item-28">
+<input checked="checked" id="sd-tab-item-30" name="sd-tab-set-14" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-30">
 macOS/Linux (zsh/bash)</label><div class="sd-tab-content docutils">
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>deployment
 <span class="nb">source</span><span class="w"> </span>admin-commands.sh
@@ -1081,8 +1118,8 @@ dc-prod<span class="w"> </span>down
 </pre></div>
 </div>
 </div>
-<input id="sd-tab-item-29" name="sd-tab-set-13" type="radio">
-<label class="sd-tab-label" for="sd-tab-item-29">
+<input id="sd-tab-item-31" name="sd-tab-set-14" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-31">
 Windows (Powershell)</label><div class="sd-tab-content docutils">
 <div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="nb">cd </span><span class="n">deployment</span>
 <span class="p">.</span> <span class="p">.\</span><span class="n">admin-commands</span><span class="p">.</span><span class="n">ps1</span>
@@ -1099,8 +1136,8 @@ Windows (Powershell)</label><div class="sd-tab-content docutils">
 <p>This will delete all data in the test environment, including any users you created and records you uploaded. You will have to start from <a class="reference internal" href="#start-services"><span class="std std-ref">Step 6: Start Services</span></a> again if you want to use it after cleanup.</p>
 <p>To completely remove the local test environment:</p>
 <div class="sd-tab-set docutils">
-<input checked="checked" id="sd-tab-item-30" name="sd-tab-set-14" type="radio">
-<label class="sd-tab-label" for="sd-tab-item-30">
+<input checked="checked" id="sd-tab-item-32" name="sd-tab-set-15" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-32">
 macOS/Linux (zsh/bash)</label><div class="sd-tab-content docutils">
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Stop containers and remove volumes</span>
 <span class="nb">cd</span><span class="w"> </span>deployment
@@ -1122,8 +1159,8 @@ sudo<span class="w"> </span>sed<span class="w"> </span>-i.bak<span class="w"> </
 </pre></div>
 </div>
 </div>
-<input id="sd-tab-item-31" name="sd-tab-set-14" type="radio">
-<label class="sd-tab-label" for="sd-tab-item-31">
+<input id="sd-tab-item-33" name="sd-tab-set-15" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-33">
 Windows (Powershell)</label><div class="sd-tab-content docutils">
 <p>Run PowerShell as Administrator:</p>
 <div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="c"># Stop containers and remove volumes</span>
@@ -1210,6 +1247,14 @@ mkcert<span class="w"> </span>-install
 </pre></div>
 </div>
 </section>
+<section id="backend-ssl-error-when-uploading-records">
+<h3>Backend SSL error when uploading records<a class="headerlink" href="#backend-ssl-error-when-uploading-records" title="Link to this heading">#</a></h3>
+<p>If the record builder fails with <code class="docutils literal notranslate"><span class="pre">SSLCertVerificationError</span></code> / <code class="docutils literal notranslate"><span class="pre">certificate</span> <span class="pre">verify</span> <span class="pre">failed:</span> <span class="pre">unable</span> <span class="pre">to</span> <span class="pre">get</span> <span class="pre">local</span> <span class="pre">issuer</span> <span class="pre">certificate</span></code> when trying to reach <code class="docutils literal notranslate"><span class="pre">nexuslims-local.test</span></code>, the backend’s
+Python <code class="docutils literal notranslate"><span class="pre">requests</span></code> library does not trust the mkcert CA. This is distinct from browser trust —
+<code class="docutils literal notranslate"><span class="pre">mkcert</span> <span class="pre">-install</span></code> only affects the OS/browser store, not Python. See the
+<a class="reference internal" href="#backend-mkcert-ca">Configure the NexusLIMS backend to trust the mkcert CA</a>
+section above and set <code class="docutils literal notranslate"><span class="pre">NX_CERT_BUNDLE_FILE</span></code> in the backend <code class="docutils literal notranslate"><span class="pre">.env</span></code> to the mkcert <code class="docutils literal notranslate"><span class="pre">rootCA.pem</span></code>.</p>
+</section>
 <section id="port-already-in-use">
 <h3>Port Already in Use<a class="headerlink" href="#port-already-in-use" title="Link to this heading">#</a></h3>
 <p>If ports 80/443 are in use:</p>
@@ -1295,6 +1340,7 @@ sudo<span class="w"> </span>lsof<span class="w"> </span>-i<span class="w"> </spa
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#start-services">6. Start Services</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#test-nexuslims-cdcs-access">7. Test NexusLIMS-CDCS Access</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#test-api-access">8. Test API Access</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#configure-the-nexuslims-backend-to-trust-the-mkcert-ca">Configure the NexusLIMS backend to trust the mkcert CA</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#testing-production-procedures">Testing Production Procedures</a><ul class="nav section-nav flex-column">
@@ -1309,6 +1355,7 @@ sudo<span class="w"> </span>lsof<span class="w"> </span>-i<span class="w"> </spa
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#troubleshooting">Troubleshooting</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#certificate-not-trusted">Certificate Not Trusted</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cannot-access-urls">Cannot Access URLs</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#backend-ssl-error-when-uploading-records">Backend SSL error when uploading records</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#port-already-in-use">Port Already in Use</a></li>
 </ul>
 </li>
