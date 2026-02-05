@@ -1,0 +1,84 @@
+# {py:mod}`nexusLIMS.cli.config`
+
+```{py:module} nexusLIMS.cli.config
+```
+
+```{autodoc2-docstring} nexusLIMS.cli.config
+:parser: autodoc2_docstrings_parser
+:allowtitles:
+```
+
+## Module Contents
+
+### Functions
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`main <nexusLIMS.cli.config.main>`
+  - ```{autodoc2-docstring} nexusLIMS.cli.config.main
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`dump <nexusLIMS.cli.config.dump>`
+  - ```{autodoc2-docstring} nexusLIMS.cli.config.dump
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`load <nexusLIMS.cli.config.load>`
+  - ```{autodoc2-docstring} nexusLIMS.cli.config.load
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
+### Data
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`logger <nexusLIMS.cli.config.logger>`
+  - ```{autodoc2-docstring} nexusLIMS.cli.config.logger
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
+### API
+
+````{py:data} logger
+:canonical: nexusLIMS.cli.config.logger
+:value: >
+   'getLogger(...)'
+
+```{autodoc2-docstring} nexusLIMS.cli.config.logger
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:function} main() -> None
+:canonical: nexusLIMS.cli.config.main
+
+```{autodoc2-docstring} nexusLIMS.cli.config.main
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} dump(output: str) -> None
+:canonical: nexusLIMS.cli.config.dump
+
+```{autodoc2-docstring} nexusLIMS.cli.config.dump
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} load(input: str, env_path: str, *, force: bool) -> None
+:canonical: nexusLIMS.cli.config.load
+
+```{autodoc2-docstring} nexusLIMS.cli.config.load
+:parser: autodoc2_docstrings_parser
+```
+````
