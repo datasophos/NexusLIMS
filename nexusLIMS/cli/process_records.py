@@ -30,6 +30,7 @@ Options
 ```
 """
 
+import json
 import logging
 import re
 import smtplib
@@ -459,6 +460,21 @@ def main(*, dry_run: bool, verbose: int) -> None:
     # Log startup information
     logger.info("Starting NexusLIMS record processor")
     logger.info("Dry run: %s", dry_run)
+
+    # Dump sanitized effective configuration when verbose
+    if verbose >= 1:
+        from nexusLIMS.cli.config import (  # noqa: PLC0415
+            _build_config_dict,
+            _sanitize_config,
+        )
+        from nexusLIMS.config import settings  # noqa: PLC0415
+
+        logger.info(
+            "Effective configuration:\n%s",
+            json.dumps(
+                _sanitize_config(_build_config_dict(settings)), indent=2, default=str
+            ),
+        )
 
     # Run record builder with file locking
     _run_with_lock(dry_run)
