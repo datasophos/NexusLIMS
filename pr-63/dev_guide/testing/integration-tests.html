@@ -1,0 +1,1858 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Integration Testing Guide &#8212; NexusLIMS pr-63 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=acda69ee" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../_static/documentation_options.js?v=a1b85868"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=30646c52"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";
+
+const defaultStyle = document.createElement('style');
+defaultStyle.textContent = `pre.mermaid {
+    /* Same as .mermaid-container > pre */
+    display: block;
+    width: 100%;
+}
+
+pre.mermaid > svg {
+    /* Same as .mermaid-container > pre > svg */
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+`;
+document.head.appendChild(defaultStyle);
+
+const fullscreenStyle = document.createElement('style');
+fullscreenStyle.textContent = `.mermaid-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.mermaid-container > pre {
+    display: block;
+    width: 100%;
+}
+
+.mermaid-container > pre > svg {
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+
+.mermaid-fullscreen-btn {
+    width: 28px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    font-size: 14px;
+    line-height: 1;
+    padding: 0;
+    color: #333;
+}
+
+.mermaid-fullscreen-btn:hover {
+    opacity: 100% !important;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-btn.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-btn.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 3px 10px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal {
+    display: none;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 95vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.98);
+    z-index: 9999;
+    padding: 20px;
+    overflow: auto;
+}
+
+.mermaid-fullscreen-modal.dark-theme {
+    background: rgba(0, 0, 0, 0.98);
+}
+
+.mermaid-fullscreen-modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen {
+    position: relative;
+    width: 95vw;
+    height: 90vh;
+    max-width: 95vw;
+    max-height: 90vh;
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    overflow: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen.dark-theme {
+    background: #1a1a1a;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+}
+
+.mermaid-container-fullscreen pre.mermaid {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen .mermaid svg {
+    height: 100% !important;
+    width: 100% !important;
+    cursor: grab;
+}
+
+.mermaid-fullscreen-close {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s;
+    font-size: 24px;
+    line-height: 1;
+    color: #333;
+}
+
+.mermaid-fullscreen-close:hover {
+    background: white;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-close.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-close.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal .mermaid-fullscreen-btn {
+    display: none !important;
+}`;
+document.head.appendChild(fullscreenStyle);
+
+// Detect if page has dark background
+const isDarkTheme = () => {
+    const bgColor = window.getComputedStyle(document.body).backgroundColor;
+    const match = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)/);
+    if (match) {
+        const r = parseInt(match[1]);
+        const g = parseInt(match[2]);
+        const b = parseInt(match[3]);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        return brightness < 128;
+    }
+    return false;
+};
+
+const load = async () => {
+    await mermaid.run();
+
+    const all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+
+    if ("True" === "True") {
+        const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+        if(mermaids_to_add_zoom > 0) {
+            var svgs = d3.selectAll(".mermaid svg");
+            if(all_mermaids.length !== mermaids_processed.length) {
+                setTimeout(load, 200);
+                return;
+            } else if(svgs.size() !== mermaids_to_add_zoom) {
+                setTimeout(load, 200);
+                return;
+            } else {
+                svgs.each(function() {
+                    var svg = d3.select(this);
+                    svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                    var inner = svg.select("g");
+                    var zoom = d3.zoom().on("zoom", function(event) {
+                        inner.attr("transform", event.transform);
+                    });
+                    svg.call(zoom);
+                });
+            }
+        }
+    } else if(all_mermaids.length !== mermaids_processed.length) {
+        // Wait for mermaid to process all diagrams
+        setTimeout(load, 200);
+        return;
+    }
+
+    const darkTheme = isDarkTheme();
+
+    // Stop here if not adding fullscreen capability
+    if ("True" !== "True") return;
+
+    const modal = document.createElement('div');
+    modal.className = 'mermaid-fullscreen-modal' + (darkTheme ? ' dark-theme' : '');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Fullscreen diagram viewer');
+    modal.innerHTML = `
+        <button class="mermaid-fullscreen-close${darkTheme ? ' dark-theme' : ''}" aria-label="Close fullscreen">✕</button>
+        <div class="mermaid-container-fullscreen${darkTheme ? ' dark-theme' : ''}"></div>
+    `;
+    document.body.appendChild(modal);
+
+    const modalContent = modal.querySelector('.mermaid-container-fullscreen');
+    const closeBtn = modal.querySelector('.mermaid-fullscreen-close');
+
+    let previousScrollOffset = [window.scrollX, window.scrollY];
+
+    const closeModal = () => {
+        modal.classList.remove('active');
+        modalContent.innerHTML = '';
+        document.body.style.overflow = ''
+        window.scrollTo({left: previousScrollOffset[0], top: previousScrollOffset[1], behavior: 'instant'});
+    };
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeModal();
+        }
+    });
+
+    const allButtons = [];
+
+    document.querySelectorAll('.mermaid').forEach((mermaidDiv) => {
+        if (mermaidDiv.parentNode.classList.contains('mermaid-container') ||
+            mermaidDiv.closest('.mermaid-fullscreen-modal')) {
+            return;
+        }
+
+        const container = document.createElement('div');
+        container.className = 'mermaid-container';
+        mermaidDiv.parentNode.insertBefore(container, mermaidDiv);
+        container.appendChild(mermaidDiv);
+
+        const fullscreenBtn = document.createElement('button');
+        fullscreenBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+        fullscreenBtn.setAttribute('aria-label', 'View diagram in fullscreen');
+        fullscreenBtn.textContent = '⛶';
+        fullscreenBtn.style.opacity = '50%';
+
+        // Calculate dynamic position based on diagram's margin and padding
+        const diagramStyle = window.getComputedStyle(mermaidDiv);
+        const marginTop = parseFloat(diagramStyle.marginTop) || 0;
+        const marginRight = parseFloat(diagramStyle.marginRight) || 0;
+        const paddingTop = parseFloat(diagramStyle.paddingTop) || 0;
+        const paddingRight = parseFloat(diagramStyle.paddingRight) || 0;
+        fullscreenBtn.style.top = `${marginTop + paddingTop + 4}px`;
+        fullscreenBtn.style.right = `${marginRight + paddingRight + 4}px`;
+
+        fullscreenBtn.addEventListener('click', () => {
+            previousScrollOffset = [window.scroll, window.scrollY];
+            const clone = mermaidDiv.cloneNode(true);
+            modalContent.innerHTML = '';
+            modalContent.appendChild(clone);
+
+            const svg = clone.querySelector('svg');
+            if (svg) {
+                svg.removeAttribute('width');
+                svg.removeAttribute('height');
+                svg.style.width = '100%';
+                svg.style.height = 'auto';
+                svg.style.maxWidth = '100%';
+                svg.style.sdisplay = 'block';
+
+                if ("True" === "True") {
+                    setTimeout(() => {
+                        const g = svg.querySelector('g');
+                        if (g) {
+                            var svgD3 = d3.select(svg);
+                            svgD3.html("<g class='wrapper'>" + svgD3.html() + "</g>");
+                            var inner = svgD3.select("g");
+                            var zoom = d3.zoom().on("zoom", function(event) {
+                                inner.attr("transform", event.transform);
+                            });
+                            svgD3.call(zoom);
+                        }
+                    }, 100);
+                }
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        container.appendChild(fullscreenBtn);
+        allButtons.push(fullscreenBtn);
+    });
+
+    // Update theme classes when theme changes
+    const updateTheme = () => {
+        const dark = isDarkTheme();
+        allButtons.forEach(btn => {
+            if (dark) {
+                btn.classList.add('dark-theme');
+            } else {
+                btn.classList.remove('dark-theme');
+            }
+        });
+        if (dark) {
+            modal.classList.add('dark-theme');
+            modalContent.classList.add('dark-theme');
+            closeBtn.classList.add('dark-theme');
+        } else {
+            modal.classList.remove('dark-theme');
+            modalContent.classList.remove('dark-theme');
+            closeBtn.classList.remove('dark-theme');
+        }
+    };
+
+    // Watch for theme changes
+    const observer = new MutationObserver(updateTheme);
+    observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+    observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class', 'style']
+    });
+};
+
+window.addEventListener("load", load);
+</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'dev_guide/testing/integration-tests';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'pr-63';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script src="../../_static/custom.js?v=ba087cdf"></script>
+    <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/pr-63/dev_guide/testing/integration-tests.html" />
+    <link rel="icon" href="../../_static/nexusLIMS_bare_logo.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Frontend Guide" href="../../frontend_guide.html" />
+    <link rel="prev" title="XML Schema Reference" href="../schema_documentation.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="pr-63" />
+    <meta name="docbuild:last-update" content="Feb, 05, 2026"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS pr-63 documentation - Home"/>
+    <img src="../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS pr-63 documentation - Home"/>
+  
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../migration.html">
+    Migration Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../dev_guide.html">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../frontend_guide.html">
+    Frontend Guide
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../reference.html">
+    Reference
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datasophos/NexusLIMS" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://datasophos.co" title="Datasophos" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-globe fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Datasophos</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../migration.html">
+    Migration Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../dev_guide.html">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../frontend_guide.html">
+    Frontend Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../reference.html">
+    Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datasophos/NexusLIMS" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://datasophos.co" title="Datasophos" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-globe fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Datasophos</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../development.html">Development introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../writing_extractor_plugins.html">Writing Extractor Plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../writing_export_destinations.html">Writing Export Destination Plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../instrument_profiles.html">Instrument Profiles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../nexuslims_internal_schema.html">Internal Metadata Schema System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../em_glossary_reference.html">EM Glossary Field Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../uv_migration.html">Migration from Poetry to uv</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../database.html">NexusLIMS Database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../schema_documentation.html">XML Schema Reference</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Integration Testing Guide</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../dev_guide.html" class="nav-link">Dev Guide</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Integration Testing Guide</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="integration-testing-guide">
+<h1>Integration Testing Guide<a class="headerlink" href="#integration-testing-guide" title="Link to this heading">#</a></h1>
+<p>This guide provides comprehensive documentation for NexusLIMS integration tests, which validate end-to-end workflows using real Docker services instead of mocks.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
+<p>NexusLIMS integration tests verify that the complete system works together correctly, from NEMO reservation harvesting through record building to CDCS upload. These tests use Docker Compose to orchestrate a complete service stack that mirrors the production environment.</p>
+<section id="why-integration-testing">
+<h3>Why Integration Testing?<a class="headerlink" href="#why-integration-testing" title="Link to this heading">#</a></h3>
+<p>Integration tests provide:</p>
+<ul class="simple">
+<li><p><strong>End-to-End Validation</strong>: Verify workflows work across multiple components</p></li>
+<li><p><strong>Real Service Integration</strong>: Test actual NEMO API, CDCS REST API, and file operations</p></li>
+<li><p><strong>Regression Detection</strong>: Catch breaking changes in component interactions</p></li>
+<li><p><strong>Production Confidence</strong>: High assurance that deployments will work</p></li>
+</ul>
+</section>
+<section id="when-to-use-integration-tests-vs-unit-tests">
+<h3>When to Use Integration Tests vs Unit Tests<a class="headerlink" href="#when-to-use-integration-tests-vs-unit-tests" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Aspect</p></th>
+<th class="head"><p>Unit Tests</p></th>
+<th class="head"><p>Integration Tests</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Speed</strong></p></td>
+<td><p>Very fast (seconds)</p></td>
+<td><p>Slower (potentially minutes)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Isolation</strong></p></td>
+<td><p>Mocked dependencies</p></td>
+<td><p>Real services</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Coverage</strong></p></td>
+<td><p>Internal logic</p></td>
+<td><p>External interactions</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Frequency</strong></p></td>
+<td><p>Run on every commit</p></td>
+<td><p>Run nightly or before merge</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Environment</strong></p></td>
+<td><p>Local without Docker</p></td>
+<td><p>Requires Docker</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Rule of Thumb</strong>: Unit tests for logic, integration tests for interactions.</p>
+</section>
+</section>
+<section id="architecture">
+<h2>Architecture<a class="headerlink" href="#architecture" title="Link to this heading">#</a></h2>
+<section id="service-stack">
+<h3>Service Stack<a class="headerlink" href="#service-stack" title="Link to this heading">#</a></h3>
+<p>The integration test environment includes:</p>
+<pre  class="mermaid">
+        graph TB
+    subgraph &quot;Test Runner&quot;
+        A[&quot;pytest&lt;br/&gt;Integration Tests&quot;]
+    end
+    
+    subgraph &quot;Reverse Proxy&quot;
+        B[&quot;Caddy&lt;br/&gt;port 80&lt;br/&gt;nemo.localhost&lt;br/&gt;cdcs.localhost&lt;br/&gt;mailpit.localhost&lt;br/&gt;fileserver.localhost&quot;]
+    end
+    
+    subgraph &quot;NEMO&quot;
+        C[&quot;NEMO Service&lt;br/&gt;port 8000&lt;br/&gt;Django + SQLite&quot;]
+    end
+    
+    subgraph &quot;CDCS&quot;
+        D[&quot;CDCS&lt;br/&gt;port 8080&lt;br/&gt;Django + uWSGI&quot;]
+        E[&quot;PostgreSQL&lt;br/&gt;Django DB&quot;]
+        F[&quot;MongoDB&lt;br/&gt;Record Storage&quot;]
+        G[&quot;Redis&lt;br/&gt;Celery Queue&quot;]
+    end
+    
+    subgraph &quot;File Serving&quot;
+        H[&quot;Fileserver&lt;br/&gt;port 8081&lt;br/&gt;pytest HTTP server fixture&quot;]
+    end
+    
+    subgraph &quot;Email Capture&quot;
+        I[&quot;MailPit SMTP&lt;br/&gt;port 1025&lt;br/&gt;Web UI: 8025&quot;]
+    end
+    
+    A --&gt; B
+    B --&gt; C
+    B --&gt; D
+    B --&gt; H
+    B --&gt; I
+    D --&gt; E
+    D --&gt; F
+    D --&gt; G
+    
+    style A fill:#e3f2fd
+    style B fill:#fff9c4
+    style C fill:#f3e5f5
+    style D fill:#f3e5f5
+    style E fill:#ede7f6
+    style F fill:#ede7f6
+    style G fill:#ede7f6
+    style H fill:#e8f5e9
+    style I fill:#fce4ec
+    </pre></section>
+<section id="data-flow">
+<h3>Data Flow<a class="headerlink" href="#data-flow" title="Link to this heading">#</a></h3>
+<pre  class="mermaid">
+        graph TD
+    A[&quot;NEMO Reservation&quot;] --&gt; B[&quot;NEMO Harvester&quot;]
+    B --&gt; C[&quot;Session Log&quot;]
+    C --&gt; D[&quot;Record Builder&quot;]
+    D --&gt; E[&quot;File Discovery&quot;]
+    F[&quot;Microscopy Files&lt;br/&gt;via Fileserver&quot;] --&gt; E
+    E --&gt; G[&quot;Metadata Extraction&quot;]
+    G --&gt; H[&quot;XML Generation&quot;]
+    H --&gt; I[&quot;CDCS Upload&quot;]
+    I --&gt; J[&quot;Queryable Records&quot;]
+    
+    style A fill:#e1f5ff
+    style D fill:#fff3e0
+    style I fill:#f3e5f5
+    style J fill:#e8f5e9
+    </pre></section>
+</section>
+<section id="setup-and-configuration">
+<h2>Setup and Configuration<a class="headerlink" href="#setup-and-configuration" title="Link to this heading">#</a></h2>
+<section id="prerequisites">
+<h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Docker and Docker Compose 2.0+</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">uv</span></code> package manager or Python 3.11+</p></li>
+<li><p>At least 4GB available RAM for Docker</p></li>
+<li><p>Ports 8000, 8025, 8080, 8081, 1025 available</p></li>
+</ul>
+</section>
+<section id="first-time-setup">
+<h3>First Time Setup<a class="headerlink" href="#first-time-setup" title="Link to this heading">#</a></h3>
+<ol class="arabic">
+<li><p><strong>Clone the repository:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/datasophos/NexusLIMS.git
+<span class="nb">cd</span><span class="w"> </span>NexusLIMS
+</pre></div>
+</div>
+</li>
+<li><p><strong>Install dependencies:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>sync
+</pre></div>
+</div>
+</li>
+<li><p><strong>Start Docker services:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>tests/integration/docker
+docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
+
+<span class="c1"># Wait for services to be healthy</span>
+docker<span class="w"> </span>compose<span class="w"> </span>ps<span class="w">  </span><span class="c1"># Check STATUS column</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Verify service connectivity:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># NEMO (via Caddy reverse proxy)</span>
+curl<span class="w"> </span>http://nemo.localhost/<span class="w">  </span><span class="c1"># Should return HTML</span>
+
+<span class="c1"># CDCS (via Caddy reverse proxy)</span>
+curl<span class="w"> </span>http://cdcs.localhost/<span class="w">  </span><span class="c1"># Should return HTML</span>
+
+<span class="c1"># Mailpit (via Caddy reverse proxy)</span>
+curl<span class="w"> </span>http://mailpit.localhost/<span class="w">  </span><span class="c1"># Should return directory listing</span>
+
+<span class="c1"># Fileserver (via Caddy reverse proxy)</span>
+<span class="c1"># the fileserver only runs while the tests are actually running,</span>
+<span class="c1"># so the URL below will not be available unless tests are running</span>
+curl<span class="w"> </span>http://fileserver.localhost/
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="environment-configuration">
+<h3>Environment Configuration<a class="headerlink" href="#environment-configuration" title="Link to this heading">#</a></h3>
+<p>Fixtures automatically patch configuration variables through <code class="docutils literal notranslate"><span class="pre">nexusLIMS.config</span></code>, so there’s no envrionment configuration necessary.</p>
+</section>
+</section>
+<section id="running-integration-tests">
+<h2>Running Integration Tests<a class="headerlink" href="#running-integration-tests" title="Link to this heading">#</a></h2>
+<section id="docker-service-management">
+<h3>Docker Service Management<a class="headerlink" href="#docker-service-management" title="Link to this heading">#</a></h3>
+<p>Integration tests automatically manage Docker services through pytest fixtures. The <code class="docutils literal notranslate"><span class="pre">docker_services</span></code> fixture handles the complete lifecycle:</p>
+<ol class="arabic simple">
+<li><p><strong>Startup</strong>: Services start automatically when first integration test runs</p></li>
+<li><p><strong>Health Checks</strong>: Waits for services to be healthy (NEMO, CDCS, MailPit, etc.)</p></li>
+<li><p><strong>Teardown</strong>: Services automatically stop and cleanup after all tests complete</p></li>
+</ol>
+<p><strong>By default</strong>, Docker services are:</p>
+<ul class="simple">
+<li><p>Started once per test session (session-scoped fixture)</p></li>
+<li><p>Automatically cleaned up after tests finish</p></li>
+<li><p>Have volumes removed to prevent state carryover</p></li>
+</ul>
+</section>
+<section id="keeping-docker-services-running-development">
+<h3>Keeping Docker Services Running (Development)<a class="headerlink" href="#keeping-docker-services-running-development" title="Link to this heading">#</a></h3>
+<p>For development and debugging, you can keep Docker services running between test runs by setting an environment variable. This speeds up the setup phase of the tests so you don’t have to wait for the Docker stack to start and stop for every test run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set this before running tests to keep services up after test completion</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">NX_TESTS_KEEP_DOCKER_RUNNING</span><span class="o">=</span><span class="m">1</span>
+
+<span class="c1"># Run tests - services will stay running after completion</span>
+uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>tests/integration/<span class="w"> </span>-v
+
+<span class="c1"># Services now available for manual testing/inspection</span>
+docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>tests/integration/docker/docker-compose.yml<span class="w"> </span>ps
+
+<span class="c1"># Manually stop when done</span>
+docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>tests/integration/docker/docker-compose.yml<span class="w"> </span>down<span class="w"> </span>-v
+</pre></div>
+</div>
+<p><strong>Benefits of keeping services running:</strong></p>
+<ul class="simple">
+<li><p>Faster iteration during development (no startup overhead)</p></li>
+<li><p>Inspect service logs and state between runs</p></li>
+<li><p>Manually test APIs with curl or Postman</p></li>
+<li><p>Reproduce issues without full test overhead</p></li>
+</ul>
+</section>
+<section id="configure-via-env-test-optional">
+<h3>Configure via .env.test (Optional)<a class="headerlink" href="#configure-via-env-test-optional" title="Link to this heading">#</a></h3>
+<p>You can optionally configure integration test behavior via a
+<code class="docutils literal notranslate"><span class="pre">.env.test</span></code> file in the repository root. See <code class="docutils literal notranslate"><span class="pre">.env.test.example</span></code>
+for available configuration options. Currently the only option
+is the <code class="docutils literal notranslate"><span class="pre">NX_TESTS_KEEP_DOCKER_RUNNING</span></code> setting.</p>
+</section>
+<section id="quick-start">
+<h3>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading">#</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># From repository root</span>
+uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>tests/integration/<span class="w"> </span>-v
+</pre></div>
+</div>
+</section>
+<section id="common-commands">
+<h3>Common Commands<a class="headerlink" href="#common-commands" title="Link to this heading">#</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run all integration tests with coverage</span>
+uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>tests/integration/<span class="w"> </span>-v<span class="w"> </span>--cov<span class="o">=</span>nexusLIMS
+
+<span class="c1"># Run specific test file</span>
+uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>tests/integration/test_nemo_integration.py<span class="w"> </span>-v
+
+<span class="c1"># Run with print statements visible</span>
+uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>tests/integration/<span class="w"> </span>-v<span class="w"> </span>-s
+</pre></div>
+</div>
+</section>
+<section id="running-without-docker">
+<h3>Running Without Docker<a class="headerlink" href="#running-without-docker" title="Link to this heading">#</a></h3>
+<p>If you only want to run unit tests (which don’t require Docker):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Unit tests only (default)</span>
+uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>tests/unit/<span class="w"> </span>-v
+</pre></div>
+</div>
+</section>
+</section>
+<section id="test-organization">
+<h2>Test Organization<a class="headerlink" href="#test-organization" title="Link to this heading">#</a></h2>
+<section id="test-files">
+<h3>Test Files<a class="headerlink" href="#test-files" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>File</p></th>
+<th class="head"><p>Purpose</p></th>
+<th class="head"><p>Test Count</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">test_nemo_integration.py</span></code></p></td>
+<td><p>NEMO API and harvester</p></td>
+<td><p>35+</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">test_cdcs_integration.py</span></code></p></td>
+<td><p>CDCS upload and retrieval</p></td>
+<td><p>20+</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">test_end_to_end_workflow.py</span></code></p></td>
+<td><p>Complete workflows</p></td>
+<td><p>3+</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">test_partial_failure_recovery.py</span></code></p></td>
+<td><p>Error handling</p></td>
+<td><p>6+</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">test_cli.py</span></code></p></td>
+<td><p>CLI script testing</p></td>
+<td><p>8+</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">test_nemo_multi_instance.py</span></code></p></td>
+<td><p>Multi-NEMO support</p></td>
+<td><p>16+</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">test_fixtures_smoke.py</span></code></p></td>
+<td><p>Fixture validation</p></td>
+<td><p>20+</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">test_fileserver.py</span></code></p></td>
+<td><p>File serving</p></td>
+<td><p>2+</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="key-integration-test-patterns">
+<h2>Key Integration Test Patterns<a class="headerlink" href="#key-integration-test-patterns" title="Link to this heading">#</a></h2>
+<section id="nemo-integration-tests">
+<h3>1. NEMO Integration Tests<a class="headerlink" href="#nemo-integration-tests" title="Link to this heading">#</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">nemo_client</span></code> fixture provides connection information for the NEMO Docker instance:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">nemo_client[&quot;url&quot;]</span></code>: NEMO API base URL (e.g., <code class="docutils literal notranslate"><span class="pre">http://nemo.localhost/api/</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nemo_client[&quot;token&quot;]</span></code>: Authentication token for API requests</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nemo_client[&quot;timezone&quot;]</span></code>: Timezone string for datetime handling (e.g., <code class="docutils literal notranslate"><span class="pre">&quot;America/New_York&quot;</span></code>)</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">integration</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_nemo_connector_fetches_users</span><span class="p">(</span><span class="n">nemo_client</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Test fetching users from NEMO API.&quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.harvesters.nemo.connector</span><span class="w"> </span><span class="kn">import</span> <span class="n">NemoConnector</span>
+
+    <span class="n">connector</span> <span class="o">=</span> <span class="n">NemoConnector</span><span class="p">(</span>
+        <span class="n">base_url</span><span class="o">=</span><span class="n">nemo_client</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">],</span>
+        <span class="n">token</span><span class="o">=</span><span class="n">nemo_client</span><span class="p">[</span><span class="s2">&quot;token&quot;</span><span class="p">],</span>
+        <span class="n">timezone</span><span class="o">=</span><span class="n">nemo_client</span><span class="p">[</span><span class="s2">&quot;timezone&quot;</span><span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="n">users</span> <span class="o">=</span> <span class="n">connector</span><span class="o">.</span><span class="n">get_all_users</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">users</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+    <span class="k">assert</span> <span class="nb">any</span><span class="p">(</span><span class="n">u</span><span class="p">[</span><span class="s2">&quot;username&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;captain&quot;</span> <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">users</span><span class="p">)</span>
+</pre></div>
+</div>
+<section id="testing-nemo-usage-event-questions">
+<h4>Testing NEMO Usage Event Questions<a class="headerlink" href="#testing-nemo-usage-event-questions" title="Link to this heading">#</a></h4>
+<p>NEMO usage events can contain experiment metadata in two JSON-encoded fields:</p>
+<ul class="simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">run_data</span></code></strong>: Questions answered at the <strong>end</strong> of instrument usage (highest priority)</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">pre_run_data</span></code></strong>: Questions answered at the <strong>start</strong> of instrument usage (medium priority)</p></li>
+</ul>
+<p>The harvester implements a three-tier fallback strategy (run_data → pre_run_data → reservation matching) to obtain the most accurate metadata. Integration tests verify this behavior using test usage events (IDs 100-106) seeded in the NEMO Docker instance.</p>
+<p><strong>Test usage events in <code class="docutils literal notranslate"><span class="pre">seed_data.json</span></code>:</strong></p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Event ID</p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">run_data</span></code></p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">pre_run_data</span></code></p></th>
+<th class="head"><p>Test Purpose</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>100</p></td>
+<td><p>Valid questions</p></td>
+<td><p>Empty</p></td>
+<td><p>Tests Priority 1: run_data</p></td>
+</tr>
+<tr class="row-odd"><td><p>101</p></td>
+<td><p>Empty</p></td>
+<td><p>Valid questions</p></td>
+<td><p>Tests Priority 2: pre_run_data</p></td>
+</tr>
+<tr class="row-even"><td><p>102</p></td>
+<td><p>Valid questions</p></td>
+<td><p>Valid questions</p></td>
+<td><p>Tests run_data priority over pre_run_data</p></td>
+</tr>
+<tr class="row-odd"><td><p>103</p></td>
+<td><p>Empty</p></td>
+<td><p>“Disagree” consent</p></td>
+<td><p>Tests consent validation and fallback</p></td>
+</tr>
+<tr class="row-even"><td><p>104</p></td>
+<td><p>Missing user_input fields</p></td>
+<td><p>Empty</p></td>
+<td><p>Tests graceful handling of incomplete data</p></td>
+</tr>
+<tr class="row-odd"><td><p>105</p></td>
+<td><p>Empty strings</p></td>
+<td><p>Empty strings</p></td>
+<td><p>Tests fallback to reservation matching</p></td>
+</tr>
+<tr class="row-even"><td><p>106</p></td>
+<td><p>Malformed JSON</p></td>
+<td><p>Malformed JSON</p></td>
+<td><p>Tests JSON parsing error handling</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Example test:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">integration</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_usage_event_with_run_data</span><span class="p">(</span><span class="n">test_instrument</span><span class="p">,</span> <span class="n">nemo_connector</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Verify run_data is used when populated.&quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.db.session_handler</span><span class="w"> </span><span class="kn">import</span> <span class="n">Session</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.harvesters.nemo</span><span class="w"> </span><span class="kn">import</span> <span class="n">res_event_from_session</span>
+
+    <span class="c1"># Create session for usage event 100 (has run_data)</span>
+    <span class="n">session</span> <span class="o">=</span> <span class="n">Session</span><span class="p">(</span>
+        <span class="n">instrument</span><span class="o">=</span><span class="n">test_instrument</span><span class="p">,</span>
+        <span class="n">session_identifier</span><span class="o">=</span><span class="s2">&quot;http://nemo.localhost/api/usage_events/100/&quot;</span><span class="p">,</span>
+        <span class="n">dt_from</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2024</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">),</span>
+        <span class="n">dt_to</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2024</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">),</span>
+        <span class="n">user</span><span class="o">=</span><span class="s2">&quot;captain&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">res_event</span> <span class="o">=</span> <span class="n">res_event_from_session</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">nemo_connector</span><span class="p">)</span>
+
+    <span class="c1"># Verify metadata came from run_data (not reservation)</span>
+    <span class="k">assert</span> <span class="n">res_event</span><span class="o">.</span><span class="n">experiment_title</span> <span class="o">==</span> <span class="s2">&quot;Au-TiO2 characterization&quot;</span>
+    <span class="k">assert</span> <span class="n">res_event</span><span class="o">.</span><span class="n">experiment_purpose</span> <span class="o">==</span> <span class="s2">&quot;Measuring particle size distribution&quot;</span>
+    <span class="k">assert</span> <span class="s2">&quot;http://nemo.localhost/event_details/usage/100/&quot;</span> <span class="ow">in</span> <span class="n">res_event</span><span class="o">.</span><span class="n">url</span>
+</pre></div>
+</div>
+<p><strong>Test coverage includes:</strong></p>
+<ul class="simple">
+<li><p>Three-tier priority ordering (run_data &gt; pre_run_data &gt; reservation)</p></li>
+<li><p>Data consent validation and rejection</p></li>
+<li><p>JSON parsing error handling</p></li>
+<li><p>Empty/missing field fallback behavior</p></li>
+<li><p>Operator vs. user field handling</p></li>
+<li><p>Helper function validation (<code class="docutils literal notranslate"><span class="pre">has_valid_question_data()</span></code>)</p></li>
+</ul>
+<p>See <code class="docutils literal notranslate"><span class="pre">TestNemoUsageEventQuestions</span></code> class in <code class="docutils literal notranslate"><span class="pre">tests/integration/test_nemo_integration.py</span></code> for complete test suite.</p>
+</section>
+</section>
+<section id="cdcs-integration-tests">
+<h3>2. CDCS Integration Tests<a class="headerlink" href="#cdcs-integration-tests" title="Link to this heading">#</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">cdcs_client</span></code> fixture provides connection information and utilities for the CDCS Docker instance:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">cdcs_client[&quot;url&quot;]</span></code>: CDCS base URL (e.g., <code class="docutils literal notranslate"><span class="pre">http://cdcs.localhost/</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cdcs_client[&quot;username&quot;]</span></code>: Authentication username for CDCS API</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cdcs_client[&quot;password&quot;]</span></code>: Authentication password for CDCS API</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cdcs_client[&quot;register_record&quot;](record_id)</span></code>: Register a record ID for automatic cleanup after test</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cdcs_client[&quot;created_records&quot;]</span></code>: List of all registered record IDs</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">integration</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_cdcs_record_upload</span><span class="p">(</span><span class="n">cdcs_client</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Test uploading and retrieving records from CDCS.&quot;&quot;&quot;</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">nexusLIMS.cdcs</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cdcs</span>
+
+    <span class="n">xml_content</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="s1">    &lt;Experiment&gt;...&lt;/Experiment&gt;&#39;&#39;&#39;</span>
+
+    <span class="n">record_id</span> <span class="o">=</span> <span class="n">cdcs</span><span class="o">.</span><span class="n">upload_record_content</span><span class="p">(</span><span class="n">xml_content</span><span class="p">,</span> <span class="s2">&quot;Test Record&quot;</span><span class="p">)</span>
+    <span class="n">cdcs_client</span><span class="p">[</span><span class="s2">&quot;register_record&quot;</span><span class="p">](</span><span class="n">record_id</span><span class="p">)</span>  <span class="c1"># Auto-cleanup after test</span>
+
+    <span class="k">assert</span> <span class="n">record_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+</pre></div>
+</div>
+</section>
+<section id="end-to-end-workflow-tests">
+<h3>3. End-to-End Workflow Tests<a class="headerlink" href="#end-to-end-workflow-tests" title="Link to this heading">#</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">test_environment_setup</span></code> fixture configures a complete end-to-end test environment with all services and test data:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">test_environment_setup[&quot;instrument_pid&quot;]</span></code>: Test instrument ID (e.g., <code class="docutils literal notranslate"><span class="pre">&quot;FEI-Titan-TEM&quot;</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">test_environment_setup[&quot;dt_from&quot;]</span></code>: Expected session start datetime</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">test_environment_setup[&quot;dt_to&quot;]</span></code>: Expected session end datetime</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">test_environment_setup[&quot;user&quot;]</span></code>: Expected username for test session</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">test_environment_setup[&quot;instrument_db&quot;]</span></code>: Configured test instrument database</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">test_environment_setup[&quot;cdcs_client&quot;]</span></code>: CDCS client configuration</p></li>
+</ul>
+<p>This fixture automatically:</p>
+<ul class="simple">
+<li><p>Starts all Docker services (NEMO, CDCS, MailPit, fileserver)</p></li>
+<li><p>Configures NEMO harvester with test data</p></li>
+<li><p>Sets up test database with instruments</p></li>
+<li><p>Extracts test microscopy files</p></li>
+<li><p>Configures CDCS client for uploads</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">integration</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_complete_record_building</span><span class="p">(</span><span class="n">test_environment_setup</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Test complete NEMO → Record Builder → CDCS workflow.&quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.harvesters.nemo.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">add_all_usage_events_to_db</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.builder.record_builder</span><span class="w"> </span><span class="kn">import</span> <span class="n">process_new_records</span>
+
+    <span class="c1"># Harvest from NEMO</span>
+    <span class="n">add_all_usage_events_to_db</span><span class="p">()</span>
+
+    <span class="c1"># Build and upload records</span>
+    <span class="n">process_new_records</span><span class="p">()</span>
+
+    <span class="c1"># Verify records in CDCS</span>
+    <span class="c1"># ... verification ...</span>
+</pre></div>
+</div>
+</section>
+<section id="error-handling-tests">
+<h3>4. Error Handling Tests<a class="headerlink" href="#error-handling-tests" title="Link to this heading">#</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">nemo_connector</span></code> fixture provides a pre-configured <code class="docutils literal notranslate"><span class="pre">NemoConnector</span></code> instance for testing. It differs from <code class="docutils literal notranslate"><span class="pre">nemo_client</span></code> in that:</p>
+<ul class="simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">nemo_client</span></code></strong>: Returns a dict with connection information (URL, token, timezone) - use when you need to manually create a connector or test connection parameters</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">nemo_connector</span></code></strong>: Returns a ready-to-use <code class="docutils literal notranslate"><span class="pre">NemoConnector</span></code> instance configured with test database and NEMO client settings - use when you just need a working connector</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">integration</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_nemo_connection_failure</span><span class="p">(</span><span class="n">nemo_connector</span><span class="p">,</span> <span class="n">monkeypatch</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Test graceful handling of NEMO connection failures.&quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.harvesters.nemo.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">add_all_usage_events_to_db</span>
+
+    <span class="c1"># Simulate network error</span>
+    <span class="n">monkeypatch</span><span class="o">.</span><span class="n">setattr</span><span class="p">(</span>
+        <span class="s2">&quot;requests.get&quot;</span><span class="p">,</span>
+        <span class="n">side_effect</span><span class="o">=</span><span class="n">requests</span><span class="o">.</span><span class="n">ConnectionError</span><span class="p">(</span><span class="s2">&quot;Network error&quot;</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Should handle gracefully</span>
+    <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="n">requests</span><span class="o">.</span><span class="n">ConnectionError</span><span class="p">):</span>
+        <span class="n">add_all_usage_events_to_db</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="debugging-integration-tests">
+<h2>Debugging Integration Tests<a class="headerlink" href="#debugging-integration-tests" title="Link to this heading">#</a></h2>
+<section id="view-service-logs">
+<h3>View Service Logs<a class="headerlink" href="#view-service-logs" title="Link to this heading">#</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>tests/integration/docker
+
+<span class="c1"># View logs from all services</span>
+docker<span class="w"> </span>compose<span class="w"> </span>logs
+
+<span class="c1"># View logs from specific service</span>
+docker<span class="w"> </span>compose<span class="w"> </span>logs<span class="w"> </span>nemo
+docker<span class="w"> </span>compose<span class="w"> </span>logs<span class="w"> </span>cdcs
+docker<span class="w"> </span>compose<span class="w"> </span>logs<span class="w"> </span>mailpit
+
+<span class="c1"># Follow logs in real-time</span>
+docker<span class="w"> </span>compose<span class="w"> </span>logs<span class="w"> </span>-f<span class="w"> </span>nemo
+
+<span class="c1"># Show last 100 lines</span>
+docker<span class="w"> </span>compose<span class="w"> </span>logs<span class="w"> </span>--tail<span class="o">=</span><span class="m">100</span>
+</pre></div>
+</div>
+</section>
+<section id="access-service-web-uis">
+<h3>Access Service Web UIs<a class="headerlink" href="#access-service-web-uis" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>NEMO</strong>: <a class="reference external" href="http://nemo.localhost">http://nemo.localhost</a> (or <a class="reference external" href="http://localhost:8000">http://localhost:8000</a>)</p></li>
+<li><p><strong>CDCS</strong>: <a class="reference external" href="http://cdcs.localhost">http://cdcs.localhost</a> (or <a class="reference external" href="http://localhost:8080">http://localhost:8080</a>) – this can be useful to inspect records during/after tests</p></li>
+<li><p><strong>MailPit</strong>: <a class="reference external" href="http://mailpit.localhost">http://mailpit.localhost</a> (or <a class="reference external" href="http://localhost:8025">http://localhost:8025</a>)</p></li>
+<li><p><strong>Fileserver</strong>: <a class="reference external" href="http://fileserver.localhost/data">http://fileserver.localhost/data</a> (or <a class="reference external" href="http://localhost:8081/data">http://localhost:8081/data</a>)</p></li>
+</ul>
+</section>
+<section id="use-standalone-fileserver">
+<h3>Use Standalone Fileserver<a class="headerlink" href="#use-standalone-fileserver" title="Link to this heading">#</a></h3>
+<p>For debugging file serving issues:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>tests/integration/debug_fileserver.py
+</pre></div>
+</div>
+<p>This starts the same fileserver used in tests on port 8081 for manual testing.</p>
+</section>
+</section>
+<section id="troubleshooting">
+<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading">#</a></h2>
+<section id="services-fail-to-start">
+<h3>Services Fail to Start<a class="headerlink" href="#services-fail-to-start" title="Link to this heading">#</a></h3>
+<p><strong>Check Docker daemon:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>ps<span class="w">  </span><span class="c1"># Should list running containers</span>
+</pre></div>
+</div>
+<p><strong>Check service logs:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>tests/integration/docker
+docker<span class="w"> </span>compose<span class="w"> </span>logs<span class="w"> </span>nemo
+docker<span class="w"> </span>compose<span class="w"> </span>logs<span class="w"> </span>cdcs
+</pre></div>
+</div>
+<p><strong>Common causes:</strong></p>
+<ul class="simple">
+<li><p>Ports already in use: <code class="docutils literal notranslate"><span class="pre">lsof</span> <span class="pre">-i</span> <span class="pre">:8000</span></code></p></li>
+<li><p>Insufficient Docker resources (Docker Desktop settings)</p></li>
+<li><p>Previous containers not cleaned: <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span> <span class="pre">down</span> <span class="pre">-v</span></code></p></li>
+</ul>
+</section>
+<section id="health-checks-timeout">
+<h3>Health Checks Timeout<a class="headerlink" href="#health-checks-timeout" title="Link to this heading">#</a></h3>
+<p><strong>Increase timeout in <code class="docutils literal notranslate"><span class="pre">conftest.py</span></code>:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Change this value (in seconds)</span>
+<span class="n">HEALTH_CHECK_TIMEOUT</span> <span class="o">=</span> <span class="mi">300</span>  <span class="c1"># Increased from 180</span>
+</pre></div>
+</div>
+<p><strong>Or skip health checks in development:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d<span class="w"> </span>--no-health<span class="w">  </span><span class="c1"># Not recommended for CI</span>
+</pre></div>
+</div>
+</section>
+<section id="tests-fail-with-connection-refused">
+<h3>Tests Fail with “Connection Refused”<a class="headerlink" href="#tests-fail-with-connection-refused" title="Link to this heading">#</a></h3>
+<p><strong>Ensure services are running:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>ps
+<span class="c1"># STATUS should show &quot;healthy&quot; or &quot;running&quot;</span>
+</pre></div>
+</div>
+<p><strong>If not healthy, restart:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>down<span class="w"> </span>-v
+docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
+<span class="c1"># Wait for health checks to pass</span>
+</pre></div>
+</div>
+</section>
+<section id="database-locks">
+<h3>Database Locks<a class="headerlink" href="#database-locks" title="Link to this heading">#</a></h3>
+<p><strong>If tests hang on database operations:</strong></p>
+<ol class="arabic simple">
+<li><p>Stop all tests: <code class="docutils literal notranslate"><span class="pre">Ctrl+C</span></code></p></li>
+<li><p>Clean up: <code class="docutils literal notranslate"><span class="pre">rm</span> <span class="pre">/tmp/nexuslims-test.db*</span></code></p></li>
+<li><p>Restart services: <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span> <span class="pre">down</span> <span class="pre">-v</span> <span class="pre">&amp;&amp;</span> <span class="pre">docker</span> <span class="pre">compose</span> <span class="pre">up</span> <span class="pre">-d</span></code></p></li>
+</ol>
+</section>
+<section id="cdcs-upload-failures">
+<h3>CDCS Upload Failures<a class="headerlink" href="#cdcs-upload-failures" title="Link to this heading">#</a></h3>
+<p><strong>Check credentials:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Should return 200 status with some workspace data</span>
+curl<span class="w"> </span>-u<span class="w"> </span>admin:admin<span class="w"> </span>http://cdcs.localhost/rest/workspace/
+</pre></div>
+</div>
+<p><strong>Check XML validity:</strong></p>
+<ul class="simple">
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">xmllint</span></code>: <code class="docutils literal notranslate"><span class="pre">xmllint</span> <span class="pre">--schema</span> <span class="pre">schema.xsd</span> <span class="pre">record.xml</span></code></p></li>
+<li><p>Validate in CDCS web UI</p></li>
+</ul>
+</section>
+<section id="cleanup-issues">
+<h3>Cleanup Issues<a class="headerlink" href="#cleanup-issues" title="Link to this heading">#</a></h3>
+<p><strong>Manual cleanup:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Stop all services</span>
+docker<span class="w"> </span>compose<span class="w"> </span>down
+
+<span class="c1"># Remove volumes</span>
+docker<span class="w"> </span>volume<span class="w"> </span>prune<span class="w"> </span>-f
+
+<span class="c1"># Remove test data</span>
+rm<span class="w"> </span>-rf<span class="w"> </span>/tmp/nexuslims-test-*
+
+<span class="c1"># Clean Docker system</span>
+docker<span class="w"> </span>system<span class="w"> </span>prune<span class="w"> </span>-a<span class="w"> </span>--volumes
+</pre></div>
+</div>
+</section>
+</section>
+<section id="best-practices">
+<h2>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading">#</a></h2>
+<section id="always-use-fixtures">
+<h3>1. Always Use Fixtures<a class="headerlink" href="#always-use-fixtures" title="Link to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Good - uses fixtures</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_something</span><span class="p">(</span><span class="n">nemo_client</span><span class="p">,</span> <span class="n">cdcs_client</span><span class="p">):</span>
+    <span class="c1"># ...</span>
+
+<span class="c1"># Bad - hardcoded URLs</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_something</span><span class="p">():</span>
+    <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;http://localhost:8000/&quot;</span><span class="p">)</span>  <span class="c1"># Don&#39;t do this</span>
+</pre></div>
+</div>
+</section>
+<section id="mark-tests-properly">
+<h3>2. Mark Tests Properly<a class="headerlink" href="#mark-tests-properly" title="Link to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Good</span>
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">integration</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_complete_workflow</span><span class="p">(</span><span class="n">test_environment_setup</span><span class="p">):</span>
+    <span class="c1"># ...</span>
+
+<span class="c1"># Bad - missing integration marker</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_something</span><span class="p">():</span>
+    <span class="c1"># ...</span>
+</pre></div>
+</div>
+</section>
+<section id="use-descriptive-names">
+<h3>3. Use Descriptive Names<a class="headerlink" href="#use-descriptive-names" title="Link to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Good</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_nemo_harvester_creates_session_for_usage_event</span><span class="p">():</span>
+    <span class="c1"># ...</span>
+
+<span class="c1"># Bad</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_harvester</span><span class="p">():</span>
+    <span class="c1"># ...</span>
+</pre></div>
+</div>
+</section>
+<section id="clean-up-resources">
+<h3>4. Clean Up Resources<a class="headerlink" href="#clean-up-resources" title="Link to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Good - use cdcs_client fixture</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_upload</span><span class="p">(</span><span class="n">cdcs_client</span><span class="p">):</span>
+    <span class="n">record_id</span> <span class="o">=</span> <span class="n">cdcs</span><span class="o">.</span><span class="n">upload_record_content</span><span class="p">(</span><span class="n">xml</span><span class="p">,</span> <span class="s2">&quot;Test&quot;</span><span class="p">)</span>
+    <span class="n">cdcs_client</span><span class="p">[</span><span class="s2">&quot;register_record&quot;</span><span class="p">](</span><span class="n">record_id</span><span class="p">)</span>  <span class="c1"># Auto-cleanup</span>
+
+<span class="c1"># Bad - manual cleanup required</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_upload</span><span class="p">():</span>
+    <span class="n">record_id</span> <span class="o">=</span> <span class="n">cdcs</span><span class="o">.</span><span class="n">upload_record_content</span><span class="p">(</span><span class="n">xml</span><span class="p">,</span> <span class="s2">&quot;Test&quot;</span><span class="p">)</span>
+    <span class="c1"># No cleanup = test pollution</span>
+</pre></div>
+</div>
+</section>
+<section id="test-one-thing-per-test">
+<h3>5. Test One Thing Per Test<a class="headerlink" href="#test-one-thing-per-test" title="Link to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Good - tests single behavior</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_nemo_connector_retrieves_users</span><span class="p">():</span>
+    <span class="c1"># Only test user retrieval</span>
+
+<span class="c1"># Bad - tests multiple behaviors</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_nemo_connector_everything</span><span class="p">():</span>
+    <span class="c1"># Tests users, tools, projects, and reservations</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="performance-optimization">
+<h2>Performance Optimization<a class="headerlink" href="#performance-optimization" title="Link to this heading">#</a></h2>
+<section id="session-scoped-fixtures">
+<h3>Session-Scoped Fixtures<a class="headerlink" href="#session-scoped-fixtures" title="Link to this heading">#</a></h3>
+<p>Services start once per test session (not per test):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># conftest.py</span>
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s2">&quot;session&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">docker_services</span><span class="p">():</span>
+    <span class="c1"># Starts once, runs for entire session</span>
+    <span class="c1"># ...</span>
+</pre></div>
+</div>
+<p>This means services stay running across all tests, greatly improving performance.</p>
+</section>
+<section id="selective-service-startup">
+<h3>Selective Service Startup<a class="headerlink" href="#selective-service-startup" title="Link to this heading">#</a></h3>
+<p>If only testing specific components:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>tests/integration/docker
+docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d<span class="w"> </span>nemo<span class="w">  </span><span class="c1"># Only start NEMO</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="ci-cd-integration">
+<h2>CI/CD Integration<a class="headerlink" href="#ci-cd-integration" title="Link to this heading">#</a></h2>
+<p>Integration tests run automatically in GitHub Actions:</p>
+<ul class="simple">
+<li><p><strong>Trigger</strong>: Every push to <code class="docutils literal notranslate"><span class="pre">main</span></code> or feature branches</p></li>
+<li><p><strong>Schedule</strong>: Nightly at 3 AM UTC</p></li>
+<li><p><strong>Environment</strong>: Ubuntu latest with Docker</p></li>
+<li><p><strong>Timeout</strong>: 600 seconds per test</p></li>
+<li><p><strong>Coverage</strong>: Reported to Codecov with <code class="docutils literal notranslate"><span class="pre">integration</span></code> flag</p></li>
+</ul>
+<section id="running-in-github-actions">
+<h3>Running in GitHub Actions<a class="headerlink" href="#running-in-github-actions" title="Link to this heading">#</a></h3>
+<p>Tests use pre-built images from GitHub Container Registry when available, falling back to local builds.</p>
+<p><strong>Workflow file:</strong> <code class="docutils literal notranslate"><span class="pre">.github/workflows/integration-tests.yml</span></code></p>
+</section>
+</section>
+<section id="adding-new-integration-tests">
+<h2>Adding New Integration Tests<a class="headerlink" href="#adding-new-integration-tests" title="Link to this heading">#</a></h2>
+<section id="template">
+<h3>Template<a class="headerlink" href="#template" title="Link to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Integration tests for [feature].</span>
+
+<span class="sd">This module tests [what functionality] by interacting with real</span>
+<span class="sd">Docker services instead of mocks.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">pytest</span>
+
+
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">integration</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Test</span><span class="p">[</span><span class="n">FeatureName</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Integration tests for [feature].&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_</span><span class="p">[</span><span class="n">specific_behavior</span><span class="p">](</span><span class="bp">self</span><span class="p">,</span> <span class="p">[</span><span class="n">required_fixtures</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Test [what you&#39;re testing].</span>
+
+<span class="sd">        This test verifies that:</span>
+<span class="sd">        1. [Behavior one]</span>
+<span class="sd">        2. [Behavior two]</span>
+<span class="sd">        3. [Expected outcome]</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        [fixture_name] : [type]</span>
+<span class="sd">            Description of fixture</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Arrange</span>
+        <span class="c1"># ... setup ...</span>
+
+        <span class="c1"># Act</span>
+        <span class="c1"># ... execute feature ...</span>
+
+        <span class="c1"># Assert</span>
+        <span class="c1"># ... verify results ...</span>
+</pre></div>
+</div>
+</section>
+<section id="checklist">
+<h3>Checklist<a class="headerlink" href="#checklist" title="Link to this heading">#</a></h3>
+<ul class="checklist simple">
+<li><p>☐ Module docstring explains what’s being tested</p></li>
+<li><p>☐ Class docstring summarizes test scope</p></li>
+<li><p>☐ Each test has clear docstring with Parameters section</p></li>
+<li><p>☐ Test is marked with <code class="docutils literal notranslate"><span class="pre">&#64;pytest.mark.integration</span></code></p></li>
+<li><p>☐ Test name is descriptive (not just “test_something”)</p></li>
+<li><p>☐ Test follows Arrange-Act-Assert pattern</p></li>
+<li><p>☐ Test cleans up resources (use fixtures for this)</p></li>
+<li><p>☐ Test is independent (no order dependencies)</p></li>
+<li><p>☐ Test uses fixtures instead of hardcoded values</p></li>
+</ul>
+</section>
+</section>
+<section id="further-reading">
+<h2>Further Reading<a class="headerlink" href="#further-reading" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>Tests Integration README</strong>: Quick reference guide in <code class="docutils literal notranslate"><span class="pre">tests/integration/README.md</span></code></p></li>
+<li><p><strong>Docker Services Documentation</strong>: Service details in <code class="docutils literal notranslate"><span class="pre">tests/integration/docker/README.md</span></code></p></li>
+<li><p><strong>Shared Test Fixtures</strong>: Available fixtures (see <a class="reference download internal" download="" href="../../_downloads/e8a59a80b8513db9c2b197283571fc09/shared_data.py"><span class="xref download myst"><code class="docutils literal notranslate"><span class="pre">tests/fixtures/shared_data.py</span></code></span></a>)</p></li>
+</ul>
+</section>
+<section id="support">
+<h2>Support<a class="headerlink" href="#support" title="Link to this heading">#</a></h2>
+<p>For issues or questions:</p>
+<ol class="arabic simple">
+<li><p>Check the readme in <code class="docutils literal notranslate"><span class="pre">tests/integration/README.md</span></code></p></li>
+<li><p>Review test logs: <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span> <span class="pre">logs</span></code></p></li>
+<li><p>Search <a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues">GitHub Issues</a></p></li>
+<li><p>Open a new issue with logs and reproduction steps</p></li>
+</ol>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../schema_documentation.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">XML Schema Reference</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../../frontend_guide.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Frontend Guide</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">Overview</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-integration-testing">Why Integration Testing?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#when-to-use-integration-tests-vs-unit-tests">When to Use Integration Tests vs Unit Tests</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#architecture">Architecture</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#service-stack">Service Stack</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data-flow">Data Flow</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setup-and-configuration">Setup and Configuration</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#prerequisites">Prerequisites</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#first-time-setup">First Time Setup</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#environment-configuration">Environment Configuration</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#running-integration-tests">Running Integration Tests</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docker-service-management">Docker Service Management</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#keeping-docker-services-running-development">Keeping Docker Services Running (Development)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#configure-via-env-test-optional">Configure via .env.test (Optional)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quick-start">Quick Start</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#common-commands">Common Commands</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#running-without-docker">Running Without Docker</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#test-organization">Test Organization</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#test-files">Test Files</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#key-integration-test-patterns">Key Integration Test Patterns</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nemo-integration-tests">1. NEMO Integration Tests</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#testing-nemo-usage-event-questions">Testing NEMO Usage Event Questions</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cdcs-integration-tests">2. CDCS Integration Tests</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#end-to-end-workflow-tests">3. End-to-End Workflow Tests</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#error-handling-tests">4. Error Handling Tests</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#debugging-integration-tests">Debugging Integration Tests</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#view-service-logs">View Service Logs</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#access-service-web-uis">Access Service Web UIs</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#use-standalone-fileserver">Use Standalone Fileserver</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#troubleshooting">Troubleshooting</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#services-fail-to-start">Services Fail to Start</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#health-checks-timeout">Health Checks Timeout</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tests-fail-with-connection-refused">Tests Fail with “Connection Refused”</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#database-locks">Database Locks</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cdcs-upload-failures">CDCS Upload Failures</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cleanup-issues">Cleanup Issues</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#best-practices">Best Practices</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#always-use-fixtures">1. Always Use Fixtures</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mark-tests-properly">2. Mark Tests Properly</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#use-descriptive-names">3. Use Descriptive Names</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clean-up-resources">4. Clean Up Resources</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#test-one-thing-per-test">5. Test One Thing Per Test</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#performance-optimization">Performance Optimization</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#session-scoped-fixtures">Session-Scoped Fixtures</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selective-service-startup">Selective Service Startup</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ci-cd-integration">CI/CD Integration</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#running-in-github-actions">Running in GitHub Actions</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#adding-new-integration-tests">Adding New Integration Tests</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#template">Template</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#checklist">Checklist</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#further-reading">Further Reading</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#support">Support</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/dev_guide/testing/integration-tests.md.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2025 - 2026, datasophos, LLC.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

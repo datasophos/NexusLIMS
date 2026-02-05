@@ -1,0 +1,53 @@
+[
+  {
+    "name": "v2.4.1.dev0 (latest)",
+    "version": "dev",
+    "url": "https://datasophos.github.io/NexusLIMS/latest/"
+  },
+  {
+    "name": "v2.4.0 (stable)",
+    "version": "2.4.0",
+    "url": "https://datasophos.github.io/NexusLIMS/stable/",
+    "preferred": true
+  },
+  {
+    "name": "v2.3.0",
+    "version": "2.3.0",
+    "url": "https://datasophos.github.io/NexusLIMS/2.3.0/"
+  },
+  {
+    "name": "v2.2.0",
+    "version": "2.2.0",
+    "url": "https://datasophos.github.io/NexusLIMS/2.2.0/"
+  },
+  {
+    "name": "v2.1.1",
+    "version": "2.1.1",
+    "url": "https://datasophos.github.io/NexusLIMS/2.1.1/"
+  },
+  {
+    "name": "v2.0.0",
+    "version": "2.0.0",
+    "url": "https://datasophos.github.io/NexusLIMS/2.0.0/"
+  },
+  {
+    "name": "PR #64",
+    "version": "pr-64",
+    "url": "https://datasophos.github.io/NexusLIMS/pr-64/"
+  },
+  {
+    "name": "PR #61",
+    "version": "pr-61",
+    "url": "https://datasophos.github.io/NexusLIMS/pr-61/"
+  },
+  {
+    "name": "PR #43",
+    "version": "pr-43",
+    "url": "https://datasophos.github.io/NexusLIMS/pr-43/"
+  },
+  {
+    "name": "Upstream NIST docs",
+    "version": "upstream",
+    "url": "https://pages.nist.gov/NexusLIMS/"
+  }
+]

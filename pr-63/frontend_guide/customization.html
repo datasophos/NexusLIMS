@@ -1,0 +1,1076 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Branding and Customization &#8212; NexusLIMS pr-63 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=acda69ee" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=a1b85868"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=30646c52"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'frontend_guide/customization';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'pr-63';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script src="../_static/custom.js?v=ba087cdf"></script>
+    <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/pr-63/frontend_guide/customization.html" />
+    <link rel="icon" href="../_static/nexusLIMS_bare_logo.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Administration" href="administration.html" />
+    <link rel="prev" title="Configuration" href="configuration.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="pr-63" />
+    <meta name="docbuild:last-update" content="Feb, 05, 2026"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS pr-63 documentation - Home"/>
+    <img src="../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS pr-63 documentation - Home"/>
+  
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../migration.html">
+    Migration Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../dev_guide.html">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../frontend_guide.html">
+    Frontend Guide
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../reference.html">
+    Reference
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datasophos/NexusLIMS" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://datasophos.co" title="Datasophos" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-globe fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Datasophos</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../migration.html">
+    Migration Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../dev_guide.html">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../frontend_guide.html">
+    Frontend Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../reference.html">
+    Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datasophos/NexusLIMS" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://datasophos.co" title="Datasophos" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-globe fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Datasophos</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="gallery.html">Screenshot Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development.html">Development Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="production.html">Production Deployment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="local-test-deployment.html">Local Test Deployment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Branding and Customization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="administration.html">Administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../frontend_guide.html" class="nav-link">Frontend Guide</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Branding and Customization</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="branding-and-customization">
+<span id="cdcs-customization"></span><h1>Branding and Customization<a class="headerlink" href="#branding-and-customization" title="Link to this heading">#</a></h1>
+<p>This guide explains how to customize your NexusLIMS-CDCS deployment to match your organization’s branding and requirements.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
+<p>NexusLIMS uses a centralized settings approach where all customization options are defined in <code class="docutils literal notranslate"><span class="pre">NexusLIMS-CDCS/config/settings/</span></code>.</p>
+<p>This directory contains default values appropriate for development (<code class="docutils literal notranslate"><span class="pre">dev_settings.py</span></code>) and production (<code class="docutils literal notranslate"><span class="pre">prod_settings.py</span></code>) deployments of NexusLIMS. To customize your deployment, you can use the <code class="docutils literal notranslate"><span class="pre">custom_settings.py</span></code> template also provided in that folder.</p>
+<section id="customization-workflow">
+<h3>Customization Workflow<a class="headerlink" href="#customization-workflow" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Never modify:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">nexuslims_overrides/settings.py</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">config/settings/dev_settings.py</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">config/settings/prod_settings.py</span></code></p></li>
+</ul>
+</li>
+<li><p><strong>Override/change settings</strong> in <code class="docutils literal notranslate"><span class="pre">config/settings/custom_settings.py</span></code></p></li>
+<li><p><strong>Update <code class="docutils literal notranslate"><span class="pre">DJANGO_SETTINGS_MODULE</span></code></strong> in your <code class="docutils literal notranslate"><span class="pre">.env</span></code> file by setting it to <code class="docutils literal notranslate"><span class="pre">DJANGO_SETTINGS_MODULE=config.settings.custom_settings</span></code></p></li>
+<li><p><strong>Place custom assets</strong> (logos, images) in <code class="docutils literal notranslate"><span class="pre">config/static_files/</span></code></p></li>
+<li><p><strong>Restart containers</strong> to load new configuration (no rebuild required)</p></li>
+</ol>
+</section>
+</section>
+<hr class="docutils" />
+<section id="branding-logos">
+<h2>Branding &amp; Logos<a class="headerlink" href="#branding-logos" title="Link to this heading">#</a></h2>
+<section id="navigation-bar-logo">
+<h3>Navigation Bar Logo<a class="headerlink" href="#navigation-bar-logo" title="Link to this heading">#</a></h3>
+<p>The logo displayed in the top-left corner of the navigation bar.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Default: &quot;nexuslims/img/logo_horizontal_light.png&quot;</span>
+<span class="n">NX_NAV_LOGO</span> <span class="o">=</span> <span class="s2">&quot;path/to/your/logo_horizontal_light.png&quot;</span>
+</pre></div>
+</div>
+<p><strong>Recommendations:</strong></p>
+<ul class="simple">
+<li><p><strong>Format</strong>: PNG with transparent background</p></li>
+<li><p><strong>Size</strong>: Max height ~24px</p></li>
+<li><p><strong>Aspect ratio</strong>: Horizontal logos work best (2:1 to 4:1)</p></li>
+</ul>
+</section>
+<section id="footer-logo">
+<h3>Footer Logo<a class="headerlink" href="#footer-logo" title="Link to this heading">#</a></h3>
+<p>The logo displayed in the footer.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Default: &quot;nexuslims/img/datasophos_logo.png&quot;</span>
+<span class="n">NX_FOOTER_LOGO</span> <span class="o">=</span> <span class="s2">&quot;path/to/your/footer_logo.png&quot;</span>
+
+<span class="c1"># Default: &quot;https://datasophos.co&quot;</span>
+<span class="n">NX_FOOTER_LINK</span> <span class="o">=</span> <span class="s2">&quot;https://your-organization.com&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="homepage-logo">
+<h3>Homepage Logo<a class="headerlink" href="#homepage-logo" title="Link to this heading">#</a></h3>
+<p>The logo displayed on the homepage alongside the welcome text.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Default: &quot;nexuslims/img/logo_stacked_modern.png&quot;</span>
+<span class="n">NX_HOMEPAGE_LOGO</span> <span class="o">=</span> <span class="s2">&quot;path/to/your/homepage_logo.png&quot;</span>
+</pre></div>
+</div>
+<p><strong>Recommendations:</strong></p>
+<ul class="simple">
+<li><p><strong>Format</strong>: PNG or SVG</p></li>
+<li><p><strong>Size</strong>: Max width 400px</p></li>
+<li><p><strong>Style</strong>: Can include text/wordmark</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="theme-colors">
+<h2>Theme Colors<a class="headerlink" href="#theme-colors" title="Link to this heading">#</a></h2>
+<p>Customize the color scheme of your NexusLIMS deployment using CSS custom properties. These colors are used throughout the interface for buttons, links, badges, and other UI elements.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">NX_THEME_COLORS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;primary&quot;</span><span class="p">:</span> <span class="s2">&quot;#11659c&quot;</span><span class="p">,</span>           <span class="c1"># Main brand color (buttons, links, icons)</span>
+    <span class="s2">&quot;primary_dark&quot;</span><span class="p">:</span> <span class="s2">&quot;#0d528a&quot;</span><span class="p">,</span>      <span class="c1"># Darker variant for hover states</span>
+    <span class="s2">&quot;info_badge_dark&quot;</span><span class="p">:</span> <span class="s2">&quot;#505050&quot;</span><span class="p">,</span>   <span class="c1"># Info badge background color</span>
+    <span class="s2">&quot;secondary&quot;</span><span class="p">:</span> <span class="s2">&quot;#f9f9f9&quot;</span><span class="p">,</span>         <span class="c1"># Secondary (light) button background</span>
+    <span class="s2">&quot;secondary_dark&quot;</span><span class="p">:</span> <span class="s2">&quot;#e2e2e2&quot;</span><span class="p">,</span>    <span class="c1"># Secondary button hover state</span>
+    <span class="s2">&quot;success&quot;</span><span class="p">:</span> <span class="s2">&quot;#28a745&quot;</span><span class="p">,</span>           <span class="c1"># Success states</span>
+    <span class="s2">&quot;danger&quot;</span><span class="p">:</span> <span class="s2">&quot;#dc3545&quot;</span><span class="p">,</span>            <span class="c1"># Error/danger states</span>
+    <span class="s2">&quot;warning&quot;</span><span class="p">:</span> <span class="s2">&quot;#ffc107&quot;</span><span class="p">,</span>           <span class="c1"># Warning states and hover highlights</span>
+    <span class="s2">&quot;info&quot;</span><span class="p">:</span> <span class="s2">&quot;#17a2b8&quot;</span><span class="p">,</span>              <span class="c1"># Info messages</span>
+    <span class="s2">&quot;light_gray&quot;</span><span class="p">:</span> <span class="s2">&quot;#e3e3e3&quot;</span><span class="p">,</span>        <span class="c1"># Light gray accents</span>
+    <span class="s2">&quot;dark_gray&quot;</span><span class="p">:</span> <span class="s2">&quot;#212529&quot;</span><span class="p">,</span>         <span class="c1"># Dark text color</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>How it works:</strong></p>
+<ul class="simple">
+<li><p>Colors are injected as CSS custom properties (e.g., <code class="docutils literal notranslate"><span class="pre">--nx-primary-color</span></code>)</p></li>
+<li><p>Only specify colors you want to change; unspecified colors use CSS defaults</p></li>
+<li><p>Changes take effect after restarting the Django container</p></li>
+</ul>
+<p><strong>Usage:</strong></p>
+<ul class="simple">
+<li><p>Set <code class="docutils literal notranslate"><span class="pre">NX_THEME_COLORS</span></code> in your <code class="docutils literal notranslate"><span class="pre">config/settings/custom_settings.py</span></code></p></li>
+<li><p>Only include the colors you want to override</p></li>
+</ul>
+<p><strong>Example: Custom Blue Theme</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">NX_THEME_COLORS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;primary&quot;</span><span class="p">:</span> <span class="s2">&quot;#1a5276&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;primary_dark&quot;</span><span class="p">:</span> <span class="s2">&quot;#154360&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;warning&quot;</span><span class="p">:</span> <span class="s2">&quot;#f4d03f&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Example: Corporate Green Theme</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">NX_THEME_COLORS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;primary&quot;</span><span class="p">:</span> <span class="s2">&quot;#1e8449&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;primary_dark&quot;</span><span class="p">:</span> <span class="s2">&quot;#196f3d&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;info_badge_dark&quot;</span><span class="p">:</span> <span class="s2">&quot;#2c3e50&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Choose a primary color that represents your organization’s brand. The <code class="docutils literal notranslate"><span class="pre">warning</span></code> color is used for hover highlights on links and buttons.</p>
+</div>
+</section>
+<hr class="docutils" />
+<section id="homepage-content">
+<h2>Homepage Content<a class="headerlink" href="#homepage-content" title="Link to this heading">#</a></h2>
+<section id="welcome-title">
+<h3>Welcome Title<a class="headerlink" href="#welcome-title" title="Link to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Default: &quot;Welcome to NexusLIMS!&quot;</span>
+<span class="n">CUSTOM_TITLE</span> <span class="o">=</span> <span class="s2">&quot;Welcome to Your LIMS!&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="homepage-text">
+<h3>Homepage Text<a class="headerlink" href="#homepage-text" title="Link to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">NX_HOMEPAGE_TEXT</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">Your custom introductory text here. This appears on the homepage</span>
+<span class="s2">and explains what your LIMS does and how to use it.</span>
+<span class="s2">&quot;&quot;&quot;</span>
+</pre></div>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Keep this concise (2-3 sentences) and action-oriented.</p>
+</div>
+</section>
+<section id="documentation-link">
+<h3>Documentation Link<a class="headerlink" href="#documentation-link" title="Link to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Default: &quot;https://datasophos.github.io/NexusLIMS/&quot;</span>
+<span class="n">NX_DOCUMENTATION_LINK</span> <span class="o">=</span> <span class="s2">&quot;https://docs.your-organization.com&quot;</span>
+</pre></div>
+</div>
+<p>Set to empty string <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code> to hide the documentation link entirely.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="navigation-menu">
+<h2>Navigation Menu<a class="headerlink" href="#navigation-menu" title="Link to this heading">#</a></h2>
+<section id="custom-menu-links">
+<h3>Custom Menu Links<a class="headerlink" href="#custom-menu-links" title="Link to this heading">#</a></h3>
+<p>Add custom links to the top navigation bar.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">NX_CUSTOM_MENU_LINKS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Data Portal&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://portal.your-org.com&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;icon&quot;</span><span class="p">:</span> <span class="s2">&quot;database&quot;</span><span class="p">,</span>           <span class="c1"># Font Awesome icon name (optional)</span>
+        <span class="s2">&quot;iconClass&quot;</span><span class="p">:</span> <span class="s2">&quot;fas&quot;</span>            <span class="c1"># Font Awesome class (optional)</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Help Desk&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://help.your-org.com&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;icon&quot;</span><span class="p">:</span> <span class="s2">&quot;question-circle&quot;</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Team Directory&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;/team&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;icon&quot;</span><span class="p">:</span> <span class="s2">&quot;users&quot;</span>
+    <span class="p">},</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<p><strong>Icon Options:</strong></p>
+<ul class="simple">
+<li><p>Use any <a class="reference external" href="https://fontawesome.com/v6/search">Font Awesome 6</a> icon name</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">iconClass</span></code> can be <code class="docutils literal notranslate"><span class="pre">&quot;fas&quot;</span></code> (solid), <code class="docutils literal notranslate"><span class="pre">&quot;far&quot;</span></code> (regular), or <code class="docutils literal notranslate"><span class="pre">&quot;fab&quot;</span></code> (brands)</p></li>
+<li><p>Omit <code class="docutils literal notranslate"><span class="pre">icon</span></code> to display text only</p></li>
+</ul>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Limit to 3-5 custom links to avoid cluttering the navigation.</p>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="xslt-configuration">
+<h2>XSLT Configuration<a class="headerlink" href="#xslt-configuration" title="Link to this heading">#</a></h2>
+<section id="xslt-debug-mode">
+<h3>XSLT Debug Mode<a class="headerlink" href="#xslt-debug-mode" title="Link to this heading">#</a></h3>
+<p>Enable detailed messages from XSLT transformation for debugging.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Enable XSLT debug output (default: False)</span>
+<span class="n">NX_XSLT_DEBUG</span> <span class="o">=</span> <span class="kc">True</span>
+</pre></div>
+</div>
+<p><strong>Use Cases:</strong></p>
+<ul class="simple">
+<li><p><strong>Development</strong>: Set to <code class="docutils literal notranslate"><span class="pre">True</span></code> when working on XSLT stylesheets</p></li>
+<li><p><strong>Production</strong>: Set to <code class="docutils literal notranslate"><span class="pre">False</span></code> to avoid verbose debug output</p></li>
+</ul>
+<p>You can add debug statements in XSLT using <code class="docutils literal notranslate"><span class="pre">&lt;xsl:message&gt;</span></code> tags:</p>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;xsl:message&gt;</span>DEBUG:<span class="w"> </span>Processing<span class="w"> </span>instrument<span class="w"> </span><span class="nt">&lt;xsl:value-of</span><span class="w"> </span><span class="na">select=</span><span class="s">&quot;$instrument-name&quot;</span><span class="nt">/&gt;&lt;/xsl:message&gt;</span>
+</pre></div>
+</div>
+</section>
+<section id="instrument-badge-colors">
+<h3>Instrument Badge Colors<a class="headerlink" href="#instrument-badge-colors" title="Link to this heading">#</a></h3>
+<p>Configure colors for instrument badges in detail and list views.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">NX_INSTRUMENT_COLOR_MAPPINGS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;FEI-Titan-TEM&quot;</span><span class="p">:</span> <span class="s2">&quot;#2E86AB&quot;</span><span class="p">,</span>     <span class="c1"># Blue for TEMs</span>
+    <span class="s2">&quot;FEI-Titan-STEM&quot;</span><span class="p">:</span> <span class="s2">&quot;#0645AD&quot;</span><span class="p">,</span>    <span class="c1"># Darker blue for STEM</span>
+    <span class="s2">&quot;FEI-Quanta200-ESEM&quot;</span><span class="p">:</span> <span class="s2">&quot;#A569BD&quot;</span><span class="p">,</span> <span class="c1"># Purple for ESEM</span>
+    <span class="s2">&quot;Hitachi-S4700-SEM&quot;</span><span class="p">:</span> <span class="s2">&quot;#E74C3C&quot;</span><span class="p">,</span> <span class="c1"># Red for Hitachi SEMs</span>
+    <span class="s2">&quot;JEOL-JSM7100-SEM&quot;</span><span class="p">:</span> <span class="s2">&quot;#F39C12&quot;</span><span class="p">,</span>  <span class="c1"># Orange for JEOL SEMs</span>
+    <span class="s2">&quot;Zeiss-LEO_1525_FESEM&quot;</span><span class="p">:</span> <span class="s2">&quot;#16A085&quot;</span><span class="p">,</span> <span class="c1"># Teal for Zeiss</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Best Practices:</strong></p>
+<ul class="simple">
+<li><p>Use distinct, accessible colors</p></li>
+<li><p>Choose colors that contrast well with white text</p></li>
+<li><p>Group similar instruments by color family</p></li>
+<li><p>Use tools like <a class="reference external" href="https://coolors.co/">Coolors</a> for palettes</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="feature-flags">
+<h2>Feature Flags<a class="headerlink" href="#feature-flags" title="Link to this heading">#</a></h2>
+<section id="enable-disable-features">
+<h3>Enable/Disable Features<a class="headerlink" href="#enable-disable-features" title="Link to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Enable the interactive tutorial (default: True)</span>
+<span class="n">NX_ENABLE_TUTORIALS</span> <span class="o">=</span> <span class="kc">True</span>
+</pre></div>
+</div>
+</section>
+<section id="dataset-display-threshold">
+<h3>Dataset Display Threshold<a class="headerlink" href="#dataset-display-threshold" title="Link to this heading">#</a></h3>
+<p>Control when simplified display mode is used for records with many datasets.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Records with more datasets than this use simple display</span>
+<span class="c1"># Default: 100</span>
+<span class="n">NX_MAX_DATASET_DISPLAY_COUNT</span> <span class="o">=</span> <span class="mi">100</span>
+</pre></div>
+</div>
+<p><strong>Guidelines:</strong></p>
+<ul class="simple">
+<li><p><strong>Default (100)</strong>: Records with 101+ datasets use simple display</p></li>
+<li><p><strong>Lower values (50)</strong>: More records use simple display (better performance)</p></li>
+<li><p><strong>Higher values (500)</strong>: Fewer records use simple display (more interactive)</p></li>
+<li><p><strong>0</strong>: Always use full interactive display</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="custom-assets">
+<h2>Custom Assets<a class="headerlink" href="#custom-assets" title="Link to this heading">#</a></h2>
+<section id="directory-structure">
+<h3>Directory Structure<a class="headerlink" href="#directory-structure" title="Link to this heading">#</a></h3>
+<p>Place custom assets in <code class="docutils literal notranslate"><span class="pre">config/static_files/</span></code>:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>config/
+├── static_files/
+│   ├── logo_horizontal_light.png
+│   ├── footer_logo.png
+│   ├── logo_horizontal_text.png
+│   └── custom_icon.png
+└── settings/
+    └── custom_settings.py
+</pre></div>
+</div>
+<p><strong>Benefits:</strong></p>
+<ul class="simple">
+<li><p>Keep customizations separate from app code</p></li>
+<li><p>No need to modify <code class="docutils literal notranslate"><span class="pre">nexuslims_overrides/</span></code> directory</p></li>
+<li><p>Runtime configuration updates without rebuilding containers</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="example-configurations">
+<h2>Example Configurations<a class="headerlink" href="#example-configurations" title="Link to this heading">#</a></h2>
+<section id="university-deployment">
+<h3>University Deployment<a class="headerlink" href="#university-deployment" title="Link to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># University of Example - NexusLIMS Settings</span>
+
+<span class="c1"># Theme Colors (university blue)</span>
+<span class="n">NX_THEME_COLORS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;primary&quot;</span><span class="p">:</span> <span class="s2">&quot;#2E86AB&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;primary_dark&quot;</span><span class="p">:</span> <span class="s2">&quot;#1A5276&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;warning&quot;</span><span class="p">:</span> <span class="s2">&quot;#F5B041&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="c1"># Branding</span>
+<span class="n">CUSTOM_TITLE</span> <span class="o">=</span> <span class="s2">&quot;Welcome to UEx Microscopy LIMS&quot;</span>
+<span class="n">NX_NAV_LOGO</span> <span class="o">=</span> <span class="s2">&quot;nexuslims/img/uex_nav_logo.png&quot;</span>
+<span class="n">NX_FOOTER_LOGO</span> <span class="o">=</span> <span class="s2">&quot;nexuslims/img/uex_footer_logo.png&quot;</span>
+<span class="n">NX_FOOTER_LINK</span> <span class="o">=</span> <span class="s2">&quot;https://microscopy.uex.edu&quot;</span>
+
+<span class="c1"># Content</span>
+<span class="n">NX_HOMEPAGE_TEXT</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">&quot;Access and manage microscopy data from the University of Example &quot;</span>
+    <span class="s2">&quot;Microscopy Core Facility.&quot;</span>
+<span class="p">)</span>
+<span class="n">NX_DOCUMENTATION_LINK</span> <span class="o">=</span> <span class="s2">&quot;https://microscopy.uex.edu/docs&quot;</span>
+
+<span class="c1"># Navigation</span>
+<span class="n">NX_CUSTOM_MENU_LINKS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Core Facility&quot;</span><span class="p">,</span> <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://microscopy.uex.edu&quot;</span><span class="p">,</span> <span class="s2">&quot;icon&quot;</span><span class="p">:</span> <span class="s2">&quot;microscope&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Book Time&quot;</span><span class="p">,</span> <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://booking.uex.edu&quot;</span><span class="p">,</span> <span class="s2">&quot;icon&quot;</span><span class="p">:</span> <span class="s2">&quot;calendar&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Training&quot;</span><span class="p">,</span> <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://training.uex.edu&quot;</span><span class="p">,</span> <span class="s2">&quot;icon&quot;</span><span class="p">:</span> <span class="s2">&quot;graduation-cap&quot;</span><span class="p">},</span>
+<span class="p">]</span>
+
+<span class="c1"># Instrument Colors</span>
+<span class="n">NX_INSTRUMENT_COLOR_MAPPINGS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;FEI-Titan-TEM&quot;</span><span class="p">:</span> <span class="s2">&quot;#2E86AB&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;FEI-Titan-STEM&quot;</span><span class="p">:</span> <span class="s2">&quot;#0645AD&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;FEI-Quanta200-ESEM&quot;</span><span class="p">:</span> <span class="s2">&quot;#A569BD&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="c1"># Features</span>
+<span class="n">NX_ENABLE_TUTORIALS</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">NX_MAX_DATASET_DISPLAY_COUNT</span> <span class="o">=</span> <span class="mi">99</span>
+</pre></div>
+</div>
+</section>
+<section id="corporate-lab">
+<h3>Corporate Lab<a class="headerlink" href="#corporate-lab" title="Link to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Acme Corp - Materials Lab LIMS Settings</span>
+
+<span class="c1"># Theme Colors (corporate orange)</span>
+<span class="n">NX_THEME_COLORS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;primary&quot;</span><span class="p">:</span> <span class="s2">&quot;#E67E22&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;primary_dark&quot;</span><span class="p">:</span> <span class="s2">&quot;#D35400&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;info_badge_dark&quot;</span><span class="p">:</span> <span class="s2">&quot;#34495E&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="c1"># Branding</span>
+<span class="n">CUSTOM_TITLE</span> <span class="o">=</span> <span class="s2">&quot;Acme Materials Lab&quot;</span>
+<span class="n">NX_NAV_LOGO</span> <span class="o">=</span> <span class="s2">&quot;nexuslims/img/acme_logo_white.png&quot;</span>
+<span class="n">NX_FOOTER_LOGO</span> <span class="o">=</span> <span class="s2">&quot;nexuslims/img/acme_logo_color.png&quot;</span>
+<span class="n">NX_FOOTER_LINK</span> <span class="o">=</span> <span class="s2">&quot;https://acme.com/materials-lab&quot;</span>
+
+<span class="c1"># Content</span>
+<span class="n">NX_HOMEPAGE_TEXT</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">&quot;Materials characterization data management system for Acme Corp R&amp;D.&quot;</span>
+<span class="p">)</span>
+<span class="n">NX_DOCUMENTATION_LINK</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>  <span class="c1"># Internal docs not public</span>
+
+<span class="c1"># Navigation</span>
+<span class="n">NX_CUSTOM_MENU_LINKS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Sample Request&quot;</span><span class="p">,</span> <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://samples.acme.internal&quot;</span><span class="p">,</span> <span class="s2">&quot;icon&quot;</span><span class="p">:</span> <span class="s2">&quot;flask&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Lab Wiki&quot;</span><span class="p">,</span> <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://wiki.acme.internal/materials&quot;</span><span class="p">,</span> <span class="s2">&quot;icon&quot;</span><span class="p">:</span> <span class="s2">&quot;book&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Support&quot;</span><span class="p">,</span> <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;mailto:lab-support@acme.com&quot;</span><span class="p">,</span> <span class="s2">&quot;icon&quot;</span><span class="p">:</span> <span class="s2">&quot;envelope&quot;</span><span class="p">},</span>
+<span class="p">]</span>
+
+<span class="c1"># Features</span>
+<span class="n">NX_ENABLE_TUTORIALS</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># Custom onboarding</span>
+<span class="n">NX_MAX_DATASET_DISPLAY_COUNT</span> <span class="o">=</span> <span class="mi">249</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="troubleshooting">
+<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading">#</a></h2>
+<section id="changes-not-appearing">
+<h3>Changes Not Appearing<a class="headerlink" href="#changes-not-appearing" title="Link to this heading">#</a></h3>
+<ol class="arabic">
+<li><p><strong>Restart Django</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dc-prod<span class="w"> </span>restart<span class="w"> </span>cdcs
+</pre></div>
+</div>
+</li>
+<li><p><strong>Run collectstatic</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>nexuslims_prod_cdcs<span class="w"> </span>python<span class="w"> </span>manage.py<span class="w"> </span>collectstatic<span class="w"> </span>--noinput
+</pre></div>
+</div>
+</li>
+<li><p><strong>Clear browser cache</strong>: Hard refresh (Ctrl+Shift+R / Cmd+Shift+R)</p></li>
+</ol>
+</section>
+<section id="instrument-colors-not-updating">
+<h3>Instrument Colors Not Updating<a class="headerlink" href="#instrument-colors-not-updating" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p>Verify setting name is exactly <code class="docutils literal notranslate"><span class="pre">NX_INSTRUMENT_COLOR_MAPPINGS</span></code></p></li>
+<li><p>Check instrument PIDs match exactly what’s in the database</p></li>
+<li><p>Validate color format (must be <code class="docutils literal notranslate"><span class="pre">#RRGGBB</span></code>)</p></li>
+<li><p>Restart Django (XSLT parameters load at startup)</p></li>
+<li><p>Enable <code class="docutils literal notranslate"><span class="pre">NX_XSLT_DEBUG</span> <span class="pre">=</span> <span class="pre">True</span></code> to see transformation messages</p></li>
+</ol>
+</section>
+<section id="logo-not-displaying">
+<h3>Logo Not Displaying<a class="headerlink" href="#logo-not-displaying" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Check file path is correct (relative to <code class="docutils literal notranslate"><span class="pre">config/static_files/</span></code>)</p></li>
+<li><p>Verify file exists and has read permissions</p></li>
+<li><p>Run <code class="docutils literal notranslate"><span class="pre">collectstatic</span></code> to collect files</p></li>
+<li><p>Check Django logs for 404 errors</p></li>
+</ul>
+</section>
+<section id="menu-links-not-showing">
+<h3>Menu Links Not Showing<a class="headerlink" href="#menu-links-not-showing" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Verify <code class="docutils literal notranslate"><span class="pre">NX_CUSTOM_MENU_LINKS</span></code> is a list of dictionaries</p></li>
+<li><p>Each dict must have <code class="docutils literal notranslate"><span class="pre">&quot;title&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;url&quot;</span></code> keys</p></li>
+<li><p>Restart Django after settings changes</p></li>
+</ul>
+</section>
+<section id="theme-colors-not-applying">
+<h3>Theme Colors Not Applying<a class="headerlink" href="#theme-colors-not-applying" title="Link to this heading">#</a></h3>
+<p>If your custom theme colors aren’t appearing:</p>
+<ol class="arabic simple">
+<li><p>Verify dictionary keys are lowercase without <code class="docutils literal notranslate"><span class="pre">nx_</span></code> prefix (e.g., <code class="docutils literal notranslate"><span class="pre">&quot;primary&quot;</span></code>, not <code class="docutils literal notranslate"><span class="pre">&quot;NX_PRIMARY_COLOR&quot;</span></code>)</p></li>
+<li><p>Check color format is valid CSS (e.g., <code class="docutils literal notranslate"><span class="pre">#RRGGBB</span></code>)</p></li>
+<li><p>Restart Django (theme colors load at startup)</p></li>
+<li><p>Clear browser cache (Ctrl+Shift+R / Cmd+Shift+R)</p></li>
+</ol>
+<p><strong>Valid keys:</strong> <code class="docutils literal notranslate"><span class="pre">primary</span></code>, <code class="docutils literal notranslate"><span class="pre">primary_dark</span></code>, <code class="docutils literal notranslate"><span class="pre">info_badge_dark</span></code>, <code class="docutils literal notranslate"><span class="pre">secondary</span></code>, <code class="docutils literal notranslate"><span class="pre">secondary_dark</span></code>, <code class="docutils literal notranslate"><span class="pre">success</span></code>, <code class="docutils literal notranslate"><span class="pre">danger</span></code>, <code class="docutils literal notranslate"><span class="pre">warning</span></code>, <code class="docutils literal notranslate"><span class="pre">info</span></code>, <code class="docutils literal notranslate"><span class="pre">light_gray</span></code>, <code class="docutils literal notranslate"><span class="pre">dark_gray</span></code></p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Link to this heading">#</a></h2>
+<p>NexusLIMS customization is designed to be:</p>
+<ul class="simple">
+<li><p><strong>Centralized</strong>: All settings in one place</p></li>
+<li><p><strong>Safe</strong>: Override in your settings, never modify defaults</p></li>
+<li><p><strong>Flexible</strong>: From simple logo swaps to complete rebranding</p></li>
+<li><p><strong>Maintainable</strong>: Clearly separated from core CDCS code</p></li>
+</ul>
+<p>Start with basic branding (logos and text), then progressively customize navigation, features, and styling as needed.</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="configuration.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Configuration</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="administration.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Administration</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">Overview</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#customization-workflow">Customization Workflow</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#branding-logos">Branding &amp; Logos</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#navigation-bar-logo">Navigation Bar Logo</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#footer-logo">Footer Logo</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#homepage-logo">Homepage Logo</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#theme-colors">Theme Colors</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#homepage-content">Homepage Content</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#welcome-title">Welcome Title</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#homepage-text">Homepage Text</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#documentation-link">Documentation Link</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#navigation-menu">Navigation Menu</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#custom-menu-links">Custom Menu Links</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#xslt-configuration">XSLT Configuration</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#xslt-debug-mode">XSLT Debug Mode</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#instrument-badge-colors">Instrument Badge Colors</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#feature-flags">Feature Flags</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#enable-disable-features">Enable/Disable Features</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dataset-display-threshold">Dataset Display Threshold</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#custom-assets">Custom Assets</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#directory-structure">Directory Structure</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-configurations">Example Configurations</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#university-deployment">University Deployment</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#corporate-lab">Corporate Lab</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#troubleshooting">Troubleshooting</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#changes-not-appearing">Changes Not Appearing</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#instrument-colors-not-updating">Instrument Colors Not Updating</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#logo-not-displaying">Logo Not Displaying</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#menu-links-not-showing">Menu Links Not Showing</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#theme-colors-not-applying">Theme Colors Not Applying</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/frontend_guide/customization.md.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2025 - 2026, datasophos, LLC.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
