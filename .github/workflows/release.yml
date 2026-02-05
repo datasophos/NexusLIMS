@@ -180,7 +180,7 @@ jobs:
 
           git fetch origin gh-pages
           git checkout gh-pages
-          git pull origin gh-pages
+          git pull origin gh-pages --ff-only
 
           VERSION_DIR="${{ steps.version.outputs.version }}"
 
@@ -203,6 +203,7 @@ jobs:
 
           git add "$VERSION_DIR" stable index.html
           git commit -m "Deploy docs for version ${{ steps.version.outputs.version }}" || echo "No changes to commit"
+          git pull --rebase origin gh-pages
           git push origin gh-pages
 
           echo "✅ Documentation deployed!"
@@ -220,6 +221,7 @@ jobs:
 
           # Switch back to gh-pages to update all versions
           git checkout gh-pages
+          git pull origin gh-pages --ff-only
 
           # Update switcher.json in all version directories
           for dir in */; do
@@ -242,6 +244,7 @@ jobs:
           git add -A "*/_static/switcher.json" 2>/dev/null || true
           git add -A "docs/_static/switcher.json" 2>/dev/null || true
           git commit -m "Update switcher.json with version ${{ steps.version.outputs.version }}" || echo "No changes to commit"
+          git pull --rebase origin gh-pages
           git push origin gh-pages
 
           echo "✅ Switcher updated in all version directories!"
