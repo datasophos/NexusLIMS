@@ -44,6 +44,7 @@ tests/**/*.xml
 !tests/unit/files/*metadata.xml
 tests/test_report.xml
 .env
+.env.bak.*-*
 nexuslims_config.json
 config.json
 tests/.env.test

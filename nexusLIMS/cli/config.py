@@ -32,7 +32,7 @@ back up any pre-existing ``.env`` file before overwriting.
 import json
 import logging
 from copy import deepcopy
-from datetime import UTC, datetime
+from datetime import datetime
 from pathlib import Path
 
 import click
@@ -345,7 +345,7 @@ def load(input: str, env_path: str, *, force: bool) -> None:  # noqa: A002
         if not force:
             click.confirm("Create a backup and proceed?", abort=True)
 
-        timestamp = datetime.now(tz=UTC).strftime("%Y%m%d-%H%M%S")
+        timestamp = datetime.now().astimezone().strftime("%Y%m%d-%H%M%S")
         backup_path = env_file.with_name(f"{env_file.name}.bak.{timestamp}")
         env_file.rename(backup_path)
         click.echo(f"Existing .env backed up to {backup_path}")
