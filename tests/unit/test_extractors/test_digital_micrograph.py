@@ -794,6 +794,80 @@ class TestDigitalMicrographSchemaValidation:
         validated = DiffractionMetadata.model_validate(metadata["nx_meta"])
         assert validated is not None
 
+    def test_diffraction_rejects_magnification_and_empty_stage_position(
+        self,
+        tecnai_tem_diff,
+        mock_instrument_from_filepath,
+    ):
+        """Diffraction files must not emit magnification or empty stage_position.
+
+        Regression test for GitHub issue #52: a .dm3 file classified as
+        Diffraction that also carries an "Indicated Magnification" value
+        (e.g. from a mode-switch artefact) previously caused a Pydantic
+        ValidationError because ``magnification`` is not a field on
+        ``DiffractionMetadata`` and ``extra = "forbid"`` is set on the
+        base class.  Similarly, an empty ``stage_position`` dict must not
+        be emitted for Diffraction datasets.
+        """
+        from nexusLIMS.extractors import parse_metadata
+        from nexusLIMS.schemas.metadata import DiffractionMetadata
+
+        mock_instrument_from_filepath(make_titan_tem())
+
+        result, _ = parse_metadata(tecnai_tem_diff[0], generate_preview=False)
+        metadata = result[0] if isinstance(result, list) else result
+        nx_meta = metadata["nx_meta"]
+
+        # The profile must have classified this as Diffraction
+        assert nx_meta["DatasetType"] == "Diffraction"
+
+        # magnification must NOT be at the top level; if present at all it
+        # belongs in extensions
+        assert "magnification" not in nx_meta
+
+        # An empty stage_position dict must not appear
+        assert nx_meta.get("stage_position") != {}
+
+        # The whole nx_meta must validate against DiffractionMetadata without
+        # raising — this is the error the original bug produced
+        validated = DiffractionMetadata.model_validate(nx_meta)
+        assert validated is not None
+
+    def test_migrate_diffraction_sends_magnification_and_empty_stage_to_extensions(
+        self,
+    ):
+        """_migrate_to_schema_compliant_metadata routes image-only fields correctly.
+
+        Unit-level regression for issue #52: synthetic Diffraction metadata
+        containing both ``Indicated Magnification`` and an empty
+        ``Stage Position`` dict.  After migration ``magnification`` must land
+        in extensions and an empty ``stage_position`` must be absent entirely.
+        """
+        from nexusLIMS.extractors.plugins.digital_micrograph import (
+            _migrate_to_schema_compliant_metadata,
+        )
+
+        test_meta = {
+            "nx_meta": {
+                "DatasetType": "Diffraction",
+                "Creation Time": "2025-12-25T10:00:00+00:00",
+                "Data Type": "TEM_Diffraction",
+                "Indicated Magnification": 245.0,
+                "Stage Position": {},  # empty — must not produce stage_position: {}
+            }
+        }
+
+        migrated = _migrate_to_schema_compliant_metadata(test_meta)
+        nx = migrated["nx_meta"]
+
+        # magnification must not be a top-level key
+        assert "magnification" not in nx
+        # it should have been routed to extensions instead
+        assert nx["extensions"].get("Indicated Magnification") == 245.0
+
+        # empty stage_position must not appear at all
+        assert "stage_position" not in nx
+
     def test_core_fields_use_em_glossary_names(
         self,
         stem_image_dm3,

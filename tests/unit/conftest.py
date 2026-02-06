@@ -449,6 +449,14 @@ def tecnai_mag():
     delete_files("TECNAI_MAG")
 
 
+@pytest.fixture(scope="module")
+def tecnai_tem_diff():
+    """Tecnai TEM diffraction file with Indicated Magnification present."""
+    files = extract_files("TECNAI_TEM_DIFF")
+    yield files
+    delete_files("TECNAI_TEM_DIFF")
+
+
 # Quanta tiff files
 
 
