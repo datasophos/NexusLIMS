@@ -471,10 +471,10 @@ class ELabFTWClient:
 
         Parameters
         ----------
-        limit : int, default 15
-            Maximum number of results to return
-        offset : int, default 0
-            Number of results to skip (for pagination)
+        limit : int, optional
+            Maximum number of results to return (default: 15)
+        offset : int, optional
+            Number of results to skip (for pagination) (default: 0)
         query : str, optional
             Full-text search query
 
@@ -669,7 +669,7 @@ class ELabFTWClient:
         ----------
         experiment_id : int
             ID of experiment to attach file to
-        file_path : Path or str
+        file_path : pathlib.Path or str
             Path to file to upload
         comment : str, optional
             Comment/description for the uploaded file
