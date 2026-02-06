@@ -157,7 +157,9 @@ class Settings(BaseSettings):
     """
 
     model_config = SettingsConfigDict(
-        env_file=".env",
+        # CRITICAL: Disable .env file loading in TEST_MODE to prevent contamination
+        # from local environment files during testing
+        env_file=None if TEST_MODE else ".env",
         env_file_encoding="utf-8",
         extra="ignore",  # Ignore extra environment variables not defined here
         # In test mode, disable path validation to allow non-existent paths
@@ -402,12 +404,15 @@ class Settings(BaseSettings):
         """
         harvesters = {}
 
-        # Load .env file to get NEMO variables (Pydantic doesn't load
-        # variables that aren't defined as fields)
-        env_file_path = Path(".env")
+        # CRITICAL: In TEST_MODE, do NOT load from .env file to prevent
+        # test contamination from local environment configuration
         env_vars = {}
-        if env_file_path.exists():
-            env_vars = dotenv_values(env_file_path)
+        if not TEST_MODE:
+            # Load .env file to get NEMO variables (Pydantic doesn't load
+            # variables that aren't defined as fields)
+            env_file_path = Path(".env")
+            if env_file_path.exists():
+                env_vars = dotenv_values(env_file_path)
 
         # Merge with os.environ (os.environ takes precedence)
         all_env = {**env_vars, **os.environ}
@@ -493,11 +498,14 @@ class Settings(BaseSettings):
         NX_EMAIL_USE_TLS=true
         ```
         """
-        # Load .env file to get email variables
-        env_file_path = Path(".env")
+        # CRITICAL: In TEST_MODE, do NOT load from .env file to prevent
+        # test contamination from local environment configuration
         env_vars = {}
-        if env_file_path.exists():
-            env_vars = dotenv_values(env_file_path)
+        if not TEST_MODE:
+            # Load .env file to get email variables
+            env_file_path = Path(".env")
+            if env_file_path.exists():
+                env_vars = dotenv_values(env_file_path)
 
         # Merge with os.environ (os.environ takes precedence)
         all_env = {**env_vars, **os.environ}

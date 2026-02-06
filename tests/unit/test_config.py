@@ -300,7 +300,9 @@ def test_settings_validation_error(monkeypatch, with_validation):
     assert "NexusLIMS configuration validation failed" in notes
 
 
-def test_email_config_loads_from_dotenv_file(monkeypatch, mock_nemo_env):
+def test_email_config_loads_from_dotenv_file(
+    monkeypatch, mock_nemo_env, with_validation
+):
     """Test that email_config loads variables from .env file when it exists."""
     from pathlib import Path
     from unittest.mock import Mock
@@ -356,7 +358,9 @@ def test_email_config_loads_from_dotenv_file(monkeypatch, mock_nemo_env):
     assert email.smtp_port == 465
 
 
-def test_nemo_harvesters_loads_from_dotenv_file(monkeypatch, mock_nemo_env):
+def test_nemo_harvesters_loads_from_dotenv_file(
+    monkeypatch, mock_nemo_env, with_validation
+):
     """Test that nemo_harvesters loads variables from .env file when it exists."""
     from pathlib import Path
     from unittest.mock import Mock
