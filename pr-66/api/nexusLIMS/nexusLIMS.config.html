@@ -1,0 +1,1099 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>nexusLIMS.config &#8212; NexusLIMS pr-66 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=acda69ee" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../_static/documentation_options.js?v=f9b1c6d6"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=30646c52"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api/nexusLIMS/nexusLIMS.config';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'pr-66';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script src="../../_static/custom.js?v=ba087cdf"></script>
+    <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/pr-66/api/nexusLIMS/nexusLIMS.config.html" />
+    <link rel="icon" href="../../_static/nexusLIMS_bare_logo.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="NEMO System Reference for NexusLIMS" href="../../reference/NEMO_Reference.html" />
+    <link rel="prev" title="nexusLIMS.instruments" href="nexusLIMS.instruments.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="pr-66" />
+    <meta name="docbuild:last-update" content="Feb, 06, 2026"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS pr-66 documentation - Home"/>
+    <img src="../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS pr-66 documentation - Home"/>
+  
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../migration.html">
+    Migration Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../dev_guide.html">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../frontend_guide.html">
+    Frontend Guide
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="../../reference.html">
+    Reference
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datasophos/NexusLIMS" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://datasophos.co" title="Datasophos" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-globe fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Datasophos</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../migration.html">
+    Migration Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../dev_guide.html">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../frontend_guide.html">
+    Frontend Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../reference.html">
+    Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datasophos/NexusLIMS" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://datasophos.co" title="Datasophos" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-globe fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Datasophos</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../reference/changelog.html">Changelog</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../reference/api.html">NexusLIMS API documentation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="nexusLIMS.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS</span></code></a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.db.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.db</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.builder.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.builder</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.extractors.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.cli.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.harvesters.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.harvesters</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.schemas.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.schemas</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.exporters.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.exporters</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.instruments.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.instruments</span></code></a></li>
+<li class="toctree-l3 current active"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.config</span></code></a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/NEMO_Reference.html">NEMO System Reference for NexusLIMS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/eLabFTW_metadata_reference.html">eLabFTW Metadata Reference</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../reference.html" class="nav-link">Reference</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../../reference/api.html" class="nav-link">NexusLIMS API documentation</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="nexusLIMS.html" class="nav-link"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS</span></code></a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.config</span></code></span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="module-nexusLIMS.config">
+<span id="nexuslims-config"></span><h1><a class="reference internal" href="#module-nexusLIMS.config" title="nexusLIMS.config"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.config</span></code></a><a class="headerlink" href="#module-nexusLIMS.config" title="Link to this heading">#</a></h1>
+<p>Centralized environment variable management for NexusLIMS.</p>
+<p>This module uses <code class="docutils literal notranslate"><span class="pre">pydantic-settings</span></code> to define, validate, and access
+application settings from environment variables and .env files.
+It provides a single source of truth for configuration, ensuring
+type safety and simplifying access throughout the application.</p>
+<p>The settings object can be imported and used throughout the application.
+In tests, use refresh_settings() to reload settings after modifying
+environment variables.</p>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
+<section id="classes">
+<h3>Classes<a class="headerlink" href="#classes" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table table-left">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.config.NemoHarvesterConfig" title="nexusLIMS.config.NemoHarvesterConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NemoHarvesterConfig</span></code></a></p></td>
+<td><p>Configuration for a single NEMO harvester instance.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.config.EmailConfig" title="nexusLIMS.config.EmailConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EmailConfig</span></code></a></p></td>
+<td><p>Config for email notifications from the nexuslims-process-records script.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.config.Settings" title="nexusLIMS.config.Settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Settings</span></code></a></p></td>
+<td><p>Manage application settings loaded from environment variables and <code class="docutils literal notranslate"><span class="pre">.env</span></code> files.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table table-left">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.config.refresh_settings" title="nexusLIMS.config.refresh_settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">refresh_settings</span></code></a></p></td>
+<td><p>Refresh the settings singleton from current environment variables.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.config.clear_settings" title="nexusLIMS.config.clear_settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clear_settings</span></code></a></p></td>
+<td><p>Clear the settings cache without immediately creating a new instance.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="data">
+<h3>Data<a class="headerlink" href="#data" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table table-left">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.config.TEST_MODE" title="nexusLIMS.config.TEST_MODE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TEST_MODE</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.config.settings" title="nexusLIMS.config.settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">settings</span></code></a></p></td>
+<td><p>The settings “singleton” - accessed like a normal object in the application</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="api">
+<h3>API<a class="headerlink" href="#api" title="Link to this heading">#</a></h3>
+<dl class="py data">
+<dt class="sig sig-object py" id="nexusLIMS.config.TEST_MODE">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.config.</span></span><span class="sig-name descname"><span class="pre">TEST_MODE</span></span><a class="headerlink" href="#nexusLIMS.config.TEST_MODE" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="nexusLIMS.config.NemoHarvesterConfig">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nexusLIMS.config.</span></span><span class="sig-name descname"><span class="pre">NemoHarvesterConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**data:</span> <span class="pre">typing.Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/config.html#NemoHarvesterConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.config.NemoHarvesterConfig" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.pydantic.dev/latest/api/base_model/#pydantic.BaseModel" title="(in Pydantic Validation v0.0.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pydantic.BaseModel</span></code></a></p>
+<p>Configuration for a single NEMO harvester instance.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.config.NemoHarvesterConfig.address">
+<span class="sig-name descname"><span class="pre">address</span></span><a class="headerlink" href="#nexusLIMS.config.NemoHarvesterConfig.address" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> nexusLIMS.config.TestAwareHttpUrl</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.config.NemoHarvesterConfig.token">
+<span class="sig-name descname"><span class="pre">token</span></span><a class="headerlink" href="#nexusLIMS.config.NemoHarvesterConfig.token" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.config.NemoHarvesterConfig.strftime_fmt">
+<span class="sig-name descname"><span class="pre">strftime_fmt</span></span><a class="headerlink" href="#nexusLIMS.config.NemoHarvesterConfig.strftime_fmt" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.config.NemoHarvesterConfig.strptime_fmt">
+<span class="sig-name descname"><span class="pre">strptime_fmt</span></span><a class="headerlink" href="#nexusLIMS.config.NemoHarvesterConfig.strptime_fmt" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.config.NemoHarvesterConfig.tz">
+<span class="sig-name descname"><span class="pre">tz</span></span><a class="headerlink" href="#nexusLIMS.config.NemoHarvesterConfig.tz" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> str | None</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nexusLIMS.config.NemoHarvesterConfig.validate_trailing_slash">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">validate_trailing_slash</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.pydantic.dev/latest/api/networks/#pydantic.networks.AnyHttpUrl" title="(in Pydantic Validation v0.0.0)"><span class="pre">AnyHttpUrl</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.pydantic.dev/latest/api/networks/#pydantic.networks.AnyHttpUrl" title="(in Pydantic Validation v0.0.0)"><span class="pre">AnyHttpUrl</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/config.html#NemoHarvesterConfig.validate_trailing_slash"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.config.NemoHarvesterConfig.validate_trailing_slash" title="Link to this definition">#</a></dt>
+<dd><p>Ensure the API address has a trailing slash.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="nexusLIMS.config.EmailConfig">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nexusLIMS.config.</span></span><span class="sig-name descname"><span class="pre">EmailConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**data:</span> <span class="pre">typing.Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/config.html#EmailConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.config.EmailConfig" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.pydantic.dev/latest/api/base_model/#pydantic.BaseModel" title="(in Pydantic Validation v0.0.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pydantic.BaseModel</span></code></a></p>
+<p>Config for email notifications from the nexuslims-process-records script.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.config.EmailConfig.smtp_host">
+<span class="sig-name descname"><span class="pre">smtp_host</span></span><a class="headerlink" href="#nexusLIMS.config.EmailConfig.smtp_host" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.config.EmailConfig.smtp_port">
+<span class="sig-name descname"><span class="pre">smtp_port</span></span><a class="headerlink" href="#nexusLIMS.config.EmailConfig.smtp_port" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> int</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.config.EmailConfig.smtp_username">
+<span class="sig-name descname"><span class="pre">smtp_username</span></span><a class="headerlink" href="#nexusLIMS.config.EmailConfig.smtp_username" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> str | None</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.config.EmailConfig.smtp_password">
+<span class="sig-name descname"><span class="pre">smtp_password</span></span><a class="headerlink" href="#nexusLIMS.config.EmailConfig.smtp_password" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> str | None</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.config.EmailConfig.use_tls">
+<span class="sig-name descname"><span class="pre">use_tls</span></span><a class="headerlink" href="#nexusLIMS.config.EmailConfig.use_tls" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> bool</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.config.EmailConfig.sender">
+<span class="sig-name descname"><span class="pre">sender</span></span><a class="headerlink" href="#nexusLIMS.config.EmailConfig.sender" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> nexusLIMS.config.TestAwareEmailStr</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.config.EmailConfig.recipients">
+<span class="sig-name descname"><span class="pre">recipients</span></span><a class="headerlink" href="#nexusLIMS.config.EmailConfig.recipients" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> list[nexusLIMS.config.TestAwareEmailStr]</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="nexusLIMS.config.Settings">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nexusLIMS.config.</span></span><span class="sig-name descname"><span class="pre">Settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_case_sensitive</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_nested_model_default_partial_update</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_env_prefix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_env_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pydantic_settings.sources.DotenvType</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">ENV_FILE_SENTINEL</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_env_file_encoding</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_env_ignore_empty</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_env_nested_delimiter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_env_nested_max_split</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_env_parse_none_str</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_env_parse_enums</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_cli_prog_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_cli_parse_args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#list" title="(in Python v3.11)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#tuple" title="(in Python v3.11)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_cli_settings_source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pydantic.dev/latest/api/pydantic_settings/#pydantic_settings.CliSettingsSource" title="(in Pydantic Validation v0.0.0)"><span class="pre">CliSettingsSource</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_cli_parse_none_str</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_cli_hide_none_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_cli_avoid_json</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_cli_enforce_required</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_cli_use_class_docs_for_groups</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_cli_exit_on_error</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_cli_prefix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_cli_flag_prefix_char</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_cli_implicit_flags</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_cli_ignore_unknown_args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_cli_kebab_case</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Literal" title="(in Python v3.11)"><span class="pre">Literal</span></a><span class="p"><span class="pre">[</span></span><span class="pre">all</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">no_enums</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_cli_shortcuts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/collections.abc.html#collections.abc.Mapping" title="(in Python v3.11)"><span class="pre">Mapping</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#list" title="(in Python v3.11)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_secrets_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pydantic_settings.sources.PathType</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/config.html#Settings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.config.Settings" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.pydantic.dev/latest/api/pydantic_settings/#pydantic_settings.BaseSettings" title="(in Pydantic Validation v0.0.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pydantic_settings.BaseSettings</span></code></a></p>
+<p>Manage application settings loaded from environment variables and <code class="docutils literal notranslate"><span class="pre">.env</span></code> files.</p>
+<p>This class utilizes <code class="docutils literal notranslate"><span class="pre">pydantic-settings</span></code> to provide a robust and type-safe way
+to define, validate, and access all application configurations. It ensures
+that settings are loaded with proper types and provides descriptions for each.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.config.Settings.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><a class="headerlink" href="#nexusLIMS.config.Settings.model_config" title="Link to this definition">#</a></dt>
+<dd><p>‘SettingsConfigDict(…)’</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.config.Settings.NX_FILE_STRATEGY">
+<span class="sig-name descname"><span class="pre">NX_FILE_STRATEGY</span></span><a class="headerlink" href="#nexusLIMS.config.Settings.NX_FILE_STRATEGY" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> typing.Literal[exclusive, inclusive]</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.config.Settings.NX_IGNORE_PATTERNS">
+<span class="sig-name descname"><span class="pre">NX_IGNORE_PATTERNS</span></span><a class="headerlink" href="#nexusLIMS.config.Settings.NX_IGNORE_PATTERNS" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> list[str]</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.config.Settings.NX_INSTRUMENT_DATA_PATH">
+<span class="sig-name descname"><span class="pre">NX_INSTRUMENT_DATA_PATH</span></span><a class="headerlink" href="#nexusLIMS.config.Settings.NX_INSTRUMENT_DATA_PATH" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> nexusLIMS.config.TestAwareDirectoryPath</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.config.Settings.NX_DATA_PATH">
+<span class="sig-name descname"><span class="pre">NX_DATA_PATH</span></span><a class="headerlink" href="#nexusLIMS.config.Settings.NX_DATA_PATH" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> nexusLIMS.config.TestAwareDirectoryPath</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.config.Settings.NX_DB_PATH">
+<span class="sig-name descname"><span class="pre">NX_DB_PATH</span></span><a class="headerlink" href="#nexusLIMS.config.Settings.NX_DB_PATH" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> nexusLIMS.config.TestAwareFilePath</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.config.Settings.NX_CDCS_TOKEN">
+<span class="sig-name descname"><span class="pre">NX_CDCS_TOKEN</span></span><a class="headerlink" href="#nexusLIMS.config.Settings.NX_CDCS_TOKEN" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.config.Settings.NX_CDCS_URL">
+<span class="sig-name descname"><span class="pre">NX_CDCS_URL</span></span><a class="headerlink" href="#nexusLIMS.config.Settings.NX_CDCS_URL" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> nexusLIMS.config.TestAwareHttpUrl</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.config.Settings.NX_EXPORT_STRATEGY">
+<span class="sig-name descname"><span class="pre">NX_EXPORT_STRATEGY</span></span><a class="headerlink" href="#nexusLIMS.config.Settings.NX_EXPORT_STRATEGY" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> typing.Literal[all, first_success, best_effort]</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.config.Settings.NX_CERT_BUNDLE_FILE">
+<span class="sig-name descname"><span class="pre">NX_CERT_BUNDLE_FILE</span></span><a class="headerlink" href="#nexusLIMS.config.Settings.NX_CERT_BUNDLE_FILE" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> nexusLIMS.config.TestAwareFilePath | None</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.config.Settings.NX_CERT_BUNDLE">
+<span class="sig-name descname"><span class="pre">NX_CERT_BUNDLE</span></span><a class="headerlink" href="#nexusLIMS.config.Settings.NX_CERT_BUNDLE" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> str | None</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.config.Settings.NX_DISABLE_SSL_VERIFY">
+<span class="sig-name descname"><span class="pre">NX_DISABLE_SSL_VERIFY</span></span><a class="headerlink" href="#nexusLIMS.config.Settings.NX_DISABLE_SSL_VERIFY" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> bool</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.config.Settings.NX_FILE_DELAY_DAYS">
+<span class="sig-name descname"><span class="pre">NX_FILE_DELAY_DAYS</span></span><a class="headerlink" href="#nexusLIMS.config.Settings.NX_FILE_DELAY_DAYS" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> float</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.config.Settings.NX_CLUSTERING_SENSITIVITY">
+<span class="sig-name descname"><span class="pre">NX_CLUSTERING_SENSITIVITY</span></span><a class="headerlink" href="#nexusLIMS.config.Settings.NX_CLUSTERING_SENSITIVITY" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> float</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.config.Settings.NX_LOG_PATH">
+<span class="sig-name descname"><span class="pre">NX_LOG_PATH</span></span><a class="headerlink" href="#nexusLIMS.config.Settings.NX_LOG_PATH" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> nexusLIMS.config.TestAwareDirectoryPath | None</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.config.Settings.NX_RECORDS_PATH">
+<span class="sig-name descname"><span class="pre">NX_RECORDS_PATH</span></span><a class="headerlink" href="#nexusLIMS.config.Settings.NX_RECORDS_PATH" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> nexusLIMS.config.TestAwareDirectoryPath | None</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.config.Settings.NX_LOCAL_PROFILES_PATH">
+<span class="sig-name descname"><span class="pre">NX_LOCAL_PROFILES_PATH</span></span><a class="headerlink" href="#nexusLIMS.config.Settings.NX_LOCAL_PROFILES_PATH" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> nexusLIMS.config.TestAwareDirectoryPath | None</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.config.Settings.NX_ELABFTW_API_KEY">
+<span class="sig-name descname"><span class="pre">NX_ELABFTW_API_KEY</span></span><a class="headerlink" href="#nexusLIMS.config.Settings.NX_ELABFTW_API_KEY" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> str | None</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.config.Settings.NX_ELABFTW_URL">
+<span class="sig-name descname"><span class="pre">NX_ELABFTW_URL</span></span><a class="headerlink" href="#nexusLIMS.config.Settings.NX_ELABFTW_URL" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> nexusLIMS.config.TestAwareHttpUrl | None</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.config.Settings.NX_ELABFTW_EXPERIMENT_CATEGORY">
+<span class="sig-name descname"><span class="pre">NX_ELABFTW_EXPERIMENT_CATEGORY</span></span><a class="headerlink" href="#nexusLIMS.config.Settings.NX_ELABFTW_EXPERIMENT_CATEGORY" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> int | None</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.config.Settings.NX_ELABFTW_EXPERIMENT_STATUS">
+<span class="sig-name descname"><span class="pre">NX_ELABFTW_EXPERIMENT_STATUS</span></span><a class="headerlink" href="#nexusLIMS.config.Settings.NX_ELABFTW_EXPERIMENT_STATUS" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> int | None</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="nexusLIMS.config.Settings.nexuslims_instrument_data_path">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">nexuslims_instrument_data_path</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a></em><a class="headerlink" href="#nexusLIMS.config.Settings.nexuslims_instrument_data_path" title="Link to this definition">#</a></dt>
+<dd><p>Alias for NX_INSTRUMENT_DATA_PATH for easier access.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="nexusLIMS.config.Settings.lock_file_path">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">lock_file_path</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a></em><a class="headerlink" href="#nexusLIMS.config.Settings.lock_file_path" title="Link to this definition">#</a></dt>
+<dd><p>Path to the record builder lock file.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="nexusLIMS.config.Settings.log_dir_path">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">log_dir_path</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a></em><a class="headerlink" href="#nexusLIMS.config.Settings.log_dir_path" title="Link to this definition">#</a></dt>
+<dd><p>Base directory for timestamped log files.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="nexusLIMS.config.Settings.records_dir_path">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">records_dir_path</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a></em><a class="headerlink" href="#nexusLIMS.config.Settings.records_dir_path" title="Link to this definition">#</a></dt>
+<dd><p>Base directory for generated XML records.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nexusLIMS.config.Settings.nemo_harvesters">
+<span class="sig-name descname"><span class="pre">nemo_harvesters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#nexusLIMS.config.NemoHarvesterConfig" title="nexusLIMS.config.NemoHarvesterConfig"><span class="pre">NemoHarvesterConfig</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/nexusLIMS/config.html#Settings.nemo_harvesters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.config.Settings.nemo_harvesters" title="Link to this definition">#</a></dt>
+<dd><p>Dynamically discover and parse all NEMO harvester configurations.</p>
+<p>Searches environment variables for NX_NEMO_ADDRESS_N patterns and
+constructs NemoHarvesterConfig objects for each numbered harvester.</p>
+<dl class="myst field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dictionary mapping harvester number (1, 2, 3, …) to configuration
+objects. Empty dict if no harvesters are configured.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>[<a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>, <a class="reference internal" href="#nexusLIMS.config.NemoHarvesterConfig" title="nexusLIMS.config.NemoHarvesterConfig"><em>NemoHarvesterConfig</em></a>]</p>
+</dd>
+</dl>
+<p><strong>Examples:</strong></p>
+<p>With environment variables:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">NX_NEMO_ADDRESS_1</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">nemo1</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">api</span><span class="o">/</span>
+<span class="n">NX_NEMO_TOKEN_1</span><span class="o">=</span><span class="n">token123</span>
+<span class="n">NX_NEMO_ADDRESS_2</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">nemo2</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">api</span><span class="o">/</span>
+<span class="n">NX_NEMO_TOKEN_2</span><span class="o">=</span><span class="n">token456</span>
+<span class="n">NX_NEMO_TZ_2</span><span class="o">=</span><span class="n">America</span><span class="o">/</span><span class="n">New_York</span>
+</pre></div>
+</div>
+<p>The resulting output will be of the following format:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="mi">1</span><span class="p">:</span> <span class="n">NemoHarvesterConfig</span><span class="p">(</span>
+        <span class="n">address</span><span class="o">=</span><span class="s1">&#39;https://nemo1.com/api/&#39;</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="s1">&#39;token123&#39;</span><span class="p">,</span> <span class="o">...</span>
+    <span class="p">),</span>
+    <span class="mi">2</span><span class="p">:</span> <span class="n">NemoHarvesterConfig</span><span class="p">(</span>
+        <span class="n">address</span><span class="o">=</span><span class="s1">&#39;https://nemo2.com/api/&#39;</span><span class="p">,</span>
+        <span class="n">token</span><span class="o">=</span><span class="s1">&#39;token456&#39;</span><span class="p">,</span>
+        <span class="n">tz</span><span class="o">=</span><span class="s1">&#39;America/New_York&#39;</span><span class="p">,</span>
+        <span class="o">...</span>
+    <span class="p">)</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nexusLIMS.config.Settings.email_config">
+<span class="sig-name descname"><span class="pre">email_config</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#nexusLIMS.config.EmailConfig" title="nexusLIMS.config.EmailConfig"><span class="pre">EmailConfig</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/config.html#Settings.email_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.config.Settings.email_config" title="Link to this definition">#</a></dt>
+<dd><p>Load email configuration from environment variables if available.</p>
+<p>This method is cached per Settings instance for performance.</p>
+<dl class="myst field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Email configuration object if all required settings are present,
+None otherwise (email notifications will be disabled).</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#nexusLIMS.config.EmailConfig" title="nexusLIMS.config.EmailConfig"><em>EmailConfig</em></a> | <em>None</em></p>
+</dd>
+</dl>
+<p><strong>Examples:</strong></p>
+<p>With environment variables:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">NX_EMAIL_SMTP_HOST</span><span class="o">=</span><span class="n">smtp</span><span class="o">.</span><span class="n">gmail</span><span class="o">.</span><span class="n">com</span>
+<span class="n">NX_EMAIL_SENDER</span><span class="o">=</span><span class="n">nexuslims</span><span class="nd">@example</span><span class="o">.</span><span class="n">com</span>
+<span class="n">NX_EMAIL_RECIPIENTS</span><span class="o">=</span><span class="n">admin</span><span class="nd">@example</span><span class="o">.</span><span class="n">com</span><span class="p">,</span><span class="n">team</span><span class="nd">@example</span><span class="o">.</span><span class="n">com</span>
+</pre></div>
+</div>
+<p>Optional variables:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">NX_EMAIL_SMTP_PORT</span><span class="o">=</span><span class="mi">587</span>
+<span class="n">NX_EMAIL_SMTP_USERNAME</span><span class="o">=</span><span class="n">user</span><span class="nd">@example</span><span class="o">.</span><span class="n">com</span>
+<span class="n">NX_EMAIL_SMTP_PASSWORD</span><span class="o">=</span><span class="n">secret</span>
+<span class="n">NX_EMAIL_USE_TLS</span><span class="o">=</span><span class="n">true</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.config.refresh_settings">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.config.</span></span><span class="sig-name descname"><span class="pre">refresh_settings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#nexusLIMS.config.Settings" title="nexusLIMS.config.Settings"><span class="pre">Settings</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/config.html#refresh_settings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.config.refresh_settings" title="Link to this definition">#</a></dt>
+<dd><p>Refresh the settings singleton from current environment variables.</p>
+<p>This forces a reload of all settings from the environment.
+Primarily useful for testing.</p>
+<dl class="myst field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The newly created settings instance</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#nexusLIMS.config.Settings" title="nexusLIMS.config.Settings"><em>Settings</em></a></p>
+</dd>
+</dl>
+<p><strong>Examples:</strong></p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">settings</span><span class="p">,</span> <span class="n">refresh_settings</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;NX_FILE_STRATEGY&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;inclusive&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">refresh_settings</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="n">settings</span><span class="o">.</span><span class="n">NX_FILE_STRATEGY</span> <span class="o">==</span> <span class="s2">&quot;inclusive&quot;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.config.clear_settings">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.config.</span></span><span class="sig-name descname"><span class="pre">clear_settings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/config.html#clear_settings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.config.clear_settings" title="Link to this definition">#</a></dt>
+<dd><p>Clear the settings cache without immediately creating a new instance.</p>
+<p>The next import or access to settings will create a fresh instance.
+Useful in test teardown to ensure clean state.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="nexusLIMS.config.settings">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.config.</span></span><span class="sig-name descname"><span class="pre">settings</span></span><a class="headerlink" href="#nexusLIMS.config.settings" title="Link to this definition">#</a></dt>
+<dd><p>‘_SettingsProxy(…)’</p>
+<p>The settings “singleton” - accessed like a normal object in the application</p>
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="nexusLIMS.instruments.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.instruments</span></code></p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../../reference/NEMO_Reference.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">NEMO System Reference for NexusLIMS</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#classes">Classes</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data">Data</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#api">API</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.TEST_MODE"><code class="docutils literal notranslate"><span class="pre">TEST_MODE</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.NemoHarvesterConfig"><code class="docutils literal notranslate"><span class="pre">NemoHarvesterConfig</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.NemoHarvesterConfig.address"><code class="docutils literal notranslate"><span class="pre">NemoHarvesterConfig.address</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.NemoHarvesterConfig.token"><code class="docutils literal notranslate"><span class="pre">NemoHarvesterConfig.token</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.NemoHarvesterConfig.strftime_fmt"><code class="docutils literal notranslate"><span class="pre">NemoHarvesterConfig.strftime_fmt</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.NemoHarvesterConfig.strptime_fmt"><code class="docutils literal notranslate"><span class="pre">NemoHarvesterConfig.strptime_fmt</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.NemoHarvesterConfig.tz"><code class="docutils literal notranslate"><span class="pre">NemoHarvesterConfig.tz</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.NemoHarvesterConfig.validate_trailing_slash"><code class="docutils literal notranslate"><span class="pre">NemoHarvesterConfig.validate_trailing_slash()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.EmailConfig"><code class="docutils literal notranslate"><span class="pre">EmailConfig</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.EmailConfig.smtp_host"><code class="docutils literal notranslate"><span class="pre">EmailConfig.smtp_host</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.EmailConfig.smtp_port"><code class="docutils literal notranslate"><span class="pre">EmailConfig.smtp_port</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.EmailConfig.smtp_username"><code class="docutils literal notranslate"><span class="pre">EmailConfig.smtp_username</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.EmailConfig.smtp_password"><code class="docutils literal notranslate"><span class="pre">EmailConfig.smtp_password</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.EmailConfig.use_tls"><code class="docutils literal notranslate"><span class="pre">EmailConfig.use_tls</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.EmailConfig.sender"><code class="docutils literal notranslate"><span class="pre">EmailConfig.sender</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.EmailConfig.recipients"><code class="docutils literal notranslate"><span class="pre">EmailConfig.recipients</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings"><code class="docutils literal notranslate"><span class="pre">Settings</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.model_config"><code class="docutils literal notranslate"><span class="pre">Settings.model_config</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.NX_FILE_STRATEGY"><code class="docutils literal notranslate"><span class="pre">Settings.NX_FILE_STRATEGY</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.NX_IGNORE_PATTERNS"><code class="docutils literal notranslate"><span class="pre">Settings.NX_IGNORE_PATTERNS</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.NX_INSTRUMENT_DATA_PATH"><code class="docutils literal notranslate"><span class="pre">Settings.NX_INSTRUMENT_DATA_PATH</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.NX_DATA_PATH"><code class="docutils literal notranslate"><span class="pre">Settings.NX_DATA_PATH</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.NX_DB_PATH"><code class="docutils literal notranslate"><span class="pre">Settings.NX_DB_PATH</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.NX_CDCS_TOKEN"><code class="docutils literal notranslate"><span class="pre">Settings.NX_CDCS_TOKEN</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.NX_CDCS_URL"><code class="docutils literal notranslate"><span class="pre">Settings.NX_CDCS_URL</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.NX_EXPORT_STRATEGY"><code class="docutils literal notranslate"><span class="pre">Settings.NX_EXPORT_STRATEGY</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.NX_CERT_BUNDLE_FILE"><code class="docutils literal notranslate"><span class="pre">Settings.NX_CERT_BUNDLE_FILE</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.NX_CERT_BUNDLE"><code class="docutils literal notranslate"><span class="pre">Settings.NX_CERT_BUNDLE</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.NX_DISABLE_SSL_VERIFY"><code class="docutils literal notranslate"><span class="pre">Settings.NX_DISABLE_SSL_VERIFY</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.NX_FILE_DELAY_DAYS"><code class="docutils literal notranslate"><span class="pre">Settings.NX_FILE_DELAY_DAYS</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.NX_CLUSTERING_SENSITIVITY"><code class="docutils literal notranslate"><span class="pre">Settings.NX_CLUSTERING_SENSITIVITY</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.NX_LOG_PATH"><code class="docutils literal notranslate"><span class="pre">Settings.NX_LOG_PATH</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.NX_RECORDS_PATH"><code class="docutils literal notranslate"><span class="pre">Settings.NX_RECORDS_PATH</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.NX_LOCAL_PROFILES_PATH"><code class="docutils literal notranslate"><span class="pre">Settings.NX_LOCAL_PROFILES_PATH</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.NX_ELABFTW_API_KEY"><code class="docutils literal notranslate"><span class="pre">Settings.NX_ELABFTW_API_KEY</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.NX_ELABFTW_URL"><code class="docutils literal notranslate"><span class="pre">Settings.NX_ELABFTW_URL</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.NX_ELABFTW_EXPERIMENT_CATEGORY"><code class="docutils literal notranslate"><span class="pre">Settings.NX_ELABFTW_EXPERIMENT_CATEGORY</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.NX_ELABFTW_EXPERIMENT_STATUS"><code class="docutils literal notranslate"><span class="pre">Settings.NX_ELABFTW_EXPERIMENT_STATUS</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.nexuslims_instrument_data_path"><code class="docutils literal notranslate"><span class="pre">Settings.nexuslims_instrument_data_path</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.lock_file_path"><code class="docutils literal notranslate"><span class="pre">Settings.lock_file_path</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.log_dir_path"><code class="docutils literal notranslate"><span class="pre">Settings.log_dir_path</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.records_dir_path"><code class="docutils literal notranslate"><span class="pre">Settings.records_dir_path</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.nemo_harvesters"><code class="docutils literal notranslate"><span class="pre">Settings.nemo_harvesters()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.email_config"><code class="docutils literal notranslate"><span class="pre">Settings.email_config()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.refresh_settings"><code class="docutils literal notranslate"><span class="pre">refresh_settings()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.clear_settings"><code class="docutils literal notranslate"><span class="pre">clear_settings()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.settings"><code class="docutils literal notranslate"><span class="pre">settings</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/api/nexusLIMS/nexusLIMS.config.md.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2025 - 2026, datasophos, LLC.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

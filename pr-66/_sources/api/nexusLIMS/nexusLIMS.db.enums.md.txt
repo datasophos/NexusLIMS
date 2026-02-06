@@ -1,0 +1,174 @@
+# {py:mod}`nexusLIMS.db.enums`
+
+```{py:module} nexusLIMS.db.enums
+```
+
+```{autodoc2-docstring} nexusLIMS.db.enums
+:parser: autodoc2_docstrings_parser
+:allowtitles:
+```
+
+## Module Contents
+
+### Classes
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`EventType <nexusLIMS.db.enums.EventType>`
+  - ```{autodoc2-docstring} nexusLIMS.db.enums.EventType
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`RecordStatus <nexusLIMS.db.enums.RecordStatus>`
+  - ```{autodoc2-docstring} nexusLIMS.db.enums.RecordStatus
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
+### API
+
+`````{py:class} EventType()
+:canonical: nexusLIMS.db.enums.EventType
+
+Bases: {py:obj}`str`, {py:obj}`enum.Enum`
+
+```{autodoc2-docstring} nexusLIMS.db.enums.EventType
+:parser: autodoc2_docstrings_parser
+```
+
+````{py:attribute} START
+:canonical: nexusLIMS.db.enums.EventType.START
+:value: >
+   'START'
+
+```{autodoc2-docstring} nexusLIMS.db.enums.EventType.START
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} END
+:canonical: nexusLIMS.db.enums.EventType.END
+:value: >
+   'END'
+
+```{autodoc2-docstring} nexusLIMS.db.enums.EventType.END
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} RECORD_GENERATION
+:canonical: nexusLIMS.db.enums.EventType.RECORD_GENERATION
+:value: >
+   'RECORD_GENERATION'
+
+```{autodoc2-docstring} nexusLIMS.db.enums.EventType.RECORD_GENERATION
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+`````
+
+`````{py:class} RecordStatus()
+:canonical: nexusLIMS.db.enums.RecordStatus
+
+Bases: {py:obj}`str`, {py:obj}`enum.Enum`
+
+```{autodoc2-docstring} nexusLIMS.db.enums.RecordStatus
+:parser: autodoc2_docstrings_parser
+```
+
+````{py:attribute} WAITING_FOR_END
+:canonical: nexusLIMS.db.enums.RecordStatus.WAITING_FOR_END
+:value: >
+   'WAITING_FOR_END'
+
+```{autodoc2-docstring} nexusLIMS.db.enums.RecordStatus.WAITING_FOR_END
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} TO_BE_BUILT
+:canonical: nexusLIMS.db.enums.RecordStatus.TO_BE_BUILT
+:value: >
+   'TO_BE_BUILT'
+
+```{autodoc2-docstring} nexusLIMS.db.enums.RecordStatus.TO_BE_BUILT
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} COMPLETED
+:canonical: nexusLIMS.db.enums.RecordStatus.COMPLETED
+:value: >
+   'COMPLETED'
+
+```{autodoc2-docstring} nexusLIMS.db.enums.RecordStatus.COMPLETED
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} BUILT_NOT_EXPORTED
+:canonical: nexusLIMS.db.enums.RecordStatus.BUILT_NOT_EXPORTED
+:value: >
+   'BUILT_NOT_EXPORTED'
+
+```{autodoc2-docstring} nexusLIMS.db.enums.RecordStatus.BUILT_NOT_EXPORTED
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} ERROR
+:canonical: nexusLIMS.db.enums.RecordStatus.ERROR
+:value: >
+   'ERROR'
+
+```{autodoc2-docstring} nexusLIMS.db.enums.RecordStatus.ERROR
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} NO_FILES_FOUND
+:canonical: nexusLIMS.db.enums.RecordStatus.NO_FILES_FOUND
+:value: >
+   'NO_FILES_FOUND'
+
+```{autodoc2-docstring} nexusLIMS.db.enums.RecordStatus.NO_FILES_FOUND
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} NO_CONSENT
+:canonical: nexusLIMS.db.enums.RecordStatus.NO_CONSENT
+:value: >
+   'NO_CONSENT'
+
+```{autodoc2-docstring} nexusLIMS.db.enums.RecordStatus.NO_CONSENT
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} NO_RESERVATION
+:canonical: nexusLIMS.db.enums.RecordStatus.NO_RESERVATION
+:value: >
+   'NO_RESERVATION'
+
+```{autodoc2-docstring} nexusLIMS.db.enums.RecordStatus.NO_RESERVATION
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+`````
