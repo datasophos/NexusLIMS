@@ -387,7 +387,9 @@ def _run_with_lock(
         sys.exit(0)
 
 
-def _parse_date_argument(date_str: str | None) -> datetime | None:
+def _parse_date_argument(
+    date_str: str | None, *, inclusive_end: bool = False
+) -> datetime | None:
     """
     Parse a date string argument into a datetime object.
 
@@ -397,6 +399,10 @@ def _parse_date_argument(date_str: str | None) -> datetime | None:
         Date string in ISO format (YYYY-MM-DD or YYYY-MM-DDTHH:MM:SS),
         or special values "none"/"all" to disable filtering,
         or None to return None
+    inclusive_end : bool
+        If True and date_str has no time component, set time to 23:59:59
+        to include the entire day. Used for --to parameter to make date
+        ranges inclusive. Default is False (use midnight).
 
     Returns
     -------
@@ -421,8 +427,12 @@ def _parse_date_argument(date_str: str | None) -> datetime | None:
         # Try parsing with time component first
         if "T" in date_str:
             dt_obj = datetime.fromisoformat(date_str)
+        # Parse date-only string
+        elif inclusive_end:
+            # For inclusive end dates, set time to end of day
+            dt_obj = datetime.fromisoformat(date_str + "T23:59:59")
         else:
-            # Parse date-only string and set time to midnight
+            # For start dates, set time to midnight
             dt_obj = datetime.fromisoformat(date_str + "T00:00:00")
 
         # Ensure timezone-aware datetime using system timezone
@@ -557,7 +567,7 @@ def main(
 
     # Parse date arguments
     dt_from = _parse_date_argument(from_date)
-    dt_to = _parse_date_argument(to_date)
+    dt_to = _parse_date_argument(to_date, inclusive_end=True)
 
     # Apply default: fetch last week if no --from was provided
     if from_date is None:

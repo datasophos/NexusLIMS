@@ -810,7 +810,7 @@ class TestDateFiltering:
         tmp_path,
         monkeypatch,
     ):
-        """Test custom --to date."""
+        """Test custom --to date (should be end of day for inclusive range)."""
         from datetime import datetime
 
         from nexusLIMS.utils.time import current_system_tz
@@ -831,7 +831,8 @@ class TestDateFiltering:
         call_args = mock_process_records.call_args
         dt_to = call_args.kwargs["dt_to"]
 
-        expected = datetime(2025, 12, 31, 0, 0, 0, tzinfo=current_system_tz())
+        # --to date should be end of day (23:59:59) for inclusive range
+        expected = datetime(2025, 12, 31, 23, 59, 59, tzinfo=current_system_tz())
         assert dt_to == expected
 
     @patch("nexusLIMS.builder.record_builder.process_new_records")
@@ -845,7 +846,7 @@ class TestDateFiltering:
         tmp_path,
         monkeypatch,
     ):
-        """Test both --from and --to dates together."""
+        """Test both --from and --to dates together (inclusive range)."""
         from datetime import datetime
 
         from nexusLIMS.utils.time import current_system_tz
@@ -868,8 +869,10 @@ class TestDateFiltering:
         dt_to = call_args.kwargs["dt_to"]
 
         tz = current_system_tz()
+        # --from should be start of day (midnight)
         assert dt_from == datetime(2025, 1, 1, 0, 0, 0, tzinfo=tz)
-        assert dt_to == datetime(2025, 1, 31, 0, 0, 0, tzinfo=tz)
+        # --to should be end of day (23:59:59) for inclusive range
+        assert dt_to == datetime(2025, 1, 31, 23, 59, 59, tzinfo=tz)
 
     @patch("nexusLIMS.builder.record_builder.process_new_records")
     @patch("nexusLIMS.cli.process_records.send_error_notification")
@@ -882,7 +885,7 @@ class TestDateFiltering:
         tmp_path,
         monkeypatch,
     ):
-        """Test datetime string with time component."""
+        """Test datetime string with time component for --from."""
         from datetime import datetime
 
         from nexusLIMS.utils.time import current_system_tz
@@ -905,6 +908,42 @@ class TestDateFiltering:
 
         expected = datetime(2025, 1, 1, 12, 30, 45, tzinfo=current_system_tz())
         assert dt_from == expected
+
+    @patch("nexusLIMS.builder.record_builder.process_new_records")
+    @patch("nexusLIMS.cli.process_records.send_error_notification")
+    @patch("nexusLIMS.utils.logging.setup_loggers")
+    def test_to_date_with_time_component_preserved(
+        self,
+        mock_setup_loggers,
+        mock_send_email,
+        mock_process_records,
+        tmp_path,
+        monkeypatch,
+    ):
+        """Test that explicit time in --to is preserved (not changed to 23:59:59)."""
+        from datetime import datetime
+
+        from nexusLIMS.utils.time import current_system_tz
+
+        mock_settings = Mock()
+        mock_settings.log_dir_path = tmp_path / "logs"
+        mock_settings.lock_file_path = tmp_path / ".builder.lock"
+        mock_settings.email_config = None
+
+        monkeypatch.setattr("nexusLIMS.config.settings", mock_settings)
+
+        runner = CliRunner()
+        result = runner.invoke(main, ["--from=none", "--to=2025-01-31T14:30:00"])
+
+        assert result.exit_code == 0
+        mock_process_records.assert_called_once()
+
+        call_args = mock_process_records.call_args
+        dt_to = call_args.kwargs["dt_to"]
+
+        # Explicit time should be preserved, not changed to 23:59:59
+        expected = datetime(2025, 1, 31, 14, 30, 0, tzinfo=current_system_tz())
+        assert dt_to == expected
 
     @patch("nexusLIMS.utils.logging.setup_loggers")
     def test_invalid_date_format(self, mock_setup_loggers, tmp_path, monkeypatch):
