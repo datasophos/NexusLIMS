@@ -87,6 +87,7 @@ Documentation = "https://datasophos.github.io/NexusLIMS/stable"
 
 [project.scripts]
 nexuslims-process-records = "nexusLIMS.cli.process_records:main"
+nexuslims-config = "nexusLIMS.cli.config:main"
 
 [build-system]
 requires = ["hatchling"]

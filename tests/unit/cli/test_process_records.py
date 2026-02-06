@@ -436,7 +436,10 @@ class TestMainCLI:
         mock_settings = Mock()
         mock_settings.log_dir_path = tmp_path / "logs"
         mock_settings.lock_file_path = tmp_path / ".builder.lock"
-        mock_settings.email_config = None
+        # verbose >= 1 triggers config dump, which calls these three methods
+        mock_settings.model_dump.return_value = {}
+        mock_settings.nemo_harvesters.return_value = {}
+        mock_settings.email_config.return_value = None
 
         monkeypatch.setattr("nexusLIMS.config.settings", mock_settings)
 
@@ -630,7 +633,10 @@ class TestMainCLI:
         mock_settings = Mock()
         mock_settings.log_dir_path = tmp_path / "logs"
         mock_settings.lock_file_path = tmp_path / ".builder.lock"
-        mock_settings.email_config = None
+        # verbose >= 1 triggers config dump, which calls these three methods
+        mock_settings.model_dump.return_value = {}
+        mock_settings.nemo_harvesters.return_value = {}
+        mock_settings.email_config.return_value = None
 
         monkeypatch.setattr("nexusLIMS.config.settings", mock_settings)
 

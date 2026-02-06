@@ -111,8 +111,17 @@ NexusLIMS requires configuration through environment variables, typically stored
    - `NX_CDCS_URL`, `NX_CDCS_TOKEN` - CDCS API credentials
    - `NX_NEMO_ADDRESS_N`, `NX_NEMO_TOKEN_N` - NEMO integration
 
+3. *(Optional)* Verify your configuration was loaded correctly:
+   ```bash
+   # Dump current config to see what NexusLIMS sees
+   # WARNING: Output contains live credentials - don't share publicly
+   nexuslims-config dump --output my-config.json
+   ```
+
 ```{seealso}
 For complete configuration documentation including all available settings, validation rules, and troubleshooting, see the {ref}`configuration` guide.
+
+For config management tools (dump/load) and debugging configuration issues, see {ref}`configuration-management`.
 ```
 
 ## Database Setup
