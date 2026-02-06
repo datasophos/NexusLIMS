@@ -512,14 +512,14 @@ structure for NEMO harvesters and email config so that the file is both
 human-readable and unambiguous.</p>
 <section id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Link to this heading">#</a></h2>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Dump current config (writes config.json in CWD by default)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Dump current config (writes nexuslims_config.json in CWD by default)</span>
 nexuslims-config<span class="w"> </span>dump
-nexuslims-config<span class="w"> </span>dump<span class="w"> </span>--output<span class="w"> </span>/path/to/config.json
+nexuslims-config<span class="w"> </span>dump<span class="w"> </span>--output<span class="w"> </span>/path/to/nexuslims_config.json
 
 <span class="c1"># Load a previously dumped config into .env</span>
-nexuslims-config<span class="w"> </span>load<span class="w"> </span>config.json
-nexuslims-config<span class="w"> </span>load<span class="w"> </span>config.json<span class="w"> </span>--env-path<span class="w"> </span>/path/to/.env
-nexuslims-config<span class="w"> </span>load<span class="w"> </span>config.json<span class="w"> </span>--force<span class="w">          </span><span class="c1"># skip confirmation prompt</span>
+nexuslims-config<span class="w"> </span>load<span class="w"> </span>nexuslims_config.json
+nexuslims-config<span class="w"> </span>load<span class="w"> </span>nexuslims_config.json<span class="w"> </span>--env-path<span class="w"> </span>/path/to/.env
+nexuslims-config<span class="w"> </span>load<span class="w"> </span>nexuslims_config.json<span class="w"> </span>--force<span class="w">          </span><span class="c1"># skip confirmation prompt</span>
 </pre></div>
 </div>
 </section>
