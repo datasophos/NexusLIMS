@@ -432,13 +432,16 @@ def _migrate_to_schema_compliant_metadata(mdict: dict) -> dict:  # noqa: PLR0912
         "Vertical Field Width": "vertical_field_width",
         "Acquisition Device": "acquisition_device",
         "Sample Time": "dwell_time",
-        # Image-specific
-        "Indicated Magnification": "magnification",
     }
 
     # Conditional mappings based on dataset type
     if dataset_type == "Diffraction":
         field_mappings["STEM Camera Length"] = "camera_length"
+    if dataset_type in ("Image", "SpectrumImage"):
+        # magnification is only a core field for image-like datasets;
+        # for others (e.g. Diffraction) it routes to extensions via the
+        # fall-through below
+        field_mappings["Indicated Magnification"] = "magnification"
 
     # Fields that should ALWAYS go to extensions (vendor/instrument-specific)
     extension_fields = {
@@ -538,7 +541,15 @@ def _migrate_to_schema_compliant_metadata(mdict: dict) -> dict:  # noqa: PLR0912
                             # Tilts in degrees
                             val = ureg.Quantity(val, "degree")
                         stage_pos[new_key] = val
-                new_nx_meta["stage_position"] = stage_pos
+                # Only emit stage_position when non-empty and the dataset
+                # type declares the field (Image / SpectrumImage); route
+                # non-empty values to extensions for other types and drop
+                # empty dicts entirely.
+                if stage_pos:
+                    if dataset_type in ("Image", "SpectrumImage"):
+                        new_nx_meta["stage_position"] = stage_pos
+                    else:
+                        extensions["Stage Position"] = stage_pos
             else:
                 # If it's not a dict, move to extensions (this is not expected)
                 extensions["Stage Position"] = value  # pragma: no cover

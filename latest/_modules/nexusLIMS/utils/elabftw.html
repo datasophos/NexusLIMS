@@ -428,7 +428,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Feb, 04, 2026"/>
+    <meta name="docbuild:last-update" content="Feb, 06, 2026"/>
   </head>
   
   
@@ -1042,8 +1042,7 @@ window.addEventListener("load", load);
                 <span class="c1"># Extract experiment ID by removing the endpoint URL</span>
                 <span class="c1"># E.g., &quot;http://host/api/v2/experiments/123&quot; -&gt; &quot;123&quot;</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="n">id_str</span> <span class="o">=</span> <span class="n">location</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">url</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
-                    <span class="n">experiment_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">id_str</span><span class="p">)</span>
+                    <span class="n">experiment_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">location</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
                 <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                     <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
                         <span class="s2">&quot;Failed to parse experiment ID from &quot;</span>
@@ -1591,8 +1590,7 @@ window.addEventListener("load", load);
                 <span class="k">if</span> <span class="n">location</span><span class="p">:</span>
                     <span class="c1"># Extract upload ID from URL</span>
                     <span class="k">try</span><span class="p">:</span>
-                        <span class="n">id_str</span> <span class="o">=</span> <span class="n">location</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">url</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
-                        <span class="n">upload_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">id_str</span><span class="p">)</span>
+                        <span class="n">upload_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">location</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
                     <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                         <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
                             <span class="s2">&quot;Failed to parse upload ID from &quot;</span>
