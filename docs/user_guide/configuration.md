@@ -11,6 +11,129 @@ NexusLIMS loads configuration from environment variables and optionally from a `
 Copy `.env.example` to `.env` and customize it for your deployment. The `.env` file should never be committed to version control.
 ```
 
+(configuration-management)=
+## Configuration Management
+
+NexusLIMS provides CLI tools to help you manage, debug, and migrate configuration between environments.
+
+### Dumping Configuration
+
+Use `nexuslims-config dump` to export your current configuration to a JSON file:
+
+```bash
+# Dump to default file (nexuslims_config.json)
+nexuslims-config dump
+
+# Dump to specific file
+nexuslims-config dump --output /path/to/my-config.json
+```
+
+The dumped configuration includes:
+
+- All environment variables (from both environment and `.env` file)
+- Parsed NEMO harvester configurations
+- Email configuration (if configured)
+- Computed defaults for optional settings
+
+```{danger}
+**Security Warning**: The dumped JSON file contains **live credentials** (API tokens, passwords, certificates). Handle it with the same care as your `.env` file. Never commit it to version control or share it publicly.
+```
+
+Example output:
+```json
+{
+  "NX_DATA_PATH": "/var/nexuslims/data",
+  "NX_INSTRUMENT_DATA_PATH": "/mnt/nexus_instruments",
+  "NX_DB_PATH": "/var/nexuslims/data/nexuslims.db",
+  "NX_CDCS_URL": "https://nexuslims.example.com",
+  "NX_CDCS_TOKEN": "live-secret-token-here",
+  "nemo_harvesters": {
+    "1": {
+      "address": "https://nemo.example.com/api/",
+      "token": "live-secret-token-here",
+      "tz": null
+    }
+  },
+  "email_config": {
+    "smtp_host": "smtp.gmail.com",
+    "smtp_port": 587,
+    "smtp_password": "live-password-here",
+    "sender": "nexuslims@example.com",
+    "recipients": ["admin@example.com"]
+  }
+}
+```
+
+**Use cases for config dumps:**
+
+- **Backup**: Create a complete snapshot of a working configuration
+- **Migration**: Transfer configuration to a new server (see Loading Configuration below)
+- **Comparison**: Diff configs between environments to identify differences
+- **Disaster recovery**: Quick restoration of configuration after system failure
+
+### Loading Configuration
+
+Use `nexuslims-config load` to convert a dumped JSON config back into a `.env` file:
+
+```bash
+# Load config (creates/overwrites .env in current directory)
+nexuslims-config load nexuslims_config.json
+
+# Load to specific .env file
+nexuslims-config load nexuslims_config.json --env-path /path/to/.env
+
+# Skip confirmation prompt (useful for automation)
+nexuslims-config load nexuslims_config.json --force
+```
+
+**Safety features:**
+
+- **Backup**: If `.env` exists, it's automatically backed up to `.env.bak.YYYYMMDD-HHMMSS` before overwriting
+- **Confirmation**: Prompts for confirmation before overwriting (unless `--force` is used)
+- **Flattening**: Structured config (nested harvesters, email config) is converted back to flat environment variables
+
+**Migration workflow example:**
+
+```bash
+# On source server
+nexuslims-config dump --output production-config.json
+
+# Securely transfer the file to new server (contains live credentials!)
+scp production-config.json user@newserver:/path/to/
+
+# On destination server
+nexuslims-config load production-config.json
+
+# Clean up the dump file (it contains secrets)
+rm production-config.json
+```
+
+### Configuration in Logs
+
+When `nexuslims-process-records` starts with a verbosity of `-v` or higher,
+it logs a sanitized view of the loaded configuration to help with debugging.
+The log output is sanitized as `nexuslims-config dump`,
+ensuring no sensitive environment variables are exposed in logs.
+
+Example log output:
+```
+INFO - Loaded configuration:
+INFO - {
+INFO -   "NX_DATA_PATH": "/var/nexuslims/data",
+INFO -   "NX_CDCS_TOKEN": "***",
+INFO -   "nemo_harvesters": {
+INFO -     "1": {"address": "https://nemo.example.com/api/", "token": "***"}
+INFO -   }
+INFO - }
+```
+
+This is particularly useful when:
+
+- Troubleshooting why a specific setting isn't taking effect
+- Verifying that `.env` changes were picked up
+- Confirming which NEMO instances are configured
+- Checking computed defaults for optional settings
+
 ## Required Configuration
 
 These variables **must** be set for NexusLIMS to function.
