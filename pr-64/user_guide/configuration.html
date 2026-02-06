@@ -66,7 +66,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="pr-64" />
-    <meta name="docbuild:last-update" content="Feb, 05, 2026"/>
+    <meta name="docbuild:last-update" content="Feb, 06, 2026"/>
   </head>
   
   
@@ -611,6 +611,28 @@
 </div>
 </section>
 </section>
+<section id="export-configuration">
+<h3>Export Configuration<a class="headerlink" href="#export-configuration" title="Link to this heading">#</a></h3>
+<section id="nx-export-strategy">
+<span id="config-export-strategy"></span><h4><code class="docutils literal notranslate"><span class="pre">NX_EXPORT_STRATEGY</span></code><a class="headerlink" href="#nx-export-strategy" title="Link to this heading">#</a></h4>
+<p><strong>Type:</strong> <code class="docutils literal notranslate"><span class="pre">&quot;all&quot;</span></code> | <code class="docutils literal notranslate"><span class="pre">&quot;first_success&quot;</span></code> | <code class="docutils literal notranslate"><span class="pre">&quot;best_effort&quot;</span></code><br />
+<strong>Default:</strong> <code class="docutils literal notranslate"><span class="pre">&quot;all&quot;</span></code></p>
+<p>Controls how records are exported when multiple export destinations are enabled (e.g. CDCS and eLabFTW). Destinations are always attempted in priority order (highest first).</p>
+<ul class="simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">all</span></code></strong>: Export to every enabled destination. The overall export is considered a failure if <em>any</em> destination fails.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">first_success</span></code></strong>: Stop after the first destination succeeds. Remaining destinations are skipped.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">best_effort</span></code></strong>: Attempt all enabled destinations. The overall export succeeds as long as <em>at least one</em> destination succeeds.</p></li>
+</ul>
+<p><strong>Example:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_EXPORT_STRATEGY</span><span class="o">=</span>best_effort
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>See the <a class="reference internal" href="exporters.html#exporters"><span class="std std-ref">Export Destinations</span></a> page for a full description of how strategies interact with destination priorities and inter-destination dependencies (e.g. eLabFTW cross-linking to a CDCS record).</p>
+</div>
+</section>
+</section>
 <section id="nemo-integration">
 <h3>NEMO Integration<a class="headerlink" href="#nemo-integration" title="Link to this heading">#</a></h3>
 <p>NexusLIMS supports multiple NEMO instances by using numbered environment variable pairs. Each NEMO instance requires an address and token.</p>
@@ -995,6 +1017,9 @@ certificates and providing every CA via <code class="docutils literal notranslat
 <span class="nv">NX_CDCS_URL</span><span class="o">=</span>https://nexuslims.example.com
 <span class="nv">NX_CDCS_TOKEN</span><span class="o">=</span>your-api-token-here
 
+<span class="c1"># Export strategy</span>
+<span class="nv">NX_EXPORT_STRATEGY</span><span class="o">=</span>all
+
 <span class="c1"># File handling</span>
 <span class="nv">NX_FILE_STRATEGY</span><span class="o">=</span>inclusive
 <span class="nv">NX_FILE_DELAY_DAYS</span><span class="o">=</span><span class="m">2</span>.5
@@ -1177,6 +1202,10 @@ certificates and providing every CA via <code class="docutils literal notranslat
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-elabftw-api-key"><code class="docutils literal notranslate"><span class="pre">NX_ELABFTW_API_KEY</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-elabftw-experiment-category"><code class="docutils literal notranslate"><span class="pre">NX_ELABFTW_EXPERIMENT_CATEGORY</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-elabftw-experiment-status"><code class="docutils literal notranslate"><span class="pre">NX_ELABFTW_EXPERIMENT_STATUS</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#export-configuration">Export Configuration</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-export-strategy"><code class="docutils literal notranslate"><span class="pre">NX_EXPORT_STRATEGY</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nemo-integration">NEMO Integration</a><ul class="nav section-nav flex-column">

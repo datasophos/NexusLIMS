@@ -428,7 +428,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="pr-64" />
-    <meta name="docbuild:last-update" content="Feb, 05, 2026"/>
+    <meta name="docbuild:last-update" content="Feb, 06, 2026"/>
   </head>
   
   
@@ -1272,13 +1272,16 @@ window.addEventListener("load", load);
         <span class="s2">&quot;Vertical Field Width&quot;</span><span class="p">:</span> <span class="s2">&quot;vertical_field_width&quot;</span><span class="p">,</span>
         <span class="s2">&quot;Acquisition Device&quot;</span><span class="p">:</span> <span class="s2">&quot;acquisition_device&quot;</span><span class="p">,</span>
         <span class="s2">&quot;Sample Time&quot;</span><span class="p">:</span> <span class="s2">&quot;dwell_time&quot;</span><span class="p">,</span>
-        <span class="c1"># Image-specific</span>
-        <span class="s2">&quot;Indicated Magnification&quot;</span><span class="p">:</span> <span class="s2">&quot;magnification&quot;</span><span class="p">,</span>
     <span class="p">}</span>
 
     <span class="c1"># Conditional mappings based on dataset type</span>
     <span class="k">if</span> <span class="n">dataset_type</span> <span class="o">==</span> <span class="s2">&quot;Diffraction&quot;</span><span class="p">:</span>
         <span class="n">field_mappings</span><span class="p">[</span><span class="s2">&quot;STEM Camera Length&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;camera_length&quot;</span>
+    <span class="k">if</span> <span class="n">dataset_type</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;Image&quot;</span><span class="p">,</span> <span class="s2">&quot;SpectrumImage&quot;</span><span class="p">):</span>
+        <span class="c1"># magnification is only a core field for image-like datasets;</span>
+        <span class="c1"># for others (e.g. Diffraction) it routes to extensions via the</span>
+        <span class="c1"># fall-through below</span>
+        <span class="n">field_mappings</span><span class="p">[</span><span class="s2">&quot;Indicated Magnification&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;magnification&quot;</span>
 
     <span class="c1"># Fields that should ALWAYS go to extensions (vendor/instrument-specific)</span>
     <span class="n">extension_fields</span> <span class="o">=</span> <span class="p">{</span>
@@ -1378,7 +1381,15 @@ window.addEventListener("load", load);
                             <span class="c1"># Tilts in degrees</span>
                             <span class="n">val</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="s2">&quot;degree&quot;</span><span class="p">)</span>
                         <span class="n">stage_pos</span><span class="p">[</span><span class="n">new_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
-                <span class="n">new_nx_meta</span><span class="p">[</span><span class="s2">&quot;stage_position&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">stage_pos</span>
+                <span class="c1"># Only emit stage_position when non-empty and the dataset</span>
+                <span class="c1"># type declares the field (Image / SpectrumImage); route</span>
+                <span class="c1"># non-empty values to extensions for other types and drop</span>
+                <span class="c1"># empty dicts entirely.</span>
+                <span class="k">if</span> <span class="n">stage_pos</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">dataset_type</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;Image&quot;</span><span class="p">,</span> <span class="s2">&quot;SpectrumImage&quot;</span><span class="p">):</span>
+                        <span class="n">new_nx_meta</span><span class="p">[</span><span class="s2">&quot;stage_position&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">stage_pos</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">extensions</span><span class="p">[</span><span class="s2">&quot;Stage Position&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">stage_pos</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># If it&#39;s not a dict, move to extensions (this is not expected)</span>
                 <span class="n">extensions</span><span class="p">[</span><span class="s2">&quot;Stage Position&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>  <span class="c1"># pragma: no cover</span>

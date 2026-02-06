@@ -66,7 +66,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="pr-64" />
-    <meta name="docbuild:last-update" content="Feb, 05, 2026"/>
+    <meta name="docbuild:last-update" content="Feb, 06, 2026"/>
   </head>
   
   
@@ -859,8 +859,8 @@ strings for convenience.</p>
 <dl class="myst field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>limit</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>default 15</em>) – Maximum number of results to return</p></li>
-<li><p><strong>offset</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>default 0</em>) – Number of results to skip (for pagination)</p></li>
+<li><p><strong>limit</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – Maximum number of results to return (default: 15)</p></li>
+<li><p><strong>offset</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – Number of results to skip (for pagination) (default: 0)</p></li>
 <li><p><strong>query</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – Full-text search query</p></li>
 </ul>
 </dd>
@@ -991,7 +991,7 @@ as deleted but can be restored by administrators.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>experiment_id</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – ID of experiment to attach file to</p></li>
-<li><p><strong>file_path</strong> (<em>Path</em><em> or </em><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Path to file to upload</p></li>
+<li><p><strong>file_path</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><em>Path</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Path to file to upload</p></li>
 <li><p><strong>comment</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – Comment/description for the uploaded file</p></li>
 </ul>
 </dd>

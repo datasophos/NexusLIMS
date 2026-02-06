@@ -161,6 +161,29 @@ When eLabFTW export is enabled, experiments are created with:
 - **Attachment:** Full XML record file
 ```
 
+### Export Configuration
+
+(config-export-strategy)=
+#### `NX_EXPORT_STRATEGY`
+
+**Type:** `"all"` | `"first_success"` | `"best_effort"`\
+**Default:** `"all"`
+
+Controls how records are exported when multiple export destinations are enabled (e.g. CDCS and eLabFTW). Destinations are always attempted in priority order (highest first).
+
+- **`all`**: Export to every enabled destination. The overall export is considered a failure if *any* destination fails.
+- **`first_success`**: Stop after the first destination succeeds. Remaining destinations are skipped.
+- **`best_effort`**: Attempt all enabled destinations. The overall export succeeds as long as *at least one* destination succeeds.
+
+**Example:**
+```bash
+NX_EXPORT_STRATEGY=best_effort
+```
+
+```{note}
+See the {ref}`exporters` page for a full description of how strategies interact with destination priorities and inter-destination dependencies (e.g. eLabFTW cross-linking to a CDCS record).
+```
+
 ### NEMO Integration
 
 NexusLIMS supports multiple NEMO instances by using numbered environment variable pairs. Each NEMO instance requires an address and token.
@@ -603,6 +626,9 @@ NX_LOCAL_PROFILES_PATH=/etc/nexuslims/profiles
 # CDCS
 NX_CDCS_URL=https://nexuslims.example.com
 NX_CDCS_TOKEN=your-api-token-here
+
+# Export strategy
+NX_EXPORT_STRATEGY=all
 
 # File handling
 NX_FILE_STRATEGY=inclusive
