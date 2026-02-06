@@ -11,14 +11,14 @@ Usage
 -----
 
 ```bash
-# Dump current config (writes config.json in CWD by default)
+# Dump current config (writes nexuslims_config.json in CWD by default)
 nexuslims-config dump
-nexuslims-config dump --output /path/to/config.json
+nexuslims-config dump --output /path/to/nexuslims_config.json
 
 # Load a previously dumped config into .env
-nexuslims-config load config.json
-nexuslims-config load config.json --env-path /path/to/.env
-nexuslims-config load config.json --force          # skip confirmation prompt
+nexuslims-config load nexuslims_config.json
+nexuslims-config load nexuslims_config.json --env-path /path/to/.env
+nexuslims-config load nexuslims_config.json --force          # skip confirmation prompt
 ```
 
 Security
@@ -281,7 +281,7 @@ def main() -> None:
     "--output",
     "-o",
     type=click.Path(dir_okay=False, writable=True),
-    default="config.json",
+    default="nexuslims_config.json",
     show_default=True,
     help="Path to write the JSON config file.",
 )

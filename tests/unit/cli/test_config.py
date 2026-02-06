@@ -402,7 +402,7 @@ class TestDumpCommand:
         assert "credentials" in result.stderr
 
     def test_dump_default_output_name(self, tmp_path, monkeypatch):
-        """Default output path is config.json in CWD."""
+        """Default output path is nexuslims_config.json in CWD."""
         monkeypatch.setattr("nexusLIMS.config.settings", _mock_settings())
 
         runner = CliRunner(mix_stderr=False)
@@ -414,7 +414,7 @@ class TestDumpCommand:
             os.chdir(original_cwd)
 
         assert result.exit_code == 0, result.output
-        assert (tmp_path / "config.json").exists()
+        assert (tmp_path / "nexuslims_config.json").exists()
 
 
 # ===========================================================================
@@ -431,7 +431,7 @@ class TestLoadCommand:
 
     def test_load_no_preexisting_env(self, tmp_path):
         """Load writes .env cleanly when none exists — no prompt."""
-        input_file = tmp_path / "config.json"
+        input_file = tmp_path / "nexuslims_config.json"
         self._write_config_json(input_file)
         env_path = tmp_path / ".env"
 
@@ -449,7 +449,7 @@ class TestLoadCommand:
 
     def test_load_backs_up_existing_env_on_confirm(self, tmp_path):
         """Pre-existing .env is backed up and overwritten on 'y'."""
-        input_file = tmp_path / "config.json"
+        input_file = tmp_path / "nexuslims_config.json"
         self._write_config_json(input_file)
         env_path = tmp_path / ".env"
         env_path.write_text("OLD_CONTENT=1\n")
@@ -469,7 +469,7 @@ class TestLoadCommand:
 
     def test_load_aborts_on_deny(self, tmp_path):
         """User says 'n' at the prompt -> .env is untouched, no backup."""
-        input_file = tmp_path / "config.json"
+        input_file = tmp_path / "nexuslims_config.json"
         self._write_config_json(input_file)
         env_path = tmp_path / ".env"
         env_path.write_text("OLD_CONTENT=1\n")
@@ -488,7 +488,7 @@ class TestLoadCommand:
 
     def test_load_force_skips_prompt_but_still_backs_up(self, tmp_path):
         """--force skips the confirmation prompt but still creates a backup."""
-        input_file = tmp_path / "config.json"
+        input_file = tmp_path / "nexuslims_config.json"
         self._write_config_json(input_file)
         env_path = tmp_path / ".env"
         env_path.write_text("OLD_CONTENT=1\n")
@@ -506,7 +506,7 @@ class TestLoadCommand:
 
     def test_load_warns_about_existing_env(self, tmp_path):
         """The WARNING about pre-existing .env appears on stderr."""
-        input_file = tmp_path / "config.json"
+        input_file = tmp_path / "nexuslims_config.json"
         self._write_config_json(input_file)
         env_path = tmp_path / ".env"
         env_path.write_text("OLD=1\n")
