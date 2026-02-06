@@ -203,8 +203,7 @@ class ELabFTWClient:
                 # Extract experiment ID by removing the endpoint URL
                 # E.g., "http://host/api/v2/experiments/123" -> "123"
                 try:
-                    id_str = location.replace(url + "/", "").rstrip("/")
-                    experiment_id = int(id_str)
+                    experiment_id = int(location.rstrip("/").rsplit("/", 1)[-1])
                 except ValueError as e:
                     msg = (
                         "Failed to parse experiment ID from "
@@ -735,8 +734,7 @@ class ELabFTWClient:
                 if location:
                     # Extract upload ID from URL
                     try:
-                        id_str = location.replace(url + "/", "").rstrip("/")
-                        upload_id = int(id_str)
+                        upload_id = int(location.rstrip("/").rsplit("/", 1)[-1])
                     except ValueError as e:
                         msg = (
                             "Failed to parse upload ID from "

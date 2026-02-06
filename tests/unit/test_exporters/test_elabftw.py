@@ -292,6 +292,50 @@ class TestELabFTWClient:
             # Verify the original ValueError is chained
             assert isinstance(exc_info.value.__cause__, ValueError)
 
+    def test_create_experiment_localhost_location_header(self, client, mock_response):
+        """Test ID extraction when Location uses localhost (no port)."""
+        # base_url is https://elab.example.com but Location comes back on localhost
+        with patch("nexusLIMS.utils.elabftw.nexus_req") as mock_req:
+            response = mock_response(status_code=HTTPStatus.CREATED)
+            response.headers = {"Location": "https://localhost/api/v2/experiments/7"}
+            mock_req.return_value = response
+
+            result = client.create_experiment(title="Localhost Test")
+
+            assert result["id"] == 7
+            assert result["location"] == "https://localhost/api/v2/experiments/7"
+
+    @pytest.mark.parametrize(
+        ("base_url", "location_header"),
+        [
+            # base_url has explicit port, Location omits it
+            (
+                "https://localhost:8443",
+                "https://localhost/api/v2/experiments/12",
+            ),
+            # base_url omits port, Location includes it
+            (
+                "https://localhost",
+                "https://localhost:8443/api/v2/experiments/12",
+            ),
+        ],
+    )
+    def test_create_experiment_nonstandard_port_location_header(
+        self, mock_response, base_url, location_header
+    ):
+        """Test ID extraction when port differs between base_url and Location."""
+        client = ELabFTWClient(base_url=base_url, api_key="test-key")
+
+        with patch("nexusLIMS.utils.elabftw.nexus_req") as mock_req:
+            response = mock_response(status_code=HTTPStatus.CREATED)
+            response.headers = {"Location": location_header}
+            mock_req.return_value = response
+
+            result = client.create_experiment(title="Port Mismatch Test")
+
+            assert result["id"] == 12
+            assert result["location"] == location_header
+
     def test_create_experiment_fallback_json_response(self, client, mock_response):
         """Test create falls back to JSON response when Location header missing."""
         with patch("nexusLIMS.utils.elabftw.nexus_req") as mock_req:
