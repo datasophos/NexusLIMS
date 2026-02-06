@@ -185,6 +185,96 @@ class TestSanitizeConfig:
         assert sanitized["NX_FILE_DELAY_DAYS"] == 2.0
         assert sanitized["NX_IGNORE_PATTERNS"] == ["*.mib", "*.db"]
 
+    def test_redacts_keys_containing_token_uppercase(self):
+        """Any top-level key containing 'TOKEN' (uppercase) is redacted."""
+        config = self._full_config()
+        config["NX_CUSTOM_TOKEN"] = "secret-custom-token"
+        config["NX_API_TOKEN_VALUE"] = "another-secret"
+        sanitized = _sanitize_config(config)
+        assert sanitized["NX_CUSTOM_TOKEN"] == "***"
+        assert sanitized["NX_API_TOKEN_VALUE"] == "***"
+
+    def test_redacts_keys_containing_token_lowercase(self):
+        """Pattern matching is case-insensitive for 'token'."""
+        config = self._full_config()
+        config["nx_custom_token"] = "secret-custom-token"
+        config["nx_api_token_value"] = "another-secret"
+        sanitized = _sanitize_config(config)
+        assert sanitized["nx_custom_token"] == "***"
+        assert sanitized["nx_api_token_value"] == "***"
+
+    def test_redacts_keys_containing_token_mixedcase(self):
+        """Pattern matching works with mixed case 'ToKeN'."""
+        config = self._full_config()
+        config["NX_Custom_ToKeN"] = "secret-custom-token"
+        sanitized = _sanitize_config(config)
+        assert sanitized["NX_Custom_ToKeN"] == "***"
+
+    def test_redacts_keys_containing_password_uppercase(self):
+        """Any top-level key containing 'PASSWORD' (uppercase) is redacted."""
+        config = self._full_config()
+        config["NX_DATABASE_PASSWORD"] = "db-secret"
+        config["NX_ADMIN_PASSWORD_HASH"] = "hash-value"
+        sanitized = _sanitize_config(config)
+        assert sanitized["NX_DATABASE_PASSWORD"] == "***"
+        assert sanitized["NX_ADMIN_PASSWORD_HASH"] == "***"
+
+    def test_redacts_keys_containing_password_lowercase(self):
+        """Pattern matching is case-insensitive for 'password'."""
+        config = self._full_config()
+        config["nx_database_password"] = "db-secret"
+        config["nx_admin_password_hash"] = "hash-value"
+        sanitized = _sanitize_config(config)
+        assert sanitized["nx_database_password"] == "***"
+        assert sanitized["nx_admin_password_hash"] == "***"
+
+    def test_redacts_keys_containing_password_mixedcase(self):
+        """Pattern matching works with mixed case 'PaSsWoRd'."""
+        config = self._full_config()
+        config["NX_Custom_PaSsWoRd"] = "secret-password"
+        sanitized = _sanitize_config(config)
+        assert sanitized["NX_Custom_PaSsWoRd"] == "***"
+
+    def test_pattern_matching_does_not_affect_non_secrets(self):
+        """Keys without TOKEN or PASSWORD substrings remain unchanged."""
+        config = self._full_config()
+        config["NX_SOME_API_KEY"] = "not-detected-by-pattern"
+        config["NX_CUSTOM_SETTING"] = "also-not-detected"
+        sanitized = _sanitize_config(config)
+        # These should NOT be redacted (unless they match _SECRET_TOP_LEVEL_KEYS)
+        assert sanitized["NX_SOME_API_KEY"] == "not-detected-by-pattern"
+        assert sanitized["NX_CUSTOM_SETTING"] == "also-not-detected"
+
+    def test_pattern_matching_and_explicit_keys_both_work(self):
+        """Both explicit listing and pattern matching can coexist."""
+        config = self._full_config()
+        # Explicitly listed secrets should still be redacted
+        assert config["NX_CDCS_TOKEN"] == "secret-cdcs-token"
+        assert config["NX_CERT_BUNDLE"] == "secret-pem-data"
+        assert config["NX_ELABFTW_API_KEY"] == "secret-elab-key"
+
+        # Add pattern-matched secrets
+        config["NX_CUSTOM_TOKEN"] = "custom-secret"
+        config["NX_DB_PASSWORD"] = "db-secret"
+
+        sanitized = _sanitize_config(config)
+
+        # All should be redacted
+        assert sanitized["NX_CDCS_TOKEN"] == "***"
+        assert sanitized["NX_CERT_BUNDLE"] == "***"
+        assert sanitized["NX_ELABFTW_API_KEY"] == "***"
+        assert sanitized["NX_CUSTOM_TOKEN"] == "***"
+        assert sanitized["NX_DB_PASSWORD"] == "***"
+
+    def test_pattern_matching_with_token_in_middle_of_key(self):
+        """Pattern matching works when TOKEN/PASSWORD appears in the middle."""
+        config = self._full_config()
+        config["NX_BEARER_TOKEN_AUTH"] = "bearer-secret"
+        config["NX_USER_PASSWORD_SALT"] = "salt-secret"
+        sanitized = _sanitize_config(config)
+        assert sanitized["NX_BEARER_TOKEN_AUTH"] == "***"
+        assert sanitized["NX_USER_PASSWORD_SALT"] == "***"
+
 
 # ===========================================================================
 # TestFlattenToEnv
@@ -246,6 +336,36 @@ class TestFlattenToEnv:
         env = _flatten_to_env(config)
         assert not any(k.startswith("NX_NEMO_") for k in env)
         assert not any(k.startswith("NX_EMAIL_") for k in env)
+
+    def test_email_config_with_none_values(self):
+        """Email config fields with None values are omitted from the output."""
+        settings = _mock_settings(with_email=True)
+        # Create an email config with some None values
+        email_cfg = Mock()
+        email_cfg.model_dump.return_value = {
+            "smtp_host": "smtp.example.com",
+            "smtp_port": 587,
+            "smtp_username": None,  # This should be omitted
+            "smtp_password": "secret-smtp-pass",
+            "use_tls": True,
+            "sender": None,  # This should be omitted
+            "recipients": ["admin@example.com"],
+        }
+        settings.email_config.return_value = email_cfg
+
+        config = _build_config_dict(settings)
+        env = _flatten_to_env(config)
+
+        # Fields with non-None values should be present
+        assert env["NX_EMAIL_SMTP_HOST"] == "smtp.example.com"
+        assert env["NX_EMAIL_SMTP_PORT"] == "587"
+        assert env["NX_EMAIL_SMTP_PASSWORD"] == "secret-smtp-pass"
+        assert env["NX_EMAIL_USE_TLS"] == "true"
+        assert env["NX_EMAIL_RECIPIENTS"] == "admin@example.com"
+
+        # Fields with None values should be omitted
+        assert "NX_EMAIL_SMTP_USERNAME" not in env
+        assert "NX_EMAIL_SENDER" not in env
 
 
 # ===========================================================================

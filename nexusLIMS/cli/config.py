@@ -50,6 +50,9 @@ logger = logging.getLogger(__name__)
 # explicitly in _sanitize_config().
 _SECRET_TOP_LEVEL_KEYS = {"NX_CDCS_TOKEN", "NX_CERT_BUNDLE", "NX_ELABFTW_API_KEY"}
 
+# Substrings that indicate a key contains sensitive data
+_SECRET_SUBSTRINGS = {"TOKEN", "PASSWORD"}
+
 _REDACTED = "***"
 
 # ---------------------------------------------------------------------------
@@ -102,6 +105,7 @@ def _sanitize_config(config_dict: dict) -> dict:
     Secrets that are redacted:
 
     * Top-level: ``NX_CDCS_TOKEN``, ``NX_CERT_BUNDLE``, ``NX_ELABFTW_API_KEY``
+    * Any top-level key containing ``TOKEN`` or ``PASSWORD`` (case-insensitive)
     * ``nemo_harvesters.<N>.token`` for every harvester
     * ``email_config.smtp_password``
 
@@ -117,8 +121,14 @@ def _sanitize_config(config_dict: dict) -> dict:
     """
     sanitized = deepcopy(config_dict)
 
+    # Redact explicitly listed secret keys
     for key in _SECRET_TOP_LEVEL_KEYS:
         if key in sanitized:
+            sanitized[key] = _REDACTED
+
+    # Redact any key containing sensitive substrings
+    for key in list(sanitized.keys()):
+        if any(substring in key.upper() for substring in _SECRET_SUBSTRINGS):
             sanitized[key] = _REDACTED
 
     for hvst in sanitized.get("nemo_harvesters", {}).values():
