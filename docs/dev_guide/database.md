@@ -82,29 +82,38 @@ If you have an existing NexusLIMS database (created before version 2.2.0), you n
 
 ```bash
 # Mark existing database as migrated to current schema
-uv run alembic stamp head
+nexuslims-migrate stamp head
 ```
 
 This tells Alembic that your database already has the current schema structure and doesn't need the baseline migration applied.
 
-### Common Alembic Commands
+```{versionadded} 2.5.0
+The `nexuslims-migrate` command is now the recommended way to run migrations.
+It automatically locates the migrations directory inside the installed package,
+making migrations work correctly after pip/uv installation. The `uv run alembic`
+command still works for development from source checkouts.
+```
+
+### Common Migration Commands
 
 ```bash
 # Check current migration status
-uv run alembic current
+nexuslims-migrate current
 
 # View migration history
-uv run alembic history --verbose
+nexuslims-migrate history --verbose
 
 # Upgrade to latest schema version
-uv run alembic upgrade head
+nexuslims-migrate upgrade head
 
 # Downgrade one migration
-uv run alembic downgrade -1
+nexuslims-migrate downgrade -1
 
-# Generate a new migration (after modifying SQLModel models)
-uv run alembic revision --autogenerate -m "Description of changes"
+# Generate a new migration (after modifying SQLModel models, development only)
+nexuslims-migrate revision --autogenerate -m "Description of changes"
 ```
+
+All standard Alembic sub-commands are supported. From a source checkout, you can also use `uv run alembic` instead of `nexuslims-migrate`.
 
 ### Creating New Migrations
 
@@ -113,19 +122,19 @@ When you modify the database schema (by changing {py:class}`~nexusLIMS.db.models
 1. **Modify the SQLModel classes** in `nexusLIMS/db/models.py`
 2. **Generate migration script**:
    ```bash
-   uv run alembic revision --autogenerate -m "Add new field to SessionLog"
+   nexuslims-migrate revision --autogenerate -m "Add new field to SessionLog"
    ```
-3. **Review the generated script** in `migrations/versions/`
+3. **Review the generated script** in `nexusLIMS/migrations/versions/`
 4. **Test the migration**:
    ```bash
    # Apply migration
-   uv run alembic upgrade head
+   nexuslims-migrate upgrade head
 
    # Test downgrade
-   uv run alembic downgrade -1
+   nexuslims-migrate downgrade -1
 
    # Re-apply
-   uv run alembic upgrade head
+   nexuslims-migrate upgrade head
    ```
 5. **Commit the migration script** to version control
 
@@ -133,10 +142,12 @@ When you modify the database schema (by changing {py:class}`~nexusLIMS.db.models
 
 Alembic configuration is stored in:
 - `pyproject.toml` under `[tool.alembic]` - Source code configuration (migration paths, etc.)
-- `migrations/env.py` - Migration environment setup (automatically reads {ref}`NX_DB_PATH <config-db-path>`)
-- `migrations/versions/` - Migration scripts directory
+- `nexusLIMS/migrations/env.py` - Migration environment setup (automatically reads {ref}`NX_DB_PATH <config-db-path>`)
+- `nexusLIMS/migrations/versions/` - Migration scripts directory (shipped in the package)
 
 The database URL is automatically set from the {ref}`NX_DB_PATH <config-db-path>` environment variable in `env.py`, so you don't need to configure it separately. All Alembic configuration lives in `pyproject.toml`, eliminating the need for a separate `alembic.ini` file.
+
+The `nexuslims-migrate` CLI command automatically locates the migrations directory using `importlib.resources`, so migrations work correctly whether NexusLIMS is installed via pip, uv, or run from source.
 
 ### Important Notes
 

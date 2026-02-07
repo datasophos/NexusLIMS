@@ -1,4 +1,4 @@
-"""add_check_constraints_to_session_log
+"""Add check constraints to session_log.
 
 Adds CHECK constraints to session_log table for event_type and record_status.
 

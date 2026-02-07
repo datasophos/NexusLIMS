@@ -132,7 +132,16 @@ NexusLIMS uses SQLite to track instruments and sessions. Initialize the database
 
 ```bash
 # Create database with schema
-sqlite3 $NX_DB_PATH < nexusLIMS/db/dev/NexusLIMS_db_creation_script.sql
+uv run python -m nexusLIMS.db.dev.initialize_db
+
+# Apply migrations to current schema version
+nexuslims-migrate upgrade head
+```
+
+```{note}
+The `nexuslims-migrate` command is a wrapper around Alembic that automatically
+locates the migrations directory inside the installed package. You can use all
+standard Alembic commands: `current`, `history`, `upgrade`, `downgrade`, etc.
 ```
 
 ### Configure Instruments

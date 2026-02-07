@@ -1,4 +1,4 @@
-# ruff: noqa: INP001, ERA001
+# ruff: noqa: ERA001
 """Alembic migration environment configuration for NexusLIMS.
 
 This module configures the Alembic migration environment for the NexusLIMS database.
@@ -21,6 +21,8 @@ Note:
     used) to ensure Alembic can detect them for autogenerate operations.
 """
 
+from pathlib import Path
+
 from alembic import context
 from sqlalchemy import engine_from_config, pool
 
@@ -29,6 +31,10 @@ from sqlmodel import SQLModel
 
 from nexusLIMS.config import settings
 from nexusLIMS.db.models import Instrument, SessionLog, UploadLog  # noqa: F401
+
+# Derive the migrations directory from this file's own location.
+# Works regardless of whether the package is installed or run from source.
+_MIGRATIONS_DIR = Path(__file__).resolve().parent
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
