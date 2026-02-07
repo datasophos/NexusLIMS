@@ -545,7 +545,7 @@ Examples:
 )
 @click.option(
     "--from",
-    "from_date",
+    "from_arg",
     type=str,
     default=None,
     help="Start date for session filtering (ISO format: YYYY-MM-DD). "
@@ -553,7 +553,7 @@ Examples:
 )
 @click.option(
     "--to",
-    "to_date",
+    "to_arg",
     type=str,
     default=None,
     help="End date for session filtering (ISO format: YYYY-MM-DD). "
@@ -563,7 +563,7 @@ Examples:
     version=None, message=_format_version("nexuslims-process-records")
 )
 def main(
-    *, dry_run: bool, verbose: int, from_date: str | None, to_date: str | None
+    *, dry_run: bool, verbose: int, from_arg: str | None, to_arg: str | None
 ) -> None:
     """
     Process new NexusLIMS records with logging and email notifications.
@@ -579,12 +579,13 @@ def main(
     log_level = _get_log_level(verbose)
     log_file, file_handler = _setup_logging(log_level, dry_run)
 
-    # Parse date arguments
-    dt_from = _parse_date_argument(from_date)
-    dt_to = _parse_date_argument(to_date, inclusive_end=True)
+    # Parse date arguments from raw string parameters
+    dt_from = _parse_date_argument(from_arg)
+    dt_to = _parse_date_argument(to_arg, inclusive_end=True)
 
     # Apply default: fetch last week if no --from was provided
-    if from_date is None:
+    # (Don't apply if user explicitly passed --from=none)
+    if from_arg is None:
         from nexusLIMS.utils.time import current_system_tz  # noqa: PLC0415
 
         dt_from = datetime.now(tz=current_system_tz()) - timedelta(weeks=1)
