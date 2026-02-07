@@ -175,6 +175,7 @@ jobs:
           # Note: We don't update index.html here because it should always point to the
           # latest stable release, not to the dev build. It gets updated by release.yml.
           git add -A latest/ 2>/dev/null || true
+          git add -A stable/ 2>/dev/null || true
           git add -A [0-9]*/ 2>/dev/null || true
           git add -A pr-*/ 2>/dev/null || true
           git commit -m "Deploy docs to latest from main branch and update switcher.json" || echo "No changes to commit"
