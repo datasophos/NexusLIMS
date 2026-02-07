@@ -1,7 +1,7 @@
 """Add upload_log table and BUILT_NOT_EXPORTED status.
 
-Revision ID: 0ea2bc3d2ebe
-Revises: 57f0798d0c6d
+Revision ID: 002
+Revises: 001
 Create Date: 2026-01-23 12:12:15.867734
 
 """
@@ -12,8 +12,8 @@ import sqlalchemy as sa
 from alembic import op
 
 # revision identifiers, used by Alembic.
-revision: str = "0ea2bc3d2ebe"
-down_revision: Union[str, Sequence[str], None] = "57f0798d0c6d"
+revision: str = "002"
+down_revision: Union[str, Sequence[str], None] = "001"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 

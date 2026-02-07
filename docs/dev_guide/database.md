@@ -132,6 +132,14 @@ When you modify the database schema (by changing {py:class}`~nexusLIMS.db.models
    ```bash
    nexuslims-migrate alembic revision --autogenerate -m "Add new field to SessionLog"
    ```
+
+   The migration will be created with a user-friendly sequential ID:
+   ```
+   nexusLIMS/migrations/versions/004_add_new_field_to_sessionlog.py
+   ```
+
+   Instead of random hex like `a1b2c3d4e5f6_add_new_field_to_sessionlog.py`
+
 3. **Review the generated script** in `nexusLIMS/migrations/versions/`
 4. **Test the migration**:
    ```bash
@@ -145,6 +153,16 @@ When you modify the database schema (by changing {py:class}`~nexusLIMS.db.models
    nexuslims-migrate upgrade
    ```
 5. **Commit the migration script** to version control
+
+```{note}
+**Revision ID Format**
+
+NexusLIMS uses sequential, descriptive revision IDs instead of random hex values:
+- **Format**: `NNN_description` (e.g., `001_initial_schema`, `002_add_upload_log`)
+- **Benefits**: Clear ordering, easy to understand, sortable by name
+- **Automatic**: The message you provide in `-m "..."` is automatically sanitized and used
+- **Existing migrations**: Old hex-based migrations (from before 2.5.0) continue to work normally
+```
 
 ### Migration Configuration
 

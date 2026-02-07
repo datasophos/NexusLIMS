@@ -21,9 +21,11 @@ Note:
     used) to ensure Alembic can detect them for autogenerate operations.
 """
 
+import re
 from pathlib import Path
 
 from alembic import context
+from alembic.script import ScriptDirectory
 from sqlalchemy import engine_from_config, pool
 
 # Import SQLModel metadata and models
@@ -53,6 +55,68 @@ target_metadata = SQLModel.metadata
 # ... etc.
 
 
+def _generate_revision_id(context_obj) -> str:
+    """Generate a user-friendly sequential revision ID.
+
+    This function creates revision IDs in the format: NNN_description
+    where NNN is a zero-padded sequential number.
+
+    Examples: 001_initial_schema, 002_add_upload_log, 003_add_constraints
+
+    This is much more readable than random hex values while maintaining
+    clear ordering.
+    """
+    script = ScriptDirectory.from_config(config)
+
+    # Find the highest existing numeric revision
+    max_num = 0
+    for rev in script.walk_revisions():
+        if rev.revision and rev.revision[0].isdigit():
+            try:
+                # Extract numeric prefix (e.g., "001" from "001_description")
+                num_part = rev.revision.split("_")[0]
+                max_num = max(max_num, int(num_part))
+            except (ValueError, IndexError):
+                # Skip if not in our format
+                pass
+
+    # Generate next sequential number
+    next_num = max_num + 1
+
+    # Get the message from the context (cleaned up for use in ID)
+    message = context_obj.opts.get("message", "migration")
+    if message:
+        # Convert message to lowercase, replace spaces/special chars with underscores
+        sanitized = re.sub(r"[^\w\s-]", "", message.lower())
+        sanitized = re.sub(r"[-\s]+", "_", sanitized).strip("_")
+        # Limit length to keep IDs reasonable
+        sanitized = sanitized[:50]
+    else:
+        sanitized = "migration"
+
+    return f"{next_num:03d}_{sanitized}"
+
+
+def process_revision_directives(context_obj, _revision, directives):
+    """Alembic hook to customize revision generation.
+
+    This is called by Alembic when creating new migrations via
+    'nexuslims-migrate alembic revision --autogenerate'.
+
+    It replaces the default random hex revision ID with a sequential
+    numbered ID for better readability.
+    """
+    if config.cmd_opts and config.cmd_opts.autogenerate:
+        script = directives[0]
+        if script.upgrade_ops.is_empty():
+            # Don't generate empty migrations
+            directives[:] = []
+            return
+
+        # Use our custom revision ID generator
+        script.rev_id = _generate_revision_id(context_obj)
+
+
 def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode.
 
@@ -71,6 +135,7 @@ def run_migrations_offline() -> None:
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
+        process_revision_directives=process_revision_directives,
     )
 
     with context.begin_transaction():
@@ -91,7 +156,11 @@ def run_migrations_online() -> None:
     )
 
     with connectable.connect() as connection:
-        context.configure(connection=connection, target_metadata=target_metadata)
+        context.configure(
+            connection=connection,
+            target_metadata=target_metadata,
+            process_revision_directives=process_revision_directives,
+        )
 
         with context.begin_transaction():
             context.run_migrations()

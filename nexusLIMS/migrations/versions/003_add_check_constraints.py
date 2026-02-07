@@ -9,8 +9,8 @@ This migration:
 For SQLite, this requires recreating the table since ALTER TABLE doesn't support
 adding CHECK constraints.
 
-Revision ID: 2e1408e573b1
-Revises: 0ea2bc3d2ebe
+Revision ID: 003
+Revises: 002
 Create Date: 2026-01-25 10:28:38.768026
 
 """
@@ -21,8 +21,8 @@ import sqlalchemy as sa
 from alembic import op
 
 # revision identifiers, used by Alembic.
-revision: str = "2e1408e573b1"
-down_revision: Union[str, Sequence[str], None] = "0ea2bc3d2ebe"
+revision: str = "003"
+down_revision: Union[str, Sequence[str], None] = "002"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
@@ -32,7 +32,7 @@ def upgrade() -> None:
     # SQLite doesn't support adding CHECK constraints via ALTER TABLE,
     # so we need to recreate the table
 
-    # Step 1: Create new table with CHECK constraints
+    # Step 1: Create new table with CHECK constraints (without index yet)
     op.create_table(
         "session_log_new",
         sa.Column("id_session_log", sa.Integer(), nullable=False),
@@ -59,15 +59,7 @@ def upgrade() -> None:
         sa.PrimaryKeyConstraint("id_session_log"),
     )
 
-    # Step 2: Create index on new table
-    op.create_index(
-        "ix_session_log_session_identifier",
-        "session_log_new",
-        ["session_identifier"],
-        unique=False,
-    )
-
-    # Step 3: Copy data from old table to new table
+    # Step 2: Copy data from old table to new table
     op.execute(
         """
         INSERT INTO session_log_new (
@@ -81,18 +73,29 @@ def upgrade() -> None:
         """
     )
 
+    # Step 3: Drop index from old table
+    op.drop_index("ix_session_log_session_identifier", table_name="session_log")
+
     # Step 4: Drop old table
     op.drop_table("session_log")
 
     # Step 5: Rename new table to original name
     op.rename_table("session_log_new", "session_log")
 
+    # Step 6: Create index on the renamed table (after old one is dropped)
+    op.create_index(
+        "ix_session_log_session_identifier",
+        "session_log",
+        ["session_identifier"],
+        unique=False,
+    )
+
 
 def downgrade() -> None:
     """Downgrade schema."""
     # Recreate table without CHECK constraints
 
-    # Step 1: Create table without CHECK constraints
+    # Step 1: Create table without CHECK constraints (without index yet)
     op.create_table(
         "session_log_old",
         sa.Column("id_session_log", sa.Integer(), nullable=False),
@@ -109,15 +112,7 @@ def downgrade() -> None:
         sa.PrimaryKeyConstraint("id_session_log"),
     )
 
-    # Step 2: Create index
-    op.create_index(
-        "ix_session_log_session_identifier",
-        "session_log_old",
-        ["session_identifier"],
-        unique=False,
-    )
-
-    # Step 3: Copy data
+    # Step 2: Copy data
     op.execute(
         """
         INSERT INTO session_log_old (
@@ -131,8 +126,19 @@ def downgrade() -> None:
         """
     )
 
+    # Step 3: Drop index from current table
+    op.drop_index("ix_session_log_session_identifier", table_name="session_log")
+
     # Step 4: Drop new table
     op.drop_table("session_log")
 
     # Step 5: Rename old table
     op.rename_table("session_log_old", "session_log")
+
+    # Step 6: Create index on renamed table
+    op.create_index(
+        "ix_session_log_session_identifier",
+        "session_log",
+        ["session_identifier"],
+        unique=False,
+    )

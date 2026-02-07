@@ -121,6 +121,33 @@ def _run_alembic_command(command_name: str, *args, **kwargs):
     command_func(cfg, *args, **kwargs)
 
 
+def _get_current_revision() -> str:
+    """Get the current database revision.
+
+    Returns
+    -------
+    str
+        Current revision ID or "none" if not stamped
+    """
+    import os
+
+    from alembic.runtime.migration import MigrationContext
+    from sqlalchemy import create_engine
+
+    db_path = os.getenv("NX_DB_PATH")
+    if not db_path:
+        return "unknown"
+
+    try:
+        engine = create_engine(f"sqlite:///{db_path}")
+        with engine.connect() as connection:
+            context = MigrationContext.configure(connection)
+            current_rev = context.get_current_revision()
+            return current_rev or "none"
+    except Exception:
+        return "unknown"
+
+
 def _cli():  # noqa: PLR0915
     """Create the Click CLI application.
 
@@ -162,12 +189,21 @@ def _cli():  # noqa: PLR0915
         This is equivalent to running initialize_db.py followed by
         'nexuslims-migrate upgrade head'.
         """
-        import subprocess
+        import os
         import sys
 
-        from nexusLIMS.config import settings
+        # Get DB path from environment variable directly (not from settings)
+        # because settings validation requires the file to exist
+        db_path_str = os.getenv("NX_DB_PATH")
+        if not db_path_str:
+            click.secho(
+                "Error: NX_DB_PATH environment variable is not set", fg="red", err=True
+            )
+            click.echo("Set it to the desired database location, e.g.:", err=True)
+            click.echo("  export NX_DB_PATH=/path/to/database.db", err=True)
+            sys.exit(1)
 
-        db_path = settings.NX_DB_PATH
+        db_path = Path(db_path_str)
 
         if db_path.exists() and not force:
             click.secho(
@@ -178,29 +214,24 @@ def _cli():  # noqa: PLR0915
             )
             sys.exit(1)
 
+        # Create parent directory if it doesn't exist
+        db_path.parent.mkdir(parents=True, exist_ok=True)
+
+        # Create empty database file
+        db_path.touch()
+
         click.echo(f"Initializing database at {db_path}...")
 
-        # Initialize the database schema
+        # Run all migrations to create the schema
         try:
-            result = subprocess.run(
-                [sys.executable, "-m", "nexusLIMS.db.dev.initialize_db"],
-                capture_output=True,
-                text=True,
-                check=True,
-            )
-            if result.stdout:
-                click.echo(result.stdout)
-        except subprocess.CalledProcessError as e:
-            click.secho(f"Error initializing database: {e.stderr}", fg="red", err=True)
-            sys.exit(1)
-
-        # Stamp the database with the current migration version
-        click.echo("Marking database as current version...")
-        try:
-            _run_alembic_command("stamp", "head")
+            _run_alembic_command("upgrade", "head")
             click.secho("✓ Database initialized successfully", fg="green")
+            click.echo(f"  Current version: {_get_current_revision()}")
         except Exception as e:
-            click.secho(f"Error stamping database: {e}", fg="red", err=True)
+            click.secho(f"Error initializing database: {e}", fg="red", err=True)
+            # Clean up the empty database file on failure
+            if db_path.exists():
+                db_path.unlink()
             sys.exit(1)
 
     @cli.command()
