@@ -14,6 +14,34 @@ up to version 1.4.3. The datasophos fork begins at version 2.0.
 
 <!-- towncrier release notes start -->
 
+## 2.4.1 (2026-02-06)
+
+### New features
+
+- The `nexuslims-process-records` command now supports `--from` and `--to` options to filter sessions by date range. Use these options to process sessions from specific time periods, for example `--from 2025-01-01 --to 2025-01-31` to process all sessions in January 2025. Both date bounds are inclusive (the `--to` date includes all sessions ending by 23:59:59 on that day). Without these options, all pending sessions are processed regardless of date. ([#47](https://github.com/datasophos/NexusLIMS/issues/47))
+- Added `nexuslims-config dump` and `nexuslims-config load` commands for exporting and importing the full NexusLIMS configuration as a JSON file, making it straightforward to migrate configurations between deployments. Running `nexuslims-process-records -v` (or `-vv`) now also prints the effective configuration (with secrets redacted) to the log at startup. ([#56](https://github.com/datasophos/NexusLIMS/issues/56))
+- Added `NX_DISABLE_SSL_VERIFY` configuration option to disable SSL certificate verification for all outgoing HTTPS requests (for local development only).
+
+### Bug fixes
+
+- Fixed a validation error when extracting metadata from Gatan `.dm3` Diffraction files.  `magnification` and `stage_position` are now only written as core fields for dataset types whose schema declares them (Image / SpectrumImage); for other types the values are routed to extensions or dropped when empty. ([#52](https://github.com/datasophos/NexusLIMS/issues/52))
+- Fixed eLabFTW export failure when the ``Location`` header returned by the
+  server differs from ``base_url`` in host or port (e.g. localhost deployments).
+  Experiment and upload IDs are now extracted from the last path segment of the
+  ``Location`` URL instead of relying on prefix-stripping. ([#60](https://github.com/datasophos/NexusLIMS/issues/60))
+
+### Documentation improvements
+
+- Added comprehensive CLI reference documentation covering all `nexuslims-process-records` command-line options including the new `--from` and `--to` date filtering flags, dry-run mode, verbosity levels, and usage examples. ([#47](https://github.com/datasophos/NexusLIMS/issues/47))
+- Updated `.env.example` to match current configuration surface and documentation standards. Fixed stale repository links pointing to NIST infrastructure, removed unused `NX_TEST_CDCS_URL` variable, added missing `NX_EXPORT_STRATEGY` setting, synchronized `NX_IGNORE_PATTERNS` default value with code, and updated Python documentation link to version-agnostic URL. ([#53](https://github.com/datasophos/NexusLIMS/issues/53))
+- Added `NX_EXPORT_STRATEGY` to the configuration reference, including a dedicated entry with descriptions of each valid value and its inclusion in the Full Production Configuration example block. ([#54](https://github.com/datasophos/NexusLIMS/issues/54))
+- Added note to {ref}`Local Test Deployment <cdcs-local-test-deployment>` docs about the need to set `NX_CERT_BUNDLE_FILE` in the backend when using `mkcert`.
+
+### Miscellaneous/Development changes
+
+- Updated links to project homepage and documentation for PyPI release info.
+
+
 ## 2.4.0 (2026-02-02)
 
 ### New features
