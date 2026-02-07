@@ -79,8 +79,20 @@ def pytest_configure(config):
 
     We use the integration test directories and set up minimal required
     environment variables to allow imports to succeed.
+
+    IMPORTANT: NX_TEST_MODE is already set in tests/conftest.py, which
+    disables .env file loading in nexusLIMS.config to prevent test
+    contamination from local environment files.
     """
     import os
+
+    # Verify NX_TEST_MODE is set (should be set by tests/conftest.py)
+    if os.environ.get("NX_TEST_MODE", "").lower() not in ("true", "1", "yes"):
+        msg = (
+            "CRITICAL: NX_TEST_MODE must be set before running integration tests. "
+            "This should be set in tests/conftest.py."
+        )
+        raise RuntimeError(msg)
 
     # Create test directories (for actual test execution)
     test_dirs = [
@@ -94,11 +106,10 @@ def pytest_configure(config):
 
     # Set up environment variables BEFORE any nexusLIMS imports
     # These are the minimum required for Settings validation
-    if "NX_INSTRUMENT_DATA_PATH" not in os.environ:
-        os.environ["NX_INSTRUMENT_DATA_PATH"] = str(TEST_INSTRUMENT_DATA_DIR)
-
-    if "NX_DATA_PATH" not in os.environ:
-        os.environ["NX_DATA_PATH"] = str(TEST_DATA_DIR)
+    # CRITICAL: Use unconditional assignment to ensure test values are used
+    # even if variables are already set in the shell environment
+    os.environ["NX_INSTRUMENT_DATA_PATH"] = str(TEST_INSTRUMENT_DATA_DIR)
+    os.environ["NX_DATA_PATH"] = str(TEST_DATA_DIR)
 
     # Create a temporary database file for integration tests
     # Always use integration test database (don't reuse unit test database)
@@ -112,16 +123,11 @@ def pytest_configure(config):
 
     # Set required CDCS environment variables to dummy values
     # (actual values will be set per-test via fixtures)
-    if "NX_CDCS_URL" not in os.environ:
-        os.environ["NX_CDCS_URL"] = "https://cdcs.example.com"
-
-    if "NX_CDCS_TOKEN" not in os.environ:
-        os.environ["NX_CDCS_TOKEN"] = "test-api-token"
-
-    if "NX_CERT_BUNDLE" not in os.environ:
-        os.environ["NX_CERT_BUNDLE"] = (
-            "-----BEGIN CERTIFICATE-----\nDUMMY\n-----END CERTIFICATE-----"
-        )
+    os.environ["NX_CDCS_URL"] = "https://cdcs.example.com"
+    os.environ["NX_CDCS_TOKEN"] = "test-api-token"
+    os.environ["NX_CERT_BUNDLE"] = (
+        "-----BEGIN CERTIFICATE-----\nDUMMY\n-----END CERTIFICATE-----"
+    )
 
 
 # ============================================================================

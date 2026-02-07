@@ -177,15 +177,23 @@ if [ "$DRAFT_ONLY" = true ]; then
     exit 0
 fi
 
+# Calculate next dev version for display
+IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
+PATCH=$(echo "$PATCH" | sed 's/-.*//')
+NEXT_PATCH=$((PATCH + 1))
+DEV_VERSION="$MAJOR.$MINOR.$NEXT_PATCH.dev0"
+
 # Confirm before proceeding
 if [ "$SKIP_CONFIRM" = false ]; then
     echo "This will:"
     echo "  1. Update version in pyproject.toml to $VERSION"
-    echo "  2. Generate changelog from towncrier fragments"
-    echo "  3. Commit changes"
-    echo "  4. Create and tag version v$VERSION"
+    echo "  2. Set release date in version.py"
+    echo "  3. Generate changelog from towncrier fragments"
+    echo "  4. Commit changes"
+    echo "  5. Create and tag version v$VERSION"
+    echo "  6. Bump to development version $DEV_VERSION"
     if [ "$NO_PUSH" = false ]; then
-        echo "  5. Push commits and tag to remote"
+        echo "  7. Push commits and tag to remote"
     fi
     echo
     read -p "Continue? (y/N) " -n 1 -r
@@ -200,8 +208,10 @@ if [ "$DRY_RUN" = true ]; then
     warning "DRY RUN MODE - No changes will be made"
     echo
     info "Would update version to: $VERSION"
+    info "Would set release date to: $(date +%Y-%m-%d)"
     info "Would generate changelog and commit"
     info "Would create tag: v$VERSION"
+    info "Would bump to dev version: $DEV_VERSION"
     if [ "$NO_PUSH" = false ]; then
         info "Would push to remote"
     fi
@@ -215,6 +225,13 @@ sed -i.bak "s/^version = .*/version = \"$VERSION\"/" pyproject.toml
 rm pyproject.toml.bak
 success "Version updated to $VERSION"
 
+# Update release date in version.py
+RELEASE_DATE=$(date +%Y-%m-%d)
+info "Setting release date in version.py..."
+sed -i.bak "s/^__release_date__ = .*/__release_date__ = \"$RELEASE_DATE\"/" nexusLIMS/version.py
+rm nexusLIMS/version.py.bak
+success "Release date set to $RELEASE_DATE"
+
 # Generate changelog with towncrier (this will consume the fragments)
 info "Generating changelog with towncrier..."
 uv run towncrier build --version="$VERSION" --yes
@@ -226,7 +243,7 @@ uv run ruff format pyproject.toml || true
 
 # Stage changes
 info "Staging changes..."
-git add pyproject.toml docs/reference/changelog.md docs/changes/
+git add pyproject.toml nexusLIMS/version.py docs/reference/changelog.md docs/changes/
 success "Changes staged"
 
 # Commit
@@ -241,13 +258,37 @@ info "Creating tag: $TAG_NAME"
 git tag -a "$TAG_NAME" -m "Release $VERSION"
 success "Tag created: $TAG_NAME"
 
+# Bump to next dev version
+info "Bumping to next development version..."
+
+# Parse version and increment patch for dev version
+IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
+# Remove any pre-release suffix (e.g., -rc1) from PATCH
+PATCH=$(echo "$PATCH" | sed 's/-.*//')
+NEXT_PATCH=$((PATCH + 1))
+DEV_VERSION="$MAJOR.$MINOR.$NEXT_PATCH.dev0"
+
+# Update version in pyproject.toml
+sed -i.bak "s/^version = .*/version = \"$DEV_VERSION\"/" pyproject.toml
+rm pyproject.toml.bak
+
+# Reset release date to None
+sed -i.bak "s/^__release_date__ = .*/__release_date__ = None/" nexusLIMS/version.py
+rm nexusLIMS/version.py.bak
+
+# Stage and commit dev version bump
+git add pyproject.toml nexusLIMS/version.py
+git commit -m "Bump version to $DEV_VERSION for development"
+success "Version bumped to $DEV_VERSION"
+
 # Show what was done
 echo
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 success "Release preparation complete!"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo
-info "Version: $VERSION"
+info "Release version: $VERSION"
+info "Development version: $DEV_VERSION"
 info "Tag: $TAG_NAME"
 info "Branch: $CURRENT_BRANCH"
 echo

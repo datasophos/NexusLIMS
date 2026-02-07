@@ -1159,15 +1159,19 @@ def file_factory(tmp_path):
 
 
 @pytest.fixture
-def with_validation(monkeypatch):
+def with_validation(monkeypatch, tmp_path):
     """
     Temporarily enable validation for tests that specifically test validation behavior.
 
     By default, tests run with NX_TEST_MODE=true (from conftest.py), which disables
     validation. This fixture temporarily disables test mode to allow validation tests
     to run as expected.
+
+    IMPORTANT: Changes to a temporary directory to avoid loading from any .env files
+    in the repository root, which would interfere with validation testing.
     """
     import importlib
+    import os
     import sys
 
     import nexusLIMS.config
@@ -1192,6 +1196,13 @@ def with_validation(monkeypatch):
                     # If reload fails, just continue - module might have dependencies
                     importlib.reload(sys.modules[module_name])
 
+    # Save original directory
+    original_cwd = Path.cwd()
+
+    # Change to temp directory to avoid loading .env files from repo root
+    # This ensures validation tests run in a clean environment
+    os.chdir(tmp_path)
+
     # Temporarily disable test mode
     monkeypatch.setenv("NX_TEST_MODE", "false")
 
@@ -1209,6 +1220,9 @@ def with_validation(monkeypatch):
     reload_dependent_modules()
 
     yield
+
+    # Restore original directory FIRST (before cleanup)
+    os.chdir(original_cwd)
 
     # Cleanup: Restore test mode and reload config again to restore test defaults
     monkeypatch.setenv("NX_TEST_MODE", "true")

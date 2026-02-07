@@ -9,11 +9,45 @@ from click.testing import CliRunner
 from filelock import Timeout
 
 from nexusLIMS.cli.process_records import (
+    _format_version,
     check_log_for_errors,
     main,
     send_error_notification,
     setup_file_logging,
 )
+
+
+class TestFormatVersion:
+    """Test the _format_version function."""
+
+    def test_format_version_with_release_date(self, monkeypatch):
+        """Version string includes release date when available."""
+        monkeypatch.setattr("nexusLIMS.version.__version__", "2.1.0")
+        monkeypatch.setattr("nexusLIMS.version.__release_date__", "2025-02-06")
+
+        result = _format_version("nexuslims-process-records")
+
+        assert (
+            result == "nexuslims-process-records (NexusLIMS 2.1.0, released 2025-02-06)"
+        )
+
+    def test_format_version_without_release_date(self, monkeypatch):
+        """Version string omits release date when not available."""
+        monkeypatch.setattr("nexusLIMS.version.__version__", "2.1.0")
+        monkeypatch.setattr("nexusLIMS.version.__release_date__", None)
+
+        result = _format_version("nexuslims-process-records")
+
+        assert result == "nexuslims-process-records (NexusLIMS 2.1.0)"
+
+    def test_format_version_with_empty_release_date(self, monkeypatch):
+        """Empty string release date is treated as missing."""
+        monkeypatch.setattr("nexusLIMS.version.__version__", "2.1.0")
+        monkeypatch.setattr("nexusLIMS.version.__release_date__", "")
+
+        result = _format_version("nexuslims-process-records")
+
+        assert result == "nexuslims-process-records (NexusLIMS 2.1.0)"
 
 
 class TestSetupFileLogging:
@@ -379,6 +413,10 @@ class TestMainCLI:
         monkeypatch,
     ):
         """Test that dry run mode is passed correctly."""
+        from datetime import datetime, timedelta
+
+        from nexusLIMS.utils.time import current_system_tz
+
         mock_settings = Mock()
         mock_settings.log_dir_path = tmp_path / "logs"
         mock_settings.lock_file_path = tmp_path / ".builder.lock"
@@ -390,7 +428,18 @@ class TestMainCLI:
         result = runner.invoke(main, ["-n"])
 
         assert result.exit_code == 0
-        mock_process_records.assert_called_once_with(dry_run=True)
+        mock_process_records.assert_called_once()
+
+        # Verify all parameters including date filtering
+        call_args = mock_process_records.call_args
+        assert call_args.kwargs["dry_run"] is True
+        assert call_args.kwargs["dt_to"] is None
+
+        # dt_from should be approximately 1 week ago (default)
+        dt_from = call_args.kwargs["dt_from"]
+        expected_from = datetime.now(tz=current_system_tz()) - timedelta(weeks=1)
+        time_diff = abs((dt_from - expected_from).total_seconds())
+        assert time_diff < 60, f"dt_from is {time_diff}s off from expected"
 
     @patch("nexusLIMS.builder.record_builder.process_new_records")
     @patch("nexusLIMS.utils.logging.setup_loggers")
@@ -646,6 +695,304 @@ class TestMainCLI:
         assert result.exit_code == 0
         # -v should call setup_loggers with INFO
         mock_setup_loggers.assert_called_once_with(logging.INFO)
+
+
+class TestDateFiltering:
+    """Test date filtering CLI options."""
+
+    @patch("nexusLIMS.builder.record_builder.process_new_records")
+    @patch("nexusLIMS.cli.process_records.send_error_notification")
+    @patch("nexusLIMS.utils.logging.setup_loggers")
+    def test_default_from_date_one_week_ago(
+        self,
+        mock_setup_loggers,
+        mock_send_email,
+        mock_process_records,
+        tmp_path,
+        monkeypatch,
+    ):
+        """Test that default --from is 1 week ago."""
+        from datetime import datetime, timedelta
+
+        from nexusLIMS.utils.time import current_system_tz
+
+        mock_settings = Mock()
+        mock_settings.log_dir_path = tmp_path / "logs"
+        mock_settings.lock_file_path = tmp_path / ".builder.lock"
+        mock_settings.email_config = None
+
+        monkeypatch.setattr("nexusLIMS.config.settings", mock_settings)
+
+        runner = CliRunner()
+        result = runner.invoke(main, [])
+
+        assert result.exit_code == 0
+        mock_process_records.assert_called_once()
+
+        # Check that dt_from is approximately 1 week ago
+        call_args = mock_process_records.call_args
+        dt_from = call_args.kwargs["dt_from"]
+        dt_to = call_args.kwargs["dt_to"]
+
+        assert dt_to is None  # No upper bound by default
+
+        # dt_from should be approximately 1 week ago (allow 1 minute tolerance)
+        expected_from = datetime.now(tz=current_system_tz()) - timedelta(weeks=1)
+        time_diff = abs((dt_from - expected_from).total_seconds())
+        assert time_diff < 60, f"dt_from is {time_diff}s off from expected"
+
+    @patch("nexusLIMS.builder.record_builder.process_new_records")
+    @patch("nexusLIMS.cli.process_records.send_error_notification")
+    @patch("nexusLIMS.utils.logging.setup_loggers")
+    def test_from_none_disables_lower_bound(
+        self,
+        mock_setup_loggers,
+        mock_send_email,
+        mock_process_records,
+        tmp_path,
+        monkeypatch,
+    ):
+        """Test that --from=none disables lower bound."""
+        mock_settings = Mock()
+        mock_settings.log_dir_path = tmp_path / "logs"
+        mock_settings.lock_file_path = tmp_path / ".builder.lock"
+        mock_settings.email_config = None
+
+        monkeypatch.setattr("nexusLIMS.config.settings", mock_settings)
+
+        runner = CliRunner()
+        result = runner.invoke(main, ["--from=none"])
+
+        assert result.exit_code == 0
+        mock_process_records.assert_called_once()
+
+        call_args = mock_process_records.call_args
+        assert call_args.kwargs["dt_from"] is None
+        assert call_args.kwargs["dt_to"] is None
+
+    @patch("nexusLIMS.builder.record_builder.process_new_records")
+    @patch("nexusLIMS.cli.process_records.send_error_notification")
+    @patch("nexusLIMS.utils.logging.setup_loggers")
+    def test_from_all_disables_lower_bound(
+        self,
+        mock_setup_loggers,
+        mock_send_email,
+        mock_process_records,
+        tmp_path,
+        monkeypatch,
+    ):
+        """Test that --from=all disables lower bound."""
+        mock_settings = Mock()
+        mock_settings.log_dir_path = tmp_path / "logs"
+        mock_settings.lock_file_path = tmp_path / ".builder.lock"
+        mock_settings.email_config = None
+
+        monkeypatch.setattr("nexusLIMS.config.settings", mock_settings)
+
+        runner = CliRunner()
+        result = runner.invoke(main, ["--from=all"])
+
+        assert result.exit_code == 0
+        mock_process_records.assert_called_once()
+
+        call_args = mock_process_records.call_args
+        assert call_args.kwargs["dt_from"] is None
+
+    @patch("nexusLIMS.builder.record_builder.process_new_records")
+    @patch("nexusLIMS.cli.process_records.send_error_notification")
+    @patch("nexusLIMS.utils.logging.setup_loggers")
+    def test_custom_from_date(
+        self,
+        mock_setup_loggers,
+        mock_send_email,
+        mock_process_records,
+        tmp_path,
+        monkeypatch,
+    ):
+        """Test custom --from date."""
+        from datetime import datetime
+
+        from nexusLIMS.utils.time import current_system_tz
+
+        mock_settings = Mock()
+        mock_settings.log_dir_path = tmp_path / "logs"
+        mock_settings.lock_file_path = tmp_path / ".builder.lock"
+        mock_settings.email_config = None
+
+        monkeypatch.setattr("nexusLIMS.config.settings", mock_settings)
+
+        runner = CliRunner()
+        result = runner.invoke(main, ["--from=2025-01-01"])
+
+        assert result.exit_code == 0
+        mock_process_records.assert_called_once()
+
+        call_args = mock_process_records.call_args
+        dt_from = call_args.kwargs["dt_from"]
+
+        expected = datetime(2025, 1, 1, 0, 0, 0, tzinfo=current_system_tz())
+        assert dt_from == expected
+
+    @patch("nexusLIMS.builder.record_builder.process_new_records")
+    @patch("nexusLIMS.cli.process_records.send_error_notification")
+    @patch("nexusLIMS.utils.logging.setup_loggers")
+    def test_custom_to_date(
+        self,
+        mock_setup_loggers,
+        mock_send_email,
+        mock_process_records,
+        tmp_path,
+        monkeypatch,
+    ):
+        """Test custom --to date (should be end of day for inclusive range)."""
+        from datetime import datetime
+
+        from nexusLIMS.utils.time import current_system_tz
+
+        mock_settings = Mock()
+        mock_settings.log_dir_path = tmp_path / "logs"
+        mock_settings.lock_file_path = tmp_path / ".builder.lock"
+        mock_settings.email_config = None
+
+        monkeypatch.setattr("nexusLIMS.config.settings", mock_settings)
+
+        runner = CliRunner()
+        result = runner.invoke(main, ["--from=none", "--to=2025-12-31"])
+
+        assert result.exit_code == 0
+        mock_process_records.assert_called_once()
+
+        call_args = mock_process_records.call_args
+        dt_to = call_args.kwargs["dt_to"]
+
+        # --to date should be end of day (23:59:59) for inclusive range
+        expected = datetime(2025, 12, 31, 23, 59, 59, tzinfo=current_system_tz())
+        assert dt_to == expected
+
+    @patch("nexusLIMS.builder.record_builder.process_new_records")
+    @patch("nexusLIMS.cli.process_records.send_error_notification")
+    @patch("nexusLIMS.utils.logging.setup_loggers")
+    def test_both_from_and_to_dates(
+        self,
+        mock_setup_loggers,
+        mock_send_email,
+        mock_process_records,
+        tmp_path,
+        monkeypatch,
+    ):
+        """Test both --from and --to dates together (inclusive range)."""
+        from datetime import datetime
+
+        from nexusLIMS.utils.time import current_system_tz
+
+        mock_settings = Mock()
+        mock_settings.log_dir_path = tmp_path / "logs"
+        mock_settings.lock_file_path = tmp_path / ".builder.lock"
+        mock_settings.email_config = None
+
+        monkeypatch.setattr("nexusLIMS.config.settings", mock_settings)
+
+        runner = CliRunner()
+        result = runner.invoke(main, ["--from=2025-01-01", "--to=2025-01-31"])
+
+        assert result.exit_code == 0
+        mock_process_records.assert_called_once()
+
+        call_args = mock_process_records.call_args
+        dt_from = call_args.kwargs["dt_from"]
+        dt_to = call_args.kwargs["dt_to"]
+
+        tz = current_system_tz()
+        # --from should be start of day (midnight)
+        assert dt_from == datetime(2025, 1, 1, 0, 0, 0, tzinfo=tz)
+        # --to should be end of day (23:59:59) for inclusive range
+        assert dt_to == datetime(2025, 1, 31, 23, 59, 59, tzinfo=tz)
+
+    @patch("nexusLIMS.builder.record_builder.process_new_records")
+    @patch("nexusLIMS.cli.process_records.send_error_notification")
+    @patch("nexusLIMS.utils.logging.setup_loggers")
+    def test_datetime_with_time_component(
+        self,
+        mock_setup_loggers,
+        mock_send_email,
+        mock_process_records,
+        tmp_path,
+        monkeypatch,
+    ):
+        """Test datetime string with time component for --from."""
+        from datetime import datetime
+
+        from nexusLIMS.utils.time import current_system_tz
+
+        mock_settings = Mock()
+        mock_settings.log_dir_path = tmp_path / "logs"
+        mock_settings.lock_file_path = tmp_path / ".builder.lock"
+        mock_settings.email_config = None
+
+        monkeypatch.setattr("nexusLIMS.config.settings", mock_settings)
+
+        runner = CliRunner()
+        result = runner.invoke(main, ["--from=2025-01-01T12:30:45"])
+
+        assert result.exit_code == 0
+        mock_process_records.assert_called_once()
+
+        call_args = mock_process_records.call_args
+        dt_from = call_args.kwargs["dt_from"]
+
+        expected = datetime(2025, 1, 1, 12, 30, 45, tzinfo=current_system_tz())
+        assert dt_from == expected
+
+    @patch("nexusLIMS.builder.record_builder.process_new_records")
+    @patch("nexusLIMS.cli.process_records.send_error_notification")
+    @patch("nexusLIMS.utils.logging.setup_loggers")
+    def test_to_date_with_time_component_preserved(
+        self,
+        mock_setup_loggers,
+        mock_send_email,
+        mock_process_records,
+        tmp_path,
+        monkeypatch,
+    ):
+        """Test that explicit time in --to is preserved (not changed to 23:59:59)."""
+        from datetime import datetime
+
+        from nexusLIMS.utils.time import current_system_tz
+
+        mock_settings = Mock()
+        mock_settings.log_dir_path = tmp_path / "logs"
+        mock_settings.lock_file_path = tmp_path / ".builder.lock"
+        mock_settings.email_config = None
+
+        monkeypatch.setattr("nexusLIMS.config.settings", mock_settings)
+
+        runner = CliRunner()
+        result = runner.invoke(main, ["--from=none", "--to=2025-01-31T14:30:00"])
+
+        assert result.exit_code == 0
+        mock_process_records.assert_called_once()
+
+        call_args = mock_process_records.call_args
+        dt_to = call_args.kwargs["dt_to"]
+
+        # Explicit time should be preserved, not changed to 23:59:59
+        expected = datetime(2025, 1, 31, 14, 30, 0, tzinfo=current_system_tz())
+        assert dt_to == expected
+
+    @patch("nexusLIMS.utils.logging.setup_loggers")
+    def test_invalid_date_format(self, mock_setup_loggers, tmp_path, monkeypatch):
+        """Test that invalid date format raises error."""
+        mock_settings = Mock()
+        mock_settings.log_dir_path = tmp_path / "logs"
+        mock_settings.lock_file_path = tmp_path / ".builder.lock"
+
+        monkeypatch.setattr("nexusLIMS.config.settings", mock_settings)
+
+        runner = CliRunner()
+        result = runner.invoke(main, ["--from=invalid-date"])
+
+        assert result.exit_code != 0
+        assert "Invalid date format" in result.output
 
 
 def test_main_entry_point():

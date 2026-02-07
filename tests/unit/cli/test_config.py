@@ -1,7 +1,6 @@
 """Tests for the nexuslims-config CLI (dump / load) and helpers."""
 
 import json
-import os
 from pathlib import Path
 from unittest.mock import Mock
 
@@ -10,6 +9,7 @@ from click.testing import CliRunner
 from nexusLIMS.cli.config import (
     _build_config_dict,
     _flatten_to_env,
+    _format_version,
     _sanitize_config,
     main,
 )
@@ -78,6 +78,42 @@ def _mock_settings(
         settings.email_config.return_value = None
 
     return settings
+
+
+# ===========================================================================
+# TestFormatVersion
+# ===========================================================================
+
+
+class TestFormatVersion:
+    """Unit tests for _format_version."""
+
+    def test_format_version_with_release_date(self, monkeypatch):
+        """Version string includes release date when available."""
+        monkeypatch.setattr("nexusLIMS.version.__version__", "1.2.3")
+        monkeypatch.setattr("nexusLIMS.version.__release_date__", "2025-01-15")
+
+        result = _format_version("test-prog")
+
+        assert result == "test-prog (NexusLIMS 1.2.3, released 2025-01-15)"
+
+    def test_format_version_without_release_date(self, monkeypatch):
+        """Version string omits release date when not available."""
+        monkeypatch.setattr("nexusLIMS.version.__version__", "1.2.3")
+        monkeypatch.setattr("nexusLIMS.version.__release_date__", None)
+
+        result = _format_version("test-prog")
+
+        assert result == "test-prog (NexusLIMS 1.2.3)"
+
+    def test_format_version_with_empty_release_date(self, monkeypatch):
+        """Empty string release date is treated as missing."""
+        monkeypatch.setattr("nexusLIMS.version.__version__", "1.2.3")
+        monkeypatch.setattr("nexusLIMS.version.__release_date__", "")
+
+        result = _format_version("test-prog")
+
+        assert result == "test-prog (NexusLIMS 1.2.3)"
 
 
 # ===========================================================================
@@ -401,20 +437,34 @@ class TestDumpCommand:
         assert "WARNING" in result.stderr
         assert "credentials" in result.stderr
 
-    def test_dump_default_output_name(self, tmp_path, monkeypatch):
-        """Default output path is nexuslims_config.json in CWD."""
+    def test_dump_prints_to_stdout_by_default(self, monkeypatch):
+        """Default behavior is to print JSON to stdout."""
         monkeypatch.setattr("nexusLIMS.config.settings", _mock_settings())
 
         runner = CliRunner(mix_stderr=False)
-        original_cwd = Path.cwd()
-        os.chdir(tmp_path)
-        try:
-            result = runner.invoke(main, ["dump"])
-        finally:
-            os.chdir(original_cwd)
+        result = runner.invoke(main, ["dump"])
 
         assert result.exit_code == 0, result.output
-        assert (tmp_path / "nexuslims_config.json").exists()
+        # stdout should contain valid JSON
+        data = json.loads(result.stdout)
+        assert data["NX_CDCS_TOKEN"] == "secret-cdcs-token"
+        assert data["NX_FILE_STRATEGY"] == "exclusive"
+
+    def test_dump_writes_to_file_with_output_flag(self, tmp_path, monkeypatch):
+        """When --output is specified, writes to that file instead of stdout."""
+        monkeypatch.setattr("nexusLIMS.config.settings", _mock_settings())
+        output_file = tmp_path / "custom_config.json"
+
+        runner = CliRunner(mix_stderr=False)
+        result = runner.invoke(main, ["dump", "--output", str(output_file)])
+
+        assert result.exit_code == 0, result.output
+        assert output_file.exists()
+        # stdout should NOT contain the JSON (only the confirmation message on stderr)
+        assert "{" not in result.stdout
+        # File should contain valid JSON
+        data = json.loads(output_file.read_text())
+        assert data["NX_CDCS_TOKEN"] == "secret-cdcs-token"
 
 
 # ===========================================================================

@@ -2,7 +2,7 @@
 CLI commands for dumping and loading NexusLIMS configuration.
 
 Provides ``nexuslims-config dump`` and ``nexuslims-config load`` for exporting
-the current effective configuration to a JSON file and importing a previously
+the current effective configuration to JSON and importing a previously
 dumped configuration back into a ``.env`` file.  The JSON format uses a nested
 structure for NEMO harvesters and email config so that the file is both
 human-readable and unambiguous.
@@ -11,8 +11,10 @@ Usage
 -----
 
 ```bash
-# Dump current config (writes nexuslims_config.json in CWD by default)
+# Dump current config to stdout (default)
 nexuslims-config dump
+
+# Dump current config to a file
 nexuslims-config dump --output /path/to/nexuslims_config.json
 
 # Load a previously dumped config into .env
@@ -41,6 +43,18 @@ import click
 # --help / --version fast (same pattern as process_records.py).
 
 logger = logging.getLogger(__name__)
+
+
+def _format_version(prog_name: str) -> str:
+    """Format version string with release date if available."""
+    from nexusLIMS.version import __release_date__, __version__  # noqa: PLC0415
+
+    version_str = f"{prog_name} (NexusLIMS {__version__}"
+    if __release_date__:
+        version_str += f", released {__release_date__}"
+    version_str += ")"
+    return version_str
+
 
 # ---------------------------------------------------------------------------
 # Secret-field definitions
@@ -272,6 +286,7 @@ def _write_env_file(env_vars: dict[str, str], path: Path) -> None:
 
 
 @click.group()
+@click.version_option(version=None, message=_format_version("nexuslims-config"))
 def main() -> None:
     """Manage NexusLIMS configuration files."""
 
@@ -281,12 +296,13 @@ def main() -> None:
     "--output",
     "-o",
     type=click.Path(dir_okay=False, writable=True),
-    default="nexuslims_config.json",
-    show_default=True,
-    help="Path to write the JSON config file.",
+    default=None,
+    help="Path to write the JSON config file. If omitted, prints to stdout.",
 )
-def dump(output: str) -> None:
-    """Dump the current effective configuration to a JSON file.
+def dump(output: str | None) -> None:
+    """Dump the current effective configuration to JSON.
+
+    By default, prints the configuration to stdout. Use --output to write to a file.
 
     The output contains live API tokens and passwords — handle it like a
     secret.  Use ``load`` to import a previously dumped file back into a
@@ -295,16 +311,23 @@ def dump(output: str) -> None:
     from nexusLIMS.config import settings  # noqa: PLC0415
 
     click.echo(
-        "WARNING: The output file will contain live credentials "
+        "WARNING: The output will contain live credentials "
         "(API tokens, passwords, certificates).  "
         "Handle it with the same care as your .env file.",
         err=True,
     )
 
     config = _build_config_dict(settings)
-    output_path = Path(output)
-    output_path.write_text(json.dumps(config, indent=2, default=str) + "\n")
-    click.echo(f"Configuration dumped to {output_path}")
+    json_output = json.dumps(config, indent=2, default=str)
+
+    if output is None:
+        # Print to stdout
+        click.echo(json_output)
+    else:
+        # Write to file
+        output_path = Path(output)
+        output_path.write_text(json_output + "\n")
+        click.echo(f"Configuration dumped to {output_path}", err=True)
 
 
 @main.command()

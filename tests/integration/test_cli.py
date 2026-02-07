@@ -59,7 +59,9 @@ class TestProcessRecordsScript:
             from click.testing import CliRunner
 
             runner = CliRunner()
-            result = runner.invoke(main, ["-vv"])
+            # in order for it to find sessions that we have in our integration NEMO
+            # instance, we have to look farther back than just the default one week:
+            result = runner.invoke(main, ["-vv", "--from", "none"])
 
             # Check that the command succeeded
             assert result.exit_code == 0, f"Command failed: {result.output}"

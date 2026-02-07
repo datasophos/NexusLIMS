@@ -25,6 +25,9 @@ Options
 ```bash
 -n, --dry-run   : Dry run mode (find files without building records)
 -v, --verbose   : Increase verbosity (-v for INFO, -vv for DEBUG)
+--from <date>   : Start date for filtering (ISO format). Defaults to 1 week ago.
+                  Use "none" to disable lower bound.
+--to <date>     : End date for filtering (ISO format). Omit to disable upper bound.
 --version       : Show version and exit
 --help          : Show help message and exit
 ```
@@ -35,7 +38,7 @@ import logging
 import re
 import smtplib
 import sys
-from datetime import datetime
+from datetime import datetime, timedelta
 from email.mime.text import MIMEText
 from pathlib import Path
 
@@ -49,6 +52,18 @@ from rich.logging import RichHandler
 
 logger = logging.getLogger(__name__)
 console = Console()
+
+
+def _format_version(prog_name: str) -> str:
+    """Format version string with release date if available."""
+    from nexusLIMS.version import __release_date__, __version__  # noqa: PLC0415
+
+    version_str = f"{prog_name} (NexusLIMS {__version__}"
+    if __release_date__:
+        version_str += f", released {__release_date__}"
+    version_str += ")"
+    return version_str
+
 
 # Error patterns to search for in log files
 ERROR_PATTERNS = [
@@ -332,7 +347,9 @@ def _setup_logging(log_level: int, dry_run: bool) -> tuple[Path, logging.FileHan
         sys.exit(1)
 
 
-def _run_with_lock(dry_run: bool) -> None:
+def _run_with_lock(
+    dry_run: bool, dt_from: datetime | None, dt_to: datetime | None
+) -> None:
     """
     Run the record builder with file locking.
 
@@ -340,6 +357,10 @@ def _run_with_lock(dry_run: bool) -> None:
     ----------
     dry_run : bool
         If True, run in dry-run mode (find files without building records)
+    dt_from : datetime | None
+        The point in time after which sessions will be fetched
+    dt_to : datetime | None
+        The point in time before which sessions will be fetched
 
     Returns
     -------
@@ -361,7 +382,9 @@ def _run_with_lock(dry_run: bool) -> None:
         with lock:
             logger.info("Lock acquired successfully")
             try:
-                record_builder.process_new_records(dry_run=dry_run)
+                record_builder.process_new_records(
+                    dry_run=dry_run, dt_from=dt_from, dt_to=dt_to
+                )
                 logger.info("Record processing completed")
             except Exception:
                 logger.exception("Error during record processing")
@@ -374,6 +397,70 @@ def _run_with_lock(dry_run: bool) -> None:
         console.print(f"[yellow]Lock file already exists at {lock_file}[/yellow]")
         console.print("[yellow]Another instance is already running. Exiting.[/yellow]")
         sys.exit(0)
+
+
+def _parse_date_argument(
+    date_str: str | None, *, inclusive_end: bool = False
+) -> datetime | None:
+    """
+    Parse a date string argument into a datetime object.
+
+    Parameters
+    ----------
+    date_str : str | None
+        Date string in ISO format (YYYY-MM-DD or YYYY-MM-DDTHH:MM:SS),
+        or special values "none"/"all" to disable filtering,
+        or None to return None
+    inclusive_end : bool
+        If True and date_str has no time component, set time to 23:59:59
+        to include the entire day. Used for --to parameter to make date
+        ranges inclusive. Default is False (use midnight).
+
+    Returns
+    -------
+    datetime | None
+        Parsed datetime with system timezone, or None if date_str is None
+        or a special value
+
+    Raises
+    ------
+    click.BadParameter
+        If date string cannot be parsed
+    """
+    if date_str is None:
+        return None
+
+    # Check for special values that disable filtering
+    if date_str.lower() in ("none", "all"):
+        return None
+
+    # Parse ISO format date string
+    try:
+        # Try parsing with time component first
+        if "T" in date_str:
+            dt_obj = datetime.fromisoformat(date_str)
+        # Parse date-only string
+        elif inclusive_end:
+            # For inclusive end dates, set time to end of day
+            dt_obj = datetime.fromisoformat(date_str + "T23:59:59")
+        else:
+            # For start dates, set time to midnight
+            dt_obj = datetime.fromisoformat(date_str + "T00:00:00")
+
+        # Ensure timezone-aware datetime using system timezone
+        if dt_obj.tzinfo is None:
+            from nexusLIMS.utils.time import current_system_tz  # noqa: PLC0415
+
+            dt_obj = dt_obj.replace(tzinfo=current_system_tz())
+    except ValueError as e:
+        msg = (
+            f"Invalid date format: {date_str}. "
+            f"Use ISO format (YYYY-MM-DD or YYYY-MM-DDTHH:MM:SS) "
+            f'or special value "none" to disable filtering.'
+        )
+        raise click.BadParameter(msg) from e
+    else:
+        return dt_obj
 
 
 def _handle_error_notification(
@@ -420,8 +507,20 @@ def _handle_error_notification(
 Examples:
 
   \b
-  # Normal run (process records)
+  # Normal run (process records from last week)
   $ nexuslims-process-records
+
+  \b
+  # Process all sessions (no date filtering)
+  $ nexuslims-process-records --from=none
+
+  \b
+  # Process sessions since a specific date
+  $ nexuslims-process-records --from=2025-01-01
+
+  \b
+  # Process a specific date range
+  $ nexuslims-process-records --from=2025-01-01 --to=2025-01-31
 
   \b
   # Dry run (find files only)
@@ -444,22 +543,64 @@ Examples:
     count=True,
     help="Increase verbosity (-v for INFO, -vv for DEBUG)",
 )
-@click.version_option(package_name="nexusLIMS", prog_name="nexusLIMS")
-def main(*, dry_run: bool, verbose: int) -> None:
+@click.option(
+    "--from",
+    "from_arg",
+    type=str,
+    default=None,
+    help="Start date for session filtering (ISO format: YYYY-MM-DD). "
+    'Defaults to 1 week ago. Use "none" to disable lower bound.',
+)
+@click.option(
+    "--to",
+    "to_arg",
+    type=str,
+    default=None,
+    help="End date for session filtering (ISO format: YYYY-MM-DD). "
+    "Omit to disable upper bound.",
+)
+@click.version_option(
+    version=None, message=_format_version("nexuslims-process-records")
+)
+def main(
+    *, dry_run: bool, verbose: int, from_arg: str | None, to_arg: str | None
+) -> None:
     """
     Process new NexusLIMS records with logging and email notifications.
 
     This command runs the NexusLIMS record builder to process new experimental
     sessions and generate XML records. It provides file locking to prevent
     concurrent runs, timestamped logging, and email notifications on errors.
+
+    By default, only sessions from the last week are processed. Use --from=none
+    to process all sessions, or specify custom date ranges with --from and --to.
     """
     # Setup logging
     log_level = _get_log_level(verbose)
     log_file, file_handler = _setup_logging(log_level, dry_run)
 
+    # Parse date arguments from raw string parameters
+    dt_from = _parse_date_argument(from_arg)
+    dt_to = _parse_date_argument(to_arg, inclusive_end=True)
+
+    # Apply default: fetch last week if no --from was provided
+    # (Don't apply if user explicitly passed --from=none)
+    if from_arg is None:
+        from nexusLIMS.utils.time import current_system_tz  # noqa: PLC0415
+
+        dt_from = datetime.now(tz=current_system_tz()) - timedelta(weeks=1)
+
     # Log startup information
     logger.info("Starting NexusLIMS record processor")
     logger.info("Dry run: %s", dry_run)
+    if dt_from is not None:
+        logger.info("Fetching sessions from: %s", dt_from.isoformat())
+    else:
+        logger.info("Fetching sessions from: (no lower bound)")
+    if dt_to is not None:
+        logger.info("Fetching sessions to: %s", dt_to.isoformat())
+    else:
+        logger.info("Fetching sessions to: (no upper bound)")
 
     # Dump sanitized effective configuration when verbose
     if verbose >= 1:
@@ -477,7 +618,7 @@ def main(*, dry_run: bool, verbose: int) -> None:
         )
 
     # Run record builder with file locking
-    _run_with_lock(dry_run)
+    _run_with_lock(dry_run, dt_from, dt_to)
 
     # Handle error notifications and cleanup
     _handle_error_notification(log_file, file_handler)
