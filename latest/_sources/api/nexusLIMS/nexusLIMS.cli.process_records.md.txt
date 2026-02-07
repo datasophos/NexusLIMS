@@ -134,7 +134,7 @@
 ```
 ````
 
-````{py:function} main(*, dry_run: bool, verbose: int) -> None
+````{py:function} main(*, dry_run: bool, verbose: int, from_arg: str | None, to_arg: str | None) -> None
 :canonical: nexusLIMS.cli.process_records.main
 
 ```{autodoc2-docstring} nexusLIMS.cli.process_records.main

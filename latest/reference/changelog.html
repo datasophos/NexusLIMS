@@ -66,7 +66,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Feb, 06, 2026"/>
+    <meta name="docbuild:last-update" content="Feb, 07, 2026"/>
   </head>
   
   
@@ -481,11 +481,13 @@
 <p>This changelog documents development history including the original NIST project
 up to version 1.4.3. The datasophos fork begins at version 2.0.</p>
 </div>
-<section id="unreleased-2026-02-06">
-<h2>[Unreleased] (2026-02-06)<a class="headerlink" href="#unreleased-2026-02-06" title="Link to this heading">#</a></h2>
+<section id="unreleased-2026-02-07">
+<h2>[Unreleased] (2026-02-07)<a class="headerlink" href="#unreleased-2026-02-07" title="Link to this heading">#</a></h2>
 <section id="new-features">
 <h3>New features<a class="headerlink" href="#new-features" title="Link to this heading">#</a></h3>
 <ul class="simple">
+<li><p>The <code class="docutils literal notranslate"><span class="pre">nexuslims-process-records</span></code> command now supports <code class="docutils literal notranslate"><span class="pre">--from</span></code> and <code class="docutils literal notranslate"><span class="pre">--to</span></code> options to filter sessions by date range. Use these options to process sessions from specific time periods, for example <code class="docutils literal notranslate"><span class="pre">--from</span> <span class="pre">2025-01-01</span> <span class="pre">--to</span> <span class="pre">2025-01-31</span></code> to process all sessions in January 2025. Both date bounds are inclusive (the <code class="docutils literal notranslate"><span class="pre">--to</span></code> date includes all sessions ending by 23:59:59 on that day). Without these options, all pending sessions are processed regardless of date. (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/47">#47</a>)</p></li>
+<li><p>Added <code class="docutils literal notranslate"><span class="pre">nexuslims-config</span> <span class="pre">dump</span></code> and <code class="docutils literal notranslate"><span class="pre">nexuslims-config</span> <span class="pre">load</span></code> commands for exporting and importing the full NexusLIMS configuration as a JSON file, making it straightforward to migrate configurations between deployments. Running <code class="docutils literal notranslate"><span class="pre">nexuslims-process-records</span> <span class="pre">-v</span></code> (or <code class="docutils literal notranslate"><span class="pre">-vv</span></code>) now also prints the effective configuration (with secrets redacted) to the log at startup. (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/56">#56</a>)</p></li>
 <li><p>Added <code class="docutils literal notranslate"><span class="pre">NX_DISABLE_SSL_VERIFY</span></code> configuration option to disable SSL certificate verification for all outgoing HTTPS requests (for local development only).</p></li>
 </ul>
 </section>
@@ -502,6 +504,9 @@ Experiment and upload IDs are now extracted from the last path segment of the
 <section id="documentation-improvements">
 <h3>Documentation improvements<a class="headerlink" href="#documentation-improvements" title="Link to this heading">#</a></h3>
 <ul class="simple">
+<li><p>Added comprehensive CLI reference documentation covering all <code class="docutils literal notranslate"><span class="pre">nexuslims-process-records</span></code> command-line options including the new <code class="docutils literal notranslate"><span class="pre">--from</span></code> and <code class="docutils literal notranslate"><span class="pre">--to</span></code> date filtering flags, dry-run mode, verbosity levels, and usage examples. (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/47">#47</a>)</p></li>
+<li><p>Updated <code class="docutils literal notranslate"><span class="pre">.env.example</span></code> to match current configuration surface and documentation standards. Fixed stale repository links pointing to NIST infrastructure, removed unused <code class="docutils literal notranslate"><span class="pre">NX_TEST_CDCS_URL</span></code> variable, added missing <code class="docutils literal notranslate"><span class="pre">NX_EXPORT_STRATEGY</span></code> setting, synchronized <code class="docutils literal notranslate"><span class="pre">NX_IGNORE_PATTERNS</span></code> default value with code, and updated Python documentation link to version-agnostic URL. (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/53">#53</a>)</p></li>
+<li><p>Added <code class="docutils literal notranslate"><span class="pre">NX_EXPORT_STRATEGY</span></code> to the configuration reference, including a dedicated entry with descriptions of each valid value and its inclusion in the Full Production Configuration example block. (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/54">#54</a>)</p></li>
 <li><p>Added note to <a class="reference internal" href="../frontend_guide/local-test-deployment.html#cdcs-local-test-deployment"><span class="std std-ref">Local Test Deployment</span></a> docs about the need to set <code class="docutils literal notranslate"><span class="pre">NX_CERT_BUNDLE_FILE</span></code> in the backend when using <code class="docutils literal notranslate"><span class="pre">mkcert</span></code>.</p></li>
 </ul>
 </section>
@@ -1252,7 +1257,7 @@ delineate functionality of the various parts of NexusLIMS</p></li>
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#unreleased-2026-02-06">[Unreleased] (2026-02-06)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#unreleased-2026-02-07">[Unreleased] (2026-02-07)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">2.4.0 (2026-02-02)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">2.3.0 (2026-01-19)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">2.2.0 (2026-01-09)</a></li>

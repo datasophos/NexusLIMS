@@ -428,7 +428,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Feb, 06, 2026"/>
+    <meta name="docbuild:last-update" content="Feb, 07, 2026"/>
   </head>
   
   
@@ -990,7 +990,9 @@ window.addEventListener("load", load);
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">model_config</span> <span class="o">=</span> <span class="n">SettingsConfigDict</span><span class="p">(</span>
-        <span class="n">env_file</span><span class="o">=</span><span class="s2">&quot;.env&quot;</span><span class="p">,</span>
+        <span class="c1"># CRITICAL: Disable .env file loading in TEST_MODE to prevent contamination</span>
+        <span class="c1"># from local environment files during testing</span>
+        <span class="n">env_file</span><span class="o">=</span><span class="kc">None</span> <span class="k">if</span> <span class="n">TEST_MODE</span> <span class="k">else</span> <span class="s2">&quot;.env&quot;</span><span class="p">,</span>
         <span class="n">env_file_encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span>
         <span class="n">extra</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span>  <span class="c1"># Ignore extra environment variables not defined here</span>
         <span class="c1"># In test mode, disable path validation to allow non-existent paths</span>
@@ -1237,12 +1239,15 @@ window.addEventListener("load", load);
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">harvesters</span> <span class="o">=</span> <span class="p">{}</span>
 
-        <span class="c1"># Load .env file to get NEMO variables (Pydantic doesn&#39;t load</span>
-        <span class="c1"># variables that aren&#39;t defined as fields)</span>
-        <span class="n">env_file_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;.env&quot;</span><span class="p">)</span>
+        <span class="c1"># CRITICAL: In TEST_MODE, do NOT load from .env file to prevent</span>
+        <span class="c1"># test contamination from local environment configuration</span>
         <span class="n">env_vars</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">if</span> <span class="n">env_file_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-            <span class="n">env_vars</span> <span class="o">=</span> <span class="n">dotenv_values</span><span class="p">(</span><span class="n">env_file_path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">TEST_MODE</span><span class="p">:</span>
+            <span class="c1"># Load .env file to get NEMO variables (Pydantic doesn&#39;t load</span>
+            <span class="c1"># variables that aren&#39;t defined as fields)</span>
+            <span class="n">env_file_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;.env&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">env_file_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+                <span class="n">env_vars</span> <span class="o">=</span> <span class="n">dotenv_values</span><span class="p">(</span><span class="n">env_file_path</span><span class="p">)</span>
 
         <span class="c1"># Merge with os.environ (os.environ takes precedence)</span>
         <span class="n">all_env</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">env_vars</span><span class="p">,</span> <span class="o">**</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">}</span>
@@ -1331,11 +1336,14 @@ window.addEventListener("load", load);
 <span class="sd">        NX_EMAIL_USE_TLS=true</span>
 <span class="sd">        ```</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Load .env file to get email variables</span>
-        <span class="n">env_file_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;.env&quot;</span><span class="p">)</span>
+        <span class="c1"># CRITICAL: In TEST_MODE, do NOT load from .env file to prevent</span>
+        <span class="c1"># test contamination from local environment configuration</span>
         <span class="n">env_vars</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">if</span> <span class="n">env_file_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-            <span class="n">env_vars</span> <span class="o">=</span> <span class="n">dotenv_values</span><span class="p">(</span><span class="n">env_file_path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">TEST_MODE</span><span class="p">:</span>
+            <span class="c1"># Load .env file to get email variables</span>
+            <span class="n">env_file_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;.env&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">env_file_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+                <span class="n">env_vars</span> <span class="o">=</span> <span class="n">dotenv_values</span><span class="p">(</span><span class="n">env_file_path</span><span class="p">)</span>
 
         <span class="c1"># Merge with os.environ (os.environ takes precedence)</span>
         <span class="n">all_env</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">env_vars</span><span class="p">,</span> <span class="o">**</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">}</span>

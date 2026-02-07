@@ -428,7 +428,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Feb, 06, 2026"/>
+    <meta name="docbuild:last-update" content="Feb, 07, 2026"/>
   </head>
   
   
@@ -1318,10 +1318,10 @@ window.addEventListener("load", load);
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        limit : int, default 15</span>
-<span class="sd">            Maximum number of results to return</span>
-<span class="sd">        offset : int, default 0</span>
-<span class="sd">            Number of results to skip (for pagination)</span>
+<span class="sd">        limit : int, optional</span>
+<span class="sd">            Maximum number of results to return (default: 15)</span>
+<span class="sd">        offset : int, optional</span>
+<span class="sd">            Number of results to skip (for pagination) (default: 0)</span>
 <span class="sd">        query : str, optional</span>
 <span class="sd">            Full-text search query</span>
 
@@ -1525,7 +1525,7 @@ window.addEventListener("load", load);
 <span class="sd">        ----------</span>
 <span class="sd">        experiment_id : int</span>
 <span class="sd">            ID of experiment to attach file to</span>
-<span class="sd">        file_path : Path or str</span>
+<span class="sd">        file_path : pathlib.Path or str</span>
 <span class="sd">            Path to file to upload</span>
 <span class="sd">        comment : str, optional</span>
 <span class="sd">            Comment/description for the uploaded file</span>
