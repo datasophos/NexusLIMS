@@ -53,6 +53,18 @@ from rich.logging import RichHandler
 logger = logging.getLogger(__name__)
 console = Console()
 
+
+def _format_version(prog_name: str) -> str:
+    """Format version string with release date if available."""
+    from nexusLIMS.version import __release_date__, __version__  # noqa: PLC0415
+
+    version_str = f"{prog_name} (NexusLIMS {__version__}"
+    if __release_date__:
+        version_str += f", released {__release_date__}"
+    version_str += ")"
+    return version_str
+
+
 # Error patterns to search for in log files
 ERROR_PATTERNS = [
     re.compile(r"\bcritical\b", re.IGNORECASE),
@@ -547,7 +559,9 @@ Examples:
     help="End date for session filtering (ISO format: YYYY-MM-DD). "
     "Omit to disable upper bound.",
 )
-@click.version_option(package_name="nexusLIMS", prog_name="nexusLIMS")
+@click.version_option(
+    version=None, message=_format_version("nexuslims-process-records")
+)
 def main(
     *, dry_run: bool, verbose: int, from_date: str | None, to_date: str | None
 ) -> None:

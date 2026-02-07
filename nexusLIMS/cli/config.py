@@ -42,6 +42,18 @@ import click
 
 logger = logging.getLogger(__name__)
 
+
+def _format_version(prog_name: str) -> str:
+    """Format version string with release date if available."""
+    from nexusLIMS.version import __release_date__, __version__  # noqa: PLC0415
+
+    version_str = f"{prog_name} (NexusLIMS {__version__}"
+    if __release_date__:
+        version_str += f", released {__release_date__}"
+    version_str += ")"
+    return version_str
+
+
 # ---------------------------------------------------------------------------
 # Secret-field definitions
 # ---------------------------------------------------------------------------
@@ -272,6 +284,7 @@ def _write_env_file(env_vars: dict[str, str], path: Path) -> None:
 
 
 @click.group()
+@click.version_option(version=None, message=_format_version("nexuslims-config"))
 def main() -> None:
     """Manage NexusLIMS configuration files."""
 
