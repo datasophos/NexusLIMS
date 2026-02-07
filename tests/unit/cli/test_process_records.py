@@ -9,11 +9,45 @@ from click.testing import CliRunner
 from filelock import Timeout
 
 from nexusLIMS.cli.process_records import (
+    _format_version,
     check_log_for_errors,
     main,
     send_error_notification,
     setup_file_logging,
 )
+
+
+class TestFormatVersion:
+    """Test the _format_version function."""
+
+    def test_format_version_with_release_date(self, monkeypatch):
+        """Version string includes release date when available."""
+        monkeypatch.setattr("nexusLIMS.version.__version__", "2.1.0")
+        monkeypatch.setattr("nexusLIMS.version.__release_date__", "2025-02-06")
+
+        result = _format_version("nexuslims-process-records")
+
+        assert (
+            result == "nexuslims-process-records (NexusLIMS 2.1.0, released 2025-02-06)"
+        )
+
+    def test_format_version_without_release_date(self, monkeypatch):
+        """Version string omits release date when not available."""
+        monkeypatch.setattr("nexusLIMS.version.__version__", "2.1.0")
+        monkeypatch.setattr("nexusLIMS.version.__release_date__", None)
+
+        result = _format_version("nexuslims-process-records")
+
+        assert result == "nexuslims-process-records (NexusLIMS 2.1.0)"
+
+    def test_format_version_with_empty_release_date(self, monkeypatch):
+        """Empty string release date is treated as missing."""
+        monkeypatch.setattr("nexusLIMS.version.__version__", "2.1.0")
+        monkeypatch.setattr("nexusLIMS.version.__release_date__", "")
+
+        result = _format_version("nexuslims-process-records")
+
+        assert result == "nexuslims-process-records (NexusLIMS 2.1.0)"
 
 
 class TestSetupFileLogging:
