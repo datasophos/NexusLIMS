@@ -6,4 +6,4 @@ __version__ = importlib.metadata.version("nexusLIMS")
 
 # Release date for the current version (YYYY-MM-DD format)
 # Set to None for unreleased development versions
-__release_date__ = None  # Updated when releasing a new version
+__release_date__ = "2026-02-06"
