@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>nexusLIMS.cli.process_records &#8212; NexusLIMS 2.4.0 documentation</title>
+    <title>nexusLIMS.cli.process_records &#8212; NexusLIMS 2.4.1 documentation</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../_static/documentation_options.js?v=4d935f96"></script>
+    <script src="../../_static/documentation_options.js?v=e9ebdb8f"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -52,7 +52,7 @@
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.4.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.4.1';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
@@ -60,12 +60,12 @@
     <link rel="icon" href="../../_static/nexusLIMS_bare_logo.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="nexusLIMS.harvesters" href="nexusLIMS.harvesters.html" />
+    <link rel="next" title="nexusLIMS.cli.config" href="nexusLIMS.cli.config.html" />
     <link rel="prev" title="nexusLIMS.cli" href="nexusLIMS.cli.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.4.0" />
-    <meta name="docbuild:last-update" content="Feb, 03, 2026"/>
+  <meta name="docsearch:version" content="2.4.1" />
+    <meta name="docbuild:last-update" content="Feb, 07, 2026"/>
   </head>
   
   
@@ -131,8 +131,8 @@
       
     
     
-    <img src="../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.4.0 documentation - Home"/>
-    <img src="../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.4.0 documentation - Home"/>
+    <img src="../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.4.1 documentation - Home"/>
+    <img src="../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.4.1 documentation - Home"/>
   
   
 </a></div>
@@ -418,6 +418,7 @@
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.extractors.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors</span></code></a></li>
 <li class="toctree-l3 current active has-children"><a class="reference internal" href="nexusLIMS.cli.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli</span></code></a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l4 current active"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.process_records</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nexusLIMS.cli.config.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.config</span></code></a></li>
 </ul>
 </details></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.harvesters.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.harvesters</span></code></a></li>
@@ -520,6 +521,9 @@ It replaces the functionality previously provided by process_new_records.sh.</p>
 <h2>Options<a class="headerlink" href="#options" title="Link to this heading">#</a></h2>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>-n,<span class="w"> </span>--dry-run<span class="w">   </span>:<span class="w"> </span>Dry<span class="w"> </span>run<span class="w"> </span>mode<span class="w"> </span><span class="o">(</span>find<span class="w"> </span>files<span class="w"> </span>without<span class="w"> </span>building<span class="w"> </span>records<span class="o">)</span>
 -v,<span class="w"> </span>--verbose<span class="w">   </span>:<span class="w"> </span>Increase<span class="w"> </span>verbosity<span class="w"> </span><span class="o">(</span>-v<span class="w"> </span><span class="k">for</span><span class="w"> </span>INFO,<span class="w"> </span>-vv<span class="w"> </span><span class="k">for</span><span class="w"> </span>DEBUG<span class="o">)</span>
+--from<span class="w"> </span>&lt;date&gt;<span class="w">   </span>:<span class="w"> </span>Start<span class="w"> </span>date<span class="w"> </span><span class="k">for</span><span class="w"> </span>filtering<span class="w"> </span><span class="o">(</span>ISO<span class="w"> </span>format<span class="o">)</span>.<span class="w"> </span>Defaults<span class="w"> </span>to<span class="w"> </span><span class="m">1</span><span class="w"> </span>week<span class="w"> </span>ago.
+<span class="w">                  </span>Use<span class="w"> </span><span class="s2">&quot;none&quot;</span><span class="w"> </span>to<span class="w"> </span>disable<span class="w"> </span>lower<span class="w"> </span>bound.
+--to<span class="w"> </span>&lt;date&gt;<span class="w">     </span>:<span class="w"> </span>End<span class="w"> </span>date<span class="w"> </span><span class="k">for</span><span class="w"> </span>filtering<span class="w"> </span><span class="o">(</span>ISO<span class="w"> </span>format<span class="o">)</span>.<span class="w"> </span>Omit<span class="w"> </span>to<span class="w"> </span>disable<span class="w"> </span>upper<span class="w"> </span>bound.
 --version<span class="w">       </span>:<span class="w"> </span>Show<span class="w"> </span>version<span class="w"> </span>and<span class="w"> </span><span class="nb">exit</span>
 --help<span class="w">          </span>:<span class="w"> </span>Show<span class="w"> </span><span class="nb">help</span><span class="w"> </span>message<span class="w"> </span>and<span class="w"> </span><span class="nb">exit</span>
 </pre></div>
@@ -681,11 +685,13 @@ detected. Email sending is skipped if email configuration is not available.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="nexusLIMS.cli.process_records.main">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.cli.process_records.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">dry_run</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#nexusLIMS.cli.process_records.main" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.cli.process_records.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">dry_run</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_arg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_arg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#nexusLIMS.cli.process_records.main" title="Link to this definition">#</a></dt>
 <dd><p>Process new NexusLIMS records with logging and email notifications.</p>
 <p>This command runs the NexusLIMS record builder to process new experimental
 sessions and generate XML records. It provides file locking to prevent
 concurrent runs, timestamped logging, and email notifications on errors.</p>
+<p>By default, only sessions from the last week are processed. Use –from=none
+to process all sessions, or specify custom date ranges with –from and –to.</p>
 </dd></dl>
 
 </section>
@@ -712,11 +718,11 @@ concurrent runs, timestamped logging, and email notifications on errors.</p>
       </div>
     </a>
     <a class="right-next"
-       href="nexusLIMS.harvesters.html"
+       href="nexusLIMS.cli.config.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.harvesters</span></code></p>
+        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.config</span></code></p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

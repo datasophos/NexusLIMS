@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Getting Started &#8212; NexusLIMS 2.4.0 documentation</title>
+    <title>Getting Started &#8212; NexusLIMS 2.4.1 documentation</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=4d935f96"></script>
+    <script src="../_static/documentation_options.js?v=e9ebdb8f"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -52,7 +52,7 @@
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.4.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.4.1';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
@@ -64,8 +64,8 @@
     <link rel="prev" title="User Guide" href="../user_guide.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.4.0" />
-    <meta name="docbuild:last-update" content="Feb, 03, 2026"/>
+  <meta name="docsearch:version" content="2.4.1" />
+    <meta name="docbuild:last-update" content="Feb, 07, 2026"/>
   </head>
   
   
@@ -131,8 +131,8 @@
       
     
     
-    <img src="../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.4.0 documentation - Home"/>
-    <img src="../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.4.0 documentation - Home"/>
+    <img src="../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.4.1 documentation - Home"/>
+    <img src="../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.4.1 documentation - Home"/>
   
   
 </a></div>
@@ -415,6 +415,7 @@
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="record_building.html">Record building workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli_reference.html">Command-Line Interface Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="extractors.html">Extractors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exporters.html">Export Destinations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="taxonomy.html">NexusLIMS Taxonomy</a></li>
@@ -586,10 +587,18 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 <li><p><code class="docutils literal notranslate"><span class="pre">NX_NEMO_ADDRESS_N</span></code>, <code class="docutils literal notranslate"><span class="pre">NX_NEMO_TOKEN_N</span></code> - NEMO integration</p></li>
 </ul>
 </li>
+<li><p><em>(Optional)</em> Verify your configuration was loaded correctly:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Dump current config to see what NexusLIMS sees</span>
+<span class="c1"># WARNING: Output contains live credentials - don&#39;t share publicly</span>
+nexuslims-config<span class="w"> </span>dump<span class="w"> </span>--output<span class="w"> </span>my-config.json
+</pre></div>
+</div>
+</li>
 </ol>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <p>For complete configuration documentation including all available settings, validation rules, and troubleshooting, see the <a class="reference internal" href="configuration.html#configuration"><span class="std std-ref">Configuration</span></a> guide.</p>
+<p>For config management tools (dump/load) and debugging configuration issues, see <a class="reference internal" href="configuration.html#configuration-management"><span class="std std-ref">Configuration Management</span></a>.</p>
 </div>
 </section>
 </section>
