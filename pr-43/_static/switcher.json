@@ -1,12 +1,12 @@
 [
   {
-    "name": "v2.4.1.dev0 (latest)",
+    "name": "v2.4.2.dev0 (latest)",
     "version": "dev",
     "url": "https://datasophos.github.io/NexusLIMS/latest/"
   },
   {
-    "name": "v2.4.0 (stable)",
-    "version": "2.4.0",
+    "name": "v2.4.1 (stable)",
+    "version": "2.4.1",
     "url": "https://datasophos.github.io/NexusLIMS/stable/",
     "preferred": true
   },
