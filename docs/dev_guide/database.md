@@ -82,16 +82,18 @@ If you have an existing NexusLIMS database (created before version 2.2.0), you n
 
 ```bash
 # Mark existing database as migrated to current schema
-nexuslims-migrate stamp head
+nexuslims-migrate alembic stamp head
 ```
 
 This tells Alembic that your database already has the current schema structure and doesn't need the baseline migration applied.
 
 ```{versionadded} 2.5.0
-The `nexuslims-migrate` command is now the recommended way to run migrations.
-It automatically locates the migrations directory inside the installed package,
-making migrations work correctly after pip/uv installation. The `uv run alembic`
-command still works for development from source checkouts.
+The `nexuslims-migrate` command provides simple, user-friendly commands for
+common database operations. It automatically locates the migrations directory
+inside the installed package, making migrations work correctly after pip/uv
+installation. Advanced users can access the full Alembic CLI via
+`nexuslims-migrate alembic [COMMAND]`. The `uv run alembic` command still works
+for development from source checkouts.
 ```
 
 ### Common Migration Commands
@@ -100,41 +102,47 @@ command still works for development from source checkouts.
 # Check current migration status
 nexuslims-migrate current
 
+# Check if database has pending migrations
+nexuslims-migrate check
+
 # View migration history
-nexuslims-migrate history --verbose
+nexuslims-migrate history
 
 # Upgrade to latest schema version
-nexuslims-migrate upgrade head
+nexuslims-migrate upgrade
+
+# Upgrade to specific revision
+nexuslims-migrate upgrade abc123
 
 # Downgrade one migration
-nexuslims-migrate downgrade -1
+nexuslims-migrate downgrade
 
-# Generate a new migration (after modifying SQLModel models, development only)
-nexuslims-migrate revision --autogenerate -m "Description of changes"
+# Generate a new migration (development only, requires source checkout)
+nexuslims-migrate alembic revision --autogenerate -m "Description"
 ```
 
-All standard Alembic sub-commands are supported. From a source checkout, you can also use `uv run alembic` instead of `nexuslims-migrate`.
+For advanced Alembic operations, use `nexuslims-migrate alembic [COMMAND]` to access all Alembic sub-commands. From a source checkout, you can also use `uv run alembic` directly.
 
 ### Creating New Migrations
 
 When you modify the database schema (by changing {py:class}`~nexusLIMS.db.models.SessionLog` or {py:class}`~nexusLIMS.db.models.Instrument`), you should create a migration:
 
 1. **Modify the SQLModel classes** in `nexusLIMS/db/models.py`
-2. **Generate migration script**:
+2. **Generate migration script** (requires source checkout):
    ```bash
-   nexuslims-migrate revision --autogenerate -m "Add new field to SessionLog"
+   nexuslims-migrate alembic revision --autogenerate -m "Add new field to SessionLog"
    ```
 3. **Review the generated script** in `nexusLIMS/migrations/versions/`
 4. **Test the migration**:
    ```bash
    # Apply migration
-   nexuslims-migrate upgrade head
+   nexuslims-migrate upgrade
 
    # Test downgrade
-   nexuslims-migrate downgrade -1
+   nexuslims-migrate downgrade
 
    # Re-apply
-   nexuslims-migrate upgrade head
+   nexuslims-migrate upgrade
    ```
 5. **Commit the migration script** to version control
 
