@@ -96,6 +96,7 @@ jobs:
           gh release create "${{ github.ref_name }}" \
             --repo="$GITHUB_REPOSITORY" \
             --title="NexusLIMS ${{ steps.version.outputs.version }}" \
+            --draft \
             --generate-notes \
             dist/*
 
