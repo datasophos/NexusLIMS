@@ -12,7 +12,7 @@ from textual import on
 from textual.app import ComposeResult
 from textual.containers import Container, Horizontal, Vertical
 from textual.screen import ModalScreen, Screen
-from textual.widgets import Button, DataTable, Footer, Header, Label, Static
+from textual.widgets import Button, DataTable, Footer, Header, Input, Label, Static
 
 
 class BaseListScreen(Screen):
@@ -25,7 +25,8 @@ class BaseListScreen(Screen):
     - on_row_selected(row_key, row_data): Handle row selection
 
     Provides:
-    - DataTable with navigation
+    - DataTable with navigation and sorting
+    - Search/filter bar
     - Add/Edit/Delete/Quit keybindings
     - Header and footer
     """
@@ -37,35 +38,98 @@ class BaseListScreen(Screen):
         ("r", "refresh", "Refresh"),
         ("q", "quit", "Quit"),
         ("?", "help", "Help"),
+        ("/", "focus_filter", "Filter"),
     ]
+
+    def __init__(self, **kwargs):
+        """Initialize the list screen."""
+        super().__init__(**kwargs)
+        self._filter_text = ""
+        self._all_data = []
+        self._sort_column = None
+        self._sort_reverse = False
 
     def compose(self) -> ComposeResult:
         """Compose the list screen layout."""
         yield Header()
-        yield DataTable(id="data-table")
+        yield Input(placeholder="Filter (press / to focus)...", id="filter-input")
+        yield DataTable(id="data-table", cursor_type="row")
         yield Footer()
 
     def on_mount(self) -> None:
         """Set up the data table on mount."""
         table = self.query_one(DataTable)
 
-        # Add columns
-        columns = self.get_columns()
-        table.add_columns(*columns)
+        # Add columns (only if not already added)
+        if not table.columns:
+            columns = self.get_columns()
+            table.add_columns(*columns)
 
         # Load data
         self.refresh_data()
 
+        # Focus the table (not the filter input)
+        table.focus()
+
     def refresh_data(self) -> None:
         """Reload data into the table."""
+        # Get all data and store it
+        self._all_data = self.get_data()
+        self._apply_filter()
+
+    def _apply_filter(self) -> None:
+        """Apply current filter to the data and update table."""
         table = self.query_one(DataTable)
         table.clear()
 
-        data = self.get_data()
-        for row in data:
+        # Filter data based on filter text
+        filtered_data = self._all_data
+        if self._filter_text:
+            filter_lower = self._filter_text.lower()
+            filtered_data = [
+                row
+                for row in self._all_data
+                if any(filter_lower in str(v).lower() for v in row.values())
+            ]
+
+        # Sort data if a sort column is set
+        if self._sort_column:
+            filtered_data = sorted(
+                filtered_data,
+                key=lambda row: str(row.get(self._sort_column, "")),
+                reverse=self._sort_reverse,
+            )
+
+        # Add filtered rows to table
+        for row in filtered_data:
             # Use first column value as row key (should be unique ID)
             row_key = next(iter(row.values())) if row else None
             table.add_row(*row.values(), key=row_key)
+
+    @on(DataTable.HeaderSelected)
+    def on_header_selected(self, event: DataTable.HeaderSelected) -> None:
+        """Handle column header click for sorting."""
+        columns = self.get_columns()
+        column_name = columns[event.column_index]
+
+        # Toggle sort direction if clicking same column, otherwise sort ascending
+        if self._sort_column == column_name:
+            self._sort_reverse = not self._sort_reverse
+        else:
+            self._sort_column = column_name
+            self._sort_reverse = False
+
+        self._apply_filter()
+
+    @on(Input.Changed, "#filter-input")
+    def on_filter_changed(self, event: Input.Changed) -> None:
+        """Handle filter input changes."""
+        self._filter_text = event.value
+        self._apply_filter()
+
+    def action_focus_filter(self) -> None:
+        """Focus the filter input."""
+        self.query_one("#filter-input", Input).focus()
 
     @abstractmethod
     def get_columns(self) -> list[str]:
@@ -92,14 +156,17 @@ class BaseListScreen(Screen):
     @on(DataTable.RowSelected)
     def on_row_selected_event(self, event: DataTable.RowSelected) -> None:
         """Handle row selection from table."""
-        # Get row data
+        # Get row data from the table using cursor_row
+        table = self.query_one(DataTable)
         row_data = {}
         columns = self.get_columns()
 
+        # Get the row values from the table
+        row_values = table.get_row_at(event.cursor_row)
         for i, column in enumerate(columns):
-            row_data[column] = event.row[i]
+            row_data[column] = row_values[i]
 
-        self.on_row_selected(event.row_key, row_data)
+        self.on_row_selected(event.row_key.value, row_data)
 
     @abstractmethod
     def on_row_selected(self, row_key, row_data: dict) -> None:

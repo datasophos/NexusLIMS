@@ -9,7 +9,6 @@ from sqlmodel import Session
 
 from nexusLIMS.tui.common.db_utils import find_conflicting_instrument
 from nexusLIMS.tui.common.validators import (
-    validate_ip_address,
     validate_max_length,
     validate_required,
     validate_url,
@@ -154,83 +153,6 @@ def validate_harvester(
     return True, ""
 
 
-def validate_computer_name_unique(
-    session: Session,
-    value: str | None,
-    exclude_pid: str | None = None,
-) -> tuple[bool, str]:
-    """
-    Validate computer_name field with uniqueness check.
-
-    Parameters
-    ----------
-    session : Session
-        Database session
-    value : str | None
-        Computer name to validate
-    exclude_pid : str | None
-        Instrument PID to exclude (for edit operations)
-
-    Returns
-    -------
-    tuple[bool, str]
-        (is_valid, error_message)
-    """
-    # Optional field
-    if value is None or value.strip() == "":
-        return True, ""
-
-    # Uniqueness check
-    conflict = find_conflicting_instrument(session, "computer_name", value, exclude_pid)
-    if conflict:
-        return False, f"Computer name already used by {conflict.instrument_pid}"
-
-    return True, ""
-
-
-def validate_computer_ip_unique(
-    session: Session,
-    value: str | None,
-    exclude_pid: str | None = None,
-) -> tuple[bool, str]:
-    """
-    Validate computer_ip field with uniqueness check.
-
-    Parameters
-    ----------
-    session : Session
-        Database session
-    value : str | None
-        Computer IP to validate
-    exclude_pid : str | None
-        Instrument PID to exclude (for edit operations)
-
-    Returns
-    -------
-    tuple[bool, str]
-        (is_valid, error_message)
-    """
-    # Optional field - validate format if provided
-    if value and value.strip():
-        is_valid, error = validate_ip_address(value)
-        if not is_valid:
-            return False, error
-
-        # Max length check
-        is_valid, error = validate_max_length(value, 15, "Computer IP")
-        if not is_valid:
-            return False, error
-
-        # Uniqueness check
-        conflict = find_conflicting_instrument(
-            session, "computer_ip", value, exclude_pid
-        )
-        if conflict:
-            return False, f"Computer IP already used by {conflict.instrument_pid}"
-
-    return True, ""
-
-
 def get_example_values() -> dict[str, str]:
     """
     Get example values for instrument fields (for placeholders).
@@ -243,15 +165,11 @@ def get_example_values() -> dict[str, str]:
     return {
         "instrument_pid": "FEI-Quanta-650-FEG-123456",
         "api_url": "https://nemo.example.com/api/tools/?id=42",
-        "calendar_name": "FEI Quanta 650 FEG SEM",
-        "calendar_url": "https://nemo.example.com/calendar/quanta-650",
+        "calendar_url": "https://nemo.example.com/calendar/",
         "location": "Building 223 Room 101",
-        "schema_name": "Quanta 650 FEG SEM",
+        "display_name": "Quanta 650 FEG SEM",
         "property_tag": "123456",
         "filestore_path": "./Quanta_650_FEG",
         "harvester": "nemo",
         "timezone_str": "America/New_York",
-        "computer_name": "quanta-pc-01",
-        "computer_ip": "192.168.1.100",
-        "computer_mount": "/mnt/central_storage",
     }

@@ -9,9 +9,49 @@ from collections.abc import Callable
 from textual import on
 from textual.app import ComposeResult
 from textual.containers import Vertical
+from textual.events import Key
 from textual.message import Message
 from textual.suggester import Suggester
 from textual.widgets import Input, Label, Static
+
+
+class NumpadInput(Input):
+    """
+    Input widget that accepts numpad key entry.
+
+    Extends Textual's Input to map numpad keys to their regular equivalents,
+    fixing the issue where numpad minus and other numpad keys don't work.
+    """
+
+    def on_key(self, event: Key) -> None:
+        """Handle numpad key events before default Input processing."""
+        # Map numpad keys to regular keys - using actual key names from Textual
+        numpad_map = {
+            # Actual Textual key names (as shown in debug output)
+            "subtract": "-",
+            "add": "+",
+            "divide": "/",
+            "multiply": "*",
+            "decimal": ".",
+            # Numeric keys (if needed)
+            "numpad_0": "0",
+            "numpad_1": "1",
+            "numpad_2": "2",
+            "numpad_3": "3",
+            "numpad_4": "4",
+            "numpad_5": "5",
+            "numpad_6": "6",
+            "numpad_7": "7",
+            "numpad_8": "8",
+            "numpad_9": "9",
+        }
+
+        if event.key in numpad_map:
+            # Insert the mapped character
+            self.insert_text_at_cursor(numpad_map[event.key])
+            event.prevent_default()
+            event.stop()
+        # Otherwise let default Input handling process the key
 
 
 class ValidatedInput(Input):

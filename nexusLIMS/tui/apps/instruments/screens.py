@@ -15,8 +15,6 @@ from nexusLIMS.db.models import Instrument
 from nexusLIMS.tui.apps.instruments.validators import (
     get_example_values,
     validate_api_url_unique,
-    validate_computer_ip_unique,
-    validate_computer_name_unique,
     validate_instrument_pid,
 )
 from nexusLIMS.tui.common.base_screens import (
@@ -28,7 +26,7 @@ from nexusLIMS.tui.common.db_utils import get_session_log_count
 from nexusLIMS.tui.common.validators import (
     validate_timezone,
 )
-from nexusLIMS.tui.common.widgets import AutocompleteInput, FormField
+from nexusLIMS.tui.common.widgets import AutocompleteInput, FormField, NumpadInput
 
 
 class WelcomeDialog(ModalScreen):
@@ -81,7 +79,9 @@ class WelcomeDialog(ModalScreen):
     def compose(self) -> ComposeResult:
         """Compose the welcome dialog."""
         with Vertical(id="welcome-dialog"):
-            yield Label("Welcome to NexusLIMS Instrument Manager!", id="welcome-title")
+            yield Label(
+                "Welcome to the NexusLIMS Instrument Manager!", id="welcome-title"
+            )
             yield Static(
                 "No instruments were found in the database! If this is your first time "
                 "running NexusLIMS, welcome!\n\n"
@@ -130,10 +130,12 @@ class InstrumentListScreen(BaseListScreen):
     def get_columns(self) -> list[str]:
         """Get column headers."""
         return [
+            "Display Name",
             "PID",
+            "API URL",
+            "Filestore Path",
             "Location",
-            "Calendar Name",
-            "Harvester",
+            "Property Tag",
             "Timezone",
         ]
 
@@ -145,10 +147,12 @@ class InstrumentListScreen(BaseListScreen):
         for instr in instruments:
             data.append(
                 {
+                    "Display Name": instr.display_name,
                     "PID": instr.instrument_pid,
+                    "API URL": instr.api_url,
+                    "Filestore Path": instr.filestore_path,
                     "Location": instr.location,
-                    "Calendar Name": instr.calendar_name,
-                    "Harvester": instr.harvester,
+                    "Property Tag": instr.property_tag,
                     "Timezone": instr.timezone_str,
                 }
             )
@@ -258,12 +262,12 @@ class InstrumentAddScreen(BaseFormScreen):
         # Required fields
         yield FormField(
             "Instrument PID",
-            Input(
+            NumpadInput(
                 placeholder=self.examples["instrument_pid"],
                 id="instrument_pid",
             ),
             required=True,
-            help_text="Unique identifier (e.g., FEI-Titan-TEM-012345)",
+            help_text=f"Unique identifier (e.g., {self.examples['instrument_pid']})",
         )
 
         yield FormField(
@@ -273,17 +277,7 @@ class InstrumentAddScreen(BaseFormScreen):
                 id="api_url",
             ),
             required=True,
-            help_text="Calendar API endpoint URL",
-        )
-
-        yield FormField(
-            "Calendar Name",
-            Input(
-                placeholder=self.examples["calendar_name"],
-                id="calendar_name",
-            ),
-            required=True,
-            help_text="Display name in reservation system",
+            help_text=f"Calendar API endpoint URL (e.g., {self.examples['api_url']})",
         )
 
         yield FormField(
@@ -293,7 +287,9 @@ class InstrumentAddScreen(BaseFormScreen):
                 id="calendar_url",
             ),
             required=True,
-            help_text="Web-accessible calendar URL",
+            help_text=(
+                f"Web-accessible calendar URL (e.g., {self.examples['calendar_url']})"
+            ),
         )
 
         yield FormField(
@@ -303,17 +299,20 @@ class InstrumentAddScreen(BaseFormScreen):
                 id="location",
             ),
             required=True,
-            help_text="Physical location (building and room)",
+            help_text=f"Physical location (e.g., {self.examples['location']})",
         )
 
         yield FormField(
-            "Schema Name",
+            "Display Name",
             Input(
-                placeholder=self.examples["schema_name"],
-                id="schema_name",
+                placeholder=self.examples["display_name"],
+                id="display_name",
             ),
             required=True,
-            help_text="Human-readable name for NexusLIMS records",
+            help_text=(
+                f"Human-readable instrument name for NexusLIMS records "
+                f"(e.g., {self.examples['display_name']})"
+            ),
         )
 
         yield FormField(
@@ -323,7 +322,9 @@ class InstrumentAddScreen(BaseFormScreen):
                 id="property_tag",
             ),
             required=True,
-            help_text="Unique numeric identifier",
+            help_text=(
+                f"Unique numeric identifier (e.g., {self.examples['property_tag']})"
+            ),
         )
 
         yield FormField(
@@ -333,24 +334,27 @@ class InstrumentAddScreen(BaseFormScreen):
                 id="filestore_path",
             ),
             required=True,
-            help_text="Relative path under NX_INSTRUMENT_DATA_PATH",
+            help_text=(
+                f"Relative path under NX_INSTRUMENT_DATA_PATH "
+                f"(e.g., {self.examples['filestore_path']})"
+            ),
         )
 
         yield FormField(
             "Harvester",
             Select(
-                [("nemo", "nemo"), ("sharepoint", "sharepoint")],
+                [("nemo", "nemo")],
                 value="nemo",
                 id="harvester",
             ),
             required=True,
-            help_text='Harvester module ("nemo" or "sharepoint")',
+            help_text='Harvester module ("nemo" is the only option, currently)',
         )
 
         yield FormField(
             "Timezone",
             AutocompleteInput(
-                suggestions=pytz.all_timezones,
+                suggestions=pytz.common_timezones,
                 placeholder=self.examples["timezone_str"],
                 value="America/New_York",
                 id="timezone_str",
@@ -359,64 +363,20 @@ class InstrumentAddScreen(BaseFormScreen):
             help_text="IANA timezone (e.g., America/New_York)",
         )
 
-        # Optional fields
-        yield FormField(
-            "Computer Name",
-            Input(
-                placeholder=self.examples["computer_name"],
-                id="computer_name",
-            ),
-            required=False,
-            help_text="Hostname of support PC (optional)",
-        )
-
-        yield FormField(
-            "Computer IP",
-            Input(
-                placeholder=self.examples["computer_ip"],
-                id="computer_ip",
-            ),
-            required=False,
-            help_text="IP address of support PC (optional)",
-        )
-
-        yield FormField(
-            "Computer Mount",
-            Input(
-                placeholder=self.examples["computer_mount"],
-                id="computer_mount",
-            ),
-            required=False,
-            help_text="Mount path on support PC (optional)",
-        )
-
     def collect_form_data(self) -> dict:
         """Collect data from form fields."""
         # Get form fields
-        data = {
+        return {
             "instrument_pid": self.query_one("#instrument_pid", Input).value,
             "api_url": self.query_one("#api_url", Input).value,
-            "calendar_name": self.query_one("#calendar_name", Input).value,
             "calendar_url": self.query_one("#calendar_url", Input).value,
             "location": self.query_one("#location", Input).value,
-            "schema_name": self.query_one("#schema_name", Input).value,
+            "display_name": self.query_one("#display_name", Input).value,
             "property_tag": self.query_one("#property_tag", Input).value,
             "filestore_path": self.query_one("#filestore_path", Input).value,
             "harvester": self.query_one("#harvester", Select).value,
             "timezone_str": self.query_one("#timezone_str", Input).value,
         }
-
-        # Optional fields (convert empty strings to None)
-        computer_name = self.query_one("#computer_name", Input).value
-        data["computer_name"] = computer_name if computer_name.strip() else None
-
-        computer_ip = self.query_one("#computer_ip", Input).value
-        data["computer_ip"] = computer_ip if computer_ip.strip() else None
-
-        computer_mount = self.query_one("#computer_mount", Input).value
-        data["computer_mount"] = computer_mount if computer_mount.strip() else None
-
-        return data
 
     def validate_form(self) -> dict[str, str]:
         """Validate form data."""
@@ -437,20 +397,6 @@ class InstrumentAddScreen(BaseFormScreen):
         is_valid, error = validate_timezone(data["timezone_str"])
         if not is_valid:
             errors["timezone_str"] = error
-
-        # Validate computer_name (with uniqueness check)
-        is_valid, error = validate_computer_name_unique(
-            self.app.db_session, data["computer_name"]
-        )
-        if not is_valid:
-            errors["computer_name"] = error
-
-        # Validate computer_ip (with uniqueness check)
-        is_valid, error = validate_computer_ip_unique(
-            self.app.db_session, data["computer_ip"]
-        )
-        if not is_valid:
-            errors["computer_ip"] = error
 
         return errors
 
@@ -499,25 +445,13 @@ class InstrumentEditScreen(InstrumentAddScreen):
         self.query_one("#instrument_pid", Input).disabled = True  # Can't change PID
 
         self.query_one("#api_url", Input).value = self.instrument.api_url
-        self.query_one("#calendar_name", Input).value = self.instrument.calendar_name
         self.query_one("#calendar_url", Input).value = self.instrument.calendar_url
         self.query_one("#location", Input).value = self.instrument.location
-        self.query_one("#schema_name", Input).value = self.instrument.schema_name
+        self.query_one("#display_name", Input).value = self.instrument.display_name
         self.query_one("#property_tag", Input).value = self.instrument.property_tag
         self.query_one("#filestore_path", Input).value = self.instrument.filestore_path
         self.query_one("#harvester", Select).value = self.instrument.harvester
         self.query_one("#timezone_str", Input).value = self.instrument.timezone_str
-
-        if self.instrument.computer_name:
-            self.query_one(
-                "#computer_name", Input
-            ).value = self.instrument.computer_name
-        if self.instrument.computer_ip:
-            self.query_one("#computer_ip", Input).value = self.instrument.computer_ip
-        if self.instrument.computer_mount:
-            self.query_one(
-                "#computer_mount", Input
-            ).value = self.instrument.computer_mount
 
     def validate_form(self) -> dict[str, str]:
         """Validate form data (excluding PID from uniqueness checks)."""
@@ -538,24 +472,6 @@ class InstrumentEditScreen(InstrumentAddScreen):
         if not is_valid:
             errors["timezone_str"] = error
 
-        # Validate computer_name (with uniqueness check)
-        is_valid, error = validate_computer_name_unique(
-            self.app.db_session,
-            data["computer_name"],
-            exclude_pid=self.instrument.instrument_pid,
-        )
-        if not is_valid:
-            errors["computer_name"] = error
-
-        # Validate computer_ip (with uniqueness check)
-        is_valid, error = validate_computer_ip_unique(
-            self.app.db_session,
-            data["computer_ip"],
-            exclude_pid=self.instrument.instrument_pid,
-        )
-        if not is_valid:
-            errors["computer_ip"] = error
-
         return errors
 
     def on_save(self, data: dict) -> None:
@@ -563,17 +479,13 @@ class InstrumentEditScreen(InstrumentAddScreen):
         try:
             # Update instrument fields (except PID)
             self.instrument.api_url = data["api_url"]
-            self.instrument.calendar_name = data["calendar_name"]
             self.instrument.calendar_url = data["calendar_url"]
             self.instrument.location = data["location"]
-            self.instrument.schema_name = data["schema_name"]
+            self.instrument.display_name = data["display_name"]
             self.instrument.property_tag = data["property_tag"]
             self.instrument.filestore_path = data["filestore_path"]
             self.instrument.harvester = data["harvester"]
             self.instrument.timezone_str = data["timezone_str"]
-            self.instrument.computer_name = data["computer_name"]
-            self.instrument.computer_ip = data["computer_ip"]
-            self.instrument.computer_mount = data["computer_mount"]
 
             # Commit changes
             self.app.db_session.add(self.instrument)

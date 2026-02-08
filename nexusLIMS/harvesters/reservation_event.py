@@ -209,7 +209,7 @@ class ReservationEvent:
         if self.experiment_title:
             title_el.text = self.experiment_title
         else:
-            title_el.text = f"Experiment on the {self.instrument.schema_name}"
+            title_el.text = f"Experiment on the {self.instrument.display_name}"
             if self.start_time:
                 title_el.text += f" on {self.start_time.strftime('%A %b. %d, %Y')}"
         if self.internal_id:
@@ -235,7 +235,7 @@ class ReservationEvent:
             experimenter_el.text = self.username
         if self.instrument:
             instr_el = etree.SubElement(summary_el, "instrument")
-            instr_el.text = self.instrument.schema_name
+            instr_el.text = self.instrument.display_name
             pid = self.instrument.name
             # temporary workaround for duplicate harvesters for some instruments
             if self.instrument.harvester == "nemo" and self.instrument.name.endswith(
