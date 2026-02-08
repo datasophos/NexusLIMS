@@ -95,7 +95,8 @@ See [Configuration Documentation](https://datasophos.github.io/NexusLIMS/stable/
 ### Initialize Database
 
 ```bash
-sqlite3 nexusLIMS.db < nexusLIMS/db/dev/NexusLIMS_db_creation_script.sql
+# create database using NexusLIMS database migration tool:
+uv run nexuslims-migrate init
 ```
 
 Then add your instruments to the `instruments` table (see [Database Documentation](https://datasophos.github.io/NexusLIMS/stable/dev_guide/database.html)).
@@ -105,9 +106,6 @@ Then add your instruments to the `instruments` table (see [Database Documentatio
 ```bash
 # Run the record builder
 uv run nexuslims-process-records
-
-# Or use the module directly
-uv run python -m nexusLIMS.builder.record_builder
 ```
 
 ## Documentation

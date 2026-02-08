@@ -6,7 +6,7 @@ NexusLIMS uses a [SQLite](https://sqlite.org/index.html) database to track exper
 
 **Key features:**
 - Single-file database for easy backup (just copy the file)
-- Created from [SQL Schema Definition](https://github.com/datasophos/NexusLIMS/blob/main/nexusLIMS/db/dev/NexusLIMS_db_creation_script.sql)
+- Created from [SQLModel ORM Definitions](https://github.com/datasophos/NexusLIMS/blob/main/nexusLIMS/db/models.py)
 - Inspectable with database tools such as [DB Browser for SQLite](https://sqlitebrowser.org/)
 
 ## SQLModel ORM Migration
