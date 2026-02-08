@@ -81,8 +81,11 @@ coverage.xml
 *-checkpoint.ipynb
 Untitled.ipynb
 
-# Ignore auto-generated version switcher for docs
+# Ignore auto-generated documentation artifacts
 docs/_static/switcher.json
+docs/_static/db_schema.dot
+docs/_static/db_schema.png
+docs/dev_guide/db_schema_diagram.md
 
 # pip installation files
 *.egg-info

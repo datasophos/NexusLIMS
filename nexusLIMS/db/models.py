@@ -66,7 +66,8 @@ class Instrument(SQLModel, table=True):
     instrument_pid
         Unique identifier for the instrument (e.g., "FEI-Titan-TEM-012345")
     api_url
-        Calendar API endpoint URL for this instrument's scheduler
+        Calendar API endpoint URL for this instrument's scheduler (e.g.,
+        `https://<nemo_address>/api/tools/?id=<tool_id>`)
     calendar_name
         User-friendly name displayed in the reservation system
     calendar_url

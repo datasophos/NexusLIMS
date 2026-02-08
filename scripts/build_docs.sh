@@ -31,6 +31,11 @@ if [[ "$WATCH_MODE" == "true" ]]; then
     echo "Press Ctrl+C to stop"
     uv run sphinx-autobuild ./docs ./_build --watch nexusLIMS --port 8765
 else
+    # Generate database schema diagrams
+    echo "Generating database schema diagrams..."
+    uv run python scripts/generate_db_diagrams.py
+    echo ""
+
     echo "Building documentation..."
     if [[ -n "$STRICT_MODE" ]]; then
         echo "Running in strict mode (warnings as errors)..."

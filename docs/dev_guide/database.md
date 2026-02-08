@@ -81,11 +81,11 @@ Alembic provides a way to track and manage changes to the database schema over t
 If you have an existing NexusLIMS database (created before version 2.2.0), you need to mark it as migrated to the baseline schema:
 
 ```bash
-# Mark existing database as migrated to current schema
-nexuslims-migrate alembic stamp head
+# Mark existing database as consistent with the baseline pre-2.0 schema
+nexuslims-migrate alembic stamp v1_4_3
 ```
 
-This tells Alembic that your database already has the current schema structure and doesn't need the baseline migration applied.
+This tells Alembic that your database already has the baseline schema structure and doesn't need to be created from scratch.
 
 ```{versionadded} 2.5.0
 The `nexuslims-migrate` command provides simple, user-friendly commands for
@@ -112,7 +112,7 @@ nexuslims-migrate history
 nexuslims-migrate upgrade
 
 # Upgrade to specific revision
-nexuslims-migrate upgrade abc123
+nexuslims-migrate upgrade v2_5_0a
 
 # Downgrade one migration
 nexuslims-migrate downgrade
@@ -125,23 +125,37 @@ For advanced Alembic operations, use `nexuslims-migrate alembic [COMMAND]` to ac
 
 ### Creating New Migrations
 
-When you modify the database schema (by changing {py:class}`~nexusLIMS.db.models.SessionLog` or {py:class}`~nexusLIMS.db.models.Instrument`), you should create a migration:
+When you modify the database schema (by changing {py:class}`~nexusLIMS.db.models.SessionLog` or {py:class}`~nexusLIMS.db.models.Instrument`, etc.), you should create a migration:
 
-1. **Modify the SQLModel classes** in `nexusLIMS/db/models.py`
-2. **Generate migration script** (requires source checkout):
+1. **Modify the SQLModel classes** in `nexusLIMS/db/models.py` or add new enums in `nexusLIMS/db/enums.py`
+
+2. **Determine the revision ID** following the naming convention:
+   - **Format**: `v[MAJOR]_[MINOR]_[PATCH][letter]_d[escription]` (e.g., `v2_5_0a_add_external_user_identifiers`)
+   - **Version number**: Match the target release version where this schema change will land
+   - **Letter suffix**: Use sequential letters (`a`, `b`, `c`, ...) for multiple migrations within the same version
+   - **Description**: Brief, snake_case description of the change
+
+3. **Generate migration script** (requires source checkout):
    ```bash
-   nexuslims-migrate alembic revision --autogenerate -m "Add new field to SessionLog"
+   nexuslims-migrate alembic revision --autogenerate \
+       -m "add external user identifiers" \
+       --rev-id "v2_5_0a"
    ```
 
-   The migration will be created with a user-friendly sequential ID:
+   The migration will be created at:
    ```
-   nexusLIMS/migrations/versions/004_add_new_field_to_sessionlog.py
+   nexusLIMS/db/migrations/versions/v2_5_0a_add_external_user_identifiers.py
    ```
 
-   Instead of random hex like `a1b2c3d4e5f6_add_new_field_to_sessionlog.py`
+   **Note**: The filename combines the revision ID with the sanitized message for readability
 
-3. **Review the generated script** in `nexusLIMS/migrations/versions/`
-4. **Test the migration**:
+4. **Review and edit the generated script** in `nexusLIMS/db/migrations/versions/`:
+   - Verify the `upgrade()` function creates the expected schema changes
+   - Verify the `downgrade()` function properly reverses those changes
+   - For CHECK constraints or enums, you should use **hardcoded values** in the migration (preserves historical accuracy, migration won't break if enum changes later)
+   - Add docstring explaining the migration's purpose if needed
+
+5. **Test the migration thoroughly**:
    ```bash
    # Apply migration
    nexuslims-migrate upgrade
@@ -150,18 +164,31 @@ When you modify the database schema (by changing {py:class}`~nexusLIMS.db.models
    nexuslims-migrate downgrade
 
    # Re-apply
-   nexuslims-migrate upgrade
+   nexuslims-migrate upgrade head
    ```
-5. **Commit the migration script** to version control
+
+6. **Add integration tests** in `tests/integration/test_migrations.py`:
+   - Test that upgrade creates expected tables/columns
+   - Test that downgrade removes them
+   - Test offline mode if migration has conditional logic
+
+7. **Create changelog fragment** in `docs/changes/`:
+   ```bash
+   # Format: {issue_number}.{change_type}.md
+   # Change types: feature, bugfix, doc, removal, misc
+   docs/changes/48.feature.md
+   ```
+
+8. **Commit the migration script and tests** to version control
 
 ```{note}
 **Revision ID Format**
 
-NexusLIMS uses sequential, descriptive revision IDs instead of random hex values:
-- **Format**: `NNN_description` (e.g., `001_initial_schema`, `002_add_upload_log`)
-- **Benefits**: Clear ordering, easy to understand, sortable by name
-- **Automatic**: The message you provide in `-m "..."` is automatically sanitized and used
-- **Existing migrations**: Old hex-based migrations (from before 2.5.0) continue to work normally
+NexusLIMS uses version-based revision IDs with letter suffixes:
+- **Format**: `vMAJOR_MINOR_PATCHletter` (e.g., `v2_5_0a`, `v2_5_0b`, `v2_4_0a`)
+- **Benefits**: Clear association with release versions, sequential ordering within a version
+- **Multiple migrations per version**: Use sequential letters (`a`, `b`, `c`, ...)
+- **Manual specification**: Use `--rev-id` flag when generating migrations
 ```
 
 ### Migration Configuration
@@ -180,11 +207,25 @@ The `nexuslims-migrate` CLI command automatically locates the migrations directo
 - **Always backup your database** before running migrations on production data
 - **Test migrations thoroughly** in a development environment first
 - **Never edit applied migrations** - create a new migration to fix issues
-- The initial migration (`57f0798d0c6d_initial_schema_baseline.py`) is a no-op baseline for existing installations
+- The initial migration (`v1_4_3_initial_schema_baseline.py`) creates the basic database structure that serves as a basis for later migrations
 
 ## Database Structure
 
-The database contains two primary tables:
+```{figure} ../_static/db_schema.png
+:alt: NexusLIMS Database Schema Diagram
+:align: center
+:width: 100%
+
+NexusLIMS Database Schema (auto-generated from SQLModel metadata)
+```
+
+```{note}
+This diagram is automatically regenerated when you build the documentation, ensuring it always reflects the current database schema. Field descriptions are extracted from the SQLModel class docstrings.
+```
+
+For an interactive Mermaid diagram with detailed field descriptions and relationship documentation, see the [Database Schema Diagram](db_schema_diagram.md) (also auto-generated).
+
+The database contains four primary tables:
 
 1. **`session_log`** - Tracks experimental sessions and record building status
    - Records when users start/end experiments
@@ -196,6 +237,18 @@ The database contains two primary tables:
    - Reservation system URLs
    - Data storage paths
    - Harvester configuration
+
+3. **`upload_log`** - Tracks record uploads to CDCS and other export destinations
+   - Session identifier and instrument linkage
+   - CDCS record ID and PID
+   - Upload timestamps and success status
+   - Error tracking for failed uploads
+
+4. **`external_user_identifiers`** - Maps NexusLIMS usernames to external system IDs
+   - Star-topology design with `nexuslims_username` as canonical identifier
+   - Supports NEMO, LabArchives ELN, LabArchives Scheduler, CDCS
+   - Bidirectional lookup between internal and external identities
+   - Tracks creation and verification timestamps
 
 
 ## The `session_log` Table
@@ -272,3 +325,75 @@ import, rather than every time information is needed.
 | `computer_mount` | TEXT | The full path where the central file storage is mounted and files are saved on the 'support PC' for the instrument (for reference purposes) |
 | `harvester` | TEXT | The specific submodule within {py:mod}`nexusLIMS.harvesters` that should be used to harvest reservation information for this instrument. Possible values: `nemo`. |
 | `timezone` | TEXT | The timezone in which this instrument is located, in the format of the IANA timezone database (e.g. `America/New_York`). This is used to properly localize dates and times when communicating with the harvester APIs. |
+
+## The `upload_log` Table
+
+```{versionadded} 2.4.0
+The upload_log table was added to track record exports to external repositories.
+```
+
+### Purpose
+
+The `upload_log` table tracks export attempts to destination repositories like CDCS and LabArchives. It enables multi-destination export with granular success/failure tracking per destination and session.
+
+### How It Works
+
+1. **Per-Destination Tracking** - Each export attempt creates a new row, allowing one session to be exported to multiple destinations
+2. **Success/Failure Recording** - Stores whether export succeeded and captures error messages if it failed
+3. **Record Linkage** - Stores destination-specific record IDs and URLs for successful exports
+4. **Retry Logic** - Failed exports can be identified and retried based on `success` status
+
+### Table Schema
+
+| Column | Data type | Description |
+|--------|-----------|-------------|
+| `id` | INTEGER | The auto-incrementing primary key identifier for this table.<br><br>*Checks:* must not be `NULL` |
+| `session_identifier` | VARCHAR(36) | Foreign key reference to `session_log.session_identifier`.<br><br>*Checks:* must not be `NULL`<br>*Indexed:* for efficient session lookup |
+| `destination_name` | VARCHAR(100) | Name of the export destination (e.g., `"cdcs"`, `"labarchives"`).<br><br>*Checks:* must not be `NULL`<br>*Indexed:* for destination-specific queries |
+| `success` | BOOLEAN | Whether the export succeeded (`TRUE`) or failed (`FALSE`).<br><br>*Checks:* must not be `NULL` |
+| `timestamp` | DATETIME | When the export attempt occurred (timezone-aware).<br><br>*Checks:* must not be `NULL` |
+| `record_id` | VARCHAR(255) | Destination-specific record identifier (e.g., CDCS document ID).<br><br>*Optional:* `NULL` if export failed |
+| `record_url` | VARCHAR(500) | Direct URL to view the exported record in the destination system.<br><br>*Optional:* `NULL` if export failed |
+| `error_message` | TEXT | Error message if export failed.<br><br>*Optional:* `NULL` if export succeeded |
+| `metadata_json` | TEXT | JSON-serialized dict with destination-specific metadata.<br><br>*Optional:* for storing additional export context |
+
+## The `external_user_identifiers` Table
+
+```{versionadded} 2.5.0
+The external_user_identifiers table was added to map NexusLIMS usernames to external system IDs.
+```
+
+### Purpose
+
+The `external_user_identifiers` table maintains mappings between NexusLIMS usernames and user identifiers in external systems (NEMO, LabArchives ELN, LabArchives Scheduler, CDCS). This enables bidirectional user identity lookup and supports integration with external APIs.
+
+### How It Works
+
+1. **Star Topology Design** - Uses `nexuslims_username` (from `session_log.user`) as the canonical identifier, with mappings to each external system
+2. **Bidirectional Lookup** - Supports both forward lookup (NexusLIMS → external ID) and reverse lookup (external ID → NexusLIMS)
+3. **Uniqueness Constraints**:
+   - One external ID per system per NexusLIMS user
+   - One NexusLIMS user per external ID per system
+4. **Verification Tracking** - Records when mappings are created and last verified for auditing
+
+### Helper Functions
+
+The {py:mod}`nexusLIMS.db.models` module provides convenience functions:
+
+- {py:func}`~nexusLIMS.db.models.get_external_id` - Get external ID for a NexusLIMS username
+- {py:func}`~nexusLIMS.db.models.get_nexuslims_username` - Reverse lookup from external ID
+- {py:func}`~nexusLIMS.db.models.store_external_id` - Store or update a mapping (upsert)
+- {py:func}`~nexusLIMS.db.models.get_all_external_ids` - Get all external IDs for a username
+
+### Table Schema
+
+| Column | Data type | Description |
+|--------|-----------|-------------|
+| `id` | INTEGER | The auto-incrementing primary key identifier for this table.<br><br>*Checks:* must not be `NULL` |
+| `nexuslims_username` | VARCHAR | Canonical username in NexusLIMS (from `session_log.user`).<br><br>*Checks:* must not be `NULL`<br>*Indexed:* for efficient lookup<br>*Unique Constraint:* with `external_system` |
+| `external_system` | TEXT | External system identifier.<br><br>*Checks:* must be one of `"nemo"`, `"labarchives_eln"`, `"labarchives_scheduler"`, `"cdcs"`<br>*Unique Constraints:* with `nexuslims_username` and with `external_id` |
+| `external_id` | TEXT | User ID/username in the external system.<br><br>*Checks:* must not be `NULL`<br>*Unique Constraint:* with `external_system` |
+| `email` | VARCHAR | User's email for verification/matching purposes.<br><br>*Optional:* may be `NULL` |
+| `created_at` | DATETIME | When this mapping was created (timezone-aware, UTC).<br><br>*Checks:* must not be `NULL`<br>*Default:* current UTC timestamp |
+| `last_verified_at` | DATETIME | Last time this mapping was verified (timezone-aware, UTC).<br><br>*Optional:* `NULL` until first verification |
+| `notes` | TEXT | Additional notes about this mapping (e.g., `"OAuth registration"`, `"From NEMO harvester"`).<br><br>*Optional:* may be `NULL` |
