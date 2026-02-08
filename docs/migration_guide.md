@@ -282,8 +282,8 @@ nexuslims-migrate upgrade
 
 1. `stamp v1_4_3` - Marks your v1.4.3 database as having the baseline schema (`instruments` + `session_log` tables)
 2. `upgrade` - Applies migration (database update) commands that have updated the schema since v1.4.3:
-   - Migration `v2_4_0_1`: Adds the `upload_log` table for tracking record exports
-   - Migration `v2_4_0_2`: Updates `session_log` CHECK constraints to include new statuses (`NO_CONSENT`, `NO_RESERVATION`, `BUILT_NOT_EXPORTED`)
+   - Migration `v2_4_0a`: Adds the `upload_log` table for tracking record exports
+   - Migration `v2_4_0b`: Updates `session_log` CHECK constraints to include new statuses (`NO_CONSENT`, `NO_RESERVATION`, `BUILT_NOT_EXPORTED`)
 
 ````{note}
 If you're running from a source checkout (not an installed package), prefix commands with `uv run`:

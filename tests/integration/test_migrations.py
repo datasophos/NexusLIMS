@@ -170,7 +170,7 @@ class TestMigrationUpgradePath:
         tables = get_table_names(engine)
         assert "instruments" in tables
         assert "session_log" in tables
-        assert "upload_log" not in tables  # Added in v2_4_0_1
+        assert "upload_log" not in tables  # Added in v2_4_0a
 
         # Verify instruments table columns
         instruments_cols = get_column_names(engine, "instruments")
@@ -208,20 +208,20 @@ class TestMigrationUpgradePath:
         indexes = get_indexes(engine, "session_log")
         assert "ix_session_log_session_identifier" in indexes
 
-        # Verify NO CHECK constraints yet (added in v2_4_0_2)
+        # Verify NO CHECK constraints yet (added in v2_4_0b)
         constraints = get_check_constraints(engine, "session_log")
         assert "check_event_type" not in constraints
         assert "check_record_status" not in constraints
 
-    def test_upgrade_to_v2_4_0_1(self, alembic_config, engine):
-        """Test upgrading to v2_4_0_1 adds upload_log table."""
+    def test_upgrade_to_v2_4_0a(self, alembic_config, engine):
+        """Test upgrading to v2_4_0a adds upload_log table."""
         config, _ = alembic_config
 
         # Start from v1_4_3
         command.upgrade(config, "v1_4_3")
 
-        # Upgrade to v2_4_0_1
-        command.upgrade(config, "v2_4_0_1")
+        # Upgrade to v2_4_0a
+        command.upgrade(config, "v2_4_0a")
 
         # Verify upload_log table exists
         tables = get_table_names(engine)
@@ -247,15 +247,15 @@ class TestMigrationUpgradePath:
         assert "ix_upload_log_session_identifier" in indexes
         assert "ix_upload_log_destination_name" in indexes
 
-    def test_upgrade_to_v2_4_0_2(self, alembic_config, engine):
-        """Test upgrading to v2_4_0_2 adds CHECK constraints."""
+    def test_upgrade_to_v2_4_0b(self, alembic_config, engine):
+        """Test upgrading to v2_4_0b adds CHECK constraints."""
         config, _ = alembic_config
 
-        # Start from v2_4_0_1
-        command.upgrade(config, "v2_4_0_1")
+        # Start from v2_4_0a
+        command.upgrade(config, "v2_4_0a")
 
-        # Upgrade to v2_4_0_2
-        command.upgrade(config, "v2_4_0_2")
+        # Upgrade to v2_4_0b
+        command.upgrade(config, "v2_4_0b")
 
         # Verify CHECK constraints exist
         constraints = get_check_constraints(engine, "session_log")
@@ -383,11 +383,11 @@ class TestMigrationWithData:
             assert row[1] == "Building A, Room 101"
 
     def test_upgrade_with_session_logs(self, alembic_config, engine):
-        """Test that session_log data is preserved through v2_4_0_2 table recreation."""
+        """Test that session_log data is preserved through v2_4_0b table recreation."""
         config, _ = alembic_config
 
-        # Upgrade to v2_4_0_1 (before CHECK constraints)
-        command.upgrade(config, "v2_4_0_1")
+        # Upgrade to v2_4_0a (before CHECK constraints)
+        command.upgrade(config, "v2_4_0a")
 
         # Insert test instrument
         with engine.begin() as conn:
@@ -451,8 +451,8 @@ class TestMigrationWithData:
             )
             initial_distribution = dict(result.fetchall())
 
-        # Upgrade to v2_4_0_2 (recreates table with CHECK constraints)
-        command.upgrade(config, "v2_4_0_2")
+        # Upgrade to v2_4_0b (recreates table with CHECK constraints)
+        command.upgrade(config, "v2_4_0b")
 
         # Verify data preserved
         with engine.begin() as conn:
@@ -488,20 +488,20 @@ class TestMigrationWithData:
 class TestMigrationDowngrade:
     """Test downgrade paths work correctly."""
 
-    def test_downgrade_from_v2_4_0_2_to_v2_4_0_1(self, alembic_config, engine):
-        """Test downgrading from v2_4_0_2 removes CHECK constraints."""
+    def test_downgrade_from_v2_4_0b_to_v2_4_0a(self, alembic_config, engine):
+        """Test downgrading from v2_4_0b removes CHECK constraints."""
         config, _ = alembic_config
 
-        # Start at v2_4_0_2
-        command.upgrade(config, "v2_4_0_2")
+        # Start at v2_4_0b
+        command.upgrade(config, "v2_4_0b")
 
         # Verify CHECK constraints exist
         constraints = get_check_constraints(engine, "session_log")
         assert "check_event_type" in constraints
         assert "check_record_status" in constraints
 
-        # Downgrade to v2_4_0_1
-        command.downgrade(config, "v2_4_0_1")
+        # Downgrade to v2_4_0a
+        command.downgrade(config, "v2_4_0a")
 
         # Verify CHECK constraints removed
         constraints = get_check_constraints(engine, "session_log")
@@ -512,12 +512,12 @@ class TestMigrationDowngrade:
         tables = get_table_names(engine)
         assert "session_log" in tables
 
-    def test_downgrade_from_v2_4_0_1_to_v1_4_3(self, alembic_config, engine):
-        """Test downgrading from v2_4_0_1 removes upload_log table."""
+    def test_downgrade_from_v2_4_0a_to_v1_4_3(self, alembic_config, engine):
+        """Test downgrading from v2_4_0a removes upload_log table."""
         config, _ = alembic_config
 
-        # Start at v2_4_0_1
-        command.upgrade(config, "v2_4_0_1")
+        # Start at v2_4_0a
+        command.upgrade(config, "v2_4_0a")
 
         # Verify upload_log exists
         tables = get_table_names(engine)
@@ -536,8 +536,8 @@ class TestMigrationDowngrade:
         """Test that downgrade preserves session_log data."""
         config, _ = alembic_config
 
-        # Upgrade to v2_4_0_2 and insert data
-        command.upgrade(config, "v2_4_0_2")
+        # Upgrade to v2_4_0b and insert data
+        command.upgrade(config, "v2_4_0b")
 
         with engine.begin() as conn:
             # Insert test instrument
@@ -586,8 +586,8 @@ class TestMigrationDowngrade:
             initial_count = result.scalar()
             assert initial_count == 2
 
-        # Downgrade to v2_4_0_1
-        command.downgrade(config, "v2_4_0_1")
+        # Downgrade to v2_4_0a
+        command.downgrade(config, "v2_4_0a")
 
         # Verify data preserved
         with engine.begin() as conn:
@@ -602,7 +602,7 @@ class TestCheckConstraints:
     def test_event_type_constraint_enforced(self, alembic_config, engine):
         """Test that invalid event_type values are rejected."""
         config, _ = alembic_config
-        command.upgrade(config, "v2_4_0_2")
+        command.upgrade(config, "v2_4_0b")
 
         with engine.begin() as conn:
             # Insert test instrument
@@ -675,7 +675,7 @@ class TestCheckConstraints:
     def test_record_status_constraint_enforced(self, alembic_config, engine):
         """Test that invalid record_status values are rejected."""
         config, _ = alembic_config
-        command.upgrade(config, "v2_4_0_2")
+        command.upgrade(config, "v2_4_0b")
 
         with engine.begin() as conn:
             # Insert test instrument
@@ -746,9 +746,9 @@ class TestCheckConstraints:
             )
 
     def test_built_not_exported_status_allowed(self, alembic_config, engine):
-        """Test that BUILT_NOT_EXPORTED status (added in v2_4_0_1) is allowed."""
+        """Test that BUILT_NOT_EXPORTED status (added in v2_4_0a) is allowed."""
         config, _ = alembic_config
-        command.upgrade(config, "v2_4_0_2")
+        command.upgrade(config, "v2_4_0b")
 
         with engine.begin() as conn:
             # Insert test instrument
@@ -1076,6 +1076,32 @@ class TestMigrationEnvHelpers:
             if sql_path.exists():
                 sql_path.unlink()
 
+    def test_offline_downgrade_mode(self, alembic_config):
+        """Test that offline downgrade generates SQL without database access."""
+        config, _db_path = alembic_config
+
+        # Don't create database - test offline mode
+        # Generate SQL for downgrade without a database
+        try:
+            # Capture output
+            import sys
+            from io import StringIO
+
+            old_stdout = sys.stdout
+            sys.stdout = StringIO()
+
+            # Run downgrade in SQL mode (offline) - requires range format
+            # This covers lines 200-204 in v2_4_0b downgrade function
+            command.downgrade(config, "head:v1_4_3", sql=True)
+
+            sql_output = sys.stdout.getvalue()
+            sys.stdout = old_stdout
+
+            # Should generate SQL statements for downgrade
+            assert "DROP TABLE" in sql_output or "CREATE TABLE" in sql_output
+        finally:
+            pass  # No cleanup needed for offline mode
+
     def test_migration_with_corrupted_backup_handling(self, alembic_config, engine):
         """Test that migrations handle backup errors gracefully (lines 184-187)."""
         config, _db_path = alembic_config
@@ -1158,7 +1184,7 @@ class TestMigrationEnvHelpers:
 
         for rev in revisions:
             # Our custom revisions should match: v<major>_<minor>_<patch> format
-            # (existing migrations use version tags like v1_4_3, v2_4_0_1, v2_4_0_2)
+            # (existing migrations use version tags like v1_4_3, v2_4_0a, v2_4_0b)
             assert rev.revision is not None
             assert "_" in rev.revision  # Should have underscores
 
@@ -1177,3 +1203,72 @@ class TestMigrationEnvHelpers:
         command.history(config)
 
         # Should complete without errors
+
+
+class TestMigrationV250a:
+    """Test v2_5_0a migration (external_user_identifiers table)."""
+
+    def test_upgrade_creates_external_user_identifiers_table(
+        self, alembic_config, engine
+    ):
+        """Test that upgrading to v2_5_0a creates external_user_identifiers."""
+        config, _ = alembic_config
+
+        # Upgrade to v2_5_0a
+        command.upgrade(config, "v2_5_0a")
+
+        # Verify table exists
+        tables = get_table_names(engine)
+        assert "external_user_identifiers" in tables
+
+        # Verify columns
+        columns = get_column_names(engine, "external_user_identifiers")
+        expected_columns = {
+            "id",
+            "nexuslims_username",
+            "external_system",
+            "external_id",
+            "email",
+            "created_at",
+            "last_verified_at",
+            "notes",
+        }
+        assert columns == expected_columns
+
+        # Verify CHECK constraint
+        constraints = get_check_constraints(engine, "external_user_identifiers")
+        assert "valid_external_system" in constraints
+
+    def test_downgrade_removes_external_user_identifiers_table(
+        self, alembic_config, engine
+    ):
+        """Test that downgrading from v2_5_0a removes the table."""
+        config, _ = alembic_config
+
+        # Upgrade to v2_5_0a
+        command.upgrade(config, "v2_5_0a")
+        tables = get_table_names(engine)
+        assert "external_user_identifiers" in tables
+
+        # Downgrade to v2_4_0b
+        command.downgrade(config, "v2_4_0b")
+
+        # Verify table removed
+        tables = get_table_names(engine)
+        assert "external_user_identifiers" not in tables
+
+    def test_full_upgrade_includes_external_user_identifiers(
+        self, alembic_config, engine
+    ):
+        """Test that upgrading to head includes external_user_identifiers."""
+        config, _ = alembic_config
+
+        # Upgrade to head
+        command.upgrade(config, "head")
+
+        # Verify external_user_identifiers exists alongside other tables
+        tables = get_table_names(engine)
+        assert "instruments" in tables
+        assert "session_log" in tables
+        assert "upload_log" in tables
+        assert "external_user_identifiers" in tables

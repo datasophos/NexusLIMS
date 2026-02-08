@@ -1,6 +1,6 @@
 """Add upload_log table and BUILT_NOT_EXPORTED status.
 
-Revision ID: v2_4_0_1
+Revision ID: v2_4_0a
 Revises: v1_4_3
 Create Date: 2026-01-23 12:12:15.867734
 
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 from alembic import op
 
 # revision identifiers, used by Alembic.
-revision: str = "v2_4_0_1"
+revision: str = "v2_4_0a"
 down_revision: Union[str, Sequence[str], None] = "v1_4_3"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
