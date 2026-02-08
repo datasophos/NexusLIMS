@@ -3,10 +3,10 @@
 Creates the core NexusLIMS database schema with instruments and session_log tables.
 
 This migration creates the foundational schema based on SQLModel definitions.
-For existing installations (pre-2.5.0): Run `alembic stamp 001` to mark as migrated.
+For existing installations (pre-2.5.0): Run `alembic stamp v1_4_3` to mark as migrated.
 For new installations: This migration creates the initial tables.
 
-Revision ID: 001
+Revision ID: v1_4_3
 Revises:
 Create Date: 2025-12-29 11:08:25.723483
 
@@ -18,7 +18,7 @@ import sqlalchemy as sa
 from alembic import op
 
 # revision identifiers, used by Alembic.
-revision: str = "001"
+revision: str = "v1_4_3"
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None

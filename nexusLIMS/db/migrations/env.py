@@ -24,6 +24,7 @@ Note:
 import re
 from pathlib import Path
 
+import sqlalchemy as sa
 from alembic import context
 from alembic.script import ScriptDirectory
 from sqlalchemy import engine_from_config, pool
@@ -149,6 +150,8 @@ def run_migrations_online() -> None:
     and associate a connection with the context.
 
     """
+    from nexusLIMS.db.migrations.utils import create_backup  # noqa: PLC0415
+
     connectable = engine_from_config(
         config.get_section(config.config_ini_section, {}),
         prefix="sqlalchemy.",
@@ -163,6 +166,26 @@ def run_migrations_online() -> None:
         )
 
         with context.begin_transaction():
+            # Create automatic backup before running migrations
+            # Skip backup for new database initialization (no alembic_version table yet)
+            try:
+                destination_rev = context.get_context().opts.get("destination_rev")
+                if destination_rev:
+                    # Check if alembic_version table exists
+                    # (indicates existing database)
+                    inspector = sa.inspect(connection)
+                    has_alembic_version = (
+                        "alembic_version" in inspector.get_table_names()
+                    )
+
+                    if has_alembic_version:
+                        create_backup(connection)
+                    # else: new database initialization, skip backup
+            except Exception:  # noqa: S110
+                # If we can't determine if backup is needed, skip it
+                # (e.g., for read-only operations like current/history)
+                pass
+
             context.run_migrations()
 
 

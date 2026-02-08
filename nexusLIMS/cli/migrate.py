@@ -61,26 +61,26 @@ from pathlib import Path
 def _get_migrations_dir() -> Path:
     """Locate the migrations directory inside the installed package.
 
-    Uses importlib.resources (Python 3.9+) to find nexusLIMS.migrations
+    Uses importlib.resources (Python 3.9+) to find nexusLIMS.db.migrations
     regardless of whether the package is installed normally, as an editable
     install, or run from source.
 
     Returns
     -------
     pathlib.Path
-        Absolute path to the nexusLIMS/migrations/ directory.
+        Absolute path to the nexusLIMS/db/migrations/ directory.
 
     Raises
     ------
     ImportError
-        If the nexusLIMS.migrations package cannot be found.
+        If the nexusLIMS.db.migrations package cannot be found.
     """
     try:
-        migrations_resource = files("nexusLIMS.migrations")
+        migrations_resource = files("nexusLIMS.db.migrations")
         return Path(str(migrations_resource))
     except (ImportError, TypeError) as e:
         msg = (
-            "Could not locate nexusLIMS.migrations package. "
+            "Could not locate nexusLIMS.db.migrations package. "
             "Ensure NexusLIMS is properly installed."
         )
         raise ImportError(msg) from e

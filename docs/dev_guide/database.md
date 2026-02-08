@@ -260,7 +260,7 @@ import, rather than every time information is needed.
 | Column | Data type | Description |
 |--------|-----------|-------------|
 | `instrument_pid` | VARCHAR(100) | The unique identifier for an instrument in the facility, typically built from the make, model, and type of instrument, plus a unique numeric code (e.g. `Vendor-Model-Type-12345` ) |
-| `api_url` | TEXT | The calendar API endpoint url for this instrument's scheduler |
+| `api_url` | TEXT | The calendar API endpoint url for this instrument's scheduler. For NEMO, should be of the format `https://<nemo_address>/api/tools/?id=<tool_id>` |
 | `calendar_name` | TEXT | The "user-friendly" name of the calendar for this instrument as displayed on the reservation system resource (e.g. "FEI Titan TEM") |
 | `calendar_url` | TEXT | **[Deprecated]** The URL to this instrument's web-accessible calendar on the SharePoint resource (this is no longer used after SharePoint support was removed) |
 | `location` | VARCHAR(100) | The physical location of this instrument |

@@ -4,15 +4,61 @@ NexusLIMS provides command-line tools for record processing and configuration ma
 NexusLIMS from a `git`-cloned version of the repository, ensure you
 add `uv run` before every command.
 
+Every command (and any subcommands) also support the `--help` flag that can be
+used to get interactive assistance for any operation.
+
 ## `nexuslims-process-records`
 
-The main record processing command that searches for completed sessions, builds XML records,
-and uploads them to configured export destinations.
+The main record processing command that searches for completed sessions, builds
+XML records, and uploads them to configured export destinations.
 
 ### Basic Usage
 
 ```bash
-nexuslims-process-records [OPTIONS]
+nexuslims-process-records --help
+```
+
+```text
+Usage: nexuslims-process-records [OPTIONS]
+
+  Process new NexusLIMS records with logging and email notifications.
+
+  This command runs the NexusLIMS record builder to process new experimental
+  sessions and generate XML records. It provides file locking to prevent
+  concurrent runs, timestamped logging, and email notifications on errors.
+
+  By default, only sessions from the last week are processed. Use --from=none
+  to process all sessions, or specify custom date ranges with --from and --to.
+
+Options:
+  -n, --dry-run  Dry run: find files without building records
+  -v, --verbose  Increase verbosity (-v for INFO, -vv for DEBUG)
+  --from TEXT    Start date for session filtering (ISO format: YYYY-MM-DD).
+                 Defaults to 1 week ago. Use "none" to disable lower bound.
+  --to TEXT      End date for session filtering (ISO format: YYYY-MM-DD). Omit
+                 to disable upper bound.
+  --version      Show the version and exit.
+  --help         Show this message and exit.
+
+  Examples:
+
+      # Normal run (process records from last week)
+      $ nexuslims-process-records
+
+      # Process all sessions (no date filtering)
+      $ nexuslims-process-records --from=none
+
+      # Process sessions since a specific date
+      $ nexuslims-process-records --from=2025-01-01
+
+      # Process a specific date range
+      $ nexuslims-process-records --from=2025-01-01 --to=2025-01-31
+
+      # Dry run (find files only)
+      $ nexuslims-process-records -n
+
+      # Verbose output
+      $ nexuslims-process-records -vv
 ```
 
 ### Options
@@ -45,7 +91,7 @@ Filter sessions to only process those that **started on or after** the specified
 - `none` - Disable the lower bound and process all sessions regardless of start date
 
 **Examples:**
-```bash
+```text
 # Process sessions from January 1, 2024 onward
 nexuslims-process-records --from 2024-01-01
 
@@ -66,7 +112,7 @@ Filter sessions to only process those that **ended on or before** the specified 
 **Date format:** `YYYY-MM-DD` (ISO 8601 date format)
 
 **Examples:**
-```bash
+```text
 # Process sessions up to and including December 31, 2023
 nexuslims-process-records --to 2023-12-31
 
@@ -83,7 +129,7 @@ that day.
 Use both options together to process sessions within a specific date range.
 
 **Examples:**
-```bash
+```text
 # Process sessions from January 2024 only
 nexuslims-process-records --from 2024-01-01 --to 2024-01-31
 
@@ -275,6 +321,24 @@ See the {py:mod}`nexusLIMS.cli.config` module documentation for details.
 ### Basic Usage
 
 ```bash
+nexuslims-config --help
+```
+
+```text
+Usage: nexuslims-config [OPTIONS] COMMAND [ARGS]...
+
+  Manage NexusLIMS configuration files.
+
+Options:
+  --version  Show the version and exit.
+  --help     Show this message and exit.
+
+Commands:
+  dump  Dump the current effective configuration to JSON.
+  load  Load a previously dumped JSON config into a .env file.
+```
+
+```bash
 # View current configuration (prints to stdout)
 nexuslims-config dump
 
@@ -339,3 +403,347 @@ Example output of the dump command:
   }
 }
 ```
+
+---
+
+## `nexuslims-migrate`
+
+```{versionadded} 2.5.0
+```
+
+`nexuslims-migrate` is the NexusLIMS database management tool. It
+provides simple commands for common database operations while allowing
+advanced access to [Alembic](https://alembic.sqlalchemy.org/) functionality
+for developers.
+
+The migration command will automatically read the value of `NX_DB_PATH`
+set in your `.env` file and apply any changes required to that database.
+Backups of your database file will be made automatically during the upgrade
+process.
+
+```{note}
+This command is generally only needed when upgrading NexusLIMS to new versions,
+or when initially setting up a deployment of NexusLIMS. The release notes
+for each NexusLIMS version will indicate if a database upgrade is necessary.
+If so, you will need to run `nexuslims-migrate upgrade` as part of the
+version upgrade.
+```
+
+**Database version naming:** Database migration revision IDs track NexusLIMS
+version numbers. For example, revision `v2_4_0_2` corresponds to the database
+schema required for NexusLIMS v2.4.0. This makes it easy to identify which
+database version matches your installed NexusLIMS version.
+
+### Basic Usage
+
+```bash
+nexuslims-migrate --help
+```
+
+```text
+Usage: nexuslims-migrate [OPTIONS] COMMAND [ARGS]...
+
+  Manage NexusLIMS database schema migrations.
+
+  This tool provides simple commands for common database operations. For
+  advanced usage, use 'nexuslims-migrate alembic [COMMAND]' to access the full
+  Alembic CLI.
+
+Options:
+  --version  Show version and exit
+  --help     Show this message and exit.
+
+Commands:
+  alembic    Run Alembic commands directly (advanced usage).
+  check      Check if the database has pending migrations.
+  current    Show the current database migration version.
+  downgrade  Downgrade database to an earlier version.
+  history    Show migration history.
+  init       Initialize a new NexusLIMS database.
+  upgrade    Upgrade database to a later version.
+```
+
+### Commands
+
+#### `init`
+
+Initialize a new NexusLIMS database with.
+
+Creates the database file at `NX_DB_PATH`, applies all migrations to create the schema,
+and marks it as current.
+
+**Usage:**
+```bash
+nexuslims-migrate init [OPTIONS]
+```
+
+**Options:**
+- `--force` - Overwrite existing database file if it exists (use with caution)
+
+**Examples:**
+```bash
+# Create new database
+nexuslims-migrate init
+
+# Force recreate (destroys existing data)
+nexuslims-migrate init --force
+```
+
+**Notes:**
+- Database location is read from `NX_DB_PATH` environment variable
+- Parent directories are created automatically if they don't exist
+- Fails with clear error if database already exists (unless `--force` is used)
+
+#### `upgrade`
+
+Upgrade an existing NexusLIMS database to a later schema version.
+
+**Usage:**
+```bash
+nexuslims-migrate upgrade [REVISION] [OPTIONS]
+```
+
+**Arguments:**
+- `REVISION` - Target migration version (default: `head` for latest)
+  - `head` - Upgrade to latest version
+  - `+1` - Upgrade one version
+  - `abc` - Upgrade to specific revision ID (e.g., `v2_4_0_1`)
+
+**Options:**
+- `--sql` - Generate SQL script instead of applying changes
+
+**Examples:**
+```bash
+# Upgrade to latest version
+nexuslims-migrate upgrade
+
+# Upgrade one version at a time
+nexuslims-migrate upgrade +1
+
+# Upgrade to specific revision
+nexuslims-migrate upgrade v2_4_0_1
+
+# Generate SQL without applying
+nexuslims-migrate upgrade --sql
+```
+
+#### `downgrade`
+
+Downgrade NexusLIMS database to an earlier schema version.
+
+**Usage:**
+```bash
+nexuslims-migrate downgrade [REVISION] [OPTIONS]
+```
+
+**Arguments:**
+- `REVISION` - Target migration version (default: `-1` for one step back)
+  - `-1` - Downgrade one version
+  - `-2` - Downgrade two versions
+  - `abc` - Downgrade to specific revision ID (e.g., `002`)
+
+**Options:**
+- `--sql` - Generate SQL script instead of applying changes
+
+**Examples:**
+```bash
+# Downgrade one version
+nexuslims-migrate downgrade
+
+# Downgrade to specific revision
+nexuslims-migrate downgrade v1_4_3
+
+# Generate SQL without applying
+nexuslims-migrate downgrade --sql
+```
+
+#### `current`
+
+Show the current database migration version.
+
+**Usage:**
+```bash
+nexuslims-migrate current [OPTIONS]
+```
+
+**Options:**
+- `-v, --verbose` - Show detailed information
+
+**Examples:**
+```bash
+# Show current version
+nexuslims-migrate current
+
+# output: 
+#   v2_4_0_2 (head)
+
+# Show detailed information
+nexuslims-migrate current -v
+
+# output:
+#  Current revision(s) for sqlite:///test_db.sqlite:
+#  Rev: v2_4_0_2 (head)
+#  Parent: v2_4_0_1
+#  Path: nexusLIMS/db/migrations/versions/v2_4_0_2_add_check_constraints.py
+```
+
+#### `check`
+
+Check if the database has any pending migrations.
+
+Useful for automated monitoring or pre-deployment checks.
+
+**Usage:**
+```bash
+nexuslims-migrate check
+```
+
+**Exit Codes:**
+- **0** - Database is up-to-date
+- **1** - Database has pending migrations
+- **2** - Error occurred
+
+**Examples:**
+```bash
+# Check migration status
+nexuslims-migrate check
+
+# output:
+#   ⚠ Database has pending migrations
+#   Current revision: v1_4_3
+#   Latest revision:  v2_4_0_2
+```
+
+#### `history`
+
+Show migration history.
+
+**Usage:**
+```bash
+nexuslims-migrate history [OPTIONS]
+```
+
+**Options:**
+- `-v, --verbose` - Show detailed information
+- `-i, --indicate-current` - Indicate current revision (Alembic default)
+
+**Examples:**
+```bash
+# Show migration history
+nexuslims-migrate history
+
+# output:
+#   v2_4_0_1 -> v2_4_0_2 (head), Add check constraints to session_log.
+#   v1_4_3 -> v2_4_0_1, Add upload_log table and BUILT_NOT_EXPORTED status.
+#   <base> -> v1_4_3, Initial schema baseline.
+
+# Show verbose history with current revision marked
+nexuslims-migrate history -v -i
+```
+
+#### `alembic`
+
+Run Alembic commands directly (advanced usage).
+
+Provides access to the full Alembic CLI for advanced operations not covered by the
+simplified commands above.
+
+**Usage:**
+```bash
+nexuslims-migrate alembic [ALEMBIC_COMMAND] [ALEMBIC_OPTIONS]
+```
+
+**Examples:**
+```bash
+# Show detailed migration history
+nexuslims-migrate alembic history --verbose
+
+# Create a new migration (development only, requires source checkout)
+nexuslims-migrate alembic revision --autogenerate -m "Add column"
+
+# Show specific revision details
+nexuslims-migrate alembic show 003
+
+# Stamp database without running migrations (use with caution)
+nexuslims-migrate alembic stamp head
+```
+
+**Note:** The `alembic` subcommand passes arguments directly to Alembic's CLI. See the
+[Alembic documentation](https://alembic.sqlalchemy.org/) for available commands.
+
+### Global Options
+
+#### `--version`
+
+Display the NexusLIMS version and exit.
+
+**Example:**
+```bash
+nexuslims-migrate --version
+# Output: nexuslims-migrate (NexusLIMS 2.4.1)
+```
+
+### Common Workflows
+
+#### Setting Up a New Installation
+
+```bash
+# 1. Set database path in .env
+echo "NX_DB_PATH=/var/nexuslims/database.db" >> .env
+
+# 2. Initialize database
+nexuslims-migrate init
+
+# 3. Verify database status
+nexuslims-migrate current
+```
+
+#### Upgrading After NexusLIMS Update
+
+```bash
+# 1. Check for pending migrations
+nexuslims-migrate check
+
+# 2. If migrations are pending, review what will change
+nexuslims-migrate history -v
+
+# 3. Manually ackup database (recommended, though the upgrade command will also backup)
+cp /path/to/database.db /path/to/database.db.backup
+
+# 4. Apply migrations
+nexuslims-migrate upgrade
+
+# 5. Verify upgrade
+nexuslims-migrate current
+```
+
+#### Migrating from v1.x or Early v2.x
+
+If you have an existing database from before v2.2.0 (when Alembic was introduced),
+mark it as migrated to the baseline schema:
+
+```bash
+# Mark existing database as at the v1.4.3 migration level
+nexuslims-migrate alembic stamp v1_4_3
+```
+
+See the {ref}`migration` guide for complete migration instructions.
+
+### Configuration
+
+The `nexuslims-migrate` command automatically:
+
+- Reads database path from {ref}`NX_DB_PATH <config-db-path>` environment variable
+- Locates migrations directory inside the installed package (works with pip/uv installations)
+- Creates temporary Alembic configuration as needed
+
+No manual configuration is required.
+
+### Notes
+
+- **Always backup your database** before running migrations on production data
+- **Test migrations** in a development environment first
+- **Never edit applied migrations** - create a new migration to fix issues
+- The sequential revision IDs aligned to NexusLIMS versions (v1_4_3, v2_4_0, etc.) make it easy to track migration order
+
+For more details on the migration system, see the {doc}`database migration documentation <../dev_guide/database>`.

@@ -112,8 +112,8 @@ rm production-config.json
 
 When `nexuslims-process-records` starts with a verbosity of `-v` or higher,
 it logs a sanitized view of the loaded configuration to help with debugging.
-The log output is sanitized as `nexuslims-config dump`,
-ensuring no sensitive environment variables are exposed in logs.
+The log output is sanitized, ensuring no sensitive environment variables
+are exposed in logs.
 
 Example log output:
 ```
@@ -136,7 +136,7 @@ This is particularly useful when:
 
 ## Required Configuration
 
-These variables **must** be set for NexusLIMS to function.
+These variables **must** be configured for NexusLIMS to function.
 
 ### File System Paths
 
@@ -210,6 +210,41 @@ NX_CDCS_TOKEN=your-api-token-here
 ```{warning}
 Store API tokens securely. Use environment variables or a secure secrets management system rather than committing tokens to version control.
 ```
+
+### NEMO Integration
+
+NexusLIMS supports multiple NEMO instances by using numbered environment variable pairs. Each NEMO instance requires an address and token.
+
+(config-nemo-address)=
+#### `NX_NEMO_ADDRESS_N`
+
+**Type:** URL (must end with trailing slash)\
+**Required:** Yes (for each NEMO instance)
+
+Full path to the NEMO API endpoint. The `_N` suffix can be any number (e.g., `_1`, `_2`, `_3`).
+
+**Example:**
+```bash
+NX_NEMO_ADDRESS_1=https://nemo1.example.com/api/
+NX_NEMO_ADDRESS_2=https://nemo2.example.com/api/
+```
+
+(config-nemo-token)=
+#### `NX_NEMO_TOKEN_N`
+
+**Type:** String\
+**Required:** Yes (for each NEMO instance)
+
+API authentication token for the corresponding NEMO instance. Obtain from the "Detailed Administration" → "Tokens" page in NEMO. The token authenticates as a specific user, so consider using a dedicated service account.
+
+**Example:**
+```bash
+NX_NEMO_TOKEN_1=abc123def456...
+NX_NEMO_TOKEN_2=xyz789uvw012...
+```
+
+## Optional Configuration
+
 
 ### eLabFTW Integration
 
@@ -307,39 +342,6 @@ NX_EXPORT_STRATEGY=best_effort
 See the {ref}`exporters` page for a full description of how strategies interact with destination priorities and inter-destination dependencies (e.g. eLabFTW cross-linking to a CDCS record).
 ```
 
-### NEMO Integration
-
-NexusLIMS supports multiple NEMO instances by using numbered environment variable pairs. Each NEMO instance requires an address and token.
-
-(config-nemo-address)=
-#### `NX_NEMO_ADDRESS_N`
-
-**Type:** URL (must end with trailing slash)\
-**Required:** Yes (for each NEMO instance)
-
-Full path to the NEMO API endpoint. The `_N` suffix can be any number (e.g., `_1`, `_2`, `_3`).
-
-**Example:**
-```bash
-NX_NEMO_ADDRESS_1=https://nemo1.example.com/api/
-NX_NEMO_ADDRESS_2=https://nemo2.example.com/api/
-```
-
-(config-nemo-token)=
-#### `NX_NEMO_TOKEN_N`
-
-**Type:** String\
-**Required:** Yes (for each NEMO instance)
-
-API authentication token for the corresponding NEMO instance. Obtain from the "Detailed Administration" → "Tokens" page in NEMO. The token authenticates as a specific user, so consider using a dedicated service account.
-
-**Example:**
-```bash
-NX_NEMO_TOKEN_1=abc123def456...
-NX_NEMO_TOKEN_2=xyz789uvw012...
-```
-
-## Optional Configuration
 
 ### File Handling
 
@@ -654,7 +656,7 @@ List of recipient email addresses for error notifications.
 NX_EMAIL_RECIPIENTS=admin@example.com,team@example.com
 ```
 
-## Configuration in Code
+## Configuration in Code (for developers)
 
 ### Accessing Configuration
 
@@ -733,10 +735,12 @@ NX_NEMO_ADDRESS_1=https://nemo.example.com/api/
 NX_NEMO_TOKEN_1=token_here
 ```
 
-### Full Production Configuration
+### Full Example Production Configuration
 
 ```bash
+# ============================================================================
 # File paths
+# ============================================================================
 NX_INSTRUMENT_DATA_PATH=/mnt/nexus_instruments
 NX_DATA_PATH=/var/nexuslims/data
 NX_DB_PATH=/var/nexuslims/data/nexuslims.db
@@ -746,28 +750,52 @@ NX_RECORDS_PATH=/var/nexuslims/records
 # Local profiles
 NX_LOCAL_PROFILES_PATH=/etc/nexuslims/profiles
 
-# CDCS
+# ============================================================================
+# CDCS Integration
+# ============================================================================
 NX_CDCS_URL=https://nexuslims.example.com
 NX_CDCS_TOKEN=your-api-token-here
 
-# Export strategy
+# ============================================================================
+# Export Configuration
+# ============================================================================
+# Strategy for exporting to multiple destinations ('all', 'first_success', 'best_effort')
 NX_EXPORT_STRATEGY=all
 
-# File handling
+# ============================================================================
+# eLabFTW Integration (optional)
+# ============================================================================
+NX_ELABFTW_URL=https://elabftw.example.com
+NX_ELABFTW_API_KEY=your-elabftw-api-key
+NX_ELABFTW_EXPERIMENT_CATEGORY=1
+NX_ELABFTW_EXPERIMENT_STATUS=1
+
+# ============================================================================
+# File Handling
+# ============================================================================
 NX_FILE_STRATEGY=inclusive
 NX_FILE_DELAY_DAYS=2.5
-NX_IGNORE_PATTERNS=["*.mib", "*.db", "*.emi", "*.tmp"]
+NX_CLUSTERING_SENSITIVITY=1.0
+NX_IGNORE_PATTERNS='["*.mib","*.db","*.emi","*.hdr"]'
 
-# NEMO instances
+# ============================================================================
+# NEMO Harvesters
+# ============================================================================
+# First NEMO instance
 NX_NEMO_ADDRESS_1=https://nemo1.example.com/api/
 NX_NEMO_TOKEN_1=token1_here
 NX_NEMO_TZ_1=America/Denver
+NX_NEMO_STRFTIME_FMT_1=%Y-%m-%dT%H:%M:%S%z
+NX_NEMO_STRPTIME_FMT_1=%Y-%m-%dT%H:%M:%S%z
 
+# Second NEMO instance (optional)
 NX_NEMO_ADDRESS_2=https://nemo2.example.com/api/
 NX_NEMO_TOKEN_2=token2_here
 NX_NEMO_TZ_2=America/New_York
 
-# Email notifications
+# ============================================================================
+# Email Notifications (optional)
+# ============================================================================
 NX_EMAIL_SMTP_HOST=smtp.gmail.com
 NX_EMAIL_SMTP_PORT=587
 NX_EMAIL_SMTP_USERNAME=nexuslims@example.com
@@ -776,32 +804,17 @@ NX_EMAIL_USE_TLS=true
 NX_EMAIL_SENDER=nexuslims@example.com
 NX_EMAIL_RECIPIENTS=admin@example.com,team@example.com
 
-# SSL certificates (if needed)
+# ============================================================================
+# SSL Certificate Configuration (optional)
+# ============================================================================
+# Option 1: Path to certificate bundle file
 NX_CERT_BUNDLE_FILE=/etc/ssl/certs/custom-ca.crt
-```
 
-### Development/Testing Configuration
+# Option 2: Certificate bundle as string (alternative to NX_CERT_BUNDLE_FILE)
+# NX_CERT_BUNDLE="-----BEGIN CERTIFICATE-----\n...\n-----END CERTIFICATE-----"
 
-```bash
-# File paths (local development)
-NX_INSTRUMENT_DATA_PATH=/tmp/test_instruments
-NX_DATA_PATH=/tmp/test_data
-NX_DB_PATH=/tmp/test_data/nexuslims.db
-
-# CDCS (test instance)
-NX_CDCS_URL=https://nexuslims-test.example.com
-NX_CDCS_TOKEN=test-api-token-here
-
-# NEMO (test instance)
-NX_NEMO_ADDRESS_1=https://nemo-test.example.com/api/
-NX_NEMO_TOKEN_1=test_token
-
-# Aggressive file finding for testing
-NX_FILE_STRATEGY=inclusive
-NX_FILE_DELAY_DAYS=0.1
-
-# Skip SSL verification for local self-signed/mkcert certs
-NX_DISABLE_SSL_VERIFY=true
+# Option 3: Disable SSL verification (NEVER use in production!)
+# NX_DISABLE_SSL_VERIFY=false
 ```
 
 ## Troubleshooting

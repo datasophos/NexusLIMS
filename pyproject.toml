@@ -226,7 +226,7 @@ reportMissingTypeStubs = false
 
 [tool.alembic]
 # Path to migration scripts (relative to pyproject.toml)
-script_location = "nexusLIMS/migrations"
+script_location = "nexusLIMS/db/migrations"
 
 # Prepend current directory to sys.path for imports
 prepend_sys_path = ["."]
