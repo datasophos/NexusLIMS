@@ -191,8 +191,8 @@ def _cli():  # noqa: PLR0915
         Creates the database file at NX_DB_PATH, applies the schema,
         and marks it as migrated to the latest version.
 
-        This is equivalent to running initialize_db.py followed by
-        'nexuslims-migrate upgrade head'.
+        This creates the database file and applies all migrations
+        (equivalent to 'nexuslims-migrate upgrade head' on a new DB).
         """
         import os
         import sys
