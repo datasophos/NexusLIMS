@@ -77,7 +77,7 @@ def _generate_revision_id(context_obj) -> str:
                 # Extract numeric prefix (e.g., "001" from "001_description")
                 num_part = rev.revision.split("_")[0]
                 max_num = max(max_num, int(num_part))
-            except (ValueError, IndexError):
+            except (ValueError, IndexError):  # pragma: no cover
                 # Skip if not in our format
                 pass
 

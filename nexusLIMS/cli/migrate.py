@@ -127,7 +127,8 @@ def _get_current_revision() -> str:
     Returns
     -------
     str
-        Current revision ID or "none" if not stamped
+        Current revision ID, "none" if not stamped, or "unknown" if database
+        doesn't exist
     """
     import os
 
@@ -136,6 +137,10 @@ def _get_current_revision() -> str:
 
     db_path = os.getenv("NX_DB_PATH")
     if not db_path:
+        return "unknown"
+
+    # Check if database file exists
+    if not Path(db_path).exists():
         return "unknown"
 
     try:
@@ -250,14 +255,27 @@ def _cli():  # noqa: PLR0915
           nexuslims-migrate upgrade +1       # Upgrade one version
           nexuslims-migrate upgrade abc123   # Upgrade to specific revision
         """
+        import os
+        import sys
+
+        # Check database exists (unless in SQL mode where we just generate SQL)
+        if not sql:
+            db_path = os.getenv("NX_DB_PATH")
+            if not db_path or not Path(db_path).exists():
+                click.secho(
+                    "Error: Database does not exist. Run 'nexuslims-migrate init' "
+                    "first.",
+                    fg="red",
+                    err=True,
+                )
+                sys.exit(1)
+
         try:
             _run_alembic_command("upgrade", revision, sql=sql)
             if not sql:
                 click.secho("✓ Database upgraded successfully", fg="green")
         except Exception as e:
             click.secho(f"Error upgrading database: {e}", fg="red", err=True)
-            import sys
-
             sys.exit(1)
 
     @cli.command()
@@ -276,14 +294,26 @@ def _cli():  # noqa: PLR0915
           nexuslims-migrate downgrade -2     # Downgrade two versions
           nexuslims-migrate downgrade abc123 # Downgrade to specific revision
         """
+        import os
+        import sys
+
+        # Check database exists (unless in SQL mode where we just generate SQL)
+        if not sql:
+            db_path = os.getenv("NX_DB_PATH")
+            if not db_path or not Path(db_path).exists():
+                click.secho(
+                    "Error: Database does not exist.",
+                    fg="red",
+                    err=True,
+                )
+                sys.exit(1)
+
         try:
             _run_alembic_command("downgrade", revision, sql=sql)
             if not sql:
                 click.secho("✓ Database downgraded successfully", fg="green")
         except Exception as e:
             click.secho(f"Error downgrading database: {e}", fg="red", err=True)
-            import sys
-
             sys.exit(1)
 
     @cli.command()
@@ -293,12 +323,23 @@ def _cli():  # noqa: PLR0915
 
         Displays the revision ID that the database is currently at.
         """
+        import os
+        import sys
+
+        # Check database exists
+        db_path = os.getenv("NX_DB_PATH")
+        if not db_path or not Path(db_path).exists():
+            click.secho(
+                "Error: Database does not exist. Run 'nexuslims-migrate init' first.",
+                fg="red",
+                err=True,
+            )
+            sys.exit(1)
+
         try:
             _run_alembic_command("current", verbose=verbose)
         except Exception as e:
             click.secho(f"Error checking database version: {e}", fg="red", err=True)
-            import sys
-
             sys.exit(1)
 
     @cli.command()
@@ -308,9 +349,20 @@ def _cli():  # noqa: PLR0915
         Exits with code 0 if database is up-to-date, code 1 if migrations
         are pending, or code 2 on error.
         """
+        import os
         import sys
 
         from alembic.script import ScriptDirectory
+
+        # Check database exists
+        db_path = os.getenv("NX_DB_PATH")
+        if not db_path or not Path(db_path).exists():
+            click.secho(
+                "Error: Database does not exist. Run 'nexuslims-migrate init' first.",
+                fg="red",
+                err=True,
+            )
+            sys.exit(2)
 
         try:
             cfg = _get_alembic_config()

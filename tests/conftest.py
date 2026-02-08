@@ -2,6 +2,7 @@
 """Top-level pytest configuration for test discovery and plugin loading."""
 
 import os
+import tempfile
 from pathlib import Path
 
 # ============================================================================
@@ -10,6 +11,28 @@ from pathlib import Path
 # This disables Pydantic validation in nexusLIMS.config, allowing tests to
 # set up the environment at runtime without validation errors during import
 os.environ["NX_TEST_MODE"] = "true"
+
+# Ensure we never create a repo-root SQLite file from relative NX_DB_PATH values
+_DEFAULT_TEST_DB_DIR = Path(tempfile.mkdtemp(prefix="nexuslims-tests-"))
+_DEFAULT_TEST_DB_PATH = _DEFAULT_TEST_DB_DIR / "test.db"
+_DEFAULT_TEST_DB_SET = False
+if "NX_DB_PATH" not in os.environ or not Path(os.environ["NX_DB_PATH"]).is_absolute():
+    os.environ["NX_DB_PATH"] = str(_DEFAULT_TEST_DB_PATH)
+    _DEFAULT_TEST_DB_SET = True
+
+
+def pytest_sessionfinish(session, exitstatus):  # noqa: ARG001
+    """Clean up the temp NX_DB_PATH used for tests."""
+    if not _DEFAULT_TEST_DB_SET:
+        return
+
+    try:
+        if _DEFAULT_TEST_DB_PATH.exists():
+            _DEFAULT_TEST_DB_PATH.unlink()
+        _DEFAULT_TEST_DB_DIR.rmdir()
+    except OSError:
+        # Best-effort cleanup; ignore if the DB is still open or the dir isn't empty.
+        pass
 
 
 # ============================================================================
