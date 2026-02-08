@@ -66,7 +66,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Feb, 07, 2026"/>
+    <meta name="docbuild:last-update" content="Feb, 08, 2026"/>
   </head>
   
   
@@ -183,7 +183,7 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../migration.html">
+  <a class="nav-link nav-internal" href="../migration_guide.html">
     Migration Guide
   </a>
 </li>
@@ -322,7 +322,7 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../migration.html">
+  <a class="nav-link nav-internal" href="../migration_guide.html">
     Migration Guide
   </a>
 </li>
@@ -489,7 +489,7 @@
 <p><strong>Key features:</strong></p>
 <ul class="simple">
 <li><p>Single-file database for easy backup (just copy the file)</p></li>
-<li><p>Created from <a class="reference external" href="https://github.com/datasophos/NexusLIMS/blob/main/nexusLIMS/db/dev/NexusLIMS_db_creation_script.sql">SQL Schema Definition</a></p></li>
+<li><p>Created from <a class="reference external" href="https://github.com/datasophos/NexusLIMS/blob/main/nexusLIMS/db/models.py">SQLModel ORM Definitions</a></p></li>
 <li><p>Inspectable with database tools such as <a class="reference external" href="https://sqlitebrowser.org/">DB Browser for SQLite</a></p></li>
 </ul>
 </section>
@@ -562,65 +562,97 @@
 <h3>For Existing Installations<a class="headerlink" href="#for-existing-installations" title="Link to this heading">#</a></h3>
 <p>If you have an existing NexusLIMS database (created before version 2.2.0), you need to mark it as migrated to the baseline schema:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Mark existing database as migrated to current schema</span>
-uv<span class="w"> </span>run<span class="w"> </span>alembic<span class="w"> </span>stamp<span class="w"> </span>head
+nexuslims-migrate<span class="w"> </span>alembic<span class="w"> </span>stamp<span class="w"> </span>head
 </pre></div>
 </div>
 <p>This tells Alembic that your database already has the current schema structure and doesn’t need the baseline migration applied.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 2.5.0: </span>The <code class="docutils literal notranslate"><span class="pre">nexuslims-migrate</span></code> command provides simple, user-friendly commands for
+common database operations. It automatically locates the migrations directory
+inside the installed package, making migrations work correctly after pip/uv
+installation. Advanced users can access the full Alembic CLI via
+<code class="docutils literal notranslate"><span class="pre">nexuslims-migrate</span> <span class="pre">alembic</span> <span class="pre">[COMMAND]</span></code>. The <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">run</span> <span class="pre">alembic</span></code> command still works
+for development from source checkouts.</p>
+</div>
 </section>
-<section id="common-alembic-commands">
-<h3>Common Alembic Commands<a class="headerlink" href="#common-alembic-commands" title="Link to this heading">#</a></h3>
+<section id="common-migration-commands">
+<h3>Common Migration Commands<a class="headerlink" href="#common-migration-commands" title="Link to this heading">#</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check current migration status</span>
-uv<span class="w"> </span>run<span class="w"> </span>alembic<span class="w"> </span>current
+nexuslims-migrate<span class="w"> </span>current
+
+<span class="c1"># Check if database has pending migrations</span>
+nexuslims-migrate<span class="w"> </span>check
 
 <span class="c1"># View migration history</span>
-uv<span class="w"> </span>run<span class="w"> </span>alembic<span class="w"> </span><span class="nb">history</span><span class="w"> </span>--verbose
+nexuslims-migrate<span class="w"> </span><span class="nb">history</span>
 
 <span class="c1"># Upgrade to latest schema version</span>
-uv<span class="w"> </span>run<span class="w"> </span>alembic<span class="w"> </span>upgrade<span class="w"> </span>head
+nexuslims-migrate<span class="w"> </span>upgrade
+
+<span class="c1"># Upgrade to specific revision</span>
+nexuslims-migrate<span class="w"> </span>upgrade<span class="w"> </span>abc123
 
 <span class="c1"># Downgrade one migration</span>
-uv<span class="w"> </span>run<span class="w"> </span>alembic<span class="w"> </span>downgrade<span class="w"> </span>-1
+nexuslims-migrate<span class="w"> </span>downgrade
 
-<span class="c1"># Generate a new migration (after modifying SQLModel models)</span>
-uv<span class="w"> </span>run<span class="w"> </span>alembic<span class="w"> </span>revision<span class="w"> </span>--autogenerate<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Description of changes&quot;</span>
+<span class="c1"># Generate a new migration (development only, requires source checkout)</span>
+nexuslims-migrate<span class="w"> </span>alembic<span class="w"> </span>revision<span class="w"> </span>--autogenerate<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Description&quot;</span>
 </pre></div>
 </div>
+<p>For advanced Alembic operations, use <code class="docutils literal notranslate"><span class="pre">nexuslims-migrate</span> <span class="pre">alembic</span> <span class="pre">[COMMAND]</span></code> to access all Alembic sub-commands. From a source checkout, you can also use <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">run</span> <span class="pre">alembic</span></code> directly.</p>
 </section>
 <section id="creating-new-migrations">
 <h3>Creating New Migrations<a class="headerlink" href="#creating-new-migrations" title="Link to this heading">#</a></h3>
 <p>When you modify the database schema (by changing <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.db.models.html#nexusLIMS.db.models.SessionLog" title="nexusLIMS.db.models.SessionLog"><code class="xref py py-class docutils literal notranslate"><span class="pre">SessionLog</span></code></a> or <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.db.models.html#nexusLIMS.db.models.Instrument" title="nexusLIMS.db.models.Instrument"><code class="xref py py-class docutils literal notranslate"><span class="pre">Instrument</span></code></a>), you should create a migration:</p>
 <ol class="arabic">
 <li><p><strong>Modify the SQLModel classes</strong> in <code class="docutils literal notranslate"><span class="pre">nexusLIMS/db/models.py</span></code></p></li>
-<li><p><strong>Generate migration script</strong>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>run<span class="w"> </span>alembic<span class="w"> </span>revision<span class="w"> </span>--autogenerate<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Add new field to SessionLog&quot;</span>
+<li><p><strong>Generate migration script</strong> (requires source checkout):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims-migrate<span class="w"> </span>alembic<span class="w"> </span>revision<span class="w"> </span>--autogenerate<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Add new field to SessionLog&quot;</span>
 </pre></div>
 </div>
+<p>The migration will be created with a user-friendly sequential ID:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">nexusLIMS</span><span class="o">/</span><span class="n">migrations</span><span class="o">/</span><span class="n">versions</span><span class="o">/</span><span class="mi">004</span><span class="n">_add_new_field_to_sessionlog</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+<p>Instead of random hex like <code class="docutils literal notranslate"><span class="pre">a1b2c3d4e5f6_add_new_field_to_sessionlog.py</span></code></p>
 </li>
-<li><p><strong>Review the generated script</strong> in <code class="docutils literal notranslate"><span class="pre">migrations/versions/</span></code></p></li>
+<li><p><strong>Review the generated script</strong> in <code class="docutils literal notranslate"><span class="pre">nexusLIMS/migrations/versions/</span></code></p></li>
 <li><p><strong>Test the migration</strong>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Apply migration</span>
-uv<span class="w"> </span>run<span class="w"> </span>alembic<span class="w"> </span>upgrade<span class="w"> </span>head
+nexuslims-migrate<span class="w"> </span>upgrade
 
 <span class="c1"># Test downgrade</span>
-uv<span class="w"> </span>run<span class="w"> </span>alembic<span class="w"> </span>downgrade<span class="w"> </span>-1
+nexuslims-migrate<span class="w"> </span>downgrade
 
 <span class="c1"># Re-apply</span>
-uv<span class="w"> </span>run<span class="w"> </span>alembic<span class="w"> </span>upgrade<span class="w"> </span>head
+nexuslims-migrate<span class="w"> </span>upgrade
 </pre></div>
 </div>
 </li>
 <li><p><strong>Commit the migration script</strong> to version control</p></li>
 </ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Revision ID Format</strong></p>
+<p>NexusLIMS uses sequential, descriptive revision IDs instead of random hex values:</p>
+<ul class="simple">
+<li><p><strong>Format</strong>: <code class="docutils literal notranslate"><span class="pre">NNN_description</span></code> (e.g., <code class="docutils literal notranslate"><span class="pre">001_initial_schema</span></code>, <code class="docutils literal notranslate"><span class="pre">002_add_upload_log</span></code>)</p></li>
+<li><p><strong>Benefits</strong>: Clear ordering, easy to understand, sortable by name</p></li>
+<li><p><strong>Automatic</strong>: The message you provide in <code class="docutils literal notranslate"><span class="pre">-m</span> <span class="pre">&quot;...&quot;</span></code> is automatically sanitized and used</p></li>
+<li><p><strong>Existing migrations</strong>: Old hex-based migrations (from before 2.5.0) continue to work normally</p></li>
+</ul>
+</div>
 </section>
 <section id="migration-configuration">
 <h3>Migration Configuration<a class="headerlink" href="#migration-configuration" title="Link to this heading">#</a></h3>
 <p>Alembic configuration is stored in:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> under <code class="docutils literal notranslate"><span class="pre">[tool.alembic]</span></code> - Source code configuration (migration paths, etc.)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">migrations/env.py</span></code> - Migration environment setup (automatically reads <a class="reference internal" href="../user_guide/configuration.html#config-db-path"><span class="std std-ref">NX_DB_PATH</span></a>)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">migrations/versions/</span></code> - Migration scripts directory</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nexusLIMS/migrations/env.py</span></code> - Migration environment setup (automatically reads <a class="reference internal" href="../user_guide/configuration.html#config-db-path"><span class="std std-ref">NX_DB_PATH</span></a>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nexusLIMS/migrations/versions/</span></code> - Migration scripts directory (shipped in the package)</p></li>
 </ul>
 <p>The database URL is automatically set from the <a class="reference internal" href="../user_guide/configuration.html#config-db-path"><span class="std std-ref">NX_DB_PATH</span></a> environment variable in <code class="docutils literal notranslate"><span class="pre">env.py</span></code>, so you don’t need to configure it separately. All Alembic configuration lives in <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code>, eliminating the need for a separate <code class="docutils literal notranslate"><span class="pre">alembic.ini</span></code> file.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">nexuslims-migrate</span></code> CLI command automatically locates the migrations directory using <code class="docutils literal notranslate"><span class="pre">importlib.resources</span></code>, so migrations work correctly whether NexusLIMS is installed via pip, uv, or run from source.</p>
 </section>
 <section id="important-notes">
 <h3>Important Notes<a class="headerlink" href="#important-notes" title="Link to this heading">#</a></h3>
@@ -758,7 +790,7 @@ import, rather than every time information is needed.</p>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">api_url</span></code></p></td>
 <td><p>TEXT</p></td>
-<td><p>The calendar API endpoint url for this instrument’s scheduler</p></td>
+<td><p>The calendar API endpoint url for this instrument’s scheduler. For NEMO, should be of the format <code class="docutils literal notranslate"><span class="pre">https://&lt;nemo_address&gt;/api/tools/?id=&lt;tool_id&gt;</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">calendar_name</span></code></p></td>
 <td><p>TEXT</p></td>
@@ -865,7 +897,7 @@ import, rather than every time information is needed.</p>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#database-migrations-with-alembic">Database Migrations with Alembic</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#for-existing-installations">For Existing Installations</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#common-alembic-commands">Common Alembic Commands</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#common-migration-commands">Common Migration Commands</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-new-migrations">Creating New Migrations</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#migration-configuration">Migration Configuration</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#important-notes">Important Notes</a></li>

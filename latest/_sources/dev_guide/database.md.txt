@@ -6,7 +6,7 @@ NexusLIMS uses a [SQLite](https://sqlite.org/index.html) database to track exper
 
 **Key features:**
 - Single-file database for easy backup (just copy the file)
-- Created from [SQL Schema Definition](https://github.com/datasophos/NexusLIMS/blob/main/nexusLIMS/db/dev/NexusLIMS_db_creation_script.sql)
+- Created from [SQLModel ORM Definitions](https://github.com/datasophos/NexusLIMS/blob/main/nexusLIMS/db/models.py)
 - Inspectable with database tools such as [DB Browser for SQLite](https://sqlitebrowser.org/)
 
 ## SQLModel ORM Migration
@@ -82,61 +82,98 @@ If you have an existing NexusLIMS database (created before version 2.2.0), you n
 
 ```bash
 # Mark existing database as migrated to current schema
-uv run alembic stamp head
+nexuslims-migrate alembic stamp head
 ```
 
 This tells Alembic that your database already has the current schema structure and doesn't need the baseline migration applied.
 
-### Common Alembic Commands
+```{versionadded} 2.5.0
+The `nexuslims-migrate` command provides simple, user-friendly commands for
+common database operations. It automatically locates the migrations directory
+inside the installed package, making migrations work correctly after pip/uv
+installation. Advanced users can access the full Alembic CLI via
+`nexuslims-migrate alembic [COMMAND]`. The `uv run alembic` command still works
+for development from source checkouts.
+```
+
+### Common Migration Commands
 
 ```bash
 # Check current migration status
-uv run alembic current
+nexuslims-migrate current
+
+# Check if database has pending migrations
+nexuslims-migrate check
 
 # View migration history
-uv run alembic history --verbose
+nexuslims-migrate history
 
 # Upgrade to latest schema version
-uv run alembic upgrade head
+nexuslims-migrate upgrade
+
+# Upgrade to specific revision
+nexuslims-migrate upgrade abc123
 
 # Downgrade one migration
-uv run alembic downgrade -1
+nexuslims-migrate downgrade
 
-# Generate a new migration (after modifying SQLModel models)
-uv run alembic revision --autogenerate -m "Description of changes"
+# Generate a new migration (development only, requires source checkout)
+nexuslims-migrate alembic revision --autogenerate -m "Description"
 ```
+
+For advanced Alembic operations, use `nexuslims-migrate alembic [COMMAND]` to access all Alembic sub-commands. From a source checkout, you can also use `uv run alembic` directly.
 
 ### Creating New Migrations
 
 When you modify the database schema (by changing {py:class}`~nexusLIMS.db.models.SessionLog` or {py:class}`~nexusLIMS.db.models.Instrument`), you should create a migration:
 
 1. **Modify the SQLModel classes** in `nexusLIMS/db/models.py`
-2. **Generate migration script**:
+2. **Generate migration script** (requires source checkout):
    ```bash
-   uv run alembic revision --autogenerate -m "Add new field to SessionLog"
+   nexuslims-migrate alembic revision --autogenerate -m "Add new field to SessionLog"
    ```
-3. **Review the generated script** in `migrations/versions/`
+
+   The migration will be created with a user-friendly sequential ID:
+   ```
+   nexusLIMS/migrations/versions/004_add_new_field_to_sessionlog.py
+   ```
+
+   Instead of random hex like `a1b2c3d4e5f6_add_new_field_to_sessionlog.py`
+
+3. **Review the generated script** in `nexusLIMS/migrations/versions/`
 4. **Test the migration**:
    ```bash
    # Apply migration
-   uv run alembic upgrade head
+   nexuslims-migrate upgrade
 
    # Test downgrade
-   uv run alembic downgrade -1
+   nexuslims-migrate downgrade
 
    # Re-apply
-   uv run alembic upgrade head
+   nexuslims-migrate upgrade
    ```
 5. **Commit the migration script** to version control
+
+```{note}
+**Revision ID Format**
+
+NexusLIMS uses sequential, descriptive revision IDs instead of random hex values:
+- **Format**: `NNN_description` (e.g., `001_initial_schema`, `002_add_upload_log`)
+- **Benefits**: Clear ordering, easy to understand, sortable by name
+- **Automatic**: The message you provide in `-m "..."` is automatically sanitized and used
+- **Existing migrations**: Old hex-based migrations (from before 2.5.0) continue to work normally
+```
 
 ### Migration Configuration
 
 Alembic configuration is stored in:
 - `pyproject.toml` under `[tool.alembic]` - Source code configuration (migration paths, etc.)
-- `migrations/env.py` - Migration environment setup (automatically reads {ref}`NX_DB_PATH <config-db-path>`)
-- `migrations/versions/` - Migration scripts directory
+- `nexusLIMS/migrations/env.py` - Migration environment setup (automatically reads {ref}`NX_DB_PATH <config-db-path>`)
+- `nexusLIMS/migrations/versions/` - Migration scripts directory (shipped in the package)
 
 The database URL is automatically set from the {ref}`NX_DB_PATH <config-db-path>` environment variable in `env.py`, so you don't need to configure it separately. All Alembic configuration lives in `pyproject.toml`, eliminating the need for a separate `alembic.ini` file.
+
+The `nexuslims-migrate` CLI command automatically locates the migrations directory using `importlib.resources`, so migrations work correctly whether NexusLIMS is installed via pip, uv, or run from source.
 
 ### Important Notes
 
@@ -223,7 +260,7 @@ import, rather than every time information is needed.
 | Column | Data type | Description |
 |--------|-----------|-------------|
 | `instrument_pid` | VARCHAR(100) | The unique identifier for an instrument in the facility, typically built from the make, model, and type of instrument, plus a unique numeric code (e.g. `Vendor-Model-Type-12345` ) |
-| `api_url` | TEXT | The calendar API endpoint url for this instrument's scheduler |
+| `api_url` | TEXT | The calendar API endpoint url for this instrument's scheduler. For NEMO, should be of the format `https://<nemo_address>/api/tools/?id=<tool_id>` |
 | `calendar_name` | TEXT | The "user-friendly" name of the calendar for this instrument as displayed on the reservation system resource (e.g. "FEI Titan TEM") |
 | `calendar_url` | TEXT | **[Deprecated]** The URL to this instrument's web-accessible calendar on the SharePoint resource (this is no longer used after SharePoint support was removed) |
 | `location` | VARCHAR(100) | The physical location of this instrument |

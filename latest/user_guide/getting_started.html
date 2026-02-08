@@ -66,7 +66,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Feb, 07, 2026"/>
+    <meta name="docbuild:last-update" content="Feb, 08, 2026"/>
   </head>
   
   
@@ -183,7 +183,7 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../migration.html">
+  <a class="nav-link nav-internal" href="../migration_guide.html">
     Migration Guide
   </a>
 </li>
@@ -322,7 +322,7 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../migration.html">
+  <a class="nav-link nav-internal" href="../migration_guide.html">
     Migration Guide
   </a>
 </li>
@@ -417,6 +417,8 @@
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="record_building.html">Record building workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cli_reference.html">Command-Line Interface Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="migrations.html">Database Migrations</a></li>
+
 <li class="toctree-l1"><a class="reference internal" href="extractors.html">Extractors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exporters.html">Export Destinations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="taxonomy.html">NexusLIMS Taxonomy</a></li>
@@ -487,7 +489,7 @@
 <p>Welcome to NexusLIMS! This guide will help you get up and running quickly.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p><strong>Upgrading from v1.x?</strong> See the <a class="reference internal" href="../migration.html#migration"><span class="std std-ref">Migration Guide</span></a> guide for step-by-step instructions on migrating from NexusLIMS v1.4.3 to v2.0+.</p>
+<p><strong>Upgrading from v1.x?</strong> See the <a class="reference internal" href="../migration_guide.html#migration"><span class="std std-ref">Migration Guide</span></a> guide for step-by-step instructions on migrating from NexusLIMS v1.4.3 to v2.0+.</p>
 </div>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
@@ -591,7 +593,7 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 <li><p><em>(Optional)</em> Verify your configuration was loaded correctly:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Dump current config to see what NexusLIMS sees</span>
 <span class="c1"># WARNING: Output contains live credentials - don&#39;t share publicly</span>
-nexuslims-config<span class="w"> </span>dump<span class="w"> </span>--output<span class="w"> </span>my-config.json
+nexuslims-config<span class="w"> </span>dump
 </pre></div>
 </div>
 </li>
@@ -608,33 +610,62 @@ nexuslims-config<span class="w"> </span>dump<span class="w"> </span>--output<spa
 <section id="initialize-the-database">
 <h3>Initialize the Database<a class="headerlink" href="#initialize-the-database" title="Link to this heading">#</a></h3>
 <p>NexusLIMS uses SQLite to track instruments and sessions. Initialize the database:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create database with schema</span>
-sqlite3<span class="w"> </span><span class="nv">$NX_DB_PATH</span><span class="w"> </span>&lt;<span class="w"> </span>nexusLIMS/db/dev/NexusLIMS_db_creation_script.sql
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Initialize new database with schema and migrations</span>
+nexuslims-migrate<span class="w"> </span>init
 </pre></div>
+</div>
+<p>This creates an appropriately-formatted database file at <code class="docutils literal notranslate"><span class="pre">NX_DB_PATH</span></code>.
+It will not have any instruments configured, but will have the correct</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p><strong>Check database status:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims-migrate<span class="w"> </span>current<span class="w">  </span><span class="c1"># Show current version</span>
+nexuslims-migrate<span class="w"> </span>check<span class="w">    </span><span class="c1"># Check for pending migrations</span>
+</pre></div>
+</div>
+<p><strong>Apply updates after upgrading NexusLIMS:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims-migrate<span class="w"> </span>upgrade<span class="w">  </span><span class="c1"># Apply pending migrations</span>
+</pre></div>
+</div>
 </div>
 </section>
 <section id="configure-instruments">
 <h3>Configure Instruments<a class="headerlink" href="#configure-instruments" title="Link to this heading">#</a></h3>
 <p>Add your instruments to the database. Each instrument requires:</p>
 <ul class="simple">
-<li><p><strong>name</strong>: Instrument identifier</p></li>
-<li><p><strong>harvester</strong>: “nemo” or “sharepoint”</p></li>
+<li><p><strong>instrument_pid</strong>: Unique instrument identifier (e.g., “FEI-Titan-TEM-12345”)</p></li>
+<li><p><strong>harvester</strong>: “nemo” (SharePoint harvester is deprecated)</p></li>
 <li><p><strong>filestore_path</strong>: Path relative to <code class="docutils literal notranslate"><span class="pre">NX_INSTRUMENT_DATA_PATH</span></code></p></li>
-<li><p><strong>timezone</strong>: Timezone for datetime handling</p></li>
-<li><p><strong>api_url</strong>: NEMO API URL (for NEMO harvester)</p></li>
-<li><p><strong>calendar_name</strong>: NEMO tool name (must match NEMO configuration)</p></li>
+<li><p><strong>timezone</strong>: Timezone for datetime handling (IANA format like “America/New_York”)</p></li>
+<li><p><strong>api_url</strong>: NEMO API URL (for NEMO harvester) – Should be of the format <code class="docutils literal notranslate"><span class="pre">https://&lt;nemo_address&gt;/api/tools/?id=&lt;tool_id_in_NEMO&gt;</span></code></p></li>
+<li><p><strong>calendar_name</strong>: NEMO tool name (must match NEMO configuration exactly)</p></li>
+<li><p><strong>schema_name</strong>: Human-readable name for the Nexus Microscopy schema</p></li>
+<li><p><strong>location</strong>: Physical location of the instrument</p></li>
+<li><p><strong>property_tag</strong>: Unique numeric identifier (for reference)</p></li>
 </ul>
+<p>See <a class="reference internal" href="../dev_guide/database.html#instr-table"><span class="std std-ref">the instruments table documentation</span></a> for all available columns.</p>
 <p>Example SQL:</p>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">instruments</span><span class="w"> </span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">harvester</span><span class="p">,</span><span class="w"> </span><span class="n">filestore_path</span><span class="p">,</span><span class="w"> </span><span class="n">timezone</span><span class="p">,</span><span class="w"> </span><span class="n">api_url</span><span class="p">,</span><span class="w"> </span><span class="n">calendar_name</span><span class="p">)</span>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">instruments</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">instrument_pid</span><span class="p">,</span><span class="w"> </span><span class="n">harvester</span><span class="p">,</span><span class="w"> </span><span class="n">filestore_path</span><span class="p">,</span><span class="w"> </span><span class="n">timezone</span><span class="p">,</span>
+<span class="w">    </span><span class="n">api_url</span><span class="p">,</span><span class="w"> </span><span class="n">calendar_name</span><span class="p">,</span><span class="w"> </span><span class="k">schema_name</span><span class="p">,</span><span class="w"> </span><span class="k">location</span><span class="p">,</span><span class="w"> </span><span class="n">property_tag</span>
+<span class="p">)</span>
 <span class="k">VALUES</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="s1">&#39;FEI Titan&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="s1">&#39;FEI-Titan-TEM-12345&#39;</span><span class="p">,</span>
 <span class="w">    </span><span class="s1">&#39;nemo&#39;</span><span class="p">,</span>
 <span class="w">    </span><span class="s1">&#39;Titan_data&#39;</span><span class="p">,</span>
 <span class="w">    </span><span class="s1">&#39;America/New_York&#39;</span><span class="p">,</span>
-<span class="w">    </span><span class="s1">&#39;https://nemo.example.com&#39;</span><span class="p">,</span>
-<span class="w">    </span><span class="s1">&#39;FEI Titan TEM&#39;</span>
+<span class="w">    </span><span class="s1">&#39;https://nemo.example.com/api/tools/?id=10&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="s1">&#39;FEI Titan TEM&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="s1">&#39;FEI Titan TEM&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="s1">&#39;Building 1, Room 101&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="s1">&#39;12345&#39;</span>
 <span class="p">);</span>
 </pre></div>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>You can use a SQLite database browser like <a class="reference external" href="https://sqlitebrowser.org/">DB Browser for SQLite</a>
+to manage instruments graphically instead of writing SQL.</p>
 </div>
 </section>
 </section>
@@ -645,6 +676,7 @@ sqlite3<span class="w"> </span><span class="nv">$NX_DB_PATH</span><span class="w
 <p>Once configured, run the record builder:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Full orchestration (recommended)</span>
 <span class="c1"># Includes file locking, timestamped logging, email notifications</span>
+<span class="c1"># by default, will only search for usage events that occurred in the past week</span>
 nexuslims-process-records
 
 <span class="c1"># Dry-run mode (find files without building records)</span>
@@ -659,12 +691,12 @@ nexuslims-process-records<span class="w"> </span>-vv
 <h3>Understanding the Workflow<a class="headerlink" href="#understanding-the-workflow" title="Link to this heading">#</a></h3>
 <p>NexusLIMS follows this process:</p>
 <ol class="arabic simple">
-<li><p><strong>Harvest</strong>: NEMO harvester polls API for new/ended reservations</p></li>
+<li><p><strong>Harvest</strong>: NEMO harvester checks API for new/ended reservations</p></li>
 <li><p><strong>Track</strong>: Creates <code class="docutils literal notranslate"><span class="pre">session_log</span></code> entries with START/END events</p></li>
 <li><p><strong>Find Files</strong>: Locates files modified during session window</p></li>
 <li><p><strong>Cluster</strong>: Groups files into Acquisition Activities by temporal analysis</p></li>
 <li><p><strong>Extract</strong>: Reads metadata from each file using format-specific extractors</p></li>
-<li><p><strong>Validate</strong> <em>(New in v2.2.0)</em>: Validates metadata using Pydantic schemas (<a class="reference internal" href="../api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.ImageMetadata" title="nexusLIMS.schemas.metadata.ImageMetadata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ImageMetadata</span></code></a>, <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.SpectrumMetadata" title="nexusLIMS.schemas.metadata.SpectrumMetadata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SpectrumMetadata</span></code></a>, etc.)</p></li>
+<li><p><strong>Validate</strong>: Validates record metadata matches expected format</p></li>
 <li><p><strong>Build</strong>: Generates XML record conforming to Nexus Experiment schema</p></li>
 <li><p><strong>Upload</strong>: Publishes record to CDCS</p></li>
 </ol>
@@ -720,9 +752,7 @@ nexuslims-process-records<span class="w"> </span>-vv
 <li><p><strong>Documentation</strong>: You’re reading it! Browse the sections above</p></li>
 <li><p><strong>Issues</strong>: Report bugs at <a class="github reference external" href="https://github.com/datasophos/NexusLIMS/issues">datasophos/NexusLIMS#issues</a></p></li>
 <li><p><strong>Source Code</strong>: <a class="github reference external" href="https://github.com/datasophos/NexusLIMS">datasophos/NexusLIMS</a></p></li>
-<li><p><strong>Original NIST Docs</strong>: <a class="reference external" href="https://pages.nist.gov/NexusLIMS">https://pages.nist.gov/NexusLIMS</a> (may be outdated)</p></li>
 </ul>
-<p><strong>Note</strong>: This is a fork maintained by <a class="reference external" href="https://datasophos.co">datasophos</a>, not affiliated with NIST.</p>
 </section>
 </section>
 

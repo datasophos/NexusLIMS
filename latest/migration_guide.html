@@ -48,7 +48,7 @@
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="_static/copybutton.js?v=30646c52"></script>
     <script src="_static/design-tabs.js?v=f930bc37"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'migration';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'migration_guide';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
@@ -57,7 +57,7 @@
             true;
         </script>
     <script src="_static/custom.js?v=ba087cdf"></script>
-    <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/latest/migration.html" />
+    <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/latest/migration_guide.html" />
     <link rel="icon" href="_static/nexusLIMS_bare_logo.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -66,7 +66,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Feb, 07, 2026"/>
+    <meta name="docbuild:last-update" content="Feb, 08, 2026"/>
   </head>
   
   
@@ -467,7 +467,7 @@
                   
   <section id="migration-guide">
 <span id="migration"></span><h1>Migration Guide<a class="headerlink" href="#migration-guide" title="Link to this heading">#</a></h1>
-<p>This guide is for system administrators, and will help you migrate your NexusLIMS installation from v1.4.3 to v2.3.0.</p>
+<p>This guide is for system administrators, and will help you migrate your NexusLIMS installation from v1.4.3 to v2.5.0.</p>
 <section id="what-changed">
 <h2>What Changed<a class="headerlink" href="#what-changed" title="Link to this heading">#</a></h2>
 <p>The major changes you need to know about:</p>
@@ -869,18 +869,23 @@ for use in the test suite, ensuring more reliable code quality testing.</p></li>
 </section>
 <section id="step-by-step-migration-instructions">
 <h2>Step-by-Step Migration Instructions<a class="headerlink" href="#step-by-step-migration-instructions" title="Link to this heading">#</a></h2>
-<p>Follow these steps to migrate your NexusLIMS installation from v1.x to v2.0:</p>
+<p>Follow these steps to migrate your NexusLIMS installation from v1.x to v2.5.0:</p>
 <section id="backup-your-current-installation">
 <h3>1. Backup Your Current Installation<a class="headerlink" href="#backup-your-current-installation" title="Link to this heading">#</a></h3>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p><strong>Good news</strong>: The database schema has <strong>not changed</strong> between v1.4.3 and v2.2.0. Your existing database will work without any migration or modifications. We still recommend backing up as a precaution.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p><strong>Database migrations required</strong>: The database schema has changed since v1.4.3. You will need to run migrations to:</p>
+<ul class="simple">
+<li><p>Add the <code class="docutils literal notranslate"><span class="pre">upload_log</span></code> table (for tracking record exports)</p></li>
+<li><p>Update <code class="docutils literal notranslate"><span class="pre">session_log</span></code> CHECK constraints (to support new record statuses)</p></li>
+</ul>
+<p><strong>Note:</strong> Database migrations automatically create timestamped backups before making changes. However, it’s still good practice to create your own backups of critical files before major upgrades.</p>
 </div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Backup your database</span>
-cp<span class="w"> </span>/path/to/nexuslims_db.sqlite<span class="w"> </span>/path/to/nexuslims_db.sqlite.backup
-
-<span class="c1"># Backup your .env file</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Backup your .env file (always recommended)</span>
 cp<span class="w"> </span>.env<span class="w"> </span>.env.v1.backup
+
+<span class="c1"># Optional: Create manual database backup (migrations create automatic backups)</span>
+cp<span class="w"> </span>/path/to/nexuslims_db.sqlite<span class="w"> </span>/path/to/nexuslims_db.sqlite.backup
 </pre></div>
 </div>
 </section>
@@ -939,16 +944,44 @@ uv<span class="w"> </span>sync
 </pre></div>
 </div>
 </section>
-<section id="mark-database-as-migrated">
-<h3>6. Mark Database as Migrated<a class="headerlink" href="#mark-database-as-migrated" title="Link to this heading">#</a></h3>
+<section id="mark-database-as-migrated-and-apply-updates">
+<h3>6. Mark Database as Migrated and Apply Updates<a class="headerlink" href="#mark-database-as-migrated-and-apply-updates" title="Link to this heading">#</a></h3>
 <div class="versionadded">
-<p><span class="versionmodified added">Added in version 2.2.0: </span>NexusLIMS now uses Alembic for database schema version control. You need to mark your existing database as migrated to the current schema.</p>
+<p><span class="versionmodified added">Added in version 2.2.0: </span>NexusLIMS now uses Alembic for database schema version control. You need to mark your existing database as migrated to the baseline schema, then apply updates.</p>
 </div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Mark database as at current schema version</span>
-uv<span class="w"> </span>run<span class="w"> </span>alembic<span class="w"> </span>stamp<span class="w"> </span>head
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Mark database as at the baseline schema version (v1.4.3 schema)</span>
+nexuslims-migrate<span class="w"> </span>alembic<span class="w"> </span>stamp<span class="w"> </span>v1_4_3
+
+<span class="c1"># Apply pending migrations (adds upload_log table and updated CHECK constraints)</span>
+nexuslims-migrate<span class="w"> </span>upgrade
 </pre></div>
 </div>
-<p>This tells Alembic that your database already has the current schema structure and doesn’t need any migrations applied. This is a one-time operation for existing installations.</p>
+<p><strong>What this does:</strong></p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">stamp</span> <span class="pre">v1_4_3</span></code> - Marks your v1.4.3 database as having the baseline schema (<code class="docutils literal notranslate"><span class="pre">instruments</span></code> + <code class="docutils literal notranslate"><span class="pre">session_log</span></code> tables)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">upgrade</span></code> - Applies migration (database update) commands that have updated the schema since v1.4.3:</p>
+<ul class="simple">
+<li><p>Migration <code class="docutils literal notranslate"><span class="pre">v2_4_0_1</span></code>: Adds the <code class="docutils literal notranslate"><span class="pre">upload_log</span></code> table for tracking record exports</p></li>
+<li><p>Migration <code class="docutils literal notranslate"><span class="pre">v2_4_0_2</span></code>: Updates <code class="docutils literal notranslate"><span class="pre">session_log</span></code> CHECK constraints to include new statuses (<code class="docutils literal notranslate"><span class="pre">NO_CONSENT</span></code>, <code class="docutils literal notranslate"><span class="pre">NO_RESERVATION</span></code>, <code class="docutils literal notranslate"><span class="pre">BUILT_NOT_EXPORTED</span></code>)</p></li>
+</ul>
+</li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you’re running from a source checkout (not an installed package), prefix commands with <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">run</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>run<span class="w"> </span>nexuslims-migrate<span class="w"> </span>alembic<span class="w"> </span>stamp<span class="w"> </span>v1_4_3
+uv<span class="w"> </span>run<span class="w"> </span>nexuslims-migrate<span class="w"> </span>upgrade
+</pre></div>
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Automatic backups:</strong> The migration system automatically creates timestamped backups before making changes to your database (e.g., <code class="docutils literal notranslate"><span class="pre">database_backup_20260207_143216.sqlite</span></code>). These are created in the same directory as your database file.</p>
+<p>If you prefer to create your own backup first, you can:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>/path/to/nexuslims_db.sqlite<span class="w"> </span>/path/to/nexuslims_db.sqlite.backup
+</pre></div>
+</div>
+</div>
 </section>
 <section id="verify-installation">
 <h3>7. Verify Installation<a class="headerlink" href="#verify-installation" title="Link to this heading">#</a></h3>
@@ -976,9 +1009,6 @@ poetry<span class="w"> </span>run<span class="w"> </span>python<span class="w"> 
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Using uv</span>
 <span class="nb">cd</span><span class="w"> </span>/path/to/NexusLIMS
 uv<span class="w"> </span>run<span class="w"> </span>nexuslims-process-records
-
-<span class="c1"># Or using the module directly</span>
-uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>nexusLIMS.cli.process_records
 </pre></div>
 </div>
 </section>
@@ -989,7 +1019,7 @@ uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </sp
 uv<span class="w"> </span>run<span class="w"> </span>nexuslims-process-records<span class="w"> </span>-n
 
 <span class="c1"># Verbose mode (with detailed logging)</span>
-uv<span class="w"> </span>run<span class="w"> </span>nexuslims-process-records<span class="w"> </span>-vv
+uv<span class="w"> </span>run<span class="w"> </span>nexuslims-process-records<span class="w"> </span>-vv<span class="w"> </span>-n
 </pre></div>
 </div>
 </section>
@@ -1026,35 +1056,6 @@ mkdir<span class="w"> </span>-p<span class="w"> </span>/path/to/nexuslims/logs
 <span class="nv">NX_NEMO_TOKEN_1</span><span class="o">=</span>your-token-here
 </pre></div>
 </div>
-</section>
-</section>
-<section id="what-s-new-in-v2-2-0">
-<h2>What’s New in v2.2.0<a class="headerlink" href="#what-s-new-in-v2-2-0" title="Link to this heading">#</a></h2>
-<section id="metadata-improvements">
-<h3>Metadata Improvements<a class="headerlink" href="#metadata-improvements" title="Link to this heading">#</a></h3>
-<ul class="simple">
-<li><p><strong>Pydantic Schemas</strong>: All metadata validated before record building</p></li>
-<li><p><strong>EM Glossary Integration</strong>: 50+ standardized field names</p></li>
-<li><p><strong>Formal Unit Handling</strong>: Type-safe quantity handling with automatic conversion</p></li>
-<li><p><strong>Helper Functions</strong>: <code class="docutils literal notranslate"><span class="pre">emg_field()</span></code> and <code class="docutils literal notranslate"><span class="pre">add_to_extensions()</span></code> for cleaner code</p></li>
-</ul>
-</section>
-<section id="other-improvements">
-<h3>Other Improvements<a class="headerlink" href="#other-improvements" title="Link to this heading">#</a></h3>
-<ul class="simple">
-<li><p><strong>Email notifications</strong>: Optional alerts for record building errors</p></li>
-<li><p><strong>Custom paths</strong>: Specify log/record directories with <code class="docutils literal notranslate"><span class="pre">NX_LOG_PATH</span></code> / <code class="docutils literal notranslate"><span class="pre">NX_RECORDS_PATH</span></code></p></li>
-<li><p><strong>Local profiles</strong>: Load site-specific profiles from <code class="docutils literal notranslate"><span class="pre">NX_LOCAL_PROFILES_PATH</span></code></p></li>
-<li><p><strong>Better errors</strong>: Pydantic provides detailed, actionable validation messages</p></li>
-<li><p><strong>Faster installation</strong>: <code class="docutils literal notranslate"><span class="pre">uv</span></code> is significantly faster than Poetry</p></li>
-</ul>
-</section>
-<section id="removed-features">
-<h3>Removed Features<a class="headerlink" href="#removed-features" title="Link to this heading">#</a></h3>
-<ul class="simple">
-<li><p><strong>SharePoint harvester</strong>: Deprecated (use NEMO instead)</p></li>
-<li><p><strong>Poetry</strong>: Replaced by <code class="docutils literal notranslate"><span class="pre">uv</span></code></p></li>
-</ul>
 </section>
 </section>
 <section id="getting-help">
@@ -1158,7 +1159,7 @@ mkdir<span class="w"> </span>-p<span class="w"> </span>/path/to/nexuslims/logs
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#update-your-env-file">3. Update Your .env File</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#remove-old-virtual-environment">4. Remove Old Virtual Environment</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#create-new-environment-with-uv">5. Create New Environment with uv</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mark-database-as-migrated">6. Mark Database as Migrated</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mark-database-as-migrated-and-apply-updates">6. Mark Database as Migrated and Apply Updates</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#verify-installation">7. Verify Installation</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#update-deployment-scripts">8. Update Deployment Scripts</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#test-record-building">9. Test Record Building</a></li>
@@ -1171,12 +1172,6 @@ mkdir<span class="w"> </span>-p<span class="w"> </span>/path/to/nexuslims/logs
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nemo-harvester-not-found">NEMO Harvester Not Found</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-s-new-in-v2-2-0">What’s New in v2.2.0</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#metadata-improvements">Metadata Improvements</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#other-improvements">Other Improvements</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#removed-features">Removed Features</a></li>
-</ul>
-</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-help">Getting Help</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#further-reading">Further Reading</a></li>
 </ul>
@@ -1186,7 +1181,7 @@ mkdir<span class="w"> </span>-p<span class="w"> </span>/path/to/nexuslims/logs
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="_sources/migration.md.txt"
+      <li><a href="_sources/migration_guide.md.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div></div>

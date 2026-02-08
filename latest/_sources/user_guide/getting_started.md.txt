@@ -115,7 +115,7 @@ NexusLIMS requires configuration through environment variables, typically stored
    ```bash
    # Dump current config to see what NexusLIMS sees
    # WARNING: Output contains live credentials - don't share publicly
-   nexuslims-config dump --output my-config.json
+   nexuslims-config dump
    ```
 
 ```{seealso}
@@ -131,33 +131,65 @@ For config management tools (dump/load) and debugging configuration issues, see 
 NexusLIMS uses SQLite to track instruments and sessions. Initialize the database:
 
 ```bash
-# Create database with schema
-sqlite3 $NX_DB_PATH < nexusLIMS/db/dev/NexusLIMS_db_creation_script.sql
+# Initialize new database with schema and migrations
+nexuslims-migrate init
 ```
+
+This creates an appropriately-formatted database file at `NX_DB_PATH`. 
+It will not have any instruments configured, but will have the correct
+
+````{tip}
+**Check database status:**
+```bash
+nexuslims-migrate current  # Show current version
+nexuslims-migrate check    # Check for pending migrations
+```
+
+**Apply updates after upgrading NexusLIMS:**
+```bash
+nexuslims-migrate upgrade  # Apply pending migrations
+```
+````
 
 ### Configure Instruments
 
 Add your instruments to the database. Each instrument requires:
 
-- **name**: Instrument identifier
-- **harvester**: "nemo" or "sharepoint"
+- **instrument_pid**: Unique instrument identifier (e.g., "FEI-Titan-TEM-12345")
+- **harvester**: "nemo" (SharePoint harvester is deprecated)
 - **filestore_path**: Path relative to `NX_INSTRUMENT_DATA_PATH`
-- **timezone**: Timezone for datetime handling
-- **api_url**: NEMO API URL (for NEMO harvester)
-- **calendar_name**: NEMO tool name (must match NEMO configuration)
+- **timezone**: Timezone for datetime handling (IANA format like "America/New_York")
+- **api_url**: NEMO API URL (for NEMO harvester) -- Should be of the format `https://<nemo_address>/api/tools/?id=<tool_id_in_NEMO>`
+- **calendar_name**: NEMO tool name (must match NEMO configuration exactly)
+- **schema_name**: Human-readable name for the Nexus Microscopy schema
+- **location**: Physical location of the instrument
+- **property_tag**: Unique numeric identifier (for reference)
+
+See {ref}`the instruments table documentation <instr-table>` for all available columns.
 
 Example SQL:
 
 ```sql
-INSERT INTO instruments (name, harvester, filestore_path, timezone, api_url, calendar_name)
+INSERT INTO instruments (
+    instrument_pid, harvester, filestore_path, timezone,
+    api_url, calendar_name, schema_name, location, property_tag
+)
 VALUES (
-    'FEI Titan',
+    'FEI-Titan-TEM-12345',
     'nemo',
     'Titan_data',
     'America/New_York',
-    'https://nemo.example.com',
-    'FEI Titan TEM'
+    'https://nemo.example.com/api/tools/?id=10',
+    'FEI Titan TEM',
+    'FEI Titan TEM',
+    'Building 1, Room 101',
+    '12345'
 );
+```
+
+```{tip}
+You can use a SQLite database browser like [DB Browser for SQLite](https://sqlitebrowser.org/)
+to manage instruments graphically instead of writing SQL.
 ```
 
 ## Quick Start
@@ -169,6 +201,7 @@ Once configured, run the record builder:
 ```bash
 # Full orchestration (recommended)
 # Includes file locking, timestamped logging, email notifications
+# by default, will only search for usage events that occurred in the past week
 nexuslims-process-records
 
 # Dry-run mode (find files without building records)
@@ -182,12 +215,12 @@ nexuslims-process-records -vv
 
 NexusLIMS follows this process:
 
-1. **Harvest**: NEMO harvester polls API for new/ended reservations
+1. **Harvest**: NEMO harvester checks API for new/ended reservations
 2. **Track**: Creates `session_log` entries with START/END events
 3. **Find Files**: Locates files modified during session window
 4. **Cluster**: Groups files into Acquisition Activities by temporal analysis
 5. **Extract**: Reads metadata from each file using format-specific extractors
-6. **Validate** *(New in v2.2.0)*: Validates metadata using Pydantic schemas ({py:obj}`~nexusLIMS.schemas.metadata.ImageMetadata`, {py:obj}`~nexusLIMS.schemas.metadata.SpectrumMetadata`, etc.)
+6. **Validate**: Validates record metadata matches expected format
 7. **Build**: Generates XML record conforming to Nexus Experiment schema
 8. **Upload**: Publishes record to CDCS
 
@@ -212,6 +245,3 @@ NexusLIMS tracks your sessions through several states:
 - **Documentation**: You're reading it! Browse the sections above
 - **Issues**: Report bugs at [https://github.com/datasophos/NexusLIMS/issues](https://github.com/datasophos/NexusLIMS/issues)
 - **Source Code**: [https://github.com/datasophos/NexusLIMS](https://github.com/datasophos/NexusLIMS)
-- **Original NIST Docs**: [https://pages.nist.gov/NexusLIMS](https://pages.nist.gov/NexusLIMS) (may be outdated)
-
-**Note**: This is a fork maintained by [datasophos](https://datasophos.co), not affiliated with NIST.

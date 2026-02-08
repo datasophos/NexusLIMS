@@ -431,7 +431,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Feb, 07, 2026"/>
+    <meta name="docbuild:last-update" content="Feb, 08, 2026"/>
   </head>
   
   
@@ -548,7 +548,7 @@ window.addEventListener("load", load);
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../migration.html">
+  <a class="nav-link nav-internal" href="../migration_guide.html">
     Migration Guide
   </a>
 </li>
@@ -687,7 +687,7 @@ window.addEventListener("load", load);
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../migration.html">
+  <a class="nav-link nav-internal" href="../migration_guide.html">
     Migration Guide
   </a>
 </li>
@@ -779,6 +779,8 @@ window.addEventListener("load", load);
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Record building workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cli_reference.html">Command-Line Interface Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="migrations.html">Database Migrations</a></li>
+
 <li class="toctree-l1"><a class="reference internal" href="extractors.html">Extractors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exporters.html">Export Destinations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="taxonomy.html">NexusLIMS Taxonomy</a></li>
@@ -848,12 +850,14 @@ window.addEventListener("load", load);
 session information from the database with metadata extracted from data files. This page
 explains the workflow from session detection to record upload. See the
 <a class="reference internal" href="#activity-diagram"><span class="std std-ref">activity diagram</span></a> at the bottom for a visual overview.</p>
-<p>Links to API reference documentation are provided throughout.</p>
+<p>Understanding these details isn’t required for basic operation, but this documentation
+may help you troubleshoot issues, customize behavior, and understand what the system
+does behind the scenes. Links to API reference documentation are provided throughout.</p>
 <section id="general-approach">
 <span id="id1"></span><h2>General Approach<a class="headerlink" href="#general-approach" title="Link to this heading">#</a></h2>
 <p>Since instruments cannot communicate directly with NexusLIMS, the system uses periodic
 polling (via <code class="docutils literal notranslate"><span class="pre">systemd</span></code> or <code class="docutils literal notranslate"><span class="pre">cron</span></code>) to detect sessions requiring record generation.</p>
-<p><strong>Execution:</strong> Run <code class="docutils literal notranslate"><span class="pre">nexuslims-process-records</span></code> (or <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">nexusLIMS.cli.process_records</span></code>) to invoke
+<p><strong>Execution:</strong> Run <code class="docutils literal notranslate"><span class="pre">nexuslims-process-records</span></code> to invoke
 <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.builder.record_builder.html#nexusLIMS.builder.record_builder.process_new_records" title="nexusLIMS.builder.record_builder.process_new_records"><code class="xref py py-func docutils literal notranslate"><span class="pre">process_new_records()</span></code></a>. See the
 <a class="reference internal" href="cli_reference.html"><span class="doc">CLI reference</span></a> for all command-line options including date filtering,
 dry-run mode, and verbosity controls. The command:</p>
@@ -863,10 +867,10 @@ dry-run mode, and verbosity controls. The command:</p>
 <li><p>Searches the centralized file system for matching files</p></li>
 <li><p>Extracts metadata and groups files into <code class="docutils literal notranslate"><span class="pre">Acquisition</span> <span class="pre">Activities</span></code></p></li>
 <li><p>Builds and validates XML records against the Nexus Microscopy Schema</p></li>
-<li><p>Uploads valid records to the CDCS instance</p></li>
+<li><p>Uploads valid records to the CDCS instance (and any other export destinations configured)</p></li>
 </ol>
 <p><strong>Error handling:</strong> Failed builds are logged to the database with <code class="docutils literal notranslate"><span class="pre">ERROR</span></code> status,
-triggering operator notifications.</p>
+triggering email notifications.</p>
 </section>
 <section id="finding-new-sessions">
 <h2>Finding New Sessions<a class="headerlink" href="#finding-new-sessions" title="Link to this heading">#</a></h2>
@@ -895,7 +899,7 @@ then paired into <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.
 <li><p><strong><code class="docutils literal notranslate"><span class="pre">instrument</span></code></strong> (<a class="reference internal" href="../api/nexusLIMS/nexusLIMS.db.models.html#nexusLIMS.db.models.Instrument" title="nexusLIMS.db.models.Instrument"><code class="xref py py-class docutils literal notranslate"><span class="pre">Instrument</span></code></a>): Associated instrument object</p></li>
 <li><p><strong><code class="docutils literal notranslate"><span class="pre">dt_from</span></code></strong> (<a class="reference external" href="https://docs.python.org/3.11/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a>): Session start time</p></li>
 <li><p><strong><code class="docutils literal notranslate"><span class="pre">dt_to</span></code></strong> (<a class="reference external" href="https://docs.python.org/3.11/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a>): Session end time</p></li>
-<li><p><strong><code class="docutils literal notranslate"><span class="pre">user</span></code></strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>): Username (may be unreliable if instrument doesn’t require login)</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">user</span></code></strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>): Username (read from NEMO usage event)</p></li>
 </ul>
 <p>Sessions are processed sequentially by the record builder.</p>
 </section>
@@ -908,7 +912,7 @@ executes these steps:</p>
 <span id="overview"></span><h3>Process Overview<a class="headerlink" href="#process-overview" title="Link to this heading">#</a></h3>
 <ol class="arabic simple">
 <li><p><strong><a class="reference internal" href="#starting-record-builder"><span class="std std-ref">(link)</span></a> Initiate build</strong>: Execute <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.builder.record_builder.html#nexusLIMS.builder.record_builder.build_record" title="nexusLIMS.builder.record_builder.build_record"><code class="xref py py-func docutils literal notranslate"><span class="pre">build_record()</span></code></a></p></li>
-<li><p><strong><a class="reference internal" href="#harvesting-calendar"><span class="std std-ref">(link)</span></a> Fetch reservation data</strong>: Query harvesters (e.g., <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.harvesters.nemo.html#module-nexusLIMS.harvesters.nemo" title="nexusLIMS.harvesters.nemo"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nemo</span></code></a>)</p></li>
+<li><p><strong><a class="reference internal" href="#harvesting-calendar"><span class="std std-ref">(link)</span></a> Fetch usage event/reservation data</strong>: Query harvesters (e.g., <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.harvesters.nemo.html#module-nexusLIMS.harvesters.nemo" title="nexusLIMS.harvesters.nemo"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nemo</span></code></a>)</p></li>
 <li><p><strong><a class="reference internal" href="#identifying-files"><span class="std std-ref">(link)</span></a> Find files</strong>: Search for parseable files within session timespan</p>
 <ul class="simple">
 <li><p>If none found → mark as <code class="docutils literal notranslate"><span class="pre">NO_FILES_FOUND</span></code> and skip to next session</p></li>
@@ -918,7 +922,7 @@ executes these steps:</p>
 <li><p><strong><a class="reference internal" href="#parse-metadata"><span class="std std-ref">(link)</span></a> Extract metadata</strong>: Parse each file’s metadata and generate preview images</p></li>
 <li><p><strong><a class="reference internal" href="#separate-setup-parameters"><span class="std std-ref">(link)</span></a> Organize metadata</strong>: Separate common metadata (setup parameters) from file-specific values</p></li>
 <li><p><strong><a class="reference internal" href="#validating-the-record"><span class="std std-ref">(link)</span></a> Validate</strong>: Check XML against Nexus Microscopy Schema</p></li>
-<li><p><strong><a class="reference internal" href="#upload-records"><span class="std std-ref">(link)</span></a> Upload</strong>: Push valid records to CDCS and update database</p></li>
+<li><p><strong><a class="reference internal" href="#upload-records"><span class="std std-ref">(link)</span></a> Upload</strong>: Push valid records to CDCS/other export destinations and update database</p></li>
 </ol>
 </section>
 <section id="initiating-the-build">
@@ -1019,13 +1023,9 @@ timespan, and identifier. Instrument configuration (persistent ID, location,
 file storage path relative to <a class="reference internal" href="configuration.html#config-instrument-data-path"><span class="std std-ref">NX_INSTRUMENT_DATA_PATH</span></a>)
 is read from the database <code class="docutils literal notranslate"><span class="pre">instruments</span></code> table, centralizing configuration management.</p>
 <p><strong>File search strategy:</strong></p>
-<ol class="arabic simple">
-<li><p><strong>Primary:</strong> <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.utils.files.html#nexusLIMS.utils.files.gnu_find_files_by_mtime" title="nexusLIMS.utils.files.gnu_find_files_by_mtime"><code class="xref py py-meth docutils literal notranslate"><span class="pre">gnu_find_files_by_mtime()</span></code></a> uses GNU
-<a class="reference external" href="https://www.gnu.org/software/findutils/"><code class="docutils literal notranslate"><span class="pre">find</span></code></a> (available on Linux/macOS, ~tens of seconds)</p></li>
-<li><p><strong>Fallback:</strong> <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.utils.files.html#nexusLIMS.utils.files.find_files_by_mtime" title="nexusLIMS.utils.files.find_files_by_mtime"><code class="xref py py-meth docutils literal notranslate"><span class="pre">find_files_by_mtime()</span></code></a> provides pure-Python
-implementation (~3× slower if GNU find unavailable)</p></li>
-</ol>
-<p>Only files modified within the session timespan are returned.</p>
+<p><a class="reference internal" href="../api/nexusLIMS/nexusLIMS.utils.files.html#nexusLIMS.utils.files.gnu_find_files_by_mtime" title="nexusLIMS.utils.files.gnu_find_files_by_mtime"><code class="xref py py-meth docutils literal notranslate"><span class="pre">gnu_find_files_by_mtime()</span></code></a> uses GNU
+<a class="reference external" href="https://www.gnu.org/software/findutils/"><code class="docutils literal notranslate"><span class="pre">find</span></code></a> to find files modified
+within the session timespan.</p>
 <p><strong>No files found:</strong> Sessions without matching files (accidental session start, no data generated)
 are marked <code class="docutils literal notranslate"><span class="pre">NO_FILES_FOUND</span></code> and the builder moves to the next session.
 <a class="reference internal" href="#overview"><span class="std std-ref">(go to top)</span></a></p>
@@ -1035,6 +1035,9 @@ are marked <code class="docutils literal notranslate"><span class="pre">NO_FILES
 <p>Files are grouped into logical <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.schemas.activity.html#nexusLIMS.schemas.activity.AcquisitionActivity" title="nexusLIMS.schemas.activity.AcquisitionActivity"><code class="xref py py-class docutils literal notranslate"><span class="pre">AcquisitionActivity</span></code></a>
 objects to approximate conceptual experiment boundaries using statistical analysis of
 file creation times.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 2.3.0: </span>The <a class="reference internal" href="configuration.html#config-clustering-sensitivity"><span class="std std-ref">NX_CLUSTERING_SENSITIVITY</span></a> configuration variable allows you to adjust how files are clustered into activities. Higher values (e.g., 2.0) create more activities by detecting smaller time gaps, while lower values (e.g., 0.5) create fewer activities by requiring larger gaps. Set to 0 to disable clustering entirely and group all files into a single activity.</p>
+</div>
 <p>The figure below illustrates the clustering process for an EELS spectrum image
 experiment. Panel (a) shows creation time differences revealing 13 distinct groups.
 Panel (b) histograms time gaps between consecutive files—small gaps indicate
@@ -1097,7 +1100,7 @@ generator implementation.</p>
 <ul class="simple">
 <li><p><strong>JSON metadata file</strong>: Full metadata in text format (linked from XML record)</p></li>
 <li><p><strong>PNG preview image</strong>: Generated via <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.extractors.plugins.preview_generators.html#module-nexusLIMS.extractors.plugins.preview_generators" title="nexusLIMS.extractors.plugins.preview_generators"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.preview_generators</span></code></a>
-(HyperSpy-based for complex formats, simple downsampling for TIFF)</p></li>
+(HyperSpy-based for complex formats, simple downsampling for regular image files)</p></li>
 </ul>
 <p>Metadata and preview paths are stored at the
 <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.schemas.activity.html#nexusLIMS.schemas.activity.AcquisitionActivity" title="nexusLIMS.schemas.activity.AcquisitionActivity"><code class="xref py py-class docutils literal notranslate"><span class="pre">AcquisitionActivity</span></code></a> level.</p>
@@ -1126,7 +1129,8 @@ activities are assembled, <a class="reference internal" href="../api/nexusLIMS/n
 validates the complete record against the NexusLIMS schema.</p>
 <p><strong>Validation failure:</strong> Session marked <code class="docutils literal notranslate"><span class="pre">ERROR</span></code> in database for investigation.</p>
 <p><strong>Validation success:</strong> Record written to <a class="reference internal" href="configuration.html#config-records-path"><span class="std std-ref">NX_RECORDS_PATH</span></a>
-(or <a class="reference internal" href="configuration.html#config-data-path"><span class="std std-ref">NX_DATA_PATH</span></a> subdirectory if unspecified) before CDCS upload.</p>
+(or <a class="reference internal" href="configuration.html#config-data-path"><span class="std std-ref">NX_DATA_PATH</span></a> subdirectory if unspecified) before
+uploading to configured exporters.</p>
 <p>The builder then processes the next session, repeating until all are complete.</p>
 <p><a class="reference internal" href="#overview"><span class="std std-ref">(go to top)</span></a></p>
 </section>
