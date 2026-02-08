@@ -1013,8 +1013,8 @@ window.addEventListener("load", load);
 <span class="sd">        Creates the database file at NX_DB_PATH, applies the schema,</span>
 <span class="sd">        and marks it as migrated to the latest version.</span>
 
-<span class="sd">        This is equivalent to running initialize_db.py followed by</span>
-<span class="sd">        &#39;nexuslims-migrate upgrade head&#39;.</span>
+<span class="sd">        This creates the database file and applies all migrations</span>
+<span class="sd">        (equivalent to &#39;nexuslims-migrate upgrade head&#39; on a new DB).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
         <span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
