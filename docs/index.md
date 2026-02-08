@@ -4,7 +4,7 @@
 
 Home <self>
 user_guide
-migration
+migration_guide
 dev_guide
 frontend_guide
 reference
@@ -57,7 +57,7 @@ New to NexusLIMS? Start here for installation, configuration, and quick start gu
 ```
 
 ```{grid-item-card} 🔄 Migration Guide
-:link: migration
+:link: migration_guide
 :link-type: doc
 
 Upgrading from v1.x? Step-by-step instructions for migrating to v2.0+.

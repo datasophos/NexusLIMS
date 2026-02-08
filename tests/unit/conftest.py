@@ -1116,16 +1116,7 @@ def db_factory(tmp_path_factory):
     # Use session-scoped temp directory
     temp_dir = tmp_path_factory.mktemp("test_databases")
 
-    # Path to production SQL schema (single source of truth)
-    schema_path = (
-        Path(__file__).parent.parent.parent
-        / "nexusLIMS"
-        / "db"
-        / "dev"
-        / "NexusLIMS_db_creation_script.sql"
-    )
-
-    return DatabaseFactory(temp_dir, schema_path)
+    return DatabaseFactory(temp_dir)
 
 
 @pytest.fixture

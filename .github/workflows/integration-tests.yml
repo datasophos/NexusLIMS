@@ -129,25 +129,14 @@ jobs:
       - name: Install dependencies
         run: uv sync
 
-      - name: Run unit tests
+      - name: Run all tests (unit + integration)
         run: |
           uv run pytest tests/ \
-            --ignore=tests/integration \
             -v \
+            --override-ini=addopts= \
             --mpl \
             --mpl-baseline-path=tests/unit/files/figs \
             --cov=nexusLIMS \
-            --cov-report term-missing \
-            --tb=short \
-            --maxfail=5
-
-      - name: Run integration tests
-        run: |
-          uv run pytest tests/integration/ \
-            -v \
-            -m integration \
-            --cov=nexusLIMS \
-            --cov-append \
             --cov-report html:tests/coverage-combined \
             --cov-report term-missing \
             --cov-report=xml:coverage-combined.xml \

@@ -1,7 +1,7 @@
 (migration)=
 # Migration Guide
 
-This guide is for system administrators, and will help you migrate your NexusLIMS installation from v1.4.3 to v2.3.0.
+This guide is for system administrators, and will help you migrate your NexusLIMS installation from v1.4.3 to v2.5.0.
 
 ## What Changed
 
@@ -187,20 +187,24 @@ This provides:
 
 ## Step-by-Step Migration Instructions
 
-Follow these steps to migrate your NexusLIMS installation from v1.x to v2.0:
+Follow these steps to migrate your NexusLIMS installation from v1.x to v2.5.0:
 
 ### 1. Backup Your Current Installation
 
-```{note}
-**Good news**: The database schema has **not changed** between v1.4.3 and v2.2.0. Your existing database will work without any migration or modifications. We still recommend backing up as a precaution.
+```{important}
+**Database migrations required**: The database schema has changed since v1.4.3. You will need to run migrations to:
+- Add the `upload_log` table (for tracking record exports)
+- Update `session_log` CHECK constraints (to support new record statuses)
+
+**Note:** Database migrations automatically create timestamped backups before making changes. However, it's still good practice to create your own backups of critical files before major upgrades.
 ```
 
 ```bash
-# Backup your database
-cp /path/to/nexuslims_db.sqlite /path/to/nexuslims_db.sqlite.backup
-
-# Backup your .env file
+# Backup your .env file (always recommended)
 cp .env .env.v1.backup
+
+# Optional: Create manual database backup (migrations create automatic backups)
+cp /path/to/nexuslims_db.sqlite /path/to/nexuslims_db.sqlite.backup
 ```
 
 ### 2. Install uv
@@ -260,18 +264,43 @@ rm poetry.lock  # if it exists
 uv sync
 ```
 
-### 6. Mark Database as Migrated
+### 6. Mark Database as Migrated and Apply Updates
 
 ```{versionadded} 2.2.0
-NexusLIMS now uses Alembic for database schema version control. You need to mark your existing database as migrated to the current schema.
+NexusLIMS now uses Alembic for database schema version control. You need to mark your existing database as migrated to the baseline schema, then apply updates.
 ```
 
 ```bash
-# Mark database as at current schema version
-uv run alembic stamp head
+# Mark database as at the baseline schema version (v1.4.3 schema)
+nexuslims-migrate alembic stamp v1_4_3
+
+# Apply pending migrations (adds upload_log table and updated CHECK constraints)
+nexuslims-migrate upgrade
 ```
 
-This tells Alembic that your database already has the current schema structure and doesn't need any migrations applied. This is a one-time operation for existing installations.
+**What this does:**
+
+1. `stamp v1_4_3` - Marks your v1.4.3 database as having the baseline schema (`instruments` + `session_log` tables)
+2. `upgrade` - Applies migration (database update) commands that have updated the schema since v1.4.3:
+   - Migration `v2_4_0_1`: Adds the `upload_log` table for tracking record exports
+   - Migration `v2_4_0_2`: Updates `session_log` CHECK constraints to include new statuses (`NO_CONSENT`, `NO_RESERVATION`, `BUILT_NOT_EXPORTED`)
+
+````{note}
+If you're running from a source checkout (not an installed package), prefix commands with `uv run`:
+```bash
+uv run nexuslims-migrate alembic stamp v1_4_3
+uv run nexuslims-migrate upgrade
+```
+````
+
+````{note}
+**Automatic backups:** The migration system automatically creates timestamped backups before making changes to your database (e.g., `database_backup_20260207_143216.sqlite`). These are created in the same directory as your database file.
+
+If you prefer to create your own backup first, you can:
+```bash
+cp /path/to/nexuslims_db.sqlite /path/to/nexuslims_db.sqlite.backup
+```
+````
 
 ### 7. Verify Installation
 
@@ -304,9 +333,6 @@ poetry run python -m nexusLIMS.builder.record_builder
 # Using uv
 cd /path/to/NexusLIMS
 uv run nexuslims-process-records
-
-# Or using the module directly
-uv run python -m nexusLIMS.cli.process_records
 ```
 
 ### 9. Test Record Building
@@ -318,7 +344,7 @@ Run a test record build to verify everything works:
 uv run nexuslims-process-records -n
 
 # Verbose mode (with detailed logging)
-uv run nexuslims-process-records -vv
+uv run nexuslims-process-records -vv -n
 ```
 
 ## Common Migration Issues
@@ -360,28 +386,6 @@ NX_CERT_BUNDLE_FILE=/etc/ssl/certs/custom-ca-bundle.pem
 NX_NEMO_ADDRESS_1=https://nemo.example.com/api/
 NX_NEMO_TOKEN_1=your-token-here
 ```
-
-## What's New in v2.2.0
-
-### Metadata Improvements
-
-- **Pydantic Schemas**: All metadata validated before record building
-- **EM Glossary Integration**: 50+ standardized field names
-- **Formal Unit Handling**: Type-safe quantity handling with automatic conversion
-- **Helper Functions**: `emg_field()` and `add_to_extensions()` for cleaner code
-
-### Other Improvements
-
-- **Email notifications**: Optional alerts for record building errors
-- **Custom paths**: Specify log/record directories with `NX_LOG_PATH` / `NX_RECORDS_PATH`
-- **Local profiles**: Load site-specific profiles from `NX_LOCAL_PROFILES_PATH`
-- **Better errors**: Pydantic provides detailed, actionable validation messages
-- **Faster installation**: `uv` is significantly faster than Poetry
-
-### Removed Features
-
-- **SharePoint harvester**: Deprecated (use NEMO instead)
-- **Poetry**: Replaced by `uv`
 
 ## Getting Help
 

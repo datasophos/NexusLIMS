@@ -10,7 +10,9 @@ session information from the database with metadata extracted from data files. T
 explains the workflow from session detection to record upload. See the
 [activity diagram](activity-diagram) at the bottom for a visual overview.
 
-Links to API reference documentation are provided throughout.
+Understanding these details isn't required for basic operation, but this documentation
+may help you troubleshoot issues, customize behavior, and understand what the system 
+does behind the scenes. Links to API reference documentation are provided throughout.
 
 (general-approach)=
 ## General Approach
@@ -18,7 +20,7 @@ Links to API reference documentation are provided throughout.
 Since instruments cannot communicate directly with NexusLIMS, the system uses periodic
 polling (via `systemd` or `cron`) to detect sessions requiring record generation.
 
-**Execution:** Run `nexuslims-process-records` (or `python -m nexusLIMS.cli.process_records`) to invoke
+**Execution:** Run `nexuslims-process-records` to invoke
 {py:func}`~nexusLIMS.builder.record_builder.process_new_records`. See the
 {doc}`CLI reference <cli_reference>` for all command-line options including date filtering,
 dry-run mode, and verbosity controls. The command:
@@ -28,10 +30,10 @@ dry-run mode, and verbosity controls. The command:
 3. Searches the centralized file system for matching files
 4. Extracts metadata and groups files into `Acquisition Activities`
 5. Builds and validates XML records against the Nexus Microscopy Schema
-6. Uploads valid records to the CDCS instance
+6. Uploads valid records to the CDCS instance (and any other export destinations configured)
 
 **Error handling:** Failed builds are logged to the database with `ERROR` status,
-triggering operator notifications.
+triggering email notifications.
 
 ## Finding New Sessions
 
@@ -63,7 +65,7 @@ Each {py:class}`~nexusLIMS.db.session_handler.Session` contains:
 - **`instrument`** ({py:class}`~nexusLIMS.db.models.Instrument`): Associated instrument object
 - **`dt_from`** ({py:class}`~datetime.datetime`): Session start time
 - **`dt_to`** ({py:class}`~datetime.datetime`): Session end time
-- **`user`** ({py:class}`str`): Username (may be unreliable if instrument doesn't require login)
+- **`user`** ({py:class}`str`): Username (read from NEMO usage event)
 
 Sessions are processed sequentially by the record builder.
 
@@ -76,14 +78,14 @@ executes these steps:
 ### Process Overview
 
 1. **[(link)](starting-record-builder) Initiate build**: Execute {py:func}`~nexusLIMS.builder.record_builder.build_record`
-2. **[(link)](harvesting-calendar) Fetch reservation data**: Query harvesters (e.g., {py:mod}`~nexusLIMS.harvesters.nemo`)
+2. **[(link)](harvesting-calendar) Fetch usage event/reservation data**: Query harvesters (e.g., {py:mod}`~nexusLIMS.harvesters.nemo`)
 3. **[(link)](identifying-files) Find files**: Search for parseable files within session timespan
    - If none found → mark as `NO_FILES_FOUND` and skip to next session
 4. **[(link)](build-activities) Cluster activities**: Group files into {py:class}`~nexusLIMS.schemas.activity.AcquisitionActivity` objects using temporal analysis
 5. **[(link)](parse-metadata) Extract metadata**: Parse each file's metadata and generate preview images
 6. **[(link)](separate-setup-parameters) Organize metadata**: Separate common metadata (setup parameters) from file-specific values
 7. **[(link)](validating-the-record) Validate**: Check XML against Nexus Microscopy Schema
-8. **[(link)](upload-records) Upload**: Push valid records to CDCS and update database
+8. **[(link)](upload-records) Upload**: Push valid records to CDCS/other export destinations and update database
 
 (starting-record-builder)=
 ### 1. Initiating the Build
@@ -201,12 +203,9 @@ is read from the database `instruments` table, centralizing configuration manage
 
 **File search strategy:**
 
-1. **Primary:** {py:meth}`~nexusLIMS.utils.files.gnu_find_files_by_mtime` uses GNU
-   [`find`](https://www.gnu.org/software/findutils/) (available on Linux/macOS, ~tens of seconds)
-2. **Fallback:** {py:meth}`~nexusLIMS.utils.files.find_files_by_mtime` provides pure-Python
-   implementation (~3× slower if GNU find unavailable)
-
-Only files modified within the session timespan are returned.
+{py:meth}`~nexusLIMS.utils.files.gnu_find_files_by_mtime` uses GNU
+[`find`](https://www.gnu.org/software/findutils/) to find files modified
+within the session timespan.
 
 **No files found:** Sessions without matching files (accidental session start, no data generated)
 are marked `NO_FILES_FOUND` and the builder moves to the next session.
@@ -218,6 +217,10 @@ are marked `NO_FILES_FOUND` and the builder moves to the next session.
 Files are grouped into logical {py:class}`~nexusLIMS.schemas.activity.AcquisitionActivity`
 objects to approximate conceptual experiment boundaries using statistical analysis of
 file creation times.
+
+```{versionadded} 2.3.0
+The {ref}`NX_CLUSTERING_SENSITIVITY <config-clustering-sensitivity>` configuration variable allows you to adjust how files are clustered into activities. Higher values (e.g., 2.0) create more activities by detecting smaller time gaps, while lower values (e.g., 0.5) create fewer activities by requiring larger gaps. Set to 0 to disable clustering entirely and group all files into a single activity.
+```
 
 The figure below illustrates the clustering process for an EELS spectrum image
 experiment. Panel (a) shows creation time differences revealing 13 distinct groups.
@@ -294,7 +297,7 @@ generator implementation.
 
 - **JSON metadata file**: Full metadata in text format (linked from XML record)
 - **PNG preview image**: Generated via {py:mod}`nexusLIMS.extractors.plugins.preview_generators`
-  (HyperSpy-based for complex formats, simple downsampling for TIFF)
+  (HyperSpy-based for complex formats, simple downsampling for regular image files)
 
 Metadata and preview paths are stored at the
 {py:class}`~nexusLIMS.schemas.activity.AcquisitionActivity` level.
@@ -330,7 +333,8 @@ validates the complete record against the NexusLIMS schema.
 **Validation failure:** Session marked `ERROR` in database for investigation.
 
 **Validation success:** Record written to {ref}`NX_RECORDS_PATH <config-records-path>`
-(or {ref}`NX_DATA_PATH <config-data-path>` subdirectory if unspecified) before CDCS upload.
+(or {ref}`NX_DATA_PATH <config-data-path>` subdirectory if unspecified) before
+uploading to configured exporters.
 
 The builder then processes the next session, repeating until all are complete.
 

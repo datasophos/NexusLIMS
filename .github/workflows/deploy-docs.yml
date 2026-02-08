@@ -85,7 +85,7 @@ jobs:
             });
 
             const coverageArtifact = artifacts.data.artifacts.find(
-              artifact => artifact.name === 'coverage-html-3.11'
+              artifact => artifact.name === 'coverage-combined-html'
             );
 
             if (coverageArtifact) {

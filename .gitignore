@@ -59,6 +59,7 @@ nexusLIMS.db
 
 # dev files
 nexuslims_db.sqlite
+*v1.4.3*_db.sqlite
 *.pyc
 .idea
 .vscode

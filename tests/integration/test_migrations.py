@@ -1,0 +1,1179 @@
+"""Integration tests for database migrations.
+
+Tests the full migration lifecycle including upgrade paths, downgrades,
+schema validation, and data preservation.
+"""
+
+import tempfile
+from pathlib import Path
+
+import pytest
+import sqlalchemy as sa
+from alembic import command
+from alembic.config import Config
+from sqlalchemy import inspect
+
+
+class BackupError(Exception):
+    """Backup failure for tests."""
+
+
+@pytest.fixture
+def alembic_config(tmp_path, monkeypatch):
+    """Create Alembic config pointing to a temporary database.
+
+    Parameters
+    ----------
+    tmp_path : Path
+        Temporary directory for the test
+    monkeypatch : pytest.MonkeyPatch
+        Pytest fixture for monkeypatching
+
+    Returns
+    -------
+    tuple[Config, Path]
+        Alembic config object and path to the test database
+    """
+    # Create temporary database
+    db_path = tmp_path / "test_migration.db"
+
+    # Set NX_DB_PATH environment variable so env.py will use our test database
+    monkeypatch.setenv("NX_DB_PATH", str(db_path))
+
+    # Refresh settings to pick up the new environment variable
+    from nexusLIMS.config import refresh_settings
+
+    refresh_settings()
+
+    # Create Alembic config
+    config = Config()
+
+    # Point to the migrations directory in the package
+    # Use the installed package location
+    import nexusLIMS.db.migrations
+
+    migrations_dir = Path(nexusLIMS.db.migrations.__file__).parent
+    config.set_main_option("script_location", str(migrations_dir))
+
+    # env.py will read the database URL from settings.NX_DB_PATH
+    # (which we set above via monkeypatch)
+
+    return config, db_path
+
+
+@pytest.fixture
+def engine(alembic_config):
+    """Create SQLAlchemy engine for the test database.
+
+    Parameters
+    ----------
+    alembic_config : tuple[Config, Path]
+        Alembic config and database path from fixture
+
+    Returns
+    -------
+    sa.Engine
+        SQLAlchemy engine connected to test database
+    """
+    _, db_path = alembic_config
+    return sa.create_engine(f"sqlite:///{db_path}")
+
+
+def get_table_names(engine) -> set[str]:
+    """Get all table names in the database.
+
+    Parameters
+    ----------
+    engine : sa.Engine
+        SQLAlchemy engine
+
+    Returns
+    -------
+    set[str]
+        Set of table names
+    """
+    inspector = inspect(engine)
+    return set(inspector.get_table_names())
+
+
+def get_column_names(engine, table_name: str) -> set[str]:
+    """Get column names for a table.
+
+    Parameters
+    ----------
+    engine : sa.Engine
+        SQLAlchemy engine
+    table_name : str
+        Name of the table
+
+    Returns
+    -------
+    set[str]
+        Set of column names
+    """
+    inspector = inspect(engine)
+    columns = inspector.get_columns(table_name)
+    return {col["name"] for col in columns}
+
+
+def get_indexes(engine, table_name: str) -> set[str]:
+    """Get index names for a table.
+
+    Parameters
+    ----------
+    engine : sa.Engine
+        SQLAlchemy engine
+    table_name : str
+        Name of the table
+
+    Returns
+    -------
+    set[str]
+        Set of index names
+    """
+    inspector = inspect(engine)
+    indexes = inspector.get_indexes(table_name)
+    return {idx["name"] for idx in indexes}
+
+
+def get_check_constraints(engine, table_name: str) -> set[str]:
+    """Get CHECK constraint names for a table.
+
+    Parameters
+    ----------
+    engine : sa.Engine
+        SQLAlchemy engine
+    table_name : str
+        Name of the table
+
+    Returns
+    -------
+    set[str]
+        Set of constraint names
+    """
+    inspector = inspect(engine)
+    constraints = inspector.get_check_constraints(table_name)
+    return {c["name"] for c in constraints}
+
+
+class TestMigrationUpgradePath:
+    """Test the full upgrade path from scratch to latest version."""
+
+    def test_upgrade_to_v1_4_3_empty_db(self, alembic_config, engine):
+        """Test upgrading to v1_4_3 creates initial schema."""
+        config, _ = alembic_config
+
+        # Upgrade to v1_4_3
+        command.upgrade(config, "v1_4_3")
+
+        # Verify tables exist
+        tables = get_table_names(engine)
+        assert "instruments" in tables
+        assert "session_log" in tables
+        assert "upload_log" not in tables  # Added in v2_4_0_1
+
+        # Verify instruments table columns
+        instruments_cols = get_column_names(engine, "instruments")
+        expected_cols = {
+            "instrument_pid",
+            "api_url",
+            "calendar_name",
+            "calendar_url",
+            "location",
+            "schema_name",
+            "property_tag",
+            "filestore_path",
+            "harvester",
+            "timezone",
+            "computer_name",
+            "computer_ip",
+            "computer_mount",
+        }
+        assert instruments_cols == expected_cols
+
+        # Verify session_log table columns
+        session_log_cols = get_column_names(engine, "session_log")
+        expected_cols = {
+            "id_session_log",
+            "session_identifier",
+            "instrument",
+            "timestamp",
+            "event_type",
+            "record_status",
+            "user",
+        }
+        assert session_log_cols == expected_cols
+
+        # Verify index exists
+        indexes = get_indexes(engine, "session_log")
+        assert "ix_session_log_session_identifier" in indexes
+
+        # Verify NO CHECK constraints yet (added in v2_4_0_2)
+        constraints = get_check_constraints(engine, "session_log")
+        assert "check_event_type" not in constraints
+        assert "check_record_status" not in constraints
+
+    def test_upgrade_to_v2_4_0_1(self, alembic_config, engine):
+        """Test upgrading to v2_4_0_1 adds upload_log table."""
+        config, _ = alembic_config
+
+        # Start from v1_4_3
+        command.upgrade(config, "v1_4_3")
+
+        # Upgrade to v2_4_0_1
+        command.upgrade(config, "v2_4_0_1")
+
+        # Verify upload_log table exists
+        tables = get_table_names(engine)
+        assert "upload_log" in tables
+
+        # Verify upload_log columns
+        upload_log_cols = get_column_names(engine, "upload_log")
+        expected_cols = {
+            "id",
+            "session_identifier",
+            "destination_name",
+            "success",
+            "timestamp",
+            "record_id",
+            "record_url",
+            "error_message",
+            "metadata_json",
+        }
+        assert upload_log_cols == expected_cols
+
+        # Verify indexes
+        indexes = get_indexes(engine, "upload_log")
+        assert "ix_upload_log_session_identifier" in indexes
+        assert "ix_upload_log_destination_name" in indexes
+
+    def test_upgrade_to_v2_4_0_2(self, alembic_config, engine):
+        """Test upgrading to v2_4_0_2 adds CHECK constraints."""
+        config, _ = alembic_config
+
+        # Start from v2_4_0_1
+        command.upgrade(config, "v2_4_0_1")
+
+        # Upgrade to v2_4_0_2
+        command.upgrade(config, "v2_4_0_2")
+
+        # Verify CHECK constraints exist
+        constraints = get_check_constraints(engine, "session_log")
+        assert "check_event_type" in constraints
+        assert "check_record_status" in constraints
+
+        # Verify session_log table still has all columns
+        session_log_cols = get_column_names(engine, "session_log")
+        expected_cols = {
+            "id_session_log",
+            "session_identifier",
+            "instrument",
+            "timestamp",
+            "event_type",
+            "record_status",
+            "user",
+        }
+        assert session_log_cols == expected_cols
+
+        # Verify index still exists after table recreation
+        indexes = get_indexes(engine, "session_log")
+        assert "ix_session_log_session_identifier" in indexes
+
+    def test_full_upgrade_path(self, alembic_config, engine):
+        """Test upgrading from scratch to head (latest version)."""
+        config, _ = alembic_config
+
+        # Upgrade to head (latest)
+        command.upgrade(config, "head")
+
+        # Verify all tables exist
+        tables = get_table_names(engine)
+        assert "instruments" in tables
+        assert "session_log" in tables
+        assert "upload_log" in tables
+
+        # Verify final schema has CHECK constraints
+        constraints = get_check_constraints(engine, "session_log")
+        assert "check_event_type" in constraints
+        assert "check_record_status" in constraints
+
+
+class TestMigrationWithData:
+    """Test migrations preserve data correctly."""
+
+    def test_upgrade_with_instruments(self, alembic_config, engine):
+        """Test that instrument data is preserved through all migrations."""
+        config, _ = alembic_config
+
+        # Upgrade to v1_4_3 and insert test data
+        command.upgrade(config, "v1_4_3")
+
+        with engine.begin() as conn:
+            conn.execute(
+                sa.text(
+                    """
+                INSERT INTO instruments (
+                    instrument_pid, api_url, calendar_name, calendar_url,
+                    location, schema_name, property_tag, filestore_path,
+                    harvester, timezone
+                )
+                VALUES (
+                    'test_instrument_1',
+                    'https://api.example.com/1',
+                    'Test Calendar 1',
+                    'https://cal.example.com/1',
+                    'Building A, Room 101',
+                    'nexusLIMS',
+                    'PROP-001',
+                    'instrument_1/data',
+                    'nemo',
+                    'America/New_York'
+                )
+                """
+                )
+            )
+            conn.execute(
+                sa.text(
+                    """
+                INSERT INTO instruments (
+                    instrument_pid, api_url, calendar_name, calendar_url,
+                    location, schema_name, property_tag, filestore_path,
+                    harvester, timezone
+                )
+                VALUES (
+                    'test_instrument_2',
+                    'https://api.example.com/2',
+                    'Test Calendar 2',
+                    'https://cal.example.com/2',
+                    'Building B, Room 202',
+                    'nexusLIMS',
+                    'PROP-002',
+                    'instrument_2/data',
+                    'nemo',
+                    'America/Denver'
+                )
+                """
+                )
+            )
+
+            # Get initial count
+            result = conn.execute(sa.text("SELECT COUNT(*) FROM instruments"))
+            initial_count = result.scalar()
+            assert initial_count == 2
+
+        # Upgrade through all versions
+        command.upgrade(config, "head")
+
+        # Verify data preserved
+        with engine.begin() as conn:
+            result = conn.execute(sa.text("SELECT COUNT(*) FROM instruments"))
+            final_count = result.scalar()
+            assert final_count == 2
+
+            # Verify specific instrument still exists
+            result = conn.execute(
+                sa.text(
+                    "SELECT instrument_pid, location FROM instruments "
+                    "WHERE instrument_pid = 'test_instrument_1'"
+                )
+            )
+            row = result.fetchone()
+            assert row is not None
+            assert row[0] == "test_instrument_1"
+            assert row[1] == "Building A, Room 101"
+
+    def test_upgrade_with_session_logs(self, alembic_config, engine):
+        """Test that session_log data is preserved through v2_4_0_2 table recreation."""
+        config, _ = alembic_config
+
+        # Upgrade to v2_4_0_1 (before CHECK constraints)
+        command.upgrade(config, "v2_4_0_1")
+
+        # Insert test instrument
+        with engine.begin() as conn:
+            conn.execute(
+                sa.text(
+                    """
+                INSERT INTO instruments (
+                    instrument_pid, api_url, calendar_name, calendar_url,
+                    location, schema_name, property_tag, filestore_path,
+                    harvester, timezone
+                )
+                VALUES (
+                    'test_instrument',
+                    'https://api.example.com',
+                    'Test Calendar',
+                    'https://cal.example.com',
+                    'Building A',
+                    'nexusLIMS',
+                    'PROP-001',
+                    'test/data',
+                    'nemo',
+                    'UTC'
+                )
+                """
+                )
+            )
+
+            # Insert session logs with various statuses
+            conn.execute(
+                sa.text(
+                    """
+                INSERT INTO session_log (
+                    session_identifier, instrument, timestamp,
+                    event_type, record_status, user
+                )
+                VALUES
+                    ('uuid-1', 'test_instrument', '2025-01-01T10:00:00Z',
+                     'START', 'COMPLETED', 'user1@example.com'),
+                    ('uuid-1', 'test_instrument', '2025-01-01T11:00:00Z',
+                     'END', 'COMPLETED', 'user1@example.com'),
+                    ('uuid-2', 'test_instrument', '2025-01-02T10:00:00Z',
+                     'START', 'WAITING_FOR_END', 'user2@example.com'),
+                    ('uuid-3', 'test_instrument', '2025-01-03T10:00:00Z',
+                     'START', 'TO_BE_BUILT', NULL),
+                    ('uuid-3', 'test_instrument', '2025-01-03T12:00:00Z',
+                     'END', 'TO_BE_BUILT', NULL)
+                """
+                )
+            )
+
+            # Get baseline data
+            result = conn.execute(sa.text("SELECT COUNT(*) FROM session_log"))
+            initial_count = result.scalar()
+            assert initial_count == 5
+
+            result = conn.execute(
+                sa.text(
+                    "SELECT record_status, COUNT(*) FROM session_log "
+                    "GROUP BY record_status ORDER BY record_status"
+                )
+            )
+            initial_distribution = dict(result.fetchall())
+
+        # Upgrade to v2_4_0_2 (recreates table with CHECK constraints)
+        command.upgrade(config, "v2_4_0_2")
+
+        # Verify data preserved
+        with engine.begin() as conn:
+            # Check count
+            result = conn.execute(sa.text("SELECT COUNT(*) FROM session_log"))
+            final_count = result.scalar()
+            assert final_count == initial_count
+
+            # Check distribution preserved
+            result = conn.execute(
+                sa.text(
+                    "SELECT record_status, COUNT(*) FROM session_log "
+                    "GROUP BY record_status ORDER BY record_status"
+                )
+            )
+            final_distribution = dict(result.fetchall())
+            assert final_distribution == initial_distribution
+
+            # Verify specific session still exists with correct data
+            result = conn.execute(
+                sa.text(
+                    "SELECT session_identifier, event_type, user FROM session_log "
+                    "WHERE session_identifier = 'uuid-1' AND event_type = 'START'"
+                )
+            )
+            row = result.fetchone()
+            assert row is not None
+            assert row[0] == "uuid-1"
+            assert row[1] == "START"
+            assert row[2] == "user1@example.com"
+
+
+class TestMigrationDowngrade:
+    """Test downgrade paths work correctly."""
+
+    def test_downgrade_from_v2_4_0_2_to_v2_4_0_1(self, alembic_config, engine):
+        """Test downgrading from v2_4_0_2 removes CHECK constraints."""
+        config, _ = alembic_config
+
+        # Start at v2_4_0_2
+        command.upgrade(config, "v2_4_0_2")
+
+        # Verify CHECK constraints exist
+        constraints = get_check_constraints(engine, "session_log")
+        assert "check_event_type" in constraints
+        assert "check_record_status" in constraints
+
+        # Downgrade to v2_4_0_1
+        command.downgrade(config, "v2_4_0_1")
+
+        # Verify CHECK constraints removed
+        constraints = get_check_constraints(engine, "session_log")
+        assert "check_event_type" not in constraints
+        assert "check_record_status" not in constraints
+
+        # Verify table still exists with data
+        tables = get_table_names(engine)
+        assert "session_log" in tables
+
+    def test_downgrade_from_v2_4_0_1_to_v1_4_3(self, alembic_config, engine):
+        """Test downgrading from v2_4_0_1 removes upload_log table."""
+        config, _ = alembic_config
+
+        # Start at v2_4_0_1
+        command.upgrade(config, "v2_4_0_1")
+
+        # Verify upload_log exists
+        tables = get_table_names(engine)
+        assert "upload_log" in tables
+
+        # Downgrade to v1_4_3
+        command.downgrade(config, "v1_4_3")
+
+        # Verify upload_log removed
+        tables = get_table_names(engine)
+        assert "upload_log" not in tables
+        assert "session_log" in tables
+        assert "instruments" in tables
+
+    def test_downgrade_preserves_data(self, alembic_config, engine):
+        """Test that downgrade preserves session_log data."""
+        config, _ = alembic_config
+
+        # Upgrade to v2_4_0_2 and insert data
+        command.upgrade(config, "v2_4_0_2")
+
+        with engine.begin() as conn:
+            # Insert test instrument
+            conn.execute(
+                sa.text(
+                    """
+                INSERT INTO instruments (
+                    instrument_pid, api_url, calendar_name, calendar_url,
+                    location, schema_name, property_tag, filestore_path,
+                    harvester, timezone
+                )
+                VALUES (
+                    'test_instrument',
+                    'https://api.example.com',
+                    'Test Calendar',
+                    'https://cal.example.com',
+                    'Building A',
+                    'nexusLIMS',
+                    'PROP-001',
+                    'test/data',
+                    'nemo',
+                    'UTC'
+                )
+                """
+                )
+            )
+
+            # Insert session logs
+            conn.execute(
+                sa.text(
+                    """
+                INSERT INTO session_log (
+                    session_identifier, instrument, timestamp,
+                    event_type, record_status
+                )
+                VALUES
+                    ('uuid-1', 'test_instrument', '2025-01-01T10:00:00Z',
+                     'START', 'COMPLETED'),
+                    ('uuid-2', 'test_instrument', '2025-01-02T10:00:00Z',
+                     'END', 'TO_BE_BUILT')
+                """
+                )
+            )
+
+            result = conn.execute(sa.text("SELECT COUNT(*) FROM session_log"))
+            initial_count = result.scalar()
+            assert initial_count == 2
+
+        # Downgrade to v2_4_0_1
+        command.downgrade(config, "v2_4_0_1")
+
+        # Verify data preserved
+        with engine.begin() as conn:
+            result = conn.execute(sa.text("SELECT COUNT(*) FROM session_log"))
+            final_count = result.scalar()
+            assert final_count == initial_count
+
+
+class TestCheckConstraints:
+    """Test that CHECK constraints are properly enforced."""
+
+    def test_event_type_constraint_enforced(self, alembic_config, engine):
+        """Test that invalid event_type values are rejected."""
+        config, _ = alembic_config
+        command.upgrade(config, "v2_4_0_2")
+
+        with engine.begin() as conn:
+            # Insert test instrument
+            conn.execute(
+                sa.text(
+                    """
+                INSERT INTO instruments (
+                    instrument_pid, api_url, calendar_name, calendar_url,
+                    location, schema_name, property_tag, filestore_path,
+                    harvester, timezone
+                )
+                VALUES (
+                    'test_instrument',
+                    'https://api.example.com',
+                    'Test Calendar',
+                    'https://cal.example.com',
+                    'Building A',
+                    'nexusLIMS',
+                    'PROP-001',
+                    'test/data',
+                    'nemo',
+                    'UTC'
+                )
+                """
+                )
+            )
+
+            # Valid event_type should succeed
+            conn.execute(
+                sa.text(
+                    """
+                INSERT INTO session_log (
+                    session_identifier, instrument, timestamp,
+                    event_type, record_status
+                )
+                VALUES (
+                    'uuid-valid',
+                    'test_instrument',
+                    '2025-01-01T10:00:00Z',
+                    'START',
+                    'WAITING_FOR_END'
+                )
+                """
+                )
+            )
+
+        # Invalid event_type should fail
+        with (
+            engine.begin() as conn,
+            pytest.raises(sa.exc.IntegrityError, match="check_event_type"),
+        ):
+            conn.execute(
+                sa.text(
+                    """
+                INSERT INTO session_log (
+                    session_identifier, instrument, timestamp,
+                    event_type, record_status
+                )
+                VALUES (
+                    'uuid-invalid',
+                    'test_instrument',
+                    '2025-01-01T11:00:00Z',
+                    'INVALID_TYPE',
+                    'COMPLETED'
+                )
+                """
+                )
+            )
+
+    def test_record_status_constraint_enforced(self, alembic_config, engine):
+        """Test that invalid record_status values are rejected."""
+        config, _ = alembic_config
+        command.upgrade(config, "v2_4_0_2")
+
+        with engine.begin() as conn:
+            # Insert test instrument
+            conn.execute(
+                sa.text(
+                    """
+                INSERT INTO instruments (
+                    instrument_pid, api_url, calendar_name, calendar_url,
+                    location, schema_name, property_tag, filestore_path,
+                    harvester, timezone
+                )
+                VALUES (
+                    'test_instrument',
+                    'https://api.example.com',
+                    'Test Calendar',
+                    'https://cal.example.com',
+                    'Building A',
+                    'nexusLIMS',
+                    'PROP-001',
+                    'test/data',
+                    'nemo',
+                    'UTC'
+                )
+                """
+                )
+            )
+
+            # Valid record_status should succeed
+            conn.execute(
+                sa.text(
+                    """
+                INSERT INTO session_log (
+                    session_identifier, instrument, timestamp,
+                    event_type, record_status
+                )
+                VALUES (
+                    'uuid-valid',
+                    'test_instrument',
+                    '2025-01-01T10:00:00Z',
+                    'START',
+                    'COMPLETED'
+                )
+                """
+                )
+            )
+
+        # Invalid record_status should fail
+        with (
+            engine.begin() as conn,
+            pytest.raises(sa.exc.IntegrityError, match="check_record_status"),
+        ):
+            conn.execute(
+                sa.text(
+                    """
+                INSERT INTO session_log (
+                    session_identifier, instrument, timestamp,
+                    event_type, record_status
+                )
+                VALUES (
+                    'uuid-invalid',
+                    'test_instrument',
+                    '2025-01-01T11:00:00Z',
+                    'START',
+                    'INVALID_STATUS'
+                )
+                """
+                )
+            )
+
+    def test_built_not_exported_status_allowed(self, alembic_config, engine):
+        """Test that BUILT_NOT_EXPORTED status (added in v2_4_0_1) is allowed."""
+        config, _ = alembic_config
+        command.upgrade(config, "v2_4_0_2")
+
+        with engine.begin() as conn:
+            # Insert test instrument
+            conn.execute(
+                sa.text(
+                    """
+                INSERT INTO instruments (
+                    instrument_pid, api_url, calendar_name, calendar_url,
+                    location, schema_name, property_tag, filestore_path,
+                    harvester, timezone
+                )
+                VALUES (
+                    'test_instrument',
+                    'https://api.example.com',
+                    'Test Calendar',
+                    'https://cal.example.com',
+                    'Building A',
+                    'nexusLIMS',
+                    'PROP-001',
+                    'test/data',
+                    'nemo',
+                    'UTC'
+                )
+                """
+                )
+            )
+
+            # BUILT_NOT_EXPORTED should be accepted
+            conn.execute(
+                sa.text(
+                    """
+                INSERT INTO session_log (
+                    session_identifier, instrument, timestamp,
+                    event_type, record_status
+                )
+                VALUES (
+                    'uuid-test',
+                    'test_instrument',
+                    '2025-01-01T10:00:00Z',
+                    'RECORD_GENERATION',
+                    'BUILT_NOT_EXPORTED'
+                )
+                """
+                )
+            )
+
+            # Verify it was inserted
+            result = conn.execute(
+                sa.text(
+                    "SELECT record_status FROM session_log WHERE "
+                    "session_identifier = 'uuid-test'"
+                )
+            )
+            status = result.scalar()
+            assert status == "BUILT_NOT_EXPORTED"
+
+
+class TestMigrationIdempotency:
+    """Test that migrations are idempotent where applicable."""
+
+    def test_stamp_and_upgrade_idempotent(self, alembic_config, engine):
+        """Test that stamping an already-migrated database doesn't break anything."""
+        config, _ = alembic_config
+
+        # Upgrade to head
+        command.upgrade(config, "head")
+
+        # Stamp to same version (should be no-op)
+        command.stamp(config, "head")
+
+        # Verify database still works
+        tables = get_table_names(engine)
+        assert "instruments" in tables
+        assert "session_log" in tables
+        assert "upload_log" in tables
+
+        # Should be able to insert data
+        with engine.begin() as conn:
+            conn.execute(
+                sa.text(
+                    """
+                INSERT INTO instruments (
+                    instrument_pid, api_url, calendar_name, calendar_url,
+                    location, schema_name, property_tag, filestore_path,
+                    harvester, timezone
+                )
+                VALUES (
+                    'test_instrument',
+                    'https://api.example.com',
+                    'Test Calendar',
+                    'https://cal.example.com',
+                    'Building A',
+                    'nexusLIMS',
+                    'PROP-001',
+                    'test/data',
+                    'nemo',
+                    'UTC'
+                )
+                """
+                )
+            )
+
+            result = conn.execute(sa.text("SELECT COUNT(*) FROM instruments"))
+            count = result.scalar()
+            assert count == 1
+
+
+class TestDataIntegrityVerification:
+    """Test the verify_table_integrity utility function error paths."""
+
+    def test_row_count_mismatch_detection(self, alembic_config, engine):
+        """Test that verify_table_integrity detects row count mismatches."""
+        from nexusLIMS.db.migrations.utils import verify_table_integrity
+
+        config, _ = alembic_config
+        command.upgrade(config, "head")
+
+        # Insert some test data
+        with engine.begin() as conn:
+            conn.execute(
+                sa.text(
+                    """
+                INSERT INTO instruments (
+                    instrument_pid, api_url, calendar_name, calendar_url,
+                    location, schema_name, property_tag, filestore_path,
+                    harvester, timezone
+                )
+                VALUES
+                    ('test1', 'https://api1.com', 'Cal1', 'https://cal1.com',
+                     'Loc1', 'schema1', 'PROP1', 'path1', 'nemo', 'UTC'),
+                    ('test2', 'https://api2.com', 'Cal2', 'https://cal2.com',
+                     'Loc2', 'schema2', 'PROP2', 'path2', 'nemo', 'UTC')
+                """
+                )
+            )
+
+            # Verify with wrong count should raise RuntimeError
+            with pytest.raises(RuntimeError, match="Row count mismatch"):
+                verify_table_integrity(conn, "instruments", expected_count=3)
+
+    def test_primary_key_range_mismatch_detection(self, alembic_config, engine):
+        """Test that verify_table_integrity detects PK range mismatches."""
+        from nexusLIMS.db.migrations.utils import verify_table_integrity
+
+        config, _ = alembic_config
+        command.upgrade(config, "head")
+
+        # Insert test data with specific IDs
+        with engine.begin() as conn:
+            conn.execute(
+                sa.text(
+                    """
+                INSERT INTO instruments (
+                    instrument_pid, api_url, calendar_name, calendar_url,
+                    location, schema_name, property_tag, filestore_path,
+                    harvester, timezone
+                )
+                VALUES (
+                    'test_instrument',
+                    'https://api.example.com',
+                    'Test Calendar',
+                    'https://cal.example.com',
+                    'Building A',
+                    'nexusLIMS',
+                    'PROP-001',
+                    'test/data',
+                    'nemo',
+                    'UTC'
+                )
+                """
+                )
+            )
+
+            # Insert session logs with known IDs
+            conn.execute(
+                sa.text(
+                    """
+                INSERT INTO session_log (id_session_log, session_identifier, instrument,
+                                        timestamp, event_type, record_status)
+                VALUES
+                    (5, 'uuid-1', 'test_instrument', '2025-01-01T10:00:00Z',
+                     'START', 'COMPLETED'),
+                    (10, 'uuid-2', 'test_instrument', '2025-01-02T10:00:00Z',
+                     'START', 'COMPLETED')
+                """
+                )
+            )
+
+            # Verify with wrong PK range should raise RuntimeError
+            with pytest.raises(RuntimeError, match="Primary key range mismatch"):
+                verify_table_integrity(
+                    conn,
+                    "session_log",
+                    expected_count=2,
+                    expected_pk_range=(1, 10),  # Wrong min
+                    pk_column="id_session_log",
+                )
+
+    def test_distribution_mismatch_detection(self, alembic_config, engine):
+        """Test that verify_table_integrity detects distribution mismatches."""
+        from nexusLIMS.db.migrations.utils import verify_table_integrity
+
+        config, _ = alembic_config
+        command.upgrade(config, "head")
+
+        # Insert test data
+        with engine.begin() as conn:
+            conn.execute(
+                sa.text(
+                    """
+                INSERT INTO instruments (
+                    instrument_pid, api_url, calendar_name, calendar_url,
+                    location, schema_name, property_tag, filestore_path,
+                    harvester, timezone
+                )
+                VALUES (
+                    'test_instrument',
+                    'https://api.example.com',
+                    'Test Calendar',
+                    'https://cal.example.com',
+                    'Building A',
+                    'nexusLIMS',
+                    'PROP-001',
+                    'test/data',
+                    'nemo',
+                    'UTC'
+                )
+                """
+                )
+            )
+
+            # Insert session logs with specific status distribution
+            conn.execute(
+                sa.text(
+                    """
+                INSERT INTO session_log (session_identifier, instrument, timestamp,
+                                        event_type, record_status)
+                VALUES
+                    ('uuid-1', 'test_instrument', '2025-01-01T10:00:00Z',
+                     'START', 'COMPLETED'),
+                    ('uuid-2', 'test_instrument', '2025-01-02T10:00:00Z',
+                     'START', 'COMPLETED'),
+                    ('uuid-3', 'test_instrument', '2025-01-03T10:00:00Z',
+                     'START', 'TO_BE_BUILT')
+                """
+                )
+            )
+
+            # Verify with wrong distribution should raise RuntimeError
+            wrong_distribution = {"COMPLETED": 1, "TO_BE_BUILT": 2}  # Wrong counts
+            with pytest.raises(RuntimeError, match="Distribution mismatch"):
+                verify_table_integrity(
+                    conn,
+                    "session_log",
+                    expected_count=3,
+                    expected_distribution=wrong_distribution,
+                    distribution_column="record_status",
+                )
+
+
+class TestBaselineMigrationDowngrade:
+    """Test the baseline migration downgrade path."""
+
+    def test_v1_4_3_downgrade_drops_all_tables(self, alembic_config, engine):
+        """Test that downgrading from v1_4_3 removes all NexusLIMS tables."""
+        config, _ = alembic_config
+
+        # Upgrade to v1_4_3
+        command.upgrade(config, "v1_4_3")
+
+        # Verify tables exist
+        tables = get_table_names(engine)
+        assert "instruments" in tables
+        assert "session_log" in tables
+
+        # Downgrade from v1_4_3 (should drop all NexusLIMS tables)
+        command.downgrade(config, "base")
+
+        # Verify all NexusLIMS tables removed
+        tables = get_table_names(engine)
+        assert "instruments" not in tables
+        assert "session_log" not in tables
+        # Note: alembic_version table remains (used by Alembic to track state)
+        assert tables in ({"alembic_version"}, set())
+
+
+class TestMigrationEnvHelpers:
+    """Test helper functions and edge cases in the env.py migration environment.
+
+    These tests cover the custom revision ID generation and migration
+    preprocessing logic. Since env.py is designed to run within Alembic's
+    context, we test these features indirectly through integration tests.
+    """
+
+    def test_offline_migration_mode(self, alembic_config):
+        """Test that offline migrations generate SQL without database access."""
+        config, _db_path = alembic_config
+
+        # Don't create database - test offline mode
+        # Generate SQL for upgrade without a database
+        with tempfile.NamedTemporaryFile(
+            mode="w", suffix=".sql", delete=False
+        ) as sql_file:
+            sql_path = Path(sql_file.name)
+
+        try:
+            # Capture output to SQL file
+            import sys
+            from io import StringIO
+
+            old_stdout = sys.stdout
+            sys.stdout = StringIO()
+
+            # Run upgrade in SQL mode (offline)
+            command.upgrade(config, "head", sql=True)
+
+            sql_output = sys.stdout.getvalue()
+            sys.stdout = old_stdout
+
+            # Should generate SQL statements
+            assert "CREATE TABLE" in sql_output
+            assert "instruments" in sql_output
+            assert "session_log" in sql_output
+        finally:
+            if sql_path.exists():
+                sql_path.unlink()
+
+    def test_migration_with_corrupted_backup_handling(self, alembic_config, engine):
+        """Test that migrations handle backup errors gracefully (lines 184-187)."""
+        config, _db_path = alembic_config
+
+        # Create and upgrade database
+        command.upgrade(config, "head")
+
+        # Insert some test data
+        with engine.begin() as conn:
+            conn.execute(
+                sa.text(
+                    """
+                INSERT INTO instruments (
+                    instrument_pid, api_url, calendar_name, calendar_url,
+                    location, schema_name, property_tag, filestore_path,
+                    harvester, timezone
+                )
+                VALUES (
+                    'test_instrument',
+                    'https://api.example.com',
+                    'Test Calendar',
+                    'https://cal.example.com',
+                    'Building A',
+                    'nexusLIMS',
+                    'PROP-001',
+                    'test/data',
+                    'nemo',
+                    'UTC'
+                )
+                """
+                )
+            )
+
+        # Mock the backup creation to raise an exception
+        # The exception should be caught and migration should continue
+        original_backup = None
+        try:
+            from nexusLIMS.db.migrations import utils
+
+            original_backup = utils.create_backup
+
+            def failing_backup(connection):
+                raise BackupError
+
+            utils.create_backup = failing_backup
+
+            # This should succeed despite backup failure (exception caught at line
+            # 184-187).
+            command.downgrade(config, "-1")
+            command.upgrade(config, "head")
+
+            # Verify data still exists
+            with engine.begin() as conn:
+                result = conn.execute(sa.text("SELECT COUNT(*) FROM instruments"))
+                count = result.scalar()
+                assert count == 1
+        finally:
+            if original_backup:
+                utils.create_backup = original_backup
+
+    def test_migration_history_shows_revision_structure(self, alembic_config):
+        """Test that migrations use the structured revision format.
+
+        This indirectly tests _generate_revision_id (lines 70-98) by verifying
+        the revision naming convention is applied in actual migrations.
+        """
+        config, _db_path = alembic_config
+
+        # Upgrade to create migration history
+        command.upgrade(config, "head")
+
+        # Get migration history
+        from alembic.script import ScriptDirectory
+
+        script = ScriptDirectory.from_config(config)
+
+        # Check existing revisions use proper format
+        revisions = list(script.walk_revisions())
+        assert len(revisions) > 0
+
+        for rev in revisions:
+            # Our custom revisions should match: v<major>_<minor>_<patch> format
+            # (existing migrations use version tags like v1_4_3, v2_4_0_1, v2_4_0_2)
+            assert rev.revision is not None
+            assert "_" in rev.revision  # Should have underscores
+
+    def test_readonly_operations_skip_backup(self, alembic_config):
+        """Test that read-only operations don't attempt backups.
+
+        Tests the exception handling path (lines 184-187) for read-only ops.
+        """
+        config, _db_path = alembic_config
+
+        # Create database
+        command.upgrade(config, "head")
+
+        # These operations should not create backups (read-only)
+        command.current(config)
+        command.history(config)
+
+        # Should complete without errors

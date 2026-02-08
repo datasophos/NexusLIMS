@@ -9,6 +9,8 @@ import sqlite3
 from datetime import datetime
 from pathlib import Path
 
+from sqlmodel import SQLModel, create_engine
+
 from nexusLIMS.db.enums import EventType, RecordStatus
 
 
@@ -16,7 +18,7 @@ class DatabaseFactory:
     """
     Factory for creating test databases on-demand.
 
-    This factory reads the production SQL schema and creates databases
+    This factory uses SQLModel metadata to create databases
     with only the instruments and sessions that tests actually need,
     dramatically reducing test setup overhead.
 
@@ -24,11 +26,11 @@ class DatabaseFactory:
     ----------
     temp_dir : Path
         Directory where test databases will be created
-    schema_path : Path
-        Path to the production SQL schema script (single source of truth)
+    _db_counter : int
+        Counter for generating unique database names
     """
 
-    def __init__(self, temp_dir: Path, schema_path: Path):
+    def __init__(self, temp_dir: Path):
         """
         Initialize the database factory.
 
@@ -36,11 +38,8 @@ class DatabaseFactory:
         ----------
         temp_dir : Path
             Directory for creating test databases
-        schema_path : Path
-            Path to NexusLIMS_db_creation_script.sql
         """
         self.temp_dir = temp_dir
-        self.schema_path = schema_path
         self._db_counter = 0
 
     def create_db(
@@ -74,7 +73,7 @@ class DatabaseFactory:
 
         Examples
         --------
-        >>> factory = DatabaseFactory(tmp_path, schema_path)
+        >>> factory = DatabaseFactory(tmp_path)
         >>> # Empty database
         >>> db_path = factory.create_db()
         >>> # Database with one instrument
@@ -91,10 +90,19 @@ class DatabaseFactory:
 
         db_path = self.temp_dir / name
 
-        # Create database with production schema
+        # Create database with SQLModel metadata (single source of truth)
+        # Import all models to register them with SQLModel metadata
+        from nexusLIMS.db.models import (  # noqa: F401
+            Instrument,
+            SessionLog,
+            UploadLog,
+        )
+
+        engine = create_engine(f"sqlite:///{db_path}")
+        SQLModel.metadata.create_all(engine)
+        engine.dispose()
+
         conn = sqlite3.connect(db_path)
-        with self.schema_path.open() as f:
-            conn.executescript(f.read())
 
         # Insert requested instruments
         if instruments:

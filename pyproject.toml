@@ -88,6 +88,7 @@ Documentation = "https://datasophos.github.io/NexusLIMS/stable"
 [project.scripts]
 nexuslims-process-records = "nexusLIMS.cli.process_records:main"
 nexuslims-config = "nexusLIMS.cli.config:main"
+nexuslims-migrate = "nexusLIMS.cli.migrate:main"
 
 [build-system]
 requires = ["hatchling"]
@@ -101,7 +102,6 @@ packages = ["nexusLIMS"]
 exclude = [
     "nexusLIMS/dev_scripts",
     "tests/dev",
-    "nexusLIMS/db/dev/migrate_db.py",
     "tests/integration/docker/elabftw/init_elabftw.py"
 ]
 
@@ -225,7 +225,7 @@ reportMissingTypeStubs = false
 
 [tool.alembic]
 # Path to migration scripts (relative to pyproject.toml)
-script_location = "migrations"
+script_location = "nexusLIMS/db/migrations"
 
 # Prepend current directory to sys.path for imports
 prepend_sys_path = ["."]
