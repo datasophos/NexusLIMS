@@ -9,8 +9,8 @@ This migration:
 For SQLite, this requires recreating the table since ALTER TABLE doesn't support
 adding CHECK constraints.
 
-Revision ID: v2_4_0_2
-Revises: v2_4_0_1
+Revision ID: v2_4_0b
+Revises: v2_4_0a
 Create Date: 2026-01-25 10:28:38.768026
 
 """
@@ -23,8 +23,8 @@ from alembic import op
 from nexusLIMS.db.migrations.utils import verify_table_integrity
 
 # revision identifiers, used by Alembic.
-revision: str = "v2_4_0_2"
-down_revision: Union[str, Sequence[str], None] = "v2_4_0_1"
+revision: str = "v2_4_0b"
+down_revision: Union[str, Sequence[str], None] = "v2_4_0a"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 

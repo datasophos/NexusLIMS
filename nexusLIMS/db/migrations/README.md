@@ -15,8 +15,8 @@ nexusLIMS/db/migrations/
 ├── script.py.mako                               # Template for new migration scripts
 └── versions/                                    # Migration scripts (version-based IDs)
     ├── v1_4_3_initial_schema_baseline.py        # v1.4.3: instruments + session_log
-    ├── v2_4_0_1_add_upload_log_table.py         # v2.4.0: upload_log table
-    └── v2_4_0_2_add_check_constraints.py        # v2.4.0: CHECK constraints
+    ├── v2_4_0a_add_upload_log_table.py         # v2.4.0: upload_log table
+    └── v2_4_0b_add_check_constraints.py        # v2.4.0: CHECK constraints
 ```
 
 ## Quick Start
@@ -61,7 +61,7 @@ nexuslims-migrate check
 The last command should output something like the following:
 
 ```text
-✓ Database is up-to-date (revision: v2_4_0_2)
+✓ Database is up-to-date (revision: v2_4_0b)
 ```
 
 ## Common Commands
@@ -86,7 +86,7 @@ nexuslims-migrate history
 nexuslims-migrate upgrade
 
 # Upgrade to specific version
-nexuslims-migrate upgrade v2_4_0_1
+nexuslims-migrate upgrade v2_4_0a
 
 # Downgrade one migration
 nexuslims-migrate downgrade
@@ -166,8 +166,8 @@ Empty databases skip verification messages.
 Migration IDs use semantic versioning instead of random hex:
 
 - **v1_4_3**: Baseline schema from NexusLIMS v1.4.3
-- **v2_4_0_1**: First migration in v2.4.0 (upload_log)
-- **v2_4_0_2**: Second migration in v2.4.0 (CHECK constraints)
+- **v2_4_0a**: First migration in v2.4.0 (upload_log)
+- **v2_4_0b**: Second migration in v2.4.0 (CHECK constraints)
 
 This makes it immediately clear which NexusLIMS version introduced each database change.
 

@@ -430,7 +430,7 @@ version upgrade.
 ```
 
 **Database version naming:** Database migration revision IDs track NexusLIMS
-version numbers. For example, revision `v2_4_0_2` corresponds to the database
+version numbers. For example, revision `v2_4_0b` corresponds to the database
 schema required for NexusLIMS v2.4.0. This makes it easy to identify which
 database version matches your installed NexusLIMS version.
 
@@ -507,7 +507,7 @@ nexuslims-migrate upgrade [REVISION] [OPTIONS]
 - `REVISION` - Target migration version (default: `head` for latest)
   - `head` - Upgrade to latest version
   - `+1` - Upgrade one version
-  - `abc` - Upgrade to specific revision ID (e.g., `v2_4_0_1`)
+  - `abc` - Upgrade to specific revision ID (e.g., `v2_4_0a`)
 
 **Options:**
 - `--sql` - Generate SQL script instead of applying changes
@@ -521,7 +521,7 @@ nexuslims-migrate upgrade
 nexuslims-migrate upgrade +1
 
 # Upgrade to specific revision
-nexuslims-migrate upgrade v2_4_0_1
+nexuslims-migrate upgrade v2_4_0a
 
 # Generate SQL without applying
 nexuslims-migrate upgrade --sql
@@ -575,16 +575,16 @@ nexuslims-migrate current [OPTIONS]
 nexuslims-migrate current
 
 # output: 
-#   v2_4_0_2 (head)
+#   v2_4_0b (head)
 
 # Show detailed information
 nexuslims-migrate current -v
 
 # output:
 #  Current revision(s) for sqlite:///test_db.sqlite:
-#  Rev: v2_4_0_2 (head)
-#  Parent: v2_4_0_1
-#  Path: nexusLIMS/db/migrations/versions/v2_4_0_2_add_check_constraints.py
+#  Rev: v2_4_0b (head)
+#  Parent: v2_4_0a
+#  Path: nexusLIMS/db/migrations/versions/v2_4_0b_add_check_constraints.py
 ```
 
 #### `check`
@@ -611,7 +611,7 @@ nexuslims-migrate check
 # output:
 #   ⚠ Database has pending migrations
 #   Current revision: v1_4_3
-#   Latest revision:  v2_4_0_2
+#   Latest revision:  v2_4_0b
 ```
 
 #### `history`
@@ -633,8 +633,8 @@ nexuslims-migrate history [OPTIONS]
 nexuslims-migrate history
 
 # output:
-#   v2_4_0_1 -> v2_4_0_2 (head), Add check constraints to session_log.
-#   v1_4_3 -> v2_4_0_1, Add upload_log table and BUILT_NOT_EXPORTED status.
+#   v2_4_0a -> v2_4_0b (head), Add check constraints to session_log.
+#   v1_4_3 -> v2_4_0a, Add upload_log table and BUILT_NOT_EXPORTED status.
 #   <base> -> v1_4_3, Initial schema baseline.
 
 # Show verbose history with current revision marked
