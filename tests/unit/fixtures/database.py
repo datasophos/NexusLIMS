@@ -93,6 +93,7 @@ class DatabaseFactory:
         # Create database with SQLModel metadata (single source of truth)
         # Import all models to register them with SQLModel metadata
         from nexusLIMS.db.models import (  # noqa: F401
+            ExternalUserIdentifier,
             Instrument,
             SessionLog,
             UploadLog,

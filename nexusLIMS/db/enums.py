@@ -51,3 +51,26 @@ class RecordStatus(str, Enum):
     NO_FILES_FOUND = "NO_FILES_FOUND"
     NO_CONSENT = "NO_CONSENT"
     NO_RESERVATION = "NO_RESERVATION"
+
+
+class ExternalSystem(str, Enum):
+    """External systems that NexusLIMS integrates with.
+
+    Maps to the CHECK constraint in external_user_identifiers.external_system column.
+
+    Attributes
+    ----------
+    NEMO
+        NEMO lab management system (usage tracking and reservations)
+    LABARCHIVES_ELN
+        LabArchives Electronic Lab Notebook (record export destination)
+    LABARCHIVES_SCHEDULER
+        LabArchives Scheduler (reservation system integration)
+    CDCS
+        Configurable Data Curation System (NexusLIMS frontend)
+    """
+
+    NEMO = "nemo"
+    LABARCHIVES_ELN = "labarchives_eln"
+    LABARCHIVES_SCHEDULER = "labarchives_scheduler"
+    CDCS = "cdcs"

@@ -10,13 +10,13 @@ import logging
 
 import pytz
 from pytz.tzinfo import BaseTzInfo
-from sqlalchemy import CheckConstraint, types
+from sqlalchemy import CheckConstraint, UniqueConstraint, types
 from sqlalchemy.types import TypeDecorator
 from sqlmodel import Column, Field, Relationship, SQLModel, select
 from sqlmodel import Session as DBSession
 
 from nexusLIMS.db.engine import get_engine
-from nexusLIMS.db.enums import EventType, RecordStatus
+from nexusLIMS.db.enums import EventType, ExternalSystem, RecordStatus
 
 _logger = logging.getLogger(__name__)
 
@@ -417,3 +417,285 @@ class UploadLog(SQLModel, table=True):
             f"status={status}, "
             f"timestamp={self.timestamp})"
         )
+
+
+class ExternalUserIdentifier(SQLModel, table=True):
+    """
+    Maps NexusLIMS usernames to external system user IDs.
+
+    Maintains a star topology with nexuslims_username (from session_log.user)
+    as the canonical identifier, mapping to external system IDs.
+
+    Parameters
+    ----------
+    id
+        Auto-incrementing primary key
+    nexuslims_username
+        Canonical username in NexusLIMS (from session_log.user)
+    external_system
+        External system identifier (nemo, labarchives_eln, etc.)
+    external_id
+        User ID/username in the external system
+    email
+        User's email for verification/matching (optional)
+    created_at
+        When this mapping was created
+    last_verified_at
+        Last time this mapping was verified (optional)
+    notes
+        Additional notes about this mapping (optional)
+
+    Examples
+    --------
+    >>> # NEMO harvester user ID
+    >>> ExternalUserIdentifier(
+    ...     nexuslims_username='jsmith',
+    ...     external_system=ExternalSystem.NEMO,
+    ...     external_id='12345'
+    ... )
+
+    >>> # LabArchives UID from OAuth
+    >>> ExternalUserIdentifier(
+    ...     nexuslims_username='jsmith',
+    ...     external_system=ExternalSystem.LABARCHIVES_ELN,
+    ...     external_id='285489257Ho...',
+    ...     email='jsmith@upenn.edu'
+    ... )
+    """
+
+    __tablename__ = "external_user_identifiers"
+    __table_args__ = (
+        # NOTE: This CHECK constraint is dynamically generated from ExternalSystem enum
+        # to keep the model in sync with the enum. However, migrations should hardcode
+        # the values to preserve historical accuracy. When adding a new system, create
+        # a new migration to update the CHECK constraint.
+        CheckConstraint(
+            f"external_system IN ({', '.join(repr(s.value) for s in ExternalSystem)})",
+            name="valid_external_system",
+        ),
+        # UNIQUE constraints to enforce star-topology design
+        UniqueConstraint(
+            "nexuslims_username",
+            "external_system",
+            name="nexuslims_username_system_UNIQUE",
+        ),
+        UniqueConstraint(
+            "external_system", "external_id", name="system_external_id_UNIQUE"
+        ),
+    )
+
+    # Primary key
+    id: int | None = Field(default=None, primary_key=True)
+
+    # Required fields
+    nexuslims_username: str = Field(index=True)
+    external_system: str = Field()
+    external_id: str = Field()
+
+    # Optional fields
+    email: str | None = Field(default=None)
+    created_at: datetime.datetime = Field(
+        default_factory=lambda: datetime.datetime.now(pytz.UTC),
+        sa_column=Column(TZDateTime),
+    )
+    last_verified_at: datetime.datetime | None = Field(
+        default=None, sa_column=Column(TZDateTime, nullable=True)
+    )
+    notes: str | None = Field(default=None)
+
+    def __repr__(self):
+        """Return custom representation of an ExternalUserIdentifier."""
+        return (
+            f"ExternalUserIdentifier (username={self.nexuslims_username}, "
+            f"system={self.external_system}, "
+            f"external_id={self.external_id})"
+        )
+
+
+def get_external_id(
+    nexuslims_username: str, external_system: ExternalSystem
+) -> str | None:
+    """
+    Get external system ID for a NexusLIMS user.
+
+    Parameters
+    ----------
+    nexuslims_username
+        Username from session_log.user
+    external_system
+        Target external system
+
+    Returns
+    -------
+    str | None
+        External ID if found, None otherwise
+
+    Examples
+    --------
+    >>> from nexusLIMS.db.models import get_external_id
+    >>> from nexusLIMS.db.enums import ExternalSystem
+    >>> uid = get_external_id('jsmith', ExternalSystem.LABARCHIVES_ELN)
+    >>> print(uid)
+    '285489257Ho...'
+    """
+    with DBSession(get_engine()) as session:
+        result = session.exec(
+            select(ExternalUserIdentifier).where(
+                ExternalUserIdentifier.nexuslims_username == nexuslims_username,
+                ExternalUserIdentifier.external_system == external_system.value,
+            )
+        ).first()
+        return result.external_id if result else None
+
+
+def get_nexuslims_username(
+    external_id: str, external_system: ExternalSystem
+) -> str | None:
+    """
+    Reverse lookup: find NexusLIMS username from external ID.
+
+    Useful for harvesters that receive external IDs (e.g., NEMO user IDs)
+    and need to map them to NexusLIMS usernames for session_log entries.
+
+    Parameters
+    ----------
+    external_id
+        ID in external system
+    external_system
+        Source external system
+
+    Returns
+    -------
+    str | None
+        NexusLIMS username if found, None otherwise
+
+    Examples
+    --------
+    >>> from nexusLIMS.db.models import get_nexuslims_username
+    >>> from nexusLIMS.db.enums import ExternalSystem
+    >>> username = get_nexuslims_username('12345', ExternalSystem.NEMO)
+    >>> print(username)
+    'jsmith'
+    """
+    with DBSession(get_engine()) as session:
+        result = session.exec(
+            select(ExternalUserIdentifier).where(
+                ExternalUserIdentifier.external_id == external_id,
+                ExternalUserIdentifier.external_system == external_system.value,
+            )
+        ).first()
+        return result.nexuslims_username if result else None
+
+
+def store_external_id(
+    nexuslims_username: str,
+    external_system: ExternalSystem,
+    external_id: str,
+    email: str | None = None,
+    notes: str | None = None,
+) -> ExternalUserIdentifier:
+    """
+    Store or update external ID mapping.
+
+    If mapping exists for this user/system combination, updates it and
+    refreshes last_verified_at. Otherwise, creates new mapping.
+
+    Parameters
+    ----------
+    nexuslims_username
+        Username from session_log.user
+    external_system
+        Target external system
+    external_id
+        ID in external system
+    email
+        Optional email for verification
+    notes
+        Optional notes about this mapping
+
+    Returns
+    -------
+    ExternalUserIdentifier
+        Created or updated ExternalUserIdentifier record
+
+    Examples
+    --------
+    >>> from nexusLIMS.db.models import store_external_id
+    >>> from nexusLIMS.db.enums import ExternalSystem
+    >>> record = store_external_id(
+    ...     nexuslims_username='jsmith',
+    ...     external_system=ExternalSystem.LABARCHIVES_ELN,
+    ...     external_id='285489257Ho...',
+    ...     email='jsmith@upenn.edu',
+    ...     notes='OAuth registration portal 2026-01-25'
+    ... )
+    """
+    with DBSession(get_engine()) as session:
+        # Check if mapping exists
+        existing = session.exec(
+            select(ExternalUserIdentifier).where(
+                ExternalUserIdentifier.nexuslims_username == nexuslims_username,
+                ExternalUserIdentifier.external_system == external_system.value,
+            )
+        ).first()
+
+        if existing:
+            # Update existing
+            existing.external_id = external_id
+            if email:
+                existing.email = email
+            if notes:
+                existing.notes = notes
+            existing.last_verified_at = datetime.datetime.now(pytz.UTC)
+            session.add(existing)
+        else:
+            # Create new
+            existing = ExternalUserIdentifier(
+                nexuslims_username=nexuslims_username,
+                external_system=external_system.value,
+                external_id=external_id,
+                email=email,
+                notes=notes,
+            )
+            session.add(existing)
+
+        session.commit()
+        session.refresh(existing)
+        return existing
+
+
+def get_all_external_ids(nexuslims_username: str) -> dict[str, str]:
+    """
+    Get all external IDs for a user.
+
+    Returns dict mapping external system name to external ID.
+    Useful for debugging or user profile displays.
+
+    Parameters
+    ----------
+    nexuslims_username
+        Username from session_log.user
+
+    Returns
+    -------
+    dict[str, str]
+        Dict mapping external system name to external ID
+
+    Examples
+    --------
+    >>> from nexusLIMS.db.models import get_all_external_ids
+    >>> ids = get_all_external_ids('jsmith')
+    >>> print(ids)
+    {
+        'nemo': '12345',
+        'labarchives_eln': '285489257Ho...',
+        'cdcs': 'jsmith@upenn.edu'
+    }
+    """
+    with DBSession(get_engine()) as session:
+        results = session.exec(
+            select(ExternalUserIdentifier).where(
+                ExternalUserIdentifier.nexuslims_username == nexuslims_username
+            )
+        ).all()
+        return {r.external_system: r.external_id for r in results}

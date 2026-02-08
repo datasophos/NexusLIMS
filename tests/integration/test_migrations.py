@@ -1076,6 +1076,32 @@ class TestMigrationEnvHelpers:
             if sql_path.exists():
                 sql_path.unlink()
 
+    def test_offline_downgrade_mode(self, alembic_config):
+        """Test that offline downgrade generates SQL without database access."""
+        config, _db_path = alembic_config
+
+        # Don't create database - test offline mode
+        # Generate SQL for downgrade without a database
+        try:
+            # Capture output
+            import sys
+            from io import StringIO
+
+            old_stdout = sys.stdout
+            sys.stdout = StringIO()
+
+            # Run downgrade in SQL mode (offline) - requires range format
+            # This covers lines 200-204 in v2_4_0b downgrade function
+            command.downgrade(config, "head:v1_4_3", sql=True)
+
+            sql_output = sys.stdout.getvalue()
+            sys.stdout = old_stdout
+
+            # Should generate SQL statements for downgrade
+            assert "DROP TABLE" in sql_output or "CREATE TABLE" in sql_output
+        finally:
+            pass  # No cleanup needed for offline mode
+
     def test_migration_with_corrupted_backup_handling(self, alembic_config, engine):
         """Test that migrations handle backup errors gracefully (lines 184-187)."""
         config, _db_path = alembic_config
@@ -1177,3 +1203,72 @@ class TestMigrationEnvHelpers:
         command.history(config)
 
         # Should complete without errors
+
+
+class TestMigrationV250a:
+    """Test v2_5_0a migration (external_user_identifiers table)."""
+
+    def test_upgrade_creates_external_user_identifiers_table(
+        self, alembic_config, engine
+    ):
+        """Test that upgrading to v2_5_0a creates external_user_identifiers."""
+        config, _ = alembic_config
+
+        # Upgrade to v2_5_0a
+        command.upgrade(config, "v2_5_0a")
+
+        # Verify table exists
+        tables = get_table_names(engine)
+        assert "external_user_identifiers" in tables
+
+        # Verify columns
+        columns = get_column_names(engine, "external_user_identifiers")
+        expected_columns = {
+            "id",
+            "nexuslims_username",
+            "external_system",
+            "external_id",
+            "email",
+            "created_at",
+            "last_verified_at",
+            "notes",
+        }
+        assert columns == expected_columns
+
+        # Verify CHECK constraint
+        constraints = get_check_constraints(engine, "external_user_identifiers")
+        assert "valid_external_system" in constraints
+
+    def test_downgrade_removes_external_user_identifiers_table(
+        self, alembic_config, engine
+    ):
+        """Test that downgrading from v2_5_0a removes the table."""
+        config, _ = alembic_config
+
+        # Upgrade to v2_5_0a
+        command.upgrade(config, "v2_5_0a")
+        tables = get_table_names(engine)
+        assert "external_user_identifiers" in tables
+
+        # Downgrade to v2_4_0b
+        command.downgrade(config, "v2_4_0b")
+
+        # Verify table removed
+        tables = get_table_names(engine)
+        assert "external_user_identifiers" not in tables
+
+    def test_full_upgrade_includes_external_user_identifiers(
+        self, alembic_config, engine
+    ):
+        """Test that upgrading to head includes external_user_identifiers."""
+        config, _ = alembic_config
+
+        # Upgrade to head
+        command.upgrade(config, "head")
+
+        # Verify external_user_identifiers exists alongside other tables
+        tables = get_table_names(engine)
+        assert "instruments" in tables
+        assert "session_log" in tables
+        assert "upload_log" in tables
+        assert "external_user_identifiers" in tables
