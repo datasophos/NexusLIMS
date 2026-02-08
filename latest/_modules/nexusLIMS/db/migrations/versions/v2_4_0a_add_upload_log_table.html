@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>nexusLIMS.db.migrations.versions.v2_4_0_1_add_upload_log_table &#8212; NexusLIMS dev documentation</title>
+    <title>nexusLIMS.db.migrations.versions.v2_4_0a_add_upload_log_table &#8212; NexusLIMS dev documentation</title>
   
   
   
@@ -412,7 +412,7 @@ const load = async () => {
 
 window.addEventListener("load", load);
 </script>
-    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/nexusLIMS/db/migrations/versions/v2_4_0_1_add_upload_log_table';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/nexusLIMS/db/migrations/versions/v2_4_0a_add_upload_log_table';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
@@ -421,7 +421,7 @@ window.addEventListener("load", load);
             true;
         </script>
     <script src="../../../../../_static/custom.js?v=ba087cdf"></script>
-    <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/latest/_modules/nexusLIMS/db/migrations/versions/v2_4_0_1_add_upload_log_table.html" />
+    <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/latest/_modules/nexusLIMS/db/migrations/versions/v2_4_0a_add_upload_log_table.html" />
     <link rel="icon" href="../../../../../_static/nexusLIMS_bare_logo.ico"/>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" />
@@ -802,7 +802,7 @@ window.addEventListener("load", load);
     
     <li class="breadcrumb-item"><a href="../../../../index.html" class="nav-link">Module code</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">nexusLIMS.db.migrations.versions.v2_4_0_1_add_upload_log_table</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">nexusLIMS.db.migrations.versions.v2_4_0a_add_upload_log_table</span></li>
   </ul>
 </nav>
 </div>
@@ -819,10 +819,10 @@ window.addEventListener("load", load);
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <h1>Source code for nexusLIMS.db.migrations.versions.v2_4_0_1_add_upload_log_table</h1><div class="highlight"><pre>
+  <h1>Source code for nexusLIMS.db.migrations.versions.v2_4_0a_add_upload_log_table</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Add upload_log table and BUILT_NOT_EXPORTED status.</span>
 
-<span class="sd">Revision ID: v2_4_0_1</span>
+<span class="sd">Revision ID: v2_4_0a</span>
 <span class="sd">Revises: v1_4_3</span>
 <span class="sd">Create Date: 2026-01-23 12:12:15.867734</span>
 
@@ -834,14 +834,14 @@ window.addEventListener("load", load);
 <span class="kn">from</span><span class="w"> </span><span class="nn">alembic</span><span class="w"> </span><span class="kn">import</span> <span class="n">op</span>
 
 <span class="c1"># revision identifiers, used by Alembic.</span>
-<span class="n">revision</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;v2_4_0_1&quot;</span>
+<span class="n">revision</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;v2_4_0a&quot;</span>
 <span class="n">down_revision</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;v1_4_3&quot;</span>
 <span class="n">branch_labels</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="n">depends_on</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
 
 <div class="viewcode-block" id="upgrade">
-<a class="viewcode-back" href="../../../../../api/nexusLIMS/nexusLIMS.db.migrations.versions.v2_4_0_1_add_upload_log_table.html#nexusLIMS.db.migrations.versions.v2_4_0_1_add_upload_log_table.upgrade">[docs]</a>
+<a class="viewcode-back" href="../../../../../api/nexusLIMS/nexusLIMS.db.migrations.versions.v2_4_0a_add_upload_log_table.html#nexusLIMS.db.migrations.versions.v2_4_0a_add_upload_log_table.upgrade">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">upgrade</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Upgrade schema.&quot;&quot;&quot;</span>
     <span class="c1"># Create upload_log table</span>
@@ -880,7 +880,7 @@ window.addEventListener("load", load);
 
 
 <div class="viewcode-block" id="downgrade">
-<a class="viewcode-back" href="../../../../../api/nexusLIMS/nexusLIMS.db.migrations.versions.v2_4_0_1_add_upload_log_table.html#nexusLIMS.db.migrations.versions.v2_4_0_1_add_upload_log_table.downgrade">[docs]</a>
+<a class="viewcode-back" href="../../../../../api/nexusLIMS/nexusLIMS.db.migrations.versions.v2_4_0a_add_upload_log_table.html#nexusLIMS.db.migrations.versions.v2_4_0a_add_upload_log_table.downgrade">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">downgrade</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Downgrade schema.&quot;&quot;&quot;</span>
     <span class="c1"># Drop indexes</span>

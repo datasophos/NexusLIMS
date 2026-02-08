@@ -497,8 +497,8 @@ existing installations and ensuring schema consistency across deployments.</p>
 ├── script.py.mako                               # Template for new migration scripts
 └── versions/                                    # Migration scripts (version-based IDs)
     ├── v1_4_3_initial_schema_baseline.py        # v1.4.3: instruments + session_log
-    ├── v2_4_0_1_add_upload_log_table.py         # v2.4.0: upload_log table
-    └── v2_4_0_2_add_check_constraints.py        # v2.4.0: CHECK constraints
+    ├── v2_4_0a_add_upload_log_table.py         # v2.4.0: upload_log table
+    └── v2_4_0b_add_check_constraints.py        # v2.4.0: CHECK constraints
 </pre></div>
 </div>
 </section>
@@ -536,7 +536,7 @@ nexuslims-migrate<span class="w"> </span>check
 </pre></div>
 </div>
 <p>The last command should output something like the following:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>✓ Database is up-to-date (revision: v2_4_0_2)
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>✓ Database is up-to-date (revision: v2_4_0b)
 </pre></div>
 </div>
 </section>
@@ -563,7 +563,7 @@ nexuslims-migrate<span class="w"> </span><span class="nb">history</span>
 nexuslims-migrate<span class="w"> </span>upgrade
 
 <span class="c1"># Upgrade to specific version</span>
-nexuslims-migrate<span class="w"> </span>upgrade<span class="w"> </span>v2_4_0_1
+nexuslims-migrate<span class="w"> </span>upgrade<span class="w"> </span>v2_4_0a
 
 <span class="c1"># Downgrade one migration</span>
 nexuslims-migrate<span class="w"> </span>downgrade
@@ -647,8 +647,8 @@ nexuslims-migrate<span class="w"> </span>upgrade<span class="w">      </span><sp
 <p>Migration IDs use semantic versioning instead of random hex:</p>
 <ul class="simple">
 <li><p><strong>v1_4_3</strong>: Baseline schema from NexusLIMS v1.4.3</p></li>
-<li><p><strong>v2_4_0_1</strong>: First migration in v2.4.0 (upload_log)</p></li>
-<li><p><strong>v2_4_0_2</strong>: Second migration in v2.4.0 (CHECK constraints)</p></li>
+<li><p><strong>v2_4_0a</strong>: First migration in v2.4.0 (upload_log)</p></li>
+<li><p><strong>v2_4_0b</strong>: Second migration in v2.4.0 (CHECK constraints)</p></li>
 </ul>
 <p>This makes it immediately clear which NexusLIMS version introduced each database change.</p>
 </section>

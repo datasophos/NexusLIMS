@@ -883,7 +883,7 @@ If so, you will need to run <code class="docutils literal notranslate"><span cla
 version upgrade.</p>
 </div>
 <p><strong>Database version naming:</strong> Database migration revision IDs track NexusLIMS
-version numbers. For example, revision <code class="docutils literal notranslate"><span class="pre">v2_4_0_2</span></code> corresponds to the database
+version numbers. For example, revision <code class="docutils literal notranslate"><span class="pre">v2_4_0b</span></code> corresponds to the database
 schema required for NexusLIMS v2.4.0. This makes it easy to identify which
 database version matches your installed NexusLIMS version.</p>
 <section id="id2">
@@ -957,7 +957,7 @@ nexuslims-migrate<span class="w"> </span>init<span class="w"> </span>--force
 <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">head</span></code> - Upgrade to latest version</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">+1</span></code> - Upgrade one version</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">abc</span></code> - Upgrade to specific revision ID (e.g., <code class="docutils literal notranslate"><span class="pre">v2_4_0_1</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">abc</span></code> - Upgrade to specific revision ID (e.g., <code class="docutils literal notranslate"><span class="pre">v2_4_0a</span></code>)</p></li>
 </ul>
 </li>
 </ul>
@@ -973,7 +973,7 @@ nexuslims-migrate<span class="w"> </span>upgrade
 nexuslims-migrate<span class="w"> </span>upgrade<span class="w"> </span>+1
 
 <span class="c1"># Upgrade to specific revision</span>
-nexuslims-migrate<span class="w"> </span>upgrade<span class="w"> </span>v2_4_0_1
+nexuslims-migrate<span class="w"> </span>upgrade<span class="w"> </span>v2_4_0a
 
 <span class="c1"># Generate SQL without applying</span>
 nexuslims-migrate<span class="w"> </span>upgrade<span class="w"> </span>--sql
@@ -1029,16 +1029,16 @@ nexuslims-migrate<span class="w"> </span>downgrade<span class="w"> </span>--sql
 nexuslims-migrate<span class="w"> </span>current
 
 <span class="c1"># output: </span>
-<span class="c1">#   v2_4_0_2 (head)</span>
+<span class="c1">#   v2_4_0b (head)</span>
 
 <span class="c1"># Show detailed information</span>
 nexuslims-migrate<span class="w"> </span>current<span class="w"> </span>-v
 
 <span class="c1"># output:</span>
 <span class="c1">#  Current revision(s) for sqlite:///test_db.sqlite:</span>
-<span class="c1">#  Rev: v2_4_0_2 (head)</span>
-<span class="c1">#  Parent: v2_4_0_1</span>
-<span class="c1">#  Path: nexusLIMS/db/migrations/versions/v2_4_0_2_add_check_constraints.py</span>
+<span class="c1">#  Rev: v2_4_0b (head)</span>
+<span class="c1">#  Parent: v2_4_0a</span>
+<span class="c1">#  Path: nexusLIMS/db/migrations/versions/v2_4_0b_add_check_constraints.py</span>
 </pre></div>
 </div>
 </section>
@@ -1063,7 +1063,7 @@ nexuslims-migrate<span class="w"> </span>check
 <span class="c1"># output:</span>
 <span class="c1">#   ⚠ Database has pending migrations</span>
 <span class="c1">#   Current revision: v1_4_3</span>
-<span class="c1">#   Latest revision:  v2_4_0_2</span>
+<span class="c1">#   Latest revision:  v2_4_0b</span>
 </pre></div>
 </div>
 </section>
@@ -1084,8 +1084,8 @@ nexuslims-migrate<span class="w"> </span>check
 nexuslims-migrate<span class="w"> </span><span class="nb">history</span>
 
 <span class="c1"># output:</span>
-<span class="c1">#   v2_4_0_1 -&gt; v2_4_0_2 (head), Add check constraints to session_log.</span>
-<span class="c1">#   v1_4_3 -&gt; v2_4_0_1, Add upload_log table and BUILT_NOT_EXPORTED status.</span>
+<span class="c1">#   v2_4_0a -&gt; v2_4_0b (head), Add check constraints to session_log.</span>
+<span class="c1">#   v1_4_3 -&gt; v2_4_0a, Add upload_log table and BUILT_NOT_EXPORTED status.</span>
 <span class="c1">#   &lt;base&gt; -&gt; v1_4_3, Initial schema baseline.</span>
 
 <span class="c1"># Show verbose history with current revision marked</span>

@@ -561,11 +561,11 @@
 <section id="for-existing-installations">
 <h3>For Existing Installations<a class="headerlink" href="#for-existing-installations" title="Link to this heading">#</a></h3>
 <p>If you have an existing NexusLIMS database (created before version 2.2.0), you need to mark it as migrated to the baseline schema:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Mark existing database as migrated to current schema</span>
-nexuslims-migrate<span class="w"> </span>alembic<span class="w"> </span>stamp<span class="w"> </span>head
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Mark existing database as consistent with the baseline pre-2.0 schema</span>
+nexuslims-migrate<span class="w"> </span>alembic<span class="w"> </span>stamp<span class="w"> </span>v1_4_3
 </pre></div>
 </div>
-<p>This tells Alembic that your database already has the current schema structure and doesn’t need the baseline migration applied.</p>
+<p>This tells Alembic that your database already has the baseline schema structure and doesn’t need to be created from scratch.</p>
 <div class="versionadded">
 <p><span class="versionmodified added">Added in version 2.5.0: </span>The <code class="docutils literal notranslate"><span class="pre">nexuslims-migrate</span></code> command provides simple, user-friendly commands for
 common database operations. It automatically locates the migrations directory
@@ -590,7 +590,7 @@ nexuslims-migrate<span class="w"> </span><span class="nb">history</span>
 nexuslims-migrate<span class="w"> </span>upgrade
 
 <span class="c1"># Upgrade to specific revision</span>
-nexuslims-migrate<span class="w"> </span>upgrade<span class="w"> </span>abc123
+nexuslims-migrate<span class="w"> </span>upgrade<span class="w"> </span>v2_5_0a
 
 <span class="c1"># Downgrade one migration</span>
 nexuslims-migrate<span class="w"> </span>downgrade
@@ -603,21 +603,38 @@ nexuslims-migrate<span class="w"> </span>alembic<span class="w"> </span>revision
 </section>
 <section id="creating-new-migrations">
 <h3>Creating New Migrations<a class="headerlink" href="#creating-new-migrations" title="Link to this heading">#</a></h3>
-<p>When you modify the database schema (by changing <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.db.models.html#nexusLIMS.db.models.SessionLog" title="nexusLIMS.db.models.SessionLog"><code class="xref py py-class docutils literal notranslate"><span class="pre">SessionLog</span></code></a> or <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.db.models.html#nexusLIMS.db.models.Instrument" title="nexusLIMS.db.models.Instrument"><code class="xref py py-class docutils literal notranslate"><span class="pre">Instrument</span></code></a>), you should create a migration:</p>
+<p>When you modify the database schema (by changing <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.db.models.html#nexusLIMS.db.models.SessionLog" title="nexusLIMS.db.models.SessionLog"><code class="xref py py-class docutils literal notranslate"><span class="pre">SessionLog</span></code></a> or <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.db.models.html#nexusLIMS.db.models.Instrument" title="nexusLIMS.db.models.Instrument"><code class="xref py py-class docutils literal notranslate"><span class="pre">Instrument</span></code></a>, etc.), you should create a migration:</p>
 <ol class="arabic">
-<li><p><strong>Modify the SQLModel classes</strong> in <code class="docutils literal notranslate"><span class="pre">nexusLIMS/db/models.py</span></code></p></li>
-<li><p><strong>Generate migration script</strong> (requires source checkout):</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims-migrate<span class="w"> </span>alembic<span class="w"> </span>revision<span class="w"> </span>--autogenerate<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Add new field to SessionLog&quot;</span>
-</pre></div>
-</div>
-<p>The migration will be created with a user-friendly sequential ID:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">nexusLIMS</span><span class="o">/</span><span class="n">migrations</span><span class="o">/</span><span class="n">versions</span><span class="o">/</span><span class="mi">004</span><span class="n">_add_new_field_to_sessionlog</span><span class="o">.</span><span class="n">py</span>
-</pre></div>
-</div>
-<p>Instead of random hex like <code class="docutils literal notranslate"><span class="pre">a1b2c3d4e5f6_add_new_field_to_sessionlog.py</span></code></p>
+<li><p><strong>Modify the SQLModel classes</strong> in <code class="docutils literal notranslate"><span class="pre">nexusLIMS/db/models.py</span></code> or add new enums in <code class="docutils literal notranslate"><span class="pre">nexusLIMS/db/enums.py</span></code></p></li>
+<li><p><strong>Determine the revision ID</strong> following the naming convention:</p>
+<ul class="simple">
+<li><p><strong>Format</strong>: <code class="docutils literal notranslate"><span class="pre">v[MAJOR]_[MINOR]_[PATCH][letter]_d[escription]</span></code> (e.g., <code class="docutils literal notranslate"><span class="pre">v2_5_0a_add_external_user_identifiers</span></code>)</p></li>
+<li><p><strong>Version number</strong>: Match the target release version where this schema change will land</p></li>
+<li><p><strong>Letter suffix</strong>: Use sequential letters (<code class="docutils literal notranslate"><span class="pre">a</span></code>, <code class="docutils literal notranslate"><span class="pre">b</span></code>, <code class="docutils literal notranslate"><span class="pre">c</span></code>, …) for multiple migrations within the same version</p></li>
+<li><p><strong>Description</strong>: Brief, snake_case description of the change</p></li>
+</ul>
 </li>
-<li><p><strong>Review the generated script</strong> in <code class="docutils literal notranslate"><span class="pre">nexusLIMS/migrations/versions/</span></code></p></li>
-<li><p><strong>Test the migration</strong>:</p>
+<li><p><strong>Generate migration script</strong> (requires source checkout):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims-migrate<span class="w"> </span>alembic<span class="w"> </span>revision<span class="w"> </span>--autogenerate<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-m<span class="w"> </span><span class="s2">&quot;add external user identifiers&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--rev-id<span class="w"> </span><span class="s2">&quot;v2_5_0a&quot;</span>
+</pre></div>
+</div>
+<p>The migration will be created at:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">nexusLIMS</span><span class="o">/</span><span class="n">db</span><span class="o">/</span><span class="n">migrations</span><span class="o">/</span><span class="n">versions</span><span class="o">/</span><span class="n">v2_5_0a_add_external_user_identifiers</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+<p><strong>Note</strong>: The filename combines the revision ID with the sanitized message for readability</p>
+</li>
+<li><p><strong>Review and edit the generated script</strong> in <code class="docutils literal notranslate"><span class="pre">nexusLIMS/db/migrations/versions/</span></code>:</p>
+<ul class="simple">
+<li><p>Verify the <code class="docutils literal notranslate"><span class="pre">upgrade()</span></code> function creates the expected schema changes</p></li>
+<li><p>Verify the <code class="docutils literal notranslate"><span class="pre">downgrade()</span></code> function properly reverses those changes</p></li>
+<li><p>For CHECK constraints or enums, you should use <strong>hardcoded values</strong> in the migration (preserves historical accuracy, migration won’t break if enum changes later)</p></li>
+<li><p>Add docstring explaining the migration’s purpose if needed</p></li>
+</ul>
+</li>
+<li><p><strong>Test the migration thoroughly</strong>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Apply migration</span>
 nexuslims-migrate<span class="w"> </span>upgrade
 
@@ -625,21 +642,35 @@ nexuslims-migrate<span class="w"> </span>upgrade
 nexuslims-migrate<span class="w"> </span>downgrade
 
 <span class="c1"># Re-apply</span>
-nexuslims-migrate<span class="w"> </span>upgrade
+nexuslims-migrate<span class="w"> </span>upgrade<span class="w"> </span>head
 </pre></div>
 </div>
 </li>
-<li><p><strong>Commit the migration script</strong> to version control</p></li>
+<li><p><strong>Add integration tests</strong> in <code class="docutils literal notranslate"><span class="pre">tests/integration/test_migrations.py</span></code>:</p>
+<ul class="simple">
+<li><p>Test that upgrade creates expected tables/columns</p></li>
+<li><p>Test that downgrade removes them</p></li>
+<li><p>Test offline mode if migration has conditional logic</p></li>
+</ul>
+</li>
+<li><p><strong>Create changelog fragment</strong> in <code class="docutils literal notranslate"><span class="pre">docs/changes/</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Format: {issue_number}.{change_type}.md</span>
+<span class="c1"># Change types: feature, bugfix, doc, removal, misc</span>
+docs/changes/48.feature.md
+</pre></div>
+</div>
+</li>
+<li><p><strong>Commit the migration script and tests</strong> to version control</p></li>
 </ol>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p><strong>Revision ID Format</strong></p>
-<p>NexusLIMS uses sequential, descriptive revision IDs instead of random hex values:</p>
+<p>NexusLIMS uses version-based revision IDs with letter suffixes:</p>
 <ul class="simple">
-<li><p><strong>Format</strong>: <code class="docutils literal notranslate"><span class="pre">NNN_description</span></code> (e.g., <code class="docutils literal notranslate"><span class="pre">001_initial_schema</span></code>, <code class="docutils literal notranslate"><span class="pre">002_add_upload_log</span></code>)</p></li>
-<li><p><strong>Benefits</strong>: Clear ordering, easy to understand, sortable by name</p></li>
-<li><p><strong>Automatic</strong>: The message you provide in <code class="docutils literal notranslate"><span class="pre">-m</span> <span class="pre">&quot;...&quot;</span></code> is automatically sanitized and used</p></li>
-<li><p><strong>Existing migrations</strong>: Old hex-based migrations (from before 2.5.0) continue to work normally</p></li>
+<li><p><strong>Format</strong>: <code class="docutils literal notranslate"><span class="pre">vMAJOR_MINOR_PATCHletter</span></code> (e.g., <code class="docutils literal notranslate"><span class="pre">v2_5_0a</span></code>, <code class="docutils literal notranslate"><span class="pre">v2_5_0b</span></code>, <code class="docutils literal notranslate"><span class="pre">v2_4_0a</span></code>)</p></li>
+<li><p><strong>Benefits</strong>: Clear association with release versions, sequential ordering within a version</p></li>
+<li><p><strong>Multiple migrations per version</strong>: Use sequential letters (<code class="docutils literal notranslate"><span class="pre">a</span></code>, <code class="docutils literal notranslate"><span class="pre">b</span></code>, <code class="docutils literal notranslate"><span class="pre">c</span></code>, …)</p></li>
+<li><p><strong>Manual specification</strong>: Use <code class="docutils literal notranslate"><span class="pre">--rev-id</span></code> flag when generating migrations</p></li>
 </ul>
 </div>
 </section>
@@ -660,13 +691,25 @@ nexuslims-migrate<span class="w"> </span>upgrade
 <li><p><strong>Always backup your database</strong> before running migrations on production data</p></li>
 <li><p><strong>Test migrations thoroughly</strong> in a development environment first</p></li>
 <li><p><strong>Never edit applied migrations</strong> - create a new migration to fix issues</p></li>
-<li><p>The initial migration (<code class="docutils literal notranslate"><span class="pre">57f0798d0c6d_initial_schema_baseline.py</span></code>) is a no-op baseline for existing installations</p></li>
+<li><p>The initial migration (<code class="docutils literal notranslate"><span class="pre">v1_4_3_initial_schema_baseline.py</span></code>) creates the basic database structure that serves as a basis for later migrations</p></li>
 </ul>
 </section>
 </section>
 <section id="database-structure">
 <h2>Database Structure<a class="headerlink" href="#database-structure" title="Link to this heading">#</a></h2>
-<p>The database contains two primary tables:</p>
+<figure class="align-center" id="id7">
+<a class="reference internal image-reference" href="_static/db_schema.png"><img alt="NexusLIMS Database Schema Diagram" src="_static/db_schema.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">NexusLIMS Database Schema (auto-generated from SQLModel metadata)</span><a class="headerlink" href="#id7" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This diagram is automatically regenerated when you build the documentation, ensuring it always reflects the current database schema. Field descriptions are extracted from the SQLModel class docstrings.</p>
+</div>
+<p>For an interactive Mermaid diagram with detailed field descriptions and relationship documentation, see the <a class="reference internal" href="#db_schema_diagram.md"><span class="xref myst">Database Schema Diagram</span></a> (also auto-generated).</p>
+<p>The database contains four primary tables:</p>
 <ol class="arabic simple">
 <li><p><strong><code class="docutils literal notranslate"><span class="pre">session_log</span></code></strong> - Tracks experimental sessions and record building status</p>
 <ul class="simple">
@@ -681,6 +724,22 @@ nexuslims-migrate<span class="w"> </span>upgrade
 <li><p>Reservation system URLs</p></li>
 <li><p>Data storage paths</p></li>
 <li><p>Harvester configuration</p></li>
+</ul>
+</li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">upload_log</span></code></strong> - Tracks record uploads to CDCS and other export destinations</p>
+<ul class="simple">
+<li><p>Session identifier and instrument linkage</p></li>
+<li><p>CDCS record ID and PID</p></li>
+<li><p>Upload timestamps and success status</p></li>
+<li><p>Error tracking for failed uploads</p></li>
+</ul>
+</li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">external_user_identifiers</span></code></strong> - Maps NexusLIMS usernames to external system IDs</p>
+<ul class="simple">
+<li><p>Star-topology design with <code class="docutils literal notranslate"><span class="pre">nexuslims_username</span></code> as canonical identifier</p></li>
+<li><p>Supports NEMO, LabArchives ELN, LabArchives Scheduler, CDCS</p></li>
+<li><p>Bidirectional lookup between internal and external identities</p></li>
+<li><p>Tracks creation and verification timestamps</p></li>
 </ul>
 </li>
 </ol>
@@ -840,6 +899,155 @@ import, rather than every time information is needed.</p>
 </table>
 </div>
 </section>
+<section id="the-upload-log-table">
+<h2>The <code class="docutils literal notranslate"><span class="pre">upload_log</span></code> Table<a class="headerlink" href="#the-upload-log-table" title="Link to this heading">#</a></h2>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 2.4.0: </span>The upload_log table was added to track record exports to external repositories.</p>
+</div>
+<section id="id1">
+<h3>Purpose<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">upload_log</span></code> table tracks export attempts to destination repositories like CDCS and LabArchives. It enables multi-destination export with granular success/failure tracking per destination and session.</p>
+</section>
+<section id="id2">
+<h3>How It Works<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Per-Destination Tracking</strong> - Each export attempt creates a new row, allowing one session to be exported to multiple destinations</p></li>
+<li><p><strong>Success/Failure Recording</strong> - Stores whether export succeeded and captures error messages if it failed</p></li>
+<li><p><strong>Record Linkage</strong> - Stores destination-specific record IDs and URLs for successful exports</p></li>
+<li><p><strong>Retry Logic</strong> - Failed exports can be identified and retried based on <code class="docutils literal notranslate"><span class="pre">success</span></code> status</p></li>
+</ol>
+</section>
+<section id="id3">
+<h3>Table Schema<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Column</p></th>
+<th class="head"><p>Data type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">id</span></code></p></td>
+<td><p>INTEGER</p></td>
+<td><p>The auto-incrementing primary key identifier for this table.<br><br><em>Checks:</em> must not be <code class="docutils literal notranslate"><span class="pre">NULL</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">session_identifier</span></code></p></td>
+<td><p>VARCHAR(36)</p></td>
+<td><p>Foreign key reference to <code class="docutils literal notranslate"><span class="pre">session_log.session_identifier</span></code>.<br><br><em>Checks:</em> must not be <code class="docutils literal notranslate"><span class="pre">NULL</span></code><br><em>Indexed:</em> for efficient session lookup</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">destination_name</span></code></p></td>
+<td><p>VARCHAR(100)</p></td>
+<td><p>Name of the export destination (e.g., <code class="docutils literal notranslate"><span class="pre">&quot;cdcs&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;labarchives&quot;</span></code>).<br><br><em>Checks:</em> must not be <code class="docutils literal notranslate"><span class="pre">NULL</span></code><br><em>Indexed:</em> for destination-specific queries</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">success</span></code></p></td>
+<td><p>BOOLEAN</p></td>
+<td><p>Whether the export succeeded (<code class="docutils literal notranslate"><span class="pre">TRUE</span></code>) or failed (<code class="docutils literal notranslate"><span class="pre">FALSE</span></code>).<br><br><em>Checks:</em> must not be <code class="docutils literal notranslate"><span class="pre">NULL</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">timestamp</span></code></p></td>
+<td><p>DATETIME</p></td>
+<td><p>When the export attempt occurred (timezone-aware).<br><br><em>Checks:</em> must not be <code class="docutils literal notranslate"><span class="pre">NULL</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">record_id</span></code></p></td>
+<td><p>VARCHAR(255)</p></td>
+<td><p>Destination-specific record identifier (e.g., CDCS document ID).<br><br><em>Optional:</em> <code class="docutils literal notranslate"><span class="pre">NULL</span></code> if export failed</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">record_url</span></code></p></td>
+<td><p>VARCHAR(500)</p></td>
+<td><p>Direct URL to view the exported record in the destination system.<br><br><em>Optional:</em> <code class="docutils literal notranslate"><span class="pre">NULL</span></code> if export failed</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">error_message</span></code></p></td>
+<td><p>TEXT</p></td>
+<td><p>Error message if export failed.<br><br><em>Optional:</em> <code class="docutils literal notranslate"><span class="pre">NULL</span></code> if export succeeded</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">metadata_json</span></code></p></td>
+<td><p>TEXT</p></td>
+<td><p>JSON-serialized dict with destination-specific metadata.<br><br><em>Optional:</em> for storing additional export context</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="the-external-user-identifiers-table">
+<h2>The <code class="docutils literal notranslate"><span class="pre">external_user_identifiers</span></code> Table<a class="headerlink" href="#the-external-user-identifiers-table" title="Link to this heading">#</a></h2>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 2.5.0: </span>The external_user_identifiers table was added to map NexusLIMS usernames to external system IDs.</p>
+</div>
+<section id="id4">
+<h3>Purpose<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">external_user_identifiers</span></code> table maintains mappings between NexusLIMS usernames and user identifiers in external systems (NEMO, LabArchives ELN, LabArchives Scheduler, CDCS). This enables bidirectional user identity lookup and supports integration with external APIs.</p>
+</section>
+<section id="id5">
+<h3>How It Works<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Star Topology Design</strong> - Uses <code class="docutils literal notranslate"><span class="pre">nexuslims_username</span></code> (from <code class="docutils literal notranslate"><span class="pre">session_log.user</span></code>) as the canonical identifier, with mappings to each external system</p></li>
+<li><p><strong>Bidirectional Lookup</strong> - Supports both forward lookup (NexusLIMS → external ID) and reverse lookup (external ID → NexusLIMS)</p></li>
+<li><p><strong>Uniqueness Constraints</strong>:</p>
+<ul class="simple">
+<li><p>One external ID per system per NexusLIMS user</p></li>
+<li><p>One NexusLIMS user per external ID per system</p></li>
+</ul>
+</li>
+<li><p><strong>Verification Tracking</strong> - Records when mappings are created and last verified for auditing</p></li>
+</ol>
+</section>
+<section id="helper-functions">
+<h3>Helper Functions<a class="headerlink" href="#helper-functions" title="Link to this heading">#</a></h3>
+<p>The <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.db.models.html#module-nexusLIMS.db.models" title="nexusLIMS.db.models"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.db.models</span></code></a> module provides convenience functions:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../api/nexusLIMS/nexusLIMS.db.models.html#nexusLIMS.db.models.get_external_id" title="nexusLIMS.db.models.get_external_id"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_external_id()</span></code></a> - Get external ID for a NexusLIMS username</p></li>
+<li><p><a class="reference internal" href="../api/nexusLIMS/nexusLIMS.db.models.html#nexusLIMS.db.models.get_nexuslims_username" title="nexusLIMS.db.models.get_nexuslims_username"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_nexuslims_username()</span></code></a> - Reverse lookup from external ID</p></li>
+<li><p><a class="reference internal" href="../api/nexusLIMS/nexusLIMS.db.models.html#nexusLIMS.db.models.store_external_id" title="nexusLIMS.db.models.store_external_id"><code class="xref py py-func docutils literal notranslate"><span class="pre">store_external_id()</span></code></a> - Store or update a mapping (upsert)</p></li>
+<li><p><a class="reference internal" href="../api/nexusLIMS/nexusLIMS.db.models.html#nexusLIMS.db.models.get_all_external_ids" title="nexusLIMS.db.models.get_all_external_ids"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_all_external_ids()</span></code></a> - Get all external IDs for a username</p></li>
+</ul>
+</section>
+<section id="id6">
+<h3>Table Schema<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Column</p></th>
+<th class="head"><p>Data type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">id</span></code></p></td>
+<td><p>INTEGER</p></td>
+<td><p>The auto-incrementing primary key identifier for this table.<br><br><em>Checks:</em> must not be <code class="docutils literal notranslate"><span class="pre">NULL</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">nexuslims_username</span></code></p></td>
+<td><p>VARCHAR</p></td>
+<td><p>Canonical username in NexusLIMS (from <code class="docutils literal notranslate"><span class="pre">session_log.user</span></code>).<br><br><em>Checks:</em> must not be <code class="docutils literal notranslate"><span class="pre">NULL</span></code><br><em>Indexed:</em> for efficient lookup<br><em>Unique Constraint:</em> with <code class="docutils literal notranslate"><span class="pre">external_system</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">external_system</span></code></p></td>
+<td><p>TEXT</p></td>
+<td><p>External system identifier.<br><br><em>Checks:</em> must be one of <code class="docutils literal notranslate"><span class="pre">&quot;nemo&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;labarchives_eln&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;labarchives_scheduler&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;cdcs&quot;</span></code><br><em>Unique Constraints:</em> with <code class="docutils literal notranslate"><span class="pre">nexuslims_username</span></code> and with <code class="docutils literal notranslate"><span class="pre">external_id</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">external_id</span></code></p></td>
+<td><p>TEXT</p></td>
+<td><p>User ID/username in the external system.<br><br><em>Checks:</em> must not be <code class="docutils literal notranslate"><span class="pre">NULL</span></code><br><em>Unique Constraint:</em> with <code class="docutils literal notranslate"><span class="pre">external_system</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">email</span></code></p></td>
+<td><p>VARCHAR</p></td>
+<td><p>User’s email for verification/matching purposes.<br><br><em>Optional:</em> may be <code class="docutils literal notranslate"><span class="pre">NULL</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">created_at</span></code></p></td>
+<td><p>DATETIME</p></td>
+<td><p>When this mapping was created (timezone-aware, UTC).<br><br><em>Checks:</em> must not be <code class="docutils literal notranslate"><span class="pre">NULL</span></code><br><em>Default:</em> current UTC timestamp</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">last_verified_at</span></code></p></td>
+<td><p>DATETIME</p></td>
+<td><p>Last time this mapping was verified (timezone-aware, UTC).<br><br><em>Optional:</em> <code class="docutils literal notranslate"><span class="pre">NULL</span></code> until first verification</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">notes</span></code></p></td>
+<td><p>TEXT</p></td>
+<td><p>Additional notes about this mapping (e.g., <code class="docutils literal notranslate"><span class="pre">&quot;OAuth</span> <span class="pre">registration&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;From</span> <span class="pre">NEMO</span> <span class="pre">harvester&quot;</span></code>).<br><br><em>Optional:</em> may be <code class="docutils literal notranslate"><span class="pre">NULL</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
 </section>
 
 
@@ -911,6 +1119,19 @@ import, rather than every time information is needed.</p>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-instruments-table">The <code class="docutils literal notranslate"><span class="pre">instruments</span></code> Table</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-upload-log-table">The <code class="docutils literal notranslate"><span class="pre">upload_log</span></code> Table</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Purpose</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">How It Works</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">Table Schema</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-external-user-identifiers-table">The <code class="docutils literal notranslate"><span class="pre">external_user_identifiers</span></code> Table</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">Purpose</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">How It Works</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#helper-functions">Helper Functions</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">Table Schema</a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 

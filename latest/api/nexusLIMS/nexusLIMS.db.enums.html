@@ -522,6 +522,9 @@ constrained values (CHECK constraints in the database schema).</p>
 <tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.db.enums.RecordStatus" title="nexusLIMS.db.enums.RecordStatus"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RecordStatus</span></code></a></p></td>
 <td><p>Allowed record status values for session logs.</p></td>
 </tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.db.enums.ExternalSystem" title="nexusLIMS.db.enums.ExternalSystem"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ExternalSystem</span></code></a></p></td>
+<td><p>External systems that NexusLIMS integrates with.</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -624,6 +627,48 @@ constrained values (CHECK constraints in the database schema).</p>
 
 </dd></dl>
 
+<dl class="py class">
+<dt class="sig sig-object py" id="nexusLIMS.db.enums.ExternalSystem">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nexusLIMS.db.enums.</span></span><span class="sig-name descname"><span class="pre">ExternalSystem</span></span><a class="reference internal" href="../../_modules/nexusLIMS/db/enums.html#ExternalSystem"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.db.enums.ExternalSystem" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.11/library/enum.html#enum.Enum" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">enum.Enum</span></code></a></p>
+<p>External systems that NexusLIMS integrates with.</p>
+<p>Maps to the CHECK constraint in external_user_identifiers.external_system column.</p>
+<dl class="myst field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>NEMO</strong> – NEMO lab management system (usage tracking and reservations)</p></li>
+<li><p><strong>LABARCHIVES_ELN</strong> – LabArchives Electronic Lab Notebook (record export destination)</p></li>
+<li><p><strong>LABARCHIVES_SCHEDULER</strong> – LabArchives Scheduler (reservation system integration)</p></li>
+<li><p><strong>CDCS</strong> – Configurable Data Curation System (NexusLIMS frontend)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.db.enums.ExternalSystem.NEMO">
+<span class="sig-name descname"><span class="pre">NEMO</span></span><a class="headerlink" href="#nexusLIMS.db.enums.ExternalSystem.NEMO" title="Link to this definition">#</a></dt>
+<dd><p>‘nemo’</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.db.enums.ExternalSystem.LABARCHIVES_ELN">
+<span class="sig-name descname"><span class="pre">LABARCHIVES_ELN</span></span><a class="headerlink" href="#nexusLIMS.db.enums.ExternalSystem.LABARCHIVES_ELN" title="Link to this definition">#</a></dt>
+<dd><p>‘labarchives_eln’</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.db.enums.ExternalSystem.LABARCHIVES_SCHEDULER">
+<span class="sig-name descname"><span class="pre">LABARCHIVES_SCHEDULER</span></span><a class="headerlink" href="#nexusLIMS.db.enums.ExternalSystem.LABARCHIVES_SCHEDULER" title="Link to this definition">#</a></dt>
+<dd><p>‘labarchives_scheduler’</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.db.enums.ExternalSystem.CDCS">
+<span class="sig-name descname"><span class="pre">CDCS</span></span><a class="headerlink" href="#nexusLIMS.db.enums.ExternalSystem.CDCS" title="Link to this definition">#</a></dt>
+<dd><p>‘cdcs’</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 </section>
 </section>
@@ -693,6 +738,13 @@ constrained values (CHECK constraints in the database schema).</p>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.enums.RecordStatus.NO_FILES_FOUND"><code class="docutils literal notranslate"><span class="pre">RecordStatus.NO_FILES_FOUND</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.enums.RecordStatus.NO_CONSENT"><code class="docutils literal notranslate"><span class="pre">RecordStatus.NO_CONSENT</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.enums.RecordStatus.NO_RESERVATION"><code class="docutils literal notranslate"><span class="pre">RecordStatus.NO_RESERVATION</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.enums.ExternalSystem"><code class="docutils literal notranslate"><span class="pre">ExternalSystem</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.enums.ExternalSystem.NEMO"><code class="docutils literal notranslate"><span class="pre">ExternalSystem.NEMO</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.enums.ExternalSystem.LABARCHIVES_ELN"><code class="docutils literal notranslate"><span class="pre">ExternalSystem.LABARCHIVES_ELN</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.enums.ExternalSystem.LABARCHIVES_SCHEDULER"><code class="docutils literal notranslate"><span class="pre">ExternalSystem.LABARCHIVES_SCHEDULER</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.enums.ExternalSystem.CDCS"><code class="docutils literal notranslate"><span class="pre">ExternalSystem.CDCS</span></code></a></li>
 </ul>
 </li>
 </ul>

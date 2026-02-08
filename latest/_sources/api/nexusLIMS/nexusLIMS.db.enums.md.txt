@@ -26,6 +26,11 @@
     :parser: autodoc2_docstrings_parser
     :summary:
     ```
+* - {py:obj}`ExternalSystem <nexusLIMS.db.enums.ExternalSystem>`
+  - ```{autodoc2-docstring} nexusLIMS.db.enums.ExternalSystem
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
 ````
 
 ### API
@@ -166,6 +171,61 @@ Bases: {py:obj}`str`, {py:obj}`enum.Enum`
    'NO_RESERVATION'
 
 ```{autodoc2-docstring} nexusLIMS.db.enums.RecordStatus.NO_RESERVATION
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+`````
+
+`````{py:class} ExternalSystem()
+:canonical: nexusLIMS.db.enums.ExternalSystem
+
+Bases: {py:obj}`str`, {py:obj}`enum.Enum`
+
+```{autodoc2-docstring} nexusLIMS.db.enums.ExternalSystem
+:parser: autodoc2_docstrings_parser
+```
+
+````{py:attribute} NEMO
+:canonical: nexusLIMS.db.enums.ExternalSystem.NEMO
+:value: >
+   'nemo'
+
+```{autodoc2-docstring} nexusLIMS.db.enums.ExternalSystem.NEMO
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} LABARCHIVES_ELN
+:canonical: nexusLIMS.db.enums.ExternalSystem.LABARCHIVES_ELN
+:value: >
+   'labarchives_eln'
+
+```{autodoc2-docstring} nexusLIMS.db.enums.ExternalSystem.LABARCHIVES_ELN
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} LABARCHIVES_SCHEDULER
+:canonical: nexusLIMS.db.enums.ExternalSystem.LABARCHIVES_SCHEDULER
+:value: >
+   'labarchives_scheduler'
+
+```{autodoc2-docstring} nexusLIMS.db.enums.ExternalSystem.LABARCHIVES_SCHEDULER
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} CDCS
+:canonical: nexusLIMS.db.enums.ExternalSystem.CDCS
+:value: >
+   'cdcs'
+
+```{autodoc2-docstring} nexusLIMS.db.enums.ExternalSystem.CDCS
 :parser: autodoc2_docstrings_parser
 ```
 
