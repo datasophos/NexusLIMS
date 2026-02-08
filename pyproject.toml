@@ -45,6 +45,7 @@ dependencies = [
     "rdflib>=7.0.0,<8.0.0",
     "sqlmodel>=0.0.31",
     "alembic>=1.17.2",
+    "textual>=0.87.0",
 ]
 
 [dependency-groups]
@@ -89,6 +90,7 @@ Documentation = "https://datasophos.github.io/NexusLIMS/stable"
 nexuslims-process-records = "nexusLIMS.cli.process_records:main"
 nexuslims-config = "nexusLIMS.cli.config:main"
 nexuslims-migrate = "nexusLIMS.cli.migrate:main"
+nexuslims-manage-instruments = "nexusLIMS.cli.manage_instruments:main"
 
 [build-system]
 requires = ["hatchling"]
@@ -119,6 +121,7 @@ ignore = ["N999", "UP006", "UP007", "UP035", "B905", "RUF007", "S603", "COM812"]
 "tests/fixtures/**/*.py" = ["F401", "E402"]
 "tests/integration/**/*.py" = ["ARG002", "ARG001"]
 "migrations/**/*.py" = ["D400"]  # Migration files don't need perfect docstrings
+"nexusLIMS/tui/**/*.py" = ["FBT001", "FBT002", "FBT003", "TRY300", "PLR2004"]  # TUI patterns
 
 
 [tool.ruff.lint.pydocstyle]
