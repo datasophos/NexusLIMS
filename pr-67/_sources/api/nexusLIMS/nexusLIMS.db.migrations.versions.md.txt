@@ -1,0 +1,20 @@
+# {py:mod}`nexusLIMS.db.migrations.versions`
+
+```{py:module} nexusLIMS.db.migrations.versions
+```
+
+```{autodoc2-docstring} nexusLIMS.db.migrations.versions
+:parser: autodoc2_docstrings_parser
+:allowtitles:
+```
+
+## Submodules
+
+```{toctree}
+:titlesonly:
+:maxdepth: 1
+
+nexusLIMS.db.migrations.versions.v2_4_0_1_add_upload_log_table
+nexusLIMS.db.migrations.versions.v1_4_3_initial_schema_baseline
+nexusLIMS.db.migrations.versions.v2_4_0_2_add_check_constraints
+```
