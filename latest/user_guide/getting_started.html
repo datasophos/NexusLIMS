@@ -66,7 +66,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Feb, 08, 2026"/>
+    <meta name="docbuild:last-update" content="Feb, 10, 2026"/>
   </head>
   
   
@@ -415,8 +415,9 @@
 </ul>
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="record_building.html">Record building workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cli_reference.html">Command-Line Interface Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="record_building.html">Record building workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="instrument_manager.html">Instrument Manager TUI Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="migrations.html">Database Migrations</a></li>
 
 <li class="toctree-l1"><a class="reference internal" href="extractors.html">Extractors</a></li>
@@ -638,8 +639,7 @@ nexuslims-migrate<span class="w"> </span>check<span class="w">    </span><span c
 <li><p><strong>filestore_path</strong>: Path relative to <code class="docutils literal notranslate"><span class="pre">NX_INSTRUMENT_DATA_PATH</span></code></p></li>
 <li><p><strong>timezone</strong>: Timezone for datetime handling (IANA format like “America/New_York”)</p></li>
 <li><p><strong>api_url</strong>: NEMO API URL (for NEMO harvester) – Should be of the format <code class="docutils literal notranslate"><span class="pre">https://&lt;nemo_address&gt;/api/tools/?id=&lt;tool_id_in_NEMO&gt;</span></code></p></li>
-<li><p><strong>calendar_name</strong>: NEMO tool name (must match NEMO configuration exactly)</p></li>
-<li><p><strong>schema_name</strong>: Human-readable name for the Nexus Microscopy schema</p></li>
+<li><p><strong>display_name</strong>: Human-readable name for the Nexus Microscopy schema</p></li>
 <li><p><strong>location</strong>: Physical location of the instrument</p></li>
 <li><p><strong>property_tag</strong>: Unique numeric identifier (for reference)</p></li>
 </ul>
@@ -647,7 +647,7 @@ nexuslims-migrate<span class="w"> </span>check<span class="w">    </span><span c
 <p>Example SQL:</p>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">instruments</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="n">instrument_pid</span><span class="p">,</span><span class="w"> </span><span class="n">harvester</span><span class="p">,</span><span class="w"> </span><span class="n">filestore_path</span><span class="p">,</span><span class="w"> </span><span class="n">timezone</span><span class="p">,</span>
-<span class="w">    </span><span class="n">api_url</span><span class="p">,</span><span class="w"> </span><span class="n">calendar_name</span><span class="p">,</span><span class="w"> </span><span class="k">schema_name</span><span class="p">,</span><span class="w"> </span><span class="k">location</span><span class="p">,</span><span class="w"> </span><span class="n">property_tag</span>
+<span class="w">    </span><span class="n">api_url</span><span class="p">,</span><span class="w"> </span><span class="n">display_name</span><span class="p">,</span><span class="w"> </span><span class="k">location</span><span class="p">,</span><span class="w"> </span><span class="n">property_tag</span>
 <span class="p">)</span>
 <span class="k">VALUES</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="s1">&#39;FEI-Titan-TEM-12345&#39;</span><span class="p">,</span>
@@ -655,7 +655,6 @@ nexuslims-migrate<span class="w"> </span>check<span class="w">    </span><span c
 <span class="w">    </span><span class="s1">&#39;Titan_data&#39;</span><span class="p">,</span>
 <span class="w">    </span><span class="s1">&#39;America/New_York&#39;</span><span class="p">,</span>
 <span class="w">    </span><span class="s1">&#39;https://nemo.example.com/api/tools/?id=10&#39;</span><span class="p">,</span>
-<span class="w">    </span><span class="s1">&#39;FEI Titan TEM&#39;</span><span class="p">,</span>
 <span class="w">    </span><span class="s1">&#39;FEI Titan TEM&#39;</span><span class="p">,</span>
 <span class="w">    </span><span class="s1">&#39;Building 1, Room 101&#39;</span><span class="p">,</span>
 <span class="w">    </span><span class="s1">&#39;12345&#39;</span>

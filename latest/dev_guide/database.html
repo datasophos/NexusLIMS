@@ -66,7 +66,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Feb, 08, 2026"/>
+    <meta name="docbuild:last-update" content="Feb, 10, 2026"/>
   </head>
   
   
@@ -421,6 +421,7 @@
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">NexusLIMS Database</a></li>
 <li class="toctree-l1"><a class="reference internal" href="schema_documentation.html">XML Schema Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="testing/integration-tests.html">Integration Testing Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/textual_testing_reference.html">Textual Testing Reference</a></li>
 </ul>
 </div>
 </nav></div>
@@ -851,41 +852,25 @@ import, rather than every time information is needed.</p>
 <td><p>TEXT</p></td>
 <td><p>The calendar API endpoint url for this instrument’s scheduler. For NEMO, should be of the format <code class="docutils literal notranslate"><span class="pre">https://&lt;nemo_address&gt;/api/tools/?id=&lt;tool_id&gt;</span></code></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">calendar_name</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">calendar_url</span></code></p></td>
 <td><p>TEXT</p></td>
-<td><p>The “user-friendly” name of the calendar for this instrument as displayed on the reservation system resource (e.g. “FEI Titan TEM”)</p></td>
+<td><p>The URL to this instrument’s web-accessible calendar</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">calendar_url</span></code></p></td>
-<td><p>TEXT</p></td>
-<td><p><strong>[Deprecated]</strong> The URL to this instrument’s web-accessible calendar on the SharePoint resource (this is no longer used after SharePoint support was removed)</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">location</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">location</span></code></p></td>
 <td><p>VARCHAR(100)</p></td>
 <td><p>The physical location of this instrument</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">schema_name</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">display_name</span></code></p></td>
 <td><p>TEXT</p></td>
-<td><p>The human-readable name of instrument as defined in the Nexus Microscopy schema and displayed in the records</p></td>
+<td><p>The human-readable instrument name displayed in NexusLIMS records</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">property_tag</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">property_tag</span></code></p></td>
 <td><p>VARCHAR(20)</p></td>
 <td><p>A unique numeric identifier for this instrument (not used by NexusLIMS, but for reference and potential future use)</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">filestore_path</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">filestore_path</span></code></p></td>
 <td><p>TEXT</p></td>
 <td><p>The path (relative to central storage location specified in <a class="reference internal" href="../user_guide/configuration.html#config-instrument-data-path"><span class="std std-ref">NX_INSTRUMENT_DATA_PATH</span></a>) where this instrument stores its data (e.g. <code class="docutils literal notranslate"><span class="pre">./instrument_name</span></code>)</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">computer_name</span></code></p></td>
-<td><p>TEXT</p></td>
-<td><p>The hostname of the <code class="docutils literal notranslate"><span class="pre">support</span> <span class="pre">PC</span></code> connected to this instrument (for reference purposes)</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">computer_ip</span></code></p></td>
-<td><p>VARCHAR(15)</p></td>
-<td><p>The IP address of the <code class="docutils literal notranslate"><span class="pre">support</span> <span class="pre">PC</span></code> connected to this instrument (not currently utilized)</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">computer_mount</span></code></p></td>
-<td><p>TEXT</p></td>
-<td><p>The full path where the central file storage is mounted and files are saved on the ‘support PC’ for the instrument (for reference purposes)</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">harvester</span></code></p></td>
 <td><p>TEXT</p></td>

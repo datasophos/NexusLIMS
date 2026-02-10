@@ -16,6 +16,7 @@
 
 nexusLIMS.db
 nexusLIMS.utils
+nexusLIMS.tui
 nexusLIMS.builder
 nexusLIMS.extractors
 nexusLIMS.cli

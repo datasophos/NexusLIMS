@@ -16,6 +16,7 @@
 
 nexusLIMS.db.migrations.versions.v2_4_0b_add_check_constraints
 nexusLIMS.db.migrations.versions.v2_5_0a_add_external_user_identifiers
+nexusLIMS.db.migrations.versions.v2_5_0b_remove_computer_fields
 nexusLIMS.db.migrations.versions.v2_4_0a_add_upload_log_table
 nexusLIMS.db.migrations.versions.v1_4_3_initial_schema_baseline
 ```

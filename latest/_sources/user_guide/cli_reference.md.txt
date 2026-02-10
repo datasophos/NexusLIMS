@@ -312,6 +312,72 @@ See the {doc}`configuration guide <configuration>` Email Notifications section f
 
 ---
 
+## `nexuslims-manage-instruments`
+
+Terminal user interface (TUI) for managing the NexusLIMS instruments database.
+
+Provides an interactive interface for adding, editing, and deleting instruments without
+manual SQL manipulation. Features include sortable tables, real-time validation, search/filter,
+theme switching, and automatic database initialization.
+
+### Basic Usage
+
+```bash
+nexuslims-manage-instruments --help
+```
+
+```text
+Usage: nexuslims-manage-instruments [OPTIONS]
+
+  Manage NexusLIMS instruments database.
+
+  Launch an interactive terminal UI for adding, editing, and deleting
+  instruments in the NexusLIMS database. Provides form validation,
+  uniqueness checks, and confirmation prompts for destructive actions.
+
+Options:
+  --version  Show the version and exit.
+  --help     Show this message and exit.
+```
+
+### Features
+
+- **Interactive table**: Sortable instrument list with real-time filtering
+- **Add instruments**: Form validation ensures data integrity
+- **Edit instruments**: Modify existing instruments with pre-filled forms
+- **Delete instruments**: Confirmation prompts prevent accidental deletion
+- **Search/filter**: Find instruments by any field
+- **Theme switching**: Toggle between dark and light modes
+- **Auto-init**: Automatically creates database if it doesn't exist
+- **Help screen**: Built-in keybinding reference
+
+### Keybindings
+
+See the {doc}`instrument_manager` guide for detailed keybindings and usage examples.
+
+Quick reference:
+- **a**: Add new instrument
+- **e**: Edit selected instrument
+- **d**: Delete selected instrument
+- **/**: Focus search/filter input
+- **Ctrl+T**: Toggle theme
+- **?**: Show help
+- **q**: Quit
+
+### Examples
+
+```bash
+# Launch the instrument manager TUI
+nexuslims-manage-instruments
+
+# Show version
+nexuslims-manage-instruments --version
+```
+
+For a complete guide with screenshots and demonstrations, see the {doc}`instrument_manager` user guide.
+
+---
+
 ## `nexuslims-config`
 
 Configuration management utility for viewing and exporting NexusLIMS configuration.

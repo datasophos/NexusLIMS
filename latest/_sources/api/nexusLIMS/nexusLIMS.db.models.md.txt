@@ -153,17 +153,6 @@ Bases: {py:obj}`sqlmodel.SQLModel`
 
 ````
 
-````{py:attribute} calendar_name
-:canonical: nexusLIMS.db.models.Instrument.calendar_name
-
-**Type:** str
-
-```{autodoc2-docstring} nexusLIMS.db.models.Instrument.calendar_name
-:parser: autodoc2_docstrings_parser
-```
-
-````
-
 ````{py:attribute} calendar_url
 :canonical: nexusLIMS.db.models.Instrument.calendar_url
 
@@ -186,12 +175,12 @@ Bases: {py:obj}`sqlmodel.SQLModel`
 
 ````
 
-````{py:attribute} schema_name
-:canonical: nexusLIMS.db.models.Instrument.schema_name
+````{py:attribute} display_name
+:canonical: nexusLIMS.db.models.Instrument.display_name
 
 **Type:** str
 
-```{autodoc2-docstring} nexusLIMS.db.models.Instrument.schema_name
+```{autodoc2-docstring} nexusLIMS.db.models.Instrument.display_name
 :parser: autodoc2_docstrings_parser
 ```
 
@@ -236,39 +225,6 @@ Bases: {py:obj}`sqlmodel.SQLModel`
 **Type:** str
 
 ```{autodoc2-docstring} nexusLIMS.db.models.Instrument.timezone_str
-:parser: autodoc2_docstrings_parser
-```
-
-````
-
-````{py:attribute} computer_name
-:canonical: nexusLIMS.db.models.Instrument.computer_name
-
-**Type:** str | None
-
-```{autodoc2-docstring} nexusLIMS.db.models.Instrument.computer_name
-:parser: autodoc2_docstrings_parser
-```
-
-````
-
-````{py:attribute} computer_ip
-:canonical: nexusLIMS.db.models.Instrument.computer_ip
-
-**Type:** str | None
-
-```{autodoc2-docstring} nexusLIMS.db.models.Instrument.computer_ip
-:parser: autodoc2_docstrings_parser
-```
-
-````
-
-````{py:attribute} computer_mount
-:canonical: nexusLIMS.db.models.Instrument.computer_mount
-
-**Type:** str | None
-
-```{autodoc2-docstring} nexusLIMS.db.models.Instrument.computer_mount
 :parser: autodoc2_docstrings_parser
 ```
 

@@ -61,12 +61,12 @@
     <link rel="icon" href="../_static/nexusLIMS_bare_logo.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Database Migrations" href="migrations.html" />
-    <link rel="prev" title="Record building workflow" href="record_building.html" />
+    <link rel="next" title="Record building workflow" href="record_building.html" />
+    <link rel="prev" title="Configuration" href="configuration.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Feb, 08, 2026"/>
+    <meta name="docbuild:last-update" content="Feb, 10, 2026"/>
   </head>
   
   
@@ -412,8 +412,9 @@
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="record_building.html">Record building workflow</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Command-Line Interface Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="record_building.html">Record building workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="instrument_manager.html">Instrument Manager TUI Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="migrations.html">Database Migrations</a></li>
 
 <li class="toctree-l1"><a class="reference internal" href="extractors.html">Extractors</a></li>
@@ -774,12 +775,77 @@ error notifications are sent when:</p>
 </section>
 </section>
 <hr class="docutils" />
+<section id="nexuslims-manage-instruments">
+<h2><code class="docutils literal notranslate"><span class="pre">nexuslims-manage-instruments</span></code><a class="headerlink" href="#nexuslims-manage-instruments" title="Link to this heading">#</a></h2>
+<p>Terminal user interface (TUI) for managing the NexusLIMS instruments database.</p>
+<p>Provides an interactive interface for adding, editing, and deleting instruments without
+manual SQL manipulation. Features include sortable tables, real-time validation, search/filter,
+theme switching, and automatic database initialization.</p>
+<section id="id1">
+<h3>Basic Usage<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims-manage-instruments<span class="w"> </span>--help
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Usage: nexuslims-manage-instruments [OPTIONS]
+
+  Manage NexusLIMS instruments database.
+
+  Launch an interactive terminal UI for adding, editing, and deleting
+  instruments in the NexusLIMS database. Provides form validation,
+  uniqueness checks, and confirmation prompts for destructive actions.
+
+Options:
+  --version  Show the version and exit.
+  --help     Show this message and exit.
+</pre></div>
+</div>
+</section>
+<section id="features">
+<h3>Features<a class="headerlink" href="#features" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Interactive table</strong>: Sortable instrument list with real-time filtering</p></li>
+<li><p><strong>Add instruments</strong>: Form validation ensures data integrity</p></li>
+<li><p><strong>Edit instruments</strong>: Modify existing instruments with pre-filled forms</p></li>
+<li><p><strong>Delete instruments</strong>: Confirmation prompts prevent accidental deletion</p></li>
+<li><p><strong>Search/filter</strong>: Find instruments by any field</p></li>
+<li><p><strong>Theme switching</strong>: Toggle between dark and light modes</p></li>
+<li><p><strong>Auto-init</strong>: Automatically creates database if it doesn’t exist</p></li>
+<li><p><strong>Help screen</strong>: Built-in keybinding reference</p></li>
+</ul>
+</section>
+<section id="keybindings">
+<h3>Keybindings<a class="headerlink" href="#keybindings" title="Link to this heading">#</a></h3>
+<p>See the <a class="reference internal" href="instrument_manager.html"><span class="doc">Instrument Manager TUI Guide</span></a> guide for detailed keybindings and usage examples.</p>
+<p>Quick reference:</p>
+<ul class="simple">
+<li><p><strong>a</strong>: Add new instrument</p></li>
+<li><p><strong>e</strong>: Edit selected instrument</p></li>
+<li><p><strong>d</strong>: Delete selected instrument</p></li>
+<li><p><strong>/</strong>: Focus search/filter input</p></li>
+<li><p><strong>Ctrl+T</strong>: Toggle theme</p></li>
+<li><p><strong>?</strong>: Show help</p></li>
+<li><p><strong>q</strong>: Quit</p></li>
+</ul>
+</section>
+<section id="id2">
+<h3>Examples<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Launch the instrument manager TUI</span>
+nexuslims-manage-instruments
+
+<span class="c1"># Show version</span>
+nexuslims-manage-instruments<span class="w"> </span>--version
+</pre></div>
+</div>
+<p>For a complete guide with screenshots and demonstrations, see the <a class="reference internal" href="instrument_manager.html"><span class="doc">Instrument Manager TUI Guide</span></a> user guide.</p>
+</section>
+</section>
+<hr class="docutils" />
 <section id="nexuslims-config">
 <h2><code class="docutils literal notranslate"><span class="pre">nexuslims-config</span></code><a class="headerlink" href="#nexuslims-config" title="Link to this heading">#</a></h2>
 <p>Configuration management utility for viewing and exporting NexusLIMS configuration.</p>
 <p>See the <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.cli.config.html#module-nexusLIMS.cli.config" title="nexusLIMS.cli.config"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.config</span></code></a> module documentation for details.</p>
-<section id="id1">
-<h3>Basic Usage<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
+<section id="id3">
+<h3>Basic Usage<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims-config<span class="w"> </span>--help
 </pre></div>
 </div>
@@ -886,8 +952,8 @@ version upgrade.</p>
 version numbers. For example, revision <code class="docutils literal notranslate"><span class="pre">v2_4_0b</span></code> corresponds to the database
 schema required for NexusLIMS v2.4.0. This makes it easy to identify which
 database version matches your installed NexusLIMS version.</p>
-<section id="id2">
-<h3>Basic Usage<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
+<section id="id4">
+<h3>Basic Usage<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims-migrate<span class="w"> </span>--help
 </pre></div>
 </div>
@@ -1122,8 +1188,8 @@ nexuslims-migrate<span class="w"> </span>alembic<span class="w"> </span>stamp<sp
 </section>
 <section id="global-options">
 <h3>Global Options<a class="headerlink" href="#global-options" title="Link to this heading">#</a></h3>
-<section id="id3">
-<h4><code class="docutils literal notranslate"><span class="pre">--version</span></code><a class="headerlink" href="#id3" title="Link to this heading">#</a></h4>
+<section id="id5">
+<h4><code class="docutils literal notranslate"><span class="pre">--version</span></code><a class="headerlink" href="#id5" title="Link to this heading">#</a></h4>
 <p>Display the NexusLIMS version and exit.</p>
 <p><strong>Example:</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims-migrate<span class="w"> </span>--version
@@ -1211,20 +1277,20 @@ nexuslims-migrate<span class="w"> </span>alembic<span class="w"> </span>stamp<sp
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="record_building.html"
+       href="configuration.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Record building workflow</p>
+        <p class="prev-next-title">Configuration</p>
       </div>
     </a>
     <a class="right-next"
-       href="migrations.html"
+       href="record_building.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Database Migrations</p>
+        <p class="prev-next-title">Record building workflow</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -1272,12 +1338,19 @@ nexuslims-migrate<span class="w"> </span>alembic<span class="w"> </span>stamp<sp
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#email-notifications">Email Notifications</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#nexuslims-config"><code class="docutils literal notranslate"><span class="pre">nexuslims-config</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#nexuslims-manage-instruments"><code class="docutils literal notranslate"><span class="pre">nexuslims-manage-instruments</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Basic Usage</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#features">Features</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#keybindings">Keybindings</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Examples</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#nexuslims-config"><code class="docutils literal notranslate"><span class="pre">nexuslims-config</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">Basic Usage</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#nexuslims-migrate"><code class="docutils literal notranslate"><span class="pre">nexuslims-migrate</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Basic Usage</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">Basic Usage</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#commands">Commands</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#init"><code class="docutils literal notranslate"><span class="pre">init</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#upgrade"><code class="docutils literal notranslate"><span class="pre">upgrade</span></code></a></li>
@@ -1289,7 +1362,7 @@ nexuslims-migrate<span class="w"> </span>alembic<span class="w"> </span>stamp<sp
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#global-options">Global Options</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id3"><code class="docutils literal notranslate"><span class="pre">--version</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id5"><code class="docutils literal notranslate"><span class="pre">--version</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#common-workflows">Common Workflows</a><ul class="nav section-nav flex-column">

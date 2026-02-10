@@ -66,7 +66,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Feb, 08, 2026"/>
+    <meta name="docbuild:last-update" content="Feb, 10, 2026"/>
   </head>
   
   
@@ -422,6 +422,7 @@
 </ul>
 </details></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.tui.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.tui</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.builder.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.builder</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.extractors.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.cli.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli</span></code></a></li>
@@ -603,15 +604,11 @@ with configuration for calendar integration, file storage, and metadata.</p>
 <li><p><strong>instrument_pid</strong> – Unique identifier for the instrument (e.g., “FEI-Titan-TEM-012345”)</p></li>
 <li><p><strong>api_url</strong> – Calendar API endpoint URL for this instrument’s scheduler (e.g.,
 <code class="docutils literal notranslate"><span class="pre">https://&lt;nemo_address&gt;/api/tools/?id=&lt;tool_id&gt;</span></code>)</p></li>
-<li><p><strong>calendar_name</strong> – User-friendly name displayed in the reservation system</p></li>
 <li><p><strong>calendar_url</strong> – URL to the instrument’s web-accessible calendar</p></li>
 <li><p><strong>location</strong> – Physical location (building and room number)</p></li>
-<li><p><strong>schema_name</strong> – Human-readable name as displayed in NexusLIMS records</p></li>
+<li><p><strong>display_name</strong> – Human-readable instrument name displayed in NexusLIMS records</p></li>
 <li><p><strong>property_tag</strong> – Unique numeric identifier (for reference)</p></li>
 <li><p><strong>filestore_path</strong> – Relative path under NX_INSTRUMENT_DATA_PATH where data is stored</p></li>
-<li><p><strong>computer_name</strong> – Hostname of the support PC running Session Logger App</p></li>
-<li><p><strong>computer_ip</strong> – IP address of the support PC</p></li>
-<li><p><strong>computer_mount</strong> – Full path where central storage is mounted on support PC</p></li>
 <li><p><strong>harvester</strong> – Harvester module to use (“nemo” or “sharepoint”)</p></li>
 <li><p><strong>timezone_str</strong> – IANA timezone database string (e.g., “America/New_York”)</p></li>
 </ul>
@@ -630,12 +627,6 @@ with configuration for calendar integration, file storage, and metadata.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="nexusLIMS.db.models.Instrument.calendar_name">
-<span class="sig-name descname"><span class="pre">calendar_name</span></span><a class="headerlink" href="#nexusLIMS.db.models.Instrument.calendar_name" title="Link to this definition">#</a></dt>
-<dd><p><strong>Type:</strong> str</p>
-</dd></dl>
-
-<dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.db.models.Instrument.calendar_url">
 <span class="sig-name descname"><span class="pre">calendar_url</span></span><a class="headerlink" href="#nexusLIMS.db.models.Instrument.calendar_url" title="Link to this definition">#</a></dt>
 <dd><p><strong>Type:</strong> str</p>
@@ -648,8 +639,8 @@ with configuration for calendar integration, file storage, and metadata.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="nexusLIMS.db.models.Instrument.schema_name">
-<span class="sig-name descname"><span class="pre">schema_name</span></span><a class="headerlink" href="#nexusLIMS.db.models.Instrument.schema_name" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="nexusLIMS.db.models.Instrument.display_name">
+<span class="sig-name descname"><span class="pre">display_name</span></span><a class="headerlink" href="#nexusLIMS.db.models.Instrument.display_name" title="Link to this definition">#</a></dt>
 <dd><p><strong>Type:</strong> str</p>
 </dd></dl>
 
@@ -675,24 +666,6 @@ with configuration for calendar integration, file storage, and metadata.</p>
 <dt class="sig sig-object py" id="nexusLIMS.db.models.Instrument.timezone_str">
 <span class="sig-name descname"><span class="pre">timezone_str</span></span><a class="headerlink" href="#nexusLIMS.db.models.Instrument.timezone_str" title="Link to this definition">#</a></dt>
 <dd><p><strong>Type:</strong> str</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="nexusLIMS.db.models.Instrument.computer_name">
-<span class="sig-name descname"><span class="pre">computer_name</span></span><a class="headerlink" href="#nexusLIMS.db.models.Instrument.computer_name" title="Link to this definition">#</a></dt>
-<dd><p><strong>Type:</strong> str | None</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="nexusLIMS.db.models.Instrument.computer_ip">
-<span class="sig-name descname"><span class="pre">computer_ip</span></span><a class="headerlink" href="#nexusLIMS.db.models.Instrument.computer_ip" title="Link to this definition">#</a></dt>
-<dd><p><strong>Type:</strong> str | None</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="nexusLIMS.db.models.Instrument.computer_mount">
-<span class="sig-name descname"><span class="pre">computer_mount</span></span><a class="headerlink" href="#nexusLIMS.db.models.Instrument.computer_mount" title="Link to this definition">#</a></dt>
-<dd><p><strong>Type:</strong> str | None</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -1244,17 +1217,13 @@ Useful for debugging or user profile displays.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.Instrument"><code class="docutils literal notranslate"><span class="pre">Instrument</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.Instrument.instrument_pid"><code class="docutils literal notranslate"><span class="pre">Instrument.instrument_pid</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.Instrument.api_url"><code class="docutils literal notranslate"><span class="pre">Instrument.api_url</span></code></a></li>
-<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.Instrument.calendar_name"><code class="docutils literal notranslate"><span class="pre">Instrument.calendar_name</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.Instrument.calendar_url"><code class="docutils literal notranslate"><span class="pre">Instrument.calendar_url</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.Instrument.location"><code class="docutils literal notranslate"><span class="pre">Instrument.location</span></code></a></li>
-<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.Instrument.schema_name"><code class="docutils literal notranslate"><span class="pre">Instrument.schema_name</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.Instrument.display_name"><code class="docutils literal notranslate"><span class="pre">Instrument.display_name</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.Instrument.property_tag"><code class="docutils literal notranslate"><span class="pre">Instrument.property_tag</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.Instrument.filestore_path"><code class="docutils literal notranslate"><span class="pre">Instrument.filestore_path</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.Instrument.harvester"><code class="docutils literal notranslate"><span class="pre">Instrument.harvester</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.Instrument.timezone_str"><code class="docutils literal notranslate"><span class="pre">Instrument.timezone_str</span></code></a></li>
-<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.Instrument.computer_name"><code class="docutils literal notranslate"><span class="pre">Instrument.computer_name</span></code></a></li>
-<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.Instrument.computer_ip"><code class="docutils literal notranslate"><span class="pre">Instrument.computer_ip</span></code></a></li>
-<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.Instrument.computer_mount"><code class="docutils literal notranslate"><span class="pre">Instrument.computer_mount</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.Instrument.session_logs"><code class="docutils literal notranslate"><span class="pre">Instrument.session_logs</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.Instrument.name"><code class="docutils literal notranslate"><span class="pre">Instrument.name</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.Instrument.timezone"><code class="docutils literal notranslate"><span class="pre">Instrument.timezone</span></code></a></li>

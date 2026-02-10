@@ -428,7 +428,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Feb, 08, 2026"/>
+    <meta name="docbuild:last-update" content="Feb, 10, 2026"/>
   </head>
   
   
@@ -901,24 +901,16 @@ window.addEventListener("load", load);
 <span class="sd">    api_url</span>
 <span class="sd">        Calendar API endpoint URL for this instrument&#39;s scheduler (e.g.,</span>
 <span class="sd">        `https://&lt;nemo_address&gt;/api/tools/?id=&lt;tool_id&gt;`)</span>
-<span class="sd">    calendar_name</span>
-<span class="sd">        User-friendly name displayed in the reservation system</span>
 <span class="sd">    calendar_url</span>
 <span class="sd">        URL to the instrument&#39;s web-accessible calendar</span>
 <span class="sd">    location</span>
 <span class="sd">        Physical location (building and room number)</span>
-<span class="sd">    schema_name</span>
-<span class="sd">        Human-readable name as displayed in NexusLIMS records</span>
+<span class="sd">    display_name</span>
+<span class="sd">        Human-readable instrument name displayed in NexusLIMS records</span>
 <span class="sd">    property_tag</span>
 <span class="sd">        Unique numeric identifier (for reference)</span>
 <span class="sd">    filestore_path</span>
 <span class="sd">        Relative path under NX_INSTRUMENT_DATA_PATH where data is stored</span>
-<span class="sd">    computer_name</span>
-<span class="sd">        Hostname of the support PC running Session Logger App</span>
-<span class="sd">    computer_ip</span>
-<span class="sd">        IP address of the support PC</span>
-<span class="sd">    computer_mount</span>
-<span class="sd">        Full path where central storage is mounted on support PC</span>
 <span class="sd">    harvester</span>
 <span class="sd">        Harvester module to use (&quot;nemo&quot; or &quot;sharepoint&quot;)</span>
 <span class="sd">    timezone_str</span>
@@ -932,21 +924,15 @@ window.addEventListener("load", load);
 
     <span class="c1"># Required fields</span>
     <span class="n">api_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">calendar_name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">calendar_url</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">location</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
-    <span class="n">schema_name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">display_name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">property_tag</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
     <span class="n">filestore_path</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">harvester</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">&quot;nemo&quot;</span><span class="p">)</span>
     <span class="n">timezone_str</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">sa_column_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;timezone&quot;</span><span class="p">},</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;America/New_York&quot;</span>
     <span class="p">)</span>
-
-    <span class="c1"># Optional fields</span>
-    <span class="n">computer_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">computer_ip</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">computer_mount</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 
     <span class="c1"># Relationships</span>
     <span class="n">session_logs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="s2">&quot;SessionLog&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Relationship</span><span class="p">(</span><span class="n">back_populates</span><span class="o">=</span><span class="s2">&quot;instrument_obj&quot;</span><span class="p">)</span>
@@ -966,15 +952,11 @@ window.addEventListener("load", load);
         <span class="k">return</span> <span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;Nexus Instrument: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="sa">f</span><span class="s2">&quot;API url:          </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;Calendar name:    </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">calendar_name</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="sa">f</span><span class="s2">&quot;Calendar url:     </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">calendar_url</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;Schema name:      </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">schema_name</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;Display name:     </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">display_name</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="sa">f</span><span class="s2">&quot;Location:         </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">location</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="sa">f</span><span class="s2">&quot;Property tag:     </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">property_tag</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="sa">f</span><span class="s2">&quot;Filestore path:   </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">filestore_path</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;Computer IP:      </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">computer_ip</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;Computer name:    </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">computer_name</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;Computer mount:   </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">computer_mount</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="sa">f</span><span class="s2">&quot;Harvester:        </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">harvester</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="sa">f</span><span class="s2">&quot;Timezone:         </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">timezone</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="p">)</span>
@@ -1071,15 +1053,11 @@ window.addEventListener("load", load);
         <span class="k">return</span> <span class="p">{</span>
             <span class="s2">&quot;instrument_pid&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">instrument_pid</span><span class="p">,</span>
             <span class="s2">&quot;api_url&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="p">,</span>
-            <span class="s2">&quot;calendar_name&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">calendar_name</span><span class="p">,</span>
             <span class="s2">&quot;calendar_url&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">calendar_url</span><span class="p">,</span>
             <span class="s2">&quot;location&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">location</span><span class="p">,</span>
-            <span class="s2">&quot;schema_name&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">schema_name</span><span class="p">,</span>
+            <span class="s2">&quot;display_name&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">display_name</span><span class="p">,</span>
             <span class="s2">&quot;property_tag&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">property_tag</span><span class="p">,</span>
             <span class="s2">&quot;filestore_path&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">filestore_path</span><span class="p">,</span>
-            <span class="s2">&quot;computer_name&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">computer_name</span><span class="p">,</span>
-            <span class="s2">&quot;computer_ip&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">computer_ip</span><span class="p">,</span>
-            <span class="s2">&quot;computer_mount&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">computer_mount</span><span class="p">,</span>
             <span class="s2">&quot;harvester&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">harvester</span><span class="p">,</span>
             <span class="s2">&quot;timezone&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">timezone_str</span><span class="p">,</span>
         <span class="p">}</span></div>

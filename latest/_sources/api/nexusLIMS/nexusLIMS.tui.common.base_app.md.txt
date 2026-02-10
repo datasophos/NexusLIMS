@@ -1,0 +1,189 @@
+# {py:mod}`nexusLIMS.tui.common.base_app`
+
+```{py:module} nexusLIMS.tui.common.base_app
+```
+
+```{autodoc2-docstring} nexusLIMS.tui.common.base_app
+:parser: autodoc2_docstrings_parser
+:allowtitles:
+```
+
+## Module Contents
+
+### Classes
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`HelpScreen <nexusLIMS.tui.common.base_app.HelpScreen>`
+  - ```{autodoc2-docstring} nexusLIMS.tui.common.base_app.HelpScreen
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`BaseNexusApp <nexusLIMS.tui.common.base_app.BaseNexusApp>`
+  - ```{autodoc2-docstring} nexusLIMS.tui.common.base_app.BaseNexusApp
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
+### API
+
+`````{py:class} HelpScreen(app_name: str, keybindings: list[tuple[str, str]], **kwargs)
+:canonical: nexusLIMS.tui.common.base_app.HelpScreen
+
+Bases: {py:obj}`textual.screen.Screen`
+
+```{autodoc2-docstring} nexusLIMS.tui.common.base_app.HelpScreen
+:parser: autodoc2_docstrings_parser
+```
+
+````{py:attribute} BINDINGS
+:canonical: nexusLIMS.tui.common.base_app.HelpScreen.BINDINGS
+:value: >
+   [('escape', 'dismiss', 'Close Help'), ('q', 'dismiss', 'Close Help')]
+
+**Type:** typing.ClassVar
+
+```{autodoc2-docstring} nexusLIMS.tui.common.base_app.HelpScreen.BINDINGS
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:method} compose()
+:canonical: nexusLIMS.tui.common.base_app.HelpScreen.compose
+
+```{autodoc2-docstring} nexusLIMS.tui.common.base_app.HelpScreen.compose
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:method} action_dismiss()
+:canonical: nexusLIMS.tui.common.base_app.HelpScreen.action_dismiss
+
+```{autodoc2-docstring} nexusLIMS.tui.common.base_app.HelpScreen.action_dismiss
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+`````
+
+`````{py:class} BaseNexusApp(**kwargs)
+:canonical: nexusLIMS.tui.common.base_app.BaseNexusApp
+
+Bases: {py:obj}`textual.app.App`
+
+```{autodoc2-docstring} nexusLIMS.tui.common.base_app.BaseNexusApp
+:parser: autodoc2_docstrings_parser
+```
+
+````{py:attribute} CSS_PATH
+:canonical: nexusLIMS.tui.common.base_app.BaseNexusApp.CSS_PATH
+
+**Type:** typing.ClassVar
+
+```{autodoc2-docstring} nexusLIMS.tui.common.base_app.BaseNexusApp.CSS_PATH
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} BINDINGS
+:canonical: nexusLIMS.tui.common.base_app.BaseNexusApp.BINDINGS
+:value: >
+   [('ctrl+t', 'toggle_theme', 'Toggle Theme'), ('ctrl+q', 'quit', 'Quit'), ('?', 'help', 'Help')]
+
+**Type:** typing.ClassVar
+
+```{autodoc2-docstring} nexusLIMS.tui.common.base_app.BaseNexusApp.BINDINGS
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:method} on_mount() -> None
+:canonical: nexusLIMS.tui.common.base_app.BaseNexusApp.on_mount
+
+```{autodoc2-docstring} nexusLIMS.tui.common.base_app.BaseNexusApp.on_mount
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:method} on_unmount() -> None
+:canonical: nexusLIMS.tui.common.base_app.BaseNexusApp.on_unmount
+
+```{autodoc2-docstring} nexusLIMS.tui.common.base_app.BaseNexusApp.on_unmount
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:method} action_toggle_theme() -> None
+:canonical: nexusLIMS.tui.common.base_app.BaseNexusApp.action_toggle_theme
+
+```{autodoc2-docstring} nexusLIMS.tui.common.base_app.BaseNexusApp.action_toggle_theme
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:method} action_help() -> None
+:canonical: nexusLIMS.tui.common.base_app.BaseNexusApp.action_help
+
+```{autodoc2-docstring} nexusLIMS.tui.common.base_app.BaseNexusApp.action_help
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:method} get_app_name() -> str
+:canonical: nexusLIMS.tui.common.base_app.BaseNexusApp.get_app_name
+
+```{autodoc2-docstring} nexusLIMS.tui.common.base_app.BaseNexusApp.get_app_name
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:method} get_keybindings() -> list[tuple[str, str]]
+:canonical: nexusLIMS.tui.common.base_app.BaseNexusApp.get_keybindings
+
+```{autodoc2-docstring} nexusLIMS.tui.common.base_app.BaseNexusApp.get_keybindings
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:method} show_error(message: str) -> None
+:canonical: nexusLIMS.tui.common.base_app.BaseNexusApp.show_error
+
+```{autodoc2-docstring} nexusLIMS.tui.common.base_app.BaseNexusApp.show_error
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:method} show_success(message: str) -> None
+:canonical: nexusLIMS.tui.common.base_app.BaseNexusApp.show_success
+
+```{autodoc2-docstring} nexusLIMS.tui.common.base_app.BaseNexusApp.show_success
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:method} show_warning(message: str) -> None
+:canonical: nexusLIMS.tui.common.base_app.BaseNexusApp.show_warning
+
+```{autodoc2-docstring} nexusLIMS.tui.common.base_app.BaseNexusApp.show_warning
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+`````

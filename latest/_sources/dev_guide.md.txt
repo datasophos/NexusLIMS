@@ -500,6 +500,7 @@ dev_guide/uv_migration
 dev_guide/database
 dev_guide/schema_documentation
 dev_guide/testing/integration-tests
+reference/textual_testing_reference
 ```
 
 ---
