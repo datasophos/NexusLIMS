@@ -46,6 +46,8 @@ Click on any column header to sort by that column. Click again to reverse the so
 Press `/` to focus the filter input, then type to search across all fields:
 
 <video src="../_images/demo_search_filter.mp4" width="100%" controls autoplay muted loop></video>
+<!-- this hidden span is so Sphinx will properly copy the video to the right location -->
+<span style="display: none;">![search filter](../images/tui/recordings/demo_search_filter.mp4)</span>
 
 The filter searches across all instrument fields (PID, location, display name, etc.).
 
@@ -54,6 +56,8 @@ The filter searches across all instrument fields (PID, location, display name, e
 Press `a` to open the add instrument form:
 
 <video src="../_images/demo_add_instrument.mp4" width="100%" controls autoplay muted loop></video>
+<!-- this hidden span is so Sphinx will properly copy the video to the right location -->
+<span style="display: none;">![add instrument](../images/tui/recordings/demo_add_instrument.mp4)</span>
 
 The form includes:
 
@@ -90,6 +94,9 @@ Select an instrument and press `e` to edit:
 
 <video src="../_images/demo_edit_instrument.mp4" width="100%" controls autoplay muted loop></video>
 
+<!-- this hidden span is so Sphinx will properly copy the video to the right location -->
+<span style="display: none;">![edit instrument](../images/tui/recordings/demo_edit_instrument.mp4)</span>
+
 The edit form is identical to the add form, but pre-filled with the instrument's current values.
 
 ## Deleting Instruments
@@ -97,6 +104,8 @@ The edit form is identical to the add form, but pre-filled with the instrument's
 Select an instrument and press `d` to delete:
 
 <video src="../_images/demo_delete_instrument.mp4" width="100%" controls autoplay muted loop></video>
+<!-- this hidden span is so Sphinx will properly copy the video to the right location -->
+<span style="display: none;">![delete instrument](../images/tui/recordings/demo_delete_instrument.mp4)</span>
 
 A confirmation dialog will appear before deletion. This action cannot be undone.
 
@@ -107,6 +116,8 @@ A confirmation dialog will appear before deletion. This action cannot be undone.
 Press `Ctrl+T` to toggle between dark and light themes:
 
 <video src="../_images/demo_theme_switch.mp4" width="100%" controls autoplay muted loop></video>
+<!-- this hidden span is so Sphinx will properly copy the video to the right location -->
+<span style="display: none;">![theme switch](../images/tui/recordings/demo_theme_switch.mp4)</span>
 
 ## Help Screen
 
