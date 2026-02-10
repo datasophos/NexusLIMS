@@ -6,6 +6,7 @@ management, help screens, and error notifications.
 """
 
 import logging
+from pathlib import Path
 from typing import ClassVar
 
 from sqlmodel import Session
@@ -86,127 +87,7 @@ class BaseNexusApp(App):
     - Override get_keybindings() to add app-specific bindings
     """
 
-    # CSS using Textual's built-in design system variables
-    # Colors automatically adapt to dark/light mode via self.dark property
-    CSS = """
-    /* DataTable styling */
-    DataTable {
-        height: 1fr;
-        border: solid $primary;
-    }
-
-    DataTable > .datatable--header {
-        background: $primary;
-        color: $background;
-        text-style: bold;
-    }
-
-    DataTable > .datatable--cursor {
-        background: $accent 20%;
-    }
-
-    /* Form layout */
-    #form-container {
-        width: 100%;
-        height: 100%;
-        padding: 1 2;
-        overflow-y: auto;
-    }
-
-    #form-fields {
-        width: 100%;
-        height: auto;
-        margin-bottom: 1;
-    }
-
-    .form-title {
-        text-style: bold;
-        margin-bottom: 1;
-        text-align: center;
-        color: $primary;
-    }
-
-    .field-label {
-        margin-top: 1;
-    }
-
-    .field-help {
-        color: $text-muted;
-        text-style: italic;
-        margin-bottom: 1;
-    }
-
-    .field-error {
-        color: $error;
-        margin-top: 1;
-        display: none;
-    }
-
-    .field-error.visible {
-        display: block;
-    }
-
-    #form-error {
-        color: $error;
-        background: $error 10%;
-        border: solid $error;
-        padding: 1;
-        margin: 1 0;
-        display: none;
-    }
-
-    #form-error.visible {
-        display: block;
-    }
-
-    #form-buttons {
-        height: auto;
-        align: center middle;
-        margin-top: 1;
-    }
-
-    /* Input styling */
-    Input {
-        width: 100%;
-        margin-bottom: 1;
-    }
-
-    Input:focus {
-        border: tall $accent;
-    }
-
-    Input.error {
-        border: tall $error;
-    }
-
-    /* Button styling */
-    Button {
-        margin: 0 1;
-    }
-
-    Button:focus {
-        text-style: bold;
-    }
-
-    /* General layout */
-    Label {
-        width: 100%;
-    }
-
-    Static {
-        width: 100%;
-    }
-
-    Vertical {
-        width: 100%;
-        height: auto;
-    }
-
-    Horizontal {
-        width: 100%;
-        height: auto;
-    }
-    """
+    CSS_PATH: ClassVar = [Path(__file__).parent.parent / "styles" / "base_app.tcss"]
 
     BINDINGS: ClassVar = [
         ("ctrl+t", "toggle_theme", "Toggle Theme"),
@@ -223,13 +104,14 @@ class BaseNexusApp(App):
 
     def on_mount(self) -> None:
         """Set up database connection."""
-        # Create database session
-        try:
-            self.db_session = Session(get_engine())
-            _logger.debug("Database session created")
-        except Exception as e:
-            _logger.exception("Failed to create database session")
-            self.show_error(f"Database connection failed: {e}")
+        # Create database session (if not already set by subclass)
+        if self.db_session is None:
+            try:
+                self.db_session = Session(get_engine())
+                _logger.debug("Database session created")
+            except Exception as e:
+                _logger.exception("Failed to create database session")
+                self.show_error(f"Database connection failed: {e}")
 
     def on_unmount(self) -> None:
         """Clean up database connection."""

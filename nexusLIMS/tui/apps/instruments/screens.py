@@ -4,6 +4,9 @@ Screens for the instrument management TUI application.
 Provides List, Add, Edit, and Delete screens for instrument CRUD operations.
 """
 
+from pathlib import Path
+from typing import ClassVar
+
 import pytz
 from sqlmodel import select
 from textual.app import ComposeResult
@@ -32,49 +35,12 @@ from nexusLIMS.tui.common.widgets import AutocompleteInput, FormField, NumpadInp
 class WelcomeDialog(ModalScreen):
     """Welcome dialog shown when instruments table is empty."""
 
-    DEFAULT_CSS = """
-    WelcomeDialog {
-        align: center middle;
-    }
-
-    #welcome-dialog {
-        width: 70;
-        height: auto;
-        border: thick $primary;
-        background: $surface;
-        padding: 2;
-    }
-
-    #welcome-title {
-        text-align: center;
-        text-style: bold;
-        color: $primary;
-        margin-bottom: 1;
-    }
-
-    #welcome-message {
-        margin: 1 0;
-    }
-
-    #welcome-buttons {
-        width: 100%;
-        height: auto;
-        align-horizontal: center;
-        margin-top: 1;
-        grid-gutter: 1 0;
-    }
-
-    #add-btn {
-        min-width: 30;
-        width: auto;
-    }
-
-    #close-btn {
-        min-width: 30;
-        width: auto;
-    }
-
-    """
+    CSS_PATH: ClassVar = [
+        Path(__file__).parent.parent.parent
+        / "styles"
+        / "instruments"
+        / "welcome_dialog.tcss"
+    ]
 
     def compose(self) -> ComposeResult:
         """Compose the welcome dialog."""
@@ -246,6 +212,10 @@ class InstrumentAddScreen(BaseFormScreen):
     # Disable auto-focus to prevent scrolling to first input
     AUTO_FOCUS = ""
 
+    CSS_PATH: ClassVar = [
+        Path(__file__).parent.parent.parent / "styles" / "instruments" / "screens.tcss"
+    ]
+
     def __init__(self, **kwargs):
         """Initialize add screen."""
         super().__init__(title="Add New Instrument", **kwargs)
@@ -258,110 +228,109 @@ class InstrumentAddScreen(BaseFormScreen):
         first_input.focus(scroll_visible=False)
 
     def get_form_fields(self) -> ComposeResult:
-        """Generate form fields for instrument creation."""
-        # Required fields
-        yield FormField(
-            "Instrument PID",
-            NumpadInput(
-                placeholder=self.examples["instrument_pid"],
-                id="instrument_pid",
-            ),
-            required=True,
-            help_text=f"Unique identifier (e.g., {self.examples['instrument_pid']})",
-        )
+        """Generate form fields for instrument creation in two columns."""
+        with Vertical(classes="form-column"):
+            yield FormField(
+                "Instrument PID",
+                NumpadInput(
+                    placeholder=self.examples["instrument_pid"],
+                    id="instrument_pid",
+                ),
+                required=True,
+                help_text=(
+                    f"Unique identifier (e.g., {self.examples['instrument_pid']})"
+                ),
+            )
+            yield FormField(
+                "API URL",
+                Input(
+                    placeholder=self.examples["api_url"],
+                    id="api_url",
+                ),
+                required=True,
+                help_text=(
+                    f"Calendar API endpoint URL (e.g., {self.examples['api_url']})"
+                ),
+            )
+            yield FormField(
+                "Calendar URL",
+                Input(
+                    placeholder=self.examples["calendar_url"],
+                    id="calendar_url",
+                ),
+                required=True,
+                help_text=(
+                    "Web-accessible calendar URL"
+                    f" (e.g., {self.examples['calendar_url']})"
+                ),
+            )
+            yield FormField(
+                "Location",
+                Input(
+                    placeholder=self.examples["location"],
+                    id="location",
+                ),
+                required=True,
+                help_text=f"Physical location (e.g., {self.examples['location']})",
+            )
+            yield FormField(
+                "Display Name",
+                Input(
+                    placeholder=self.examples["display_name"],
+                    id="display_name",
+                ),
+                required=True,
+                help_text=(
+                    f"Human-readable instrument name for NexusLIMS records "
+                    f"(e.g., {self.examples['display_name']})"
+                ),
+            )
 
-        yield FormField(
-            "API URL",
-            Input(
-                placeholder=self.examples["api_url"],
-                id="api_url",
-            ),
-            required=True,
-            help_text=f"Calendar API endpoint URL (e.g., {self.examples['api_url']})",
-        )
-
-        yield FormField(
-            "Calendar URL",
-            Input(
-                placeholder=self.examples["calendar_url"],
-                id="calendar_url",
-            ),
-            required=True,
-            help_text=(
-                f"Web-accessible calendar URL (e.g., {self.examples['calendar_url']})"
-            ),
-        )
-
-        yield FormField(
-            "Location",
-            Input(
-                placeholder=self.examples["location"],
-                id="location",
-            ),
-            required=True,
-            help_text=f"Physical location (e.g., {self.examples['location']})",
-        )
-
-        yield FormField(
-            "Display Name",
-            Input(
-                placeholder=self.examples["display_name"],
-                id="display_name",
-            ),
-            required=True,
-            help_text=(
-                f"Human-readable instrument name for NexusLIMS records "
-                f"(e.g., {self.examples['display_name']})"
-            ),
-        )
-
-        yield FormField(
-            "Property Tag",
-            Input(
-                placeholder=self.examples["property_tag"],
-                id="property_tag",
-            ),
-            required=True,
-            help_text=(
-                f"Unique numeric identifier (e.g., {self.examples['property_tag']})"
-            ),
-        )
-
-        yield FormField(
-            "Filestore Path",
-            Input(
-                placeholder=self.examples["filestore_path"],
-                id="filestore_path",
-            ),
-            required=True,
-            help_text=(
-                f"Relative path under NX_INSTRUMENT_DATA_PATH "
-                f"(e.g., {self.examples['filestore_path']})"
-            ),
-        )
-
-        yield FormField(
-            "Harvester",
-            Select(
-                [("nemo", "nemo")],
-                value="nemo",
-                id="harvester",
-            ),
-            required=True,
-            help_text='Harvester module ("nemo" is the only option, currently)',
-        )
-
-        yield FormField(
-            "Timezone",
-            AutocompleteInput(
-                suggestions=pytz.common_timezones,
-                placeholder=self.examples["timezone_str"],
-                value="America/New_York",
-                id="timezone_str",
-            ),
-            required=True,
-            help_text="IANA timezone (e.g., America/New_York)",
-        )
+        with Vertical(classes="form-column"):
+            yield FormField(
+                "Property Tag",
+                Input(
+                    placeholder=self.examples["property_tag"],
+                    id="property_tag",
+                ),
+                required=True,
+                help_text=(
+                    f"Unique numeric identifier (e.g., {self.examples['property_tag']})"
+                ),
+            )
+            yield FormField(
+                "Filestore Path",
+                Input(
+                    placeholder=self.examples["filestore_path"],
+                    id="filestore_path",
+                ),
+                required=True,
+                help_text=(
+                    f"Relative path under NX_INSTRUMENT_DATA_PATH "
+                    f"(e.g., {self.examples['filestore_path']})"
+                ),
+            )
+            yield FormField(
+                "Harvester",
+                Select(
+                    [("nemo", "nemo")],
+                    value="nemo",
+                    id="harvester",
+                ),
+                required=True,
+                help_text='Harvester module ("nemo" is the only option, currently)',
+            )
+            yield FormField(
+                "Timezone",
+                AutocompleteInput(
+                    suggestions=pytz.common_timezones,
+                    placeholder=self.examples["timezone_str"],
+                    value="America/New_York",
+                    id="timezone_str",
+                ),
+                required=True,
+                help_text="IANA timezone (e.g., America/New_York)",
+            )
 
     def collect_form_data(self) -> dict:
         """Collect data from form fields."""

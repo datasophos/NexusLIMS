@@ -72,6 +72,18 @@ jobs:
       - name: Install dependencies
         run: uv sync
 
+      - name: Install VHS
+        run: |
+          if ! command -v vhs &> /dev/null; then
+            echo "Installing VHS..."
+            wget https://github.com/charmbracelet/vhs/releases/download/v0.7.2/vhs-linux-amd64 -O /tmp/vhs
+            chmod +x /tmp/vhs
+            sudo mv /tmp/vhs /usr/local/bin/vhs
+            vhs --version
+          else
+            echo "VHS already installed: $(vhs --version)"
+          fi
+
       - name: Download coverage artifact from test workflow
         if: github.event_name == 'workflow_run'
         # Download coverage artifact from the workflow_run that triggered this

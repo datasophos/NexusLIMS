@@ -1,0 +1,40 @@
+WelcomeDialog {
+    align: center middle;
+}
+
+#welcome-dialog {
+    width: 70;
+    height: auto;
+    border: thick $primary;
+    background: $surface;
+    padding: 2;
+}
+
+#welcome-title {
+    text-align: center;
+    text-style: bold;
+    color: $primary;
+    margin-bottom: 1;
+}
+
+#welcome-message {
+    margin: 1 0;
+}
+
+#welcome-buttons {
+    width: 100%;
+    height: auto;
+    align-horizontal: center;
+    margin-top: 1;
+    grid-gutter: 1 0;
+}
+
+#add-btn {
+    min-width: 30;
+    width: auto;
+}
+
+#close-btn {
+    min-width: 30;
+    width: auto;
+}

@@ -117,25 +117,25 @@ def main():
     instruments in the NexusLIMS database. Provides form validation,
     uniqueness checks, and confirmation prompts for destructive actions.
 
-    Keybindings
-    -----------
-    - a: Add new instrument
-    - e: Edit selected instrument
-    - d: Delete selected instrument
-    - r: Refresh list
-    - Ctrl+T: Toggle theme (dark/light)
-    - ?: Show help
-    - Ctrl+Q / q: Quit
+    \b
+    Keybindings:
+    ------------
+      - a         Add new instrument
+      - e         Edit selected instrument
+      - d         Delete selected instrument
+      - r         Refresh list
+      - Ctrl+T    Toggle theme (dark/light)
+      - ?         Show help
+      - Ctrl+Q    Quit
 
-    Examples
+    \b
+    Example:
     --------
-    Launch the TUI::
-
-        $ nexuslims-manage-instruments
+      $ nexuslims-manage-instruments
 
     The TUI will display a table of all instruments. Use arrow keys to
     navigate and press Enter or 'e' to edit the selected instrument.
-    """
+    """  # noqa: D301
     # Configure logging (quiet for TUI mode)
     logging.basicConfig(
         level=logging.WARNING,

@@ -73,6 +73,36 @@ class TestBaseListScreen:
             assert screen._sort_column == "Name"
             assert screen._sort_reverse is True
 
+    async def test_cycle_sort_empty_columns(self):
+        """Test action_cycle_sort early return when screen has no columns."""
+
+        class EmptyListScreen(BaseListScreen):
+            def get_columns(self):
+                return []
+
+            def get_data(self):
+                return []
+
+            def on_row_selected(self, row_key, row_data):
+                pass
+
+        from nexusLIMS.tui.common.base_app import BaseNexusApp
+
+        class TestApp(BaseNexusApp):
+            def on_mount(self):
+                self.push_screen(EmptyListScreen())
+
+        app = TestApp()
+        async with app.run_test() as pilot:
+            await pilot.pause(0.1)
+            screen = app.screen
+
+            # _sort_column should remain None after pressing 's' with no columns
+            assert screen._sort_column is None
+            await pilot.press("s")
+            await pilot.pause(0.05)
+            assert screen._sort_column is None
+
     async def test_filter_rows_empty_result(self):
         """Test filtering that results in no matches (line 97)."""
 

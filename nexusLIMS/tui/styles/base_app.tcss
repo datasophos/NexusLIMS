@@ -1,0 +1,111 @@
+/* DataTable styling */
+DataTable {
+    height: 1fr;
+    border: solid $primary;
+}
+
+DataTable > .datatable--header {
+    background: $primary;
+    color: $background;
+    text-style: bold;
+}
+
+DataTable > .datatable--cursor {
+    background: $accent 20%;
+}
+
+/* Form layout */
+#form-container {
+    width: 100%;
+    height: 100%;
+    padding: 0 1;
+    overflow-y: auto;
+}
+
+#form-fields {
+    width: 100%;
+    height: auto;
+    margin-bottom: 0;
+}
+
+.form-title {
+    text-style: bold;
+    margin: 0 0 1 0;
+    text-align: center;
+    color: $primary;
+}
+
+.field-label {
+    margin: 0;
+}
+
+.field-help {
+    color: $text-muted;
+    text-style: italic;
+    margin: 0;
+}
+
+.field-error {
+    color: $error;
+    margin: 0;
+    display: none;
+}
+
+.field-error.visible {
+    display: block;
+}
+
+#form-error {
+    color: $error;
+    background: $error 10%;
+    border: solid $error;
+    padding: 0 1;
+    display: none;
+}
+
+#form-error.visible {
+    display: block;
+}
+
+#form-buttons {
+    height: auto;
+    align: center middle;
+    margin-top: 1;
+}
+
+#form-buttons Button {
+    margin: 0 2;
+}
+
+/* Input styling */
+Input:focus {
+    border: tall $accent;
+}
+
+Input.error {
+    border: tall $error;
+}
+
+/* Button styling */
+Button:focus {
+    text-style: bold;
+}
+
+/* General layout */
+Label {
+    width: 100%;
+}
+
+Static {
+    width: 100%;
+}
+
+Vertical {
+    width: 100%;
+    height: auto;
+}
+
+Horizontal {
+    width: 100%;
+    height: auto;
+}

@@ -79,6 +79,7 @@ dev = [
     "sphinx-autobuild>=2025.8.25",
     "sphinx-copybutton>=0.5.2",
     "pytest-asyncio>=1.3.0",
+    "textual-dev>=1.8.0",
 ]
 
 [project.urls]
@@ -176,6 +177,7 @@ showcontent = true
 relative_files = true
 omit = [
     "nexusLIMS/dev_scripts/*",
+    "nexusLIMS/tui/demo_helpers.py",
     "tests/dev/*",
 ]
 

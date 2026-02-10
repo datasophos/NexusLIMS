@@ -87,6 +87,11 @@ docs/_static/db_schema.dot
 docs/_static/db_schema.png
 docs/dev_guide/db_schema_diagram.md
 
+# Generated TUI demos (regenerated during docs build)
+docs/images/tui/recordings/*.gif
+docs/images/tui/recordings/*.mp4
+docs/images/tui/screenshots/*.svg
+
 # pip installation files
 *.egg-info
 

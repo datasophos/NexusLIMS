@@ -1,0 +1,16 @@
+/* InstrumentAddScreen and InstrumentEditScreen */
+
+#form-fields {
+    height: auto;
+}
+
+.form-column {
+    width: 1fr;
+    height: auto;
+    padding: 0 1;
+}
+
+FormField {
+    height: auto;
+    margin: 1 0 0 0;
+}

@@ -4,6 +4,7 @@
 # Parse arguments
 STRICT_MODE=""
 WATCH_MODE=""
+SKIP_TUI_DEMOS=""
 
 while [[ $# -gt 0 ]]; do
     case $1 in
@@ -15,11 +16,16 @@ while [[ $# -gt 0 ]]; do
             STRICT_MODE="-W --keep-going"
             shift
             ;;
+        --skip-tui-demos)
+            SKIP_TUI_DEMOS="1"
+            shift
+            ;;
         *)
             echo "Unknown option: $1"
-            echo "Usage: $0 [--watch] [--strict]"
-            echo "  --watch   Auto-rebuild on file changes"
-            echo "  --strict  Treat warnings as errors (recommended for CI)"
+            echo "Usage: $0 [--watch] [--strict] [--skip-tui-demos]"
+            echo "  --watch          Auto-rebuild on file changes"
+            echo "  --strict         Treat warnings as errors (recommended for CI)"
+            echo "  --skip-tui-demos Skip TUI demo generation (faster builds)"
             exit 1
             ;;
     esac
@@ -36,6 +42,17 @@ else
     uv run python scripts/generate_db_diagrams.py
     echo ""
 
+    # Generate TUI demonstrations (unless skipped)
+    if [[ -z "$SKIP_TUI_DEMOS" ]]; then
+        echo "Generating TUI demonstrations..."
+        uv run python scripts/generate_tui_demos.py
+        echo ""
+    else
+        export NX_DOCS_SKIP_TUI_DEMOS=1
+        echo "Skipping TUI demo generation (--skip-tui-demos flag set)"
+        echo ""
+    fi
+
     echo "Building documentation..."
     if [[ -n "$STRICT_MODE" ]]; then
         echo "Running in strict mode (warnings as errors)..."
@@ -47,4 +64,5 @@ else
     echo ""
     echo "Tip: Run './scripts/build_docs.sh --watch' for auto-rebuild on changes"
     echo "Tip: Run './scripts/build_docs.sh --strict' to treat warnings as errors (CI mode)"
+    echo "Tip: Run './scripts/build_docs.sh --skip-tui-demos' for faster local builds"
 fi

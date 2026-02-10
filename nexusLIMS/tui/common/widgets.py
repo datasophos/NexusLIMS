@@ -218,7 +218,7 @@ class FormField(Vertical):
     ----------
     label_text : str
         Field label text
-    input_widget : Input
+    input_widget : textual.widgets.Input
         Input widget (ValidatedInput, AutocompleteInput, etc.)
     required : bool
         Whether field is required
@@ -249,7 +249,7 @@ class FormField(Vertical):
         ----------
         label_text : str
             Label text for the field
-        input_widget : Input
+        input_widget : textual.widgets.Input
             Input widget to use
         required : bool
             Whether field is required

@@ -159,6 +159,50 @@ class TestInstrumentManagerApp:
         assert "d" in keybinding_strs  # Delete
         assert "r" in keybinding_strs  # Refresh
 
+    async def test_app_custom_db_path_creates_session(self, tmp_path):
+        """Test that providing db_path creates its own engine and session."""
+        from sqlmodel import SQLModel
+
+        db_path = tmp_path / "custom.db"
+        engine = create_engine(f"sqlite:///{db_path}")
+        SQLModel.metadata.create_all(engine)
+
+        app = InstrumentManagerApp(db_path=db_path)
+        async with app.run_test() as pilot:
+            await pilot.pause(0.1)
+
+            # Session should be set and use the custom db
+            assert app.db_session is not None
+            assert str(db_path) in app.title
+
+    async def test_app_custom_db_path_connection_failure(self, monkeypatch):
+        """Test that a failing custom db_path calls show_error and returns early."""
+        from pathlib import Path
+
+        errors = []
+
+        def mock_show_error(msg):
+            errors.append(msg)
+
+        # Use an invalid path to force create_engine to fail on session creation
+        app = InstrumentManagerApp(db_path=Path("/nonexistent/path/db.sqlite"))
+        monkeypatch.setattr(app, "show_error", mock_show_error)
+
+        # Patch Session to raise on construction
+        def failing_session(_engine):
+            msg = "Simulated connection failure"
+            raise RuntimeError(msg)
+
+        monkeypatch.setattr(
+            "nexusLIMS.tui.apps.instruments.app.Session", failing_session
+        )
+
+        async with app.run_test() as pilot:
+            await pilot.pause(0.1)
+
+        assert len(errors) == 1
+        assert "Database connection failed" in errors[0]
+
 
 class TestWelcomeDialog:
     """Tests for WelcomeDialog shown when instruments table is empty."""
@@ -1047,6 +1091,47 @@ class TestManualAppWorkflows:
 
         # Verify we're back on the list screen
         assert isinstance(app.screen, InstrumentListScreen)
+
+    async def test_sorting_on_list_page(self, app_setup):
+        """Test cycle_sort action covers all branches."""
+        app, pilot, _ = app_setup
+        screen = app.screen
+        columns = screen.get_columns()
+
+        # Branch 1: _sort_column is None -> sort by first column ascending
+        assert screen._sort_column is None
+        await pilot.press("s")
+        await pilot.pause(0.05)
+        assert screen._sort_column == columns[0]
+        assert screen._sort_reverse is False
+
+        # Branch 2: same column, not reversed -> toggle to descending
+        await pilot.press("s")
+        await pilot.pause(0.05)
+        assert screen._sort_column == columns[0]
+        assert screen._sort_reverse is True
+
+        # Branch 3: same column, reversed -> advance to next column ascending
+        await pilot.press("s")
+        await pilot.pause(0.05)
+        assert screen._sort_column == columns[1]
+        assert screen._sort_reverse is False
+
+        # Branch 4: _sort_column not in columns -> fallback to first column
+        screen._sort_column = "nonexistent_column"
+        screen._sort_reverse = False
+        await pilot.press("s")
+        await pilot.pause(0.05)
+        assert screen._sort_column == columns[0]
+        assert screen._sort_reverse is False
+
+        # Branch 5: wrap around at last column (descending -> next wraps to first)
+        screen._sort_column = columns[-1]
+        screen._sort_reverse = True
+        await pilot.press("s")
+        await pilot.pause(0.05)
+        assert screen._sort_column == columns[0]
+        assert screen._sort_reverse is False
 
     async def test_add_instrument(self, app_setup):
         """Test adding an instrument."""

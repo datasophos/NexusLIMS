@@ -147,8 +147,9 @@ To ensure your data is properly captured:
 
 user_guide/getting_started
 user_guide/configuration
-user_guide/record_building
 user_guide/cli_reference
+user_guide/record_building
+user_guide/instrument_manager
 user_guide/migrations
 user_guide/extractors
 user_guide/exporters

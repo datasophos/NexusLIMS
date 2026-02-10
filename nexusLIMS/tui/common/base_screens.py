@@ -6,6 +6,7 @@ forms, and confirmation dialogs.
 """
 
 from abc import abstractmethod
+from pathlib import Path
 from typing import ClassVar
 
 from textual import on
@@ -31,11 +32,14 @@ class BaseListScreen(Screen):
     - Header and footer
     """
 
+    CSS_PATH: ClassVar = [Path(__file__).parent.parent / "styles" / "base_screens.tcss"]
+
     BINDINGS: ClassVar = [
         ("a", "add", "Add"),
         ("e", "edit", "Edit"),
         ("d", "delete", "Delete"),
         ("r", "refresh", "Refresh"),
+        ("s", "cycle_sort", "Sort"),
         ("q", "quit", "Quit"),
         ("?", "help", "Help"),
         ("/", "focus_filter", "Filter"),
@@ -130,6 +134,37 @@ class BaseListScreen(Screen):
     def action_focus_filter(self) -> None:
         """Focus the filter input."""
         self.query_one("#filter-input", Input).focus()
+
+    def action_cycle_sort(self) -> None:
+        """Cycle through sort columns (press 's' repeatedly to change column)."""
+        columns = self.get_columns()
+        if not columns:
+            return
+
+        if self._sort_column is None:
+            # Start sorting by first column
+            self._sort_column = columns[0]
+            self._sort_reverse = False
+        elif self._sort_column in columns:
+            current_index = columns.index(self._sort_column)
+            if self._sort_reverse:
+                # Move to next column, ascending
+                next_index = (current_index + 1) % len(columns)
+                self._sort_column = columns[next_index]
+                self._sort_reverse = False
+            else:
+                # Toggle to descending for current column
+                self._sort_reverse = True
+        else:
+            # Fallback: start from first column
+            self._sort_column = columns[0]
+            self._sort_reverse = False
+
+        self._apply_filter()
+
+        # Show notification about current sort
+        direction = "↓" if self._sort_reverse else "↑"
+        self.app.notify(f"Sorting by: {self._sort_column} {direction}", timeout=1)
 
     @abstractmethod
     def get_columns(self) -> list[str]:
@@ -258,7 +293,7 @@ class BaseFormScreen(Screen):
             yield Label(self.screen_title, classes="form-title")
 
             # Form fields (subclass provides these)
-            with Vertical(id="form-fields"):
+            with Horizontal(id="form-fields"):
                 yield from self.get_form_fields()
 
             # Error display
@@ -371,33 +406,7 @@ class ConfirmDialog(ModalScreen[bool]):
         Dialog title
     """
 
-    DEFAULT_CSS = """
-    ConfirmDialog {
-        align: center middle;
-    }
-
-    #dialog {
-        width: 60;
-        height: auto;
-        border: thick $primary;
-        background: $surface;
-        padding: 1 2;
-    }
-
-    #message {
-        margin-bottom: 1;
-    }
-
-    #buttons {
-        width: 100%;
-        height: auto;
-        align: center middle;
-    }
-
-    Button {
-        margin: 0 1;
-    }
-    """
+    CSS_PATH: ClassVar = [Path(__file__).parent.parent / "styles" / "base_screens.tcss"]
 
     def __init__(self, message: str, title: str = "Confirm", **kwargs):
         """Initialize confirmation dialog."""
