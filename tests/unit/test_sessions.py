@@ -1,7 +1,6 @@
 """Tests functionality related to handling of session objects."""
 
 # pylint: disable=missing-function-docstring
-# ruff: noqa: D102
 
 from datetime import datetime as dt
 from uuid import uuid4

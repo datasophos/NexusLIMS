@@ -165,8 +165,11 @@ class TestInitCommand:
     def test_init_requires_env_var(self, cli_runner, monkeypatch):
         """Test that init command requires NX_DB_PATH environment variable."""
         monkeypatch.delenv("NX_DB_PATH", raising=False)
-        cli = _cli()
-        result = cli_runner.invoke(cli, ["init"])
+
+        # Patch load_dotenv to prevent reloading .env file
+        with mock.patch("dotenv.load_dotenv"):
+            cli = _cli()
+            result = cli_runner.invoke(cli, ["init"])
 
         assert result.exit_code == 1
         assert "NX_DB_PATH environment variable is not set" in result.output

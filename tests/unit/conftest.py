@@ -1,7 +1,6 @@
 """Set up pytest configuration."""
 
 # pylint: disable=unused-argument
-# ruff: noqa: ARG001
 
 import contextlib
 import os

@@ -1,6 +1,7 @@
 """Tests for common TUI validation functions."""
 
 from nexusLIMS.tui.common.validators import (
+    _find_similar_timezones,
     validate_ip_address,
     validate_max_length,
     validate_path,
@@ -146,6 +147,35 @@ class TestValidateUrl:
         assert is_valid is False
         assert "required" in error.lower()
 
+    def test_missing_netloc(self):
+        """Test validation fails for URL with scheme but no netloc (line 136)."""
+        # This URL has a scheme but no netloc (network location)
+        is_valid, error = validate_url("http://", "Test URL")
+        assert is_valid is False
+        assert "not a valid URL" in error
+
+    def test_valid_url_returns_true(self):
+        """Test that valid URL returns (True, '') (line 137)."""
+        # This specifically tests the return True, "" path
+        is_valid, error = validate_url("https://valid-site.com/path", "API URL")
+        assert is_valid is True
+        assert error == ""
+
+    def test_malformed_url_exception(self):
+        """Test that malformed URL triggers exception handler (lines 138-139)."""
+        # URLs with special characters or invalid formats that might raise exceptions
+        # Test with some edge cases that could cause urlparse to behave unexpectedly
+        test_cases = [
+            "http://[invalid",  # Invalid IPv6 format
+            "https://user:pass@:port/path",  # Invalid port specification
+        ]
+
+        for test_url in test_cases:
+            is_valid, error = validate_url(test_url, "Test URL")
+            # Should either fail validation or be caught by exception handler
+            # Both result in False being returned
+            assert is_valid is False or error != ""
+
 
 class TestValidatePath:
     """Tests for validate_path function."""
@@ -235,3 +265,36 @@ class TestValidateIpAddress:
         is_valid, error = validate_ip_address("")
         assert is_valid is True
         assert error == ""
+
+
+class TestFindSimilarTimezones:
+    """Tests for _find_similar_timezones function."""
+
+    def test_limit_triggers_break(self):
+        """Test that break statement is hit when limit is reached (line 107)."""
+        # Use "America" which matches many timezones, with a small limit
+        # This ensures we hit more than 'limit' matches and trigger the break
+        result = _find_similar_timezones("America", limit=3)
+
+        # Should return exactly 3 matches (limit)
+        assert len(result) == 3
+
+        # All should contain "America"
+        for tz in result:
+            assert "america" in tz.lower()
+
+    def test_no_limit_break(self):
+        """Test that function works when matches are fewer than limit."""
+        # Use a very specific string that matches few timezones
+        result = _find_similar_timezones("America/New_York", limit=10)
+
+        # Should return 1 match (fewer than limit, so break never triggers)
+        assert len(result) == 1
+        assert result[0] == "America/New_York"
+
+    def test_default_limit(self):
+        """Test default limit of 5."""
+        result = _find_similar_timezones("Europe")
+
+        # Should return exactly 5 matches (default limit)
+        assert len(result) == 5

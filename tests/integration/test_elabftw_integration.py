@@ -245,7 +245,7 @@ class TestELabFTWClientIntegration:
         """Test creating experiment with tags and extra_fields metadata."""
         # Build metadata using the destination's method
         destination = ELabFTWDestination()
-        metadata = destination._build_metadata(export_context_elabftw)  # noqa: SLF001
+        metadata = destination._build_metadata(export_context_elabftw)
 
         # Create experiment with tags and extra_fields metadata
         # Note: Using "NexusLIMS" with proper capitalization because eLabFTW

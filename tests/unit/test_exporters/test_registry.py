@@ -1,4 +1,3 @@
-# ruff: noqa: SLF001
 """Unit tests for the exporter registry and plugin discovery."""
 
 from datetime import datetime

@@ -312,7 +312,7 @@ class BaseFormScreen(Screen):
         if errors:
             # Show errors
             error_static = self.query_one("#form-error", Static)
-            error_messages = "\n".join(f"• {msg}" for msg in errors.values())
+            error_messages = "\n".join(f"  • {msg}" for msg in errors.values())
             error_static.update(f"Validation errors:\n{error_messages}")
             error_static.add_class("visible")
         else:

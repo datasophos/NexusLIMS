@@ -21,7 +21,7 @@ if "NX_DB_PATH" not in os.environ or not Path(os.environ["NX_DB_PATH"]).is_absol
     _DEFAULT_TEST_DB_SET = True
 
 
-def pytest_sessionfinish(session, exitstatus):  # noqa: ARG001
+def pytest_sessionfinish(session, exitstatus):
     """Clean up the temp NX_DB_PATH used for tests."""
     if not _DEFAULT_TEST_DB_SET:
         return

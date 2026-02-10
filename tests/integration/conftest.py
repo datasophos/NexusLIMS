@@ -1,4 +1,4 @@
-# ruff: noqa: T201, SLF001
+# ruff: noqa: T201
 """
 Integration test fixtures for NexusLIMS.
 

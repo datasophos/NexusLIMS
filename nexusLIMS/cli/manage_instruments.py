@@ -163,5 +163,5 @@ def main():
         raise click.Abort from e
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     main()

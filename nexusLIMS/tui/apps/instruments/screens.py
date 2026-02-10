@@ -398,6 +398,16 @@ class InstrumentAddScreen(BaseFormScreen):
         if not is_valid:
             errors["timezone_str"] = error
 
+        # Show a notification if there are validation errors (without logging as error)
+        if errors:
+            error_count = len(errors)
+            field_names = ", ".join(errors.keys())
+            msg = (
+                f"Validation failed: {error_count} error(s) in {field_names}. "
+                "See details at bottom of form."
+            )
+            self.app.notify(msg, severity="warning", timeout=5)
+
         return errors
 
     def on_save(self, data: dict) -> None:
@@ -471,6 +481,16 @@ class InstrumentEditScreen(InstrumentAddScreen):
         is_valid, error = validate_timezone(data["timezone_str"])
         if not is_valid:
             errors["timezone_str"] = error
+
+        # Show a notification if there are validation errors (without logging as error)
+        if errors:
+            error_count = len(errors)
+            field_names = ", ".join(errors.keys())
+            msg = (
+                f"Validation failed: {error_count} error(s) in {field_names}. "
+                "See details at bottom of form."
+            )
+            self.app.notify(msg, severity="warning", timeout=5)
 
         return errors
 

@@ -1,5 +1,4 @@
 # pylint: disable=C0116
-# ruff: noqa: D102
 """Tests the workings of the NexusLIMS Instrument handling."""
 
 from datetime import datetime

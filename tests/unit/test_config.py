@@ -1,7 +1,6 @@
 """Tests functionality related to the config settings module."""
 
 # pylint: disable=missing-function-docstring
-# ruff: noqa: ARG001
 
 from pathlib import Path
 

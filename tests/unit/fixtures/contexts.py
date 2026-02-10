@@ -98,7 +98,7 @@ def db_context(request, db_factory, monkeypatch):
     from nexusLIMS import instruments
 
     instruments.instrument_db.clear()
-    instruments.instrument_db.update(instruments._get_instrument_db(db_path=db_path))  # noqa: SLF001
+    instruments.instrument_db.update(instruments._get_instrument_db(db_path=db_path))
 
     # Recreate the engine to point to new database
     # The engine module creates a singleton at import time, so we need to patch it

@@ -1,5 +1,5 @@
 # pylint: disable=C0116
-# ruff: noqa: SLF001, FBT003, N817
+# ruff: noqa: FBT003
 
 """Tests for nexusLIMS.extractors.quanta_tif."""
 

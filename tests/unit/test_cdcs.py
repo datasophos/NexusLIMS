@@ -1,7 +1,7 @@
 """Tests functionality related to the interacting with the CDCS frontend."""
 
 # pylint: disable=missing-function-docstring
-# ruff: noqa: D102, ARG005
+# ruff: noqa: ARG005
 
 from typing import NamedTuple
 

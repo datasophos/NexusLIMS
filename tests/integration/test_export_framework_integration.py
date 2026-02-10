@@ -51,10 +51,9 @@ def instrument(db_session):
     instrument = Instrument(
         instrument_pid="test-instrument-001",
         api_url="http://localhost:8000/api/",
-        calendar_name="Test Instrument",
         calendar_url="http://localhost:8000/calendar/",
         location="Test Lab 101",
-        schema_name="Test Instrument",
+        display_name="Test Instrument",
         property_tag="TEST001",
         filestore_path="test_instrument",
         harvester="nemo",

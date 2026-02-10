@@ -70,7 +70,10 @@ def validate_api_url_unique(
     # Uniqueness check
     conflict = find_conflicting_instrument(session, "api_url", value, exclude_pid)
     if conflict:
-        return False, f"API URL already used by {conflict.instrument_pid}"
+        return (
+            False,
+            f'API URL "{value}" already used by instrument "{conflict.instrument_pid}"',
+        )
 
     return True, ""
 

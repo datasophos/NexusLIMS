@@ -1,5 +1,4 @@
 # pylint: disable=C0116,too-many-public-methods
-# ruff: noqa: D102
 
 """Tests for nexusLIMS.extractors.fei_emi."""
 
@@ -945,7 +944,7 @@ class TestSerEmiExtractor:  # pylint: disable=too-many-public-methods
         }
 
         # Call the migration method
-        result = extractor._migrate_to_schema_compliant_metadata(mdict)  # noqa: SLF001
+        result = extractor._migrate_to_schema_compliant_metadata(mdict)
 
         # Verify top-level vendor sections went to extensions
         assert "extensions" in result["nx_meta"]

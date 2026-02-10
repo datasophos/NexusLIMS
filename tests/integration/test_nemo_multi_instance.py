@@ -152,7 +152,7 @@ def multi_instance_instruments(populated_test_database, multi_instance_env):
 
         # Reload the instrument database to pick up modified instruments
         # SLF001: Using private method is intentional for test setup
-        test_instrument_db = instruments._get_instrument_db(  # noqa: SLF001
+        test_instrument_db = instruments._get_instrument_db(
             db_path=populated_test_database
         )
 

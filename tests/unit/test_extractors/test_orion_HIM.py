@@ -196,19 +196,19 @@ class TestOrionFibicsTiffExtractor:
     def test_detect_variant_zeiss(self, zeiss_tiff_file):
         """Test variant detection for Zeiss files."""
         img = Image.open(zeiss_tiff_file)
-        result = self.extractor._detect_variant(img)  # noqa: SLF001
+        result = self.extractor._detect_variant(img)
         assert result == "zeiss"
 
     def test_detect_variant_fibics(self, fibics_tiff_file):
         """Test variant detection for Fibics files."""
         img = Image.open(fibics_tiff_file)
-        result = self.extractor._detect_variant(img)  # noqa: SLF001
+        result = self.extractor._detect_variant(img)
         assert result == "fibics"
 
     def test_detect_variant_neither(self, unknown_xml_tiff_file):
         """Test variant detection when neither format is found."""
         img = Image.open(unknown_xml_tiff_file)
-        result = self.extractor._detect_variant(img)  # noqa: SLF001
+        result = self.extractor._detect_variant(img)
         assert result is None
 
     def test_extract_from_real_orion_zeiss_file(self, orion_zeiss_zeroed_file):  # noqa: PLR0915
@@ -530,7 +530,7 @@ class TestOrionFibicsTiffExtractor:
         )
 
         with Image.open(file_path) as img:
-            result = self.extractor._detect_variant(img)  # noqa: SLF001
+            result = self.extractor._detect_variant(img)
             # Should return None instead of raising exception
             assert result is None
 
@@ -545,7 +545,7 @@ class TestOrionFibicsTiffExtractor:
         )
 
         with Image.open(file_path) as img:
-            result = self.extractor._detect_variant(img)  # noqa: SLF001
+            result = self.extractor._detect_variant(img)
             # Should return None instead of raising exception
             assert result is None
 
@@ -602,9 +602,7 @@ class TestOrionFibicsTiffExtractor:
         mdict = {"nx_meta": {}}
 
         # Should not crash, just log and return
-        self.extractor._parse_zeiss_field(  # noqa: SLF001
-            root, "TestField", "test_key", mdict, 1.0
-        )
+        self.extractor._parse_zeiss_field(root, "TestField", "test_key", mdict, 1.0)
 
         # mdict should not be modified
         assert "test_key" not in mdict["nx_meta"]
@@ -617,9 +615,7 @@ class TestOrionFibicsTiffExtractor:
         section.find.side_effect = Exception("Mock error")
         section.findall.side_effect = Exception("Mock error")
 
-        result = self.extractor._parse_fibics_value(  # noqa: SLF001
-            section, "TestField", 1.0
-        )
+        result = self.extractor._parse_fibics_value(section, "TestField", 1.0)
         # Should return None on exception
         assert result is None
 
@@ -632,7 +628,7 @@ class TestOrionFibicsTiffExtractor:
         field.text = "abc123xyz"  # Mixed alphanumeric
         section.append(field)
 
-        result = self.extractor._parse_fibics_value(section, "NumField", 1.0)  # noqa: SLF001
+        result = self.extractor._parse_fibics_value(section, "NumField", 1.0)
         # Should return the string value, not crash
         assert result == "abc123xyz"
         assert isinstance(result, str)
@@ -646,9 +642,7 @@ class TestOrionFibicsTiffExtractor:
         field.text = "=invalid V"  # Has unit format but non-numeric value
         section.append(field)
 
-        result = self.extractor._parse_fibics_value(  # noqa: SLF001
-            section, "UnitField", "strip_units"
-        )
+        result = self.extractor._parse_fibics_value(section, "UnitField", "strip_units")
         # Should return the text portion after stripping
         assert result == "invalid"
 
@@ -667,7 +661,7 @@ class TestOrionFibicsTiffExtractor:
         section.append(field)
 
         # Call with strip_units but no unit parameter (defaults to None)
-        result = self.extractor._parse_fibics_value(  # noqa: SLF001
+        result = self.extractor._parse_fibics_value(
             section, "NumericField", "strip_units", unit=None
         )
         # Should return numeric value without creating a Quantity
@@ -682,7 +676,7 @@ class TestOrionFibicsTiffExtractor:
         # Make iteration raise an exception
         root.__iter__.side_effect = Exception("Mock iteration error")
 
-        result = self.extractor._find_fibics_section(root, "TestSection")  # noqa: SLF001
+        result = self.extractor._find_fibics_section(root, "TestSection")
         # Should return None on exception instead of crashing
         assert result is None
 
@@ -697,7 +691,7 @@ class TestOrionFibicsTiffExtractor:
         root.append(child1)
         root.append(child2)
 
-        result = self.extractor._find_fibics_section(root, "NonExistent")  # noqa: SLF001
+        result = self.extractor._find_fibics_section(root, "NonExistent")
         # Should return None when section not found
         assert result is None
 
@@ -729,7 +723,7 @@ class TestOrionFibicsTiffExtractor:
         }
 
         # Call the migration method
-        result = self.extractor._migrate_to_schema_compliant_metadata(mdict)  # noqa: SLF001
+        result = self.extractor._migrate_to_schema_compliant_metadata(mdict)
 
         # Verify display names were renamed to EM Glossary names and stayed at top level
         assert "acceleration_voltage" in result["nx_meta"]

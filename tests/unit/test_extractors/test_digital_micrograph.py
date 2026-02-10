@@ -1,5 +1,4 @@
 # pylint: disable=C0116
-# ruff: noqa: D102, SLF001
 
 """Tests for nexusLIMS.extractors.digital_micrograph."""
 

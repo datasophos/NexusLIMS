@@ -1,39 +1,14 @@
 """
 Database utilities for NexusLIMS TUI applications.
 
-Provides session management and common database query patterns.
+Provides common database query patterns.
 """
 
-from contextlib import contextmanager
 from typing import Any
 
 from sqlmodel import Session, select
 
-from nexusLIMS.db.engine import get_engine
 from nexusLIMS.db.models import Instrument, SessionLog
-
-
-@contextmanager
-def get_db_session():
-    """
-    Context manager for database sessions.
-
-    Yields
-    ------
-    Session
-        Active database session
-
-    Examples
-    --------
-    >>> from nexusLIMS.tui.common.db_utils import get_db_session
-    >>> with get_db_session() as session:
-    ...     instruments = session.exec(select(Instrument)).all()
-    """
-    session = Session(get_engine())
-    try:
-        yield session
-    finally:
-        session.close()
 
 
 def check_uniqueness(
@@ -135,7 +110,7 @@ def find_conflicting_instrument(
     session : Session
         Active database session
     field_name : str
-        Unique field name (api_url, computer_name, computer_ip)
+        Unique field name (e.g., api_url)
     value : Any
         Value to search for
     exclude_pid : str | None

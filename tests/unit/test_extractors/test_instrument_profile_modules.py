@@ -359,7 +359,7 @@ class TestProfileAutoDiscovery:
         from nexusLIMS.extractors.plugins.profiles import register_all_profiles
 
         # Create a mock that simulates finding __pycache__ modules
-        def mock_walk_packages(*args, **kwargs):  # noqa: ARG001
+        def mock_walk_packages(*args, **kwargs):
             # Simulate finding a __pycache__ module and a real module
             yield (None, "nexusLIMS.extractors.plugins.profiles.__pycache__", False)
             yield (None, "nexusLIMS.extractors.plugins.profiles.real_module", False)

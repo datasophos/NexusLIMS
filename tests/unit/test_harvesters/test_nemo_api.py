@@ -1,5 +1,5 @@
 # pylint: disable=C0116,too-many-locals
-# ruff: noqa: D102, ARG005, SLF001
+# ruff: noqa: ARG005
 """
 Test NEMO API endpoints.
 

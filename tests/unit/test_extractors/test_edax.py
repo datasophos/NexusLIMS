@@ -1,5 +1,4 @@
 # pylint: disable=C0116
-# ruff: noqa: D102
 
 """Tests for nexusLIMS.extractors.edax."""
 
@@ -244,7 +243,7 @@ class TestEDAXSPCExtractor:
         }
 
         # Call the migration method
-        result = extractor._migrate_to_schema_compliant_metadata(mdict)  # noqa: SLF001
+        result = extractor._migrate_to_schema_compliant_metadata(mdict)
 
         # Verify the unknown field went to extensions
         assert "extensions" in result["nx_meta"]

@@ -1,4 +1,3 @@
-# ruff: noqa: ARG001
 """Shared fixtures for harvester tests."""
 
 import warnings

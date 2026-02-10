@@ -1,5 +1,4 @@
 # pylint: disable=missing-function-docstring,too-many-public-methods
-# ruff: noqa: D102, ARG001
 
 """Tests the various utilities shared among NexusLIMS modules."""
 
