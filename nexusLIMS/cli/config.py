@@ -331,6 +331,26 @@ def dump(output: str | None) -> None:
 
 
 @main.command()
+@click.option(
+    "--env-path",
+    type=click.Path(dir_okay=False, writable=True),
+    default=".env",
+    show_default=True,
+    help="Path to the .env file to edit (created if absent).",
+)
+def edit(env_path: str) -> None:
+    """Interactively edit the NexusLIMS configuration in a terminal UI.
+
+    Opens a tabbed form pre-populated from the existing .env file (if any).
+    Press Ctrl+S to save and write the .env file, or Escape to cancel without
+    saving.
+    """
+    from nexusLIMS.tui.apps.config.app import ConfiguratorApp  # noqa: PLC0415
+
+    ConfiguratorApp(env_path=Path(env_path)).run()
+
+
+@main.command()
 @click.argument("input", type=click.Path(exists=True, dir_okay=False, readable=True))
 @click.option(
     "--env-path",

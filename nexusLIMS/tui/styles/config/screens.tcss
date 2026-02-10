@@ -1,0 +1,136 @@
+/* =========================================================================
+   ConfigScreen — main tabbed configuration form
+   ========================================================================= */
+
+ConfigScreen TabbedContent {
+    height: 1fr;
+}
+
+ConfigScreen TabbedContent ContentSwitcher {
+    height: 1fr;
+}
+
+ConfigScreen TabPane {
+    padding: 0 1;
+    height: 1fr;
+}
+
+ConfigScreen VerticalScroll {
+    height: 1fr;
+}
+
+.tab-description {
+    color: $text-muted;
+    margin: 0 0 1 0;
+    text-style: italic;
+}
+
+/* Footer save/cancel buttons */
+#config-footer-buttons {
+    height: 3;
+    align: center middle;
+    border-top: solid $primary;
+    padding: 0 1;
+}
+
+#config-footer-buttons Button {
+    margin: 0 1;
+}
+
+/* Form field layout within tabs */
+ConfigScreen FormField {
+    height: auto;
+    margin: 0 0 1 0;
+}
+
+/* Section enable/disable toggle rows */
+.section-toggle-row {
+    height: 3;
+    align: left middle;
+    margin: 0 0 1 0;
+}
+
+.section-toggle-label {
+    width: 1fr;
+    content-align: left middle;
+}
+
+/* SSL verify warning */
+.ssl-warning {
+    color: $warning;
+    text-style: bold;
+    display: none;
+    padding: 0 0 1 0;
+}
+
+.ssl-warning.visible {
+    display: block;
+}
+
+/* Cert bundle TextArea */
+#nx-cert-bundle {
+    height: 10;
+    margin: 0 0 1 0;
+}
+
+/* NEMO harvesters tab */
+#nemo-table {
+    height: 1fr;
+    margin-top: 1;
+}
+
+.nemo-action-bar {
+    height: 3;
+    align: left middle;
+}
+
+.nemo-action-bar Button {
+    margin-right: 1;
+}
+
+/* =========================================================================
+   NemoHarvesterFormScreen — modal dialog
+   ========================================================================= */
+
+NemoHarvesterFormScreen {
+    align: center middle;
+}
+
+#nemo-dialog {
+    width: 72;
+    height: auto;
+    background: $surface;
+    border: thick $primary;
+    padding: 1 2;
+}
+
+.nemo-dialog-title {
+    text-style: bold;
+    margin-bottom: 1;
+    color: $accent;
+}
+
+#nemo-dialog FormField {
+    height: auto;
+    margin: 0 0 1 0;
+}
+
+#nemo-error {
+    color: $error;
+    display: none;
+    margin: 0 0 1 0;
+}
+
+#nemo-error.visible {
+    display: block;
+}
+
+.nemo-form-buttons {
+    height: 3;
+    align: center middle;
+    margin-top: 1;
+}
+
+.nemo-form-buttons Button {
+    margin: 0 1;
+}
