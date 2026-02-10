@@ -85,8 +85,14 @@ def validate_timezone(tz_str: str | None) -> tuple[bool, str]:
         suggestions = _find_similar_timezones(tz_str)
         if suggestions:
             suggestion_str = ", ".join(suggestions[:3])
-            return False, f"Unknown timezone. Did you mean: {suggestion_str}?"
-        return False, "Unknown timezone. Use IANA format (e.g., America/New_York)"
+            return (
+                False,
+                f'Unknown timezone "{tz_str}". Did you mean: "{suggestion_str}"?',
+            )
+        return (
+            False,
+            f'Unknown timezone "{tz_str}". Use IANA format (e.g., America/New_York)',
+        )
 
 
 def _find_similar_timezones(tz_str: str, limit: int = 5) -> list[str]:
@@ -128,6 +134,17 @@ def validate_url(url: str | None, field_name: str = "URL") -> tuple[bool, str]:
             return False, f"{field_name} must start with http:// or https://"
         if not parsed.netloc:
             return False, f"{field_name} is not a valid URL"
+
+        # Validate netloc format to catch malformed URLs like "user:pass@:port/path"
+        netloc = parsed.netloc
+        # Remove userinfo if present (everything before @)
+        if "@" in netloc:
+            netloc = netloc.split("@", 1)[1]
+
+        # Check for invalid port specifications (e.g., ":port" with no hostname)
+        if netloc.startswith(":"):
+            return False, f"{field_name} is not a valid URL"
+
         return True, ""
     except Exception:
         return False, f"{field_name} is not a valid URL"

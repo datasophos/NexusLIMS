@@ -27,25 +27,21 @@ def db_session(in_memory_db):
         instrument1 = Instrument(
             instrument_pid="TEST-INSTRUMENT-001",
             api_url="https://example.com/api/tools/?id=1",
-            calendar_name="Test Instrument 1",
             calendar_url="https://example.com/calendar/1",
             location="Building 1 Room 101",
-            schema_name="Test 1",
+            display_name="Test 1",
             property_tag="TAG001",
             filestore_path="./test1",
             harvester="nemo",
             timezone_str="America/New_York",
-            computer_name="test-pc-01",
-            computer_ip="192.168.1.10",
         )
 
         instrument2 = Instrument(
             instrument_pid="TEST-INSTRUMENT-002",
             api_url="https://example.com/api/tools/?id=2",
-            calendar_name="Test Instrument 2",
             calendar_url="https://example.com/calendar/2",
             location="Building 1 Room 102",
-            schema_name="Test 2",
+            display_name="Test 2",
             property_tag="TAG002",
             filestore_path="./test2",
             harvester="nemo",
@@ -96,31 +92,12 @@ class TestCheckUniqueness:
 
     def test_none_value(self, db_session):
         """Test that None is considered unique (for optional fields)."""
+        # Using a non-existent field to test None handling
         is_unique = check_uniqueness(
             db_session,
             Instrument,
-            "computer_name",
+            "api_url",
             None,
-        )
-        assert is_unique is True
-
-    def test_optional_field_with_value(self, db_session):
-        """Test uniqueness check for optional field with value."""
-        # computer_name "test-pc-01" is used by TEST-INSTRUMENT-001
-        is_unique = check_uniqueness(
-            db_session,
-            Instrument,
-            "computer_name",
-            "test-pc-01",
-        )
-        assert is_unique is False
-
-        # New computer name should be unique
-        is_unique = check_uniqueness(
-            db_session,
-            Instrument,
-            "computer_name",
-            "new-pc",
         )
         assert is_unique is True
 
@@ -162,21 +139,10 @@ class TestFindConflictingInstrument:
         """Test that None returns no conflict (for optional fields)."""
         conflict = find_conflicting_instrument(
             db_session,
-            "computer_name",
+            "api_url",
             None,
         )
         assert conflict is None
-
-    def test_optional_field_conflict(self, db_session):
-        """Test finding conflicts for optional fields."""
-        # computer_ip "192.168.1.10" is used by TEST-INSTRUMENT-001
-        conflict = find_conflicting_instrument(
-            db_session,
-            "computer_ip",
-            "192.168.1.10",
-        )
-        assert conflict is not None
-        assert conflict.instrument_pid == "TEST-INSTRUMENT-001"
 
 
 class TestGetSessionLogCount:

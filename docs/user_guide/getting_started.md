@@ -160,8 +160,7 @@ Add your instruments to the database. Each instrument requires:
 - **filestore_path**: Path relative to `NX_INSTRUMENT_DATA_PATH`
 - **timezone**: Timezone for datetime handling (IANA format like "America/New_York")
 - **api_url**: NEMO API URL (for NEMO harvester) -- Should be of the format `https://<nemo_address>/api/tools/?id=<tool_id_in_NEMO>`
-- **calendar_name**: NEMO tool name (must match NEMO configuration exactly)
-- **schema_name**: Human-readable name for the Nexus Microscopy schema
+- **display_name**: Human-readable name for the Nexus Microscopy schema
 - **location**: Physical location of the instrument
 - **property_tag**: Unique numeric identifier (for reference)
 
@@ -172,7 +171,7 @@ Example SQL:
 ```sql
 INSERT INTO instruments (
     instrument_pid, harvester, filestore_path, timezone,
-    api_url, calendar_name, schema_name, location, property_tag
+    api_url, display_name, location, property_tag
 )
 VALUES (
     'FEI-Titan-TEM-12345',
@@ -180,7 +179,6 @@ VALUES (
     'Titan_data',
     'America/New_York',
     'https://nemo.example.com/api/tools/?id=10',
-    'FEI Titan TEM',
     'FEI Titan TEM',
     'Building 1, Room 101',
     '12345'

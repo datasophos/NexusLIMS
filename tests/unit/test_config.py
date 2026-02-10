@@ -162,14 +162,23 @@ def test_email_config_minimal(monkeypatch):
     assert email.recipients == ["recipient@example.com"]
 
 
-def test_email_config_not_configured(mock_nemo_env):
+def test_email_config_not_configured(mock_nemo_env, monkeypatch):
     """Test that email_config returns None when not configured."""
-    from nexusLIMS.config import settings
+    from nexusLIMS.config import refresh_settings, settings
 
-    # Default settings should not have email configured
-    if settings.email_config() is not None:
-        # Skip this test if email is actually configured in the test environment
-        pytest.skip("Email is configured in test environment")
+    # Unset any email variables that might be loaded from .env
+    # (e.g., from cli.migrate module in other tests)
+    monkeypatch.delenv("NX_EMAIL_SMTP_HOST", raising=False)
+    monkeypatch.delenv("NX_EMAIL_SENDER", raising=False)
+    monkeypatch.delenv("NX_EMAIL_RECIPIENTS", raising=False)
+    monkeypatch.delenv("NX_EMAIL_SMTP_PORT", raising=False)
+    monkeypatch.delenv("NX_EMAIL_SMTP_USERNAME", raising=False)
+    monkeypatch.delenv("NX_EMAIL_SMTP_PASSWORD", raising=False)
+    monkeypatch.delenv("NX_EMAIL_USE_TLS", raising=False)
+
+    # Refresh settings to pick up the cleared environment
+    refresh_settings()
+
     assert settings.email_config() is None
 
 
@@ -496,6 +505,13 @@ def test_elabftw_config_test_mode_defaults(monkeypatch):
     # This test only makes sense if TEST_MODE is enabled
     if not TEST_MODE:
         pytest.skip("TEST_MODE not enabled")
+
+    # Unset any environment variables that might override TEST_MODE defaults
+    # (e.g., from .env file loaded by cli.migrate module in other tests)
+    monkeypatch.delenv("NX_ELABFTW_API_KEY", raising=False)
+    monkeypatch.delenv("NX_ELABFTW_URL", raising=False)
+    monkeypatch.delenv("NX_ELABFTW_EXPERIMENT_CATEGORY", raising=False)
+    monkeypatch.delenv("NX_ELABFTW_EXPERIMENT_STATUS", raising=False)
 
     from nexusLIMS.config import Settings
 

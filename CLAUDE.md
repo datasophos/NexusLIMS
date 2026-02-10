@@ -223,7 +223,7 @@ Each instrument in `instruments` table must specify:
 - `harvester`: "nemo" or "sharepoint"
 - `filestore_path`: Relative to `NX_INSTRUMENT_DATA_PATH`
 - `timezone`: For proper datetime handling
-- NEMO-specific: `api_url`, `calendar_name` matching NEMO tool names
+- NEMO-specific: `api_url` matching NEMO tool names
 
 ### Testing Infrastructure
 - Uses `pytest` with `pytest-mpl` for image comparison tests

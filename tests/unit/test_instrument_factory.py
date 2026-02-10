@@ -21,16 +21,12 @@ from nexusLIMS.instruments import Instrument
 
 def make_test_instrument(  # noqa: PLR0913
     instrument_pid="TEST-INSTRUMENT-001",
-    calendar_name="Test Instrument",
     api_url="https://nemo.example.com/api/",
     calendar_url=None,
     location="Test Building Room 123",
-    schema_name="Test Instrument",
+    display_name="Test Instrument",
     property_tag="TEST-001",
     filestore_path="./Nexus_Test_Instrument",
-    computer_name=None,
-    computer_ip=None,
-    computer_mount=None,
     harvester="nemo",
     timezone="America/Denver",
     **overrides,
@@ -45,30 +41,22 @@ def make_test_instrument(  # noqa: PLR0913
     ----------
     instrument_pid : str, optional
         Unique instrument identifier (default: "TEST-INSTRUMENT-001")
-    calendar_name : str, optional
-        User-friendly calendar name (default: "Test Instrument")
     api_url : str, optional
         Calendar API endpoint URL (default: "https://nemo.example.com/api/")
     calendar_url : str or None, optional
         Web-accessible calendar URL (default: auto-generated from instrument_pid)
     location : str, optional
         Physical location (default: "Test Building Room 123")
-    schema_name : str, optional
-        Schema display name (default: "Test Instrument Schema")
+    display_name : str, optional
+        Human-readable instrument name (default: "Test Instrument")
     property_tag : str, optional
         Unique property tag (default: "TEST-001")
     filestore_path : str, optional
         Path relative to NX_INSTRUMENT_DATA_PATH (default: "test/path")
-    computer_name : str or None, optional
-        Support PC hostname (default: auto-generated from instrument_pid)
-    computer_ip : str or None, optional
-        Support PC IP address (default: "192.168.1.100")
-    computer_mount : str, optional
-        Mount path on support PC (default: "/mnt/test")
     harvester : str, optional
         Harvester type - only allowed value is "nemo" (default: "nemo")
     timezone : str, optional
-        IANA timezone string (default: "America/New_York")
+        IANA timezone string (default: "America/Denver")
     **overrides : dict
         Additional overrides for any parameter
 
@@ -99,15 +87,11 @@ def make_test_instrument(  # noqa: PLR0913
     params = {
         "instrument_pid": instrument_pid,
         "api_url": api_url,
-        "calendar_name": calendar_name,
         "calendar_url": calendar_url,
         "location": location,
-        "schema_name": schema_name,
+        "display_name": display_name,
         "property_tag": property_tag,
         "filestore_path": filestore_path,
-        "computer_name": computer_name,
-        "computer_ip": computer_ip,
-        "computer_mount": computer_mount,
         "harvester": harvester,
         "timezone_str": timezone,
     }
@@ -123,8 +107,7 @@ def make_test_instrument(  # noqa: PLR0913
 
 def make_titan_stem(
     instrument_pid="FEI-Titan-STEM",
-    calendar_name="FEI Titan TEM",
-    schema_name="Titan TEM",
+    display_name="Titan TEM",
     filestore_path="./Titan_STEM",
     **overrides,
 ):
@@ -138,10 +121,8 @@ def make_titan_stem(
     ----------
     instrument_pid : str, optional
         Instrument ID (default: "FEI-Titan-STEM")
-    calendar_name : str, optional
-        Calendar display name (default: "FEI Titan TEM")
-    schema_name : str, optional
-        Schema name (default: "Titan TEM")
+    display_name : str, optional
+        Human-readable instrument name (default: "Titan TEM")
     filestore_path : str, optional
         File storage path (default: "Titan_STEM")
     **overrides : dict
@@ -160,8 +141,7 @@ def make_titan_stem(
     """
     defaults = {
         "instrument_pid": instrument_pid,
-        "calendar_name": calendar_name,
-        "schema_name": schema_name,
+        "display_name": display_name,
         "filestore_path": filestore_path,
         "api_url": "https://nemo.example.com/api/tools/?id=1",
         "location": "Test Building Room 300",
@@ -173,8 +153,7 @@ def make_titan_stem(
 
 def make_titan_tem(
     instrument_pid="FEI-Titan-TEM",
-    calendar_name="FEI Titan TEM",
-    schema_name="Titan TEM",
+    display_name="Titan TEM",
     filestore_path="./Titan_TEM",
     **overrides,
 ):
@@ -188,10 +167,8 @@ def make_titan_tem(
     ----------
     instrument_pid : str, optional
         Instrument ID (default: "FEI-Titan-TEM")
-    calendar_name : str, optional
-        Calendar display name (default: "FEI Titan TEM")
-    schema_name : str, optional
-        Schema name (default: "Titan TEM")
+    display_name : str, optional
+        Human-readable instrument name (default: "Titan TEM")
     filestore_path : str, optional
         File storage path (default: "Titan_TEM")
     **overrides : dict
@@ -210,8 +187,7 @@ def make_titan_tem(
     """
     defaults = {
         "instrument_pid": instrument_pid,
-        "calendar_name": calendar_name,
-        "schema_name": schema_name,
+        "display_name": display_name,
         "filestore_path": filestore_path,
         "api_url": "https://nemo.example.com/api/tools/?id=2",
         "location": "Test Building Room 301",
@@ -223,8 +199,7 @@ def make_titan_tem(
 
 def make_quanta_sem(
     instrument_pid="FEI-Quanta-ESEM",
-    calendar_name="FEI Quanta 200 ESEM",
-    schema_name="Quanta FEG 200",
+    display_name="Quanta FEG 200",
     filestore_path="./Quanta",
     **overrides,
 ):
@@ -238,10 +213,8 @@ def make_quanta_sem(
     ----------
     instrument_pid : str, optional
         Instrument ID (default: "FEI-Quanta-ESEM")
-    calendar_name : str, optional
-        Calendar display name (default: "FEI Quanta 200 ESEM")
-    schema_name : str, optional
-        Schema name (default: "Quanta FEG 200")
+    display_name : str, optional
+        Human-readable instrument name (default: "Quanta FEG 200")
     filestore_path : str, optional
         File storage path (default: "Quanta")
     **overrides : dict
@@ -260,8 +233,7 @@ def make_quanta_sem(
     """
     defaults = {
         "instrument_pid": instrument_pid,
-        "calendar_name": calendar_name,
-        "schema_name": schema_name,
+        "display_name": display_name,
         "filestore_path": filestore_path,
         "api_url": "https://nemo.example.com/api/tools/?id=3",
         "location": "Test Building Room 302",
@@ -273,8 +245,7 @@ def make_quanta_sem(
 
 def make_jeol_tem(
     instrument_pid="JEOL-JEM-TEM",
-    calendar_name="JEOL 3010 TEM",
-    schema_name="JEOL JEM-3010",
+    display_name="JEOL JEM-3010",
     filestore_path="./JEOL_TEM",
     **overrides,
 ):
@@ -288,10 +259,8 @@ def make_jeol_tem(
     ----------
     instrument_pid : str, optional
         Instrument ID (default: "JEOL-JEM-TEM")
-    calendar_name : str, optional
-        Calendar display name (default: "JEOL 3010 TEM")
-    schema_name : str, optional
-        Schema name (default: "JEOL JEM-3010")
+    display_name : str, optional
+        Human-readable instrument name (default: "JEOL JEM-3010")
     filestore_path : str, optional
         File storage path (default: "JEOL_TEM")
     **overrides : dict
@@ -310,8 +279,7 @@ def make_jeol_tem(
     """
     defaults = {
         "instrument_pid": instrument_pid,
-        "calendar_name": calendar_name,
-        "schema_name": schema_name,
+        "display_name": display_name,
         "filestore_path": filestore_path,
         "api_url": "https://nemo.example.com/api/tools/?id=5",
         "location": "Test Building Room 303",
@@ -323,8 +291,7 @@ def make_jeol_tem(
 
 def make_test_tool(
     instrument_pid="testtool-TEST-A1234567",
-    calendar_name="Test Tool",
-    schema_name="Test Tool",
+    display_name="Test Tool",
     filestore_path="./Nexus_Test_Instrument",
     **overrides,
 ):
@@ -338,10 +305,8 @@ def make_test_tool(
     ----------
     instrument_pid : str, optional
         Instrument ID (default: "testtool-TEST-A1234567")
-    calendar_name : str, optional
-        Calendar display name (default: "Test Tool")
-    schema_name : str, optional
-        Schema name (default: "Test Tool")
+    display_name : str, optional
+        Human-readable instrument name (default: "Test Tool")
     filestore_path : str, optional
         File storage path (default: "./Nexus_Test_Instrument")
     **overrides : dict
@@ -360,8 +325,7 @@ def make_test_tool(
     """
     defaults = {
         "instrument_pid": instrument_pid,
-        "calendar_name": calendar_name,
-        "schema_name": schema_name,
+        "display_name": display_name,
         "filestore_path": filestore_path,
         "api_url": "https://nemo.example.com/api/tools/?id=6",
         "location": "Test Building Room 400",

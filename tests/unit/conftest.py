@@ -1022,10 +1022,9 @@ def sample_instrument(test_db_session):
     instrument = Instrument(
         instrument_pid="TEST-INSTRUMENT-001",
         api_url="https://test.example.com/api",
-        calendar_name="Test Calendar",
         calendar_url="https://test.example.com/calendar",
         location="Test Lab",
-        schema_name="Test Instrument",
+        display_name="Test Instrument",
         property_tag="TEST001",
         filestore_path="./test_data",
         timezone_str="America/New_York",

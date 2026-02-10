@@ -771,10 +771,9 @@ class TestNemoUtilityFunctions:
 
         mock_instrument = Instrument(
             instrument_pid="UNKNOWN-INSTRUMENT",
-            schema_name="Unknown Instrument",
+            display_name="Unknown Instrument",
             harvester="test",
             api_url="https://unknown.example.com/api/tools/?id=999",
-            calendar_name="Unknown Instrument",
             calendar_url="https://unknown.example.com/calendar/",
             location="Unknown",
             property_tag="UNKNOWN",
