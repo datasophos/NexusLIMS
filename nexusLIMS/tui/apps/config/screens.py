@@ -12,6 +12,7 @@ from typing import ClassVar
 
 import pytz
 from dotenv import dotenv_values
+from pydantic_core import PydanticUndefined
 from textual import on
 from textual.app import ComposeResult
 from textual.containers import Horizontal, Vertical, VerticalScroll
@@ -35,6 +36,7 @@ from nexusLIMS.cli.config import (
     _flatten_to_env,
     _write_env_file,
 )
+from nexusLIMS.config import EmailConfig, Settings
 from nexusLIMS.tui.apps.config.validators import (
     validate_float_nonneg,
     validate_float_positive,
@@ -53,6 +55,102 @@ from nexusLIMS.tui.common.widgets import AutocompleteInput, FormField
 
 _DEFAULT_STRFTIME = "%Y-%m-%dT%H:%M:%S%z"
 _DEFAULT_STRPTIME = "%Y-%m-%dT%H:%M:%S%z"
+
+
+# --------------------------------------------------------------------------- #
+# Helpers: pull descriptions/defaults from the Settings model                 #
+# --------------------------------------------------------------------------- #
+
+
+def _fdesc(name: str) -> str:
+    """Return the field description from Settings for the given env var name."""
+    field = Settings.model_fields.get(name)
+    if field and field.description:
+        return field.description
+    return ""
+
+
+def _fdefault(name: str) -> str:
+    """Return the field default from Settings as a string, or empty string."""
+    field = Settings.model_fields.get(name)
+    if field is None:
+        return ""
+    default = field.default
+    if default is PydanticUndefined or default is None:
+        return ""
+    if isinstance(default, list):
+        return ", ".join(str(v) for v in default)
+    return str(default)
+
+
+def _edesc(name: str) -> str:
+    """Return the field description from EmailConfig for the given field name."""
+    field = EmailConfig.model_fields.get(name)
+    if field and field.description:
+        return field.description
+    return ""
+
+
+def _edefault(name: str) -> str:
+    """Return the field default from EmailConfig as a string, or empty string."""
+    field = EmailConfig.model_fields.get(name)
+    if field is None:
+        return ""
+    default = field.default
+    if default is PydanticUndefined or default is None:
+        return ""
+    return str(default)
+
+
+def _fdetail(name: str) -> str:
+    """Return extended detail text from Settings.json_schema_extra['detail']."""
+    field = Settings.model_fields.get(name)
+    if field is None:
+        return ""
+    jse = getattr(field, "json_schema_extra", None) or {}
+    if callable(jse):
+        return ""
+    return jse.get("detail", "")
+
+
+def _edetail(name: str) -> str:
+    """Return extended detail text from EmailConfig.json_schema_extra['detail']."""
+    field = EmailConfig.model_fields.get(name)
+    if field is None:
+        return ""
+    jse = getattr(field, "json_schema_extra", None) or {}
+    if callable(jse):
+        return ""
+    return jse.get("detail", "")
+
+
+# Maps Input widget ids → (model_class, field_name) for detail lookup.
+# Select widgets (nx-file-strategy, nx-export-strategy) handled inline in action.
+# TextArea (nx-cert-bundle) and Switch widgets excluded — not Input instances.
+_INPUT_ID_TO_FIELD: dict[str, tuple[str, str]] = {
+    "nx-instrument-data-path": ("settings", "NX_INSTRUMENT_DATA_PATH"),
+    "nx-data-path": ("settings", "NX_DATA_PATH"),
+    "nx-db-path": ("settings", "NX_DB_PATH"),
+    "nx-log-path": ("settings", "NX_LOG_PATH"),
+    "nx-records-path": ("settings", "NX_RECORDS_PATH"),
+    "nx-local-profiles-path": ("settings", "NX_LOCAL_PROFILES_PATH"),
+    "nx-cdcs-url": ("settings", "NX_CDCS_URL"),
+    "nx-cdcs-token": ("settings", "NX_CDCS_TOKEN"),
+    "nx-ignore-patterns": ("settings", "NX_IGNORE_PATTERNS"),
+    "nx-file-delay-days": ("settings", "NX_FILE_DELAY_DAYS"),
+    "nx-clustering-sensitivity": ("settings", "NX_CLUSTERING_SENSITIVITY"),
+    "nx-elabftw-url": ("settings", "NX_ELABFTW_URL"),
+    "nx-elabftw-api-key": ("settings", "NX_ELABFTW_API_KEY"),
+    "nx-elabftw-category": ("settings", "NX_ELABFTW_EXPERIMENT_CATEGORY"),
+    "nx-elabftw-status": ("settings", "NX_ELABFTW_EXPERIMENT_STATUS"),
+    "nx-email-smtp-host": ("email", "smtp_host"),
+    "nx-email-smtp-port": ("email", "smtp_port"),
+    "nx-email-smtp-username": ("email", "smtp_username"),
+    "nx-email-smtp-password": ("email", "smtp_password"),
+    "nx-email-sender": ("email", "sender"),
+    "nx-email-recipients": ("email", "recipients"),
+    "nx-cert-bundle-file": ("settings", "NX_CERT_BUNDLE_FILE"),
+}
 
 
 # --------------------------------------------------------------------------- #
@@ -221,6 +319,61 @@ class NemoHarvesterFormScreen(ModalScreen):
 
 
 # --------------------------------------------------------------------------- #
+# FieldDetailScreen                                                            #
+# --------------------------------------------------------------------------- #
+
+
+class FieldDetailScreen(ModalScreen):
+    """
+    Modal popup displaying extended help text for a configuration field.
+
+    Invoked by pressing ctrl+slash while an Input or Select is focused in
+    ConfigScreen. Dismisses on Escape, ctrl+slash, or the Close button.
+
+    Parameters
+    ----------
+    field_name : str
+        The environment variable / field name shown as the popup title.
+    detail_text : str
+        The extended description to display in the scrollable body.
+    """
+
+    CSS_PATH: ClassVar = [
+        Path(__file__).parent.parent.parent / "styles" / "config" / "screens.tcss"
+    ]
+
+    BINDINGS: ClassVar = [
+        ("escape", "dismiss_detail", "Close"),
+        ("ctrl+slash", "dismiss_detail", "Close"),
+    ]
+
+    def __init__(self, field_name: str, detail_text: str, **kwargs) -> None:
+        """Initialize with the field name and detail text to display."""
+        super().__init__(**kwargs)
+        self._field_name = field_name
+        self._detail_text = detail_text
+
+    def compose(self) -> ComposeResult:
+        """Compose the modal layout."""
+        with Vertical(id="field-detail-dialog"):
+            yield Label(self._field_name, id="field-detail-title")
+            with VerticalScroll(id="field-detail-body"):
+                yield Static(self._detail_text, id="field-detail-text")
+            with Horizontal(id="field-detail-footer"):
+                yield Button(
+                    "Close (Esc)", id="field-detail-close-btn", variant="default"
+                )
+
+    def action_dismiss_detail(self) -> None:
+        """Dismiss this modal."""
+        self.dismiss()
+
+    @on(Button.Pressed, "#field-detail-close-btn")
+    def _on_close_btn(self) -> None:
+        self.dismiss()
+
+
+# --------------------------------------------------------------------------- #
 # ConfigScreen                                                                 #
 # --------------------------------------------------------------------------- #
 
@@ -245,6 +398,7 @@ class ConfigScreen(Screen):
     BINDINGS: ClassVar = [
         ("ctrl+s", "save", "Save"),
         ("escape", "cancel", "Cancel"),
+        ("ctrl+slash", "show_field_detail", "Field Help"),
     ]
 
     def __init__(self, env_path: Path, **kwargs):
@@ -342,161 +496,100 @@ class ConfigScreen(Screen):
                 "Core file paths for NexusLIMS operation",
                 classes="tab-description",
             )
-            yield FormField(
-                "NX_INSTRUMENT_DATA_PATH",
-                Input(
-                    value=self._get("NX_INSTRUMENT_DATA_PATH"),
-                    placeholder="/mnt/instrument_data",
-                    id="nx-instrument-data-path",
-                ),
-                required=True,
-                help_text="Read-only mount of centralized instrument data",
-            )
-            yield FormField(
-                "NX_DATA_PATH",
-                Input(
-                    value=self._get("NX_DATA_PATH"),
-                    placeholder="/mnt/nexuslims_data",
-                    id="nx-data-path",
-                ),
-                required=True,
-                help_text="Writable parallel directory for metadata and previews",
-            )
-            yield FormField(
-                "NX_DB_PATH",
-                Input(
-                    value=self._get("NX_DB_PATH"),
-                    placeholder="/mnt/nexuslims_data/nexuslims.db",
-                    id="nx-db-path",
-                ),
-                required=True,
-                help_text="Path to the NexusLIMS SQLite database file",
-            )
-            yield FormField(
-                "NX_LOG_PATH (optional)",
-                Input(
-                    value=self._get("NX_LOG_PATH"),
-                    placeholder="(defaults to NX_DATA_PATH/logs/)",
-                    id="nx-log-path",
-                ),
-                help_text=(
-                    "Directory for application logs (leave blank to use default)"
-                ),
-            )
-            yield FormField(
-                "NX_RECORDS_PATH (optional)",
-                Input(
-                    value=self._get("NX_RECORDS_PATH"),
-                    placeholder="(defaults to NX_DATA_PATH/records/)",
-                    id="nx-records-path",
-                ),
-                help_text=(
-                    "Directory for generated XML records (leave blank to use default)"
-                ),
-            )
-            yield FormField(
-                "NX_LOCAL_PROFILES_PATH (optional)",
-                Input(
-                    value=self._get("NX_LOCAL_PROFILES_PATH"),
-                    placeholder="(leave blank if unused)",
-                    id="nx-local-profiles-path",
-                ),
-                help_text="Directory for site-specific instrument profiles",
-            )
+            with Horizontal(classes="form-columns"):
+                with Vertical(classes="form-column"):
+                    yield FormField(
+                        "NX_INSTRUMENT_DATA_PATH",
+                        Input(
+                            value=self._get("NX_INSTRUMENT_DATA_PATH"),
+                            placeholder="/mnt/instrument_data",
+                            id="nx-instrument-data-path",
+                        ),
+                        required=True,
+                        help_text=_fdesc("NX_INSTRUMENT_DATA_PATH"),
+                    )
+                    yield FormField(
+                        "NX_DATA_PATH",
+                        Input(
+                            value=self._get("NX_DATA_PATH"),
+                            placeholder="/mnt/nexuslims_data",
+                            id="nx-data-path",
+                        ),
+                        required=True,
+                        help_text=_fdesc("NX_DATA_PATH"),
+                    )
+                    yield FormField(
+                        "NX_DB_PATH",
+                        Input(
+                            value=self._get("NX_DB_PATH"),
+                            placeholder="/mnt/nexuslims_data/nexuslims.db",
+                            id="nx-db-path",
+                        ),
+                        required=True,
+                        help_text=_fdesc("NX_DB_PATH"),
+                    )
+                with Vertical(classes="form-column"):
+                    yield FormField(
+                        "NX_LOG_PATH (optional)",
+                        Input(
+                            value=self._get("NX_LOG_PATH"),
+                            placeholder="(defaults to NX_DATA_PATH/logs/)",
+                            id="nx-log-path",
+                        ),
+                        help_text=_fdesc("NX_LOG_PATH"),
+                    )
+                    yield FormField(
+                        "NX_RECORDS_PATH (optional)",
+                        Input(
+                            value=self._get("NX_RECORDS_PATH"),
+                            placeholder="(defaults to NX_DATA_PATH/records/)",
+                            id="nx-records-path",
+                        ),
+                        help_text=_fdesc("NX_RECORDS_PATH"),
+                    )
+                    yield FormField(
+                        "NX_LOCAL_PROFILES_PATH (optional)",
+                        Input(
+                            value=self._get("NX_LOCAL_PROFILES_PATH"),
+                            placeholder="(leave blank if unused)",
+                            id="nx-local-profiles-path",
+                        ),
+                        help_text=_fdesc("NX_LOCAL_PROFILES_PATH"),
+                    )
 
     def _compose_cdcs(self) -> ComposeResult:
         with VerticalScroll():
             yield Label("CDCS front-end connection settings", classes="tab-description")
-            yield FormField(
-                "NX_CDCS_URL",
-                Input(
-                    value=self._get("NX_CDCS_URL"),
-                    placeholder="https://cdcs.example.com",
-                    id="nx-cdcs-url",
-                ),
-                required=True,
-                help_text="Root URL of the NexusLIMS CDCS front-end",
-            )
-            yield FormField(
-                "NX_CDCS_TOKEN",
-                Input(
-                    value=self._get("NX_CDCS_TOKEN"),
-                    placeholder="your-cdcs-api-token",
-                    password=True,
-                    id="nx-cdcs-token",
-                ),
-                required=True,
-                help_text="API token for authenticating to the CDCS API",
-            )
+            with Horizontal(classes="form-columns"):
+                with Vertical(classes="form-column"):
+                    yield FormField(
+                        "NX_CDCS_URL",
+                        Input(
+                            value=self._get("NX_CDCS_URL"),
+                            placeholder="https://cdcs.example.com",
+                            id="nx-cdcs-url",
+                        ),
+                        required=True,
+                        help_text=_fdesc("NX_CDCS_URL"),
+                    )
+                with Vertical(classes="form-column"):
+                    yield FormField(
+                        "NX_CDCS_TOKEN",
+                        Input(
+                            value=self._get("NX_CDCS_TOKEN"),
+                            placeholder="your-cdcs-api-token",
+                            password=True,
+                            id="nx-cdcs-token",
+                        ),
+                        required=True,
+                        help_text=_fdesc("NX_CDCS_TOKEN"),
+                    )
 
     def _compose_file_processing(self) -> ComposeResult:
         with VerticalScroll():
             yield Label(
                 "Controls file discovery and record building",
                 classes="tab-description",
-            )
-
-            strategy_opts = [
-                ("exclusive \u2014 only files with known extractors", "exclusive"),
-                (
-                    "inclusive \u2014 all files (basic metadata for unknowns)",
-                    "inclusive",
-                ),
-            ]
-            current_strategy = self._get("NX_FILE_STRATEGY", "exclusive")
-            yield FormField(
-                "NX_FILE_STRATEGY",
-                Select(
-                    options=strategy_opts,
-                    value=current_strategy,
-                    id="nx-file-strategy",
-                ),
-                help_text="How to select files for metadata extraction",
-            )
-
-            export_opts = [
-                ("all \u2014 all destinations must succeed (recommended)", "all"),
-                ("first_success \u2014 stop after first success", "first_success"),
-                (
-                    "best_effort \u2014 try all, succeed if any succeed",
-                    "best_effort",
-                ),
-            ]
-            current_export = self._get("NX_EXPORT_STRATEGY", "all")
-            yield FormField(
-                "NX_EXPORT_STRATEGY",
-                Select(
-                    options=export_opts,
-                    value=current_export,
-                    id="nx-export-strategy",
-                ),
-                help_text=("Strategy for exporting records to multiple destinations"),
-            )
-
-            yield FormField(
-                "NX_FILE_DELAY_DAYS",
-                Input(
-                    value=self._get("NX_FILE_DELAY_DAYS", "2.0"),
-                    placeholder="2.0",
-                    id="nx-file-delay-days",
-                ),
-                help_text=(
-                    "Days to wait before considering NO_FILES_FOUND sessions "
-                    "failed (must be > 0)"
-                ),
-            )
-
-            yield FormField(
-                "NX_CLUSTERING_SENSITIVITY",
-                Input(
-                    value=self._get("NX_CLUSTERING_SENSITIVITY", "1.0"),
-                    placeholder="1.0",
-                    id="nx-clustering-sensitivity",
-                ),
-                help_text=(
-                    "File clustering sensitivity "
-                    "(0 = off, 1.0 = default, higher = more splits)"
-                ),
             )
 
             raw_patterns = self._get("NX_IGNORE_PATTERNS")
@@ -509,17 +602,93 @@ class ConfigScreen(Screen):
             else:
                 patterns_display = "*.mib, *.db, *.emi, *.hdr"
 
-            yield FormField(
-                "NX_IGNORE_PATTERNS",
-                Input(
-                    value=patterns_display,
-                    placeholder="*.mib, *.db, *.emi, *.hdr",
-                    id="nx-ignore-patterns",
-                ),
-                help_text=(
-                    "Comma-separated glob patterns to exclude from file discovery"
-                ),
-            )
+            with Horizontal(classes="form-columns"):
+                with Vertical(classes="form-column"):
+                    strategy_opts = [
+                        (
+                            "exclusive \u2014 only files with known extractors",
+                            "exclusive",
+                        ),
+                        (
+                            "inclusive \u2014 all files (basic metadata for unknowns)",
+                            "inclusive",
+                        ),
+                    ]
+                    current_strategy = self._get(
+                        "NX_FILE_STRATEGY", _fdefault("NX_FILE_STRATEGY")
+                    )
+                    yield FormField(
+                        "NX_FILE_STRATEGY",
+                        Select(
+                            options=strategy_opts,
+                            value=current_strategy,
+                            id="nx-file-strategy",
+                        ),
+                        help_text=_fdesc("NX_FILE_STRATEGY"),
+                    )
+
+                    export_opts = [
+                        (
+                            "all \u2014 all destinations must succeed (recommended)",
+                            "all",
+                        ),
+                        (
+                            "first_success \u2014 stop after first success",
+                            "first_success",
+                        ),
+                        (
+                            "best_effort \u2014 try all, succeed if any succeed",
+                            "best_effort",
+                        ),
+                    ]
+                    current_export = self._get(
+                        "NX_EXPORT_STRATEGY", _fdefault("NX_EXPORT_STRATEGY")
+                    )
+                    yield FormField(
+                        "NX_EXPORT_STRATEGY",
+                        Select(
+                            options=export_opts,
+                            value=current_export,
+                            id="nx-export-strategy",
+                        ),
+                        help_text=_fdesc("NX_EXPORT_STRATEGY"),
+                    )
+
+                    yield FormField(
+                        "NX_IGNORE_PATTERNS",
+                        Input(
+                            value=patterns_display,
+                            placeholder=_fdefault("NX_IGNORE_PATTERNS"),
+                            id="nx-ignore-patterns",
+                        ),
+                        help_text=_fdesc("NX_IGNORE_PATTERNS"),
+                    )
+
+                with Vertical(classes="form-column"):
+                    yield FormField(
+                        "NX_FILE_DELAY_DAYS",
+                        Input(
+                            value=self._get(
+                                "NX_FILE_DELAY_DAYS", _fdefault("NX_FILE_DELAY_DAYS")
+                            ),
+                            placeholder=_fdefault("NX_FILE_DELAY_DAYS"),
+                            id="nx-file-delay-days",
+                        ),
+                        help_text=_fdesc("NX_FILE_DELAY_DAYS"),
+                    )
+
+                    yield FormField(
+                        "NX_CLUSTERING_SENSITIVITY",
+                        Input(
+                            value=self._get(
+                                "NX_CLUSTERING_SENSITIVITY",
+                                _fdefault("NX_CLUSTERING_SENSITIVITY"),
+                            ),
+                            placeholder=_fdefault("NX_CLUSTERING_SENSITIVITY"),
+                            id="nx-clustering-sensitivity",
+                        ),
+                        help_text=_fdesc("NX_CLUSTERING_SENSITIVITY"),
+                    )
 
     def _compose_nemo(self) -> ComposeResult:
         yield Label(
@@ -535,7 +704,11 @@ class ConfigScreen(Screen):
 
     def _compose_elabftw(self) -> ComposeResult:
         with VerticalScroll():
-            with Horizontal(classes="section-toggle-row"):
+            yield Label(
+                "Export experiment records to an eLabFTW instance",
+                classes="tab-description",
+            )
+            with Horizontal(classes="section-toggle-row", id="elabftw-toggle-row"):
                 yield Label(
                     "Enable eLabFTW integration",
                     classes="section-toggle-label",
@@ -544,57 +717,60 @@ class ConfigScreen(Screen):
                     value=self._has_elabftw(),
                     id="elabftw-enabled",
                 )
-            yield Label(
-                "Export experiment records to an eLabFTW instance",
-                classes="tab-description",
-            )
 
             enabled = self._has_elabftw()
-            yield FormField(
-                "NX_ELABFTW_URL",
-                Input(
-                    value=self._get("NX_ELABFTW_URL"),
-                    placeholder="https://elabftw.example.com",
-                    id="nx-elabftw-url",
-                    disabled=not enabled,
-                ),
-                help_text="Root URL of the eLabFTW instance",
-            )
-            yield FormField(
-                "NX_ELABFTW_API_KEY",
-                Input(
-                    value=self._get("NX_ELABFTW_API_KEY"),
-                    placeholder="your-elabftw-api-key",
-                    password=True,
-                    id="nx-elabftw-api-key",
-                    disabled=not enabled,
-                ),
-                help_text="API key from the eLabFTW user panel",
-            )
-            yield FormField(
-                "NX_ELABFTW_EXPERIMENT_CATEGORY (optional)",
-                Input(
-                    value=self._get("NX_ELABFTW_EXPERIMENT_CATEGORY"),
-                    placeholder="(integer category ID)",
-                    id="nx-elabftw-category",
-                    disabled=not enabled,
-                ),
-                help_text="Default category ID for created experiments",
-            )
-            yield FormField(
-                "NX_ELABFTW_EXPERIMENT_STATUS (optional)",
-                Input(
-                    value=self._get("NX_ELABFTW_EXPERIMENT_STATUS"),
-                    placeholder="(integer status ID)",
-                    id="nx-elabftw-status",
-                    disabled=not enabled,
-                ),
-                help_text="Default status ID for created experiments",
-            )
+            with Horizontal(classes="form-columns"):
+                with Vertical(classes="form-column"):
+                    yield FormField(
+                        "NX_ELABFTW_URL",
+                        Input(
+                            value=self._get("NX_ELABFTW_URL"),
+                            placeholder="https://elabftw.example.com",
+                            id="nx-elabftw-url",
+                            disabled=not enabled,
+                        ),
+                        help_text=_fdesc("NX_ELABFTW_URL"),
+                    )
+                    yield FormField(
+                        "NX_ELABFTW_API_KEY",
+                        Input(
+                            value=self._get("NX_ELABFTW_API_KEY"),
+                            placeholder="your-elabftw-api-key",
+                            password=True,
+                            id="nx-elabftw-api-key",
+                            disabled=not enabled,
+                        ),
+                        help_text=_fdesc("NX_ELABFTW_API_KEY"),
+                    )
+                with Vertical(classes="form-column"):
+                    yield FormField(
+                        "NX_ELABFTW_EXPERIMENT_CATEGORY (optional)",
+                        Input(
+                            value=self._get("NX_ELABFTW_EXPERIMENT_CATEGORY"),
+                            placeholder="(integer category ID)",
+                            id="nx-elabftw-category",
+                            disabled=not enabled,
+                        ),
+                        help_text=_fdesc("NX_ELABFTW_EXPERIMENT_CATEGORY"),
+                    )
+                    yield FormField(
+                        "NX_ELABFTW_EXPERIMENT_STATUS (optional)",
+                        Input(
+                            value=self._get("NX_ELABFTW_EXPERIMENT_STATUS"),
+                            placeholder="(integer status ID)",
+                            id="nx-elabftw-status",
+                            disabled=not enabled,
+                        ),
+                        help_text=_fdesc("NX_ELABFTW_EXPERIMENT_STATUS"),
+                    )
 
     def _compose_email(self) -> ComposeResult:
         with VerticalScroll():
-            with Horizontal(classes="section-toggle-row"):
+            yield Label(
+                "Send notifications on record builder errors",
+                classes="tab-description",
+            )
+            with Horizontal(classes="section-toggle-row", id="email-toggle-row"):
                 yield Label(
                     "Enable email notifications",
                     classes="section-toggle-label",
@@ -603,80 +779,81 @@ class ConfigScreen(Screen):
                     value=self._has_email(),
                     id="email-enabled",
                 )
-            yield Label(
-                "Send notifications on record builder errors",
-                classes="tab-description",
-            )
 
             enabled = self._has_email()
-            yield FormField(
-                "SMTP Host",
-                Input(
-                    value=self._get("NX_EMAIL_SMTP_HOST"),
-                    placeholder="smtp.example.com",
-                    id="nx-email-smtp-host",
-                    disabled=not enabled,
-                ),
-                help_text="SMTP server hostname",
-            )
-            yield FormField(
-                "SMTP Port",
-                Input(
-                    value=self._get("NX_EMAIL_SMTP_PORT", "587"),
-                    placeholder="587",
-                    id="nx-email-smtp-port",
-                    disabled=not enabled,
-                ),
-                help_text="SMTP server port (default 587 for STARTTLS)",
-            )
-            yield FormField(
-                "SMTP Username (optional)",
-                Input(
-                    value=self._get("NX_EMAIL_SMTP_USERNAME"),
-                    placeholder="(leave blank if not required)",
-                    id="nx-email-smtp-username",
-                    disabled=not enabled,
-                ),
-                help_text="SMTP authentication username",
-            )
-            yield FormField(
-                "SMTP Password (optional)",
-                Input(
-                    value=self._get("NX_EMAIL_SMTP_PASSWORD"),
-                    placeholder="(leave blank if not required)",
-                    password=True,
-                    id="nx-email-smtp-password",
-                    disabled=not enabled,
-                ),
-                help_text="SMTP authentication password",
-            )
-            with Horizontal(classes="section-toggle-row"):
-                yield Label("Use TLS", classes="section-toggle-label")
-                yield Switch(
-                    value=self._get_bool("NX_EMAIL_USE_TLS", default=True),
-                    id="nx-email-use-tls",
-                    disabled=not enabled,
-                )
-            yield FormField(
-                "Sender Address",
-                Input(
-                    value=self._get("NX_EMAIL_SENDER"),
-                    placeholder="nexuslims@example.com",
-                    id="nx-email-sender",
-                    disabled=not enabled,
-                ),
-                help_text="Email address to send notifications from",
-            )
-            yield FormField(
-                "Recipients",
-                Input(
-                    value=self._get("NX_EMAIL_RECIPIENTS"),
-                    placeholder="admin@example.com, user2@example.com",
-                    id="nx-email-recipients",
-                    disabled=not enabled,
-                ),
-                help_text="Comma-separated list of recipient email addresses",
-            )
+            with Horizontal(classes="form-columns"):
+                with Vertical(classes="form-column"):
+                    yield FormField(
+                        "SMTP Host",
+                        Input(
+                            value=self._get("NX_EMAIL_SMTP_HOST"),
+                            placeholder="smtp.example.com",
+                            id="nx-email-smtp-host",
+                            disabled=not enabled,
+                        ),
+                        help_text=_edesc("smtp_host"),
+                    )
+                    yield FormField(
+                        "SMTP Port",
+                        Input(
+                            value=self._get(
+                                "NX_EMAIL_SMTP_PORT", _edefault("smtp_port")
+                            ),
+                            placeholder=_edefault("smtp_port"),
+                            id="nx-email-smtp-port",
+                            disabled=not enabled,
+                        ),
+                        help_text=_edesc("smtp_port"),
+                    )
+                    yield FormField(
+                        "SMTP Username (optional)",
+                        Input(
+                            value=self._get("NX_EMAIL_SMTP_USERNAME"),
+                            placeholder="(leave blank if not required)",
+                            id="nx-email-smtp-username",
+                            disabled=not enabled,
+                        ),
+                        help_text=_edesc("smtp_username"),
+                    )
+                    yield FormField(
+                        "SMTP Password (optional)",
+                        Input(
+                            value=self._get("NX_EMAIL_SMTP_PASSWORD"),
+                            placeholder="(leave blank if not required)",
+                            password=True,
+                            id="nx-email-smtp-password",
+                            disabled=not enabled,
+                        ),
+                        help_text=_edesc("smtp_password"),
+                    )
+                with Vertical(classes="form-column"):
+                    with Horizontal(classes="section-toggle-row"):
+                        yield Label("Use TLS", classes="section-toggle-label")
+                        yield Switch(
+                            value=self._get_bool("NX_EMAIL_USE_TLS", default=True),
+                            id="nx-email-use-tls",
+                            disabled=not enabled,
+                        )
+                    yield FormField(
+                        "Sender Address",
+                        Input(
+                            value=self._get("NX_EMAIL_SENDER"),
+                            placeholder="nexuslims@example.com",
+                            id="nx-email-sender",
+                            disabled=not enabled,
+                        ),
+                        help_text=_edesc("sender"),
+                    )
+                    yield FormField(
+                        "Recipients",
+                        Input(
+                            value=self._get("NX_EMAIL_RECIPIENTS"),
+                            placeholder="admin@example.com, user2@example.com",
+                            id="nx-email-recipients",
+                            disabled=not enabled,
+                        ),
+                        help_text=_edesc("recipients"),
+                    )
 
     def _compose_ssl(self) -> ComposeResult:
         with VerticalScroll():
@@ -688,12 +865,11 @@ class ConfigScreen(Screen):
                     placeholder="/path/to/ca-bundle.crt",
                     id="nx-cert-bundle-file",
                 ),
-                help_text="Path to a custom CA certificate bundle file",
+                help_text=_fdesc("NX_CERT_BUNDLE_FILE"),
             )
             yield Label("NX_CERT_BUNDLE (optional)", classes="field-label")
             yield Static(
-                "Paste the full certificate bundle as text "
-                "(overrides NX_CERT_BUNDLE_FILE)",
+                _fdesc("NX_CERT_BUNDLE"),
                 classes="field-help",
             )
             yield TextArea(
@@ -725,6 +901,8 @@ class ConfigScreen(Screen):
     def on_mount(self) -> None:
         """Set up the NEMO harvesters DataTable after mount."""
         self._setup_nemo_table()
+        self.query_one("#elabftw-toggle-row").set_class(self._has_elabftw(), "-on")
+        self.query_one("#email-toggle-row").set_class(self._has_email(), "-on")
 
     def _setup_nemo_table(self) -> None:
         """Initialize NEMO DataTable columns and populate rows."""
@@ -805,6 +983,7 @@ class ConfigScreen(Screen):
     @on(Switch.Changed, "#elabftw-enabled")
     def _on_elabftw_toggle(self, event: Switch.Changed) -> None:
         enabled = event.value
+        self.query_one("#elabftw-toggle-row").set_class(enabled, "-on")
         for field_id in (
             "nx-elabftw-url",
             "nx-elabftw-api-key",
@@ -817,6 +996,7 @@ class ConfigScreen(Screen):
     @on(Switch.Changed, "#email-enabled")
     def _on_email_toggle(self, event: Switch.Changed) -> None:
         enabled = event.value
+        self.query_one("#email-toggle-row").set_class(enabled, "-on")
         for field_id in (
             "nx-email-smtp-host",
             "nx-email-smtp-port",
@@ -886,6 +1066,40 @@ class ConfigScreen(Screen):
     def action_cancel(self) -> None:
         """Exit without saving."""
         self.app.exit()
+
+    def action_show_field_detail(self) -> None:
+        """Show extended help popup for the currently focused input or select."""
+        focused = self.screen.focused
+        field_name: str | None = None
+        detail: str = ""
+
+        if isinstance(focused, Input):
+            mapping = _INPUT_ID_TO_FIELD.get(focused.id or "")
+            if mapping:
+                model_class, field_name = mapping
+                detail = (
+                    _fdetail(field_name)
+                    if model_class == "settings"
+                    else _edetail(field_name)
+                )
+        elif isinstance(focused, Select):
+            if focused.id == "nx-file-strategy":
+                field_name = "NX_FILE_STRATEGY"
+                detail = _fdetail(field_name)
+            elif focused.id == "nx-export-strategy":
+                field_name = "NX_EXPORT_STRATEGY"
+                detail = _fdetail(field_name)
+
+        if not field_name or not detail:
+            if field_name:
+                self.app.notify(
+                    f"No extended help available for {field_name}.",
+                    severity="information",
+                    timeout=2,
+                )
+            return
+
+        self.app.push_screen(FieldDetailScreen(field_name, detail))
 
     # ---------------------------------------------------------------------- #
     # Validation helpers                                                      #

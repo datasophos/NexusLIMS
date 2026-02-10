@@ -71,6 +71,16 @@ class NemoHarvesterConfig(BaseModel):
             "Full path to the root of the NEMO API, with trailing slash included "
             "(e.g., 'https://nemo.example.com/api/')"
         ),
+        json_schema_extra={
+            "detail": (
+                "The full URL to the NEMO API root endpoint, including the trailing "
+                "slash. For example: 'https://nemo.yourinstitution.edu/api/'. This "
+                "must point to the API root, not the NEMO web interface itself.\n\n"
+                "You can verify the address is correct by navigating to it in a "
+                "browser — a valid NEMO API root returns a JSON object listing "
+                "available endpoints."
+            )
+        },
     )
     token: str = Field(
         "test_nemo_token" if TEST_MODE else ...,
@@ -78,6 +88,15 @@ class NemoHarvesterConfig(BaseModel):
             "Authentication token for the NEMO server. Obtain from the 'detailed "
             "administration' page of the NEMO installation."
         ),
+        json_schema_extra={
+            "detail": (
+                "The API authentication token for this NEMO server instance. To "
+                "obtain: log in to NEMO as an administrator, navigate to the "
+                "'Detailed administration' page (typically at "
+                "/admin/authtoken/token/), and locate or create a token for the "
+                "NexusLIMS service account. The token is a 40-character hex string."
+            )
+        },
     )
     strftime_fmt: str = Field(
         "%Y-%m-%dT%H:%M:%S%z",
@@ -85,6 +104,16 @@ class NemoHarvesterConfig(BaseModel):
             "Format string to send datetime values to the NEMO API. Uses Python "
             "strftime syntax. Default is ISO 8601 format."
         ),
+        json_schema_extra={
+            "detail": (
+                "The Python strftime format string used when sending datetime values "
+                "to this NEMO API instance. The default '%Y-%m-%dT%H:%M:%S%z' is "
+                "ISO 8601 and works with all standard NEMO installations.\n\n"
+                "Only change this if your NEMO server has a non-standard date format "
+                "configuration. See https://docs.python.org/3/library/datetime.html"
+                "#strftime-and-strptime-format-codes for format codes."
+            )
+        },
     )
     strptime_fmt: str = Field(
         "%Y-%m-%dT%H:%M:%S%z",
@@ -92,6 +121,16 @@ class NemoHarvesterConfig(BaseModel):
             "Format string to parse datetime values from the NEMO API. Uses Python "
             "strptime syntax. Default is ISO 8601 format."
         ),
+        json_schema_extra={
+            "detail": (
+                "The Python strptime format string used when parsing datetime values "
+                "returned by this NEMO API instance. The default '%Y-%m-%dT%H:%M:%S%z' "
+                "is ISO 8601 and works with all standard NEMO installations.\n\n"
+                "Only change this if your NEMO server returns dates in a non-standard "
+                "format. See https://docs.python.org/3/library/datetime.html"
+                "#strftime-and-strptime-format-codes for format codes."
+            )
+        },
     )
     tz: str | None = Field(
         None,
@@ -100,6 +139,18 @@ class NemoHarvesterConfig(BaseModel):
             "strings into. Only needed if the NEMO server doesn't return timezone "
             "information in API responses. If provided, overrides timezone from API."
         ),
+        json_schema_extra={
+            "detail": (
+                "An IANA tz database timezone name (e.g., 'America/Denver', "
+                "'Europe/Berlin') to force onto datetime values received from this "
+                "NEMO server. Only needed when your NEMO server returns "
+                "reservation/usage event times without timezone information.\n\n"
+                "Leave blank for NEMO servers that include timezone info in their "
+                "API responses. See "
+                "https://en.wikipedia.org/wiki/List_of_tz_database_time_zones "
+                "for valid timezone names."
+            )
+        },
     )
 
     @field_validator("address")
@@ -120,30 +171,90 @@ class EmailConfig(BaseModel):
     smtp_host: str = Field(
         "localhost" if TEST_MODE else ...,
         description="SMTP server hostname (e.g., 'smtp.gmail.com')",
+        json_schema_extra={
+            "detail": (
+                "The hostname or IP address of the SMTP server used to send "
+                "error notification emails. For Gmail use 'smtp.gmail.com', for "
+                "Outlook/Office365 use 'smtp.office365.com'. For an on-premises "
+                "mail relay this is typically a local hostname or IP address."
+            )
+        },
     )
     smtp_port: int = Field(
         587,
         description="SMTP server port (default: 587 for STARTTLS)",
+        json_schema_extra={
+            "detail": (
+                "The TCP port for the SMTP connection. Common values:\n"
+                "  587 — STARTTLS (recommended, default)\n"
+                "  465 — SMTPS / implicit TLS\n"
+                "  25  — unencrypted (not recommended)\n\n"
+                "The default 587 works with most modern mail servers when "
+                "Use TLS is enabled."
+            )
+        },
     )
     smtp_username: str | None = Field(
         None,
         description="SMTP username for authentication (if required)",
+        json_schema_extra={
+            "detail": (
+                "The username for SMTP authentication. For Gmail this is your "
+                "full email address. Leave blank if your SMTP relay does not "
+                "require authentication (e.g., an internal relay that accepts "
+                "connections from trusted hosts without credentials)."
+            )
+        },
     )
     smtp_password: str | None = Field(
         None,
         description="SMTP password for authentication (if required)",
+        json_schema_extra={
+            "detail": (
+                "The password for SMTP authentication. For Gmail, use an App "
+                "Password (not your account password) if 2-factor authentication "
+                "is enabled. Leave blank if your SMTP relay does not require "
+                "authentication."
+            )
+        },
     )
     use_tls: bool = Field(
         default=True,
         description="Use TLS encryption (default: True)",
+        json_schema_extra={
+            "detail": (
+                "Whether to use TLS encryption for the SMTP connection. When "
+                "enabled (the default), NexusLIMS uses STARTTLS on the configured "
+                "port (typically 587). Disable only when connecting to a plaintext "
+                "SMTP relay on port 25."
+            )
+        },
     )
     sender: TestAwareEmailStr = Field(  # type: ignore[valid-type]
         "test@example.com" if TEST_MODE else ...,
         description="Email address to send from",
+        json_schema_extra={
+            "detail": (
+                "The 'From' email address for notification messages. This must "
+                "be an address that your SMTP server is authorized to send from. "
+                "If using Gmail or similar services, this must match the "
+                "authenticated account's address."
+            )
+        },
     )
     recipients: list[TestAwareEmailStr] = Field(  # type: ignore[valid-type]
         ["test@example.com"] if TEST_MODE else ...,
         description="List of recipient email addresses for error notifications",
+        json_schema_extra={
+            "detail": (
+                "One or more email addresses that will receive error notification "
+                "messages when the record builder encounters problems. Provide as "
+                "a comma-separated string in the .env file:\n"
+                "  NX_EMAIL_RECIPIENTS='admin@example.com,team@example.com'\n\n"
+                "Notifications are sent when nexuslims-process-records detects "
+                "ERROR-level log entries."
+            )
+        },
     )
 
 
@@ -173,6 +284,21 @@ class Settings(BaseSettings):
             "explicit extractors) or 'inclusive' (all files, with basic metadata "
             "for others). Default is 'exclusive'."
         ),
+        json_schema_extra={
+            "detail": (
+                "Controls which files are included when searching for experiment "
+                "data.\n\n"
+                "'exclusive' (default): Only files for which NexusLIMS has an explicit "
+                "metadata extractor are included. This produces cleaner records but "
+                "may miss ancillary files.\n\n"
+                "'inclusive': All files within the session window are included. Files "
+                "without a known extractor receive basic filesystem metadata only. "
+                "Useful when you want a complete audit trail of every file created "
+                "during an instrument session.\n\n"
+                "See https://datasophos.github.io/NexusLIMS/stable/ for the list of "
+                "supported file formats and their extractors."
+            )
+        },
     )
     NX_IGNORE_PATTERNS: list[str] = Field(
         ["*.mib", "*.db", "*.emi", "*.hdr"],
@@ -180,6 +306,22 @@ class Settings(BaseSettings):
             "List of glob patterns to ignore when searching for experiment files. "
             "Default is `['*.mib','*.db','*.emi','*.hdr']`."
         ),
+        json_schema_extra={
+            "detail": (
+                "Filename glob patterns to exclude when scanning for experiment files. "
+                "Patterns follow the same syntax as the '-name' argument to GNU find "
+                "(see https://manpages.org/find).\n\n"
+                "In the .env file this is stored as a JSON array string:\n"
+                '  NX_IGNORE_PATTERNS=\'["*.mib","*.db","*.emi","*.hdr"]\'\n\n'
+                "In this editor, enter patterns as a comma-separated list.\n\n"
+                "Common patterns to ignore:\n"
+                "  *.mib  — Merlin detector raw frames (very large)\n"
+                "  *.db   — SQLite lock/temp files\n"
+                "  *.emi  — FEI TIA sidecar files (paired with .ser via FEI EMI "
+                "extractor)\n"
+                "  *.hdr  — header files paired with other data formats"
+            )
+        },
     )
     # Use TestAware types which are strict in production, lenient in test mode
     NX_INSTRUMENT_DATA_PATH: TestAwareDirectoryPath = Field(  # type: ignore[valid-type]
@@ -188,6 +330,20 @@ class Settings(BaseSettings):
             "Root path to the centralized file store for instrument data "
             "(mounted read-only). The directory must exist."
         ),
+        json_schema_extra={
+            "detail": (
+                "The root path to the centralized instrument data file store — "
+                "typically a network share or mounted volume containing subdirectories "
+                "for each instrument.\n\n"
+                "IMPORTANT: This path should be mounted read-only to ensure data "
+                "preservation. NexusLIMS will never write to this location.\n\n"
+                "The 'filestore_path' column in the NexusLIMS instruments database "
+                "stores paths relative to this root. For example, if an instrument "
+                "has filestore_path='FEI_Titan/data' and this value is "
+                "'/mnt/instrument_data', NexusLIMS searches under "
+                "'/mnt/instrument_data/FEI_Titan/data'."
+            )
+        },
     )
     NX_DATA_PATH: TestAwareDirectoryPath = Field(  # type: ignore[valid-type]
         Path("/tmp") / "test_data" if TEST_MODE else ...,  # noqa: S108
@@ -195,6 +351,17 @@ class Settings(BaseSettings):
             "Writable path parallel to NX_INSTRUMENT_DATA_PATH for "
             "extracted metadata and generated preview images. The directory must exist."
         ),
+        json_schema_extra={
+            "detail": (
+                "A writable path that mirrors the directory structure of "
+                "NX_INSTRUMENT_DATA_PATH. NexusLIMS writes extracted metadata files "
+                "and generated preview images here, alongside the original data.\n\n"
+                "This path must be accessible to the NexusLIMS CDCS frontend instance "
+                "so it can serve preview images and metadata files to users browsing "
+                "records. Configure your CDCS deployment to mount or serve files from "
+                "this location."
+            )
+        },
     )
     NX_DB_PATH: TestAwareFilePath = Field(  # type: ignore[valid-type]
         Path("/tmp") / "test.db" if TEST_MODE else ...,  # noqa: S108
@@ -202,6 +369,18 @@ class Settings(BaseSettings):
             "The writable path to the NexusLIMS SQLite database that is used to get "
             "information about instruments and sessions that are built into records."
         ),
+        json_schema_extra={
+            "detail": (
+                "The full filesystem path to the NexusLIMS SQLite database file. "
+                "Stores two tables:\n"
+                "  'instruments'  — configuration for each managed instrument\n"
+                "  'session_log'  — session start/end events and record build "
+                "status\n\n"
+                "Must be writable by the NexusLIMS process. The database is created "
+                "automatically on first run of 'nexuslims-migrate'. Recommended "
+                "location: within NX_DATA_PATH for co-location with other data."
+            )
+        },
     )
     NX_CDCS_TOKEN: str = Field(
         "test_token" if TEST_MODE else ...,
@@ -209,6 +388,18 @@ class Settings(BaseSettings):
             "API token for authenticating to the CDCS API for uploading "
             "built records to the NexusLIMS front-end."
         ),
+        json_schema_extra={
+            "detail": (
+                "The API authentication token for the NexusLIMS CDCS frontend. "
+                "Used for all record upload requests.\n\n"
+                "To obtain: log in to your CDCS instance as an administrator, navigate "
+                "to the admin panel, and find or create an API token for the NexusLIMS "
+                "service account. Alternatively, use the CDCS REST API token "
+                "endpoint.\n\n"
+                "Keep this value secret — anyone with this token can upload records "
+                "to your CDCS instance."
+            )
+        },
     )
     NX_CDCS_URL: TestAwareHttpUrl = Field(  # type: ignore[valid-type]
         "http://localhost:8000" if TEST_MODE else ...,
@@ -216,6 +407,15 @@ class Settings(BaseSettings):
             "The root URL of the NexusLIMS CDCS front-end. This will be the target for "
             "record uploads that are authenticated using the CDCS credentials."
         ),
+        json_schema_extra={
+            "detail": (
+                "The root URL of the NexusLIMS CDCS frontend instance. All record "
+                "uploads are sent here using NX_CDCS_TOKEN.\n\n"
+                "Include the trailing slash: 'https://nexuslims.example.com/'\n\n"
+                "This is the same URL users visit to browse experiment records. "
+                "NexusLIMS POSTs new XML records to the CDCS REST API at this address."
+            )
+        },
     )
     NX_EXPORT_STRATEGY: Literal["all", "first_success", "best_effort"] = Field(
         "all",
@@ -225,6 +425,20 @@ class Settings(BaseSettings):
             "'first_success': Stop after first successful export. "
             "'best_effort': Try all destinations, succeed if any succeed."
         ),
+        json_schema_extra={
+            "detail": (
+                "Controls behavior when exporting records to multiple destinations "
+                "(e.g., both CDCS and eLabFTW are configured):\n\n"
+                "'all' (default, recommended): Every configured destination must "
+                "accept the record. If any destination fails, the session is marked "
+                "ERROR and retried on the next run.\n\n"
+                "'first_success': Stop after the first destination that accepts the "
+                "record. Useful if destinations are fallbacks for each other.\n\n"
+                "'best_effort': Attempt all destinations; mark COMPLETED if at least "
+                "one succeeds. Failed destinations are logged but do not trigger "
+                "a retry."
+            )
+        },
     )
     NX_CERT_BUNDLE_FILE: TestAwareFilePath | None = Field(  # type: ignore[valid-type]
         None,
@@ -235,6 +449,18 @@ class Settings(BaseSettings):
             "bundle will be appended to the existing system for all requests made "
             "by NexusLIMS."
         ),
+        json_schema_extra={
+            "detail": (
+                "Path to a custom SSL/TLS CA bundle file in PEM format. Use this "
+                "when your CDCS or NEMO servers use certificates signed by a private "
+                "or institutional CA not in the system trust store.\n\n"
+                "Any certificates in this bundle are appended to the existing system "
+                "CA certificates — they do not replace them. Provide the full absolute "
+                "path to the .pem or .crt file.\n\n"
+                "If both NX_CERT_BUNDLE and NX_CERT_BUNDLE_FILE are set, "
+                "NX_CERT_BUNDLE takes precedence."
+            )
+        },
     )
     NX_CERT_BUNDLE: str | None = Field(
         None,
@@ -244,6 +470,17 @@ class Settings(BaseSettings):
             "pipelines). Lines should be separated by a single '\n' character If "
             "defined, this value will take precedence over NX_CERT_BUNDLE_FILE."
         ),
+        json_schema_extra={
+            "detail": (
+                "The full text of a PEM-format CA certificate bundle, provided "
+                "directly as a string rather than a file path. Certificate lines "
+                "should be separated by '\\n' in the .env file.\n\n"
+                "Primarily useful in CI/CD pipelines or containerized deployments "
+                "where injecting a certificate file is impractical but environment "
+                "variables are easy to set as secrets.\n\n"
+                "When defined, this value takes precedence over NX_CERT_BUNDLE_FILE."
+            )
+        },
     )
     NX_DISABLE_SSL_VERIFY: bool = Field(
         default=False,
@@ -252,6 +489,18 @@ class Settings(BaseSettings):
             "This should ONLY be used during local development or testing with "
             "self-signed certificates. Never enable this in production."
         ),
+        json_schema_extra={
+            "detail": (
+                "WARNING: Disables SSL certificate verification for ALL outgoing "
+                "HTTPS requests, including connections to CDCS, NEMO, and eLabFTW.\n\n"
+                "NEVER enable this in production. An attacker could intercept all "
+                "communications including API tokens and uploaded records.\n\n"
+                "Only appropriate for local development or testing with self-signed "
+                "certificates when setting up a CA via NX_CERT_BUNDLE_FILE is "
+                "impractical. If you need this in production, configure "
+                "NX_CERT_BUNDLE_FILE instead."
+            )
+        },
     )
     NX_FILE_DELAY_DAYS: float = Field(
         2.0,
@@ -265,6 +514,21 @@ class Settings(BaseSettings):
             "looking for files until Wednesday at 5PM. "
         ),
         gt=0,
+        json_schema_extra={
+            "detail": (
+                "The maximum time (in days) to wait for instrument files to appear "
+                "after a session ends before giving up.\n\n"
+                "Background: On some systems, instrument data files are not "
+                "immediately available on the network share after an experiment ends "
+                "— they may be synced or transferred with a delay.\n\n"
+                "When a session ends and no files are found, the record builder marks "
+                "it NO_FILES_FOUND and retries on subsequent runs until this window "
+                "expires.\n\n"
+                "Example: With a value of 2, if a session ended Monday at 5 PM, "
+                "the builder keeps retrying until Wednesday at 5 PM.\n\n"
+                "Can be a fractional value (e.g., 0.5 for 12 hours). Must be > 0."
+            )
+        },
     )
     NX_CLUSTERING_SENSITIVITY: float = Field(
         1.0,
@@ -277,6 +541,21 @@ class Settings(BaseSettings):
             "Default is 1.0 (no change to automatic clustering)."
         ),
         ge=0,
+        json_schema_extra={
+            "detail": (
+                "Controls how aggressively files are grouped into separate Acquisition "
+                "Activities within a session record.\n\n"
+                "NexusLIMS uses kernel density estimation (KDE) on file modification "
+                "times to detect natural gaps in activity. This multiplier scales the "
+                "KDE bandwidth.\n\n"
+                "Higher values (e.g., 2.0): more sensitive — smaller time gaps cause "
+                "a split, producing more (smaller) activities.\n\n"
+                "Lower values (e.g., 0.5): less sensitive — only large gaps cause a "
+                "split, producing fewer (larger) activities.\n\n"
+                "Set to 0 to disable clustering and place all files into a single "
+                "Acquisition Activity. Default is 1.0 (unmodified KDE bandwidth)."
+            )
+        },
     )
     NX_LOG_PATH: TestAwareDirectoryPath | None = Field(  # type: ignore[valid-type]
         None,
@@ -284,6 +563,16 @@ class Settings(BaseSettings):
             "Directory for application logs. If not specified, defaults to "
             "NX_DATA_PATH/logs/. Logs are organized by date: logs/YYYY/MM/DD/"
         ),
+        json_schema_extra={
+            "detail": (
+                "Directory for NexusLIMS application logs. If not specified, logs "
+                "are written to NX_DATA_PATH/logs/ by default.\n\n"
+                "Within this directory, logs are organized by date:\n"
+                "  YYYY/MM/DD/YYYYMMDD-HHMM.log\n\n"
+                "The directory must be writable by the NexusLIMS process. Leave "
+                "blank to use the default location within NX_DATA_PATH."
+            )
+        },
     )
     NX_RECORDS_PATH: TestAwareDirectoryPath | None = Field(  # type: ignore[valid-type]
         None,
@@ -292,6 +581,16 @@ class Settings(BaseSettings):
             "NX_DATA_PATH/records/. Successfully uploaded records are moved to "
             "a 'uploaded' subdirectory."
         ),
+        json_schema_extra={
+            "detail": (
+                "Directory where generated XML record files are stored before and "
+                "after upload. If not specified, defaults to NX_DATA_PATH/records/.\n\n"
+                "After a record is successfully uploaded, the XML file is moved to "
+                "an 'uploaded' subdirectory within this path for archival.\n\n"
+                "Failed records remain in the main directory for inspection. The "
+                "directory must be writable by the NexusLIMS process."
+            )
+        },
     )
     NX_LOCAL_PROFILES_PATH: TestAwareDirectoryPath | None = Field(  # type: ignore[valid-type]
         None,
@@ -302,6 +601,20 @@ class Settings(BaseSettings):
             "Python modules that register InstrumentProfile objects. If not specified, "
             "only built-in profiles will be loaded."
         ),
+        json_schema_extra={
+            "detail": (
+                "Directory containing site-specific instrument profile Python modules. "
+                "Profiles customize metadata extraction for instruments unique to your "
+                "deployment without modifying the core NexusLIMS codebase.\n\n"
+                "Each Python file in this directory should define one or more "
+                "InstrumentProfile subclasses that are auto-discovered and loaded "
+                "alongside built-in profiles.\n\n"
+                "Use cases: adding static metadata fields, transforming extracted "
+                "values, adding instrument-specific warnings, or overriding which "
+                "extractor handles a particular instrument's files.\n\n"
+                "Leave blank if you only need the built-in profiles."
+            )
+        },
     )
 
     # ========================================================================
@@ -314,6 +627,16 @@ class Settings(BaseSettings):
             "panel in your eLabFTW instance. If not configured, eLabFTW export will "
             "be disabled."
         ),
+        json_schema_extra={
+            "detail": (
+                "API key for authenticating to the eLabFTW API. If not configured, "
+                "eLabFTW export will be disabled.\n\n"
+                "To obtain: log in to your eLabFTW instance, go to user settings, "
+                "and find the 'API keys' section. Create a new key for NexusLIMS.\n\n"
+                "Format: '{id}-{key}' (e.g., '1-abc123...'). The key is typically "
+                "a long alphanumeric string."
+            )
+        },
     )
     NX_ELABFTW_URL: TestAwareHttpUrl | None = Field(  # type: ignore[valid-type]
         "http://elabftw.localhost:40080" if TEST_MODE else None,
@@ -321,6 +644,16 @@ class Settings(BaseSettings):
             "Root URL of the eLabFTW instance (e.g., 'https://elabftw.example.com'). "
             "If not configured, eLabFTW export will be disabled."
         ),
+        json_schema_extra={
+            "detail": (
+                "The root URL of your eLabFTW instance. If not configured, eLabFTW "
+                "export will be disabled.\n\n"
+                "Should NOT include /api/ or any path — just the domain:\n"
+                "  'https://elabftw.example.com'\n"
+                "  'http://localhost:3148'\n\n"
+                "NexusLIMS appends the appropriate API paths automatically."
+            )
+        },
     )
     NX_ELABFTW_EXPERIMENT_CATEGORY: int | None = Field(
         None,
@@ -329,6 +662,15 @@ class Settings(BaseSettings):
             "eLabFTW will use its default category. Category IDs can be found "
             "in the eLabFTW admin panel."
         ),
+        json_schema_extra={
+            "detail": (
+                "The default category ID for experiments created in eLabFTW. "
+                "If not specified, eLabFTW uses its default category.\n\n"
+                "To find category IDs: log in to eLabFTW as an administrator, "
+                "navigate to the admin panel, and look under 'Experiment categories'. "
+                "The ID is shown next to each category name."
+            )
+        },
     )
     NX_ELABFTW_EXPERIMENT_STATUS: int | None = Field(
         None,
@@ -337,6 +679,15 @@ class Settings(BaseSettings):
             "eLabFTW will use its default status. Status IDs can be found "
             "in the eLabFTW admin panel."
         ),
+        json_schema_extra={
+            "detail": (
+                "The default status ID for experiments created in eLabFTW. "
+                "If not specified, eLabFTW uses its default status.\n\n"
+                "To find status IDs: log in to eLabFTW as an administrator, "
+                "navigate to the admin panel, and look under 'Experiment statuses'. "
+                "The ID is shown next to each status name."
+            )
+        },
     )
 
     @property

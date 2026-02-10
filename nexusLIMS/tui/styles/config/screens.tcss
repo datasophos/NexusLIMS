@@ -19,22 +19,75 @@ ConfigScreen VerticalScroll {
     height: 1fr;
 }
 
-.tab-description {
+/* Tab bar styling: inactive tabs are dimmed, active tab is highlighted */
+ConfigScreen Tabs {
+    height: 3;
+    background: $surface;
+}
+
+ConfigScreen Tabs #tabs-list {
+    margin-top: 1;
+}
+
+ConfigScreen Tab {
+    width: auto;
+    height: 1;
+    padding: 0 2;
     color: $text-muted;
-    margin: 0 0 1 0;
-    text-style: italic;
+    background: $surface;
+    text-style: none;
+    border-right: tall $primary 20%;
+}
+
+ConfigScreen Tab:hover {
+    color: $text;
+    background: $boost;
+}
+
+ConfigScreen Tab.-active {
+    color: $primary;
+    background: $surface;
+    text-style: bold;
+}
+
+ConfigScreen Tabs > .tabs--underline {
+    color: $primary 30%;
+}
+
+ConfigScreen Tabs > .tabs--active-bar {
+    color: $accent;
+}
+
+.tab-description {
+    color: $text;
+    background: $primary 15%;
+    margin: 1 0 1 0;
+    padding: 0 1;
+    text-style: bold;
+    border-left: thick $accent;
 }
 
 /* Footer save/cancel buttons */
 #config-footer-buttons {
-    height: 3;
+    height: auto;
     align: center middle;
     border-top: solid $primary;
-    padding: 0 1;
+    padding: 1 1;
 }
 
 #config-footer-buttons Button {
     margin: 0 1;
+}
+
+/* Two-column form layout */
+.form-columns {
+    height: auto;
+}
+
+.form-column {
+    width: 1fr;
+    height: auto;
+    padding: 0 1;
 }
 
 /* Form field layout within tabs */
@@ -45,14 +98,29 @@ ConfigScreen FormField {
 
 /* Section enable/disable toggle rows */
 .section-toggle-row {
-    height: 3;
+    height: 5;
     align: left middle;
-    margin: 0 0 1 0;
+    margin: 1 0 1 1;
+    width: auto;
+    background: $panel 30%;
+    border: tall $panel 60%;
+    padding: 0 1;
+}
+
+.section-toggle-row.-on {
+    background: $success 15%;
+    border: tall $success 40%;
 }
 
 .section-toggle-label {
-    width: 1fr;
+    width: auto;
+    height: 3;
     content-align: left middle;
+    padding: 0 1 0 0;
+}
+
+.section-toggle-row Switch:focus {
+    border: tall $primary;
 }
 
 /* SSL verify warning */
@@ -133,4 +201,46 @@ NemoHarvesterFormScreen {
 
 .nemo-form-buttons Button {
     margin: 0 1;
+}
+
+/* =========================================================================
+   FieldDetailScreen — field help popup modal
+   ========================================================================= */
+
+FieldDetailScreen {
+    align: center middle;
+}
+
+#field-detail-dialog {
+    width: 80;
+    height: auto;
+    max-height: 30;
+    background: $surface;
+    border: thick $accent;
+    padding: 1 2;
+}
+
+#field-detail-title {
+    text-style: bold;
+    color: $accent;
+    margin-bottom: 1;
+}
+
+#field-detail-body {
+    height: 1fr;
+    max-height: 20;
+    min-height: 4;
+    border: solid $panel;
+    padding: 0 1;
+    margin-bottom: 1;
+}
+
+#field-detail-text {
+    color: $text;
+    padding: 1 0;
+}
+
+#field-detail-footer {
+    height: 3;
+    align: center middle;
 }
