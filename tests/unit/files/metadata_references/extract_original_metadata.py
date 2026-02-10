@@ -46,15 +46,11 @@ if not _test_db_path.exists():
         CREATE TABLE IF NOT EXISTS instruments (
             instrument_pid VARCHAR(100) NOT NULL PRIMARY KEY,
             api_url TEXT NOT NULL UNIQUE,
-            calendar_name TEXT NOT NULL,
             calendar_url TEXT NOT NULL,
             location VARCHAR(100) NOT NULL,
-            schema_name TEXT NOT NULL,
+            display_name TEXT NOT NULL,
             property_tag VARCHAR(20) NOT NULL,
             filestore_path TEXT NOT NULL,
-            computer_name TEXT UNIQUE,
-            computer_ip VARCHAR(15) UNIQUE,
-            computer_mount TEXT,
             harvester TEXT,
             timezone TEXT DEFAULT 'America/New_York' NOT NULL
         )

@@ -1,5 +1,5 @@
 # pylint: disable=C0116
-# ruff: noqa: SLF001, E501, ARG001, ARG005
+# ruff: noqa: E501, ARG005
 
 """Tests for nexusLIMS.extractors.plugins.tescan_pfib_tif."""
 

@@ -314,15 +314,11 @@ import, rather than every time information is needed.
 |--------|-----------|-------------|
 | `instrument_pid` | VARCHAR(100) | The unique identifier for an instrument in the facility, typically built from the make, model, and type of instrument, plus a unique numeric code (e.g. `Vendor-Model-Type-12345` ) |
 | `api_url` | TEXT | The calendar API endpoint url for this instrument's scheduler. For NEMO, should be of the format `https://<nemo_address>/api/tools/?id=<tool_id>` |
-| `calendar_name` | TEXT | The "user-friendly" name of the calendar for this instrument as displayed on the reservation system resource (e.g. "FEI Titan TEM") |
-| `calendar_url` | TEXT | **[Deprecated]** The URL to this instrument's web-accessible calendar on the SharePoint resource (this is no longer used after SharePoint support was removed) |
+| `calendar_url` | TEXT | The URL to this instrument's web-accessible calendar |
 | `location` | VARCHAR(100) | The physical location of this instrument |
-| `schema_name` | TEXT | The human-readable name of instrument as defined in the Nexus Microscopy schema and displayed in the records |
+| `display_name` | TEXT | The human-readable instrument name displayed in NexusLIMS records |
 | `property_tag` | VARCHAR(20) | A unique numeric identifier for this instrument (not used by NexusLIMS, but for reference and potential future use) |
 | `filestore_path` | TEXT | The path (relative to central storage location specified in {ref}`NX_INSTRUMENT_DATA_PATH <config-instrument-data-path>`) where this instrument stores its data (e.g. `./instrument_name`) |
-| `computer_name` | TEXT | The hostname of the `support PC` connected to this instrument (for reference purposes) |
-| `computer_ip` | VARCHAR(15) | The IP address of the `support PC` connected to this instrument (not currently utilized) |
-| `computer_mount` | TEXT | The full path where the central file storage is mounted and files are saved on the 'support PC' for the instrument (for reference purposes) |
 | `harvester` | TEXT | The specific submodule within {py:mod}`nexusLIMS.harvesters` that should be used to harvest reservation information for this instrument. Possible values: `nemo`. |
 | `timezone` | TEXT | The timezone in which this instrument is located, in the format of the IANA timezone database (e.g. `America/New_York`). This is used to properly localize dates and times when communicating with the harvester APIs. |
 

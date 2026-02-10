@@ -299,7 +299,7 @@ def create_projects(projects_data, users):
         account = None
         if (
             hasattr(Project, "account")
-            and Project._meta.get_field("account").null is False  # noqa: SLF001
+            and Project._meta.get_field("account").null is False
         ):
             # Account is required, create a default one
             account, _ = Account.objects.get_or_create(

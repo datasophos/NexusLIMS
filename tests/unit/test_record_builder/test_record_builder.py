@@ -1,7 +1,7 @@
 """Tests for the record builder module."""
 
 # pylint: disable=missing-function-docstring,too-many-locals
-# ruff: noqa: D102, ARG001, ARG005
+# ruff: noqa: ARG005
 
 import re
 import shutil

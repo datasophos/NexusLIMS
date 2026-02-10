@@ -1,0 +1,32 @@
+/* BaseListScreen */
+#filter-input {
+    margin-top: 1;
+    margin-bottom: 1;
+}
+
+/* ConfirmDialog */
+ConfirmDialog {
+    align: center middle;
+}
+
+#dialog {
+    width: 60;
+    height: auto;
+    border: thick $primary;
+    background: $surface;
+    padding: 1 2;
+}
+
+#message {
+    margin-bottom: 1;
+}
+
+#buttons {
+    width: 100%;
+    height: auto;
+    align: center middle;
+}
+
+ConfirmDialog Button {
+    margin: 0 1;
+}

@@ -1,4 +1,3 @@
-# ruff: noqa: ARG001
 """
 Network resilience unit tests for NexusLIMS.
 
@@ -487,7 +486,7 @@ class TestNetworkResilience:
         """
         import nexusLIMS.utils.network as network_mod
 
-        network_mod._ssl_warning_logged = False  # noqa: SLF001
+        network_mod._ssl_warning_logged = False
 
         response = MagicMock(spec=requests.Response)
         response.status_code = HTTPStatus.OK
@@ -517,7 +516,7 @@ class TestNetworkResilience:
         """
         import nexusLIMS.utils.network as network_mod
 
-        network_mod._ssl_warning_logged = False  # noqa: SLF001
+        network_mod._ssl_warning_logged = False
 
         response = MagicMock(spec=requests.Response)
         response.status_code = HTTPStatus.OK

@@ -104,6 +104,19 @@ jobs:
           cd pr-source
           uv sync
 
+      - name: Install VHS and documentation dependencies
+        if: steps.pr.outputs.found == 'true'
+        run: |
+          if ! command -v vhs &> /dev/null; then
+            echo "Installing VHS..."
+            wget https://github.com/charmbracelet/vhs/releases/download/v0.10.0/vhs_0.10.0_amd64.deb -O /tmp/vhs.deb
+            sudo apt install ffmpeg ttyd graphviz
+            sudo dpkg -i /tmp/vhs.deb
+            vhs --version
+          else
+            echo "VHS already installed: $(vhs --version)"
+          fi
+
       - name: Download coverage artifact from integration test workflow
         # Download combined coverage artifact (unit + integration) from the workflow_run that triggered this
         if: steps.pr.outputs.found == 'true'
@@ -164,10 +177,21 @@ jobs:
 
       - name: Build documentation
         # Build Sphinx documentation for this PR (includes switcher.json from above)
+        # Dummy config values are required to satisfy pydantic-settings validation at import
+        # time (engine.py creates the engine at module level). The scripts that run during
+        # the build (generate_db_diagrams.py, generate_tui_demos.py) don't actually connect
+        # to a real database using these paths.
         if: steps.pr.outputs.found == 'true'
         env:
           PR_NUMBER: ${{ steps.pr.outputs.number }}
+          NX_INSTRUMENT_DATA_PATH: /tmp/nx_instrument_data
+          NX_DATA_PATH: /tmp/nx_data
+          NX_DB_PATH: /tmp/nexuslims_docs.db
+          NX_CDCS_TOKEN: docs-build-placeholder
+          NX_CDCS_URL: https://placeholder.example.com
         run: |
+          mkdir -p /tmp/nx_instrument_data /tmp/nx_data
+          touch /tmp/nexuslims_docs.db
           cd pr-source
           ./scripts/build_docs.sh --strict
 

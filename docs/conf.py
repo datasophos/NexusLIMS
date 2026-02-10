@@ -166,6 +166,7 @@ myst_enable_extensions = [
     "colon_fence",  # Allow ::: for RST directives (including doctest blocks)
     "attrs_block",  # Allow setting custom attributes via block quote
     "tasklist",  # Enable GitHub-style task lists (- [ ] / - [x])
+    "html_image",  # Allow raw <video> and other HTML elements in markdown
 ]
 
 # Napoleon settings - these affect docstring parsing
@@ -412,6 +413,14 @@ nitpick_ignore = [
     ("py:obj", "sqlmodel.SQLModel"),
 ]
 
+# Regex-based nitpick ignore: suppress all unresolvable references to third-party
+# libraries that don't publish intersphinx inventories (textual, rich, sqlmodel).
+nitpick_ignore_regex = [
+    (r"py:(obj|class)", r"textual\..*"),
+    (r"py:(obj|class)", r"rich\..*"),
+    (r"py:(obj|class)", r"sqlmodel\..*"),
+]
+
 
 def skip(app, what, name, obj, would_skip, options):
     if name == "__init__":
@@ -430,6 +439,21 @@ def setup(app):
     from autodoc2_docstrings_parser import patch_autodoc2_renderer
 
     patch_autodoc2_renderer()
+
+    # Textual's App/Screen classes declare `DEFAULT_CSS: ClassVar[str]` on one line
+    # then assign it on the next, causing astroid to emit two items with the same
+    # full_name and triggering autodoc2.dup_item warnings.  Patch warn_sphinx to
+    # swallow only those specific duplicate messages.
+    import autodoc2.sphinx.extension as _a2ext
+
+    _original_warn = _a2ext.warn_sphinx
+
+    def _filtered_warn(msg, subtype=None, *args, **kwargs):
+        if subtype and subtype.value == "dup_item" and "DEFAULT_CSS" in msg:
+            return
+        _original_warn(msg, subtype, *args, **kwargs)
+
+    _a2ext.warn_sphinx = _filtered_warn
 
     # autodoc2 handles API doc generation automatically, no need for run_apidoc
     # app.connect('builder-inited', build_plantuml)

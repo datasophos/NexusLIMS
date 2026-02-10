@@ -1,4 +1,3 @@
-# ruff: noqa: SLF001
 """Tests for InstrumentProfileRegistry and profile system.
 
 This test suite comprehensively tests the instrument profile registry system,
@@ -745,7 +744,7 @@ class TestProfileApplicationDuringExtraction:
         """Mock get_instr_from_filepath to return a test instrument."""
 
         def _mock(instrument):
-            def mock_func(filepath):  # noqa: ARG001
+            def mock_func(filepath):
                 return instrument
 
             monkeypatch.setattr(
@@ -781,7 +780,7 @@ class TestProfileApplicationDuringExtraction:
         mock_instrument_from_filepath(instrument)
 
         # Create a profile with a custom parser
-        def custom_parser(metadata, ctx):  # noqa: ARG001
+        def custom_parser(metadata, ctx):
             metadata["nx_meta"]["CustomField"] = "CustomValue"
             return metadata
 
@@ -827,7 +826,7 @@ class TestProfileApplicationDuringExtraction:
         mock_instrument_from_filepath(instrument)
 
         # Create a profile with a failing parser
-        def failing_parser(metadata, ctx):  # noqa: ARG001
+        def failing_parser(metadata, ctx):
             msg = "Parser intentionally failed"
             raise ValueError(msg)
 
@@ -920,7 +919,7 @@ class TestProfileApplicationDuringExtraction:
         mock_instrument_from_filepath(instrument)
 
         # Create a profile with a failing transformation
-        def failing_transform(value):  # noqa: ARG001
+        def failing_transform(value):
             msg = "Transform intentionally failed"
             raise RuntimeError(msg)
 

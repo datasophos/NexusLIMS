@@ -1,4 +1,3 @@
-# ruff: noqa: SLF001
 """Unit tests for the eLabFTW export destination plugin."""
 
 from datetime import datetime

@@ -170,6 +170,11 @@ def _cli():  # noqa: PLR0915
         For advanced usage, use 'nexuslims-migrate alembic [COMMAND]' to
         access the full Alembic CLI.
         """
+        # Load .env file if it exists (before any commands run)
+        from dotenv import load_dotenv
+
+        load_dotenv()
+
         if version:
             from nexusLIMS import __version__
 
@@ -270,10 +275,16 @@ def _cli():  # noqa: PLR0915
                 )
                 sys.exit(1)
 
+            # Get current revision before upgrade
+            before_revision = _get_current_revision()
+
         try:
             _run_alembic_command("upgrade", revision, sql=sql)
             if not sql:
+                # Get new revision after upgrade
+                after_revision = _get_current_revision()
                 click.secho("✓ Database upgraded successfully", fg="green")
+                click.echo(f"  {before_revision} -> {after_revision}")
         except Exception as e:
             click.secho(f"Error upgrading database: {e}", fg="red", err=True)
             sys.exit(1)
@@ -308,10 +319,16 @@ def _cli():  # noqa: PLR0915
                 )
                 sys.exit(1)
 
+            # Get current revision before downgrade
+            before_revision = _get_current_revision()
+
         try:
             _run_alembic_command("downgrade", revision, sql=sql)
             if not sql:
+                # Get new revision after downgrade
+                after_revision = _get_current_revision()
                 click.secho("✓ Database downgraded successfully", fg="green")
+                click.echo(f"  {before_revision} -> {after_revision}")
         except Exception as e:
             click.secho(f"Error downgrading database: {e}", fg="red", err=True)
             sys.exit(1)

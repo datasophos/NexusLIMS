@@ -825,23 +825,22 @@ class TestMigrationIdempotency:
         assert "session_log" in tables
         assert "upload_log" in tables
 
-        # Should be able to insert data
+        # Should be able to insert data (using new schema after v2_5_0b)
         with engine.begin() as conn:
             conn.execute(
                 sa.text(
                     """
                 INSERT INTO instruments (
-                    instrument_pid, api_url, calendar_name, calendar_url,
-                    location, schema_name, property_tag, filestore_path,
+                    instrument_pid, api_url, calendar_url,
+                    location, display_name, property_tag, filestore_path,
                     harvester, timezone
                 )
                 VALUES (
                     'test_instrument',
                     'https://api.example.com',
-                    'Test Calendar',
                     'https://cal.example.com',
                     'Building A',
-                    'nexusLIMS',
+                    'Test Instrument',
                     'PROP-001',
                     'test/data',
                     'nemo',
@@ -866,21 +865,21 @@ class TestDataIntegrityVerification:
         config, _ = alembic_config
         command.upgrade(config, "head")
 
-        # Insert some test data
+        # Insert some test data (using new schema after v2_5_0b)
         with engine.begin() as conn:
             conn.execute(
                 sa.text(
                     """
                 INSERT INTO instruments (
-                    instrument_pid, api_url, calendar_name, calendar_url,
-                    location, schema_name, property_tag, filestore_path,
+                    instrument_pid, api_url, calendar_url,
+                    location, display_name, property_tag, filestore_path,
                     harvester, timezone
                 )
                 VALUES
-                    ('test1', 'https://api1.com', 'Cal1', 'https://cal1.com',
-                     'Loc1', 'schema1', 'PROP1', 'path1', 'nemo', 'UTC'),
-                    ('test2', 'https://api2.com', 'Cal2', 'https://cal2.com',
-                     'Loc2', 'schema2', 'PROP2', 'path2', 'nemo', 'UTC')
+                    ('test1', 'https://api1.com', 'https://cal1.com',
+                     'Loc1', 'Test Instrument 1', 'PROP1', 'path1', 'nemo', 'UTC'),
+                    ('test2', 'https://api2.com', 'https://cal2.com',
+                     'Loc2', 'Test Instrument 2', 'PROP2', 'path2', 'nemo', 'UTC')
                 """
                 )
             )
@@ -896,23 +895,22 @@ class TestDataIntegrityVerification:
         config, _ = alembic_config
         command.upgrade(config, "head")
 
-        # Insert test data with specific IDs
+        # Insert test data with specific IDs (using new schema after v2_5_0b)
         with engine.begin() as conn:
             conn.execute(
                 sa.text(
                     """
                 INSERT INTO instruments (
-                    instrument_pid, api_url, calendar_name, calendar_url,
-                    location, schema_name, property_tag, filestore_path,
+                    instrument_pid, api_url, calendar_url,
+                    location, display_name, property_tag, filestore_path,
                     harvester, timezone
                 )
                 VALUES (
                     'test_instrument',
                     'https://api.example.com',
-                    'Test Calendar',
                     'https://cal.example.com',
                     'Building A',
-                    'nexusLIMS',
+                    'Test Instrument',
                     'PROP-001',
                     'test/data',
                     'nemo',
@@ -954,23 +952,22 @@ class TestDataIntegrityVerification:
         config, _ = alembic_config
         command.upgrade(config, "head")
 
-        # Insert test data
+        # Insert test data (using new schema after v2_5_0b)
         with engine.begin() as conn:
             conn.execute(
                 sa.text(
                     """
                 INSERT INTO instruments (
-                    instrument_pid, api_url, calendar_name, calendar_url,
-                    location, schema_name, property_tag, filestore_path,
+                    instrument_pid, api_url, calendar_url,
+                    location, display_name, property_tag, filestore_path,
                     harvester, timezone
                 )
                 VALUES (
                     'test_instrument',
                     'https://api.example.com',
-                    'Test Calendar',
                     'https://cal.example.com',
                     'Building A',
-                    'nexusLIMS',
+                    'Test Instrument',
                     'PROP-001',
                     'test/data',
                     'nemo',
@@ -1109,23 +1106,22 @@ class TestMigrationEnvHelpers:
         # Create and upgrade database
         command.upgrade(config, "head")
 
-        # Insert some test data
+        # Insert some test data (using new schema after v2_5_0b)
         with engine.begin() as conn:
             conn.execute(
                 sa.text(
                     """
                 INSERT INTO instruments (
-                    instrument_pid, api_url, calendar_name, calendar_url,
-                    location, schema_name, property_tag, filestore_path,
+                    instrument_pid, api_url, calendar_url,
+                    location, display_name, property_tag, filestore_path,
                     harvester, timezone
                 )
                 VALUES (
                     'test_instrument',
                     'https://api.example.com',
-                    'Test Calendar',
                     'https://cal.example.com',
                     'Building A',
-                    'nexusLIMS',
+                    'Test Instrument',
                     'PROP-001',
                     'test/data',
                     'nemo',
@@ -1272,3 +1268,138 @@ class TestMigrationV250a:
         assert "session_log" in tables
         assert "upload_log" in tables
         assert "external_user_identifiers" in tables
+
+
+class TestMigrationV250b:
+    """Test v2_5_0b migration (remove unused fields and rename schema_name)."""
+
+    def test_upgrade_removes_fields_and_renames_schema_name(
+        self, alembic_config, engine
+    ):
+        """Test that upgrading to v2_5_0b removes fields and renames schema_name."""
+        config, _ = alembic_config
+
+        # Upgrade to v2_5_0a (right before v2_5_0b)
+        command.upgrade(config, "v2_5_0a")
+
+        # Verify old schema has the fields we're about to remove
+        instruments_cols_before = get_column_names(engine, "instruments")
+        assert "calendar_name" in instruments_cols_before
+        assert "schema_name" in instruments_cols_before
+        assert "computer_name" in instruments_cols_before
+        assert "computer_ip" in instruments_cols_before
+        assert "computer_mount" in instruments_cols_before
+        assert "display_name" not in instruments_cols_before
+
+        # Upgrade to v2_5_0b
+        command.upgrade(config, "v2_5_0b")
+
+        # Verify fields removed and schema_name renamed to display_name
+        instruments_cols_after = get_column_names(engine, "instruments")
+        assert "calendar_name" not in instruments_cols_after
+        assert "schema_name" not in instruments_cols_after
+        assert "computer_name" not in instruments_cols_after
+        assert "computer_ip" not in instruments_cols_after
+        assert "computer_mount" not in instruments_cols_after
+        assert "display_name" in instruments_cols_after
+
+        # Verify remaining required fields still exist
+        expected_remaining = {
+            "instrument_pid",
+            "api_url",
+            "calendar_url",
+            "location",
+            "display_name",
+            "property_tag",
+            "filestore_path",
+            "harvester",
+            "timezone",
+        }
+        assert instruments_cols_after == expected_remaining
+
+    def test_downgrade_restores_fields_and_renames_display_name(
+        self, alembic_config, engine
+    ):
+        """Test that downgrading from v2_5_0b restores removed fields."""
+        config, _ = alembic_config
+
+        # Upgrade to v2_5_0b
+        command.upgrade(config, "v2_5_0b")
+
+        # Insert test data with new schema
+        with engine.connect() as conn:
+            conn.execute(
+                sa.text(
+                    """
+                INSERT INTO instruments (
+                    instrument_pid, api_url, calendar_url,
+                    location, display_name, property_tag, filestore_path,
+                    harvester, timezone
+                )
+                VALUES (
+                    'TEST-001', 'https://test.com/api', 'https://test.com/cal',
+                    'Building 1', 'Test Instrument', 'TAG001', './test',
+                    'nemo', 'America/New_York'
+                )
+                """
+                )
+            )
+            conn.commit()
+
+        # Verify data exists with new schema
+        instruments_cols = get_column_names(engine, "instruments")
+        assert "display_name" in instruments_cols
+        assert "schema_name" not in instruments_cols
+
+        # Downgrade to v2_5_0a
+        command.downgrade(config, "v2_5_0a")
+
+        # Verify old fields restored
+        instruments_cols_after = get_column_names(engine, "instruments")
+        assert "calendar_name" in instruments_cols_after
+        assert "schema_name" in instruments_cols_after
+        assert "computer_name" in instruments_cols_after
+        assert "computer_ip" in instruments_cols_after
+        assert "computer_mount" in instruments_cols_after
+        assert "display_name" not in instruments_cols_after
+
+        # Verify data preserved (display_name → schema_name)
+        with engine.connect() as conn:
+            result = conn.execute(
+                sa.text(
+                    "SELECT schema_name FROM instruments WHERE instrument_pid = "
+                    "'TEST-001'"
+                )
+            ).fetchone()
+            assert result is not None
+            assert result[0] == "Test Instrument"
+
+    def test_full_upgrade_includes_v2_5_0b_changes(self, alembic_config, engine):
+        """Test that upgrading to head includes v2_5_0b changes."""
+        config, _ = alembic_config
+
+        # Upgrade to head
+        command.upgrade(config, "head")
+
+        # Verify v2_5_0b changes applied
+        instruments_cols = get_column_names(engine, "instruments")
+        assert "display_name" in instruments_cols
+        assert "schema_name" not in instruments_cols
+        assert "calendar_name" not in instruments_cols
+        assert "computer_name" not in instruments_cols
+        assert "computer_ip" not in instruments_cols
+        assert "computer_mount" not in instruments_cols
+
+        # Verify expected schema
+        expected_cols = {
+            "instrument_pid",
+            "api_url",
+            "calendar_url",
+            "location",
+            "display_name",
+            "property_tag",
+            "filestore_path",
+            "harvester",
+            "timezone",
+        }
+        assert instruments_cols == expected_cols

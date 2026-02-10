@@ -1,7 +1,6 @@
 """Tests for AcquisitionActivity functionality."""
 
 # pylint: disable=missing-function-docstring
-# ruff: noqa: D102
 
 from pathlib import Path
 
@@ -237,7 +236,7 @@ class TestActivity:
         # Setup: Create a mock instrument with a profile that adds extension_fields
         registry = get_profile_registry()
         # Save original state
-        original_profiles = registry._profiles.copy()  # noqa: SLF001
+        original_profiles = registry._profiles.copy()
 
         try:
             # Create an instrument profile with extension fields (including Quantities)
@@ -356,7 +355,7 @@ class TestActivity:
 
         finally:
             # Restore original registry state
-            registry._profiles = original_profiles  # noqa: SLF001
+            registry._profiles = original_profiles
 
     def test_setup_params_missing_key_in_second_file(self):
         """Test that missing keys in subsequent files are not kept in setup_params.

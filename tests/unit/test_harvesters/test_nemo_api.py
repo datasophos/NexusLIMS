@@ -1,5 +1,5 @@
 # pylint: disable=C0116,too-many-locals
-# ruff: noqa: D102, ARG005, SLF001
+# ruff: noqa: ARG005
 """
 Test NEMO API endpoints.
 
@@ -576,9 +576,8 @@ class TestNemoConnectorEvents:
         # Create a minimal dummy instrument that doesn't match any NEMO harvester
         dummy_instrument = Instrument(
             instrument_pid="Dummy instrument",
-            schema_name="Dummy",
+            display_name="Dummy",
             api_url="https://dummy.example.com/api/",
-            calendar_name="Dummy Tool",
             calendar_url="https://dummy.example.com/calendar/",
             location="Dummy Location",
             property_tag="00000",

@@ -1,4 +1,4 @@
-# ruff: noqa: T201, SLF001
+# ruff: noqa: T201
 """
 Integration test fixtures for NexusLIMS.
 
@@ -1427,12 +1427,11 @@ def populated_test_database(docker_services, mock_tools_data):
                 {
                     "instrument_pid": config["instrument_pid"],
                     "api_url": f"{NEMO_URL}tools/?id={tool['id']}",
-                    "calendar_name": tool["name"],
                     "calendar_url": (
                         f"{NEMO_BASE_URL}/calendar/{config['property_tag']}-titan/"
                     ),
                     "location": "Building 217",
-                    "schema_name": tool["name"],
+                    "display_name": tool["name"],
                     "property_tag": config["property_tag"],
                     "filestore_path": config["filestore_path"],
                     "harvester": "nemo",
@@ -1451,18 +1450,17 @@ def populated_test_database(docker_services, mock_tools_data):
         cursor.execute(
             """
             INSERT INTO instruments (
-                instrument_pid, api_url, calendar_name, calendar_url,
-                location, schema_name, property_tag, filestore_path,
+                instrument_pid, api_url, calendar_url,
+                location, display_name, property_tag, filestore_path,
                 harvester, timezone
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 inst["instrument_pid"],
                 inst["api_url"],
-                inst["calendar_name"],
                 inst["calendar_url"],
                 inst["location"],
-                inst["schema_name"],
+                inst["display_name"],
                 inst["property_tag"],
                 inst["filestore_path"],
                 inst["harvester"],

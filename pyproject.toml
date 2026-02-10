@@ -45,6 +45,7 @@ dependencies = [
     "rdflib>=7.0.0,<8.0.0",
     "sqlmodel>=0.0.31",
     "alembic>=1.17.2",
+    "textual>=0.87.0",
 ]
 
 [dependency-groups]
@@ -77,6 +78,8 @@ dev = [
     "imagecodecs>=2025.11.11",
     "sphinx-autobuild>=2025.8.25",
     "sphinx-copybutton>=0.5.2",
+    "pytest-asyncio>=1.3.0",
+    "textual-dev>=1.8.0",
 ]
 
 [project.urls]
@@ -89,6 +92,7 @@ Documentation = "https://datasophos.github.io/NexusLIMS/stable"
 nexuslims-process-records = "nexusLIMS.cli.process_records:main"
 nexuslims-config = "nexusLIMS.cli.config:main"
 nexuslims-migrate = "nexusLIMS.cli.migrate:main"
+nexuslims-manage-instruments = "nexusLIMS.cli.manage_instruments:main"
 
 [build-system]
 requires = ["hatchling"]
@@ -115,10 +119,11 @@ select = [
 ignore = ["N999", "UP006", "UP007", "UP035", "B905", "RUF007", "S603", "COM812"]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/**/*.py" = ["S", "PLC0415", "PLR2004", "ARG002", "DTZ001", "DTZ005"]
+"tests/**/*.py" = ["S", "PLC0415", "PLR2004", "ARG002", "DTZ001", "DTZ005", "SLF001", "ARG001", "D102", "TRY003", "EM101", "PT017", "N817", "FBT001", "F841"]
 "tests/fixtures/**/*.py" = ["F401", "E402"]
 "tests/integration/**/*.py" = ["ARG002", "ARG001"]
 "migrations/**/*.py" = ["D400"]  # Migration files don't need perfect docstrings
+"nexusLIMS/tui/**/*.py" = ["FBT001", "FBT002", "FBT003", "TRY300", "PLR2004"]  # TUI patterns
 
 
 [tool.ruff.lint.pydocstyle]
@@ -172,6 +177,7 @@ showcontent = true
 relative_files = true
 omit = [
     "nexusLIMS/dev_scripts/*",
+    "nexusLIMS/tui/demo_helpers.py",
     "tests/dev/*",
 ]
 
@@ -187,6 +193,8 @@ exclude_lines = [
 [tool.pytest.ini_options]
 log_cli = false
 log_cli_level = "DEBUG"
+# Enable automatic async test detection (for Textual TUI tests)
+asyncio_mode = "auto"
 # Test discovery paths - unit tests run by default, integration tests require explicit -m integration
 testpaths = ["tests/unit"]
 # Python files and test functions/classes pattern

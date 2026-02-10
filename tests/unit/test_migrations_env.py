@@ -2,7 +2,6 @@
 
 Tests the custom revision ID generation and migration preprocessing logic.
 """
-# ruff: noqa: SLF001
 
 import sys
 from unittest import mock

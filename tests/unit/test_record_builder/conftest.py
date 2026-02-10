@@ -90,7 +90,7 @@ def mock_nemo_reservation_fixture(monkeypatch):
 
 
 @pytest.fixture(scope="module")
-def gnu_find_activities(test_record_files):  # noqa: ARG001
+def gnu_find_activities(test_record_files):
     """Find specific activity for testing."""
     instr = make_titan_tem()
     dt_from = dt.fromisoformat("2018-11-13T13:00:00.000-05:00")

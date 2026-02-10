@@ -68,24 +68,16 @@ class Instrument(SQLModel, table=True):
     api_url
         Calendar API endpoint URL for this instrument's scheduler (e.g.,
         `https://<nemo_address>/api/tools/?id=<tool_id>`)
-    calendar_name
-        User-friendly name displayed in the reservation system
     calendar_url
         URL to the instrument's web-accessible calendar
     location
         Physical location (building and room number)
-    schema_name
-        Human-readable name as displayed in NexusLIMS records
+    display_name
+        Human-readable instrument name displayed in NexusLIMS records
     property_tag
         Unique numeric identifier (for reference)
     filestore_path
         Relative path under NX_INSTRUMENT_DATA_PATH where data is stored
-    computer_name
-        Hostname of the support PC running Session Logger App
-    computer_ip
-        IP address of the support PC
-    computer_mount
-        Full path where central storage is mounted on support PC
     harvester
         Harvester module to use ("nemo" or "sharepoint")
     timezone_str
@@ -99,21 +91,15 @@ class Instrument(SQLModel, table=True):
 
     # Required fields
     api_url: str = Field(unique=True)
-    calendar_name: str
     calendar_url: str
     location: str = Field(max_length=100)
-    schema_name: str
+    display_name: str
     property_tag: str = Field(max_length=20)
     filestore_path: str
     harvester: str = Field(default="nemo")
     timezone_str: str = Field(
         sa_column_kwargs={"name": "timezone"}, default="America/New_York"
     )
-
-    # Optional fields
-    computer_name: str | None = Field(default=None, unique=True)
-    computer_ip: str | None = Field(default=None, max_length=15, unique=True)
-    computer_mount: str | None = Field(default=None)
 
     # Relationships
     session_logs: list["SessionLog"] = Relationship(back_populates="instrument_obj")
@@ -133,15 +119,11 @@ class Instrument(SQLModel, table=True):
         return (
             f"Nexus Instrument: {self.name}\n"
             f"API url:          {self.api_url}\n"
-            f"Calendar name:    {self.calendar_name}\n"
             f"Calendar url:     {self.calendar_url}\n"
-            f"Schema name:      {self.schema_name}\n"
+            f"Display name:     {self.display_name}\n"
             f"Location:         {self.location}\n"
             f"Property tag:     {self.property_tag}\n"
             f"Filestore path:   {self.filestore_path}\n"
-            f"Computer IP:      {self.computer_ip}\n"
-            f"Computer name:    {self.computer_name}\n"
-            f"Computer mount:   {self.computer_mount}\n"
             f"Harvester:        {self.harvester}\n"
             f"Timezone:         {self.timezone}"
         )
@@ -230,15 +212,11 @@ class Instrument(SQLModel, table=True):
         return {
             "instrument_pid": self.instrument_pid,
             "api_url": self.api_url,
-            "calendar_name": self.calendar_name,
             "calendar_url": self.calendar_url,
             "location": self.location,
-            "schema_name": self.schema_name,
+            "display_name": self.display_name,
             "property_tag": self.property_tag,
             "filestore_path": self.filestore_path,
-            "computer_name": self.computer_name,
-            "computer_ip": self.computer_ip,
-            "computer_mount": self.computer_mount,
             "harvester": self.harvester,
             "timezone": self.timezone_str,
         }

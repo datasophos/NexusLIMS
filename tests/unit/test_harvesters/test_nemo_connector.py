@@ -1,5 +1,4 @@
 # pylint: disable=C0116
-# ruff: noqa: D102
 """
 Test NEMO connector infrastructure.
 
@@ -193,7 +192,7 @@ class TestNemoConnector:
         }
 
         # Parse the reservation
-        parsed = nemo_connector._parse_reservation(reservation)  # noqa: SLF001
+        parsed = nemo_connector._parse_reservation(reservation)
 
         # Verify that cancelled_by was expanded from ID to full user dict
         assert "cancelled_by" in parsed
@@ -521,7 +520,7 @@ class TestNemoConnectorEquality:
 
         # Call _api_caller which should call raise_for_status
         with pytest.raises(requests.exceptions.HTTPError) as exc_info:
-            connector._api_caller("GET", "users/", {})  # noqa: SLF001
+            connector._api_caller("GET", "users/", {})
 
         # Verify the error was raised from raise_for_status
         assert "500 Server Error" in str(exc_info.value)
@@ -555,7 +554,7 @@ class TestNemoConnectorEquality:
         monkeypatch.setattr(connector_module, "nexus_req", mock_nexus_req)
 
         # Call _api_caller which should return the JSON data
-        result = connector._api_caller("GET", "users/", {})  # noqa: SLF001
+        result = connector._api_caller("GET", "users/", {})
 
         # Verify json() was called and data was returned
         assert mock_response.json.called

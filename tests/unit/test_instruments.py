@@ -1,5 +1,4 @@
 # pylint: disable=C0116
-# ruff: noqa: D102
 """Tests the workings of the NexusLIMS Instrument handling."""
 
 from datetime import datetime
@@ -37,15 +36,11 @@ class TestInstruments:
         assert (
             repr(titan_tem) == "Nexus Instrument: FEI-Titan-TEM\n"
             "API url:          https://nemo.example.com/api/tools/?id=2\n"
-            "Calendar name:    FEI Titan TEM\n"
             "Calendar url:     https://nemo.example.com/calendar/FEI-Titan-TEM\n"
-            "Schema name:      Titan TEM\n"
+            "Display name:     Titan TEM\n"
             "Location:         Test Building Room 301\n"
             "Property tag:     TEST-TEM-001\n"
             "Filestore path:   ./Titan_TEM\n"
-            "Computer IP:      None\n"
-            "Computer name:    None\n"
-            "Computer mount:   None\n"
             "Harvester:        nemo\n"
             "Timezone:         America/Denver"
         )
@@ -223,16 +218,12 @@ class TestInstruments:
 
         instrument = Instrument(
             instrument_pid="test-instrument",
-            schema_name="TestInstrument",
+            display_name="TestInstrument",
             api_url="https://example.com/api/",
-            calendar_name="Test Tool",
             calendar_url="https://example.com/calendar/",
             location="Building 1",
             property_tag="12345",
             filestore_path="/path/to/files",
-            computer_name="test-computer",
-            computer_ip="192.168.1.1",
-            computer_mount="/mount/path",
             harvester="nemo",
             timezone_str="America/New_York",
         )
@@ -253,16 +244,12 @@ class TestInstruments:
 
         instrument = Instrument(
             instrument_pid="test-instrument",
-            schema_name="TestInstrument",
+            display_name="TestInstrument",
             api_url="https://example.com/api/",
-            calendar_name="Test Tool",
             calendar_url="https://example.com/calendar/",
             location="Building 1",
             property_tag="12345",
             filestore_path="/path/to/files",
-            computer_name="test-computer",
-            computer_ip="192.168.1.1",
-            computer_mount="/mount/path",
             harvester="nemo",
             timezone_str="America/Denver",  # Already a string
         )
@@ -281,16 +268,12 @@ class TestInstruments:
 
         instrument = Instrument(
             instrument_pid="test-instrument",
-            schema_name="TestInstrument",
+            display_name="TestInstrument",
             api_url="https://example.com/api/",
-            calendar_name="Test Tool",
             calendar_url="https://example.com/calendar/",
             location="Building 1",
             property_tag="12345",
             filestore_path="/path/to/files",
-            computer_name="test-computer",
-            computer_ip="192.168.1.1",
-            computer_mount="/mount/path",
             harvester="nemo",
             timezone_str="America/Denver",
         )
@@ -300,25 +283,22 @@ class TestInstruments:
         # Should be valid JSON
         parsed = json.loads(json_str)
         assert parsed["instrument_pid"] == "test-instrument"
-        assert parsed["schema_name"] == "TestInstrument"
+        assert parsed["display_name"] == "TestInstrument"
 
     def test_instrument_to_json_with_kwargs(self):
         """Test Instrument.to_json() with custom kwargs."""
         from nexusLIMS.instruments import Instrument
 
         instrument = Instrument(
-            name="test-instrument",
-            schema_name="TestInstrument",
+            instrument_pid="test-instrument",
+            display_name="TestInstrument",
             api_url="https://example.com/api/",
-            calendar_name="Test Tool",
+            calendar_url="https://example.com/calendar/",
             location="Building 1",
             property_tag="12345",
             filestore_path="/path/to/files",
-            computer_name="test-computer",
-            computer_ip="192.168.1.1",
-            computer_mount="/mount/path",
             harvester="nemo",
-            timezone="America/Denver",
+            timezone_str="America/Denver",
         )
 
         json_str = instrument.to_json(indent=2)

@@ -223,7 +223,7 @@ Each instrument in `instruments` table must specify:
 - `harvester`: "nemo" or "sharepoint"
 - `filestore_path`: Relative to `NX_INSTRUMENT_DATA_PATH`
 - `timezone`: For proper datetime handling
-- NEMO-specific: `api_url`, `calendar_name` matching NEMO tool names
+- NEMO-specific: `api_url` matching NEMO tool names
 
 ### Testing Infrastructure
 - Uses `pytest` with `pytest-mpl` for image comparison tests
@@ -272,6 +272,7 @@ path = config.NX_DATA_PATH
 
 Additional technical documentation for specific tasks:
 
+- **[Textual Testing Reference](docs/reference/textual_testing_reference.md)**: Complete guide for testing Textual TUI applications. Covers the Pilot API, keyboard/mouse simulation, snapshot testing, synchronization patterns, and NexusLIMS-specific testing examples. Essential reference for developing and testing the instrument manager and other TUI components.
 - **[Zeroing Compressed TIFF Files](.claude/notes/zeroing-compressed-tiff-files.md)**: Binary patching method for zeroing out LZW-compressed TIFF image data while preserving all metadata and file structure. Use when you need to create test fixtures or anonymized data files.
 - **Creating archive files**: When creating an archive file with test files (or for any other purpose), ensure that MacOS hidden files (like `.DS_Store`), MacOS resource forks, or others do not end up in the archive. Always use COPYFILE_DISABLE=1 when creating archives on MacOS.
 - **NEMO Reference Document**: The `docs/reference/NEMO_Reference.md` document was generated from the official NEMO Feature Manual. To update it:

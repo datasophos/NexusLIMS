@@ -152,7 +152,7 @@ def multi_instance_instruments(populated_test_database, multi_instance_env):
 
         # Reload the instrument database to pick up modified instruments
         # SLF001: Using private method is intentional for test setup
-        test_instrument_db = instruments._get_instrument_db(  # noqa: SLF001
+        test_instrument_db = instruments._get_instrument_db(
             db_path=populated_test_database
         )
 
@@ -346,10 +346,9 @@ class TestMultiInstanceConnectorSelection:
         # Create a mock instrument with an unknown API URL
         unknown_instrument = Instrument(
             instrument_pid="UNKNOWN-NEMO-INST",
-            schema_name="Unknown NEMO Instrument",
+            display_name="Unknown NEMO Instrument",
             harvester="nemo",
             api_url="https://unknown-nemo.example.com/api/tools/?id=999",
-            calendar_name="Unknown NEMO Instrument",
             calendar_url="https://unknown-nemo.example.com/calendar/",
             location="Unknown",
             property_tag="UNKNOWN",
