@@ -1,4 +1,4 @@
-# Instrument Manager TUI Guide
+# Instrument Management
 
 The NexusLIMS Instrument Manager provides an interactive terminal user interface (TUI) for managing the instrument database. It offers a modern, user-friendly alternative to direct SQL database manipulation.
 

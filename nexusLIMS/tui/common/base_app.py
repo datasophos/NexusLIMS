@@ -27,7 +27,13 @@ class HelpScreen(Screen):
         ("q", "dismiss", "Close Help"),
     ]
 
-    def __init__(self, app_name: str, keybindings: list[tuple[str, str]], **kwargs):
+    def __init__(
+        self,
+        app_name: str,
+        keybindings: list[tuple[str, str]],
+        description: str = "",
+        **kwargs,
+    ):
         """
         Initialize help screen.
 
@@ -37,18 +43,23 @@ class HelpScreen(Screen):
             Name of the application
         keybindings : list[tuple[str, str]]
             List of (key, description) tuples
+        description : str
+            Optional prose blurb shown between the title and keybindings.
         **kwargs
             Additional arguments passed to Screen
         """
         super().__init__(**kwargs)
         self.app_name = app_name
         self.keybindings = keybindings
+        self.description = description
 
     def compose(self):
         """Compose help screen layout."""
         yield Header()
 
         help_text = f"# {self.app_name}\n\n"
+        if self.description:
+            help_text += f"{self.description}\n\n"
         help_text += "## Keybindings\n\n"
 
         for key, description in self.keybindings:

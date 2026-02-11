@@ -77,6 +77,37 @@ def setup_demo_database() -> Path:
     return db_path
 
 
+def create_demo_env_file(env_path: Path) -> None:
+    """Create a demo .env file for config TUI testing.
+
+    Parameters
+    ----------
+    env_path : Path
+        Path where to create the demo .env file.
+    """
+    demo_env_content = """# Demo .env file for config TUI testing
+NX_INSTRUMENT_DATA_PATH=/mnt/instrument_data
+NX_DATA_PATH=/var/nexuslims/data
+NX_DB_PATH=/var/nexuslims/data/nexuslims.db
+NX_CDCS_URL=https://nexuslims.example.com
+NX_CDCS_TOKEN=demo-token-123
+NX_FILE_STRATEGY=inclusive
+NX_EXPORT_STRATEGY=best_effort
+NX_FILE_DELAY_DAYS=2.5
+NX_CLUSTERING_SENSITIVITY=1.0
+NX_NEMO_ADDRESS_1=https://nemo1.example.com/api/
+NX_NEMO_TOKEN_1=nemo-token-1
+NX_NEMO_TZ_1=America/Denver
+NX_ELABFTW_URL=https://elabftw.example.com
+NX_ELABFTW_API_KEY=1-abcdef1234567890
+NX_EMAIL_SMTP_HOST=smtp.example.com
+NX_EMAIL_SMTP_PORT=587
+NX_EMAIL_SENDER=nexuslims@example.com
+NX_EMAIL_RECIPIENTS=admin@example.com
+"""
+    env_path.write_text(demo_env_content)
+
+
 def generate_vhs_recordings(demo_db_path: Path) -> None:
     """Generate VHS recordings from tape scripts.
 
@@ -118,9 +149,18 @@ def generate_vhs_recordings(demo_db_path: Path) -> None:
     for tape_file in tape_files:
         print(f"  • {tape_file.name}...", end=" ", flush=True)
         try:
-            # Run VHS with NX_DB_PATH set to demo database
+            # Set up environment variables
             env = os.environ.copy()
             env["NX_DB_PATH"] = str(demo_db_path)
+
+            # For config TUI tapes, also set up the demo .env file path
+            if "config" in tape_file.name:
+                demo_env_path = repo_root / "demo.env"
+                # Create demo .env file if it doesn't exist
+                if not demo_env_path.exists():
+                    create_demo_env_file(demo_env_path)
+                # Some config tapes might need the env path in a different way
+                # The tape scripts themselves handle the specific command line
 
             subprocess.run(
                 ["vhs", str(tape_file)],  # noqa: S607
@@ -201,6 +241,93 @@ def generate_svg_screenshots(demo_db_path: Path) -> None:
         raise
 
 
+def generate_config_svg_screenshots() -> None:
+    """Generate SVG screenshots for the config TUI.
+
+    Creates static SVG screenshots of key config TUI screens:
+    - Main config screen with core paths tab
+    - Help screen
+    - Field detail popup
+
+    These provide fallback documentation when VHS recordings are not available.
+    """
+    from nexusLIMS.tui.apps.config.app import ConfiguratorApp
+
+    print("Generating config TUI SVG screenshots...")
+
+    try:
+        # Determine output directory
+        repo_root = Path(__file__).parent.parent
+        screenshots_dir = repo_root / "docs" / "images" / "tui" / "screenshots"
+        screenshots_dir.mkdir(parents=True, exist_ok=True)
+
+        # Use the demo .env file we created
+        demo_env_path = repo_root / "demo.env"
+
+        # Generate screenshots using run_test
+        app = ConfiguratorApp(env_path=demo_env_path)
+
+        async def capture_config_screenshots():
+            """Async function to capture config screenshots."""
+            async with app.run_test(size=(120, 40)) as pilot:
+                # Wait for app to fully load
+                await pilot.pause(0.5)
+
+                # Screenshot 1: Main config screen
+                config_main_screenshot = screenshots_dir / "config_main_screen.svg"
+                app.save_screenshot(config_main_screenshot)
+                print(f"  ✓ {config_main_screenshot.name}")
+
+                # Screenshot 2: Help screen
+                await _capture_help_screen(pilot, screenshots_dir)
+
+                # Screenshot 3: Field detail popup
+                await _capture_field_detail(pilot, screenshots_dir)
+
+        # Run the async screenshot capture
+        import asyncio
+
+        asyncio.run(capture_config_screenshots())
+
+    except Exception as e:
+        print(f"✗ Failed to generate config screenshots: {e}")
+        raise
+
+
+async def _capture_help_screen(pilot, screenshots_dir: Path) -> None:
+    """Capture the help screen screenshot."""
+    await pilot.press("question_mark")
+    await pilot.pause(0.2)
+    config_help_screenshot = screenshots_dir / "config_help_screen.svg"
+    app = pilot.app
+    app.save_screenshot(config_help_screenshot)
+    print(f"  ✓ {config_help_screenshot.name}")
+
+    # Close help screen
+    await pilot.press("escape")
+    await pilot.pause(0.2)
+
+
+async def _capture_field_detail(pilot, screenshots_dir: Path) -> None:
+    """Capture the field detail popup screenshot."""
+    # Navigate to field and press F1
+    await pilot.press("tab")
+    await pilot.pause(0.2)
+    await pilot.press("tab")
+    await pilot.pause(0.2)
+    await pilot.press("f1")
+    await pilot.pause(0.2)
+
+    field_detail_path = screenshots_dir / "config_field_detail.svg"
+    app = pilot.app
+    app.save_screenshot(field_detail_path)
+    print(f"  ✓ {field_detail_path.name}")
+
+    # Close field detail popup
+    await pilot.press("escape")
+    await pilot.pause(0.2)
+
+
 def main() -> int:
     """Generate TUI demos.
 
@@ -220,16 +347,67 @@ def main() -> int:
     print()
 
     # Set up demo database
-    print("Setting up demo database...")
-    try:
-        db_path = setup_demo_database()
-        print(f"✓ Demo database created at {db_path}")
-        print()
-    except Exception as e:
-        print(f"✗ Failed to create demo database: {e}")
+    db_path = _setup_demo_database()
+    if db_path is None:
+        return 1
+
+    # Set up demo .env file for config TUI
+    if not _setup_demo_env_file():
         return 1
 
     # Generate VHS recordings (warns if VHS not installed, doesn't fail)
+    _generate_vhs_recordings_with_warnings(db_path)
+
+    # Generate SVG screenshots for instrument manager (always runs)
+    _generate_instrument_screenshots_with_warnings(db_path)
+
+    # Generate SVG screenshots for config TUI (always runs)
+    _generate_config_screenshots_with_warnings()
+
+    print("=" * 60)
+    print("TUI demo generation complete")
+    print("=" * 60)
+
+    return 0
+
+
+def _setup_demo_database() -> Path | None:
+    """Set up demo database and return path or None on failure."""
+    print("Setting up demo database...")
+    try:
+        db_path = setup_demo_database()
+    except Exception as e:
+        print(f"✗ Failed to create demo database: {e}")
+        return None
+
+    print(f"✓ Demo database created at {db_path}")
+    print()
+    return db_path
+
+
+def _setup_demo_env_file() -> bool:
+    """Set up demo .env file and return True on success, False on failure."""
+    print("Setting up demo .env file for config TUI...")
+    try:
+        repo_root = Path(__file__).parent.parent
+        demo_env_path = repo_root / "demo.env"
+        if not demo_env_path.exists():
+            create_demo_env_file(demo_env_path)
+
+        if demo_env_path.exists():
+            print(f"✓ Demo .env file created at {demo_env_path}")
+        else:
+            print(f"✓ Using existing demo .env file at {demo_env_path}")
+        print()
+    except Exception as e:
+        print(f"✗ Failed to create demo .env file: {e}")
+        return False
+
+    return True
+
+
+def _generate_vhs_recordings_with_warnings(db_path: Path) -> None:
+    """Generate VHS recordings with warnings on failure."""
     try:
         generate_vhs_recordings(db_path)
         print()
@@ -240,7 +418,9 @@ def main() -> int:
         traceback.print_exc()
         print()
 
-    # Generate SVG screenshots (always runs)
+
+def _generate_instrument_screenshots_with_warnings(db_path: Path) -> None:
+    """Generate instrument SVG screenshots with warnings on failure."""
     try:
         generate_svg_screenshots(db_path)
         print()
@@ -251,9 +431,28 @@ def main() -> int:
         traceback.print_exc()
         print()
 
-    print("=" * 60)
-    print("TUI demo generation complete")
-    print("=" * 60)
+
+def _generate_config_screenshots_with_warnings() -> None:
+    """Generate config SVG screenshots with warnings on failure."""
+    try:
+        generate_config_svg_screenshots()
+        print()
+    except Exception as e:
+        print(f"! Warning: Config SVG screenshot generation failed: {e}")
+        import traceback
+
+        traceback.print_exc()
+        print()
+
+    # Cleanup: Remove demo.env file if it was created
+    try:
+        repo_root = Path(__file__).parent.parent
+        demo_env_path = repo_root / "demo.env"
+        if demo_env_path.exists():
+            demo_env_path.unlink()
+            print("✓ Cleaned up demo .env file")
+    except Exception as e:
+        print(f"! Warning: Failed to clean up demo .env file: {e}")
 
     return 0
 

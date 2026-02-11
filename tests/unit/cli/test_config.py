@@ -2,7 +2,7 @@
 
 import json
 from pathlib import Path
-from unittest.mock import Mock
+from unittest.mock import MagicMock, Mock, patch
 
 from click.testing import CliRunner
 
@@ -569,3 +569,43 @@ class TestLoadCommand:
 
         assert result.exit_code == 0
         assert "WARNING" in result.stderr
+
+
+# ===========================================================================
+# TestEditCommand
+# ===========================================================================
+
+
+class TestEditCommand:
+    """Unit tests for ``nexuslims-config edit``."""
+
+    def test_edit_launches_configurator_app(self, tmp_path, monkeypatch):
+        """Edit instantiates ConfiguratorApp with the given env path and calls run()."""
+        env_path = tmp_path / ".env"
+        mock_app = MagicMock()
+
+        with patch(
+            "nexusLIMS.tui.apps.config.app.ConfiguratorApp",
+            return_value=mock_app,
+        ) as mock_cls:
+            runner = CliRunner()
+            result = runner.invoke(main, ["edit", "--env-path", str(env_path)])
+
+        assert result.exit_code == 0, result.output
+        mock_cls.assert_called_once_with(env_path=Path(str(env_path)))
+        mock_app.run.assert_called_once()
+
+    def test_edit_default_env_path(self, monkeypatch):
+        """Edit defaults to '.env' when --env-path is not specified."""
+        mock_app = MagicMock()
+
+        with patch(
+            "nexusLIMS.tui.apps.config.app.ConfiguratorApp",
+            return_value=mock_app,
+        ) as mock_cls:
+            runner = CliRunner()
+            result = runner.invoke(main, ["edit"])
+
+        assert result.exit_code == 0, result.output
+        mock_cls.assert_called_once_with(env_path=Path(".env"))
+        mock_app.run.assert_called_once()

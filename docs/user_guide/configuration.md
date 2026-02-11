@@ -5,16 +5,102 @@ This guide provides comprehensive information about configuring NexusLIMS throug
 
 ## Configuration Files
 
-NexusLIMS loads configuration from environment variables and optionally from a `.env` file in the project root. See `.env.example` in the repository for a complete template with examples.
-
-```{tip}
-Copy `.env.example` to `.env` and customize it for your deployment. The `.env` file should never be committed to version control.
-```
+NexusLIMS loads configuration from environment variables and optionally from a `.env` file in the same folder from which you run any NexusLIMS commands.
 
 (configuration-management)=
 ## Configuration Management
 
-NexusLIMS provides CLI tools to help you manage, debug, and migrate configuration between environments.
+NexusLIMS provides both CLI tools and an interactive terminal UI to help you manage, debug, and migrate your configurations between environments.
+
+### Interactive Configuration Editor (TUI)
+
+The **NexusLIMS Configuration Editor** provides a user-friendly terminal interface for editing your `.env` file:
+
+```bash
+# Launch the interactive configurator
+nexuslims-config edit
+
+# Edit a specific .env file
+nexuslims-config edit --env-path /path/to/.env
+```
+
+The configurator features:
+
+- **Tabbed Interface**: Organized into logical sections (Core Paths, CDCS, File Processing, etc.)
+- **Pre-populated Fields**: Loads existing `.env` values automatically
+- **Real-time Validation**: Catches errors before saving
+- **Context-sensitive Help**: Press **F1** on any field for detailed documentation
+- **Dynamic NEMO Management**: Add/remove multiple NEMO harvester instances
+- **Toggle Sections**: Enable/disable optional features like eLabFTW and Email alerts
+
+```{figure} ../images/tui/screenshots/config_main_screen.svg
+:name: config-tui-main-screen
+
+Main Screen of the configuration TUI
+```
+
+**Navigation:**
+- **`Tab` / `Shift+Tab`**: Move between fields
+- **`<` / `>`**: Navigate between tabs
+- **`F1`**: Show field-specific help
+- **`Ctrl+S`**: Save configuration
+- **`Escape`**: Cancel/Exit
+- **`?`**: Show the overall help screen
+
+```{figure} ../images/tui/screenshots/config_help_screen.svg
+:name: config-tui-help-screen
+
+Configuration app general help screen (shown with `?` key)
+```
+
+**Field Help:** Press **F1** while focused on any field to see extended documentation:
+
+```{figure} ../images/tui/screenshots/config_field_detail.svg
+:name: config-tui-field-detail
+
+Showing the detailed help for a particular field (by pressing `F1`)
+```
+
+#### Video Demonstrations
+
+This demo shows opening the configuration tool, browsing around the "tabs" that separate
+the logical grouping of config values, showing the help screen, and then exiting:
+
+```{raw} html
+<figure>
+  <video src="../_images/config_main.mp4" width="100%" controls autoplay muted loop aria-label="Configuration tool demonstration video">
+  </video>
+  <figcaption>Demonstration of the main screens in the interactive configuration tool</figcaption>
+</figure>
+```
+<!-- this hidden span is so Sphinx will properly copy the video to the right location -->
+<span style="display: none;">![main config screen](../images/tui/recordings/config_main.mp4)</span>
+
+This video demonstrates using the `F1` key to show detailed help for various configuration variables.
+This capability can help you learn more about what each setting does and how to properly set the values:
+
+
+```{raw} html
+<figure>
+  <video src="../_images/config_field_help.mp4" width="100%" controls autoplay muted loop></video>
+  <figcaption>Using the <code>F1</code> key to view detailed help for different fields</figcaption>
+</figure>
+```
+<!-- this hidden span is so Sphinx will properly copy the video to the right location -->
+<span style="display: none;">![main config screen](../images/tui/recordings/config_field_help.mp4)</span>
+
+This video demonstrates adding a NEMO harvester configuration to the application. Since NexusLIMS supports
+multiple NEMO instances in one installation, the configuration tool allows you to add/delete harvesters
+and fill out each harvester's configuration in a logical grouping:
+
+```{raw} html
+<figure>
+  <video src="../_images/config_nemo_management.mp4" width="100%" controls autoplay muted loop></video>
+  <figcaption>Adding a NEMO harvester configuration, then adding a second one, and finally deleting it</figcaption>
+</figure>
+```
+<!-- this hidden span is so Sphinx will properly copy the video to the right location -->
+<span style="display: none;">![main config screen](../images/tui/recordings/config_nemo_management.mp4)</span>
 
 ### Dumping Configuration
 
@@ -143,10 +229,8 @@ These variables **must** be configured for NexusLIMS to function.
 (config-instrument-data-path)=
 #### `NX_INSTRUMENT_DATA_PATH`
 
-**Type:** Directory path (must exist)\
-**Required:** Yes
-
-The root path to the centralized file store for instrument data. This should be mounted read-only and is where instruments write their data files. Individual instrument paths (specified in the database) are relative to this root.
+```{config-detail} NX_INSTRUMENT_DATA_PATH
+```
 
 **Example:**
 ```bash
@@ -156,10 +240,8 @@ NX_INSTRUMENT_DATA_PATH=/mnt/nexus_instruments
 (config-data-path)=
 #### `NX_DATA_PATH`
 
-**Type:** Directory path (must exist)\
-**Required:** Yes
-
-Writable path parallel to `NX_INSTRUMENT_DATA_PATH` for extracted metadata, generated preview images, and other NexusLIMS-generated content. This directory structure mirrors the instrument data path.
+```{config-detail} NX_DATA_PATH
+```
 
 **Example:**
 ```bash
@@ -169,10 +251,8 @@ NX_DATA_PATH=/var/nexuslims/data
 (config-db-path)=
 #### `NX_DB_PATH`
 
-**Type:** File path (must exist)\
-**Required:** Yes
-
-Full path to the NexusLIMS SQLite database file containing instrument configurations and session logs.
+```{config-detail} NX_DB_PATH
+```
 
 **Example:**
 ```bash
@@ -184,10 +264,8 @@ NX_DB_PATH=/var/nexuslims/data/nexuslims.db
 (config-cdcs-url)=
 #### `NX_CDCS_URL`
 
-**Type:** URL\
-**Required:** Yes
-
-Root URL of the NexusLIMS CDCS frontend where generated records will be uploaded.
+```{config-detail} NX_CDCS_URL
+```
 
 **Example:**
 ```bash
@@ -197,10 +275,8 @@ NX_CDCS_URL=https://nexuslims.example.com
 (config-cdcs-token)=
 #### `NX_CDCS_TOKEN`
 
-**Type:** String\
-**Required:** Yes
-
-API token for authenticating to the CDCS API for record uploads. Obtain this token from the CDCS admin panel or via the API token endpoint.
+```{config-detail} NX_CDCS_TOKEN
+```
 
 **Example:**
 ```bash
@@ -218,10 +294,8 @@ NexusLIMS supports multiple NEMO instances by using numbered environment variabl
 (config-nemo-address)=
 #### `NX_NEMO_ADDRESS_N`
 
-**Type:** URL (must end with trailing slash)\
-**Required:** Yes (for each NEMO instance)
-
-Full path to the NEMO API endpoint. The `_N` suffix can be any number (e.g., `_1`, `_2`, `_3`).
+```{config-detail} nemo.address
+```
 
 **Example:**
 ```bash
@@ -232,10 +306,8 @@ NX_NEMO_ADDRESS_2=https://nemo2.example.com/api/
 (config-nemo-token)=
 #### `NX_NEMO_TOKEN_N`
 
-**Type:** String\
-**Required:** Yes (for each NEMO instance)
-
-API authentication token for the corresponding NEMO instance. Obtain from the "Detailed Administration" → "Tokens" page in NEMO. The token authenticates as a specific user, so consider using a dedicated service account.
+```{config-detail} nemo.token
+```
 
 **Example:**
 ```bash
@@ -255,10 +327,8 @@ NexusLIMS can optionally export records to [eLabFTW](https://www.elabftw.net/), 
 (config-elabftw-url)=
 #### `NX_ELABFTW_URL`
 
-**Type:** URL\
-**Required:** No (only if using eLabFTW export)
-
-Root URL of your eLabFTW instance (without `/api/`). The eLabFTW export destination is automatically enabled when both `NX_ELABFTW_URL` and `NX_ELABFTW_API_KEY` are configured.
+```{config-detail} NX_ELABFTW_URL
+```
 
 **Example:**
 ```bash
@@ -268,10 +338,8 @@ NX_ELABFTW_URL=https://elabftw.example.com
 (config-elabftw-api-key)=
 #### `NX_ELABFTW_API_KEY`
 
-**Type:** String\
-**Required:** No (only if using eLabFTW export)
-
-API key for authenticating to the eLabFTW API. Generate this from your eLabFTW user panel under "API Keys". The key should have write permissions to create experiments and upload files.
+```{config-detail} NX_ELABFTW_API_KEY
+```
 
 **Example:**
 ```bash
@@ -285,11 +353,8 @@ eLabFTW API keys have the format `{id}-{key}` where the key portion is 84 hexade
 (config-elabftw-experiment-category)=
 #### `NX_ELABFTW_EXPERIMENT_CATEGORY`
 
-**Type:** Integer\
-**Required:** No\
-**Default:** None (uses eLabFTW default)
-
-Optional category ID to assign to created experiments. Categories are defined in eLabFTW's admin panel and help organize experiments by project or type.
+```{config-detail} NX_ELABFTW_EXPERIMENT_CATEGORY
+```
 
 **Example:**
 ```bash
@@ -299,11 +364,8 @@ NX_ELABFTW_EXPERIMENT_CATEGORY=1
 (config-elabftw-experiment-status)=
 #### `NX_ELABFTW_EXPERIMENT_STATUS`
 
-**Type:** Integer\
-**Required:** No\
-**Default:** None (uses eLabFTW default)
-
-Optional status ID to assign to created experiments. Statuses represent the experiment lifecycle (e.g., "Running", "Success", "Need to be redone") and are configured in eLabFTW's admin panel.
+```{config-detail} NX_ELABFTW_EXPERIMENT_STATUS
+```
 
 **Example:**
 ```bash
@@ -324,14 +386,8 @@ When eLabFTW export is enabled, experiments are created with:
 (config-export-strategy)=
 #### `NX_EXPORT_STRATEGY`
 
-**Type:** `"all"` | `"first_success"` | `"best_effort"`\
-**Default:** `"all"`
-
-Controls how records are exported when multiple export destinations are enabled (e.g. CDCS and eLabFTW). Destinations are always attempted in priority order (highest first).
-
-- **`all`**: Export to every enabled destination. The overall export is considered a failure if *any* destination fails.
-- **`first_success`**: Stop after the first destination succeeds. Remaining destinations are skipped.
-- **`best_effort`**: Attempt all enabled destinations. The overall export succeeds as long as *at least one* destination succeeds.
+```{config-detail} NX_EXPORT_STRATEGY
+```
 
 **Example:**
 ```bash
@@ -348,12 +404,8 @@ See the {ref}`exporters` page for a full description of how strategies interact 
 (config-file-strategy)=
 #### `NX_FILE_STRATEGY`
 
-**Type:** `"exclusive"` or `"inclusive"`\
-**Default:** `"exclusive"`
-
-Defines file discovery behavior:
-- **`exclusive`**: Only include files with known extractors
-- **`inclusive`**: Include all files, using basic metadata for unknown types
+```{config-detail} NX_FILE_STRATEGY
+```
 
 **Example:**
 ```bash
@@ -363,10 +415,8 @@ NX_FILE_STRATEGY=inclusive
 (config-ignore-patterns)=
 #### `NX_IGNORE_PATTERNS`
 
-**Type:** JSON array of glob patterns\
-**Default:** `["*.mib", "*.db", "*.emi", "*.hdr"]`
-
-Glob patterns to exclude when searching for experiment files. Useful for filtering out temporary files, databases, or dedicated metadata files that do not contain data, and are read as-needed by extractors (such as `.hdr` and `.emi`).
+```{config-detail} NX_IGNORE_PATTERNS
+```
 
 **Example:**
 ```bash
@@ -376,12 +426,8 @@ NX_IGNORE_PATTERNS=["*.mib", "*.db", "*.emi", "*.tmp", "*~"]
 (config-file-delay-days)=
 #### `NX_FILE_DELAY_DAYS`
 
-**Type:** Float (must be > 0)\
-**Default:** `2.0`
-
-Maximum delay (in days) between session end and when files are expected to be present. The record builder will continue searching for files until this delay expires. Fractional days are supported. This is useful if your file management system takes time to synchronize data files from the instrument to centralized storage.
-
-**Example:** If set to `2.0` and a session ends Monday at 5 PM, the builder will retry until Wednesday at 5 PM.
+```{config-detail} NX_FILE_DELAY_DAYS
+```
 
 ```bash
 NX_FILE_DELAY_DAYS=2.5
@@ -390,20 +436,8 @@ NX_FILE_DELAY_DAYS=2.5
 (config-clustering-sensitivity)=
 #### `NX_CLUSTERING_SENSITIVITY`
 
-**Type:** Float (must be >= 0)\
-**Default:** `1.0`
-
-Controls the sensitivity of file clustering into {ref}`Acquisition Activities <acquisition-activities>`. When building records, NexusLIMS groups files into activities based on temporal gaps in file modification times using Kernel Density Estimation (KDE). This setting allows you to adjust or disable this clustering behavior.
-
-- **Values > 1.0**: More sensitive to time gaps, resulting in more activities (finer granularity)
-- **Values < 1.0**: Less sensitive to time gaps, resulting in fewer activities (coarser granularity)
-- **Value of 0**: Disables clustering entirely; all files are grouped into a single activity
-- **Value of 1.0**: Default behavior with automatic clustering based on data distribution
-
-This is useful when:
-- The automatic clustering creates too many or too few activities for your workflow
-- You want to disable clustering for simpler record structures
-- Your data acquisition patterns don't match the default clustering assumptions
+```{config-detail} NX_CLUSTERING_SENSITIVITY
+```
 
 **Examples:**
 ```bash
@@ -422,10 +456,8 @@ NX_CLUSTERING_SENSITIVITY=0
 (config-log-path)=
 #### `NX_LOG_PATH`
 
-**Type:** Directory path\
-**Default:** `${NX_DATA_PATH}/logs/`
-
-Directory for application logs. Logs are organized by date: `logs/YYYY/MM/DD/`.
+```{config-detail} NX_LOG_PATH
+```
 
 **Example:**
 ```bash
@@ -435,10 +467,8 @@ NX_LOG_PATH=/var/log/nexuslims
 (config-records-path)=
 #### `NX_RECORDS_PATH`
 
-**Type:** Directory path\
-**Default:** `${NX_DATA_PATH}/records/`
-
-Directory for generated XML records. Successfully uploaded records are moved to an `uploaded/` subdirectory.
+```{config-detail} NX_RECORDS_PATH
+```
 
 **Example:**
 ```bash
@@ -448,12 +478,10 @@ NX_RECORDS_PATH=/var/nexuslims/records
 (config-local-profiles-path)=
 #### `NX_LOCAL_PROFILES_PATH`
 
-**Type:** Directory path\
-**Default:** None (only built-in profiles loaded)
+```{config-detail} NX_LOCAL_PROFILES_PATH
+```
 
-Directory containing site-specific instrument profiles. Profiles customize metadata extraction for instruments unique to your deployment without modifying core NexusLIMS code.
-
-Profile files should be Python modules that register `InstrumentProfile` objects. See {ref}`instrument-profiles` for details.
+See {ref}`instrument-profiles` for details on writing profile modules.
 
 **Example:**
 ```bash
@@ -465,10 +493,8 @@ NX_LOCAL_PROFILES_PATH=/etc/nexuslims/profiles
 (config-nemo-strftime-fmt)=
 #### `NX_NEMO_STRFTIME_FMT_N`
 
-**Type:** Python strftime format string\
-**Default:** `"%Y-%m-%dT%H:%M:%S%z"` (ISO 8601)
-
-Format string for sending datetime values to the NEMO API. Only needed if your NEMO instance uses non-standard date formats.
+```{config-detail} nemo.strftime_fmt
+```
 
 **Example:**
 ```bash
@@ -478,10 +504,8 @@ NX_NEMO_STRFTIME_FMT_1=%Y-%m-%d %H:%M:%S
 (config-nemo-strptime-fmt)=
 #### `NX_NEMO_STRPTIME_FMT_N`
 
-**Type:** Python strptime format string\
-**Default:** `"%Y-%m-%dT%H:%M:%S%z"` (ISO 8601)
-
-Format string for parsing datetime values from the NEMO API. Only needed if your NEMO instance returns non-standard date formats.
+```{config-detail} nemo.strptime_fmt
+```
 
 **Example:**
 ```bash
@@ -491,12 +515,8 @@ NX_NEMO_STRPTIME_FMT_1=%Y-%m-%d %H:%M:%S
 (config-nemo-tz)=
 #### `NX_NEMO_TZ_N`
 
-**Type:** IANA timezone name\
-**Default:** None
-
-Timezone to coerce NEMO API datetime strings into. Only needed if the NEMO server doesn't return timezone information in API responses.
-
-**⚠️ Warning:** This overrides timezone from API responses. Only use if your NEMO instance doesn't provide timezone data.
+```{config-detail} nemo.tz
+```
 
 **Example:**
 ```bash
@@ -504,17 +524,13 @@ NX_NEMO_TZ_1=America/Denver
 NX_NEMO_TZ_2=America/New_York
 ```
 
-See [IANA Time Zone Database](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) for valid timezone names.
-
 ### SSL/TLS Configuration
 
 (config-cert-bundle-file)=
 #### `NX_CERT_BUNDLE_FILE`
 
-**Type:** File path\
-**Default:** None
-
-Path to a custom SSL certificate CA bundle for verifying HTTPS requests to CDCS or NEMO APIs. Certificates in this bundle are appended to the system's default certificates.
+```{config-detail} NX_CERT_BUNDLE_FILE
+```
 
 **Example:**
 ```bash
@@ -524,10 +540,8 @@ NX_CERT_BUNDLE_FILE=/etc/ssl/certs/custom-ca-bundle.crt
 (config-cert-bundle)=
 #### `NX_CERT_BUNDLE`
 
-**Type:** String (PEM-formatted certificates)\
-**Default:** None
-
-Alternative to `NX_CERT_BUNDLE_FILE` - provide the entire certificate bundle as a string. Useful for CI/CD pipelines. Lines should be separated by `\n`. Takes precedence over `NX_CERT_BUNDLE_FILE` if both are set.
+```{config-detail} NX_CERT_BUNDLE
+```
 
 **Example:**
 ```bash
@@ -537,21 +551,8 @@ NX_CERT_BUNDLE="-----BEGIN CERTIFICATE-----\nMIID...\n-----END CERTIFICATE-----"
 (config-disable-ssl-verify)=
 #### `NX_DISABLE_SSL_VERIFY`
 
-**Type:** Boolean\
-**Default:** `false`
-
-```{warning}
-This setting should **only** be used during local development or testing.
-Never enable it in production — it disables all certificate verification,
-leaving connections vulnerable to interception.
+```{config-detail} NX_DISABLE_SSL_VERIFY
 ```
-
-Disable SSL certificate verification for all outgoing HTTPS requests made by
-NexusLIMS (to CDCS, NEMO, eLabFTW, etc.). This is useful in local test
-deployments where multiple services use self-signed or `mkcert`-issued
-certificates and providing every CA via `NX_CERT_BUNDLE_FILE` is impractical.
-
-When enabled, a warning is logged once per process run as a reminder.
 
 **Example:**
 ```bash
@@ -565,10 +566,10 @@ Email notifications are optional but recommended for production deployments. The
 (config-email-smtp-host)=
 #### `NX_EMAIL_SMTP_HOST`
 
-**Type:** String\
 **Required for email:** Yes
 
-SMTP server hostname for sending email notifications.
+```{config-detail} email.smtp_host
+```
 
 **Example:**
 ```bash
@@ -578,13 +579,8 @@ NX_EMAIL_SMTP_HOST=smtp.gmail.com
 (config-email-smtp-port)=
 #### `NX_EMAIL_SMTP_PORT`
 
-**Type:** Integer\
-**Default:** `587`
-
-SMTP server port. Common values:
-- `587` - STARTTLS (recommended)
-- `465` - SSL/TLS
-- `25` - Unencrypted (not recommended)
+```{config-detail} email.smtp_port
+```
 
 **Example:**
 ```bash
@@ -594,10 +590,8 @@ NX_EMAIL_SMTP_PORT=587
 (config-email-smtp-username)=
 #### `NX_EMAIL_SMTP_USERNAME`
 
-**Type:** String\
-**Default:** None
-
-SMTP username for authentication (if required by your SMTP server).
+```{config-detail} email.smtp_username
+```
 
 **Example:**
 ```bash
@@ -607,10 +601,8 @@ NX_EMAIL_SMTP_USERNAME=nexuslims@example.com
 (config-email-smtp-password)=
 #### `NX_EMAIL_SMTP_PASSWORD`
 
-**Type:** String\
-**Default:** None
-
-SMTP password for authentication (if required by your SMTP server).
+```{config-detail} email.smtp_password
+```
 
 **Example:**
 ```bash
@@ -620,10 +612,8 @@ NX_EMAIL_SMTP_PASSWORD=app_specific_password
 (config-email-use-tls)=
 #### `NX_EMAIL_USE_TLS`
 
-**Type:** Boolean (`true`/`false`, `1`/`0`, `yes`/`no`)\
-**Default:** `true`
-
-Enable TLS encryption for SMTP connection. Recommended for security.
+```{config-detail} email.use_tls
+```
 
 **Example:**
 ```bash
@@ -633,10 +623,10 @@ NX_EMAIL_USE_TLS=true
 (config-email-sender)=
 #### `NX_EMAIL_SENDER`
 
-**Type:** Email address\
 **Required for email:** Yes
 
-Email address to send notifications from.
+```{config-detail} email.sender
+```
 
 **Example:**
 ```bash
@@ -646,10 +636,10 @@ NX_EMAIL_SENDER=nexuslims@example.com
 (config-email-recipients)=
 #### `NX_EMAIL_RECIPIENTS`
 
-**Type:** Comma-separated email addresses\
 **Required for email:** Yes
 
-List of recipient email addresses for error notifications.
+```{config-detail} email.recipients
+```
 
 **Example:**
 ```bash

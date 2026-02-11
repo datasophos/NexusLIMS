@@ -27,14 +27,10 @@ _instr_data_path.mkdir(exist_ok=True)
 # Define path for dynamically-created test database
 _test_db_path = _nexuslims_path / "test_db.sqlite"
 
-# Create database using shared function from top-level conftest
-# This ensures consistency between unit and integration test databases
-from tests.conftest import create_test_database  # noqa: E402
-
-create_test_database(_test_db_path)
-
-# Set environment variables to use test paths
-# CRITICAL: This MUST happen before importing nexusLIMS.config
+# Set environment variables BEFORE create_test_database, because that call
+# imports nexusLIMS.db.models → nexusLIMS.db.engine, which creates the engine
+# singleton from settings.NX_DB_PATH.  If the env vars aren't set yet the
+# singleton ends up pointing at the root-conftest temp path (no schema).
 os.environ["NX_DB_PATH"] = str(_test_db_path)
 os.environ["NX_DATA_PATH"] = str(_nexuslims_path)
 os.environ["NX_INSTRUMENT_DATA_PATH"] = str(_instr_data_path)
@@ -55,6 +51,12 @@ os.environ["NX_CERT_BUNDLE"] = (
 
 # Create required directory structure
 (_nexuslims_path / "test_files").mkdir(parents=True, exist_ok=True)
+
+# Create database using shared function from top-level conftest
+# This ensures consistency between unit and integration test databases
+from tests.conftest import create_test_database  # noqa: E402
+
+create_test_database(_test_db_path)
 
 # ============================================================================
 # NOW it's safe to import nexusLIMS modules
