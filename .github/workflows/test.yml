@@ -127,11 +127,13 @@ jobs:
       - name: Build wheel
         run: uv build --wheel
 
-      - name: Create fresh virtual environment
-        run: uv venv --python ${{ matrix.python-version }} /tmp/test-venv
-
-      - name: Install wheel in fresh environment
+      - name: Create fresh virtual environment and install wheel
         run: |
+          # Create a fresh venv using Python's built-in venv module
+          python${{ matrix.python-version }} -m venv /tmp/test-venv
+          # Install the wheel
+          /tmp/test-venv/bin/pip install --no-deps dist/*.whl
+          # Install dependencies separately to verify package metadata is correct
           /tmp/test-venv/bin/pip install dist/*.whl
 
       - name: Test CLI entry points exist
