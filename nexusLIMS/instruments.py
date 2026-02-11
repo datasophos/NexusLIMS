@@ -18,7 +18,7 @@ from sqlmodel import Session as DBSession
 from sqlmodel import create_engine, select
 
 from nexusLIMS.config import settings
-from nexusLIMS.db.engine import engine as default_engine
+from nexusLIMS.db.engine import get_engine
 from nexusLIMS.db.models import Instrument
 from nexusLIMS.utils.paths import is_subpath
 
@@ -51,7 +51,7 @@ def _get_instrument_db(db_path: Path | str | None = None):
     if db_path is not None:
         temp_engine = create_engine(f"sqlite:///{_db_path}")
     else:
-        temp_engine = default_engine
+        temp_engine = get_engine()
 
     try:
         with DBSession(temp_engine) as session:
@@ -66,12 +66,29 @@ def _get_instrument_db(db_path: Path | str | None = None):
         return {}
 
 
-instrument_db = _get_instrument_db()
+# Lazy initialization for instrument_db to avoid triggering Settings validation
+# during module import
+_instrument_db_cache = None
+_instrument_db_initialized = False
+
+
+def _get_instrument_db_cached():
+    """Get the instrument database with caching (lazy initialization)."""
+    global _instrument_db_cache, _instrument_db_initialized  # noqa: PLW0603
+    if not _instrument_db_initialized:
+        _instrument_db_cache = _get_instrument_db()
+        _instrument_db_initialized = True
+    return _instrument_db_cache
+
+
+# Backwards-compatible module attribute
+# Will be populated on first access via __getattr__
+instrument_db = None
 """dict[str, Instrument]: Module-level cache of all instruments from the database.
 
 Keys are instrument PIDs (str), values are
 :class:`~nexusLIMS.db.models.Instrument` instances.
-Populated once at module import time from the NexusLIMS database.
+Populated on first access from the NexusLIMS database.
 """
 
 
@@ -163,3 +180,11 @@ def get_instr_from_api_url(api_url: str) -> Instrument | None:
             return v
 
     return None
+
+
+def __getattr__(name: str):
+    """Provide lazy access to instrument_db module variable."""
+    if name == "instrument_db":
+        return _get_instrument_db_cached()
+    msg = f"module {__name__!r} has no attribute {name!r}"
+    raise AttributeError(msg)
