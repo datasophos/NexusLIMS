@@ -6,6 +6,7 @@ import pytest
 
 from nexusLIMS.tui.apps.config.app import ConfiguratorApp
 from nexusLIMS.tui.apps.config.screens import ConfigScreen
+from nexusLIMS.tui.common.base_app import HelpScreen
 
 
 class TestConfiguratorApp:
@@ -98,6 +99,16 @@ class TestConfiguratorApp:
         async with app.run_test(size=(120, 40)) as pilot:
             await pilot.pause()
             assert app.is_running
+
+    async def test_action_help_pushes_help_screen(self, tmp_path):
+        """Pressing '?' pushes a HelpScreen with app name and keybindings."""
+        env_file = tmp_path / "empty.env"
+        app = ConfiguratorApp(env_path=env_file)
+        async with app.run_test(size=(120, 40)) as pilot:
+            await pilot.pause()
+            await pilot.press("?")
+            await pilot.pause(0.1)
+            assert isinstance(app.screen, HelpScreen)
 
     async def test_app_cancel_via_escape(self, tmp_path):
         """Pressing Escape exits the app without saving."""
