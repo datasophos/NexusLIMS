@@ -1,0 +1,36 @@
+# {py:mod}`nexusLIMS`
+
+```{py:module} nexusLIMS
+```
+
+```{autodoc2-docstring} nexusLIMS
+:parser: autodoc2_docstrings_parser
+:allowtitles:
+```
+
+## Subpackages
+
+```{toctree}
+:titlesonly:
+:maxdepth: 3
+
+nexusLIMS.db
+nexusLIMS.utils
+nexusLIMS.tui
+nexusLIMS.builder
+nexusLIMS.extractors
+nexusLIMS.cli
+nexusLIMS.harvesters
+nexusLIMS.schemas
+nexusLIMS.exporters
+```
+
+## Submodules
+
+```{toctree}
+:titlesonly:
+:maxdepth: 1
+
+nexusLIMS.instruments
+nexusLIMS.config
+```

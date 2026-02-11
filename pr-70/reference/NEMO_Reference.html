@@ -1,0 +1,1393 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>NEMO System Reference for NexusLIMS &#8212; NexusLIMS pr-70 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=acda69ee" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=f28f0246"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=30646c52"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'reference/NEMO_Reference';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'pr-70';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script src="../_static/custom.js?v=ba087cdf"></script>
+    <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/pr-70/reference/NEMO_Reference.html" />
+    <link rel="icon" href="../_static/nexusLIMS_bare_logo.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="eLabFTW Metadata Reference" href="eLabFTW_metadata_reference.html" />
+    <link rel="prev" title="nexusLIMS.config" href="../api/nexusLIMS/nexusLIMS.config.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="pr-70" />
+    <meta name="docbuild:last-update" content="Feb, 11, 2026"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS pr-70 documentation - Home"/>
+    <img src="../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS pr-70 documentation - Home"/>
+  
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../migration_guide.html">
+    Migration Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../dev_guide.html">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../frontend_guide.html">
+    Frontend Guide
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="../reference.html">
+    Reference
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datasophos/NexusLIMS" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://datasophos.co" title="Datasophos" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-globe fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Datasophos</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../migration_guide.html">
+    Migration Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../dev_guide.html">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../frontend_guide.html">
+    Frontend Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../reference.html">
+    Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datasophos/NexusLIMS" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://datasophos.co" title="Datasophos" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-globe fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Datasophos</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">NexusLIMS API documentation</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">NEMO System Reference for NexusLIMS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="eLabFTW_metadata_reference.html">eLabFTW Metadata Reference</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../reference.html" class="nav-link">Reference</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">NEMO System Reference for NexusLIMS</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="nemo-system-reference-for-nexuslims">
+<h1>NEMO System Reference for NexusLIMS<a class="headerlink" href="#nemo-system-reference-for-nexuslims" title="Link to this heading">#</a></h1>
+<ul class="simple">
+<li><p><strong>Source:</strong> <a class="reference external" href="https://nemo.nist.gov/public/NEMO_Feature_Manual.pdf">NEMO Feature Manual v7.0.1</a></p></li>
+<li><p><strong>Date:</strong> 2025-02-24</p></li>
+<li><p><strong>GitHub:</strong> <a class="github reference external" href="https://github.com/usnistgov/NEMO">usnistgov/NEMO</a></p></li>
+</ul>
+<p>This document provides a reference for NEMO concepts and features relevant to NexusLIMS development, extracted from the official NEMO Feature Manual.</p>
+<hr class="docutils" />
+<section id="table-of-contents">
+<h2>Table of Contents<a class="headerlink" href="#table-of-contents" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="../user_guide/record_building.html#overview"><span class="std std-ref">Overview</span></a></p></li>
+<li><p><a class="reference internal" href="#usage-events"><span class="std std-ref">Usage Events</span></a></p></li>
+<li><p><a class="reference internal" href="#prepost-usage-questions"><span class="std std-ref">Pre/Post Usage Questions</span></a></p></li>
+<li><p><a class="reference internal" href="#reservation-questions"><span class="std std-ref">Reservation Questions</span></a></p></li>
+<li><p><a class="reference internal" href="#dynamic-form-fields"><span class="std std-ref">Dynamic Form Fields</span></a></p></li>
+<li><p><a class="reference internal" href="#api-access"><span class="std std-ref">API Access</span></a></p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
+<p>NEMO (Nanofabrication Equipment Management and Operations) is a laboratory management system developed by NIST for managing facility reservations, tool usage tracking, and billing.</p>
+<section id="key-concepts">
+<h3>Key Concepts<a class="headerlink" href="#key-concepts" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Users</strong>: Individuals who access facility resources</p></li>
+<li><p><strong>Tools</strong>: Instruments/equipment in the facility</p></li>
+<li><p><strong>Projects</strong>: Billing entities associated with users</p></li>
+<li><p><strong>Reservations</strong>: Scheduled tool/area bookings</p></li>
+<li><p><strong>Usage Events</strong>: Actual tool usage records (login/logout)</p></li>
+<li><p><strong>Pre/Post Usage Questions</strong>: Dynamic forms shown at tool enable/disable</p></li>
+<li><p><strong>Reservation Questions</strong>: Dynamic forms shown when making reservations</p></li>
+</ul>
+<hr class="docutils" />
+</section>
+</section>
+<section id="usage-events">
+<span id="id1"></span><h2>Usage Events<a class="headerlink" href="#usage-events" title="Link to this heading">#</a></h2>
+<p><strong>Database Table:</strong> <code class="docutils literal notranslate"><span class="pre">usage_events</span></code></p>
+<section id="purpose">
+<h3>Purpose<a class="headerlink" href="#purpose" title="Link to this heading">#</a></h3>
+<p>The usage events table records all tool usage based on login and logout events on the tool control page. This table tracks actual tool usage for billing purposes and stores answers to pre/post usage questions.</p>
+</section>
+<section id="fields">
+<h3>Fields<a class="headerlink" href="#fields" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Field</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">id</span></code></p></td>
+<td><p>Integer</p></td>
+<td><p>Primary key</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">user</span></code></p></td>
+<td><p>Foreign Key</p></td>
+<td><p>User being billed (required)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">operator</span></code></p></td>
+<td><p>Foreign Key</p></td>
+<td><p>User operating the tool (could be user or staff on behalf of user) (required)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">project</span></code></p></td>
+<td><p>Foreign Key</p></td>
+<td><p>Project to charge usage to (required)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">tool</span></code></p></td>
+<td><p>Foreign Key</p></td>
+<td><p>Tool being used (required)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">start</span></code></p></td>
+<td><p>DateTime</p></td>
+<td><p>Usage event start time (required)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">end</span></code></p></td>
+<td><p>DateTime</p></td>
+<td><p>Usage event end time (blank for active usage)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">validated</span></code></p></td>
+<td><p>Boolean</p></td>
+<td><p>Whether staff confirmed usage was correct (for staff-operated tools)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">validated_by</span></code></p></td>
+<td><p>Foreign Key</p></td>
+<td><p>User who validated the charge</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">remote_work</span></code></p></td>
+<td><p>Boolean</p></td>
+<td><p>Whether this was remote work</p></td>
+</tr>
+<tr class="row-even"><td><p><strong><code class="docutils literal notranslate"><span class="pre">pre_run_data</span></code></strong></p></td>
+<td><p><strong>JSON String</strong></p></td>
+<td><p><strong>Answers to pre-usage questions in JSON format</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong><code class="docutils literal notranslate"><span class="pre">run_data</span></code></strong></p></td>
+<td><p><strong>JSON String</strong></p></td>
+<td><p><strong>Answers to post-usage questions in JSON format</strong></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="key-points">
+<h3>Key Points<a class="headerlink" href="#key-points" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Usage events are created automatically when users enable/disable tools</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pre_run_data</span></code> contains answers to questions asked at tool <strong>enable</strong> (start of usage)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">run_data</span></code> contains answers to questions asked at tool <strong>disable</strong> (end of usage)</p></li>
+<li><p>Both fields store JSON-encoded strings, not native JSON objects</p></li>
+<li><p>Usage events provide an electronic logbook of tool usage</p></li>
+</ul>
+</section>
+<section id="api-endpoint">
+<h3>API Endpoint<a class="headerlink" href="#api-endpoint" title="Link to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">GET</span> <span class="o">/</span><span class="n">api</span><span class="o">/</span><span class="n">usage_events</span><span class="o">/</span>
+<span class="n">GET</span> <span class="o">/</span><span class="n">api</span><span class="o">/</span><span class="n">usage_events</span><span class="o">/</span><span class="p">{</span><span class="nb">id</span><span class="p">}</span><span class="o">/</span>
+</pre></div>
+</div>
+<p><strong>Query Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">start__gte</span></code>: Filter by start date/time greater than or equal</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">end__lte</span></code>: Filter by end date/time less than or equal</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tool_id</span></code>: Filter by tool ID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">user_id</span></code>: Filter by user ID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">project_id</span></code>: Filter by project ID</p></li>
+</ul>
+<hr class="docutils" />
+</section>
+</section>
+<section id="pre-post-usage-questions">
+<span id="prepost-usage-questions"></span><h2>Pre/Post Usage Questions<a class="headerlink" href="#pre-post-usage-questions" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>Location in Manual:</strong> Chapter 6.4.7, section 43.64</p></li>
+<li><p><strong>Configuration Location:</strong> Detailed Administration → “Tool usage questions”</p></li>
+</ul>
+<section id="id2">
+<h3>Purpose<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
+<p>Pre/post usage questions are dynamic forms that users must answer when enabling (logging into) or disabling (logging out of) tools. They collect information about runs, create charges for consumables, and record important tool parameters.</p>
+</section>
+<section id="when-questions-are-asked">
+<h3>When Questions Are Asked<a class="headerlink" href="#when-questions-are-asked" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Pre-usage questions</strong>: Asked when user <strong>enables</strong> (logs into) a tool</p>
+<ul>
+<li><p>Answers stored in <code class="docutils literal notranslate"><span class="pre">usage_events.pre_run_data</span></code> field</p></li>
+<li><p>User must answer before tool usage can begin</p></li>
+</ul>
+</li>
+<li><p><strong>Post-usage questions</strong>: Asked when user <strong>disables</strong> (logs out of) a tool</p>
+<ul>
+<li><p>Answers stored in <code class="docutils literal notranslate"><span class="pre">usage_events.run_data</span></code> field</p></li>
+<li><p>User must answer before tool usage can end</p></li>
+<li><p>If unanswered, email sent to user requesting completion</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="configuration">
+<h3>Configuration<a class="headerlink" href="#configuration" title="Link to this heading">#</a></h3>
+<p>Questions are configured per tool in Detailed Administration → Tools:</p>
+<ul class="simple">
+<li><p>Can be marked as required or optional</p></li>
+<li><p>Support multiple question types (see Dynamic Form Fields section)</p></li>
+<li><p>Can be grouped and repeated multiple times</p></li>
+<li><p>Can trigger consumable purchases (for numeric fields)</p></li>
+<li><p>Can automatically create tool problem reports</p></li>
+</ul>
+</section>
+<section id="response-storage">
+<h3>Response Storage<a class="headerlink" href="#response-storage" title="Link to this heading">#</a></h3>
+<p>All pre/post usage question responses are saved in:</p>
+<ol class="arabic simple">
+<li><p><strong>Database:</strong> <code class="docutils literal notranslate"><span class="pre">usage_events</span></code> table (<code class="docutils literal notranslate"><span class="pre">pre_run_data</span></code> and <code class="docutils literal notranslate"><span class="pre">run_data</span></code> fields)</p></li>
+<li><p><strong>Tool Control Page:</strong> “Usage Data History” tab shows all responses</p></li>
+<li><p><strong>Electronic Logbook:</strong> Provides viewable history for users and staff</p></li>
+</ol>
+</section>
+<section id="example-use-cases">
+<h3>Example Use Cases<a class="headerlink" href="#example-use-cases" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Recording process parameters (temperature, pressure, duration)</p></li>
+<li><p>Tracking consumable usage (materials deposited, etchant used)</p></li>
+<li><p>Collecting feedback (run quality, problems encountered)</p></li>
+<li><p>Safety checks (equipment status verified, PPE used)</p></li>
+</ul>
+<hr class="docutils" />
+</section>
+</section>
+<section id="reservation-questions">
+<span id="id3"></span><h2>Reservation Questions<a class="headerlink" href="#reservation-questions" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>Location in Manual:</strong> Section 43.38, Chapter 50</p></li>
+<li><p><strong>Configuration Location:</strong> Detailed Administration → “Reservation questions”</p></li>
+</ul>
+<section id="id4">
+<h3>Purpose<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<p>Reservation questions are dynamic forms shown to users when they create tool or area reservations. They collect experiment metadata before the session begins.</p>
+</section>
+<section id="database-table-reservation-questions">
+<h3>Database Table: <code class="docutils literal notranslate"><span class="pre">reservation_questions</span></code><a class="headerlink" href="#database-table-reservation-questions" title="Link to this heading">#</a></h3>
+<p><strong>Fields:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">enabled</span></code>: Boolean to enable/disable questions</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code>: Descriptive name for the question set</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">questions</span></code>: JSON-formatted list of questions</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tool_reservations</span></code>: Apply to tool reservations</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">only_for_tools</span></code>: Restrict to specific tools (blank = all tools)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">area_reservations</span></code>: Apply to area reservations</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">only_for_areas</span></code>: Restrict to specific areas (blank = all areas)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">only_for_projects</span></code>: Restrict to specific projects (blank = all projects)</p></li>
+</ul>
+</section>
+<section id="id5">
+<h3>Configuration<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<section id="creating-reservation-questions">
+<h4>Creating Reservation Questions<a class="headerlink" href="#creating-reservation-questions" title="Link to this heading">#</a></h4>
+<ol class="arabic simple">
+<li><p><strong>Navigate to:</strong> Detailed Administration → Reservation Questions (section 43.38)</p></li>
+<li><p><strong>Click:</strong> “Add reservation questions” button</p></li>
+<li><p><strong>Fill in fields:</strong></p>
+<ul class="simple">
+<li><p><strong>Enabled:</strong> Check to activate questions</p></li>
+<li><p><strong>Name:</strong> Give the question set a descriptive name</p></li>
+<li><p><strong>Questions:</strong> Enter JSON-formatted question list (same format as pre/post usage questions)</p></li>
+<li><p><strong>Tool reservations:</strong> Check to apply to tool reservations</p></li>
+<li><p><strong>Only For Tools:</strong> Select specific tools (leave blank for all tools)</p></li>
+<li><p><strong>Area reservations:</strong> Check to apply to area reservations</p></li>
+<li><p><strong>Only For Areas:</strong> Select specific areas (leave blank for all areas)</p></li>
+<li><p><strong>Only For Projects:</strong> Select specific projects (leave blank for all projects)</p></li>
+</ul>
+</li>
+<li><p><strong>Save:</strong> Click “Save” to store the configuration</p></li>
+</ol>
+</section>
+<section id="applying-questions-to-tools-areas">
+<h4>Applying Questions to Tools/Areas<a class="headerlink" href="#applying-questions-to-tools-areas" title="Link to this heading">#</a></h4>
+<p>You can create multiple reservation question sets and target them to:</p>
+<ul class="simple">
+<li><p><strong>All tools:</strong> Leave “Only For Tools” blank with “Tool reservations” checked</p></li>
+<li><p><strong>Specific tools:</strong> Select tools from “Only For Tools” list</p></li>
+<li><p><strong>All areas:</strong> Leave “Only For Areas” blank with “Area reservations” checked</p></li>
+<li><p><strong>Specific areas:</strong> Select areas from “Only For Areas” list</p></li>
+<li><p><strong>Specific projects:</strong> Restrict to certain projects via “Only For Projects”</p></li>
+</ul>
+<p><strong>Questions preview:</strong> The admin interface shows a preview of how questions will appear to users when making reservations.</p>
+</section>
+<section id="example-configuration-for-nexuslims">
+<h4>Example Configuration for NexusLIMS<a class="headerlink" href="#example-configuration-for-nexuslims" title="Link to this heading">#</a></h4>
+<p>Use the same question structure as pre/post usage questions (see example above). The JSON format is identical:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;radio&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;data_consent&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Agree to NexusLIMS data curation?&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;choices&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;Agree&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Disagree&quot;</span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;required&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;textbox&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;project_id&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Project ID&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;required&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="c1">// ... additional questions</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id6">
+<h3>Response Storage<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
+<p>Answers to reservation questions are stored in the <code class="docutils literal notranslate"><span class="pre">reservations</span></code> table in a JSON-encoded <code class="docutils literal notranslate"><span class="pre">question_data</span></code> field.</p>
+</section>
+<section id="relationship-to-usage-events">
+<h3>Relationship to Usage Events<a class="headerlink" href="#relationship-to-usage-events" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Reservations are <strong>planned</strong> tool usage (future)</p></li>
+<li><p>Usage events are <strong>actual</strong> tool usage (logged when tool is used)</p></li>
+<li><p>A reservation may or may not result in a usage event</p></li>
+<li><p>NexusLIMS matches usage events to reservations by time overlap to retrieve question data</p></li>
+</ul>
+<hr class="docutils" />
+</section>
+</section>
+<section id="dynamic-form-fields">
+<span id="id7"></span><h2>Dynamic Form Fields<a class="headerlink" href="#dynamic-form-fields" title="Link to this heading">#</a></h2>
+<p><strong>Location in Manual:</strong> Chapter 50</p>
+<p>Dynamic forms in NEMO are used for:</p>
+<ul class="simple">
+<li><p>Pre/post tool usage questions</p></li>
+<li><p>Reservation questions</p></li>
+<li><p>Custom form templates</p></li>
+</ul>
+<section id="general-structure">
+<h3>General Structure<a class="headerlink" href="#general-structure" title="Link to this heading">#</a></h3>
+<p>Questions are defined as JSON-formatted lists. Responses are stored as JSON data in database fields (<code class="docutils literal notranslate"><span class="pre">pre_run_data</span></code>, <code class="docutils literal notranslate"><span class="pre">run_data</span></code>, or <code class="docutils literal notranslate"><span class="pre">question_data</span></code>).</p>
+<p><strong>Common Properties:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">type</span></code>: Field type (required)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code>: Unique identifier for the question (required)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">title</span></code>: Display label for the question</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">title_html</span></code>: HTML alternative to title</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">required</span></code>: Whether question must be answered (true/false)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">help</span></code>: Help text shown to user</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">max-width</span></code>: Maximum width in pixels</p></li>
+</ul>
+</section>
+<section id="field-types">
+<h3>Field Types<a class="headerlink" href="#field-types" title="Link to this heading">#</a></h3>
+<section id="radio-button-type-radio">
+<h4>1. Radio Button (<code class="docutils literal notranslate"><span class="pre">&quot;type&quot;:</span> <span class="pre">&quot;radio&quot;</span></code>)<a class="headerlink" href="#radio-button-type-radio" title="Link to this heading">#</a></h4>
+<p>Single-choice selection from multiple options.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;radio&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Please rate your experience.&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;user_rating&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;choices&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;Great&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;As expected&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Not terrible&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Disastrous&quot;</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;required&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;default_value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;As expected&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;inline&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Properties:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">choices</span></code>: List of option values</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">labels</span></code>: Optional list of display labels (defaults to choices)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">default_value</span></code>: Pre-selected choice</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">inline</span></code>: Display horizontally (true) or vertically (false)</p></li>
+</ul>
+</section>
+<section id="radio-button-report-problem-type-radio-report-problem">
+<h4>2. Radio Button Report Problem (<code class="docutils literal notranslate"><span class="pre">&quot;type&quot;:</span> <span class="pre">&quot;radio_report_problem&quot;</span></code>)<a class="headerlink" href="#radio-button-report-problem-type-radio-report-problem" title="Link to this heading">#</a></h4>
+<p>Yes/No question that automatically creates a tool problem report when “Yes” is selected.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;radio_report_problem&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Does the drain system display a &#39;drain tank full&#39; alert?&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;drain_tank_full&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;required&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;options&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;problem_description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Drain tank full&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;force_shutdown&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;safety_hazard&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Properties:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">options.problem_description</span></code>: Description for problem report</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">options.force_shutdown</span></code>: Whether to shutdown tool (true/false)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">options.safety_hazard</span></code>: Whether problem is a safety hazard (true/false)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">labels</span></code>: Custom labels (defaults to [‘Yes’, ‘No’])</p></li>
+</ul>
+</section>
+<section id="checkbox-type-checkbox">
+<h4>3. Checkbox (<code class="docutils literal notranslate"><span class="pre">&quot;type&quot;:</span> <span class="pre">&quot;checkbox&quot;</span></code>)<a class="headerlink" href="#checkbox-type-checkbox" title="Link to this heading">#</a></h4>
+<p>Multiple-choice selection (select all that apply).</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;checkbox&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Which slurry did you use?&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;slurry_used&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;choices&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;SS25E&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;6103&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;220A&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;A7100&quot;</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;required&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Properties:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">choices</span></code>: List of option values</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">labels</span></code>: Optional list of display labels</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">default_value</span></code>: Pre-selected choices</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">inline</span></code>: Display horizontally or vertically</p></li>
+</ul>
+</section>
+<section id="text-box-type-textbox">
+<h4>4. Text Box (<code class="docutils literal notranslate"><span class="pre">&quot;type&quot;:</span> <span class="pre">&quot;textbox&quot;</span></code>)<a class="headerlink" href="#text-box-type-textbox" title="Link to this heading">#</a></h4>
+<p>Single-line text input.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;textbox&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Sample ID&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sample_id&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;required&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;maxlength&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;pattern&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;[A-Z0-9-]+&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;placeholder&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Enter sample ID&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;prefix&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SAMPLE-&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;suffix&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Properties:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">maxlength</span></code>: Maximum character count</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pattern</span></code>: HTML5 regex pattern validation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">placeholder</span></code>: Placeholder text</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">prefix</span></code>: Text prefix inside input</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">suffix</span></code>: Text suffix inside input</p></li>
+</ul>
+</section>
+<section id="text-area-type-textarea">
+<h4>5. Text Area (<code class="docutils literal notranslate"><span class="pre">&quot;type&quot;:</span> <span class="pre">&quot;textarea&quot;</span></code>)<a class="headerlink" href="#text-area-type-textarea" title="Link to this heading">#</a></h4>
+<p>Multi-line text input.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;textarea&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Experiment Purpose&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;experiment_purpose&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;required&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;rows&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;placeholder&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Describe your experiment&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Properties:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">rows</span></code>: Number of visible text rows (default: 2)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">maxlength</span></code>: Maximum character count</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pattern</span></code>: HTML5 regex pattern validation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">placeholder</span></code>: Placeholder text</p></li>
+</ul>
+</section>
+<section id="number-integer-type-number">
+<h4>6. Number - Integer (<code class="docutils literal notranslate"><span class="pre">&quot;type&quot;:</span> <span class="pre">&quot;number&quot;</span></code>)<a class="headerlink" href="#number-integer-type-number" title="Link to this heading">#</a></h4>
+<p>Integer numeric input. Can trigger consumable purchases.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;number&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;How much gold was deposited?&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;gold_used&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;suffix&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;nm&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;required&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;min&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;max&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;consumable&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Sputter gold&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Properties:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">min</span></code>: Minimum value</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">max</span></code>: Maximum value</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">consumable</span></code>: Name of consumable to charge (triggers purchase)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">prefix</span></code>: Text prefix inside input</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">suffix</span></code>: Text suffix inside input (e.g., units)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">placeholder</span></code>: Placeholder text</p></li>
+</ul>
+</section>
+<section id="number-float-type-number-float">
+<h4>7. Number - Float (<code class="docutils literal notranslate"><span class="pre">&quot;type&quot;:</span> <span class="pre">&quot;number_float&quot;</span></code>)<a class="headerlink" href="#number-float-type-number-float" title="Link to this heading">#</a></h4>
+<p>Floating-point numeric input. Can trigger consumable purchases.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;number_float&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Etch rate (Angstroms/min)&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;etch_rate&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;suffix&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Å/min&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;required&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;min&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;max&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1000.0</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;precision&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Properties:</strong></p>
+<ul class="simple">
+<li><p>Same as integer number type</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">precision</span></code>: Number of decimal places</p></li>
+</ul>
+</section>
+<section id="dropdown-type-dropdown">
+<h4>8. Dropdown (<code class="docutils literal notranslate"><span class="pre">&quot;type&quot;:</span> <span class="pre">&quot;dropdown&quot;</span></code>)<a class="headerlink" href="#dropdown-type-dropdown" title="Link to this heading">#</a></h4>
+<p>Dropdown selection list.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;dropdown&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Select substrate type&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;substrate&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;choices&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;Silicon&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Sapphire&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Glass&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Other&quot;</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;required&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;default_value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Silicon&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Properties:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">choices</span></code>: List of option values</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">labels</span></code>: Optional list of display labels</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">default_value</span></code>: Pre-selected choice</p></li>
+</ul>
+</section>
+<section id="group-type-group">
+<h4>9. Group (<code class="docutils literal notranslate"><span class="pre">&quot;type&quot;:</span> <span class="pre">&quot;group&quot;</span></code>)<a class="headerlink" href="#group-type-group" title="Link to this heading">#</a></h4>
+<p>Groups multiple questions together, optionally repeatable.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;group&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Sample Information&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sample_group&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;questions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;textbox&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Sample Name&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sample_name&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;required&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;radio&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Sample Type&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sample_type&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;choices&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;PID&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Sample Name&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;required&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;max_number&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Properties:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">questions</span></code>: Array of nested question objects</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">max_number</span></code>: Maximum number of times group can be repeated (enables “Add another” button)</p></li>
+</ul>
+</section>
+<section id="formula-type-formula">
+<h4>10. Formula (<code class="docutils literal notranslate"><span class="pre">&quot;type&quot;:</span> <span class="pre">&quot;formula&quot;</span></code>)<a class="headerlink" href="#formula-type-formula" title="Link to this heading">#</a></h4>
+<p>Calculated field based on other fields.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;formula&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Total Cost&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;total_cost&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;formula&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;quantity * unit_price&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;suffix&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;USD&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;precision&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Properties:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">formula</span></code>: Mathematical expression using other field names</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">precision</span></code>: Number of decimal places for result</p></li>
+</ul>
+</section>
+</section>
+<section id="response-data-structure">
+<h3>Response Data Structure<a class="headerlink" href="#response-data-structure" title="Link to this heading">#</a></h3>
+<p>When questions are answered, responses are stored as JSON with this structure:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;question_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;answer_value&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;user_rating&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Great&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;sample_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SAMPLE-12345&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;sample_group&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;sample_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Gold nanoparticles&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;sample_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Sample Name&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;sample_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;pid-abc-123&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;sample_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PID&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Key Points:</strong></p>
+<ul class="simple">
+<li><p>Top-level keys match question <code class="docutils literal notranslate"><span class="pre">name</span></code> fields</p></li>
+<li><p>Simple questions have string/number values</p></li>
+<li><p>Checkbox questions have array values</p></li>
+<li><p>Group questions have array-of-objects values (one object per repetition)</p></li>
+</ul>
+<hr class="docutils" />
+</section>
+</section>
+<section id="api-access">
+<span id="id8"></span><h2>API Access<a class="headerlink" href="#api-access" title="Link to this heading">#</a></h2>
+<p><strong>Location in Manual:</strong> Chapter 51</p>
+<p>NEMO provides a REST API for programmatic access. NexusLIMS uses this API to harvest reservation and usage event data.</p>
+<section id="authentication">
+<h3>Authentication<a class="headerlink" href="#authentication" title="Link to this heading">#</a></h3>
+<p>API requests require token authentication:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Authorization</span><span class="p">:</span> <span class="n">Token</span> <span class="o">&lt;</span><span class="n">api</span><span class="o">-</span><span class="n">token</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>Tokens are managed in NEMO at: Detailed Administration → Tokens</p>
+</section>
+<section id="common-endpoints">
+<h3>Common Endpoints<a class="headerlink" href="#common-endpoints" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Endpoint</p></th>
+<th class="head"><p>Purpose</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">/api/users/</span></code></p></td>
+<td><p>List all users</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">/api/tools/</span></code></p></td>
+<td><p>List all tools</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">/api/projects/</span></code></p></td>
+<td><p>List all projects</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">/api/reservations/</span></code></p></td>
+<td><p>List reservations</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">/api/usage_events/</span></code></p></td>
+<td><p>List usage events</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="query-parameters">
+<h3>Query Parameters<a class="headerlink" href="#query-parameters" title="Link to this heading">#</a></h3>
+<p>Most endpoints support filtering:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">id</span></code>: Filter by specific ID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">id__in</span></code>: Filter by multiple IDs (comma-separated)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">start__gte</span></code>: Start date/time greater than or equal</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">end__lte</span></code>: End date/time less than or equal</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tool_id</span></code>: Filter by tool ID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">user_id</span></code>: Filter by user ID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cancelled</span></code>: Filter reservations by cancellation status</p></li>
+</ul>
+</section>
+<section id="pagination">
+<h3>Pagination<a class="headerlink" href="#pagination" title="Link to this heading">#</a></h3>
+<p>API responses are paginated. Use <code class="docutils literal notranslate"><span class="pre">?page=N</span></code> parameter to retrieve additional pages.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="nexuslims-integration-notes">
+<h2>NexusLIMS Integration Notes<a class="headerlink" href="#nexuslims-integration-notes" title="Link to this heading">#</a></h2>
+<section id="three-tier-metadata-fallback">
+<h3>Three-Tier Metadata Fallback<a class="headerlink" href="#three-tier-metadata-fallback" title="Link to this heading">#</a></h3>
+<p>NexusLIMS implements a three-tier strategy for obtaining experiment metadata:</p>
+<ol class="arabic simple">
+<li><p><strong>Priority 1: Usage Event <code class="docutils literal notranslate"><span class="pre">run_data</span></code></strong> (Post-usage questions)</p>
+<ul class="simple">
+<li><p>Highest priority - filled at END of tool usage</p></li>
+<li><p>Most accurate representation of actual experiment</p></li>
+<li><p>Accessed via <code class="docutils literal notranslate"><span class="pre">/api/usage_events/{id}/</span></code></p></li>
+<li><p>Field: <code class="docutils literal notranslate"><span class="pre">run_data</span></code> (JSON string)</p></li>
+</ul>
+</li>
+<li><p><strong>Priority 2: Usage Event <code class="docutils literal notranslate"><span class="pre">pre_run_data</span></code></strong> (Pre-usage questions)</p>
+<ul class="simple">
+<li><p>Medium priority - filled at START of tool usage</p></li>
+<li><p>Represents experiment plan (may differ from actual)</p></li>
+<li><p>Accessed via <code class="docutils literal notranslate"><span class="pre">/api/usage_events/{id}/</span></code></p></li>
+<li><p>Field: <code class="docutils literal notranslate"><span class="pre">pre_run_data</span></code> (JSON string)</p></li>
+</ul>
+</li>
+<li><p><strong>Priority 3: Reservation <code class="docutils literal notranslate"><span class="pre">question_data</span></code></strong></p>
+<ul class="simple">
+<li><p>Fallback - filled when making reservation</p></li>
+<li><p>May be created well in advance of actual usage</p></li>
+<li><p>Accessed via <code class="docutils literal notranslate"><span class="pre">/api/reservations/{id}/</span></code></p></li>
+<li><p>Field: <code class="docutils literal notranslate"><span class="pre">question_data</span></code> (JSON string)</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="expected-question-structure">
+<h3>Expected Question Structure<a class="headerlink" href="#expected-question-structure" title="Link to this heading">#</a></h3>
+<p>NexusLIMS expects specific question names in all three sources:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="s2">&quot;data_consent&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Agree&quot;</span><span class="p">,</span><span class="w">           </span><span class="c1">// Required - consent to harvest data</span>
+<span class="w">  </span><span class="s2">&quot;experiment_title&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">,</span><span class="w">          </span><span class="c1">// Experiment title</span>
+<span class="w">  </span><span class="s2">&quot;experiment_purpose&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">,</span><span class="w">        </span><span class="c1">// Purpose/motivation</span>
+<span class="w">  </span><span class="s2">&quot;project_id&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">,</span><span class="w">                </span><span class="c1">// Project identifier</span>
+<span class="w">  </span><span class="s2">&quot;sample_group&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="w">                   </span><span class="c1">// Sample information (repeatable group)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="s2">&quot;sample_name&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="s2">&quot;sample_or_pid&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Sample Name&quot;</span><span class="w"> </span><span class="nx">or</span><span class="w"> </span><span class="s2">&quot;PID&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="s2">&quot;sample_details&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="s2">&quot;sample_elements&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="data-consent-validation">
+<h3>Data Consent Validation<a class="headerlink" href="#data-consent-validation" title="Link to this heading">#</a></h3>
+<p>All three metadata sources must include affirmative <code class="docutils literal notranslate"><span class="pre">data_consent</span></code>:</p>
+<ul class="simple">
+<li><p>Required values: “Agree”, “Yes”, “True”, “Affirmative”</p></li>
+<li><p>Declined values: “Disagree”, “No”, “False”, “Negative”</p></li>
+<li><p>Missing or declined consent prevents record generation</p></li>
+</ul>
+</section>
+<section id="json-parsing">
+<h3>JSON Parsing<a class="headerlink" href="#json-parsing" title="Link to this heading">#</a></h3>
+<p>Both <code class="docutils literal notranslate"><span class="pre">run_data</span></code> and <code class="docutils literal notranslate"><span class="pre">pre_run_data</span></code> are <strong>JSON-encoded strings</strong>, not native JSON:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Must parse the JSON string</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="n">question_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">usage_event</span><span class="p">[</span><span class="s2">&quot;run_data&quot;</span><span class="p">])</span>
+
+<span class="c1"># Then access values</span>
+<span class="n">title</span> <span class="o">=</span> <span class="n">question_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;experiment_title&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="error-handling">
+<h3>Error Handling<a class="headerlink" href="#error-handling" title="Link to this heading">#</a></h3>
+<p>NexusLIMS implements graceful fallback for:</p>
+<ul class="simple">
+<li><p>Empty strings (<code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code>)</p></li>
+<li><p>Malformed JSON (parsing errors)</p></li>
+<li><p>Missing fields (<code class="docutils literal notranslate"><span class="pre">None</span></code> values)</p></li>
+<li><p>Invalid data types</p></li>
+<li><p>Missing consent or declined consent</p></li>
+</ul>
+<p>Each error triggers fallback to the next priority level.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="additional-resources">
+<h2>Additional Resources<a class="headerlink" href="#additional-resources" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>Full NEMO Feature Manual:</strong> <code class="docutils literal notranslate"><span class="pre">/docs/reference/NEMO_Feature_Manual.txt</span></code> (plain text)</p></li>
+<li><p><strong>NEMO GitHub:</strong> https://github.com/usnistgov/NEMO</p></li>
+<li><p><strong>NEMO Documentation:</strong> Check repository for latest docs</p></li>
+<li><p><strong>NexusLIMS NEMO Integration:</strong> <code class="docutils literal notranslate"><span class="pre">nexusLIMS/harvesters/nemo/</span></code></p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="reference-metadata">
+<h2>Reference Metadata<a class="headerlink" href="#reference-metadata" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>Document Version:</strong> 1.0</p></li>
+<li><p><strong>Last Updated:</strong> 2025-01-19</p></li>
+<li><p><strong>Extracted From:</strong> NEMO Feature Manual v7.0.1</p></li>
+</ul>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../api/nexusLIMS/nexusLIMS.config.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.config</span></code></p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="eLabFTW_metadata_reference.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">eLabFTW Metadata Reference</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#table-of-contents">Table of Contents</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">Overview</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#key-concepts">Key Concepts</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#usage-events">Usage Events</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#purpose">Purpose</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fields">Fields</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#key-points">Key Points</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#api-endpoint">API Endpoint</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pre-post-usage-questions">Pre/Post Usage Questions</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Purpose</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#when-questions-are-asked">When Questions Are Asked</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#configuration">Configuration</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#response-storage">Response Storage</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-use-cases">Example Use Cases</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reservation-questions">Reservation Questions</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">Purpose</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#database-table-reservation-questions">Database Table: <code class="docutils literal notranslate"><span class="pre">reservation_questions</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">Configuration</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-reservation-questions">Creating Reservation Questions</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#applying-questions-to-tools-areas">Applying Questions to Tools/Areas</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#example-configuration-for-nexuslims">Example Configuration for NexusLIMS</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">Response Storage</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#relationship-to-usage-events">Relationship to Usage Events</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dynamic-form-fields">Dynamic Form Fields</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#general-structure">General Structure</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#field-types">Field Types</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#radio-button-type-radio">1. Radio Button (<code class="docutils literal notranslate"><span class="pre">"type":</span> <span class="pre">"radio"</span></code>)</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#radio-button-report-problem-type-radio-report-problem">2. Radio Button Report Problem (<code class="docutils literal notranslate"><span class="pre">"type":</span> <span class="pre">"radio_report_problem"</span></code>)</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#checkbox-type-checkbox">3. Checkbox (<code class="docutils literal notranslate"><span class="pre">"type":</span> <span class="pre">"checkbox"</span></code>)</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#text-box-type-textbox">4. Text Box (<code class="docutils literal notranslate"><span class="pre">"type":</span> <span class="pre">"textbox"</span></code>)</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#text-area-type-textarea">5. Text Area (<code class="docutils literal notranslate"><span class="pre">"type":</span> <span class="pre">"textarea"</span></code>)</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#number-integer-type-number">6. Number - Integer (<code class="docutils literal notranslate"><span class="pre">"type":</span> <span class="pre">"number"</span></code>)</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#number-float-type-number-float">7. Number - Float (<code class="docutils literal notranslate"><span class="pre">"type":</span> <span class="pre">"number_float"</span></code>)</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#dropdown-type-dropdown">8. Dropdown (<code class="docutils literal notranslate"><span class="pre">"type":</span> <span class="pre">"dropdown"</span></code>)</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#group-type-group">9. Group (<code class="docutils literal notranslate"><span class="pre">"type":</span> <span class="pre">"group"</span></code>)</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#formula-type-formula">10. Formula (<code class="docutils literal notranslate"><span class="pre">"type":</span> <span class="pre">"formula"</span></code>)</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#response-data-structure">Response Data Structure</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#api-access">API Access</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#authentication">Authentication</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#common-endpoints">Common Endpoints</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#query-parameters">Query Parameters</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pagination">Pagination</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#nexuslims-integration-notes">NexusLIMS Integration Notes</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#three-tier-metadata-fallback">Three-Tier Metadata Fallback</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#expected-question-structure">Expected Question Structure</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data-consent-validation">Data Consent Validation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#json-parsing">JSON Parsing</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#error-handling">Error Handling</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#additional-resources">Additional Resources</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reference-metadata">Reference Metadata</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/reference/NEMO_Reference.md.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2025 - 2026, datasophos, LLC.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
