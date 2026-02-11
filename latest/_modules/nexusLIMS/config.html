@@ -428,7 +428,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Feb, 10, 2026"/>
+    <meta name="docbuild:last-update" content="Feb, 11, 2026"/>
   </head>
   
   
@@ -893,8 +893,19 @@ window.addEventListener("load", load);
         <span class="s2">&quot;http://localhost:8080/api/&quot;</span> <span class="k">if</span> <span class="n">TEST_MODE</span> <span class="k">else</span> <span class="o">...</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="p">(</span>
             <span class="s2">&quot;Full path to the root of the NEMO API, with trailing slash included &quot;</span>
-            <span class="s2">&quot;(e.g., &#39;https://nemo.example.com/api/&#39;)&quot;</span>
+            <span class="s2">&quot;(e.g., `https://nemo.example.com/api/`)&quot;</span>
         <span class="p">),</span>
+        <span class="n">json_schema_extra</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;required&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s2">&quot;detail&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;The full URL to the NEMO API root endpoint, including the trailing &quot;</span>
+                <span class="s2">&quot;slash. For example: `https://nemo.yourinstitution.edu/api/`. This &quot;</span>
+                <span class="s2">&quot;must point to the API root, not the NEMO web interface itself.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;You can verify the address is correct by navigating to it in a &quot;</span>
+                <span class="s2">&quot;browser — a valid NEMO API root returns a JSON object listing &quot;</span>
+                <span class="s2">&quot;available endpoints.&quot;</span>
+            <span class="p">),</span>
+        <span class="p">},</span>
     <span class="p">)</span>
     <span class="n">token</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="s2">&quot;test_nemo_token&quot;</span> <span class="k">if</span> <span class="n">TEST_MODE</span> <span class="k">else</span> <span class="o">...</span><span class="p">,</span>
@@ -902,6 +913,16 @@ window.addEventListener("load", load);
             <span class="s2">&quot;Authentication token for the NEMO server. Obtain from the &#39;detailed &quot;</span>
             <span class="s2">&quot;administration&#39; page of the NEMO installation.&quot;</span>
         <span class="p">),</span>
+        <span class="n">json_schema_extra</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;required&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s2">&quot;detail&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;The API authentication token for this NEMO server instance. To &quot;</span>
+                <span class="s2">&quot;obtain: log in to NEMO as an administrator, navigate to the &quot;</span>
+                <span class="s2">&quot;&#39;Detailed administration&#39; page (typically at &quot;</span>
+                <span class="s2">&quot;`/admin/authtoken/token/`), and locate or create a token for the &quot;</span>
+                <span class="s2">&quot;NexusLIMS service account. The token is a 40-character hex string.&quot;</span>
+            <span class="p">),</span>
+        <span class="p">},</span>
     <span class="p">)</span>
     <span class="n">strftime_fmt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">T%H:%M:%S%z&quot;</span><span class="p">,</span>
@@ -909,6 +930,16 @@ window.addEventListener("load", load);
             <span class="s2">&quot;Format string to send datetime values to the NEMO API. Uses Python &quot;</span>
             <span class="s2">&quot;strftime syntax. Default is ISO 8601 format.&quot;</span>
         <span class="p">),</span>
+        <span class="n">json_schema_extra</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;detail&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;The Python strftime format string used when sending datetime values &quot;</span>
+                <span class="s2">&quot;to this NEMO API instance. The default `%Y-%m-</span><span class="si">%d</span><span class="s2">T%H:%M:%S%z` is &quot;</span>
+                <span class="s2">&quot;ISO 8601 and works with all standard NEMO installations.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;Only change this if your NEMO server has a non-standard date format &quot;</span>
+                <span class="s2">&quot;configuration. See https://docs.python.org/3/library/datetime.html&quot;</span>
+                <span class="s2">&quot;#strftime-and-strptime-format-codes for format codes.&quot;</span>
+            <span class="p">)</span>
+        <span class="p">},</span>
     <span class="p">)</span>
     <span class="n">strptime_fmt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">T%H:%M:%S%z&quot;</span><span class="p">,</span>
@@ -916,14 +947,37 @@ window.addEventListener("load", load);
             <span class="s2">&quot;Format string to parse datetime values from the NEMO API. Uses Python &quot;</span>
             <span class="s2">&quot;strptime syntax. Default is ISO 8601 format.&quot;</span>
         <span class="p">),</span>
+        <span class="n">json_schema_extra</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;detail&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;The Python strptime format string used when parsing datetime values &quot;</span>
+                <span class="s2">&quot;returned by this NEMO API instance. The default &quot;</span>
+                <span class="s2">&quot;`%Y-%m-</span><span class="si">%d</span><span class="s2">T%H:%M:%S%z` &quot;</span>
+                <span class="s2">&quot;is ISO 8601 and works with all standard NEMO installations.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;Only change this if your NEMO server returns dates in a non-standard &quot;</span>
+                <span class="s2">&quot;format. See https://docs.python.org/3/library/datetime.html&quot;</span>
+                <span class="s2">&quot;#strftime-and-strptime-format-codes for format codes.&quot;</span>
+            <span class="p">)</span>
+        <span class="p">},</span>
     <span class="p">)</span>
     <span class="n">tz</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="p">(</span>
-            <span class="s2">&quot;IANA timezone name (e.g., &#39;America/Denver&#39;) to coerce API datetime &quot;</span>
+            <span class="s2">&quot;IANA timezone name (e.g., `America/Denver`) to coerce API datetime &quot;</span>
             <span class="s2">&quot;strings into. Only needed if the NEMO server doesn&#39;t return timezone &quot;</span>
             <span class="s2">&quot;information in API responses. If provided, overrides timezone from API.&quot;</span>
         <span class="p">),</span>
+        <span class="n">json_schema_extra</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;detail&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;An IANA tz database timezone name (e.g., `America/Denver`, &quot;</span>
+                <span class="s2">&quot;`Europe/Berlin`) to force onto datetime values received from this &quot;</span>
+                <span class="s2">&quot;NEMO server. Only needed when your NEMO server returns &quot;</span>
+                <span class="s2">&quot;reservation/usage event times without timezone information.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;Leave blank for NEMO servers that include timezone info in their &quot;</span>
+                <span class="s2">&quot;API responses. See &quot;</span>
+                <span class="s2">&quot;https://en.wikipedia.org/wiki/List_of_tz_database_time_zones &quot;</span>
+                <span class="s2">&quot;for valid timezone names.&quot;</span>
+            <span class="p">)</span>
+        <span class="p">},</span>
     <span class="p">)</span>
 
 <div class="viewcode-block" id="NemoHarvesterConfig.validate_trailing_slash">
@@ -950,30 +1004,93 @@ window.addEventListener("load", load);
     <span class="n">smtp_host</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="s2">&quot;localhost&quot;</span> <span class="k">if</span> <span class="n">TEST_MODE</span> <span class="k">else</span> <span class="o">...</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;SMTP server hostname (e.g., &#39;smtp.gmail.com&#39;)&quot;</span><span class="p">,</span>
+        <span class="n">json_schema_extra</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;required&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s2">&quot;detail&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;The hostname or IP address of the SMTP server used to send &quot;</span>
+                <span class="s2">&quot;error notification emails. For Gmail use `smtp.gmail.com`, for &quot;</span>
+                <span class="s2">&quot;Outlook/Office365 use `smtp.office365.com`. For an on-premises &quot;</span>
+                <span class="s2">&quot;mail relay this is typically a local hostname or IP address.&quot;</span>
+            <span class="p">),</span>
+        <span class="p">},</span>
     <span class="p">)</span>
     <span class="n">smtp_port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="mi">587</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;SMTP server port (default: 587 for STARTTLS)&quot;</span><span class="p">,</span>
+        <span class="n">json_schema_extra</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;detail&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;The TCP port for the SMTP connection. Common values:</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;  `587` — STARTTLS (recommended, default)</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;  `465` — SMTPS / implicit TLS</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;  `25`  — unencrypted (not recommended)</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;The default `587` works with most modern mail servers when &quot;</span>
+                <span class="s2">&quot;Use TLS is enabled.&quot;</span>
+            <span class="p">)</span>
+        <span class="p">},</span>
     <span class="p">)</span>
     <span class="n">smtp_username</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;SMTP username for authentication (if required)&quot;</span><span class="p">,</span>
+        <span class="n">json_schema_extra</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;detail&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;The username for SMTP authentication. For Gmail this is your &quot;</span>
+                <span class="s2">&quot;full email address. Leave blank if your SMTP relay does not &quot;</span>
+                <span class="s2">&quot;require authentication (e.g., an internal relay that accepts &quot;</span>
+                <span class="s2">&quot;connections from trusted hosts without credentials).&quot;</span>
+            <span class="p">)</span>
+        <span class="p">},</span>
     <span class="p">)</span>
     <span class="n">smtp_password</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;SMTP password for authentication (if required)&quot;</span><span class="p">,</span>
+        <span class="n">json_schema_extra</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;detail&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;The password for SMTP authentication. For Gmail, use an App &quot;</span>
+                <span class="s2">&quot;Password (not your account password) if 2-factor authentication &quot;</span>
+                <span class="s2">&quot;is enabled. Leave blank if your SMTP relay does not require &quot;</span>
+                <span class="s2">&quot;authentication.&quot;</span>
+            <span class="p">)</span>
+        <span class="p">},</span>
     <span class="p">)</span>
     <span class="n">use_tls</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Use TLS encryption (default: True)&quot;</span><span class="p">,</span>
+        <span class="n">json_schema_extra</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;detail&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;Whether to use TLS encryption for the SMTP connection. When &quot;</span>
+                <span class="s2">&quot;enabled (the default), NexusLIMS uses STARTTLS on the configured &quot;</span>
+                <span class="s2">&quot;port (typically 587). Disable only when connecting to a plaintext &quot;</span>
+                <span class="s2">&quot;SMTP relay on port 25.&quot;</span>
+            <span class="p">)</span>
+        <span class="p">},</span>
     <span class="p">)</span>
     <span class="n">sender</span><span class="p">:</span> <span class="n">TestAwareEmailStr</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>  <span class="c1"># type: ignore[valid-type]</span>
         <span class="s2">&quot;test@example.com&quot;</span> <span class="k">if</span> <span class="n">TEST_MODE</span> <span class="k">else</span> <span class="o">...</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Email address to send from&quot;</span><span class="p">,</span>
+        <span class="n">json_schema_extra</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;required&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s2">&quot;detail&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;The &#39;From&#39; email address for notification messages. This must &quot;</span>
+                <span class="s2">&quot;be an address that your SMTP server is authorized to send from. &quot;</span>
+                <span class="s2">&quot;If using Gmail or similar services, this must match the &quot;</span>
+                <span class="s2">&quot;authenticated account&#39;s address.&quot;</span>
+            <span class="p">),</span>
+        <span class="p">},</span>
     <span class="p">)</span>
     <span class="n">recipients</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">TestAwareEmailStr</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>  <span class="c1"># type: ignore[valid-type]</span>
         <span class="p">[</span><span class="s2">&quot;test@example.com&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">TEST_MODE</span> <span class="k">else</span> <span class="o">...</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;List of recipient email addresses for error notifications&quot;</span><span class="p">,</span>
+        <span class="n">json_schema_extra</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;required&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s2">&quot;detail&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;One or more email addresses that will receive error notification &quot;</span>
+                <span class="s2">&quot;messages when the record builder encounters problems. Provide as &quot;</span>
+                <span class="s2">&quot;a comma-separated string, e.g.:</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;  `NX_EMAIL_RECIPIENTS=&#39;admin@example.com,team@example.com&#39;`</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;Notifications are sent when `nexuslims-process-records` detects &quot;</span>
+                <span class="s2">&quot;ERROR-level log entries.&quot;</span>
+            <span class="p">),</span>
+        <span class="p">},</span>
     <span class="p">)</span></div>
 
 
@@ -1006,6 +1123,22 @@ window.addEventListener("load", load);
             <span class="s2">&quot;explicit extractors) or &#39;inclusive&#39; (all files, with basic metadata &quot;</span>
             <span class="s2">&quot;for others). Default is &#39;exclusive&#39;.&quot;</span>
         <span class="p">),</span>
+        <span class="n">json_schema_extra</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;detail&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;Controls which files are included when searching for experiment &quot;</span>
+                <span class="s2">&quot;data.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;`exclusive` (default): Only files for which NexusLIMS has an explicit &quot;</span>
+                <span class="s2">&quot;metadata extractor are included. This produces cleaner records but &quot;</span>
+                <span class="s2">&quot;may miss ancillary files.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;`inclusive`: All files within the session window are included. Files &quot;</span>
+                <span class="s2">&quot;without a known extractor receive basic filesystem metadata only. &quot;</span>
+                <span class="s2">&quot;Useful when you want a complete audit trail of every file created &quot;</span>
+                <span class="s2">&quot;during an instrument session.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;See https://datasophos.github.io/NexusLIMS/stable/&quot;</span>
+                <span class="s2">&quot;user_guide/extractors.html &quot;</span>
+                <span class="s2">&quot;for the list of supported file formats and their extractors.&quot;</span>
+            <span class="p">)</span>
+        <span class="p">},</span>
     <span class="p">)</span>
     <span class="n">NX_IGNORE_PATTERNS</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="p">[</span><span class="s2">&quot;*.mib&quot;</span><span class="p">,</span> <span class="s2">&quot;*.db&quot;</span><span class="p">,</span> <span class="s2">&quot;*.emi&quot;</span><span class="p">,</span> <span class="s2">&quot;*.hdr&quot;</span><span class="p">],</span>
@@ -1013,6 +1146,22 @@ window.addEventListener("load", load);
             <span class="s2">&quot;List of glob patterns to ignore when searching for experiment files. &quot;</span>
             <span class="s2">&quot;Default is `[&#39;*.mib&#39;,&#39;*.db&#39;,&#39;*.emi&#39;,&#39;*.hdr&#39;]`.&quot;</span>
         <span class="p">),</span>
+        <span class="n">json_schema_extra</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;detail&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;Filename glob patterns to exclude when scanning for experiment files. &quot;</span>
+                <span class="s2">&quot;Patterns follow the same syntax as the &#39;-name&#39; argument to GNU find &quot;</span>
+                <span class="s2">&quot;(see https://manpages.org/find).</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;This is stored in the config file as a JSON array string:</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s1">&#39;  `NX_IGNORE_PATTERNS=</span><span class="se">\&#39;</span><span class="s1">[&quot;*.mib&quot;,&quot;*.db&quot;,&quot;*.emi&quot;,&quot;*.hdr&quot;]</span><span class="se">\&#39;</span><span class="s1">`</span><span class="se">\n\n</span><span class="s1">&#39;</span>
+                <span class="s2">&quot;In the config editor, enter patterns as a comma-separated list.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;Common patterns to ignore:</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;  `*.mib`  — Merlin detector raw frames (very large)</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;  `*.db`   — SQLite lock/temp files</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;  `*.emi`  — FEI TIA sidecar files (paired with .ser via FEI EMI &quot;</span>
+                <span class="s2">&quot;extractor)</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;  `*.hdr`  — header files paired with other data formats&quot;</span>
+            <span class="p">)</span>
+        <span class="p">},</span>
     <span class="p">)</span>
     <span class="c1"># Use TestAware types which are strict in production, lenient in test mode</span>
     <span class="n">NX_INSTRUMENT_DATA_PATH</span><span class="p">:</span> <span class="n">TestAwareDirectoryPath</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>  <span class="c1"># type: ignore[valid-type]</span>
@@ -1021,6 +1170,21 @@ window.addEventListener("load", load);
             <span class="s2">&quot;Root path to the centralized file store for instrument data &quot;</span>
             <span class="s2">&quot;(mounted read-only). The directory must exist.&quot;</span>
         <span class="p">),</span>
+        <span class="n">json_schema_extra</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;required&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s2">&quot;detail&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;The root path to the centralized instrument data file store — &quot;</span>
+                <span class="s2">&quot;typically a network share or mounted volume containing subdirectories &quot;</span>
+                <span class="s2">&quot;for each instrument.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;IMPORTANT: This path should be mounted read-only to ensure data &quot;</span>
+                <span class="s2">&quot;preservation. NexusLIMS will never write to this location.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;The `filestore_path` column in the NexusLIMS instruments database &quot;</span>
+                <span class="s2">&quot;stores paths relative to this root. For example, if an instrument &quot;</span>
+                <span class="s2">&quot;has `filestore_path=&#39;FEI_Titan/data&#39;` and this value is &quot;</span>
+                <span class="s2">&quot;`/mnt/instrument_data`, NexusLIMS searches under &quot;</span>
+                <span class="s2">&quot;`/mnt/instrument_data/FEI_Titan/data`.&quot;</span>
+            <span class="p">),</span>
+        <span class="p">},</span>
     <span class="p">)</span>
     <span class="n">NX_DATA_PATH</span><span class="p">:</span> <span class="n">TestAwareDirectoryPath</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>  <span class="c1"># type: ignore[valid-type]</span>
         <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;/tmp&quot;</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;test_data&quot;</span> <span class="k">if</span> <span class="n">TEST_MODE</span> <span class="k">else</span> <span class="o">...</span><span class="p">,</span>  <span class="c1"># noqa: S108</span>
@@ -1028,6 +1192,18 @@ window.addEventListener("load", load);
             <span class="s2">&quot;Writable path parallel to NX_INSTRUMENT_DATA_PATH for &quot;</span>
             <span class="s2">&quot;extracted metadata and generated preview images. The directory must exist.&quot;</span>
         <span class="p">),</span>
+        <span class="n">json_schema_extra</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;required&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s2">&quot;detail&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;A writable path that mirrors the directory structure of &quot;</span>
+                <span class="s2">&quot;`NX_INSTRUMENT_DATA_PATH`. NexusLIMS writes extracted metadata files &quot;</span>
+                <span class="s2">&quot;and generated preview images here, alongside the original data.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;This path must be accessible to the NexusLIMS CDCS frontend instance &quot;</span>
+                <span class="s2">&quot;so it can serve preview images and metadata files to users browsing &quot;</span>
+                <span class="s2">&quot;records. Configure your CDCS deployment to mount or serve files from &quot;</span>
+                <span class="s2">&quot;this location.&quot;</span>
+            <span class="p">),</span>
+        <span class="p">},</span>
     <span class="p">)</span>
     <span class="n">NX_DB_PATH</span><span class="p">:</span> <span class="n">TestAwareFilePath</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>  <span class="c1"># type: ignore[valid-type]</span>
         <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;/tmp&quot;</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;test.db&quot;</span> <span class="k">if</span> <span class="n">TEST_MODE</span> <span class="k">else</span> <span class="o">...</span><span class="p">,</span>  <span class="c1"># noqa: S108</span>
@@ -1035,6 +1211,16 @@ window.addEventListener("load", load);
             <span class="s2">&quot;The writable path to the NexusLIMS SQLite database that is used to get &quot;</span>
             <span class="s2">&quot;information about instruments and sessions that are built into records.&quot;</span>
         <span class="p">),</span>
+        <span class="n">json_schema_extra</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;required&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s2">&quot;detail&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;The full filesystem path to the NexusLIMS SQLite database file. &quot;</span>
+                <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;Must be writable by the NexusLIMS process. The database is created &quot;</span>
+                <span class="s2">&quot;automatically on first run of `nexuslims-migrate init`. Recommended &quot;</span>
+                <span class="s2">&quot;location: within `NX_DATA_PATH` for co-location with other data.&quot;</span>
+            <span class="p">),</span>
+        <span class="p">},</span>
     <span class="p">)</span>
     <span class="n">NX_CDCS_TOKEN</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="s2">&quot;test_token&quot;</span> <span class="k">if</span> <span class="n">TEST_MODE</span> <span class="k">else</span> <span class="o">...</span><span class="p">,</span>
@@ -1042,6 +1228,19 @@ window.addEventListener("load", load);
             <span class="s2">&quot;API token for authenticating to the CDCS API for uploading &quot;</span>
             <span class="s2">&quot;built records to the NexusLIMS front-end.&quot;</span>
         <span class="p">),</span>
+        <span class="n">json_schema_extra</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;required&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s2">&quot;detail&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;The API authentication token for the NexusLIMS CDCS frontend. &quot;</span>
+                <span class="s2">&quot;Used for all record upload requests.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;To obtain: log in to your CDCS instance as an administrator, navigate &quot;</span>
+                <span class="s2">&quot;to the admin panel, and find or create an API token for the NexusLIMS &quot;</span>
+                <span class="s2">&quot;service account. Alternatively, use the CDCS REST API token &quot;</span>
+                <span class="s2">&quot;endpoint.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;Keep this value secret — anyone with this token can upload records &quot;</span>
+                <span class="s2">&quot;to your CDCS instance.&quot;</span>
+            <span class="p">),</span>
+        <span class="p">},</span>
     <span class="p">)</span>
     <span class="n">NX_CDCS_URL</span><span class="p">:</span> <span class="n">TestAwareHttpUrl</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>  <span class="c1"># type: ignore[valid-type]</span>
         <span class="s2">&quot;http://localhost:8000&quot;</span> <span class="k">if</span> <span class="n">TEST_MODE</span> <span class="k">else</span> <span class="o">...</span><span class="p">,</span>
@@ -1049,6 +1248,16 @@ window.addEventListener("load", load);
             <span class="s2">&quot;The root URL of the NexusLIMS CDCS front-end. This will be the target for &quot;</span>
             <span class="s2">&quot;record uploads that are authenticated using the CDCS credentials.&quot;</span>
         <span class="p">),</span>
+        <span class="n">json_schema_extra</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;required&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s2">&quot;detail&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;The root URL of the NexusLIMS CDCS frontend instance. All record &quot;</span>
+                <span class="s2">&quot;uploads are sent here using `NX_CDCS_TOKEN`.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;Include the trailing slash: `https://nexuslims.example.com/`</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;This is the same URL users visit to browse experiment records. &quot;</span>
+                <span class="s2">&quot;NexusLIMS POSTs new XML records to the CDCS REST API at this address.&quot;</span>
+            <span class="p">),</span>
+        <span class="p">},</span>
     <span class="p">)</span>
     <span class="n">NX_EXPORT_STRATEGY</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="s2">&quot;first_success&quot;</span><span class="p">,</span> <span class="s2">&quot;best_effort&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="s2">&quot;all&quot;</span><span class="p">,</span>
@@ -1058,8 +1267,22 @@ window.addEventListener("load", load);
             <span class="s2">&quot;&#39;first_success&#39;: Stop after first successful export. &quot;</span>
             <span class="s2">&quot;&#39;best_effort&#39;: Try all destinations, succeed if any succeed.&quot;</span>
         <span class="p">),</span>
+        <span class="n">json_schema_extra</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;detail&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;Controls behavior when exporting records to multiple destinations &quot;</span>
+                <span class="s2">&quot;(e.g., both CDCS and eLabFTW are configured):</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;`all` (default, recommended): Every configured destination must &quot;</span>
+                <span class="s2">&quot;accept the record. If any destination fails, the session is marked &quot;</span>
+                <span class="s2">&quot;`ERROR` and retried on the next run.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;`first_success`: Stop after the first destination that accepts the &quot;</span>
+                <span class="s2">&quot;record. Useful if destinations are fallbacks for each other.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;`best_effort`: Attempt all destinations; mark `COMPLETED` if at least &quot;</span>
+                <span class="s2">&quot;one succeeds. Failed destinations are logged but do not trigger &quot;</span>
+                <span class="s2">&quot;a retry.&quot;</span>
+            <span class="p">)</span>
+        <span class="p">},</span>
     <span class="p">)</span>
-    <span class="n">NX_CERT_BUNDLE_FILE</span><span class="p">:</span> <span class="n">TestAwareFilePath</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>  <span class="c1"># type: ignore[valid-type]</span>
+    <span class="n">NX_CERT_BUNDLE_FILE</span><span class="p">:</span> <span class="n">TestAwareFilePath</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="p">(</span>
             <span class="s2">&quot;If needed, a custom SSL certificate CA bundle can be used to verify &quot;</span>
@@ -1068,15 +1291,39 @@ window.addEventListener("load", load);
             <span class="s2">&quot;bundle will be appended to the existing system for all requests made &quot;</span>
             <span class="s2">&quot;by NexusLIMS.&quot;</span>
         <span class="p">),</span>
+        <span class="n">json_schema_extra</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;detail&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;Path to a custom SSL/TLS CA bundle file in PEM format. Use this &quot;</span>
+                <span class="s2">&quot;when your CDCS or NEMO servers use certificates signed by a private &quot;</span>
+                <span class="s2">&quot;or institutional CA not in the system trust store.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;Any certificates in this bundle are appended to the existing system &quot;</span>
+                <span class="s2">&quot;CA certificates — they do not replace them. Provide the full absolute &quot;</span>
+                <span class="s2">&quot;path to the `.pem` or `.crt` file.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;If both `NX_CERT_BUNDLE` and `NX_CERT_BUNDLE_FILE` are set, &quot;</span>
+                <span class="s2">&quot;`NX_CERT_BUNDLE` takes precedence.&quot;</span>
+            <span class="p">)</span>
+        <span class="p">},</span>
     <span class="p">)</span>
     <span class="n">NX_CERT_BUNDLE</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="p">(</span>
             <span class="s2">&quot;As an alternative to NX_CERT_BUNDLE_FILE, to you can provide the entire &quot;</span>
             <span class="s2">&quot;certificate bundle as a single string (this can be useful for CI/CD &quot;</span>
-            <span class="s2">&quot;pipelines). Lines should be separated by a single &#39;</span><span class="se">\n</span><span class="s2">&#39; character If &quot;</span>
-            <span class="s2">&quot;defined, this value will take precedence over NX_CERT_BUNDLE_FILE.&quot;</span>
+            <span class="s2">&quot;pipelines). If defined, this value will take precedence over &quot;</span>
+            <span class="s2">&quot;NX_CERT_BUNDLE_FILE.&quot;</span>
         <span class="p">),</span>
+        <span class="n">json_schema_extra</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;detail&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;The full text of a PEM-format CA certificate bundle, provided &quot;</span>
+                <span class="s2">&quot;directly as a string rather than a file path. Certificate lines &quot;</span>
+                <span class="s2">&quot;should be separated by &#39;</span><span class="se">\\</span><span class="s2">n&#39; in the .env file, or just &quot;</span>
+                <span class="s2">&quot;pasted into the config editor field.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;This is primarily useful in CI/CD pipelines or containerized &quot;</span>
+                <span class="s2">&quot;deployments where injecting a certificate file is impractical but &quot;</span>
+                <span class="s2">&quot;environment variables are easy to set as secrets.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;When defined, this value takes precedence over `NX_CERT_BUNDLE_FILE`.&quot;</span>
+            <span class="p">)</span>
+        <span class="p">},</span>
     <span class="p">)</span>
     <span class="n">NX_DISABLE_SSL_VERIFY</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -1085,6 +1332,18 @@ window.addEventListener("load", load);
             <span class="s2">&quot;This should ONLY be used during local development or testing with &quot;</span>
             <span class="s2">&quot;self-signed certificates. Never enable this in production.&quot;</span>
         <span class="p">),</span>
+        <span class="n">json_schema_extra</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;detail&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;WARNING: Disables SSL certificate verification for ALL outgoing &quot;</span>
+                <span class="s2">&quot;HTTPS requests, including connections to CDCS, NEMO, and eLabFTW.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;NEVER enable this in production. An attacker could intercept all &quot;</span>
+                <span class="s2">&quot;communications including API tokens and uploaded records.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;Only appropriate for local development or testing with self-signed &quot;</span>
+                <span class="s2">&quot;certificates when setting up a CA via `NX_CERT_BUNDLE_FILE` is &quot;</span>
+                <span class="s2">&quot;impractical. If you need this in production, configure &quot;</span>
+                <span class="s2">&quot;`NX_CERT_BUNDLE_FILE` instead.&quot;</span>
+            <span class="p">)</span>
+        <span class="p">},</span>
     <span class="p">)</span>
     <span class="n">NX_FILE_DELAY_DAYS</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="mf">2.0</span><span class="p">,</span>
@@ -1098,6 +1357,21 @@ window.addEventListener("load", load);
             <span class="s2">&quot;looking for files until Wednesday at 5PM. &quot;</span>
         <span class="p">),</span>
         <span class="n">gt</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">json_schema_extra</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;detail&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;The maximum time (in days) to wait for instrument files to appear &quot;</span>
+                <span class="s2">&quot;after a session ends before giving up.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;Background: On some systems, instrument data files are not &quot;</span>
+                <span class="s2">&quot;immediately available on the network share after an experiment ends &quot;</span>
+                <span class="s2">&quot;— they may be synced or transferred with a delay.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;When a session ends and no files are found, the record builder marks &quot;</span>
+                <span class="s2">&quot;it `NO_FILES_FOUND` and retries on subsequent runs until this window &quot;</span>
+                <span class="s2">&quot;expires.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;Example: With a value of 2, if a session ended Monday at 5 PM, &quot;</span>
+                <span class="s2">&quot;the builder keeps retrying until Wednesday at 5 PM.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;Can be a fractional value (e.g., 0.5 for 12 hours). Must be &gt; 0.&quot;</span>
+            <span class="p">)</span>
+        <span class="p">},</span>
     <span class="p">)</span>
     <span class="n">NX_CLUSTERING_SENSITIVITY</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="mf">1.0</span><span class="p">,</span>
@@ -1110,6 +1384,21 @@ window.addEventListener("load", load);
             <span class="s2">&quot;Default is 1.0 (no change to automatic clustering).&quot;</span>
         <span class="p">),</span>
         <span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">json_schema_extra</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;detail&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;Controls how aggressively files are grouped into separate Acquisition &quot;</span>
+                <span class="s2">&quot;Activities within a session record.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;NexusLIMS uses kernel density estimation (KDE) on file modification &quot;</span>
+                <span class="s2">&quot;times to detect natural gaps in activity. This multiplier scales the &quot;</span>
+                <span class="s2">&quot;KDE bandwidth.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;Higher values (e.g., `2.0`): more sensitive — smaller time gaps cause &quot;</span>
+                <span class="s2">&quot;a split, producing more (smaller) activities.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;Lower values (e.g., `0.5`): less sensitive — only large gaps cause a &quot;</span>
+                <span class="s2">&quot;split, producing fewer (larger) activities.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;Set to `0` to disable clustering and place all files into a single &quot;</span>
+                <span class="s2">&quot;Acquisition Activity. Default is `1.0` (unmodified KDE bandwidth).&quot;</span>
+            <span class="p">)</span>
+        <span class="p">},</span>
     <span class="p">)</span>
     <span class="n">NX_LOG_PATH</span><span class="p">:</span> <span class="n">TestAwareDirectoryPath</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>  <span class="c1"># type: ignore[valid-type]</span>
         <span class="kc">None</span><span class="p">,</span>
@@ -1117,16 +1406,37 @@ window.addEventListener("load", load);
             <span class="s2">&quot;Directory for application logs. If not specified, defaults to &quot;</span>
             <span class="s2">&quot;NX_DATA_PATH/logs/. Logs are organized by date: logs/YYYY/MM/DD/&quot;</span>
         <span class="p">),</span>
+        <span class="n">json_schema_extra</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;detail&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;Directory for NexusLIMS application logs. If not specified, logs &quot;</span>
+                <span class="s2">&quot;are written to `NX_DATA_PATH/logs/` by default.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;Within this directory, logs are organized by date:</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;  `YYYY/MM/DD/YYYYMMDD-HHMM.log`</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;The directory must be writable by the NexusLIMS process. Leave &quot;</span>
+                <span class="s2">&quot;blank to use the default location within `NX_DATA_PATH`.&quot;</span>
+            <span class="p">)</span>
+        <span class="p">},</span>
     <span class="p">)</span>
-    <span class="n">NX_RECORDS_PATH</span><span class="p">:</span> <span class="n">TestAwareDirectoryPath</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>  <span class="c1"># type: ignore[valid-type]</span>
+    <span class="n">NX_RECORDS_PATH</span><span class="p">:</span> <span class="n">TestAwareDirectoryPath</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="p">(</span>
             <span class="s2">&quot;Directory for generated XML records. If not specified, defaults to &quot;</span>
             <span class="s2">&quot;NX_DATA_PATH/records/. Successfully uploaded records are moved to &quot;</span>
             <span class="s2">&quot;a &#39;uploaded&#39; subdirectory.&quot;</span>
         <span class="p">),</span>
+        <span class="n">json_schema_extra</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;detail&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;Directory where generated XML record files are stored before and &quot;</span>
+                <span class="s2">&quot;after upload. If not specified, defaults to &quot;</span>
+                <span class="s2">&quot;`NX_DATA_PATH/records/`.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;After a record is successfully uploaded, the XML file is moved to &quot;</span>
+                <span class="s2">&quot;an `&#39;uploaded&#39;` subdirectory within this path for archival.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;Failed records remain in the main directory for inspection. The &quot;</span>
+                <span class="s2">&quot;directory must be writable by the NexusLIMS process.&quot;</span>
+            <span class="p">)</span>
+        <span class="p">},</span>
     <span class="p">)</span>
-    <span class="n">NX_LOCAL_PROFILES_PATH</span><span class="p">:</span> <span class="n">TestAwareDirectoryPath</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>  <span class="c1"># type: ignore[valid-type]</span>
+    <span class="n">NX_LOCAL_PROFILES_PATH</span><span class="p">:</span> <span class="n">TestAwareDirectoryPath</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="p">(</span>
             <span class="s2">&quot;Directory for site-specific instrument profiles. These profiles &quot;</span>
@@ -1135,6 +1445,20 @@ window.addEventListener("load", load);
             <span class="s2">&quot;Python modules that register InstrumentProfile objects. If not specified, &quot;</span>
             <span class="s2">&quot;only built-in profiles will be loaded.&quot;</span>
         <span class="p">),</span>
+        <span class="n">json_schema_extra</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;detail&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;Directory containing site-specific instrument profile Python modules. &quot;</span>
+                <span class="s2">&quot;Profiles customize metadata extraction for instruments unique to your &quot;</span>
+                <span class="s2">&quot;deployment without modifying the core NexusLIMS codebase.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;Each Python file in this directory should define one or more &quot;</span>
+                <span class="s2">&quot;`InstrumentProfile` subclasses that are auto-discovered and loaded &quot;</span>
+                <span class="s2">&quot;alongside built-in profiles.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;Use cases: adding static metadata fields, transforming extracted &quot;</span>
+                <span class="s2">&quot;values, adding instrument-specific warnings, or overriding which &quot;</span>
+                <span class="s2">&quot;extractor handles a particular instrument&#39;s files.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;Leave blank if you only need the built-in profiles.&quot;</span>
+            <span class="p">)</span>
+        <span class="p">},</span>
     <span class="p">)</span>
 
     <span class="c1"># ========================================================================</span>
@@ -1147,6 +1471,17 @@ window.addEventListener("load", load);
             <span class="s2">&quot;panel in your eLabFTW instance. If not configured, eLabFTW export will &quot;</span>
             <span class="s2">&quot;be disabled.&quot;</span>
         <span class="p">),</span>
+        <span class="n">json_schema_extra</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;display_default&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;detail&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;API key for authenticating to the eLabFTW API. If not configured, &quot;</span>
+                <span class="s2">&quot;eLabFTW export will be disabled.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;To obtain: log in to your eLabFTW instance, go to user settings, &quot;</span>
+                <span class="s2">&quot;and find the &#39;API keys&#39; section. Create a new key for NexusLIMS.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;Format: `</span><span class="si">{id}</span><span class="s2">-</span><span class="si">{key}</span><span class="s2">` (e.g., `1-abc123...`). The key is typically &quot;</span>
+                <span class="s2">&quot;a long alphanumeric string.&quot;</span>
+            <span class="p">),</span>
+        <span class="p">},</span>
     <span class="p">)</span>
     <span class="n">NX_ELABFTW_URL</span><span class="p">:</span> <span class="n">TestAwareHttpUrl</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>  <span class="c1"># type: ignore[valid-type]</span>
         <span class="s2">&quot;http://elabftw.localhost:40080&quot;</span> <span class="k">if</span> <span class="n">TEST_MODE</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
@@ -1154,6 +1489,17 @@ window.addEventListener("load", load);
             <span class="s2">&quot;Root URL of the eLabFTW instance (e.g., &#39;https://elabftw.example.com&#39;). &quot;</span>
             <span class="s2">&quot;If not configured, eLabFTW export will be disabled.&quot;</span>
         <span class="p">),</span>
+        <span class="n">json_schema_extra</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;display_default&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;detail&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;The root URL of your eLabFTW instance. If not configured, eLabFTW &quot;</span>
+                <span class="s2">&quot;export will be disabled.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;Should NOT include `/api/` or any path — just the domain:</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;  `https://elabftw.example.com`</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;  `http://localhost:3148`</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;NexusLIMS appends the appropriate API paths automatically.&quot;</span>
+            <span class="p">),</span>
+        <span class="p">},</span>
     <span class="p">)</span>
     <span class="n">NX_ELABFTW_EXPERIMENT_CATEGORY</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
@@ -1162,6 +1508,15 @@ window.addEventListener("load", load);
             <span class="s2">&quot;eLabFTW will use its default category. Category IDs can be found &quot;</span>
             <span class="s2">&quot;in the eLabFTW admin panel.&quot;</span>
         <span class="p">),</span>
+        <span class="n">json_schema_extra</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;detail&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;The default category ID for experiments created in eLabFTW. &quot;</span>
+                <span class="s2">&quot;If not specified, eLabFTW uses its default category.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;To find category IDs: log in to eLabFTW as an administrator, &quot;</span>
+                <span class="s2">&quot;navigate to the admin panel, and look under &#39;Experiment categories&#39;. &quot;</span>
+                <span class="s2">&quot;The ID is shown next to each category name.&quot;</span>
+            <span class="p">)</span>
+        <span class="p">},</span>
     <span class="p">)</span>
     <span class="n">NX_ELABFTW_EXPERIMENT_STATUS</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
@@ -1170,6 +1525,15 @@ window.addEventListener("load", load);
             <span class="s2">&quot;eLabFTW will use its default status. Status IDs can be found &quot;</span>
             <span class="s2">&quot;in the eLabFTW admin panel.&quot;</span>
         <span class="p">),</span>
+        <span class="n">json_schema_extra</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;detail&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;The default status ID for experiments created in eLabFTW. &quot;</span>
+                <span class="s2">&quot;If not specified, eLabFTW uses its default status.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;To find status IDs: log in to eLabFTW as an administrator, &quot;</span>
+                <span class="s2">&quot;navigate to the admin panel, and look under &#39;Experiment statuses&#39;. &quot;</span>
+                <span class="s2">&quot;The ID is shown next to each status name.&quot;</span>
+            <span class="p">)</span>
+        <span class="p">},</span>
     <span class="p">)</span>
 
     <span class="nd">@property</span>

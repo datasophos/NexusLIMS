@@ -17,12 +17,14 @@ Welcome to NexusLIMS! This guide will help you get up and running quickly.
 ```{important}
 **🆕 What's New in v2.0+?**
 
-Users will not notice significant changes, but the infrastructure powering NexusLIMS has received major upgrades, including:
+End users will not notice significant changes, but the infrastructure powering NexusLIMS has received major upgrades, including:
 
 - **Pydantic Metadata Schemas**: All metadata is validated internally using type-specific schemas
 - **EM Glossary v2.0**: NexusLIMS uses standardized field names from the emerging [community ontology](https://emglossary.helmholtz-metadaten.de/)
 - **Pint Unit Integration**: Type-safe quantity handling with automatic unit conversion (with future connection to the [QUDT unit ontology](https://qudt.org/) planned)
 - **Better Validation**: Strict schema validation catches errors before record building
+- **Improved system administration**: Tools to help manage NexusLIMS installations have been drastically improved
+- **Multi-destination record export**: Records can now be uploaded to other ELN systems, in addition to the default CDCS.
 
 See [NexusLIMS Internal Schema](../dev_guide/nexuslims_internal_schema.md) for more details on how NexusLIMS handles data internally.
 ```

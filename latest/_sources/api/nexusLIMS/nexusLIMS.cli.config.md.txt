@@ -26,6 +26,11 @@
     :parser: autodoc2_docstrings_parser
     :summary:
     ```
+* - {py:obj}`edit <nexusLIMS.cli.config.edit>`
+  - ```{autodoc2-docstring} nexusLIMS.cli.config.edit
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
 * - {py:obj}`load <nexusLIMS.cli.config.load>`
   - ```{autodoc2-docstring} nexusLIMS.cli.config.load
     :parser: autodoc2_docstrings_parser
@@ -71,6 +76,14 @@
 :canonical: nexusLIMS.cli.config.dump
 
 ```{autodoc2-docstring} nexusLIMS.cli.config.dump
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} edit(env_path: str) -> None
+:canonical: nexusLIMS.cli.config.edit
+
+```{autodoc2-docstring} nexusLIMS.cli.config.edit
 :parser: autodoc2_docstrings_parser
 ```
 ````

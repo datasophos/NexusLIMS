@@ -30,7 +30,7 @@
 
 ### API
 
-`````{py:class} HelpScreen(app_name: str, keybindings: list[tuple[str, str]], **kwargs)
+`````{py:class} HelpScreen(app_name: str, keybindings: list[tuple[str, str]], description: str = '', **kwargs)
 :canonical: nexusLIMS.tui.common.base_app.HelpScreen
 
 Bases: {py:obj}`textual.screen.Screen`

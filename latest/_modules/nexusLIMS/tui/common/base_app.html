@@ -428,7 +428,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Feb, 10, 2026"/>
+    <meta name="docbuild:last-update" content="Feb, 11, 2026"/>
   </head>
   
   
@@ -851,7 +851,13 @@ window.addEventListener("load", load);
         <span class="p">(</span><span class="s2">&quot;q&quot;</span><span class="p">,</span> <span class="s2">&quot;dismiss&quot;</span><span class="p">,</span> <span class="s2">&quot;Close Help&quot;</span><span class="p">),</span>
     <span class="p">]</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">app_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">keybindings</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">app_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">keybindings</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span>
+        <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialize help screen.</span>
 
@@ -861,12 +867,15 @@ window.addEventListener("load", load);
 <span class="sd">            Name of the application</span>
 <span class="sd">        keybindings : list[tuple[str, str]]</span>
 <span class="sd">            List of (key, description) tuples</span>
+<span class="sd">        description : str</span>
+<span class="sd">            Optional prose blurb shown between the title and keybindings.</span>
 <span class="sd">        **kwargs</span>
 <span class="sd">            Additional arguments passed to Screen</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">app_name</span> <span class="o">=</span> <span class="n">app_name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">keybindings</span> <span class="o">=</span> <span class="n">keybindings</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">description</span>
 
 <div class="viewcode-block" id="HelpScreen.compose">
 <a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.tui.common.base_app.html#nexusLIMS.tui.common.base_app.HelpScreen.compose">[docs]</a>
@@ -875,6 +884,8 @@ window.addEventListener("load", load);
         <span class="k">yield</span> <span class="n">Header</span><span class="p">()</span>
 
         <span class="n">help_text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;# </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">app_name</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">description</span><span class="p">:</span>
+            <span class="n">help_text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">description</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">&quot;</span>
         <span class="n">help_text</span> <span class="o">+=</span> <span class="s2">&quot;## Keybindings</span><span class="se">\n\n</span><span class="s2">&quot;</span>
 
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">description</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">keybindings</span><span class="p">:</span>

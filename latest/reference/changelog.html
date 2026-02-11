@@ -66,7 +66,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Feb, 10, 2026"/>
+    <meta name="docbuild:last-update" content="Feb, 11, 2026"/>
   </head>
   
   
@@ -481,14 +481,15 @@
 <p>This changelog documents development history including the original NIST project
 up to version 1.4.3. The datasophos fork begins at version 2.0.</p>
 </div>
-<section id="unreleased-2026-02-10">
-<h2>[Unreleased] (2026-02-10)<a class="headerlink" href="#unreleased-2026-02-10" title="Link to this heading">#</a></h2>
+<section id="unreleased-2026-02-11">
+<h2>[Unreleased] (2026-02-11)<a class="headerlink" href="#unreleased-2026-02-11" title="Link to this heading">#</a></h2>
 <section id="new-features">
 <h3>New features<a class="headerlink" href="#new-features" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Added a generic user identity mapping system to support integration with external systems (NEMO, LabArchives, CDCS) that use different user identification schemes. This enables automatic exports to LabArchives and other external destinations without requiring interactive OAuth flows for each session. (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/48">#48</a>)</p></li>
 <li><p>Alembic database migrations are now shipped inside the installed package and managed through the new <code class="docutils literal notranslate"><span class="pre">nexuslims-migrate</span></code> CLI command. This user-friendly tool provides simple commands for common database operations: <code class="docutils literal notranslate"><span class="pre">init</span></code> (initialize a new database), <code class="docutils literal notranslate"><span class="pre">upgrade</span></code> (apply migrations), <code class="docutils literal notranslate"><span class="pre">current</span></code> (show version), <code class="docutils literal notranslate"><span class="pre">check</span></code> (detect pending migrations), and <code class="docutils literal notranslate"><span class="pre">downgrade</span></code> (roll back changes). Advanced users can access the full Alembic CLI via <code class="docutils literal notranslate"><span class="pre">nexuslims-migrate</span> <span class="pre">alembic</span> <span class="pre">[COMMAND]</span></code>. The tool automatically locates migrations whether NexusLIMS is installed via pip, uv, or run from source, eliminating manual path configuration. The existing <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">run</span> <span class="pre">alembic</span></code> workflow continues to work for development. (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/50">#50</a>)</p></li>
 <li><p>Added a new <code class="docutils literal notranslate"><span class="pre">nexuslims-manage-instruments</span></code> CLI tool with an interactive terminal UI for managing the instruments database. The tool provides list, add, edit, and delete operations with real-time validation, eliminating the need for direct SQLite access or ad-hoc scripts. This release also introduces a shared TUI infrastructure (<code class="docutils literal notranslate"><span class="pre">nexusLIMS.tui</span></code>) to support future interactive terminal applications, promoting code reuse and consistent user experience across all NexusLIMS TUI tools. The TUI supports theme switching (dark/light modes), provides field validation with helpful error messages, and includes confirmation prompts for destructive actions. (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/51">#51</a>)</p></li>
+<li><p>Added <code class="docutils literal notranslate"><span class="pre">nexuslims-config</span> <span class="pre">edit</span></code> subcommand that opens an interactive Textual TUI for editing the NexusLIMS <code class="docutils literal notranslate"><span class="pre">.env</span></code> configuration file. The form is organized into seven tabs (Core Paths, CDCS, File Processing, NEMO Harvesters, eLabFTW, Email, and SSL/Certs), pre-populates all fields from the existing <code class="docutils literal notranslate"><span class="pre">.env</span></code>, validates input before saving, and writes the updated file on Ctrl+S. NEMO harvester instances can be added, edited, and deleted as individual groups for each harvester. The eLabFTW and email sections include an enable/disable toggle that omits the section from the written <code class="docutils literal notranslate"><span class="pre">.env</span></code> when turned off. (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/55">#55</a>)</p></li>
 </ul>
 </section>
 <section id="documentation-improvements">
@@ -1280,7 +1281,7 @@ delineate functionality of the various parts of NexusLIMS</p></li>
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#unreleased-2026-02-10">[Unreleased] (2026-02-10)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#unreleased-2026-02-11">[Unreleased] (2026-02-11)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">2.4.1 (2026-02-06)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">2.4.0 (2026-02-02)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">2.3.0 (2026-01-19)</a></li>

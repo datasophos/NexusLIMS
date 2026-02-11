@@ -15,4 +15,5 @@
 :maxdepth: 3
 
 nexusLIMS.tui.apps.instruments
+nexusLIMS.tui.apps.config
 ```

@@ -66,7 +66,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Feb, 10, 2026"/>
+    <meta name="docbuild:last-update" content="Feb, 11, 2026"/>
   </head>
   
   
@@ -417,7 +417,7 @@
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cli_reference.html">Command-Line Interface Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="record_building.html">Record building workflow</a></li>
-<li class="toctree-l1"><a class="reference internal" href="instrument_manager.html">Instrument Manager TUI Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="instrument_manager.html">Instrument Management</a></li>
 <li class="toctree-l1"><a class="reference internal" href="migrations.html">Database Migrations</a></li>
 
 <li class="toctree-l1"><a class="reference internal" href="extractors.html">Extractors</a></li>
@@ -495,12 +495,14 @@
 <div class="admonition important">
 <p class="admonition-title">Important</p>
 <p><strong>🆕 What’s New in v2.0+?</strong></p>
-<p>Users will not notice significant changes, but the infrastructure powering NexusLIMS has received major upgrades, including:</p>
+<p>End users will not notice significant changes, but the infrastructure powering NexusLIMS has received major upgrades, including:</p>
 <ul class="simple">
 <li><p><strong>Pydantic Metadata Schemas</strong>: All metadata is validated internally using type-specific schemas</p></li>
 <li><p><strong>EM Glossary v2.0</strong>: NexusLIMS uses standardized field names from the emerging <a class="reference external" href="https://emglossary.helmholtz-metadaten.de/">community ontology</a></p></li>
 <li><p><strong>Pint Unit Integration</strong>: Type-safe quantity handling with automatic unit conversion (with future connection to the <a class="reference external" href="https://qudt.org/">QUDT unit ontology</a> planned)</p></li>
 <li><p><strong>Better Validation</strong>: Strict schema validation catches errors before record building</p></li>
+<li><p><strong>Improved system administration</strong>: Tools to help manage NexusLIMS installations have been drastically improved</p></li>
+<li><p><strong>Multi-destination record export</strong>: Records can now be uploaded to other ELN systems, in addition to the default CDCS.</p></li>
 </ul>
 <p>See <a class="reference internal" href="../dev_guide/nexuslims_internal_schema.html"><span class="std std-doc">NexusLIMS Internal Schema</span></a> for more details on how NexusLIMS handles data internally.</p>
 </div>
