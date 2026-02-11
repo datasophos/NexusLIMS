@@ -5,16 +5,102 @@ This guide provides comprehensive information about configuring NexusLIMS throug
 
 ## Configuration Files
 
-NexusLIMS loads configuration from environment variables and optionally from a `.env` file in the project root. See `.env.example` in the repository for a complete template with examples.
-
-```{tip}
-Copy `.env.example` to `.env` and customize it for your deployment. The `.env` file should never be committed to version control.
-```
+NexusLIMS loads configuration from environment variables and optionally from a `.env` file in the same folder from which you run any NexusLIMS commands.
 
 (configuration-management)=
 ## Configuration Management
 
-NexusLIMS provides CLI tools to help you manage, debug, and migrate configuration between environments.
+NexusLIMS provides both CLI tools and an interactive terminal UI to help you manage, debug, and migrate your configurations between environments.
+
+### Interactive Configuration Editor (TUI)
+
+The **NexusLIMS Configuration Editor** provides a user-friendly terminal interface for editing your `.env` file:
+
+```bash
+# Launch the interactive configurator
+nexuslims-config edit
+
+# Edit a specific .env file
+nexuslims-config edit --env-path /path/to/.env
+```
+
+The configurator features:
+
+- **Tabbed Interface**: Organized into logical sections (Core Paths, CDCS, File Processing, etc.)
+- **Pre-populated Fields**: Loads existing `.env` values automatically
+- **Real-time Validation**: Catches errors before saving
+- **Context-sensitive Help**: Press **F1** on any field for detailed documentation
+- **Dynamic NEMO Management**: Add/remove multiple NEMO harvester instances
+- **Toggle Sections**: Enable/disable optional features like eLabFTW and Email alerts
+
+```{figure} ../images/tui/screenshots/config_main_screen.svg
+:name: config-tui-main-screen
+
+Main Screen of the configuration TUI
+```
+
+**Navigation:**
+- **`Tab` / `Shift+Tab`**: Move between fields
+- **`<` / `>`**: Navigate between tabs
+- **`F1`**: Show field-specific help
+- **`Ctrl+S`**: Save configuration
+- **`Escape`**: Cancel/Exit
+- **`?`**: Show the overall help screen
+
+```{figure} ../images/tui/screenshots/config_help_screen.svg
+:name: config-tui-help-screen
+
+Configuration app general help screen (shown with `?` key)
+```
+
+**Field Help:** Press **F1** while focused on any field to see extended documentation:
+
+```{figure} ../images/tui/screenshots/config_field_detail.svg
+:name: config-tui-field-detail
+
+Showing the detailed help for a particular field (by pressing `F1`)
+```
+
+#### Video Demonstrations
+
+This demo shows opening the configuration tool, browsing around the "tabs" that separate
+the logical grouping of config values, showing the help screen, and then exiting:
+
+```{raw} html
+<figure>
+  <video src="../_images/config_main.mp4" width="100%" controls autoplay muted loop aria-label="Configuration tool demonstration video">
+  </video>
+  <figcaption>Demonstration of the main screens in the interactive configuration tool</figcaption>
+</figure>
+```
+<!-- this hidden span is so Sphinx will properly copy the video to the right location -->
+<span style="display: none;">![main config screen](../images/tui/recordings/config_main.mp4)</span>
+
+This video demonstrates using the `F1` key to show detailed help for various configuration variables.
+This capability can help you learn more about what each setting does and how to properly set the values:
+
+
+```{raw} html
+<figure>
+  <video src="../_images/config_field_help.mp4" width="100%" controls autoplay muted loop></video>
+  <figcaption>Using the <code>F1</code> key to view detailed help for different fields</figcaption>
+</figure>
+```
+<!-- this hidden span is so Sphinx will properly copy the video to the right location -->
+<span style="display: none;">![main config screen](../images/tui/recordings/config_field_help.mp4)</span>
+
+This video demonstrates adding a NEMO harvester configuration to the application. Since NexusLIMS supports
+multiple NEMO instances in one installation, the configuration tool allows you to add/delete harvesters
+and fill out each harvester's configuration in a logical grouping:
+
+```{raw} html
+<figure>
+  <video src="../_images/config_nemo_management.mp4" width="100%" controls autoplay muted loop></video>
+  <figcaption>Adding a NEMO harvester configuration, then adding a second one, and finally deleting it</figcaption>
+</figure>
+```
+<!-- this hidden span is so Sphinx will properly copy the video to the right location -->
+<span style="display: none;">![main config screen](../images/tui/recordings/config_nemo_management.mp4)</span>
 
 ### Dumping Configuration
 

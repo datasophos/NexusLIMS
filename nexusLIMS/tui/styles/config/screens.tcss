@@ -155,26 +155,35 @@ ConfigScreen FormField {
 }
 
 .nemo-group-header {
-    height: 2;
+    height: 4;
     align: left middle;
     border-bottom: solid $primary 30%;
     margin-bottom: 0;
 }
 
 .nemo-group-header Button {
-    border: none;
-    height: 1;
-    padding: 0 1;
+    border: tall $error-muted;
+    height: 3;
+    padding: 0 0;
     background: $error-muted;
     color: $text-error;
 }
+
 
 .nemo-group-header Button:hover {
     background: $error;
     color: $text;
 }
 
+.nemo-group-header Button:focus {
+    background: $error;
+    border: tall $accent;
+    color: $text;
+}
+
 .nemo-group-title {
+    margin-top: 1;
+    margin-left: 1;
     width: 1fr;
     content-align: left middle;
     text-style: bold;

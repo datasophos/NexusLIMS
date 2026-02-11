@@ -87,8 +87,13 @@ Input.error {
 }
 
 /* Button styling */
+Button {
+    border: tall transparent;
+}
+
 Button:focus {
     text-style: bold;
+    border: tall $accent;
 }
 
 /* General layout */
