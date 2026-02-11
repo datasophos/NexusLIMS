@@ -100,3 +100,100 @@ jobs:
           coverage xml -o combined-coverage.xml
           # Show report in logs
           coverage report
+
+  package-smoke-test:
+    # Smoke test for package installation
+    # Verifies that the built wheel can be installed and all functionality works
+    name: Package Installation Smoke Test (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Build wheel
+        run: uv build --wheel
+
+      - name: Create fresh virtual environment
+        run: uv venv --python ${{ matrix.python-version }} /tmp/test-venv
+
+      - name: Install wheel in fresh environment
+        run: |
+          /tmp/test-venv/bin/pip install dist/*.whl
+
+      - name: Test CLI entry points exist
+        run: |
+          echo "Testing CLI entry points..."
+          /tmp/test-venv/bin/nexuslims-config --version
+          /tmp/test-venv/bin/nexuslims-migrate --version
+          /tmp/test-venv/bin/nexuslims-manage-instruments --version
+          /tmp/test-venv/bin/nexuslims-process-records --version
+
+      - name: Test CLI help works without .env file
+        run: |
+          echo "Testing CLI help commands work without .env..."
+          /tmp/test-venv/bin/nexuslims-config --help
+          /tmp/test-venv/bin/nexuslims-config edit --help
+          /tmp/test-venv/bin/nexuslims-config dump --help
+          /tmp/test-venv/bin/nexuslims-config load --help
+
+      - name: Test package data files are loadable
+        run: |
+          echo "Testing package data files..."
+          /tmp/test-venv/bin/python << 'EOF'
+          from pathlib import Path
+
+          # Test XSD file
+          from nexusLIMS.schemas import activity
+          xsd_path = Path(activity.__file__).parent / "nexus-experiment.xsd"
+          assert xsd_path.exists(), f"XSD not found: {xsd_path}"
+          print(f"✓ XSD file: {xsd_path}")
+
+          # Test OWL file
+          from nexusLIMS.schemas import em_glossary
+          assert em_glossary.EMG_OWL_PATH.exists(), f"OWL not found"
+          print(f"✓ OWL file: {em_glossary.EMG_OWL_PATH}")
+
+          # Test TTL file
+          from nexusLIMS.schemas import units
+          assert units.QUDT_UNIT_TTL_PATH.exists(), f"TTL not found"
+          print(f"✓ TTL file: {units.QUDT_UNIT_TTL_PATH}")
+
+          # Test migration files
+          from nexusLIMS.db import migrations
+          migrations_dir = Path(migrations.__file__).parent
+          env_py = migrations_dir / "env.py"
+          assert env_py.exists(), f"Migration env.py not found"
+          print(f"✓ Migration files: {migrations_dir}")
+
+          print("\n✓ All package data files verified!")
+          EOF
+
+      - name: Test basic module imports
+        run: |
+          echo "Testing basic imports..."
+          /tmp/test-venv/bin/python -c "
+          from nexusLIMS import __version__
+          print(f'✓ NexusLIMS version: {__version__}')
+
+          # Test that config module can be imported without triggering validation
+          from nexusLIMS.config import Settings
+          print('✓ Settings class importable')
+
+          # Test TUI can be imported without .env
+          from nexusLIMS.tui.apps.config.app import ConfiguratorApp
+          print('✓ ConfiguratorApp importable')
+          "
