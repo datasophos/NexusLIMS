@@ -2,11 +2,12 @@
 Screens for the NexusLIMS configuration TUI.
 
 Provides :class:`ConfigScreen` (the main tabbed form) and
-:class:`NemoHarvesterFormScreen` (modal add/edit dialog for NEMO harvesters).
+:class:`FieldDetailScreen` (popup help modal for configuration fields).
 """
 
 import contextlib
 import json
+import re
 from pathlib import Path
 from typing import ClassVar
 
@@ -19,7 +20,6 @@ from textual.containers import Horizontal, Vertical, VerticalScroll
 from textual.screen import ModalScreen, Screen
 from textual.widgets import (
     Button,
-    DataTable,
     Footer,
     Header,
     Input,
@@ -29,6 +29,7 @@ from textual.widgets import (
     Switch,
     TabbedContent,
     TabPane,
+    Tabs,
     TextArea,
 )
 
@@ -36,7 +37,7 @@ from nexusLIMS.cli.config import (
     _flatten_to_env,
     _write_env_file,
 )
-from nexusLIMS.config import EmailConfig, Settings
+from nexusLIMS.config import EmailConfig, NemoHarvesterConfig, Settings
 from nexusLIMS.tui.apps.config.validators import (
     validate_float_nonneg,
     validate_float_positive,
@@ -46,6 +47,7 @@ from nexusLIMS.tui.apps.config.validators import (
     validate_optional_url,
     validate_smtp_port,
 )
+from nexusLIMS.tui.common.base_screens import ConfirmDialog
 from nexusLIMS.tui.common.validators import validate_required, validate_url
 from nexusLIMS.tui.common.widgets import AutocompleteInput, FormField
 
@@ -102,6 +104,41 @@ def _edefault(name: str) -> str:
     return str(default)
 
 
+def _md_to_rich(text: str) -> str:
+    """Convert a small subset of Markdown to Rich markup for TUI display.
+
+    Handles:
+    - ``[label](url)`` → ``label (url)``
+    - bare URLs (http/https not inside a markdown link) → plain text URL
+    - `` `code` `` → ``[bold]code[/bold]``
+
+    Uses a single combined regex pass so that matched spans are never
+    processed a second time, avoiding broken nested markup.
+    """
+    # Combined pattern — alternatives are tried left-to-right, first match wins:
+    #   1. backtick code span
+    #   2. markdown link [label](url)
+    #   3. bare http/https URL
+    pattern = re.compile(
+        r"`([^`]+)`"  # group 1: backtick code span
+        r"|"
+        r"\[([^\]]+)\]\((https?://[^\)]+)\)"  # group 2+3: markdown link
+        r"|"
+        r"(https?://\S+)"  # group 4: bare URL
+    )
+
+    def _replace(m: re.Match) -> str:
+        if m.group(1) is not None:
+            return f"[bold]{m.group(1)}[/bold]"
+        if m.group(2) is not None:
+            # Render as "label (url)" — avoids MarkupError with URLs in [link=...]
+            return f"{m.group(2)} ({m.group(3)})"
+        # Bare URL — render as plain text to avoid MarkupError with "://"
+        return m.group(4)
+
+    return pattern.sub(_replace, text)
+
+
 def _fdetail(name: str) -> str:
     """Return extended detail text from Settings.json_schema_extra['detail']."""
     field = Settings.model_fields.get(name)
@@ -110,7 +147,7 @@ def _fdetail(name: str) -> str:
     jse = getattr(field, "json_schema_extra", None) or {}
     if callable(jse):
         return ""
-    return jse.get("detail", "")
+    return _md_to_rich(jse.get("detail", ""))
 
 
 def _edetail(name: str) -> str:
@@ -121,12 +158,34 @@ def _edetail(name: str) -> str:
     jse = getattr(field, "json_schema_extra", None) or {}
     if callable(jse):
         return ""
-    return jse.get("detail", "")
+    return _md_to_rich(jse.get("detail", ""))
 
+
+def _ndetail(name: str) -> str:
+    """Return extended detail text from NemoHarvesterConfig for the given field."""
+    field = NemoHarvesterConfig.model_fields.get(name)
+    if field is None:
+        return ""
+    jse = getattr(field, "json_schema_extra", None) or {}
+    if callable(jse):
+        return ""
+    return _md_to_rich(jse.get("detail", ""))
+
+
+# Maps NEMO Input widget id prefixes → NemoHarvesterConfig field name.
+# Used for dynamic ids like "nemo-address-1", "nemo-token-2", etc.
+_NEMO_INPUT_PREFIX_TO_FIELD: dict[str, str] = {
+    "nemo-address-": "address",
+    "nemo-token-": "token",
+    "nemo-tz-": "tz",
+    "nemo-strftime-": "strftime_fmt",
+    "nemo-strptime-": "strptime_fmt",
+}
 
 # Maps Input widget ids → (model_class, field_name) for detail lookup.
-# Select widgets (nx-file-strategy, nx-export-strategy) handled inline in action.
-# TextArea (nx-cert-bundle) and Switch widgets excluded — not Input instances.
+# Select widgets (nx-file-strategy, nx-export-strategy) and TextArea
+# (nx-cert-bundle) are handled inline in action_show_field_detail.
+# Switch widgets with detail text are handled inline in action_show_field_detail.
 _INPUT_ID_TO_FIELD: dict[str, tuple[str, str]] = {
     "nx-instrument-data-path": ("settings", "NX_INSTRUMENT_DATA_PATH"),
     "nx-data-path": ("settings", "NX_DATA_PATH"),
@@ -154,171 +213,6 @@ _INPUT_ID_TO_FIELD: dict[str, tuple[str, str]] = {
 
 
 # --------------------------------------------------------------------------- #
-# NemoHarvesterFormScreen                                                      #
-# --------------------------------------------------------------------------- #
-
-
-class NemoHarvesterFormScreen(ModalScreen):
-    """
-    Modal form for adding or editing a single NEMO harvester configuration.
-
-    Dismisses with a ``dict`` on save or ``None`` on cancel.
-
-    Parameters
-    ----------
-    existing : dict | None
-        Pre-populated harvester data for edit mode.  Pass ``None`` for add mode.
-    """
-
-    CSS_PATH: ClassVar = [
-        Path(__file__).parent.parent.parent / "styles" / "config" / "screens.tcss"
-    ]
-
-    BINDINGS: ClassVar = [
-        ("ctrl+s", "save_harvester", "Save"),
-        ("escape", "cancel_harvester", "Cancel"),
-    ]
-
-    def __init__(self, existing: dict | None = None, **kwargs):
-        """Initialize the form, optionally pre-populated with existing data."""
-        super().__init__(**kwargs)
-        self._existing: dict = existing or {}
-
-    def compose(self) -> ComposeResult:
-        """Compose the modal dialog layout."""
-        with Vertical(id="nemo-dialog"):
-            title = "Edit NEMO Harvester" if self._existing else "Add NEMO Harvester"
-            yield Label(title, classes="nemo-dialog-title")
-
-            yield FormField(
-                "API Address",
-                Input(
-                    value=self._existing.get("address", ""),
-                    placeholder="https://nemo.example.com/api/",
-                    id="nemo-address",
-                ),
-                required=True,
-                help_text=("Full URL to the NEMO API root (must end with '/')"),
-            )
-            yield FormField(
-                "API Token",
-                Input(
-                    value=self._existing.get("token", ""),
-                    placeholder="your-api-token-here",
-                    password=True,
-                    id="nemo-token",
-                ),
-                required=True,
-                help_text=("Authentication token from the NEMO administration page"),
-            )
-            yield FormField(
-                "Timezone (optional)",
-                AutocompleteInput(
-                    suggestions=pytz.common_timezones,
-                    value=self._existing.get("tz") or "",
-                    placeholder="America/New_York (leave blank to use NEMO default)",
-                    id="nemo-tz",
-                ),
-                help_text="IANA timezone for coercing NEMO datetime strings",
-            )
-            yield FormField(
-                "strftime format (optional)",
-                Input(
-                    value=self._existing.get("strftime_fmt", _DEFAULT_STRFTIME),
-                    placeholder=_DEFAULT_STRFTIME,
-                    id="nemo-strftime",
-                ),
-                help_text="Python strftime format sent to the NEMO API",
-            )
-            yield FormField(
-                "strptime format (optional)",
-                Input(
-                    value=self._existing.get("strptime_fmt", _DEFAULT_STRPTIME),
-                    placeholder=_DEFAULT_STRPTIME,
-                    id="nemo-strptime",
-                ),
-                help_text="Python strptime format for parsing NEMO API responses",
-            )
-
-            yield Static("", id="nemo-error", classes="form-error")
-
-            with Horizontal(classes="nemo-form-buttons"):
-                yield Button("Save (Ctrl+S)", id="nemo-save-btn", variant="primary")
-                yield Button("Cancel (Esc)", id="nemo-cancel-btn", variant="default")
-
-    # ---------------------------------------------------------------------- #
-    # Actions                                                                 #
-    # ---------------------------------------------------------------------- #
-
-    def action_save_harvester(self) -> None:
-        """Validate and dismiss with harvester data."""
-        errors = self._validate()
-        if errors:
-            self.query_one("#nemo-error", Static).update(
-                "Errors:\n" + "\n".join(f"  \u2022 {m}" for m in errors)
-            )
-            self.query_one("#nemo-error", Static).add_class("visible")
-            return
-
-        self.query_one("#nemo-error", Static).update("")
-        self.query_one("#nemo-error", Static).remove_class("visible")
-
-        address = self.query_one("#nemo-address", Input).value.strip()
-        token = self.query_one("#nemo-token", Input).value.strip()
-        tz_raw = self.query_one("#nemo-tz", Input).value.strip()
-        strftime = self.query_one("#nemo-strftime", Input).value.strip()
-        strptime = self.query_one("#nemo-strptime", Input).value.strip()
-
-        data: dict = {
-            "address": address,
-            "token": token,
-            "strftime_fmt": strftime or _DEFAULT_STRFTIME,
-            "strptime_fmt": strptime or _DEFAULT_STRPTIME,
-        }
-        if tz_raw:
-            data["tz"] = tz_raw
-
-        self.dismiss(data)
-
-    def action_cancel_harvester(self) -> None:
-        """Dismiss without saving."""
-        self.dismiss(None)
-
-    @on(Button.Pressed, "#nemo-save-btn")
-    def _on_save_btn(self) -> None:
-        self.action_save_harvester()
-
-    @on(Button.Pressed, "#nemo-cancel-btn")
-    def _on_cancel_btn(self) -> None:
-        self.action_cancel_harvester()
-
-    # ---------------------------------------------------------------------- #
-    # Validation                                                              #
-    # ---------------------------------------------------------------------- #
-
-    def _validate(self) -> list[str]:
-        errors: list[str] = []
-
-        address = self.query_one("#nemo-address", Input).value.strip()
-        ok, msg = validate_nemo_address(address)
-        if not ok:
-            errors.append(f"API Address: {msg}")
-
-        token = self.query_one("#nemo-token", Input).value.strip()
-        ok, msg = validate_required(token, "API Token")
-        if not ok:
-            errors.append(f"API Token: {msg}")
-
-        tz_raw = self.query_one("#nemo-tz", Input).value.strip()
-        if tz_raw:
-            ok, msg = validate_optional_iana_timezone(tz_raw)
-            if not ok:
-                errors.append(f"Timezone: {msg}")
-
-        return errors
-
-
-# --------------------------------------------------------------------------- #
 # FieldDetailScreen                                                            #
 # --------------------------------------------------------------------------- #
 
@@ -327,8 +221,8 @@ class FieldDetailScreen(ModalScreen):
     """
     Modal popup displaying extended help text for a configuration field.
 
-    Invoked by pressing ctrl+slash while an Input or Select is focused in
-    ConfigScreen. Dismisses on Escape, ctrl+slash, or the Close button.
+    Invoked by pressing F1 while an Input or Select is focused in
+    ConfigScreen. Dismisses on Escape, F1, or the Close button.
 
     Parameters
     ----------
@@ -344,7 +238,7 @@ class FieldDetailScreen(ModalScreen):
 
     BINDINGS: ClassVar = [
         ("escape", "dismiss_detail", "Close"),
-        ("ctrl+slash", "dismiss_detail", "Close"),
+        ("f1", "dismiss_detail", "Close"),
     ]
 
     def __init__(self, field_name: str, detail_text: str, **kwargs) -> None:
@@ -398,7 +292,10 @@ class ConfigScreen(Screen):
     BINDINGS: ClassVar = [
         ("ctrl+s", "save", "Save"),
         ("escape", "cancel", "Cancel"),
-        ("ctrl+slash", "show_field_detail", "Field Help"),
+        ("f1", "show_field_detail", "Field Help"),
+        ("<", "previous_tab", "Previous tab"),
+        (">", "next_tab", "Next tab"),
+        ("?", "app.help", "Help"),
     ]
 
     def __init__(self, env_path: Path, **kwargs):
@@ -410,6 +307,8 @@ class ConfigScreen(Screen):
         )
         self._nemo_harvesters: dict[int, dict] = {}
         self._parse_nemo_harvesters()
+        # Snapshot of the env as loaded — used for unsaved-changes detection.
+        self._initial_env: dict[str, str] = dict(self._existing)
 
     # ---------------------------------------------------------------------- #
     # Helpers for reading existing env                                        #
@@ -691,16 +590,92 @@ class ConfigScreen(Screen):
                     )
 
     def _compose_nemo(self) -> ComposeResult:
-        yield Label(
-            "NEMO harvester instances (one per NEMO server)",
-            classes="tab-description",
-        )
-        with Horizontal(classes="nemo-action-bar"):
-            yield Button("Add", id="nemo-add-btn", variant="primary")
-            yield Button("Edit", id="nemo-edit-btn")
-            yield Button("Delete", id="nemo-delete-btn", variant="error")
+        with VerticalScroll():
+            yield Label(
+                "NEMO harvester instances — one group per NEMO server",
+                classes="tab-description",
+            )
+            yield Vertical(id="nemo-groups-container")
+            with Horizontal(classes="nemo-action-bar"):
+                yield Button(
+                    "+ Add NEMO Harvester", id="nemo-add-btn", variant="primary"
+                )
 
-        yield DataTable(id="nemo-table", cursor_type="row")
+    # ---------------------------------------------------------------------- #
+    # NEMO group helpers                                                      #
+    # ---------------------------------------------------------------------- #
+
+    def _nemo_group_widget(self, n: int, data: dict) -> Vertical:
+        """Build and return a single NEMO harvester group widget."""
+        left_col = Vertical(
+            FormField(
+                "API Address",
+                Input(
+                    value=data.get("address", ""),
+                    placeholder="https://nemo.example.com/api/",
+                    id=f"nemo-address-{n}",
+                ),
+                required=True,
+                help_text="Full URL to the NEMO API root (must end with '/')",
+            ),
+            FormField(
+                "API Token",
+                Input(
+                    value=data.get("token", ""),
+                    placeholder="your-api-token-here",
+                    password=True,
+                    id=f"nemo-token-{n}",
+                ),
+                required=True,
+                help_text=("Authentication token from the NEMO administration page"),
+            ),
+            FormField(
+                "Timezone (optional)",
+                AutocompleteInput(
+                    suggestions=pytz.common_timezones,
+                    value=data.get("tz") or "",
+                    placeholder=("America/New_York (leave blank to use NEMO default)"),
+                    id=f"nemo-tz-{n}",
+                ),
+                help_text="IANA timezone for coercing NEMO datetime strings",
+            ),
+            classes="form-column",
+        )
+        right_col = Vertical(
+            FormField(
+                "strftime format (optional)",
+                Input(
+                    value=data.get("strftime_fmt", _DEFAULT_STRFTIME),
+                    placeholder=_DEFAULT_STRFTIME,
+                    id=f"nemo-strftime-{n}",
+                ),
+                help_text="Python strftime format sent to the NEMO API",
+            ),
+            FormField(
+                "strptime format (optional)",
+                Input(
+                    value=data.get("strptime_fmt", _DEFAULT_STRPTIME),
+                    placeholder=_DEFAULT_STRPTIME,
+                    id=f"nemo-strptime-{n}",
+                ),
+                help_text=("Python strptime format for parsing NEMO API responses"),
+            ),
+            classes="form-column",
+        )
+        return Vertical(
+            Horizontal(
+                Label(f"NEMO Harvester #{n}", classes="nemo-group-title"),
+                Button(
+                    "Delete",
+                    id=f"nemo-delete-{n}",
+                    classes="nemo-delete-btn",
+                ),
+                classes="nemo-group-header",
+            ),
+            Horizontal(left_col, right_col, classes="form-columns"),
+            id=f"nemo-group-{n}",
+            classes="nemo-group",
+        )
 
     def _compose_elabftw(self) -> ComposeResult:
         with VerticalScroll():
@@ -899,32 +874,21 @@ class ConfigScreen(Screen):
     # ---------------------------------------------------------------------- #
 
     def on_mount(self) -> None:
-        """Set up the NEMO harvesters DataTable after mount."""
-        self._setup_nemo_table()
+        """Populate NEMO harvester groups and configure toggle rows after mount."""
+        container = self.query_one("#nemo-groups-container", Vertical)
+        for n, data in sorted(self._nemo_harvesters.items()):
+            container.mount(self._nemo_group_widget(n, data))
         self.query_one("#elabftw-toggle-row").set_class(self._has_elabftw(), "-on")
         self.query_one("#email-toggle-row").set_class(self._has_email(), "-on")
 
-    def _setup_nemo_table(self) -> None:
-        """Initialize NEMO DataTable columns and populate rows."""
-        table = self.query_one("#nemo-table", DataTable)
-        if not table.columns:
-            table.add_columns("#", "Address", "Timezone", "Token set?")
-        self._refresh_nemo_table()
-
-    def _refresh_nemo_table(self) -> None:
-        """Clear and reload the NEMO harvesters DataTable."""
-        table = self.query_one("#nemo-table", DataTable)
-        table.clear()
-        for num, hvst in sorted(self._nemo_harvesters.items()):
-            tz_display = hvst.get("tz") or "(from NEMO)"
-            token_set = "Yes" if hvst.get("token") else "No"
-            table.add_row(
-                str(num),
-                hvst.get("address", ""),
-                tz_display,
-                token_set,
-                key=str(num),
-            )
+    def _next_nemo_index(self) -> int:
+        """Return the next available NEMO harvester index."""
+        existing = [
+            int(w.id.split("-")[-1])
+            for w in self.query(".nemo-group")
+            if w.id and w.id.startswith("nemo-group-")
+        ]
+        return max(existing, default=0) + 1
 
     # ---------------------------------------------------------------------- #
     # Event handlers                                                          #
@@ -940,45 +904,18 @@ class ConfigScreen(Screen):
 
     @on(Button.Pressed, "#nemo-add-btn")
     def _on_nemo_add(self) -> None:
-        self.app.push_screen(
-            NemoHarvesterFormScreen(),
-            self._on_nemo_form_result_add,
-        )
+        n = self._next_nemo_index()
+        container = self.query_one("#nemo-groups-container", Vertical)
+        container.mount(self._nemo_group_widget(n, {}))
+        self.app.notify(f"Added NEMO Harvester #{n}", timeout=2)
 
-    @on(Button.Pressed, "#nemo-edit-btn")
-    def _on_nemo_edit(self) -> None:
-        table = self.query_one("#nemo-table", DataTable)
-        if table.row_count == 0:
-            return
-        row_key = table.coordinate_to_cell_key(table.cursor_coordinate).row_key
-        if row_key.value is None:
-            return
-        num = int(row_key.value)
-        existing = self._nemo_harvesters.get(num)
-        if existing is not None:
-            self.app.push_screen(
-                NemoHarvesterFormScreen(existing=dict(existing)),
-                lambda data, n=num: self._on_nemo_form_result_edit(data, n),
-            )
-
-    @on(Button.Pressed, "#nemo-delete-btn")
-    def _on_nemo_delete(self) -> None:
-        table = self.query_one("#nemo-table", DataTable)
-        if table.row_count == 0:
-            return
-        row_key = table.coordinate_to_cell_key(table.cursor_coordinate).row_key
-        if row_key.value is None:
-            return
-        num = int(row_key.value)
-        if num in self._nemo_harvesters:
-            del self._nemo_harvesters[num]
-            self._nemo_harvesters = {
-                new_num: hvst
-                for new_num, (_, hvst) in enumerate(
-                    sorted(self._nemo_harvesters.items()), start=1
-                )
-            }
-            self._refresh_nemo_table()
+    def on_button_pressed(self, event: Button.Pressed) -> None:
+        """Handle delete buttons on individual NEMO harvester groups."""
+        if event.button.has_class("nemo-delete-btn"):
+            group = event.button.parent.parent  # Button → header → group
+            if group is not None:
+                group.remove()
+            event.stop()
 
     @on(Switch.Changed, "#elabftw-enabled")
     def _on_elabftw_toggle(self, event: Switch.Changed) -> None:
@@ -1018,25 +955,6 @@ class ConfigScreen(Screen):
             warning.remove_class("visible")
 
     # ---------------------------------------------------------------------- #
-    # NEMO form callbacks                                                     #
-    # ---------------------------------------------------------------------- #
-
-    def _on_nemo_form_result_add(self, data: dict | None) -> None:
-        if data is None:
-            return
-        next_num = max(self._nemo_harvesters, default=0) + 1
-        self._nemo_harvesters[next_num] = data
-        self._refresh_nemo_table()
-        self.app.notify(f"Added NEMO harvester #{next_num}", timeout=2)
-
-    def _on_nemo_form_result_edit(self, data: dict | None, num: int) -> None:
-        if data is None:
-            return
-        self._nemo_harvesters[num] = data
-        self._refresh_nemo_table()
-        self.app.notify(f"Updated NEMO harvester #{num}", timeout=2)
-
-    # ---------------------------------------------------------------------- #
     # Actions                                                                 #
     # ---------------------------------------------------------------------- #
 
@@ -1063,32 +981,87 @@ class ConfigScreen(Screen):
         except Exception as exc:
             self.app.notify(f"Failed to save: {exc}", severity="error", timeout=6)
 
+    def _has_changes(self) -> bool:
+        """Return True if the current form state differs from the loaded env."""
+        try:
+            current_env = _flatten_to_env(self._build_config_dict())
+        except Exception:
+            return True
+        return current_env != self._initial_env
+
     def action_cancel(self) -> None:
-        """Exit without saving."""
-        self.app.exit()
+        """Exit without saving, prompting if there are unsaved changes."""
+        if not self._has_changes():
+            self.app.exit()
+            return
+        self.app.push_screen(
+            ConfirmDialog(
+                "You have unsaved changes. Exit without saving?",
+                title="Unsaved Changes",
+            ),
+            self._on_cancel_confirmed,
+        )
+
+    def _on_cancel_confirmed(self, confirmed: bool) -> None:
+        if confirmed:
+            self.app.exit()
+
+    def action_next_tab(self) -> None:
+        """Activate the next tab."""
+        self.query_one(TabbedContent).query_one(Tabs).action_next_tab()
+
+    def action_previous_tab(self) -> None:
+        """Activate the previous tab."""
+        self.query_one(TabbedContent).query_one(Tabs).action_previous_tab()
+
+    def _resolve_focused_field_detail(self, focused) -> tuple[str | None, str]:
+        """Return ``(field_name, detail)`` for the currently focused widget."""
+        if isinstance(focused, Input):
+            return self._resolve_input_field_detail(focused)
+        if isinstance(focused, Switch):
+            if focused.id == "nx-disable-ssl-verify":
+                name = "NX_DISABLE_SSL_VERIFY"
+                return name, _fdetail(name)
+        elif isinstance(focused, TextArea):
+            if focused.id == "nx-cert-bundle":
+                name = "NX_CERT_BUNDLE"
+                return name, _fdetail(name)
+        elif isinstance(focused, Select):
+            return self._resolve_select_field_detail(focused)
+        return None, ""
+
+    def _resolve_input_field_detail(self, focused: Input) -> tuple[str | None, str]:
+        """Return ``(field_name, detail)`` for a focused Input widget."""
+        input_id = focused.id or ""
+        mapping = _INPUT_ID_TO_FIELD.get(input_id)
+        if mapping:
+            model_class, field_name = mapping
+            detail = (
+                _fdetail(field_name)
+                if model_class == "settings"
+                else _edetail(field_name)
+            )
+            return field_name, detail
+        for prefix, nemo_field in _NEMO_INPUT_PREFIX_TO_FIELD.items():
+            if input_id.startswith(prefix):
+                field_name = f"NX_NEMO_{nemo_field.upper()}_N"
+                return field_name, _ndetail(nemo_field)
+        return None, ""
+
+    def _resolve_select_field_detail(self, focused: Select) -> tuple[str | None, str]:
+        """Return ``(field_name, detail)`` for a focused Select widget."""
+        select_id_map = {
+            "nx-file-strategy": "NX_FILE_STRATEGY",
+            "nx-export-strategy": "NX_EXPORT_STRATEGY",
+        }
+        name = select_id_map.get(focused.id or "")
+        if name:
+            return name, _fdetail(name)
+        return None, ""
 
     def action_show_field_detail(self) -> None:
         """Show extended help popup for the currently focused input or select."""
-        focused = self.screen.focused
-        field_name: str | None = None
-        detail: str = ""
-
-        if isinstance(focused, Input):
-            mapping = _INPUT_ID_TO_FIELD.get(focused.id or "")
-            if mapping:
-                model_class, field_name = mapping
-                detail = (
-                    _fdetail(field_name)
-                    if model_class == "settings"
-                    else _edetail(field_name)
-                )
-        elif isinstance(focused, Select):
-            if focused.id == "nx-file-strategy":
-                field_name = "NX_FILE_STRATEGY"
-                detail = _fdetail(field_name)
-            elif focused.id == "nx-export-strategy":
-                field_name = "NX_EXPORT_STRATEGY"
-                detail = _fdetail(field_name)
+        field_name, detail = self._resolve_focused_field_detail(self.screen.focused)
 
         if not field_name or not detail:
             if field_name:
@@ -1192,11 +1165,33 @@ class ConfigScreen(Screen):
             errors.append(msg)
         return errors
 
+    def _validate_nemo(self) -> list[str]:
+        errors: list[str] = []
+        for group in self.query(".nemo-group"):
+            if group.id is None or not group.id.startswith("nemo-group-"):
+                continue
+            n = group.id.split("-")[-1]
+            address = self.query_one(f"#nemo-address-{n}", Input).value.strip()
+            ok, msg = validate_nemo_address(address)
+            if not ok:
+                errors.append(f"Harvester #{n} API Address: {msg}")
+            token = self.query_one(f"#nemo-token-{n}", Input).value.strip()
+            ok, msg = validate_required(token, f"Harvester #{n} API Token")
+            if not ok:
+                errors.append(msg)
+            tz_raw = self.query_one(f"#nemo-tz-{n}", Input).value.strip()
+            if tz_raw:
+                ok, msg = validate_optional_iana_timezone(tz_raw)
+                if not ok:
+                    errors.append(f"Harvester #{n} Timezone: {msg}")
+        return errors
+
     def _validate_all(self) -> list[str]:
         return (
             self._validate_core_paths()
             + self._validate_cdcs()
             + self._validate_file_processing()
+            + self._validate_nemo()
             + self._validate_elabftw()
             + self._validate_email()
         )
@@ -1309,19 +1304,37 @@ class ConfigScreen(Screen):
         ).value
         return config
 
+    def _build_nemo_config(self) -> dict:
+        """Build NEMO harvesters config from inline form groups."""
+        harvesters: dict = {}
+        for i, group in enumerate(self.query(".nemo-group"), start=1):
+            if group.id is None or not group.id.startswith("nemo-group-"):
+                continue
+            n = group.id.split("-")[-1]
+            address = self.query_one(f"#nemo-address-{n}", Input).value.strip()
+            token = self.query_one(f"#nemo-token-{n}", Input).value.strip()
+            tz_raw = self.query_one(f"#nemo-tz-{n}", Input).value.strip()
+            strftime = self.query_one(f"#nemo-strftime-{n}", Input).value.strip()
+            strptime = self.query_one(f"#nemo-strptime-{n}", Input).value.strip()
+            hvst: dict = {
+                "address": address,
+                "token": token,
+                "strftime_fmt": strftime or _DEFAULT_STRFTIME,
+                "strptime_fmt": strptime or _DEFAULT_STRPTIME,
+            }
+            if tz_raw:
+                hvst["tz"] = tz_raw
+            harvesters[str(i)] = hvst
+        return {"nemo_harvesters": harvesters} if harvesters else {}
+
     def _build_config_dict(self) -> dict:
         """Build the nested config dict consumed by ``_flatten_to_env``."""
         config: dict = {}
         config.update(self._build_paths_config())
         config.update(self._build_cdcs_config())
         config.update(self._build_file_config())
+        config.update(self._build_nemo_config())
         config.update(self._build_elabftw_config())
         config.update(self._build_email_config())
         config.update(self._build_ssl_config())
-
-        if self._nemo_harvesters:
-            config["nemo_harvesters"] = {
-                str(num): hvst for num, hvst in sorted(self._nemo_harvesters.items())
-            }
-
         return config

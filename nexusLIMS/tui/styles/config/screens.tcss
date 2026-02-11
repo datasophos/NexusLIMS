@@ -142,65 +142,57 @@ ConfigScreen FormField {
 }
 
 /* NEMO harvesters tab */
-#nemo-table {
-    height: 1fr;
-    margin-top: 1;
+#nemo-groups-container {
+    height: auto;
+}
+
+.nemo-group {
+    height: auto;
+    border: tall $primary 40%;
+    padding: 0 1 1 1;
+    margin: 0 0 1 0;
+    background: $panel 20%;
+}
+
+.nemo-group-header {
+    height: 2;
+    align: left middle;
+    border-bottom: solid $primary 30%;
+    margin-bottom: 0;
+}
+
+.nemo-group-header Button {
+    border: none;
+    height: 1;
+    padding: 0 1;
+    background: $error-muted;
+    color: $text-error;
+}
+
+.nemo-group-header Button:hover {
+    background: $error;
+    color: $text;
+}
+
+.nemo-group-title {
+    width: 1fr;
+    content-align: left middle;
+    text-style: bold;
+    color: $accent;
+}
+
+.nemo-delete-btn {
+    width: auto;
 }
 
 .nemo-action-bar {
     height: 3;
     align: left middle;
+    margin-top: 1;
 }
 
 .nemo-action-bar Button {
     margin-right: 1;
-}
-
-/* =========================================================================
-   NemoHarvesterFormScreen — modal dialog
-   ========================================================================= */
-
-NemoHarvesterFormScreen {
-    align: center middle;
-}
-
-#nemo-dialog {
-    width: 72;
-    height: auto;
-    background: $surface;
-    border: thick $primary;
-    padding: 1 2;
-}
-
-.nemo-dialog-title {
-    text-style: bold;
-    margin-bottom: 1;
-    color: $accent;
-}
-
-#nemo-dialog FormField {
-    height: auto;
-    margin: 0 0 1 0;
-}
-
-#nemo-error {
-    color: $error;
-    display: none;
-    margin: 0 0 1 0;
-}
-
-#nemo-error.visible {
-    display: block;
-}
-
-.nemo-form-buttons {
-    height: 3;
-    align: center middle;
-    margin-top: 1;
-}
-
-.nemo-form-buttons Button {
-    margin: 0 1;
 }
 
 /* =========================================================================
@@ -215,14 +207,15 @@ FieldDetailScreen {
     width: 80;
     height: auto;
     max-height: 30;
-    background: $surface;
+    background: $panel;
+    color: $text;
     border: thick $accent;
     padding: 1 2;
 }
 
 #field-detail-title {
     text-style: bold;
-    color: $accent;
+    color: $primary;
     margin-bottom: 1;
 }
 
@@ -230,7 +223,9 @@ FieldDetailScreen {
     height: 1fr;
     max-height: 20;
     min-height: 4;
-    border: solid $panel;
+    background: $surface;
+    color: $text;
+    border: solid $primary 30%;
     padding: 0 1;
     margin-bottom: 1;
 }

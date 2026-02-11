@@ -147,6 +147,7 @@ extensions = [
     "xsd_documenter",  # Custom XSD documentation extension with D3.js diagrams
     "autodoc2",  # Automatic API documentation generation
     "sphinx_copybutton",  # Add copy buttons to code blocks
+    "config_field_detail",  # Render config field detail text from json_schema_extra
 ]
 
 mermaid_d3_zoom = True
