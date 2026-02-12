@@ -1,0 +1,112 @@
+# {py:mod}`nexusLIMS.tui.apps.config.validators`
+
+```{py:module} nexusLIMS.tui.apps.config.validators
+```
+
+```{autodoc2-docstring} nexusLIMS.tui.apps.config.validators
+:parser: autodoc2_docstrings_parser
+:allowtitles:
+```
+
+## Module Contents
+
+### Functions
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`validate_nemo_address <nexusLIMS.tui.apps.config.validators.validate_nemo_address>`
+  - ```{autodoc2-docstring} nexusLIMS.tui.apps.config.validators.validate_nemo_address
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`validate_optional_url <nexusLIMS.tui.apps.config.validators.validate_optional_url>`
+  - ```{autodoc2-docstring} nexusLIMS.tui.apps.config.validators.validate_optional_url
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`validate_optional_iana_timezone <nexusLIMS.tui.apps.config.validators.validate_optional_iana_timezone>`
+  - ```{autodoc2-docstring} nexusLIMS.tui.apps.config.validators.validate_optional_iana_timezone
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`validate_float_positive <nexusLIMS.tui.apps.config.validators.validate_float_positive>`
+  - ```{autodoc2-docstring} nexusLIMS.tui.apps.config.validators.validate_float_positive
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`validate_float_nonneg <nexusLIMS.tui.apps.config.validators.validate_float_nonneg>`
+  - ```{autodoc2-docstring} nexusLIMS.tui.apps.config.validators.validate_float_nonneg
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`validate_optional_int <nexusLIMS.tui.apps.config.validators.validate_optional_int>`
+  - ```{autodoc2-docstring} nexusLIMS.tui.apps.config.validators.validate_optional_int
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`validate_smtp_port <nexusLIMS.tui.apps.config.validators.validate_smtp_port>`
+  - ```{autodoc2-docstring} nexusLIMS.tui.apps.config.validators.validate_smtp_port
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
+### API
+
+````{py:function} validate_nemo_address(value: str | None) -> tuple[bool, str]
+:canonical: nexusLIMS.tui.apps.config.validators.validate_nemo_address
+
+```{autodoc2-docstring} nexusLIMS.tui.apps.config.validators.validate_nemo_address
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} validate_optional_url(value: str | None, field_name: str = 'URL') -> tuple[bool, str]
+:canonical: nexusLIMS.tui.apps.config.validators.validate_optional_url
+
+```{autodoc2-docstring} nexusLIMS.tui.apps.config.validators.validate_optional_url
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} validate_optional_iana_timezone(value: str | None) -> tuple[bool, str]
+:canonical: nexusLIMS.tui.apps.config.validators.validate_optional_iana_timezone
+
+```{autodoc2-docstring} nexusLIMS.tui.apps.config.validators.validate_optional_iana_timezone
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} validate_float_positive(value: str | None, field_name: str = 'Value') -> tuple[bool, str]
+:canonical: nexusLIMS.tui.apps.config.validators.validate_float_positive
+
+```{autodoc2-docstring} nexusLIMS.tui.apps.config.validators.validate_float_positive
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} validate_float_nonneg(value: str | None, field_name: str = 'Value') -> tuple[bool, str]
+:canonical: nexusLIMS.tui.apps.config.validators.validate_float_nonneg
+
+```{autodoc2-docstring} nexusLIMS.tui.apps.config.validators.validate_float_nonneg
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} validate_optional_int(value: str | None, field_name: str = 'Value') -> tuple[bool, str]
+:canonical: nexusLIMS.tui.apps.config.validators.validate_optional_int
+
+```{autodoc2-docstring} nexusLIMS.tui.apps.config.validators.validate_optional_int
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} validate_smtp_port(value: str | None) -> tuple[bool, str]
+:canonical: nexusLIMS.tui.apps.config.validators.validate_smtp_port
+
+```{autodoc2-docstring} nexusLIMS.tui.apps.config.validators.validate_smtp_port
+:parser: autodoc2_docstrings_parser
+```
+````
