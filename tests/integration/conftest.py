@@ -138,7 +138,7 @@ def pytest_configure(config):
 @pytest.fixture(autouse=True)
 def reset_caches_between_tests():
     """
-    Reset singletons between integration tests without recreating database.
+    Reset singletons after integration tests to prevent pollution.
 
     Integration tests use a persistent session-scoped database (expensive to
     recreate), but we still need to clear caches to prevent pollution between
@@ -150,9 +150,9 @@ def reset_caches_between_tests():
 
     Notes
     -----
-    This is a critical defense against test pollution. Without it, changes
-    to settings or cached data in one test can leak into subsequent tests,
-    causing mysterious failures that are hard to debug.
+    We reset AFTER tests rather than BEFORE because session-scoped fixtures
+    (like populated_test_database) need to run once at the start. Resetting
+    before tests would interfere with these fixtures.
 
     What gets reset:
     - Instrument cache (forces reload from database)
@@ -167,7 +167,7 @@ def reset_caches_between_tests():
 
     yield  # Test runs first
 
-    # After test: reset caches so next test reloads from database
+    # AFTER test: reset caches so next test starts clean
     SingletonResetter.reset_instrument_cache()
     SingletonResetter.reset_settings()
     SingletonResetter.reset_emg_cache()
@@ -1409,7 +1409,7 @@ def test_database(tmp_path, monkeypatch):
     # Cleanup is automatic via tmp_path
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def populated_test_database(docker_services, mock_tools_data):
     """
     Populate the session-scoped test database with sample instruments.
@@ -1441,18 +1441,21 @@ def populated_test_database(docker_services, mock_tools_data):
     """
     import sqlite3
 
-    from nexusLIMS.config import settings
     from tests.fixtures.test_data import INSTRUMENTS
 
-    # Use the session-scoped database
-    db_path = settings.NX_DB_PATH
+    # Use the session-scoped database (created by pytest_configure and docker_services)
+    db_path = TEST_DATA_DIR / "integration_test.db"
 
     # Build instruments from mock tools data using unified configurations
     # Map tool IDs to instrument PIDs from unified test data
+    # Note: Tool ID 10 is used for TWO different purposes:
+    #   - test-tool-10: For NEMO API integration tests
+    #   - TEST-TOOL: For multi-signal file testing (has different filestore_path)
+    # We create both instruments, using the mock tool name for test-tool-10
     tool_id_to_pid = {
         1: "FEI-Titan-STEM",  # 643 Titan (S)TEM
         3: "FEI-Titan-TEM",  # 642 FEI Titan
-        10: "TEST-TOOL",  # Test Tool (unified PID)
+        10: "test-tool-10",  # Test tool for NEMO API tests
     }
 
     instruments = []
@@ -1477,6 +1480,27 @@ def populated_test_database(docker_services, mock_tools_data):
                     "timezone": config["timezone"],
                 }
             )
+
+    # Also add TEST-TOOL for multi-signal integration testing
+    # This instrument uses a different filestore_path (./Nexus_Test_Instrument)
+    # where the multi_signal_test_files fixture places test files
+    # NOTE: Uses tool ID 10 same as test-tool-10 since the multi_signal tests
+    # manually create reservation data for usage event 999 which is for tool 10
+    test_tool_config = INSTRUMENTS["TEST-TOOL"]
+    instruments.append(
+        {
+            "instrument_pid": test_tool_config["instrument_pid"],
+            # Use unique test API URL to avoid UNIQUE constraint on api_url
+            "api_url": f"{NEMO_URL}tools/?id=999",  # Dummy tool ID for unique URL
+            "calendar_url": test_tool_config["calendar_url"],
+            "location": test_tool_config["location"],
+            "display_name": "Test Tool (Multi-signal)",  # Distinguish from test-tool-10
+            "property_tag": test_tool_config["property_tag"],
+            "filestore_path": test_tool_config["filestore_path"],
+            "harvester": "nemo",  # Use NEMO harvester with tool ID 999
+            "timezone": test_tool_config["timezone"],
+        }
+    )
 
     # Insert instruments into database (or update if they exist)
     conn = sqlite3.connect(db_path)

@@ -66,7 +66,7 @@ INSTRUMENTS = {
         "harvester": "nemo",
         "timezone": "America/Chicago",
     },
-    # Unified test instrument PID (replaces both "TEST-TOOL" and "TEST-TOOL")
+    # Primary test instrument (replaces "testtool-TEST-A1234567")
     "TEST-TOOL": {
         "instrument_pid": "TEST-TOOL",
         "api_url": "https://nemo.example.com/api/tools/?id=6",
@@ -75,6 +75,18 @@ INSTRUMENTS = {
         "display_name": "Test Tool",
         "property_tag": "TEST-TOOL-001",
         "filestore_path": "./Nexus_Test_Instrument",
+        "harvester": "nemo",
+        "timezone": "America/Denver",
+    },
+    # Secondary test instrument for NEMO API testing (tool ID 10)
+    "test-tool-10": {
+        "instrument_pid": "test-tool-10",
+        "api_url": "https://nemo.example.com/api/tools/?id=10",
+        "calendar_url": "https://nemo.example.com/calendar/test-tool-10/",
+        "location": "Test Building Room 100",
+        "display_name": "Test Tool 10",
+        "property_tag": "TEST-TOOL-010",
+        "filestore_path": "./Test_Tool_10",
         "harvester": "nemo",
         "timezone": "America/Denver",
     },
@@ -116,6 +128,12 @@ SESSION_DATES = {
         "end": datetime(2021, 8, 2, 18, 0, 0, tzinfo=TZ_MOUNTAIN),
         "user": "test_user",
         "session_id": "https://nemo.example.com/api/usage_events/?id=505",
+    },
+    "test-tool-10": {
+        "start": datetime(2021, 9, 15, 11, 0, 0, tzinfo=TZ_MOUNTAIN),
+        "end": datetime(2021, 9, 15, 15, 0, 0, tzinfo=TZ_MOUNTAIN),
+        "user": "test_user_10",
+        "session_id": "https://nemo.example.com/api/usage_events/?id=606",
     },
 }
 

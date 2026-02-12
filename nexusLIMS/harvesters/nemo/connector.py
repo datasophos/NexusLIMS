@@ -3,7 +3,7 @@
 import logging
 from datetime import datetime
 from typing import Any, List, Tuple, Union
-from urllib.parse import parse_qs, urljoin, urlparse
+from urllib.parse import parse_qs, quote, urlencode, urljoin, urlparse
 
 from pytz import timezone as pytz_timezone
 
@@ -275,6 +275,10 @@ class NemoConnector:
             Raised if the request to the API did not go through correctly
         """
         params = {}
+
+        # Check if user_id is None - return all users
+        if user_id is None:
+            return self._get_users_helper(params)
 
         # list of user ids
         if hasattr(user_id, "__iter__"):
@@ -561,23 +565,28 @@ class NemoConnector:
         # there were no tools for this connector in our DB, or the tools
         # specified were not found in the DB, so we know there are no
         # usage_events of interest
-        this_connectors_tools = self.get_known_tool_ids()
-        if tool_id is None:
-            # by default (no tool_id specified), we should fetch events from
-            # only the tools known to the NexusLIMS DB for this connector
-            tool_id = this_connectors_tools
-        if isinstance(tool_id, int):
-            # coerce tool_id to list to make subsequent processing easier
-            tool_id = [tool_id]
+        #
+        # NOTE: Skip tool_id filtering if event_id is specified, since an event ID
+        # uniquely identifies an event and adding tool_id__in causes NEMO API
+        # to reject the request with 400 Bad Request
+        if event_id is None:
+            this_connectors_tools = self.get_known_tool_ids()
+            if tool_id is None:
+                # by default (no tool_id specified), we should fetch events from
+                # only the tools known to the NexusLIMS DB for this connector
+                tool_id = this_connectors_tools
+            if isinstance(tool_id, int):
+                # coerce tool_id to list to make subsequent processing easier
+                tool_id = [tool_id]
 
-        # limit tool_id to values that are present in this_connectors_tools
-        tool_id = [i for i in tool_id if i in this_connectors_tools]
+            # limit tool_id to values that are present in this_connectors_tools
+            tool_id = [i for i in tool_id if i in this_connectors_tools]
 
-        # if tool_id is empty, we should just return
-        if not tool_id:
-            return []
+            # if tool_id is empty, we should just return
+            if not tool_id:
+                return []
 
-        params.update({"tool_id__in": ",".join([str(i) for i in tool_id])})
+            params.update({"tool_id__in": ",".join([str(i) for i in tool_id])})
 
         usage_events = self._api_caller("GET", "usage_events/", params)
 
@@ -783,6 +792,66 @@ class NemoConnector:
 
         return users
 
+    def _build_url_with_params(self, base_url: str, params: dict | None) -> str:
+        """
+        Build URL with query string, preserving unencoded commas for __in filters.
+
+        Django's ORM expects __in filter syntax like: ?tool_id__in=1,3,10,999
+        The requests library would encode this as: ?tool_id__in=1%2C3%2C10%2C999
+        which breaks Django's queryset filtering because Django splits on commas:
+        ``queryset.filter(tool_id__in=request.GET.get('tool_id__in').split(','))``
+
+        This method manually constructs the query string to keep commas unencoded
+        in __in filter values while still properly encoding other special characters.
+
+        Parameters
+        ----------
+        base_url
+            The base URL without query parameters
+        params
+            Dictionary of query parameters. Keys ending with '__in' will have
+            their comma-separated values preserved without encoding the commas.
+
+        Returns
+        -------
+        str
+            Complete URL with properly encoded query string
+
+        Examples
+        --------
+        >>> connector._build_url_with_params(
+        ...     "http://api.example.com/events/",
+        ...     {"tool_id__in": "1,3,10", "start": "2025-01-01T00:00:00"}
+        ... )
+        'http://api.example.com/events/?start=2025-01-01T00%3A00%3A00&tool_id__in=1,3,10'
+        """
+        if not params:
+            return base_url
+
+        # Separate __in parameters from regular parameters
+        in_params = {k: v for k, v in params.items() if k.endswith("__in")}
+        regular_params = {k: v for k, v in params.items() if not k.endswith("__in")}
+
+        # Build query string components
+        query_parts = []
+
+        # Add regular params (URL-encoded via urlencode)
+        if regular_params:
+            query_parts.append(urlencode(regular_params))
+
+        # Add __in params (manually constructed with unencoded commas)
+        for key, value in in_params.items():
+            # Quote the key and value but preserve commas in the value
+            encoded_key = quote(key, safe="")
+            # safe=',' tells quote() to not encode commas
+            encoded_value = quote(str(value), safe=",")
+            query_parts.append(f"{encoded_key}={encoded_value}")
+
+        # Combine base URL with query string
+        query_string = "&".join(query_parts)
+        separator = "&" if "?" in base_url else "?"
+        return f"{base_url}{separator}{query_string}"
+
     def _api_caller(
         self,
         verb: str,
@@ -816,13 +885,15 @@ class NemoConnector:
         results
             The API response, formatted as a list of dict objects
         """
-        url = urljoin(self.config["base_url"], endpoint)
-        _logger.info("getting data from %s with parameters %s", url, params)
+        base_url = urljoin(self.config["base_url"], endpoint)
+        # Build complete URL with custom encoding for __in filters
+        url = self._build_url_with_params(base_url, params)
+        _logger.info("getting data from %s", url)
         response = nexus_req(
             url,
             verb,
             token_auth=self.config["token"],
-            params=params,
+            params=None,  # Already included in URL
             retries=self.config["retries"],
         )
         response.raise_for_status()

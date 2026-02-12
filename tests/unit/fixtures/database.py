@@ -193,5 +193,6 @@ INSTRUMENT_CONFIGS = {
         "FEI-Quanta-ESEM",
         "JEOL-JEM-TEM",
         "TEST-TOOL",
+        "test-tool-10",
     ]
 }
