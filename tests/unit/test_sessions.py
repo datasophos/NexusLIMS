@@ -18,7 +18,7 @@ from nexusLIMS.utils.time import current_system_tz
 from .test_instrument_factory import make_test_tool
 
 
-@pytest.mark.needs_db(instruments=["testtool-TEST-A1234567"], sessions=True)
+@pytest.mark.needs_db(instruments=["TEST-TOOL"], sessions=True)
 class TestSession:
     """Test the Session class representing a unit of time on an instrument."""
 
@@ -37,9 +37,7 @@ class TestSession:
 
     def test_session_repr(self, session):
         assert (
-            repr(session) == "2020-02-04T09:00:00 to "
-            "2020-02-04T12:00:00 on "
-            "testtool-TEST-A1234567"
+            repr(session) == "2020-02-04T09:00:00 to 2020-02-04T12:00:00 on TEST-TOOL"
         )
 
     @pytest.mark.usefixtures("_cleanup_session_log")
@@ -86,7 +84,7 @@ class TestSession:
                 db_session.commit()
 
 
-@pytest.mark.needs_db(instruments=["testtool-TEST-A1234567"])
+@pytest.mark.needs_db(instruments=["TEST-TOOL"])
 class TestSessionLog:
     """
     Test the SessionLog class.
@@ -101,7 +99,7 @@ class TestSessionLog:
         # Depend on db_context to ensure test database setup
         return SessionLog(
             session_identifier="testing-session-log",
-            instrument="testtool-TEST-A1234567",
+            instrument="TEST-TOOL",
             timestamp=dt.fromisoformat("2020-02-04T09:00:00"),
             event_type=EventType.START,
             user="ear1",
@@ -127,7 +125,7 @@ class TestSessionLog:
         assert (
             repr(sl) == "SessionLog "
             "(id=testing-session-log, "
-            "instrument=testtool-TEST-A1234567, "
+            "instrument=TEST-TOOL, "
             "timestamp=2020-02-04 09:00:00, "
             "event_type=START, "
             "user=ear1, "
@@ -154,7 +152,7 @@ class TestSessionLog:
         # Create a session log to insert
         sl = SessionLog(
             session_identifier="testing-session-log",
-            instrument="testtool-TEST-A1234567",
+            instrument="TEST-TOOL",
             timestamp=dt.fromisoformat("2020-02-04T09:00:00"),
             event_type=EventType.START,
             user="ear1",
@@ -166,7 +164,7 @@ class TestSessionLog:
         # Create another SessionLog with same data
         sl2 = SessionLog(
             session_identifier="testing-session-log",
-            instrument="testtool-TEST-A1234567",
+            instrument="TEST-TOOL",
             timestamp=dt.fromisoformat("2020-02-04T09:00:00"),
             event_type=EventType.START,
             user="ear1",
@@ -196,7 +194,7 @@ class TestSessionLog:
         # Verify the content of the returned log (use hardcoded expected values)
         found_log = test_logs[0]
         assert found_log.session_identifier == "testing-session-log"
-        assert found_log.instrument == "testtool-TEST-A1234567"
+        assert found_log.instrument == "TEST-TOOL"
         assert found_log.timestamp == dt.fromisoformat("2020-02-04T09:00:00")
         assert found_log.event_type == EventType.START
         assert found_log.user == "ear1"

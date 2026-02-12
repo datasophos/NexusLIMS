@@ -107,7 +107,7 @@ class TestNemoConnectorUsers:
         "FEI-Titan-TEM",
         "FEI-Quanta-ESEM",
         "JEOL-JEM-TEM",
-        "testtool-TEST-A1234567",
+        "TEST-TOOL",
         "test-tool-10",
     ]
 )
@@ -165,7 +165,7 @@ class TestNemoConnectorTools:
         # Test database has:
         #   FEI-Titan-STEM: id=1, FEI-Titan-TEM: id=2,
         #   FEI-Quanta-ESEM: id=3, JEOL-JEM-TEM: id=5,
-        #   testtool-TEST-A1234567: id=6, test-tool-10: id=10
+        #   TEST-TOOL: id=6, test-tool-10: id=10
         assert len(tool_ids) == 6
         for t_id in [1, 2, 3, 5, 6, 10]:
             assert t_id in tool_ids

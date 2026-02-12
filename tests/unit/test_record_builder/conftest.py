@@ -35,7 +35,7 @@ def mock_nemo_reservation_fixture(monkeypatch):
             "sample_pid": "sample-thinfilm-003",
             "project": "Thin Film Analysis",
         },
-        "testtool-TEST-A1234567": {
+        "TEST-TOOL": {
             "title": "EDX spectroscopy of platinum-nickel alloys",
             "user_name": "Test User",
             "purpose": "Determine composition of Pt-Ni alloy samples",
@@ -49,7 +49,7 @@ def mock_nemo_reservation_fixture(monkeypatch):
         """Return a mock ReservationEvent with data specific to each instrument."""
         data = reservation_data.get(
             session.instrument.name,
-            reservation_data["testtool-TEST-A1234567"],
+            reservation_data["TEST-TOOL"],
         )
         return ReservationEvent(
             experiment_title=data["title"],

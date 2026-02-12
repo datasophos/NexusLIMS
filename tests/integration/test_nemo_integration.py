@@ -323,7 +323,7 @@ class TestNemoReservationHarvesting:
         #       2021-08-02T16:00:00-06:00
         session = _create_session_from_iso_timestamps(
             session_identifier="test-session-123",
-            instrument_pid="TEST-TOOL-010",
+            instrument_pid="TEST-TOOL",
             start_iso="2021-08-02T11:00:00-06:00",
             end_iso="2021-08-02T16:00:00-06:00",
             user="testuser",
@@ -361,7 +361,7 @@ class TestNemoReservationHarvesting:
         """
         session = _create_session_from_iso_timestamps(
             session_identifier="test-session-123",
-            instrument_pid="TEST-TOOL-010",
+            instrument_pid="TEST-TOOL",
             start_iso="2021-08-04T09:00:00-06:00",
             end_iso="2021-08-04T17:40:00-06:00",
             user="testuser",
@@ -379,7 +379,7 @@ class TestNemoReservationHarvesting:
         # this time range should have no reservations in NEMO
         session = _create_session_from_iso_timestamps(
             session_identifier="test-session-123",
-            instrument_pid="TEST-TOOL-010",
+            instrument_pid="TEST-TOOL",
             start_iso="2024-08-04T09:00:00-06:00",
             end_iso="2024-08-04T17:40:00-06:00",
             user="testuser",
@@ -525,7 +525,7 @@ class TestNemoErrorHandling:
         # Create a session that doesn't overlap with any reservations
         session = Session(
             session_identifier="test-session-no-overlap",
-            instrument=test_instrument_db.get("TEST-TOOL-010"),
+            instrument=test_instrument_db.get("TEST-TOOL"),
             dt_range=(
                 datetime.fromisoformat("2024-01-01T10:00:00-06:00"),
                 datetime.fromisoformat("2024-01-01T12:00:00-06:00"),
@@ -545,7 +545,7 @@ class TestNemoErrorHandling:
         # Create a session for a future date with no reservations
         session = Session(
             session_identifier="test-session-future",
-            instrument=test_instrument_db.get("TEST-TOOL-010"),
+            instrument=test_instrument_db.get("TEST-TOOL"),
             dt_range=(
                 datetime.fromisoformat("2100-01-01T10:00:00-06:00"),
                 datetime.fromisoformat("2100-01-01T12:00:00-06:00"),
@@ -746,7 +746,7 @@ class TestNemoUtilityFunctions:
     ):
         """Test get_connector_for_session function."""
         # Create a session with an instrument from the test database
-        instrument = test_instrument_db.get("TEST-TOOL-010")
+        instrument = test_instrument_db.get("TEST-TOOL")
         session = Session(
             session_identifier="test-session",
             instrument=instrument,
@@ -863,7 +863,7 @@ class TestNemoEndToEndWorkflow:
         # 1. Create session from known reservation
         session = _create_session_from_iso_timestamps(
             session_identifier="test-workflow-session",
-            instrument_pid="TEST-TOOL-010",
+            instrument_pid="TEST-TOOL",
             start_iso="2021-08-02T11:00:00-06:00",
             end_iso="2021-08-02T16:00:00-06:00",
             user="testuser",
@@ -926,7 +926,7 @@ class TestNemoUsageEventQuestions:
         # Create session from usage event
         session = _create_session_from_iso_timestamps(
             session_identifier=f"{NEMO_URL}api/usage_events/?id=100",
-            instrument_pid="TEST-TOOL-010",
+            instrument_pid="TEST-TOOL",
             start_iso="2024-01-15T10:00:00-05:00",
             end_iso="2024-01-15T15:00:00-05:00",
             user="ned",
@@ -961,7 +961,7 @@ class TestNemoUsageEventQuestions:
         # Create session from usage event
         session = _create_session_from_iso_timestamps(
             session_identifier=f"{NEMO_URL}api/usage_events/?id=101",
-            instrument_pid="TEST-TOOL-010",
+            instrument_pid="TEST-TOOL",
             start_iso="2024-01-16T10:00:00-05:00",
             end_iso="2024-01-16T15:00:00-05:00",
             user="professor",
@@ -996,7 +996,7 @@ class TestNemoUsageEventQuestions:
         # Create session from usage event
         session = _create_session_from_iso_timestamps(
             session_identifier=f"{NEMO_URL}api/usage_events/?id=102",
-            instrument_pid="TEST-TOOL-010",
+            instrument_pid="TEST-TOOL",
             start_iso="2024-01-17T10:00:00-05:00",
             end_iso="2024-01-17T15:00:00-05:00",
             user="ned",
@@ -1026,7 +1026,7 @@ class TestNemoUsageEventQuestions:
         # Create session from usage event
         session = _create_session_from_iso_timestamps(
             session_identifier=f"{NEMO_URL}api/usage_events/?id=103",
-            instrument_pid="TEST-TOOL-010",
+            instrument_pid="TEST-TOOL",
             start_iso="2024-01-18T10:00:00-05:00",
             end_iso="2024-01-18T15:00:00-05:00",
             user="professor",
@@ -1056,7 +1056,7 @@ class TestNemoUsageEventQuestions:
         # Create session from usage event
         session = _create_session_from_iso_timestamps(
             session_identifier=f"{NEMO_URL}api/usage_events/?id=104",
-            instrument_pid="TEST-TOOL-010",
+            instrument_pid="TEST-TOOL",
             start_iso="2024-01-19T10:00:00-05:00",
             end_iso="2024-01-19T15:00:00-05:00",
             user="ned",
@@ -1089,7 +1089,7 @@ class TestNemoUsageEventQuestions:
         # Create session that matches reservation 187 time window
         session = _create_session_from_iso_timestamps(
             session_identifier=f"{NEMO_URL}api/usage_events/?id=105",
-            instrument_pid="TEST-TOOL-010",
+            instrument_pid="TEST-TOOL",
             start_iso="2021-08-02T11:00:00-06:00",
             end_iso="2021-08-02T16:00:00-06:00",
             user="ned",
@@ -1122,7 +1122,7 @@ class TestNemoUsageEventQuestions:
         # Create session that matches reservation 187 time window
         session = _create_session_from_iso_timestamps(
             session_identifier=f"{NEMO_URL}api/usage_events/?id=106",
-            instrument_pid="TEST-TOOL-010",
+            instrument_pid="TEST-TOOL",
             start_iso="2021-08-02T11:00:00-06:00",
             end_iso="2021-08-02T16:00:00-06:00",
             user="ned",

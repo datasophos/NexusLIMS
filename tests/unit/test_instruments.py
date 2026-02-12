@@ -49,7 +49,7 @@ class TestInstruments:
         # Test that we can find the test instrument by its filepath
         # The test database contains TEST-INSTRUMENT-001 with
         # filestore_path = "./NexusLIMS/test_files"  # noqa: ERA001
-        test_instrument = instrument_db.get("testtool-TEST-A1234567")
+        test_instrument = instrument_db.get("TEST-TOOL")
         if test_instrument is not None:
             # Construct a path under this instrument's filestore path
             path = (

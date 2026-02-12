@@ -33,7 +33,8 @@ TEST_PROJECT_NAME = "Test Project"
 TEST_PROJECT_ID = 1
 
 # Test instrument information
-TEST_INSTRUMENT_PID = "testtool-TEST-A1234567"
+# UPDATED: Use unified test instrument PID from test_data.py
+TEST_INSTRUMENT_PID = "TEST-TOOL"
 TEST_INSTRUMENT_SCHEMA_NAME = "Test Tool"
 
 

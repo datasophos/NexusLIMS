@@ -80,20 +80,99 @@ from .utils import delete_files, extract_files  # noqa: E402
 
 
 @pytest.fixture(autouse=True)
+def reset_unit_test_environment(request):
+    """
+    Reset all singletons before and after each unit test.
+
+    This fixture ensures complete isolation between unit tests by resetting
+    all module-level singletons (database engine, instrument cache, settings,
+    etc.) before each test runs.
+
+    Skips tests marked with @pytest.mark.needs_db as those tests use db_context
+    which handles engine/cache reset internally to avoid conflicts.
+
+    Parameters
+    ----------
+    request : pytest.FixtureRequest
+        Pytest request object to check for markers
+
+    Notes
+    -----
+    This is the primary defense against test pollution in the unit test suite.
+    It runs before db_context, file_context, and other resource fixtures to
+    ensure a clean slate.
+    """
+    from tests.fixtures.core import SingletonResetter
+
+    # Skip if test uses db_context (marker-based database)
+    # db_context handles its own engine/cache management
+    if request.node.get_closest_marker("needs_db"):
+        yield
+        return
+
+    # Reset all singletons before test
+    SingletonResetter.reset_all()
+
+    yield  # Test runs here
+
+    # Reset all singletons after test to prevent pollution
+    SingletonResetter.reset_all()
+
+
+@pytest.fixture(autouse=True)
 def clear_settings_cache():
     """
-    Clear settings cache after each test to prevent pollution.
+    Clear settings cache before and after each test to prevent pollution.
 
     This ensures that any environment variable changes made during a test
     don't leak into subsequent tests. Tests that modify environment variables
     should call refresh_settings() to pick up the changes.
-    """
-    yield
 
-    # Clear the settings cache so next test gets fresh settings
+    Notes
+    -----
+    This fixture is kept for backwards compatibility and as an additional
+    safety net. The primary cleanup is now handled by reset_unit_test_environment.
+    """
+    # Clear BEFORE test (in case previous test left pollution)
     from nexusLIMS.config import clear_settings
 
     clear_settings()
+
+    yield  # Test runs here
+
+    # Clear AFTER test (to prevent pollution to next test)
+    clear_settings()
+
+
+@pytest.fixture
+def isolated_env():
+    """
+    Provide fully isolated environment for tests that need maximum isolation.
+
+    This fixture is for special cases where a test needs complete isolation
+    from all other tests, including those that might be running in parallel
+    or have left unexpected state.
+
+    Use this fixture when:
+    - Testing singleton behavior itself
+    - Debugging test pollution issues
+    - Tests that modify global state in unusual ways
+
+    Example
+    -------
+    >>> def test_something_with_isolation(isolated_env):
+    ...     # Your test code here
+    ...     pass
+
+    Yields
+    ------
+    None
+        Context manager provides isolation, no value is yielded
+    """
+    from tests.fixtures.core import isolated_environment
+
+    with isolated_environment():
+        yield
 
 
 def pytest_configure(config):

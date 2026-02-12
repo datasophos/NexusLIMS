@@ -143,7 +143,7 @@ class TestQuantaExtractor:
             metadata[0]["nx_meta"]["Creation Time"]
             == "2025-11-17T17:52:13.811711-07:00"
         )
-        assert metadata[0]["nx_meta"]["Instrument ID"] == "testtool-TEST-A1234567"
+        assert metadata[0]["nx_meta"]["Instrument ID"] == "TEST-TOOL"
         data_dimensions = get_field(metadata, "Data Dimensions")
         assert data_dimensions == "(1024, 884)"
         frames_integrated = get_field(metadata, "Frames Integrated")
