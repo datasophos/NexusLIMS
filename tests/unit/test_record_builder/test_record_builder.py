@@ -94,7 +94,7 @@ def skip_preview_generation(monkeypatch):
 
 
 @pytest.mark.needs_db(
-    instruments=["FEI-Titan-TEM", "JEOL-JEM-TEM", "testtool-TEST-A1234567"],
+    instruments=["FEI-Titan-TEM", "JEOL-JEM-TEM", "TEST-TOOL"],
     sessions=True,
 )
 class TestRecordBuilder:
@@ -123,7 +123,7 @@ class TestRecordBuilder:
         # - FEI-Titan-TEM (2018-11-13): 11 files
         #       (8 .dm3 + 2 .ser, .emi excluded, 1 .tif from Tescan)
         # - JEOL-JEM-TEM (2019-07-24): 8 files (.dm3 in subdirs)
-        # - testtool-TEST-A1234567 (2021-08-02): 4 files (.dm3)
+        # - TEST-TOOL (2021-08-02): 4 files (.dm3)
         correct_files_per_session = [11, 8, 4]
 
         file_list_list = []
@@ -545,7 +545,7 @@ class TestRecordBuilder:
         # Updated counts to match 3 test sessions:
         # - FEI-Titan-TEM (2 logs: START + END)
         # - JEOL-JEM-TEM (2 logs: START + END)
-        # - testtool-TEST-A1234567 (2 logs: START + END)
+        # - TEST-TOOL (2 logs: START + END)
         # - 3 RECORD_GENERATION logs added during processing
         total_session_log_count = 9  # 6 original + 3 RECORD_GENERATION
         record_generation_count = 3  # One for each session
@@ -625,16 +625,14 @@ class TestRecordBuilder:
                 f"//{{{NX_NS}}}sample": 1,
             },
             # Nexus Test Instrument session (id=303)
-            "2021-08-02_testtool-TEST-A1234567_303.xml": {
+            "2021-08-02_TEST-TOOL_303.xml": {
                 f"/{{{NX_NS}}}title": "EDX spectroscopy of platinum-nickel alloys",
                 f"//{{{NX_NS}}}acquisitionActivity": 1,
                 f"//{{{NX_NS}}}dataset": 4,
                 f"/{{{NX_NS}}}summary/{{{NX_NS}}}motivation": (
                     "Determine composition of Pt-Ni alloy samples"
                 ),
-                f"/{{{NX_NS}}}summary/{{{NX_NS}}}instrument": (
-                    "testtool-TEST-A1234567"
-                ),
+                f"/{{{NX_NS}}}summary/{{{NX_NS}}}instrument": ("TEST-TOOL"),
                 f"//{{{NX_NS}}}sample": 1,
             },
         }
@@ -908,13 +906,13 @@ class TestRecordBuilder:
     def test_build_record_single_file(self, test_record_files, monkeypatch):
         """Test record builder with a narrow time window that captures only 1 file."""
 
-        # Use testtool-TEST-A1234567 from database with narrow time window
+        # Use TEST-TOOL from database with narrow time window
         # Files are at: 17:00, 17:15, 17:30, 17:45 UTC (10:00, 10:15, 10:30, 10:45 PDT)
         # This window captures only sample_002.dm3 at 17:15 UTC
         def mock_get_sessions():
             all_sessions = session_handler.get_sessions_to_build()
             test_instr = next(
-                s for s in all_sessions if s.instrument.name == "testtool-TEST-A1234567"
+                s for s in all_sessions if s.instrument.name == "TEST-TOOL"
             )
             # Create custom session with narrow window
             return [
@@ -941,7 +939,7 @@ class TestRecordBuilder:
         f = xml_files[0]
         root = etree.parse(f)
 
-        # Verify it used the mock_nemo_reservation data for testtool-TEST-A1234567
+        # Verify it used the mock_nemo_reservation data for TEST-TOOL
         assert (
             root.find(f"/{{{NX_NS}}}title").text
             == "EDX spectroscopy of platinum-nickel alloys"
@@ -954,7 +952,7 @@ class TestRecordBuilder:
         )
         assert (
             root.find(f"/{{{NX_NS}}}summary/{{{NX_NS}}}instrument").get("pid")
-            == "testtool-TEST-A1234567"
+            == "TEST-TOOL"
         )
 
         # remove record
@@ -998,12 +996,10 @@ class TestRecordBuilder:
         )
 
         # Use the Nexus Test Instrument session from fresh_test_db
-        # Filter to get just the testtool-TEST-A1234567 session
+        # Filter to get just the TEST-TOOL session
         def mock_get_sessions():
             all_sessions = session_handler.get_sessions_to_build()
-            return [
-                s for s in all_sessions if s.instrument.name == "testtool-TEST-A1234567"
-            ]
+            return [s for s in all_sessions if s.instrument.name == "TEST-TOOL"]
 
         monkeypatch.setattr(record_builder, "get_sessions_to_build", mock_get_sessions)
 
@@ -1036,7 +1032,7 @@ class TestRecordBuilder:
         assert root.find(f"/{{{NX_NS}}}summary/{{{NX_NS}}}motivation").text == "testing"
         assert (
             root.find(f"/{{{NX_NS}}}summary/{{{NX_NS}}}instrument").get("pid")
-            == "testtool-TEST-A1234567"
+            == "TEST-TOOL"
         )
         assert len(root.findall(f"//{{{NX_NS}}}sample")) == sample_count
 
@@ -1117,7 +1113,7 @@ class TestRecordBuilder:
         - DM3 file with list of signals (LIST_SIGNAL) -- 2 signals
         - Single STEM image file (test_STEM_image.dm3) -- 1 signal
 
-        Files are in the testtool-TEST-A1234567 instrument directory with
+        Files are in the TEST-TOOL instrument directory with
         mtimes set to 2025-06-15 03:00-03:30 UTC (21:00-21:30 MDT on 2025-06-14).
         """
 
@@ -1127,7 +1123,7 @@ class TestRecordBuilder:
         def mock_get_sessions():
             all_sessions = session_handler.get_sessions_to_build()
             test_instr = next(
-                s for s in all_sessions if s.instrument.name == "testtool-TEST-A1234567"
+                s for s in all_sessions if s.instrument.name == "TEST-TOOL"
             )
             # Return a session with a custom time window for multi-signal files
             return [
@@ -1218,7 +1214,7 @@ class TestRecordBuilder:
         # Verify instrument information
         assert (
             root.find(f"/{{{NX_NS}}}summary/{{{NX_NS}}}instrument").get("pid")
-            == "testtool-TEST-A1234567"
+            == "TEST-TOOL"
         )
 
         # Remove record

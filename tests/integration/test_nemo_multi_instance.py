@@ -126,13 +126,13 @@ def multi_instance_instruments(populated_test_database, multi_instance_env):
 
     try:
         # Update existing instruments to point to different NEMO instances
-        # Instrument 1: Update TEST-TOOL-010 to point to instance 1
+        # Instrument 1: Update test-tool-10 to point to instance 1
         cursor.execute(
             """
             UPDATE instruments
             SET timezone = 'America/Denver',
                 api_url = ?
-            WHERE instrument_pid = 'TEST-TOOL-010'
+            WHERE instrument_pid = 'test-tool-10'
             """,
             (f"{NEMO_URL}/api/tools/?id=10",),
         )
@@ -157,7 +157,7 @@ def multi_instance_instruments(populated_test_database, multi_instance_env):
         )
 
         yield {
-            "MULTI-INST-1": test_instrument_db.get("TEST-TOOL-010"),
+            "MULTI-INST-1": test_instrument_db.get("test-tool-10"),
             "MULTI-INST-2": test_instrument_db.get("FEI-Titan-STEM"),
         }
 
@@ -168,7 +168,7 @@ def multi_instance_instruments(populated_test_database, multi_instance_env):
             UPDATE instruments
             SET timezone = 'America/Denver',
                 api_url = ?
-            WHERE instrument_pid = 'TEST-TOOL-010'
+            WHERE instrument_pid = 'test-tool-10'
             """,
             (f"{NEMO_URL}/api/tools/?id=10",),
         )

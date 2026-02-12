@@ -302,8 +302,8 @@ class TestNemoAPIConnectivity:
         all_usage_events = nemo_connector.get_usage_events()
 
         assert isinstance(all_usage_events, list)
-        # Should have at least as many events as our September query
-        assert len(all_usage_events) == 11
+        # Should have 12 events: 11 original + 1 new event (999)
+        assert len(all_usage_events) == 12
 
 
 @pytest.mark.integration
@@ -323,7 +323,7 @@ class TestNemoReservationHarvesting:
         #       2021-08-02T16:00:00-06:00
         session = _create_session_from_iso_timestamps(
             session_identifier="test-session-123",
-            instrument_pid="TEST-TOOL-010",
+            instrument_pid="test-tool-10",
             start_iso="2021-08-02T11:00:00-06:00",
             end_iso="2021-08-02T16:00:00-06:00",
             user="testuser",
@@ -361,7 +361,7 @@ class TestNemoReservationHarvesting:
         """
         session = _create_session_from_iso_timestamps(
             session_identifier="test-session-123",
-            instrument_pid="TEST-TOOL-010",
+            instrument_pid="test-tool-10",
             start_iso="2021-08-04T09:00:00-06:00",
             end_iso="2021-08-04T17:40:00-06:00",
             user="testuser",
@@ -379,7 +379,7 @@ class TestNemoReservationHarvesting:
         # this time range should have no reservations in NEMO
         session = _create_session_from_iso_timestamps(
             session_identifier="test-session-123",
-            instrument_pid="TEST-TOOL-010",
+            instrument_pid="test-tool-10",
             start_iso="2024-08-04T09:00:00-06:00",
             end_iso="2024-08-04T17:40:00-06:00",
             user="testuser",
@@ -525,7 +525,7 @@ class TestNemoErrorHandling:
         # Create a session that doesn't overlap with any reservations
         session = Session(
             session_identifier="test-session-no-overlap",
-            instrument=test_instrument_db.get("TEST-TOOL-010"),
+            instrument=test_instrument_db.get("test-tool-10"),
             dt_range=(
                 datetime.fromisoformat("2024-01-01T10:00:00-06:00"),
                 datetime.fromisoformat("2024-01-01T12:00:00-06:00"),
@@ -545,7 +545,7 @@ class TestNemoErrorHandling:
         # Create a session for a future date with no reservations
         session = Session(
             session_identifier="test-session-future",
-            instrument=test_instrument_db.get("TEST-TOOL-010"),
+            instrument=test_instrument_db.get("test-tool-10"),
             dt_range=(
                 datetime.fromisoformat("2100-01-01T10:00:00-06:00"),
                 datetime.fromisoformat("2100-01-01T12:00:00-06:00"),
@@ -643,9 +643,14 @@ class TestNemoAPIEdgeCases:
     def test_get_usage_events_with_none_parameters(
         self, nemo_connector: NemoConnector, mock_usage_events_data: dict
     ):
-        """Test get_usage_events with all None parameters."""
-        # Should return all usage events (might be limited by API)
-        usage_events = nemo_connector.get_usage_events()
+        """Test get_usage_events with minimal parameters (wide date range)."""
+        from datetime import datetime
+
+        # NEMO API requires either event_id or date range
+        # Provide a wide date range that covers all test data (2018-2025)
+        # Note: Event 999 is in June 2025, so we need to extend to end of 2025
+        dt_range = (datetime(2018, 1, 1), datetime(2026, 1, 1))
+        usage_events = nemo_connector.get_usage_events(dt_range=dt_range)
         assert isinstance(usage_events, list)
         usage_event_ids = {u["id"] for u in usage_events}
         mock_usage_event_ids = {u["id"] for u in mock_usage_events_data}
@@ -669,11 +674,16 @@ class TestNemoAPIEdgeCases:
 
     def test_get_usage_events_with_user_filter(self, nemo_connector: NemoConnector):
         """Test get_usage_events with user parameter."""
+        from datetime import datetime
+
         # Use the user with usage events mock data
         user_id = 3
 
-        # Get usage events for this user
-        usage_events = nemo_connector.get_usage_events(user=user_id)
+        # NEMO API requires either event_id or date range
+        # Provide a wide date range that covers all test data
+        # Note: Event 999 is in June 2025, so we need to extend to end of 2025
+        dt_range = (datetime(2018, 1, 1), datetime(2026, 1, 1))
+        usage_events = nemo_connector.get_usage_events(user=user_id, dt_range=dt_range)
 
         # Should return a list with eight events
         # (IDs 29, 30, 31, 100, 102, 104, 105, 106 from seed data)
@@ -746,7 +756,7 @@ class TestNemoUtilityFunctions:
     ):
         """Test get_connector_for_session function."""
         # Create a session with an instrument from the test database
-        instrument = test_instrument_db.get("TEST-TOOL-010")
+        instrument = test_instrument_db.get("test-tool-10")
         session = Session(
             session_identifier="test-session",
             instrument=instrument,
@@ -802,13 +812,19 @@ class TestNemoUtilityFunctions:
 
     def test_add_all_usage_events_to_db(self, nemo_connector: NemoConnector):
         """Test add_all_usage_events_to_db function with real API."""
+        from datetime import datetime
+
         from nexusLIMS.db.session_handler import get_all_session_logs
 
         # This function writes to the database, so we test that it completes
         # Use filters to limit the scope
-        # Call the function - it should complete without error
+        # NEMO API requires either event_id or date range
+        # Provide a wide date range that covers all test data
+        # Note: Event 999 is in June 2025, so we need to extend to end of 2025
         before_logs = get_all_session_logs()
-        add_all_usage_events_to_db()
+        add_all_usage_events_to_db(
+            dt_from=datetime(2018, 1, 1), dt_to=datetime(2026, 1, 1)
+        )
 
         # Test the contents of the database to ensure it was updated
         # Query the session_log table to verify usage events were added
@@ -816,11 +832,11 @@ class TestNemoUtilityFunctions:
         # Query all session logs
         after_logs = get_all_session_logs()
 
-        # Check that we added exactly 22 new session logs
-        # (2 per usage event * 11 usage events)
+        # Check that we added exactly 24 new session logs
+        # (2 per usage event * 12 usage events: 29-32, 100-106, and 999)
         new_logs_count = len(after_logs) - len(before_logs)
-        assert new_logs_count == 22, (
-            f"Expected 22 new session logs, got {new_logs_count}"
+        assert new_logs_count == 24, (
+            f"Expected 24 new session logs, got {new_logs_count}"
         )
 
         # Also verify that the new logs contain the expected usage event IDs
@@ -833,7 +849,7 @@ class TestNemoUtilityFunctions:
                 event_id = log.session_identifier.split("?id=")[1].split("&")[0]
                 usage_event_ids.add(event_id)
 
-        # We expect usage events 29, 30, 31, and 32, 100, 101, 102, 103, 104, 105, 106
+        # We expect usage events 29-32, 100-106, and 999
         expected_event_ids = {
             "29",
             "30",
@@ -846,6 +862,7 @@ class TestNemoUtilityFunctions:
             "104",
             "105",
             "106",
+            "999",
         }
         assert usage_event_ids == expected_event_ids, (
             f"Expected event IDs {expected_event_ids}, got {usage_event_ids}"
@@ -863,7 +880,7 @@ class TestNemoEndToEndWorkflow:
         # 1. Create session from known reservation
         session = _create_session_from_iso_timestamps(
             session_identifier="test-workflow-session",
-            instrument_pid="TEST-TOOL-010",
+            instrument_pid="test-tool-10",
             start_iso="2021-08-02T11:00:00-06:00",
             end_iso="2021-08-02T16:00:00-06:00",
             user="testuser",
@@ -926,7 +943,7 @@ class TestNemoUsageEventQuestions:
         # Create session from usage event
         session = _create_session_from_iso_timestamps(
             session_identifier=f"{NEMO_URL}api/usage_events/?id=100",
-            instrument_pid="TEST-TOOL-010",
+            instrument_pid="test-tool-10",
             start_iso="2024-01-15T10:00:00-05:00",
             end_iso="2024-01-15T15:00:00-05:00",
             user="ned",
@@ -961,7 +978,7 @@ class TestNemoUsageEventQuestions:
         # Create session from usage event
         session = _create_session_from_iso_timestamps(
             session_identifier=f"{NEMO_URL}api/usage_events/?id=101",
-            instrument_pid="TEST-TOOL-010",
+            instrument_pid="test-tool-10",
             start_iso="2024-01-16T10:00:00-05:00",
             end_iso="2024-01-16T15:00:00-05:00",
             user="professor",
@@ -996,7 +1013,7 @@ class TestNemoUsageEventQuestions:
         # Create session from usage event
         session = _create_session_from_iso_timestamps(
             session_identifier=f"{NEMO_URL}api/usage_events/?id=102",
-            instrument_pid="TEST-TOOL-010",
+            instrument_pid="test-tool-10",
             start_iso="2024-01-17T10:00:00-05:00",
             end_iso="2024-01-17T15:00:00-05:00",
             user="ned",
@@ -1026,7 +1043,7 @@ class TestNemoUsageEventQuestions:
         # Create session from usage event
         session = _create_session_from_iso_timestamps(
             session_identifier=f"{NEMO_URL}api/usage_events/?id=103",
-            instrument_pid="TEST-TOOL-010",
+            instrument_pid="test-tool-10",
             start_iso="2024-01-18T10:00:00-05:00",
             end_iso="2024-01-18T15:00:00-05:00",
             user="professor",
@@ -1056,7 +1073,7 @@ class TestNemoUsageEventQuestions:
         # Create session from usage event
         session = _create_session_from_iso_timestamps(
             session_identifier=f"{NEMO_URL}api/usage_events/?id=104",
-            instrument_pid="TEST-TOOL-010",
+            instrument_pid="test-tool-10",
             start_iso="2024-01-19T10:00:00-05:00",
             end_iso="2024-01-19T15:00:00-05:00",
             user="ned",
@@ -1089,7 +1106,7 @@ class TestNemoUsageEventQuestions:
         # Create session that matches reservation 187 time window
         session = _create_session_from_iso_timestamps(
             session_identifier=f"{NEMO_URL}api/usage_events/?id=105",
-            instrument_pid="TEST-TOOL-010",
+            instrument_pid="test-tool-10",
             start_iso="2021-08-02T11:00:00-06:00",
             end_iso="2021-08-02T16:00:00-06:00",
             user="ned",
@@ -1122,7 +1139,7 @@ class TestNemoUsageEventQuestions:
         # Create session that matches reservation 187 time window
         session = _create_session_from_iso_timestamps(
             session_identifier=f"{NEMO_URL}api/usage_events/?id=106",
-            instrument_pid="TEST-TOOL-010",
+            instrument_pid="test-tool-10",
             start_iso="2021-08-02T11:00:00-06:00",
             end_iso="2021-08-02T16:00:00-06:00",
             user="ned",

@@ -290,7 +290,7 @@ def make_jeol_tem(
 
 
 def make_test_tool(
-    instrument_pid="testtool-TEST-A1234567",
+    instrument_pid="TEST-TOOL",
     display_name="Test Tool",
     filestore_path="./Nexus_Test_Instrument",
     **overrides,
@@ -304,7 +304,7 @@ def make_test_tool(
     Parameters
     ----------
     instrument_pid : str, optional
-        Instrument ID (default: "testtool-TEST-A1234567")
+        Instrument ID (default: "TEST-TOOL")
     display_name : str, optional
         Human-readable instrument name (default: "Test Tool")
     filestore_path : str, optional
@@ -321,7 +321,7 @@ def make_test_tool(
     --------
     >>> tool = make_test_tool()
     >>> tool.name
-    'testtool-TEST-A1234567'
+    'TEST-TOOL'
     """
     defaults = {
         "instrument_pid": instrument_pid,

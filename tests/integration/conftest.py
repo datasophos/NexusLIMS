@@ -131,6 +131,50 @@ def pytest_configure(config):
 
 
 # ============================================================================
+# Test Isolation Fixtures
+# ============================================================================
+
+
+@pytest.fixture(autouse=True)
+def reset_caches_between_tests():
+    """
+    Reset singletons after integration tests to prevent pollution.
+
+    Integration tests use a persistent session-scoped database (expensive to
+    recreate), but we still need to clear caches to prevent pollution between
+    tests. This fixture runs automatically after each test to reset caches
+    while keeping the database intact.
+
+    The database engine itself is NOT reset because it's session-scoped and
+    shared across all integration tests for performance reasons.
+
+    Notes
+    -----
+    We reset AFTER tests rather than BEFORE because session-scoped fixtures
+    (like populated_test_database) need to run once at the start. Resetting
+    before tests would interfere with these fixtures.
+
+    What gets reset:
+    - Instrument cache (forces reload from database)
+    - Settings cache (forces reload from environment)
+    - EMG graph cache (forces reload of glossary)
+
+    What does NOT get reset:
+    - Database engine (session-scoped for performance)
+    - Database contents (managed by per-test fixtures as needed)
+    """
+    from tests.fixtures.core import SingletonResetter
+
+    yield  # Test runs first
+
+    # AFTER test: reset caches so next test starts clean
+    SingletonResetter.reset_instrument_cache()
+    SingletonResetter.reset_settings()
+    SingletonResetter.reset_emg_cache()
+    # Don't reset engine/database - those are session-scoped
+
+
+# ============================================================================
 # Docker Service Management
 # ============================================================================
 
@@ -1365,7 +1409,7 @@ def test_database(tmp_path, monkeypatch):
     # Cleanup is automatic via tmp_path
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def populated_test_database(docker_services, mock_tools_data):
     """
     Populate the session-scoped test database with sample instruments.
@@ -1391,53 +1435,72 @@ def populated_test_database(docker_services, mock_tools_data):
     Uses mock_tools_data from tests/unit/fixtures/nemo_mock_data.py to ensure
     consistency between unit and integration tests. This fixture populates the
     session-scoped database, so instruments persist across tests unless cleared.
+
+    IMPORTANT: Now uses unified instrument configurations from tests.fixtures.test_data
+    to ensure consistency between unit and integration tests.
     """
     import sqlite3
 
-    from nexusLIMS.config import settings
+    from tests.fixtures.test_data import INSTRUMENTS
 
-    # Use the session-scoped database
-    db_path = settings.NX_DB_PATH
+    # Use the session-scoped database (created by pytest_configure and docker_services)
+    db_path = TEST_DATA_DIR / "integration_test.db"
 
-    # Build instruments from mock tools data
-    # Map tool IDs to instrument configurations
-    tool_configs = {
-        1: {  # 643 Titan (S)TEM
-            "instrument_pid": "FEI-Titan-STEM",
-            "property_tag": "STEM_3840284",
-            "filestore_path": "./Titan_STEM",
-        },
-        3: {  # 642 FEI Titan
-            "instrument_pid": "FEI-Titan-TEM",
-            "property_tag": "TEM_12039485",
-            "filestore_path": "./Titan_TEM",
-        },
-        10: {  # Test Tool
-            "instrument_pid": "TEST-TOOL-010",
-            "property_tag": "TEST",
-            "filestore_path": "./Nexus_Test_Instrument",
-        },
+    # Build instruments from mock tools data using unified configurations
+    # Map tool IDs to instrument PIDs from unified test data
+    # Note: Tool ID 10 is used for TWO different purposes:
+    #   - test-tool-10: For NEMO API integration tests
+    #   - TEST-TOOL: For multi-signal file testing (has different filestore_path)
+    # We create both instruments, using the mock tool name for test-tool-10
+    tool_id_to_pid = {
+        1: "FEI-Titan-STEM",  # 643 Titan (S)TEM
+        3: "FEI-Titan-TEM",  # 642 FEI Titan
+        10: "test-tool-10",  # Test tool for NEMO API tests
     }
 
     instruments = []
     for tool in mock_tools_data:
-        if tool["id"] in tool_configs:
-            config = tool_configs[tool["id"]]
+        if tool["id"] in tool_id_to_pid:
+            # Get unified configuration from test_data
+            instrument_pid = tool_id_to_pid[tool["id"]]
+            config = INSTRUMENTS[instrument_pid]
+
+            # Build instrument dict, preferring unified values but using
+            # tool name from mock data for display_name
             instruments.append(
                 {
                     "instrument_pid": config["instrument_pid"],
                     "api_url": f"{NEMO_URL}tools/?id={tool['id']}",
-                    "calendar_url": (
-                        f"{NEMO_BASE_URL}/calendar/{config['property_tag']}-titan/"
-                    ),
-                    "location": "Building 217",
-                    "display_name": tool["name"],
+                    "calendar_url": config["calendar_url"],
+                    "location": config["location"],
+                    "display_name": tool["name"],  # Use NEMO tool name for realism
                     "property_tag": config["property_tag"],
                     "filestore_path": config["filestore_path"],
-                    "harvester": "nemo",
-                    "timezone": "America/Denver",
+                    "harvester": config["harvester"],
+                    "timezone": config["timezone"],
                 }
             )
+
+    # Also add TEST-TOOL for multi-signal integration testing
+    # This instrument uses a different filestore_path (./Nexus_Test_Instrument)
+    # where the multi_signal_test_files fixture places test files
+    # NOTE: Uses tool ID 10 same as test-tool-10 since the multi_signal tests
+    # manually create reservation data for usage event 999 which is for tool 10
+    test_tool_config = INSTRUMENTS["TEST-TOOL"]
+    instruments.append(
+        {
+            "instrument_pid": test_tool_config["instrument_pid"],
+            # Use unique test API URL to avoid UNIQUE constraint on api_url
+            "api_url": f"{NEMO_URL}tools/?id=999",  # Dummy tool ID for unique URL
+            "calendar_url": test_tool_config["calendar_url"],
+            "location": test_tool_config["location"],
+            "display_name": "Test Tool (Multi-signal)",  # Distinguish from test-tool-10
+            "property_tag": test_tool_config["property_tag"],
+            "filestore_path": test_tool_config["filestore_path"],
+            "harvester": "nemo",  # Use NEMO harvester with tool ID 999
+            "timezone": test_tool_config["timezone"],
+        }
+    )
 
     # Insert instruments into database (or update if they exist)
     conn = sqlite3.connect(db_path)
@@ -2157,9 +2220,9 @@ def multi_signal_integration_record(  # noqa: PLR0913, PLR0915
     monkeypatch.setattr(instruments, "instrument_db", test_instrument_db)
 
     # Get the test instrument from database
-    instrument = test_instrument_db.get("TEST-TOOL-010")
+    instrument = test_instrument_db.get("TEST-TOOL")
     if instrument is None:
-        pytest.fail("TEST-TOOL-010 instrument not found in database")
+        pytest.fail("TEST-TOOL instrument not found in database")
 
     # Define session times matching NEMO seed data reservation 999
     session_start = dt.fromisoformat("2025-06-15T02:00:00+00:00")
@@ -2253,7 +2316,7 @@ def multi_signal_integration_record(  # noqa: PLR0913, PLR0915
     from nexusLIMS.config import settings
 
     uploaded_dir = settings.records_dir_path / "uploaded"
-    expected_record_name = f"{session_start.date()}_TEST-TOOL-010_999.xml"
+    expected_record_name = f"{session_start.date()}_TEST-TOOL_999.xml"
     record_path = uploaded_dir / expected_record_name
 
     if not record_path.exists():

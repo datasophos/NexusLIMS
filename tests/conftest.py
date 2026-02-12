@@ -116,3 +116,61 @@ try:
 except ImportError:
     # dotenv not installed, continue without it
     print("[DEBUG] dotenv library not available, skipping environment variable loading")
+
+
+# ============================================================================
+# Pytest Collection Hooks
+# ============================================================================
+
+
+def pytest_collection_modifyitems(config, items):
+    """
+    Auto-mark tests based on their location in the test directory tree.
+
+    This hook automatically adds markers to tests based on their file path,
+    eliminating the need to manually mark each test with @pytest.mark.unit
+    or @pytest.mark.integration decorators.
+
+    Parameters
+    ----------
+    config : pytest.Config
+        Pytest configuration object
+    items : list[pytest.Item]
+        List of collected test items
+
+    Notes
+    -----
+    - Tests in tests/unit/ are marked with 'unit'
+    - Tests in tests/integration/ are marked with 'integration'
+    - Markers can be used with pytest -m unit or pytest -m integration
+    """
+    import pytest
+
+    for item in items:
+        # Convert file path to string for checking
+        test_path = str(item.fspath)
+
+        # Auto-mark unit tests
+        if "tests/unit" in test_path or "tests\\unit" in test_path:
+            item.add_marker(pytest.mark.unit)
+
+        # Auto-mark integration tests
+        elif "tests/integration" in test_path or "tests\\integration" in test_path:
+            item.add_marker(pytest.mark.integration)
+
+
+def pytest_configure(config):
+    """
+    Register custom markers for test categorization.
+
+    This ensures markers appear in pytest --markers output with descriptions.
+    """
+    config.addinivalue_line(
+        "markers",
+        "unit: Unit tests that run without Docker services (auto-added by location)",
+    )
+    config.addinivalue_line(
+        "markers",
+        "integration: Integration tests requiring Docker services "
+        "(auto-added by location)",
+    )

@@ -57,13 +57,16 @@ def mock_users_data():
     return convert_to_python_types(consolidated_data["users"])
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def mock_tools_data():
     """
     Mock NEMO tools API response data from consolidated source.
 
     Based on actual /api/tools/ endpoint structure.
     Returns list of tool dictionaries matching NEMO API schema.
+
+    Note: Session-scoped because it returns static data and is used by
+    session-scoped fixtures in integration tests.
     """
     return convert_to_python_types(consolidated_data["tools"])
 

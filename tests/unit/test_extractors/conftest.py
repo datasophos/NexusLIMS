@@ -45,10 +45,10 @@ def get_field(metadata, field_name, index=0):
 
 @pytest.fixture(name="_test_tool_db")
 def _fixture_test_tool_db(monkeypatch):
-    """Monkeypatch so DM extractor thinks this file came from testtool-TEST-A1234567."""
+    """Monkeypatch so DM extractor thinks this file came from TEST-TOOL."""
     monkeypatch.setattr(
         "nexusLIMS.extractors.digital_micrograph.get_instr_from_filepath",
-        lambda _x: instruments.instrument_db["testtool-TEST-A1234567"],
+        lambda _x: instruments.instrument_db["TEST-TOOL"],
     )
 
 

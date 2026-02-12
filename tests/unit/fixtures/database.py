@@ -12,6 +12,7 @@ from pathlib import Path
 from sqlmodel import SQLModel, create_engine
 
 from nexusLIMS.db.enums import EventType, RecordStatus
+from tests.fixtures.test_data import INSTRUMENTS
 
 
 class DatabaseFactory:
@@ -183,71 +184,15 @@ class DatabaseFactory:
 
 
 # Predefined instrument configurations for common test scenarios
+# Using unified configurations from tests.fixtures.test_data (imported at top)
 INSTRUMENT_CONFIGS = {
-    "FEI-Titan-STEM": {
-        "instrument_pid": "FEI-Titan-STEM",
-        "api_url": "https://nemo.example.com/api/tools/?id=1",
-        "calendar_url": "https://nemo.example.com/calendar/titan-stem/",
-        "location": "Test Building Room 300",
-        "display_name": "Titan TEM",
-        "property_tag": "TEST-STEM-001",
-        "filestore_path": "./Titan_STEM",
-        "harvester": "nemo",
-        "timezone": "America/New_York",
-    },
-    "FEI-Titan-TEM": {
-        "instrument_pid": "FEI-Titan-TEM",
-        "api_url": "https://nemo.example.com/api/tools/?id=2",
-        "calendar_url": "https://nemo.example.com/calendar/titan/",
-        "location": "Test Building Room 301",
-        "display_name": "FEI Titan TEM",
-        "property_tag": "TEST-TEM-001",
-        "filestore_path": "./Titan_TEM",
-        "harvester": "nemo",
-        "timezone": "America/New_York",
-    },
-    "FEI-Quanta-ESEM": {
-        "instrument_pid": "FEI-Quanta-ESEM",
-        "api_url": "https://nemo.example.com/api/tools/?id=3",
-        "calendar_url": "https://nemo.example.com/calendar/quanta/",
-        "location": "Test Building Room 302",
-        "display_name": "Quanta FEG 200",
-        "property_tag": "TEST-SEM-001",
-        "filestore_path": "./Quanta",
-        "harvester": "nemo",
-        "timezone": "America/New_York",
-    },
-    "JEOL-JEM-TEM": {
-        "instrument_pid": "JEOL-JEM-TEM",
-        "api_url": "https://nemo.example.com/api/tools/?id=5",
-        "calendar_url": "https://nemo.example.com/calendar/jeol/",
-        "location": "Test Building Room 303",
-        "display_name": "JEOL JEM-3010",
-        "property_tag": "TEST-JEOL-001",
-        "filestore_path": "./JEOL_TEM",
-        "harvester": "nemo",
-        "timezone": "America/Chicago",
-    },
-    "testtool-TEST-A1234567": {
-        "instrument_pid": "testtool-TEST-A1234567",
-        "api_url": "https://nemo.example.com/api/tools/?id=6",
-        "calendar_url": "https://nemo.example.com/calendar/test-tool/",
-        "location": "Test Building Room 400",
-        "display_name": "Test Tool",
-        "property_tag": "TEST-TOOL-001",
-        "filestore_path": "./Nexus_Test_Instrument",
-        "harvester": "nemo",
-        "timezone": "America/Denver",
-    },
-    "test-tool-10": {
-        "instrument_pid": "test-tool-10",
-        "api_url": "https://nemo.example.com/api/tools/?id=10",
-        "calendar_url": "https://nemo.example.com/calendar/test-tool-10/",
-        "location": "Test Building Room 100",
-        "display_name": "Test Tool",
-        "property_tag": "TEST-TOOL-010",
-        "filestore_path": "./Test_Tool_10",
-        "harvester": "nemo",
-        "timezone": "America/Denver",
-    },
+    key: INSTRUMENTS[key]
+    for key in [
+        "FEI-Titan-STEM",
+        "FEI-Titan-TEM",
+        "FEI-Quanta-ESEM",
+        "JEOL-JEM-TEM",
+        "TEST-TOOL",
+        "test-tool-10",
+    ]
 }
