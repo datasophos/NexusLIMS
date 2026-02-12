@@ -1,0 +1,1266 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Textual Testing Reference &#8212; NexusLIMS pr-73 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=acda69ee" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=c577882c"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=30646c52"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'reference/textual_testing_reference';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'pr-73';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script src="../_static/custom.js?v=ba087cdf"></script>
+    <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/pr-73/reference/textual_testing_reference.html" />
+    <link rel="icon" href="../_static/nexusLIMS_bare_logo.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Frontend Guide" href="../frontend_guide.html" />
+    <link rel="prev" title="Integration Testing Guide" href="../dev_guide/testing/integration-tests.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="pr-73" />
+    <meta name="docbuild:last-update" content="Feb, 12, 2026"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS pr-73 documentation - Home"/>
+    <img src="../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS pr-73 documentation - Home"/>
+  
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../migration_guide.html">
+    Migration Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../dev_guide.html">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../frontend_guide.html">
+    Frontend Guide
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../reference.html">
+    Reference
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datasophos/NexusLIMS" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://datasophos.co" title="Datasophos" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-globe fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Datasophos</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../migration_guide.html">
+    Migration Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../dev_guide.html">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../frontend_guide.html">
+    Frontend Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../reference.html">
+    Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datasophos/NexusLIMS" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://datasophos.co" title="Datasophos" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-globe fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Datasophos</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../dev_guide/development.html">Development introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev_guide/writing_extractor_plugins.html">Writing Extractor Plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev_guide/writing_export_destinations.html">Writing Export Destination Plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev_guide/instrument_profiles.html">Instrument Profiles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev_guide/nexuslims_internal_schema.html">Internal Metadata Schema System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev_guide/em_glossary_reference.html">EM Glossary Field Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev_guide/examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev_guide/uv_migration.html">Migration from Poetry to uv</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev_guide/database.html">NexusLIMS Database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev_guide/schema_documentation.html">XML Schema Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev_guide/testing/integration-tests.html">Integration Testing Guide</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Textual Testing Reference</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../dev_guide.html" class="nav-link">Dev Guide</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Textual Testing Reference</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="textual-testing-reference">
+<h1>Textual Testing Reference<a class="headerlink" href="#textual-testing-reference" title="Link to this heading">#</a></h1>
+<p>Reference guide for testing Textual TUI applications in NexusLIMS.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
+<p>Textual provides built-in testing capabilities for headless execution of TUI apps. Tests use the <code class="docutils literal notranslate"><span class="pre">run_test()</span></code> method and the <code class="docutils literal notranslate"><span class="pre">Pilot</span></code> API to simulate user interactions.</p>
+</section>
+<section id="basic-test-structure">
+<h2>Basic Test Structure<a class="headerlink" href="#basic-test-structure" title="Link to this heading">#</a></h2>
+<section id="async-context-manager-pattern">
+<h3>Async Context Manager Pattern<a class="headerlink" href="#async-context-manager-pattern" title="Link to this heading">#</a></h3>
+<p>All Textual tests use async context managers:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pytest</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">my_app</span><span class="w"> </span><span class="kn">import</span> <span class="n">MyApp</span>
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">test_my_app</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Test basic app functionality.&quot;&quot;&quot;</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">MyApp</span><span class="p">()</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">app</span><span class="o">.</span><span class="n">run_test</span><span class="p">()</span> <span class="k">as</span> <span class="n">pilot</span><span class="p">:</span>
+        <span class="c1"># Test code here</span>
+        <span class="k">assert</span> <span class="n">app</span><span class="o">.</span><span class="n">some_state</span> <span class="o">==</span> <span class="n">expected_value</span>
+</pre></div>
+</div>
+</section>
+<section id="pytest-configuration">
+<h3>Pytest Configuration<a class="headerlink" href="#pytest-configuration" title="Link to this heading">#</a></h3>
+<p>Configure pytest for async tests in <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code>:</p>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[tool.pytest.ini_options]</span>
+<span class="n">asyncio_mode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;auto&quot;</span><span class="w">  </span><span class="c1"># Avoids need for @pytest.mark.asyncio on every test</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="the-pilot-api">
+<h2>The Pilot API<a class="headerlink" href="#the-pilot-api" title="Link to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">Pilot</span></code> object is your primary interface for controlling the app during tests.</p>
+<section id="keyboard-input">
+<h3>Keyboard Input<a class="headerlink" href="#keyboard-input" title="Link to this heading">#</a></h3>
+<section id="pressing-single-keys">
+<h4>Pressing Single Keys<a class="headerlink" href="#pressing-single-keys" title="Link to this heading">#</a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">press</span><span class="p">(</span><span class="s2">&quot;r&quot;</span><span class="p">)</span>          <span class="c1"># Regular key</span>
+<span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">press</span><span class="p">(</span><span class="s2">&quot;enter&quot;</span><span class="p">)</span>      <span class="c1"># Special key</span>
+<span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">press</span><span class="p">(</span><span class="s2">&quot;escape&quot;</span><span class="p">)</span>     <span class="c1"># Another special key</span>
+<span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">press</span><span class="p">(</span><span class="s2">&quot;tab&quot;</span><span class="p">)</span>        <span class="c1"># Tab key</span>
+</pre></div>
+</div>
+</section>
+<section id="typing-sequences">
+<h4>Typing Sequences<a class="headerlink" href="#typing-sequences" title="Link to this heading">#</a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">press</span><span class="p">(</span><span class="s2">&quot;h&quot;</span><span class="p">,</span> <span class="s2">&quot;e&quot;</span><span class="p">,</span> <span class="s2">&quot;l&quot;</span><span class="p">,</span> <span class="s2">&quot;l&quot;</span><span class="p">,</span> <span class="s2">&quot;o&quot;</span><span class="p">)</span>  <span class="c1"># Type &quot;hello&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="key-combinations-modifiers">
+<h4>Key Combinations (Modifiers)<a class="headerlink" href="#key-combinations-modifiers" title="Link to this heading">#</a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">press</span><span class="p">(</span><span class="s2">&quot;ctrl+c&quot;</span><span class="p">)</span>     <span class="c1"># Ctrl+C</span>
+<span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">press</span><span class="p">(</span><span class="s2">&quot;shift+tab&quot;</span><span class="p">)</span>  <span class="c1"># Shift+Tab</span>
+<span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">press</span><span class="p">(</span><span class="s2">&quot;ctrl+s&quot;</span><span class="p">)</span>     <span class="c1"># Ctrl+S</span>
+</pre></div>
+</div>
+</section>
+<section id="common-special-keys">
+<h4>Common Special Keys<a class="headerlink" href="#common-special-keys" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;enter&quot;</span></code> - Enter/Return</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;escape&quot;</span></code> - Escape</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;tab&quot;</span></code> - Tab</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;space&quot;</span></code> - Space bar</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;backspace&quot;</span></code> - Backspace</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;delete&quot;</span></code> - Delete</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;up&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;down&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;left&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;right&quot;</span></code> - Arrow keys</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;home&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;end&quot;</span></code> - Home/End</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;pageup&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;pagedown&quot;</span></code> - Page Up/Down</p></li>
+</ul>
+</section>
+</section>
+<section id="mouse-interactions">
+<h3>Mouse Interactions<a class="headerlink" href="#mouse-interactions" title="Link to this heading">#</a></h3>
+<section id="clicking-widgets">
+<h4>Clicking Widgets<a class="headerlink" href="#clicking-widgets" title="Link to this heading">#</a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Click by CSS selector</span>
+<span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">click</span><span class="p">(</span><span class="s2">&quot;#my-widget-id&quot;</span><span class="p">)</span>
+<span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">click</span><span class="p">(</span><span class="s2">&quot;.my-widget-class&quot;</span><span class="p">)</span>
+<span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">click</span><span class="p">(</span><span class="s2">&quot;Button&quot;</span><span class="p">)</span>  <span class="c1"># By widget type</span>
+
+<span class="c1"># Click at screen coordinates</span>
+<span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">click</span><span class="p">()</span>  <span class="c1"># (0, 0)</span>
+<span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">click</span><span class="p">(</span><span class="n">offset</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>  <span class="c1"># (10, 5)</span>
+
+<span class="c1"># Click with offset relative to widget</span>
+<span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">click</span><span class="p">(</span><span class="s2">&quot;#widget-id&quot;</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+</pre></div>
+</div>
+</section>
+<section id="click-variations">
+<h4>Click Variations<a class="headerlink" href="#click-variations" title="Link to this heading">#</a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Double-click</span>
+<span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">click</span><span class="p">(</span><span class="s2">&quot;#widget-id&quot;</span><span class="p">,</span> <span class="n">times</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="c1"># Triple-click</span>
+<span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">click</span><span class="p">(</span><span class="s2">&quot;#widget-id&quot;</span><span class="p">,</span> <span class="n">times</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="c1"># Click with modifiers</span>
+<span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">click</span><span class="p">(</span><span class="s2">&quot;#widget-id&quot;</span><span class="p">,</span> <span class="n">shift</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">click</span><span class="p">(</span><span class="s2">&quot;#widget-id&quot;</span><span class="p">,</span> <span class="n">control</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">click</span><span class="p">(</span><span class="s2">&quot;#widget-id&quot;</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="hovering">
+<h4>Hovering<a class="headerlink" href="#hovering" title="Link to this heading">#</a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">hover</span><span class="p">(</span><span class="s2">&quot;#widget-id&quot;</span><span class="p">)</span>  <span class="c1"># Trigger hover effects</span>
+<span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">hover</span><span class="p">(</span><span class="s2">&quot;.button&quot;</span><span class="p">)</span>     <span class="c1"># By class</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+<section id="screen-configuration">
+<h2>Screen Configuration<a class="headerlink" href="#screen-configuration" title="Link to this heading">#</a></h2>
+<section id="custom-terminal-size">
+<h3>Custom Terminal Size<a class="headerlink" href="#custom-terminal-size" title="Link to this heading">#</a></h3>
+<p>Set terminal dimensions for testing responsive layouts:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">with</span> <span class="n">app</span><span class="o">.</span><span class="n">run_test</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">50</span><span class="p">))</span> <span class="k">as</span> <span class="n">pilot</span><span class="p">:</span>
+    <span class="c1"># Test with 100 columns × 50 lines</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+<p><strong>Default size:</strong> 80 columns × 24 lines</p>
+</section>
+<section id="testing-different-sizes">
+<h3>Testing Different Sizes<a class="headerlink" href="#testing-different-sizes" title="Link to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">parametrize</span><span class="p">(</span><span class="s2">&quot;size&quot;</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">(</span><span class="mi">80</span><span class="p">,</span> <span class="mi">24</span><span class="p">),</span>   <span class="c1"># Standard</span>
+    <span class="p">(</span><span class="mi">120</span><span class="p">,</span> <span class="mi">40</span><span class="p">),</span>  <span class="c1"># Large</span>
+    <span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="mi">15</span><span class="p">),</span>   <span class="c1"># Small</span>
+<span class="p">])</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">test_responsive_layout</span><span class="p">(</span><span class="n">size</span><span class="p">):</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">MyApp</span><span class="p">()</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">app</span><span class="o">.</span><span class="n">run_test</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">)</span> <span class="k">as</span> <span class="n">pilot</span><span class="p">:</span>
+        <span class="c1"># Verify layout adapts correctly</span>
+        <span class="k">pass</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="synchronization-and-timing">
+<h2>Synchronization and Timing<a class="headerlink" href="#synchronization-and-timing" title="Link to this heading">#</a></h2>
+<section id="waiting-for-message-processing">
+<h3>Waiting for Message Processing<a class="headerlink" href="#waiting-for-message-processing" title="Link to this heading">#</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">pause()</span></code> method waits for all pending messages to be processed:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">pause</span><span class="p">()</span>  <span class="c1"># Wait for message queue to clear</span>
+</pre></div>
+</div>
+</section>
+<section id="adding-delays">
+<h3>Adding Delays<a class="headerlink" href="#adding-delays" title="Link to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">pause</span><span class="p">(</span><span class="n">delay</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>  <span class="c1"># Wait 0.5 seconds before checking queue</span>
+</pre></div>
+</div>
+<p><strong>When to use:</strong></p>
+<ul class="simple">
+<li><p>After actions that trigger async operations</p></li>
+<li><p>When state changes aren’t immediate</p></li>
+<li><p>Before assertions on app state</p></li>
+<li><p>After navigation or screen changes</p></li>
+</ul>
+</section>
+<section id="example-pattern">
+<h3>Example Pattern<a class="headerlink" href="#example-pattern" title="Link to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">test_button_click</span><span class="p">():</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">MyApp</span><span class="p">()</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">app</span><span class="o">.</span><span class="n">run_test</span><span class="p">()</span> <span class="k">as</span> <span class="n">pilot</span><span class="p">:</span>
+        <span class="c1"># Click button</span>
+        <span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">click</span><span class="p">(</span><span class="s2">&quot;#submit-button&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Wait for async processing</span>
+        <span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">pause</span><span class="p">()</span>
+
+        <span class="c1"># Now assert on updated state</span>
+        <span class="k">assert</span> <span class="n">app</span><span class="o">.</span><span class="n">is_submitted</span> <span class="ow">is</span> <span class="kc">True</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="accessing-app-state">
+<h2>Accessing App State<a class="headerlink" href="#accessing-app-state" title="Link to this heading">#</a></h2>
+<section id="query-widgets">
+<h3>Query Widgets<a class="headerlink" href="#query-widgets" title="Link to this heading">#</a></h3>
+<p>Use Textual’s query API to find and inspect widgets:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">test_widget_state</span><span class="p">():</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">MyApp</span><span class="p">()</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">app</span><span class="o">.</span><span class="n">run_test</span><span class="p">()</span> <span class="k">as</span> <span class="n">pilot</span><span class="p">:</span>
+        <span class="c1"># Get single widget</span>
+        <span class="n">button</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">query_one</span><span class="p">(</span><span class="s2">&quot;#my-button&quot;</span><span class="p">,</span> <span class="n">Button</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">button</span><span class="o">.</span><span class="n">label</span> <span class="o">==</span> <span class="s2">&quot;Click Me&quot;</span>
+
+        <span class="c1"># Get multiple widgets</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">Input</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span>
+
+        <span class="c1"># Check if widget exists</span>
+        <span class="k">assert</span> <span class="n">app</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">&quot;#my-widget&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+</pre></div>
+</div>
+</section>
+<section id="access-app-properties">
+<h3>Access App Properties<a class="headerlink" href="#access-app-properties" title="Link to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">test_app_properties</span><span class="p">():</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">MyApp</span><span class="p">()</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">app</span><span class="o">.</span><span class="n">run_test</span><span class="p">()</span> <span class="k">as</span> <span class="n">pilot</span><span class="p">:</span>
+        <span class="c1"># Direct property access</span>
+        <span class="k">assert</span> <span class="n">app</span><span class="o">.</span><span class="n">current_screen</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;main&quot;</span>
+        <span class="k">assert</span> <span class="n">app</span><span class="o">.</span><span class="n">some_state_variable</span> <span class="o">==</span> <span class="n">expected_value</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="snapshot-testing-visual-regression">
+<h2>Snapshot Testing (Visual Regression)<a class="headerlink" href="#snapshot-testing-visual-regression" title="Link to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">pytest-textual-snapshot</span></code> plugin captures SVG screenshots for visual regression testing.</p>
+<section id="installation">
+<h3>Installation<a class="headerlink" href="#installation" title="Link to this heading">#</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>add<span class="w"> </span>--dev<span class="w"> </span>pytest-textual-snapshot
+</pre></div>
+</div>
+</section>
+<section id="basic-usage">
+<h3>Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">test_app_appearance</span><span class="p">(</span><span class="n">snap_compare</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Test visual appearance of app.&quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="n">snap_compare</span><span class="p">(</span><span class="s2">&quot;path/to/app.py&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="advanced-options">
+<h3>Advanced Options<a class="headerlink" href="#advanced-options" title="Link to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">test_interactive_snapshot</span><span class="p">(</span><span class="n">snap_compare</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Test appearance after user interaction.&quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="n">snap_compare</span><span class="p">(</span>
+        <span class="s2">&quot;path/to/app.py&quot;</span><span class="p">,</span>
+        <span class="n">press</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;tab&quot;</span><span class="p">,</span> <span class="s2">&quot;enter&quot;</span><span class="p">,</span> <span class="s2">&quot;down&quot;</span><span class="p">],</span>  <span class="c1"># Simulate key presses</span>
+        <span class="n">terminal_size</span><span class="o">=</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">40</span><span class="p">),</span>         <span class="c1"># Custom size</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="using-run-before-for-setup">
+<h3>Using run_before for Setup<a class="headerlink" href="#using-run-before-for-setup" title="Link to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">setup_app</span><span class="p">(</span><span class="n">pilot</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Setup function to run before snapshot.&quot;&quot;&quot;</span>
+    <span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">click</span><span class="p">(</span><span class="s2">&quot;#login-button&quot;</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">pause</span><span class="p">()</span>
+    <span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">press</span><span class="p">(</span><span class="s2">&quot;username&quot;</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">press</span><span class="p">(</span><span class="s2">&quot;tab&quot;</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">press</span><span class="p">(</span><span class="s2">&quot;password&quot;</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">test_login_form</span><span class="p">(</span><span class="n">snap_compare</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Test login form after interaction.&quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="n">snap_compare</span><span class="p">(</span>
+        <span class="s2">&quot;path/to/app.py&quot;</span><span class="p">,</span>
+        <span class="n">run_before</span><span class="o">=</span><span class="n">setup_app</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="snapshot-workflow">
+<h3>Snapshot Workflow<a class="headerlink" href="#snapshot-workflow" title="Link to this heading">#</a></h3>
+<ol class="arabic">
+<li><p><strong>First run (no baseline):</strong> Test fails and generates HTML report</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>tests/test_my_app.py
+</pre></div>
+</div>
+</li>
+<li><p><strong>Review snapshots:</strong> Open the generated HTML report to verify output looks correct</p></li>
+<li><p><strong>Update baseline:</strong> Save the snapshots as the new baseline</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>--snapshot-update<span class="w"> </span>tests/test_my_app.py
+</pre></div>
+</div>
+</li>
+<li><p><strong>Future runs:</strong> Tests compare against saved snapshots and fail on differences</p></li>
+<li><p><strong>Review diffs:</strong> When tests fail, check HTML report for visual differences</p></li>
+</ol>
+</section>
+<section id="snapshot-storage">
+<h3>Snapshot Storage<a class="headerlink" href="#snapshot-storage" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Snapshots stored in <code class="docutils literal notranslate"><span class="pre">tests/__snapshots__/</span></code> directory</p></li>
+<li><p>Committed to version control</p></li>
+<li><p>Each test function gets its own snapshot file</p></li>
+</ul>
+</section>
+</section>
+<section id="testing-patterns">
+<h2>Testing Patterns<a class="headerlink" href="#testing-patterns" title="Link to this heading">#</a></h2>
+<section id="testing-user-workflows">
+<h3>Testing User Workflows<a class="headerlink" href="#testing-user-workflows" title="Link to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">test_complete_workflow</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Test multi-step user workflow.&quot;&quot;&quot;</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">MyApp</span><span class="p">()</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">app</span><span class="o">.</span><span class="n">run_test</span><span class="p">()</span> <span class="k">as</span> <span class="n">pilot</span><span class="p">:</span>
+        <span class="c1"># Step 1: Navigate to form</span>
+        <span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">press</span><span class="p">(</span><span class="s2">&quot;f&quot;</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">pause</span><span class="p">()</span>
+
+        <span class="c1"># Step 2: Fill form</span>
+        <span class="n">form</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">query_one</span><span class="p">(</span><span class="s2">&quot;#user-form&quot;</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">click</span><span class="p">(</span><span class="s2">&quot;#name-input&quot;</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">press</span><span class="p">(</span><span class="s2">&quot;J&quot;</span><span class="p">,</span> <span class="s2">&quot;o&quot;</span><span class="p">,</span> <span class="s2">&quot;h&quot;</span><span class="p">,</span> <span class="s2">&quot;n&quot;</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">press</span><span class="p">(</span><span class="s2">&quot;tab&quot;</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">press</span><span class="p">(</span><span class="s2">&quot;D&quot;</span><span class="p">,</span> <span class="s2">&quot;o&quot;</span><span class="p">,</span> <span class="s2">&quot;e&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Step 3: Submit</span>
+        <span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">click</span><span class="p">(</span><span class="s2">&quot;#submit&quot;</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">pause</span><span class="p">()</span>
+
+        <span class="c1"># Step 4: Verify result</span>
+        <span class="k">assert</span> <span class="n">app</span><span class="o">.</span><span class="n">current_screen</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;success&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="testing-navigation">
+<h3>Testing Navigation<a class="headerlink" href="#testing-navigation" title="Link to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">test_screen_navigation</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Test navigating between screens.&quot;&quot;&quot;</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">MyApp</span><span class="p">()</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">app</span><span class="o">.</span><span class="n">run_test</span><span class="p">()</span> <span class="k">as</span> <span class="n">pilot</span><span class="p">:</span>
+        <span class="c1"># Start on main screen</span>
+        <span class="k">assert</span> <span class="n">app</span><span class="o">.</span><span class="n">current_screen</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;main&quot;</span>
+
+        <span class="c1"># Navigate to settings</span>
+        <span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">press</span><span class="p">(</span><span class="s2">&quot;ctrl+s&quot;</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">pause</span><span class="p">()</span>
+        <span class="k">assert</span> <span class="n">app</span><span class="o">.</span><span class="n">current_screen</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;settings&quot;</span>
+
+        <span class="c1"># Go back</span>
+        <span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">press</span><span class="p">(</span><span class="s2">&quot;escape&quot;</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">pause</span><span class="p">()</span>
+        <span class="k">assert</span> <span class="n">app</span><span class="o">.</span><span class="n">current_screen</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;main&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="testing-data-tables">
+<h3>Testing Data Tables<a class="headerlink" href="#testing-data-tables" title="Link to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">test_data_table</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Test data table interactions.&quot;&quot;&quot;</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">MyApp</span><span class="p">()</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">app</span><span class="o">.</span><span class="n">run_test</span><span class="p">()</span> <span class="k">as</span> <span class="n">pilot</span><span class="p">:</span>
+        <span class="n">table</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">query_one</span><span class="p">(</span><span class="n">DataTable</span><span class="p">)</span>
+
+        <span class="c1"># Verify initial state</span>
+        <span class="k">assert</span> <span class="n">table</span><span class="o">.</span><span class="n">row_count</span> <span class="o">==</span> <span class="mi">5</span>
+
+        <span class="c1"># Navigate and select</span>
+        <span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">press</span><span class="p">(</span><span class="s2">&quot;down&quot;</span><span class="p">,</span> <span class="s2">&quot;down&quot;</span><span class="p">)</span>  <span class="c1"># Move to row 2</span>
+        <span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">press</span><span class="p">(</span><span class="s2">&quot;enter&quot;</span><span class="p">)</span>         <span class="c1"># Select row</span>
+        <span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">pause</span><span class="p">()</span>
+
+        <span class="c1"># Verify selection</span>
+        <span class="k">assert</span> <span class="n">table</span><span class="o">.</span><span class="n">cursor_row</span> <span class="o">==</span> <span class="mi">2</span>
+        <span class="k">assert</span> <span class="n">app</span><span class="o">.</span><span class="n">selected_item</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+</pre></div>
+</div>
+</section>
+<section id="testing-input-validation">
+<h3>Testing Input Validation<a class="headerlink" href="#testing-input-validation" title="Link to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">test_input_validation</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Test form input validation.&quot;&quot;&quot;</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">MyApp</span><span class="p">()</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">app</span><span class="o">.</span><span class="n">run_test</span><span class="p">()</span> <span class="k">as</span> <span class="n">pilot</span><span class="p">:</span>
+        <span class="c1"># Enter invalid data</span>
+        <span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">click</span><span class="p">(</span><span class="s2">&quot;#email-input&quot;</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">press</span><span class="p">(</span><span class="s2">&quot;i&quot;</span><span class="p">,</span> <span class="s2">&quot;n&quot;</span><span class="p">,</span> <span class="s2">&quot;v&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;l&quot;</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">,</span> <span class="s2">&quot;d&quot;</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">press</span><span class="p">(</span><span class="s2">&quot;tab&quot;</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">pause</span><span class="p">()</span>
+
+        <span class="c1"># Check validation error</span>
+        <span class="n">error</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">query_one</span><span class="p">(</span><span class="s2">&quot;#email-error&quot;</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">error</span><span class="o">.</span><span class="n">display</span> <span class="ow">is</span> <span class="kc">True</span>
+        <span class="k">assert</span> <span class="s2">&quot;invalid email&quot;</span> <span class="ow">in</span> <span class="n">error</span><span class="o">.</span><span class="n">renderable</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="testing-modals-dialogs">
+<h3>Testing Modals/Dialogs<a class="headerlink" href="#testing-modals-dialogs" title="Link to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">test_confirmation_dialog</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Test modal dialog interaction.&quot;&quot;&quot;</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">MyApp</span><span class="p">()</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">app</span><span class="o">.</span><span class="n">run_test</span><span class="p">()</span> <span class="k">as</span> <span class="n">pilot</span><span class="p">:</span>
+        <span class="c1"># Trigger dialog</span>
+        <span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">click</span><span class="p">(</span><span class="s2">&quot;#delete-button&quot;</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">pause</span><span class="p">()</span>
+
+        <span class="c1"># Verify dialog appears</span>
+        <span class="n">dialog</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">query_one</span><span class="p">(</span><span class="s2">&quot;#confirm-dialog&quot;</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">dialog</span><span class="o">.</span><span class="n">display</span> <span class="ow">is</span> <span class="kc">True</span>
+
+        <span class="c1"># Confirm action</span>
+        <span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">click</span><span class="p">(</span><span class="s2">&quot;#confirm-yes&quot;</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">pause</span><span class="p">()</span>
+
+        <span class="c1"># Verify action completed</span>
+        <span class="k">assert</span> <span class="n">app</span><span class="o">.</span><span class="n">item_deleted</span> <span class="ow">is</span> <span class="kc">True</span>
+        <span class="k">assert</span> <span class="n">dialog</span><span class="o">.</span><span class="n">display</span> <span class="ow">is</span> <span class="kc">False</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="testing-database-dependent-tuis">
+<h2>Testing Database-Dependent TUIs<a class="headerlink" href="#testing-database-dependent-tuis" title="Link to this heading">#</a></h2>
+<p>For NexusLIMS TUI apps that interact with the database:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pytest</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.db</span><span class="w"> </span><span class="kn">import</span> <span class="n">models</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.tui.apps.instruments</span><span class="w"> </span><span class="kn">import</span> <span class="n">InstrumentManagerApp</span>
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">test_instrument_list</span><span class="p">(</span><span class="n">test_db_session</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Test instrument list display.&quot;&quot;&quot;</span>
+    <span class="c1"># Setup: Add test instruments to DB</span>
+    <span class="n">instrument</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Instrument</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Test SEM&quot;</span><span class="p">,</span>
+        <span class="n">harvester</span><span class="o">=</span><span class="s2">&quot;nemo&quot;</span><span class="p">,</span>
+        <span class="n">filestore_path</span><span class="o">=</span><span class="s2">&quot;/test/path&quot;</span><span class="p">,</span>
+        <span class="c1"># ... other required fields</span>
+    <span class="p">)</span>
+    <span class="n">test_db_session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">instrument</span><span class="p">)</span>
+    <span class="n">test_db_session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+    <span class="c1"># Test app</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">InstrumentManagerApp</span><span class="p">()</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">app</span><span class="o">.</span><span class="n">run_test</span><span class="p">()</span> <span class="k">as</span> <span class="n">pilot</span><span class="p">:</span>
+        <span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">pause</span><span class="p">()</span>  <span class="c1"># Wait for DB query</span>
+
+        <span class="n">table</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">query_one</span><span class="p">(</span><span class="n">DataTable</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">table</span><span class="o">.</span><span class="n">row_count</span> <span class="o">&gt;=</span> <span class="mi">1</span>
+
+        <span class="c1"># Verify data displayed</span>
+        <span class="n">cells</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">rows</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">row</span><span class="p">]</span>
+        <span class="k">assert</span> <span class="s2">&quot;Test SEM&quot;</span> <span class="ow">in</span> <span class="n">cells</span>
+</pre></div>
+</div>
+</section>
+<section id="common-assertions">
+<h2>Common Assertions<a class="headerlink" href="#common-assertions" title="Link to this heading">#</a></h2>
+<section id="widget-state">
+<h3>Widget State<a class="headerlink" href="#widget-state" title="Link to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Visibility</span>
+<span class="k">assert</span> <span class="n">widget</span><span class="o">.</span><span class="n">display</span> <span class="ow">is</span> <span class="kc">True</span>
+<span class="k">assert</span> <span class="n">widget</span><span class="o">.</span><span class="n">disabled</span> <span class="ow">is</span> <span class="kc">False</span>
+
+<span class="c1"># Content</span>
+<span class="k">assert</span> <span class="n">button</span><span class="o">.</span><span class="n">label</span> <span class="o">==</span> <span class="s2">&quot;Submit&quot;</span>
+<span class="k">assert</span> <span class="nb">input</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s2">&quot;expected text&quot;</span>
+
+<span class="c1"># Focus</span>
+<span class="k">assert</span> <span class="n">app</span><span class="o">.</span><span class="n">focused</span> <span class="o">==</span> <span class="n">input_widget</span>
+</pre></div>
+</div>
+</section>
+<section id="screen-state">
+<h3>Screen State<a class="headerlink" href="#screen-state" title="Link to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Current screen</span>
+<span class="k">assert</span> <span class="n">app</span><span class="o">.</span><span class="n">current_screen</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;main&quot;</span>
+<span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">current_screen</span><span class="p">,</span> <span class="n">MyScreen</span><span class="p">)</span>
+
+<span class="c1"># Query results</span>
+<span class="k">assert</span> <span class="n">app</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">&quot;#widget-id&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">&quot;.button&quot;</span><span class="p">))</span> <span class="o">==</span> <span class="mi">3</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="best-practices">
+<h2>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading">#</a></h2>
+<ol class="arabic">
+<li><p><strong>Use descriptive test names:</strong> <code class="docutils literal notranslate"><span class="pre">test_user_can_submit_form_with_valid_data()</span></code></p></li>
+<li><p><strong>Test both keyboard and mouse paths:</strong> Users may use either interaction method</p></li>
+<li><p><strong>Always pause after async actions:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">click</span><span class="p">(</span><span class="s2">&quot;#button&quot;</span><span class="p">)</span>
+<span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">pause</span><span class="p">()</span>  <span class="c1"># ✓ Good</span>
+<span class="k">assert</span> <span class="n">app</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">expected</span>  <span class="c1"># Now state is updated</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Test with different screen sizes:</strong> Ensure responsive layouts work correctly</p></li>
+<li><p><strong>Isolate tests:</strong> Each test should set up its own app instance</p></li>
+<li><p><strong>Test edge cases:</strong></p>
+<ul class="simple">
+<li><p>Empty states (no data)</p></li>
+<li><p>Maximum data (full tables)</p></li>
+<li><p>Invalid input</p></li>
+<li><p>Error conditions</p></li>
+</ul>
+</li>
+<li><p><strong>Use fixtures for common setup:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">app_with_data</span><span class="p">():</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">MyApp</span><span class="p">()</span>
+    <span class="c1"># Setup data</span>
+    <span class="k">return</span> <span class="n">app</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Keep tests focused:</strong> One test should verify one specific behavior</p></li>
+<li><p><strong>Use snapshot tests for visual regressions:</strong> Catch unintended UI changes</p></li>
+<li><p><strong>Test accessibility:</strong> Verify keyboard navigation works throughout the app</p></li>
+</ol>
+</section>
+<section id="debugging-tests">
+<h2>Debugging Tests<a class="headerlink" href="#debugging-tests" title="Link to this heading">#</a></h2>
+<section id="print-app-state">
+<h3>Print App State<a class="headerlink" href="#print-app-state" title="Link to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">test_debug</span><span class="p">():</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">MyApp</span><span class="p">()</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">app</span><span class="o">.</span><span class="n">run_test</span><span class="p">()</span> <span class="k">as</span> <span class="n">pilot</span><span class="p">:</span>
+        <span class="c1"># Print widget tree</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">))</span>
+
+        <span class="c1"># Save screenshot for inspection</span>
+        <span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">pause</span><span class="p">()</span>
+        <span class="c1"># Screenshot saved automatically on failure</span>
+</pre></div>
+</div>
+</section>
+<section id="interactive-debugging">
+<h3>Interactive Debugging<a class="headerlink" href="#interactive-debugging" title="Link to this heading">#</a></h3>
+<p>Use breakpoints in async tests:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">test_with_breakpoint</span><span class="p">():</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">MyApp</span><span class="p">()</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">app</span><span class="o">.</span><span class="n">run_test</span><span class="p">()</span> <span class="k">as</span> <span class="n">pilot</span><span class="p">:</span>
+        <span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">click</span><span class="p">(</span><span class="s2">&quot;#button&quot;</span><span class="p">)</span>
+        <span class="nb">breakpoint</span><span class="p">()</span>  <span class="c1"># Inspect app state here</span>
+        <span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">pause</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="check-message-queue">
+<h3>Check Message Queue<a class="headerlink" href="#check-message-queue" title="Link to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">test_message_queue</span><span class="p">():</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">MyApp</span><span class="p">()</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">app</span><span class="o">.</span><span class="n">run_test</span><span class="p">()</span> <span class="k">as</span> <span class="n">pilot</span><span class="p">:</span>
+        <span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">press</span><span class="p">(</span><span class="s2">&quot;enter&quot;</span><span class="p">)</span>
+        <span class="c1"># If state isn&#39;t updating, add pause:</span>
+        <span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">pause</span><span class="p">()</span>
+        <span class="c1"># Now check state again</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="nexuslims-tui-testing-examples">
+<h2>NexusLIMS TUI Testing Examples<a class="headerlink" href="#nexuslims-tui-testing-examples" title="Link to this heading">#</a></h2>
+<section id="testing-instrument-manager">
+<h3>Testing Instrument Manager<a class="headerlink" href="#testing-instrument-manager" title="Link to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">test_instrument_manager_filter</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Test filtering instruments by name.&quot;&quot;&quot;</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">InstrumentManagerApp</span><span class="p">()</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">app</span><span class="o">.</span><span class="n">run_test</span><span class="p">()</span> <span class="k">as</span> <span class="n">pilot</span><span class="p">:</span>
+        <span class="c1"># Type in filter input</span>
+        <span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">click</span><span class="p">(</span><span class="s2">&quot;#filter-input&quot;</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">press</span><span class="p">(</span><span class="s2">&quot;S&quot;</span><span class="p">,</span> <span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="s2">&quot;M&quot;</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">pause</span><span class="p">()</span>
+
+        <span class="c1"># Verify filtered results</span>
+        <span class="n">table</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">query_one</span><span class="p">(</span><span class="n">DataTable</span><span class="p">)</span>
+        <span class="n">visible_rows</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">rows</span> <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">visible</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">visible_rows</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="s2">&quot;SEM&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="testing-validation">
+<h3>Testing Validation<a class="headerlink" href="#testing-validation" title="Link to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">test_instrument_form_validation</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Test instrument form validates required fields.&quot;&quot;&quot;</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">InstrumentManagerApp</span><span class="p">()</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">app</span><span class="o">.</span><span class="n">run_test</span><span class="p">()</span> <span class="k">as</span> <span class="n">pilot</span><span class="p">:</span>
+        <span class="c1"># Try to submit empty form</span>
+        <span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">click</span><span class="p">(</span><span class="s2">&quot;#add-instrument&quot;</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">pause</span><span class="p">()</span>
+        <span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">click</span><span class="p">(</span><span class="s2">&quot;#submit&quot;</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">pilot</span><span class="o">.</span><span class="n">pause</span><span class="p">()</span>
+
+        <span class="c1"># Should show validation errors</span>
+        <span class="n">errors</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">&quot;.validation-error&quot;</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">errors</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="further-reading">
+<h2>Further Reading<a class="headerlink" href="#further-reading" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://textual.textualize.io/guide/testing/">Textual Testing Guide</a></p></li>
+<li><p><a class="reference external" href="https://textual.textualize.io/api/">Textual API Reference</a></p></li>
+<li><p><a class="reference external" href="https://pytest-asyncio.readthedocs.io/">pytest-asyncio Documentation</a></p></li>
+<li><p><a class="reference external" href="https://github.com/Textualize/pytest-textual-snapshot">pytest-textual-snapshot Plugin</a></p></li>
+</ul>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../dev_guide/testing/integration-tests.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Integration Testing Guide</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../frontend_guide.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Frontend Guide</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">Overview</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#basic-test-structure">Basic Test Structure</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#async-context-manager-pattern">Async Context Manager Pattern</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytest-configuration">Pytest Configuration</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-pilot-api">The Pilot API</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#keyboard-input">Keyboard Input</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pressing-single-keys">Pressing Single Keys</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#typing-sequences">Typing Sequences</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#key-combinations-modifiers">Key Combinations (Modifiers)</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#common-special-keys">Common Special Keys</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mouse-interactions">Mouse Interactions</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#clicking-widgets">Clicking Widgets</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#click-variations">Click Variations</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hovering">Hovering</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#screen-configuration">Screen Configuration</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#custom-terminal-size">Custom Terminal Size</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#testing-different-sizes">Testing Different Sizes</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#synchronization-and-timing">Synchronization and Timing</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#waiting-for-message-processing">Waiting for Message Processing</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#adding-delays">Adding Delays</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-pattern">Example Pattern</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#accessing-app-state">Accessing App State</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#query-widgets">Query Widgets</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#access-app-properties">Access App Properties</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#snapshot-testing-visual-regression">Snapshot Testing (Visual Regression)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#installation">Installation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#basic-usage">Basic Usage</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#advanced-options">Advanced Options</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#using-run-before-for-setup">Using run_before for Setup</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#snapshot-workflow">Snapshot Workflow</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#snapshot-storage">Snapshot Storage</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#testing-patterns">Testing Patterns</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#testing-user-workflows">Testing User Workflows</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#testing-navigation">Testing Navigation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#testing-data-tables">Testing Data Tables</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#testing-input-validation">Testing Input Validation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#testing-modals-dialogs">Testing Modals/Dialogs</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#testing-database-dependent-tuis">Testing Database-Dependent TUIs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#common-assertions">Common Assertions</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#widget-state">Widget State</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#screen-state">Screen State</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#best-practices">Best Practices</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#debugging-tests">Debugging Tests</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#print-app-state">Print App State</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#interactive-debugging">Interactive Debugging</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#check-message-queue">Check Message Queue</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#nexuslims-tui-testing-examples">NexusLIMS TUI Testing Examples</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#testing-instrument-manager">Testing Instrument Manager</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#testing-validation">Testing Validation</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#further-reading">Further Reading</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/reference/textual_testing_reference.md.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2025 - 2026, datasophos, LLC.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

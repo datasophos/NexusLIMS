@@ -1,0 +1,1505 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>NexusLIMS Taxonomy &#8212; NexusLIMS pr-73 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=acda69ee" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=c577882c"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=30646c52"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";
+
+const defaultStyle = document.createElement('style');
+defaultStyle.textContent = `pre.mermaid {
+    /* Same as .mermaid-container > pre */
+    display: block;
+    width: 100%;
+}
+
+pre.mermaid > svg {
+    /* Same as .mermaid-container > pre > svg */
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+`;
+document.head.appendChild(defaultStyle);
+
+const fullscreenStyle = document.createElement('style');
+fullscreenStyle.textContent = `.mermaid-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.mermaid-container > pre {
+    display: block;
+    width: 100%;
+}
+
+.mermaid-container > pre > svg {
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+
+.mermaid-fullscreen-btn {
+    width: 28px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    font-size: 14px;
+    line-height: 1;
+    padding: 0;
+    color: #333;
+}
+
+.mermaid-fullscreen-btn:hover {
+    opacity: 100% !important;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-btn.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-btn.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 3px 10px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal {
+    display: none;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 95vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.98);
+    z-index: 9999;
+    padding: 20px;
+    overflow: auto;
+}
+
+.mermaid-fullscreen-modal.dark-theme {
+    background: rgba(0, 0, 0, 0.98);
+}
+
+.mermaid-fullscreen-modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen {
+    position: relative;
+    width: 95vw;
+    height: 90vh;
+    max-width: 95vw;
+    max-height: 90vh;
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    overflow: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen.dark-theme {
+    background: #1a1a1a;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+}
+
+.mermaid-container-fullscreen pre.mermaid {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen .mermaid svg {
+    height: 100% !important;
+    width: 100% !important;
+    cursor: grab;
+}
+
+.mermaid-fullscreen-close {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s;
+    font-size: 24px;
+    line-height: 1;
+    color: #333;
+}
+
+.mermaid-fullscreen-close:hover {
+    background: white;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-close.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-close.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal .mermaid-fullscreen-btn {
+    display: none !important;
+}`;
+document.head.appendChild(fullscreenStyle);
+
+// Detect if page has dark background
+const isDarkTheme = () => {
+    const bgColor = window.getComputedStyle(document.body).backgroundColor;
+    const match = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)/);
+    if (match) {
+        const r = parseInt(match[1]);
+        const g = parseInt(match[2]);
+        const b = parseInt(match[3]);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        return brightness < 128;
+    }
+    return false;
+};
+
+const load = async () => {
+    await mermaid.run();
+
+    const all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+
+    if ("True" === "True") {
+        const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+        if(mermaids_to_add_zoom > 0) {
+            var svgs = d3.selectAll(".mermaid svg");
+            if(all_mermaids.length !== mermaids_processed.length) {
+                setTimeout(load, 200);
+                return;
+            } else if(svgs.size() !== mermaids_to_add_zoom) {
+                setTimeout(load, 200);
+                return;
+            } else {
+                svgs.each(function() {
+                    var svg = d3.select(this);
+                    svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                    var inner = svg.select("g");
+                    var zoom = d3.zoom().on("zoom", function(event) {
+                        inner.attr("transform", event.transform);
+                    });
+                    svg.call(zoom);
+                });
+            }
+        }
+    } else if(all_mermaids.length !== mermaids_processed.length) {
+        // Wait for mermaid to process all diagrams
+        setTimeout(load, 200);
+        return;
+    }
+
+    const darkTheme = isDarkTheme();
+
+    // Stop here if not adding fullscreen capability
+    if ("True" !== "True") return;
+
+    const modal = document.createElement('div');
+    modal.className = 'mermaid-fullscreen-modal' + (darkTheme ? ' dark-theme' : '');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Fullscreen diagram viewer');
+    modal.innerHTML = `
+        <button class="mermaid-fullscreen-close${darkTheme ? ' dark-theme' : ''}" aria-label="Close fullscreen">✕</button>
+        <div class="mermaid-container-fullscreen${darkTheme ? ' dark-theme' : ''}"></div>
+    `;
+    document.body.appendChild(modal);
+
+    const modalContent = modal.querySelector('.mermaid-container-fullscreen');
+    const closeBtn = modal.querySelector('.mermaid-fullscreen-close');
+
+    let previousScrollOffset = [window.scrollX, window.scrollY];
+
+    const closeModal = () => {
+        modal.classList.remove('active');
+        modalContent.innerHTML = '';
+        document.body.style.overflow = ''
+        window.scrollTo({left: previousScrollOffset[0], top: previousScrollOffset[1], behavior: 'instant'});
+    };
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeModal();
+        }
+    });
+
+    const allButtons = [];
+
+    document.querySelectorAll('.mermaid').forEach((mermaidDiv) => {
+        if (mermaidDiv.parentNode.classList.contains('mermaid-container') ||
+            mermaidDiv.closest('.mermaid-fullscreen-modal')) {
+            return;
+        }
+
+        const container = document.createElement('div');
+        container.className = 'mermaid-container';
+        mermaidDiv.parentNode.insertBefore(container, mermaidDiv);
+        container.appendChild(mermaidDiv);
+
+        const fullscreenBtn = document.createElement('button');
+        fullscreenBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+        fullscreenBtn.setAttribute('aria-label', 'View diagram in fullscreen');
+        fullscreenBtn.textContent = '⛶';
+        fullscreenBtn.style.opacity = '50%';
+
+        // Calculate dynamic position based on diagram's margin and padding
+        const diagramStyle = window.getComputedStyle(mermaidDiv);
+        const marginTop = parseFloat(diagramStyle.marginTop) || 0;
+        const marginRight = parseFloat(diagramStyle.marginRight) || 0;
+        const paddingTop = parseFloat(diagramStyle.paddingTop) || 0;
+        const paddingRight = parseFloat(diagramStyle.paddingRight) || 0;
+        fullscreenBtn.style.top = `${marginTop + paddingTop + 4}px`;
+        fullscreenBtn.style.right = `${marginRight + paddingRight + 4}px`;
+
+        fullscreenBtn.addEventListener('click', () => {
+            previousScrollOffset = [window.scroll, window.scrollY];
+            const clone = mermaidDiv.cloneNode(true);
+            modalContent.innerHTML = '';
+            modalContent.appendChild(clone);
+
+            const svg = clone.querySelector('svg');
+            if (svg) {
+                svg.removeAttribute('width');
+                svg.removeAttribute('height');
+                svg.style.width = '100%';
+                svg.style.height = 'auto';
+                svg.style.maxWidth = '100%';
+                svg.style.sdisplay = 'block';
+
+                if ("True" === "True") {
+                    setTimeout(() => {
+                        const g = svg.querySelector('g');
+                        if (g) {
+                            var svgD3 = d3.select(svg);
+                            svgD3.html("<g class='wrapper'>" + svgD3.html() + "</g>");
+                            var inner = svgD3.select("g");
+                            var zoom = d3.zoom().on("zoom", function(event) {
+                                inner.attr("transform", event.transform);
+                            });
+                            svgD3.call(zoom);
+                        }
+                    }, 100);
+                }
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        container.appendChild(fullscreenBtn);
+        allButtons.push(fullscreenBtn);
+    });
+
+    // Update theme classes when theme changes
+    const updateTheme = () => {
+        const dark = isDarkTheme();
+        allButtons.forEach(btn => {
+            if (dark) {
+                btn.classList.add('dark-theme');
+            } else {
+                btn.classList.remove('dark-theme');
+            }
+        });
+        if (dark) {
+            modal.classList.add('dark-theme');
+            modalContent.classList.add('dark-theme');
+            closeBtn.classList.add('dark-theme');
+        } else {
+            modal.classList.remove('dark-theme');
+            modalContent.classList.remove('dark-theme');
+            closeBtn.classList.remove('dark-theme');
+        }
+    };
+
+    // Watch for theme changes
+    const observer = new MutationObserver(updateTheme);
+    observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+    observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class', 'style']
+    });
+};
+
+window.addEventListener("load", load);
+</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'user_guide/taxonomy';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'pr-73';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script src="../_static/custom.js?v=ba087cdf"></script>
+    <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/pr-73/user_guide/taxonomy.html" />
+    <link rel="icon" href="../_static/nexusLIMS_bare_logo.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Migration Guide" href="../migration_guide.html" />
+    <link rel="prev" title="Export Destinations" href="exporters.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="pr-73" />
+    <meta name="docbuild:last-update" content="Feb, 12, 2026"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS pr-73 documentation - Home"/>
+    <img src="../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS pr-73 documentation - Home"/>
+  
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../migration_guide.html">
+    Migration Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../dev_guide.html">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../frontend_guide.html">
+    Frontend Guide
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../reference.html">
+    Reference
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datasophos/NexusLIMS" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://datasophos.co" title="Datasophos" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-globe fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Datasophos</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../migration_guide.html">
+    Migration Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../dev_guide.html">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../frontend_guide.html">
+    Frontend Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../reference.html">
+    Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datasophos/NexusLIMS" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://datasophos.co" title="Datasophos" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-globe fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Datasophos</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli_reference.html">Command-Line Interface Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="record_building.html">Record building workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="instrument_manager.html">Instrument Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="migrations.html">Database Migrations</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="extractors.html">Extractors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exporters.html">Export Destinations</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">NexusLIMS Taxonomy</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../user_guide.html" class="nav-link">User Guide</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">NexusLIMS Taxonomy</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="nexuslims-taxonomy">
+<h1>NexusLIMS Taxonomy<a class="headerlink" href="#nexuslims-taxonomy" title="Link to this heading">#</a></h1>
+<p>This page defines the key terms and concepts used throughout NexusLIMS. Understanding this taxonomy is essential for working with the codebase and understanding how microscopy data is organized, classified, and transformed into experimental records.</p>
+<section id="data-organization-philosophy">
+<h2>Data Organization Philosophy<a class="headerlink" href="#data-organization-philosophy" title="Link to this heading">#</a></h2>
+<p>NexusLIMS organizes microscopy data hierarchically:</p>
+<ol class="arabic simple">
+<li><p><strong>Sessions</strong> - User reservations defining when an instrument was used</p></li>
+<li><p><strong>Acquisition Activities</strong> - Groups of files created in temporal proximity during a session</p></li>
+<li><p><strong>Datasets</strong> - Individual signals (images, spectra, etc.) with associated metadata. Typically corresponds to a single file on disk, but some files contain multiple signals and will result in multiple <em>datasets</em> in a record.</p></li>
+<li><p><strong>Records</strong> - XML documents describing complete experimental sessions</p></li>
+</ol>
+<p>This structure mirrors typical microscopy workflows: users reserve instrument time (session), collect related data in bursts (activities), and each file represents a discrete measurement (one or more datasets).</p>
+</section>
+<hr class="docutils" />
+<section id="system-components">
+<h2>System Components<a class="headerlink" href="#system-components" title="Link to this heading">#</a></h2>
+<p>The following terms describe major architectural components:</p>
+<ul>
+<li><p><strong>Harvester:</strong></p>
+<ul class="simple">
+<li><p>The harvesters (implemented in the <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.harvesters.html#module-nexusLIMS.harvesters" title="nexusLIMS.harvesters"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.harvesters</span></code></a> package)
+are the portions of the code that connect to external data sources, such
+as the NEMO laboratory management system. The only harvester currenlty implemented is NEMO
+(<a class="reference internal" href="../api/nexusLIMS/nexusLIMS.harvesters.nemo.html#module-nexusLIMS.harvesters.nemo" title="nexusLIMS.harvesters.nemo"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nemo</span></code></a>). A SharePoint calendar harvester was used in previous versions of NexusLIMS, but was removed in version 2.0.0.</p></li>
+</ul>
+</li>
+<li><p><strong>Extractor:</strong></p>
+<ul class="simple">
+<li><p>The extractors (implemented in the <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.extractors.html#module-nexusLIMS.extractors" title="nexusLIMS.extractors"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors</span></code></a> package)
+are the modules that inspect the data files collected during an Experiment
+and pull out the relevant metadata contained within for inclusion in the
+record. The preview image generation is also considered an extractor.</p></li>
+</ul>
+</li>
+<li><p><strong>Record Builder:</strong></p>
+<ul>
+<li><p>The record builder (implemented in the
+<a class="reference internal" href="../api/nexusLIMS/nexusLIMS.builder.record_builder.html#module-nexusLIMS.builder.record_builder" title="nexusLIMS.builder.record_builder"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.builder.record_builder</span></code></a> module) is the heart of the
+NexusLIMS back-end. It orchestrates the complete record creation workflow:</p>
+<ol class="arabic simple">
+<li><p>Trigger harvesters to look for new sessions and add them to the session database</p></li>
+<li><p>Query database for sessions ready to build</p></li>
+<li><p>Find all data files modified during the session time window</p></li>
+<li><p>Cluster files into Acquisition Activities based on temporal gaps</p></li>
+<li><p>Extract and validate metadata from each file</p></li>
+<li><p>Build XML record conforming to Nexus Experiment schema</p></li>
+<li><p>Export record to configured destinations via the export framework</p></li>
+</ol>
+<p>Further details are provided on the <a class="reference internal" href="record_building.html"><span class="doc">record building</span></a>
+documentation page.</p>
+</li>
+</ul>
+</li>
+<li><p><strong>Exporters:</strong></p>
+<ul>
+<li><p>The exporters (implemented in the <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.exporters.html#module-nexusLIMS.exporters" title="nexusLIMS.exporters"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.exporters</span></code></a> package)
+form a plugin-based framework for publishing experimental records to multiple
+repository systems. After building XML records, the system can export them
+to one or more configured destinations:</p>
+<ul class="simple">
+<li><p><strong>CDCS</strong> (<a class="reference internal" href="../api/nexusLIMS/nexusLIMS.exporters.destinations.cdcs.html#module-nexusLIMS.exporters.destinations.cdcs" title="nexusLIMS.exporters.destinations.cdcs"><code class="xref py py-mod docutils literal notranslate"><span class="pre">cdcs</span></code></a>) - Primary destination
+for web-based record viewing, search, and access control</p></li>
+<li><p><strong>eLabFTW</strong> (<a class="reference internal" href="../api/nexusLIMS/nexusLIMS.exporters.destinations.elabftw.html#module-nexusLIMS.exporters.destinations.elabftw" title="nexusLIMS.exporters.destinations.elabftw"><code class="xref py py-mod docutils literal notranslate"><span class="pre">elabftw</span></code></a>) - Electronic
+lab notebook integration with structured metadata and cross-linking</p></li>
+<li><p><strong>Custom destinations</strong> - Extensible plugin system for additional repositories</p></li>
+</ul>
+<p>The framework supports multiple destinations running in parallel, configurable
+failure handling strategies, inter-destination dependencies for cross-linking,
+and per-destination tracking in the database.</p>
+<p>Further details are provided on the <a class="reference internal" href="exporters.html"><span class="doc">exporters</span></a> documentation page.</p>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="dataset-types">
+<h2>Dataset Types<a class="headerlink" href="#dataset-types" title="Link to this heading">#</a></h2>
+<p><strong>Dataset Type</strong> (or <code class="docutils literal notranslate"><span class="pre">DatasetType</span></code>) classifies the fundamental nature of the data in a file. This is a <strong>required field</strong> in all NexusLIMS metadata and determines which Pydantic schema is used for validation.</p>
+<section id="available-dataset-types">
+<h3>Available Dataset Types<a class="headerlink" href="#available-dataset-types" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>DatasetType</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Example Instruments</p></th>
+<th class="head"><p>Dimensions</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;Image&quot;</span></code></p></td>
+<td><p>2D imaging data</p></td>
+<td><p>SEM, TEM, STEM, Optical</p></td>
+<td><p>2D array (x, y)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;Spectrum&quot;</span></code></p></td>
+<td><p>1D spectral data</p></td>
+<td><p>EDS, EELS, CL</p></td>
+<td><p>1D array (energy/wavelength)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;SpectrumImage&quot;</span></code></p></td>
+<td><p>2D image with spectrum at each pixel</p></td>
+<td><p>EDS maps, EELS-SI</p></td>
+<td><p>3D array (x, y, spectrum)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;Diffraction&quot;</span></code></p></td>
+<td><p>Diffraction patterns</p></td>
+<td><p>SAED, CBED, 4D-STEM</p></td>
+<td><p>2D or 4D array</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;Misc&quot;</span></code></p></td>
+<td><p>Other structured data</p></td>
+<td><p>Custom formats, line scans</p></td>
+<td><p>Variable</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;Unknown&quot;</span></code></p></td>
+<td><p>Unable to determine</p></td>
+<td><p>Corrupted/unreadable files</p></td>
+<td><p>N/A</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Note</strong>:</p>
+<ul class="simple">
+<li><p>A “line scan” is considered to be a special case of <code class="docutils literal notranslate"><span class="pre">&quot;SpectrumImage&quot;</span></code> with a <em>y</em> dimension of 1</p></li>
+</ul>
+</section>
+<section id="schema-mapping">
+<h3>Schema Mapping<a class="headerlink" href="#schema-mapping" title="Link to this heading">#</a></h3>
+<p>Each DatasetType maps to a specific Pydantic schema for metadata validation:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>DatasetType</p></th>
+<th class="head"><p>Schema Class</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;Image&quot;</span></code></p></td>
+<td><p><a class="reference internal" href="../api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.ImageMetadata" title="nexusLIMS.schemas.metadata.ImageMetadata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ImageMetadata</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;Spectrum&quot;</span></code></p></td>
+<td><p><a class="reference internal" href="../api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.SpectrumMetadata" title="nexusLIMS.schemas.metadata.SpectrumMetadata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SpectrumMetadata</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;SpectrumImage&quot;</span></code></p></td>
+<td><p><a class="reference internal" href="../api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.SpectrumImageMetadata" title="nexusLIMS.schemas.metadata.SpectrumImageMetadata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SpectrumImageMetadata</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;Diffraction&quot;</span></code></p></td>
+<td><p><a class="reference internal" href="../api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.DiffractionMetadata" title="nexusLIMS.schemas.metadata.DiffractionMetadata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DiffractionMetadata</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;Misc&quot;</span></code></p></td>
+<td><p><a class="reference internal" href="../api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.NexusMetadata" title="nexusLIMS.schemas.metadata.NexusMetadata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NexusMetadata</span></code></a> (base schema)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&quot;Unknown&quot;</span></code></p></td>
+<td><p><a class="reference internal" href="../api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.NexusMetadata" title="nexusLIMS.schemas.metadata.NexusMetadata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NexusMetadata</span></code></a> (base schema)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The schema selection happens automatically in <code class="docutils literal notranslate"><span class="pre">validate_nx_meta()</span></code> based on the <code class="docutils literal notranslate"><span class="pre">DatasetType</span></code> field. Different schemas validate different sets of optional fields:</p>
+<ul class="simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">ImageMetadata</span></code></strong> - Validates imaging fields (acceleration_voltage, working_distance, magnification)</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">SpectrumMetadata</span></code></strong> - Validates spectroscopy fields (acquisition_time, live_time, channel_size)</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">SpectrumImageMetadata</span></code></strong> - Validates <strong>both</strong> imaging and spectroscopy fields</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">DiffractionMetadata</span></code></strong> - Validates diffraction fields (camera_length, convergence_angle)</p></li>
+</ul>
+</section>
+<section id="usage-in-extractors">
+<h3>Usage in Extractors<a class="headerlink" href="#usage-in-extractors" title="Link to this heading">#</a></h3>
+<p>Extractors must set <code class="docutils literal notranslate"><span class="pre">DatasetType</span></code> based on file content:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example: SEM image</span>
+<span class="n">nx_meta</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;DatasetType&quot;</span><span class="p">:</span> <span class="s2">&quot;Image&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Data Type&quot;</span><span class="p">:</span> <span class="s2">&quot;SEM_Imaging&quot;</span><span class="p">,</span>
+    <span class="c1"># ... imaging-specific fields</span>
+<span class="p">}</span>
+
+<span class="c1"># Example: EDS spectrum</span>
+<span class="n">nx_meta</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;DatasetType&quot;</span><span class="p">:</span> <span class="s2">&quot;Spectrum&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Data Type&quot;</span><span class="p">:</span> <span class="s2">&quot;SEM_EDS&quot;</span><span class="p">,</span>
+    <span class="c1"># ... spectrum-specific fields</span>
+<span class="p">}</span>
+
+<span class="c1"># Example: EDS map (spectrum at each pixel)</span>
+<span class="n">nx_meta</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;DatasetType&quot;</span><span class="p">:</span> <span class="s2">&quot;SpectrumImage&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Data Type&quot;</span><span class="p">:</span> <span class="s2">&quot;STEM_EDS&quot;</span><span class="p">,</span>
+    <span class="c1"># ... both imaging AND spectrum fields</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>For more details on choosing the appropriate DatasetType, see <a class="reference internal" href="../dev_guide/writing_extractor_plugins.html#schema-selection-logic"><span class="std std-ref">Schema Selection Logic</span></a>.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="data-type-classification">
+<h2>Data Type Classification<a class="headerlink" href="#data-type-classification" title="Link to this heading">#</a></h2>
+<p><strong>Data Type</strong> is a descriptive string that provides more specific information about the acquisition technique and modality. While <code class="docutils literal notranslate"><span class="pre">DatasetType</span></code> is constrained to six values, <code class="docutils literal notranslate"><span class="pre">Data</span> <span class="pre">Type</span></code> can be any descriptive string.</p>
+<section id="naming-convention">
+<h3>Naming Convention<a class="headerlink" href="#naming-convention" title="Link to this heading">#</a></h3>
+<p>NexusLIMS uses a structured format for <code class="docutils literal notranslate"><span class="pre">Data</span> <span class="pre">Type</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Category_Modality_Technique</span>
+</pre></div>
+</div>
+<p><strong>Examples:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">SEM_Imaging</span></code> - Scanning Electron Microscopy imaging</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">TEM_Imaging</span></code> - Transmission Electron Microscopy imaging</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">STEM_Imaging</span></code> - Scanning Transmission Electron Microscopy imaging</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">STEM_EDS</span></code> - STEM with Energy Dispersive X-ray Spectroscopy</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">TEM_EELS</span></code> - TEM with Electron Energy Loss Spectroscopy</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">TEM_Diffraction</span></code> - TEM diffraction pattern</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SEM_BSE</span></code> - SEM with Backscattered Electron detector</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">STEM_HAADF</span></code> - STEM with High-Angle Annular Dark Field detector</p></li>
+</ul>
+</section>
+<section id="components">
+<h3>Components<a class="headerlink" href="#components" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Category</strong> - Instrument family (SEM, TEM, STEM, FIB, Optical, etc.)</p></li>
+<li><p><strong>Modality</strong> - Detection/operation mode (Imaging, EDS, EELS, Diffraction, BSE, SE, etc.)</p></li>
+<li><p><strong>Technique</strong> - Specific variant (HAADF, BF, DF, SAED, CBED, etc.) - optional</p></li>
+</ol>
+</section>
+<section id="how-extractors-determine-data-type">
+<h3>How Extractors Determine Data Type<a class="headerlink" href="#how-extractors-determine-data-type" title="Link to this heading">#</a></h3>
+<p>Extractors typically determine <code class="docutils literal notranslate"><span class="pre">Data</span> <span class="pre">Type</span></code> by analyzing:</p>
+<ol class="arabic simple">
+<li><p><strong>File format</strong> - Some formats are technique-specific (e.g., <code class="docutils literal notranslate"><span class="pre">.spc</span></code> files are always EDS spectra)</p></li>
+<li><p><strong>Metadata fields</strong> - Imaging mode, detector type, operation mode</p></li>
+<li><p><strong>Data dimensions</strong> - 2D = likely imaging, 1D = likely spectrum</p></li>
+<li><p><strong>Detector information</strong> - HAADF detector → STEM_HAADF</p></li>
+<li><p><strong>Filename patterns</strong> - Sometimes contains hints (Diff, SAED, etc.)</p></li>
+</ol>
+</section>
+<section id="relationship-to-datasettype">
+<h3>Relationship to DatasetType<a class="headerlink" href="#relationship-to-datasettype" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Data Type</p></th>
+<th class="head"><p>Typical DatasetType</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>SEM_Imaging, TEM_Imaging, STEM_Imaging</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;Image&quot;</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>SEM_EDS, TEM_EELS (point spectra)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;Spectrum&quot;</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>STEM_EDS, STEM_EELS (maps)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;SpectrumImage&quot;</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>TEM_Diffraction, TEM_SAED, TEM_CBED</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;Diffraction&quot;</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The combination of <code class="docutils literal notranslate"><span class="pre">DatasetType</span></code> (for schema validation) and <code class="docutils literal notranslate"><span class="pre">Data</span> <span class="pre">Type</span></code> (for human description) provides both machine-readable classification and human-readable context.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="metadata-schema-structure">
+<h2>Metadata Schema Structure<a class="headerlink" href="#metadata-schema-structure" title="Link to this heading">#</a></h2>
+<p><strong>New in v2.2.0:</strong> NexusLIMS uses a three-tier architecture for organizing metadata, balancing standardization with flexibility.</p>
+<section id="three-tier-architecture">
+<h3>Three-Tier Architecture<a class="headerlink" href="#three-tier-architecture" title="Link to this heading">#</a></h3>
+<pre  class="mermaid">
+        %%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e3f2fd', 'primaryTextColor': '#000', 'primaryBorderColor': '#1976d2', 'lineColor': '#1976d2', 'secondaryColor': '#fff3e0', 'tertiaryColor': '#f3e5f5'}}}%%
+flowchart TD
+    Tier1[&quot;&lt;b&gt;Tier 1: Core Fields&lt;/b&gt;&lt;br/&gt;(Required + Common EM Glossary fields)&lt;br/&gt;&lt;br/&gt;• DatasetType, Data Type, Creation Time&lt;br/&gt;• acceleration_voltage, beam_current&lt;br/&gt;• magnification, working_distance&quot;]
+
+    Tier2[&quot;&lt;b&gt;Tier 2: Type-Specific Fields&lt;/b&gt;&lt;br/&gt;(Additional fields per DatasetType)&lt;br/&gt;&lt;br/&gt;• ImageMetadata: detector_type, etc.&lt;br/&gt;• SpectrumMetadata: acquisition_time&lt;br/&gt;• DiffractionMetadata: camera_length&quot;]
+
+    Tier3[&quot;&lt;b&gt;Tier 3: Extensions&lt;/b&gt;&lt;br/&gt;(Vendor/instrument-specific fields)&lt;br/&gt;&lt;br/&gt;• facility, building, room&lt;br/&gt;• vendor_metadata&lt;br/&gt;• instrument_serial&quot;]
+
+    Tier1 --&gt; Tier2
+    Tier2 --&gt; Tier3
+
+    classDef tier1Style fill:#e3f2fd,stroke:#1976d2,stroke-width:3px,color:#000
+    classDef tier2Style fill:#fff3e0,stroke:#f57c00,stroke-width:3px,color:#000
+    classDef tier3Style fill:#f3e5f5,stroke:#7b1fa2,stroke-width:3px,color:#000
+
+    class Tier1 tier1Style
+    class Tier2 tier2Style
+    class Tier3 tier3Style
+    </pre></section>
+<section id="tier-1-core-fields">
+<h3>Tier 1: Core Fields<a class="headerlink" href="#tier-1-core-fields" title="Link to this heading">#</a></h3>
+<p><strong>Always required</strong> regardless of DatasetType:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">DatasetType</span></code> - Classification for schema selection</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Data</span> <span class="pre">Type</span></code> - Human-readable technique description</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Creation</span> <span class="pre">Time</span></code> - ISO-8601 timestamp with timezone</p></li>
+</ul>
+<p><strong>Common EM Glossary fields</strong> (optional but standardized):</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">acceleration_voltage</span></code> - Electron beam energy</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">beam_current</span></code> - Probe current</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">working_distance</span></code> - Pole piece to sample distance</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">magnification</span></code> - Imaging magnification</p></li>
+<li><p>… (50+ standardized fields available)</p></li>
+</ul>
+<p>These fields use EM Glossary standardized names and are validated by all schema classes.</p>
+</section>
+<section id="tier-2-type-specific-fields">
+<h3>Tier 2: Type-Specific Fields<a class="headerlink" href="#tier-2-type-specific-fields" title="Link to this heading">#</a></h3>
+<p>Additional optional fields validated based on <code class="docutils literal notranslate"><span class="pre">DatasetType</span></code>:</p>
+<p><strong>ImageMetadata</strong> (for <code class="docutils literal notranslate"><span class="pre">DatasetType</span> <span class="pre">==</span> <span class="pre">&quot;Image&quot;</span></code>):</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">detector_type</span></code> - Detector name (SE, BSE, HAADF, etc.)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">field_of_view_width</span></code> / <code class="docutils literal notranslate"><span class="pre">field_of_view_height</span></code> - Image dimensions in physical units</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pixel_width</span></code> / <code class="docutils literal notranslate"><span class="pre">pixel_height</span></code> - Pixel size in physical units</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dwell_time</span></code> - Pixel dwell time for scanning</p></li>
+</ul>
+<p><strong>SpectrumMetadata</strong> (for <code class="docutils literal notranslate"><span class="pre">DatasetType</span> <span class="pre">==</span> <span class="pre">&quot;Spectrum&quot;</span></code>):</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">acquisition_time</span></code> - Total acquisition duration</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">live_time</span></code> - Detector live time (EDS)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">channel_size</span></code> - Energy/wavelength per channel</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">starting_energy</span></code> - Spectrum start energy</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">takeoff_angle</span></code> - EDS detector geometry</p></li>
+</ul>
+<p><strong>SpectrumImageMetadata</strong> (for <code class="docutils literal notranslate"><span class="pre">DatasetType</span> <span class="pre">==</span> <span class="pre">&quot;SpectrumImage&quot;</span></code>):</p>
+<ul class="simple">
+<li><p>Validates <strong>both</strong> ImageMetadata AND SpectrumMetadata fields</p></li>
+<li><p>Allows both imaging parameters and spectroscopy parameters</p></li>
+</ul>
+<p><strong>DiffractionMetadata</strong> (for <code class="docutils literal notranslate"><span class="pre">DatasetType</span> <span class="pre">==</span> <span class="pre">&quot;Diffraction&quot;</span></code>):</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">camera_length</span></code> - Diffraction camera length</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">convergence_angle</span></code> - Probe convergence angle (CBED)</p></li>
+</ul>
+</section>
+<section id="tier-3-extensions">
+<h3>Tier 3: Extensions<a class="headerlink" href="#tier-3-extensions" title="Link to this heading">#</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">extensions</span></code> dictionary holds fields that don’t fit the core schema:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">nx_meta</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="c1"># Tier 1 &amp; 2: Core and type-specific fields</span>
+    <span class="s2">&quot;DatasetType&quot;</span><span class="p">:</span> <span class="s2">&quot;Image&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;acceleration_voltage&quot;</span><span class="p">:</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="s2">&quot;kilovolt&quot;</span><span class="p">),</span>
+
+    <span class="c1"># Tier 3: Extensions</span>
+    <span class="s2">&quot;extensions&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;facility&quot;</span><span class="p">:</span> <span class="s2">&quot;NIST Center for Nanoscale Science&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;building&quot;</span><span class="p">:</span> <span class="s2">&quot;Bldg 217&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;room&quot;</span><span class="p">:</span> <span class="s2">&quot;A206&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;quanta_spot_size&quot;</span><span class="p">:</span> <span class="mf">3.5</span><span class="p">,</span>  <span class="c1"># Vendor-specific</span>
+        <span class="s2">&quot;fei_detector_mode&quot;</span><span class="p">:</span> <span class="s2">&quot;CBS&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;detector_serial&quot;</span><span class="p">:</span> <span class="s2">&quot;12345-ABC&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>When to use extensions:</strong></p>
+<ul class="simple">
+<li><p>Vendor-specific fields without EM Glossary equivalents</p></li>
+<li><p>Site/facility metadata (building, room, PI name)</p></li>
+<li><p>Instrument calibration data</p></li>
+<li><p>Custom workflow parameters</p></li>
+<li><p>Anything that shouldn’t be validated by schema</p></li>
+</ul>
+<p><strong>Populating extensions:</strong></p>
+<ul class="simple">
+<li><p>In extractors: Use <code class="docutils literal notranslate"><span class="pre">add_to_extensions()</span></code> helper</p></li>
+<li><p>In instrument profiles: Use <code class="docutils literal notranslate"><span class="pre">extension_fields</span></code> parameter</p></li>
+<li><p>See <a class="reference internal" href="../dev_guide/nexuslims_internal_schema.html#metadata-helper-functions"><span class="std std-ref">Helper Functions</span></a> for details</p></li>
+</ul>
+</section>
+<section id="benefits-of-three-tier-structure">
+<h3>Benefits of Three-Tier Structure<a class="headerlink" href="#benefits-of-three-tier-structure" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Standardization</strong> - Core fields ensure interoperability across instruments</p></li>
+<li><p><strong>Validation</strong> - Type-specific fields are validated by appropriate schemas</p></li>
+<li><p><strong>Flexibility</strong> - Extensions accommodate vendor-specific or site-specific metadata</p></li>
+<li><p><strong>Extensibility</strong> - New fields can be added without breaking existing code</p></li>
+<li><p><strong>Semantic clarity</strong> - Clear separation between standardized and custom metadata</p></li>
+</ol>
+<hr class="docutils" />
+</section>
+</section>
+<section id="acquisition-activities">
+<span id="id1"></span><h2>Acquisition Activities<a class="headerlink" href="#acquisition-activities" title="Link to this heading">#</a></h2>
+<p>An <strong>Acquisition Activity</strong> is a group of files created in temporal proximity during an experimental session. Activities represent discrete experimental tasks (e.g., “Survey of sample region 1”, “EDS line scan across interface”).</p>
+<section id="motivation">
+<h3>Motivation<a class="headerlink" href="#motivation" title="Link to this heading">#</a></h3>
+<p>Microscopy experiments typically consist of multiple distinct activities:</p>
+<ul class="simple">
+<li><p>Initial survey imaging at low magnification</p></li>
+<li><p>Higher magnification imaging of regions of interest</p></li>
+<li><p>Spectroscopy (EDS, EELS) at specific points</p></li>
+<li><p>Diffraction pattern collection</p></li>
+<li><p>Return to imaging at different locations</p></li>
+</ul>
+<p>Each activity generates a burst of files. Temporal gaps between file creation indicate transitions between activities.</p>
+</section>
+<section id="file-clustering-algorithm">
+<h3>File Clustering Algorithm<a class="headerlink" href="#file-clustering-algorithm" title="Link to this heading">#</a></h3>
+<p>The record builder uses <strong>Kernel Density Estimation (KDE)</strong> to identify temporal gaps in file creation times:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas.activity</span><span class="w"> </span><span class="kn">import</span> <span class="n">cluster_filelist_mtimes</span>
+
+<span class="c1"># Input: List of file paths with modification times</span>
+<span class="n">files</span> <span class="o">=</span> <span class="p">[</span><span class="n">Path</span><span class="p">(</span><span class="s2">&quot;file1.dm3&quot;</span><span class="p">),</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;file2.dm3&quot;</span><span class="p">),</span> <span class="o">...</span><span class="p">]</span>
+
+<span class="c1"># Cluster into activities based on temporal gaps</span>
+<span class="n">activities</span> <span class="o">=</span> <span class="n">cluster_filelist_mtimes</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
+<span class="c1"># → [[file1, file2], [file3, file4, file5], [file6]]</span>
+</pre></div>
+</div>
+<p><strong>Algorithm steps:</strong></p>
+<ol class="arabic simple">
+<li><p>Extract modification times from all files</p></li>
+<li><p>Convert to minutes since session start</p></li>
+<li><p>Apply Gaussian KDE to find probability density of file creation</p></li>
+<li><p>Identify local minima in density → temporal gaps</p></li>
+<li><p>Split file list at gap boundaries</p></li>
+<li><p>Return list of file groups (activities)</p></li>
+</ol>
+<p><strong>Example timeline:</strong></p>
+<pre  class="mermaid">
+        %%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e3f2fd', 'primaryTextColor': '#000', 'primaryBorderColor': '#1976d2'}}}%%
+gantt
+    title File Clustering into Acquisition Activities
+    dateFormat mm
+    axisFormat %M min
+
+    section Activity 1
+    Survey images (7 files)           :active, a1, 00, 5m
+
+    section Gap
+    10 min gap                        :crit, gap1, 05, 10m
+
+    section Activity 2
+    High-mag imaging (4 files)        :active, a2, 15, 5m
+
+    section Gap
+    15 min gap                        :crit, gap2, 20, 15m
+
+    section Activity 3
+    EDS point spectra (6 files)       :active, a3, 35, 5m
+
+    section Gap
+    5 min gap                         :crit, gap3, 40, 5m
+
+    section Activity 4
+    EDS map (8 files)                 :active, a4, 45, 5m
+    </pre><p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p>Minimum gap duration to split activities (configurable)</p></li>
+<li><p>Bandwidth for KDE smoothing (adapts to data density)</p></li>
+</ul>
+</section>
+<section id="activity-metadata">
+<h3>Activity Metadata<a class="headerlink" href="#activity-metadata" title="Link to this heading">#</a></h3>
+<p>Each activity in a record includes:</p>
+<ul class="simple">
+<li><p>Start time (earliest file in group)</p></li>
+<li><p>End time (latest file in group)</p></li>
+<li><p>List of datasets (files) in the activity</p></li>
+<li><p>Activity-level summary information</p></li>
+</ul>
+</section>
+<section id="relationship-to-sessions">
+<h3>Relationship to Sessions<a class="headerlink" href="#relationship-to-sessions" title="Link to this heading">#</a></h3>
+<pre  class="mermaid">
+        %%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e3f2fd', 'primaryTextColor': '#000', 'primaryBorderColor': '#1976d2'}}}%%
+graph TD
+    Session[&quot;Session&lt;br/&gt;(Microscopy Usage Event)&quot;]
+
+    Session --&gt; Activity1[&quot;Activity 1&lt;br/&gt;(Survey Images)&quot;]
+    Session --&gt; Activity2[&quot;Activity 2&lt;br/&gt;(High-Mag Imaging)&quot;]
+    Session --&gt; Activity3[&quot;Activity 3&lt;br/&gt;(EDS Analysis)&quot;]
+
+    Activity1 --&gt; Dataset1[&quot;Dataset 1&lt;br/&gt;(image001.tif)&quot;]
+    Activity1 --&gt; Dataset2[&quot;Dataset 2&lt;br/&gt;(image002.tif)&quot;]
+    Activity1 --&gt; Dataset3[&quot;Dataset 3&lt;br/&gt;(image003.tif)&quot;]
+
+    Activity2 --&gt; Dataset4[&quot;Dataset 4&lt;br/&gt;(image004.tif)&quot;]
+    Activity2 --&gt; Dataset5[&quot;Dataset 5&lt;br/&gt;(image005.tif)&quot;]
+
+    Activity3 --&gt; Dataset6[&quot;Dataset 6&lt;br/&gt;(spectrum001.spc)&quot;]
+
+    classDef sessionStyle fill:#e3f2fd,stroke:#1976d2,stroke-width:3px
+    classDef activityStyle fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    classDef datasetStyle fill:#f3e5f5,stroke:#7b1fa2,stroke-width:1px
+
+    class Session sessionStyle
+    class Activity1,Activity2,Activity3 activityStyle
+    class Dataset1,Dataset2,Dataset3,Dataset4,Dataset5,Dataset6 datasetStyle
+    </pre><p>A session can have one or more activities. The clustering algorithm automatically determines activity boundaries based on temporal gaps in file creation times.</p>
+</section>
+<section id="implementation-details">
+<h3>Implementation Details<a class="headerlink" href="#implementation-details" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Module:</strong> <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.schemas.activity.html#module-nexusLIMS.schemas.activity" title="nexusLIMS.schemas.activity"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.schemas.activity</span></code></a></p></li>
+<li><p><strong>Class:</strong> <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.schemas.activity.html#nexusLIMS.schemas.activity.AcquisitionActivity" title="nexusLIMS.schemas.activity.AcquisitionActivity"><code class="xref py py-class docutils literal notranslate"><span class="pre">AcquisitionActivity</span></code></a></p></li>
+<li><p><strong>Function:</strong> <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.schemas.activity.html#nexusLIMS.schemas.activity.cluster_filelist_mtimes" title="nexusLIMS.schemas.activity.cluster_filelist_mtimes"><code class="xref py py-func docutils literal notranslate"><span class="pre">cluster_filelist_mtimes()</span></code></a></p></li>
+<li><p><strong>Algorithm:</strong> Scikit-learn <code class="docutils literal notranslate"><span class="pre">KernelDensity</span></code> with Gaussian kernel</p></li>
+</ul>
+<p>For more details, see <a class="reference internal" href="record_building.html#build-activities"><span class="std std-ref">Separating Acquisition Activities</span></a>.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="see-also">
+<h2>See Also<a class="headerlink" href="#see-also" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="../dev_guide/nexuslims_internal_schema.html"><span class="std std-doc">NexusLIMS Internal Schema</span></a> - Detailed internal metadata schema documentation</p></li>
+<li><p><a class="reference internal" href="../dev_guide/em_glossary_reference.html"><span class="std std-doc">EM Glossary Reference</span></a> - Complete field reference</p></li>
+<li><p><a class="reference internal" href="../dev_guide/writing_extractor_plugins.html"><span class="std std-doc">Writing Extractor Plugins</span></a> - Using DatasetTypes in extractors</p></li>
+<li><p><a class="reference internal" href="record_building.html"><span class="std std-doc">Record Building Process</span></a> - Complete workflow documentation</p></li>
+</ul>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="exporters.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Export Destinations</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../migration_guide.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Migration Guide</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-organization-philosophy">Data Organization Philosophy</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#system-components">System Components</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dataset-types">Dataset Types</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#available-dataset-types">Available Dataset Types</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#schema-mapping">Schema Mapping</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#usage-in-extractors">Usage in Extractors</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-type-classification">Data Type Classification</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#naming-convention">Naming Convention</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#components">Components</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#how-extractors-determine-data-type">How Extractors Determine Data Type</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#relationship-to-datasettype">Relationship to DatasetType</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#metadata-schema-structure">Metadata Schema Structure</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#three-tier-architecture">Three-Tier Architecture</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tier-1-core-fields">Tier 1: Core Fields</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tier-2-type-specific-fields">Tier 2: Type-Specific Fields</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tier-3-extensions">Tier 3: Extensions</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#benefits-of-three-tier-structure">Benefits of Three-Tier Structure</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#acquisition-activities">Acquisition Activities</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#motivation">Motivation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#file-clustering-algorithm">File Clustering Algorithm</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#activity-metadata">Activity Metadata</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#relationship-to-sessions">Relationship to Sessions</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#implementation-details">Implementation Details</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#see-also">See Also</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/user_guide/taxonomy.md.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2025 - 2026, datasophos, LLC.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
